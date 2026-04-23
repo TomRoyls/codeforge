@@ -1,40 +1,35 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface NoImplicitCoercionOptions extends RuleOptions {
   allowDoubleBang?: boolean
-  allowUnaryPlus?: boolean
-  allowStringConcat?: boolean
   allowNumericConcat?: boolean
+  allowStringConcat?: boolean
+  allowUnaryPlus?: boolean
 }
 
 const DEFAULT_OPTIONS: NoImplicitCoercionOptions = {
   allowDoubleBang: false,
-  allowUnaryPlus: false,
-  allowStringConcat: false,
   allowNumericConcat: false,
+  allowStringConcat: false,
+  allowUnaryPlus: false,
 }
 
 export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> = {
-  meta: {
-    name: 'no-implicit-coercion',
-    description:
-      'Disallow implicit type coercions like !!, +, and string concatenation for type conversion',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: NoImplicitCoercionOptions) => {
+  create(options: NoImplicitCoercionOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           // Check for double bang: !!value
           if (
             !mergedOptions.allowDoubleBang &&
@@ -48,12 +43,12 @@ export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> =
                 if (innerOperator === SyntaxKind.ExclamationToken) {
                   const range = getNodeRange(node)
                   violations.push({
-                    ruleId: 'no-implicit-coercion',
-                    severity: 'warning',
+                    filePath: node.getSourceFile().getFilePath(),
                     message:
                       'Avoid double bang (!!) for boolean conversion. Use Boolean() instead.',
-                    filePath: node.getSourceFile().getFilePath(),
                     range,
+                    ruleId: 'no-implicit-coercion',
+                    severity: 'warning',
                     suggestion: 'Replace with Boolean(value) for explicit conversion',
                   })
                 }
@@ -72,12 +67,12 @@ export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> =
               if (operand && !Node.isNumericLiteral(operand)) {
                 const range = getNodeRange(node)
                 violations.push({
-                  ruleId: 'no-implicit-coercion',
-                  severity: 'warning',
+                  filePath: node.getSourceFile().getFilePath(),
                   message:
                     'Avoid unary plus (+) for number conversion. Use Number() instead.',
-                  filePath: node.getSourceFile().getFilePath(),
                   range,
+                  ruleId: 'no-implicit-coercion',
+                  severity: 'warning',
                   suggestion: 'Replace with Number(value) for explicit conversion',
                 })
               }
@@ -101,12 +96,12 @@ export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> =
               ) {
                 const range = getNodeRange(node)
                 violations.push({
-                  ruleId: 'no-implicit-coercion',
-                  severity: 'warning',
+                  filePath: node.getSourceFile().getFilePath(),
                   message:
                     'Avoid string concatenation with empty string for type conversion. Use String() instead.',
-                  filePath: node.getSourceFile().getFilePath(),
                   range,
+                  ruleId: 'no-implicit-coercion',
+                  severity: 'warning',
                   suggestion: 'Replace with String(value) for explicit conversion',
                 })
               }
@@ -130,12 +125,12 @@ export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> =
               ) {
                 const range = getNodeRange(node)
                 violations.push({
-                  ruleId: 'no-implicit-coercion',
-                  severity: 'warning',
+                  filePath: node.getSourceFile().getFilePath(),
                   message:
                     'Avoid multiplication by 1 for number conversion. Use Number() instead.',
-                  filePath: node.getSourceFile().getFilePath(),
                   range,
+                  ruleId: 'no-implicit-coercion',
+                  severity: 'warning',
                   suggestion: 'Replace with Number(value) for explicit conversion',
                 })
               }
@@ -143,8 +138,16 @@ export const noImplicitCoercionRule: RuleDefinition<NoImplicitCoercionOptions> =
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description:
+      'Disallow implicit type coercions like !!, +, and string concatenation for type conversion',
+    fixable: 'code',
+    name: 'no-implicit-coercion',
+    recommended: false,
   },
 }
 
@@ -161,7 +164,7 @@ export function analyzeNoImplicitCoercion(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         // Check for double bang: !!value
         if (
           !mergedOptions.allowDoubleBang &&
@@ -175,12 +178,12 @@ export function analyzeNoImplicitCoercion(
               if (innerOperator === SyntaxKind.ExclamationToken) {
                 const range = getNodeRange(node)
                 violations.push({
-                  ruleId: 'no-implicit-coercion',
-                  severity: 'warning',
+                  filePath: sourceFile.getFilePath(),
                   message:
                     'Avoid double bang (!!) for boolean conversion. Use Boolean() instead.',
-                  filePath: sourceFile.getFilePath(),
                   range,
+                  ruleId: 'no-implicit-coercion',
+                  severity: 'warning',
                   suggestion: 'Replace with Boolean(value) for explicit conversion',
                 })
               }
@@ -199,12 +202,12 @@ export function analyzeNoImplicitCoercion(
             if (operand && !Node.isNumericLiteral(operand)) {
               const range = getNodeRange(node)
               violations.push({
-                ruleId: 'no-implicit-coercion',
-                severity: 'warning',
+                filePath: sourceFile.getFilePath(),
                 message:
                   'Avoid unary plus (+) for number conversion. Use Number() instead.',
-                filePath: sourceFile.getFilePath(),
                 range,
+                ruleId: 'no-implicit-coercion',
+                severity: 'warning',
                 suggestion: 'Replace with Number(value) for explicit conversion',
               })
             }
@@ -227,12 +230,12 @@ export function analyzeNoImplicitCoercion(
             ) {
               const range = getNodeRange(node)
               violations.push({
-                ruleId: 'no-implicit-coercion',
-                severity: 'warning',
+                filePath: sourceFile.getFilePath(),
                 message:
                   'Avoid string concatenation with empty string for type conversion. Use String() instead.',
-                filePath: sourceFile.getFilePath(),
                 range,
+                ruleId: 'no-implicit-coercion',
+                severity: 'warning',
                 suggestion: 'Replace with String(value) for explicit conversion',
               })
             }
@@ -255,12 +258,12 @@ export function analyzeNoImplicitCoercion(
             ) {
               const range = getNodeRange(node)
               violations.push({
-                ruleId: 'no-implicit-coercion',
-                severity: 'warning',
+                filePath: sourceFile.getFilePath(),
                 message:
                   'Avoid multiplication by 1 for number conversion. Use Number() instead.',
-                filePath: sourceFile.getFilePath(),
                 range,
+                ruleId: 'no-implicit-coercion',
+                severity: 'warning',
                 suggestion: 'Replace with Number(value) for explicit conversion',
               })
             }

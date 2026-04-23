@@ -1,11 +1,14 @@
-import type { Node, BinaryExpression, SourceFile } from 'ts-morph'
+import type { BinaryExpression, Node, SourceFile } from 'ts-morph'
+
 import { Node as TsNode } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import {
   type FunctionLikeNode,
-  type RuleViolation,
-  getNodeRange,
   getFunctionName,
+  getNodeRange,
+  type RuleViolation,
   traverseAST,
 } from '../../ast/visitor.js'
 
@@ -51,42 +54,42 @@ function calculateFunctionComplexity(node: FunctionLikeNode): number {
 }
 
 export const maxComplexityRule: RuleDefinition<MaxComplexityOptions> = {
-  meta: {
-    name: 'max-complexity',
-    description: 'Enforce a maximum cyclomatic complexity threshold for functions',
-    category: 'complexity',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {
-    max: 10,
-  },
-  create: (options: MaxComplexityOptions) => {
+  create(options: MaxComplexityOptions) {
     const violations: RuleViolation[] = []
     const maxComplexity = options.max ?? 10
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode) => {
+        visitFunction(node: FunctionLikeNode) {
           const complexity = calculateFunctionComplexity(node)
           const name = getFunctionName(node)
 
           if (complexity > maxComplexity) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: `Function '${name}' has a complexity of ${complexity}. Maximum allowed is ${maxComplexity}.`,
+              range,
               ruleId: 'max-complexity',
               severity: 'warning',
-              message: `Function '${name}' has a complexity of ${complexity}. Maximum allowed is ${maxComplexity}.`,
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion:
                 'Consider breaking this function into smaller, single-responsibility functions.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {
+    max: 10,
+  },
+  meta: {
+    category: 'complexity',
+    description: 'Enforce a maximum cyclomatic complexity threshold for functions',
+    fixable: 'code',
+    name: 'max-complexity',
+    recommended: true,
   },
 }
 
@@ -99,18 +102,18 @@ export function analyzeComplexity(
   traverseAST(
     sourceFile,
     {
-      visitFunction: (node: FunctionLikeNode) => {
+      visitFunction(node: FunctionLikeNode) {
         const complexity = calculateFunctionComplexity(node)
         const name = getFunctionName(node)
 
         if (complexity > maxComplexity) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: `Function '${name}' has a complexity of ${complexity}. Maximum allowed is ${maxComplexity}.`,
+            range,
             ruleId: 'max-complexity',
             severity: 'warning',
-            message: `Function '${name}' has a complexity of ${complexity}. Maximum allowed is ${maxComplexity}.`,
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion:
               'Consider breaking this function into smaller, single-responsibility functions.',
           })

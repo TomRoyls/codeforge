@@ -1,11 +1,12 @@
 /**
- * @fileoverview Detect useless fallbacks in spread patterns
+ * @file Detect useless fallbacks in spread patterns
  * @module rules/patterns/no-useless-fallback-in-spread
  */
 
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, getNodeText } from '../../utils/ast-helpers.js'
+import { getNodeText, getRange } from '../../utils/ast-helpers.js'
 
 /**
  * Check if a node is a LogicalExpression with || operator
@@ -122,20 +123,6 @@ function getLogicalRight(node: unknown): unknown {
 }
 
 export const noUselessFallbackInSpreadRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Detect useless fallbacks in spread patterns. Spreading undefined/null is safe and adds no properties, so `{ ...obj || {} }` is redundant and can be simplified to `{ ...obj }`.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-useless-fallback-in-spread',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       SpreadElement(node: unknown, parent?: unknown): void {
@@ -157,12 +144,11 @@ export const noUselessFallbackInSpreadRule: RuleDefinition = {
         }
 
         // Check for useless fallback in object spread: { ...obj || {} }
-        if (isSpreadInObjectExpression(node, parent)) {
-          if (isEmptyObjectLiteral(rightOperand)) {
+        if (isSpreadInObjectExpression(node, parent) && isEmptyObjectLiteral(rightOperand)) {
             const location = extractLocation(argument)
             const nodeRange = getRange(argument)
 
-            let fix: { range: readonly [number, number]; text: string } | undefined
+            let fix: undefined | { range: readonly [number, number]; text: string }
             if (nodeRange) {
               const source = context.getSource()
               const leftText = getNodeText(leftOperand, source)
@@ -175,21 +161,19 @@ export const noUselessFallbackInSpreadRule: RuleDefinition = {
             }
 
             context.report({
+              fix,
+              loc: location,
               message:
                 'Useless fallback in spread pattern. Spreading undefined/null is safe, so `...obj || {}` can be simplified to `...obj`.',
-              loc: location,
-              fix,
             })
           }
-        }
 
         // Check for useless fallback in array spread: [...arr || []]
-        if (isSpreadInArrayExpression(node, parent)) {
-          if (isEmptyArrayLiteral(rightOperand)) {
+        if (isSpreadInArrayExpression(node, parent) && isEmptyArrayLiteral(rightOperand)) {
             const location = extractLocation(argument)
             const nodeRange = getRange(argument)
 
-            let fix: { range: readonly [number, number]; text: string } | undefined
+            let fix: undefined | { range: readonly [number, number]; text: string }
             if (nodeRange) {
               const source = context.getSource()
               const leftText = getNodeText(leftOperand, source)
@@ -202,15 +186,28 @@ export const noUselessFallbackInSpreadRule: RuleDefinition = {
             }
 
             context.report({
+              fix,
+              loc: location,
               message:
                 'Useless fallback in spread pattern. Spreading undefined/null is safe, so `...arr || []` can be simplified to `...arr`.',
-              loc: location,
-              fix,
             })
           }
-        }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Detect useless fallbacks in spread patterns. Spreading undefined/null is safe and adds no properties, so `{ ...obj || {} }` is redundant and can be simplified to `{ ...obj }`.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-useless-fallback-in-spread',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isBlockStatement(node: unknown): boolean {
@@ -41,40 +42,41 @@ function terminatesFlow(node: unknown): boolean {
 }
 
 export const noUnreachableRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow unreachable code.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       BlockStatement(node: unknown): void {
         if (!isBlockStatement(node)) return
         const n = node as Record<string, unknown>
-        const body = n.body
+        const {body} = n
         if (!Array.isArray(body)) return
 
         let foundTerminator = false
         for (const stmt of body) {
           if (foundTerminator) {
             context.report({
-              message: 'Unreachable code detected.',
               loc: extractLocation(stmt),
+              message: 'Unreachable code detected.',
             })
             break
           }
+
           if (terminatesFlow(stmt)) {
             foundTerminator = true
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow unreachable code.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnreachableRule

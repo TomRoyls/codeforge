@@ -1,8 +1,9 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isMemberExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
-function getMemberProperty(node: unknown): string | null {
+import { extractLocation } from '../../ast/location-utils.js'
+import { isCallExpression, isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
+
+function getMemberProperty(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -46,30 +47,18 @@ function isMathPowCall(node: unknown): boolean {
 }
 
 export const preferExponentiationOperatorRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer the exponentiation operator (**) over Math.pow() for better readability. The ** operator is more concise and clearer for exponentiation operations.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-exponentiation-operator',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     function getNodeSource(node: unknown): string {
       if (!node || typeof node !== 'object') {
         return ''
       }
+
       const n = node as Record<string, unknown>
       const range = n.range as [number, number] | undefined
       if (!range) {
         return ''
       }
+
       const source = context.getSource()
       return source.slice(range[0], range[1])
     }
@@ -86,8 +75,8 @@ export const preferExponentiationOperatorRule: RuleDefinition = {
 
         if (!args || args.length < 2) {
           context.report({
-            message: 'Use the ** operator instead of Math.pow() for exponentiation.',
             loc: location,
+            message: 'Use the ** operator instead of Math.pow() for exponentiation.',
           })
           return
         }
@@ -97,15 +86,29 @@ export const preferExponentiationOperatorRule: RuleDefinition = {
         const fixed = `${base} ** ${exponent}`
 
         context.report({
-          message: 'Use the ** operator instead of Math.pow() for exponentiation.',
-          loc: location,
           fix: {
             range: n.range as [number, number],
             text: fixed,
           },
+          loc: location,
+          message: 'Use the ** operator instead of Math.pow() for exponentiation.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer the exponentiation operator (**) over Math.pow() for better readability. The ** operator is more concise and clearer for exponentiation operations.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-exponentiation-operator',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

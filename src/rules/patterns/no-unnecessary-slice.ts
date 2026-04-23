@@ -1,12 +1,13 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
-  isCallExpression,
-  isMemberExpression,
-  isIdentifier,
-  isLiteral,
   getArguments,
   getRange,
+  isCallExpression,
+  isIdentifier,
+  isLiteral,
+  isMemberExpression,
 } from '../../utils/ast-helpers.js'
 
 function isSliceCall(node: unknown): boolean {
@@ -31,6 +32,7 @@ function isNumericLiteral(node: unknown, value: number): boolean {
   if (!isLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.value === value
 }
@@ -39,6 +41,7 @@ function isUndefinedLiteral(node: unknown): boolean {
   if (!isLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.value === undefined && n.raw === 'undefined'
 }
@@ -83,20 +86,6 @@ function getObjectSource(context: RuleContext, node: unknown): string {
 }
 
 export const noUnnecessarySliceRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary array.slice() calls. Calling .slice(0), .slice(undefined), or .slice() without arguments creates unnecessary overhead. Remove the slice call or use spread syntax if a shallow copy is needed.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-slice',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -116,7 +105,7 @@ export const noUnnecessarySliceRule: RuleDefinition = {
         const objectSource = getObjectSource(context, node)
 
         let message: string
-        let fix: { range: [number, number]; text: string } | undefined
+        let fix: undefined | { range: [number, number]; text: string }
 
         if (reason === 'no arguments') {
           message = `Unnecessary .slice() call. It creates a shallow copy with no benefit. Remove the call or use spread syntax if you need a copy.`
@@ -136,12 +125,26 @@ export const noUnnecessarySliceRule: RuleDefinition = {
         }
 
         context.report({
-          message,
-          loc: location,
           fix,
+          loc: location,
+          message,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unnecessary array.slice() calls. Calling .slice(0), .slice(undefined), or .slice() without arguments creates unnecessary overhead. Remove the slice call or use spread syntax if a shallow copy is needed.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-slice',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

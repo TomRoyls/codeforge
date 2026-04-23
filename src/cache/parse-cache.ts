@@ -1,13 +1,12 @@
 import { statSync } from 'node:fs'
-
 import { type SourceFile } from 'ts-morph'
 
-import { LRUCache } from '../utils/lru-cache.js'
 import { logger } from '../utils/logger.js'
+import { LRUCache } from '../utils/lru-cache.js'
 
 export interface CachedSourceFile {
-  sourceFile: SourceFile
   fileStats: { mtime: number; size: number }
+  sourceFile: SourceFile
   timestamp: number
 }
 
@@ -24,6 +23,21 @@ export class ParseCache {
     this.cache = new LRUCache<string, CachedSourceFile>({
       maxSize: options.maxSize ?? 100,
     })
+  }
+
+  get size(): number {
+    return this.cache.size
+  }
+
+  clear(): void {
+    this.cache.clear()
+    this.hits = 0
+    this.misses = 0
+    logger.debug('Parse cache cleared')
+  }
+
+  delete(filePath: string): boolean {
+    return this.cache.delete(filePath)
   }
 
   get(filePath: string): SourceFile | undefined {
@@ -57,17 +71,13 @@ export class ParseCache {
     }
   }
 
-  set(filePath: string, sourceFile: SourceFile): void {
-    try {
-      const stats = statSync(filePath)
-      this.cache.set(filePath, {
-        sourceFile,
-        fileStats: { mtime: stats.mtimeMs, size: stats.size },
-        timestamp: Date.now(),
-      })
-      logger.debug(`Parse cache SET for ${filePath}`)
-    } catch (error) {
-      logger.debug(`Parse cache SET failed for ${filePath}: ${error}`)
+  getStats(): { hitRate: number; hits: number; misses: number; size: number } {
+    const total = this.hits + this.misses
+    return {
+      hitRate: total > 0 ? this.hits / total : 0,
+      hits: this.hits,
+      misses: this.misses,
+      size: this.cache.size,
     }
   }
 
@@ -75,28 +85,17 @@ export class ParseCache {
     return this.cache.has(filePath)
   }
 
-  delete(filePath: string): boolean {
-    return this.cache.delete(filePath)
-  }
-
-  clear(): void {
-    this.cache.clear()
-    this.hits = 0
-    this.misses = 0
-    logger.debug('Parse cache cleared')
-  }
-
-  get size(): number {
-    return this.cache.size
-  }
-
-  getStats(): { hits: number; misses: number; hitRate: number; size: number } {
-    const total = this.hits + this.misses
-    return {
-      hits: this.hits,
-      misses: this.misses,
-      hitRate: total > 0 ? this.hits / total : 0,
-      size: this.cache.size,
+  set(filePath: string, sourceFile: SourceFile): void {
+    try {
+      const stats = statSync(filePath)
+      this.cache.set(filePath, {
+        fileStats: { mtime: stats.mtimeMs, size: stats.size },
+        sourceFile,
+        timestamp: Date.now(),
+      })
+      logger.debug(`Parse cache SET for ${filePath}`)
+    } catch (error) {
+      logger.debug(`Parse cache SET failed for ${filePath}: ${error}`)
     }
   }
 }

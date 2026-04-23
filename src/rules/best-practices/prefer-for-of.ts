@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer for-of loop over for loop with index
+ * @file Prefer for-of loop over for loop with index
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange } from '../../ast/visitor.js'
 
 interface PreferForOfOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferForOfOptions = {}
 
-function isSimpleIndexedForLoop(node: Node): { array: Node; indexVar: string } | null {
+function isSimpleIndexedForLoop(node: Node): null | { array: Node; indexVar: string } {
   if (!Node.isForStatement(node)) return null
   
   const initializer = node.getInitializer()
@@ -71,11 +74,9 @@ function isSimpleIndexedForLoop(node: Node): { array: Node; indexVar: string } |
     if (incOp.getKind() === SyntaxKind.PlusEqualsToken) {
       const incLeft = incrementor.getLeft()
       const incRight = incrementor.getRight()
-      if (Node.isIdentifier(incLeft) && incLeft.getText() === indexVar) {
-        if (Node.isNumericLiteral(incRight) && incRight.getLiteralValue() === 1) {
+      if (Node.isIdentifier(incLeft) && incLeft.getText() === indexVar && Node.isNumericLiteral(incRight) && incRight.getLiteralValue() === 1) {
           isValidIncrement = true
         }
-      }
     }
   }
   
@@ -97,6 +98,7 @@ function isSimpleIndexedForLoop(node: Node): { array: Node; indexVar: string } |
           return // This is the expected pattern
         }
       }
+
       usesIndexForOtherPurpose = true
     }
   })
@@ -107,20 +109,13 @@ function isSimpleIndexedForLoop(node: Node): { array: Node; indexVar: string } |
 }
 
 export const preferForOfRule: RuleDefinition<PreferForOfOptions> = {
-  meta: {
-    name: 'prefer-for-of',
-    description: 'Prefer for-of loop over for loop with index when only iterating values',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferForOfOptions) => {
+  create(_options: PreferForOfOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isSimpleIndexedForLoop(node)
           if (!result) return
 
@@ -128,17 +123,24 @@ export const preferForOfRule: RuleDefinition<PreferForOfOptions> = {
           const arrayText = result.array.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: 'Use for-of loop instead of indexed for loop when only iterating values.',
+            range,
             ruleId: 'prefer-for-of',
             severity: 'info',
-            message: 'Use for-of loop instead of indexed for loop when only iterating values.',
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: for (const item of ' + arrayText + ') { ... }',
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Prefer for-of loop over for loop with index when only iterating values',
+    fixable: 'code',
+    name: 'prefer-for-of',
+    recommended: false,
   },
 }
 
@@ -155,14 +157,15 @@ export function analyzePreferForOf(
       const arrayText = result.array.getText()
 
       violations.push({
+        filePath: sourceFile.getFilePath(),
+        message: 'Use for-of loop instead of indexed for loop when only iterating values.',
+        range,
         ruleId: 'prefer-for-of',
         severity: 'info',
-        message: 'Use for-of loop instead of indexed for loop when only iterating values.',
-        filePath: sourceFile.getFilePath(),
-        range,
         suggestion: 'Replace with: for (const item of ' + arrayText + ') { ... }',
       })
     }
+
     node.forEachChild(visit)
   }
 

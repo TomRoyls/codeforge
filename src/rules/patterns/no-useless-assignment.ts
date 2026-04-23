@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -19,25 +20,15 @@ function isLiteral(node: unknown): boolean {
   return n.type === 'Literal'
 }
 
-function getIdentifierName(node: unknown): string | null {
+function getIdentifierName(node: unknown): null | string {
   if (isIdentifier(node)) {
     return (node as Record<string, unknown>).name as string
   }
+
   return null
 }
 
 export const noUselessAssignmentRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow redundant assignments.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     const lastValues = new Map<string, unknown>()
 
@@ -54,8 +45,8 @@ export const noUselessAssignmentRule: RuleDefinition = {
           const lastValue = lastValues.get(leftName)
           if (rightValue !== null && lastValue === rightValue) {
             context.report({
-              message: `Redundant assignment to '${leftName}' with same value.`,
               loc: extractLocation(node),
+              message: `Redundant assignment to '${leftName}' with same value.`,
             })
           }
         }
@@ -63,6 +54,17 @@ export const noUselessAssignmentRule: RuleDefinition = {
         lastValues.set(leftName, rightValue)
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow redundant assignments.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUselessAssignmentRule

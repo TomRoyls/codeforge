@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange, isIdentifier } from '../../utils/ast-helpers.js'
 
@@ -17,20 +18,6 @@ function isVariableDeclaratorWithIdentifier(node: unknown, name: string): boolea
 }
 
 export const preferRestParamsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer rest parameters (...args) instead of the arguments object. Rest parameters provide better readability and work with arrow functions.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-rest-params',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     let functionDepth = 0
     let argumentsDeclared = false
@@ -45,19 +32,13 @@ export const preferRestParamsRule: RuleDefinition = {
     }
 
     return {
-      FunctionDeclaration: enterFunction,
-      FunctionExpression: enterFunction,
       ArrowFunctionExpression: enterFunction,
+      'ArrowFunctionExpression:exit': exitFunction,
+      FunctionDeclaration: enterFunction,
 
       'FunctionDeclaration:exit': exitFunction,
+      FunctionExpression: enterFunction,
       'FunctionExpression:exit': exitFunction,
-      'ArrowFunctionExpression:exit': exitFunction,
-
-      VariableDeclarator(node: unknown): void {
-        if (functionDepth > 0 && isVariableDeclaratorWithIdentifier(node, 'arguments')) {
-          argumentsDeclared = true
-        }
-      },
 
       Identifier(node: unknown): void {
         if (functionDepth === 0) {
@@ -75,12 +56,32 @@ export const preferRestParamsRule: RuleDefinition = {
         const location = extractLocation(node)
         const range = getRange(node)
         context.report({
-          message: "Use rest parameters (...args) instead of 'arguments'.",
-          loc: location,
           fix: range ? { range, text: 'args' } : undefined,
+          loc: location,
+          message: "Use rest parameters (...args) instead of 'arguments'.",
         })
       },
+
+      VariableDeclarator(node: unknown): void {
+        if (functionDepth > 0 && isVariableDeclaratorWithIdentifier(node, 'arguments')) {
+          argumentsDeclared = true
+        }
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer rest parameters (...args) instead of the arguments object. Rest parameters provide better readability and work with arrow functions.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-rest-params',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

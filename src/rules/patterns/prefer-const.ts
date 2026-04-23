@@ -1,35 +1,36 @@
 /**
- * @fileoverview Require const declarations for variables that are never reassigned
+ * @file Require const declarations for variables that are never reassigned
  * @module rules/patterns/prefer-const
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface VariableInfo {
-  readonly name: string
-  readonly declaredWith: 'let' | 'var' | 'const'
+  readonly declarationNode: unknown
+  readonly declaredWith: 'const' | 'let' | 'var'
   readonly location: SourceLocation
+  readonly name: string
   readonly reassigned: boolean
   readonly scope: string
-  readonly declarationNode: unknown
 }
 
 interface PreferConstOptions {
   readonly destructuring?: 'all' | 'any'
-  readonly ignoreReadBeforeAssign?: boolean
   readonly ignoreDestructuring?: boolean
+  readonly ignoreReadBeforeAssign?: boolean
 }
 
-function getVariableKind(node: unknown): 'let' | 'var' | 'const' | null {
+function getVariableKind(node: unknown): 'const' | 'let' | 'var' | null {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -40,7 +41,7 @@ function getVariableKind(node: unknown): 'let' | 'var' | 'const' | null {
     return null
   }
 
-  const kind = n.kind
+  const {kind} = n
   if (kind === 'let' || kind === 'var' || kind === 'const') {
     return kind
   }
@@ -115,72 +116,17 @@ function extractDestructuredNames(node: unknown, names: string[]): void {
 }
 
 export const preferConstRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require const declarations for variables that are never reassigned. Using const makes code more predictable and signals intent more clearly.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-const',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          destructuring: {
-            type: 'string',
-            enum: ['all', 'any'],
-            default: 'any',
-          },
-          ignoreReadBeforeAssign: {
-            type: 'boolean',
-            default: false,
-          },
-          ignoreDestructuring: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<PreferConstOptions>(context.config.options, {
       destructuring: 'any',
-      ignoreReadBeforeAssign: false,
       ignoreDestructuring: false,
+      ignoreReadBeforeAssign: false,
     })
 
     const variableMap = new Map<string, VariableInfo>()
     const reassignments = new Set<string>()
 
     return {
-      VariableDeclaration(node: unknown): void {
-        const kind = getVariableKind(node)
-        if (!kind || kind === 'const') {
-          return
-        }
-
-        const names = getDeclarationNames(node)
-        const location = extractLocation(node)
-
-        for (const name of names) {
-          variableMap.set(name, {
-            name,
-            declaredWith: kind,
-            location,
-            reassigned: false,
-            scope: 'block',
-            declarationNode: node,
-          })
-        }
-      },
-
       AssignmentExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
@@ -191,19 +137,6 @@ export const preferConstRule: RuleDefinition = {
 
         if (left?.type === 'Identifier' && typeof left.name === 'string') {
           reassignments.add(left.name)
-        }
-      },
-
-      UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const arg = n.argument as Record<string, unknown> | undefined
-
-        if (arg?.type === 'Identifier' && typeof arg.name === 'string') {
-          reassignments.add(arg.name)
         }
       },
 
@@ -220,22 +153,90 @@ export const preferConstRule: RuleDefinition = {
 
             const range = getRange(info.declarationNode)
             const fix =
-              range !== null
-                ? {
+              range === null
+                ? undefined
+                : {
                     range: [range[0], range[0] + info.declaredWith.length] as [number, number],
                     text: 'const',
                   }
-                : undefined
 
             context.report({
-              message: `'${name}' is never reassigned. Use 'const' instead. ${RULE_SUGGESTIONS.preferConst}`,
-              loc: info.location,
               fix,
+              loc: info.location,
+              message: `'${name}' is never reassigned. Use 'const' instead. ${RULE_SUGGESTIONS.preferConst}`,
             })
           }
         }
       },
+
+      UpdateExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const arg = n.argument as Record<string, unknown> | undefined
+
+        if (arg?.type === 'Identifier' && typeof arg.name === 'string') {
+          reassignments.add(arg.name)
+        }
+      },
+
+      VariableDeclaration(node: unknown): void {
+        const kind = getVariableKind(node)
+        if (!kind || kind === 'const') {
+          return
+        }
+
+        const names = getDeclarationNames(node)
+        const location = extractLocation(node)
+
+        for (const name of names) {
+          variableMap.set(name, {
+            declarationNode: node,
+            declaredWith: kind,
+            location,
+            name,
+            reassigned: false,
+            scope: 'block',
+          })
+        }
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require const declarations for variables that are never reassigned. Using const makes code more predictable and signals intent more clearly.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-const',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          destructuring: {
+            default: 'any',
+            enum: ['all', 'any'],
+            type: 'string',
+          },
+          ignoreDestructuring: {
+            default: false,
+            type: 'boolean',
+          },
+          ignoreReadBeforeAssign: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

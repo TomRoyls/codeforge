@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAsync(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.async === true
 }
@@ -37,11 +39,9 @@ function containsAwait(node: unknown): boolean {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null) {
-      if (containsAwait(value)) {
+    } else if (typeof value === 'object' && value !== null && containsAwait(value)) {
         return true
       }
-    }
   }
 
   return false
@@ -51,6 +51,7 @@ function isGenerator(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.generator === true
 }
@@ -59,6 +60,7 @@ function isForOfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'ForOfStatement' && n.await === true
 }
@@ -91,31 +93,15 @@ function containsForAwait(node: unknown): boolean {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null) {
-      if (containsForAwait(value)) {
+    } else if (typeof value === 'object' && value !== null && containsForAwait(value)) {
         return true
       }
-    }
   }
 
   return false
 }
 
 export const noAsyncWithoutAwaitRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow async functions that lack await expressions. Async functions without await are usually unnecessary and add overhead.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-async-without-await',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     function checkFunction(node: unknown): void {
       if (!isAsync(node)) {
@@ -134,17 +120,31 @@ export const noAsyncWithoutAwaitRule: RuleDefinition = {
       if (!containsAwait(body) && !containsForAwait(body)) {
         const location = extractLocation(node)
         context.report({
-          message: 'Async function has no await expression.',
           loc: location,
+          message: 'Async function has no await expression.',
         })
       }
     }
 
     return {
+      ArrowFunctionExpression: checkFunction,
       FunctionDeclaration: checkFunction,
       FunctionExpression: checkFunction,
-      ArrowFunctionExpression: checkFunction,
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow async functions that lack await expressions. Async functions without await are usually unnecessary and add overhead.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-async-without-await',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

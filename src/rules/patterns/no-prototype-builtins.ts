@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const PROTOTYPE_METHODS = new Set(['hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable'])
@@ -22,23 +23,12 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noPrototypeBuiltinsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow calling some Object.prototype methods directly on objects.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
         if (!isCallExpression(node)) return
         const n = node as Record<string, unknown>
-        const callee = n.callee
+        const {callee} = n
         if (isMemberExpression(callee)) {
           const member = callee as Record<string, unknown>
           if (isIdentifier(member.property)) {
@@ -46,14 +36,25 @@ export const noPrototypeBuiltinsRule: RuleDefinition = {
             const name = prop.name as string
             if (PROTOTYPE_METHODS.has(name)) {
               context.report({
-                message: `Do not call '${name}' directly on an object. Use Object.prototype.${name}.call() instead.`,
                 loc: extractLocation(node),
+                message: `Do not call '${name}' directly on an object. Use Object.prototype.${name}.call() instead.`,
               })
             }
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow calling some Object.prototype methods directly on objects.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noPrototypeBuiltinsRule

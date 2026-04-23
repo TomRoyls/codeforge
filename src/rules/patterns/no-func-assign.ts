@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -14,17 +15,6 @@ function isFunctionExpression(node: unknown): boolean {
 }
 
 export const noFuncAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow reassigning function declarations.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       AssignmentExpression(node: unknown): void {
@@ -32,12 +22,23 @@ export const noFuncAssignRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (n.right && isFunctionExpression(n.right)) {
           context.report({
-            message: 'Reassigning function declaration is not allowed.',
             loc: extractLocation(node),
+            message: 'Reassigning function declaration is not allowed.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow reassigning function declarations.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noFuncAssignRule

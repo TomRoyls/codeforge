@@ -1,65 +1,69 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isLiteral } from '../../utils/ast-helpers.js'
 
 const REGEX_SPECIAL_CHARS = new Set([
-  '\\',
-  '^',
   '$',
-  '.',
-  '|',
-  '?',
-  '*',
-  '+',
   '(',
   ')',
-  '[',
-  ']',
-  '{',
-  '}',
+  '*',
+  '+',
+  '.',
   '/',
+  '?',
+  '[',
+  '\\',
+  ']',
+  '^',
+  '{',
+  '|',
+  '}',
 ])
 
 const SPECIAL_REGEX_ESCAPES = new Set([
-  'n',
-  'r',
-  't',
-  'f',
-  'v',
   '0',
-  'd',
-  'D',
-  's',
-  'S',
-  'w',
-  'W',
   'b',
   'B',
+  'd',
+  'D',
+  'f',
+  'k',
+  'n',
+  'N',
   'p',
   'P',
-  'x',
-  'u',
-  'k',
-  'N',
+  'r',
   'R',
+  's',
+  'S',
+  't',
+  'u',
+  'v',
+  'w',
+  'W',
+  'x',
   'X',
 ])
 
-function getRawStringValue(node: unknown): string | null {
+function getRawStringValue(node: unknown): null | string {
   if (!isLiteral(node)) {
     return null
   }
+
   const n = node as Record<string, unknown>
   return typeof n.raw === 'string' ? n.raw : null
 }
 
-function getQuoteChar(raw: string): string | null {
+function getQuoteChar(raw: string): null | string {
   if (raw.startsWith('"') && raw.endsWith('"')) {
     return '"'
   }
+
   if (raw.startsWith("'") && raw.endsWith("'")) {
     return "'"
   }
+
   return null
 }
 
@@ -70,20 +74,6 @@ function isQuoteEscapeUnnecessary(escapedQuote: string, stringQuote: string): bo
 }
 
 export const noUnnecessaryEscapeInRegexpRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        "Disallow unnecessary escape characters in regular expressions. Escaping characters that don't need to be escaped makes the pattern harder to read.",
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-escape-in-regexp',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
@@ -106,23 +96,21 @@ export const noUnnecessaryEscapeInRegexpRule: RuleDefinition = {
         while (escapeIndex !== -1 && escapeIndex < raw.length - 1) {
           const escapedChar = raw[escapeIndex + 1]
 
-          if (escapedChar === "'" || escapedChar === '"') {
-            if (isQuoteEscapeUnnecessary(escapedChar, quoteChar)) {
+          if ((escapedChar === "'" || escapedChar === '"') && isQuoteEscapeUnnecessary(escapedChar, quoteChar)) {
               context.report({
-                message: `Unnecessary escape character. '${escapedChar}' does not need to be escaped in ${quoteChar === '"' ? 'double' : 'single'}-quoted strings.`,
                 loc: {
-                  start: {
-                    line: location.start.line,
-                    column: location.start.column + escapeIndex,
-                  },
                   end: {
-                    line: location.start.line,
                     column: location.start.column + escapeIndex + 2,
+                    line: location.start.line,
+                  },
+                  start: {
+                    column: location.start.column + escapeIndex,
+                    line: location.start.line,
                   },
                 },
+                message: `Unnecessary escape character. '${escapedChar}' does not need to be escaped in ${quoteChar === '"' ? 'double' : 'single'}-quoted strings.`,
               })
             }
-          }
 
           escapeIndex = raw.indexOf('\\', escapeIndex + 2)
         }
@@ -157,17 +145,17 @@ export const noUnnecessaryEscapeInRegexpRule: RuleDefinition = {
 
               if (!SPECIAL_REGEX_ESCAPES.has(nextChar) && !isBackreference) {
                 context.report({
-                  message: `Unnecessary escape character '\\${nextChar}' in regex. This character does not need to be escaped.`,
                   loc: {
-                    start: {
-                      line: location.start.line,
-                      column,
-                    },
                     end: {
-                      line: location.start.line,
                       column: column + 2,
+                      line: location.start.line,
+                    },
+                    start: {
+                      column,
+                      line: location.start.line,
                     },
                   },
+                  message: `Unnecessary escape character '\\${nextChar}' in regex. This character does not need to be escaped.`,
                 })
               }
             }
@@ -181,6 +169,20 @@ export const noUnnecessaryEscapeInRegexpRule: RuleDefinition = {
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        "Disallow unnecessary escape characters in regular expressions. Escaping characters that don't need to be escaped makes the pattern harder to read.",
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-escape-in-regexp',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

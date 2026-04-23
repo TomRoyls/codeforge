@@ -18,13 +18,13 @@ export const securityRules = {
   'no-unsafe-type-assertion': noUnsafeTypeAssertionRule,
 }
 
-export {
-  noDeprecatedApiRule,
-  noDynamicDeleteRule,
-  noEvalRule,
-  noUnsafeCallRule,
-  noUnsafeMemberAccessRule,
-  noUnsafeRegexRule,
-  noUnsafeReturnRule,
-  noUnsafeTypeAssertionRule,
-}
+
+
+export {noDeprecatedApiRule} from './no-deprecated-api.js'
+export {noDynamicDeleteRule} from './no-dynamic-delete.js'
+export {noEvalRule} from './no-eval.js'
+export {noUnsafeCallRule} from './no-unsafe-call.js'
+export {noUnsafeMemberAccessRule} from './no-unsafe-member-access.js'
+export {noUnsafeRegexRule} from './no-unsafe-regex.js'
+export {noUnsafeReturnRule} from './no-unsafe-return.js'
+export {noUnsafeTypeAssertionRule} from './no-unsafe-type-assertion.js'

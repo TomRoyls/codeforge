@@ -1,46 +1,47 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const GLOBAL_OBJECTS = new Set([
-  'undefined',
-  'NaN',
-  'Infinity',
-  'Object',
-  'Function',
-  'Boolean',
-  'Symbol',
-  'Number',
-  'BigInt',
-  'Math',
-  'Date',
-  'String',
-  'RegExp',
-  'Array',
-  'Map',
-  'Set',
-  'WeakMap',
-  'WeakSet',
-  'JSON',
-  'Promise',
-  'Reflect',
-  'Proxy',
-  'Error',
   'AggregateError',
+  'Array',
+  'Atomics',
+  'BigInt',
+  'Boolean',
+  'console',
+  'Date',
+  'document',
+  'Error',
   'EvalError',
+  'Function',
+  'globalThis',
+  'Infinity',
+  'Intl',
+  'JSON',
+  'Map',
+  'Math',
+  'NaN',
+  'navigator',
+  'Number',
+  'Object',
+  'Promise',
+  'Proxy',
   'RangeError',
   'ReferenceError',
+  'Reflect',
+  'RegExp',
+  'Set',
+  'SharedArrayBuffer',
+  'String',
+  'Symbol',
   'SyntaxError',
   'TypeError',
+  'undefined',
   'URIError',
-  'globalThis',
-  'console',
-  'window',
-  'document',
-  'navigator',
-  'Intl',
+  'WeakMap',
+  'WeakSet',
   'WebAssembly',
-  'Atomics',
-  'SharedArrayBuffer',
+  'window',
 ])
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -56,17 +57,6 @@ export function isIdentifier(node: unknown): boolean {
 }
 
 export const noGlobalAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow assignment to native objects or read-only global variables.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       AssignmentExpression(node: unknown): void {
@@ -77,13 +67,24 @@ export const noGlobalAssignRule: RuleDefinition = {
           const name = left.name as string
           if (GLOBAL_OBJECTS.has(name)) {
             context.report({
-              message: `Read-only global '${name}' should not be modified.`,
               loc: extractLocation(node),
+              message: `Read-only global '${name}' should not be modified.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow assignment to native objects or read-only global variables.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noGlobalAssignRule

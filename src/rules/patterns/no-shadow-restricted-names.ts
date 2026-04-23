@@ -1,7 +1,8 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
-const RESTRICTED_NAMES = new Set(['undefined', 'NaN', 'Infinity', 'eval', 'arguments'])
+const RESTRICTED_NAMES = new Set(['arguments', 'eval', 'Infinity', 'NaN', 'undefined'])
 
 function isVariableDeclarator(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
@@ -22,33 +23,8 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noShadowRestrictedNamesRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow identifiers from shadowing restricted names.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
-      VariableDeclarator(node: unknown): void {
-        if (!isVariableDeclarator(node)) return
-        const n = node as Record<string, unknown>
-        if (isIdentifier(n.id)) {
-          const id = n.id as Record<string, unknown>
-          const name = id.name as string
-          if (RESTRICTED_NAMES.has(name)) {
-            context.report({
-              message: `Shadowing of global property '${name}'.`,
-              loc: extractLocation(node),
-            })
-          }
-        }
-      },
       FunctionDeclaration(node: unknown): void {
         if (!isFunctionDeclaration(node)) return
         const n = node as Record<string, unknown>
@@ -57,13 +33,38 @@ export const noShadowRestrictedNamesRule: RuleDefinition = {
           const name = id.name as string
           if (RESTRICTED_NAMES.has(name)) {
             context.report({
-              message: `Shadowing of global property '${name}'.`,
               loc: extractLocation(node),
+              message: `Shadowing of global property '${name}'.`,
+            })
+          }
+        }
+      },
+      VariableDeclarator(node: unknown): void {
+        if (!isVariableDeclarator(node)) return
+        const n = node as Record<string, unknown>
+        if (isIdentifier(n.id)) {
+          const id = n.id as Record<string, unknown>
+          const name = id.name as string
+          if (RESTRICTED_NAMES.has(name)) {
+            context.report({
+              loc: extractLocation(node),
+              message: `Shadowing of global property '${name}'.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow identifiers from shadowing restricted names.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noShadowRestrictedNamesRule

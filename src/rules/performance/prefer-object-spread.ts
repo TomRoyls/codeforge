@@ -1,17 +1,18 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
-import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getNodeText } from '../../utils/ast-helpers.js'
+import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface ObjectAssignMatch {
+  readonly location: SourceLocation
   readonly sourceText: string
   readonly spreadSources: readonly string[]
-  readonly location: SourceLocation
 }
 
 function isEmptyObjectLiteral(node: unknown): boolean {
@@ -25,7 +26,7 @@ function isEmptyObjectLiteral(node: unknown): boolean {
     return false
   }
 
-  const properties = n.properties
+  const {properties} = n
   return Array.isArray(properties) && properties.length === 0
 }
 
@@ -47,7 +48,7 @@ function isIdentifier(node: unknown, name: string): boolean {
   return n.type === 'Identifier' && n.name === name
 }
 
-function isObjectAssignCall(node: unknown): { callee: unknown; args: unknown[] } | null {
+function isObjectAssignCall(node: unknown): null | { args: unknown[]; callee: unknown; } {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -58,13 +59,13 @@ function isObjectAssignCall(node: unknown): { callee: unknown; args: unknown[] }
     return null
   }
 
-  const callee = n.callee
+  const {callee} = n
   if (!isPropertyAccessExpression(callee)) {
     return null
   }
 
-  const object = callee.object
-  const property = callee.property
+  const {object} = callee
+  const {property} = callee
 
   if (!isIdentifier(object, 'Object') || !isIdentifier(property, 'assign')) {
     return null
@@ -75,10 +76,10 @@ function isObjectAssignCall(node: unknown): { callee: unknown; args: unknown[] }
     return null
   }
 
-  return { callee, args }
+  return { args, callee }
 }
 
-function checkObjectAssignPattern(node: unknown, source: string): ObjectAssignMatch | null {
+function checkObjectAssignPattern(node: unknown, source: string): null | ObjectAssignMatch {
   const callInfo = isObjectAssignCall(node)
   if (!callInfo) {
     return null
@@ -105,9 +106,9 @@ function checkObjectAssignPattern(node: unknown, source: string): ObjectAssignMa
   const fullText = getNodeText(node, source)
 
   return {
+    location: extractLocation(node),
     sourceText: fullText,
     spreadSources,
-    location: extractLocation(node),
   }
 }
 
@@ -117,20 +118,6 @@ function generateSpreadSuggestion(spreadSources: readonly string[]): string {
 }
 
 export const preferObjectSpreadRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Enforce using object spread syntax ({ ...source }) instead of Object.assign({}, source) for immutable object operations. Object spread is more concise, readable, and provides better type inference in TypeScript.',
-      category: 'performance',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-object-spread',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -142,23 +129,37 @@ export const preferObjectSpreadRule: RuleDefinition = {
           const spreadDescription = match.spreadSources.map((s) => `...${s}`).join(', ')
 
           context.report({
-            node,
-            message: `Prefer object spread ({ ${spreadDescription} }) instead of Object.assign({}, ${match.spreadSources.join(', ')}). ${RULE_SUGGESTIONS.preferObjectSpread}`,
             loc: match.location,
+            message: `Prefer object spread ({ ${spreadDescription} }) instead of Object.assign({}, ${match.spreadSources.join(', ')}). ${RULE_SUGGESTIONS.preferObjectSpread}`,
+            node,
             suggest: [
               {
                 desc: `Use object spread: ${suggestion}`,
-                message: 'Use object spread syntax',
                 fix: {
                   range: [0, source.length] as const,
                   text: suggestion,
                 },
+                message: 'Use object spread syntax',
               },
             ],
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'performance',
+      description:
+        'Enforce using object spread syntax ({ ...source }) instead of Object.assign({}, source) for immutable object operations. Object spread is more concise, readable, and provides better type inference in TypeScript.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-object-spread',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

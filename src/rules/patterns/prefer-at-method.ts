@@ -1,16 +1,18 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getNodeSource } from '../../utils/ast-helpers.js'
 
 interface NodeLike {
-  type: string
   [key: string]: unknown
+  type: string
 }
 
 function isMemberExpression(node: unknown): node is NodeLike {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as NodeLike).type === 'MemberExpression'
 }
 
@@ -18,6 +20,7 @@ function isBinaryExpression(node: unknown): node is NodeLike {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as NodeLike).type === 'BinaryExpression'
 }
 
@@ -25,6 +28,7 @@ function isIdentifier(node: unknown): node is NodeLike {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as NodeLike).type === 'Identifier'
 }
 
@@ -32,6 +36,7 @@ function isLiteral(node: unknown): node is NodeLike & { value: unknown } {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as NodeLike).type === 'Literal'
 }
 
@@ -44,12 +49,12 @@ function isArrayLengthAccess(node: unknown, expectedArrayName: string): boolean 
     return false
   }
 
-  const property = node.property
+  const {property} = node
   if (!isIdentifier(property) || (property as NodeLike).name !== 'length') {
     return false
   }
 
-  const object = node.object
+  const {object} = node
   if (!isIdentifier(object)) {
     return false
   }
@@ -64,7 +69,7 @@ function isArrayLengthAccess(node: unknown, expectedArrayName: string): boolean 
  */
 function getNegativeIndexPattern(
   node: unknown,
-): { arrayName: string; negativeIndex: number; indexNode: NodeLike } | null {
+): null | { arrayName: string; indexNode: NodeLike; negativeIndex: number; } {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -74,8 +79,8 @@ function getNegativeIndexPattern(
     return null
   }
 
-  const object = node.object
-  const property = node.property
+  const {object} = node
+  const {property} = node
 
   if (!isIdentifier(object)) {
     return null
@@ -93,8 +98,8 @@ function getNegativeIndexPattern(
     return null
   }
 
-  const left = (property as NodeLike).left
-  const right = (property as NodeLike).right
+  const {left} = (property as NodeLike)
+  const {right} = (property as NodeLike)
 
   // Left side must be array.length
   if (!isArrayLengthAccess(left, arrayName)) {
@@ -113,26 +118,12 @@ function getNegativeIndexPattern(
 
   return {
     arrayName,
-    negativeIndex: -indexValue,
     indexNode: right,
+    negativeIndex: -indexValue,
   }
 }
 
 export const preferAtMethodRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer .at() method for negative indexing. Use arr.at(-1) instead of arr[arr.length - 1] for better readability.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-at-method',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       MemberExpression(node: unknown): void {
@@ -150,15 +141,29 @@ export const preferAtMethodRule: RuleDefinition = {
         const indexSource = getNodeSource(context, match.indexNode)
 
         context.report({
-          message: `Prefer .at(${negativeIndex}) over ${objectSource}[${objectSource}.length - ${indexSource}] for more readable negative indexing.`,
-          loc: location,
           fix: {
             range: (nodeObj.range as readonly [number, number]) ?? [0, 0],
             text: `${objectSource}.at(${negativeIndex})`,
           },
+          loc: location,
+          message: `Prefer .at(${negativeIndex}) over ${objectSource}[${objectSource}.length - ${indexSource}] for more readable negative indexing.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer .at() method for negative indexing. Use arr.at(-1) instead of arr[arr.length - 1] for better readability.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-at-method',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

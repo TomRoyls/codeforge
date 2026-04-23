@@ -622,7 +622,7 @@ describe('Reporter', () => {
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining('"files"'),
-        'utf-8',
+        'utf8',
       )
     })
 
@@ -3046,7 +3046,7 @@ describe('Reporter', () => {
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining('<!DOCTYPE html>'),
-        'utf-8',
+        'utf8',
       )
     })
 
@@ -3061,7 +3061,7 @@ describe('Reporter', () => {
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining('<?xml'),
-        'utf-8',
+        'utf8',
       )
     })
 
@@ -3076,7 +3076,7 @@ describe('Reporter', () => {
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining('"$schema"'),
-        'utf-8',
+        'utf8',
       )
     })
 
@@ -3091,7 +3091,7 @@ describe('Reporter', () => {
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.any(String),
         expect.stringContaining('# CodeForge Analysis Report'),
-        'utf-8',
+        'utf8',
       )
     })
 
@@ -3103,7 +3103,7 @@ describe('Reporter', () => {
       })
       const report = createReport()
       await reporter.writeReport(report)
-      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf-8')
+      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf8')
     })
 
     test('wraps non-Error throws', async () => {
@@ -3609,7 +3609,7 @@ describe('Reporter', () => {
       })
       const report = createReport()
       await reporter.writeReport(report)
-      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf-8')
+      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf8')
     })
 
     test('does not call mkdir when no output path', async () => {

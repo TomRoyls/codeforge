@@ -1,22 +1,24 @@
 /**
- * @fileoverview Suggest using ternary operator instead of verbose if-else for simple assignments
+ * @file Suggest using ternary operator instead of verbose if-else for simple assignments
  * @module rules/patterns/prefer-ternary-operator
  */
 
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 
 interface AssignmentInfo {
-  left: { type: string; name?: string }
-  right: unknown
+  left: { name?: string; type: string; }
   node: unknown
+  right: unknown
 }
 
 function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'IfStatement'
 }
@@ -25,6 +27,7 @@ function isBlockStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'BlockStatement'
 }
@@ -43,9 +46,9 @@ function getSingleAssignment(node: unknown): AssignmentInfo | null {
       const left = expr.left as Record<string, unknown> | undefined
       if (left?.type === 'Identifier' && typeof left.name === 'string') {
         return {
-          left: { type: 'Identifier', name: left.name },
-          right: expr.right,
+          left: { name: left.name, type: 'Identifier' },
           node: expr,
+          right: expr.right,
         }
       }
     }
@@ -53,7 +56,7 @@ function getSingleAssignment(node: unknown): AssignmentInfo | null {
 
   // Check for block statement with single assignment
   if (isBlockStatement(node)) {
-    const body = n.body as unknown[] | undefined
+    const body = n.body as undefined | unknown[]
     if (body && body.length === 1) {
       return getSingleAssignment(body[0])
     }
@@ -76,7 +79,7 @@ function getAssignmentFromBranch(node: unknown): AssignmentInfo | null {
 
   // Block statement
   if (isBlockStatement(node)) {
-    const body = n.body as unknown[] | undefined
+    const body = n.body as undefined | unknown[]
     if (body && body.length === 1) {
       return getSingleAssignment(body[0])
     }
@@ -86,20 +89,6 @@ function getAssignmentFromBranch(node: unknown): AssignmentInfo | null {
 }
 
 export const preferTernaryOperatorRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Suggest using ternary operator instead of verbose if-else for simple assignments. Using ternary operator makes the code more concise and readable for simple conditional assignments.',
-      category: 'style',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-ternary-operator',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       IfStatement(node: unknown): void {
@@ -108,9 +97,9 @@ export const preferTernaryOperatorRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const test = n.test
-        const consequent = n.consequent
-        const alternate = n.alternate
+        const {test} = n
+        const {consequent} = n
+        const {alternate} = n
 
         // Must have both branches
         if (!consequent || !alternate) {
@@ -139,7 +128,7 @@ export const preferTernaryOperatorRule: RuleDefinition = {
         const location = extractLocation(node)
 
         // Build fix
-        let fix: { range: [number, number]; text: string } | undefined
+        let fix: undefined | { range: [number, number]; text: string }
 
         const ifRange = getRange(node)
         const testRange = getRange(test)
@@ -162,12 +151,26 @@ export const preferTernaryOperatorRule: RuleDefinition = {
         }
 
         context.report({
-          message: `Use ternary operator instead of if-else for simple assignment to '${variableName}'.`,
-          loc: location,
           fix,
+          loc: location,
+          message: `Use ternary operator instead of if-else for simple assignment to '${variableName}'.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'style',
+      description:
+        'Suggest using ternary operator instead of verbose if-else for simple assignments. Using ternary operator makes the code more concise and readable for simple conditional assignments.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-ternary-operator',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

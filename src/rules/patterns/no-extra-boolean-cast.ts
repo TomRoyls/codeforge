@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isCallExpression(node: unknown): boolean {
@@ -10,7 +11,7 @@ function isCallExpression(node: unknown): boolean {
 function isBooleanCall(node: unknown): boolean {
   if (!isCallExpression(node)) return false
   const n = node as Record<string, unknown>
-  const callee = n.callee
+  const {callee} = n
   if (!callee || typeof callee !== 'object') return false
   const c = callee as Record<string, unknown>
   if (c.type === 'Identifier' && c.name === 'Boolean') return true
@@ -31,17 +32,6 @@ function isDoubleBang(node: unknown): boolean {
 }
 
 export const noExtraBooleanCastRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow unnecessary boolean casts.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -52,8 +42,8 @@ export const noExtraBooleanCastRule: RuleDefinition = {
           const arg = args[0]
           if (isBooleanCall(arg) || isDoubleBang(arg)) {
             context.report({
-              message: 'Redundant boolean cast.',
               loc: extractLocation(node),
+              message: 'Redundant boolean cast.',
             })
           }
         }
@@ -64,12 +54,23 @@ export const noExtraBooleanCastRule: RuleDefinition = {
         const inner = n.argument as Record<string, unknown>
         if (isBooleanCall(inner.argument)) {
           context.report({
-            message: 'Redundant boolean cast.',
             loc: extractLocation(node),
+            message: 'Redundant boolean cast.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow unnecessary boolean casts.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noExtraBooleanCastRule

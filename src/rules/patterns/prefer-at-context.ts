@@ -1,20 +1,22 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
+  getNodeText,
+  getRange,
   isCallExpression,
   isMemberExpression,
-  getRange,
-  getNodeText,
 } from '../../utils/ast-helpers.js'
 
 function isThisExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'ThisExpression'
 }
 
-function getMethodName(node: unknown): string | null {
+function getMethodName(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -50,7 +52,7 @@ function isBindThisCall(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length !== 1) {
     return false
@@ -80,7 +82,8 @@ function isFunctionExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
-  const type = (node as Record<string, unknown>).type
+
+  const {type} = (node as Record<string, unknown>)
   return type === 'FunctionExpression' || type === 'FunctionDeclaration'
 }
 
@@ -88,28 +91,40 @@ function isAssignmentToThisProperty(node: unknown): boolean {
   if (!isMemberExpression(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   const obj = n.object as Record<string, unknown> | undefined
   return isThisExpression(obj)
 }
 
 export const preferAtContextRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer arrow functions over .bind(this) for preserving context. Arrow functions automatically capture `this` from the enclosing scope, making the code cleaner and more readable.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-at-context',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
+      AssignmentExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const {left} = n
+        const {right} = n
+
+        // Check for this.method = function() { ... } pattern
+        if (isAssignmentToThisProperty(left) && isFunctionExpression(right)) {
+          const fnNode = right as Record<string, unknown>
+          const usesThis = functionUsesThis(fnNode)
+
+          if (usesThis) {
+            const location = extractLocation(right)
+
+            context.report({
+              loc: location,
+              message: `Consider using an arrow function to automatically preserve 'this' context instead of a function expression.`,
+            })
+          }
+        }
+      },
+
       CallExpression(node: unknown): void {
         if (!isCallExpression(node)) {
           return
@@ -120,7 +135,7 @@ export const preferAtContextRule: RuleDefinition = {
           const calleeObject = getCalleeObject(node)
           const location = extractLocation(node)
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           const nodeRange = getRange(node)
 
           if (nodeRange && calleeObject) {
@@ -130,7 +145,7 @@ export const preferAtContextRule: RuleDefinition = {
             // Check if the callee is a function expression - we can convert it to arrow function
             if (isFunctionExpression(calleeObject)) {
               const fnNode = calleeObject as Record<string, unknown>
-              const params = fnNode.params as unknown[] | undefined
+              const params = fnNode.params as undefined | unknown[]
               const body = fnNode.body as Record<string, unknown> | undefined
 
               if (body && params) {
@@ -153,38 +168,27 @@ export const preferAtContextRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Prefer arrow function over .bind(this). Arrow functions automatically capture 'this' from the enclosing scope.`,
-            loc: location,
             fix,
+            loc: location,
+            message: `Prefer arrow function over .bind(this). Arrow functions automatically capture 'this' from the enclosing scope.`,
           })
         }
       },
-
-      AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const left = n.left
-        const right = n.right
-
-        // Check for this.method = function() { ... } pattern
-        if (isAssignmentToThisProperty(left) && isFunctionExpression(right)) {
-          const fnNode = right as Record<string, unknown>
-          const usesThis = functionUsesThis(fnNode)
-
-          if (usesThis) {
-            const location = extractLocation(right)
-
-            context.report({
-              message: `Consider using an arrow function to automatically preserve 'this' context instead of a function expression.`,
-              loc: location,
-            })
-          }
-        }
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer arrow functions over .bind(this) for preserving context. Arrow functions automatically capture `this` from the enclosing scope, making the code cleaner and more readable.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-at-context',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 
@@ -232,11 +236,9 @@ function hasThisReference(node: unknown): boolean {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null) {
-      if (hasThisReference(value)) {
+    } else if (typeof value === 'object' && value !== null && hasThisReference(value)) {
         return true
       }
-    }
   }
 
   return false

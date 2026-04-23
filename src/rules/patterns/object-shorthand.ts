@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function hasFunctionExpressionValue(node: unknown): boolean {
@@ -36,19 +37,6 @@ function hasFunctionExpressionValue(node: unknown): boolean {
 }
 
 export const objectShorthandRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require object literal shorthand for methods. Instead of { method: function() {} }, use { method() { } } for cleaner, more concise code.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/object-shorthand',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       Property(node: unknown): void {
@@ -59,11 +47,24 @@ export const objectShorthandRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: 'Expected property shorthand.',
           loc: location,
+          message: 'Expected property shorthand.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require object literal shorthand for methods. Instead of { method: function() {} }, use { method() { } } for cleaner, more concise code.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/object-shorthand',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

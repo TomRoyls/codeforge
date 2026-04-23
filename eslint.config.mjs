@@ -10,20 +10,7 @@ const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 export default tseslintConfig(
   {
-    ignores: [
-      'dist/',
-      'coverage/',
-      'node_modules/',
-      'bin/',
-      'test/',
-      'vitest.config.ts',
-      'src/ast/',
-      'src/plugins/',
-      'src/rules/',
-      'src/cache/',
-      'src/core/',
-      'src/utils/',
-    ],
+    ignores: ['dist/', 'coverage/', 'node_modules/', 'bin/', 'test/', 'vitest.config.ts'],
   },
   ...tseslintConfigs.recommended,
   ...oclif,
@@ -47,5 +34,34 @@ export default tseslintConfig(
       '@typescript-eslint/strict-boolean-expressions': 'off',
     },
   },
-  includeIgnoreFile(gitignorePath)
+  {
+    files: ['src/rules/**/*.ts'],
+    rules: {
+      complexity: ['warn', { max: 50 }],
+      'max-depth': ['warn', { max: 6 }],
+      'max-lines': 'off',
+      'max-params': ['warn', { max: 6 }],
+      'no-bitwise': 'off',
+      camelcase: 'off',
+      'no-template-curly-in-string': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
+  {
+    files: [
+      'src/core/**/*.ts',
+      'src/ast/**/*.ts',
+      'src/utils/**/*.ts',
+      'src/plugins/**/*.ts',
+      'src/cache/**/*.ts',
+    ],
+    rules: {
+      complexity: ['warn', { max: 50 }],
+      'max-depth': ['warn', { max: 6 }],
+      'max-lines': 'off',
+      'max-params': ['warn', { max: 6 }],
+      camelcase: 'off',
+    },
+  },
+  includeIgnoreFile(gitignorePath),
 )

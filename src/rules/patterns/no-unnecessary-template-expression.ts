@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isTemplateLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TemplateLiteral' && !n.tag
 }
@@ -13,8 +15,9 @@ function hasSingleQuasi(node: unknown): boolean {
   if (!isTemplateLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
-  const quasis = n.quasis as unknown[] | undefined
+  const quasis = n.quasis as undefined | unknown[]
   return quasis?.length === 1
 }
 
@@ -22,8 +25,9 @@ function hasNoExpressions(node: unknown): boolean {
   if (!isTemplateLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
-  const expressions = n.expressions as unknown[] | undefined
+  const expressions = n.expressions as undefined | unknown[]
   return !expressions || expressions.length === 0
 }
 
@@ -31,12 +35,13 @@ function isSimpleTemplateLiteral(node: unknown): boolean {
   return hasSingleQuasi(node) && hasNoExpressions(node)
 }
 
-function getQuasiValue(node: unknown): string | null {
+function getQuasiValue(node: unknown): null | string {
   if (!isTemplateLiteral(node)) {
     return null
   }
+
   const n = node as Record<string, unknown>
-  const quasis = n.quasis as unknown[] | undefined
+  const quasis = n.quasis as undefined | unknown[]
 
   if (!quasis || quasis.length !== 1) {
     return null
@@ -78,20 +83,6 @@ function isBacktickString(node: unknown): boolean {
 }
 
 export const noUnnecessaryTemplateExpressionRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary template literals. Template literals without expressions or multi-line content should be regular strings for better readability. Use template literals when you need interpolation or multi-line strings.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-template-expression',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       TemplateLiteral(node: unknown): void {
@@ -103,14 +94,28 @@ export const noUnnecessaryTemplateExpressionRule: RuleDefinition = {
         const location = extractLocation(node)
 
         const suggestion =
-          value !== null ? ` Use "${value}" instead.` : ' Use a regular string instead.'
+          value === null ? ' Use a regular string instead.' : ` Use "${value}" instead.`
 
         context.report({
-          message: `Unnecessary template literal.${suggestion}`,
           loc: location,
+          message: `Unnecessary template literal.${suggestion}`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unnecessary template literals. Template literals without expressions or multi-line content should be regular strings for better readability. Use template literals when you need interpolation or multi-line strings.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-template-expression',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

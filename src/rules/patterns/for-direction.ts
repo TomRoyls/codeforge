@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isForStatement(node: unknown): boolean {
@@ -19,7 +20,7 @@ function isBinaryExpression(node: unknown): boolean {
   return n.type === 'BinaryExpression'
 }
 
-function getIdentifierName(node: unknown): string | null {
+function getIdentifierName(node: unknown): null | string {
   if (!node || typeof node !== 'object') return null
   const n = node as Record<string, unknown>
   if (n.type === 'Identifier' && typeof n.name === 'string') return n.name
@@ -27,25 +28,14 @@ function getIdentifierName(node: unknown): string | null {
 }
 
 export const forDirectionRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Enforce for loop update clause to move the counter in the right direction.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       ForStatement(node: unknown): void {
         if (!isForStatement(node)) return
         const n = node as Record<string, unknown>
 
-        const test = n.test
-        const update = n.update
+        const {test} = n
+        const {update} = n
 
         if (!test || !update) return
         if (!isBinaryExpression(test)) return
@@ -77,12 +67,23 @@ export const forDirectionRule: RuleDefinition = {
 
         if (!isValid) {
           context.report({
-            message: 'The update clause in this loop moves the variable in the wrong direction.',
             loc: extractLocation(node),
+            message: 'The update clause in this loop moves the variable in the wrong direction.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Enforce for loop update clause to move the counter in the right direction.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default forDirectionRule

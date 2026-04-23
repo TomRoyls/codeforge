@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isWithStatement(node: unknown): boolean {
@@ -8,27 +9,27 @@ function isWithStatement(node: unknown): boolean {
 }
 
 export const noWithRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow with statements.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       WithStatement(node: unknown): void {
         if (!isWithStatement(node)) return
         context.report({
-          message: "'with' statement is not allowed.",
           loc: extractLocation(node),
+          message: "'with' statement is not allowed.",
         })
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow with statements.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noWithRule

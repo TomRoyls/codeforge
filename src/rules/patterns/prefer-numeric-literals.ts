@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isParseIntCall(node: unknown): boolean {
@@ -50,32 +51,25 @@ function getStringLiteralValue(node: unknown): string | undefined {
 
 function getPrefixForRadix(radix: number): string | undefined {
   switch (radix) {
-    case 2:
+    case 2: {
       return '0b'
-    case 8:
+    }
+
+    case 8: {
       return '0o'
-    case 16:
+    }
+
+    case 16: {
       return '0x'
-    default:
+    }
+
+    default: {
       return undefined
+    }
   }
 }
 
 export const preferNumericLiteralsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer numeric literals over parseInt with specific radix values. Use 0b... for binary (radix 2), 0o... for octal (radix 8), or 0x... for hexadecimal (radix 16).',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-numeric-literals',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -84,7 +78,7 @@ export const preferNumericLiteralsRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const args = n.arguments as unknown[] | undefined
+        const args = n.arguments as undefined | unknown[]
 
         if (!args || args.length !== 2) {
           return
@@ -110,12 +104,26 @@ export const preferNumericLiteralsRule: RuleDefinition = {
         const fixed = `${prefix}${strValue}`
 
         context.report({
-          message: `Use ${prefix}... literal instead of parseInt with radix ${radix}.`,
-          loc: location,
           fix: range ? { range, text: fixed } : undefined,
+          loc: location,
+          message: `Use ${prefix}... literal instead of parseInt with radix ${radix}.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer numeric literals over parseInt with specific radix values. Use 0b... for binary (radix 2), 0o... for octal (radix 8), or 0x... for hexadecimal (radix 16).',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-numeric-literals',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

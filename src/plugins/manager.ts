@@ -1,12 +1,13 @@
-import type { Plugin, RuleDefinition, Logger, HookContext, PluginConfig } from './types.js'
-import { PluginLoadError, HookExecutionError } from './types.js'
-import { PluginRegistry } from './registry.js'
+import type { HookContext, Logger, Plugin, PluginConfig, RuleDefinition } from './types.js'
+
 import { createDefaultLogger } from './context.js'
+import { PluginRegistry } from './registry.js'
+import { HookExecutionError, PluginLoadError } from './types.js'
 
 export interface PluginManagerOptions {
   logger?: Logger
-  workspaceRoot: string
   registry?: PluginRegistry
+  workspaceRoot: string
 }
 
 export interface PluginLoadOptions {
@@ -14,16 +15,94 @@ export interface PluginLoadOptions {
 }
 
 export class PluginManager {
-  private readonly registry: PluginRegistry
-  private readonly logger: Logger
-  private readonly workspaceRoot: string
   private readonly loadedPlugins: Map<string, Plugin> = new Map()
+  private readonly logger: Logger
   private readonly pluginConfigs: Map<string, PluginConfig> = new Map()
+  private readonly registry: PluginRegistry
+  private readonly workspaceRoot: string
 
   constructor(options: PluginManagerOptions) {
     this.registry = options.registry ?? new PluginRegistry()
     this.logger = options.logger ?? createDefaultLogger()
     this.workspaceRoot = options.workspaceRoot
+  }
+
+  async executeHook(hookName: keyof NonNullable<Plugin['hooks']>, data?: unknown): Promise<void>
+  async executeHook(
+    plugin: Plugin,
+    hookName: keyof NonNullable<Plugin['hooks']>,
+    data?: unknown,
+  ): Promise<void>
+  async executeHook(
+    pluginOrHookName: keyof NonNullable<Plugin['hooks']> | Plugin,
+    hookNameOrData?: keyof NonNullable<Plugin['hooks']> | unknown,
+    data?: unknown,
+  ): Promise<void> {
+    await (typeof pluginOrHookName === 'string'
+      ? this.executeHookOnAllPlugins(pluginOrHookName, hookNameOrData)
+      : this.executeSingleHook(
+          pluginOrHookName,
+          hookNameOrData as keyof NonNullable<Plugin['hooks']>,
+          data,
+        ))
+  }
+
+  getAllPlugins(): Plugin[] {
+    return [...this.loadedPlugins.values()]
+  }
+
+  getLoadedPluginNames(): string[] {
+    return [...this.loadedPlugins.keys()]
+  }
+
+  getPlugin(name: string): Plugin | undefined {
+    return this.loadedPlugins.get(name)
+  }
+
+  getPluginConfig(name: string): PluginConfig | undefined {
+    return this.pluginConfigs.get(name)
+  }
+
+  getPluginRules(pluginName: string): Record<string, RuleDefinition> | undefined {
+    const plugin = this.loadedPlugins.get(pluginName)
+    return plugin?.rules
+  }
+
+  getRegistry(): PluginRegistry {
+    return this.registry
+  }
+
+  getRule(qualifiedName: string): RuleDefinition | undefined {
+    const [pluginName, ruleName] = this.parseQualifiedName(qualifiedName)
+    if (!pluginName || !ruleName) {
+      return undefined
+    }
+
+    const plugin = this.loadedPlugins.get(pluginName)
+    return plugin?.rules?.[ruleName]
+  }
+
+  getRules(): Record<string, RuleDefinition> {
+    const rules: Record<string, RuleDefinition> = {}
+
+    for (const [pluginName, plugin] of this.loadedPlugins) {
+      if (plugin.rules) {
+        for (const [ruleName, ruleDefinition] of Object.entries(plugin.rules)) {
+          const qualifiedName = `${pluginName}/${ruleName}`
+          rules[qualifiedName] = ruleDefinition
+        }
+      }
+    }
+
+    return rules
+  }
+
+  getWorkspaceRoot(): string {
+    return this.workspaceRoot
+  }
+
+  isLoaded(name: string): boolean {
+    return this.loadedPlugins.has(name)
   }
 
   async loadPlugin(name: string, options?: PluginLoadOptions): Promise<Plugin> {
@@ -51,7 +130,7 @@ export class PluginManager {
     this.pluginConfigs.set(name, config)
 
     try {
-      await this.executeSingleHook(plugin, 'onLoad', undefined)
+      await this.executeSingleHook(plugin, 'onLoad')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
       throw new PluginLoadError(name, `Failed to execute onLoad hook: ${message}`)
@@ -63,6 +142,26 @@ export class PluginManager {
     return plugin
   }
 
+  async reloadPlugin(name: string, options?: PluginLoadOptions): Promise<Plugin> {
+    this.unloadPlugin(name)
+    return this.loadPlugin(name, options)
+  }
+
+  setPluginConfig(name: string, config: PluginConfig): void {
+    if (!this.loadedPlugins.has(name)) {
+      throw new PluginLoadError(name, `Cannot set config for unloaded plugin "${name}"`)
+    }
+
+    this.pluginConfigs.set(name, config)
+  }
+
+  unloadAll(): void {
+    const pluginNames = [...this.loadedPlugins.keys()]
+    for (const name of pluginNames) {
+      this.unloadPlugin(name)
+    }
+  }
+
   unloadPlugin(name: string): void {
     const plugin = this.loadedPlugins.get(name)
     if (!plugin) {
@@ -71,7 +170,7 @@ export class PluginManager {
     }
 
     try {
-      this.executeHookSync(plugin, 'onUnload', undefined)
+      this.executeHookSync(plugin, 'onUnload')
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error'
       this.logger.error(`Error during unloading plugin "${name}": ${message}`)
@@ -82,89 +181,20 @@ export class PluginManager {
     this.logger.info(`Plugin "${name}" unloaded`)
   }
 
-  getPlugin(name: string): Plugin | undefined {
-    return this.loadedPlugins.get(name)
-  }
-
-  getAllPlugins(): Plugin[] {
-    return Array.from(this.loadedPlugins.values())
-  }
-
-  getLoadedPluginNames(): string[] {
-    return Array.from(this.loadedPlugins.keys())
-  }
-
-  isLoaded(name: string): boolean {
-    return this.loadedPlugins.has(name)
-  }
-
-  getRules(): Record<string, RuleDefinition> {
-    const rules: Record<string, RuleDefinition> = {}
-
-    for (const [pluginName, plugin] of this.loadedPlugins) {
-      if (plugin.rules) {
-        for (const [ruleName, ruleDefinition] of Object.entries(plugin.rules)) {
-          const qualifiedName = `${pluginName}/${ruleName}`
-          rules[qualifiedName] = ruleDefinition
-        }
-      }
-    }
-
-    return rules
-  }
-
-  getPluginRules(pluginName: string): Record<string, RuleDefinition> | undefined {
-    const plugin = this.loadedPlugins.get(pluginName)
-    return plugin?.rules
-  }
-
-  getRule(qualifiedName: string): RuleDefinition | undefined {
-    const [pluginName, ruleName] = this.parseQualifiedName(qualifiedName)
-    if (!pluginName || !ruleName) {
-      return undefined
-    }
-
-    const plugin = this.loadedPlugins.get(pluginName)
-    return plugin?.rules?.[ruleName]
-  }
-
-  async executeHook(hookName: keyof NonNullable<Plugin['hooks']>, data?: unknown): Promise<void>
-
-  async executeHook(
-    plugin: Plugin,
-    hookName: keyof NonNullable<Plugin['hooks']>,
-    data?: unknown,
-  ): Promise<void>
-
-  async executeHook(
-    pluginOrHookName: Plugin | keyof NonNullable<Plugin['hooks']>,
-    hookNameOrData?: keyof NonNullable<Plugin['hooks']> | unknown,
-    data?: unknown,
-  ): Promise<void> {
-    if (typeof pluginOrHookName === 'string') {
-      await this.executeHookOnAllPlugins(pluginOrHookName, hookNameOrData)
-    } else {
-      await this.executeSingleHook(
-        pluginOrHookName,
-        hookNameOrData as keyof NonNullable<Plugin['hooks']>,
-        data,
-      )
-    }
-  }
-
   private async executeHookOnAllPlugins(
     hookName: keyof NonNullable<Plugin['hooks']>,
     data?: unknown,
   ): Promise<void> {
-    const errors: Array<{ plugin: string; error: Error }> = []
+    const errors: Array<{ error: Error; plugin: string }> = []
 
     for (const [pluginName, plugin] of this.loadedPlugins) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         await this.executeSingleHook(plugin, hookName, data)
       } catch (error) {
         errors.push({
-          plugin: pluginName,
           error: error instanceof Error ? error : new Error('Unknown error'),
+          plugin: pluginName,
         })
       }
     }
@@ -175,20 +205,55 @@ export class PluginManager {
     }
   }
 
-  private async executeSingleHook(
+  private executeHookSync(
     plugin: Plugin,
     hookName: keyof NonNullable<Plugin['hooks']>,
     data?: unknown,
-  ): Promise<void> {
-    const hooks = plugin.hooks
+  ): void {
+    const { hooks } = plugin
     if (!hooks) {
       return
     }
 
     const hookContext: HookContext = {
+      data,
       logger: this.logger,
       timestamp: new Date(),
+    }
+
+    let result: Promise<void> | undefined | void
+
+    if (hookName === 'onUnload' && hooks.onUnload) {
+      result = hooks.onUnload(hookContext)
+    } else {
+      const hook = hooks[hookName]
+      if (typeof hook === 'function') {
+        result = (hook as (ctx: HookContext) => Promise<void> | void)(hookContext)
+      }
+    }
+
+    if (result instanceof Promise) {
+      result.catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : 'Unknown error'
+        this.logger.error(`Async hook "${hookName}" failed for plugin "${plugin.name}": ${message}`)
+      })
+    }
+  }
+
+  private async executeSingleHook(
+    plugin: Plugin,
+    hookName: keyof NonNullable<Plugin['hooks']>,
+    data?: unknown,
+  ): Promise<void> {
+    const { hooks } = plugin
+    if (!hooks) {
+      return
+    }
+
+    const hookContext: HookContext = {
       data,
+      logger: this.logger,
+      timestamp: new Date(),
     }
 
     try {
@@ -198,7 +263,7 @@ export class PluginManager {
       } else {
         const hook = hooks[hookName]
         if (typeof hook === 'function') {
-          await (hook as (ctx: HookContext) => void | Promise<void>)(hookContext)
+          await (hook as (ctx: HookContext) => Promise<void> | void)(hookContext)
         }
       }
     } catch (error) {
@@ -212,39 +277,22 @@ export class PluginManager {
     }
   }
 
-  private executeHookSync(
-    plugin: Plugin,
-    hookName: keyof NonNullable<Plugin['hooks']>,
-    data?: unknown,
-  ): void {
-    const hooks = plugin.hooks
-    if (!hooks) {
-      return
-    }
-
-    const hookContext: HookContext = {
-      logger: this.logger,
-      timestamp: new Date(),
-      data,
-    }
-
-    let result: void | Promise<void> = undefined
-
-    if (hookName === 'onUnload' && hooks.onUnload) {
-      result = hooks.onUnload(hookContext)
+  private parseQualifiedName(
+    qualifiedName: string,
+  ): [pluginName: null | string, name: null | string] {
+    if (qualifiedName.startsWith('@')) {
+      const match = /^(@[^/]+\/[^/]+)\/(.+)$/.exec(qualifiedName)
+      if (match && match[1] && match[2]) {
+        return [match[1], match[2]]
+      }
     } else {
-      const hook = hooks[hookName]
-      if (typeof hook === 'function') {
-        result = (hook as (ctx: HookContext) => void | Promise<void>)(hookContext)
+      const parts = qualifiedName.split('/')
+      if (parts.length === 2 && parts[0] && parts[1]) {
+        return [parts[0], parts[1]]
       }
     }
 
-    if (result instanceof Promise) {
-      void result.catch((error) => {
-        const message = error instanceof Error ? error.message : 'Unknown error'
-        this.logger.error(`Async hook "${hookName}" failed for plugin "${plugin.name}": ${message}`)
-      })
-    }
+    return [null, null]
   }
 
   private validatePlugin(plugin: Plugin): void {
@@ -261,6 +309,7 @@ export class PluginManager {
         if (!ruleDefinition.meta) {
           throw new PluginLoadError(plugin.name, `Rule "${ruleName}" must have meta property`)
         }
+
         if (!ruleDefinition.create || typeof ruleDefinition.create !== 'function') {
           throw new PluginLoadError(plugin.name, `Rule "${ruleName}" must have create function`)
         }
@@ -277,54 +326,5 @@ export class PluginManager {
         }
       }
     }
-  }
-
-  private parseQualifiedName(
-    qualifiedName: string,
-  ): [pluginName: string | null, name: string | null] {
-    if (qualifiedName.startsWith('@')) {
-      const match = /^(@[^/]+\/[^/]+)\/(.+)$/.exec(qualifiedName)
-      if (match && match[1] && match[2]) {
-        return [match[1], match[2]]
-      }
-    } else {
-      const parts = qualifiedName.split('/')
-      if (parts.length === 2 && parts[0] && parts[1]) {
-        return [parts[0], parts[1]]
-      }
-    }
-
-    return [null, null]
-  }
-
-  getRegistry(): PluginRegistry {
-    return this.registry
-  }
-
-  getWorkspaceRoot(): string {
-    return this.workspaceRoot
-  }
-
-  unloadAll(): void {
-    const pluginNames = Array.from(this.loadedPlugins.keys())
-    for (const name of pluginNames) {
-      this.unloadPlugin(name)
-    }
-  }
-
-  async reloadPlugin(name: string, options?: PluginLoadOptions): Promise<Plugin> {
-    this.unloadPlugin(name)
-    return this.loadPlugin(name, options)
-  }
-
-  getPluginConfig(name: string): PluginConfig | undefined {
-    return this.pluginConfigs.get(name)
-  }
-
-  setPluginConfig(name: string, config: PluginConfig): void {
-    if (!this.loadedPlugins.has(name)) {
-      throw new PluginLoadError(name, `Cannot set config for unloaded plugin "${name}"`)
-    }
-    this.pluginConfigs.set(name, config)
   }
 }

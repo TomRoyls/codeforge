@@ -1,35 +1,36 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const NATIVE_OBJECTS = new Set([
-  'Object',
   'Array',
-  'String',
-  'Number',
   'Boolean',
-  'Function',
-  'Symbol',
-  'RegExp',
   'Date',
-  'Math',
+  'Error',
+  'EvalError',
+  'Function',
   'JSON',
-  'Promise',
   'Map',
+  'Math',
+  'Number',
+  'Object',
+  'Promise',
+  'Proxy',
+  'RangeError',
+  'ReferenceError',
+  'Reflect',
+  'RegExp',
   'Set',
+  'String',
+  'Symbol',
+  'SyntaxError',
+  'TypeError',
+  'URIError',
   'WeakMap',
   'WeakSet',
-  'Proxy',
-  'Reflect',
-  'Error',
-  'TypeError',
-  'ReferenceError',
-  'SyntaxError',
-  'RangeError',
-  'URIError',
-  'EvalError',
 ])
 
-function isPrototypeExtension(node: unknown): { isExtension: boolean; nativeName: string | null } {
+function isPrototypeExtension(node: unknown): { isExtension: boolean; nativeName: null | string } {
   if (!node || typeof node !== 'object') {
     return { isExtension: false, nativeName: null }
   }
@@ -73,31 +74,15 @@ function isPrototypeExtension(node: unknown): { isExtension: boolean; nativeName
   }
 
   // Case 2: NativeObject['property'] (bracket notation on prototype)
-  if (obj.type === 'Identifier' && NATIVE_OBJECTS.has(obj.name as string)) {
-    if (prop.type === 'Identifier' && prop.name === 'prototype') {
+  if (obj.type === 'Identifier' && NATIVE_OBJECTS.has(obj.name as string) && prop.type === 'Identifier' && prop.name === 'prototype') {
       // This is assignment to NativeObject.prototype itself, not an extension
       return { isExtension: false, nativeName: null }
     }
-  }
 
   return { isExtension: false, nativeName: null }
 }
 
 export const noExtendNativeRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow extending native objects. Modifying prototypes of built-in objects can cause unexpected behavior and conflicts with other code.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-extend-native',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       AssignmentExpression(node: unknown): void {
@@ -110,11 +95,25 @@ export const noExtendNativeRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: `Extending native object '${nativeName}' is not allowed. Use a utility function or wrapper instead.`,
           loc: location,
+          message: `Extending native object '${nativeName}' is not allowed. Use a utility function or wrapper instead.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow extending native objects. Modifying prototypes of built-in objects can cause unexpected behavior and conflicts with other code.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-extend-native',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

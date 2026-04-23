@@ -1,11 +1,11 @@
 /**
- * @fileoverview Disallow unsafe return of values that bypass type safety
+ * @file Disallow unsafe return of values that bypass type safety
  * @module rules/security/no-unsafe-return
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
@@ -19,13 +19,13 @@ interface NoUnsafeReturnOptions {
 
 interface FunctionInfo {
   readonly hasExplicitReturnType: boolean
-  readonly returnTypeName: string | null
+  readonly returnTypeName: null | string
 }
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -43,18 +43,18 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
 
-function getTypeAnnotationName(typeAnnotation: unknown): string | null {
+function getTypeAnnotationName(typeAnnotation: unknown): null | string {
   if (!typeAnnotation || typeof typeAnnotation !== 'object') {
     return null
   }
@@ -64,6 +64,7 @@ function getTypeAnnotationName(typeAnnotation: unknown): string | null {
   if (ta.type === 'TSAnyKeyword') {
     return 'any'
   }
+
   if (ta.type === 'TSUnknownKeyword') {
     return 'unknown'
   }
@@ -111,7 +112,7 @@ function getReturnType(node: unknown): FunctionInfo {
   }
 }
 
-function getArgumentType(node: unknown): string | null {
+function getArgumentType(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -147,7 +148,7 @@ function isTypeNarrowed(expression: unknown): boolean {
   if (expr.type === 'CallExpression') {
     const callee = expr.callee as Record<string, unknown> | undefined
     if (callee?.type === 'Identifier') {
-      const name = callee.name
+      const {name} = callee
       if (
         name === 'String' ||
         name === 'Number' ||
@@ -175,70 +176,36 @@ function checkUnsafeReturn(
   returnValue: unknown,
   functionInfo: FunctionInfo,
   options: NoUnsafeReturnOptions,
-): { unsafe: boolean; reason: string } {
+): { reason: string; unsafe: boolean; } {
   if (!returnValue) {
-    return { unsafe: false, reason: '' }
+    return { reason: '', unsafe: false }
   }
 
   const valueType = getArgumentType(returnValue)
 
-  if (valueType === 'any') {
-    if (
+  if (valueType === 'any' && 
       !options.allowAny &&
       functionInfo.hasExplicitReturnType &&
       functionInfo.returnTypeName !== 'any'
     ) {
-      return { unsafe: true, reason: 'Returning a value of type any bypasses type safety' }
+      return { reason: 'Returning a value of type any bypasses type safety', unsafe: true }
     }
-  }
 
-  if (valueType === 'unknown') {
-    if (
+  if (valueType === 'unknown' && 
       !options.allowUnknown &&
       functionInfo.hasExplicitReturnType &&
       functionInfo.returnTypeName !== 'unknown'
-    ) {
-      if (!isTypeNarrowed(returnValue)) {
+     && !isTypeNarrowed(returnValue)) {
         return {
-          unsafe: true,
           reason: 'Returning a value of type unknown without type narrowing is unsafe',
+          unsafe: true,
         }
       }
-    }
-  }
 
-  return { unsafe: false, reason: '' }
+  return { reason: '', unsafe: false }
 }
 
 export const noUnsafeReturnRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow unsafe return of values that bypass type safety. Returning any or unknown typed values without proper type narrowing can introduce runtime errors.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unsafe-return',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowAny: {
-            type: 'boolean',
-            default: false,
-          },
-          allowUnknown: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoUnsafeReturnOptions>(context.config.options, {
       allowAny: false,
@@ -248,26 +215,24 @@ export const noUnsafeReturnRule: RuleDefinition = {
     const functionStack: FunctionInfo[] = []
 
     return {
-      FunctionDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const info = getReturnType(node)
-        functionStack.push(info)
-      },
-
-      FunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const info = getReturnType(node)
-        functionStack.push(info)
-      },
-
       ArrowFunctionExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
+
+        const info = getReturnType(node)
+        functionStack.push(info)
+      },
+
+      'ArrowFunctionExpression:exit'(): void {
+        functionStack.pop()
+      },
+
+      FunctionDeclaration(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
         const info = getReturnType(node)
         functionStack.push(info)
       },
@@ -276,11 +241,16 @@ export const noUnsafeReturnRule: RuleDefinition = {
         functionStack.pop()
       },
 
-      'FunctionExpression:exit'(): void {
-        functionStack.pop()
+      FunctionExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const info = getReturnType(node)
+        functionStack.push(info)
       },
 
-      'ArrowFunctionExpression:exit'(): void {
+      'FunctionExpression:exit'(): void {
         functionStack.pop()
       },
 
@@ -289,30 +259,58 @@ export const noUnsafeReturnRule: RuleDefinition = {
           return
         }
 
-        const currentFunction = functionStack[functionStack.length - 1] as FunctionInfo
+        const currentFunction = functionStack.at(-1) as FunctionInfo
 
         if (!node || typeof node !== 'object') {
           return
         }
 
         const n = node as Record<string, unknown>
-        const argument = n.argument
+        const {argument} = n
 
         if (!argument) {
           return
         }
 
-        const { unsafe, reason } = checkUnsafeReturn(argument, currentFunction, options)
+        const { reason, unsafe } = checkUnsafeReturn(argument, currentFunction, options)
 
         if (unsafe) {
           context.report({
-            node,
-            message: `Unsafe return. ${reason}. Use type guards or validation before returning.`,
             loc: extractLocation(node),
+            message: `Unsafe return. ${reason}. Use type guards or validation before returning.`,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow unsafe return of values that bypass type safety. Returning any or unknown typed values without proper type narrowing can introduce runtime errors.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unsafe-return',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowAny: {
+            default: false,
+            type: 'boolean',
+          },
+          allowUnknown: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isReturnStatement(node: unknown): boolean {
@@ -20,20 +21,6 @@ function isAwaitExpression(node: unknown): boolean {
 }
 
 export const noReturnAwaitRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary return await. In async functions, return await is redundant and slightly slower than returning the Promise directly.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-return-await',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ReturnStatement(node: unknown): void {
@@ -42,7 +29,7 @@ export const noReturnAwaitRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const argument = n.argument
+        const {argument} = n
 
         if (!argument) {
           return
@@ -51,13 +38,27 @@ export const noReturnAwaitRule: RuleDefinition = {
         if (isAwaitExpression(argument)) {
           const location = extractLocation(argument)
           context.report({
+            loc: location,
             message:
               'Unnecessary return await. Return the Promise directly for better performance, or keep await only if you need to catch errors at this level.',
-            loc: location,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unnecessary return await. In async functions, return await is redundant and slightly slower than returning the Promise directly.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-return-await',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

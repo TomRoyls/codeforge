@@ -878,9 +878,9 @@ describe('rule-category-registry', () => {
 
     test('entries are ordered as defined in source', () => {
       const keys = Object.keys(RULE_CATEGORIES)
-      expect(keys[0]).toBe('max-complexity')
-      expect(keys[1]).toBe('max-depth')
-      expect(keys[2]).toBe('max-lines')
+      expect(keys[0]).toBe('consistent-imports')
+      expect(keys[1]).toBe('consistent-type-exports')
+      expect(keys[2]).toBe('constructor-super')
     })
 
     test('for...of iteration works over entries', () => {

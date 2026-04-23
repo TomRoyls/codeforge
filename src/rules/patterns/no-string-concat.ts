@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isBinaryExpression, isLiteral } from '../../utils/ast-helpers.js'
 
@@ -6,6 +7,7 @@ function isPlusOperator(node: unknown): boolean {
   if (!isBinaryExpression(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.operator === '+'
 }
@@ -14,6 +16,7 @@ function isStringLiteral(node: unknown): boolean {
   if (!isLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return typeof n.value === 'string'
 }
@@ -22,6 +25,7 @@ function isTemplateLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TemplateLiteral'
 }
@@ -44,20 +48,6 @@ function isConcatWithStrings(node: unknown): boolean {
 }
 
 export const noStringConcatRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow string concatenation with the + operator. Use template literals or array join() for better readability, especially with multiple strings.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-string-concat',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -68,12 +58,26 @@ export const noStringConcatRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
+          loc: location,
           message:
             'Unexpected string concatenation. Use template literals or array.join() instead.',
-          loc: location,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow string concatenation with the + operator. Use template literals or array join() for better readability, especially with multiple strings.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-string-concat',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

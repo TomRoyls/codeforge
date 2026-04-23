@@ -1,16 +1,19 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../ast/location-utils.js'
-import { isNewExpression, isIdentifier, getArguments, getRange } from '../../utils/ast-helpers.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
-function getCalleeName(node: unknown): string | null {
+import { extractLocation } from '../../ast/location-utils.js'
+import { getArguments, getRange, isIdentifier, isNewExpression } from '../../utils/ast-helpers.js'
+
+function getCalleeName(node: unknown): null | string {
   if (!isNewExpression(node)) {
     return null
   }
+
   const n = node as Record<string, unknown>
   const callee = n.callee as unknown
   if (isIdentifier(callee)) {
     return (callee as Record<string, unknown>).name as string
   }
+
   return null
 }
 
@@ -19,20 +22,6 @@ function isObjectConstructor(node: unknown): boolean {
 }
 
 export const noObjectConstructorRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow Object constructors. Using new Object() is redundant; use object literals {} instead for better readability and conciseness.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-object-constructor',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -47,12 +36,26 @@ export const noObjectConstructorRule: RuleDefinition = {
         const fix = argCount === 0 && range ? { range, text: '{}' } : undefined
 
         context.report({
-          message: 'Use object literal {} instead of new Object().',
-          loc: location,
           fix,
+          loc: location,
+          message: 'Use object literal {} instead of new Object().',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow Object constructors. Using new Object() is redundant; use object literals {} instead for better readability and conciseness.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-object-constructor',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

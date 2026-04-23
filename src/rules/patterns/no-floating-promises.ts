@@ -1,10 +1,11 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoFloatingPromisesOptions {
-  readonly ignoreVoid?: boolean
   readonly ignoreIIFE?: boolean
+  readonly ignoreVoid?: boolean
 }
 
 function isExpressionStatement(node: unknown): boolean {
@@ -99,39 +100,10 @@ function isLikelyPromise(node: unknown): boolean {
 }
 
 export const noFloatingPromisesRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Require Promise-like statements to be handled appropriately. Floating Promises can cause unhandled rejections and race conditions.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-floating-promises',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          ignoreVoid: {
-            type: 'boolean',
-            default: false,
-          },
-          ignoreIIFE: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoFloatingPromisesOptions>(context.config.options, {
-      ignoreVoid: false,
       ignoreIIFE: false,
+      ignoreVoid: false,
     })
 
     return {
@@ -141,25 +113,55 @@ export const noFloatingPromisesRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const expression = n.expression
+        const {expression} = n
 
         if (isVoidOperator(expression)) {
           if (options.ignoreVoid === false) {
             return
           }
+
           return
         }
 
         if (isLikelyPromise(expression)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Promises must be awaited, returned, or handled with .catch(). Floating Promises can cause unhandled rejections.',
-            loc: location,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require Promise-like statements to be handled appropriately. Floating Promises can cause unhandled rejections and race conditions.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-floating-promises',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          ignoreIIFE: {
+            default: false,
+            type: 'boolean',
+          },
+          ignoreVoid: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

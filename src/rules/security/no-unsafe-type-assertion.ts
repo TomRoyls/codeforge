@@ -1,14 +1,15 @@
 /**
- * @fileoverview Warn on unsafe type assertions (casting to/from any, unknown, or unrelated types)
+ * @file Warn on unsafe type assertions (casting to/from any, unknown, or unrelated types)
  * @module rules/security/no-unsafe-type-assertion
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeTypeAssertionOptions {
@@ -19,8 +20,8 @@ interface NoUnsafeTypeAssertionOptions {
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -38,18 +39,18 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
 
-function getTypeAnnotationName(typeAnnotation: unknown): string | null {
+function getTypeAnnotationName(typeAnnotation: unknown): null | string {
   if (!typeAnnotation || typeof typeAnnotation !== 'object') {
     return null
   }
@@ -59,6 +60,7 @@ function getTypeAnnotationName(typeAnnotation: unknown): string | null {
   if (ta.type === 'TSAnyKeyword') {
     return 'any'
   }
+
   if (ta.type === 'TSUnknownKeyword') {
     return 'unknown'
   }
@@ -77,7 +79,7 @@ function getTypeAnnotationName(typeAnnotation: unknown): string | null {
   return null
 }
 
-function getTargetType(node: unknown): string | null {
+function getTargetType(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -105,31 +107,31 @@ function getSourceExpression(node: unknown): unknown {
 }
 
 function checkForDoubleAssertion(node: unknown): {
+  intermediateType: null | string
   isDouble: boolean
-  intermediateType: string | null
 } {
   if (!node || typeof node !== 'object') {
-    return { isDouble: false, intermediateType: null }
+    return { intermediateType: null, isDouble: false }
   }
 
   const n = node as Record<string, unknown>
-  const expression = n.expression
+  const {expression} = n
 
   if (!expression || typeof expression !== 'object') {
-    return { isDouble: false, intermediateType: null }
+    return { intermediateType: null, isDouble: false }
   }
 
   const expr = expression as Record<string, unknown>
 
   if (expr.type === 'TSAsExpression' || expr.type === 'TSTypeAssertion') {
     const intermediateType = getTargetType(expr)
-    return { isDouble: true, intermediateType }
+    return { intermediateType, isDouble: true }
   }
 
-  return { isDouble: false, intermediateType: null }
+  return { intermediateType: null, isDouble: false }
 }
 
-function getExpressionType(expression: unknown): string | null {
+function getExpressionType(expression: unknown): null | string {
   if (!expression || typeof expression !== 'object') {
     return null
   }
@@ -158,39 +160,42 @@ function getExpressionType(expression: unknown): string | null {
 }
 
 function isUnsafeAssertion(
-  sourceType: string | null,
-  targetType: string | null,
+  sourceType: null | string,
+  targetType: null | string,
   options: NoUnsafeTypeAssertionOptions,
-): { unsafe: boolean; reason: string } {
+): { reason: string; unsafe: boolean; } {
   if (targetType === 'unknown') {
     if (options.allowAnyToUnknown && sourceType === 'any') {
-      return { unsafe: false, reason: '' }
+      return { reason: '', unsafe: false }
     }
+
     if (sourceType === 'any') {
-      return { unsafe: !options.allowAnyToUnknown, reason: 'Casting from any to unknown' }
+      return { reason: 'Casting from any to unknown', unsafe: !options.allowAnyToUnknown }
     }
-    return { unsafe: false, reason: '' }
+
+    return { reason: '', unsafe: false }
   }
 
   if (targetType === 'any') {
     if (options.allowUnknownToAny && sourceType === 'unknown') {
-      return { unsafe: false, reason: '' }
+      return { reason: '', unsafe: false }
     }
-    return { unsafe: true, reason: 'Casting to any bypasses type safety' }
+
+    return { reason: 'Casting to any bypasses type safety', unsafe: true }
   }
 
   if (sourceType === 'any') {
-    return { unsafe: true, reason: 'Casting from any to a specific type is unsafe' }
+    return { reason: 'Casting from any to a specific type is unsafe', unsafe: true }
   }
 
   if (sourceType === 'unknown') {
-    return { unsafe: true, reason: 'Casting from unknown without type checking is unsafe' }
+    return { reason: 'Casting from unknown without type checking is unsafe', unsafe: true }
   }
 
-  return { unsafe: false, reason: '' }
+  return { reason: '', unsafe: false }
 }
 
-function isRedundantCast(sourceType: string | null, targetType: string | null): boolean {
+function isRedundantCast(sourceType: null | string, targetType: null | string): boolean {
   if (!sourceType || !targetType) {
     return false
   }
@@ -199,38 +204,6 @@ function isRedundantCast(sourceType: string | null, targetType: string | null): 
 }
 
 export const noUnsafeTypeAssertionRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Warn on unsafe type assertions (casting to/from any, unknown, or unrelated types). Type assertions bypass TypeScript safety checks and can hide type errors.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unsafe-type-assertion',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowAnyToUnknown: {
-            type: 'boolean',
-            default: false,
-          },
-          allowUnknownToAny: {
-            type: 'boolean',
-            default: false,
-          },
-          reportRedundant: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoUnsafeTypeAssertionOptions>(context.config.options, {
       allowAnyToUnknown: false,
@@ -248,11 +221,43 @@ export const noUnsafeTypeAssertionRule: RuleDefinition = {
       },
     }
   },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Warn on unsafe type assertions (casting to/from any, unknown, or unrelated types). Type assertions bypass TypeScript safety checks and can hide type errors.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unsafe-type-assertion',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowAnyToUnknown: {
+            default: false,
+            type: 'boolean',
+          },
+          allowUnknownToAny: {
+            default: false,
+            type: 'boolean',
+          },
+          reportRedundant: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
+  },
 }
 
 function checkTypeAssertion(
   node: unknown,
-  syntax: 'as' | 'angle-bracket',
+  syntax: 'angle-bracket' | 'as',
   context: RuleContext,
   options: NoUnsafeTypeAssertionOptions,
 ): void {
@@ -267,28 +272,28 @@ function checkTypeAssertion(
   const doubleCheck = checkForDoubleAssertion(node)
   if (doubleCheck.isDouble && doubleCheck.intermediateType === 'unknown') {
     context.report({
-      message: `Unsafe double type assertion via 'unknown'. This bypasses type safety entirely. Use type guards or validation instead.`,
       loc: location,
+      message: `Unsafe double type assertion via 'unknown'. This bypasses type safety entirely. Use type guards or validation instead.`,
     })
     return
   }
 
   const sourceType = getExpressionType(expression)
 
-  const { unsafe, reason } = isUnsafeAssertion(sourceType, targetType, options)
+  const { reason, unsafe } = isUnsafeAssertion(sourceType, targetType, options)
   if (unsafe) {
     const syntaxDesc = syntax === 'as' ? 'as' : '<>'
     context.report({
-      message: `Unsafe type assertion (${syntaxDesc} ${targetType ?? 'type'}). ${reason}. Use type guards or validation instead.`,
       loc: location,
+      message: `Unsafe type assertion (${syntaxDesc} ${targetType ?? 'type'}). ${reason}. Use type guards or validation instead.`,
     })
     return
   }
 
   if (options.reportRedundant && isRedundantCast(sourceType, targetType)) {
     context.report({
-      message: `Redundant type assertion. Expression is already of type '${targetType}'.`,
       loc: location,
+      message: `Redundant type assertion. Expression is already of type '${targetType}'.`,
     })
   }
 }

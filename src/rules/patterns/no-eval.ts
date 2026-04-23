@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isCallExpression, isIdentifier } from '../../utils/ast-helpers.js'
 
@@ -14,19 +15,6 @@ function isDirectEvalCall(node: unknown): boolean {
 }
 
 export const noEvalRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow the use of eval() as a global function. eval() can lead to security vulnerabilities and performance issues.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-eval',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -37,11 +25,24 @@ export const noEvalRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: "Unexpected use of 'eval'.",
           loc: location,
+          message: "Unexpected use of 'eval'.",
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow the use of eval() as a global function. eval() can lead to security vulnerabilities and performance issues.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-eval',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

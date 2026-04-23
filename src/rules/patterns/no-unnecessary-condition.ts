@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'IfStatement'
 }
@@ -13,6 +15,7 @@ function isConditionalExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'ConditionalExpression'
 }
@@ -21,6 +24,7 @@ function isBooleanLiteral(node: unknown, value: boolean): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'BooleanLiteral' && n.value === value
 }
@@ -29,6 +33,7 @@ function isLiteral(node: unknown, value: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Literal' && n.value === value
 }
@@ -37,6 +42,7 @@ function getTestNode(node: unknown): unknown {
   if (!node || typeof node !== 'object') {
     return null
   }
+
   const n = node as Record<string, unknown>
   return n.test
 }
@@ -45,6 +51,7 @@ function isUnaryExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'UnaryExpression'
 }
@@ -53,6 +60,7 @@ function isLogicalExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'LogicalExpression'
 }
@@ -82,15 +90,17 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
 
   if (isUnaryExpression(testNode)) {
     const operator = t.operator as string
-    const argument = t.argument
+    const {argument} = t
 
     if (operator === '!') {
       if (isBooleanLiteral(argument, true) || isLiteral(argument, true)) {
         return { isUnnecessary: true, reason: 'Unnecessary condition: !true is always false' }
       }
+
       if (isBooleanLiteral(argument, false) || isLiteral(argument, false)) {
         return { isUnnecessary: true, reason: 'Unnecessary condition: !false is always true' }
       }
+
       if (isLiteral(argument, null)) {
         return { isUnnecessary: true, reason: 'Unnecessary condition: !null is always true' }
       }
@@ -98,8 +108,8 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
   }
 
   if (isLogicalExpression(testNode)) {
-    const left = t.left
-    const right = t.right
+    const {left} = t
+    const {right} = t
     const operator = t.operator as string
 
     const leftResult = checkUnnecessaryCondition(left)
@@ -113,14 +123,17 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
             reason: 'Unnecessary condition: false && x is always false',
           }
         }
+
         if (isBooleanLiteral(left, true) || isLiteral(left, true)) {
           return { isUnnecessary: true, reason: 'Unnecessary condition: true && x is always x' }
         }
       }
+
       if (operator === '||') {
         if (isBooleanLiteral(left, true) || isLiteral(left, true)) {
           return { isUnnecessary: true, reason: 'Unnecessary condition: true || x is always true' }
         }
+
         if (isBooleanLiteral(left, false) || isLiteral(left, false)) {
           return { isUnnecessary: true, reason: 'Unnecessary condition: false || x is always x' }
         }
@@ -132,39 +145,8 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
 }
 
 export const noUnnecessaryConditionRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow conditions that are always truthy or always falsy. These conditions are unnecessary and likely indicate a mistake.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-condition',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
-      IfStatement(node: unknown): void {
-        if (!isIfStatement(node)) {
-          return
-        }
-
-        const testNode = getTestNode(node)
-        const result = checkUnnecessaryCondition(testNode)
-
-        if (result.isUnnecessary) {
-          const location = extractLocation(node)
-          context.report({
-            message: result.reason,
-            loc: location,
-          })
-        }
-      },
-
       ConditionalExpression(node: unknown): void {
         if (!isConditionalExpression(node)) {
           return
@@ -176,12 +158,43 @@ export const noUnnecessaryConditionRule: RuleDefinition = {
         if (result.isUnnecessary) {
           const location = extractLocation(node)
           context.report({
-            message: result.reason,
             loc: location,
+            message: result.reason,
+          })
+        }
+      },
+
+      IfStatement(node: unknown): void {
+        if (!isIfStatement(node)) {
+          return
+        }
+
+        const testNode = getTestNode(node)
+        const result = checkUnnecessaryCondition(testNode)
+
+        if (result.isUnnecessary) {
+          const location = extractLocation(node)
+          context.report({
+            loc: location,
+            message: result.reason,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow conditions that are always truthy or always falsy. These conditions are unnecessary and likely indicate a mistake.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-condition',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,14 +1,15 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import {
-  type FunctionLikeNode,
-  type RuleViolation,
-  type VisitorContext,
-  getNodeRange,
-  getFunctionName,
-  traverseAST,
-} from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
 
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
+import {
+  type FunctionLikeNode,
+  getFunctionName,
+  getNodeRange,
+  type RuleViolation,
+  traverseAST,
+  type VisitorContext,
+} from '../../ast/visitor.js'
 import { DEFAULT_MAX_LINES } from '../../utils/constants.js'
 
 interface MaxLinesOptions extends RuleOptions {
@@ -43,12 +44,12 @@ function countLines(
     : []
 
   let count = 0
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+  for (const [i, line] of lines.entries()) {
     if (!line) {
       if (!options.skipBlankLines) {
         count++
       }
+
       continue
     }
 
@@ -96,6 +97,7 @@ function countFunctionLines(
       if (!options.skipBlankLines) {
         count++
       }
+
       continue
     }
 
@@ -119,29 +121,19 @@ function getTextPosition(text: string, lineIndex: number): number {
   for (let i = 0; i < lineIndex; i++) {
     pos += (lines[i]?.length ?? 0) + 1
   }
+
   return pos
 }
 
 export const maxLinesRule: RuleDefinition<MaxLinesOptions> = {
-  meta: {
-    name: 'max-lines',
-    description: 'Enforce a maximum number of lines per file',
-    category: 'complexity',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: {
-    max: DEFAULT_MAX_LINES,
-    skipBlankLines: true,
-    skipComments: true,
-  },
-  create: (options: MaxLinesOptions) => {
+  create(options: MaxLinesOptions) {
     const violations: RuleViolation[] = []
     const maxLines = options.max ?? DEFAULT_MAX_LINES
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitSourceFile: (node: SourceFile, _context: VisitorContext) => {
+        visitSourceFile(node: SourceFile, _context: VisitorContext) {
           const lineCount = countLines(node, {
             skipBlankLines: options.skipBlankLines,
             skipComments: options.skipComments,
@@ -150,41 +142,41 @@ export const maxLinesRule: RuleDefinition<MaxLinesOptions> = {
           if (lineCount > maxLines) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getFilePath(),
+              message: `File has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
+              range,
               ruleId: 'max-lines',
               severity: 'warning',
-              message: `File has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
-              filePath: node.getFilePath(),
-              range,
               suggestion: 'Consider splitting this file into smaller, focused modules.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {
+    max: DEFAULT_MAX_LINES,
+    skipBlankLines: true,
+    skipComments: true,
+  },
+  meta: {
+    category: 'complexity',
+    description: 'Enforce a maximum number of lines per file',
+    fixable: 'code',
+    name: 'max-lines',
+    recommended: false,
   },
 }
 
 export const maxLinesPerFunctionRule: RuleDefinition<MaxLinesPerFunctionOptions> = {
-  meta: {
-    name: 'max-lines-per-function',
-    description: 'Enforce a maximum number of lines per function',
-    category: 'complexity',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {
-    max: 50,
-    skipBlankLines: true,
-    skipComments: true,
-  },
-  create: (options: MaxLinesPerFunctionOptions) => {
+  create(options: MaxLinesPerFunctionOptions) {
     const violations: RuleViolation[] = []
     const maxLines = options.max ?? 50
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode) => {
+        visitFunction(node: FunctionLikeNode) {
           const lineCount = countFunctionLines(node, {
             skipBlankLines: options.skipBlankLines,
             skipComments: options.skipComments,
@@ -194,19 +186,30 @@ export const maxLinesPerFunctionRule: RuleDefinition<MaxLinesPerFunctionOptions>
           if (lineCount > maxLines) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: `Function '${name}' has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
+              range,
               ruleId: 'max-lines-per-function',
               severity: 'warning',
-              message: `Function '${name}' has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion:
                 'Consider breaking this function into smaller, single-responsibility functions.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {
+    max: 50,
+    skipBlankLines: true,
+    skipComments: true,
+  },
+  meta: {
+    category: 'complexity',
+    description: 'Enforce a maximum number of lines per function',
+    fixable: 'code',
+    name: 'max-lines-per-function',
+    recommended: true,
   },
 }
 
@@ -221,11 +224,11 @@ export function analyzeMaxLines(
   if (lineCount > maxLines) {
     const range = getNodeRange(sourceFile)
     violations.push({
+      filePath: sourceFile.getFilePath(),
+      message: `File has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
+      range,
       ruleId: 'max-lines',
       severity: 'warning',
-      message: `File has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
-      filePath: sourceFile.getFilePath(),
-      range,
       suggestion: 'Consider splitting this file into smaller, focused modules.',
     })
   }
@@ -243,18 +246,18 @@ export function analyzeMaxLinesPerFunction(
   traverseAST(
     sourceFile,
     {
-      visitFunction: (node: FunctionLikeNode) => {
+      visitFunction(node: FunctionLikeNode) {
         const lineCount = countFunctionLines(node, options)
         const name = getFunctionName(node)
 
         if (lineCount > maxLines) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: `Function '${name}' has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
+            range,
             ruleId: 'max-lines-per-function',
             severity: 'warning',
-            message: `Function '${name}' has ${lineCount} lines. Maximum allowed is ${maxLines}.`,
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion:
               'Consider breaking this function into smaller, single-responsibility functions.',
           })

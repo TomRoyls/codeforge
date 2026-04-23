@@ -1,11 +1,14 @@
 /**
- * @fileoverview Disallow useless comparisons that are always true or false
+ * @file Disallow useless comparisons that are always true or false
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface NoUselessComparisonOptions extends RuleOptions {
@@ -48,20 +51,13 @@ function getComparisonMessage(alwaysTrue: boolean, reason: string): string {
 }
 
 export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions> = {
-  meta: {
-    name: 'no-useless-comparison',
-    description: 'Disallow useless comparisons that are always true or false',
-    category: 'style',
-    recommended: true,
-    fixable: undefined,
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: NoUselessComparisonOptions) => {
+  create(options: NoUselessComparisonOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, context: VisitorContext) => {
+        visitNode(node: Node, context: VisitorContext) {
           if (!Node.isBinaryExpression(node)) return
 
           const operatorToken = node.getOperatorToken()
@@ -101,14 +97,14 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
 
             const range = getNodeRange(node)
             violations.push({
-              ruleId: 'no-useless-comparison',
-              severity: 'warning',
+              filePath: context.getFilePath(),
               message: getComparisonMessage(
                 !isNaNCheck,
                 isNaNCheck ? 'NaN !== NaN' : 'comparing a value to itself',
               ),
-              filePath: context.getFilePath(),
               range,
+              ruleId: 'no-useless-comparison',
+              severity: 'warning',
               suggestion: isNaNCheck
                 ? 'Use Number.isNaN() to check for NaN'
                 : 'Remove this comparison, it can never be false',
@@ -133,14 +129,14 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
 
             const range = getNodeRange(node)
             violations.push({
-              ruleId: 'no-useless-comparison',
-              severity: 'warning',
+              filePath: context.getFilePath(),
               message: getComparisonMessage(
                 isNaNCheck,
                 isNaNCheck ? 'NaN !== NaN is true' : 'comparing a value to itself',
               ),
-              filePath: context.getFilePath(),
               range,
+              ruleId: 'no-useless-comparison',
+              severity: 'warning',
               suggestion: isNaNCheck
                 ? 'Use Number.isNaN() to check for NaN'
                 : 'Remove this comparison, it can never be true',
@@ -151,10 +147,10 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
           // Check for comparing literal values with <, >, <=, >=
           if (
             [
-              SyntaxKind.LessThanToken,
-              SyntaxKind.LessThanEqualsToken,
-              SyntaxKind.GreaterThanToken,
               SyntaxKind.GreaterThanEqualsToken,
+              SyntaxKind.GreaterThanToken,
+              SyntaxKind.LessThanEqualsToken,
+              SyntaxKind.LessThanToken,
             ].includes(operatorKind)
           ) {
             if (Node.isNumericLiteral(left) && Node.isNumericLiteral(right)) {
@@ -164,35 +160,42 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
               let alwaysFalse = false
 
               switch (operatorKind) {
-                case SyntaxKind.LessThanToken:
-                  alwaysTrue = leftValue < rightValue
-                  alwaysFalse = leftValue >= rightValue
-                  break
-                case SyntaxKind.LessThanEqualsToken:
-                  alwaysTrue = leftValue <= rightValue
-                  alwaysFalse = leftValue > rightValue
-                  break
-                case SyntaxKind.GreaterThanToken:
-                  alwaysTrue = leftValue > rightValue
-                  alwaysFalse = leftValue <= rightValue
-                  break
-                case SyntaxKind.GreaterThanEqualsToken:
+                case SyntaxKind.GreaterThanEqualsToken: {
                   alwaysTrue = leftValue >= rightValue
                   alwaysFalse = leftValue < rightValue
                   break
+                }
+
+                case SyntaxKind.GreaterThanToken: {
+                  alwaysTrue = leftValue > rightValue
+                  alwaysFalse = leftValue <= rightValue
+                  break
+                }
+
+                case SyntaxKind.LessThanEqualsToken: {
+                  alwaysTrue = leftValue <= rightValue
+                  alwaysFalse = leftValue > rightValue
+                  break
+                }
+
+                case SyntaxKind.LessThanToken: {
+                  alwaysTrue = leftValue < rightValue
+                  alwaysFalse = leftValue >= rightValue
+                  break
+                }
               }
 
               if (alwaysTrue || alwaysFalse) {
                 const range = getNodeRange(node)
                 violations.push({
-                  ruleId: 'no-useless-comparison',
-                  severity: 'warning',
+                  filePath: context.getFilePath(),
                   message: getComparisonMessage(
                     alwaysTrue,
                     `comparing constant numbers ${leftValue} and ${rightValue}`,
                   ),
-                  filePath: context.getFilePath(),
                   range,
+                  ruleId: 'no-useless-comparison',
+                  severity: 'warning',
                   suggestion: alwaysTrue
                     ? 'Replace with true, or remove if used in condition'
                     : 'Replace with false, or remove if used in condition',
@@ -208,32 +211,39 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
               let alwaysFalse = false
 
               switch (operatorKind) {
-                case SyntaxKind.LessThanToken:
-                  alwaysTrue = leftText < rightText
-                  alwaysFalse = leftText >= rightText
-                  break
-                case SyntaxKind.LessThanEqualsToken:
-                  alwaysTrue = leftText <= rightText
-                  alwaysFalse = leftText > rightText
-                  break
-                case SyntaxKind.GreaterThanToken:
-                  alwaysTrue = leftText > rightText
-                  alwaysFalse = leftText <= rightText
-                  break
-                case SyntaxKind.GreaterThanEqualsToken:
+                case SyntaxKind.GreaterThanEqualsToken: {
                   alwaysTrue = leftText >= rightText
                   alwaysFalse = leftText < rightText
                   break
+                }
+
+                case SyntaxKind.GreaterThanToken: {
+                  alwaysTrue = leftText > rightText
+                  alwaysFalse = leftText <= rightText
+                  break
+                }
+
+                case SyntaxKind.LessThanEqualsToken: {
+                  alwaysTrue = leftText <= rightText
+                  alwaysFalse = leftText > rightText
+                  break
+                }
+
+                case SyntaxKind.LessThanToken: {
+                  alwaysTrue = leftText < rightText
+                  alwaysFalse = leftText >= rightText
+                  break
+                }
               }
 
               if (alwaysTrue || alwaysFalse) {
                 const range = getNodeRange(node)
                 violations.push({
+                  filePath: context.getFilePath(),
+                  message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
+                  range,
                   ruleId: 'no-useless-comparison',
                   severity: 'warning',
-                  message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
-                  filePath: context.getFilePath(),
-                  range,
                   suggestion: alwaysTrue
                     ? 'Replace with true, or remove if used in condition'
                     : 'Replace with false, or remove if used in condition',
@@ -243,8 +253,15 @@ export const noUselessComparisonRule: RuleDefinition<NoUselessComparisonOptions>
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Disallow useless comparisons that are always true or false',
+    fixable: undefined,
+    name: 'no-useless-comparison',
+    recommended: true,
   },
 }
 
@@ -259,7 +276,7 @@ export function analyzeNoUselessComparison(
   }
 
   traverseAST(sourceFile, {
-    visitNode: (node: Node, _context: VisitorContext) => {
+    visitNode(node: Node, _context: VisitorContext) {
       if (!Node.isBinaryExpression(node)) return
 
       const operatorToken = node.getOperatorToken()
@@ -297,14 +314,14 @@ export function analyzeNoUselessComparison(
 
         const range = getNodeRange(node)
         violations.push({
-          ruleId: 'no-useless-comparison',
-          severity: 'warning',
+          filePath: sourceFile.getFilePath(),
           message: getComparisonMessage(
             !isNaNCheck,
             isNaNCheck ? 'NaN !== NaN' : 'comparing a value to itself',
           ),
-          filePath: sourceFile.getFilePath(),
           range,
+          ruleId: 'no-useless-comparison',
+          severity: 'warning',
           suggestion: isNaNCheck
             ? 'Use Number.isNaN() to check for NaN'
             : 'Remove this comparison, it can never be false',
@@ -328,14 +345,14 @@ export function analyzeNoUselessComparison(
 
         const range = getNodeRange(node)
         violations.push({
-          ruleId: 'no-useless-comparison',
-          severity: 'warning',
+          filePath: sourceFile.getFilePath(),
           message: getComparisonMessage(
             isNaNCheck,
             isNaNCheck ? 'NaN !== NaN is true' : 'comparing a value to itself',
           ),
-          filePath: sourceFile.getFilePath(),
           range,
+          ruleId: 'no-useless-comparison',
+          severity: 'warning',
           suggestion: isNaNCheck
             ? 'Use Number.isNaN() to check for NaN'
             : 'Remove this comparison, it can never be true',
@@ -346,10 +363,10 @@ export function analyzeNoUselessComparison(
       // Check for comparing literal values with <, >, <=, >=
       if (
         [
-          SyntaxKind.LessThanToken,
-          SyntaxKind.LessThanEqualsToken,
-          SyntaxKind.GreaterThanToken,
           SyntaxKind.GreaterThanEqualsToken,
+          SyntaxKind.GreaterThanToken,
+          SyntaxKind.LessThanEqualsToken,
+          SyntaxKind.LessThanToken,
         ].includes(operatorKind)
       ) {
         if (Node.isNumericLiteral(left) && Node.isNumericLiteral(right)) {
@@ -359,35 +376,42 @@ export function analyzeNoUselessComparison(
           let alwaysFalse = false
 
           switch (operatorKind) {
-            case SyntaxKind.LessThanToken:
-              alwaysTrue = leftValue < rightValue
-              alwaysFalse = leftValue >= rightValue
-              break
-            case SyntaxKind.LessThanEqualsToken:
-              alwaysTrue = leftValue <= rightValue
-              alwaysFalse = leftValue > rightValue
-              break
-            case SyntaxKind.GreaterThanToken:
-              alwaysTrue = leftValue > rightValue
-              alwaysFalse = leftValue <= rightValue
-              break
-            case SyntaxKind.GreaterThanEqualsToken:
+            case SyntaxKind.GreaterThanEqualsToken: {
               alwaysTrue = leftValue >= rightValue
               alwaysFalse = leftValue < rightValue
               break
+            }
+
+            case SyntaxKind.GreaterThanToken: {
+              alwaysTrue = leftValue > rightValue
+              alwaysFalse = leftValue <= rightValue
+              break
+            }
+
+            case SyntaxKind.LessThanEqualsToken: {
+              alwaysTrue = leftValue <= rightValue
+              alwaysFalse = leftValue > rightValue
+              break
+            }
+
+            case SyntaxKind.LessThanToken: {
+              alwaysTrue = leftValue < rightValue
+              alwaysFalse = leftValue >= rightValue
+              break
+            }
           }
 
           if (alwaysTrue || alwaysFalse) {
             const range = getNodeRange(node)
             violations.push({
-              ruleId: 'no-useless-comparison',
-              severity: 'warning',
+              filePath: sourceFile.getFilePath(),
               message: getComparisonMessage(
                 alwaysTrue,
                 `comparing constant numbers ${leftValue} and ${rightValue}`,
               ),
-              filePath: sourceFile.getFilePath(),
               range,
+              ruleId: 'no-useless-comparison',
+              severity: 'warning',
               suggestion: alwaysTrue
                 ? 'Replace with true, or remove if used in condition'
                 : 'Replace with false, or remove if used in condition',
@@ -402,32 +426,39 @@ export function analyzeNoUselessComparison(
           let alwaysFalse = false
 
           switch (operatorKind) {
-            case SyntaxKind.LessThanToken:
-              alwaysTrue = leftText < rightText
-              alwaysFalse = leftText >= rightText
-              break
-            case SyntaxKind.LessThanEqualsToken:
-              alwaysTrue = leftText <= rightText
-              alwaysFalse = leftText > rightText
-              break
-            case SyntaxKind.GreaterThanToken:
-              alwaysTrue = leftText > rightText
-              alwaysFalse = leftText <= rightText
-              break
-            case SyntaxKind.GreaterThanEqualsToken:
+            case SyntaxKind.GreaterThanEqualsToken: {
               alwaysTrue = leftText >= rightText
               alwaysFalse = leftText < rightText
               break
+            }
+
+            case SyntaxKind.GreaterThanToken: {
+              alwaysTrue = leftText > rightText
+              alwaysFalse = leftText <= rightText
+              break
+            }
+
+            case SyntaxKind.LessThanEqualsToken: {
+              alwaysTrue = leftText <= rightText
+              alwaysFalse = leftText > rightText
+              break
+            }
+
+            case SyntaxKind.LessThanToken: {
+              alwaysTrue = leftText < rightText
+              alwaysFalse = leftText >= rightText
+              break
+            }
           }
 
           if (alwaysTrue || alwaysFalse) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: sourceFile.getFilePath(),
+              message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
+              range,
               ruleId: 'no-useless-comparison',
               severity: 'warning',
-              message: getComparisonMessage(alwaysTrue, 'comparing constant strings'),
-              filePath: sourceFile.getFilePath(),
-              range,
               suggestion: alwaysTrue
                 ? 'Replace with true, or remove if used in condition'
                 : 'Replace with false, or remove if used in condition',

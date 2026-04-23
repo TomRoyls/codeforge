@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAsyncFunctionWithReturnOrAwait(node: unknown): boolean {
@@ -47,6 +48,7 @@ function hasReturnOrAwait(node: unknown): boolean {
       if (hasReturnOrAwait(value)) {
         return true
       }
+
       if (Array.isArray(value)) {
         for (const item of value) {
           if (typeof item === 'object' && item !== null && hasReturnOrAwait(item)) {
@@ -61,64 +63,70 @@ function hasReturnOrAwait(node: unknown): boolean {
 }
 
 export const noReturnOrAwaitRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow async functions that never use await or return. Async functions should perform asynchronous operations.',
-      category: 'performance',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-return-or-await',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
-      FunctionDeclaration(node: unknown): void {
+      ArrowFunctionExpression(node: unknown): void {
         if (isAsyncFunctionWithReturnOrAwait(node)) {
           return
         }
+
         const n = node as Record<string, unknown>
         if (n.async !== true) {
           return
         }
+
         const location = extractLocation(node)
         context.report({
-          message: 'Async function has no await or return.',
           loc: location,
+          message: 'Async function has no await or return.',
+        })
+      },
+      FunctionDeclaration(node: unknown): void {
+        if (isAsyncFunctionWithReturnOrAwait(node)) {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        if (n.async !== true) {
+          return
+        }
+
+        const location = extractLocation(node)
+        context.report({
+          loc: location,
+          message: 'Async function has no await or return.',
         })
       },
       FunctionExpression(node: unknown): void {
         if (isAsyncFunctionWithReturnOrAwait(node)) {
           return
         }
+
         const n = node as Record<string, unknown>
         if (n.async !== true) {
           return
         }
+
         const location = extractLocation(node)
         context.report({
-          message: 'Async function has no await or return.',
           loc: location,
-        })
-      },
-      ArrowFunctionExpression(node: unknown): void {
-        if (isAsyncFunctionWithReturnOrAwait(node)) {
-          return
-        }
-        const n = node as Record<string, unknown>
-        if (n.async !== true) {
-          return
-        }
-        const location = extractLocation(node)
-        context.report({
           message: 'Async function has no await or return.',
-          loc: location,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'performance',
+      description:
+        'Disallow async functions that never use await or return. Async functions should perform asynchronous operations.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-return-or-await',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,14 +1,15 @@
 import { Node } from 'ts-morph'
+
 import {
+  ASSIGNMENT_OPERATORS,
   KIND_MAP,
   KIND_NAME_ALIASES,
   KIND_SPECIFIC_MAP,
-  PROPERTY_MAP,
-  OPERATOR_TOKEN_MAP,
-  SKIP_KEYS,
-  MAX_DEPTH,
-  ASSIGNMENT_OPERATORS,
   LOGICAL_OPERATORS,
+  MAX_DEPTH,
+  OPERATOR_TOKEN_MAP,
+  PROPERTY_MAP,
+  SKIP_KEYS,
 } from './adapter-constants.js'
 
 // Module-level source text for trivia skipping in convertRawCompilerNode
@@ -20,7 +21,6 @@ export function setRangeSourceText(text: string): void {
 
 export function clearRecord(obj: Record<string, unknown>): void {
   for (const key of Object.keys(obj)) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete obj[key]
   }
 }
@@ -30,30 +30,34 @@ export function skipTrivia(pos: number): number {
   if (!text) return pos
   let i = pos
   while (i < text.length) {
-    const ch = text.charCodeAt(i)
+    const ch = text.codePointAt(i) ?? 0
     if (ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d) {
       i++
       continue
     }
+
     if (ch === 0x2f && i + 1 < text.length) {
-      const next = text.charCodeAt(i + 1)
+      const next = text.codePointAt(i + 1) ?? 0
       if (next === 0x2f) {
-        while (i < text.length && text.charCodeAt(i) !== 0x0a) i++
+        while (i < text.length && text.codePointAt(i) !== 0x0a) i++
         continue
       }
+
       if (next === 0x2a) {
         i += 2
         while (
           i + 1 < text.length &&
-          !(text.charCodeAt(i) === 0x2a && text.charCodeAt(i + 1) === 0x2f)
+          !((text.codePointAt(i) ?? 0) === 0x2a && (text.codePointAt(i + 1) ?? 0) === 0x2f)
         )
           i++
         i += 2
         continue
       }
     }
+
     break
   }
+
   return i
 }
 
@@ -63,22 +67,25 @@ export function convertOperatorToken(token: unknown): string {
     const tokenName = KIND_MAP[token as number] ?? ''
     return (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(token)
   }
+
   if (token && typeof token === 'object') {
     const obj = token as Record<string, unknown>
     if (typeof obj.type === 'string') {
       const mapped = OPERATOR_TOKEN_MAP[obj.type]
       if (mapped) return mapped
     }
+
     if (typeof obj.getText === 'function') return (obj.getText as () => string)()
     if (obj.operator !== undefined) return String(obj.operator)
   }
+
   return String(token)
 }
 
 export function convertRawCompilerNode(
   raw: Record<string, unknown>,
   depth: number,
-): Record<string, unknown> | null {
+): null | Record<string, unknown> {
   if (depth >= MAX_DEPTH) return null
   if (!raw || typeof raw !== 'object') return null
 
@@ -93,6 +100,7 @@ export function convertRawCompilerNode(
     result.start = startPos
     result.end = raw.end
   }
+
   result.type = KIND_NAME_ALIASES[kindName] ?? kindName
 
   // Add literal values
@@ -108,23 +116,40 @@ export function convertRawCompilerNode(
   } else if (kindName === 'Identifier' && raw.escapedText !== undefined) {
     result.name = raw.escapedText
     result.value = raw.escapedText
-  } else if (kindName === 'TrueKeyword') {
-    result.value = true
-    result.raw = 'true'
-  } else if (kindName === 'FalseKeyword') {
-    result.value = false
-    result.raw = 'false'
-  } else if (kindName === 'NullKeyword') {
-    result.value = null
-    result.raw = 'null'
-  } else if (kindName === 'RegularExpressionLiteral' && raw.text !== undefined) {
-    result.raw = raw.text as string
-    const regexText = raw.text as string
-    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-    if (regexMatch) {
-      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+  } else
+    switch (kindName) {
+      case 'FalseKeyword': {
+        result.value = false
+        result.raw = 'false'
+
+        break
+      }
+
+      case 'NullKeyword': {
+        result.value = null
+        result.raw = 'null'
+
+        break
+      }
+
+      case 'TrueKeyword': {
+        result.value = true
+        result.raw = 'true'
+
+        break
+      }
+
+      default: {
+        if (kindName === 'RegularExpressionLiteral' && raw.text !== undefined) {
+          result.raw = raw.text as string
+          const regexText = raw.text as string
+          const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+          if (regexMatch) {
+            result.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+          }
+        }
+      }
     }
-  }
 
   // Iterate children
   for (const [key, val] of Object.entries(raw)) {
@@ -147,8 +172,10 @@ export function convertRawCompilerNode(
             converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
           }
         }
+
         result[estreeName] = converted
       }
+
       continue
     }
 
@@ -162,16 +189,16 @@ export function convertRawCompilerNode(
         const head = raw.head as Record<string, unknown> | undefined
         if (head && typeof head.kind === 'number') {
           quasis.push({
-            type: 'TemplateElement',
-            value: {
-              raw: (head.rawText ?? head.text) as string,
-              cooked: (head.text ?? head.rawText) as string,
-            },
-            tail: false,
             range:
               typeof head.pos === 'number' && typeof head.end === 'number'
                 ? [head.pos as number, head.end as number]
                 : undefined,
+            tail: false,
+            type: 'TemplateElement',
+            value: {
+              cooked: (head.text ?? head.rawText) as string,
+              raw: (head.rawText ?? head.text) as string,
+            },
           })
         }
 
@@ -180,24 +207,25 @@ export function convertRawCompilerNode(
         if (Array.isArray(spans)) {
           for (let i = 0; i < spans.length; i++) {
             const span = spans[i]! as Record<string, unknown>
-            const spanExpr = span['expression'] as Record<string, unknown> | undefined
+            const spanExpr = span.expression as Record<string, unknown> | undefined
             if (spanExpr && typeof spanExpr.kind === 'number') {
               expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
             }
+
             const lit = span.literal as Record<string, unknown> | undefined
             if (lit && typeof lit.kind === 'number') {
               const isTail = i === spans.length - 1
               quasis.push({
-                type: 'TemplateElement',
-                value: {
-                  raw: (lit.rawText ?? lit.text) as string,
-                  cooked: (lit.text ?? lit.rawText) as string,
-                },
-                tail: isTail,
                 range:
                   typeof lit.pos === 'number' && typeof lit.end === 'number'
                     ? [lit.pos as number, lit.end as number]
                     : undefined,
+                tail: isTail,
+                type: 'TemplateElement',
+                value: {
+                  cooked: (lit.text ?? lit.rawText) as string,
+                  raw: (lit.rawText ?? lit.text) as string,
+                },
               })
             }
           }
@@ -206,6 +234,7 @@ export function convertRawCompilerNode(
         result.quasis = quasis
         result.expressions = expressions
       }
+
       continue
     }
 
@@ -216,13 +245,14 @@ export function convertRawCompilerNode(
         const cookedText = (raw.text ?? raw.rawText) as string
         result.quasis = [
           {
-            type: 'TemplateElement',
-            value: { raw: rawText, cooked: cookedText },
             tail: true,
+            type: 'TemplateElement',
+            value: { cooked: cookedText, raw: rawText },
           },
         ]
         result.expressions = []
       }
+
       continue
     }
 
@@ -245,14 +275,10 @@ export function convertRawCompilerNode(
       typeof (val as Record<string, unknown>).kind === 'number'
     ) {
       const varDecl = val as Record<string, unknown>
-      if (varDecl.name && typeof varDecl.name === 'object') {
-        result[estreeName] = convertRawCompilerNode(
-          varDecl.name as Record<string, unknown>,
-          depth + 1,
-        )
-      } else {
-        result[estreeName] = null
-      }
+      result[estreeName] =
+        varDecl.name && typeof varDecl.name === 'object'
+          ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+          : null
     } else if (
       typeof val === 'object' &&
       typeof (val as Record<string, unknown>).kind === 'number'
@@ -278,6 +304,7 @@ export function convertRawCompilerNode(
           converted.push(item)
         }
       }
+
       result[estreeName] = converted
     }
   }
@@ -306,6 +333,7 @@ export function convertRawCompilerNode(
       result.prefix = true
     }
   }
+
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
@@ -313,7 +341,7 @@ export function convertRawCompilerNode(
 
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
-    let flags: number | undefined = undefined
+    let flags: number | undefined
     if (typeof raw.flags === 'number' && (raw.flags as number) & 3) {
       flags = raw.flags as number
     } else {
@@ -322,6 +350,7 @@ export function convertRawCompilerNode(
         flags = declList.flags as number
       }
     }
+
     if (typeof flags === 'number') {
       if (flags & 2) {
         result.kind = 'const'
@@ -336,7 +365,7 @@ export function convertRawCompilerNode(
   return result
 }
 
-export function convertCompilerNode(node: Node, depth: number = 0): Record<string, unknown> | null {
+export function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
   if (depth >= MAX_DEPTH) return null
   if (!node || typeof node !== 'object') return null
 
@@ -353,47 +382,77 @@ export function convertCompilerNode(node: Node, depth: number = 0): Record<strin
     type: KIND_NAME_ALIASES[kindName] ?? kindName,
   }
 
-  const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
-  if (compilerNode && typeof compilerNode === 'object') {
-    if (typeof compilerNode.pos === 'number' && typeof compilerNode.end === 'number') {
-      const startPos = skipTrivia(compilerNode.pos as number)
-      result.range = [startPos, compilerNode.end] as [number, number]
-      result.start = startPos
-      result.end = compilerNode.end
-    }
+  const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
+  if (
+    compilerNode &&
+    typeof compilerNode === 'object' &&
+    typeof compilerNode.pos === 'number' &&
+    typeof compilerNode.end === 'number'
+  ) {
+    const startPos = skipTrivia(compilerNode.pos as number)
+    result.range = [startPos, compilerNode.end] as [number, number]
+    result.start = startPos
+    result.end = compilerNode.end
   }
 
   // Add literal value
-  if (kindName === 'StringLiteral') {
-    const text = node.getText()
-    result.value = text.slice(1, -1) // Remove quotes
-    result.raw = text
-  } else if (kindName === 'NumericLiteral' || kindName === 'BigIntLiteral') {
-    const text = node.getText()
-    result.value = Number(text)
-    result.raw = text
-  } else if (kindName === 'TrueKeyword') {
-    result.value = true
-    result.raw = 'true'
-  } else if (kindName === 'FalseKeyword') {
-    result.value = false
-    result.raw = 'false'
-  } else if (kindName === 'NullKeyword') {
-    result.value = null
-    result.raw = 'null'
-  } else if (kindName === 'RegularExpressionLiteral') {
-    const regexText = node.getText()
-    result.raw = regexText
-    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-    if (regexMatch) {
-      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+  switch (kindName) {
+    case 'BigIntLiteral':
+    // falls through
+    case 'NumericLiteral': {
+      const text = node.getText()
+      result.value = Number(text)
+      result.raw = text
+
+      break
     }
+
+    case 'FalseKeyword': {
+      result.value = false
+      result.raw = 'false'
+
+      break
+    }
+
+    case 'NullKeyword': {
+      result.value = null
+      result.raw = 'null'
+
+      break
+    }
+
+    case 'RegularExpressionLiteral': {
+      const regexText = node.getText()
+      result.raw = regexText
+      const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+      if (regexMatch) {
+        result.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+      }
+
+      break
+    }
+
+    case 'StringLiteral': {
+      const text = node.getText()
+      result.value = text.slice(1, -1) // Remove quotes
+      result.raw = text
+
+      break
+    }
+
+    case 'TrueKeyword': {
+      result.value = true
+      result.raw = 'true'
+
+      break
+    }
+    // No default
   }
 
   // Iterate compiler node children using raw compiler node
   // (ts-morph getter methods like getExpression() fail on detached nodes)
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (compilerNode && typeof compilerNode === 'object') {
       for (const [key, val] of Object.entries(compilerNode)) {
         if (key.startsWith('_')) continue
@@ -415,8 +474,10 @@ export function convertCompilerNode(node: Node, depth: number = 0): Record<strin
                 converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
               }
             }
+
             result[estreeName] = converted
           }
+
           continue
         }
 
@@ -439,14 +500,10 @@ export function convertCompilerNode(node: Node, depth: number = 0): Record<strin
           typeof (val as Record<string, unknown>).kind === 'number'
         ) {
           const varDecl = val as Record<string, unknown>
-          if (varDecl.name && typeof varDecl.name === 'object') {
-            result[estreeName] = convertRawCompilerNode(
-              varDecl.name as Record<string, unknown>,
-              depth + 1,
-            )
-          } else {
-            result[estreeName] = null
-          }
+          result[estreeName] =
+            varDecl.name && typeof varDecl.name === 'object'
+              ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+              : null
         } else if (
           typeof val === 'object' &&
           typeof (val as Record<string, unknown>).kind === 'number'
@@ -470,6 +527,7 @@ export function convertCompilerNode(node: Node, depth: number = 0): Record<strin
               converted.push(item)
             }
           }
+
           result[estreeName] = converted
         }
       }
@@ -497,20 +555,17 @@ export function convertCompilerNode(node: Node, depth: number = 0): Record<strin
       result.prefix = true
     }
   }
+
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
   }
 
   if (result.type === 'VariableDeclaration') {
-    let rawFlags = compilerNode?.flags
+    const rawFlags = compilerNode?.flags
     if (typeof rawFlags === 'number' && rawFlags & 3) {
       // NodeFlags.Const = 2, NodeFlags.Let = 1
-      if (rawFlags & 2) {
-        result.kind = 'const'
-      } else {
-        result.kind = 'let'
-      }
+      result.kind = rawFlags & 2 ? 'const' : 'let'
     } else {
       const declList = compilerNode?.declarationList as Record<string, unknown> | undefined
       const listFlags = declList?.flags

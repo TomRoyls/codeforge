@@ -1,11 +1,13 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression, getNodeSource } from '../../utils/ast-helpers.js'
+import { getNodeSource, isBinaryExpression } from '../../utils/ast-helpers.js'
 
 function isUnaryExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'UnaryExpression'
 }
 
@@ -13,14 +15,16 @@ function isLiteral(node: unknown, value?: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   if (n.type !== 'Literal') {
     return false
   }
+
   return value === undefined || n.value === value
 }
 
-function isStringConcatCoercion(node: unknown): { operand: unknown } | null {
+function isStringConcatCoercion(node: unknown): null | { operand: unknown } {
   if (!isBinaryExpression(node)) {
     return null
   }
@@ -46,7 +50,7 @@ function isStringConcatCoercion(node: unknown): { operand: unknown } | null {
   return null
 }
 
-function isNumberCoercion(node: unknown): { operand: unknown } | null {
+function isNumberCoercion(node: unknown): null | { operand: unknown } {
   if (!isUnaryExpression(node)) {
     return null
   }
@@ -67,7 +71,7 @@ function isNumberCoercion(node: unknown): { operand: unknown } | null {
   return { operand: argument }
 }
 
-function isBooleanCoercion(node: unknown): { operand: unknown; isDouble: boolean } | null {
+function isBooleanCoercion(node: unknown): null | { isDouble: boolean; operand: unknown; } {
   if (!isUnaryExpression(node)) {
     return null
   }
@@ -82,40 +86,48 @@ function isBooleanCoercion(node: unknown): { operand: unknown; isDouble: boolean
   const argument = n.argument as unknown
 
   if (!isUnaryExpression(argument)) {
-    return { operand: argument, isDouble: false }
+    return { isDouble: false, operand: argument }
   }
 
   const innerArg = argument as Record<string, unknown>
   const innerOp = innerArg.operator as string | undefined
 
   if (innerOp !== '!') {
-    return { operand: argument, isDouble: false }
+    return { isDouble: false, operand: argument }
   }
 
-  return { operand: innerArg.argument, isDouble: true }
+  return { isDouble: true, operand: innerArg.argument }
 }
 
 export const noImplicitCoercionRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow implicit type coercion. Use explicit conversion functions like Number(), String(), and Boolean() instead of shorthand patterns like +x, x + "", and !!x for better readability.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-implicit-coercion',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
+      BinaryExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const range = n.range as [number, number] | undefined
+        const location = extractLocation(node)
+
+        const stringCoercion = isStringConcatCoercion(node)
+        if (stringCoercion) {
+          const operandSource = getNodeSource(context, stringCoercion.operand)
+          context.report({
+            fix: range ? { range, text: `String(${operandSource})` } : undefined,
+            loc: location,
+            message:
+              'Avoid implicit string coercion with x + "". Use String(x) for explicit and readable conversion.',
+          })
+        }
+      },
+
       UnaryExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
         const range = n.range as [number, number] | undefined
         const location = extractLocation(node)
@@ -124,10 +136,10 @@ export const noImplicitCoercionRule: RuleDefinition = {
         if (numberCoercion) {
           const operandSource = getNodeSource(context, numberCoercion.operand)
           context.report({
+            fix: range ? { range, text: `Number(${operandSource})` } : undefined,
+            loc: location,
             message:
               'Avoid implicit number coercion with +x. Use Number(x) for explicit and readable conversion.',
-            loc: location,
-            fix: range ? { range, text: `Number(${operandSource})` } : undefined,
           })
           return
         }
@@ -137,35 +149,29 @@ export const noImplicitCoercionRule: RuleDefinition = {
           const operandSource = getNodeSource(context, booleanCoercion.operand)
           if (booleanCoercion.isDouble) {
             context.report({
+              fix: range ? { range, text: `Boolean(${operandSource})` } : undefined,
+              loc: location,
               message:
                 'Avoid implicit boolean coercion with !!x. Use Boolean(x) for explicit and readable conversion.',
-              loc: location,
-              fix: range ? { range, text: `Boolean(${operandSource})` } : undefined,
             })
           }
         }
       },
-
-      BinaryExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const range = n.range as [number, number] | undefined
-        const location = extractLocation(node)
-
-        const stringCoercion = isStringConcatCoercion(node)
-        if (stringCoercion) {
-          const operandSource = getNodeSource(context, stringCoercion.operand)
-          context.report({
-            message:
-              'Avoid implicit string coercion with x + "". Use String(x) for explicit and readable conversion.',
-            loc: location,
-            fix: range ? { range, text: `String(${operandSource})` } : undefined,
-          })
-        }
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow implicit type coercion. Use explicit conversion functions like Number(), String(), and Boolean() instead of shorthand patterns like +x, x + "", and !!x for better readability.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-implicit-coercion',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

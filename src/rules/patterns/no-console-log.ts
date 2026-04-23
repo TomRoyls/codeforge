@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
@@ -33,7 +34,7 @@ const CONSOLE_METHODS = [
 function isConsoleCall(
   node: unknown,
   allowedMethods: readonly string[],
-): { isConsole: boolean; method: string | null } {
+): { isConsole: boolean; method: null | string } {
   if (!node || typeof node !== 'object') {
     return { isConsole: false, method: null }
   }
@@ -75,34 +76,6 @@ function isConsoleCall(
 }
 
 export const noConsoleLogRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow console.log and similar console methods in production code. Use a proper logging library instead.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-console-log',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allow: {
-            type: 'array',
-            items: {
-              type: 'string',
-              enum: CONSOLE_METHODS,
-            },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoConsoleLogOptions>(context.config.options, { allow: [] })
 
@@ -120,12 +93,40 @@ export const noConsoleLogRule: RuleDefinition = {
         const range = getRange(node)
 
         context.report({
-          message: `Unexpected console.${method} statement. ${RULE_SUGGESTIONS.noConsoleLog}`,
-          loc: location,
           fix: range ? { range, text: '' } : undefined,
+          loc: location,
+          message: `Unexpected console.${method} statement. ${RULE_SUGGESTIONS.noConsoleLog}`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow console.log and similar console methods in production code. Use a proper logging library instead.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-console-log',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allow: {
+            items: {
+              enum: CONSOLE_METHODS,
+              type: 'string',
+            },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

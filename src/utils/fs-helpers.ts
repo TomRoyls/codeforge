@@ -1,13 +1,13 @@
-import * as fs from 'fs/promises'
-import * as path from 'path'
-import { Stats } from 'fs'
+import { Stats } from 'node:fs'
+import * as fs from 'node:fs/promises'
+import { dirname, join, resolve } from 'node:path'
 
 interface CacheEntry<T> {
-  value: T
   timestamp: number
+  value: T
 }
 
-const CACHE_TTL = 60000
+const CACHE_TTL = 60_000
 const cache = new Map<string, CacheEntry<unknown>>()
 
 export function clearCache(): void {
@@ -15,110 +15,114 @@ export function clearCache(): void {
 }
 
 export interface CacheStats {
-  size: number
   keys: string[]
+  size: number
   ttlMs: number
 }
 
 export function getCacheStats(): CacheStats {
   return {
+    keys: [...cache.keys()],
     size: cache.size,
-    keys: Array.from(cache.keys()),
     ttlMs: CACHE_TTL,
   }
 }
 
-function getCached<T>(key: string): T | null {
+function getCached<T>(key: string): null | T {
   const entry = cache.get(key) as CacheEntry<T> | undefined
   if (!entry) return null
   if (Date.now() - entry.timestamp > CACHE_TTL) {
     cache.delete(key)
     return null
   }
+
   return entry.value
 }
 
 function setCached<T>(key: string, value: T): void {
-  cache.set(key, { value, timestamp: Date.now() })
+  cache.set(key, { timestamp: Date.now(), value })
 }
 
 export interface FileInfo {
+  created: Date
+  isDirectory: boolean
+  modified: Date
   path: string
   size: number
-  created: Date
-  modified: Date
-  isDirectory: boolean
 }
 
-export async function readFileSafe(filePath: string): Promise<string | null> {
-  const resolvedPath = path.resolve(filePath)
+export async function readFileSafe(filePath: string): Promise<null | string> {
+  const resolvedPath = resolve(filePath)
   const cacheKey = `readFile:${resolvedPath}`
 
-  const cached = getCached<string | null>(cacheKey)
+  const cached = getCached<null | string>(cacheKey)
   if (cached !== null) return cached
 
   try {
-    const content = await fs.readFile(resolvedPath, 'utf-8')
+    const content = await fs.readFile(resolvedPath, 'utf8')
     setCached(cacheKey, content)
     return content
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      setCached<string | null>(cacheKey, null)
+      setCached<null | string>(cacheKey, null)
       return null
     }
+
     throw error
   }
 }
 
 export async function readFileStrict(filePath: string): Promise<string> {
-  const resolvedPath = path.resolve(filePath)
+  const resolvedPath = resolve(filePath)
 
   try {
-    const content = await fs.readFile(resolvedPath, 'utf-8')
+    const content = await fs.readFile(resolvedPath, 'utf8')
     return content
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       throw new Error(`File not found: ${resolvedPath}`)
     }
+
     throw new Error(`Failed to read file ${resolvedPath}: ${(error as Error).message}`)
   }
 }
 
-export async function readJsonFile<T = unknown>(filePath: string): Promise<T | null> {
-  const resolvedPath = path.resolve(filePath)
+export async function readJsonFile<T = unknown>(filePath: string): Promise<null | T> {
+  const resolvedPath = resolve(filePath)
   const cacheKey = `readJsonFile:${resolvedPath}`
 
   const cached = getCached<T>(cacheKey)
   if (cached !== null) return cached
 
   try {
-    const content = await fs.readFile(resolvedPath, 'utf-8')
+    const content = await fs.readFile(resolvedPath, 'utf8')
     const result = JSON.parse(content) as T
     setCached(cacheKey, result)
     return result
   } catch (error) {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
-      setCached<T | null>(cacheKey, null)
+      setCached<null | T>(cacheKey, null)
       return null
     }
+
     throw error
   }
 }
 
 export async function writeFileSafe(filePath: string, content: string): Promise<void> {
-  const resolvedPath = path.resolve(filePath)
-  const dirPath = path.dirname(resolvedPath)
+  const resolvedPath = resolve(filePath)
+  const dirPath = dirname(resolvedPath)
 
   try {
     await fs.mkdir(dirPath, { recursive: true })
-    await fs.writeFile(resolvedPath, content, 'utf-8')
+    await fs.writeFile(resolvedPath, content, 'utf8')
   } catch (error) {
     throw new Error(`Failed to write file ${resolvedPath}: ${(error as Error).message}`)
   }
 }
 
 export async function fileExists(filePath: string): Promise<boolean> {
-  const resolvedPath = path.resolve(filePath)
+  const resolvedPath = resolve(filePath)
   const cacheKey = `fileExists:${resolvedPath}`
 
   const cached = getCached<boolean>(cacheKey)
@@ -134,12 +138,13 @@ export async function fileExists(filePath: string): Promise<boolean> {
       setCached(cacheKey, false)
       return false
     }
+
     throw error
   }
 }
 
 export async function directoryExists(dirPath: string): Promise<boolean> {
-  const resolvedPath = path.resolve(dirPath)
+  const resolvedPath = resolve(dirPath)
 
   try {
     const stats = await fs.stat(resolvedPath)
@@ -148,12 +153,13 @@ export async function directoryExists(dirPath: string): Promise<boolean> {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return false
     }
+
     throw error
   }
 }
 
 export async function ensureDirectory(dirPath: string): Promise<void> {
-  const resolvedPath = path.resolve(dirPath)
+  const resolvedPath = resolve(dirPath)
 
   try {
     await fs.mkdir(resolvedPath, { recursive: true })
@@ -163,7 +169,7 @@ export async function ensureDirectory(dirPath: string): Promise<void> {
 }
 
 export async function deleteFile(filePath: string): Promise<boolean> {
-  const resolvedPath = path.resolve(filePath)
+  const resolvedPath = resolve(filePath)
 
   try {
     await fs.unlink(resolvedPath)
@@ -172,12 +178,13 @@ export async function deleteFile(filePath: string): Promise<boolean> {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       return false
     }
+
     throw new Error(`Failed to delete file ${resolvedPath}: ${(error as Error).message}`)
   }
 }
 
 export async function listFiles(dir: string, pattern?: string): Promise<string[]> {
-  const resolvedDir = path.resolve(dir)
+  const resolvedDir = resolve(dir)
 
   try {
     const entries = await fs.readdir(resolvedDir, { withFileTypes: true })
@@ -185,7 +192,7 @@ export async function listFiles(dir: string, pattern?: string): Promise<string[]
 
     for (const entry of entries) {
       if (entry.isFile()) {
-        const filePath = path.join(resolvedDir, entry.name)
+        const filePath = join(resolvedDir, entry.name)
 
         if (pattern === undefined || matchesPattern(entry.name, pattern)) {
           files.push(filePath)
@@ -200,7 +207,7 @@ export async function listFiles(dir: string, pattern?: string): Promise<string[]
 }
 
 export async function getFileInfo(filePath: string): Promise<FileInfo> {
-  const resolvedPath = path.resolve(filePath)
+  const resolvedPath = resolve(filePath)
   const cacheKey = `getFileInfo:${resolvedPath}`
 
   const cached = getCached<FileInfo>(cacheKey)
@@ -212,11 +219,11 @@ export async function getFileInfo(filePath: string): Promise<FileInfo> {
     const stats: Stats = await fs.stat(resolvedPath)
 
     const result: FileInfo = {
+      created: stats.birthtime,
+      isDirectory: stats.isDirectory(),
+      modified: stats.mtime,
       path: resolvedPath,
       size: stats.size,
-      created: stats.birthtime,
-      modified: stats.mtime,
-      isDirectory: stats.isDirectory(),
     }
     setCached(cacheKey, result)
     return result
@@ -224,12 +231,13 @@ export async function getFileInfo(filePath: string): Promise<FileInfo> {
     if (error instanceof Error && (error as NodeJS.ErrnoException).code === 'ENOENT') {
       throw new Error(`File not found: ${resolvedPath}`)
     }
+
     throw new Error(`Failed to get file info for ${resolvedPath}: ${(error as Error).message}`)
   }
 }
 
 function matchesPattern(filename: string, pattern: string): boolean {
-  const regexPattern = pattern.replace(/\./g, '\\.').replace(/\*/g, '.*')
+  const regexPattern = pattern.replaceAll('.', String.raw`\.`).replaceAll('*', '.*')
   const regex = new RegExp(`^${regexPattern}$`)
   return regex.test(filename)
 }

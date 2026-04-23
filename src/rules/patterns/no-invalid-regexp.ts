@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isCallExpression(node: unknown): boolean {
@@ -10,7 +11,7 @@ function isCallExpression(node: unknown): boolean {
 function isRegExpConstructor(node: unknown): boolean {
   if (!isCallExpression(node)) return false
   const n = node as Record<string, unknown>
-  const callee = n.callee
+  const { callee } = n
   if (!callee || typeof callee !== 'object') return false
   const c = callee as Record<string, unknown>
   if (c.type === 'Identifier' && c.name === 'RegExp') return true
@@ -23,34 +24,24 @@ function isLiteral(node: unknown): boolean {
   return n.type === 'Literal'
 }
 
-function isValidRegex(pattern: string, flags?: string): { valid: boolean; error?: string } {
+function isValidRegex(pattern: string, flags?: string): { error?: string; valid: boolean } {
   try {
+    // eslint-disable-next-line no-new
     new RegExp(pattern, flags || '')
     return { valid: true }
-  } catch (e) {
-    return { valid: false, error: String(e) }
+  } catch (error) {
+    return { error: String(error), valid: false }
   }
 }
 
 export const noInvalidRegexpRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow invalid regular expression strings in RegExp constructors.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
         if (!isRegExpConstructor(node)) return
         const n = node as Record<string, unknown>
         const args = n.arguments
-        if (!Array.isArray(args) || args.length < 1) return
+        if (!Array.isArray(args) || args.length === 0) return
 
         const patternArg = args[0]
         const flagsArg = args[1]
@@ -69,14 +60,25 @@ export const noInvalidRegexpRule: RuleDefinition = {
             const result = isValidRegex(pattern, flags)
             if (!result.valid) {
               context.report({
-                message: `Invalid regular expression: ${result.error}`,
                 loc: extractLocation(node),
+                message: `Invalid regular expression: ${result.error}`,
               })
             }
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow invalid regular expression strings in RegExp constructors.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noInvalidRegexpRule

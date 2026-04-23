@@ -1,17 +1,17 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
-const TEST_FUNCTIONS = new Set(['it', 'test', 'describe'])
+const TEST_FUNCTIONS = new Set(['describe', 'it', 'test'])
 const FOCUSED_ALIAS = 'fit'
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -29,13 +29,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -58,11 +58,9 @@ function isFocusedTest(node: unknown): { isFocused: boolean; reason: string } {
   }
 
   // Check for fit() - direct Identifier call
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    if (callee.name === FOCUSED_ALIAS) {
+  if (callee.type === 'Identifier' && typeof callee.name === 'string' && callee.name === FOCUSED_ALIAS) {
       return { isFocused: true, reason: FOCUSED_ALIAS }
     }
-  }
 
   // Check for MemberExpression chain: it.only(), test.only(), describe.only()
   // Also handles chained calls like it.only.each(), it.only.each().withTimeout()
@@ -100,19 +98,6 @@ function isFocusedTest(node: unknown): { isFocused: boolean; reason: string } {
 }
 
 export const noFocusedTestsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Detect focused tests (.only() calls) that can mask failures in CI by running only a subset of tests',
-      category: 'testing',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-focused-tests',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -120,13 +105,26 @@ export const noFocusedTestsRule: RuleDefinition = {
 
         if (result.isFocused) {
           context.report({
-            node,
-            message: `Unexpected focused test '${result.reason}'. Focused tests can mask failures in CI by running only a subset of tests.`,
             loc: extractLocation(node),
+            message: `Unexpected focused test '${result.reason}'. Focused tests can mask failures in CI by running only a subset of tests.`,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'testing',
+      description:
+        'Detect focused tests (.only() calls) that can mask failures in CI by running only a subset of tests',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-focused-tests',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

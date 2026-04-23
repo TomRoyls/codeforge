@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 
 import { type ChalkColorFunction } from '../types/chalk.js'
-
 import {
   HEALTH_SCORE_THRESHOLD_A,
   HEALTH_SCORE_THRESHOLD_B,

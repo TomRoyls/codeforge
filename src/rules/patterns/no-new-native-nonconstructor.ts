@@ -1,7 +1,8 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
-const NON_CONSTRUCTORS = new Set(['Symbol', 'BigInt'])
+const NON_CONSTRUCTORS = new Set(['BigInt', 'Symbol'])
 
 function isNewExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
@@ -16,17 +17,6 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noNewNativeNonconstructorRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow new operators with global non-constructor functions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -37,13 +27,24 @@ export const noNewNativeNonconstructorRule: RuleDefinition = {
           const name = callee.name as string
           if (NON_CONSTRUCTORS.has(name)) {
             context.report({
-              message: `'${name}' cannot be called as a constructor.`,
               loc: extractLocation(node),
+              message: `'${name}' cannot be called as a constructor.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow new operators with global non-constructor functions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noNewNativeNonconstructorRule

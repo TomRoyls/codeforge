@@ -1,8 +1,9 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isCallExpression, isMemberExpression } from '../../utils/ast-helpers.js'
 
-function getMethodName(node: unknown): string | null {
+function getMethodName(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -147,20 +148,6 @@ function getCallerName(node: unknown): string {
 }
 
 export const preferObjectHasOwnRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer Object.hasOwn() over hasOwnProperty() and propertyIsEnumerable() for safer property checking. Use Object.hasOwn(obj, prop) instead of obj.hasOwnProperty(prop) or Object.prototype.hasOwnProperty.call(obj, prop).',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-object-has-own',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -171,9 +158,9 @@ export const preferObjectHasOwnRule: RuleDefinition = {
         if (isHasOwnPropertyCall(node)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call(). Use Object.hasOwn(obj, prop) for cleaner code.',
-            loc: location,
           })
           return
         }
@@ -181,9 +168,9 @@ export const preferObjectHasOwnRule: RuleDefinition = {
         if (isPropertyIsEnumerableCall(node)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Prefer Object.hasOwn() over Object.prototype.propertyIsEnumerable.call() for checking own properties.',
-            loc: location,
           })
           return
         }
@@ -195,12 +182,26 @@ export const preferObjectHasOwnRule: RuleDefinition = {
           const methodName = getMethodName(callee)
 
           context.report({
-            message: `Prefer Object.hasOwn() over ${callerName}.${methodName}(). Use Object.hasOwn(${callerName}, prop) for safer property checking.`,
             loc: location,
+            message: `Prefer Object.hasOwn() over ${callerName}.${methodName}(). Use Object.hasOwn(${callerName}, prop) for safer property checking.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer Object.hasOwn() over hasOwnProperty() and propertyIsEnumerable() for safer property checking. Use Object.hasOwn(obj, prop) instead of obj.hasOwnProperty(prop) or Object.prototype.hasOwnProperty.call(obj, prop).',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-object-has-own',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

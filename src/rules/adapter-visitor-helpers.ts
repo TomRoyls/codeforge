@@ -1,13 +1,15 @@
 import { Node } from 'ts-morph'
+
 import type { RuleVisitor } from '../plugins/types.js'
-import { EXPORTABLE_KINDS, LOGICAL_OPERATORS, ASSIGNMENT_OPERATORS } from './adapter-constants.js'
+
+import { ASSIGNMENT_OPERATORS, EXPORTABLE_KINDS, LOGICAL_OPERATORS } from './adapter-constants.js'
 import {
-  nodeToGeneric,
-  setParentRefs,
+  extractExportSpecifiers,
+  extractImportSpecifiers,
   genericNodeCache,
   getExportInfo,
-  extractImportSpecifiers,
-  extractExportSpecifiers,
+  nodeToGeneric,
+  setParentRefs,
 } from './adapter-node-converter.js'
 
 type GenericNode = Record<string, unknown>
@@ -27,6 +29,7 @@ export function ensureGenericNode(node: Node): GenericNode {
 
     genericNodeCache.set(node, genericNode)
   }
+
   return genericNode
 }
 
@@ -48,6 +51,7 @@ export function applyTypeRewrites(kindName: string, genericNode: GenericNode): v
       genericNode.type = 'UnaryExpression'
     }
   }
+
   if (kindName === 'PostfixUnaryExpression') {
     genericNode.prefix = false
   }
@@ -69,17 +73,17 @@ export function dispatchExportDeclaration(
       genericNode.specifiers = exportSpecs
     }
   } else {
-    exportSpecs = ((genericNode as GenericNode).specifiers as unknown[] | undefined) ?? []
+    exportSpecs = ((genericNode as GenericNode).specifiers as undefined | unknown[]) ?? []
     exportSpecs = exportSpecs.length > 0 ? exportSpecs : []
   }
 
   const sourceValue = (genericNode.source as string) ?? null
   const sourceLiteral = sourceValue
     ? {
+        loc: genericNode.loc,
+        range: genericNode.range,
         type: 'Literal',
         value: sourceValue,
-        range: genericNode.range,
-        loc: genericNode.loc,
       }
     : null
 
@@ -87,25 +91,25 @@ export function dispatchExportDeclaration(
     const handler = pluginVisitor['ExportAllDeclaration' + suffix]
     if (handler) {
       handler({
-        type: 'ExportAllDeclaration',
-        source: sourceLiteral,
         exported: null,
         exportKind: genericNode.exportKind ?? 'value',
-        range: genericNode.range,
         loc: genericNode.loc,
+        range: genericNode.range,
+        source: sourceLiteral,
+        type: 'ExportAllDeclaration',
       })
     }
   } else {
     const handler = pluginVisitor['ExportNamedDeclaration' + suffix]
     if (handler) {
       handler({
-        type: 'ExportNamedDeclaration',
         declaration: null,
-        specifiers: exportSpecs,
-        source: sourceLiteral,
         exportKind: genericNode.exportKind ?? 'value',
-        range: genericNode.range,
         loc: genericNode.loc,
+        range: genericNode.range,
+        source: sourceLiteral,
+        specifiers: exportSpecs,
+        type: 'ExportNamedDeclaration',
       })
     }
   }
@@ -120,16 +124,16 @@ export function dispatchExportWrapper(
 ): void {
   if (!EXPORTABLE_KINDS.has(kindName)) return
 
-  const { isExported, isDefault } = getExportInfo(node)
+  const { isDefault, isExported } = getExportInfo(node)
   if (!isExported) return
 
   const exportWrapper: GenericNode = {
-    type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
     declaration: genericNode,
+    type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
     ...(isDefault ? {} : { specifiers: [] }),
-    source: null,
-    range: genericNode.range,
     loc: genericNode.loc,
+    range: genericNode.range,
+    source: null,
   }
   const exportType = exportWrapper.type as string
   const handler = pluginVisitor[exportType + suffix]
@@ -146,15 +150,15 @@ export function dispatchClassBody(
 ): void {
   if (kindName !== 'ClassDeclaration' && kindName !== 'ClassExpression') return
 
-  const body = genericNode.body
+  const {body} = genericNode
   if (!Array.isArray(body)) return
 
   const classBodyNode: GenericNode = {
-    type: 'ClassBody',
     body,
-    range: genericNode.range,
     loc: genericNode.loc,
     parent: genericNode,
+    range: genericNode.range,
+    type: 'ClassBody',
   }
 
   if (suffix === '') {
@@ -180,10 +184,10 @@ export function dispatchExportAssignment(
   if (kindName !== 'ExportAssignment') return
 
   const defWrapper: GenericNode = {
-    type: 'ExportDefaultDeclaration',
     declaration: genericNode.expression ?? genericNode,
-    range: genericNode.range,
     loc: genericNode.loc,
+    range: genericNode.range,
+    type: 'ExportDefaultDeclaration',
   }
   const handler = pluginVisitor['ExportDefaultDeclaration' + suffix]
   if (handler) {

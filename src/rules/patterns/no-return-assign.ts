@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isReturnAssignment(node: unknown): boolean {
@@ -21,19 +22,6 @@ function isReturnAssignment(node: unknown): boolean {
 }
 
 export const noReturnAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow assignment operators in return statements. Return statements like `return a = b` are confusing - did you mean to assign or compare? Always assign before returning.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-return-assign',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ReturnStatement(node: unknown): void {
@@ -44,11 +32,24 @@ export const noReturnAssignRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: 'Return statement should not contain assignment.',
           loc: location,
+          message: 'Return statement should not contain assignment.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow assignment operators in return statements. Return statements like `return a = b` are confusing - did you mean to assign or compare? Always assign before returning.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-return-assign',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

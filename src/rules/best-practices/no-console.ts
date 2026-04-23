@@ -1,21 +1,22 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoConsoleOptions {
   readonly allow?: readonly string[]
 }
 
-const CONSOLE_METHODS = new Set(['log', 'warn', 'error', 'info', 'debug', 'trace'])
+const CONSOLE_METHODS = new Set(['debug', 'error', 'info', 'log', 'trace', 'warn'])
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -33,13 +34,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -78,6 +79,7 @@ function isConsoleCall(
       if (allowedMethods.has(property.name)) {
         return { isConsole: false, method: '' }
       }
+
       return { isConsole: true, method: property.name }
     }
   }
@@ -86,32 +88,6 @@ function isConsoleCall(
 }
 
 export const noConsoleRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Detect console usage in production code that should use proper logging',
-      category: 'best-practices',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-console',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allow: {
-            type: 'array',
-            items: {
-              type: 'string',
-              enum: ['log', 'warn', 'error', 'info', 'debug', 'trace'],
-            },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoConsoleOptions>(context.config.options, {
       allow: [] as const,
@@ -125,13 +101,39 @@ export const noConsoleRule: RuleDefinition = {
 
         if (result.isConsole) {
           context.report({
-            node,
-            message: `Unexpected use of 'console.${result.method}'. Use a proper logging library instead.`,
             loc: extractLocation(node),
+            message: `Unexpected use of 'console.${result.method}'. Use a proper logging library instead.`,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'best-practices',
+      description: 'Detect console usage in production code that should use proper logging',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-console',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allow: {
+            items: {
+              enum: ['log', 'warn', 'error', 'info', 'debug', 'trace'],
+              type: 'string',
+            },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

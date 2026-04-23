@@ -1,7 +1,10 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferArrowCallbackOptions extends RuleOptions {
@@ -20,7 +23,7 @@ function isCallbackContext(node: Node): boolean {
   // Check if it's being passed as an argument
   if (Node.isCallExpression(parent)) {
     const args = parent.getArguments()
-    return args.some(arg => arg === node)
+    return args.includes(node)
   }
 
   // Check if it's assigned to a variable or property
@@ -37,21 +40,14 @@ function isCallbackContext(node: Node): boolean {
 }
 
 export const preferArrowCallbackRule: RuleDefinition<PreferArrowCallbackOptions> = {
-  meta: {
-    name: 'prefer-arrow-callback',
-    description: 'Enforce using arrow functions for callbacks',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: PreferArrowCallbackOptions) => {
+  create(options: PreferArrowCallbackOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           // Check for function expressions used as callbacks
           if (!Node.isFunctionExpression(node) && !Node.isFunctionDeclaration(node)) return
 
@@ -60,6 +56,7 @@ export const preferArrowCallbackRule: RuleDefinition<PreferArrowCallbackOptions>
             if (Node.isFunctionDeclaration(node) && node.getName()) {
               return
             }
+
             if (Node.isFunctionExpression(node) && node.getName()) {
               return
             }
@@ -72,18 +69,25 @@ export const preferArrowCallbackRule: RuleDefinition<PreferArrowCallbackOptions>
           if (!Node.isArrowFunction(node)) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: 'Use arrow function for callback instead of function expression.',
+              range,
               ruleId: 'prefer-arrow-callback',
               severity: 'info',
-              message: 'Use arrow function for callback instead of function expression.',
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Convert to arrow function: (args) => { ... }',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Enforce using arrow functions for callbacks',
+    fixable: 'code',
+    name: 'prefer-arrow-callback',
+    recommended: false,
   },
 }
 
@@ -97,13 +101,14 @@ export function analyzePreferArrowCallback(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         if (!Node.isFunctionExpression(node) && !Node.isFunctionDeclaration(node)) return
 
         if (mergedOptions.allowNamedFunctions) {
           if (Node.isFunctionDeclaration(node) && node.getName()) {
             return
           }
+
           if (Node.isFunctionExpression(node) && node.getName()) {
             return
           }
@@ -114,11 +119,11 @@ export function analyzePreferArrowCallback(
         if (!Node.isArrowFunction(node)) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: 'Use arrow function for callback instead of function expression.',
+            range,
             ruleId: 'prefer-arrow-callback',
             severity: 'info',
-            message: 'Use arrow function for callback instead of function expression.',
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion: 'Convert to arrow function: (args) => { ... }',
           })
         }

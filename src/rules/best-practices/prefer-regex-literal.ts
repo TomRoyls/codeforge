@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer regex literal over RegExp constructor
+ * @file Prefer regex literal over RegExp constructor
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferRegexLiteralOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferRegexLiteralOptions = {}
 
-function isNewRegExpCall(node: Node): { pattern: Node; flags: Node | null } | null {
+function isNewRegExpCall(node: Node): null | { flags: Node | null; pattern: Node } {
   if (!Node.isNewExpression(node)) return null
 
   const expression = node.getExpression()
@@ -28,7 +31,7 @@ function isNewRegExpCall(node: Node): { pattern: Node; flags: Node | null } | nu
 
   const flags = args.length > 1 ? (args[1] ?? null) : null
 
-  return { pattern, flags }
+  return { flags, pattern }
 }
 
 function isStaticPattern(node: Node): boolean {
@@ -42,7 +45,7 @@ function isStaticPattern(node: Node): boolean {
 
     // Check for complex regex patterns with special characters that might need escaping
     const patternText = text.slice(1, -1)
-    const complexPatternRegex = /[\\\[\]{}()|^$.*+?|]/
+    const complexPatternRegex = /[\\[\]{}()|^$.*+?|]/
     if (complexPatternRegex.test(patternText)) return false
   }
 
@@ -50,26 +53,17 @@ function isStaticPattern(node: Node): boolean {
 }
 
 export const preferRegexLiteralRule: RuleDefinition<PreferRegexLiteralOptions> = {
-  meta: {
-    name: 'prefer-regex-literal',
-    description: 'Enforce using regex literals instead of RegExp constructor',
-    category: 'style',
-    severity: 'info',
-    recommended: true,
-  },
-
-  defaultOptions: DEFAULT_OPTIONS,
-
   create(_options: PreferRegexLiteralOptions = {}) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isNewRegExpCall(node)
           if (!result) return
 
-          const { pattern, flags } = result
+          const { flags, pattern } = result
 
           if (!isStaticPattern(pattern)) return
 
@@ -85,17 +79,26 @@ export const preferRegexLiteralRule: RuleDefinition<PreferRegexLiteralOptions> =
           }
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: 'Use regex literal instead of RegExp constructor',
+            range,
             ruleId: 'prefer-regex-literal',
             severity: 'info',
-            message: 'Use regex literal instead of RegExp constructor',
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: ' + fixText,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+
+  defaultOptions: DEFAULT_OPTIONS,
+
+  meta: {
+    category: 'style',
+    description: 'Enforce using regex literals instead of RegExp constructor',
+    name: 'prefer-regex-literal',
+    recommended: true,
+    severity: 'info',
   },
 }
 
@@ -106,11 +109,11 @@ export function analyzePreferRegexLiteral(
   const violations: RuleViolation[] = []
 
   traverseAST(sourceFile, {
-    visitNode: (node: Node, _context: VisitorContext) => {
+    visitNode(node: Node, _context: VisitorContext) {
       const result = isNewRegExpCall(node)
       if (!result) return
 
-      const { pattern, flags } = result
+      const { flags, pattern } = result
 
       if (!isStaticPattern(pattern)) return
 
@@ -126,11 +129,11 @@ export function analyzePreferRegexLiteral(
       }
 
       violations.push({
+        filePath: sourceFile.getFilePath(),
+        message: 'Use regex literal instead of RegExp constructor',
+        range,
         ruleId: 'prefer-regex-literal',
         severity: 'info',
-        message: 'Use regex literal instead of RegExp constructor',
-        filePath: sourceFile.getFilePath(),
-        range,
         suggestion: 'Replace with: ' + fixText,
       })
     },

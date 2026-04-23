@@ -1,11 +1,14 @@
 /**
- * @fileoverview Prefer String.startsWith() over String(start,) + String(end)
+ * @file Prefer String.startsWith() over String(start,) + String(end)
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferStringStartEndOptions extends RuleOptions {}
@@ -25,38 +28,38 @@ function isStringConcatenation(node: Node): boolean {
 }
 
 export const preferStringStartEndRule: RuleDefinition<PreferStringStartEndOptions> = {
-  meta: {
-    name: 'prefer-string-start-end',
-    description: 'Prefer template literals over string concatenation',
-    category: 'style',
-    severity: 'warning',
-    recommended: false,
-  },
-
-  defaultOptions: DEFAULT_OPTIONS,
-
   create(_options: PreferStringStartEndOptions = {}) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           if (!isStringConcatenation(node)) return
 
           const range = getNodeRange(node)
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: 'Prefer template literals over string concatenation',
+            range,
             ruleId: 'prefer-string-start-end',
             severity: 'warning',
-            message: 'Prefer template literals over string concatenation',
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Consider using a template literal instead',
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+
+  defaultOptions: DEFAULT_OPTIONS,
+
+  meta: {
+    category: 'style',
+    description: 'Prefer template literals over string concatenation',
+    name: 'prefer-string-start-end',
+    recommended: false,
+    severity: 'warning',
   },
 }
 
@@ -67,17 +70,17 @@ export function analyzePreferStringStartEnd(
   const violations: RuleViolation[] = []
 
   traverseAST(sourceFile, {
-    visitNode: (node: Node, _context: VisitorContext) => {
+    visitNode(node: Node, _context: VisitorContext) {
       if (!isStringConcatenation(node)) return
 
       const range = getNodeRange(node)
 
       violations.push({
+        filePath: sourceFile.getFilePath(),
+        message: 'Prefer template literals over string concatenation',
+        range,
         ruleId: 'prefer-string-start-end',
         severity: 'warning',
-        message: 'Prefer template literals over string concatenation',
-        filePath: sourceFile.getFilePath(),
-        range,
         suggestion: 'Consider using a template literal instead',
       })
     },

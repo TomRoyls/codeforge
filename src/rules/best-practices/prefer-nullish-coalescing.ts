@@ -1,11 +1,14 @@
 /**
- * @fileoverview Prefer nullish coalescing operator (??) over logical OR (||) for undefined/null checks
+ * @file Prefer nullish coalescing operator (??) over logical OR (||) for undefined/null checks
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferNullishCoalescingOptions extends RuleOptions {
@@ -16,7 +19,7 @@ const DEFAULT_OPTIONS: PreferNullishCoalescingOptions = {
   ignoreBooleanCoercion: false,
 }
 
-function isLogicalOrExpression(node: Node): { left: Node; right: Node } | null {
+function isLogicalOrExpression(node: Node): null | { left: Node; right: Node } {
   if (!Node.isBinaryExpression(node)) return null
 
   const operatorToken = node.getOperatorToken()
@@ -46,15 +49,7 @@ function isLikelyNullishCheck(left: Node, right: Node): boolean {
 }
 
 export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescingOptions> = {
-  meta: {
-    name: "prefer-nullish-coalescing",
-    description: "Enforce using the nullish coalescing operator (??) instead of logical OR (||) for default values",
-    category: "style",
-    recommended: false,
-    fixable: "code",
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: PreferNullishCoalescingOptions) => {
+  create(options: PreferNullishCoalescingOptions) {
     const violations: RuleViolation[] = []
     // Use options to avoid unused variable warning
     if (options && options.ignoreBooleanCoercion) {
@@ -62,8 +57,9 @@ export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescing
     }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isLogicalOrExpression(node)
           if (!result) return
 
@@ -74,17 +70,24 @@ export const preferNullishCoalescingRule: RuleDefinition<PreferNullishCoalescing
           const rightText = result.right.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: "Prefer nullish coalescing operator (??) over logical OR (||). Use '" + leftText + " ?? " + rightText + "' instead.",
+            range,
             ruleId: "prefer-nullish-coalescing",
             severity: "info",
-            message: "Prefer nullish coalescing operator (??) over logical OR (||). Use '" + leftText + " ?? " + rightText + "' instead.",
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: "Replace || with ??: " + leftText + " ?? " + rightText,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: "style",
+    description: "Enforce using the nullish coalescing operator (??) instead of logical OR (||) for default values",
+    fixable: "code",
+    name: "prefer-nullish-coalescing",
+    recommended: false,
   },
 }
 
@@ -100,7 +103,7 @@ export function analyzePreferNullishCoalescing(
     }
 
     traverseAST(sourceFile, {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
             const result = isLogicalOrExpression(node)
             if (!result) return
 
@@ -111,11 +114,11 @@ export function analyzePreferNullishCoalescing(
             const rightText = result.right.getText()
 
             violations.push({
+                filePath: sourceFile.getFilePath(),
+                message: "Prefer nullish coalescing operator (??) over logical OR (||). Use '" + leftText + " ?? " + rightText + "' instead.",
+                range,
                 ruleId: "prefer-nullish-coalescing",
                 severity: "info",
-                message: "Prefer nullish coalescing operator (??) over logical OR (||). Use '" + leftText + " ?? " + rightText + "' instead.",
-                filePath: sourceFile.getFilePath(),
-                range,
                 suggestion: "replace || with ??: " + leftText + " ?? " + rightText,
             })
         },

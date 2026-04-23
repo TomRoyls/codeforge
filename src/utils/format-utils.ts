@@ -26,5 +26,6 @@ export function countSeverities(
   for (const v of violations) {
     counts[v.severity]++
   }
+
   return counts
 }

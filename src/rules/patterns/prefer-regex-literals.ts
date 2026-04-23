@@ -1,11 +1,13 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { isNewExpression, isIdentifier, isLiteral } from '../../utils/ast-helpers.js'
+import { isIdentifier, isLiteral, isNewExpression } from '../../utils/ast-helpers.js'
 
 function getLiteralValue(node: unknown): unknown {
   if (!isLiteral(node)) {
     return undefined
   }
+
   const n = node as Record<string, unknown>
   return n.value
 }
@@ -14,6 +16,7 @@ function isTemplateLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TemplateLiteral' && !n.tag
 }
@@ -24,7 +27,7 @@ function hasDynamicArguments(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length === 0) {
     return false
@@ -39,16 +42,16 @@ function hasDynamicArguments(node: unknown): boolean {
   return false
 }
 
-function getPatternInfo(node: unknown): { pattern: string; flags: string } | null {
+function getPatternInfo(node: unknown): null | { flags: string; pattern: string; } {
   if (!isNewExpression(node)) {
     return null
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length === 0) {
-    return { pattern: '', flags: '' }
+    return { flags: '', pattern: '' }
   }
 
   const firstArg = args[0]
@@ -79,28 +82,14 @@ function getPatternInfo(node: unknown): { pattern: string; flags: string } | nul
     }
   }
 
-  return { pattern, flags }
+  return { flags, pattern }
 }
 
 function needsEscape(str: string): boolean {
-  return str.includes('/') || str.includes('\\n') || str.includes('\\r')
+  return str.includes('/') || str.includes(String.raw`\n`) || str.includes(String.raw`\r`)
 }
 
 export const preferRegexLiteralsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer regex literals over RegExp constructor. Regex literals are more readable and performant. Only use new RegExp() when the pattern is dynamic.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-regex-literals',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -126,27 +115,41 @@ export const preferRegexLiteralsRule: RuleDefinition = {
           return
         }
 
-        const { pattern, flags } = patternInfo
+        const { flags, pattern } = patternInfo
 
         if (needsEscape(pattern)) {
           context.report({
-            message: `Use regex literal /${pattern}/${flags} instead of new RegExp("${pattern}"${flags ? `, "${flags}"` : ''}).`,
             loc: location,
+            message: `Use regex literal /${pattern}/${flags} instead of new RegExp("${pattern}"${flags ? `, "${flags}"` : ''}).`,
           })
         } else if (pattern === '' && flags === '') {
           context.report({
+            loc: location,
             message:
               'Use regex literal /(?:)/ instead of new RegExp() for an empty pattern, or use a more specific pattern.',
-            loc: location,
           })
         } else {
           context.report({
-            message: `Use regex literal /${pattern}/${flags} instead of new RegExp("${pattern}"${flags ? `, "${flags}"` : ''}).`,
             loc: location,
+            message: `Use regex literal /${pattern}/${flags} instead of new RegExp("${pattern}"${flags ? `, "${flags}"` : ''}).`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer regex literals over RegExp constructor. Regex literals are more readable and performant. Only use new RegExp() when the pattern is dynamic.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-regex-literals',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

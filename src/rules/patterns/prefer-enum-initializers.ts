@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function getEnumMemberName(node: unknown): string {
@@ -25,20 +26,6 @@ function getEnumMemberName(node: unknown): string {
 }
 
 export const preferEnumInitializersRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require all enum members to have explicit values. Explicit values make the code more predictable and prevent accidental value changes when members are added or reordered.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-enum-initializers',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       TSEnumMember(node: unknown): void {
@@ -47,7 +34,7 @@ export const preferEnumInitializersRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const initializer = n.initializer
+        const {initializer} = n
 
         // If there's no initializer, report the issue
         if (!initializer) {
@@ -55,12 +42,26 @@ export const preferEnumInitializersRule: RuleDefinition = {
           const location = extractLocation(node)
 
           context.report({
-            message: `Enum member '${memberName}' should have an explicit value.`,
             loc: location,
+            message: `Enum member '${memberName}' should have an explicit value.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require all enum members to have explicit values. Explicit values make the code more predictable and prevent accidental value changes when members are added or reordered.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-enum-initializers',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

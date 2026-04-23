@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isCatchClause(node: unknown): boolean {
@@ -42,17 +43,6 @@ function isIdentifierUsed(body: unknown, name: string): boolean {
 }
 
 export const preserveCaughtErrorRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Require using caught error variables.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       CatchClause(node: unknown): void {
@@ -67,12 +57,23 @@ export const preserveCaughtErrorRule: RuleDefinition = {
         if (!n.body || typeof n.body !== 'object') return
         if (!isIdentifierUsed(n.body, name)) {
           context.report({
-            message: `Caught error '${name}' is not used. Use 'catch { }' syntax or use the error.`,
             loc: extractLocation(node),
+            message: `Caught error '${name}' is not used. Use 'catch { }' syntax or use the error.`,
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Require using caught error variables.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default preserveCaughtErrorRule

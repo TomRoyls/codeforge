@@ -1,10 +1,11 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
+  getNodeText,
+  getRange,
   isCallExpression,
   isMemberExpression,
-  getRange,
-  getNodeText,
 } from '../../utils/ast-helpers.js'
 
 /**
@@ -90,25 +91,12 @@ function getCallArguments(node: unknown): unknown[] {
   if (!isCallExpression(node)) {
     return []
   }
+
   const n = node as Record<string, unknown>
   return (n.arguments as unknown[]) ?? []
 }
 
 export const preferPrototypeMethodsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer modern alternatives over prototype method calls. Use spread syntax instead of Array.prototype.slice.call(), and Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-prototype-methods',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -122,7 +110,7 @@ export const preferPrototypeMethodsRule: RuleDefinition = {
           const args = getCallArguments(node)
           const nodeRange = getRange(node)
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           if (nodeRange && args.length > 0) {
             const source = context.getSource()
             const targetArg = args[0]
@@ -156,10 +144,10 @@ export const preferPrototypeMethodsRule: RuleDefinition = {
           }
 
           context.report({
+            fix,
+            loc: location,
             message:
               'Prefer spread syntax over Array.prototype.slice.call(). Use [...arr] for array-like to array conversion.',
-            loc: location,
-            fix,
           })
           return
         }
@@ -170,7 +158,7 @@ export const preferPrototypeMethodsRule: RuleDefinition = {
           const args = getCallArguments(node)
           const nodeRange = getRange(node)
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           if (nodeRange && args.length >= 2) {
             const source = context.getSource()
             const objText = getNodeText(args[0], source)
@@ -185,14 +173,28 @@ export const preferPrototypeMethodsRule: RuleDefinition = {
           }
 
           context.report({
+            fix,
+            loc: location,
             message:
               'Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call(). Use Object.hasOwn(obj, prop) for cleaner code.',
-            loc: location,
-            fix,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer modern alternatives over prototype method calls. Use spread syntax instead of Array.prototype.slice.call(), and Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-prototype-methods',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -23,7 +24,7 @@ function isRequireCall(node: unknown): { isRequire: boolean; moduleName?: string
     return { isRequire: false }
   }
 
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length === 0) {
     return { isRequire: true }
@@ -48,33 +49,6 @@ function isVarDeclaration(node: unknown): boolean {
 }
 
 export const noVarRequiresRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow require statements using var. Use ES6 import statements instead for better static analysis and tree shaking.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-var-requires',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allow: {
-            type: 'array',
-            items: {
-              type: 'string',
-            },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoVarRequiresOptions>(context.config.options, { allow: [] })
 
@@ -87,7 +61,7 @@ export const noVarRequiresRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const declarations = n.declarations as unknown[] | undefined
+        const declarations = n.declarations as undefined | unknown[]
 
         if (!declarations || declarations.length === 0) {
           return
@@ -95,7 +69,7 @@ export const noVarRequiresRule: RuleDefinition = {
 
         for (const decl of declarations) {
           const d = decl as Record<string, unknown>
-          const init = d.init
+          const {init} = d
 
           const { isRequire, moduleName } = isRequireCall(init)
 
@@ -106,14 +80,41 @@ export const noVarRequiresRule: RuleDefinition = {
 
             const location = extractLocation(node)
             context.report({
-              message: `Unexpected var require(). Use ES6 import statement instead for better static analysis and tree shaking.`,
               loc: location,
+              message: `Unexpected var require(). Use ES6 import statement instead for better static analysis and tree shaking.`,
             })
             return
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow require statements using var. Use ES6 import statements instead for better static analysis and tree shaking.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-var-requires',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allow: {
+            items: {
+              type: 'string',
+            },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

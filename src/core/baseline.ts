@@ -1,57 +1,57 @@
-import * as fs from 'fs/promises'
-import * as path from 'path'
+import * as fs from 'node:fs/promises'
+import { resolve } from 'node:path'
 
 import type { RuleViolation } from '../ast/visitor.js'
 
 export interface BaselineViolation {
-  ruleId: string
   filePath: string
+  message: string
   range: {
-    start: {
-      line: number
-      column: number
-    }
     end: {
-      line: number
       column: number
+      line: number
+    }
+    start: {
+      column: number
+      line: number
     }
   }
+  ruleId: string
   severity: 'error' | 'info' | 'warning'
-  message: string
 }
 
 export interface BaselineSummary {
   errors: number
-  warnings: number
   info: number
   total: number
+  warnings: number
 }
 
 export interface BaselineFile {
+  summary: BaselineSummary
   timestamp: string
   violations: BaselineViolation[]
-  summary: BaselineSummary
 }
 
 export interface BaselineResult {
-  regressions: RuleViolation[]
   improvements: RuleViolation[]
+  regressions: RuleViolation[]
   unchanged: number
 }
 
 const BASELINE_FILE_NAME = '.codeforge-baseline.json'
 
-function getViolationKey(violation: RuleViolation | BaselineViolation): string {
+function getViolationKey(violation: BaselineViolation | RuleViolation): string {
   return `${violation.ruleId}:${violation.filePath}:${violation.range.start.line}`
 }
 
 function violationToBaseline(violation: RuleViolation): BaselineViolation {
   return {
-    ruleId: violation.ruleId,
     filePath: violation.filePath,
-    range: violation.range,
-    severity: violation.severity,
     message: violation.message,
+    range: violation.range,
+    ruleId: violation.ruleId,
+    severity: violation.severity,
   }
 }
 
@@ -61,9 +61,9 @@ export async function saveBaseline(
 ): Promise<string> {
   const summary: BaselineSummary = {
     errors: 0,
-    warnings: 0,
     info: 0,
     total: violations.length,
+    warnings: 0,
   }
 
   for (const v of violations) {
@@ -73,23 +73,23 @@ export async function saveBaseline(
   }
 
   const baseline: BaselineFile = {
-    timestamp: new Date().toISOString(),
-    violations: violations.map(violationToBaseline),
     summary,
+    timestamp: new Date().toISOString(),
+    violations: violations.map((v) => violationToBaseline(v)),
   }
 
-  const baselinePath = outputPath ? path.resolve(outputPath) : path.resolve(BASELINE_FILE_NAME)
+  const baselinePath = outputPath ? resolve(outputPath) : resolve(BASELINE_FILE_NAME)
 
-  await fs.writeFile(baselinePath, JSON.stringify(baseline, null, 2), 'utf-8')
+  await fs.writeFile(baselinePath, JSON.stringify(baseline, null, 2), 'utf8')
 
   return baselinePath
 }
 
 export async function loadBaseline(outputPath?: string): Promise<BaselineFile | null> {
-  const baselinePath = outputPath ? path.resolve(outputPath) : path.resolve(BASELINE_FILE_NAME)
+  const baselinePath = outputPath ? resolve(outputPath) : resolve(BASELINE_FILE_NAME)
 
   try {
-    const content = await fs.readFile(baselinePath, 'utf-8')
+    const content = await fs.readFile(baselinePath, 'utf8')
     const baseline = JSON.parse(content) as BaselineFile
     return baseline
   } catch {
@@ -118,11 +118,11 @@ export function compareWithBaseline(
     const key = getViolationKey(violation)
     if (!currentKeys.has(key)) {
       improvements.push({
-        ruleId: violation.ruleId,
         filePath: violation.filePath,
-        range: violation.range,
-        severity: violation.severity,
         message: violation.message,
+        range: violation.range,
+        ruleId: violation.ruleId,
+        severity: violation.severity,
       })
     }
   }
@@ -130,8 +130,8 @@ export function compareWithBaseline(
   const unchanged = currentViolations.length - regressions.length
 
   return {
-    regressions,
     improvements,
+    regressions,
     unchanged,
   }
 }

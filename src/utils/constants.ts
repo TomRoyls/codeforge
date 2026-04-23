@@ -136,7 +136,7 @@ export const TIME_FORMAT_THRESHOLD_MS = 1000
 export const DEFAULT_FIX_PRIORITY = 10
 export const DEFAULT_CONCURRENCY =
   typeof process !== 'undefined' && process.env.UV_THREADPOOL_SIZE
-    ? parseInt(process.env.UV_THREADPOOL_SIZE, 10)
+    ? Number.parseInt(process.env.UV_THREADPOOL_SIZE, 10)
     : 4
 
 // ============================================================================

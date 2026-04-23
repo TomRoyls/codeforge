@@ -1,8 +1,9 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
-import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isMemberExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
-function getMemberProperty(node: unknown): string | null {
+import { extractLocation } from '../../ast/location-utils.js'
+import { isCallExpression, isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
+
+function getMemberProperty(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -17,7 +18,7 @@ function getMemberProperty(node: unknown): string | null {
   return (property as Record<string, unknown>).name as string
 }
 
-function isSubstringMethod(node: unknown): { callee: unknown; methodName: string } | null {
+function isSubstringMethod(node: unknown): null | { callee: unknown; methodName: string } {
   if (!isCallExpression(node)) {
     return null
   }
@@ -39,20 +40,6 @@ function isSubstringMethod(node: unknown): { callee: unknown; methodName: string
 }
 
 export const preferStringSliceRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer String.slice() over substring() and substr(). slice() is more consistent and supports negative indices for counting from the end of the string.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-string-slice',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -65,11 +52,25 @@ export const preferStringSliceRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: `Use .slice() instead of .${substringInfo.methodName}(). slice() is more consistent and supports negative indices for counting from the end of the string.`,
           loc: location,
+          message: `Use .slice() instead of .${substringInfo.methodName}(). slice() is more consistent and supports negative indices for counting from the end of the string.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer String.slice() over substring() and substr(). slice() is more consistent and supports negative indices for counting from the end of the string.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-string-slice',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

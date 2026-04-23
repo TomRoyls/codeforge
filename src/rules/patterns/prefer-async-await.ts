@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -43,31 +44,6 @@ function isPromiseMethodCall(node: unknown): { isCall: boolean; method: string }
 }
 
 export const preferAsyncAwaitRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer async/await syntax over Promise .then()/.catch() chains for better readability and error handling.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-async-await',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowPromiseMethods: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<PreferAsyncAwaitOptions>(context.config.options, {
       allowPromiseMethods: false,
@@ -84,12 +60,37 @@ export const preferAsyncAwaitRule: RuleDefinition = {
         if (isCall) {
           const location = extractLocation(node)
           context.report({
-            message: `Prefer async/await over .${method}() for better readability. Convert this Promise chain to use async/await syntax.`,
             loc: location,
+            message: `Prefer async/await over .${method}() for better readability. Convert this Promise chain to use async/await syntax.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer async/await syntax over Promise .then()/.catch() chains for better readability and error handling.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-async-await',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowPromiseMethods: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

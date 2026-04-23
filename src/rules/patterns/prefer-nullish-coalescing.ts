@@ -1,9 +1,10 @@
 /**
- * @fileoverview Suggest using `??` instead of `||` for null/undefined checks
+ * @file Suggest using `??` instead of `||` for null/undefined checks
  * @module rules/patterns/prefer-nullish-coalescing
  */
 
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -46,31 +47,6 @@ function isNullishCoalescingCandidate(node: unknown): boolean {
 }
 
 export const preferNullishCoalescingRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        "Suggest using the nullish coalescing operator (`??`) instead of `||` for null/undefined checks. The `??` operator only falls through on null/undefined, whereas `||` also falls through on falsy values like 0, '', and false.",
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-nullish-coalescing',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          ignoreConditionalTests: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<PreferNullishCoalescingOptions>(context.config.options, {
       ignoreConditionalTests: false,
@@ -90,19 +66,44 @@ export const preferNullishCoalescingRule: RuleDefinition = {
           const nodeStart = location.start.column
           // Simple heuristic: if the line contains 'if' before this expression, skip
           const lineStart = source.split('\n')[location.start.line - 1] || ''
-          const beforeNode = lineStart.substring(0, nodeStart)
-          if (beforeNode.includes('if (') || beforeNode.includes('if(')) {
+          const beforeNode = new Set(lineStart.slice(0, Math.max(0, nodeStart)))
+          if (beforeNode.has('if (') || beforeNode.has('if(')) {
             return
           }
         }
 
         context.report({
+          loc: location,
           message:
             'Use the nullish coalescing operator `??` instead of `||` for null/undefined checks. The `||` operator treats falsy values (0, "", false) as nullish, which may cause unexpected behavior.',
-          loc: location,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        "Suggest using the nullish coalescing operator (`??`) instead of `||` for null/undefined checks. The `??` operator only falls through on null/undefined, whereas `||` also falls through on falsy values like 0, '', and false.",
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-nullish-coalescing',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          ignoreConditionalTests: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

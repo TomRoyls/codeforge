@@ -1,23 +1,24 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 interface PrivateMemberInfo {
-  name: string
-  used: boolean
   location: SourceLocation
-  type: 'property' | 'method'
+  name: string
+  type: 'method' | 'property'
+  used: boolean
 }
 
 interface ClassInfo {
   privateMembers: Map<string, PrivateMemberInfo>
 }
 
-function isPrivateIdentifier(node: unknown): node is { type: 'PrivateIdentifier'; name: string } {
+function isPrivateIdentifier(node: unknown): node is { name: string; type: 'PrivateIdentifier'; } {
   return (
     node !== null &&
     typeof node === 'object' &&
@@ -29,29 +30,16 @@ function getNodeProperty<T>(node: unknown, prop: string): T | undefined {
   if (!node || typeof node !== 'object') {
     return undefined
   }
+
   return (node as Record<string, unknown>)[prop] as T | undefined
 }
 
 export const noUnusedPrivateMembersRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unused private class members. Private properties and methods that are declared but never used within the class may indicate dead code or incomplete implementation.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unused-private-members',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const classStack: ClassInfo[] = []
 
     function currentClass(): ClassInfo | undefined {
-      return classStack[classStack.length - 1]
+      return classStack.at(-1)
     }
 
     function pushClass(): void {
@@ -67,8 +55,8 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
       for (const [, member] of classInfo.privateMembers) {
         if (!member.used) {
           context.report({
-            message: `${member.type === 'method' ? 'Private method' : 'Private property'} '#${member.name}' is declared but never used.`,
             loc: member.location,
+            message: `${member.type === 'method' ? 'Private method' : 'Private property'} '#${member.name}' is declared but never used.`,
           })
         }
       }
@@ -77,17 +65,18 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
     function registerPrivateMember(
       name: string,
       location: SourceLocation,
-      type: 'property' | 'method',
+      type: 'method' | 'property',
     ): void {
       const classInfo = currentClass()
       if (!classInfo) {
         return
       }
+
       classInfo.privateMembers.set(name, {
-        name,
-        used: false,
         location,
+        name,
         type,
+        used: false,
       })
     }
 
@@ -96,6 +85,7 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
       if (!classInfo) {
         return
       }
+
       const member = classInfo.privateMembers.get(name)
       if (member) {
         member.used = true
@@ -103,6 +93,24 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
     }
 
     return {
+      BinaryExpression(node: unknown): void {
+        const left = getNodeProperty<unknown>(node, 'left')
+        const operator = getNodeProperty<string>(node, 'operator')
+        if (operator === 'in' && isPrivateIdentifier(left)) {
+          markPrivateMemberUsed(left.name)
+        }
+      },
+
+      CallExpression(node: unknown): void {
+        const callee = getNodeProperty<unknown>(node, 'callee')
+        if (isMemberExpression(callee)) {
+          const property = getNodeProperty<unknown>(callee, 'property')
+          if (isPrivateIdentifier(property)) {
+            markPrivateMemberUsed(property.name)
+          }
+        }
+      },
+
       ClassDeclaration(): void {
         pushClass()
       },
@@ -119,10 +127,10 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
         popClass()
       },
 
-      PropertyDefinition(node: unknown): void {
-        const key = getNodeProperty<unknown>(node, 'key')
-        if (isPrivateIdentifier(key)) {
-          registerPrivateMember(key.name, extractLocation(node), 'property')
+      MemberExpression(node: unknown): void {
+        const property = getNodeProperty<unknown>(node, 'property')
+        if (isPrivateIdentifier(property)) {
+          markPrivateMemberUsed(property.name)
         }
       },
 
@@ -133,31 +141,27 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
         }
       },
 
-      MemberExpression(node: unknown): void {
-        const property = getNodeProperty<unknown>(node, 'property')
-        if (isPrivateIdentifier(property)) {
-          markPrivateMemberUsed(property.name)
-        }
-      },
-
-      CallExpression(node: unknown): void {
-        const callee = getNodeProperty<unknown>(node, 'callee')
-        if (isMemberExpression(callee)) {
-          const property = getNodeProperty<unknown>(callee, 'property')
-          if (isPrivateIdentifier(property)) {
-            markPrivateMemberUsed(property.name)
-          }
-        }
-      },
-
-      BinaryExpression(node: unknown): void {
-        const left = getNodeProperty<unknown>(node, 'left')
-        const operator = getNodeProperty<string>(node, 'operator')
-        if (operator === 'in' && isPrivateIdentifier(left)) {
-          markPrivateMemberUsed(left.name)
+      PropertyDefinition(node: unknown): void {
+        const key = getNodeProperty<unknown>(node, 'key')
+        if (isPrivateIdentifier(key)) {
+          registerPrivateMember(key.name, extractLocation(node), 'property')
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unused private class members. Private properties and methods that are declared but never used within the class may indicate dead code or incomplete implementation.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unused-private-members',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

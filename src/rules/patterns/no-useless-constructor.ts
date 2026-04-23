@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isUselessConstructor(node: unknown): boolean {
@@ -87,29 +88,29 @@ function isUselessConstructor(node: unknown): boolean {
 }
 
 export const noUselessConstructorRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Disallow useless constructors that are empty or only pass through to super().',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
         if (isUselessConstructor(node)) {
           context.report({
+            loc: extractLocation(node),
             message:
               'Useless constructor. This constructor is empty or only forwards arguments to super(). Remove it or add meaningful logic.',
-            loc: extractLocation(node),
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow useless constructors that are empty or only pass through to super().',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 export default noUselessConstructorRule

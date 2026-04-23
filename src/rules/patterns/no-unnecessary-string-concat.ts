@@ -1,11 +1,13 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isMemberExpression, isLiteral } from '../../utils/ast-helpers.js'
+import { isCallExpression, isLiteral, isMemberExpression } from '../../utils/ast-helpers.js'
 
 function isEmptyString(node: unknown): boolean {
   if (!isLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.value === ''
 }
@@ -14,6 +16,7 @@ function isConcatCall(node: unknown): boolean {
   if (!isCallExpression(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   const callee = n.callee as unknown
 
@@ -32,22 +35,25 @@ function isConcatCall(node: unknown): boolean {
   return propNode.type === 'Identifier' && propNode.name === 'concat'
 }
 
-function getFirstArgument(node: unknown): unknown | null {
+function getFirstArgument(node: unknown): null | unknown {
   if (!isCallExpression(node)) {
     return null
   }
+
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
   if (!args || args.length === 0) {
     return null
   }
+
   return args[0]
 }
 
-function getCalleeObject(node: unknown): unknown | null {
+function getCalleeObject(node: unknown): null | unknown {
   if (!isCallExpression(node)) {
     return null
   }
+
   const n = node as Record<string, unknown>
   const callee = n.callee as unknown
 
@@ -79,20 +85,6 @@ function isUnnecessaryConcat(node: unknown): { isUnnecessary: boolean; replaceme
 }
 
 export const noUnnecessaryStringConcatRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary string concatenation with empty strings. Using "".concat(str) or str.concat("") is redundant and should be simplified to just str.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-string-concat',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -104,12 +96,26 @@ export const noUnnecessaryStringConcatRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
+          loc: location,
           message:
             'Unnecessary string concatenation with empty string. The result is the same as using the string directly.',
-          loc: location,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unnecessary string concatenation with empty strings. Using "".concat(str) or str.concat("") is redundant and should be simplified to just str.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-string-concat',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

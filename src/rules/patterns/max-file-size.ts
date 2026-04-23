@@ -1,11 +1,11 @@
 /**
- * @fileoverview Enforce a maximum file size
+ * @file Enforce a maximum file size
  * @module rules/patterns/max-file-size
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
@@ -14,17 +14,17 @@ import { DEFAULT_MAX_FILE_SIZE_LINES } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface FileInfo {
-  readonly lineCount: number
   readonly characterCount: number
   readonly filePath: string
+  readonly lineCount: number
 }
 
 interface MaxFileSizeOptions {
-  readonly maxLines?: number
-  readonly maxCharacters?: number
-  readonly ignoreComments?: boolean
-  readonly ignoreBlankLines?: boolean
   readonly exclude?: readonly string[]
+  readonly ignoreBlankLines?: boolean
+  readonly ignoreComments?: boolean
+  readonly maxCharacters?: number
+  readonly maxLines?: number
 }
 
 function countLines(source: string, ignoreBlankLines: boolean): number {
@@ -32,21 +32,22 @@ function countLines(source: string, ignoreBlankLines: boolean): number {
   if (ignoreBlankLines) {
     return lines.filter((line) => line.trim().length > 0).length
   }
+
   return lines.length
 }
 
 function removeComments(source: string): string {
   // Remove single-line comments
-  let result = source.replace(/\/\/.*$/gm, '')
+  let result = source.replaceAll(/\/\/.*$/gm, '')
   // Remove multi-line comments
-  result = result.replace(/\/\*[\s\S]*?\*\//g, '')
+  result = result.replaceAll(/\/\*[\s\S]*?\*\//g, '')
   return result
 }
 
 function extractLocation(_source: string, line: number): SourceLocation {
   return {
-    start: { line, column: 0 },
-    end: { line, column: 1 },
+    end: { column: 1, line },
+    start: { column: 0, line },
   }
 }
 
@@ -56,6 +57,7 @@ function shouldExclude(filePath: string, excludePatterns: readonly string[]): bo
       return true
     }
   }
+
   return false
 }
 
@@ -65,7 +67,7 @@ function matchGlob(filePath: string, pattern: string): boolean {
   const cached = globPatternCache.get(pattern)
   if (cached) return cached.test(filePath)
 
-  const regex = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*').replace(/\?/g, '.')
+  const regex = pattern.replaceAll('**', '.*').replaceAll('*', '[^/]*').replaceAll('?', '.')
   const compiled = new RegExp(regex)
   globPatternCache.set(pattern, compiled)
   return compiled.test(filePath)
@@ -76,59 +78,17 @@ function matchGlob(filePath: string, pattern: string): boolean {
  * Enforces a maximum file size to keep files maintainable
  */
 export const maxFileSizeRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Enforce a maximum file size. Large files are harder to understand and maintain. Consider splitting large files into smaller, focused modules.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/max-file-size',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          maxLines: {
-            type: 'number',
-            minimum: 1,
-            default: DEFAULT_MAX_FILE_SIZE_LINES,
-          },
-          maxCharacters: {
-            type: 'number',
-            minimum: 100,
-            default: 50000,
-          },
-          ignoreComments: {
-            type: 'boolean',
-            default: false,
-          },
-          ignoreBlankLines: {
-            type: 'boolean',
-            default: false,
-          },
-          exclude: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<MaxFileSizeOptions>(context.config.options, {
-      maxLines: DEFAULT_MAX_FILE_SIZE_LINES,
-      maxCharacters: 50000,
-      ignoreComments: false,
-      ignoreBlankLines: false,
       exclude: [],
+      ignoreBlankLines: false,
+      ignoreComments: false,
+      maxCharacters: 50_000,
+      maxLines: DEFAULT_MAX_FILE_SIZE_LINES,
     })
 
     const maxLines = options.maxLines ?? DEFAULT_MAX_FILE_SIZE_LINES
-    const maxCharacters = options.maxCharacters ?? 50000
+    const maxCharacters = options.maxCharacters ?? 50_000
     const ignoreComments = options.ignoreComments ?? false
     const ignoreBlankLines = options.ignoreBlankLines ?? false
     const exclude = options.exclude ?? []
@@ -140,7 +100,7 @@ export const maxFileSizeRule: RuleDefinition = {
       return {}
     }
 
-    let source = context.getSource()
+    const source = context.getSource()
     let fileInfo: FileInfo | null = null
 
     return {
@@ -156,24 +116,24 @@ export const maxFileSizeRule: RuleDefinition = {
         const characterCount = processedSource.length
 
         fileInfo = {
-          lineCount,
           characterCount,
           filePath,
+          lineCount,
         }
 
         // Check line limit
         if (lineCount > maxLines) {
           context.report({
-            message: `File has ${lineCount} lines, which exceeds the maximum of ${maxLines} lines. Consider splitting this file into smaller modules.`,
             loc: extractLocation(source, 1),
+            message: `File has ${lineCount} lines, which exceeds the maximum of ${maxLines} lines. Consider splitting this file into smaller modules.`,
           })
         }
 
         // Check character limit
         if (characterCount > maxCharacters) {
           context.report({
-            message: `File has ${characterCount} characters, which exceeds the maximum of ${maxCharacters} characters. Consider splitting this file into smaller modules.`,
             loc: extractLocation(source, 1),
+            message: `File has ${characterCount} characters, which exceeds the maximum of ${maxCharacters} characters. Consider splitting this file into smaller modules.`,
           })
         }
       },
@@ -182,12 +142,54 @@ export const maxFileSizeRule: RuleDefinition = {
         // Additional check for very large files
         if (fileInfo && fileInfo.lineCount > maxLines * 2) {
           context.report({
-            message: `File is critically large (${fileInfo.lineCount} lines). This significantly impacts maintainability and should be refactored immediately.`,
             loc: extractLocation(source, 1),
+            message: `File is critically large (${fileInfo.lineCount} lines). This significantly impacts maintainability and should be refactored immediately.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Enforce a maximum file size. Large files are harder to understand and maintain. Consider splitting large files into smaller, focused modules.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/max-file-size',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          exclude: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+          ignoreBlankLines: {
+            default: false,
+            type: 'boolean',
+          },
+          ignoreComments: {
+            default: false,
+            type: 'boolean',
+          },
+          maxCharacters: {
+            default: 50_000,
+            minimum: 100,
+            type: 'number',
+          },
+          maxLines: {
+            default: DEFAULT_MAX_FILE_SIZE_LINES,
+            minimum: 1,
+            type: 'number',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

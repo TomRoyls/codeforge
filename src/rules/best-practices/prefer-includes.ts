@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer .includes() over .indexOf() for array membership checks
+ * @file Prefer .includes() over .indexOf() for array membership checks
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferIncludesOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferIncludesOptions = {}
 
-function isIndexOfComparison(node: Node): { array: Node; searchElement: Node } | null {
+function isIndexOfComparison(node: Node): null | { array: Node; searchElement: Node } {
   if (!Node.isBinaryExpression(node)) return null
 
   const operatorToken = node.getOperatorToken()
@@ -46,7 +49,7 @@ function isIndexOfComparison(node: Node): { array: Node; searchElement: Node } |
   if (methodName !== 'indexOf') return null
 
   const args = left.getArguments()
-  if (args.length < 1) return null
+  if (args.length === 0) return null
 
   const searchElement = args[0]
   if (!searchElement) return null
@@ -55,20 +58,13 @@ function isIndexOfComparison(node: Node): { array: Node; searchElement: Node } |
 }
 
 export const preferIncludesRule: RuleDefinition<PreferIncludesOptions> = {
-  meta: {
-    name: 'prefer-includes',
-    description: 'Enforce using includes() method instead of indexOf() for array membership checks',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferIncludesOptions) => {
+  create(_options: PreferIncludesOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isIndexOfComparison(node)
           if (!result) return
 
@@ -77,17 +73,24 @@ export const preferIncludesRule: RuleDefinition<PreferIncludesOptions> = {
           const elementText = result.searchElement.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: "Use .includes() instead of .indexOf() for array membership check.",
+            range,
             ruleId: 'prefer-includes',
             severity: 'info',
-            message: "Use .includes() instead of .indexOf() for array membership check.",
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: ' + arrayText + '.includes(' + elementText + ')',
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Enforce using includes() method instead of indexOf() for array membership checks',
+    fixable: 'code',
+    name: 'prefer-includes',
+    recommended: false,
   },
 }
 
@@ -100,7 +103,7 @@ export function analyzePreferIncludes(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         const result = isIndexOfComparison(node)
         if (!result) return
 
@@ -109,11 +112,11 @@ export function analyzePreferIncludes(
         const elementText = result.searchElement.getText()
 
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: "Use .includes() instead of .indexOf() for array membership check.",
+          range,
           ruleId: 'prefer-includes',
           severity: 'info',
-          message: "Use .includes() instead of .indexOf() for array membership check.",
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Replace with: ' + arrayText + '.includes(' + elementText + ')',
         })
       },

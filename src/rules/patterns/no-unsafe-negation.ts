@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isUnaryExpression(node: unknown): boolean {
@@ -16,17 +17,6 @@ function isBinaryExpression(node: unknown): boolean {
 const RELATIONAL_OPERATORS = new Set(['in', 'instanceof'])
 
 export const noUnsafeNegationRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow negating the left operand of relational operators.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       UnaryExpression(node: unknown): void {
@@ -37,13 +27,24 @@ export const noUnsafeNegationRule: RuleDefinition = {
           const arg = n.argument as Record<string, unknown>
           if (RELATIONAL_OPERATORS.has(arg.operator as string)) {
             context.report({
-              message: `Unexpected negating the left operand of '${arg.operator}' operator.`,
               loc: extractLocation(node),
+              message: `Unexpected negating the left operand of '${arg.operator}' operator.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow negating the left operand of relational operators.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnsafeNegationRule

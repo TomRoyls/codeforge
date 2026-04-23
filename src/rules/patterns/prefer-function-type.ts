@@ -1,20 +1,21 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 
 interface TSInterfaceDeclaration {
-  type: 'TSInterfaceDeclaration'
+  body: { body: unknown[]; type: 'TSInterfaceBody' }
   id: { name: string; type: 'Identifier' }
-  body: { type: 'TSInterfaceBody'; body: unknown[] }
-  typeParameters?: unknown
-  loc?: { start: { line: number; column: number }; end: { line: number; column: number } }
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
   range?: [number, number]
+  type: 'TSInterfaceDeclaration'
+  typeParameters?: unknown
 }
 
 interface TSCallSignatureDeclaration {
-  type: 'TSCallSignatureDeclaration'
   params: unknown[]
   returnType?: unknown
+  type: 'TSCallSignatureDeclaration'
   typeParameters?: unknown
 }
 
@@ -22,6 +23,7 @@ function isTSInterfaceDeclaration(node: unknown): node is TSInterfaceDeclaration
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TSInterfaceDeclaration'
 }
@@ -30,6 +32,7 @@ function isTSCallSignatureDeclaration(node: unknown): node is TSCallSignatureDec
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TSCallSignatureDeclaration'
 }
@@ -59,7 +62,7 @@ function buildFunctionTypeFromCallSignatures(
   }
 
   const signature = callSignatures[0]!
-  const params = (signature.params as Array<{ type?: string; name?: string }> | undefined) ?? []
+  const params = (signature.params as Array<{ name?: string; type?: string }> | undefined) ?? []
 
   // Build params string - simplified representation
   const paramsStr = params
@@ -67,9 +70,11 @@ function buildFunctionTypeFromCallSignatures(
       if (p.type === 'Identifier' && p.name) {
         return p.name
       }
+
       if (p.type === 'RestElement') {
         return `...args`
       }
+
       return `param${i + 1}`
     })
     .join(', ')
@@ -80,24 +85,49 @@ function buildFunctionTypeFromCallSignatures(
     const rt = signature.returnType as Record<string, unknown>
     if (rt.type === 'TSTypeAnnotation' && rt.typeAnnotation) {
       const typeAnnotation = rt.typeAnnotation as Record<string, unknown>
-      if (typeAnnotation.type === 'TSStringKeyword') {
-        returnTypeStr = 'string'
-      } else if (typeAnnotation.type === 'TSNumberKeyword') {
-        returnTypeStr = 'number'
-      } else if (typeAnnotation.type === 'TSBooleanKeyword') {
-        returnTypeStr = 'boolean'
-      } else if (typeAnnotation.type === 'TSAnyKeyword') {
-        returnTypeStr = 'any'
-      } else if (typeAnnotation.type === 'TSVoidKeyword') {
-        returnTypeStr = 'void'
-      } else if (typeAnnotation.type === 'TSTypeReference') {
-        // Try to extract the type name
-        if (typeAnnotation.typeName && typeof typeAnnotation.typeName === 'object') {
-          const typeName = typeAnnotation.typeName as Record<string, unknown>
-          if (typeName.name) {
-            returnTypeStr = typeName.name as string
-          }
+      switch (typeAnnotation.type) {
+        case 'TSAnyKeyword': {
+          returnTypeStr = 'any'
+
+          break
         }
+
+        case 'TSBooleanKeyword': {
+          returnTypeStr = 'boolean'
+
+          break
+        }
+
+        case 'TSNumberKeyword': {
+          returnTypeStr = 'number'
+
+          break
+        }
+
+        case 'TSStringKeyword': {
+          returnTypeStr = 'string'
+
+          break
+        }
+
+        case 'TSTypeReference': {
+          // Try to extract the type name
+          if (typeAnnotation.typeName && typeof typeAnnotation.typeName === 'object') {
+            const typeName = typeAnnotation.typeName as Record<string, unknown>
+            if (typeName.name) {
+              returnTypeStr = typeName.name as string
+            }
+          }
+
+          break
+        }
+
+        case 'TSVoidKeyword': {
+          returnTypeStr = 'void'
+
+          break
+        }
+        // No default
       }
     }
   }
@@ -106,20 +136,6 @@ function buildFunctionTypeFromCallSignatures(
 }
 
 export const preferFunctionTypeRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer function type over interface with a single call signature. Function types are more concise and idiomatic for callable types.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-function-type',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       TSInterfaceDeclaration(node: unknown): void {
@@ -135,7 +151,7 @@ export const preferFunctionTypeRule: RuleDefinition = {
         }
 
         const interfaceName = node.id.name
-        const callSignatures = bodyMembers.filter(isTSCallSignatureDeclaration)
+        const callSignatures = bodyMembers.filter((m) => isTSCallSignatureDeclaration(m))
         const location = extractLocation(node)
         const range = getRange(node)
 
@@ -143,17 +159,31 @@ export const preferFunctionTypeRule: RuleDefinition = {
         const suggestedType = buildFunctionTypeFromCallSignatures(interfaceName, callSignatures)
 
         context.report({
-          message: `Interface '${interfaceName}' has only a call signature. Use a function type instead: \`${suggestedType}\``,
-          loc: location,
           fix: range
             ? {
                 range,
                 text: suggestedType,
               }
             : undefined,
+          loc: location,
+          message: `Interface '${interfaceName}' has only a call signature. Use a function type instead: \`${suggestedType}\``,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer function type over interface with a single call signature. Function types are more concise and idiomatic for callable types.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-function-type',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

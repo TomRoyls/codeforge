@@ -64,11 +64,7 @@ describe('baseline', () => {
       await saveBaseline([createViolation('rule1', 'file1.ts', 10, 'Error 1')], 'custom.json')
 
       expect(path.resolve).toHaveBeenCalledWith('custom.json')
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        '/resolved/custom.json',
-        expect.any(String),
-        'utf-8',
-      )
+      expect(fs.writeFile).toHaveBeenCalledWith('/resolved/custom.json', expect.any(String), 'utf8')
     })
 
     it('creates timestamp as ISO string', async () => {
@@ -1070,7 +1066,7 @@ describe('baseline', () => {
     it('writes file with utf-8 encoding', async () => {
       await saveBaseline([createViolation('r', 'f.ts', 1, 'm')])
 
-      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf-8')
+      expect(fs.writeFile).toHaveBeenCalledWith(expect.any(String), expect.any(String), 'utf8')
     })
 
     it('strips suggestion field from RuleViolation when converting to baseline', async () => {

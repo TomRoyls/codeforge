@@ -1,24 +1,24 @@
 /**
- * @fileoverview Detect potentially unsafe regular expression patterns
+ * @file Detect potentially unsafe regular expression patterns
  * @module rules/security/no-unsafe-regex
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
 interface UnsafeRegexInfo {
+  readonly location: SourceLocation
   readonly pattern: string
   readonly reason: string
-  readonly location: SourceLocation
 }
 
 interface NoUnsafeRegexOptions {
-  readonly checkReDoS?: boolean
   readonly checkInjection?: boolean
+  readonly checkReDoS?: boolean
 }
 
 /**
@@ -36,7 +36,7 @@ function hasNestedQuantifiers(pattern: string): boolean {
 function hasComplexAlternation(pattern: string): boolean {
   // Count alternation operators within groups
   const groupPattern = /\(([^)]+)\)/g
-  let match: RegExpExecArray | null
+  let match: null | RegExpExecArray
 
   while ((match = groupPattern.exec(pattern)) !== null) {
     const groupContent = match[1] ?? ''
@@ -71,8 +71,8 @@ function analyzePattern(pattern: string): string[] {
  */
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -90,13 +90,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -104,7 +104,7 @@ function extractLocation(node: unknown): SourceLocation {
 /**
  * Extracts the pattern string from a regex literal or RegExp constructor
  */
-function extractPattern(node: unknown): string | null {
+function extractPattern(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -119,12 +119,13 @@ function extractPattern(node: unknown): string | null {
 
   // Handle new RegExp(pattern) or RegExp(pattern)
   if (n.type === 'NewExpression' || n.type === 'CallExpression') {
-    const args = n.arguments as unknown[] | undefined
+    const args = n.arguments as undefined | unknown[]
     if (args && args.length > 0) {
       const firstArg = args[0] as Record<string, unknown>
       if (firstArg.type === 'Literal' && typeof firstArg.value === 'string') {
         return firstArg.value
       }
+
       // If the argument is not a literal, it might be user input (injection risk)
       if (firstArg.type === 'Identifier' || firstArg.type === 'MemberExpression') {
         return '__DYNAMIC__'
@@ -166,35 +167,6 @@ function isRegexNode(node: unknown): boolean {
  * Detects potentially unsafe regular expression patterns
  */
 export const noUnsafeRegexRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Detect potentially unsafe regular expression patterns that can cause ReDoS (catastrophic backtracking), injection vulnerabilities, or security issues.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unsafe-regex',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          checkReDoS: {
-            type: 'boolean',
-            default: true,
-          },
-          checkInjection: {
-            type: 'boolean',
-            default: true,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = context.config.options?.[0] as NoUnsafeRegexOptions | undefined
     const checkReDoS = options?.checkReDoS ?? true
@@ -203,6 +175,52 @@ export const noUnsafeRegexRule: RuleDefinition = {
     const unsafePatterns: UnsafeRegexInfo[] = []
 
     return {
+      CallExpression(node: unknown): void {
+        if (!isRegexNode(node)) {
+          return
+        }
+
+        const pattern = extractPattern(node)
+        if (!pattern) {
+          return
+        }
+
+        // Check for dynamic patterns (injection risk)
+        if (pattern === '__DYNAMIC__') {
+          if (checkInjection) {
+            const location = extractLocation(node)
+            context.report({
+              loc: location,
+              message:
+                'RegExp constructor with dynamic input detected. This can lead to regex injection vulnerabilities. Consider using a safe regex library or escaping user input.',
+              node,
+            })
+          }
+
+          return
+        }
+
+        // Analyze the pattern for issues
+        const issues = analyzePattern(pattern)
+
+        if (issues.length > 0 && checkReDoS) {
+          const location = extractLocation(node)
+          const message = `Unsafe regex pattern detected: "${pattern}". Issues: ${issues.join('; ')}. Consider refactoring to avoid ReDoS vulnerabilities.`
+
+          unsafePatterns.push({
+            location,
+            pattern,
+            reason: issues.join('; '),
+          })
+
+          context.report({
+            loc: location,
+            message,
+            node,
+          })
+        }
+      },
+
       Literal(node: unknown): void {
         if (!isRegexNode(node)) {
           return
@@ -218,12 +236,13 @@ export const noUnsafeRegexRule: RuleDefinition = {
           if (checkInjection) {
             const location = extractLocation(node)
             context.report({
-              node,
+              loc: location,
               message:
                 'RegExp constructor with dynamic input detected. This can lead to regex injection vulnerabilities. Consider using a safe regex library or escaping user input.',
-              loc: location,
+              node,
             })
           }
+
           return
         }
 
@@ -235,15 +254,15 @@ export const noUnsafeRegexRule: RuleDefinition = {
           const message = `Unsafe regex pattern detected: "${pattern}". Issues: ${issues.join('; ')}. Consider refactoring to avoid ReDoS vulnerabilities.`
 
           unsafePatterns.push({
+            location,
             pattern,
             reason: issues.join('; '),
-            location,
           })
 
           context.report({
-            node,
-            message,
             loc: location,
+            message,
+            node,
           })
         }
       },
@@ -263,12 +282,13 @@ export const noUnsafeRegexRule: RuleDefinition = {
           if (checkInjection) {
             const location = extractLocation(node)
             context.report({
-              node,
+              loc: location,
               message:
                 'RegExp constructor with dynamic input detected. This can lead to regex injection vulnerabilities. Consider using a safe regex library or escaping user input.',
-              loc: location,
+              node,
             })
           }
+
           return
         }
 
@@ -280,64 +300,48 @@ export const noUnsafeRegexRule: RuleDefinition = {
           const message = `Unsafe regex pattern detected: "${pattern}". Issues: ${issues.join('; ')}. Consider refactoring to avoid ReDoS vulnerabilities.`
 
           unsafePatterns.push({
+            location,
             pattern,
             reason: issues.join('; '),
-            location,
           })
 
           context.report({
-            node,
-            message,
             loc: location,
-          })
-        }
-      },
-
-      CallExpression(node: unknown): void {
-        if (!isRegexNode(node)) {
-          return
-        }
-
-        const pattern = extractPattern(node)
-        if (!pattern) {
-          return
-        }
-
-        // Check for dynamic patterns (injection risk)
-        if (pattern === '__DYNAMIC__') {
-          if (checkInjection) {
-            const location = extractLocation(node)
-            context.report({
-              node,
-              message:
-                'RegExp constructor with dynamic input detected. This can lead to regex injection vulnerabilities. Consider using a safe regex library or escaping user input.',
-              loc: location,
-            })
-          }
-          return
-        }
-
-        // Analyze the pattern for issues
-        const issues = analyzePattern(pattern)
-
-        if (issues.length > 0 && checkReDoS) {
-          const location = extractLocation(node)
-          const message = `Unsafe regex pattern detected: "${pattern}". Issues: ${issues.join('; ')}. Consider refactoring to avoid ReDoS vulnerabilities.`
-
-          unsafePatterns.push({
-            pattern,
-            reason: issues.join('; '),
-            location,
-          })
-
-          context.report({
-            node,
             message,
-            loc: location,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Detect potentially unsafe regular expression patterns that can cause ReDoS (catastrophic backtracking), injection vulnerabilities, or security issues.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unsafe-regex',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          checkInjection: {
+            default: true,
+            type: 'boolean',
+          },
+          checkReDoS: {
+            default: true,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

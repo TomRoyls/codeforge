@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const EMPTY_CHAR_CLASS_PATTERN = /\[\]/
@@ -8,17 +9,6 @@ function hasEmptyCharacterClass(pattern: string): boolean {
 }
 
 export const noEmptyCharacterClassRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow empty character classes in regular expressions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       RegExpLiteral(node: unknown): void {
@@ -38,12 +28,23 @@ export const noEmptyCharacterClassRule: RuleDefinition = {
 
         if (hasEmptyCharacterClass(raw)) {
           context.report({
-            message: 'Empty character class in regular expression.',
             loc: extractLocation(node),
+            message: 'Empty character class in regular expression.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow empty character classes in regular expressions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noEmptyCharacterClassRule

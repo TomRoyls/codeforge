@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -55,7 +56,7 @@ function isHigherOrderFunction(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const body = n.body
+  const {body} = n
 
   if (!body || typeof body !== 'object') {
     return false
@@ -96,7 +97,7 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const parent = n.parent
+  const {parent} = n
 
   if (!parent || typeof parent !== 'object') {
     return false
@@ -117,7 +118,7 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   return false
 }
 
-function getFunctionName(node: unknown): string | null {
+function getFunctionName(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -125,7 +126,7 @@ function getFunctionName(node: unknown): string | null {
   const n = node as Record<string, unknown>
 
   // Direct function name
-  const id = n.id
+  const {id} = n
   if (id && typeof id === 'object') {
     const idNode = id as Record<string, unknown>
     if (typeof idNode.name === 'string') {
@@ -134,7 +135,7 @@ function getFunctionName(node: unknown): string | null {
   }
 
   // Variable name for function expressions
-  const parent = n.parent
+  const {parent} = n
   if (parent && typeof parent === 'object') {
     const parentNode = parent as Record<string, unknown>
 
@@ -156,20 +157,20 @@ function shouldReport(
   node: unknown,
   nodeType: string,
   options: ExplicitModuleBoundaryTypesOptions,
-): { shouldReport: boolean; reason: string | null } {
+): { reason: null | string; shouldReport: boolean; } {
   // Check if exported
   if (!isExported(node)) {
-    return { shouldReport: false, reason: null }
+    return { reason: null, shouldReport: false }
   }
 
   // Already has return type
   if (hasReturnType(node)) {
-    return { shouldReport: false, reason: null }
+    return { reason: null, shouldReport: false }
   }
 
   // Allow arrow functions option
   if (nodeType === 'ArrowFunctionExpression' && options.allowArrowFunctions) {
-    return { shouldReport: false, reason: null }
+    return { reason: null, shouldReport: false }
   }
 
   // Allow typed function expressions option
@@ -178,48 +179,18 @@ function shouldReport(
     options.allowTypedFunctionExpressions &&
     isVariableTypedWithFunction(node)
   ) {
-    return { shouldReport: false, reason: null }
+    return { reason: null, shouldReport: false }
   }
 
   // Allow higher order functions option
   if (options.allowHigherOrderFunctions && isHigherOrderFunction(node)) {
-    return { shouldReport: false, reason: null }
+    return { reason: null, shouldReport: false }
   }
 
-  return { shouldReport: true, reason: 'Missing return type on exported function' }
+  return { reason: 'Missing return type on exported function', shouldReport: true }
 }
 
 export const explicitModuleBoundaryTypesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require explicit return types on exported functions. Explicit return types on module boundaries improve API documentation and help catch type errors at compile time.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/explicit-module-boundary-types',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowArrowFunctions: {
-            type: 'boolean',
-          },
-          allowHigherOrderFunctions: {
-            type: 'boolean',
-          },
-          allowTypedFunctionExpressions: {
-            type: 'boolean',
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<ExplicitModuleBoundaryTypesOptions>(context.config.options, {
       allowArrowFunctions: false,
@@ -228,7 +199,7 @@ export const explicitModuleBoundaryTypesRule: RuleDefinition = {
     })
 
     function checkFunction(node: unknown, nodeType: string): void {
-      const { shouldReport: report, reason } = shouldReport(node, nodeType, options)
+      const { reason, shouldReport: report } = shouldReport(node, nodeType, options)
 
       if (!report || !reason) {
         return
@@ -247,22 +218,52 @@ export const explicitModuleBoundaryTypesRule: RuleDefinition = {
       const message = `${functionKind}${namePart} is missing a return type annotation. Add an explicit return type for better API documentation and type safety.`
 
       context.report({
-        message,
         loc: location,
+        message,
       })
     }
 
     return {
+      ArrowFunctionExpression(node: unknown): void {
+        checkFunction(node, 'ArrowFunctionExpression')
+      },
       FunctionDeclaration(node: unknown): void {
         checkFunction(node, 'FunctionDeclaration')
       },
       FunctionExpression(node: unknown): void {
         checkFunction(node, 'FunctionExpression')
       },
-      ArrowFunctionExpression(node: unknown): void {
-        checkFunction(node, 'ArrowFunctionExpression')
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require explicit return types on exported functions. Explicit return types on module boundaries improve API documentation and help catch type errors at compile time.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/explicit-module-boundary-types',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowArrowFunctions: {
+            type: 'boolean',
+          },
+          allowHigherOrderFunctions: {
+            type: 'boolean',
+          },
+          allowTypedFunctionExpressions: {
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

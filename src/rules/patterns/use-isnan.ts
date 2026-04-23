@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isBinaryExpression(node: unknown): boolean {
@@ -19,17 +20,6 @@ function isNaNIdentifier(node: unknown): boolean {
 }
 
 export const useIsnanRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Require calls to isNaN() when checking for NaN.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -37,16 +27,25 @@ export const useIsnanRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         const operator = n.operator as string
 
-        if (['===', '!==', '==', '!='].includes(operator)) {
-          if (isNaNIdentifier(n.left) || isNaNIdentifier(n.right)) {
+        if (['!=', '!==', '==', '==='].includes(operator) && (isNaNIdentifier(n.left) || isNaNIdentifier(n.right))) {
             context.report({
-              message: 'Use the isNaN function to compare with NaN.',
               loc: extractLocation(node),
+              message: 'Use the isNaN function to compare with NaN.',
             })
           }
-        }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Require calls to isNaN() when checking for NaN.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default useIsnanRule

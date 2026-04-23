@@ -1,11 +1,14 @@
 import type { Node, SourceFile } from 'ts-morph'
+
 import { Node as TsNode } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import {
   type FunctionLikeNode,
-  type RuleViolation,
-  getNodeRange,
   getFunctionName,
+  getNodeRange,
+  type RuleViolation,
   traverseAST,
 } from '../../ast/visitor.js'
 
@@ -42,42 +45,42 @@ function calculateNestingDepth(node: Node, currentDepth: number = 0): number {
 }
 
 export const maxDepthRule: RuleDefinition<MaxDepthOptions> = {
-  meta: {
-    name: 'max-depth',
-    description: 'Enforce a maximum nesting depth for code blocks',
-    category: 'complexity',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {
-    max: 4,
-  },
-  create: (options: MaxDepthOptions) => {
+  create(options: MaxDepthOptions) {
     const violations: RuleViolation[] = []
     const maxDepth = options.max ?? 4
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode) => {
+        visitFunction(node: FunctionLikeNode) {
           const depth = calculateNestingDepth(node)
           const name = getFunctionName(node)
 
           if (depth > maxDepth) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: `Function '${name}' has a nesting depth of ${depth}. Maximum allowed is ${maxDepth}.`,
+              range,
               ruleId: 'max-depth',
               severity: 'warning',
-              message: `Function '${name}' has a nesting depth of ${depth}. Maximum allowed is ${maxDepth}.`,
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion:
                 'Extract deeply nested code into separate functions to improve readability.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {
+    max: 4,
+  },
+  meta: {
+    category: 'complexity',
+    description: 'Enforce a maximum nesting depth for code blocks',
+    fixable: 'code',
+    name: 'max-depth',
+    recommended: true,
   },
 }
 
@@ -87,18 +90,18 @@ export function analyzeDepth(sourceFile: SourceFile, maxDepth: number = 4): Rule
   traverseAST(
     sourceFile,
     {
-      visitFunction: (node: FunctionLikeNode) => {
+      visitFunction(node: FunctionLikeNode) {
         const depth = calculateNestingDepth(node)
         const name = getFunctionName(node)
 
         if (depth > maxDepth) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: `Function '${name}' has a nesting depth of ${depth}. Maximum allowed is ${maxDepth}.`,
+            range,
             ruleId: 'max-depth',
             severity: 'warning',
-            message: `Function '${name}' has a nesting depth of ${depth}. Maximum allowed is ${maxDepth}.`,
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion:
               'Extract deeply nested code into separate functions to improve readability.',
           })

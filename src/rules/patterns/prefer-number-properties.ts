@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isBinaryExpression, isIdentifier } from '../../utils/ast-helpers.js'
 
@@ -6,10 +7,12 @@ function isMemberExpression(node: unknown, objectName: string, propertyName: str
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   if (n.type !== 'MemberExpression') {
     return false
   }
+
   const obj = n.object as Record<string, unknown> | undefined
   const prop = n.property as Record<string, unknown> | undefined
 
@@ -29,7 +32,7 @@ function isEqualityOperator(operator: string | undefined): boolean {
   return operator === '===' || operator === '==' || operator === '!==' || operator === '!='
 }
 
-function isNanComparison(node: unknown): { isNegative: boolean; operand: unknown } | null {
+function isNanComparison(node: unknown): null | { isNegative: boolean; operand: unknown } {
   if (!isBinaryExpression(node)) {
     return null
   }
@@ -55,7 +58,7 @@ function isNanComparison(node: unknown): { isNegative: boolean; operand: unknown
   return null
 }
 
-function isInfinityComparison(node: unknown): { isNegative: boolean; operand: unknown } | null {
+function isInfinityComparison(node: unknown): null | { isNegative: boolean; operand: unknown } {
   if (!isBinaryExpression(node)) {
     return null
   }
@@ -90,20 +93,6 @@ function isInfinityComparison(node: unknown): { isNegative: boolean; operand: un
 }
 
 export const preferNumberPropertiesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer Number.isNaN() and Number.isFinite() over isNaN(), isFinite(), and direct NaN/Infinity comparisons. The global isNaN() coerces values, while Number.isNaN() does not. Direct comparisons with NaN always return false.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-number-properties',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -113,17 +102,18 @@ export const preferNumberPropertiesRule: RuleDefinition = {
         if (nanComparison) {
           if (nanComparison.isNegative) {
             context.report({
+              loc: location,
               message:
                 "Use !Number.isNaN(x) instead of x !== NaN. NaN comparisons always return false, so this check doesn't work as expected.",
-              loc: location,
             })
           } else {
             context.report({
+              loc: location,
               message:
                 "Use Number.isNaN(x) instead of x === NaN. NaN comparisons always return false, so this check doesn't work as expected.",
-              loc: location,
             })
           }
+
           return
         }
 
@@ -131,20 +121,34 @@ export const preferNumberPropertiesRule: RuleDefinition = {
         if (infinityComparison) {
           if (infinityComparison.isNegative) {
             context.report({
+              loc: location,
               message:
                 'Use !Number.isFinite(x) instead of x !== Infinity. Consider using Number.isFinite() for proper infinity and NaN checks.',
-              loc: location,
             })
           } else {
             context.report({
+              loc: location,
               message:
                 'Use Number.isFinite(x) or explicit checks instead of x === Infinity. Consider using Number.isFinite() for proper infinity and NaN checks.',
-              loc: location,
             })
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer Number.isNaN() and Number.isFinite() over isNaN(), isFinite(), and direct NaN/Infinity comparisons. The global isNaN() coerces values, while Number.isNaN() does not. Direct comparisons with NaN always return false.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-number-properties',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isChainExpression(node: unknown): boolean {
@@ -14,17 +15,6 @@ function isNewExpression(node: unknown): boolean {
 }
 
 export const noUnsafeOptionalChainingRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow use of optional chaining where undefined is not allowed.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -32,12 +22,23 @@ export const noUnsafeOptionalChainingRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (isChainExpression(n.callee)) {
           context.report({
-            message: 'Optional chaining cannot appear in a new expression.',
             loc: extractLocation(node),
+            message: 'Optional chaining cannot appear in a new expression.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow use of optional chaining where undefined is not allowed.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnsafeOptionalChainingRule

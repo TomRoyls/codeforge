@@ -1,21 +1,21 @@
-export { discoverFiles, DEFAULT_PATTERNS, DEFAULT_IGNORE } from './file-discovery.js'
-export type { FileDiscoveryOptions, DiscoveredFile } from './file-discovery.js'
+export { DEFAULT_IGNORE, DEFAULT_PATTERNS, discoverFiles } from './file-discovery.js'
+export type { DiscoveredFile, FileDiscoveryOptions } from './file-discovery.js'
 
 export { Parser } from './parser.js'
 export type { ParseResult, ParserOptions } from './parser.js'
 
 export { Reporter } from './reporter.js'
-export type { OutputFormat, ReporterOptions, FileReport, AnalysisReport } from './reporter.js'
+export type { AnalysisReport, FileReport, OutputFormat, ReporterOptions } from './reporter.js'
 
 export {
-  parseSuppressions,
-  parseSuppressionsFromSourceFile,
   filterSuppressedViolations,
   isViolationSuppressed,
+  parseSuppressions,
+  parseSuppressionsFromSourceFile,
 } from './suppression-parser.js'
 export type {
   Suppression,
-  SuppressionType,
   SuppressionParseResult,
   SuppressionParserOptions,
+  SuppressionType,
 } from './suppression-parser.js'

@@ -1,14 +1,14 @@
 export class CLIError extends Error {
   public readonly code: string
-  public readonly suggestions: string[]
   public readonly context: Record<string, unknown>
+  public readonly suggestions: string[]
 
   constructor(
     message: string,
     options: {
       code?: string
-      suggestions?: string[]
       context?: Record<string, unknown>
+      suggestions?: string[]
     } = {},
   ) {
     super(message)
@@ -22,8 +22,8 @@ export class CLIError extends Error {
     }
   }
 
-  public static invalidInput(message: string, suggestions: string[] = []): CLIError {
-    return new CLIError(message, { code: 'E001', suggestions })
+  public static configError(message: string, suggestions: string[] = []): CLIError {
+    return new CLIError(message, { code: 'E003', suggestions })
   }
 
   public static fileNotFound(filePath: string): CLIError {
@@ -37,39 +37,39 @@ export class CLIError extends Error {
     })
   }
 
-  public static configError(message: string, suggestions: string[] = []): CLIError {
-    return new CLIError(message, { code: 'E003', suggestions })
+  public static invalidInput(message: string, suggestions: string[] = []): CLIError {
+    return new CLIError(message, { code: 'E001', suggestions })
   }
 
   public toJSON(): {
-    name: string
     code: string
-    message: string
-    suggestions: string[]
     context: Record<string, unknown>
+    message: string
+    name: string
     stack?: string
+    suggestions: string[]
   } {
     return {
-      name: this.name,
       code: this.code,
-      message: this.message,
-      suggestions: this.suggestions,
       context: this.context,
+      message: this.message,
+      name: this.name,
       stack: this.stack,
+      suggestions: this.suggestions,
     }
   }
 }
 
 export class SystemError extends Error {
-  public readonly code: string
   public readonly cause?: Error
+  public readonly code: string
   public readonly context: Record<string, unknown>
 
   constructor(
     message: string,
     options: {
-      code?: string
       cause?: Error
+      code?: string
       context?: Record<string, unknown>
     } = {},
   ) {
@@ -84,38 +84,38 @@ export class SystemError extends Error {
     }
   }
 
-  public static parseError(filePath: string, cause: Error): SystemError {
-    return new SystemError(`Failed to parse file: ${filePath}`, {
-      code: 'E501',
+  public static ioError(operation: string, cause: Error): SystemError {
+    return new SystemError(`I/O error: ${operation}`, {
       cause,
-      context: { filePath, causeMessage: cause.message },
+      code: 'E502',
+      context: { causeMessage: cause.message, operation },
     })
   }
 
-  public static ioError(operation: string, cause: Error): SystemError {
-    return new SystemError(`I/O error: ${operation}`, {
-      code: 'E502',
+  public static parseError(filePath: string, cause: Error): SystemError {
+    return new SystemError(`Failed to parse file: ${filePath}`, {
       cause,
-      context: { operation, causeMessage: cause.message },
+      code: 'E501',
+      context: { causeMessage: cause.message, filePath },
     })
   }
 
   public toJSON(): {
-    name: string
+    cause?: { message: string; name: string; stack?: string }
     code: string
-    message: string
-    cause?: { name: string; message: string; stack?: string }
     context: Record<string, unknown>
+    message: string
+    name: string
     stack?: string
   } {
     return {
-      name: this.name,
-      code: this.code,
-      message: this.message,
       cause: this.cause
-        ? { name: this.cause.name, message: this.cause.message, stack: this.cause.stack }
+        ? { message: this.cause.message, name: this.cause.name, stack: this.cause.stack }
         : undefined,
+      code: this.code,
       context: this.context,
+      message: this.message,
+      name: this.name,
       stack: this.stack,
     }
   }

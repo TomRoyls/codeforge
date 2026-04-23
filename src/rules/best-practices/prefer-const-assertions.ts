@@ -1,23 +1,26 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferConstAssertionsOptions extends RuleOptions {
   checkArrays?: boolean
   checkObjects?: boolean
+  minimumProperties?: number
   skipEmpty?: boolean
   skipExported?: boolean
-  minimumProperties?: number
 }
 
 const DEFAULT_OPTIONS: PreferConstAssertionsOptions = {
   checkArrays: true,
   checkObjects: true,
+  minimumProperties: 0,
   skipEmpty: true,
   skipExported: false,
-  minimumProperties: 0,
 }
 
 function isConstableValue(node: Node): boolean {
@@ -39,6 +42,7 @@ function isConstableValue(node: Node): boolean {
       const initializer = prop.getInitializer()
       if (!initializer || !isConstableValue(initializer)) return false
     }
+
     return true
   }
 
@@ -48,6 +52,7 @@ function isConstableValue(node: Node): boolean {
       if (Node.isSpreadElement(elem)) return false
       if (!isConstableValue(elem)) return false
     }
+
     return true
   }
 
@@ -84,28 +89,22 @@ function isExported(node: Node): boolean {
     if (Node.isVariableStatement(current)) {
       return current.isExported()
     }
+
     current = current.getParent()
   }
+
   return false
 }
 
 export const preferConstAssertionsRule: RuleDefinition<PreferConstAssertionsOptions> = {
-  meta: {
-    name: 'prefer-const-assertions',
-    description:
-      'Enforce using const assertions for better type inference on objects and array literals',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: PreferConstAssertionsOptions) => {
+  create(options: PreferConstAssertionsOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           if (!Node.isVariableDeclaration(node)) return
 
           const declaration = node
@@ -134,38 +133,38 @@ export const preferConstAssertionsRule: RuleDefinition<PreferConstAssertionsOpti
 
           const minProps = mergedOptions.minimumProperties ?? 0
           if (mergedOptions.skipEmpty) {
-            if (Node.isObjectLiteralExpression(initializer)) {
-              if (initializer.getProperties().length === 0) return
-            }
-            if (Node.isArrayLiteralExpression(initializer)) {
-              if (initializer.getElements().length === 0) return
-            }
+            if (Node.isObjectLiteralExpression(initializer) && initializer.getProperties().length === 0) return
+            if (Node.isArrayLiteralExpression(initializer) && initializer.getElements().length === 0) return
           }
 
           if (minProps > 0) {
-            if (Node.isObjectLiteralExpression(initializer)) {
-              if (initializer.getProperties().length < minProps) return
-            }
-            if (Node.isArrayLiteralExpression(initializer)) {
-              if (initializer.getElements().length < minProps) return
-            }
+            if (Node.isObjectLiteralExpression(initializer) && initializer.getProperties().length < minProps) return
+            if (Node.isArrayLiteralExpression(initializer) && initializer.getElements().length < minProps) return
           }
 
           if (!isConstableValue(initializer)) return
 
           const range = getNodeRange(initializer)
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: `Use 'as const' for better type inference on this ${Node.isObjectLiteralExpression(initializer) ? 'object' : 'array'} literal.`,
+            range,
             ruleId: 'prefer-const-assertions',
             severity: 'info',
-            message: `Use 'as const' for better type inference on this ${Node.isObjectLiteralExpression(initializer) ? 'object' : 'array'} literal.`,
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: `Add 'as const' to make the literal type more specific and readonly.`,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description:
+      'Enforce using const assertions for better type inference on objects and array literals',
+    fixable: 'code',
+    name: 'prefer-const-assertions',
+    recommended: false,
   },
 }
 
@@ -179,7 +178,7 @@ export function analyzePreferConstAssertions(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         if (!Node.isVariableDeclaration(node)) return
 
         const declaration = node
@@ -208,32 +207,24 @@ export function analyzePreferConstAssertions(
 
         const minProps = mergedOptions.minimumProperties ?? 0
         if (mergedOptions.skipEmpty) {
-          if (Node.isObjectLiteralExpression(initializer)) {
-            if (initializer.getProperties().length === 0) return
-          }
-          if (Node.isArrayLiteralExpression(initializer)) {
-            if (initializer.getElements().length === 0) return
-          }
+          if (Node.isObjectLiteralExpression(initializer) && initializer.getProperties().length === 0) return
+          if (Node.isArrayLiteralExpression(initializer) && initializer.getElements().length === 0) return
         }
 
         if (minProps > 0) {
-          if (Node.isObjectLiteralExpression(initializer)) {
-            if (initializer.getProperties().length < minProps) return
-          }
-          if (Node.isArrayLiteralExpression(initializer)) {
-            if (initializer.getElements().length < minProps) return
-          }
+          if (Node.isObjectLiteralExpression(initializer) && initializer.getProperties().length < minProps) return
+          if (Node.isArrayLiteralExpression(initializer) && initializer.getElements().length < minProps) return
         }
 
         if (!isConstableValue(initializer)) return
 
         const range = getNodeRange(initializer)
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: `Use 'as const' for better type inference on this ${Node.isObjectLiteralExpression(initializer) ? 'object' : 'array'} literal.`,
+          range,
           ruleId: 'prefer-const-assertions',
           severity: 'info',
-          message: `Use 'as const' for better type inference on this ${Node.isObjectLiteralExpression(initializer) ? 'object' : 'array'} literal.`,
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: `Add 'as const' to make the literal type more specific and readonly.`,
         })
       },

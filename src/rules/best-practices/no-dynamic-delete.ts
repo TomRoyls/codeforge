@@ -1,11 +1,14 @@
 /**
- * @fileoverview Disallow delete operator on variables
+ * @file Disallow delete operator on variables
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange } from '../../ast/visitor.js'
 
 interface NoDynamicDeleteOptions extends RuleOptions {}
@@ -36,20 +39,13 @@ function isDynamicDelete(node: Node): Node | null {
 }
 
 export const noDynamicDeleteRule: RuleDefinition<NoDynamicDeleteOptions> = {
-  meta: {
-    name: 'no-dynamic-delete',
-    description: 'Disallow delete operator on variables and computed property access',
-    category: 'correctness',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: NoDynamicDeleteOptions) => {
+  create(_options: NoDynamicDeleteOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isDynamicDelete(node)
           if (!result) return
 
@@ -58,27 +54,34 @@ export const noDynamicDeleteRule: RuleDefinition<NoDynamicDeleteOptions> = {
 
           if (Node.isIdentifier(result)) {
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: 'Deleting local variables is not allowed. Use undefined assignment or refactor instead.',
+              range,
               ruleId: 'no-dynamic-delete',
               severity: 'warning',
-              message: 'Deleting local variables is not allowed. Use undefined assignment or refactor instead.',
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Set to undefined or refactor: ' + exprText + ' = undefined',
             })
           } else {
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: 'Deleting computed properties can be slow. Consider using a Map or Set.',
+              range,
               ruleId: 'no-dynamic-delete',
               severity: 'warning',
-              message: 'Deleting computed properties can be slow. Consider using a Map or Set.',
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Consider using Map.delete() or Set.delete() for dynamic key removal',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'correctness',
+    description: 'Disallow delete operator on variables and computed property access',
+    fixable: 'code',
+    name: 'no-dynamic-delete',
+    recommended: false,
   },
 }
 
@@ -96,24 +99,25 @@ export function analyzeNoDynamicDelete(
 
       if (Node.isIdentifier(result)) {
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: 'Deleting local variables is not allowed. Use undefined assignment or refactor instead.',
+          range,
           ruleId: 'no-dynamic-delete',
           severity: 'warning',
-          message: 'Deleting local variables is not allowed. Use undefined assignment or refactor instead.',
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Set to undefined or refactor: ' + exprText + ' = undefined',
         })
       } else {
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: 'Deleting computed properties can be slow. Consider using a Map or Set.',
+          range,
           ruleId: 'no-dynamic-delete',
           severity: 'warning',
-          message: 'Deleting computed properties can be slow. Consider using a Map or Set.',
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Consider using Map.delete() or Set.delete() for dynamic key removal',
         })
       }
     }
+
     node.forEachChild(visit)
   }
 

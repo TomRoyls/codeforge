@@ -1,31 +1,31 @@
-import { Node, type SourceFile, type BinaryExpression, SyntaxKind } from 'ts-morph'
+import { type BinaryExpression, Node, type SourceFile, SyntaxKind } from 'ts-morph'
 
 import { type FunctionLikeNode, getFunctionName, isFunctionLike } from '../ast/visitor.js'
 
-export type ComplexityCategory = 'low' | 'moderate' | 'high' | 'extreme'
+export type ComplexityCategory = 'extreme' | 'high' | 'low' | 'moderate'
 
 export interface FunctionComplexity {
-  functionName: string
-  filePath: string
-  startLine: number
-  cyclomatic: number
-  cognitive: number
   category: ComplexityCategory
+  cognitive: number
+  cyclomatic: number
+  filePath: string
+  functionName: string
+  startLine: number
 }
 
 export interface ComplexityResult {
   functions: FunctionComplexity[]
   summary: {
-    totalFunctions: number
-    averageCyclomatic: number
     averageCognitive: number
-    maxCyclomatic: number
-    maxCognitive: number
+    averageCyclomatic: number
     categoryBreakdown: Record<ComplexityCategory, number>
+    maxCognitive: number
+    maxCyclomatic: number
+    totalFunctions: number
   }
 }
 
-const LOGICAL_OPERATORS = [SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken]
+const LOGICAL_OPERATORS = new Set([SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken])
 
 export function getComplexityCategory(complexity: number): ComplexityCategory {
   if (complexity <= 5) return 'low'
@@ -38,7 +38,7 @@ function isLogicalBinaryExpression(node: Node): boolean {
   if (!Node.isBinaryExpression(node)) return false
   const binaryExpr = node as BinaryExpression
   const operator = binaryExpr.getOperatorToken().getKind()
-  return LOGICAL_OPERATORS.includes(operator)
+  return LOGICAL_OPERATORS.has(operator)
 }
 
 export function calculateCyclomaticComplexity(functionNode: FunctionLikeNode): number {
@@ -85,6 +85,7 @@ export function calculateCognitiveComplexity(functionNode: FunctionLikeNode): nu
       if (elseStatement) {
         elseStatement.forEachChild((child) => visit(child, nestingDepth + 1))
       }
+
       return
     }
 
@@ -120,16 +121,16 @@ export function calculateCognitiveComplexity(functionNode: FunctionLikeNode): nu
 
     if (Node.isSwitchStatement(node)) {
       complexity += 1 + nestingDepth
-      node
+      for (const clause of node
         .getCaseBlock()
-        .getClauses()
-        .forEach((clause) => {
+        .getClauses()) {
           clause.forEachChild((child) => {
             if (!Node.isCaseClause(child) && !Node.isDefaultClause(child)) {
               visit(child, nestingDepth + 1)
             }
           })
-        })
+        }
+
       return
     }
 

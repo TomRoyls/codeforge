@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isLabeledStatement(node: unknown): boolean {
@@ -26,30 +27,10 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noUnusedLabelsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow unused labels.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
-    const labels = new Map<string, { used: boolean; node: unknown }>()
+    const labels = new Map<string, { node: unknown; used: boolean; }>()
 
     return {
-      LabeledStatement(node: unknown): void {
-        if (!isLabeledStatement(node)) return
-        const n = node as Record<string, unknown>
-        if (isIdentifier(n.label)) {
-          const label = n.label as Record<string, unknown>
-          const name = label.name as string
-          labels.set(name, { used: false, node })
-        }
-      },
       BreakStatement(node: unknown): void {
         if (!isBreakStatement(node)) return
         const n = node as Record<string, unknown>
@@ -72,17 +53,37 @@ export const noUnusedLabelsRule: RuleDefinition = {
           }
         }
       },
+      LabeledStatement(node: unknown): void {
+        if (!isLabeledStatement(node)) return
+        const n = node as Record<string, unknown>
+        if (isIdentifier(n.label)) {
+          const label = n.label as Record<string, unknown>
+          const name = label.name as string
+          labels.set(name, { node, used: false })
+        }
+      },
       'Program:exit'(): void {
         for (const [name, info] of labels) {
           if (!info.used) {
             context.report({
-              message: `Unused label '${name}'.`,
               loc: extractLocation(info.node),
+              message: `Unused label '${name}'.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow unused labels.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnusedLabelsRule

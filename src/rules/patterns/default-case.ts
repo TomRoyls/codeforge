@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isSwitchStatement(node: unknown): boolean {
@@ -7,7 +8,7 @@ function isSwitchStatement(node: unknown): boolean {
   return n.type === 'SwitchStatement'
 }
 
-function hasDefaultCase(cases: unknown[] | undefined): boolean {
+function hasDefaultCase(cases: undefined | unknown[]): boolean {
   if (!cases) return false
   return cases.some((c) => {
     const caseNode = c as Record<string, unknown>
@@ -16,31 +17,31 @@ function hasDefaultCase(cases: unknown[] | undefined): boolean {
 }
 
 export const defaultCaseRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Require default case in switch statements.',
-      category: 'patterns',
-      recommended: false,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       SwitchStatement(node: unknown): void {
         if (!isSwitchStatement(node)) return
         const n = node as Record<string, unknown>
-        const cases = n.cases as unknown[] | undefined
+        const cases = n.cases as undefined | unknown[]
         if (!hasDefaultCase(cases)) {
           context.report({
-            message: 'Expected a default case.',
             loc: extractLocation(node),
+            message: 'Expected a default case.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Require default case in switch statements.',
+      recommended: false,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 export default defaultCaseRule

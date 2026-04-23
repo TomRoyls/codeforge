@@ -1,14 +1,15 @@
 /**
- * @fileoverview Disallow use of eval() and related functions
+ * @file Disallow use of eval() and related functions
  * @module rules/security/no-eval
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
@@ -24,38 +25,39 @@ interface NoEvalOptions {
 
 const DANGEROUS_FUNCTIONS = new Set([
   'eval',
-  'Function',
-  'setTimeout',
-  'setInterval',
-  'setImmediate',
   'execScript',
+  'Function',
+  'setImmediate',
+  'setInterval',
+  'setTimeout',
 ])
 
-function isEvalLike(node: unknown): { isEval: boolean; callee: string } {
+function isEvalLike(node: unknown): { callee: string; isEval: boolean; } {
   if (!node || typeof node !== 'object') {
-    return { isEval: false, callee: '' }
+    return { callee: '', isEval: false }
   }
 
   const n = node as Record<string, unknown>
 
   if (n.type !== 'CallExpression') {
-    return { isEval: false, callee: '' }
+    return { callee: '', isEval: false }
   }
 
   const callee = n.callee as Record<string, unknown> | undefined
 
   if (!callee) {
-    return { isEval: false, callee: '' }
+    return { callee: '', isEval: false }
   }
 
   // Direct eval call: eval(...)
   if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    const name = callee.name
+    const {name} = callee
     if (name === 'eval') {
-      return { isEval: true, callee: 'eval' }
+      return { callee: 'eval', isEval: true }
     }
+
     if (name === 'Function') {
-      return { isEval: true, callee: 'Function' }
+      return { callee: 'Function', isEval: true }
     }
   }
 
@@ -63,20 +65,20 @@ function isEvalLike(node: unknown): { isEval: boolean; callee: string } {
   if (callee.type === 'MemberExpression') {
     const property = callee.property as Record<string, unknown> | undefined
     if (property && property.type === 'Identifier' && typeof property.name === 'string') {
-      const name = property.name
+      const {name} = property
       if (DANGEROUS_FUNCTIONS.has(name)) {
-        return { isEval: true, callee: name }
+        return { callee: name, isEval: true }
       }
     }
   }
 
-  return { isEval: false, callee: '' }
+  return { callee: '', isEval: false }
 }
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -94,13 +96,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -110,35 +112,6 @@ function extractLocation(node: unknown): SourceLocation {
  * Disallows use of eval() and similar dangerous functions
  */
 export const noEvalRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow the use of eval() and similar methods which can execute arbitrary code strings. These functions pose security risks and can lead to code injection vulnerabilities.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-eval',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowIndirect: {
-            type: 'boolean',
-            default: false,
-          },
-          allowWith: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoEvalOptions>(context.config.options, {
       allowIndirect: false,
@@ -167,20 +140,9 @@ export const noEvalRule: RuleDefinition = {
           })
 
           context.report({
-            node,
+            loc: extractLocation(node),
             message: `Unexpected use of '${result.callee}'. This can lead to security vulnerabilities. ${RULE_SUGGESTIONS.noEval}`,
-            loc: extractLocation(node),
-          })
-        }
-      },
-
-      WithStatement(node: unknown): void {
-        if (!options.allowWith) {
-          context.report({
             node,
-            message:
-              'Unexpected use of with statement. It is deprecated and can lead to security issues. ${RULE_SUGGESTIONS.noEval}',
-            loc: extractLocation(node),
           })
         }
       },
@@ -195,14 +157,54 @@ export const noEvalRule: RuleDefinition = {
 
         if (callee?.type === 'Identifier' && callee.name === 'Function') {
           context.report({
-            node,
+            loc: extractLocation(node),
             message:
               "Unexpected use of 'new Function()'. This is equivalent to eval() and can lead to security vulnerabilities. ${RULE_SUGGESTIONS.noEval}",
+            node,
+          })
+        }
+      },
+
+      WithStatement(node: unknown): void {
+        if (!options.allowWith) {
+          context.report({
             loc: extractLocation(node),
+            message:
+              'Unexpected use of with statement. It is deprecated and can lead to security issues. ${RULE_SUGGESTIONS.noEval}',
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow the use of eval() and similar methods which can execute arbitrary code strings. These functions pose security risks and can lead to code injection vulnerabilities.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-eval',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowIndirect: {
+            default: false,
+            type: 'boolean',
+          },
+          allowWith: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

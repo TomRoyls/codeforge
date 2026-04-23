@@ -2,11 +2,13 @@ import {
   type ArrowFunction,
   type CallExpression,
   type FunctionExpression,
-  type PropertyAccessExpression,
   Node,
+  type PropertyAccessExpression,
 } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
-import { type RuleViolation, type VisitorContext, getNodeRange } from '../../ast/visitor.js'
+
+import { getNodeRange, type RuleViolation, type VisitorContext } from '../../ast/visitor.js'
 
 interface NoMisusedPromisesOptions extends RuleOptions {}
 
@@ -29,7 +31,7 @@ function isArrowOrFunctionExpression(node: Node): node is ArrowFunction | Functi
   return kind === ARROW_FUNCTION_KIND || kind === FUNCTION_EXPRESSION_KIND
 }
 
-function checkAsyncForEachCallback(node: Node, context: VisitorContext): RuleViolation | null {
+function checkAsyncForEachCallback(node: Node, context: VisitorContext): null | RuleViolation {
   if (!isCallExpression(node)) {
     return null
   }
@@ -67,40 +69,40 @@ function checkAsyncForEachCallback(node: Node, context: VisitorContext): RuleVio
   }
 
   return {
-    ruleId: 'no-misused-promises',
-    severity: 'warning',
+    filePath: context.getFilePath(),
     message:
       'Promise returned from async forEach callback is ignored. This can lead to unhandled rejections and unexpected behavior.',
-    filePath: context.getFilePath(),
     range: getNodeRange(node),
+    ruleId: 'no-misused-promises',
+    severity: 'warning',
     suggestion:
       'Consider using for-of with await for sequential execution, or map() with Promise.all() for parallel execution.',
   }
 }
 
 export const noMisusedPromisesRule: RuleDefinition<NoMisusedPromisesOptions> = {
-  meta: {
-    name: 'no-misused-promises',
-    description: 'Disallow promises in fire-and-forget contexts like forEach with async callbacks',
-    category: 'performance',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {},
-  create: (_options: NoMisusedPromisesOptions) => {
+  create(_options: NoMisusedPromisesOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, context: VisitorContext) => {
+        visitNode(node: Node, context: VisitorContext) {
           const violation = checkAsyncForEachCallback(node, context)
           if (violation) {
             violations.push(violation)
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {},
+  meta: {
+    category: 'performance',
+    description: 'Disallow promises in fire-and-forget contexts like forEach with async callbacks',
+    fixable: 'code',
+    name: 'no-misused-promises',
+    recommended: true,
   },
 }
 

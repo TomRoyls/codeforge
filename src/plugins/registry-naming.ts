@@ -7,16 +7,17 @@ export function isPluginName(name: string): boolean {
   return name.startsWith(PLUGIN_PREFIX) || SCOPED_PLUGIN_PATTERN.test(name)
 }
 
-export function parsePluginName(fullName: string): { scope: string | null; name: string } {
+export function parsePluginName(fullName: string): { name: string; scope: null | string; } {
   if (fullName.startsWith('@')) {
     const [scope, name] = fullName.split('/')
     if (!scope || !name) {
       throw new PluginLoadError(fullName, `Invalid scoped plugin name: ${fullName}`)
     }
-    return { scope, name }
+
+    return { name, scope }
   }
 
-  return { scope: null, name: fullName }
+  return { name: fullName, scope: null }
 }
 
 export const PLUGIN_PATTERNS = {

@@ -7,17 +7,18 @@
  * @module rules/lazy-loader
  */
 
-import type { RuleDefinition } from './types.js'
 import type { RuleDefinition as PluginRuleDefinition } from '../plugins/types.js'
+import type { RuleDefinition } from './types.js'
+
 import { adaptPluginRule } from './adapter.js'
 
 export type RuleCategory =
   | 'complexity'
+  | 'correctness'
   | 'dependencies'
+  | 'patterns'
   | 'performance'
   | 'security'
-  | 'patterns'
-  | 'correctness'
   | 'testing'
 
 /**
@@ -25,74 +26,50 @@ export type RuleCategory =
  * Rules are grouped by their source category for efficient loading
  */
 const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>> = {
-  // Best practices module
-  'no-magic-numbers': () =>
-    import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
-  'prefer-const-assertions': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'prefer-const-assertions': m.preferConstAssertionsRule,
+  'consistent-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
     })),
-  'no-unnecessary-type-assertion': () =>
+  'explicit-return-type': () =>
     import('./best-practices/index.js').then((m) => ({
-      'no-unnecessary-type-assertion': m.noUnnecessaryTypeAssertionRule,
+      'explicit-return-type': m.explicitReturnTypeRule,
     })),
-  'strict-boolean-expressions': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'strict-boolean-expressions': m.strictBooleanExpressionsRule,
-    })),
-  'no-console': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
-    })),
-
   // Complexity module
   'max-complexity': () =>
     import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
   'max-depth': () => import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
   'max-lines': () => import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
+
   'max-lines-per-function': () =>
     import('./complexity/index.js').then((m) => ({
       'max-lines-per-function': m.maxLinesPerFunctionRule,
     })),
   'max-params': () =>
     import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
-
   // Performance module
   'no-await-in-loop': () =>
     import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
-  'no-sync-in-async': () =>
-    import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
-  'prefer-object-spread': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-object-spread': adaptPluginRule(m.preferObjectSpreadRule, 'prefer-object-spread'),
+  'no-barrel-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
     })),
-  'prefer-optional-chain': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-optional-chain': adaptPluginRule(m.preferOptionalChainRule, 'prefer-optional-chain'),
-    })),
-  'prefer-math-trunc': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-math-trunc': adaptPluginRule(m.preferMathTruncRule, 'prefer-math-trunc'),
-    })),
-
   // Dependencies module
   'no-circular-deps': () =>
     import('./dependencies/index.js').then((m) => ({
       'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
     })),
-  'no-unused-exports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-unused-exports': adaptPluginRule(m.noUnusedExportsRule, 'no-unused-exports'),
-    })),
-  'consistent-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
-    })),
-  'no-barrel-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
-    })),
 
+  'no-console': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
+    })),
+  'no-constant-binary-expression': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-constant-binary-expression': adaptPluginRule(
+        m.noConstantBinaryExpressionRule,
+        'no-constant-binary-expression',
+      ),
+    })),
   // Security module
   'no-deprecated-api': () =>
     import('./security/index.js').then((m) => ({
@@ -102,20 +79,50 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./security/index.js').then((m) => ({
       'no-dynamic-delete': adaptPluginRule(m.noDynamicDeleteRule, 'no-dynamic-delete'),
     })),
+  // Correctness continued
+  'no-empty-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
+    })),
+
+  'no-empty-character-class': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-character-class': adaptPluginRule(
+        m.noEmptyCharacterClassRule,
+        'no-empty-character-class',
+      ),
+    })),
+  'no-empty-function': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-function': adaptPluginRule(m.noEmptyFunctionRule, 'no-empty-function'),
+    })),
   'no-eval': () =>
     import('./security/index.js').then((m) => ({
       'no-eval': adaptPluginRule(m.noEvalRule, 'no-eval'),
     })),
-  'no-unsafe-return': () =>
-    import('./security/index.js').then((m) => ({
-      'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
+  'no-focused-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
     })),
-  'no-unsafe-type-assertion': () =>
-    import('./security/index.js').then((m) => ({
-      'no-unsafe-type-assertion': adaptPluginRule(
-        m.noUnsafeTypeAssertionRule,
-        'no-unsafe-type-assertion',
-      ),
+
+  // Best practices module
+  'no-magic-numbers': () =>
+    import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
+  // Testing module
+  'no-skipped-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
+    })),
+  'no-sync-in-async': () =>
+    import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
+  // Correctness module
+  'no-throw-literal': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-throw-literal': adaptPluginRule(m.noThrowLiteralRule, 'no-throw-literal'),
+    })),
+  'no-unnecessary-type-assertion': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'no-unnecessary-type-assertion': m.noUnnecessaryTypeAssertionRule,
     })),
   'no-unsafe-call': () =>
     import('./security/index.js').then((m) => ({
@@ -133,9 +140,28 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
       'no-unsafe-regex': adaptPluginRule(m.noUnsafeRegexRule, 'no-unsafe-regex'),
     })),
 
-  'explicit-return-type': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'explicit-return-type': m.explicitReturnTypeRule,
+  'no-unsafe-return': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
+    })),
+  'no-unsafe-type-assertion': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-type-assertion': adaptPluginRule(
+        m.noUnsafeTypeAssertionRule,
+        'no-unsafe-type-assertion',
+      ),
+    })),
+  'no-unused-exports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-unused-exports': adaptPluginRule(m.noUnusedExportsRule, 'no-unused-exports'),
+    })),
+  'no-useless-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-useless-catch': adaptPluginRule(m.noUselessCatchRule, 'no-useless-catch'),
+    })),
+  'no-useless-comparison': () =>
+    import('./patterns/index.js').then((m) => ({
+      'no-useless-comparison': m.noUselessComparisonRule,
     })),
   'prefer-array-find': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -148,6 +174,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
   'prefer-arrow-callback': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-arrow-callback': m.preferArrowCallbackRule,
+    })),
+  'prefer-const-assertions': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'prefer-const-assertions': m.preferConstAssertionsRule,
     })),
   'prefer-default-export': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -165,10 +195,23 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./best-practices/index.js').then((m) => ({
       'prefer-for-of': m.preferForOfRule,
     })),
+  'prefer-math-trunc': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-math-trunc': adaptPluginRule(m.preferMathTruncRule, 'prefer-math-trunc'),
+    })),
+  'prefer-object-spread': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-object-spread': adaptPluginRule(m.preferObjectSpreadRule, 'prefer-object-spread'),
+    })),
+  'prefer-optional-chain': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-optional-chain': adaptPluginRule(m.preferOptionalChainRule, 'prefer-optional-chain'),
+    })),
   'prefer-regex-literal': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-regex-literal': m.preferRegexLiteralRule,
     })),
+
   'prefer-string-start-end': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-start-end': m.preferStringStartEndRule,
@@ -177,61 +220,22 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-template': m.preferStringTemplateRule,
     })),
-  'no-empty-character-class': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-character-class': adaptPluginRule(m.noEmptyCharacterClassRule, 'no-empty-character-class'),
-    })),
-  // Correctness module
-  'no-throw-literal': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-throw-literal': adaptPluginRule(m.noThrowLiteralRule, 'no-throw-literal'),
-    })),
-  'no-constant-binary-expression': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-constant-binary-expression': adaptPluginRule(
-        m.noConstantBinaryExpressionRule,
-        'no-constant-binary-expression',
-      ),
-    })),
-  'no-useless-catch': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-useless-catch': adaptPluginRule(m.noUselessCatchRule, 'no-useless-catch'),
-    })),
-  'no-empty-function': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-function': adaptPluginRule(m.noEmptyFunctionRule, 'no-empty-function'),
-    })),
-  'no-useless-comparison': () =>
-    import('./patterns/index.js').then((m) => ({
-      'no-useless-comparison': m.noUselessComparisonRule,
-    })),
 
-  // Testing module
-  'no-skipped-tests': () =>
-    import('./testing/index.js').then((m) => ({
-      'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
-    })),
-  'no-focused-tests': () =>
-    import('./testing/index.js').then((m) => ({
-      'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
-    })),
-
-  // Correctness continued
-  'no-empty-catch': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
+  'strict-boolean-expressions': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'strict-boolean-expressions': m.strictBooleanExpressionsRule,
     })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)
   ...createPatternRuleLoaders(),
 }
 
+const patternsModule = () => import('./patterns/index.js')
+
 /**
  * Create loaders for pattern rules - the largest category
  */
 function createPatternRuleLoaders(): Record<string, () => Promise<Record<string, RuleDefinition>>> {
-  const patternsModule = () => import('./patterns/index.js')
-
   const patternRules = [
     'consistent-type-exports',
     'curly',
@@ -413,6 +417,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
         if (!rule) {
           throw new Error(`Rule ${ruleId} not found in patterns module`)
         }
+
         return { [ruleId]: adaptPluginRule(rule, ruleId) }
       })
   }
@@ -424,226 +429,226 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
  * Rule ID to category mapping for filtering rules by category
  */
 const RULE_CATEGORIES: Record<string, RuleCategory> = {
+  'consistent-imports': 'dependencies',
+  // Patterns (default for most rules)
+  'consistent-type-exports': 'patterns',
+  // Orphan rules - pattern rules
+  'constructor-super': 'patterns',
+  curly: 'patterns',
+  'default-case': 'patterns',
+  'eq-eq-eq': 'patterns',
+  'explicit-module-boundary-types': 'patterns',
+  'explicit-return-type': 'patterns',
+  'for-direction': 'patterns',
+  'getter-return': 'patterns',
   // Complexity
   'max-complexity': 'complexity',
   'max-depth': 'complexity',
+  'max-file-size': 'patterns',
   'max-lines': 'complexity',
   'max-lines-per-function': 'complexity',
   'max-params': 'complexity',
-  // Performance
-  'no-await-in-loop': 'performance',
-  'no-sync-in-async': 'performance',
-  'prefer-object-spread': 'performance',
-  'prefer-optional-chain': 'performance',
-  'prefer-math-trunc': 'performance',
-  // Dependencies
-  'no-circular-deps': 'dependencies',
-  'no-unused-exports': 'dependencies',
-  'consistent-imports': 'dependencies',
-  'no-barrel-imports': 'dependencies',
-  // Security
-  'no-deprecated-api': 'security',
-  'no-dynamic-delete': 'security',
-  'no-eval': 'security',
-  'no-unsafe-return': 'security',
-  'no-unsafe-type-assertion': 'security',
-  // Testing
-  'no-skipped-tests': 'testing',
-  'no-focused-tests': 'testing',
-  'no-unfinished-todos': 'patterns',
-  // Correctness continued
-  'no-empty-catch': 'correctness',
-  'no-useless-catch': 'correctness',
-  // Patterns (default for most rules)
-  'consistent-type-exports': 'patterns',
-  'max-file-size': 'patterns',
   'max-union-size': 'patterns',
-  'no-console-log': 'patterns',
-  'no-duplicate-code': 'patterns',
-  'no-duplicate-else-if': 'patterns',
-  'no-explicit-any': 'patterns',
-  'no-floating-promises': 'patterns',
-  'no-implicit-coercion': 'patterns',
-  'no-implied-eval': 'patterns',
-  'no-inferrable-types': 'patterns',
-  'no-misused-promises': 'patterns',
-  'no-lonely-if': 'patterns',
-  'no-loss-of-precision': 'patterns',
-  'no-multi-spaces': 'patterns',
-  'no-return-await': 'patterns',
-  'no-throw-sync': 'patterns',
-  'no-unnecessary-condition': 'patterns',
-  'no-unnecessary-escape-in-regexp': 'patterns',
-  'no-unnecessary-qualifier': 'patterns',
-  'no-var-requires': 'patterns',
-  'prefer-async-await': 'patterns',
-  'prefer-const': 'patterns',
-  'prefer-includes': 'patterns',
-  'prefer-literal-enum-member': 'patterns',
-  'prefer-nullish-coalescing': 'patterns',
-  'prefer-readonly': 'patterns',
-  'require-return-type': 'patterns',
-  'prefer-regex-literals': 'patterns',
-  'prefer-regexp-exec': 'patterns',
-  'prefer-rest-params': 'patterns',
-  'prefer-spread': 'patterns',
-  'prefer-string-replace-all': 'patterns',
-  'prefer-string-slice-over-substring': 'patterns',
-  'prefer-string-slice': 'patterns',
-  'prefer-template': 'patterns',
-  'require-await': 'patterns',
-  'restrict-template-expressions': 'patterns',
-  curly: 'patterns',
-  'eq-eq-eq': 'patterns',
-  'explicit-module-boundary-types': 'patterns',
+  'no-alert': 'patterns',
   'no-array-constructor': 'patterns',
-  'no-async-promise-executor': 'patterns',
-  'no-compare-neg-zero': 'patterns',
-  'no-confusing-void-expression': 'patterns',
-  'no-constant-condition': 'patterns',
-  'no-const-assign': 'patterns',
-  'no-duplicate-imports': 'patterns',
-  'no-else-return': 'patterns',
-  'no-empty': 'patterns',
-  'no-nested-ternary': 'patterns',
-  'no-non-null-assertion': 'patterns',
-  'no-object-constructor': 'patterns',
-  'no-param-reassign': 'patterns',
-  'no-promise-as-boolean': 'patterns',
-  'no-shadow': 'patterns',
-  'no-string-concat': 'patterns',
-  'no-unnecessary-template-expression': 'patterns',
-  'no-unused-vars': 'patterns',
-  'no-unused-private-members': 'patterns',
-  'no-unsafe-declaration-merging': 'patterns',
-  'no-void': 'patterns',
-  'prefer-exponentiation-operator': 'patterns',
-  'prefer-number-properties': 'patterns',
-  'prefer-numeric-literals': 'patterns',
-  'prefer-object-has-own': 'patterns',
-  'no-type-only-return': 'patterns',
-  'prefer-date-now': 'patterns',
-  'prefer-readonly-parameter': 'patterns',
-  // Best practices
-  'prefer-const-assertions': 'patterns',
-  'no-unnecessary-type-assertion': 'patterns',
-  'strict-boolean-expressions': 'patterns',
-  'no-throw-literal': 'correctness',
-  'no-constant-binary-expression': 'correctness',
   // Additional pattern rules
   'no-array-destructuring': 'patterns',
+  'no-async-promise-executor': 'patterns',
   'no-async-without-await': 'patterns',
-  'no-same-side-conditions': 'patterns',
-  'no-simplifiable-pattern': 'patterns',
-  'no-unnecessary-slice': 'patterns',
-  'no-unnecessary-string-concat': 'patterns',
-  'no-unnecessary-type-arguments': 'patterns',
-  'no-unsafe-assignment': 'patterns',
-  'no-useless-fallback-in-spread': 'patterns',
-  'prefer-array-flat': 'patterns',
-  'prefer-at-context': 'patterns',
-  'prefer-at-method': 'patterns',
-  'prefer-enum-initializers': 'patterns',
-  'prefer-function-type': 'patterns',
-  'prefer-prototype-methods': 'patterns',
-  'prefer-string-starts-ends-with': 'patterns',
-  'prefer-ternary-operator': 'patterns',
-  // Best practices rules
-  'no-magic-numbers': 'patterns',
-  'no-console': 'patterns',
-  'no-debugger': 'patterns',
-  'no-delete-var': 'patterns',
-  'no-useless-comparison': 'patterns',
-  'prefer-promise-reject-errors': 'patterns',
-  'no-empty-function': 'correctness',
-  'no-alert': 'patterns',
-  'no-useless-constructor': 'patterns',
-  'no-unsafe-call': 'security',
-  'no-unsafe-member-access': 'security',
-  'no-unsafe-regex': 'security',
-  // Orphan rules - pattern rules
-  'constructor-super': 'patterns',
-  'default-case': 'patterns',
-  'for-direction': 'patterns',
-  'getter-return': 'patterns',
+  // Performance
+  'no-await-in-loop': 'performance',
+  'no-barrel-imports': 'dependencies',
   'no-bitwise': 'patterns',
   'no-caller': 'patterns',
   'no-case-declarations': 'patterns',
+  // Dependencies
+  'no-circular-deps': 'dependencies',
   'no-class-assign': 'patterns',
+  'no-compare-neg-zero': 'patterns',
   'no-cond-assign': 'patterns',
+  'no-confusing-void-expression': 'patterns',
+  'no-console': 'patterns',
+  'no-console-log': 'patterns',
+  'no-const-assign': 'patterns',
+  'no-constant-binary-expression': 'correctness',
+  'no-constant-condition': 'patterns',
   'no-constructor-return': 'patterns',
   'no-control-regex': 'patterns',
+  'no-debugger': 'patterns',
+  'no-delete-var': 'patterns',
+  // Security
+  'no-deprecated-api': 'security',
   'no-div-regex': 'patterns',
   'no-dupe-args': 'patterns',
   'no-dupe-class-members': 'patterns',
   'no-dupe-keys': 'patterns',
   'no-duplicate-case': 'patterns',
+  'no-duplicate-code': 'patterns',
+  'no-duplicate-else-if': 'patterns',
+  'no-duplicate-imports': 'patterns',
+  'no-dynamic-delete': 'security',
+  'no-else-return': 'patterns',
+  'no-empty': 'patterns',
+  // Correctness continued
+  'no-empty-catch': 'correctness',
+  'no-empty-character-class': 'correctness',
+  'no-empty-function': 'correctness',
   'no-empty-pattern': 'patterns',
   'no-empty-static-block': 'patterns',
+  'no-eval': 'security',
   'no-ex-assign': 'patterns',
+  'no-explicit-any': 'patterns',
   'no-extend-native': 'patterns',
   'no-extra-boolean-cast': 'patterns',
   'no-fallthrough': 'patterns',
+  'no-floating-promises': 'patterns',
+  'no-focused-tests': 'testing',
   'no-func-assign': 'patterns',
   'no-global-assign': 'patterns',
+  'no-implicit-coercion': 'patterns',
+  'no-implied-eval': 'patterns',
   'no-import-assign': 'patterns',
+  'no-inferrable-types': 'patterns',
   'no-invalid-regexp': 'patterns',
   'no-irregular-whitespace': 'patterns',
   'no-iterator': 'patterns',
+  'no-lonely-if': 'patterns',
   'no-loop-func': 'patterns',
+  'no-loss-of-precision': 'patterns',
+  // Best practices rules
+  'no-magic-numbers': 'patterns',
   'no-misleading-character-class': 'patterns',
+  'no-misused-promises': 'patterns',
+  'no-multi-spaces': 'patterns',
+  'no-nested-ternary': 'patterns',
   'no-new-func': 'patterns',
   'no-new-native-nonconstructor': 'patterns',
   'no-new-wrappers': 'patterns',
+  'no-non-null-assertion': 'patterns',
   'no-nonoctal-decimal-escape': 'patterns',
   'no-obj-calls': 'patterns',
+  'no-object-constructor': 'patterns',
   'no-octal': 'patterns',
+  'no-param-reassign': 'patterns',
+  'no-promise-as-boolean': 'patterns',
   'no-prototype-builtins': 'patterns',
   'no-redeclare': 'patterns',
   'no-regex-spaces': 'patterns',
   'no-return-assign': 'patterns',
+  'no-return-await': 'patterns',
   'no-return-or-await': 'patterns',
+  'no-same-side-conditions': 'patterns',
   'no-self-assign': 'patterns',
   'no-sequences': 'patterns',
   'no-setter-return': 'patterns',
+  'no-shadow': 'patterns',
   'no-shadow-restricted-names': 'patterns',
+  'no-simplifiable-pattern': 'patterns',
+  // Testing
+  'no-skipped-tests': 'testing',
   'no-sparse-arrays': 'patterns',
+  'no-string-concat': 'patterns',
+  'no-sync-in-async': 'performance',
   'no-thenable': 'patterns',
   'no-this-before-super': 'patterns',
+  'no-throw-literal': 'correctness',
+  'no-throw-sync': 'patterns',
+  'no-type-only-return': 'patterns',
   'no-unassigned-vars': 'patterns',
   'no-undef': 'patterns',
   'no-unexpected-multiline': 'patterns',
+  'no-unfinished-todos': 'patterns',
+  'no-unnecessary-condition': 'patterns',
+  'no-unnecessary-escape-in-regexp': 'patterns',
+  'no-unnecessary-qualifier': 'patterns',
+  'no-unnecessary-slice': 'patterns',
+  'no-unnecessary-string-concat': 'patterns',
+  'no-unnecessary-template-expression': 'patterns',
+  'no-unnecessary-type-arguments': 'patterns',
+  'no-unnecessary-type-assertion': 'patterns',
   'no-unneeded-ternary': 'patterns',
   'no-unreachable': 'patterns',
+  'no-unsafe-assignment': 'patterns',
+  'no-unsafe-call': 'security',
+  'no-unsafe-declaration-merging': 'patterns',
   'no-unsafe-finally': 'patterns',
+  'no-unsafe-member-access': 'security',
   'no-unsafe-negation': 'patterns',
   'no-unsafe-optional-chaining': 'patterns',
+  'no-unsafe-regex': 'security',
+  'no-unsafe-return': 'security',
+  'no-unsafe-type-assertion': 'security',
+  'no-unused-exports': 'dependencies',
   'no-unused-expressions': 'patterns',
   'no-unused-labels': 'patterns',
+  'no-unused-private-members': 'patterns',
+  'no-unused-vars': 'patterns',
   'no-useless-assignment': 'patterns',
   'no-useless-backreference': 'patterns',
+  'no-useless-catch': 'correctness',
+  'no-useless-comparison': 'patterns',
   'no-useless-concat': 'patterns',
+  'no-useless-constructor': 'patterns',
   'no-useless-escape': 'patterns',
+  'no-useless-fallback-in-spread': 'patterns',
   'no-var': 'patterns',
+  'no-var-requires': 'patterns',
+  'no-void': 'patterns',
   'no-with': 'patterns',
   'object-shorthand': 'patterns',
-  'preserve-caught-error': 'patterns',
-  'require-yield': 'patterns',
-  'sort-keys': 'patterns',
-  'use-isnan': 'patterns',
-  'valid-typeof': 'patterns',
-  'explicit-return-type': 'patterns',
   'prefer-array-find': 'patterns',
+  'prefer-array-flat': 'patterns',
   'prefer-array-some': 'patterns',
   'prefer-arrow-callback': 'patterns',
+  'prefer-async-await': 'patterns',
+  'prefer-at-context': 'patterns',
+  'prefer-at-method': 'patterns',
+  'prefer-const': 'patterns',
+  // Best practices
+  'prefer-const-assertions': 'patterns',
+  'prefer-date-now': 'patterns',
   'prefer-default-export': 'patterns',
+  'prefer-enum-initializers': 'patterns',
   'prefer-exponent-operator': 'patterns',
+  'prefer-exponentiation-operator': 'patterns',
   'prefer-flat-map': 'patterns',
   'prefer-for-of': 'patterns',
+  'prefer-function-type': 'patterns',
+  'prefer-includes': 'patterns',
+  'prefer-literal-enum-member': 'patterns',
+  'prefer-math-trunc': 'performance',
+  'prefer-nullish-coalescing': 'patterns',
+  'prefer-number-properties': 'patterns',
+  'prefer-numeric-literals': 'patterns',
+  'prefer-object-has-own': 'patterns',
+  'prefer-object-spread': 'performance',
+  'prefer-optional-chain': 'performance',
+  'prefer-promise-reject-errors': 'patterns',
+  'prefer-prototype-methods': 'patterns',
+  'prefer-readonly': 'patterns',
+  'prefer-readonly-parameter': 'patterns',
   'prefer-regex-literal': 'patterns',
+  'prefer-regex-literals': 'patterns',
+  'prefer-regexp-exec': 'patterns',
+  'prefer-rest-params': 'patterns',
+  'prefer-spread': 'patterns',
+  'prefer-string-replace-all': 'patterns',
+  'prefer-string-slice': 'patterns',
+  'prefer-string-slice-over-substring': 'patterns',
   'prefer-string-start-end': 'patterns',
+  'prefer-string-starts-ends-with': 'patterns',
   'prefer-string-template': 'patterns',
-  'no-empty-character-class': 'correctness',
+  'prefer-template': 'patterns',
+  'prefer-ternary-operator': 'patterns',
+  'preserve-caught-error': 'patterns',
+  'require-await': 'patterns',
+  'require-return-type': 'patterns',
+  'require-yield': 'patterns',
+  'restrict-template-expressions': 'patterns',
+  'sort-keys': 'patterns',
+  'strict-boolean-expressions': 'patterns',
+  'use-isnan': 'patterns',
+  'valid-typeof': 'patterns',
 }
 
 /**
@@ -673,18 +678,36 @@ export const ALL_RULE_IDS = Object.keys(RULE_MODULES)
  */
 export class LazyRuleLoader {
   private cache: Map<string, RuleDefinition> = new Map()
-  private loadPromises: Map<string, Promise<RuleDefinition | undefined>> = new Map()
   private eagerLoadingEnabled: boolean = false
+  private loadPromises: Map<string, Promise<RuleDefinition | undefined>> = new Map()
 
   constructor(options?: { eagerLoading?: boolean }) {
     this.eagerLoadingEnabled = options?.eagerLoading ?? false
   }
 
   /**
-   * Check if a rule ID is known
+   * Clear the rule cache
    */
-  hasRule(ruleId: string): boolean {
-    return ruleId in RULE_MODULES
+  clearCache(): void {
+    this.cache.clear()
+    this.loadPromises.clear()
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats(): { cached: number; hitRate?: number; total: number } {
+    return {
+      cached: this.cache.size,
+      total: ALL_RULE_IDS.length,
+    }
+  }
+
+  /**
+   * Get the category for a rule
+   */
+  getRuleCategory(ruleId: string): RuleCategory {
+    return RULE_CATEGORIES[ruleId] ?? 'complexity'
   }
 
   /**
@@ -695,10 +718,26 @@ export class LazyRuleLoader {
   }
 
   /**
-   * Get the category for a rule
+   * Check if a rule ID is known
    */
-  getRuleCategory(ruleId: string): RuleCategory {
-    return RULE_CATEGORIES[ruleId] ?? 'complexity'
+  hasRule(ruleId: string): boolean {
+    return ruleId in RULE_MODULES
+  }
+
+  /**
+   * Check if eager loading is enabled
+   */
+  isEagerLoadingEnabled(): boolean {
+    return this.eagerLoadingEnabled
+  }
+
+  /**
+   * Load all available rules
+   *
+   * @returns Object mapping all rule IDs to their definitions
+   */
+  async loadAllRules(): Promise<Record<string, RuleDefinition>> {
+    return this.loadRules(ALL_RULE_IDS)
   }
 
   /**
@@ -734,6 +773,7 @@ export class LazyRuleLoader {
         if (rule) {
           this.cache.set(ruleId, rule)
         }
+
         this.loadPromises.delete(ruleId)
         return rule
       } catch (error) {
@@ -793,47 +833,6 @@ export class LazyRuleLoader {
   }
 
   /**
-   * Load all available rules
-   *
-   * @returns Object mapping all rule IDs to their definitions
-   */
-  async loadAllRules(): Promise<Record<string, RuleDefinition>> {
-    return this.loadRules(ALL_RULE_IDS)
-  }
-
-  /**
-   * Clear the rule cache
-   */
-  clearCache(): void {
-    this.cache.clear()
-    this.loadPromises.clear()
-  }
-
-  /**
-   * Get cache statistics
-   */
-  getCacheStats(): { cached: number; total: number; hitRate?: number } {
-    return {
-      cached: this.cache.size,
-      total: ALL_RULE_IDS.length,
-    }
-  }
-
-  /**
-   * Check if eager loading is enabled
-   */
-  isEagerLoadingEnabled(): boolean {
-    return this.eagerLoadingEnabled
-  }
-
-  /**
-   * Enable or disable eager loading
-   */
-  setEagerLoading(enabled: boolean): void {
-    this.eagerLoadingEnabled = enabled
-  }
-
-  /**
    * Get rules that match a search query
    *
    * @param query - Search query (matches rule ID and description)
@@ -842,6 +841,13 @@ export class LazyRuleLoader {
   searchRules(query: string): string[] {
     const lowerQuery = query.toLowerCase()
     return ALL_RULE_IDS.filter((ruleId) => ruleId.toLowerCase().includes(lowerQuery))
+  }
+
+  /**
+   * Enable or disable eager loading
+   */
+  setEagerLoading(enabled: boolean): void {
+    this.eagerLoadingEnabled = enabled
   }
 }
 

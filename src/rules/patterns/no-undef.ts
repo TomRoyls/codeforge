@@ -1,4 +1,4 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 function isIdentifier(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
@@ -7,22 +7,11 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noUndefRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow undeclared variables.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(_context: RuleContext): RuleVisitor {
     const declared = new Set<string>()
 
     return {
-      VariableDeclarator(node: unknown): void {
+      ClassDeclaration(node: unknown): void {
         if (!node || typeof node !== 'object') return
         const n = node as Record<string, unknown>
         if (n.id && isIdentifier(n.id)) {
@@ -38,13 +27,9 @@ export const noUndefRule: RuleDefinition = {
           declared.add(id.name as string)
         }
       },
-      ClassDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') return
-        const n = node as Record<string, unknown>
-        if (n.id && isIdentifier(n.id)) {
-          const id = n.id as Record<string, unknown>
-          declared.add(id.name as string)
-        }
+      Identifier(_node: unknown): void {
+        // Note: This is a simplified implementation
+        // Full implementation would need scope analysis
       },
       ImportSpecifier(node: unknown): void {
         if (!node || typeof node !== 'object') return
@@ -54,11 +39,26 @@ export const noUndefRule: RuleDefinition = {
           declared.add(local.name as string)
         }
       },
-      Identifier(_node: unknown): void {
-        // Note: This is a simplified implementation
-        // Full implementation would need scope analysis
+      VariableDeclarator(node: unknown): void {
+        if (!node || typeof node !== 'object') return
+        const n = node as Record<string, unknown>
+        if (n.id && isIdentifier(n.id)) {
+          const id = n.id as Record<string, unknown>
+          declared.add(id.name as string)
+        }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow undeclared variables.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUndefRule

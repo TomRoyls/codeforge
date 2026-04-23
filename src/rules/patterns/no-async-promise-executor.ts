@@ -1,12 +1,14 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { isNewExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { isIdentifier, isNewExpression } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isAsyncFunction(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'FunctionExpression' || n.type === 'ArrowFunctionExpression'
 }
@@ -15,6 +17,7 @@ function hasAsyncModifier(node: unknown): boolean {
   if (!isAsyncFunction(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.async === true
 }
@@ -25,7 +28,7 @@ function getFirstArgument(node: unknown): unknown {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length === 0) {
     return null
@@ -35,20 +38,6 @@ function getFirstArgument(node: unknown): unknown {
 }
 
 export const noAsyncPromiseExecutorRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow async functions as Promise executors. Async functions already return Promises, so wrapping them in new Promise() is redundant and can cause unhandled rejections.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-async-promise-executor',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -71,14 +60,28 @@ export const noAsyncPromiseExecutorRule: RuleDefinition = {
         if (hasAsyncModifier(executor)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Promise executor functions should not be async. Async functions already return Promises - use the async function directly or refactor the executor.' +
               RULE_SUGGESTIONS.noAsyncPromiseExecutor,
-            loc: location,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow async functions as Promise executors. Async functions already return Promises, so wrapping them in new Promise() is redundant and can cause unhandled rejections.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-async-promise-executor',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

@@ -1,14 +1,14 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -26,13 +26,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -56,17 +56,6 @@ function isEmptyCharacterClass(value: unknown): boolean {
 }
 
 export const noEmptyCharacterClassRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow empty character classes in regular expressions',
-      category: 'correctness',
-      recommended: true,
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
@@ -78,12 +67,23 @@ export const noEmptyCharacterClassRule: RuleDefinition = {
         
         if (isEmptyCharacterClass(n.value)) {
           context.report({
-            message: 'Empty character class in regular expression',
             loc: extractLocation(node),
+            message: 'Empty character class in regular expression',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'correctness',
+      description: 'Disallow empty character classes in regular expressions',
+      recommended: true,
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

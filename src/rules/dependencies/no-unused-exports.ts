@@ -1,38 +1,39 @@
 /**
- * @fileoverview Unused exports detection rule for CodeForge
+ * @file Unused exports detection rule for CodeForge
  * Finds exports that are never imported by any other file
  * @module rules/dependencies/no-unused-exports
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExportInfo {
-  readonly name: string
   readonly filePath: string
-  readonly type: 'named' | 'default' | 'namespace'
-  readonly location: SourceLocation
   readonly isTypeOnly: boolean
+  readonly location: SourceLocation
+  readonly name: string
+  readonly type: 'default' | 'named' | 'namespace'
 }
 
 interface ImportInfo {
+  readonly isTypeOnly: boolean
   readonly name: string
   readonly sourceFile: string
   readonly targetFile: string
-  readonly isTypeOnly: boolean
 }
 
 interface UnusedExportsOptions {
-  readonly ignorePatterns?: readonly string[]
-  readonly ignoreTypeOnly?: boolean
   readonly allowEntryExports?: boolean
   readonly entryFiles?: readonly string[]
+  readonly ignorePatterns?: readonly string[]
+  readonly ignoreTypeOnly?: boolean
 }
 
 const globalExports = new Map<string, ExportInfo[]>()
@@ -73,22 +74,112 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   const n = node as Record<string, unknown>
 
   switch (n.type) {
-    case 'ExportNamedDeclaration':
+    case 'ClassDeclaration': {
+      const classId = n.id as Record<string, unknown> | undefined
+      if (classId?.name && typeof classId.name === 'string') {
+        const hasExport = hasExportModifier(n)
+        if (hasExport) {
+          exports.push({
+            filePath,
+            isTypeOnly: false,
+            location,
+            name: classId.name,
+            type: 'named',
+          })
+        }
+      }
+
+      break
+    }
+
+    case 'ExportAllDeclaration': {
+      exports.push({
+        filePath,
+        isTypeOnly: n.exportKind === 'type',
+        location,
+        name: '*',
+        type: 'namespace',
+      })
+      break
+    }
+
+    case 'ExportDefaultDeclaration': {
+      exports.push({
+        filePath,
+        isTypeOnly: false,
+        location,
+        name: 'default',
+        type: 'default',
+      })
+      break
+    }
+
+    case 'ExportNamedDeclaration': {
       const declaration = n.declaration as Record<string, unknown> | undefined
       if (declaration) {
-        if (declaration.type === 'FunctionDeclaration') {
+        switch (declaration.type) {
+        case 'ClassDeclaration': {
           const id = declaration.id as Record<string, unknown> | undefined
           if (id?.name && typeof id.name === 'string') {
             exports.push({
-              name: id.name,
               filePath,
-              type: 'named',
-              location,
               isTypeOnly: n.exportKind === 'type',
+              location,
+              name: id.name,
+              type: 'named',
             })
           }
-        } else if (declaration.type === 'VariableDeclaration') {
-          const declarations = declaration.declarations
+        
+        break;
+        }
+
+        case 'FunctionDeclaration': {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              filePath,
+              isTypeOnly: n.exportKind === 'type',
+              location,
+              name: id.name,
+              type: 'named',
+            })
+          }
+        
+        break;
+        }
+
+        case 'TSInterfaceDeclaration': {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              filePath,
+              isTypeOnly: true,
+              location,
+              name: id.name,
+              type: 'named',
+            })
+          }
+        
+        break;
+        }
+
+        case 'TSTypeAliasDeclaration': {
+          const id = declaration.id as Record<string, unknown> | undefined
+          if (id?.name && typeof id.name === 'string') {
+            exports.push({
+              filePath,
+              isTypeOnly: true,
+              location,
+              name: id.name,
+              type: 'named',
+            })
+          }
+        
+        break;
+        }
+
+        case 'VariableDeclaration': {
+          const {declarations} = declaration
           if (Array.isArray(declarations)) {
             for (const decl of declarations) {
               if (!decl || typeof decl !== 'object') continue
@@ -96,51 +187,22 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
               const id = declNode.id as Record<string, unknown> | undefined
               if (id?.type === 'Identifier' && typeof id.name === 'string') {
                 exports.push({
-                  name: id.name,
                   filePath,
-                  type: 'named',
-                  location,
                   isTypeOnly: n.exportKind === 'type',
+                  location,
+                  name: id.name,
+                  type: 'named',
                 })
               }
             }
           }
-        } else if (declaration.type === 'ClassDeclaration') {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              name: id.name,
-              filePath,
-              type: 'named',
-              location,
-              isTypeOnly: n.exportKind === 'type',
-            })
-          }
-        } else if (declaration.type === 'TSTypeAliasDeclaration') {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              name: id.name,
-              filePath,
-              type: 'named',
-              location,
-              isTypeOnly: true,
-            })
-          }
-        } else if (declaration.type === 'TSInterfaceDeclaration') {
-          const id = declaration.id as Record<string, unknown> | undefined
-          if (id?.name && typeof id.name === 'string') {
-            exports.push({
-              name: id.name,
-              filePath,
-              type: 'named',
-              location,
-              isTypeOnly: true,
-            })
-          }
+        
+        break;
+        }
+        // No default
         }
       } else {
-        const specifiers = n.specifiers
+        const {specifiers} = n
         if (Array.isArray(specifiers)) {
           for (const spec of specifiers) {
             if (!spec || typeof spec !== 'object') continue
@@ -149,75 +211,43 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
               const exported = specNode.exported as Record<string, unknown> | undefined
               if (exported?.name && typeof exported.name === 'string') {
                 exports.push({
-                  name: exported.name,
                   filePath,
-                  type: 'named',
-                  location,
                   isTypeOnly: specNode.exportKind === 'type' || n.exportKind === 'type',
+                  location,
+                  name: exported.name,
+                  type: 'named',
                 })
               }
             }
           }
         }
       }
-      break
 
-    case 'ExportDefaultDeclaration':
-      exports.push({
-        name: 'default',
-        filePath,
-        type: 'default',
-        location,
-        isTypeOnly: false,
-      })
       break
+    }
 
-    case 'ExportAllDeclaration':
-      exports.push({
-        name: '*',
-        filePath,
-        type: 'namespace',
-        location,
-        isTypeOnly: n.exportKind === 'type',
-      })
-      break
-
-    case 'FunctionDeclaration':
+    case 'FunctionDeclaration': {
       const funcId = n.id as Record<string, unknown> | undefined
       if (funcId?.name && typeof funcId.name === 'string') {
         const hasExport = hasExportModifier(n)
         if (hasExport) {
           exports.push({
+            filePath,
+            isTypeOnly: false,
+            location,
             name: funcId.name,
-            filePath,
             type: 'named',
-            location,
-            isTypeOnly: false,
           })
         }
       }
-      break
 
-    case 'ClassDeclaration':
-      const classId = n.id as Record<string, unknown> | undefined
-      if (classId?.name && typeof classId.name === 'string') {
-        const hasExport = hasExportModifier(n)
-        if (hasExport) {
-          exports.push({
-            name: classId.name,
-            filePath,
-            type: 'named',
-            location,
-            isTypeOnly: false,
-          })
-        }
-      }
       break
+    }
 
-    case 'VariableDeclaration':
+    case 'VariableDeclaration': {
       const varHasExport = hasExportModifier(n)
       if (varHasExport) {
-        const declarations = n.declarations
+        const {declarations} = n
         if (Array.isArray(declarations)) {
           for (const decl of declarations) {
             if (!decl || typeof decl !== 'object') continue
@@ -225,17 +255,19 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
             const id = declNode.id as Record<string, unknown> | undefined
             if (id?.type === 'Identifier' && typeof id.name === 'string') {
               exports.push({
-                name: id.name,
                 filePath,
-                type: 'named',
-                location,
                 isTypeOnly: false,
+                location,
+                name: id.name,
+                type: 'named',
               })
             }
           }
         }
       }
+
       break
+    }
   }
 
   return exports
@@ -244,7 +276,7 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
 function hasExportModifier(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
   const n = node as Record<string, unknown>
-  const modifiers = n.modifiers
+  const {modifiers} = n
   if (!Array.isArray(modifiers)) return false
 
   return modifiers.some((mod) => {
@@ -286,50 +318,9 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
   const n = node as Record<string, unknown>
 
   switch (n.type) {
-    case 'ImportDeclaration': {
-      const sourceNode = n.source as Record<string, unknown> | undefined
-      const source = sourceNode?.value
-      if (typeof source === 'string') {
-        const specifiers = n.specifiers
-        if (Array.isArray(specifiers)) {
-          for (const spec of specifiers) {
-            if (!spec || typeof spec !== 'object') continue
-            const specNode = spec as Record<string, unknown>
-            let importedName = ''
-            let isTypeOnly = n.importKind === 'type'
-
-            switch (specNode.type) {
-              case 'ImportDefaultSpecifier':
-                importedName = 'default'
-                break
-              case 'ImportNamespaceSpecifier':
-                importedName = '*'
-                break
-              case 'ImportSpecifier': {
-                const imported = specNode.imported as Record<string, unknown> | undefined
-                importedName = imported?.name ? (imported.name as string) : ''
-                isTypeOnly = isTypeOnly || specNode.importKind === 'type'
-                break
-              }
-            }
-
-            if (importedName) {
-              imports.push({
-                name: importedName,
-                sourceFile: filePath,
-                targetFile: source,
-                isTypeOnly,
-              })
-            }
-          }
-        }
-      }
-      break
-    }
-
     case 'CallExpression': {
       const callee = n.callee as Record<string, unknown> | undefined
-      const arguments_ = n.arguments as unknown[] | undefined
+      const arguments_ = n.arguments as undefined | unknown[]
       if (
         callee?.type === 'Identifier' &&
         callee.name === 'require' &&
@@ -342,23 +333,70 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
           typeof arg0.value === 'string'
         ) {
           imports.push({
+            isTypeOnly: false,
             name: '*',
             sourceFile: filePath,
             targetFile: arg0.value,
-            isTypeOnly: false,
           })
         }
       } else if (callee?.type === 'Import' && Array.isArray(arguments_) && arguments_.length > 0) {
         const arg0 = arguments_[0] as Record<string, unknown> | undefined
         if (arg0?.value && typeof arg0.value === 'string') {
           imports.push({
+            isTypeOnly: false,
             name: '*',
             sourceFile: filePath,
             targetFile: arg0.value,
-            isTypeOnly: false,
           })
         }
       }
+
+      break
+    }
+
+    case 'ImportDeclaration': {
+      const sourceNode = n.source as Record<string, unknown> | undefined
+      const source = sourceNode?.value
+      if (typeof source === 'string') {
+        const {specifiers} = n
+        if (Array.isArray(specifiers)) {
+          for (const spec of specifiers) {
+            if (!spec || typeof spec !== 'object') continue
+            const specNode = spec as Record<string, unknown>
+            let importedName = ''
+            let isTypeOnly = n.importKind === 'type'
+
+            switch (specNode.type) {
+              case 'ImportDefaultSpecifier': {
+                importedName = 'default'
+                break
+              }
+
+              case 'ImportNamespaceSpecifier': {
+                importedName = '*'
+                break
+              }
+
+              case 'ImportSpecifier': {
+                const imported = specNode.imported as Record<string, unknown> | undefined
+                importedName = imported?.name ? (imported.name as string) : ''
+                isTypeOnly = isTypeOnly || specNode.importKind === 'type'
+                break
+              }
+            }
+
+            if (importedName) {
+              imports.push({
+                isTypeOnly,
+                name: importedName,
+                sourceFile: filePath,
+                targetFile: source,
+              })
+            }
+          }
+        }
+      }
+
       break
     }
 
@@ -369,13 +407,14 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
         if (expression?.value && typeof expression.value === 'string') {
           const id = n.id as Record<string, unknown> | undefined
           imports.push({
+            isTypeOnly: n.isTypeOnly === true,
             name: id?.name ? (id.name as string) : '*',
             sourceFile: filePath,
             targetFile: expression.value,
-            isTypeOnly: n.isTypeOnly === true,
           })
         }
       }
+
       break
     }
   }
@@ -390,7 +429,7 @@ function getEntryFileRegex(pattern: string): RegExp {
   const cached = isEntryFileCache.get(pattern)
   if (cached) return cached
 
-  const regex = new RegExp(`^${pattern.replace(/\*/g, '.*').replace(/\?/g, '.')}$`)
+  const regex = new RegExp(`^${pattern.replaceAll('*', '.*').replaceAll('?', '.')}$`)
   isEntryFileCache.set(pattern, regex)
   return regex
 }
@@ -419,6 +458,7 @@ function isEntryFile(filePath: string, entryFiles: readonly string[]): boolean {
     if (pattern.includes('*')) {
       return getEntryFileRegex(pattern).test(filePath)
     }
+
     return filePath.includes(pattern)
   })
 }
@@ -430,6 +470,7 @@ function shouldIgnoreExport(name: string, patterns: readonly string[]): boolean 
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
       return getIgnorePatternRegex(pattern).test(name)
     }
+
     return name === pattern
   })
 }
@@ -439,49 +480,12 @@ function shouldIgnoreExport(name: string, patterns: readonly string[]): boolean 
  * Finds exports that are never imported by any other file.
  */
 export const noUnusedExportsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    fixable: 'code',
-    docs: {
-      description:
-        'Disallow exports that are never imported by other modules. Unused exports indicate dead code or missing documentation.',
-      category: 'dependencies',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unused-exports',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          ignorePatterns: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-          ignoreTypeOnly: {
-            type: 'boolean',
-            default: false,
-          },
-          allowEntryExports: {
-            type: 'boolean',
-            default: true,
-          },
-          entryFiles: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<UnusedExportsOptions>(context.config.options, {
-      ignorePatterns: [],
-      ignoreTypeOnly: false,
       allowEntryExports: true,
       entryFiles: [],
+      ignorePatterns: [],
+      ignoreTypeOnly: false,
     })
     const filePath = context.getFilePath()
 
@@ -509,7 +513,7 @@ export const noUnusedExportsRule: RuleDefinition = {
         // Build reverse index incrementally
         for (const imp of imports) {
           const target = imp.targetFile
-          let names = importedByTargetFile.get(target)
+          const names = importedByTargetFile.get(target)
           if (names) {
             names.add(imp.name)
           } else {
@@ -527,7 +531,7 @@ export const noUnusedExportsRule: RuleDefinition = {
         const usedExports = new Set<string>()
         const targetImports = importedByTargetFile.get(filePath)
         if (targetImports) {
-          targetImports.forEach((name) => usedExports.add(name))
+          for (const name of targetImports) usedExports.add(name)
         }
 
         for (const exp of fileExports) {
@@ -541,13 +545,50 @@ export const noUnusedExportsRule: RuleDefinition = {
 
           if (!usedExports.has(exp.name) && !usedExports.has('*')) {
             context.report({
-              message: `Export '${exp.name}' is never used in other modules`,
               loc: exp.location,
+              message: `Export '${exp.name}' is never used in other modules`,
             })
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'dependencies',
+      description:
+        'Disallow exports that are never imported by other modules. Unused exports indicate dead code or missing documentation.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unused-exports',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowEntryExports: {
+            default: true,
+            type: 'boolean',
+          },
+          entryFiles: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+          ignorePatterns: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+          ignoreTypeOnly: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

@@ -1,43 +1,45 @@
 /**
- * @fileoverview Disallow duplicate code blocks
+ * @file Disallow duplicate code blocks
  * @module rules/pokies/no-duplicate-code
  */
 
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface CodeBlock {
-  readonly hash: string
-  readonly startLine: number
+  readonly content: string
   readonly endLine: number
   readonly filePath: string
-  readonly content: string
+  readonly hash: string
+  readonly startLine: number
 }
 
 interface NoDuplicateCodeOptions {
-  readonly minLines?: number
-  readonly minTokens?: number
   readonly ignoreComments?: boolean
   readonly ignoreImports?: boolean
+  readonly minLines?: number
+  readonly minTokens?: number
   readonly threshold?: number
 }
 
 function normalizeCode(code: string): string {
-  return code.replace(/\s+/g, ' ').trim().toLowerCase()
+  return code.replaceAll(/\s+/g, ' ').trim().toLowerCase()
 }
 
 function hashContent(content: string): string {
   let hash = 0
   for (let i = 0; i < content.length; i++) {
-    const char = content.charCodeAt(i)
+    const char = content.codePointAt(i) ?? 0
     hash = (hash << 5) - hash + char
-    hash = hash & hash
+    hash &= hash
   }
+
   return hash.toString(16)
 }
 
-function getBlockContent(node: unknown, source: string): string | null {
+function getBlockContent(node: unknown, source: string): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -67,6 +69,7 @@ function isImportOrExport(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return (
     n.type === 'ImportDeclaration' ||
@@ -80,6 +83,7 @@ function isComment(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Block' || n.type === 'Line'
 }
@@ -89,56 +93,12 @@ function isComment(node: unknown): boolean {
  * Detects duplicate code blocks within a file or across files
  */
 export const noDuplicateCodeRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow duplicate code blocks. Duplicated code increases maintenance burden and can indicate missing abstractions.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-duplicate-code',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          minLines: {
-            type: 'number',
-            minimum: 2,
-            default: 5,
-          },
-          minTokens: {
-            type: 'number',
-            minimum: 10,
-            default: 50,
-          },
-          ignoreComments: {
-            type: 'boolean',
-            default: true,
-          },
-          ignoreImports: {
-            type: 'boolean',
-            default: true,
-          },
-          threshold: {
-            type: 'number',
-            minimum: 1,
-            maximum: 100,
-            default: 70,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoDuplicateCodeOptions>(context.config.options, {
-      minLines: 5,
-      minTokens: 50,
       ignoreComments: true,
       ignoreImports: true,
+      minLines: 5,
+      minTokens: 50,
       threshold: 70,
     })
 
@@ -155,6 +115,7 @@ export const noDuplicateCodeRule: RuleDefinition = {
         if (ignoreImports && isImportOrExport(node)) {
           return
         }
+
         if (ignoreComments && isComment(node)) {
           return
         }
@@ -174,11 +135,35 @@ export const noDuplicateCodeRule: RuleDefinition = {
         const hash = hashContent(normalized)
 
         codeBlocks.push({
-          hash,
-          startLine: location.start.line,
+          content: content.slice(0, 100),
           endLine: location.end.line,
           filePath,
+          hash,
+          startLine: location.start.line,
+        })
+      },
+
+      ClassDeclaration(node: unknown): void {
+        const content = getBlockContent(node, source)
+        if (!content) {
+          return
+        }
+
+        const lines = content.split('\n')
+        if (lines.length < minLines) {
+          return
+        }
+
+        const location = extractLocation(node)
+        const normalized = normalizeCode(content)
+        const hash = hashContent(normalized)
+
+        codeBlocks.push({
           content: content.slice(0, 100),
+          endLine: location.end.line,
+          filePath,
+          hash,
+          startLine: location.start.line,
         })
       },
 
@@ -202,35 +187,11 @@ export const noDuplicateCodeRule: RuleDefinition = {
         const hash = hashContent(normalized)
 
         codeBlocks.push({
-          hash,
-          startLine: location.start.line,
+          content: content.slice(0, 100),
           endLine: location.end.line,
           filePath,
-          content: content.slice(0, 100),
-        })
-      },
-
-      ClassDeclaration(node: unknown): void {
-        const content = getBlockContent(node, source)
-        if (!content) {
-          return
-        }
-
-        const lines = content.split('\n')
-        if (lines.length < minLines) {
-          return
-        }
-
-        const location = extractLocation(node)
-        const normalized = normalizeCode(content)
-        const hash = hashContent(normalized)
-
-        codeBlocks.push({
           hash,
           startLine: location.start.line,
-          endLine: location.end.line,
-          filePath,
-          content: content.slice(0, 100),
         })
       },
 
@@ -251,17 +212,61 @@ export const noDuplicateCodeRule: RuleDefinition = {
               const duplicate = blocks[i]!
 
               context.report({
-                message: `Duplicate code block detected (lines ${duplicate.startLine}-${duplicate.endLine}). Original block at lines ${original.startLine}-${original.endLine}. Consider extracting to a shared function.`,
                 loc: {
-                  start: { line: duplicate.startLine, column: 0 },
-                  end: { line: duplicate.endLine, column: 0 },
+                  end: { column: 0, line: duplicate.endLine },
+                  start: { column: 0, line: duplicate.startLine },
                 },
+                message: `Duplicate code block detected (lines ${duplicate.startLine}-${duplicate.endLine}). Original block at lines ${original.startLine}-${original.endLine}. Consider extracting to a shared function.`,
               })
             }
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow duplicate code blocks. Duplicated code increases maintenance burden and can indicate missing abstractions.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-duplicate-code',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          ignoreComments: {
+            default: true,
+            type: 'boolean',
+          },
+          ignoreImports: {
+            default: true,
+            type: 'boolean',
+          },
+          minLines: {
+            default: 5,
+            minimum: 2,
+            type: 'number',
+          },
+          minTokens: {
+            default: 50,
+            minimum: 10,
+            type: 'number',
+          },
+          threshold: {
+            default: 70,
+            maximum: 100,
+            minimum: 1,
+            type: 'number',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

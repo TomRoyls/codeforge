@@ -1,11 +1,12 @@
 /**
- * @fileoverview Prefer Date.now() over new Date().getTime()
+ * @file Prefer Date.now() over new Date().getTime()
  * @module rules/patterns/prefer-date-now
  */
 
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isMemberExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { isCallExpression, isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
 
 function isDateGetTimeCall(node: unknown): boolean {
   if (!isCallExpression(node)) {
@@ -38,7 +39,7 @@ function isDateGetTimeCall(node: unknown): boolean {
     return false
   }
 
-  const args = newExpr.arguments as unknown[] | undefined
+  const args = newExpr.arguments as undefined | unknown[]
   if (args && args.length > 0) {
     return false
   }
@@ -47,20 +48,6 @@ function isDateGetTimeCall(node: unknown): boolean {
 }
 
 export const preferDateNowRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer Date.now() over new Date().getTime(). Date.now() is more concise and avoids creating an unnecessary Date object.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-date-now',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -73,17 +60,31 @@ export const preferDateNowRule: RuleDefinition = {
         const range = n.range as [number, number] | undefined
 
         context.report({
-          message: 'Use Date.now() instead of new Date().getTime().',
-          loc: location,
           fix: range
             ? {
                 range,
                 text: 'Date.now()',
               }
             : undefined,
+          loc: location,
+          message: 'Use Date.now() instead of new Date().getTime().',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer Date.now() over new Date().getTime(). Date.now() is more concise and avoids creating an unnecessary Date object.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-date-now',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

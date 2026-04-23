@@ -1,18 +1,20 @@
 import type { SourceFile } from 'ts-morph'
+
 import type { RuleViolation } from '../ast/visitor.js'
+
 import { logger } from '../utils/logger.js'
 
-export type SuppressionType = 'next-line' | 'block-start' | 'block-end'
+export type SuppressionType = 'block-end' | 'block-start' | 'next-line'
 
 export interface Suppression {
-  type: SuppressionType
   line: number
   ruleIds: string[]
+  type: SuppressionType
 }
 
 export interface SuppressionParseResult {
-  suppressions: Suppression[]
   count: number
+  suppressions: Suppression[]
 }
 
 export interface SuppressionParserOptions {
@@ -31,8 +33,7 @@ export function parseSuppressions(text: string): SuppressionParseResult {
   const suppressions: Suppression[] = []
   const lines = text.split('\n')
 
-  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex]
+  for (const [lineIndex, line] of lines.entries()) {
     if (!line) continue
     const lineNumber = lineIndex + 1
     const lineSuppressions = parseLineSuppressions(line, lineNumber)
@@ -40,8 +41,8 @@ export function parseSuppressions(text: string): SuppressionParseResult {
   }
 
   return {
-    suppressions,
     count: suppressions.length,
+    suppressions,
   }
 }
 
@@ -50,7 +51,7 @@ function parseLineSuppressions(line: string, lineNumber: number): Suppression[] 
 
   SUPPRESSION_PATTERN.lastIndex = 0
 
-  let match: RegExpExecArray | null
+  let match: null | RegExpExecArray
   while ((match = SUPPRESSION_PATTERN.exec(line)) !== null) {
     const directive = (match[1] ?? '').toLowerCase()
     const rulesPart = match[2]?.trim()
@@ -68,28 +69,28 @@ function parseSuppressionDirective(
   directive: string,
   rulesPart: string | undefined,
   lineNumber: number,
-): Suppression | null {
+): null | Suppression {
   if (directive === `${DISABLE_PREFIX}${NEXT_LINE_SUFFIX}`) {
     return {
-      type: 'next-line',
       line: lineNumber,
       ruleIds: parseRuleIds(rulesPart),
+      type: 'next-line',
     }
   }
 
   if (directive === DISABLE_PREFIX) {
     return {
-      type: 'block-start',
       line: lineNumber,
       ruleIds: parseRuleIds(rulesPart),
+      type: 'block-start',
     }
   }
 
   if (directive === ENABLE_PREFIX) {
     return {
-      type: 'block-end',
       line: lineNumber,
       ruleIds: parseRuleIds(rulesPart),
+      type: 'block-end',
     }
   }
 
@@ -119,18 +120,8 @@ export function isViolationSuppressed(
   const enabledFromAll = new Set<string>()
 
   for (const suppression of suppressions) {
-    if (suppression.type === 'block-start') {
-      if (suppression.line <= violationLine) {
-        if (suppression.ruleIds.length === 0) {
-          allRulesDisabled = true
-          enabledFromAll.clear()
-        } else {
-          for (const ruleId of suppression.ruleIds) {
-            disabledRules.add(ruleId)
-          }
-        }
-      }
-    } else if (suppression.type === 'block-end') {
+    switch (suppression.type) {
+    case 'block-end': {
       if (suppression.line <= violationLine) {
         if (suppression.ruleIds.length === 0) {
           allRulesDisabled = false
@@ -146,19 +137,43 @@ export function isViolationSuppressed(
           }
         }
       }
-    } else if (suppression.type === 'next-line') {
+    
+    break;
+    }
+
+    case 'block-start': {
+      if (suppression.line <= violationLine) {
+        if (suppression.ruleIds.length === 0) {
+          allRulesDisabled = true
+          enabledFromAll.clear()
+        } else {
+          for (const ruleId of suppression.ruleIds) {
+            disabledRules.add(ruleId)
+          }
+        }
+      }
+    
+    break;
+    }
+
+    case 'next-line': {
       const targetLine = suppression.line + 1
       if (targetLine === violationLine) {
         if (suppression.ruleIds.length === 0) {
           logSuppression(violation, 'all rules', options)
           return true
         }
+
         const ruleIdSet = new Set(suppression.ruleIds)
         if (ruleIdSet.has(violationRuleId)) {
           logSuppression(violation, violationRuleId, options)
           return true
         }
       }
+    
+    break;
+    }
+    // No default
     }
   }
 
@@ -167,6 +182,7 @@ export function isViolationSuppressed(
       logSuppression(violation, 'all rules (block)', options)
       return true
     }
+
     return false
   }
 

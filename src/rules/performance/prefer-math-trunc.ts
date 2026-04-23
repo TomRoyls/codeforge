@@ -1,14 +1,14 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -26,13 +26,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -49,8 +49,8 @@ function isTruncationPattern(node: unknown): boolean {
   }
 
   const operator = n.operator as string
-  const left = n.left
-  const right = n.right
+  const {left} = n
+  const {right} = n
 
   if (!left || !right || typeof left !== 'object' || typeof right !== 'object') {
     return false
@@ -70,19 +70,6 @@ function isTruncationPattern(node: unknown): boolean {
 }
 
 export const preferMathTruncRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer Math.trunc() over bitwise operations (| 0, >> 0) for truncating numbers. Math.trunc() is more readable, handles large numbers correctly, and is explicit about intent.',
-      category: 'performance',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-math-trunc',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -94,12 +81,25 @@ export const preferMathTruncRule: RuleDefinition = {
         const operator = n.operator as string
 
         context.report({
-          node,
-          message: `Prefer Math.trunc() over ${operator === '|' ? '| 0' : '>> 0'} for truncating numbers. Math.trunc() is more readable and handles large numbers correctly.`,
           loc: extractLocation(node),
+          message: `Prefer Math.trunc() over ${operator === '|' ? '| 0' : '>> 0'} for truncating numbers. Math.trunc() is more readable and handles large numbers correctly.`,
+          node,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'performance',
+      description:
+        'Prefer Math.trunc() over bitwise operations (| 0, >> 0) for truncating numbers. Math.trunc() is more readable, handles large numbers correctly, and is explicit about intent.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-math-trunc',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

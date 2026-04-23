@@ -1,22 +1,23 @@
 /**
- * @fileoverview Enforce using optional chain operator instead of chained && checks
+ * @file Enforce using optional chain operator instead of chained && checks
  * @module rules/performance/prefer-optional-chain
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getNodeText } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface OptionalChainMatch {
   readonly leftText: string
-  readonly rightText: string
   readonly location: SourceLocation
+  readonly rightText: string
   readonly suggestion: string
 }
 
@@ -56,7 +57,7 @@ function getPropertyAccessObject(node: unknown): unknown {
   return n.object
 }
 
-function getPropertyName(node: unknown): string | null {
+function getPropertyName(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -101,7 +102,7 @@ function nodesMatch(node1: unknown, node2: unknown, source: string): boolean {
   return false
 }
 
-function checkOptionalChainPattern(node: unknown, source: string): OptionalChainMatch | null {
+function checkOptionalChainPattern(node: unknown, source: string): null | OptionalChainMatch {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -116,8 +117,8 @@ function checkOptionalChainPattern(node: unknown, source: string): OptionalChain
     return null
   }
 
-  const left = n.left
-  const right = n.right
+  const {left} = n
+  const {right} = n
 
   if (!left || !right) {
     return null
@@ -138,8 +139,8 @@ function checkOptionalChainPattern(node: unknown, source: string): OptionalChain
       if (propertyName) {
         return {
           leftText,
-          rightText,
           location: extractLocation(node),
+          rightText,
           suggestion: `${leftText}?.${propertyName}`,
         }
       }
@@ -159,8 +160,8 @@ function checkOptionalChainPattern(node: unknown, source: string): OptionalChain
           const args = argsMatch ? argsMatch[0] : '()'
           return {
             leftText,
-            rightText,
             location: extractLocation(node),
+            rightText,
             suggestion: `${leftText}?.${methodName}${args}`,
           }
         }
@@ -172,68 +173,68 @@ function checkOptionalChainPattern(node: unknown, source: string): OptionalChain
 }
 
 export const preferOptionalChainRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Enforce using optional chain operator (?.) instead of chained && checks for property access and method calls. Optional chaining is more concise and readable.',
-      category: 'performance',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-optional-chain',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
-      LogicalExpression(node: unknown): void {
-        const source = context.getSource()
-        const match = checkOptionalChainPattern(node, source)
-
-        if (match) {
-          context.report({
-            node,
-            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
-            loc: match.location,
-            suggest: [
-              {
-                desc: `Use optional chaining: ${match.suggestion}`,
-                message: 'Use optional chaining operator',
-                fix: {
-                  range: [0, source.length] as const,
-                  text: match.suggestion,
-                },
-              },
-            ],
-          })
-        }
-      },
-
       BinaryExpression(node: unknown): void {
         const source = context.getSource()
         const match = checkOptionalChainPattern(node, source)
 
         if (match) {
           context.report({
-            node,
-            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
             loc: match.location,
+            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
+            node,
             suggest: [
               {
                 desc: `Use optional chaining: ${match.suggestion}`,
-                message: 'Use optional chaining operator',
                 fix: {
                   range: [0, source.length] as const,
                   text: match.suggestion,
                 },
+                message: 'Use optional chaining operator',
+              },
+            ],
+          })
+        }
+      },
+
+      LogicalExpression(node: unknown): void {
+        const source = context.getSource()
+        const match = checkOptionalChainPattern(node, source)
+
+        if (match) {
+          context.report({
+            loc: match.location,
+            message: `Prefer optional chaining (${match.suggestion}) instead of ${match.leftText} && ${match.rightText}. ${RULE_SUGGESTIONS.preferOptionalChain}`,
+            node,
+            suggest: [
+              {
+                desc: `Use optional chaining: ${match.suggestion}`,
+                fix: {
+                  range: [0, source.length] as const,
+                  text: match.suggestion,
+                },
+                message: 'Use optional chaining operator',
               },
             ],
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'performance',
+      description:
+        'Enforce using optional chain operator (?.) instead of chained && checks for property access and method calls. Optional chaining is more concise and readable.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-optional-chain',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

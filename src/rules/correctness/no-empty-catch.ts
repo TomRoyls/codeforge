@@ -1,9 +1,10 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoEmptyCatchOptions {
@@ -12,8 +13,8 @@ interface NoEmptyCatchOptions {
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -31,13 +32,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -67,7 +68,7 @@ function isEmptyCatchBlock(node: unknown, allowComments: boolean): boolean {
       return false
     }
 
-    const statements = body.body as unknown[] | undefined
+    const statements = body.body as undefined | unknown[]
     if (!Array.isArray(statements) || statements.length === 0) {
       return true
     }
@@ -94,43 +95,18 @@ function isEmptyCatchBlock(node: unknown, allowComments: boolean): boolean {
   const inner = text.slice(openBrace + 1, closeBrace)
 
   const withoutComments = inner
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '')
+    .replaceAll(/\/\*[\s\S]*?\*\//g, '')
+    .replaceAll(/\/\/.*$/gm, '')
     .trim()
 
-  if (allowComments) {
-    if (withoutComments.length === 0 && inner.trim().length > 0) {
+  if (allowComments && withoutComments.length === 0 && inner.trim().length > 0) {
       return false
     }
-  }
 
   return withoutComments.length === 0
 }
 
 export const noEmptyCatchRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description: 'Disallow empty catch clauses that may hide errors silently',
-      category: 'correctness',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-empty-catch',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowComments: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoEmptyCatchOptions>(context.config.options, {
       allowComments: false,
@@ -140,13 +116,36 @@ export const noEmptyCatchRule: RuleDefinition = {
       CatchClause(node: unknown): void {
         if (isEmptyCatchBlock(node, options.allowComments ?? false)) {
           context.report({
-            node,
-            message: 'Empty catch clause. Either add error handling or remove the catch block.',
             loc: extractLocation(node),
+            message: 'Empty catch clause. Either add error handling or remove the catch block.',
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'correctness',
+      description: 'Disallow empty catch clauses that may hide errors silently',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-empty-catch',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowComments: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

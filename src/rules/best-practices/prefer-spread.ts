@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer spread operator over .concat()
+ * @file Prefer spread operator over .concat()
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferSpreadOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferSpreadOptions = {}
 
-function isConcatCall(node: Node): { receiver: Node; args: Node[] } | null {
+function isConcatCall(node: Node): null | { args: Node[]; receiver: Node; } {
   if (!Node.isCallExpression(node)) return null
   const concatMethod = node.getExpression()
   if (!Node.isPropertyAccessExpression(concatMethod)) return null
@@ -20,50 +23,51 @@ function isConcatCall(node: Node): { receiver: Node; args: Node[] } | null {
   const receiver = concatMethod.getExpression()
   const args = node.getArguments()
   if (args.length === 0) return null
-  return { receiver, args: [...args] }
+  return { args: [...args], receiver }
 }
 
 export const preferSpreadRule: RuleDefinition<PreferSpreadOptions> = {
-  meta: {
-    name: 'prefer-spread',
-    description: 'Enforce using spread operator instead of .concat() for array concatenation',
-    category: 'style',
-    severity: 'info',
-    recommended: true,
-    fixable: "code",
-  },
-
-  defaultOptions: DEFAULT_OPTIONS,
-
   create(_options: PreferSpreadOptions = {}) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isConcatCall(node)
           if (!result) return
-          const { receiver, args } = result
+          const { args, receiver } = result
           const range = getNodeRange(node)
           
           const spreadParts = [receiver.getText()]
-          args.forEach(arg => {
+          for (const arg of args) {
             spreadParts.push('...' + arg.getText())
-          })
+          }
+
           const fixText = '[' + spreadParts.join(', ') + ']'
           
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: 'Use spread operator instead of .concat()',
+            range,
             ruleId: 'prefer-spread',
             severity: 'info',
-            message: 'Use spread operator instead of .concat()',
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: ' + fixText,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+
+  defaultOptions: DEFAULT_OPTIONS,
+
+  meta: {
+    category: 'style',
+    description: 'Enforce using spread operator instead of .concat() for array concatenation',
+    fixable: "code",
+    name: 'prefer-spread',
+    recommended: true,
+    severity: 'info',
   },
 }
 
@@ -76,24 +80,25 @@ export function analyzePreferSpread(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         const result = isConcatCall(node)
         if (!result) return
-        const { receiver, args } = result
+        const { args, receiver } = result
         const range = getNodeRange(node)
         
         const spreadParts = [receiver.getText()]
-        args.forEach(arg => {
+        for (const arg of args) {
           spreadParts.push('...' + arg.getText())
-        })
+        }
+
         const fixText = '[' + spreadParts.join(', ') + ']'
         
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: 'Use spread operator instead of .concat()',
+          range,
           ruleId: 'prefer-spread',
           severity: 'info',
-          message: 'Use spread operator instead of .concat()',
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Replace with: ' + fixText,
         })
       },

@@ -1,11 +1,14 @@
 /**
- * @fileoverview Prefer .find() over .filter()[0] or .filter().shift()
+ * @file Prefer .find() over .filter()[0] or .filter().shift()
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferArrayFindOptions extends RuleOptions {}
@@ -15,7 +18,7 @@ const DEFAULT_OPTIONS: PreferArrayFindOptions = {}
 /**
  * Check if node is .filter()[0] pattern
  */
-function isFilterWithZeroIndex(node: Node): { receiver: Node; callback: Node | null } | null {
+function isFilterWithZeroIndex(node: Node): null | { callback: Node | null; receiver: Node; } {
   if (!Node.isElementAccessExpression(node)) return null
   
   const indexExpr = node.getArgumentExpression()
@@ -35,13 +38,13 @@ function isFilterWithZeroIndex(node: Node): { receiver: Node; callback: Node | n
   const args = filterExpr.getArguments()
   const callback = args.length > 0 ? args[0] ?? null : null
   
-  return { receiver, callback }
+  return { callback, receiver }
 }
 
 /**
  * Check if node is .filter().shift() pattern
  */
-function isFilterWithShift(node: Node): { receiver: Node; callback: Node | null } | null {
+function isFilterWithShift(node: Node): null | { callback: Node | null; receiver: Node; } {
   if (!Node.isCallExpression(node)) return null
   
   const shiftMethod = node.getExpression()
@@ -61,40 +64,31 @@ function isFilterWithShift(node: Node): { receiver: Node; callback: Node | null 
   const args = filterExpr.getArguments()
   const callback = args.length > 0 ? args[0] ?? null : null
   
-  return { receiver, callback }
+  return { callback, receiver }
 }
 
 export const preferArrayFindRule: RuleDefinition<PreferArrayFindOptions> = {
-  meta: {
-    name: 'prefer-array-find',
-    description: 'Enforce using find() method instead of filter()[0] or filter().shift() for finding a single element',
-    category: 'performance',
-    severity: 'warning',
-    recommended: true,
-  },
-
-  defaultOptions: DEFAULT_OPTIONS,
-
   create(_options: PreferArrayFindOptions = {}) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           // Check for .filter()[0]
           const indexResult = isFilterWithZeroIndex(node)
           if (indexResult) {
-            const { receiver, callback } = indexResult
+            const { callback, receiver } = indexResult
             const range = getNodeRange(node)
             const callbackText = callback ? callback.getText() : 'x => x'
             const fixText = `${receiver.getText()}.find(${callbackText})`
             
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: 'Use .find() instead of .filter()[0]',
+              range,
               ruleId: 'prefer-array-find',
               severity: 'warning',
-              message: 'Use .find() instead of .filter()[0]',
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Replace with: ' + fixText,
             })
             return
@@ -103,24 +97,33 @@ export const preferArrayFindRule: RuleDefinition<PreferArrayFindOptions> = {
           // Check for .filter().shift()
           const shiftResult = isFilterWithShift(node)
           if (shiftResult) {
-            const { receiver, callback } = shiftResult
+            const { callback, receiver } = shiftResult
             const range = getNodeRange(node)
             const callbackText = callback ? callback.getText() : 'x => x'
             const fixText = `${receiver.getText()}.find(${callbackText})`
             
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: 'Use .find() instead of .filter().shift()',
+              range,
               ruleId: 'prefer-array-find',
               severity: 'warning',
-              message: 'Use .find() instead of .filter().shift()',
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Replace with: ' + fixText,
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+
+  defaultOptions: DEFAULT_OPTIONS,
+
+  meta: {
+    category: 'performance',
+    description: 'Enforce using find() method instead of filter()[0] or filter().shift() for finding a single element',
+    name: 'prefer-array-find',
+    recommended: true,
+    severity: 'warning',
   },
 }
 
@@ -133,21 +136,21 @@ export function analyzePreferArrayFind(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         // Check for .filter()[0]
         const indexResult = isFilterWithZeroIndex(node)
         if (indexResult) {
-          const { receiver, callback } = indexResult
+          const { callback, receiver } = indexResult
           const range = getNodeRange(node)
           const callbackText = callback ? callback.getText() : 'x => x'
           const fixText = `${receiver.getText()}.find(${callbackText})`
           
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: 'Use .find() instead of .filter()[0]',
+            range,
             ruleId: 'prefer-array-find',
             severity: 'warning',
-            message: 'Use .find() instead of .filter()[0]',
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion: 'Replace with: ' + fixText,
           })
           return
@@ -156,17 +159,17 @@ export function analyzePreferArrayFind(
         // Check for .filter().shift()
         const shiftResult = isFilterWithShift(node)
         if (shiftResult) {
-          const { receiver, callback } = shiftResult
+          const { callback, receiver } = shiftResult
           const range = getNodeRange(node)
           const callbackText = callback ? callback.getText() : 'x => x'
           const fixText = `${receiver.getText()}.find(${callbackText})`
           
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: 'Use .find() instead of .filter().shift()',
+            range,
             ruleId: 'prefer-array-find',
             severity: 'warning',
-            message: 'Use .find() instead of .filter().shift()',
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion: 'Replace with: ' + fixText,
           })
         }

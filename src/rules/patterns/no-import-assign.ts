@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -20,27 +21,22 @@ function isImportSpecifier(node: unknown): boolean {
 }
 
 export const noImportAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow assignment to import bindings.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     const importNames = new Set<string>()
 
     return {
-      ImportSpecifier(node: unknown): void {
-        if (!isImportSpecifier(node)) return
+      AssignmentExpression(node: unknown): void {
+        if (!isAssignmentExpression(node)) return
         const n = node as Record<string, unknown>
-        if (n.local && isIdentifier(n.local)) {
-          const local = n.local as Record<string, unknown>
-          importNames.add(local.name as string)
+        if (isIdentifier(n.left)) {
+          const left = n.left as Record<string, unknown>
+          const name = left.name as string
+          if (importNames.has(name)) {
+            context.report({
+              loc: extractLocation(node),
+              message: `Import binding '${name}' should not be modified.`,
+            })
+          }
         }
       },
       ImportDefaultSpecifier(node: unknown): void {
@@ -59,21 +55,26 @@ export const noImportAssignRule: RuleDefinition = {
           importNames.add(local.name as string)
         }
       },
-      AssignmentExpression(node: unknown): void {
-        if (!isAssignmentExpression(node)) return
+      ImportSpecifier(node: unknown): void {
+        if (!isImportSpecifier(node)) return
         const n = node as Record<string, unknown>
-        if (isIdentifier(n.left)) {
-          const left = n.left as Record<string, unknown>
-          const name = left.name as string
-          if (importNames.has(name)) {
-            context.report({
-              message: `Import binding '${name}' should not be modified.`,
-              loc: extractLocation(node),
-            })
-          }
+        if (n.local && isIdentifier(n.local)) {
+          const local = n.local as Record<string, unknown>
+          importNames.add(local.name as string)
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow assignment to import bindings.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noImportAssignRule

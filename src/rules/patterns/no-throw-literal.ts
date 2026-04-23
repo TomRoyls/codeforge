@@ -1,33 +1,34 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const VALID_THROW_TYPES = new Set([
-  'NewExpression',
-  'Identifier',
-  'CallExpression',
-  'MemberExpression',
-  'ConditionalExpression',
-  'LogicalExpression',
-  'BinaryExpression',
-  'UnaryExpression',
   'AwaitExpression',
-  'SequenceExpression',
+  'BinaryExpression',
+  'CallExpression',
+  'ConditionalExpression',
+  'Identifier',
+  'LogicalExpression',
+  'MemberExpression',
+  'NewExpression',
   'ParenthesizedExpression',
+  'SequenceExpression',
   'TSAsExpression',
-  'TSTypeAssertion',
   'TSNonNullExpression',
+  'TSTypeAssertion',
+  'UnaryExpression',
 ])
 
 const INVALID_LITERAL_TYPES = new Set([
-  'StringLiteral',
-  'NumericLiteral',
+  'ArrayExpression',
+  'BigIntLiteral',
   'BooleanLiteral',
   'NullLiteral',
-  'BigIntLiteral',
-  'RegExpLiteral',
-  'TemplateLiteral',
+  'NumericLiteral',
   'ObjectExpression',
-  'ArrayExpression',
+  'RegExpLiteral',
+  'StringLiteral',
+  'TemplateLiteral',
   'ThisExpression',
 ])
 
@@ -77,7 +78,7 @@ function isInvalidThrowArgument(node: unknown): boolean {
     if (!type) return false
     if (VALID_THROW_TYPES.has(type)) return false
     if (INVALID_LITERAL_TYPES.has(type)) return true
-    if (typeof argument.value !== 'undefined' && type.includes('Literal')) return true
+    if (argument.value !== undefined && type.includes('Literal')) return true
     return false
   }
 
@@ -86,19 +87,6 @@ function isInvalidThrowArgument(node: unknown): boolean {
 }
 
 export const noThrowLiteralRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow throwing literals or non-Error objects. Only Error objects and subclasses should be thrown for proper stack traces and error handling.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-throw-literal',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ThrowStatement(node: unknown): void {
@@ -110,12 +98,25 @@ export const noThrowLiteralRule: RuleDefinition = {
           const location = extractLocation(node)
 
           context.report({
-            message: 'Expected an error object to be thrown.',
             loc: location,
+            message: 'Expected an error object to be thrown.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow throwing literals or non-Error objects. Only Error objects and subclasses should be thrown for proper stack traces and error handling.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-throw-literal',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

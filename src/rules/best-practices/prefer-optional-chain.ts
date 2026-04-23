@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer optional chaining operator (?.) over explicit null/undefined checks
+ * @file Prefer optional chaining operator (?.) over explicit null/undefined checks
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferOptionalChainOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferOptionalChainOptions = {}
 
-function isExplicitNullCheck(node: Node): { object: Node; property: Node } | null {
+function isExplicitNullCheck(node: Node): null | { object: Node; property: Node } {
   // Look for: obj && obj.property
   if (!Node.isBinaryExpression(node)) return null
 
@@ -40,20 +43,13 @@ function isExplicitNullCheck(node: Node): { object: Node; property: Node } | nul
 }
 
 export const preferOptionalChainRule: RuleDefinition<PreferOptionalChainOptions> = {
-  meta: {
-    name: 'prefer-optional-chain',
-    description: 'Enforce using optional chaining operator (?.) instead of explicit null/undefined checks',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferOptionalChainOptions) => {
+  create(_options: PreferOptionalChainOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isExplicitNullCheck(node)
           if (!result) return
 
@@ -61,20 +57,27 @@ export const preferOptionalChainRule: RuleDefinition<PreferOptionalChainOptions>
           const propertyText = result.property.getText()
 
           // Convert obj && obj.prop to obj?.prop
-          const optionalChain = propertyText.replace(/\./g, '?.')
+          const optionalChain = propertyText.replaceAll('.', '?.')
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: "Use optional chaining (?.) instead of explicit null check.",
+            range,
             ruleId: 'prefer-optional-chain',
             severity: 'info',
-            message: "Use optional chaining (?.) instead of explicit null check.",
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: ' + optionalChain,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Enforce using optional chaining operator (?.) instead of explicit null/undefined checks',
+    fixable: 'code',
+    name: 'prefer-optional-chain',
+    recommended: false,
   },
 }
 
@@ -87,20 +90,20 @@ export function analyzePreferOptionalChain(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         const result = isExplicitNullCheck(node)
         if (!result) return
 
         const range = getNodeRange(node)
         const propertyText = result.property.getText()
-        const optionalChain = propertyText.replace(/\./g, '?.')
+        const optionalChain = propertyText.replaceAll('.', '?.')
 
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: "Use optional chaining (?.) instead of explicit null check.",
+          range,
           ruleId: 'prefer-optional-chain',
           severity: 'info',
-          message: "Use optional chaining (?.) instead of explicit null check.",
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Replace with: ' + optionalChain,
         })
       },

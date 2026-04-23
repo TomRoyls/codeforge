@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isBinaryExpression(node: unknown): boolean {
@@ -16,38 +17,24 @@ function isLiteral(node: unknown): boolean {
 function isUselessOperator(left: unknown, operator: string): boolean {
   if (left && typeof left === 'object') {
     const n = left as Record<string, unknown>
-    if (n.type === 'RegExpLiteral') {
-      if (operator === '||' || operator === '??') return true
-    }
+    if (n.type === 'RegExpLiteral' && (operator === '||' || operator === '??')) return true
   }
-  if (operator === '||' || operator === '??') {
-    if (isLiteral(left)) {
+
+  if ((operator === '||' || operator === '??') && isLiteral(left)) {
       const l = left as Record<string, unknown>
       if (operator === '||' && l.value) return true
       if (operator === '??' && l.value !== null && l.value !== undefined) return true
     }
-  }
-  if (operator === '&&') {
-    if (isLiteral(left)) {
+
+  if (operator === '&&' && isLiteral(left)) {
       const l = left as Record<string, unknown>
       if (!l.value && l.value !== 0 && l.value !== '') return true
     }
-  }
+
   return false
 }
 
 export const noConstantBinaryExpressionRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow expressions where the operation does not affect the value.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -57,8 +44,8 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
 
         if (isUselessOperator(n.left, operator)) {
           context.report({
-            message: 'Expression reduces to the left operand and has no effect.',
             loc: extractLocation(node),
+            message: 'Expression reduces to the left operand and has no effect.',
           })
         }
       },
@@ -70,12 +57,23 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
 
         if (isUselessOperator(n.left, operator)) {
           context.report({
-            message: 'Expression reduces to the left operand and has no effect.',
             loc: extractLocation(node),
+            message: 'Expression reduces to the left operand and has no effect.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow expressions where the operation does not affect the value.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noConstantBinaryExpressionRule

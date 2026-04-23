@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isTryStatement(node: unknown): boolean {
@@ -23,17 +24,6 @@ function onlyRethrows(body: unknown): boolean {
 }
 
 export const noUselessCatchRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow useless catch clauses.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       TryStatement(node: unknown): void {
@@ -44,13 +34,24 @@ export const noUselessCatchRule: RuleDefinition = {
           const handler = n.handler as Record<string, unknown>
           if (handler.body && onlyRethrows(handler.body)) {
             context.report({
-              message: 'Useless catch clause that only rethrows.',
               loc: extractLocation(n.handler),
+              message: 'Useless catch clause that only rethrows.',
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow useless catch clauses.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUselessCatchRule

@@ -1,7 +1,8 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
-const NON_CALLABLE_GLOBALS = new Set(['Math', 'JSON', 'Reflect', 'Atomics', 'Intl'])
+const NON_CALLABLE_GLOBALS = new Set(['Atomics', 'Intl', 'JSON', 'Math', 'Reflect'])
 
 function isCallExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') return false
@@ -16,35 +17,35 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noObjCallsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow calling global object properties as functions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
         if (!isCallExpression(node)) return
         const n = node as Record<string, unknown>
-        const callee = n.callee
+        const {callee} = n
         if (isIdentifier(callee)) {
           const c = callee as Record<string, unknown>
           const name = c.name as string
           if (NON_CALLABLE_GLOBALS.has(name)) {
             context.report({
-              message: `'${name}' is not a function.`,
               loc: extractLocation(node),
+              message: `'${name}' is not a function.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow calling global object properties as functions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noObjCallsRule

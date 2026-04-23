@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function serializeCondition(node: unknown): string {
@@ -12,7 +13,7 @@ function serializeCondition(node: unknown): string {
     return 'null'
   }
 
-  const type = n.type
+  const {type} = n
 
   if (type === 'Identifier') {
     return `Identifier(${n.name})`
@@ -66,6 +67,7 @@ function serializeCondition(node: unknown): string {
       parts.push(`${key}:${serializeCondition(n[key])}`)
     }
   }
+
   return `{${parts.join(',')}}`
 }
 
@@ -83,7 +85,7 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
       return
     }
 
-    const test = n.test
+    const {test} = n
     if (test) {
       conditions.push({
         condition: serializeCondition(test),
@@ -91,7 +93,7 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
       })
     }
 
-    const alternate = n.alternate
+    const {alternate} = n
     if (alternate && typeof alternate === 'object') {
       const alt = alternate as Record<string, unknown>
       if (alt.type === 'IfStatement') {
@@ -114,24 +116,11 @@ function isChainRoot(node: unknown, allIfStatements: Set<unknown>): boolean {
       return false
     }
   }
+
   return true
 }
 
 export const noDuplicateElseIfRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow duplicate conditions in if-else chains. Duplicate conditions in if-else chains are usually a bug as only the first matching branch will be executed.',
-      category: 'logic',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-duplicate-else-if',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const seenIfStatements = new Set<unknown>()
     const processedChains = new Set<unknown>()
@@ -171,8 +160,8 @@ export const noDuplicateElseIfRule: RuleDefinition = {
               const firstLocation = extractLocation(firstNode)
 
               context.report({
-                message: `Duplicate condition in if-else chain. This condition was already checked at line ${firstLocation.start.line}.`,
                 loc: location,
+                message: `Duplicate condition in if-else chain. This condition was already checked at line ${firstLocation.start.line}.`,
               })
             } else {
               seenConditions.set(condition, conditionNode)
@@ -185,6 +174,20 @@ export const noDuplicateElseIfRule: RuleDefinition = {
         seenIfStatements.clear()
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'logic',
+      description:
+        'Disallow duplicate conditions in if-else chains. Duplicate conditions in if-else chains are usually a bug as only the first matching branch will be executed.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-duplicate-else-if',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

@@ -7,8 +7,8 @@ const ESLINT_TO_CODEFORGE_RULES: Record<string, string> = {
   // TypeScript rules
   '@typescript-eslint/no-explicit-any': 'no-unsafe-type-assertion',
   '@typescript-eslint/no-unsafe-assignment': 'no-unsafe-type-assertion',
-  '@typescript-eslint/no-unsafe-member-access': 'no-unsafe-type-assertion',
   '@typescript-eslint/no-unsafe-call': 'no-unsafe-type-assertion',
+  '@typescript-eslint/no-unsafe-member-access': 'no-unsafe-type-assertion',
   '@typescript-eslint/no-unsafe-return': 'no-unsafe-type-assertion',
 
   // Complexity rules
@@ -20,23 +20,23 @@ const ESLINT_TO_CODEFORGE_RULES: Record<string, string> = {
 
   // Performance rules
   'no-await-in-loop': 'no-await-in-loop',
-  'no-sync-in-async': 'no-sync-in-async',
-  'prefer-object-spread': 'prefer-object-spread',
-  'prefer-optional-chaining': 'prefer-optional-chain',
-
-  // Pattern rules
-  'prefer-const': 'prefer-const',
-
   // Security rules
   'no-eval': 'no-eval',
   'no-implied-eval': 'no-eval',
   'no-new-func': 'no-eval',
+
+  'no-sync-in-async': 'no-sync-in-async',
+
+  // Pattern rules
+  'prefer-const': 'prefer-const',
+  'prefer-object-spread': 'prefer-object-spread',
+  'prefer-optional-chaining': 'prefer-optional-chain',
 }
 
 /**
  * Convert ESLint severity to CodeForge severity
  */
-function convertSeverity(severity: unknown): RuleSeverity | null {
+function convertSeverity(severity: unknown): null | RuleSeverity {
   if (Array.isArray(severity)) {
     return convertSeverity(severity[0])
   }
@@ -63,6 +63,7 @@ function extractOptions(ruleConfig: unknown): Record<string, unknown> {
   if (Array.isArray(ruleConfig) && ruleConfig.length > 1) {
     return typeof ruleConfig[1] === 'object' ? ruleConfig[1] : {}
   }
+
   return {}
 }
 
@@ -70,20 +71,20 @@ function extractOptions(ruleConfig: unknown): Record<string, unknown> {
  * ESLint config structure (simplified)
  */
 interface ESLintConfig {
-  rules?: Record<string, unknown>
+  extends?: string | string[]
   overrides?: Array<{
     rules?: Record<string, unknown>
   }>
-  extends?: string | string[]
+  rules?: Record<string, unknown>
 }
 
 /**
  * Migration result
  */
 export interface MigrationResult {
-  rules: Record<string, RuleSeverity | [RuleSeverity, Record<string, unknown>]>
-  unmapped: string[]
+  rules: Record<string, [RuleSeverity, Record<string, unknown>] | RuleSeverity>
   source: 'eslint'
+  unmapped: string[]
 }
 
 /**
@@ -120,11 +121,7 @@ export function migrateESLintConfig(config: ESLintConfig): MigrationResult {
     }
 
     const options = extractOptions(ruleConfig)
-    if (Object.keys(options).length > 0) {
-      rules[codeforgeRule] = [severity, options]
-    } else {
-      rules[codeforgeRule] = severity
-    }
+    rules[codeforgeRule] = Object.keys(options).length > 0 ? [severity, options] : severity
   }
 
   return {
@@ -140,7 +137,7 @@ export function migrateESLintConfig(config: ESLintConfig): MigrationResult {
 export async function readESLintConfig(configPath: string): Promise<ESLintConfig | null> {
   try {
     const { readFile } = await import('node:fs/promises')
-    const content = await readFile(configPath, 'utf-8')
+    const content = await readFile(configPath, 'utf8')
 
     // Handle JSON config
     if (configPath.endsWith('.json')) {
@@ -186,10 +183,10 @@ export async function readESLintConfig(configPath: string): Promise<ESLintConfig
           if (ruleName && ruleValue) {
             currentRule = ruleName
             const parsed = Number.parseInt(ruleValue, 10)
-            if (!Number.isNaN(parsed)) {
-              config.rules![currentRule] = parsed
-            } else {
+            if (Number.isNaN(parsed)) {
               config.rules![currentRule] = ruleValue
+            } else {
+              config.rules![currentRule] = parsed
             }
           }
         }
@@ -207,7 +204,7 @@ export async function readESLintConfig(configPath: string): Promise<ESLintConfig
 /**
  * Detect ESLint config file in directory
  */
-export async function detectESLintConfig(cwd: string): Promise<string | null> {
+export async function detectESLintConfig(cwd: string): Promise<null | string> {
   const { access } = await import('node:fs/promises')
   const { join } = await import('node:path')
 
@@ -224,6 +221,7 @@ export async function detectESLintConfig(cwd: string): Promise<string | null> {
   for (const file of configFiles) {
     const filePath = join(cwd, file)
     try {
+      // eslint-disable-next-line no-await-in-loop
       await access(filePath)
       return filePath
     } catch {
@@ -235,7 +233,7 @@ export async function detectESLintConfig(cwd: string): Promise<string | null> {
   try {
     const { readFile } = await import('node:fs/promises')
     const packageJsonPath = join(cwd, 'package.json')
-    const content = await readFile(packageJsonPath, 'utf-8')
+    const content = await readFile(packageJsonPath, 'utf8')
     const packageJson = JSON.parse(content) as { eslintConfig?: ESLintConfig }
     if (packageJson.eslintConfig) {
       return packageJsonPath

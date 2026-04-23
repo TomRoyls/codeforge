@@ -1,42 +1,44 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 interface LiteralNode {
-  type: 'Literal'
-  value: string | null
+  loc?: {
+    end: { column: number; line: number; }
+    start: { column: number; line: number; }
+  }
   raw?: string
   regex?: {
-    pattern: string
     flags: string
+    pattern: string
   }
-  loc?: {
-    start: { line: number; column: number }
-    end: { line: number; column: number }
-  }
+  type: 'Literal'
+  value: null | string
 }
 
 interface CallExpressionNode {
-  type: 'CallExpression'
+  arguments: unknown[]
   callee: {
-    type: 'MemberExpression'
+    computed: boolean
     object: unknown
     property: {
-      type: 'Identifier'
       name: string
+      type: 'Identifier'
     }
-    computed: boolean
+    type: 'MemberExpression'
   }
-  arguments: unknown[]
   loc?: {
-    start: { line: number; column: number }
-    end: { line: number; column: number }
+    end: { column: number; line: number; }
+    start: { column: number; line: number; }
   }
+  type: 'CallExpression'
 }
 
 function isCallExpression(node: unknown): node is CallExpressionNode {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'CallExpression'
 }
@@ -45,6 +47,7 @@ function isMemberExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'MemberExpression'
 }
@@ -53,10 +56,12 @@ function isIdentifier(node: unknown, name?: string): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   if (n.type !== 'Identifier') {
     return false
   }
+
   return name === undefined || n.name === name
 }
 
@@ -64,6 +69,7 @@ function isLiteral(node: unknown): node is LiteralNode {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Literal' || n.type === 'RegExpLiteral'
 }
@@ -92,13 +98,13 @@ function isStringMatchCall(node: unknown): boolean {
     return false
   }
 
-  const callee = node.callee
+  const {callee} = node
 
   if (!isMemberExpression(callee)) {
     return false
   }
 
-  const property = callee.property
+  const {property} = callee
   if (!isIdentifier(property, 'match')) {
     return false
   }
@@ -113,20 +119,6 @@ function isStringMatchCall(node: unknown): boolean {
 }
 
 export const preferRegexpExecRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer RegExp.exec() or String.matchAll() over String.match() with global flag. Using str.match(/regex/g) can lead to bugs with stateful regex lastIndex, and str.matchAll(regex) or regex.exec(str) in a loop are more explicit.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-regexp-exec',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -136,12 +128,26 @@ export const preferRegexpExecRule: RuleDefinition = {
 
         const location = extractLocation(node)
         context.report({
+          loc: location,
           message:
             'Prefer using regex.exec(string) or string.matchAll(regex) instead of string.match() with global flag for more predictable behavior.',
-          loc: location,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer RegExp.exec() or String.matchAll() over String.match() with global flag. Using str.match(/regex/g) can lead to bugs with stateful regex lastIndex, and str.matchAll(regex) or regex.exec(str) in a loop are more explicit.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-regexp-exec',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

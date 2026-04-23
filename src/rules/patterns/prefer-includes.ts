@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isBinaryExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'BinaryExpression'
 }
@@ -37,6 +39,7 @@ function isLiteralZero(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Literal' && n.value === 0
 }
@@ -45,25 +48,12 @@ function isLiteralMinusOne(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Literal' && n.value === -1
 }
 
 export const preferIncludesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer .includes() over .indexOf() comparisons for better readability. Use array.includes(x) instead of array.indexOf(x) >= 0.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-includes',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -73,8 +63,8 @@ export const preferIncludesRule: RuleDefinition = {
 
         const n = node as Record<string, unknown>
         const operator = n.operator as string
-        const left = n.left
-        const right = n.right
+        const {left} = n
+        const {right} = n
 
         const isLeftIndexOf = isIndexOfCall(left)
         const isRightIndexOf = isIndexOfCall(right)
@@ -88,8 +78,8 @@ export const preferIncludesRule: RuleDefinition = {
           if (isLiteralZero(checkNode) || isLiteralMinusOne(checkNode)) {
             const location = extractLocation(node)
             context.report({
-              message: `Prefer .includes() over .indexOf() ${operator} for more readable code.`,
               loc: location,
+              message: `Prefer .includes() over .indexOf() ${operator} for more readable code.`,
             })
           }
         }
@@ -99,13 +89,27 @@ export const preferIncludesRule: RuleDefinition = {
           if (isLiteralMinusOne(checkNode)) {
             const location = extractLocation(node)
             context.report({
-              message: `Prefer .includes() over .indexOf() ${operator} for more readable code.`,
               loc: location,
+              message: `Prefer .includes() over .indexOf() ${operator} for more readable code.`,
             })
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer .includes() over .indexOf() comparisons for better readability. Use array.includes(x) instead of array.indexOf(x) >= 0.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-includes',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,14 +1,16 @@
 import type { SourceFile } from 'ts-morph'
-import { traverseASTMultiple, type RuleViolation, type ASTVisitor } from '../ast/visitor.js'
+
 import type { RuleDefinition, RuleOptions } from '../rules/types.js'
+
+import { type ASTVisitor, type RuleViolation, traverseASTMultiple } from '../ast/visitor.js'
 
 export type RuleCategory =
   | 'complexity'
+  | 'correctness'
   | 'dependencies'
+  | 'patterns'
   | 'performance'
   | 'security'
-  | 'patterns'
-  | 'correctness'
   | 'testing'
 
 export interface LoadedRule {
@@ -22,8 +24,74 @@ export interface LoadedRule {
  * Registry for managing and running code analysis rules
  */
 export class RuleRegistry {
-  private rules = new Map<string, LoadedRule>()
   private enabledRulesCache: LoadedRule[] | null = null
+  private rules = new Map<string, LoadedRule>()
+
+  /**
+   * Disables a specific rule in the registry
+   * @param ruleId - Unique identifier of the rule to disable
+   * @example
+   * registry.disable('no-console');
+   */
+  disable(ruleId: string): void {
+    const rule = this.rules.get(ruleId)
+    if (rule) {
+      rule.enabled = false
+      this.enabledRulesCache = null
+    }
+  }
+
+  /**
+   * Enables a specific rule in the registry
+   * @param ruleId - Unique identifier of the rule to enable
+   * @example
+   * registry.enable('no-console');
+   */
+  enable(ruleId: string): void {
+    const rule = this.rules.get(ruleId)
+    if (rule) {
+      rule.enabled = true
+      this.enabledRulesCache = null
+    }
+  }
+
+  /**
+   * Gets all registered rules (both enabled and disabled)
+   * @returns Array of all LoadedRule objects
+   */
+  getAllRules(): LoadedRule[] {
+    return [...this.rules.values()]
+  }
+
+  /**
+   * Gets all currently enabled rules from the registry
+   * Uses caching to avoid repeated array operations on every file analysis
+   * @returns Array of enabled LoadedRule objects
+   * @example
+   * const enabledRules = registry.getEnabledRules();
+   */
+  getEnabledRules(): LoadedRule[] {
+    if (this.enabledRulesCache !== null) {
+      return this.enabledRulesCache
+    }
+
+    this.enabledRulesCache = [...this.rules.values()].filter((r) => r.enabled)
+    return this.enabledRulesCache
+  }
+
+  /**
+   * Gets a specific rule by its ID
+   * @param ruleId - Unique identifier of the rule to retrieve
+   * @returns The LoadedRule object if found, undefined otherwise
+   * @example
+   * const rule = registry.getRule('no-console');
+   * if (rule) {
+   *   // Rule is enabled
+   * }
+   */
+  getRule(ruleId: string): LoadedRule | undefined {
+    return this.rules.get(ruleId)
+  }
 
   /**
    * Registers a new rule in the registry
@@ -50,63 +118,6 @@ export class RuleRegistry {
   }
 
   /**
-   * Enables a specific rule in the registry
-   * @param ruleId - Unique identifier of the rule to enable
-   * @example
-   * registry.enable('no-console');
-   */
-  enable(ruleId: string): void {
-    const rule = this.rules.get(ruleId)
-    if (rule) {
-      rule.enabled = true
-      this.enabledRulesCache = null
-    }
-  }
-
-  /**
-   * Disables a specific rule in the registry
-   * @param ruleId - Unique identifier of the rule to disable
-   * @example
-   * registry.disable('no-console');
-   */
-  disable(ruleId: string): void {
-    const rule = this.rules.get(ruleId)
-    if (rule) {
-      rule.enabled = false
-      this.enabledRulesCache = null
-    }
-  }
-
-  /**
-   * Gets all currently enabled rules from the registry
-   * Uses caching to avoid repeated array operations on every file analysis
-   * @returns Array of enabled LoadedRule objects
-   * @example
-   * const enabledRules = registry.getEnabledRules();
-   */
-  getEnabledRules(): LoadedRule[] {
-    if (this.enabledRulesCache !== null) {
-      return this.enabledRulesCache
-    }
-    this.enabledRulesCache = Array.from(this.rules.values()).filter((r) => r.enabled)
-    return this.enabledRulesCache
-  }
-
-  /**
-   * Gets a specific rule by its ID
-   * @param ruleId - Unique identifier of the rule to retrieve
-   * @returns The LoadedRule object if found, undefined otherwise
-   * @example
-   * const rule = registry.getRule('no-console');
-   * if (rule) {
-   *   // Rule is enabled
-   * }
-   */
-  getRule(ruleId: string): LoadedRule | undefined {
-    return this.rules.get(ruleId)
-  }
-
-  /**
    * Runs all enabled rules against a source file
    * @param sourceFile - The TypeScript source file to analyze
    * @returns Array of rule violations found in the source file
@@ -123,7 +134,7 @@ export class RuleRegistry {
 
     for (const loadedRule of enabledRules) {
       const { definition, options } = loadedRule
-      const { visitor, onComplete } = definition.create(options)
+      const { onComplete, visitor } = definition.create(options)
       visitors.push(visitor)
       if (onComplete) onCompleteCallbacks.push(onComplete)
     }
@@ -158,7 +169,7 @@ export class RuleRegistry {
 
       for (const loadedRule of batch) {
         const { definition, options } = loadedRule
-        const { visitor, onComplete } = definition.create(options)
+        const { onComplete, visitor } = definition.create(options)
         visitors.push(visitor)
         if (onComplete) onCompleteCallbacks.push(onComplete)
       }
@@ -172,14 +183,6 @@ export class RuleRegistry {
     }
 
     return allViolations
-  }
-
-  /**
-   * Gets all registered rules (both enabled and disabled)
-   * @returns Array of all LoadedRule objects
-   */
-  getAllRules(): LoadedRule[] {
-    return Array.from(this.rules.values())
   }
 }
 

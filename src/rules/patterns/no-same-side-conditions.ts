@@ -1,11 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 /**
  * Get a string representation of a node for comparison purposes.
  * This handles identifiers, literals, and simple expressions.
  */
-function getNodeKey(node: unknown): string | null {
+function getNodeKey(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -75,25 +76,12 @@ function isLogicalExpression(node: unknown): node is Record<string, unknown> {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'LogicalExpression' && (n.operator === '&&' || n.operator === '||')
 }
 
 export const noSameSideConditionsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow conditions where both sides of a logical operator are the same. Expressions like `a && a` or `a || a` are redundant.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-same-side-conditions',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const checkLogicalExpression = (node: unknown): void => {
       if (!isLogicalExpression(node)) {
@@ -101,8 +89,8 @@ export const noSameSideConditionsRule: RuleDefinition = {
       }
 
       const n = node as Record<string, unknown>
-      const left = n.left
-      const right = n.right
+      const {left} = n
+      const {right} = n
       const operator = n.operator as string
 
       if (areNodesEqual(left, right)) {
@@ -110,8 +98,8 @@ export const noSameSideConditionsRule: RuleDefinition = {
         const operatorName = operator === '&&' ? 'AND' : 'OR'
 
         context.report({
-          message: `Both sides of the ${operatorName} operator are identical. This expression is redundant.`,
           loc: location,
+          message: `Both sides of the ${operatorName} operator are identical. This expression is redundant.`,
         })
       }
     }
@@ -119,6 +107,20 @@ export const noSameSideConditionsRule: RuleDefinition = {
     return {
       LogicalExpression: checkLogicalExpression,
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow conditions where both sides of a logical operator are the same. Expressions like `a && a` or `a || a` are redundant.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-same-side-conditions',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

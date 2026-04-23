@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isFunctionExpression(node: unknown): boolean {
@@ -21,6 +22,7 @@ function hasReturnStatement(body: unknown): boolean {
       if (s.alternate && hasReturnInBody(s.alternate)) return true
     }
   }
+
   return false
 }
 
@@ -33,17 +35,6 @@ function hasReturnInBody(node: unknown): boolean {
 }
 
 export const getterReturnRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Enforce return statements in getters.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
@@ -55,12 +46,23 @@ export const getterReturnRule: RuleDefinition = {
         const value = n.value as Record<string, unknown>
         if (!value.body || !hasReturnStatement(value.body)) {
           context.report({
-            message: 'Getter should return a value.',
             loc: extractLocation(node),
+            message: 'Getter should return a value.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Enforce return statements in getters.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default getterReturnRule

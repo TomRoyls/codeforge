@@ -1,24 +1,24 @@
-import { readFile, readdir, unlink } from 'node:fs/promises'
+import { readdir, readFile, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { Project, type SourceFile } from 'ts-morph'
 
-import { CacheStore } from './index.js'
 import { logger } from '../utils/logger.js'
+import { CacheStore } from './index.js'
 
 /**
  * Cached AST entry stored on disk
  */
 export interface CachedASTEntry {
-  /** Absolute file path */
-  filePath: string
   /** SHA-256 hash of the file content */
   contentHash: string
+  /** Absolute file path */
+  filePath: string
   /** The source code text */
   sourceText: string
-  /** CodeForge version when cached */
-  version: string
   /** Timestamp when cached (ms since epoch) */
   timestamp: number
+  /** CodeForge version when cached */
+  version: string
 }
 
 /**
@@ -27,14 +27,14 @@ export interface CachedASTEntry {
 export interface ASTCacheStats {
   /** Number of cache entries */
   entries: number
-  /** Total size in bytes */
-  size: number
   /** Cache hit rate (0-1) */
   hitRate: number
   /** Number of cache hits */
   hits: number
   /** Number of cache misses */
   misses: number
+  /** Total size in bytes */
+  size: number
 }
 
 /**
@@ -43,12 +43,12 @@ export interface ASTCacheStats {
 export interface ASTCacheOptions {
   /** Custom cache directory path */
   cacheDir?: string
+  /** Whether caching is enabled (default: true) */
+  enabled?: boolean
   /** Time-to-live in milliseconds (default: 7 days) */
   ttl?: number
   /** CodeForge version for cache invalidation */
   version?: string
-  /** Whether caching is enabled (default: true) */
-  enabled?: boolean
 }
 
 // Default TTL: 7 days in milliseconds
@@ -86,13 +86,13 @@ const DEFAULT_VERSION = '0.1.0'
  */
 export class ASTCache {
   private cacheDir: string
-  private ttl: number
-  private version: string
+  private cacheStore: CacheStore
   private enabled: boolean
-  private project: Project | null = null
   private hits: number = 0
   private misses: number = 0
-  private cacheStore: CacheStore
+  private project: null | Project = null
+  private ttl: number
+  private version: string
 
   /**
    * Create a new ASTCache instance
@@ -100,7 +100,7 @@ export class ASTCache {
    * @param project - ts-morph Project instance (can be set later via setProject)
    * @param options - Cache configuration options
    */
-  constructor(project: Project | null, options: ASTCacheOptions = {}) {
+  constructor(project: null | Project, options: ASTCacheOptions = {}) {
     this.project = project
     this.cacheDir = options.cacheDir ?? path.join(process.cwd(), '.codeforge', 'cache', 'ast')
     this.ttl = options.ttl ?? DEFAULT_TTL
@@ -110,11 +110,61 @@ export class ASTCache {
   }
 
   /**
-   * Set the ts-morph Project instance
-   * Required for creating SourceFile objects from cached data
+   * Clean up expired cache entries
+   * Can be called periodically to free disk space
    */
-  setProject(project: Project): void {
-    this.project = project
+  async cleanup(): Promise<number> {
+    try {
+      const files = await readdir(this.cacheDir)
+      let cleaned = 0
+
+      for (const file of files) {
+        try {
+          const filePath = path.join(this.cacheDir, file)
+          // eslint-disable-next-line no-await-in-loop
+          const content = await readFile(filePath, 'utf8')
+          const entry: CacheEntry<CachedASTEntry> = JSON.parse(content)
+
+          // Check if expired
+          if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
+            // eslint-disable-next-line no-await-in-loop
+            await unlink(filePath)
+            cleaned++
+          }
+        } catch {
+          // Invalid cache file, remove it
+          const filePath = path.join(this.cacheDir, file)
+          // eslint-disable-next-line no-await-in-loop
+          await unlink(filePath).catch((error: Error) => {
+            logger.debug(`Failed to delete invalid cache file ${file}:`, error)
+          })
+          cleaned++
+        }
+      }
+
+      if (cleaned > 0) {
+        logger.debug(`AST cache cleanup: removed ${cleaned} expired entries`)
+      }
+
+      return cleaned
+    } catch (error) {
+      logger.debug('AST cache cleanup error:', error)
+      return 0
+    }
+  }
+
+  /**
+   * Clear all cache entries
+   */
+  async clear(): Promise<void> {
+    try {
+      await this.cacheStore.clear()
+      this.hits = 0
+      this.misses = 0
+      logger.debug('AST cache cleared')
+    } catch (error) {
+      logger.debug('AST cache clear error:', error)
+    }
   }
 
   /**
@@ -124,7 +174,7 @@ export class ASTCache {
    * @param contentHash - SHA-256 hash of the current file content
    * @returns SourceFile if cache hit and valid, null otherwise
    */
-  async get(filePath: string, contentHash: string): Promise<SourceFile | null> {
+  async get(filePath: string, contentHash: string): Promise<null | SourceFile> {
     if (!this.enabled) {
       this.misses++
       return null
@@ -187,33 +237,31 @@ export class ASTCache {
   }
 
   /**
-   * Cache a parsed SourceFile
+   * Get cache statistics
    *
-   * @param filePath - Absolute path to the source file
-   * @param contentHash - SHA-256 hash of the file content
-   * @param sourceFile - The parsed SourceFile to cache
+   * @returns Cache statistics including entries, size, and hit rate
    */
-  async set(filePath: string, contentHash: string, sourceFile: SourceFile): Promise<void> {
-    if (!this.enabled) {
-      return
-    }
-
+  async getStats(): Promise<ASTCacheStats> {
     try {
-      const cacheKey = this.getCacheKey(filePath, contentHash)
-      const sourceText = sourceFile.getFullText()
+      const storeStats = await this.cacheStore.getStats()
+      const total = this.hits + this.misses
 
-      const entry: CachedASTEntry = {
-        filePath,
-        contentHash,
-        sourceText,
-        version: this.version,
-        timestamp: Date.now(),
+      return {
+        entries: storeStats.entries,
+        hitRate: total > 0 ? this.hits / total : 0,
+        hits: this.hits,
+        misses: this.misses,
+        size: storeStats.size,
       }
-
-      await this.cacheStore.set(cacheKey, entry, this.ttl)
-      logger.debug(`AST cache SET for ${filePath}`)
     } catch (error) {
-      logger.debug(`AST cache set error for ${filePath}:`, error)
+      logger.debug('AST cache stats error:', error)
+      return {
+        entries: 0,
+        hitRate: 0,
+        hits: this.hits,
+        misses: this.misses,
+        size: 0,
+      }
     }
   }
 
@@ -245,45 +293,40 @@ export class ASTCache {
   }
 
   /**
-   * Clear all cache entries
+   * Check if cache is enabled
    */
-  async clear(): Promise<void> {
-    try {
-      await this.cacheStore.clear()
-      this.hits = 0
-      this.misses = 0
-      logger.debug('AST cache cleared')
-    } catch (error) {
-      logger.debug('AST cache clear error:', error)
-    }
+  isEnabled(): boolean {
+    return this.enabled
   }
 
   /**
-   * Get cache statistics
+   * Cache a parsed SourceFile
    *
-   * @returns Cache statistics including entries, size, and hit rate
+   * @param filePath - Absolute path to the source file
+   * @param contentHash - SHA-256 hash of the file content
+   * @param sourceFile - The parsed SourceFile to cache
    */
-  async getStats(): Promise<ASTCacheStats> {
-    try {
-      const storeStats = await this.cacheStore.getStats()
-      const total = this.hits + this.misses
+  async set(filePath: string, contentHash: string, sourceFile: SourceFile): Promise<void> {
+    if (!this.enabled) {
+      return
+    }
 
-      return {
-        entries: storeStats.entries,
-        size: storeStats.size,
-        hitRate: total > 0 ? this.hits / total : 0,
-        hits: this.hits,
-        misses: this.misses,
+    try {
+      const cacheKey = this.getCacheKey(filePath, contentHash)
+      const sourceText = sourceFile.getFullText()
+
+      const entry: CachedASTEntry = {
+        contentHash,
+        filePath,
+        sourceText,
+        timestamp: Date.now(),
+        version: this.version,
       }
+
+      await this.cacheStore.set(cacheKey, entry, this.ttl)
+      logger.debug(`AST cache SET for ${filePath}`)
     } catch (error) {
-      logger.debug('AST cache stats error:', error)
-      return {
-        entries: 0,
-        size: 0,
-        hitRate: 0,
-        hits: this.hits,
-        misses: this.misses,
-      }
+      logger.debug(`AST cache set error for ${filePath}:`, error)
     }
   }
 
@@ -295,10 +338,11 @@ export class ASTCache {
   }
 
   /**
-   * Check if cache is enabled
+   * Set the ts-morph Project instance
+   * Required for creating SourceFile objects from cached data
    */
-  isEnabled(): boolean {
-    return this.enabled
+  setProject(project: Project): void {
+    this.project = project
   }
 
   /**
@@ -308,60 +352,19 @@ export class ASTCache {
     // Include version in key for automatic invalidation on version change
     return `ast:${this.version}:${filePath}:${contentHash}`
   }
-
-  /**
-   * Clean up expired cache entries
-   * Can be called periodically to free disk space
-   */
-  async cleanup(): Promise<number> {
-    try {
-      const files = await readdir(this.cacheDir)
-      let cleaned = 0
-
-      for (const file of files) {
-        try {
-          const filePath = path.join(this.cacheDir, file)
-          const content = await readFile(filePath, 'utf-8')
-          const entry: CacheEntry<CachedASTEntry> = JSON.parse(content)
-
-          // Check if expired
-          if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
-            await unlink(filePath)
-            cleaned++
-          }
-        } catch {
-          // Invalid cache file, remove it
-          const filePath = path.join(this.cacheDir, file)
-          await unlink(filePath).catch((error: Error) => {
-            logger.debug(`Failed to delete invalid cache file ${file}:`, error)
-          })
-          cleaned++
-        }
-      }
-
-      if (cleaned > 0) {
-        logger.debug(`AST cache cleanup: removed ${cleaned} expired entries`)
-      }
-
-      return cleaned
-    } catch (error) {
-      logger.debug('AST cache cleanup error:', error)
-      return 0
-    }
-  }
 }
 
 /**
  * Create a default ASTCache instance
  */
-export function createDefaultASTCache(project: Project | null, version?: string): ASTCache {
+export function createDefaultASTCache(project: null | Project, version?: string): ASTCache {
   return new ASTCache(project, { version })
 }
 
 // Re-export CacheEntry type for use in cleanup
 interface CacheEntry<T = unknown> {
   key: string
-  value: T
   timestamp: number
   ttl?: number
+  value: T
 }

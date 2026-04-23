@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -20,29 +21,10 @@ function isCatchClause(node: unknown): boolean {
 }
 
 export const noExAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow reassigning exceptions in catch clauses.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     const catchParamNames = new Set<string>()
 
     return {
-      CatchClause(node: unknown): void {
-        if (!isCatchClause(node)) return
-        const n = node as Record<string, unknown>
-        if (n.param && isIdentifier(n.param)) {
-          const param = n.param as Record<string, unknown>
-          catchParamNames.add(param.name as string)
-        }
-      },
       AssignmentExpression(node: unknown): void {
         if (!isAssignmentExpression(node)) return
         const n = node as Record<string, unknown>
@@ -51,13 +33,32 @@ export const noExAssignRule: RuleDefinition = {
           const name = left.name as string
           if (catchParamNames.has(name)) {
             context.report({
-              message: `Do not reassign the catch parameter '${name}'.`,
               loc: extractLocation(node),
+              message: `Do not reassign the catch parameter '${name}'.`,
             })
           }
         }
       },
+      CatchClause(node: unknown): void {
+        if (!isCatchClause(node)) return
+        const n = node as Record<string, unknown>
+        if (n.param && isIdentifier(n.param)) {
+          const param = n.param as Record<string, unknown>
+          catchParamNames.add(param.name as string)
+        }
+      },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow reassigning exceptions in catch clauses.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noExAssignRule

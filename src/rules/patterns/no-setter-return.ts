@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isMethodDefinition(node: unknown): boolean {
@@ -22,21 +23,11 @@ function hasReturnValue(node: unknown): boolean {
       if (hasReturnValue(stmt)) return true
     }
   }
+
   return false
 }
 
 export const noSetterReturnRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow returning values from setters.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
@@ -48,12 +39,23 @@ export const noSetterReturnRule: RuleDefinition = {
         const value = n.value as Record<string, unknown>
         if (value.body && hasReturnValue(value.body)) {
           context.report({
-            message: 'Setter should not return a value.',
             loc: extractLocation(node),
+            message: 'Setter should not return a value.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow returning values from setters.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noSetterReturnRule

@@ -1,19 +1,19 @@
 /**
- * @fileoverview Disallow constant binary expressions in conditionals
+ * @file Disallow constant binary expressions in conditionals
  * @module rules/correctness/no-constant-binary-expression
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -31,13 +31,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -54,7 +54,7 @@ function isConstant(node: unknown): boolean {
   }
 
   if (n.type === 'UnaryExpression' && n.operator === '!') {
-    const argument = n.argument
+    const {argument} = n
     if (argument && typeof argument === 'object') {
       const arg = argument as Record<string, unknown>
       return arg.type === 'Literal' && typeof arg.value === 'boolean'
@@ -88,19 +88,6 @@ function isBinaryOperator(operator: unknown): operator is string {
 }
 
 export const noConstantBinaryExpressionRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow comparisons with constant binary values (true/false, 0/1). These are likely mistakes where a variable was intended, the boolean literal. Use the variable directly or fix the comparison.',
-      category: 'correctness',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-constant-binary-expression',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -114,8 +101,8 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
           return
         }
 
-        const left = n.left
-        const right = n.right
+        const {left} = n
+        const {right} = n
 
         const leftIsConstant = isConstant(left)
         const rightIsConstant = isConstant(right)
@@ -128,11 +115,24 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
         const constantValue = leftIsConstant ? getConstantValue(left) : getConstantValue(right)
 
         context.report({
-          node,
-          message: `Unexpected comparison with constant ${typeof constantValue === 'boolean' ? 'boolean' : 'numeric'} value (${constantValue}) on the ${constantSide} side. This is likely a mistake. Use the variable directly or fix the comparison.`,
           loc: extractLocation(node),
+          message: `Unexpected comparison with constant ${typeof constantValue === 'boolean' ? 'boolean' : 'numeric'} value (${constantValue}) on the ${constantSide} side. This is likely a mistake. Use the variable directly or fix the comparison.`,
+          node,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'correctness',
+      description:
+        'Disallow comparisons with constant binary values (true/false, 0/1). These are likely mistakes where a variable was intended, the boolean literal. Use the variable directly or fix the comparison.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-constant-binary-expression',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }

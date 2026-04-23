@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 type ASTNode = Record<string, unknown>
@@ -35,9 +36,9 @@ function isIdentifier(node: unknown, name?: string): boolean {
   return name === undefined || n.name === name
 }
 
-function getRegexPattern(regex: RegExp): { type: 'startsWith' | 'endsWith'; value: string } | null {
-  const source = regex.source
-  const flags = regex.flags
+function getRegexPattern(regex: RegExp): null | { type: 'endsWith' | 'startsWith'; value: string } {
+  const {source} = regex
+  const {flags} = regex
 
   // Only support simple patterns without flags that change behavior
   if (flags.includes('i') || flags.includes('m')) return null
@@ -78,7 +79,7 @@ function isLiteralZero(node: unknown): boolean {
   return node.value === 0
 }
 
-function isIndexOfEqualsZero(node: ASTNode): { object: ASTNode; arg: unknown } | null {
+function isIndexOfEqualsZero(node: ASTNode): null | { arg: unknown; object: ASTNode; } {
   if (!isBinaryExpression(node)) return null
   if (node.operator !== '===' && node.operator !== '==') return null
 
@@ -91,7 +92,7 @@ function isIndexOfEqualsZero(node: ASTNode): { object: ASTNode; arg: unknown } |
     const callee = leftCall.callee as ASTNode
     const args = leftCall.arguments as unknown[]
     if (args.length === 1) {
-      return { object: callee.object as ASTNode, arg: args[0] }
+      return { arg: args[0], object: callee.object as ASTNode }
     }
   }
 
@@ -101,7 +102,7 @@ function isIndexOfEqualsZero(node: ASTNode): { object: ASTNode; arg: unknown } |
     const callee = rightCall.callee as ASTNode
     const args = rightCall.arguments as unknown[]
     if (args.length === 1) {
-      return { object: callee.object as ASTNode, arg: args[0] }
+      return { arg: args[0], object: callee.object as ASTNode }
     }
   }
 
@@ -109,22 +110,61 @@ function isIndexOfEqualsZero(node: ASTNode): { object: ASTNode; arg: unknown } |
 }
 
 export const preferStringStartsEndsWithRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer String.startsWith() and String.endsWith() over regex or indexOf patterns for better readability.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-string-starts-ends-with',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
+      BinaryExpression(node: unknown): void {
+        if (!isBinaryExpression(node)) return
+
+        const n = node as ASTNode
+
+        // Pattern: x.indexOf('y') === 0 -> x.startsWith('y')
+        const startsWithMatch = isIndexOfEqualsZero(n)
+        if (startsWithMatch) {
+          const location = extractLocation(node)
+          context.report({
+            loc: location,
+            message: `Prefer String.startsWith() over indexOf() === 0 for checking start of string.`,
+          })
+          return
+        }
+
+        // Pattern: x.indexOf('y') === x.length - 1 or x.lastIndexOf('y') === x.length - y.length
+        // For simplicity, we detect: x.indexOf('y') !== -1 && x.indexOf('y') === x.length - 1 patterns
+        // A common endsWith pattern is: str.lastIndexOf('x') === str.length - 1
+        // Or: str.indexOf('x', str.length - 1) !== -1
+
+        const operator = n.operator as string
+        const left = n.left as unknown
+        const right = n.right as unknown
+
+        // Pattern: str.indexOf('x', str.length - 1) === str.length - 1
+        // or: str.lastIndexOf('x') === str.length - x.length
+        if ((operator === '===' || operator === '==') && // Check if this is an indexOf with a second argument (position)
+          isCallExpression(left)) {
+            const leftCall = left as ASTNode
+            const callee = leftCall.callee as unknown
+            if (isMemberExpression(callee)) {
+              const property = callee.property as unknown
+              const args = leftCall.arguments as unknown[]
+
+              // str.indexOf('x', str.length - 1) pattern - detecting this is complex
+              // For now, detect str.lastIndexOf('x') === str.length - n patterns
+              if (isIdentifier(property, 'lastIndexOf') && args.length === 1 && // Simple detection: lastIndexOf being compared to length-related expression
+                isMemberExpression(right)) {
+                  const rightMember = right as ASTNode
+                  const rightProp = rightMember.property as unknown
+                  if (isIdentifier(rightProp, 'length')) {
+                    const location = extractLocation(node)
+                    context.report({
+                      loc: location,
+                      message: `Prefer String.endsWith() over lastIndexOf() for checking end of string.`,
+                    })
+                  }
+                }
+            }
+          }
+      },
+
       CallExpression(node: unknown): void {
         if (!isCallExpression(node)) return
 
@@ -145,8 +185,8 @@ export const preferStringStartsEndsWithRule: RuleDefinition = {
                 const location = extractLocation(node)
                 const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
                 context.report({
-                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
                   loc: location,
+                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
                 })
               }
             }
@@ -163,72 +203,29 @@ export const preferStringStartsEndsWithRule: RuleDefinition = {
                 const location = extractLocation(node)
                 const method = pattern.type === 'startsWith' ? 'startsWith' : 'endsWith'
                 context.report({
-                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
                   loc: location,
+                  message: `Prefer String.${method}() over regex pattern for checking ${pattern.type === 'startsWith' ? 'start' : 'end'} of string.`,
                 })
               }
             }
           }
         }
       },
-
-      BinaryExpression(node: unknown): void {
-        if (!isBinaryExpression(node)) return
-
-        const n = node as ASTNode
-
-        // Pattern: x.indexOf('y') === 0 -> x.startsWith('y')
-        const startsWithMatch = isIndexOfEqualsZero(n)
-        if (startsWithMatch) {
-          const location = extractLocation(node)
-          context.report({
-            message: `Prefer String.startsWith() over indexOf() === 0 for checking start of string.`,
-            loc: location,
-          })
-          return
-        }
-
-        // Pattern: x.indexOf('y') === x.length - 1 or x.lastIndexOf('y') === x.length - y.length
-        // For simplicity, we detect: x.indexOf('y') !== -1 && x.indexOf('y') === x.length - 1 patterns
-        // A common endsWith pattern is: str.lastIndexOf('x') === str.length - 1
-        // Or: str.indexOf('x', str.length - 1) !== -1
-
-        const operator = n.operator as string
-        const left = n.left as unknown
-        const right = n.right as unknown
-
-        // Pattern: str.indexOf('x', str.length - 1) === str.length - 1
-        // or: str.lastIndexOf('x') === str.length - x.length
-        if (operator === '===' || operator === '==') {
-          // Check if this is an indexOf with a second argument (position)
-          if (isCallExpression(left)) {
-            const leftCall = left as ASTNode
-            const callee = leftCall.callee as unknown
-            if (isMemberExpression(callee)) {
-              const property = callee.property as unknown
-              const args = leftCall.arguments as unknown[]
-
-              // str.indexOf('x', str.length - 1) pattern - detecting this is complex
-              // For now, detect str.lastIndexOf('x') === str.length - n patterns
-              if (isIdentifier(property, 'lastIndexOf') && args.length === 1) {
-                // Simple detection: lastIndexOf being compared to length-related expression
-                if (isMemberExpression(right)) {
-                  const rightMember = right as ASTNode
-                  const rightProp = rightMember.property as unknown
-                  if (isIdentifier(rightProp, 'length')) {
-                    const location = extractLocation(node)
-                    context.report({
-                      message: `Prefer String.endsWith() over lastIndexOf() for checking end of string.`,
-                      loc: location,
-                    })
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer String.startsWith() and String.endsWith() over regex or indexOf patterns for better readability.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-string-starts-ends-with',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

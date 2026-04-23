@@ -1,21 +1,22 @@
 /**
- * @fileoverview Disallow use of deprecated APIs
+ * @file Disallow use of deprecated APIs
  * @module rules/security/no-deprecated-api
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface DeprecatedApiInfo {
   readonly name: string
   readonly reason: string
-  readonly since?: string
   readonly replacement?: string
+  readonly since?: string
 }
 
 interface DeprecatedApiCall {
@@ -30,29 +31,50 @@ interface NoDeprecatedApiOptions {
 
 const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
   [
-    'escape',
-    { name: 'escape', reason: 'Deprecated in ECMAScript v3', replacement: 'encodeURIComponent' },
+    '__defineGetter__',
+    { name: '__defineGetter__', reason: 'Deprecated', replacement: 'Object.defineProperty' },
   ],
   [
-    'unescape',
-    { name: 'unescape', reason: 'Deprecated in ECMAScript v3', replacement: 'decodeURIComponent' },
+    '__defineSetter__',
+    { name: '__defineSetter__', reason: 'Deprecated', replacement: 'Object.defineProperty' },
   ],
-  ['substr', { name: 'substr', reason: 'Considered legacy', replacement: 'substring or slice' }],
   [
-    'String.prototype.substr',
+    '__lookupGetter__',
     {
-      name: 'String.prototype.substr',
-      reason: 'Considered legacy',
-      replacement: 'String.prototype.substring or String.prototype.slice',
+      name: '__lookupGetter__',
+      reason: 'Deprecated',
+      replacement: 'Object.getOwnPropertyDescriptor',
+    },
+  ],
+  [
+    '__lookupSetter__',
+    {
+      name: '__lookupSetter__',
+      reason: 'Deprecated',
+      replacement: 'Object.getOwnPropertyDescriptor',
+    },
+  ],
+  [
+    '__proto__',
+    {
+      name: '__proto__',
+      reason: 'Deprecated',
+      replacement: 'Object.getPrototypeOf / Object.setPrototypeOf',
     },
   ],
   [
     'Array.prototype.buffer',
     { name: 'Array.prototype.buffer', reason: 'Non-standard', replacement: 'TypedArrays' },
   ],
-  ['getYear', { name: 'getYear', reason: 'Deprecated', replacement: 'getFullYear' }],
-  ['setYear', { name: 'setYear', reason: 'Deprecated', replacement: 'setFullYear' }],
-  ['toGMTString', { name: 'toGMTString', reason: 'Deprecated', replacement: 'toUTCString' }],
+  [
+    'Buffer',
+    {
+      name: 'Buffer()',
+      reason: 'Deprecated in favor of Buffer.alloc() and Buffer.from()',
+      since: 'Node.js 6',
+    },
+  ],
+  ['compile', { name: 'compile', reason: 'Deprecated', since: 'ES2015' }],
   [
     'Date.prototype.getYear',
     {
@@ -77,31 +99,11 @@ const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
       replacement: 'Date.prototype.toUTCString',
     },
   ],
-  ['compile', { name: 'compile', reason: 'Deprecated', since: 'ES2015' }],
   [
-    'RegExp.prototype.compile',
-    { name: 'RegExp.prototype.compile', reason: 'Deprecated', since: 'ES2015' },
+    'escape',
+    { name: 'escape', reason: 'Deprecated in ECMAScript v3', replacement: 'encodeURIComponent' },
   ],
-  [
-    '__proto__',
-    {
-      name: '__proto__',
-      reason: 'Deprecated',
-      replacement: 'Object.getPrototypeOf / Object.setPrototypeOf',
-    },
-  ],
-  [
-    'Object.prototype.__proto__',
-    {
-      name: 'Object.prototype.__proto__',
-      reason: 'Deprecated',
-      replacement: 'Object.getPrototypeOf / Object.setPrototypeOf',
-    },
-  ],
-  [
-    '__defineGetter__',
-    { name: '__defineGetter__', reason: 'Deprecated', replacement: 'Object.defineProperty' },
-  ],
+  ['getYear', { name: 'getYear', reason: 'Deprecated', replacement: 'getFullYear' }],
   [
     'Object.prototype.__defineGetter__',
     {
@@ -109,10 +111,6 @@ const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
       reason: 'Deprecated',
       replacement: 'Object.defineProperty',
     },
-  ],
-  [
-    '__defineSetter__',
-    { name: '__defineSetter__', reason: 'Deprecated', replacement: 'Object.defineProperty' },
   ],
   [
     'Object.prototype.__defineSetter__',
@@ -123,25 +121,9 @@ const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
     },
   ],
   [
-    '__lookupGetter__',
-    {
-      name: '__lookupGetter__',
-      reason: 'Deprecated',
-      replacement: 'Object.getOwnPropertyDescriptor',
-    },
-  ],
-  [
     'Object.prototype.__lookupGetter__',
     {
       name: 'Object.prototype.__lookupGetter__',
-      reason: 'Deprecated',
-      replacement: 'Object.getOwnPropertyDescriptor',
-    },
-  ],
-  [
-    '__lookupSetter__',
-    {
-      name: '__lookupSetter__',
       reason: 'Deprecated',
       replacement: 'Object.getOwnPropertyDescriptor',
     },
@@ -155,19 +137,38 @@ const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
     },
   ],
   [
-    'Buffer',
+    'Object.prototype.__proto__',
     {
-      name: 'Buffer()',
-      reason: 'Deprecated in favor of Buffer.alloc() and Buffer.from()',
-      since: 'Node.js 6',
+      name: 'Object.prototype.__proto__',
+      reason: 'Deprecated',
+      replacement: 'Object.getPrototypeOf / Object.setPrototypeOf',
     },
+  ],
+  [
+    'RegExp.prototype.compile',
+    { name: 'RegExp.prototype.compile', reason: 'Deprecated', since: 'ES2015' },
+  ],
+  ['setYear', { name: 'setYear', reason: 'Deprecated', replacement: 'setFullYear' }],
+  [
+    'String.prototype.substr',
+    {
+      name: 'String.prototype.substr',
+      reason: 'Considered legacy',
+      replacement: 'String.prototype.substring or String.prototype.slice',
+    },
+  ],
+  ['substr', { name: 'substr', reason: 'Considered legacy', replacement: 'substring or slice' }],
+  ['toGMTString', { name: 'toGMTString', reason: 'Deprecated', replacement: 'toUTCString' }],
+  [
+    'unescape',
+    { name: 'unescape', reason: 'Deprecated in ECMAScript v3', replacement: 'decodeURIComponent' },
   ],
 ])
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -185,13 +186,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -213,7 +214,7 @@ function isDeprecatedCall(
 
     // Direct call: escape(), unescape(), Buffer()
     if (callee?.type === 'Identifier' && typeof callee.name === 'string') {
-      const name = callee.name
+      const {name} = callee
       if (!ignoreList.has(name) && apis.has(name)) {
         return apis.get(name) ?? null
       }
@@ -234,9 +235,11 @@ function isDeprecatedCall(
           if (fullKey && apis.has(fullKey)) {
             return apis.get(fullKey) ?? null
           }
+
           if (apis.has(simpleKey)) {
             return apis.get(simpleKey) ?? null
           }
+
           if (apis.has(methodName)) {
             return apis.get(methodName) ?? null
           }
@@ -249,7 +252,7 @@ function isDeprecatedCall(
   if (n.type === 'NewExpression') {
     const callee = n.callee as Record<string, unknown> | undefined
     if (callee?.type === 'Identifier' && typeof callee.name === 'string') {
-      const name = callee.name
+      const {name} = callee
       if (!ignoreList.has(name) && apis.has(name)) {
         return apis.get(name) ?? null
       }
@@ -263,18 +266,16 @@ function isDeprecatedCall(
       const propName = property.name
       const fullKey = `Object.prototype.${propName}`
 
-      if (!ignoreList.has(propName) && !ignoreList.has(fullKey)) {
-        if (apis.has(fullKey)) {
+      if (!ignoreList.has(propName) && !ignoreList.has(fullKey) && apis.has(fullKey)) {
           return apis.get(fullKey) ?? null
         }
-      }
     }
   }
 
   return null
 }
 
-function getObjectTypeName(node: unknown): string | null {
+function getObjectTypeName(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -301,44 +302,6 @@ function getObjectTypeName(node: unknown): string | null {
  * Disallows use of deprecated JavaScript and Node.js APIs
  */
 export const noDeprecatedApiRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow the use of deprecated APIs. Using deprecated APIs may cause issues when upgrading runtime environments.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-deprecated-api',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          additionalApis: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                name: { type: 'string' },
-                reason: { type: 'string' },
-                since: { type: 'string' },
-                replacement: { type: 'string' },
-              },
-              required: ['name', 'reason'],
-            },
-          },
-          ignoreApis: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoDeprecatedApiOptions>(context.config.options, {
       additionalApis: undefined,
@@ -370,38 +333,15 @@ export const noDeprecatedApiRule: RuleDefinition = {
           if (api.reason) {
             message += ` - ${api.reason}`
           }
+
           if (api.replacement) {
             message += `. Use '${api.replacement}' instead.`
           }
 
           context.report({
-            node,
-            message,
             loc: extractLocation(node),
-          })
-        }
-      },
-
-      NewExpression(node: unknown): void {
-        const api = isDeprecatedCall(node, apis, ignoreList)
-        if (api) {
-          deprecatedCalls.push({
-            api,
-            location: extractLocation(node),
-          })
-
-          let message = `Deprecated API used: '${api.name}' is deprecated`
-          if (api.reason) {
-            message += ` - ${api.reason}`
-          }
-          if (api.replacement) {
-            message += `. Use '${api.replacement}' instead.`
-          }
-
-          context.report({
-            node,
             message,
-            loc: extractLocation(node),
+            node,
           })
         }
       },
@@ -418,18 +358,82 @@ export const noDeprecatedApiRule: RuleDefinition = {
           if (api.reason) {
             message += ` - ${api.reason}`
           }
+
           if (api.replacement) {
             message += `. Use '${api.replacement}' instead.`
           }
 
           context.report({
-            node,
-            message,
             loc: extractLocation(node),
+            message,
+            node,
+          })
+        }
+      },
+
+      NewExpression(node: unknown): void {
+        const api = isDeprecatedCall(node, apis, ignoreList)
+        if (api) {
+          deprecatedCalls.push({
+            api,
+            location: extractLocation(node),
+          })
+
+          let message = `Deprecated API used: '${api.name}' is deprecated`
+          if (api.reason) {
+            message += ` - ${api.reason}`
+          }
+
+          if (api.replacement) {
+            message += `. Use '${api.replacement}' instead.`
+          }
+
+          context.report({
+            loc: extractLocation(node),
+            message,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow the use of deprecated APIs. Using deprecated APIs may cause issues when upgrading runtime environments.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-deprecated-api',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          additionalApis: {
+            items: {
+              properties: {
+                name: { type: 'string' },
+                reason: { type: 'string' },
+                replacement: { type: 'string' },
+                since: { type: 'string' },
+              },
+              required: ['name', 'reason'],
+              type: 'object',
+            },
+            type: 'array',
+          },
+          ignoreApis: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

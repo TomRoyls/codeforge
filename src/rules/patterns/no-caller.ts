@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isCallerAccess(node: unknown): boolean {
@@ -47,19 +48,6 @@ function isArgumentsCallee(node: unknown): boolean {
 }
 
 export const noCallerRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow the use of arguments.caller and arguments.callee. These are non-standard, deprecated, and pose security risks by exposing call stacks.',
-      category: 'security',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-caller',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       MemberExpression(node: unknown): void {
@@ -67,12 +55,25 @@ export const noCallerRule: RuleDefinition = {
           const location = extractLocation(node)
 
           context.report({
-            message: 'Avoid arguments.caller and arguments.callee.',
             loc: location,
+            message: 'Avoid arguments.caller and arguments.callee.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow the use of arguments.caller and arguments.callee. These are non-standard, deprecated, and pose security risks by exposing call stacks.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-caller',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

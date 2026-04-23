@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isBinaryExpression(node: unknown): boolean {
@@ -20,28 +21,17 @@ function isLiteral(node: unknown): boolean {
 }
 
 const VALID_TYPES = new Set([
-  'undefined',
-  'object',
+  'bigint',
   'boolean',
+  'function',
   'number',
+  'object',
   'string',
   'symbol',
-  'function',
-  'bigint',
+  'undefined',
 ])
 
 export const validTypeofRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Enforce comparing typeof expressions against valid strings.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -73,12 +63,23 @@ export const validTypeofRule: RuleDefinition = {
 
         if (!VALID_TYPES.has(v.value)) {
           context.report({
-            message: `Invalid typeof comparison value '${v.value}'.`,
             loc: extractLocation(node),
+            message: `Invalid typeof comparison value '${v.value}'.`,
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Enforce comparing typeof expressions against valid strings.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default validTypeofRule

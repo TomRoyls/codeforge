@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isLiteral(node: unknown): boolean {
@@ -10,9 +11,9 @@ function isLiteral(node: unknown): boolean {
 function hasMisleadingChars(pattern: unknown): boolean {
   if (typeof pattern !== 'string') return false
   const misleadingRanges: [number, number][] = [
-    [0x1f1e6, 0x1f1ff],
-    [0x200d, 0x200d],
-    [0xfe0f, 0xfe0f],
+    [0x1_f1_e6, 0x1_f1_ff],
+    [0x20_0d, 0x20_0d],
+    [0xfe_0f, 0xfe_0f],
   ]
 
   for (let i = 0; i < pattern.length; i++) {
@@ -23,37 +24,39 @@ function hasMisleadingChars(pattern: unknown): boolean {
       const end = range[1]
       if (code >= start && code <= end) return true
     }
-    if (code > 0xffff) i++
+
+    if (code > 0xff_ff) i++
   }
+
   return false
 }
 
 export const noMisleadingCharacterClassRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow characters made with multiple code points in character class syntax.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
         if (!isLiteral(node)) return
         const n = node as Record<string, unknown>
-        const regex = n.regex as { pattern?: string } | undefined
+        const regex = n.regex as undefined | { pattern?: string }
         if (regex && regex.pattern && hasMisleadingChars(regex.pattern)) {
           context.report({
-            message: 'Character class may contain multiple code points.',
             loc: extractLocation(node),
+            message: 'Character class may contain multiple code points.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow characters made with multiple code points in character class syntax.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noMisleadingCharacterClassRule

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
-import { mkdir, readFile, writeFile, unlink, readdir, stat } from 'node:fs/promises'
+import { mkdir, readdir, readFile, stat, unlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 import { logger } from '../utils/logger.js'
@@ -27,9 +27,9 @@ export async function hashFile(filePath: string): Promise<string> {
 
 export interface CacheEntry<T = unknown> {
   key: string
-  value: T
   timestamp: number
   ttl?: number
+  value: T
 }
 
 export class CacheStore {
@@ -39,47 +39,12 @@ export class CacheStore {
     this.cacheDir = cacheDir
   }
 
-  async get<T>(key: string): Promise<T | null> {
+  async clear(): Promise<void> {
     try {
-      const filePath = this.getCacheFilePath(key)
-      const content = await readFile(filePath, 'utf-8')
-      // JSON.parse may throw for corrupted cache data - returning null is expected for cache misses
-      const entry: CacheEntry<T> = JSON.parse(content)
-
-      if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
-        await this.delete(key)
-        return null
-      }
-
-      return entry.value
+      const files = await readdir(this.cacheDir)
+      await Promise.all(files.map((file) => unlink(path.join(this.cacheDir, file))))
     } catch (error) {
-      logger.debug(`Cache get failed for key "${key}":`, error)
-      return null
-    }
-  }
-
-  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
-    await this.ensureCacheDir()
-
-    const entry: CacheEntry<T> = {
-      key,
-      value,
-      timestamp: Date.now(),
-      ttl,
-    }
-
-    const filePath = this.getCacheFilePath(key)
-    await writeFile(filePath, JSON.stringify(entry))
-  }
-
-  async has(key: string): Promise<boolean> {
-    try {
-      const filePath = this.getCacheFilePath(key)
-      const stats = await stat(filePath)
-      return stats.isFile()
-    } catch (error) {
-      logger.debug(`Cache check failed for key "${key}":`, error)
-      return false
+      logger.debug('Failed to clear cache:', error)
     }
   }
 
@@ -94,12 +59,22 @@ export class CacheStore {
     }
   }
 
-  async clear(): Promise<void> {
+  async get<T>(key: string): Promise<null | T> {
     try {
-      const files = await readdir(this.cacheDir)
-      await Promise.all(files.map((file) => unlink(path.join(this.cacheDir, file))))
+      const filePath = this.getCacheFilePath(key)
+      const content = await readFile(filePath, 'utf8')
+      // JSON.parse may throw for corrupted cache data - returning null is expected for cache misses
+      const entry: CacheEntry<T> = JSON.parse(content)
+
+      if (entry.ttl && Date.now() > entry.timestamp + entry.ttl) {
+        await this.delete(key)
+        return null
+      }
+
+      return entry.value
     } catch (error) {
-      logger.debug('Failed to clear cache:', error)
+      logger.debug(`Cache get failed for key "${key}":`, error)
+      return null
     }
   }
 
@@ -118,9 +93,29 @@ export class CacheStore {
     }
   }
 
-  private getCacheFilePath(key: string): string {
-    const safeKey = createHash('md5').update(key).digest('hex')
-    return path.join(this.cacheDir, `${safeKey}.json`)
+  async has(key: string): Promise<boolean> {
+    try {
+      const filePath = this.getCacheFilePath(key)
+      const stats = await stat(filePath)
+      return stats.isFile()
+    } catch (error) {
+      logger.debug(`Cache check failed for key "${key}":`, error)
+      return false
+    }
+  }
+
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
+    await this.ensureCacheDir()
+
+    const entry: CacheEntry<T> = {
+      key,
+      timestamp: Date.now(),
+      ttl,
+      value,
+    }
+
+    const filePath = this.getCacheFilePath(key)
+    await writeFile(filePath, JSON.stringify(entry))
   }
 
   private async ensureCacheDir(): Promise<void> {
@@ -130,11 +125,16 @@ export class CacheStore {
       logger.debug(`Failed to ensure cache directory "${this.cacheDir}":`, error)
     }
   }
+
+  private getCacheFilePath(key: string): string {
+    const safeKey = createHash('md5').update(key).digest('hex')
+    return path.join(this.cacheDir, `${safeKey}.json`)
+  }
 }
 
 export enum InvalidationStrategy {
-  TimeBased = 'time-based',
   ContentBased = 'content-based',
+  TimeBased = 'time-based',
   VersionBased = 'version-based',
 }
 
@@ -147,19 +147,6 @@ export class InvalidationManager {
     this.packageVersion = packageVersion
   }
 
-  async shouldInvalidate(key: string, strategy: InvalidationStrategy): Promise<boolean> {
-    switch (strategy) {
-      case InvalidationStrategy.TimeBased:
-        return this.checkTimeBased(key)
-      case InvalidationStrategy.ContentBased:
-        return this.checkContentBased(key)
-      case InvalidationStrategy.VersionBased:
-        return this.checkVersionBased()
-      default:
-        return false
-    }
-  }
-
   async invalidateOnContentChange(filePath: string, cachedHash: string): Promise<boolean> {
     const currentHash = await hashFile(filePath)
     return currentHash !== cachedHash
@@ -169,17 +156,37 @@ export class InvalidationManager {
     return packageVersion !== this.packageVersion
   }
 
-  private async checkTimeBased(key: string): Promise<boolean> {
-    const entry = await this.cacheStore.get<{ timestamp: number; ttl: number }>(key)
-    if (!entry) return true
+  async shouldInvalidate(key: string, strategy: InvalidationStrategy): Promise<boolean> {
+    switch (strategy) {
+      case InvalidationStrategy.ContentBased: {
+        return this.checkContentBased(key)
+      }
 
-    return Date.now() > entry.timestamp + entry.ttl
+      case InvalidationStrategy.TimeBased: {
+        return this.checkTimeBased(key)
+      }
+
+      case InvalidationStrategy.VersionBased: {
+        return this.checkVersionBased()
+      }
+
+      default: {
+        return false
+      }
+    }
   }
 
   private async checkContentBased(_key: string): Promise<boolean> {
     // Content-based invalidation requires file hash comparison
     // This is handled by invalidateOnContentChange
     return false
+  }
+
+  private async checkTimeBased(key: string): Promise<boolean> {
+    const entry = await this.cacheStore.get<{ timestamp: number; ttl: number }>(key)
+    if (!entry) return true
+
+    return Date.now() > entry.timestamp + entry.ttl
   }
 
   private checkVersionBased(): boolean {
@@ -202,6 +209,6 @@ export function createDefaultInvalidationManager(
 }
 
 export { ASTCache, createDefaultASTCache } from './ast-cache.js'
-export type { CachedASTEntry, ASTCacheOptions, ASTCacheStats } from './ast-cache.js'
-export { ResultCache, createDefaultResultCache } from './result-cache.js'
+export type { ASTCacheOptions, ASTCacheStats, CachedASTEntry } from './ast-cache.js'
+export { createDefaultResultCache, ResultCache } from './result-cache.js'
 export type { CachedResultEntry, ResultCacheOptions, ResultCacheStats } from './result-cache.js'

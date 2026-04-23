@@ -1,21 +1,21 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
 
 const NON_PROMISE_AWARE_METHODS = new Set([
-  'forEach',
-  'map',
+  'every',
   'filter',
-  'reduce',
-  'reduceRight',
   'find',
   'findIndex',
   'findLast',
   'findLastIndex',
-  'every',
+  'flatMap',
+  'forEach',
+  'map',
+  'reduce',
+  'reduceRight',
   'some',
   'sort',
-  'flatMap',
 ])
 
 function isAsyncFunction(node: unknown): boolean {
@@ -47,7 +47,7 @@ function isMemberExpression(node: unknown): boolean {
   return n.type === 'MemberExpression'
 }
 
-function getMethodName(node: unknown): string | null {
+function getMethodName(node: unknown): null | string {
   if (!isCallExpression(node)) {
     return null
   }
@@ -101,35 +101,6 @@ function findParentAsyncFunction(node: unknown, depth = 0): boolean {
 }
 
 export const noMisusedPromisesRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow Promises in places not designed to handle them, such as async callbacks passed to non-Promise-aware methods and await in non-async functions.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-misused-promises',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          checksConditionals: {
-            type: 'boolean',
-            default: true,
-          },
-          checksVoidReturn: {
-            type: 'boolean',
-            default: true,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     function checkMisusedPromiseCallback(node: unknown): void {
       if (!isCallExpression(node)) {
@@ -153,8 +124,8 @@ export const noMisusedPromisesRule: RuleDefinition = {
 
       const location = extractLocation(callback)
       context.report({
-        message: `Promise returned from async ${methodName} callback is ignored. This can lead to unhandled rejections. Consider using for-of with await for sequential execution.`,
         loc: location,
+        message: `Promise returned from async ${methodName} callback is ignored. This can lead to unhandled rejections. Consider using for-of with await for sequential execution.`,
       })
     }
 
@@ -172,22 +143,51 @@ export const noMisusedPromisesRule: RuleDefinition = {
       if (!findParentAsyncFunction(node)) {
         const location = extractLocation(node)
         context.report({
+          loc: location,
           message:
             'await used in a non-async function. Add async keyword to the containing function.',
-          loc: location,
         })
       }
     }
 
     return {
-      CallExpression(node: unknown): void {
-        checkMisusedPromiseCallback(node)
-      },
-
       AwaitExpression(node: unknown): void {
         checkAwaitInSyncFunction(node)
       },
+
+      CallExpression(node: unknown): void {
+        checkMisusedPromiseCallback(node)
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow Promises in places not designed to handle them, such as async callbacks passed to non-Promise-aware methods and await in non-async functions.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-misused-promises',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          checksConditionals: {
+            default: true,
+            type: 'boolean',
+          },
+          checksVoidReturn: {
+            default: true,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

@@ -1,25 +1,24 @@
-import { Project, type SourceFile } from 'ts-morph'
-import pLimit from 'p-limit'
-
 import { readFile } from 'node:fs/promises'
+import pLimit from 'p-limit'
+import { Project, type SourceFile } from 'ts-morph'
 
-import { globalParseCache } from '../cache/parse-cache.js'
 import { ASTCache } from '../cache/ast-cache.js'
 import { hashContent } from '../cache/index.js'
+import { globalParseCache } from '../cache/parse-cache.js'
 import { logger } from '../utils/logger.js'
 
 export interface ParseResult {
-  sourceFile: SourceFile
-  filePath: string
-  parseTime: number
   cached: boolean
   diskCached?: boolean
+  filePath: string
+  parseTime: number
+  sourceFile: SourceFile
 }
 
 export interface ParserOptions {
-  tsConfigFilePath?: string
-  skipFileDependencyResolution?: boolean
   concurrency?: number
+  skipFileDependencyResolution?: boolean
+  tsConfigFilePath?: string
   /** Enable persistent disk-based AST cache */
   useDiskCache?: boolean
   /** CodeForge version for cache invalidation */
@@ -27,25 +26,61 @@ export interface ParserOptions {
 }
 
 export class Parser {
-  private project: Project | null = null
-  private options: ParserOptions
-  private concurrency: number
   private astCache: ASTCache | null = null
+  private concurrency: number
+  private options: ParserOptions
+  private project: null | Project = null
 
   constructor(options: ParserOptions = {}) {
     this.options = options
     this.concurrency = options.concurrency ?? 4
   }
 
+  async clearCache(): Promise<void> {
+    globalParseCache.clear()
+    if (this.astCache) {
+      await this.astCache.clear()
+    }
+  }
+
+  dispose(): void {
+    if (this.project) {
+      this.project = null
+    }
+
+    this.astCache = null
+  }
+
+  getASTCache(): ASTCache | null {
+    return this.astCache
+  }
+
+  async getCacheStats(): Promise<{
+    disk: null | { entries: number; hitRate: number; size: number }
+    memory: { hitRate: number; hits: number; misses: number }
+  }> {
+    const memoryStats = globalParseCache.getStats()
+    const diskStats = this.astCache ? await this.astCache.getStats() : null
+
+    return {
+      disk: diskStats,
+      memory: memoryStats,
+    }
+  }
+
+  getProject(): null | Project {
+    return this.project
+  }
+
   async initialize(): Promise<void> {
     this.project = new Project({
-      tsConfigFilePath: this.options.tsConfigFilePath,
-      skipFileDependencyResolution: this.options.skipFileDependencyResolution ?? true,
-      skipAddingFilesFromTsConfig: this.options.tsConfigFilePath ? false : true,
       compilerOptions: {
         allowJs: true,
         checkJs: false,
       },
+      skipAddingFilesFromTsConfig: !this.options.tsConfigFilePath,
+      skipFileDependencyResolution: this.options.skipFileDependencyResolution ?? true,
+      tsConfigFilePath: this.options.tsConfigFilePath,
     })
 
     if (this.options.useDiskCache) {
@@ -78,7 +113,7 @@ export class Parser {
 
     // Check disk cache if enabled
     if (this.astCache) {
-      const content = await readFile(filePath, 'utf-8')
+      const content = await readFile(filePath, 'utf8')
       const contentHash = hashContent(content)
 
       const diskCached = await this.astCache.get(filePath, contentHash)
@@ -159,42 +194,7 @@ export class Parser {
     return results.filter((result): result is ParseResult => result !== null)
   }
 
-  getProject(): Project | null {
-    return this.project
-  }
-
-  getASTCache(): ASTCache | null {
-    return this.astCache
-  }
-
-  async getCacheStats(): Promise<{
-    memory: { hits: number; misses: number; hitRate: number }
-    disk: { entries: number; size: number; hitRate: number } | null
-  }> {
-    const memoryStats = globalParseCache.getStats()
-    const diskStats = this.astCache ? await this.astCache.getStats() : null
-
-    return {
-      memory: memoryStats,
-      disk: diskStats,
-    }
-  }
-
-  async clearCache(): Promise<void> {
-    globalParseCache.clear()
-    if (this.astCache) {
-      await this.astCache.clear()
-    }
-  }
-
   releaseFile(filePath: string): void {
     globalParseCache.delete(filePath)
-  }
-
-  dispose(): void {
-    if (this.project) {
-      this.project = null
-    }
-    this.astCache = null
   }
 }

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function hasSideEffects(node: unknown): boolean {
@@ -10,58 +11,57 @@ function hasSideEffects(node: unknown): boolean {
 
   switch (n.type) {
     case 'AssignmentExpression':
-    case 'UpdateExpression':
     case 'UnaryExpression':
+    case 'UpdateExpression': {
       return true
-
-    case 'CallExpression':
-    case 'NewExpression':
-      return true
-
-    case 'BinaryExpression':
-      return hasSideEffects(n.left) || hasSideEffects(n.right)
-
-    case 'LogicalExpression':
-      return hasSideEffects(n.left) || hasSideEffects(n.right)
-
-    case 'ConditionalExpression':
-      return hasSideEffects(n.test) || hasSideEffects(n.consequent) || hasSideEffects(n.alternate)
-
-    case 'SequenceExpression':
-      return (n.expressions as unknown[]).some((exp) => hasSideEffects(exp)) as boolean
-
-    case 'MemberExpression':
-      return hasSideEffects(n.object) || ((n.computed as boolean) && hasSideEffects(n.property))
-
-    case 'ChainExpression':
-      return hasSideEffects(n.expression)
-
-    case 'TaggedTemplateExpression':
-      return true
+    }
 
     case 'AwaitExpression':
-    case 'YieldExpression':
+    case 'YieldExpression': {
       return true
+    }
 
-    default:
+    case 'BinaryExpression': {
+      return hasSideEffects(n.left) || hasSideEffects(n.right)
+    }
+
+    case 'CallExpression':
+    // falls through
+    case 'NewExpression': {
+      return true
+    }
+
+    case 'ChainExpression': {
+      return hasSideEffects(n.expression)
+    }
+
+    case 'ConditionalExpression': {
+      return hasSideEffects(n.test) || hasSideEffects(n.consequent) || hasSideEffects(n.alternate)
+    }
+
+    case 'LogicalExpression': {
+      return hasSideEffects(n.left) || hasSideEffects(n.right)
+    }
+
+    case 'MemberExpression': {
+      return hasSideEffects(n.object) || ((n.computed as boolean) && hasSideEffects(n.property))
+    }
+
+    case 'SequenceExpression': {
+      return (n.expressions as unknown[]).some((exp) => hasSideEffects(exp)) as boolean
+    }
+
+    case 'TaggedTemplateExpression': {
+      return true
+    }
+
+    default: {
       return false
+    }
   }
 }
 
 export const noUnusedExpressionsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description: 'Disallow unused expressions that have no effect',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unused-expressions',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ExpressionStatement(node: unknown): void {
@@ -71,17 +71,28 @@ export const noUnusedExpressionsRule: RuleDefinition = {
 
         const n = node as Record<string, unknown>
 
-        if (n.type === 'ExpressionStatement' && n.expression) {
-          if (!hasSideEffects(n.expression)) {
-            const location = extractLocation(node)
-            context.report({
-              message: 'Unused expression - this code has no effect',
-              loc: location,
-            })
-          }
+        if (n.type === 'ExpressionStatement' && n.expression && !hasSideEffects(n.expression)) {
+          const location = extractLocation(node)
+          context.report({
+            loc: location,
+            message: 'Unused expression - this code has no effect',
+          })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow unused expressions that have no effect',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unused-expressions',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

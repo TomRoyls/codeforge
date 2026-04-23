@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isIdentifier(node: unknown): boolean {
@@ -31,31 +32,20 @@ function isClassDeclaration(node: unknown): boolean {
   return n.type === 'ClassDeclaration'
 }
 
-function getIdentifierName(node: unknown): string | null {
+function getIdentifierName(node: unknown): null | string {
   if (!isIdentifier(node)) return null
   const n = node as Record<string, unknown>
-  const name = (n as Record<string, unknown>).name
+  const {name} = (n as Record<string, unknown>)
   return typeof name === 'string' ? name : null
 }
 
 export const noLabelVarRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow labels that share a name with a variable.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     const variableNames = new Set<string>()
 
     return {
-      VariableDeclarator(node: unknown): void {
-        if (!isVariableDeclarator(node)) return
+      ClassDeclaration(node: unknown): void {
+        if (!isClassDeclaration(node)) return
         const n = node as Record<string, unknown>
         const name = getIdentifierName(n.id)
         if (name) {
@@ -70,26 +60,37 @@ export const noLabelVarRule: RuleDefinition = {
           variableNames.add(name)
         }
       },
-      ClassDeclaration(node: unknown): void {
-        if (!isClassDeclaration(node)) return
-        const n = node as Record<string, unknown>
-        const name = getIdentifierName(n.id)
-        if (name) {
-          variableNames.add(name)
-        }
-      },
       LabeledStatement(node: unknown): void {
         if (!isLabeledStatement(node)) return
         const n = node as Record<string, unknown>
         const labelName = getIdentifierName(n.label)
         if (labelName && variableNames.has(labelName)) {
           context.report({
-            message: `Unexpected label '${labelName}'.`,
             loc: extractLocation(n.label),
+            message: `Unexpected label '${labelName}'.`,
           })
         }
       },
+      VariableDeclarator(node: unknown): void {
+        if (!isVariableDeclarator(node)) return
+        const n = node as Record<string, unknown>
+        const name = getIdentifierName(n.id)
+        if (name) {
+          variableNames.add(name)
+        }
+      },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow labels that share a name with a variable.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noLabelVarRule

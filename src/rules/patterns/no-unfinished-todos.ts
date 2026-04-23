@@ -1,10 +1,11 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnfinishedTodosOptions {
-  readonly terms?: readonly string[]
   readonly allowPatterns?: readonly string[]
+  readonly terms?: readonly string[]
 }
 
 const DEFAULT_TERMS = ['TODO', 'FIXME', 'HACK', 'XXX'] as const
@@ -21,43 +22,16 @@ function getTermRegex(term: string): RegExp {
 }
 
 export const noUnfinishedTodosRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Detect unfinished TODO/FIXME/HACK comments that should be addressed',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-unfinished-todos',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          terms: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-          allowPatterns: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoUnfinishedTodosOptions>(context.config.options, {
-      terms: DEFAULT_TERMS,
       allowPatterns: [],
+      terms: DEFAULT_TERMS,
     })
 
     const terms = options.terms ?? DEFAULT_TERMS
     const allowPatterns = options.allowPatterns?.map((p) => new RegExp(p)) ?? []
 
-    function checkComment(commentText: string): string | null {
+    function checkComment(commentText: string): null | string {
       for (const term of terms) {
         if (getTermRegex(term).test(commentText)) {
           for (const pattern of allowPatterns) {
@@ -65,9 +39,11 @@ export const noUnfinishedTodosRule: RuleDefinition = {
               return null
             }
           }
+
           return term.toUpperCase()
         }
       }
+
       return null
     }
 
@@ -84,11 +60,38 @@ export const noUnfinishedTodosRule: RuleDefinition = {
 
         const location = extractLocation(node)
         context.report({
-          message: `Found ${foundTerm} comment. Consider addressing or removing it to reduce technical debt.`,
           loc: location,
+          message: `Found ${foundTerm} comment. Consider addressing or removing it to reduce technical debt.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Detect unfinished TODO/FIXME/HACK comments that should be addressed',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-unfinished-todos',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowPatterns: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+          terms: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

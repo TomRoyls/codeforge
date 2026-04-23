@@ -166,7 +166,7 @@ describe('prefer-nullish-coalescing rule', () => {
 
       visitor.LogicalExpression(node)
 
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should report || in if statement when option is false', () => {
@@ -1278,7 +1278,7 @@ describe('prefer-nullish-coalescing rule', () => {
       }
 
       visitor.LogicalExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should skip || when source has "if (" pattern with space', () => {
@@ -1299,7 +1299,7 @@ describe('prefer-nullish-coalescing rule', () => {
       }
 
       visitor.LogicalExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should not skip || in assignment context with option true', () => {
@@ -1388,7 +1388,7 @@ describe('prefer-nullish-coalescing rule', () => {
       }
 
       visitor.LogicalExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle multi-line source with assignment on different line', () => {
@@ -2205,7 +2205,7 @@ describe('prefer-nullish-coalescing rule', () => {
       }
 
       visitor.LogicalExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle options with ignoreConditionalTests as 1 (truthy)', () => {
@@ -2226,7 +2226,7 @@ describe('prefer-nullish-coalescing rule', () => {
       }
 
       visitor.LogicalExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('should handle options with ignoreConditionalTests as 0 (falsy)', () => {

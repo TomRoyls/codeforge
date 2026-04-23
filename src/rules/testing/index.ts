@@ -1,9 +1,12 @@
-import { noSkippedTestsRule } from './no-skipped-tests.js'
 import { noFocusedTestsRule } from './no-focused-tests.js'
+import { noSkippedTestsRule } from './no-skipped-tests.js'
 
 export const testingRules = {
-  'no-skipped-tests': noSkippedTestsRule,
   'no-focused-tests': noFocusedTestsRule,
+  'no-skipped-tests': noSkippedTestsRule,
 }
 
-export { noSkippedTestsRule, noFocusedTestsRule }
+
+
+export {noFocusedTestsRule} from './no-focused-tests.js'
+export {noSkippedTestsRule} from './no-skipped-tests.js'

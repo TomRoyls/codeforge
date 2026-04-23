@@ -23,29 +23,30 @@
  * }
  * ```
  */
-import { readFile, readdir, unlink } from 'node:fs/promises'
+import { readdir, readFile, unlink } from 'node:fs/promises'
 import path from 'node:path'
 
-import { CacheStore, hashContent } from './index.js'
-import { logger } from '../utils/logger.js'
 import type { RuleViolation } from '../ast/visitor.js'
+
+import { logger } from '../utils/logger.js'
+import { CacheStore, hashContent } from './index.js'
 
 /**
  * Cached analysis result entry
  */
 export interface CachedResultEntry {
-  /** Absolute file path */
-  filePath: string
-  /** SHA-256 hash of the file content */
-  fileHash: string
   /** SHA-256 hash of the rule configuration */
   configHash: string
-  /** Cached rule violations */
-  violations: RuleViolation[]
-  /** CodeForge version when cached */
-  version: string
+  /** SHA-256 hash of the file content */
+  fileHash: string
+  /** Absolute file path */
+  filePath: string
   /** Timestamp when cached (ms since epoch) */
   timestamp: number
+  /** CodeForge version when cached */
+  version: string
+  /** Cached rule violations */
+  violations: RuleViolation[]
 }
 
 /**
@@ -54,14 +55,14 @@ export interface CachedResultEntry {
 export interface ResultCacheStats {
   /** Number of cache entries */
   entries: number
-  /** Total size in bytes */
-  size: number
   /** Cache hit rate (0-1) */
   hitRate: number
   /** Number of cache hits */
   hits: number
   /** Number of cache misses */
   misses: number
+  /** Total size in bytes */
+  size: number
 }
 
 /**
@@ -70,12 +71,12 @@ export interface ResultCacheStats {
 export interface ResultCacheOptions {
   /** Custom cache directory path */
   cacheDir?: string
+  /** Whether caching is enabled (default: true) */
+  enabled?: boolean
   /** Time-to-live in milliseconds (default: 7 days) */
   ttl?: number
   /** CodeForge version for cache invalidation */
   version?: string
-  /** Whether caching is enabled (default: true) */
-  enabled?: boolean
 }
 
 // Default TTL: 7 days in milliseconds
@@ -112,12 +113,12 @@ const DEFAULT_VERSION = '0.1.0'
  */
 export class ResultCache {
   private cacheDir: string
-  private ttl: number
-  private version: string
-  private enabled: boolean
   private cacheStore: CacheStore
+  private enabled: boolean
   private hits: number = 0
   private misses: number = 0
+  private ttl: number
+  private version: string
 
   /**
    * Create a new ResultCache instance
@@ -133,6 +134,64 @@ export class ResultCache {
   }
 
   /**
+   * Clean up expired cache entries
+   * Can be called periodically to free disk space
+   */
+  async cleanup(): Promise<number> {
+    try {
+      const files = await readdir(this.cacheDir)
+      let cleaned = 0
+
+      for (const file of files) {
+        try {
+          const filePath = path.join(this.cacheDir, file)
+          // eslint-disable-next-line no-await-in-loop
+          const content = await readFile(filePath, 'utf8')
+          const entry: CachedResultEntry = JSON.parse(content)
+
+          // Check if expired
+          if (Date.now() > entry.timestamp + this.ttl) {
+            // eslint-disable-next-line no-await-in-loop
+            await unlink(filePath)
+            cleaned++
+          }
+        } catch {
+          // Invalid cache file, remove it
+          const filePath = path.join(this.cacheDir, file)
+          // eslint-disable-next-line no-await-in-loop
+          await unlink(filePath).catch((error: Error) => {
+            logger.debug(`Failed to delete invalid cache file ${file}:`, error)
+          })
+          cleaned++
+        }
+      }
+
+      if (cleaned > 0) {
+        logger.debug(`Result cache cleanup: removed ${cleaned} expired entries`)
+      }
+
+      return cleaned
+    } catch (error) {
+      logger.debug('Result cache cleanup error:', error)
+      return 0
+    }
+  }
+
+  /**
+   * Clear all cache entries
+   */
+  async clear(): Promise<void> {
+    try {
+      await this.cacheStore.clear()
+      this.hits = 0
+      this.misses = 0
+      logger.debug('Result cache cleared')
+    } catch (error) {
+      logger.debug('Result cache clear error:', error)
+    }
+  }
+
+  /**
    * Get cached violations if available and valid
    *
    * @param filePath - Absolute path to the source file
@@ -144,7 +203,7 @@ export class ResultCache {
     filePath: string,
     fileHash: string,
     configHash: string,
-  ): Promise<RuleViolation[] | null> {
+  ): Promise<null | RuleViolation[]> {
     if (!this.enabled) {
       this.misses++
       return null
@@ -204,39 +263,31 @@ export class ResultCache {
   }
 
   /**
-   * Cache rule analysis results
+   * Get cache statistics
    *
-   * @param filePath - Absolute path to the source file
-   * @param fileHash - SHA-256 hash of the file content
-   * @param configHash - SHA-256 hash of the rule configuration
-   * @param violations - Rule violations to cache
+   * @returns Cache statistics including entries, size, and hit rate
    */
-  async set(
-    filePath: string,
-    fileHash: string,
-    configHash: string,
-    violations: RuleViolation[],
-  ): Promise<void> {
-    if (!this.enabled) {
-      return
-    }
-
+  async getStats(): Promise<ResultCacheStats> {
     try {
-      const cacheKey = this.getCacheKey(filePath, fileHash, configHash)
+      const storeStats = await this.cacheStore.getStats()
+      const total = this.hits + this.misses
 
-      const entry: CachedResultEntry = {
-        filePath,
-        fileHash,
-        configHash,
-        violations,
-        version: this.version,
-        timestamp: Date.now(),
+      return {
+        entries: storeStats.entries,
+        hitRate: total > 0 ? this.hits / total : 0,
+        hits: this.hits,
+        misses: this.misses,
+        size: storeStats.size,
       }
-
-      await this.cacheStore.set(cacheKey, entry, this.ttl)
-      logger.debug(`Result cache SET for ${filePath} (${violations.length} violations)`)
     } catch (error) {
-      logger.debug(`Result cache set error for ${filePath}:`, error)
+      logger.debug('Result cache stats error:', error)
+      return {
+        entries: 0,
+        hitRate: 0,
+        hits: this.hits,
+        misses: this.misses,
+        size: 0,
+      }
     }
   }
 
@@ -274,6 +325,21 @@ export class ResultCache {
   }
 
   /**
+   * Generate a hash from rule configuration
+   *
+   * @param rules - List of active rule IDs
+   * @param ruleConfig - Optional rule-specific configuration
+   * @returns SHA-256 hash of the configuration
+   */
+  hashConfig(rules: string[], ruleConfig?: Record<string, unknown>): string {
+    const config = {
+      ruleConfig: ruleConfig ?? {},
+      rules: rules.sort(),
+    }
+    return hashContent(JSON.stringify(config))
+  }
+
+  /**
    * Invalidate cache entries for a specific file
    *
    * @param filePath - Absolute path to the source file
@@ -285,13 +351,15 @@ export class ResultCache {
 
       for (const file of files) {
         try {
-          const content = await readFile(path.join(this.cacheDir, file), 'utf-8')
+          // eslint-disable-next-line no-await-in-loop
+          const content = await readFile(path.join(this.cacheDir, file), 'utf8')
           const raw = JSON.parse(content) as { value?: CachedResultEntry }
 
           const entry: CachedResultEntry | undefined =
             raw.value ?? (raw as unknown as CachedResultEntry)
 
           if (entry?.filePath === filePath) {
+            // eslint-disable-next-line no-await-in-loop
             await unlink(path.join(this.cacheDir, file))
             deleted++
           }
@@ -312,45 +380,46 @@ export class ResultCache {
   }
 
   /**
-   * Clear all cache entries
+   * Check if cache is enabled
    */
-  async clear(): Promise<void> {
-    try {
-      await this.cacheStore.clear()
-      this.hits = 0
-      this.misses = 0
-      logger.debug('Result cache cleared')
-    } catch (error) {
-      logger.debug('Result cache clear error:', error)
-    }
+  isEnabled(): boolean {
+    return this.enabled
   }
 
   /**
-   * Get cache statistics
+   * Cache rule analysis results
    *
-   * @returns Cache statistics including entries, size, and hit rate
+   * @param filePath - Absolute path to the source file
+   * @param fileHash - SHA-256 hash of the file content
+   * @param configHash - SHA-256 hash of the rule configuration
+   * @param violations - Rule violations to cache
    */
-  async getStats(): Promise<ResultCacheStats> {
-    try {
-      const storeStats = await this.cacheStore.getStats()
-      const total = this.hits + this.misses
+  async set(
+    filePath: string,
+    fileHash: string,
+    configHash: string,
+    violations: RuleViolation[],
+  ): Promise<void> {
+    if (!this.enabled) {
+      return
+    }
 
-      return {
-        entries: storeStats.entries,
-        size: storeStats.size,
-        hitRate: total > 0 ? this.hits / total : 0,
-        hits: this.hits,
-        misses: this.misses,
+    try {
+      const cacheKey = this.getCacheKey(filePath, fileHash, configHash)
+
+      const entry: CachedResultEntry = {
+        configHash,
+        fileHash,
+        filePath,
+        timestamp: Date.now(),
+        version: this.version,
+        violations,
       }
+
+      await this.cacheStore.set(cacheKey, entry, this.ttl)
+      logger.debug(`Result cache SET for ${filePath} (${violations.length} violations)`)
     } catch (error) {
-      logger.debug('Result cache stats error:', error)
-      return {
-        entries: 0,
-        size: 0,
-        hitRate: 0,
-        hits: this.hits,
-        misses: this.misses,
-      }
+      logger.debug(`Result cache set error for ${filePath}:`, error)
     }
   }
 
@@ -362,74 +431,11 @@ export class ResultCache {
   }
 
   /**
-   * Check if cache is enabled
-   */
-  isEnabled(): boolean {
-    return this.enabled
-  }
-
-  /**
-   * Generate a hash from rule configuration
-   *
-   * @param rules - List of active rule IDs
-   * @param ruleConfig - Optional rule-specific configuration
-   * @returns SHA-256 hash of the configuration
-   */
-  hashConfig(rules: string[], ruleConfig?: Record<string, unknown>): string {
-    const config = {
-      rules: rules.sort(),
-      ruleConfig: ruleConfig ?? {},
-    }
-    return hashContent(JSON.stringify(config))
-  }
-
-  /**
    * Generate a cache key from file path and hashes
    */
   private getCacheKey(filePath: string, fileHash: string, configHash: string): string {
     // Include version in key for automatic invalidation on version change
     return `result:${this.version}:${filePath}:${fileHash}:${configHash}`
-  }
-
-  /**
-   * Clean up expired cache entries
-   * Can be called periodically to free disk space
-   */
-  async cleanup(): Promise<number> {
-    try {
-      const files = await readdir(this.cacheDir)
-      let cleaned = 0
-
-      for (const file of files) {
-        try {
-          const filePath = path.join(this.cacheDir, file)
-          const content = await readFile(filePath, 'utf-8')
-          const entry: CachedResultEntry = JSON.parse(content)
-
-          // Check if expired
-          if (Date.now() > entry.timestamp + this.ttl) {
-            await unlink(filePath)
-            cleaned++
-          }
-        } catch {
-          // Invalid cache file, remove it
-          const filePath = path.join(this.cacheDir, file)
-          await unlink(filePath).catch((error: Error) => {
-            logger.debug(`Failed to delete invalid cache file ${file}:`, error)
-          })
-          cleaned++
-        }
-      }
-
-      if (cleaned > 0) {
-        logger.debug(`Result cache cleanup: removed ${cleaned} expired entries`)
-      }
-
-      return cleaned
-    } catch (error) {
-      logger.debug('Result cache cleanup error:', error)
-      return 0
-    }
   }
 }
 

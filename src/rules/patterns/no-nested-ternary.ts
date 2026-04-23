@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 
@@ -6,6 +7,7 @@ function isConditionalExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'ConditionalExpression'
 }
@@ -14,10 +16,10 @@ function generateIfElse(
   source: string,
   node: Record<string, unknown>,
   indent = '  ',
-): string | null {
-  const test = node.test
-  const consequent = node.consequent
-  const alternate = node.alternate
+): null | string {
+  const {test} = node
+  const {consequent} = node
+  const {alternate} = node
 
   const testRange = getRange(test)
   const consequentRange = getRange(consequent)
@@ -54,19 +56,6 @@ function generateIfElse(
 }
 
 export const noNestedTernaryRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Do not nest ternary expressions. Use if-else or switch statements instead.',
-      category: 'style',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-nested-ternary',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ConditionalExpression(node: unknown): void {
@@ -75,8 +64,8 @@ export const noNestedTernaryRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const consequent = n.consequent
-        const alternate = n.alternate
+        const {consequent} = n
+        const {alternate} = n
 
         const isConsequentNested = isConditionalExpression(consequent)
         const isAlternateNested = isConditionalExpression(alternate)
@@ -85,7 +74,7 @@ export const noNestedTernaryRule: RuleDefinition = {
           const location = extractLocation(node)
           const nodeRange = getRange(node)
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           if (nodeRange) {
             const source = context.getSource()
             const ifElseCode = generateIfElse(source, n, '')
@@ -98,13 +87,26 @@ export const noNestedTernaryRule: RuleDefinition = {
           }
 
           context.report({
-            message: 'Do not nest ternary expressions. Use if-else or switch statements instead.',
-            loc: location,
             fix,
+            loc: location,
+            message: 'Do not nest ternary expressions. Use if-else or switch statements instead.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'style',
+      description: 'Do not nest ternary expressions. Use if-else or switch statements instead.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-nested-ternary',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

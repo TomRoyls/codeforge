@@ -1,19 +1,19 @@
 /**
- * @fileoverview Prefer String.prototype.replaceAll() over regex with global flag
+ * @file Prefer String.prototype.replaceAll() over regex with global flag
  * @module rules/patterns/prefer-string-replace-all
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -31,13 +31,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -96,7 +96,7 @@ function isGlobalRegex(argument: unknown): boolean {
   return false
 }
 
-function getRegexPattern(argument: unknown): string | null {
+function getRegexPattern(argument: unknown): null | string {
   if (!argument || typeof argument !== 'object') {
     return null
   }
@@ -120,19 +120,6 @@ function getRegexPattern(argument: unknown): string | null {
 }
 
 export const preferStringReplaceAllRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer String.prototype.replaceAll() over .replace() with a global regex. replaceAll() is more readable and explicit about replacing all occurrences.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-string-replace-all',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -141,7 +128,7 @@ export const preferStringReplaceAllRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const args = n.arguments as unknown[] | undefined
+        const args = n.arguments as undefined | unknown[]
 
         if (!args || args.length === 0) {
           return
@@ -155,20 +142,30 @@ export const preferStringReplaceAllRule: RuleDefinition = {
 
         const pattern = getRegexPattern(firstArg)
 
-        let suggestion: string
-        if (pattern) {
-          suggestion = `Use str.replaceAll('${pattern}', ...) instead of str.replace(/${pattern}/g, ...)`
-        } else {
-          suggestion = 'Use str.replaceAll() instead of str.replace() with global regex'
-        }
+        const suggestion: string = pattern
+          ? `Use str.replaceAll('${pattern}', ...) instead of str.replace(/${pattern}/g, ...)`
+          : 'Use str.replaceAll() instead of str.replace() with global regex'
 
         context.report({
-          node,
-          message: `Prefer replaceAll() over replace() with global regex. ${suggestion}`,
           loc: extractLocation(node),
+          message: `Prefer replaceAll() over replace() with global regex. ${suggestion}`,
+          node,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer String.prototype.replaceAll() over .replace() with a global regex. replaceAll() is more readable and explicit about replacing all occurrences.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-string-replace-all',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

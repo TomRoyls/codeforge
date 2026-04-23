@@ -1,11 +1,14 @@
 /**
- * @fileoverview Prefer exponent operator (**) over Math.pow()
+ * @file Prefer exponent operator (**) over Math.pow()
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferExponentOperatorOptions extends RuleOptions {
@@ -16,7 +19,7 @@ const DEFAULT_OPTIONS: PreferExponentOperatorOptions = {
   ignoreNonIntegerExponent: false,
 }
 
-function isMathPowCall(node: Node): { base: Node; exponent: Node } | null {
+function isMathPowCall(node: Node): null | { base: Node; exponent: Node } {
   if (!Node.isCallExpression(node)) return null
 
   const expression = node.getExpression()
@@ -44,6 +47,7 @@ function isIntegerLiteral(node: Node): boolean {
     const text = node.getText()
     return !text.includes('.') && !text.includes('e') && !text.includes('E')
   }
+
   if (Node.isPrefixUnaryExpression(node)) {
     const operatorToken = node.getOperatorToken()
     if (operatorToken === SyntaxKind.MinusToken) {
@@ -51,25 +55,19 @@ function isIntegerLiteral(node: Node): boolean {
       return isIntegerLiteral(operand)
     }
   }
+
   return false
 }
 
 export const preferExponentOperatorRule: RuleDefinition<PreferExponentOperatorOptions> = {
-  meta: {
-    name: 'prefer-exponent-operator',
-    description: 'Enforce using the exponent operator (**) instead of Math.pow()',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: PreferExponentOperatorOptions) => {
+  create(options: PreferExponentOperatorOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isMathPowCall(node)
           if (!result) return
 
@@ -82,17 +80,24 @@ export const preferExponentOperatorRule: RuleDefinition<PreferExponentOperatorOp
           const exponentText = result.exponent.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: `Use the exponent operator (**) instead of 'Math.pow(${baseText}, ${exponentText})'.`,
+            range,
             ruleId: 'prefer-exponent-operator',
             severity: 'info',
-            message: `Use the exponent operator (**) instead of 'Math.pow(${baseText}, ${exponentText})'.`,
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: `Replace with: ${baseText} ** ${exponentText}`,
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Enforce using the exponent operator (**) instead of Math.pow()',
+    fixable: 'code',
+    name: 'prefer-exponent-operator',
+    recommended: false,
   },
 }
 
@@ -106,7 +111,7 @@ export function analyzePreferExponentOperator(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         const result = isMathPowCall(node)
         if (!result) return
 
@@ -119,11 +124,11 @@ export function analyzePreferExponentOperator(
         const exponentText = result.exponent.getText()
 
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: `Use the exponent operator (**) instead of 'Math.pow(${baseText}, ${exponentText})'.`,
+          range,
           ruleId: 'prefer-exponent-operator',
           severity: 'info',
-          message: `Use the exponent operator (**) instead of 'Math.pow(${baseText}, ${exponentText})'.`,
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: `Replace with: ${baseText} ** ${exponentText}`,
         })
       },

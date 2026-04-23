@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isClassBody(node: unknown): boolean {
@@ -13,10 +14,10 @@ function isMethodDefinition(node: unknown): boolean {
   return n.type === 'MethodDefinition' || n.type === 'PropertyDefinition'
 }
 
-function getMemberKey(node: unknown): string | null {
+function getMemberKey(node: unknown): null | string {
   if (!node || typeof node !== 'object') return null
   const n = node as Record<string, unknown>
-  const key = n.key
+  const {key} = n
   if (!key || typeof key !== 'object') return null
   const k = key as Record<string, unknown>
   if (k.type === 'Identifier' && typeof k.name === 'string') return k.name
@@ -25,7 +26,7 @@ function getMemberKey(node: unknown): string | null {
   return null
 }
 
-function getMemberSignature(node: unknown): string | null {
+function getMemberSignature(node: unknown): null | string {
   if (!isMethodDefinition(node)) return null
   const n = node as Record<string, unknown>
   const key = getMemberKey(node)
@@ -36,23 +37,12 @@ function getMemberSignature(node: unknown): string | null {
 }
 
 export const noDupeClassMembersRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow duplicate class members.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       ClassBody(node: unknown): void {
         if (!isClassBody(node)) return
         const n = node as Record<string, unknown>
-        const body = n.body
+        const {body} = n
         if (!Array.isArray(body)) return
 
         const seen = new Map<string, unknown>()
@@ -62,15 +52,27 @@ export const noDupeClassMembersRule: RuleDefinition = {
           if (sig) {
             if (seen.has(sig)) {
               context.report({
-                message: `Duplicate class member '${sig.split('|')[0]}'.`,
                 loc: extractLocation(member),
+                message: `Duplicate class member '${sig.split('|')[0]}'.`,
               })
             }
+
             seen.set(sig, member)
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow duplicate class members.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noDupeClassMembersRule

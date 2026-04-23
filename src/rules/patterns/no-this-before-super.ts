@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isMethodDefinition(node: unknown): boolean {
@@ -32,6 +33,7 @@ function checkBodyForThisBeforeSuper(body: unknown[], hasSuper: { value: boolean
       hasSuper.value = true
       return false
     }
+
     if (isThisExpression(s) && !hasSuper.value) return true
     if (s.type === 'ExpressionStatement' && s.expression) {
       if (isThisExpression(s.expression) && !hasSuper.value) return true
@@ -41,21 +43,11 @@ function checkBodyForThisBeforeSuper(body: unknown[], hasSuper: { value: boolean
       }
     }
   }
+
   return false
 }
 
 export const noThisBeforeSuperRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow this/super before super() calling.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
@@ -71,12 +63,23 @@ export const noThisBeforeSuperRule: RuleDefinition = {
         const hasSuper = { value: false }
         if (checkBodyForThisBeforeSuper(body.body, hasSuper)) {
           context.report({
-            message: "'this' is not allowed before super().",
             loc: extractLocation(node),
+            message: "'this' is not allowed before super().",
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow this/super before super() calling.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noThisBeforeSuperRule

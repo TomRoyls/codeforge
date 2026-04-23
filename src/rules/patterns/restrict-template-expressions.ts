@@ -1,17 +1,18 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
   isBinaryExpression,
   isCallExpression,
-  isMemberExpression,
   isIdentifier,
+  isMemberExpression,
 } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RestrictTemplateExpressionsOptions {
-  readonly allowNumber?: boolean
   readonly allowBoolean?: boolean
   readonly allowNull?: boolean
+  readonly allowNumber?: boolean
   readonly allowUndefined?: boolean
 }
 
@@ -136,48 +137,11 @@ function getExpressionDescription(node: unknown): string {
 }
 
 export const restrictTemplateExpressionsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Restrict template expressions to specific types. Prevents accidental string coercion of non-string values which can lead to unexpected output.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/restrict-template-expressions',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowNumber: {
-            type: 'boolean',
-            default: false,
-          },
-          allowBoolean: {
-            type: 'boolean',
-            default: false,
-          },
-          allowNull: {
-            type: 'boolean',
-            default: false,
-          },
-          allowUndefined: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<RestrictTemplateExpressionsOptions>(context.config.options, {
-      allowNumber: false,
       allowBoolean: false,
       allowNull: false,
+      allowNumber: false,
       allowUndefined: false,
     })
 
@@ -188,7 +152,7 @@ export const restrictTemplateExpressionsRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const expressions = n.expressions as unknown[] | undefined
+        const expressions = n.expressions as undefined | unknown[]
 
         if (!expressions || expressions.length === 0) {
           return
@@ -203,12 +167,49 @@ export const restrictTemplateExpressionsRule: RuleDefinition = {
           const description = getExpressionDescription(expression)
 
           context.report({
-            message: `Unexpected ${description} in template literal. Use explicit string conversion (String()) or template with only string values.`,
             loc: location,
+            message: `Unexpected ${description} in template literal. Use explicit string conversion (String()) or template with only string values.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Restrict template expressions to specific types. Prevents accidental string coercion of non-string values which can lead to unexpected output.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/restrict-template-expressions',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowBoolean: {
+            default: false,
+            type: 'boolean',
+          },
+          allowNull: {
+            default: false,
+            type: 'boolean',
+          },
+          allowNumber: {
+            default: false,
+            type: 'boolean',
+          },
+          allowUndefined: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

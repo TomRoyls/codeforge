@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isLiteral } from '../../utils/ast-helpers.js'
 
@@ -6,6 +7,7 @@ function isBooleanLiteral(node: unknown, value: boolean): boolean {
   if (!isLiteral(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.value === value
 }
@@ -33,20 +35,6 @@ function areNodesEqual(nodeA: unknown, nodeB: unknown): boolean {
 }
 
 export const noUnneededTernaryRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow ternary expressions that can be simplified. Ternary expressions like `x ? true : false` should use `!!x` or `Boolean(x)`, and `x ? false : true` should use `!x`. Identical branches should be simplified.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unneeded-ternary',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       ConditionalExpression(node: unknown): void {
@@ -59,8 +47,8 @@ export const noUnneededTernaryRule: RuleDefinition = {
           return
         }
 
-        const consequent = n.consequent
-        const alternate = n.alternate
+        const {consequent} = n
+        const {alternate} = n
 
         if (!consequent || !alternate) {
           return
@@ -71,9 +59,9 @@ export const noUnneededTernaryRule: RuleDefinition = {
         // Check for: cond ? true : false
         if (isBooleanLiteral(consequent, true) && isBooleanLiteral(alternate, false)) {
           context.report({
+            loc: location,
             message:
               'Unnecessary use of boolean literals in ternary expression. Use `!!condition` or `Boolean(condition)` instead.',
-            loc: location,
           })
           return
         }
@@ -81,9 +69,9 @@ export const noUnneededTernaryRule: RuleDefinition = {
         // Check for: cond ? false : true
         if (isBooleanLiteral(consequent, false) && isBooleanLiteral(alternate, true)) {
           context.report({
+            loc: location,
             message:
               'Unnecessary use of boolean literals in ternary expression. Use `!condition` instead.',
-            loc: location,
           })
           return
         }
@@ -91,13 +79,27 @@ export const noUnneededTernaryRule: RuleDefinition = {
         // Check for identical consequent and alternate: cond ? val : val
         if (areNodesEqual(consequent, alternate)) {
           context.report({
+            loc: location,
             message:
               'Unnecessary ternary expression with identical consequent and alternate branches.',
-            loc: location,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow ternary expressions that can be simplified. Ternary expressions like `x ? true : false` should use `!!x` or `Boolean(x)`, and `x ? false : true` should use `!x`. Identical branches should be simplified.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unneeded-ternary',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

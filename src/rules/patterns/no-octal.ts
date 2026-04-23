@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isLiteral(node: unknown): boolean {
@@ -12,32 +13,30 @@ function isOctalLiteral(raw: string): boolean {
 }
 
 export const noOctalRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow octal literals.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
         if (!isLiteral(node)) return
         const n = node as Record<string, unknown>
-        if (typeof n.value === 'number' && typeof n.raw === 'string') {
-          if (isOctalLiteral(n.raw)) {
+        if (typeof n.value === 'number' && typeof n.raw === 'string' && isOctalLiteral(n.raw)) {
             context.report({
-              message: 'Octal literals should not be used.',
               loc: extractLocation(node),
+              message: 'Octal literals should not be used.',
             })
           }
-        }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow octal literals.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noOctalRule

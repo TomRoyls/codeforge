@@ -1,28 +1,29 @@
 /**
- * @fileoverview Circular dependency detection rule for CodeForge
+ * @file Circular dependency detection rule for CodeForge
  * Detects circular dependencies between files by building and analyzing a dependency graph
  * @module rules/dependencies/no-circular-deps
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ImportInfo {
-  readonly sourceFile: string
-  readonly modulePath: string
   readonly location: SourceLocation
+  readonly modulePath: string
+  readonly sourceFile: string
 }
 
 interface DependencyNode {
   readonly filePath: string
-  readonly imports: Set<string>
   readonly importDetails: Map<string, ImportInfo>
+  readonly imports: Set<string>
 }
 
 interface DependencyGraph {
@@ -35,9 +36,9 @@ interface CircularDependency {
 }
 
 interface CircularDepsOptions {
-  readonly maxDepth?: number
-  readonly ignoreTypeOnly?: boolean
   readonly exclude?: readonly string[]
+  readonly ignoreTypeOnly?: boolean
+  readonly maxDepth?: number
 }
 
 class DependencyGraphBuilder {
@@ -46,14 +47,10 @@ class DependencyGraphBuilder {
   addFile(filePath: string, imports: readonly ImportInfo[]): void {
     const node: DependencyNode = {
       filePath,
-      imports: new Set(imports.map((i) => i.modulePath)),
       importDetails: new Map(imports.map((i) => [i.modulePath, i])),
+      imports: new Set(imports.map((i) => i.modulePath)),
     }
     this.graph.nodes.set(filePath, node)
-  }
-
-  getGraph(): DependencyGraph {
-    return this.graph
   }
 
   detectCycles(maxDepth: number = 50): CircularDependency[] {
@@ -66,6 +63,27 @@ class DependencyGraphBuilder {
     }
 
     return this.deduplicateCycles(cycles)
+  }
+
+  getGraph(): DependencyGraph {
+    return this.graph
+  }
+
+  private deduplicateCycles(cycles: CircularDependency[]): CircularDependency[] {
+    const seen = new Set<string>()
+    const unique: CircularDependency[] = []
+
+    for (const cycle of cycles) {
+      const normalized = this.normalizeCycle(cycle.cycle)
+      const key = normalized.join('->')
+
+      if (!seen.has(key)) {
+        seen.add(key)
+        unique.push(cycle)
+      }
+    }
+
+    return unique
   }
 
   private detectCyclesFromNode(
@@ -113,23 +131,6 @@ class DependencyGraphBuilder {
 
     path.pop()
     recursionStack.delete(currentPath)
-  }
-
-  private deduplicateCycles(cycles: CircularDependency[]): CircularDependency[] {
-    const seen = new Set<string>()
-    const unique: CircularDependency[] = []
-
-    for (const cycle of cycles) {
-      const normalized = this.normalizeCycle(cycle.cycle)
-      const key = normalized.join('->')
-
-      if (!seen.has(key)) {
-        seen.add(key)
-        unique.push(cycle)
-      }
-    }
-
-    return unique
   }
 
   private normalizeCycle(cycle: readonly string[]): string[] {
@@ -191,9 +192,9 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
     const sourceNode = n.source as Record<string, unknown> | undefined
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
-        sourceFile: filePath,
-        modulePath: sourceNode.value,
         location,
+        modulePath: sourceNode.value,
+        sourceFile: filePath,
       }
     }
   }
@@ -202,9 +203,9 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
     const sourceNode = n.source as Record<string, unknown> | undefined
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
-        sourceFile: filePath,
-        modulePath: sourceNode.value,
         location,
+        modulePath: sourceNode.value,
+        sourceFile: filePath,
       }
     }
   }
@@ -213,22 +214,22 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
     const requireCall = findRequireCall(n)
     if (requireCall) {
       return {
-        sourceFile: filePath,
-        modulePath: requireCall.argument,
         location,
+        modulePath: requireCall.argument,
+        sourceFile: filePath,
       }
     }
   }
 
   if (n.type === 'ExpressionStatement') {
-    const expression = n.expression
+    const {expression} = n
     if (isDynamicImport(expression)) {
       const importArg = getDynamicImportArgument(expression)
       if (importArg) {
         return {
-          sourceFile: filePath,
-          modulePath: importArg,
           location,
+          modulePath: importArg,
+          sourceFile: filePath,
         }
       }
     }
@@ -237,7 +238,7 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
   return null
 }
 
-function findRequireCall(node: unknown): { argument: string } | null {
+function findRequireCall(node: unknown): null | { argument: string } {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -245,15 +246,15 @@ function findRequireCall(node: unknown): { argument: string } | null {
   const n = node as Record<string, unknown>
 
   if (n.type === 'VariableDeclaration') {
-    const declarations = n.declarations
+    const {declarations} = n
     if (Array.isArray(declarations)) {
       for (const decl of declarations) {
         if (!decl || typeof decl !== 'object') continue
         const declNode = decl as Record<string, unknown>
-        const init = declNode.init
+        const {init} = declNode
         if (init && isRequireCall(init)) {
           const initNode = init as Record<string, unknown>
-          const arguments_ = initNode.arguments as unknown[] | undefined
+          const arguments_ = initNode.arguments as undefined | unknown[]
           const arg0 =
             Array.isArray(arguments_) && arguments_.length > 0
               ? (arguments_[0] as Record<string, unknown> | undefined)
@@ -267,10 +268,10 @@ function findRequireCall(node: unknown): { argument: string } | null {
   }
 
   if (n.type === 'ExpressionStatement') {
-    const expression = n.expression
+    const {expression} = n
     if (expression && isRequireCall(expression)) {
       const exprNode = expression as Record<string, unknown>
-      const arguments_ = exprNode.arguments as unknown[] | undefined
+      const arguments_ = exprNode.arguments as undefined | unknown[]
       const arg0 =
         Array.isArray(arguments_) && arguments_.length > 0
           ? (arguments_[0] as Record<string, unknown> | undefined)
@@ -306,13 +307,13 @@ function isDynamicImport(node: unknown): boolean {
   return n.type === 'CallExpression' && callee?.type === 'Import'
 }
 
-function getDynamicImportArgument(node: unknown): string | null {
+function getDynamicImportArgument(node: unknown): null | string {
   if (!isDynamicImport(node)) {
     return null
   }
 
   const n = node as Record<string, unknown>
-  const arguments_ = n.arguments as unknown[] | undefined
+  const arguments_ = n.arguments as undefined | unknown[]
   const arg0 =
     Array.isArray(arguments_) && arguments_.length > 0
       ? (arguments_[0] as Record<string, unknown> | undefined)
@@ -334,46 +335,11 @@ function getDynamicImportArgument(node: unknown): string | null {
  * Detects circular dependencies between files by building a dependency graph
  */
 export const noCircularDepsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    fixable: 'code',
-    docs: {
-      description:
-        'Disallow circular dependencies between modules. Circular dependencies can lead to runtime issues, make code harder to understand, and can cause problems with bundlers and tree-shaking.',
-      category: 'dependencies',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-circular-deps',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          maxDepth: {
-            type: 'number',
-            minimum: 1,
-            maximum: 100,
-            default: 50,
-          },
-          ignoreTypeOnly: {
-            type: 'boolean',
-            default: false,
-          },
-          exclude: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<CircularDepsOptions>(context.config.options, {
-      maxDepth: 50,
-      ignoreTypeOnly: false,
       exclude: [],
+      ignoreTypeOnly: false,
+      maxDepth: 50,
     })
     const maxDepth = options.maxDepth ?? 50
     const filePath = context.getFilePath()
@@ -382,11 +348,28 @@ export const noCircularDepsRule: RuleDefinition = {
     const builder = new DependencyGraphBuilder()
 
     return {
-      Program(node: unknown): void {
-        const ast = context.getAST() ?? node
-        const imports = extractImports(ast, filePath)
-        fileImports.set(filePath, imports)
-        builder.addFile(filePath, imports)
+      CallExpression(node: unknown): void {
+        const n = node as Record<string, unknown>
+
+        if (isRequireCall(n)) {
+          const arguments_ = n.arguments as undefined | unknown[]
+          const arg0 =
+            Array.isArray(arguments_) && arguments_.length > 0
+              ? (arguments_[0] as Record<string, unknown> | undefined)
+              : undefined
+          if (arg0?.value && typeof arg0.value === 'string') {
+            const modulePath = arg0.value
+            const imports = fileImports.get(filePath) ?? []
+            fileImports.set(filePath, [
+              ...imports,
+              {
+                location: extractLocation(n),
+                modulePath,
+                sourceFile: filePath,
+              },
+            ])
+          }
+        }
       },
 
       ImportDeclaration(node: unknown): void {
@@ -402,9 +385,9 @@ export const noCircularDepsRule: RuleDefinition = {
 
             if (hasCycle) {
               context.report({
-                node,
-                message: `Circular dependency detected: ${filePath} -> ${modulePath} -> ${filePath}`,
                 loc: extractLocation(n),
+                message: `Circular dependency detected: ${filePath} -> ${modulePath} -> ${filePath}`,
+                node,
               })
             }
           }
@@ -412,36 +395,19 @@ export const noCircularDepsRule: RuleDefinition = {
           fileImports.set(filePath, [
             ...imports,
             {
-              sourceFile: filePath,
-              modulePath,
               location: extractLocation(n),
+              modulePath,
+              sourceFile: filePath,
             },
           ])
         }
       },
 
-      CallExpression(node: unknown): void {
-        const n = node as Record<string, unknown>
-
-        if (isRequireCall(n)) {
-          const arguments_ = n.arguments as unknown[] | undefined
-          const arg0 =
-            Array.isArray(arguments_) && arguments_.length > 0
-              ? (arguments_[0] as Record<string, unknown> | undefined)
-              : undefined
-          if (arg0?.value && typeof arg0.value === 'string') {
-            const modulePath = arg0.value
-            const imports = fileImports.get(filePath) ?? []
-            fileImports.set(filePath, [
-              ...imports,
-              {
-                sourceFile: filePath,
-                modulePath,
-                location: extractLocation(n),
-              },
-            ])
-          }
-        }
+      Program(node: unknown): void {
+        const ast = context.getAST() ?? node
+        const imports = extractImports(ast, filePath)
+        fileImports.set(filePath, imports)
+        builder.addFile(filePath, imports)
       },
 
       'Program:exit'(): void {
@@ -450,12 +416,47 @@ export const noCircularDepsRule: RuleDefinition = {
         for (const cycle of cycles) {
           const cyclePath = cycle.cycle.join(' -> ')
           context.report({
-            message: `Circular dependency detected: ${cyclePath}`,
             loc: cycle.location,
+            message: `Circular dependency detected: ${cyclePath}`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'dependencies',
+      description:
+        'Disallow circular dependencies between modules. Circular dependencies can lead to runtime issues, make code harder to understand, and can cause problems with bundlers and tree-shaking.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-circular-deps',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          exclude: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+          ignoreTypeOnly: {
+            default: false,
+            type: 'boolean',
+          },
+          maxDepth: {
+            default: 50,
+            maximum: 100,
+            minimum: 1,
+            type: 'number',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

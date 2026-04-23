@@ -1,6 +1,7 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, getNodeSource, isBinaryExpression } from '../../utils/ast-helpers.js'
+import { getNodeSource, getRange, isBinaryExpression } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isNullLiteral(node: unknown): boolean {
@@ -17,20 +18,6 @@ function isNullNullComparison(left: unknown, right: unknown): boolean {
 }
 
 export const eqEqEqRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require strict equality operators (=== and !==) instead of loose equality operators (== and !=). Loose equality can lead to unexpected type coercion.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/eq-eq-eq',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -57,17 +44,31 @@ export const eqEqEqRule: RuleDefinition = {
         const rightSource = getNodeSource(context, n.right)
 
         context.report({
-          message: `Expected '${expectedOperator}' and instead saw '${operator}'. ${RULE_SUGGESTIONS.useStrictEquality}`,
-          loc: location,
           fix: range
             ? {
                 range,
                 text: `${leftSource} ${expectedOperator} ${rightSource}`,
               }
             : undefined,
+          loc: location,
+          message: `Expected '${expectedOperator}' and instead saw '${operator}'. ${RULE_SUGGESTIONS.useStrictEquality}`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require strict equality operators (=== and !==) instead of loose equality operators (== and !=). Loose equality can lead to unexpected type coercion.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/eq-eq-eq',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function getDeclaratorName(node: unknown): string | undefined {
@@ -23,19 +24,6 @@ function getDeclaratorName(node: unknown): string | undefined {
 }
 
 export const noShadowRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow variable shadowing. Variable shadowing can lead to confusion and bugs when an outer scope variable becomes inaccessible.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-shadow',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const declaredNames: Set<string> = new Set()
 
@@ -51,14 +39,27 @@ export const noShadowRule: RuleDefinition = {
           const location = extractLocation(node)
 
           context.report({
-            message: `Variable '${name}' is already declared in an outer scope.`,
             loc: location,
+            message: `Variable '${name}' is already declared in an outer scope.`,
           })
         }
 
         declaredNames.add(name)
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow variable shadowing. Variable shadowing can lead to confusion and bugs when an outer scope variable becomes inaccessible.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-shadow',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

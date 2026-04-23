@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isStaticBlock(node: unknown): boolean {
@@ -16,17 +17,6 @@ function isEmpty(body: unknown): boolean {
 }
 
 export const noEmptyStaticBlockRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow empty static blocks.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       StaticBlock(node: unknown): void {
@@ -34,12 +24,23 @@ export const noEmptyStaticBlockRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (isEmpty(n.body)) {
           context.report({
-            message: 'Unexpected empty static block.',
             loc: extractLocation(node),
+            message: 'Unexpected empty static block.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow empty static blocks.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noEmptyStaticBlockRule

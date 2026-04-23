@@ -1,8 +1,10 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+
 import type { Plugin } from './types.js'
-import { PluginLoadError } from './types.js'
+
 import { logger } from '../utils/logger.js'
+import { PluginLoadError } from './types.js'
 
 interface ImportedModule {
   default?: Plugin
@@ -15,51 +17,12 @@ const SCOPED_PLUGIN_PATTERN = /^@[^/]+\/codeforge-plugin-/
 export class PluginRegistry {
   private readonly plugins: Map<string, Plugin> = new Map()
 
-  register(plugin: Plugin): void {
-    if (!plugin.name) {
-      throw new PluginLoadError('unknown', 'Plugin must have a valid name property')
-    }
-
-    if (!plugin.version) {
-      throw new PluginLoadError(plugin.name, 'Plugin must have a valid version property')
-    }
-
-    if (this.plugins.has(plugin.name)) {
-      throw new PluginLoadError(plugin.name, `Plugin "${plugin.name}" is already registered`)
-    }
-
-    this.plugins.set(plugin.name, plugin)
-  }
-
-  unregister(name: string): void {
-    if (!this.plugins.has(name)) {
-      throw new PluginLoadError(name, `Plugin "${name}" is not registered`)
-    }
-    this.plugins.delete(name)
-  }
-
-  get(name: string): Plugin | undefined {
-    return this.plugins.get(name)
-  }
-
-  has(name: string): boolean {
-    return this.plugins.has(name)
-  }
-
-  getAll(): Plugin[] {
-    return Array.from(this.plugins.values())
-  }
-
-  getNames(): string[] {
-    return Array.from(this.plugins.keys())
+  get size(): number {
+    return this.plugins.size
   }
 
   clear(): void {
     this.plugins.clear()
-  }
-
-  get size(): number {
-    return this.plugins.size
   }
 
   async discover(workspaceRoot: string): Promise<string[]> {
@@ -73,6 +36,7 @@ export class PluginRegistry {
         if (entry.isDirectory()) {
           if (entry.name.startsWith('@')) {
             const scopePath = join(nodeModulesPath, entry.name)
+            // eslint-disable-next-line no-await-in-loop
             const scopedEntries = await readdir(scopePath, { withFileTypes: true })
 
             for (const scopedEntry of scopedEntries) {
@@ -83,10 +47,8 @@ export class PluginRegistry {
                 }
               }
             }
-          } else if (entry.name.startsWith(PLUGIN_PREFIX)) {
-            if (!this.has(entry.name)) {
-              discovered.push(entry.name)
-            }
+          } else if (entry.name.startsWith(PLUGIN_PREFIX) && !this.has(entry.name)) {
+            discovered.push(entry.name)
           }
         }
       }
@@ -98,8 +60,8 @@ export class PluginRegistry {
   }
 
   async discoverAndValidate(workspaceRoot: string): Promise<{
-    valid: string[]
     invalid: Array<{ name: string; reason: string }>
+    valid: string[]
   }> {
     const discovered = await this.discover(workspaceRoot)
     const valid: string[] = []
@@ -107,6 +69,7 @@ export class PluginRegistry {
 
     for (const pluginName of discovered) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         const manifest = await this.readPluginManifest(workspaceRoot, pluginName)
         if (this.validatePluginManifest(manifest)) {
           valid.push(pluginName)
@@ -119,50 +82,23 @@ export class PluginRegistry {
       }
     }
 
-    return { valid, invalid }
+    return { invalid, valid }
   }
 
-  private async readPluginManifest(
-    workspaceRoot: string,
-    pluginName: string,
-  ): Promise<Record<string, unknown>> {
-    const nodeModulesPath = join(workspaceRoot, 'node_modules')
-    const packagePath = join(nodeModulesPath, pluginName, 'package.json')
-
-    try {
-      const content = await readFile(packagePath, 'utf-8')
-      try {
-        return JSON.parse(content) as Record<string, unknown>
-      } catch (jsonError) {
-        const message = jsonError instanceof Error ? jsonError.message : 'Unknown error'
-        logger.error(`Failed to parse package.json for plugin "${pluginName}": ${message}`)
-        throw new PluginLoadError(pluginName, `Invalid JSON in package.json: ${message}`)
-      }
-    } catch (error) {
-      if (error instanceof PluginLoadError) {
-        throw error
-      }
-      throw new PluginLoadError(
-        pluginName,
-        `Failed to read package.json: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      )
-    }
+  get(name: string): Plugin | undefined {
+    return this.plugins.get(name)
   }
 
-  private validatePluginManifest(manifest: Record<string, unknown>): boolean {
-    if (typeof manifest.name !== 'string' || manifest.name.length === 0) {
-      return false
-    }
+  getAll(): Plugin[] {
+    return [...this.plugins.values()]
+  }
 
-    if (typeof manifest.version !== 'string' || manifest.version.length === 0) {
-      return false
-    }
+  getNames(): string[] {
+    return [...this.plugins.keys()]
+  }
 
-    if (typeof manifest.main !== 'string' || manifest.main.length === 0) {
-      return false
-    }
-
-    return true
+  has(name: string): boolean {
+    return this.plugins.has(name)
   }
 
   /**
@@ -201,6 +137,30 @@ export class PluginRegistry {
     }
   }
 
+  register(plugin: Plugin): void {
+    if (!plugin.name) {
+      throw new PluginLoadError('unknown', 'Plugin must have a valid name property')
+    }
+
+    if (!plugin.version) {
+      throw new PluginLoadError(plugin.name, 'Plugin must have a valid version property')
+    }
+
+    if (this.plugins.has(plugin.name)) {
+      throw new PluginLoadError(plugin.name, `Plugin "${plugin.name}" is already registered`)
+    }
+
+    this.plugins.set(plugin.name, plugin)
+  }
+
+  unregister(name: string): void {
+    if (!this.plugins.has(name)) {
+      throw new PluginLoadError(name, `Plugin "${name}" is not registered`)
+    }
+
+    this.plugins.delete(name)
+  }
+
   private extractPluginFromModule(module: ImportedModule, pluginName: string): Plugin {
     const plugin = module.default ?? module.plugin
 
@@ -212,6 +172,34 @@ export class PluginRegistry {
     }
 
     return plugin
+  }
+
+  private async readPluginManifest(
+    workspaceRoot: string,
+    pluginName: string,
+  ): Promise<Record<string, unknown>> {
+    const nodeModulesPath = join(workspaceRoot, 'node_modules')
+    const packagePath = join(nodeModulesPath, pluginName, 'package.json')
+
+    try {
+      const content = await readFile(packagePath, 'utf8')
+      try {
+        return JSON.parse(content) as Record<string, unknown>
+      } catch (jsonError) {
+        const message = jsonError instanceof Error ? jsonError.message : 'Unknown error'
+        logger.error(`Failed to parse package.json for plugin "${pluginName}": ${message}`)
+        throw new PluginLoadError(pluginName, `Invalid JSON in package.json: ${message}`)
+      }
+    } catch (error) {
+      if (error instanceof PluginLoadError) {
+        throw error
+      }
+
+      throw new PluginLoadError(
+        pluginName,
+        `Failed to read package.json: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      )
+    }
   }
 
   private validateImportedPlugin(plugin: unknown, pluginName: string): asserts plugin is Plugin {
@@ -239,9 +227,11 @@ export class PluginRegistry {
         if (!ruleDef || typeof ruleDef !== 'object') {
           throw new PluginLoadError(pluginName, `Rule "${ruleName}" must be a valid object`)
         }
+
         if (!ruleDef.meta) {
           throw new PluginLoadError(pluginName, `Rule "${ruleName}" must have a "meta" property`)
         }
+
         if (!ruleDef.create || typeof ruleDef.create !== 'function') {
           throw new PluginLoadError(pluginName, `Rule "${ruleName}" must have a "create" function`)
         }
@@ -261,6 +251,7 @@ export class PluginRegistry {
             `Transform "${transformName}" must be a valid object`,
           )
         }
+
         if (!transformDef.transform || typeof transformDef.transform !== 'function') {
           throw new PluginLoadError(
             pluginName,
@@ -270,22 +261,39 @@ export class PluginRegistry {
       }
     }
   }
+
+  private validatePluginManifest(manifest: Record<string, unknown>): boolean {
+    if (typeof manifest.name !== 'string' || manifest.name.length === 0) {
+      return false
+    }
+
+    if (typeof manifest.version !== 'string' || manifest.version.length === 0) {
+      return false
+    }
+
+    if (typeof manifest.main !== 'string' || manifest.main.length === 0) {
+      return false
+    }
+
+    return true
+  }
 }
 
 export function isPluginName(name: string): boolean {
   return name.startsWith(PLUGIN_PREFIX) || SCOPED_PLUGIN_PATTERN.test(name)
 }
 
-export function parsePluginName(fullName: string): { scope: string | null; name: string } {
+export function parsePluginName(fullName: string): { name: string; scope: null | string } {
   if (fullName.startsWith('@')) {
     const [scope, name] = fullName.split('/')
     if (!scope || !name) {
       throw new PluginLoadError(fullName, `Invalid scoped plugin name: ${fullName}`)
     }
-    return { scope, name }
+
+    return { name, scope }
   }
 
-  return { scope: null, name: fullName }
+  return { name: fullName, scope: null }
 }
 
 export const PLUGIN_PATTERNS = {

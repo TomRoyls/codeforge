@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 function naturalStringCompare(a: string, b: string): number {
@@ -6,16 +7,16 @@ function naturalStringCompare(a: string, b: string): number {
 }
 
 interface SortKeysOptions {
-  natural?: boolean
   minKeys?: number
+  natural?: boolean
 }
 
 const DEFAULT_OPTIONS: SortKeysOptions = {
-  natural: true,
   minKeys: 2,
+  natural: true,
 }
 
-function getPropertyKey(property: unknown): string | null {
+function getPropertyKey(property: unknown): null | string {
   if (!property || typeof property !== 'object') {
     return null
   }
@@ -33,9 +34,11 @@ function getPropertyKey(property: unknown): string | null {
   if (key.type === 'Identifier') {
     return key.name as string
   }
+
   if (key.type === 'Literal' && typeof key.value === 'string') {
     return key.value
   }
+
   return null
 }
 
@@ -51,38 +54,11 @@ function isSorted(keys: string[], natural: boolean): boolean {
       return false
     }
   }
+
   return true
 }
 
 export const sortKeysRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Enforce alphabetical sorting of object literal keys for better readability and consistency.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/sort-keys',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          natural: {
-            type: 'boolean',
-          },
-          minKeys: {
-            type: 'number',
-            minimum: 2,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<SortKeysOptions>(context.config.options, DEFAULT_OPTIONS)
 
@@ -132,14 +108,42 @@ export const sortKeysRule: RuleDefinition = {
                 .join(', ')
 
               context.report({
-                message: `Object keys should be sorted in ${options.natural ? 'natural ' : ''}alphabetical order. Expected order: ${expectedOrder}`,
                 loc: location,
+                message: `Object keys should be sorted in ${options.natural ? 'natural ' : ''}alphabetical order. Expected order: ${expectedOrder}`,
               })
             }
           }
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Enforce alphabetical sorting of object literal keys for better readability and consistency.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/sort-keys',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          minKeys: {
+            minimum: 2,
+            type: 'number',
+          },
+          natural: {
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

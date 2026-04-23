@@ -1,15 +1,16 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
-type DeclarationType = 'class' | 'interface' | 'function'
+type DeclarationType = 'class' | 'function' | 'interface'
 
 interface DeclarationInfo {
-  type: DeclarationType
   name: string
   node: unknown
+  type: DeclarationType
 }
 
-function getDeclarationName(node: unknown): { name: string; type: DeclarationType } | null {
+function getDeclarationName(node: unknown): null | { name: string; type: DeclarationType } {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -24,6 +25,7 @@ function getDeclarationName(node: unknown): { name: string; type: DeclarationTyp
         return { name, type: 'class' }
       }
     }
+
     return null
   }
 
@@ -35,6 +37,7 @@ function getDeclarationName(node: unknown): { name: string; type: DeclarationTyp
         return { name, type: 'interface' }
       }
     }
+
     return null
   }
 
@@ -46,6 +49,7 @@ function getDeclarationName(node: unknown): { name: string; type: DeclarationTyp
         return { name, type: 'function' }
       }
     }
+
     return null
   }
 
@@ -56,7 +60,7 @@ function isUnsafeMerging(
   existingType: DeclarationType,
   newType: DeclarationType,
   name: string,
-): string | null {
+): null | string {
   if (
     (existingType === 'class' && newType === 'interface') ||
     (existingType === 'interface' && newType === 'class')
@@ -75,20 +79,6 @@ function isUnsafeMerging(
 }
 
 export const noUnsafeDeclarationMergingRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unsafe declaration merging between classes, interfaces, and functions. Declaration merging can lead to confusing code and unexpected type behavior.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unsafe-declaration-merging',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const declarations: Map<string, DeclarationInfo> = new Map()
 
@@ -108,15 +98,15 @@ export const noUnsafeDeclarationMergingRule: RuleDefinition = {
           const location = extractLocation(node)
 
           context.report({
-            message,
             loc: location,
+            message,
           })
         }
       } else {
         declarations.set(declInfo.name, {
-          type: declInfo.type,
           name: declInfo.name,
           node,
+          type: declInfo.type,
         })
       }
     }
@@ -126,14 +116,28 @@ export const noUnsafeDeclarationMergingRule: RuleDefinition = {
         checkDeclaration(node, 'class')
       },
 
-      TSInterfaceDeclaration(node: unknown): void {
-        checkDeclaration(node, 'interface')
-      },
-
       FunctionDeclaration(node: unknown): void {
         checkDeclaration(node, 'function')
       },
+
+      TSInterfaceDeclaration(node: unknown): void {
+        checkDeclaration(node, 'interface')
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unsafe declaration merging between classes, interfaces, and functions. Declaration merging can lead to confusing code and unexpected type behavior.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unsafe-declaration-merging',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

@@ -1,24 +1,27 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node, SyntaxKind } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface NoUnnecessaryTypeAssertionOptions extends RuleOptions {
-  skipStringLiterals?: boolean
-  skipNumericLiterals?: boolean
   skipBooleanLiterals?: boolean
   skipNullLiterals?: boolean
+  skipNumericLiterals?: boolean
+  skipStringLiterals?: boolean
 }
 
 const DEFAULT_OPTIONS: NoUnnecessaryTypeAssertionOptions = {
-  skipStringLiterals: false,
-  skipNumericLiterals: false,
   skipBooleanLiterals: false,
   skipNullLiterals: true,
+  skipNumericLiterals: false,
+  skipStringLiterals: false,
 }
 
-function getLiteralType(node: Node): string | null {
+function getLiteralType(node: Node): null | string {
   if (Node.isStringLiteral(node)) return 'string'
   if (Node.isNoSubstitutionTemplateLiteral(node)) return 'string'
   if (Node.isNumericLiteral(node)) return 'number'
@@ -29,7 +32,7 @@ function getLiteralType(node: Node): string | null {
   return null
 }
 
-function getTypeText(node: Node): string | null {
+function getTypeText(node: Node): null | string {
   const text = node.getText().trim()
   if (text === 'string') return 'string'
   if (text === 'number') return 'number'
@@ -57,22 +60,14 @@ function isRedundantAssertion(
 }
 
 export const noUnnecessaryTypeAssertionRule: RuleDefinition<NoUnnecessaryTypeAssertionOptions> = {
-  meta: {
-    name: 'no-unnecessary-type-assertion',
-    description:
-      'Disallow type assertions that are redundant because TypeScript can already infer the same type',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: NoUnnecessaryTypeAssertionOptions) => {
+  create(options: NoUnnecessaryTypeAssertionOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           if (!Node.isAsExpression(node)) return
 
           const expression = node.getExpression()
@@ -87,18 +82,26 @@ export const noUnnecessaryTypeAssertionRule: RuleDefinition<NoUnnecessaryTypeAss
           if (isRedundantAssertion(expression, targetType, mergedOptions)) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: `Type assertion '${expression.getText()} as ${targetType}' is redundant. The expression is already of type ${targetType}.`,
+              range,
               ruleId: 'no-unnecessary-type-assertion',
               severity: 'info',
-              message: `Type assertion '${expression.getText()} as ${targetType}' is redundant. The expression is already of type ${targetType}.`,
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion: 'Remove this type assertion.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description:
+      'Disallow type assertions that are redundant because TypeScript can already infer the same type',
+    fixable: 'code',
+    name: 'no-unnecessary-type-assertion',
+    recommended: false,
   },
 }
 
@@ -112,7 +115,7 @@ export function analyzeNoUnnecessaryTypeAssertion(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         if (!Node.isAsExpression(node)) return
 
         const expression = node.getExpression()
@@ -127,11 +130,11 @@ export function analyzeNoUnnecessaryTypeAssertion(
         if (isRedundantAssertion(expression, targetType, mergedOptions)) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: `Type assertion '${expression.getText()} as ${targetType}' is redundant. The expression is already of type ${targetType}.`,
+            range,
             ruleId: 'no-unnecessary-type-assertion',
             severity: 'info',
-            message: `Type assertion '${expression.getText()} as ${targetType}' is redundant. The expression is already of type ${targetType}.`,
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion: 'Remove this type assertion.',
           })
         }

@@ -1,13 +1,14 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
+  getNodeText,
+  getRange,
   isCallExpression,
   isMemberExpression,
-  getRange,
-  getNodeText,
 } from '../../utils/ast-helpers.js'
 
-function getMethodName(node: unknown): string | null {
+function getMethodName(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -74,7 +75,7 @@ function hasAcceptableApplyContext(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length < 2) {
     return false
@@ -97,11 +98,13 @@ function getApplyArgs(node: unknown): unknown[] {
   if (!isCallExpression(node)) {
     return []
   }
+
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
   if (!args || args.length < 2) {
     return []
   }
+
   return args.slice(1)
 }
 
@@ -109,26 +112,13 @@ function getConcatArgs(node: unknown): unknown[] {
   if (!isCallExpression(node)) {
     return []
   }
+
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
   return args ?? []
 }
 
 export const preferSpreadRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer spread syntax over .apply() and .concat(). Use ...args instead of fn.apply(this, args), and [...arr1, ...arr2] instead of arr1.concat(arr2).',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-spread',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -146,7 +136,7 @@ export const preferSpreadRule: RuleDefinition = {
               ? ((calleeObject as Record<string, unknown>).name as string)
               : 'function'
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           const nodeRange = getRange(node)
           if (nodeRange) {
             const source = context.getSource()
@@ -169,9 +159,9 @@ export const preferSpreadRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Prefer spread syntax over .apply(). Use ${calleeName}(...args) instead of ${calleeName}.apply().`,
-            loc: location,
             fix,
+            loc: location,
+            message: `Prefer spread syntax over .apply(). Use ${calleeName}(...args) instead of ${calleeName}.apply().`,
           })
           return
         }
@@ -186,7 +176,7 @@ export const preferSpreadRule: RuleDefinition = {
               ? ((calleeObject as Record<string, unknown>).name as string)
               : 'array'
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           const nodeRange = getRange(node)
           if (nodeRange) {
             const source = context.getSource()
@@ -209,13 +199,27 @@ export const preferSpreadRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Prefer spread syntax over .concat(). Use [...${calleeName}, ...other] instead of ${calleeName}.concat(other).`,
-            loc: location,
             fix,
+            loc: location,
+            message: `Prefer spread syntax over .concat(). Use [...${calleeName}, ...other] instead of ${calleeName}.concat(other).`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer spread syntax over .apply() and .concat(). Use ...args instead of fn.apply(this, args), and [...arr1, ...arr2] instead of arr1.concat(arr2).',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-spread',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

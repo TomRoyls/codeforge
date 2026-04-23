@@ -1,14 +1,15 @@
 /**
- * @fileoverview Disallow dynamic property deletion which can bypass security checks
+ * @file Disallow dynamic property deletion which can bypass security checks
  * @module rules/security/no-dynamic-delete
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoDynamicDeleteOptions {
@@ -17,8 +18,8 @@ interface NoDynamicDeleteOptions {
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -36,13 +37,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -88,30 +89,6 @@ function isTestContext(context: RuleContext): boolean {
 }
 
 export const noDynamicDeleteRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow dynamic property deletion (delete obj[dynamicKey]). Dynamic deletion can bypass security checks, indicate poor design, and make code harder to analyze. Use static property deletion or Map/Set instead.',
-      category: 'security',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-dynamic-delete',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowInTests: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoDynamicDeleteOptions>(context.config.options, {
       allowInTests: false,
@@ -129,7 +106,7 @@ export const noDynamicDeleteRule: RuleDefinition = {
           return
         }
 
-        const argument = n.argument
+        const {argument} = n
 
         if (!argument || typeof argument !== 'object') {
           return
@@ -141,7 +118,7 @@ export const noDynamicDeleteRule: RuleDefinition = {
           return
         }
 
-        const property = arg.property
+        const {property} = arg
         const computed = arg.computed as boolean | undefined
 
         if (!computed) {
@@ -157,13 +134,37 @@ export const noDynamicDeleteRule: RuleDefinition = {
         }
 
         context.report({
-          node,
+          loc: extractLocation(node),
           message:
             'Dynamic property deletion detected. Use static property access (delete obj.key), Map.delete(), or a filtered copy instead for better security and maintainability.',
-          loc: extractLocation(node),
+          node,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'security',
+      description:
+        'Disallow dynamic property deletion (delete obj[dynamicKey]). Dynamic deletion can bypass security checks, indicate poor design, and make code harder to analyze. Use static property deletion or Map/Set instead.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-dynamic-delete',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowInTests: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

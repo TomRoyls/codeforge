@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isPromiseWithoutRejectCatch(node: unknown): boolean {
@@ -36,31 +37,31 @@ function isPromiseWithoutRejectCatch(node: unknown): boolean {
 }
 
 export const preferPromiseRejectErrorsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer using reject() in Promise executors to handle errors properly. Executors with only resolve() may swallow errors.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-promise-reject-errors',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
         if (isPromiseWithoutRejectCatch(node)) {
           const location = extractLocation(node)
           context.report({
-            message: 'Promise executor should handle errors with reject().',
             loc: location,
+            message: 'Promise executor should handle errors with reject().',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer using reject() in Promise executors to handle errors properly. Executors with only resolve() may swallow errors.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-promise-reject-errors',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

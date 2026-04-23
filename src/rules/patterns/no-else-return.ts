@@ -1,19 +1,45 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 
 const DEDENT_PATTERN = /^( {1,2}|\t)(.*)$/
 const BLOCK_CONTENT_PATTERN = /^\s*\{([\s\S]*)\}\s*$/
 
+function dedentCode(text: string): string {
+  const lines = text.split('\n')
+  const dedentedLines = lines.map((line) => {
+    const match = DEDENT_PATTERN.exec(line)
+    return match?.[2] ?? line
+  })
+  return dedentedLines.join('\n')
+}
+
+function extractBlockContent(source: string): null | string {
+  const match = BLOCK_CONTENT_PATTERN.exec(source)
+  return match?.[1] ?? null
+}
+
+function findElseKeywordStart(source: string, alternateStart: number, ifStart: number): number {
+  for (let i = alternateStart - 1; i >= ifStart; i--) {
+    if (source.slice(i, i + 4) === 'else') {
+      return i
+    }
+  }
+
+  return alternateStart
+}
+
 function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'IfStatement'
 }
@@ -30,7 +56,7 @@ function hasReturnStatement(node: unknown): boolean {
   }
 
   if (n.type === 'BlockStatement') {
-    const body = n.body as unknown[] | undefined
+    const body = n.body as undefined | unknown[]
     if (body && Array.isArray(body)) {
       return body.some((statement) => hasReturnStatement(statement))
     }
@@ -38,7 +64,7 @@ function hasReturnStatement(node: unknown): boolean {
 
   if (n.type === 'IfStatement') {
     const consequent = n.consequent as unknown
-    const alternate = n.alternate as unknown | undefined
+    const alternate = n.alternate as undefined | unknown
 
     if (hasReturnStatement(consequent)) {
       return true
@@ -58,14 +84,15 @@ function hasAlternate(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
-  const alternate = n.alternate as unknown | undefined
+  const alternate = n.alternate as undefined | unknown
   return alternate !== undefined && alternate !== null
 }
 
 function extractAlternateLocation(node: unknown): SourceLocation {
   if (!node || typeof node !== 'object') {
-    return { start: { line: 1, column: 0 }, end: { line: 1, column: 1 } }
+    return { end: { column: 1, line: 1 }, start: { column: 0, line: 1 } }
   }
 
   const n = node as Record<string, unknown>
@@ -79,44 +106,7 @@ function extractAlternateLocation(node: unknown): SourceLocation {
 }
 
 export const noElseReturnRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary else blocks after return statements. If a block contains a return, the else block can be removed and its body unindented.',
-      category: 'style',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-else-return',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
-    function dedentCode(text: string): string {
-      const lines = text.split('\n')
-      const dedentedLines = lines.map((line) => {
-        const match = DEDENT_PATTERN.exec(line)
-        return match?.[2] ?? line
-      })
-      return dedentedLines.join('\n')
-    }
-
-    function extractBlockContent(source: string): string | null {
-      const match = BLOCK_CONTENT_PATTERN.exec(source)
-      return match?.[1] ?? null
-    }
-
-    function findElseKeywordStart(source: string, alternateStart: number, ifStart: number): number {
-      for (let i = alternateStart - 1; i >= ifStart; i--) {
-        if (source.slice(i, i + 4) === 'else') {
-          return i
-        }
-      }
-      return alternateStart
-    }
-
     return {
       IfStatement(node: unknown): void {
         if (!isIfStatement(node)) {
@@ -137,7 +127,7 @@ export const noElseReturnRule: RuleDefinition = {
         const location = extractAlternateLocation(node)
         const alternate = n.alternate as Record<string, unknown>
 
-        let fix: { range: [number, number]; text: string } | undefined
+        let fix: undefined | { range: [number, number]; text: string }
 
         const ifRange = getRange(node)
         const alternateRange = getRange(alternate)
@@ -148,7 +138,7 @@ export const noElseReturnRule: RuleDefinition = {
           let fixedText: string
 
           if (alternate.type === 'BlockStatement') {
-            const body = alternate.body as unknown[] | undefined
+            const body = alternate.body as undefined | unknown[]
             if (body && body.length > 0) {
               const blockContent = extractBlockContent(alternateSource)
               fixedText = blockContent ? '\n' + dedentCode(blockContent) : ''
@@ -164,12 +154,26 @@ export const noElseReturnRule: RuleDefinition = {
         }
 
         context.report({
-          message: 'Unnecessary else block after return statement.',
-          loc: location,
           fix,
+          loc: location,
+          message: 'Unnecessary else block after return statement.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'style',
+      description:
+        'Disallow unnecessary else blocks after return statements. If a block contains a return, the else block can be removed and its body unindented.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-else-return',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

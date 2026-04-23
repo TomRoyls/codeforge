@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isFunctionDeclaration(node: unknown): boolean {
@@ -11,7 +12,7 @@ function isFunctionDeclaration(node: unknown): boolean {
   )
 }
 
-function getParamName(param: unknown): string | null {
+function getParamName(param: unknown): null | string {
   if (!param || typeof param !== 'object') return null
   const p = param as Record<string, unknown>
   if (p.type === 'Identifier' && typeof p.name === 'string') return p.name
@@ -22,33 +23,22 @@ function getParamName(param: unknown): string | null {
 }
 
 export const noDupeArgsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow duplicate arguments in function definitions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
+      ArrowFunctionExpression(node: unknown): void {
+        checkFunction(node)
+      },
       FunctionDeclaration(node: unknown): void {
         checkFunction(node)
       },
       FunctionExpression(node: unknown): void {
         checkFunction(node)
       },
-      ArrowFunctionExpression(node: unknown): void {
-        checkFunction(node)
-      },
     }
     function checkFunction(node: unknown): void {
       if (!isFunctionDeclaration(node)) return
       const n = node as Record<string, unknown>
-      const params = n.params
+      const {params} = n
       if (!Array.isArray(params)) return
 
       const seen = new Set<string>()
@@ -57,14 +47,26 @@ export const noDupeArgsRule: RuleDefinition = {
         if (name) {
           if (seen.has(name)) {
             context.report({
-              message: `Duplicate argument '${name}' in function definition.`,
               loc: extractLocation(param),
+              message: `Duplicate argument '${name}' in function definition.`,
             })
           }
+
           seen.add(name)
         }
       }
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow duplicate arguments in function definitions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noDupeArgsRule

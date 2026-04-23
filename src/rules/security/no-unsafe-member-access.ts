@@ -1,14 +1,15 @@
 /**
- * @fileoverview Disallow member access on values that are explicitly cast as any
+ * @file Disallow member access on values that are explicitly cast as any
  * @module rules/security/no-unsafe-member-access
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeMemberAccessOptions {
@@ -17,8 +18,8 @@ interface NoUnsafeMemberAccessOptions {
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
   if (!node || typeof node !== 'object') return defaultLoc
   const n = node as Record<string, unknown>
@@ -27,13 +28,13 @@ function extractLocation(node: unknown): SourceLocation {
   const start = loc.start as Record<string, unknown> | undefined
   const end = loc.end as Record<string, unknown> | undefined
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -62,17 +63,6 @@ function hasAnyBase(node: unknown): boolean {
 }
 
 export const noUnsafeMemberAccessRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow unsafe member access on values that are explicitly cast as any.',
-      category: 'security',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoUnsafeMemberAccessOptions>(context.config.options, {})
     const allowOptionalChaining = options.allowOptionalChaining ?? false
@@ -89,13 +79,24 @@ export const noUnsafeMemberAccessRule: RuleDefinition = {
         const obj = n.object
         if (isAnyAsExpression(obj) || hasAnyBase(obj)) {
           context.report({
+            loc: extractLocation(node),
             message:
               'Unsafe member access on an any-typed value. Add proper type annotations instead of casting to any.',
-            loc: extractLocation(node),
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'security',
+      description: 'Disallow unsafe member access on values that are explicitly cast as any.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnsafeMemberAccessRule

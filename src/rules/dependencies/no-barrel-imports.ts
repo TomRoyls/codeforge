@@ -1,29 +1,30 @@
 /**
- * @fileoverview Barrel import detection rule for CodeForge
+ * @file Barrel import detection rule for CodeForge
  * Detects imports from barrel files (index.ts/index.js)
  * @module rules/dependencies/no-barrel-imports
  */
 
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface BarrelImport {
   readonly barrelPath: string
-  readonly source: string
   readonly location: SourceLocation
+  readonly source: string
   readonly specifiers: readonly string[]
 }
 
 interface NoBarrelImportsOptions {
+  readonly allowTypeOnly?: boolean
   readonly barrelPatterns?: readonly string[]
   readonly exclude?: readonly string[]
-  readonly allowTypeOnly?: boolean
 }
 
 const DEFAULT_BARREL_PATTERNS = [
@@ -42,7 +43,7 @@ function getWildcardPatternRegex(pattern: string): RegExp {
   const cached = wildcardPatternCache.get(pattern)
   if (cached) return cached
 
-  const regex = new RegExp('^' + pattern.replace(/\*/g, '.*').replace(/\?/g, '.') + '$')
+  const regex = new RegExp('^' + pattern.replaceAll('*', '.*').replaceAll('?', '.') + '$')
   wildcardPatternCache.set(pattern, regex)
   return regex
 }
@@ -57,17 +58,16 @@ function getExcludePatternRegex(pattern: string): RegExp {
 }
 
 function isBarrelImport(source: string, patterns: readonly string[]): boolean {
-  const normalizedSource = source.replace(/\\/g, '/')
+  const normalizedSource = source.replaceAll('\\', '/')
 
   for (const pattern of patterns) {
     if (normalizedSource.endsWith(pattern)) {
       return true
     }
-    if (pattern.includes('*')) {
-      if (getWildcardPatternRegex(pattern).test(normalizedSource)) {
+
+    if (pattern.includes('*') && getWildcardPatternRegex(pattern).test(normalizedSource)) {
         return true
       }
-    }
   }
 
   return false
@@ -78,16 +78,17 @@ function isExcluded(source: string, patterns: readonly string[]): boolean {
     if (pattern.startsWith('/') && pattern.endsWith('/')) {
       return getExcludePatternRegex(pattern).test(source)
     }
+
     return source === pattern || source.includes(pattern)
   })
 }
 
-function extractImportDetails(node: unknown): {
-  source: string
-  specifiers: string[]
+function extractImportDetails(node: unknown): null | {
   isTypeOnly: boolean
   location: SourceLocation
-} | null {
+  source: string
+  specifiers: string[]
+} {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -106,24 +107,37 @@ function extractImportDetails(node: unknown): {
         for (const spec of specifierArray) {
           if (!spec || typeof spec !== 'object') continue
           const specNode = spec as Record<string, unknown>
-          if (specNode.type === 'ImportDefaultSpecifier') {
+          switch (specNode.type) {
+          case 'ImportDefaultSpecifier': {
             specifiers.push('default')
-          } else if (specNode.type === 'ImportNamespaceSpecifier') {
+          
+          break;
+          }
+
+          case 'ImportNamespaceSpecifier': {
             specifiers.push('*')
-          } else if (specNode.type === 'ImportSpecifier') {
+          
+          break;
+          }
+
+          case 'ImportSpecifier': {
             const imported = specNode.imported as Record<string, unknown> | undefined
             if (imported?.name && typeof imported.name === 'string') {
               specifiers.push(imported.name)
             }
+          
+          break;
+          }
+          // No default
           }
         }
       }
 
       return {
-        source: sourceNode.value,
-        specifiers,
         isTypeOnly,
         location,
+        source: sourceNode.value,
+        specifiers,
       }
     }
   }
@@ -132,10 +146,10 @@ function extractImportDetails(node: unknown): {
     const sourceNode = n.source as Record<string, unknown> | undefined
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
-        source: sourceNode.value,
-        specifiers: [],
         isTypeOnly: n.exportKind === 'type',
         location,
+        source: sourceNode.value,
+        specifiers: [],
       }
     }
   }
@@ -144,10 +158,10 @@ function extractImportDetails(node: unknown): {
     const sourceNode = n.source as Record<string, unknown> | undefined
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
-        source: sourceNode.value,
-        specifiers: ['*'],
         isTypeOnly: n.exportKind === 'type',
         location,
+        source: sourceNode.value,
+        specifiers: ['*'],
       }
     }
   }
@@ -156,7 +170,7 @@ function extractImportDetails(node: unknown): {
 }
 
 function generateDirectImportSuggestion(barrelImport: BarrelImport): string {
-  const { specifiers, barrelPath } = barrelImport
+  const { barrelPath, specifiers } = barrelImport
   const dir = barrelPath.replace(/\/index\.(ts|js|tsx|jsx|mjs|cjs)$/, '')
 
   if (specifiers.length === 0) {
@@ -172,136 +186,22 @@ function generateDirectImportSuggestion(barrelImport: BarrelImport): string {
  * Detects imports from barrel files (index.ts/index.js).
  */
 export const noBarrelImportsRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    fixable: 'code',
-    docs: {
-      description:
-        'Disallow imports from barrel files (index.ts/index.js). Importing from barrel files can cause performance issues, circular dependencies, and make the dependency graph harder to understand.',
-      category: 'dependencies',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-barrel-imports',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          barrelPatterns: {
-            type: 'array',
-            items: { type: 'string' },
-            default: DEFAULT_BARREL_PATTERNS,
-          },
-          exclude: {
-            type: 'array',
-            items: { type: 'string' },
-          },
-          allowTypeOnly: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoBarrelImportsOptions>(context.config.options, {
+      allowTypeOnly: false,
       barrelPatterns: undefined,
       exclude: [],
-      allowTypeOnly: false,
     })
     const barrelPatterns = options.barrelPatterns ?? DEFAULT_BARREL_PATTERNS
     const exclude = options.exclude ?? []
     const allowTypeOnly = options.allowTypeOnly ?? false
 
     return {
-      ImportDeclaration(node: unknown): void {
-        const details = extractImportDetails(node)
-        if (!details) return
-
-        if (isExcluded(details.source, exclude)) {
-          return
-        }
-
-        if (allowTypeOnly && details.isTypeOnly) {
-          return
-        }
-
-        if (isBarrelImport(details.source, barrelPatterns)) {
-          const barrelImport: BarrelImport = {
-            barrelPath: details.source,
-            source: details.source,
-            location: details.location,
-            specifiers: details.specifiers,
-          }
-
-          context.report({
-            node,
-            message: `Import from barrel file '${details.source}'. Consider importing directly from the source module.`,
-            loc: details.location,
-            suggest: [
-              {
-                desc: 'Import directly from source module',
-                message: 'Import directly from source module',
-                fix: {
-                  range: [0, 0],
-                  text: generateDirectImportSuggestion(barrelImport),
-                },
-              },
-            ],
-          })
-        }
-      },
-
-      ExportNamedDeclaration(node: unknown): void {
-        const details = extractImportDetails(node)
-        if (!details || details.specifiers.length > 0) return
-
-        if (isExcluded(details.source, exclude)) {
-          return
-        }
-
-        if (allowTypeOnly && details.isTypeOnly) {
-          return
-        }
-
-        if (isBarrelImport(details.source, barrelPatterns)) {
-          context.report({
-            node,
-            message: `Re-export from barrel file '${details.source}'. Consider exporting directly from the source module.`,
-            loc: details.location,
-          })
-        }
-      },
-
-      ExportAllDeclaration(node: unknown): void {
-        const details = extractImportDetails(node)
-        if (!details) return
-
-        if (isExcluded(details.source, exclude)) {
-          return
-        }
-
-        if (allowTypeOnly && details.isTypeOnly) {
-          return
-        }
-
-        if (isBarrelImport(details.source, barrelPatterns)) {
-          context.report({
-            node,
-            message: `Re-export all from barrel file '${details.source}'. Consider exporting directly from the source module.`,
-            loc: details.location,
-          })
-        }
-      },
-
       CallExpression(node: unknown): void {
         const n = node as Record<string, unknown>
 
         const callee = n.callee as Record<string, unknown> | undefined
-        const arguments_ = n.arguments as unknown[] | undefined
+        const arguments_ = n.arguments as undefined | unknown[]
         const arg0 =
           Array.isArray(arguments_) && arguments_.length > 0
             ? (arguments_[0] as Record<string, unknown> | undefined)
@@ -322,14 +222,128 @@ export const noBarrelImportsRule: RuleDefinition = {
 
           if (isBarrelImport(source, barrelPatterns)) {
             context.report({
-              node,
-              message: `require() from barrel file '${source}'. Consider requiring directly from the source module.`,
               loc: extractLocation(n),
+              message: `require() from barrel file '${source}'. Consider requiring directly from the source module.`,
+              node,
             })
           }
         }
       },
+
+      ExportAllDeclaration(node: unknown): void {
+        const details = extractImportDetails(node)
+        if (!details) return
+
+        if (isExcluded(details.source, exclude)) {
+          return
+        }
+
+        if (allowTypeOnly && details.isTypeOnly) {
+          return
+        }
+
+        if (isBarrelImport(details.source, barrelPatterns)) {
+          context.report({
+            loc: details.location,
+            message: `Re-export all from barrel file '${details.source}'. Consider exporting directly from the source module.`,
+            node,
+          })
+        }
+      },
+
+      ExportNamedDeclaration(node: unknown): void {
+        const details = extractImportDetails(node)
+        if (!details || details.specifiers.length > 0) return
+
+        if (isExcluded(details.source, exclude)) {
+          return
+        }
+
+        if (allowTypeOnly && details.isTypeOnly) {
+          return
+        }
+
+        if (isBarrelImport(details.source, barrelPatterns)) {
+          context.report({
+            loc: details.location,
+            message: `Re-export from barrel file '${details.source}'. Consider exporting directly from the source module.`,
+            node,
+          })
+        }
+      },
+
+      ImportDeclaration(node: unknown): void {
+        const details = extractImportDetails(node)
+        if (!details) return
+
+        if (isExcluded(details.source, exclude)) {
+          return
+        }
+
+        if (allowTypeOnly && details.isTypeOnly) {
+          return
+        }
+
+        if (isBarrelImport(details.source, barrelPatterns)) {
+          const barrelImport: BarrelImport = {
+            barrelPath: details.source,
+            location: details.location,
+            source: details.source,
+            specifiers: details.specifiers,
+          }
+
+          context.report({
+            loc: details.location,
+            message: `Import from barrel file '${details.source}'. Consider importing directly from the source module.`,
+            node,
+            suggest: [
+              {
+                desc: 'Import directly from source module',
+                fix: {
+                  range: [0, 0],
+                  text: generateDirectImportSuggestion(barrelImport),
+                },
+                message: 'Import directly from source module',
+              },
+            ],
+          })
+        }
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'dependencies',
+      description:
+        'Disallow imports from barrel files (index.ts/index.js). Importing from barrel files can cause performance issues, circular dependencies, and make the dependency graph harder to understand.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-barrel-imports',
+    },
+    fixable: 'code',
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowTypeOnly: {
+            default: false,
+            type: 'boolean',
+          },
+          barrelPatterns: {
+            default: DEFAULT_BARREL_PATTERNS,
+            items: { type: 'string' },
+            type: 'array',
+          },
+          exclude: {
+            items: { type: 'string' },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

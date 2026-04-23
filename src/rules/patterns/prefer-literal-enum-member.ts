@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const ALLOWED_UNARY_OPERATORS = ['-', '+', '~', '!'] as const
@@ -16,7 +17,7 @@ function isLiteralLike(node: unknown): boolean {
   }
 
   if (type === 'TemplateLiteral') {
-    const expressions = n.expressions as unknown[] | undefined
+    const expressions = n.expressions as undefined | unknown[]
     return !expressions || expressions.length === 0
   }
 
@@ -61,20 +62,6 @@ function getEnumMemberName(node: unknown): string {
 }
 
 export const preferLiteralEnumMemberRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require enum members to be literal values. Computed values in enums can lead to unpredictable behavior and reduce type safety.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-literal-enum-member',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       TSEnumMember(node: unknown): void {
@@ -83,7 +70,7 @@ export const preferLiteralEnumMemberRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const initializer = n.initializer
+        const {initializer} = n
 
         if (!initializer) {
           return
@@ -97,11 +84,25 @@ export const preferLiteralEnumMemberRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: `Enum member '${memberName}' should have a literal value instead of a computed expression.`,
           loc: location,
+          message: `Enum member '${memberName}' should have a literal value instead of a computed expression.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Require enum members to be literal values. Computed values in enums can lead to unpredictable behavior and reduce type safety.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-literal-enum-member',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

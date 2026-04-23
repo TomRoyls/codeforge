@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAssignmentExpression(node: unknown): boolean {
@@ -27,25 +28,16 @@ function areNodesEqual(left: unknown, right: unknown): boolean {
   if (isIdentifier(left)) {
     return l.name === r.name
   }
+
   if (isMemberExpression(left)) {
     if (!isMemberExpression(right)) return false
     return areNodesEqual(l.object, r.object) && areNodesEqual(l.property, r.property)
   }
+
   return false
 }
 
 export const noSelfAssignRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow assignments where both sides are exactly the same.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       AssignmentExpression(node: unknown): void {
@@ -53,12 +45,23 @@ export const noSelfAssignRule: RuleDefinition = {
         const n = node as Record<string, unknown>
         if (areNodesEqual(n.left, n.right)) {
           context.report({
-            message: 'Self assignment has no effect.',
             loc: extractLocation(node),
+            message: 'Self assignment has no effect.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow assignments where both sides are exactly the same.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noSelfAssignRule

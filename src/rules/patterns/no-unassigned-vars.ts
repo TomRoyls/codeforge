@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isVariableDeclarator(node: unknown): boolean {
@@ -14,17 +15,6 @@ function isIdentifier(node: unknown): boolean {
 }
 
 export const noUnassignedVarsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow variables that are read but never assigned.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       VariableDeclarator(node: unknown): void {
@@ -35,13 +25,24 @@ export const noUnassignedVarsRule: RuleDefinition = {
           const name = id.name as string
           if (n.init === null || n.init === undefined) {
             context.report({
-              message: `Variable '${name}' is never assigned a value.`,
               loc: extractLocation(node),
+              message: `Variable '${name}' is never assigned a value.`,
             })
           }
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow variables that are read but never assigned.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUnassignedVarsRule

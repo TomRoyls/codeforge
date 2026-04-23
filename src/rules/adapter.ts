@@ -1,14 +1,15 @@
-import { Node, type ModifierableNode, type SourceFile } from 'ts-morph'
+import { type ModifierableNode, Node, type SourceFile } from 'ts-morph'
 import { SyntaxKind } from 'ts-morph'
-import type { RuleViolation, VisitorContext, ASTVisitor } from '../ast/visitor.js'
-import type { RuleDefinition, RuleOptions, RuleMeta } from './types.js'
+
+import type { ASTVisitor, RuleViolation, VisitorContext } from '../ast/visitor.js'
 import type {
-  RuleDefinition as PluginRuleDefinition,
-  RuleContext as PluginRuleContext,
-  ReportDescriptor,
   Logger,
   PluginConfig,
+  RuleContext as PluginRuleContext,
+  RuleDefinition as PluginRuleDefinition,
+  ReportDescriptor,
 } from '../plugins/types.js'
+import type { RuleDefinition, RuleMeta, RuleOptions } from './types.js'
 
 function getAccessibilityModifier(
   node: ModifierableNode,
@@ -27,30 +28,34 @@ function skipTrivia(pos: number): number {
   if (!text) return pos
   let i = pos
   while (i < text.length) {
-    const ch = text.charCodeAt(i)
+    const ch = text.codePointAt(i) ?? 0
     if (ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d) {
       i++
       continue
     }
+
     if (ch === 0x2f && i + 1 < text.length) {
-      const next = text.charCodeAt(i + 1)
+      const next = text.codePointAt(i + 1) ?? 0
       if (next === 0x2f) {
-        while (i < text.length && text.charCodeAt(i) !== 0x0a) i++
+        while (i < text.length && text.codePointAt(i) !== 0x0a) i++
         continue
       }
+
       if (next === 0x2a) {
         i += 2
         while (
           i + 1 < text.length &&
-          !(text.charCodeAt(i) === 0x2a && text.charCodeAt(i + 1) === 0x2f)
+          !((text.codePointAt(i) ?? 0) === 0x2a && (text.codePointAt(i + 1) ?? 0) === 0x2f)
         )
           i++
         i += 2
         continue
       }
     }
+
     break
   }
+
   return i
 }
 
@@ -64,10 +69,10 @@ for (const [name, value] of Object.entries(SyntaxKind)) {
 }
 
 const silentLogger: Logger = {
-  debug: () => {},
-  info: () => {},
-  warn: () => {},
-  error: () => {},
+  debug() {},
+  error() {},
+  info() {},
+  warn() {},
 }
 
 const defaultConfig: PluginConfig = {
@@ -77,313 +82,313 @@ const defaultConfig: PluginConfig = {
 }
 
 const PROPERTY_MAP: Record<string, string> = {
-  block: 'body',
-  expression: 'argument',
-  expressions: 'expressions',
-  escapedText: 'name',
-  text: 'raw',
-  initializer: 'init',
-  left: 'left',
-  right: 'right',
-  test: 'test',
-  consequent: 'consequent',
   alternate: 'alternate',
-  operatorToken: 'operator',
-  condition: 'test',
+  arguments: 'arguments',
+  block: 'body',
   body: 'body',
-  thenStatement: 'consequent',
-  elseStatement: 'alternate',
+  condition: 'test',
+  consequent: 'consequent',
   declarationList: 'declarations',
   declarations: 'declarations',
+  decorators: 'decorators',
+  defaultImport: 'local',
+  elements: 'elements',
+  elseStatement: 'alternate',
+  escapedText: 'name',
+  expression: 'argument',
+  expressions: 'expressions',
+  externalModuleReference: 'source',
+  heritageClauses: 'heritage',
+  importClause: 'importClause',
+  importSpecifier: 'imported',
+  initializer: 'init',
+  left: 'left',
+  members: 'body',
+  modifierFlags: 'modifierFlags',
+  moduleSpecifier: 'source',
   name: 'name',
+  namedBindings: 'namedBindings',
+  namedImports: 'namedImports',
+  namespaceImport: 'namespaceImport',
+  objectLiteral: 'objectValue',
+  operand: 'argument',
+  operator: 'operator',
+  operatorToken: 'operator',
+  parameters: 'params',
+  properties: 'properties',
+  propertyName: 'imported',
+  right: 'right',
+  statements: 'body',
+  stringLiteral: 'importPath',
+  test: 'test',
+  text: 'raw',
+  thenStatement: 'consequent',
   type: 'typeAnnotation',
   typeArguments: 'typeParameters',
   typeParameters: 'typeParameters',
-  parameters: 'params',
-  arguments: 'arguments',
-  heritageClauses: 'heritage',
-  members: 'body',
-  elements: 'elements',
-  properties: 'properties',
-  objectLiteral: 'objectValue',
-  importClause: 'importClause',
-  moduleSpecifier: 'source',
-  namedImports: 'namedImports',
-  namespaceImport: 'namespaceImport',
-  stringLiteral: 'importPath',
-  defaultImport: 'local',
-  namedBindings: 'namedBindings',
-  importSpecifier: 'imported',
-  propertyName: 'imported',
-  externalModuleReference: 'source',
-  decorators: 'decorators',
-  modifierFlags: 'modifierFlags',
-  statements: 'body',
   variableDeclaration: 'param',
-  operand: 'argument',
-  operator: 'operator',
 }
 
 const KIND_NAME_ALIASES: Record<string, string> = {
-  Block: 'BlockStatement',
-  StringLiteral: 'Literal',
-  NumericLiteral: 'Literal',
-  BigIntLiteral: 'Literal',
-  TrueKeyword: 'BooleanLiteral',
-  FalseKeyword: 'BooleanLiteral',
-  NullKeyword: 'Literal',
-  RegularExpressionLiteral: 'RegExpLiteral',
-  ObjectLiteralExpression: 'ObjectExpression',
+  AnyKeyword: 'TSAnyKeyword',
+  ArrayDestructuring: 'ArrayPattern',
   ArrayLiteralExpression: 'ArrayExpression',
-  FunctionExpression: 'FunctionExpression',
   ArrowFunction: 'ArrowFunctionExpression',
-  PropertyAccessExpression: 'MemberExpression',
-  ElementAccessExpression: 'MemberExpression',
-  CallExpression: 'CallExpression',
-  NewExpression: 'NewExpression',
+  AsExpression: 'TSAsExpression',
+  AwaitExpression: 'AwaitExpression',
+  BigIntLiteral: 'Literal',
   BinaryExpression: 'BinaryExpression',
-  PrefixUnaryExpression: 'UnaryExpression',
-  PostfixUnaryExpression: 'UpdateExpression',
-  ConditionalExpression: 'ConditionalExpression',
-  VariableDeclaration: 'VariableDeclarator',
-  VariableDeclarationList: 'VariableDeclaration',
-  VariableStatement: 'VariableDeclaration',
-  FunctionDeclaration: 'FunctionDeclaration',
+  Block: 'BlockStatement',
+  BooleanKeyword: 'TSBooleanKeyword',
+  BreakStatement: 'BreakStatement',
+  CallExpression: 'CallExpression',
+  CallSignature: 'TSCallSignatureDeclaration',
+  CaseClause: 'SwitchCase',
+  CatchClause: 'CatchClause',
   ClassDeclaration: 'ClassDeclaration',
-  InterfaceDeclaration: 'TSInterfaceDeclaration',
+  ClassExpression: 'ClassExpression',
+  ComputedPropertyName: 'Literal',
+  ConditionalExpression: 'ConditionalExpression',
+  Constructor: 'MethodDefinition',
+  ContinueStatement: 'ContinueStatement',
+  DebuggerStatement: 'DebuggerStatement',
+  DefaultClause: 'SwitchCase',
+  DefaultKeyword: 'Literal',
+  DeleteExpression: 'UnaryExpression',
+  DoStatement: 'DoWhileStatement',
+  ElementAccessExpression: 'MemberExpression',
+  EnumDeclaration: 'TSEnumDeclaration',
+  ExportDeclaration: 'ExportDeclaration',
+  ExportKeyword: 'TSExportKeyword',
+  ExportSpecifier: 'ExportSpecifier',
+  ExpressionStatement: 'ExpressionStatement',
+  ExternalModuleReference: 'TSExternalModuleReference',
+  FalseKeyword: 'BooleanLiteral',
+  ForInStatement: 'ForInStatement',
+  ForOfStatement: 'ForOfStatement',
+  ForStatement: 'ForStatement',
+  FunctionDeclaration: 'FunctionDeclaration',
+  FunctionExpression: 'FunctionExpression',
+  GetAccessor: 'MethodDefinition',
+  Identifier: 'Identifier',
+  IfStatement: 'IfStatement',
   ImportDeclaration: 'ImportDeclaration',
   ImportEqualsDeclaration: 'TSImportEqualsDeclaration',
   ImportExpression: 'Import',
-  ExportDeclaration: 'ExportDeclaration',
-  ReturnStatement: 'ReturnStatement',
-  ThrowStatement: 'ThrowStatement',
-  IfStatement: 'IfStatement',
-  ForStatement: 'ForStatement',
-  ForInStatement: 'ForInStatement',
-  ForOfStatement: 'ForOfStatement',
-  WhileStatement: 'WhileStatement',
-  DoStatement: 'DoWhileStatement',
-  SwitchStatement: 'SwitchStatement',
-  TryStatement: 'TryStatement',
-  ExpressionStatement: 'ExpressionStatement',
-  TypeReference: 'TSTypeReference',
-  TypeLiteral: 'TSTypeLiteral',
-  EnumDeclaration: 'TSEnumDeclaration',
-  ModuleDeclaration: 'TSModuleDeclaration',
   ImportSpecifier: 'ImportSpecifier',
-  ExportSpecifier: 'ExportSpecifier',
-  CatchClause: 'CatchClause',
-  CaseClause: 'SwitchCase',
-  DefaultClause: 'SwitchCase',
-  PropertyDeclaration: 'PropertyDefinition',
-  PropertyAssignment: 'Property',
+  InExpression: 'BinaryExpression',
+  InstanceOfExpression: 'BinaryExpression',
+  InterfaceDeclaration: 'TSInterfaceDeclaration',
+  LabeledStatement: 'LabeledStatement',
   MethodDeclaration: 'MethodDefinition',
-  Constructor: 'MethodDefinition',
-  GetAccessor: 'MethodDefinition',
+  ModuleDeclaration: 'TSModuleDeclaration',
+  NewExpression: 'NewExpression',
+  NonNullExpression: 'TSNonNullExpression',
+  NoSubstitutionTemplateLiteral: 'TemplateLiteral',
+  NullKeyword: 'Literal',
+  NumberKeyword: 'TSNumberKeyword',
+  NumericLiteral: 'Literal',
+  ObjectDestructuring: 'ObjectPattern',
+  ObjectKeyword: 'TSObjectKeyword',
+  ObjectLiteralExpression: 'ObjectExpression',
+  ParenthesizedExpression: 'SequenceExpression',
+  PostfixUnaryExpression: 'UpdateExpression',
+  PrefixUnaryExpression: 'UnaryExpression',
+  PrivateIdentifier: 'PrivateIdentifier',
+  PropertyAccessExpression: 'MemberExpression',
+  PropertyAssignment: 'Property',
+  PropertyDeclaration: 'PropertyDefinition',
+  RegularExpressionLiteral: 'RegExpLiteral',
+  ReturnStatement: 'ReturnStatement',
   SetAccessor: 'MethodDefinition',
   ShorthandPropertyAssignment: 'Property',
   SpreadAssignment: 'SpreadElement',
   SpreadElement: 'SpreadElement',
-  TemplateExpression: 'TemplateLiteral',
-  NoSubstitutionTemplateLiteral: 'TemplateLiteral',
-  TaggedTemplateExpression: 'TaggedTemplateExpression',
-  AwaitExpression: 'AwaitExpression',
-  YieldExpression: 'YieldExpression',
-  DeleteExpression: 'UnaryExpression',
-  VoidExpression: 'UnaryExpression',
-  TypeOfExpression: 'UnaryExpression',
-  InstanceOfExpression: 'BinaryExpression',
-  InExpression: 'BinaryExpression',
-  AsExpression: 'TSAsExpression',
-  TypeAssertion: 'TSTypeAssertion',
-  NonNullExpression: 'TSNonNullExpression',
-  ParenthesizedExpression: 'SequenceExpression',
-  ObjectDestructuring: 'ObjectPattern',
-  ArrayDestructuring: 'ArrayPattern',
-  ComputedPropertyName: 'Literal',
-  DefaultKeyword: 'Literal',
+  StaticBlock: 'StaticBlock',
+  StringKeyword: 'TSStringKeyword',
+  StringLiteral: 'Literal',
   SuperKeyword: 'Super',
+  SwitchStatement: 'SwitchStatement',
+  TaggedTemplateExpression: 'TaggedTemplateExpression',
+  TemplateExpression: 'TemplateLiteral',
   ThisKeyword: 'ThisExpression',
-  BreakStatement: 'BreakStatement',
-  ContinueStatement: 'ContinueStatement',
-  DebuggerStatement: 'DebuggerStatement',
-  LabeledStatement: 'LabeledStatement',
-  ClassExpression: 'ClassExpression',
-  Identifier: 'Identifier',
-  PrivateIdentifier: 'PrivateIdentifier',
+  ThrowStatement: 'ThrowStatement',
+  TrueKeyword: 'BooleanLiteral',
+  TryStatement: 'TryStatement',
   TSAnyKeyword: 'TSAnyKeyword',
   TSArrayType: 'TSArrayType',
-  TSUnionType: 'TSUnionType',
   TSEnumMember: 'TSEnumMember',
-  TSInterfaceDeclaration: 'TSInterfaceDeclaration',
   TSInterfaceBody: 'TSInterfaceBody',
-  StaticBlock: 'StaticBlock',
-  AnyKeyword: 'TSAnyKeyword',
-  BooleanKeyword: 'TSBooleanKeyword',
-  NumberKeyword: 'TSNumberKeyword',
-  StringKeyword: 'TSStringKeyword',
-  VoidKeyword: 'TSVoidKeyword',
-  UnknownKeyword: 'TSUnknownKeyword',
-  ObjectKeyword: 'TSObjectKeyword',
-  CallSignature: 'TSCallSignatureDeclaration',
+  TSInterfaceDeclaration: 'TSInterfaceDeclaration',
+  TSUnionType: 'TSUnionType',
   TypeAliasDeclaration: 'TSTypeAliasDeclaration',
-  ExternalModuleReference: 'TSExternalModuleReference',
-  ExportKeyword: 'TSExportKeyword',
   TypeAnnotation: 'TSTypeAnnotation',
+  TypeAssertion: 'TSTypeAssertion',
+  TypeLiteral: 'TSTypeLiteral',
+  TypeOfExpression: 'UnaryExpression',
+  TypeReference: 'TSTypeReference',
+  UnknownKeyword: 'TSUnknownKeyword',
+  VariableDeclaration: 'VariableDeclarator',
+  VariableDeclarationList: 'VariableDeclaration',
+  VariableStatement: 'VariableDeclaration',
+  VoidExpression: 'UnaryExpression',
+  VoidKeyword: 'TSVoidKeyword',
+  WhileStatement: 'WhileStatement',
+  YieldExpression: 'YieldExpression',
 }
 
 const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
-  SwitchStatement: { expression: 'discriminant', caseBlock: 'cases' },
+  ArrowFunction: { type: 'returnType' },
+  AwaitExpression: { expression: 'argument' },
+  CallExpression: { expression: 'callee' },
   CaseClause: { expression: 'test', statements: 'consequent' },
+  ClassDeclaration: { name: 'id' },
   DefaultClause: { statements: 'consequent' },
-  TryStatement: { tryBlock: 'block', catchClause: 'handler', finallyBlock: 'finalizer' },
-  IfStatement: { expression: 'test', thenStatement: 'consequent', elseStatement: 'alternate' },
-  ForStatement: {
-    initializer: 'init',
-    condition: 'test',
-    incrementor: 'update',
-    statement: 'body',
-  },
+  DeleteExpression: { expression: 'argument' },
+  DoStatement: { expression: 'test', statement: 'body' },
+  ElementAccessExpression: { argumentExpression: 'property', expression: 'object' },
+  ExportSpecifier: { name: 'exported', propertyName: 'imported' },
   ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
   ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
-  LabeledStatement: { statement: 'body' },
-  WithStatement: { statement: 'body' },
-  DoStatement: { expression: 'test', statement: 'body' },
-  WhileStatement: { expression: 'test', statement: 'body' },
-  CallExpression: { expression: 'callee' },
-  NewExpression: { expression: 'callee' },
-  PropertyAccessExpression: { expression: 'object', name: 'property' },
-  ElementAccessExpression: { expression: 'object', argumentExpression: 'property' },
-  ThrowStatement: { expression: 'argument' },
-  ReturnStatement: { expression: 'argument' },
-  DeleteExpression: { expression: 'argument' },
-  VoidExpression: { expression: 'argument' },
-  TypeOfExpression: { expression: 'argument' },
-  AwaitExpression: { expression: 'argument' },
-  YieldExpression: { expression: 'argument' },
-  PrefixUnaryExpression: { operand: 'argument' },
-  PostfixUnaryExpression: { operand: 'argument' },
-  VariableDeclaration: { name: 'id', type: 'typeAnnotation' },
+  ForStatement: {
+    condition: 'test',
+    incrementor: 'update',
+    initializer: 'init',
+    statement: 'body',
+  },
   FunctionDeclaration: { name: 'id', type: 'returnType' },
   FunctionExpression: { type: 'returnType' },
-  ArrowFunction: { type: 'returnType' },
-  ClassDeclaration: { name: 'id' },
-  PropertyDeclaration: { name: 'key', initializer: 'value' },
-  PropertyAssignment: { name: 'key', initializer: 'value' },
-  MethodDeclaration: { name: 'key' },
   GetAccessor: { name: 'key' },
-  SetAccessor: { name: 'key' },
+  IfStatement: { elseStatement: 'alternate', expression: 'test', thenStatement: 'consequent' },
   ImportSpecifier: { name: 'local', propertyName: 'imported' },
-  ExportSpecifier: { name: 'exported', propertyName: 'imported' },
+  LabeledStatement: { statement: 'body' },
+  MethodDeclaration: { name: 'key' },
+  NewExpression: { expression: 'callee' },
   ParenthesizedExpression: { expression: 'expression' },
-  SpreadElement: { expression: 'argument' },
+  PostfixUnaryExpression: { operand: 'argument' },
+  PrefixUnaryExpression: { operand: 'argument' },
+  PropertyAccessExpression: { expression: 'object', name: 'property' },
+  PropertyAssignment: { initializer: 'value', name: 'key' },
+  PropertyDeclaration: { initializer: 'value', name: 'key' },
+  ReturnStatement: { expression: 'argument' },
+  SetAccessor: { name: 'key' },
   SpreadAssignment: { expression: 'argument' },
+  SpreadElement: { expression: 'argument' },
+  SwitchStatement: { caseBlock: 'cases', expression: 'discriminant' },
   TaggedTemplateExpression: { template: 'quasi' },
+  ThrowStatement: { expression: 'argument' },
+  TryStatement: { catchClause: 'handler', finallyBlock: 'finalizer', tryBlock: 'block' },
+  TypeOfExpression: { expression: 'argument' },
+  VariableDeclaration: { name: 'id', type: 'typeAnnotation' },
+  VoidExpression: { expression: 'argument' },
+  WhileStatement: { expression: 'test', statement: 'body' },
+  WithStatement: { statement: 'body' },
+  YieldExpression: { expression: 'argument' },
 }
 
 const MAX_DEPTH = 5
 
 const SKIP_KEYS = new Set([
-  'kind',
-  'pos',
   'end',
   'flags',
-  'modifierFlagsCache',
-  'transformFlags',
-  'parent',
-  'original',
-  'jlChildren',
-  'symbol',
-  'locals',
-  'nextContainer',
   'id',
+  'jlChildren',
+  'kind',
+  'locals',
+  'modifierFlagsCache',
+  'nextContainer',
+  'original',
+  'parent',
+  'pos',
+  'symbol',
+  'transformFlags',
 ])
 
 const OPERATOR_TOKEN_MAP: Record<string, string> = {
-  EqualsEqualsToken: '==',
-  EqualsEqualsEqualsToken: '===',
-  ExclamationEqualsToken: '!=',
-  ExclamationEqualsEqualsToken: '!==',
-  LessThanToken: '<',
-  LessThanEqualsToken: '<=',
-  GreaterThanToken: '>',
-  GreaterThanEqualsToken: '>=',
-  PlusToken: '+',
-  MinusToken: '-',
-  AsteriskToken: '*',
-  SlashToken: '/',
-  PercentToken: '%',
-  AsteriskAsteriskToken: '**',
-  AmpersandToken: '&',
-  BarToken: '|',
-  CaretToken: '^',
-  LessThanLessThanToken: '<<',
-  GreaterThanGreaterThanToken: '>>',
-  GreaterThanGreaterThanGreaterThanToken: '>>>',
-  EqualsToken: '=',
-  PlusEqualsToken: '+=',
-  MinusEqualsToken: '-=',
-  AsteriskEqualsToken: '*=',
-  SlashEqualsToken: '/=',
-  PercentEqualsToken: '%=',
-  AsteriskAsteriskEqualsToken: '**=',
+  AmpersandAmpersandEqualsToken: '&&=',
+  AmpersandAmpersandToken: '&&',
   AmpersandEqualsToken: '&=',
+  AmpersandToken: '&',
+  ArrowToken: '=>',
+  AsteriskAsteriskEqualsToken: '**=',
+  AsteriskAsteriskToken: '**',
+  AsteriskEqualsToken: '*=',
+  AsteriskToken: '*',
+  BarBarEqualsToken: '||=',
+  BarBarToken: '||',
   BarEqualsToken: '|=',
+  BarToken: '|',
   CaretEqualsToken: '^=',
-  LessThanLessThanEqualsToken: '<<=',
+  CaretToken: '^',
+  ColonToken: ':',
+  CommaToken: ',',
+  DotDotDotToken: '...',
+  DotToken: '.',
+  EqualsEqualsEqualsToken: '===',
+  EqualsEqualsToken: '==',
+  EqualsToken: '=',
+  ExclamationEqualsEqualsToken: '!==',
+  ExclamationEqualsToken: '!=',
+  ExclamationToken: '!',
+  GreaterThanEqualsToken: '>=',
   GreaterThanGreaterThanEqualsToken: '>>=',
   GreaterThanGreaterThanGreaterThanEqualsToken: '>>>=',
-  AmpersandAmpersandToken: '&&',
-  BarBarToken: '||',
-  QuestionQuestionToken: '??',
-  AmpersandAmpersandEqualsToken: '&&=',
-  BarBarEqualsToken: '||=',
-  QuestionQuestionEqualsToken: '??=',
-  DotDotDotToken: '...',
-  CommaToken: ',',
-  ColonToken: ':',
-  SemicolonToken: ';',
-  ArrowToken: '=>',
-  DotToken: '.',
-  QuestionDotToken: '?.',
-  ExclamationToken: '!',
-  TildeToken: '~',
+  GreaterThanGreaterThanGreaterThanToken: '>>>',
+  GreaterThanGreaterThanToken: '>>',
+  GreaterThanToken: '>',
   InKeyword: 'in',
   InstanceOfKeyword: 'instanceof',
+  LessThanEqualsToken: '<=',
+  LessThanLessThanEqualsToken: '<<=',
+  LessThanLessThanToken: '<<',
+  LessThanToken: '<',
+  MinusEqualsToken: '-=',
+  MinusToken: '-',
   OfKeyword: 'of',
+  PercentEqualsToken: '%=',
+  PercentToken: '%',
+  PlusEqualsToken: '+=',
+  PlusToken: '+',
+  QuestionDotToken: '?.',
+  QuestionQuestionEqualsToken: '??=',
+  QuestionQuestionToken: '??',
+  SemicolonToken: ';',
+  SlashEqualsToken: '/=',
+  SlashToken: '/',
+  TildeToken: '~',
 }
 
 const ASSIGNMENT_OPERATORS = new Set([
-  '=',
+  '%=',
+  '&&=',
+  '&=',
+  '**=',
+  '*=',
   '+=',
   '-=',
-  '*=',
   '/=',
-  '%=',
-  '**=',
-  '&=',
-  '|=',
-  '^=',
   '<<=',
+  '=',
   '>>=',
   '>>>=',
-  '&&=',
-  '||=',
   '??=',
+  '^=',
+  '|=',
+  '||=',
 ])
 
-const LOGICAL_OPERATORS = new Set(['&&', '||', '??'])
+const LOGICAL_OPERATORS = new Set(['&&', '??', '||'])
 
 const EXPORTABLE_KINDS = new Set([
-  'FunctionDeclaration',
   'ClassDeclaration',
-  'InterfaceDeclaration',
   'EnumDeclaration',
-  'TypeAliasDeclaration',
+  'FunctionDeclaration',
+  'InterfaceDeclaration',
   'ModuleDeclaration',
+  'TypeAliasDeclaration',
 ])
 
-function getExportInfo(node: Node): { isExported: boolean; isDefault: boolean } {
+function getExportInfo(node: Node): { isDefault: boolean; isExported: boolean } {
   let isExported = false
   let isDefault = false
   try {
@@ -401,13 +406,14 @@ function getExportInfo(node: Node): { isExported: boolean; isDefault: boolean } 
   } catch {
     // Not all node types support getModifiers
   }
-  return { isExported, isDefault }
+
+  return { isDefault, isExported }
 }
 
 function extractImportSpecifiers(node: Node): unknown[] {
   const specifiers: unknown[] = []
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (!compilerNode) return specifiers
     const clause = compilerNode.importClause as Record<string, unknown> | undefined
     if (!clause) return specifiers
@@ -416,11 +422,11 @@ function extractImportSpecifiers(node: Node): unknown[] {
     if (clause.name && typeof clause.name === 'object') {
       const name = clause.name as Record<string, unknown>
       specifiers.push({
-        type: 'ImportDefaultSpecifier',
-        local: { type: 'Identifier', name: name.text, value: name.text },
+        end: name.end,
+        local: { name: name.text, type: 'Identifier', value: name.text },
         range: [name.pos, name.end],
         start: name.pos,
-        end: name.end,
+        type: 'ImportDefaultSpecifier',
       })
     }
 
@@ -434,22 +440,24 @@ function extractImportSpecifiers(node: Node): unknown[] {
           if (!el || typeof el !== 'object') continue
           const e = el as Record<string, unknown>
           const spec: Record<string, unknown> = {
-            type: 'ImportSpecifier',
+            end: e.end,
             range: [e.pos, e.end],
             start: e.pos,
-            end: e.end,
+            type: 'ImportSpecifier',
           }
           if (e.name && typeof e.name === 'object') {
             const nameObj = e.name as Record<string, unknown>
-            spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+            spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
           }
+
           if (e.propertyName && typeof e.propertyName === 'object') {
             const pn = e.propertyName as Record<string, unknown>
-            spec.imported = { type: 'Identifier', name: pn.text, value: pn.text }
+            spec.imported = { name: pn.text, type: 'Identifier', value: pn.text }
           } else if (e.name && typeof e.name === 'object') {
             const nameObj = e.name as Record<string, unknown>
-            spec.imported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+            spec.imported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
           }
+
           spec.importKind =
             typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
           specifiers.push(spec)
@@ -460,24 +468,25 @@ function extractImportSpecifiers(node: Node): unknown[] {
       if (bindings.name && typeof bindings.name === 'object') {
         const name = bindings.name as Record<string, unknown>
         specifiers.push({
-          type: 'ImportNamespaceSpecifier',
-          local: { type: 'Identifier', name: name.text, value: name.text },
+          end: bindings.end ?? name.end,
+          local: { name: name.text, type: 'Identifier', value: name.text },
           range: [bindings.pos ?? name.pos, bindings.end ?? name.end],
           start: bindings.pos ?? name.pos,
-          end: bindings.end ?? name.end,
+          type: 'ImportNamespaceSpecifier',
         })
       }
     }
   } catch {
     // Compiler node not available
   }
+
   return specifiers
 }
 
 function extractExportSpecifiers(node: Node): unknown[] {
   const specifiers: unknown[] = []
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (!compilerNode) return specifiers
 
     const exportClause = compilerNode.exportClause as Record<string, unknown> | undefined
@@ -486,20 +495,22 @@ function extractExportSpecifiers(node: Node): unknown[] {
         if (!el || typeof el !== 'object') continue
         const e = el as Record<string, unknown>
         const spec: Record<string, unknown> = {
-          type: 'ExportSpecifier',
+          end: e.end,
           range: [e.pos, e.end],
           start: e.pos,
-          end: e.end,
+          type: 'ExportSpecifier',
         }
         if (e.name && typeof e.name === 'object') {
           const nameObj = e.name as Record<string, unknown>
-          spec.local = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
-          spec.exported = { type: 'Identifier', name: nameObj.text, value: nameObj.text }
+          spec.local = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
+          spec.exported = { name: nameObj.text, type: 'Identifier', value: nameObj.text }
         }
+
         if (e.propertyName && typeof e.propertyName === 'object') {
           const pn = e.propertyName as Record<string, unknown>
-          spec.exported = { type: 'Identifier', name: pn.text, value: pn.text }
+          spec.exported = { name: pn.text, type: 'Identifier', value: pn.text }
         }
+
         spec.exportKind =
           typeof e.isTypeOnly === 'boolean' ? (e.isTypeOnly ? 'type' : 'value') : 'value'
         specifiers.push(spec)
@@ -508,6 +519,7 @@ function extractExportSpecifiers(node: Node): unknown[] {
   } catch {
     // Compiler node not available
   }
+
   return specifiers
 }
 
@@ -517,22 +529,25 @@ function convertOperatorToken(token: unknown): string {
     const tokenName = KIND_MAP[token as number] ?? ''
     return (OPERATOR_TOKEN_MAP[tokenName] ?? tokenName) || String(token)
   }
+
   if (token && typeof token === 'object') {
     const obj = token as Record<string, unknown>
     if (typeof obj.type === 'string') {
       const mapped = OPERATOR_TOKEN_MAP[obj.type]
       if (mapped) return mapped
     }
+
     if (typeof obj.getText === 'function') return (obj.getText as () => string)()
     if (obj.operator !== undefined) return String(obj.operator)
   }
+
   return String(token)
 }
 
 function convertRawCompilerNode(
   raw: Record<string, unknown>,
   depth: number,
-): Record<string, unknown> | null {
+): null | Record<string, unknown> {
   if (depth >= MAX_DEPTH) return null
   if (!raw || typeof raw !== 'object') return null
 
@@ -547,6 +562,7 @@ function convertRawCompilerNode(
     result.start = startPos
     result.end = raw.end
   }
+
   result.type = KIND_NAME_ALIASES[kindName] ?? kindName
 
   // Add literal values
@@ -562,23 +578,40 @@ function convertRawCompilerNode(
   } else if (kindName === 'Identifier' && raw.escapedText !== undefined) {
     result.name = raw.escapedText
     result.value = raw.escapedText
-  } else if (kindName === 'TrueKeyword') {
-    result.value = true
-    result.raw = 'true'
-  } else if (kindName === 'FalseKeyword') {
-    result.value = false
-    result.raw = 'false'
-  } else if (kindName === 'NullKeyword') {
-    result.value = null
-    result.raw = 'null'
-  } else if (kindName === 'RegularExpressionLiteral' && raw.text !== undefined) {
-    result.raw = raw.text as string
-    const regexText = raw.text as string
-    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-    if (regexMatch) {
-      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+  } else
+    switch (kindName) {
+      case 'FalseKeyword': {
+        result.value = false
+        result.raw = 'false'
+
+        break
+      }
+
+      case 'NullKeyword': {
+        result.value = null
+        result.raw = 'null'
+
+        break
+      }
+
+      case 'TrueKeyword': {
+        result.value = true
+        result.raw = 'true'
+
+        break
+      }
+
+      default: {
+        if (kindName === 'RegularExpressionLiteral' && raw.text !== undefined) {
+          result.raw = raw.text as string
+          const regexText = raw.text as string
+          const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+          if (regexMatch) {
+            result.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+          }
+        }
+      }
     }
-  }
 
   // Iterate children
   for (const [key, val] of Object.entries(raw)) {
@@ -601,8 +634,10 @@ function convertRawCompilerNode(
             converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
           }
         }
+
         result[estreeName] = converted
       }
+
       continue
     }
 
@@ -616,16 +651,16 @@ function convertRawCompilerNode(
         const head = raw.head as Record<string, unknown> | undefined
         if (head && typeof head.kind === 'number') {
           quasis.push({
-            type: 'TemplateElement',
-            value: {
-              raw: (head.rawText ?? head.text) as string,
-              cooked: (head.text ?? head.rawText) as string,
-            },
-            tail: false,
             range:
               typeof head.pos === 'number' && typeof head.end === 'number'
                 ? [head.pos as number, head.end as number]
                 : undefined,
+            tail: false,
+            type: 'TemplateElement',
+            value: {
+              cooked: (head.text ?? head.rawText) as string,
+              raw: (head.rawText ?? head.text) as string,
+            },
           })
         }
 
@@ -634,24 +669,25 @@ function convertRawCompilerNode(
         if (Array.isArray(spans)) {
           for (let i = 0; i < spans.length; i++) {
             const span = spans[i]! as Record<string, unknown>
-            const spanExpr = span['expression'] as Record<string, unknown> | undefined
+            const spanExpr = span.expression as Record<string, unknown> | undefined
             if (spanExpr && typeof spanExpr.kind === 'number') {
               expressions.push(convertRawCompilerNode(spanExpr, depth + 1))
             }
+
             const lit = span.literal as Record<string, unknown> | undefined
             if (lit && typeof lit.kind === 'number') {
               const isTail = i === spans.length - 1
               quasis.push({
-                type: 'TemplateElement',
-                value: {
-                  raw: (lit.rawText ?? lit.text) as string,
-                  cooked: (lit.text ?? lit.rawText) as string,
-                },
-                tail: isTail,
                 range:
                   typeof lit.pos === 'number' && typeof lit.end === 'number'
                     ? [lit.pos as number, lit.end as number]
                     : undefined,
+                tail: isTail,
+                type: 'TemplateElement',
+                value: {
+                  cooked: (lit.text ?? lit.rawText) as string,
+                  raw: (lit.rawText ?? lit.text) as string,
+                },
               })
             }
           }
@@ -660,6 +696,7 @@ function convertRawCompilerNode(
         result.quasis = quasis
         result.expressions = expressions
       }
+
       continue
     }
 
@@ -670,13 +707,14 @@ function convertRawCompilerNode(
         const cookedText = (raw.text ?? raw.rawText) as string
         result.quasis = [
           {
-            type: 'TemplateElement',
-            value: { raw: rawText, cooked: cookedText },
             tail: true,
+            type: 'TemplateElement',
+            value: { cooked: cookedText, raw: rawText },
           },
         ]
         result.expressions = []
       }
+
       continue
     }
 
@@ -699,14 +737,10 @@ function convertRawCompilerNode(
       typeof (val as Record<string, unknown>).kind === 'number'
     ) {
       const varDecl = val as Record<string, unknown>
-      if (varDecl.name && typeof varDecl.name === 'object') {
-        result[estreeName] = convertRawCompilerNode(
-          varDecl.name as Record<string, unknown>,
-          depth + 1,
-        )
-      } else {
-        result[estreeName] = null
-      }
+      result[estreeName] =
+        varDecl.name && typeof varDecl.name === 'object'
+          ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+          : null
     } else if (
       typeof val === 'object' &&
       typeof (val as Record<string, unknown>).kind === 'number'
@@ -732,6 +766,7 @@ function convertRawCompilerNode(
           converted.push(item)
         }
       }
+
       result[estreeName] = converted
     }
   }
@@ -760,6 +795,7 @@ function convertRawCompilerNode(
       result.prefix = true
     }
   }
+
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
@@ -767,7 +803,7 @@ function convertRawCompilerNode(
 
   // VariableDeclarationList: convert flags to ESTree kind property ('var'/'let'/'const')
   if (result.type === 'VariableDeclaration') {
-    let flags: number | undefined = undefined
+    let flags: number | undefined
     if (typeof raw.flags === 'number' && (raw.flags as number) & 3) {
       flags = raw.flags as number
     } else {
@@ -776,6 +812,7 @@ function convertRawCompilerNode(
         flags = declList.flags as number
       }
     }
+
     if (typeof flags === 'number') {
       if (flags & 2) {
         result.kind = 'const'
@@ -790,7 +827,7 @@ function convertRawCompilerNode(
   return result
 }
 
-function convertCompilerNode(node: Node, depth: number = 0): Record<string, unknown> | null {
+function convertCompilerNode(node: Node, depth: number = 0): null | Record<string, unknown> {
   if (depth >= MAX_DEPTH) return null
   if (!node || typeof node !== 'object') return null
 
@@ -807,47 +844,77 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
     type: KIND_NAME_ALIASES[kindName] ?? kindName,
   }
 
-  const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
-  if (compilerNode && typeof compilerNode === 'object') {
-    if (typeof compilerNode.pos === 'number' && typeof compilerNode.end === 'number') {
-      const startPos = skipTrivia(compilerNode.pos as number)
-      result.range = [startPos, compilerNode.end] as [number, number]
-      result.start = startPos
-      result.end = compilerNode.end
-    }
+  const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
+  if (
+    compilerNode &&
+    typeof compilerNode === 'object' &&
+    typeof compilerNode.pos === 'number' &&
+    typeof compilerNode.end === 'number'
+  ) {
+    const startPos = skipTrivia(compilerNode.pos as number)
+    result.range = [startPos, compilerNode.end] as [number, number]
+    result.start = startPos
+    result.end = compilerNode.end
   }
 
   // Add literal value
-  if (kindName === 'StringLiteral') {
-    const text = node.getText()
-    result.value = text.slice(1, -1) // Remove quotes
-    result.raw = text
-  } else if (kindName === 'NumericLiteral' || kindName === 'BigIntLiteral') {
-    const text = node.getText()
-    result.value = Number(text)
-    result.raw = text
-  } else if (kindName === 'TrueKeyword') {
-    result.value = true
-    result.raw = 'true'
-  } else if (kindName === 'FalseKeyword') {
-    result.value = false
-    result.raw = 'false'
-  } else if (kindName === 'NullKeyword') {
-    result.value = null
-    result.raw = 'null'
-  } else if (kindName === 'RegularExpressionLiteral') {
-    const regexText = node.getText()
-    result.raw = regexText
-    const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
-    if (regexMatch) {
-      result.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+  switch (kindName) {
+    case 'BigIntLiteral':
+    // falls through
+    case 'NumericLiteral': {
+      const text = node.getText()
+      result.value = Number(text)
+      result.raw = text
+
+      break
     }
+
+    case 'FalseKeyword': {
+      result.value = false
+      result.raw = 'false'
+
+      break
+    }
+
+    case 'NullKeyword': {
+      result.value = null
+      result.raw = 'null'
+
+      break
+    }
+
+    case 'RegularExpressionLiteral': {
+      const regexText = node.getText()
+      result.raw = regexText
+      const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
+      if (regexMatch) {
+        result.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
+      }
+
+      break
+    }
+
+    case 'StringLiteral': {
+      const text = node.getText()
+      result.value = text.slice(1, -1) // Remove quotes
+      result.raw = text
+
+      break
+    }
+
+    case 'TrueKeyword': {
+      result.value = true
+      result.raw = 'true'
+
+      break
+    }
+    // No default
   }
 
   // Iterate compiler node children using raw compiler node
   // (ts-morph getter methods like getExpression() fail on detached nodes)
   try {
-    const compilerNode = (node as unknown as { compilerNode: Record<string, unknown> }).compilerNode
+    const { compilerNode } = node as unknown as { compilerNode: Record<string, unknown> }
     if (compilerNode && typeof compilerNode === 'object') {
       for (const [key, val] of Object.entries(compilerNode)) {
         if (key.startsWith('_')) continue
@@ -869,8 +936,10 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
                 converted.push(convertRawCompilerNode(clause as Record<string, unknown>, depth + 1))
               }
             }
+
             result[estreeName] = converted
           }
+
           continue
         }
 
@@ -893,14 +962,10 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
           typeof (val as Record<string, unknown>).kind === 'number'
         ) {
           const varDecl = val as Record<string, unknown>
-          if (varDecl.name && typeof varDecl.name === 'object') {
-            result[estreeName] = convertRawCompilerNode(
-              varDecl.name as Record<string, unknown>,
-              depth + 1,
-            )
-          } else {
-            result[estreeName] = null
-          }
+          result[estreeName] =
+            varDecl.name && typeof varDecl.name === 'object'
+              ? convertRawCompilerNode(varDecl.name as Record<string, unknown>, depth + 1)
+              : null
         } else if (
           typeof val === 'object' &&
           typeof (val as Record<string, unknown>).kind === 'number'
@@ -924,6 +989,7 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
               converted.push(item)
             }
           }
+
           result[estreeName] = converted
         }
       }
@@ -951,20 +1017,17 @@ function convertCompilerNode(node: Node, depth: number = 0): Record<string, unkn
       result.prefix = true
     }
   }
+
   // PostfixUnaryExpression: always UpdateExpression with prefix:false
   if (kindName === 'PostfixUnaryExpression') {
     result.prefix = false
   }
 
   if (result.type === 'VariableDeclaration') {
-    let rawFlags = compilerNode?.flags
+    const rawFlags = compilerNode?.flags
     if (typeof rawFlags === 'number' && rawFlags & 3) {
       // NodeFlags.Const = 2, NodeFlags.Let = 1
-      if (rawFlags & 2) {
-        result.kind = 'const'
-      } else {
-        result.kind = 'let'
-      }
+      result.kind = rawFlags & 2 ? 'const' : 'let'
     } else {
       const declList = compilerNode?.declarationList as Record<string, unknown> | undefined
       const listFlags = declList?.flags
@@ -994,36 +1057,38 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   const kindName = node.getKindName()
   const estreeType = KIND_NAME_ALIASES[kindName] ?? kindName
   const base: Record<string, unknown> = {
-    type: estreeType,
-    range: [start, end] as [number, number],
-    loc: {
-      start: { line: startPos.line, column: startPos.column },
-      end: { line: endPos.line, column: endPos.column },
-    },
-    start,
     end,
+    loc: {
+      end: { column: endPos.column, line: endPos.line },
+      start: { column: startPos.column, line: startPos.line },
+    },
+    range: [start, end] as [number, number],
+    start,
     text: node.getText(),
+    type: estreeType,
   }
 
   if (estreeType === 'MemberExpression') {
     base.computed = kindName === 'ElementAccessExpression'
   }
+
   if (typeof node.getKind === 'function') {
     if (Node.isFunctionDeclaration(node)) {
       if (node.isAsync()) base.async = true
       if (node.isGenerator()) base.generator = true
     }
+
     if (Node.isFunctionExpression(node)) {
       if (node.isAsync()) base.async = true
       if (node.isGenerator()) base.generator = true
     }
-    if (Node.isArrowFunction(node)) {
-      if (node.isAsync()) base.async = true
-    }
+
+    if (Node.isArrowFunction(node) && node.isAsync()) base.async = true
     if (Node.isPropertyDeclaration(node)) {
       if (node.isStatic()) base.static = true
       if (node.isReadonly()) base.readonly = true
     }
+
     if (Node.isMethodDeclaration(node)) {
       base.method = true
       base.kind = 'method'
@@ -1031,12 +1096,14 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       const acc = getAccessibilityModifier(node)
       if (acc) base.accessibility = acc
     }
+
     if (Node.isConstructorDeclaration(node)) {
       base.kind = 'constructor'
       base.method = true
       const acc = getAccessibilityModifier(node)
       if (acc) base.accessibility = acc
     }
+
     if (Node.isGetAccessorDeclaration(node)) {
       base.kind = 'get'
       base.method = true
@@ -1044,6 +1111,7 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       const acc = getAccessibilityModifier(node)
       if (acc) base.accessibility = acc
     }
+
     if (Node.isSetAccessorDeclaration(node)) {
       base.kind = 'set'
       base.method = true
@@ -1051,32 +1119,30 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       const acc = getAccessibilityModifier(node)
       if (acc) base.accessibility = acc
     }
+
     if (kindName === 'RegularExpressionLiteral') {
       const regexText = node.getText()
       base.raw = regexText
       const regexMatch = regexText.match(/^\/(.*)\/([gimsuvy]*)$/)
       if (regexMatch) {
-        base.regex = { pattern: regexMatch[1], flags: regexMatch[2] }
+        base.regex = { flags: regexMatch[2], pattern: regexMatch[1] }
       }
     }
+
     if (Node.isShorthandPropertyAssignment(node)) {
       base.shorthand = true
     }
-    if (Node.isPropertyAccessExpression(node)) {
-      if (node.hasQuestionDotToken()) base.optional = true
-    }
-    if (Node.isElementAccessExpression(node)) {
-      if (node.hasQuestionDotToken()) base.optional = true
-    }
-    if (Node.isCallExpression(node)) {
-      if (node.hasQuestionDotToken()) base.optional = true
-    }
+
+    if (Node.isPropertyAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
+    if (Node.isElementAccessExpression(node) && node.hasQuestionDotToken()) base.optional = true
+    if (Node.isCallExpression(node) && node.hasQuestionDotToken()) base.optional = true
     // Extract exportKind/importKind for type-only imports/exports
     if (Node.isExportDeclaration(node)) {
       try {
         if (node.isTypeOnly()) base.exportKind = 'type'
       } catch {}
     }
+
     if (Node.isImportDeclaration(node)) {
       try {
         if (node.isTypeOnly()) base.importKind = 'type'
@@ -1091,18 +1157,14 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     for (const [key, val] of Object.entries(enhanced)) {
       if (!(key in base)) {
         // Convert operator tokens
-        if (key === 'operatorToken' || key === 'operator') {
-          base[key] = convertOperatorToken(val)
-        } else {
-          base[key] = val
-        }
+        base[key] = key === 'operatorToken' || key === 'operator' ? convertOperatorToken(val) : val
       }
     }
   }
 
   // Detect parameter properties for TSParameterProperty synthesis
   let isParamProp = false
-  let paramPropAccessibility: string | null = null
+  let paramPropAccessibility: null | string = null
   let paramPropReadonly = false
   let paramPropOverride = false
   if (base.type === 'Parameter') {
@@ -1121,8 +1183,8 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
 
   // Synthesize RestElement / AssignmentPattern for function parameters
   if (base.type === 'Parameter') {
-    const hasRest = base.dotDotDotToken != null
-    const hasInit = base.init != null
+    const hasRest = base.dotDotDotToken !== null
+    const hasInit = base.init !== null
     if (hasRest) {
       base.type = 'RestElement'
       base.argument = base.name
@@ -1146,12 +1208,13 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
       // Simple parameter — flatten to the name node (Identifier / ObjectPattern / ArrayPattern)
       const nameNode = base.name as Record<string, unknown> | undefined
       if (nameNode && typeof nameNode === 'object') {
-        const saved = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+        const saved = { end: base.end, loc: base.loc, range: base.range, start: base.start }
         for (const key of Object.keys(base)) {
           delete base[key]
         }
+
         Object.assign(base, nameNode)
-        if (nameNode.range == null) {
+        if (nameNode.range === null) {
           base.range = saved.range
           base.loc = saved.loc
           base.start = saved.start
@@ -1164,10 +1227,11 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   // Wrap parameter properties in TSParameterProperty node
   if (isParamProp) {
     const inner = { ...base }
-    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+    const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
     for (const key of Object.keys(base)) {
       delete base[key]
     }
+
     base.type = 'TSParameterProperty'
     base.parameter = inner
     base.accessibility = paramPropAccessibility
@@ -1188,15 +1252,15 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     const isAsync = base.async === true
     const isGenerator = base.generator === true
     base.value = {
-      type: 'FunctionExpression',
-      id: null,
-      params: funcParams ?? [],
-      body: funcBody ?? { type: 'BlockStatement', body: [] },
       async: isAsync,
+      body: funcBody ?? { body: [], type: 'BlockStatement' },
       generator: isGenerator,
-      range: base.range,
+      id: null,
       loc: base.loc,
+      params: funcParams ?? [],
       parent: base,
+      range: base.range,
+      type: 'FunctionExpression',
     }
     // ESTree: body/params live on .value only
     delete base.body
@@ -1209,10 +1273,11 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
     (base.type === 'MemberExpression' || base.type === 'CallExpression')
   ) {
     const inner = { ...base }
-    const savedRange = { range: base.range, loc: base.loc, start: base.start, end: base.end }
+    const savedRange = { end: base.end, loc: base.loc, range: base.range, start: base.start }
     for (const key of Object.keys(base)) {
       delete base[key]
     }
+
     base.type = 'ChainExpression'
     base.expression = inner
     base.range = savedRange.range
@@ -1224,66 +1289,87 @@ function nodeToGeneric(node: Node): Record<string, unknown> {
   return base
 }
 
-function convertSeverity(severity: 'off' | 'warn' | 'error'): 'error' | 'warning' | 'info' {
+function convertSeverity(severity: 'error' | 'off' | 'warn'): 'error' | 'info' | 'warning' {
   switch (severity) {
-    case 'error':
+    case 'error': {
       return 'error'
-    case 'warn':
-      return 'warning'
-    case 'off':
+    }
+
+    case 'off': {
       return 'info'
+    }
+
+    case 'warn': {
+      return 'warning'
+    }
   }
 }
 
 function convertMeta(pluginMeta: PluginRuleDefinition['meta'], ruleId: string): RuleMeta {
   return {
-    name: ruleId,
-    description: pluginMeta.docs?.description ?? pluginMeta.type,
     category: mapCategory(pluginMeta.docs?.category),
-    recommended: pluginMeta.docs?.recommended ?? false,
     deprecated: pluginMeta.deprecated,
-    replacedBy: pluginMeta.replacedBy?.[0],
-    severity: convertSeverity(pluginMeta.severity),
+    description: pluginMeta.docs?.description ?? pluginMeta.type,
+    docs: pluginMeta.docs?.url
+      ? { description: pluginMeta.docs?.description, url: pluginMeta.docs.url }
+      : undefined,
     fixable:
       pluginMeta.fixable === 'code'
         ? 'code'
         : pluginMeta.fixable === 'whitespace'
           ? 'whitespace'
           : undefined,
-    docs: pluginMeta.docs?.url
-      ? { description: pluginMeta.docs?.description, url: pluginMeta.docs.url }
-      : undefined,
+    name: ruleId,
+    recommended: pluginMeta.docs?.recommended ?? false,
+    replacedBy: pluginMeta.replacedBy?.[0],
+    severity: convertSeverity(pluginMeta.severity),
   }
 }
 
 function mapCategory(category: string | undefined): RuleMeta['category'] {
   switch (category?.toLowerCase()) {
-    case 'performance':
-      return 'performance'
-    case 'security':
-      return 'security'
-    case 'style':
-      return 'style'
-    case 'correctness':
-      return 'correctness'
-    case 'complexity':
+    case 'complexity': {
       return 'complexity'
-    case 'patterns':
-      return 'patterns'
-    case 'dependencies':
+    }
+
+    case 'correctness': {
+      return 'correctness'
+    }
+
+    case 'dependencies': {
       return 'dependencies'
-    default:
+    }
+
+    case 'patterns': {
+      return 'patterns'
+    }
+
+    case 'performance': {
+      return 'performance'
+    }
+
+    case 'security': {
+      return 'security'
+    }
+
+    case 'style': {
       return 'style'
+    }
+
+    default: {
+      return 'style'
+    }
   }
 }
 
 function setParentRefs(
   node: Record<string, unknown>,
-  parent: Record<string, unknown> | null = null,
+  parent: null | Record<string, unknown> = null,
 ): void {
   if (parent !== null) {
     node.parent = parent
   }
+
   for (const val of Object.values(node)) {
     if (val && typeof val === 'object') {
       if (Array.isArray(val)) {
@@ -1306,60 +1392,226 @@ function setParentRefs(
 
 export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string): RuleDefinition {
   return {
-    meta: convertMeta(pluginRule.meta, ruleId),
-    defaultOptions: {},
-
     create(_options: RuleOptions) {
       let violations: RuleViolation[] = []
-      let sourceFile: SourceFile | null = null
+      let sourceFile: null | SourceFile = null
       let sourceText = ''
 
       const convertedNodes = new WeakMap<Node, Record<string, unknown>>()
 
       const pluginContext: PluginRuleContext = {
-        logger: silentLogger,
         config: defaultConfig,
-        workspaceRoot: process.cwd(),
-        getSource: () => sourceText,
-        getFilePath: () => sourceFile?.getFilePath() ?? '',
         getAST: () => null,
-        getTokens: () => [],
         getComments: () => [],
-        report: (descriptor: ReportDescriptor) => {
+        getFilePath: () => sourceFile?.getFilePath() ?? '',
+        getSource: () => sourceText,
+        getTokens: () => [],
+        logger: silentLogger,
+        report(descriptor: ReportDescriptor) {
           const loc = descriptor.loc ?? {
-            start: { line: 1, column: 0 },
-            end: { line: 1, column: 1 },
+            end: { column: 1, line: 1 },
+            start: { column: 0, line: 1 },
           }
 
           violations.push({
+            filePath: sourceFile?.getFilePath() ?? '',
+            message: descriptor.message,
+            range: {
+              end: { column: loc.end.column, line: loc.end.line },
+              start: { column: loc.start.column, line: loc.start.line },
+            },
             ruleId,
             severity: convertSeverity(pluginRule.meta.severity),
-            message: descriptor.message,
-            filePath: sourceFile?.getFilePath() ?? '',
-            range: {
-              start: { line: loc.start.line, column: loc.start.column },
-              end: { line: loc.end.line, column: loc.end.column },
-            },
             suggestion: descriptor.suggest?.[0]?.desc,
           })
         },
+        workspaceRoot: process.cwd(),
       }
 
       const pluginVisitor = pluginRule.create(pluginContext)
 
       const visitor: ASTVisitor = {
-        visitSourceFile(node, _context: VisitorContext) {
-          sourceFile = node
-          sourceText = node.getFullText()
-          violations = []
-
+        exitNode(node: Node, _context: VisitorContext) {
+          const kindName = node.getKindName()
           const genericNode = nodeToGeneric(node)
-          setParentRefs(genericNode)
-          convertedNodes.set(node, genericNode)
 
-          const handler = pluginVisitor['SourceFile'] ?? pluginVisitor['Program']
-          if (handler) {
-            handler(genericNode)
+          // Set parent references within the converted subtree
+          setParentRefs(genericNode)
+
+          // Link to parent from previously converted ancestor
+          try {
+            const tsParent = node.getParent()
+            if (tsParent && convertedNodes.has(tsParent)) {
+              genericNode.parent = convertedNodes.get(tsParent)!
+            }
+          } catch {}
+
+          if (
+            kindName === 'BinaryExpression' &&
+            ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'AssignmentExpression'
+          }
+
+          if (
+            kindName === 'BinaryExpression' &&
+            LOGICAL_OPERATORS.has(genericNode.operator as string)
+          ) {
+            genericNode.type = 'LogicalExpression'
+          }
+
+          if (kindName === 'PrefixUnaryExpression') {
+            const op = genericNode.operator as string
+            if (op === '++' || op === '--') {
+              genericNode.type = 'UpdateExpression'
+              genericNode.prefix = true
+            } else {
+              genericNode.type = 'UnaryExpression'
+            }
+          }
+
+          if (kindName === 'PostfixUnaryExpression') {
+            genericNode.prefix = false
+          }
+
+          // Dispatch exit handler by ts-morph kind name
+          const exitHandler = pluginVisitor[kindName + ':exit']
+          if (exitHandler) {
+            exitHandler(genericNode)
+          }
+
+          // Dispatch by ESTree-compatible type name if different
+          const estreeType = genericNode.type as string
+          if (estreeType && estreeType !== kindName) {
+            const estreeExitHandler = pluginVisitor[estreeType + ':exit']
+            if (estreeExitHandler) {
+              estreeExitHandler(genericNode)
+            }
+          }
+
+          // ImportDeclaration → dispatch specifier exit handlers
+          if (kindName === 'ImportDeclaration') {
+            const specs = (genericNode as Record<string, unknown>).specifiers as unknown[]
+            if (Array.isArray(specs)) {
+              for (const spec of specs) {
+                if (spec && typeof spec === 'object') {
+                  const specType = (spec as Record<string, unknown>).type as string
+                  if (specType) {
+                    const specExitHandler = pluginVisitor[specType + ':exit']
+                    if (specExitHandler) {
+                      specExitHandler(spec)
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // === Synthetic ClassBody exit dispatch ===
+          if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
+            const { body } = genericNode
+            if (Array.isArray(body)) {
+              const classBodyNode: Record<string, unknown> = {
+                body,
+                loc: genericNode.loc,
+                parent: genericNode,
+                range: genericNode.range,
+                type: 'ClassBody',
+              }
+              const classBodyExitHandler = pluginVisitor['ClassBody:exit']
+              if (classBodyExitHandler) {
+                classBodyExitHandler(classBodyNode)
+              }
+            }
+          }
+
+          // === Export wrapper exit dispatch ===
+          // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration exit
+          if (EXPORTABLE_KINDS.has(kindName)) {
+            const { isDefault, isExported } = getExportInfo(node)
+            if (isExported) {
+              const exportWrapper: Record<string, unknown> = {
+                declaration: genericNode,
+                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
+                ...(isDefault ? {} : { specifiers: [] }),
+                loc: genericNode.loc,
+                range: genericNode.range,
+                source: null,
+              }
+              const exportType = exportWrapper.type as string
+              const exportExitHandler = pluginVisitor[exportType + ':exit']
+              if (exportExitHandler) {
+                exportExitHandler(exportWrapper)
+              }
+            }
+          }
+
+          // ExportDeclaration → dispatch ExportNamedDeclaration:exit or ExportAllDeclaration:exit
+          if (kindName === 'ExportDeclaration') {
+            const exportSpecs = (genericNode as Record<string, unknown>).specifiers as
+              | undefined
+              | unknown[]
+            const specsToUse = exportSpecs && exportSpecs.length > 0 ? exportSpecs : []
+            const sourceValue = (genericNode.source as string) ?? null
+            const sourceLiteral = sourceValue
+              ? {
+                  loc: genericNode.loc,
+                  range: genericNode.range,
+                  type: 'Literal',
+                  value: sourceValue,
+                }
+              : null
+
+            if (specsToUse.length === 0 && sourceValue) {
+              const exportAllExitHandler = pluginVisitor['ExportAllDeclaration:exit']
+              if (exportAllExitHandler) {
+                const wrapper: Record<string, unknown> = {
+                  exported: null,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  loc: genericNode.loc,
+                  range: genericNode.range,
+                  source: sourceLiteral,
+                  type: 'ExportAllDeclaration',
+                }
+                exportAllExitHandler(wrapper)
+              }
+            } else {
+              const exportNamedExitHandler = pluginVisitor['ExportNamedDeclaration:exit']
+              if (exportNamedExitHandler) {
+                const wrapper: Record<string, unknown> = {
+                  declaration: null,
+                  exportKind: genericNode.exportKind ?? 'value',
+                  loc: genericNode.loc,
+                  range: genericNode.range,
+                  source: sourceLiteral,
+                  specifiers: specsToUse,
+                  type: 'ExportNamedDeclaration',
+                }
+                exportNamedExitHandler(wrapper)
+              }
+            }
+          }
+
+          // ExportAssignment → dispatch ExportDefaultDeclaration:exit
+          if (kindName === 'ExportAssignment') {
+            const defWrapper: Record<string, unknown> = {
+              declaration: genericNode.expression ?? genericNode,
+              loc: genericNode.loc,
+              range: genericNode.range,
+              type: 'ExportDefaultDeclaration',
+            }
+            const defExitHandler = pluginVisitor['ExportDefaultDeclaration:exit']
+            if (defExitHandler) {
+              defExitHandler(defWrapper)
+            }
+          }
+
+          // SourceFile exit → also dispatch Program:exit
+          if (Node.isSourceFile(node)) {
+            const programExitHandler = pluginVisitor['Program:exit']
+            if (programExitHandler) {
+              programExitHandler(genericNode)
+            }
           }
         },
 
@@ -1410,21 +1662,22 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
               genericNode.type = 'UnaryExpression'
             }
           }
+
           if (kindName === 'PostfixUnaryExpression') {
             genericNode.prefix = false
           }
 
           // === Export wrapper dispatch (before declaration handler for ESTree traversal order) ===
           if (EXPORTABLE_KINDS.has(kindName)) {
-            const { isExported, isDefault } = getExportInfo(node)
+            const { isDefault, isExported } = getExportInfo(node)
             if (isExported) {
               const exportWrapper: Record<string, unknown> = {
-                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
                 declaration: genericNode,
+                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
                 ...(isDefault ? {} : { specifiers: [] }),
-                source: null,
-                range: genericNode.range,
                 loc: genericNode.loc,
+                range: genericNode.range,
+                source: null,
               }
               const exportType = exportWrapper.type as string
               const exportHandler = pluginVisitor[exportType]
@@ -1451,21 +1704,22 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
 
           // === Synthetic ClassBody dispatch ===
           if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
-            const body = genericNode.body
+            const { body } = genericNode
             if (Array.isArray(body)) {
               const classBodyNode: Record<string, unknown> = {
-                type: 'ClassBody',
                 body,
-                range: genericNode.range,
                 loc: genericNode.loc,
                 parent: genericNode,
+                range: genericNode.range,
+                type: 'ClassBody',
               }
               for (const member of body) {
                 if (member && typeof member === 'object') {
                   ;(member as Record<string, unknown>).parent = classBodyNode
                 }
               }
-              const classBodyHandler = pluginVisitor['ClassBody']
+
+              const classBodyHandler = pluginVisitor.ClassBody
               if (classBodyHandler) {
                 classBodyHandler(classBodyNode)
               }
@@ -1478,40 +1732,41 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             if (exportSpecs.length > 0) {
               genericNode.specifiers = exportSpecs
             }
+
             const sourceValue = (genericNode.source as string) ?? null
             const sourceLiteral = sourceValue
               ? {
+                  loc: genericNode.loc,
+                  range: genericNode.range,
                   type: 'Literal',
                   value: sourceValue,
-                  range: genericNode.range,
-                  loc: genericNode.loc,
                 }
               : null
 
             if (exportSpecs.length === 0 && sourceValue) {
-              const exportAllHandler = pluginVisitor['ExportAllDeclaration']
+              const exportAllHandler = pluginVisitor.ExportAllDeclaration
               if (exportAllHandler) {
                 const wrapper: Record<string, unknown> = {
-                  type: 'ExportAllDeclaration',
-                  source: sourceLiteral,
                   exported: null,
                   exportKind: genericNode.exportKind ?? 'value',
-                  range: genericNode.range,
                   loc: genericNode.loc,
+                  range: genericNode.range,
+                  source: sourceLiteral,
+                  type: 'ExportAllDeclaration',
                 }
                 exportAllHandler(wrapper)
               }
             } else {
-              const exportNamedHandler = pluginVisitor['ExportNamedDeclaration']
+              const exportNamedHandler = pluginVisitor.ExportNamedDeclaration
               if (exportNamedHandler) {
                 const wrapper: Record<string, unknown> = {
-                  type: 'ExportNamedDeclaration',
                   declaration: null,
-                  specifiers: exportSpecs,
-                  source: sourceLiteral,
                   exportKind: genericNode.exportKind ?? 'value',
-                  range: genericNode.range,
                   loc: genericNode.loc,
+                  range: genericNode.range,
+                  source: sourceLiteral,
+                  specifiers: exportSpecs,
+                  type: 'ExportNamedDeclaration',
                 }
                 exportNamedHandler(wrapper)
               }
@@ -1521,12 +1776,12 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           // ExportAssignment → dispatch as ExportDefaultDeclaration
           if (kindName === 'ExportAssignment') {
             const defWrapper: Record<string, unknown> = {
-              type: 'ExportDefaultDeclaration',
               declaration: genericNode.expression ?? genericNode,
-              range: genericNode.range,
               loc: genericNode.loc,
+              range: genericNode.range,
+              type: 'ExportDefaultDeclaration',
             }
-            const defHandler = pluginVisitor['ExportDefaultDeclaration']
+            const defHandler = pluginVisitor.ExportDefaultDeclaration
             if (defHandler) {
               defHandler(defWrapper)
             }
@@ -1549,203 +1804,38 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             }
           }
 
-          const genericHandler = pluginVisitor['*'] ?? pluginVisitor['Any']
+          const genericHandler = pluginVisitor['*'] ?? pluginVisitor.Any
           if (genericHandler) {
             genericHandler(genericNode)
           }
         },
 
-        exitNode(node: Node, _context: VisitorContext) {
-          const kindName = node.getKindName()
+        visitSourceFile(node, _context: VisitorContext) {
+          sourceFile = node
+          sourceText = node.getFullText()
+          violations = []
+
           const genericNode = nodeToGeneric(node)
-
-          // Set parent references within the converted subtree
           setParentRefs(genericNode)
+          convertedNodes.set(node, genericNode)
 
-          // Link to parent from previously converted ancestor
-          try {
-            const tsParent = node.getParent()
-            if (tsParent && convertedNodes.has(tsParent)) {
-              genericNode.parent = convertedNodes.get(tsParent)!
-            }
-          } catch {}
-
-          if (
-            kindName === 'BinaryExpression' &&
-            ASSIGNMENT_OPERATORS.has(genericNode.operator as string)
-          ) {
-            genericNode.type = 'AssignmentExpression'
-          }
-
-          if (
-            kindName === 'BinaryExpression' &&
-            LOGICAL_OPERATORS.has(genericNode.operator as string)
-          ) {
-            genericNode.type = 'LogicalExpression'
-          }
-
-          if (kindName === 'PrefixUnaryExpression') {
-            const op = genericNode.operator as string
-            if (op === '++' || op === '--') {
-              genericNode.type = 'UpdateExpression'
-              genericNode.prefix = true
-            } else {
-              genericNode.type = 'UnaryExpression'
-            }
-          }
-          if (kindName === 'PostfixUnaryExpression') {
-            genericNode.prefix = false
-          }
-
-          // Dispatch exit handler by ts-morph kind name
-          const exitHandler = pluginVisitor[kindName + ':exit']
-          if (exitHandler) {
-            exitHandler(genericNode)
-          }
-
-          // Dispatch by ESTree-compatible type name if different
-          const estreeType = genericNode.type as string
-          if (estreeType && estreeType !== kindName) {
-            const estreeExitHandler = pluginVisitor[estreeType + ':exit']
-            if (estreeExitHandler) {
-              estreeExitHandler(genericNode)
-            }
-          }
-
-          // ImportDeclaration → dispatch specifier exit handlers
-          if (kindName === 'ImportDeclaration') {
-            const specs = (genericNode as Record<string, unknown>).specifiers as unknown[]
-            if (Array.isArray(specs)) {
-              for (const spec of specs) {
-                if (spec && typeof spec === 'object') {
-                  const specType = (spec as Record<string, unknown>).type as string
-                  if (specType) {
-                    const specExitHandler = pluginVisitor[specType + ':exit']
-                    if (specExitHandler) {
-                      specExitHandler(spec)
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          // === Synthetic ClassBody exit dispatch ===
-          if (kindName === 'ClassDeclaration' || kindName === 'ClassExpression') {
-            const body = genericNode.body
-            if (Array.isArray(body)) {
-              const classBodyNode: Record<string, unknown> = {
-                type: 'ClassBody',
-                body,
-                range: genericNode.range,
-                loc: genericNode.loc,
-                parent: genericNode,
-              }
-              const classBodyExitHandler = pluginVisitor['ClassBody:exit']
-              if (classBodyExitHandler) {
-                classBodyExitHandler(classBodyNode)
-              }
-            }
-          }
-
-          // === Export wrapper exit dispatch ===
-          // Declarations with export modifier → synthetic ExportNamedDeclaration/ExportDefaultDeclaration exit
-          if (EXPORTABLE_KINDS.has(kindName)) {
-            const { isExported, isDefault } = getExportInfo(node)
-            if (isExported) {
-              const exportWrapper: Record<string, unknown> = {
-                type: isDefault ? 'ExportDefaultDeclaration' : 'ExportNamedDeclaration',
-                declaration: genericNode,
-                ...(isDefault ? {} : { specifiers: [] }),
-                source: null,
-                range: genericNode.range,
-                loc: genericNode.loc,
-              }
-              const exportType = exportWrapper.type as string
-              const exportExitHandler = pluginVisitor[exportType + ':exit']
-              if (exportExitHandler) {
-                exportExitHandler(exportWrapper)
-              }
-            }
-          }
-
-          // ExportDeclaration → dispatch ExportNamedDeclaration:exit or ExportAllDeclaration:exit
-          if (kindName === 'ExportDeclaration') {
-            const exportSpecs = (genericNode as Record<string, unknown>).specifiers as
-              | unknown[]
-              | undefined
-            const specsToUse = exportSpecs && exportSpecs.length > 0 ? exportSpecs : []
-            const sourceValue = (genericNode.source as string) ?? null
-            const sourceLiteral = sourceValue
-              ? {
-                  type: 'Literal',
-                  value: sourceValue,
-                  range: genericNode.range,
-                  loc: genericNode.loc,
-                }
-              : null
-
-            if (specsToUse.length === 0 && sourceValue) {
-              const exportAllExitHandler = pluginVisitor['ExportAllDeclaration:exit']
-              if (exportAllExitHandler) {
-                const wrapper: Record<string, unknown> = {
-                  type: 'ExportAllDeclaration',
-                  source: sourceLiteral,
-                  exported: null,
-                  exportKind: genericNode.exportKind ?? 'value',
-                  range: genericNode.range,
-                  loc: genericNode.loc,
-                }
-                exportAllExitHandler(wrapper)
-              }
-            } else {
-              const exportNamedExitHandler = pluginVisitor['ExportNamedDeclaration:exit']
-              if (exportNamedExitHandler) {
-                const wrapper: Record<string, unknown> = {
-                  type: 'ExportNamedDeclaration',
-                  declaration: null,
-                  specifiers: specsToUse,
-                  source: sourceLiteral,
-                  exportKind: genericNode.exportKind ?? 'value',
-                  range: genericNode.range,
-                  loc: genericNode.loc,
-                }
-                exportNamedExitHandler(wrapper)
-              }
-            }
-          }
-
-          // ExportAssignment → dispatch ExportDefaultDeclaration:exit
-          if (kindName === 'ExportAssignment') {
-            const defWrapper: Record<string, unknown> = {
-              type: 'ExportDefaultDeclaration',
-              declaration: genericNode.expression ?? genericNode,
-              range: genericNode.range,
-              loc: genericNode.loc,
-            }
-            const defExitHandler = pluginVisitor['ExportDefaultDeclaration:exit']
-            if (defExitHandler) {
-              defExitHandler(defWrapper)
-            }
-          }
-
-          // SourceFile exit → also dispatch Program:exit
-          if (Node.isSourceFile(node)) {
-            const programExitHandler = pluginVisitor['Program:exit']
-            if (programExitHandler) {
-              programExitHandler(genericNode)
-            }
+          const handler = pluginVisitor.SourceFile ?? pluginVisitor.Program
+          if (handler) {
+            handler(genericNode)
           }
         },
       }
 
       return {
-        visitor,
-        onComplete: () => {
+        onComplete() {
           return violations
         },
+        visitor,
       }
     },
+    defaultOptions: {},
+
+    meta: convertMeta(pluginRule.meta, ruleId),
   }
 }
 

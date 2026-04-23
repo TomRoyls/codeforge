@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isVariableDeclarator(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'VariableDeclarator'
 }
@@ -13,6 +15,7 @@ function hasTypeAnnotation(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   const typeAnnotation = n.typeAnnotation as Record<string, unknown> | undefined
 
@@ -33,6 +36,7 @@ function getInitType(node: unknown): string | undefined {
   if (!node || typeof node !== 'object') {
     return undefined
   }
+
   const n = node as Record<string, unknown>
   const init = n.init as Record<string, unknown> | undefined
 
@@ -43,7 +47,7 @@ function getInitType(node: unknown): string | undefined {
   const initType = init.type as string | undefined
 
   if (initType === 'Literal' || initType === 'StringLiteral' || initType === 'NumericLiteral') {
-    const value = init.value
+    const {value} = init
     if (typeof value === 'string') return 'string'
     if (typeof value === 'number') return 'number'
     if (typeof value === 'boolean') return 'boolean'
@@ -51,6 +55,7 @@ function getInitType(node: unknown): string | undefined {
     if (initType === 'StringLiteral') return 'string'
     if (initType === 'NumericLiteral') return 'number'
   }
+
   if (initType === 'BooleanLiteral') {
     return 'boolean'
   }
@@ -59,19 +64,6 @@ function getInitType(node: unknown): string | undefined {
 }
 
 export const noInferrableTypesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow explicit type declarations in variables where the type can be easily inferred from the initial value.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-inferrable-types',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       VariableDeclarator(node: unknown): void {
@@ -88,12 +80,25 @@ export const noInferrableTypesRule: RuleDefinition = {
         if (initType) {
           const location = extractLocation(node)
           context.report({
-            message: `Type '${initType}' is inferrable from the initial value. Remove the type annotation for cleaner code.`,
             loc: location,
+            message: `Type '${initType}' is inferrable from the initial value. Remove the type annotation for cleaner code.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow explicit type declarations in variables where the type can be easily inferred from the initial value.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-inferrable-types',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

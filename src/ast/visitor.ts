@@ -1,89 +1,89 @@
 import {
-  Node,
-  type SourceFile,
-  type FunctionDeclaration,
-  type FunctionExpression,
   type ArrowFunction,
-  type MethodDeclaration,
-  type ConstructorDeclaration,
-  type GetAccessorDeclaration,
-  type SetAccessorDeclaration,
-  type IfStatement,
-  type ForStatement,
-  type ForInStatement,
-  type ForOfStatement,
-  type WhileStatement,
-  type DoStatement,
-  type SwitchStatement,
+  type BinaryExpression,
   type CaseClause,
-  type DefaultClause,
   type CatchClause,
   type ConditionalExpression,
-  type BinaryExpression,
+  type ConstructorDeclaration,
+  type DefaultClause,
+  type DoStatement,
+  type ForInStatement,
+  type ForOfStatement,
+  type ForStatement,
+  type FunctionDeclaration,
+  type FunctionExpression,
+  type GetAccessorDeclaration,
+  type IfStatement,
+  type MethodDeclaration,
+  Node,
+  type SetAccessorDeclaration,
+  type SourceFile,
+  type SwitchStatement,
+  type WhileStatement,
 } from 'ts-morph'
 
 export type FunctionLikeNode =
+  | ArrowFunction
+  | ConstructorDeclaration
   | FunctionDeclaration
   | FunctionExpression
-  | ArrowFunction
-  | MethodDeclaration
-  | ConstructorDeclaration
   | GetAccessorDeclaration
+  | MethodDeclaration
   | SetAccessorDeclaration
 
 export type BranchingNode =
-  | IfStatement
-  | ForStatement
-  | ForInStatement
-  | ForOfStatement
-  | WhileStatement
-  | DoStatement
   | CaseClause
   | CatchClause
   | ConditionalExpression
+  | DoStatement
+  | ForInStatement
+  | ForOfStatement
+  | ForStatement
+  | IfStatement
+  | WhileStatement
 
 export interface Position {
-  line: number
   column: number
+  line: number
 }
 
 export interface Range {
-  start: Position
   end: Position
+  start: Position
 }
 
 export interface RuleViolation {
-  ruleId: string
-  severity: 'error' | 'warning' | 'info'
-  message: string
   filePath: string
+  message: string
   range: Range
+  ruleId: string
+  severity: 'error' | 'info' | 'warning'
   suggestion?: string
 }
 
 export interface VisitorContext {
-  sourceFile: SourceFile
-  depth: number
-  parent: Node | undefined
   addViolation: (violation: RuleViolation) => void
+  depth: number
   getFilePath: () => string
+  parent: Node | undefined
+  sourceFile: SourceFile
 }
 
 export interface ASTVisitor {
-  visitNode?: (node: Node, context: VisitorContext) => void
   exitNode?: (node: Node, context: VisitorContext) => void
-  visitFunction?: (node: FunctionLikeNode, context: VisitorContext) => void
-  visitSourceFile?: (node: SourceFile, context: VisitorContext) => void
-  visitIfStatement?: (node: IfStatement, context: VisitorContext) => void
-  visitLoop?: (
-    node: ForStatement | ForInStatement | ForOfStatement | WhileStatement | DoStatement,
-    context: VisitorContext,
-  ) => void
-  visitSwitch?: (node: SwitchStatement, context: VisitorContext) => void
+  visitBinaryExpression?: (node: BinaryExpression, context: VisitorContext) => void
   visitCase?: (node: CaseClause | DefaultClause, context: VisitorContext) => void
   visitCatch?: (node: CatchClause, context: VisitorContext) => void
   visitConditional?: (node: ConditionalExpression, context: VisitorContext) => void
-  visitBinaryExpression?: (node: BinaryExpression, context: VisitorContext) => void
+  visitFunction?: (node: FunctionLikeNode, context: VisitorContext) => void
+  visitIfStatement?: (node: IfStatement, context: VisitorContext) => void
+  visitLoop?: (
+    node: DoStatement | ForInStatement | ForOfStatement | ForStatement | WhileStatement,
+    context: VisitorContext,
+  ) => void
+  visitNode?: (node: Node, context: VisitorContext) => void
+  visitSourceFile?: (node: SourceFile, context: VisitorContext) => void
+  visitSwitch?: (node: SwitchStatement, context: VisitorContext) => void
 }
 
 export function getNodePosition(node: Node): Position {
@@ -91,8 +91,8 @@ export function getNodePosition(node: Node): Position {
   const start = node.getStart()
   const position = sourceFile.getLineAndColumnAtPos(start)
   return {
-    line: position.line,
     column: position.column,
+    line: position.line,
   }
 }
 
@@ -103,13 +103,13 @@ export function getNodeRange(node: Node): Range {
   const startPosition = sourceFile.getLineAndColumnAtPos(start)
   const endPosition = sourceFile.getLineAndColumnAtPos(end)
   return {
-    start: {
-      line: startPosition.line,
-      column: startPosition.column,
-    },
     end: {
-      line: endPosition.line,
       column: endPosition.column,
+      line: endPosition.line,
+    },
+    start: {
+      column: startPosition.column,
+      line: startPosition.line,
     },
   }
 }
@@ -139,6 +139,7 @@ export function getFunctionName(node: FunctionLikeNode): string {
     if (Node.isClassDeclaration(parent)) {
       return `${parent.getName() ?? 'Anonymous'}.${name}`
     }
+
     return name
   }
 
@@ -147,12 +148,14 @@ export function getFunctionName(node: FunctionLikeNode): string {
     if (Node.isClassDeclaration(parent)) {
       return `constructor (${parent.getName() ?? 'Anonymous'})`
     }
+
     return 'constructor'
   }
 
   if (Node.isGetAccessorDeclaration(node)) {
     return `get ${node.getName()}`
   }
+
   if (Node.isSetAccessorDeclaration(node)) {
     return `set ${node.getName()}`
   }
@@ -165,6 +168,7 @@ export function getFunctionName(node: FunctionLikeNode): string {
         return nameNode.getText()
       }
     }
+
     return 'arrow function'
   }
 
@@ -179,13 +183,13 @@ export function traverseAST(
   const filePath = sourceFile.getFilePath()
 
   const createChildContext = (parent: Node, currentDepth: number): VisitorContext => ({
-    sourceFile,
-    depth: currentDepth,
-    parent,
-    addViolation: (violation: RuleViolation) => {
+    addViolation(violation: RuleViolation) {
       violations.push(violation)
     },
+    depth: currentDepth,
     getFilePath: () => filePath,
+    parent,
+    sourceFile,
   })
 
   function visit(node: Node, depth: number): void {
@@ -243,13 +247,13 @@ export function traverseASTMultiple(
   const filePath = sourceFile.getFilePath()
 
   const createChildContext = (parent: Node, currentDepth: number): VisitorContext => ({
-    sourceFile,
-    depth: currentDepth,
-    parent,
-    addViolation: (violation: RuleViolation) => {
+    addViolation(violation: RuleViolation) {
       violations.push(violation)
     },
+    depth: currentDepth,
     getFilePath: () => filePath,
+    parent,
+    sourceFile,
   })
 
   function visit(node: Node, depth: number): void {
@@ -315,4 +319,6 @@ export function traverseASTMultiple(
   visit(sourceFile, 0)
 }
 
-export { Node }
+
+
+export {Node} from 'ts-morph'

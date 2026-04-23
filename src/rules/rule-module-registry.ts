@@ -1,76 +1,55 @@
-import type { RuleDefinition } from './types.js'
 import type { RuleDefinition as PluginRuleDefinition } from '../plugins/types.js'
+import type { RuleDefinition } from './types.js'
+
 import { adaptPluginRule } from './adapter.js'
 
-export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>> = {
-  // Best practices module
-  'no-magic-numbers': () =>
-    import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
-  'prefer-const-assertions': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'prefer-const-assertions': m.preferConstAssertionsRule,
-    })),
-  'no-unnecessary-type-assertion': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'no-unnecessary-type-assertion': m.noUnnecessaryTypeAssertionRule,
-    })),
-  'strict-boolean-expressions': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'strict-boolean-expressions': m.strictBooleanExpressionsRule,
-    })),
-  'no-console': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
-    })),
+const patternsModule = () => import('./patterns/index.js')
 
+export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>> = {
+  'consistent-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
+    })),
+  'explicit-return-type': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'explicit-return-type': m.explicitReturnTypeRule,
+    })),
   // Complexity module
   'max-complexity': () =>
     import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
   'max-depth': () => import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
   'max-lines': () => import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
+
   'max-lines-per-function': () =>
     import('./complexity/index.js').then((m) => ({
       'max-lines-per-function': m.maxLinesPerFunctionRule,
     })),
   'max-params': () =>
     import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
-
   // Performance module
   'no-await-in-loop': () =>
     import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
-  'no-sync-in-async': () =>
-    import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
-  'prefer-object-spread': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-object-spread': adaptPluginRule(m.preferObjectSpreadRule, 'prefer-object-spread'),
+  'no-barrel-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
     })),
-  'prefer-optional-chain': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-optional-chain': adaptPluginRule(m.preferOptionalChainRule, 'prefer-optional-chain'),
-    })),
-  'prefer-math-trunc': () =>
-    import('./performance/index.js').then((m) => ({
-      'prefer-math-trunc': adaptPluginRule(m.preferMathTruncRule, 'prefer-math-trunc'),
-    })),
-
   // Dependencies module
   'no-circular-deps': () =>
     import('./dependencies/index.js').then((m) => ({
       'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
     })),
-  'no-unused-exports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-unused-exports': adaptPluginRule(m.noUnusedExportsRule, 'no-unused-exports'),
-    })),
-  'consistent-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
-    })),
-  'no-barrel-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
-    })),
 
+  'no-console': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
+    })),
+  'no-constant-binary-expression': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-constant-binary-expression': adaptPluginRule(
+        m.noConstantBinaryExpressionRule,
+        'no-constant-binary-expression',
+      ),
+    })),
   // Security module
   'no-deprecated-api': () =>
     import('./security/index.js').then((m) => ({
@@ -80,20 +59,50 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./security/index.js').then((m) => ({
       'no-dynamic-delete': adaptPluginRule(m.noDynamicDeleteRule, 'no-dynamic-delete'),
     })),
+  // Correctness continued
+  'no-empty-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
+    })),
+
+  'no-empty-character-class': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-character-class': adaptPluginRule(
+        m.noEmptyCharacterClassRule,
+        'no-empty-character-class',
+      ),
+    })),
+  'no-empty-function': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-empty-function': adaptPluginRule(m.noEmptyFunctionRule, 'no-empty-function'),
+    })),
   'no-eval': () =>
     import('./security/index.js').then((m) => ({
       'no-eval': adaptPluginRule(m.noEvalRule, 'no-eval'),
     })),
-  'no-unsafe-return': () =>
-    import('./security/index.js').then((m) => ({
-      'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
+  'no-focused-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
     })),
-  'no-unsafe-type-assertion': () =>
-    import('./security/index.js').then((m) => ({
-      'no-unsafe-type-assertion': adaptPluginRule(
-        m.noUnsafeTypeAssertionRule,
-        'no-unsafe-type-assertion',
-      ),
+
+  // Best practices module
+  'no-magic-numbers': () =>
+    import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
+  // Testing module
+  'no-skipped-tests': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
+    })),
+  'no-sync-in-async': () =>
+    import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
+  // Correctness module
+  'no-throw-literal': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-throw-literal': adaptPluginRule(m.noThrowLiteralRule, 'no-throw-literal'),
+    })),
+  'no-unnecessary-type-assertion': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'no-unnecessary-type-assertion': m.noUnnecessaryTypeAssertionRule,
     })),
   'no-unsafe-call': () =>
     import('./security/index.js').then((m) => ({
@@ -111,9 +120,28 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
       'no-unsafe-regex': adaptPluginRule(m.noUnsafeRegexRule, 'no-unsafe-regex'),
     })),
 
-  'explicit-return-type': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'explicit-return-type': m.explicitReturnTypeRule,
+  'no-unsafe-return': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
+    })),
+  'no-unsafe-type-assertion': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-type-assertion': adaptPluginRule(
+        m.noUnsafeTypeAssertionRule,
+        'no-unsafe-type-assertion',
+      ),
+    })),
+  'no-unused-exports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-unused-exports': adaptPluginRule(m.noUnusedExportsRule, 'no-unused-exports'),
+    })),
+  'no-useless-catch': () =>
+    import('./correctness/index.js').then((m) => ({
+      'no-useless-catch': adaptPluginRule(m.noUselessCatchRule, 'no-useless-catch'),
+    })),
+  'no-useless-comparison': () =>
+    import('./patterns/index.js').then((m) => ({
+      'no-useless-comparison': m.noUselessComparisonRule,
     })),
   'prefer-array-find': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -126,6 +154,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
   'prefer-arrow-callback': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-arrow-callback': m.preferArrowCallbackRule,
+    })),
+  'prefer-const-assertions': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'prefer-const-assertions': m.preferConstAssertionsRule,
     })),
   'prefer-default-export': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -143,10 +175,23 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-for-of': m.preferForOfRule,
     })),
+  'prefer-math-trunc': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-math-trunc': adaptPluginRule(m.preferMathTruncRule, 'prefer-math-trunc'),
+    })),
+  'prefer-object-spread': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-object-spread': adaptPluginRule(m.preferObjectSpreadRule, 'prefer-object-spread'),
+    })),
+  'prefer-optional-chain': () =>
+    import('./performance/index.js').then((m) => ({
+      'prefer-optional-chain': adaptPluginRule(m.preferOptionalChainRule, 'prefer-optional-chain'),
+    })),
   'prefer-regex-literal': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-regex-literal': m.preferRegexLiteralRule,
     })),
+
   'prefer-string-start-end': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-start-end': m.preferStringStartEndRule,
@@ -155,52 +200,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-template': m.preferStringTemplateRule,
     })),
-  'no-empty-character-class': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-character-class': adaptPluginRule(
-        m.noEmptyCharacterClassRule,
-        'no-empty-character-class',
-      ),
-    })),
-  // Correctness module
-  'no-throw-literal': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-throw-literal': adaptPluginRule(m.noThrowLiteralRule, 'no-throw-literal'),
-    })),
-  'no-constant-binary-expression': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-constant-binary-expression': adaptPluginRule(
-        m.noConstantBinaryExpressionRule,
-        'no-constant-binary-expression',
-      ),
-    })),
-  'no-useless-catch': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-useless-catch': adaptPluginRule(m.noUselessCatchRule, 'no-useless-catch'),
-    })),
-  'no-empty-function': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-function': adaptPluginRule(m.noEmptyFunctionRule, 'no-empty-function'),
-    })),
-  'no-useless-comparison': () =>
-    import('./patterns/index.js').then((m) => ({
-      'no-useless-comparison': m.noUselessComparisonRule,
-    })),
 
-  // Testing module
-  'no-skipped-tests': () =>
-    import('./testing/index.js').then((m) => ({
-      'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
-    })),
-  'no-focused-tests': () =>
-    import('./testing/index.js').then((m) => ({
-      'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
-    })),
-
-  // Correctness continued
-  'no-empty-catch': () =>
-    import('./correctness/index.js').then((m) => ({
-      'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
+  'strict-boolean-expressions': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'strict-boolean-expressions': m.strictBooleanExpressionsRule,
     })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)
@@ -208,8 +211,6 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
 }
 
 function createPatternRuleLoaders(): Record<string, () => Promise<Record<string, RuleDefinition>>> {
-  const patternsModule = () => import('./patterns/index.js')
-
   const patternRules = [
     'consistent-type-exports',
     'curly',
@@ -393,6 +394,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
         if (!rule) {
           throw new Error(`Rule ${ruleId} not found in patterns module`)
         }
+
         return { [ruleId]: adaptPluginRule(rule, ruleId) }
       })
   }

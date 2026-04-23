@@ -1966,7 +1966,7 @@ describe('formatGitlab', () => {
     })
     const parsed = JSON.parse(formatGitlab(report))
     const loc = parsed[0].location
-    expect(Object.keys(loc)).toEqual(['path', 'lines'])
+    expect(Object.keys(loc)).toEqual(['lines', 'path'])
     expect(Object.keys(loc.lines)).toEqual(['begin'])
   })
 
@@ -3589,7 +3589,7 @@ describe('formatSarif additional', () => {
     })
     const parsed = JSON.parse(formatSarif(report))
     const region = parsed.runs[0].results[0].locations[0].physicalLocation.region
-    expect(Object.keys(region)).toEqual(['startLine', 'startColumn'])
+    expect(Object.keys(region)).toEqual(['startColumn', 'startLine'])
   })
 })
 

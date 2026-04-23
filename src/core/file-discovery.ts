@@ -1,16 +1,16 @@
-import * as path from 'path'
 import fg from 'fast-glob'
+import { relative, resolve } from 'node:path'
 
 export interface FileDiscoveryOptions {
-  patterns: string[]
-  ignore: string[]
   cwd: string
+  ignore: string[]
   onProgress?: (count: number) => void
+  patterns: string[]
 }
 
 export interface DiscoveredFile {
-  path: string
   absolutePath: string
+  path: string
 }
 
 const DEFAULT_PATTERNS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']
@@ -24,17 +24,17 @@ const DEFAULT_IGNORE = [
 ]
 
 export async function discoverFiles(options: FileDiscoveryOptions): Promise<DiscoveredFile[]> {
-  const { patterns, ignore, cwd, onProgress } = options
+  const { cwd, ignore, onProgress, patterns } = options
   const actualPatterns = patterns.length > 0 ? patterns : DEFAULT_PATTERNS
   const ignorePatterns = ignore.length > 0 ? ignore : DEFAULT_IGNORE
-  const resolvedCwd = path.resolve(cwd)
+  const resolvedCwd = resolve(cwd)
 
   const stream = fg.globStream(actualPatterns, {
-    cwd: resolvedCwd,
-    ignore: ignorePatterns,
     absolute: true,
-    onlyFiles: true,
+    cwd: resolvedCwd,
     followSymbolicLinks: false,
+    ignore: ignorePatterns,
+    onlyFiles: true,
     suppressErrors: true,
   })
 
@@ -43,10 +43,10 @@ export async function discoverFiles(options: FileDiscoveryOptions): Promise<Disc
 
   for await (const entry of stream) {
     const absolutePath = entry as string
-    const relativePath = path.relative(resolvedCwd, absolutePath)
+    const relativePath = relative(resolvedCwd, absolutePath)
     files.push({
-      path: relativePath,
       absolutePath,
+      path: relativePath,
     })
     count++
     onProgress?.(count)
@@ -55,4 +55,4 @@ export async function discoverFiles(options: FileDiscoveryOptions): Promise<Disc
   return files
 }
 
-export { DEFAULT_PATTERNS, DEFAULT_IGNORE }
+export { DEFAULT_IGNORE, DEFAULT_PATTERNS }

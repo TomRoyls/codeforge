@@ -1,8 +1,9 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isIdentifier } from '../../utils/ast-helpers.js'
 
-const WRAPPER_TYPES = ['String', 'Number', 'Boolean', 'Symbol', 'BigInt']
+const WRAPPER_TYPES = new Set(['BigInt', 'Boolean', 'Number', 'String', 'Symbol'])
 
 function isWrapperNewExpression(node: unknown): boolean {
   if (typeof node !== 'object' || node === null) {
@@ -10,7 +11,7 @@ function isWrapperNewExpression(node: unknown): boolean {
   }
 
   const n = node as Record<string, unknown>
-  const type = n.type
+  const {type} = n
 
   if (type !== 'NewExpression') {
     return false
@@ -22,23 +23,10 @@ function isWrapperNewExpression(node: unknown): boolean {
   }
 
   const name = (callee as Record<string, unknown>).name as string
-  return WRAPPER_TYPES.includes(name)
+  return WRAPPER_TYPES.has(name)
 }
 
 export const noNewWrappersRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow new String(), new Number(), new Boolean(), new Symbol(), and new BigInt(). These create object wrappers instead of primitives, which can lead to unexpected behavior.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-new-wrappers',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
@@ -53,11 +41,24 @@ export const noNewWrappersRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: `Do not use new ${wrapperName}(). Use ${wrapperName.toLowerCase()}() or a literal instead.`,
           loc: location,
+          message: `Do not use new ${wrapperName}(). Use ${wrapperName.toLowerCase()}() or a literal instead.`,
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow new String(), new Number(), new Boolean(), new Symbol(), and new BigInt(). These create object wrappers instead of primitives, which can lead to unexpected behavior.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-new-wrappers',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

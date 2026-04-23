@@ -1,6 +1,7 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, getNodeSource } from '../../utils/ast-helpers.js'
+import { getNodeSource, getRange } from '../../utils/ast-helpers.js'
 
 function hasNonNullAssertion(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
@@ -17,20 +18,6 @@ function hasNonNullAssertion(node: unknown): boolean {
 }
 
 export const noNonNullAssertionRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow the use of non-null assertion operator (!). Using this operator can lead to runtime errors if the value is actually null or undefined.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-non-null-assertion',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       TSNonNullExpression(node: unknown): void {
@@ -40,13 +27,11 @@ export const noNonNullAssertionRule: RuleDefinition = {
 
         const location = extractLocation(node)
         const n = node as Record<string, unknown>
-        const expression = n.expression
+        const {expression} = n
         const range = getRange(node)
         const expressionSource = expression ? getNodeSource(context, expression) : ''
 
         context.report({
-          message: "Unexpected use of non-null assertion operator '!'.",
-          loc: location,
           fix:
             range && expressionSource
               ? {
@@ -54,9 +39,25 @@ export const noNonNullAssertionRule: RuleDefinition = {
                   text: expressionSource,
                 }
               : undefined,
+          loc: location,
+          message: "Unexpected use of non-null assertion operator '!'.",
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow the use of non-null assertion operator (!). Using this operator can lead to runtime errors if the value is actually null or undefined.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-non-null-assertion',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

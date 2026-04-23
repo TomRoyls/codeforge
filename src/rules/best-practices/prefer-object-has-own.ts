@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call()
+ * @file Prefer Object.hasOwn() over Object.prototype.hasOwnProperty.call()
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferObjectHasOwnOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferObjectHasOwnOptions = {}
 
-function isHasOwnPropertyCall(node: Node): { object: Node; property: Node } | null {
+function isHasOwnPropertyCall(node: Node): null | { object: Node; property: Node } {
   if (!Node.isCallExpression(node)) return null
 
   const expression = node.getExpression()
@@ -50,20 +53,13 @@ function isHasOwnPropertyCall(node: Node): { object: Node; property: Node } | nu
 }
 
 export const preferObjectHasOwnRule: RuleDefinition<PreferObjectHasOwnOptions> = {
-  meta: {
-    name: 'prefer-object-has-own',
-    description: 'Enforce using Object.hasOwn() instead of Object.prototype.hasOwnProperty.call()',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferObjectHasOwnOptions) => {
+  create(_options: PreferObjectHasOwnOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isHasOwnPropertyCall(node)
           if (!result) return
 
@@ -72,17 +68,24 @@ export const preferObjectHasOwnRule: RuleDefinition<PreferObjectHasOwnOptions> =
           const propertyText = result.property.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: "Use Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().",
+            range,
             ruleId: 'prefer-object-has-own',
             severity: 'info',
-            message: "Use Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().",
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: Object.hasOwn(' + objectText + ', ' + propertyText + ')',
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description: 'Enforce using Object.hasOwn() instead of Object.prototype.hasOwnProperty.call()',
+    fixable: 'code',
+    name: 'prefer-object-has-own',
+    recommended: false,
   },
 }
 
@@ -95,7 +98,7 @@ export function analyzePreferObjectHasOwn(
   traverseAST(
     sourceFile,
     {
-      visitNode: (node: Node, _context: VisitorContext) => {
+      visitNode(node: Node, _context: VisitorContext) {
         const result = isHasOwnPropertyCall(node)
         if (!result) return
 
@@ -104,11 +107,11 @@ export function analyzePreferObjectHasOwn(
         const propertyText = result.property.getText()
 
         violations.push({
+          filePath: sourceFile.getFilePath(),
+          message: "Use Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().",
+          range,
           ruleId: 'prefer-object-has-own',
           severity: 'info',
-          message: "Use Object.hasOwn() instead of Object.prototype.hasOwnProperty.call().",
-          filePath: sourceFile.getFilePath(),
-          range,
           suggestion: 'Replace with: Object.hasOwn(' + objectText + ', ' + propertyText + ')',
         })
       },

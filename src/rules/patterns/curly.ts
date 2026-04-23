@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor, Range } from '../../plugins/types.js'
+import type { Range, RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getNodeSource, getRange } from '../../utils/ast-helpers.js'
 
@@ -35,7 +36,7 @@ function getBodyNode(node: unknown): unknown {
 function createFix(
   context: RuleContext,
   bodyNode: unknown,
-): { range: Range; text: string } | undefined {
+): undefined | { range: Range; text: string } {
   const bodyRange = getRange(bodyNode)
   if (!bodyRange) {
     return undefined
@@ -66,49 +67,49 @@ function checkControlStatement(node: unknown, keyword: string, context: RuleCont
   const fix = bodyNode ? createFix(context, bodyNode) : undefined
 
   context.report({
-    message: `Expected { after '${keyword}' statement.`,
-    loc: location,
     fix,
+    loc: location,
+    message: `Expected { after '${keyword}' statement.`,
   })
 }
 
 export const curlyRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Require curly braces for all control statements (if, for, while, do, with) for better code readability and maintainability.',
-      category: 'style',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/curly',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
-      IfStatement(node: unknown): void {
-        checkControlStatement(node, 'if', context)
+      DoWhileStatement(node: unknown): void {
+        checkControlStatement(node, 'do', context)
       },
 
       ForStatement(node: unknown): void {
         checkControlStatement(node, 'for', context)
       },
 
-      WhileStatement(node: unknown): void {
-        checkControlStatement(node, 'while', context)
+      IfStatement(node: unknown): void {
+        checkControlStatement(node, 'if', context)
       },
 
-      DoWhileStatement(node: unknown): void {
-        checkControlStatement(node, 'do', context)
+      WhileStatement(node: unknown): void {
+        checkControlStatement(node, 'while', context)
       },
 
       WithStatement(node: unknown): void {
         checkControlStatement(node, 'with', context)
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'style',
+      description:
+        'Require curly braces for all control statements (if, for, while, do, with) for better code readability and maintainability.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/curly',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isLiteral(node: unknown): boolean {
@@ -26,35 +27,35 @@ function hasUselessBackreference(pattern: unknown): boolean {
     }
   }
 
-  return backrefs.some(({ num }) => !groups.has(num) && isNaN(parseInt(num, 10)))
+  return backrefs.some(({ num }) => !groups.has(num) && Number.isNaN(Number.parseInt(num, 10)))
 }
 
 export const noUselessBackreferenceRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow useless backreferences in regular expressions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
         if (!isLiteral(node)) return
         const n = node as Record<string, unknown>
-        const regex = n.regex as { pattern?: string } | undefined
+        const regex = n.regex as undefined | { pattern?: string }
         if (regex && regex.pattern && hasUselessBackreference(regex.pattern)) {
           context.report({
-            message: 'Useless backreference in regular expression.',
             loc: extractLocation(node),
+            message: 'Useless backreference in regular expression.',
           })
         }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Disallow useless backreferences in regular expressions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noUselessBackreferenceRule

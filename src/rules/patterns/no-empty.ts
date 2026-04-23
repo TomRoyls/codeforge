@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange } from '../../utils/ast-helpers.js'
 
@@ -6,6 +7,7 @@ function isBlockStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'BlockStatement'
 }
@@ -14,8 +16,9 @@ function isEmptyBlock(node: unknown): boolean {
   if (!isBlockStatement(node)) {
     return false
   }
+
   const n = node as Record<string, unknown>
-  const body = n.body as unknown[] | undefined
+  const body = n.body as undefined | unknown[]
   return !body || body.length === 0
 }
 
@@ -29,17 +32,20 @@ function hasCommentsInRange(
   if (!Array.isArray(comments)) {
     return false
   }
+
   for (const comment of comments) {
     const c = comment as Record<string, unknown>
     const cLoc = c.loc as Record<string, unknown> | undefined
     if (!cLoc) {
       continue
     }
+
     const cStart = cLoc.start as Record<string, unknown> | undefined
     const cEnd = cLoc.end as Record<string, unknown> | undefined
     if (!cStart || !cEnd) {
       continue
     }
+
     const cStartLine = cStart.line as number
     const cEndLine = cEnd.line as number
     const cStartColumn = cStart.column as number
@@ -53,24 +59,11 @@ function hasCommentsInRange(
       return true
     }
   }
+
   return false
 }
 
 export const noEmptyRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow empty block statements. Empty blocks can be confusing and along indicate incomplete code.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-empty',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BlockStatement(node: unknown): void {
@@ -94,8 +87,8 @@ export const noEmptyRule: RuleDefinition = {
 
         if (!start || !end) {
           context.report({
-            message: 'Unexpected empty block.',
             loc: extractLocation(node),
+            message: 'Unexpected empty block.',
           })
           return
         }
@@ -116,12 +109,26 @@ export const noEmptyRule: RuleDefinition = {
           : undefined
 
         context.report({
-          message: 'Unexpected empty block.',
-          loc: location,
           fix,
+          loc: location,
+          message: 'Unexpected empty block.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow empty block statements. Empty blocks can be confusing and along indicate incomplete code.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-empty',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

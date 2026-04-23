@@ -1,21 +1,8 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 export const noRegexSpacesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow multiple consecutive spaces in regular expressions. Use \\s+ or {N} quantifier instead for clarity.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-regex-spaces',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       RegExpLiteral(node: unknown): void {
@@ -46,21 +33,35 @@ export const noRegexSpacesRule: RuleDefinition = {
           const column = location.start.column + 1 + match.index
 
           context.report({
-            message: `Multiple consecutive spaces (${spaceCount}) in regex literal. Use '\\s+' or '{${spaceCount}}' instead.`,
             loc: {
-              start: {
-                line: location.start.line,
-                column,
-              },
               end: {
-                line: location.start.line,
                 column: column + spaceCount,
+                line: location.start.line,
+              },
+              start: {
+                column,
+                line: location.start.line,
               },
             },
+            message: `Multiple consecutive spaces (${spaceCount}) in regex literal. Use '\\s+' or '{${spaceCount}}' instead.`,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        String.raw`Disallow multiple consecutive spaces in regular expressions. Use \s+ or {N} quantifier instead for clarity.`,
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-regex-spaces',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

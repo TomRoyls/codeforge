@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function hasMultipleSpaces(value: string): boolean {
@@ -6,20 +7,6 @@ function hasMultipleSpaces(value: string): boolean {
 }
 
 export const noMultiSpacesRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow multiple spaces except for indentation. Multiple spaces can be confusing and may indicate errors.',
-      category: 'style',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/no-multi-spaces',
-    },
-    schema: [],
-    fixable: 'whitespace',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
@@ -35,8 +22,8 @@ export const noMultiSpacesRule: RuleDefinition = {
         if (hasMultipleSpaces(n.value)) {
           const location = extractLocation(node)
           context.report({
-            message: 'Multiple spaces found in string literal.',
             loc: location,
+            message: 'Multiple spaces found in string literal.',
           })
         }
       },
@@ -53,12 +40,26 @@ export const noMultiSpacesRule: RuleDefinition = {
         if (raw && hasMultipleSpaces(raw)) {
           const location = extractLocation(node)
           context.report({
-            message: 'Multiple spaces found in template literal.',
             loc: location,
+            message: 'Multiple spaces found in template literal.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'style',
+      description:
+        'Disallow multiple spaces except for indentation. Multiple spaces can be confusing and may indicate errors.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/no-multi-spaces',
+    },
+    fixable: 'whitespace',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

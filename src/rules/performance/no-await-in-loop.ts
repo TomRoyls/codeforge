@@ -1,10 +1,12 @@
 import { SyntaxKind } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import {
   type FunctionLikeNode,
+  getNodeRange,
   type RuleViolation,
   type VisitorContext,
-  getNodeRange,
 } from '../../ast/visitor.js'
 
 export interface NoAwaitInLoopOptions extends RuleOptions {}
@@ -18,20 +20,13 @@ const LOOP_KINDS = [
 ]
 
 export const noAwaitInLoopRule: RuleDefinition<NoAwaitInLoopOptions> = {
-  meta: {
-    name: 'no-await-in-loop',
-    description: 'Disallow await inside of loops for better performance',
-    category: 'performance',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {},
-  create: (_options: NoAwaitInLoopOptions) => {
+  create(_options: NoAwaitInLoopOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode, context: VisitorContext) => {
+        visitFunction(node: FunctionLikeNode, context: VisitorContext) {
           const loops = LOOP_KINDS.flatMap((kind) => node.getDescendantsOfKind(kind))
 
           for (const loop of loops) {
@@ -39,19 +34,26 @@ export const noAwaitInLoopRule: RuleDefinition<NoAwaitInLoopOptions> = {
 
             for (const awaitExpr of awaitExpressions) {
               violations.push({
+                filePath: context.getFilePath(),
+                message: 'Await inside loop can cause performance issues.',
+                range: getNodeRange(awaitExpr),
                 ruleId: 'no-await-in-loop',
                 severity: 'warning',
-                message: 'Await inside loop can cause performance issues.',
-                filePath: context.getFilePath(),
-                range: getNodeRange(awaitExpr),
                 suggestion: 'Consider using Promise.all() with map() for parallel execution.',
               })
             }
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {},
+  meta: {
+    category: 'performance',
+    description: 'Disallow await inside of loops for better performance',
+    fixable: 'code',
+    name: 'no-await-in-loop',
+    recommended: true,
   },
 }
 
@@ -68,11 +70,11 @@ export function analyzeAwaitInLoop(
 
     for (const awaitExpr of awaitExpressions) {
       violations.push({
+        filePath: context.getFilePath(),
+        message: 'Await inside loop can cause performance issues.',
+        range: getNodeRange(awaitExpr),
         ruleId: 'no-await-in-loop',
         severity: 'warning',
-        message: 'Await inside loop can cause performance issues.',
-        filePath: context.getFilePath(),
-        range: getNodeRange(awaitExpr),
         suggestion: 'Consider using Promise.all() with map() for parallel execution.',
       })
     }

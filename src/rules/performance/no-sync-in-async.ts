@@ -1,39 +1,44 @@
-import { SyntaxKind, Node } from 'ts-morph'
+import { Node, SyntaxKind } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import {
   type FunctionLikeNode,
+  getNodeRange,
   type RuleViolation,
   type VisitorContext,
-  getNodeRange,
 } from '../../ast/visitor.js'
 
 interface NoSyncInAsyncOptions extends RuleOptions {}
 
 const SYNC_OPERATIONS = new Set([
-  'readFileSync',
-  'writeFileSync',
-  'existsSync',
-  'mkdirSync',
-  'rmdirSync',
-  'unlinkSync',
-  'readdirSync',
-  'statSync',
-  'lstatSync',
-  'execSync',
-  'spawnSync',
   'execFileSync',
+  'execSync',
+  'existsSync',
+  'lstatSync',
+  'mkdirSync',
+  'readdirSync',
+  'readFileSync',
+  'rmdirSync',
+  'spawnSync',
+  'statSync',
+  'unlinkSync',
+  'writeFileSync',
 ])
 
 function isAsyncFunction(node: FunctionLikeNode): boolean {
   if (Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node)) {
     return node.isAsync()
   }
+
   if (Node.isArrowFunction(node)) {
     return node.isAsync()
   }
+
   if (Node.isMethodDeclaration(node)) {
     return node.isAsync()
   }
+
   return false
 }
 
@@ -42,20 +47,13 @@ function getAsyncVersion(syncOp: string): string {
 }
 
 export const noSyncInAsyncRule: RuleDefinition<NoSyncInAsyncOptions> = {
-  meta: {
-    name: 'no-sync-in-async',
-    description: 'Disallow synchronous operations in async functions for better performance',
-    category: 'performance',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {},
-  create: (_options: NoSyncInAsyncOptions) => {
+  create(_options: NoSyncInAsyncOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode, context: VisitorContext) => {
+        visitFunction(node: FunctionLikeNode, context: VisitorContext) {
           if (!isAsyncFunction(node)) {
             return
           }
@@ -69,11 +67,11 @@ export const noSyncInAsyncRule: RuleDefinition<NoSyncInAsyncOptions> = {
               if (callText.includes(syncOp)) {
                 const asyncVersion = getAsyncVersion(syncOp)
                 violations.push({
+                  filePath: context.getFilePath(),
+                  message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
+                  range: getNodeRange(callExpr),
                   ruleId: 'no-sync-in-async',
                   severity: 'warning',
-                  message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
-                  filePath: context.getFilePath(),
-                  range: getNodeRange(callExpr),
                   suggestion: `Consider using the async version '${asyncVersion}()' instead.`,
                 })
                 break
@@ -82,8 +80,15 @@ export const noSyncInAsyncRule: RuleDefinition<NoSyncInAsyncOptions> = {
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {},
+  meta: {
+    category: 'performance',
+    description: 'Disallow synchronous operations in async functions for better performance',
+    fixable: 'code',
+    name: 'no-sync-in-async',
+    recommended: true,
   },
 }
 
@@ -106,11 +111,11 @@ export function analyzeSyncInAsync(
       if (callText.includes(syncOp)) {
         const asyncVersion = getAsyncVersion(syncOp)
         violations.push({
+          filePath: context.getFilePath(),
+          message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
+          range: getNodeRange(callExpr),
           ruleId: 'no-sync-in-async',
           severity: 'warning',
-          message: `Synchronous operation '${syncOp}' in async function blocks the event loop.`,
-          filePath: context.getFilePath(),
-          range: getNodeRange(callExpr),
           suggestion: `Consider using the async version '${asyncVersion}()' instead.`,
         })
         break

@@ -65,7 +65,7 @@ describe('Git Helpers', () => {
         'git rev-parse --is-inside-work-tree',
         expect.objectContaining({
           cwd: expect.any(String),
-          encoding: 'utf-8',
+          encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }),
       )
@@ -199,7 +199,7 @@ describe('Git Helpers', () => {
         'git diff --cached --name-only --diff-filter=ACMR',
         expect.objectContaining({
           cwd: expect.any(String),
-          encoding: 'utf-8',
+          encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }),
       )
@@ -362,7 +362,7 @@ describe('Git Helpers', () => {
         'git rev-parse --show-toplevel',
         expect.objectContaining({
           cwd: expect.any(String),
-          encoding: 'utf-8',
+          encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }),
       )
@@ -595,7 +595,7 @@ describe('Git Helpers', () => {
       gitHelpers.isGitRepository(tempDir)
       expect(execSyncMock).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ encoding: 'utf-8' }),
+        expect.objectContaining({ encoding: 'utf8' }),
       )
     })
 
@@ -613,7 +613,7 @@ describe('Git Helpers', () => {
       gitHelpers.getStagedFiles(tempDir)
       expect(execSyncMock).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ encoding: 'utf-8' }),
+        expect.objectContaining({ encoding: 'utf8' }),
       )
     })
 
@@ -631,7 +631,7 @@ describe('Git Helpers', () => {
       gitHelpers.getGitRoot(tempDir)
       expect(execSyncMock).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ encoding: 'utf-8' }),
+        expect.objectContaining({ encoding: 'utf8' }),
       )
     })
 
@@ -972,7 +972,7 @@ describe('Git Helpers', () => {
         'git diff --name-only main HEAD',
         expect.objectContaining({
           cwd: expect.any(String),
-          encoding: 'utf-8',
+          encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }),
       )
@@ -1180,7 +1180,7 @@ describe('Git Helpers', () => {
       gitHelpers.getChangedFiles('main', tempDir)
       expect(execSyncMock).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ encoding: 'utf-8' }),
+        expect.objectContaining({ encoding: 'utf8' }),
       )
     })
 
@@ -1310,7 +1310,7 @@ describe('Git Helpers', () => {
         'git remote show origin 2>/dev/null | grep "HEAD branch" | sed "s/.*: //" || echo main',
         expect.objectContaining({
           cwd: path.resolve(tempDir),
-          encoding: 'utf-8',
+          encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }),
       )
@@ -1321,7 +1321,7 @@ describe('Git Helpers', () => {
       gitHelpers.getDefaultBranch(tempDir)
       expect(execSyncMock).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ encoding: 'utf-8' }),
+        expect.objectContaining({ encoding: 'utf8' }),
       )
     })
 

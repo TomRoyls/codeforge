@@ -1,21 +1,22 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isBinaryExpression } from '../../utils/ast-helpers.js'
 
 const BITWISE_OPERATORS = new Set([
   '&',
-  '|',
-  '^',
-  '~',
-  '<<',
-  '>>',
-  '>>>',
   '&=',
-  '|=',
-  '^=',
+  '<<',
   '<<=',
+  '>>',
   '>>=',
+  '>>>',
   '>>>=',
+  '^',
+  '^=',
+  '|',
+  '|=',
+  '~',
 ])
 
 function isBitwiseOperator(operator: string): boolean {
@@ -23,33 +24,6 @@ function isBitwiseOperator(operator: string): boolean {
 }
 
 export const noBitwiseRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow bitwise operators (&, |, ^, ~, >>>, etc.). Bitwise operators are often mistaken for logical operators (& vs &&, | vs ||) and can indicate typos.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-bitwise',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allow: {
-            type: 'array',
-            items: { type: 'string' },
-            description:
-              'List of bitwise operators to allow. Valid values: &, |, ^, ~, <<, >>, >>>, &=, |=, ^=, <<=, >>=, >>>=',
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const ruleConfig = context.config.rules?.['no-bitwise']
     const options =
@@ -59,6 +33,26 @@ export const noBitwiseRule: RuleDefinition = {
     const allowedOperators = new Set((options?.allow as string[]) ?? [])
 
     return {
+      AssignmentExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+
+        if (n.type === 'AssignmentExpression') {
+          const operator = n.operator as string
+
+          if (isBitwiseOperator(operator) && !allowedOperators.has(operator)) {
+            const location = extractLocation(node)
+            context.report({
+              loc: location,
+              message: `Unexpected use of bitwise assignment operator '${operator}'`,
+            })
+          }
+        }
+      },
+
       BinaryExpression(node: unknown): void {
         if (!isBinaryExpression(node)) {
           return
@@ -70,8 +64,8 @@ export const noBitwiseRule: RuleDefinition = {
         if (isBitwiseOperator(operator) && !allowedOperators.has(operator)) {
           const location = extractLocation(node)
           context.report({
-            message: `Unexpected use of bitwise operator '${operator}'. Did you mean to use '${operator === '&' ? '&&' : operator === '|' ? '||' : operator}'?`,
             loc: location,
+            message: `Unexpected use of bitwise operator '${operator}'. Did you mean to use '${operator === '&' ? '&&' : operator === '|' ? '||' : operator}'?`,
           })
         }
       },
@@ -86,32 +80,39 @@ export const noBitwiseRule: RuleDefinition = {
         if (n.type === 'UnaryExpression' && n.operator === '~' && !allowedOperators.has('~')) {
           const location = extractLocation(node)
           context.report({
-            message: "Unexpected use of bitwise NOT operator '~'",
             loc: location,
+            message: "Unexpected use of bitwise NOT operator '~'",
           })
         }
       },
-
-      AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-
-        if (n.type === 'AssignmentExpression') {
-          const operator = n.operator as string
-
-          if (isBitwiseOperator(operator) && !allowedOperators.has(operator)) {
-            const location = extractLocation(node)
-            context.report({
-              message: `Unexpected use of bitwise assignment operator '${operator}'`,
-              loc: location,
-            })
-          }
-        }
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow bitwise operators (&, |, ^, ~, >>>, etc.). Bitwise operators are often mistaken for logical operators (& vs &&, | vs ||) and can indicate typos.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-bitwise',
+    },
+    fixable: undefined,
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allow: {
+            description:
+              'List of bitwise operators to allow. Valid values: &, |, ^, ~, <<, >>, >>>, &=, |=, ^=, <<=, >>=, >>>=',
+            items: { type: 'string' },
+            type: 'array',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

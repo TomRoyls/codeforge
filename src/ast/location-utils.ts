@@ -3,8 +3,8 @@
  */
 
 export interface SourceLocation {
-  start: { line: number; column: number }
-  end: { line: number; column: number }
+  end: { column: number; line: number; }
+  start: { column: number; line: number; }
 }
 
 /**
@@ -15,8 +15,8 @@ export interface SourceLocation {
  */
 export function extractLocation(node: unknown, defaultLine: number = 1): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: defaultLine, column: 0 },
-    end: { line: defaultLine, column: 1 },
+    end: { column: 1, line: defaultLine },
+    start: { column: 0, line: defaultLine },
   }
 
   if (!node || typeof node !== 'object') {
@@ -34,13 +34,13 @@ export function extractLocation(node: unknown, defaultLine: number = 1): SourceL
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : defaultLine,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : defaultLine,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : defaultLine,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : defaultLine,
     },
   }
 }

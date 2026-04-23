@@ -673,7 +673,7 @@ describe('Parser', () => {
       await parser.initialize()
       await parser.parseFile('/disk/read.ts')
 
-      expect(mockReadFile).toHaveBeenCalledWith('/disk/read.ts', 'utf-8')
+      expect(mockReadFile).toHaveBeenCalledWith('/disk/read.ts', 'utf8')
     })
 
     test('calls hashContent with file content', async () => {

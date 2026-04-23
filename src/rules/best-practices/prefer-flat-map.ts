@@ -1,18 +1,21 @@
 /**
- * @fileoverview Prefer .flat() over .reduce((acc, val) => acc.concat(val), [])
+ * @file Prefer .flat() over .reduce((acc, val) => acc.concat(val), [])
  */
 
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
 
 interface PreferFlatMapOptions extends RuleOptions {}
 
 const DEFAULT_OPTIONS: PreferFlatMapOptions = {}
 
-function isReduceConcatPattern(node: Node): { array: Node } | null {
+function isReduceConcatPattern(node: Node): null | { array: Node } {
   if (!Node.isCallExpression(node)) return null
 
   const expression = node.getExpression()
@@ -22,7 +25,7 @@ function isReduceConcatPattern(node: Node): { array: Node } | null {
   if (methodName !== 'reduce') return null
 
   const args = node.getArguments()
-  if (args.length < 1) return null
+  if (args.length === 0) return null
 
   const callback = args[0]
   if (!Node.isArrowFunction(callback) && !Node.isFunctionExpression(callback)) return null
@@ -49,21 +52,13 @@ function isReduceConcatPattern(node: Node): { array: Node } | null {
 }
 
 export const preferFlatMapRule: RuleDefinition<PreferFlatMapOptions> = {
-  meta: {
-    name: 'prefer-flat-map',
-    description:
-      'Enforce using .flat() instead of .reduce((acc, val) => acc.concat(val), []) for flattening arrays',
-    category: 'style',
-    recommended: false,
-    fixable: 'code',
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (_options: PreferFlatMapOptions) => {
+  create(_options: PreferFlatMapOptions) {
     const violations: RuleViolation[] = []
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitNode: (node: Node, _context: VisitorContext) => {
+        visitNode(node: Node, _context: VisitorContext) {
           const result = isReduceConcatPattern(node)
           if (!result) return
 
@@ -71,17 +66,25 @@ export const preferFlatMapRule: RuleDefinition<PreferFlatMapOptions> = {
           const arrayText = result.array.getText()
 
           violations.push({
+            filePath: node.getSourceFile().getFilePath(),
+            message: 'Use .flat() instead of .reduce() for flattening arrays.',
+            range,
             ruleId: 'prefer-flat-map',
             severity: 'info',
-            message: 'Use .flat() instead of .reduce() for flattening arrays.',
-            filePath: node.getSourceFile().getFilePath(),
-            range,
             suggestion: 'Replace with: ' + arrayText + '.flat()',
           })
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description:
+      'Enforce using .flat() instead of .reduce((acc, val) => acc.concat(val), []) for flattening arrays',
+    fixable: 'code',
+    name: 'prefer-flat-map',
+    recommended: false,
   },
 }
 
@@ -92,7 +95,7 @@ export function analyzePreferFlatMap(
   const violations: RuleViolation[] = []
 
   traverseAST(sourceFile, {
-    visitNode: (node: Node, _context: VisitorContext) => {
+    visitNode(node: Node, _context: VisitorContext) {
       const result = isReduceConcatPattern(node)
       if (!result) return
 
@@ -100,11 +103,11 @@ export function analyzePreferFlatMap(
       const arrayText = result.array.getText()
 
       violations.push({
+        filePath: sourceFile.getFilePath(),
+        message: 'Use .flat() instead of .reduce() for flattening arrays.',
+        range,
         ruleId: 'prefer-flat-map',
         severity: 'info',
-        message: 'Use .flat() instead of .reduce() for flattening arrays.',
-        filePath: sourceFile.getFilePath(),
-        range,
         suggestion: 'Replace with: ' + arrayText + '.flat()',
       })
     },

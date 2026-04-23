@@ -1,17 +1,18 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 interface VariableInfo {
-  name: string
   declared: boolean
-  used: boolean
+  kind: 'const' | 'function' | 'import' | 'let' | 'parameter' | 'var'
   location: SourceLocation
-  kind: 'var' | 'let' | 'const' | 'function' | 'parameter' | 'import'
+  name: string
+  used: boolean
 }
 
 function getEndKey(node: unknown): string | undefined {
@@ -20,25 +21,26 @@ function getEndKey(node: unknown): string | undefined {
   if (Array.isArray(n.range) && typeof n.range[1] === 'number') {
     return String(n.range[1])
   }
+
   return undefined
 }
 
 class Scope {
-  private variables: Map<string, VariableInfo> = new Map()
-  private parent: Scope | null
   private declarationEnds: Map<string, Set<string>> = new Map()
+  private parent: null | Scope
+  private variables: Map<string, VariableInfo> = new Map()
 
-  constructor(parent: Scope | null = null) {
+  constructor(parent: null | Scope = null) {
     this.parent = parent
   }
 
   declare(name: string, location: SourceLocation, kind: VariableInfo['kind']): void {
     this.variables.set(name, {
-      name,
       declared: true,
-      used: false,
-      location,
       kind,
+      location,
+      name,
+      used: false,
     })
   }
 
@@ -56,8 +58,20 @@ class Scope {
         ends = new Set()
         this.declarationEnds.set(name, ends)
       }
+
       ends.add(endKey)
     }
+  }
+
+  getUnusedVariables(): VariableInfo[] {
+    const unused: VariableInfo[] = []
+    for (const variable of this.variables.values()) {
+      if (!variable.used) {
+        unused.push(variable)
+      }
+    }
+
+    return unused
   }
 
   isDeclarationSite(name: string, endKey: string | undefined): boolean {
@@ -75,19 +89,9 @@ class Scope {
       this.parent.use(name)
     }
   }
-
-  getUnusedVariables(): VariableInfo[] {
-    const unused: VariableInfo[] = []
-    for (const variable of this.variables.values()) {
-      if (!variable.used) {
-        unused.push(variable)
-      }
-    }
-    return unused
-  }
 }
 
-function isIdentifier(node: unknown): node is { type: 'Identifier'; name: string } {
+function isIdentifier(node: unknown): node is { name: string; type: 'Identifier'; } {
   return (
     node !== null &&
     typeof node === 'object' &&
@@ -95,41 +99,29 @@ function isIdentifier(node: unknown): node is { type: 'Identifier'; name: string
   )
 }
 
-function extractParamInfo(param: unknown): { name: string; idNode: unknown } | null {
+function extractParamInfo(param: unknown): null | { idNode: unknown; name: string; } {
   if (!param || typeof param !== 'object') return null
   const p = param as Record<string, unknown>
   if (p.type === 'Identifier' && typeof p.name === 'string') {
-    return { name: p.name, idNode: param }
+    return { idNode: param, name: p.name }
   }
+
   if (p.type === 'Parameter' && p.name && typeof p.name === 'object') {
     const inner = p.name as Record<string, unknown>
     if (inner.type === 'Identifier' && typeof inner.name === 'string') {
-      return { name: inner.name, idNode: p.name }
+      return { idNode: p.name, name: inner.name }
     }
   }
+
   return null
 }
 
 export const noUnusedVarsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unused variables. Variables that are declared but never used may indicate incomplete code or refactoring leftovers.',
-      category: 'variables',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unused-vars',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     const scopeStack: Scope[] = [new Scope()]
 
     function currentScope(): Scope {
-      return scopeStack[scopeStack.length - 1]!
+      return scopeStack.at(-1)!
     }
 
     function pushScope(): void {
@@ -143,9 +135,10 @@ export const noUnusedVarsRule: RuleDefinition = {
           if (variable.name.startsWith('_')) {
             continue
           }
+
           context.report({
-            message: `'${variable.name}' is declared but never used.`,
             loc: variable.location,
+            message: `'${variable.name}' is declared but never used.`,
           })
         }
       }
@@ -167,11 +160,16 @@ export const noUnusedVarsRule: RuleDefinition = {
     }
 
     return {
-      Program(): void {
+      ArrowFunctionExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
         pushScope()
+        declareParams((node as Record<string, unknown>).params)
       },
 
-      'Program:exit'(): void {
+      'ArrowFunctionExpression:exit'(): void {
         popScope()
       },
 
@@ -179,10 +177,12 @@ export const noUnusedVarsRule: RuleDefinition = {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
         if (isIdentifier(n.id)) {
           currentScope().declareWithRange(n.id.name, extractLocation(node), 'function', n.id)
         }
+
         pushScope()
         declareParams(n.params)
       },
@@ -195,6 +195,7 @@ export const noUnusedVarsRule: RuleDefinition = {
         if (!node || typeof node !== 'object') {
           return
         }
+
         pushScope()
         declareParams((node as Record<string, unknown>).params)
       },
@@ -203,15 +204,24 @@ export const noUnusedVarsRule: RuleDefinition = {
         popScope()
       },
 
-      ArrowFunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
+      Identifier(node: unknown): void {
+        if (!isIdentifier(node)) {
           return
         }
-        pushScope()
-        declareParams((node as Record<string, unknown>).params)
+
+        const endKey = getEndKey(node)
+        if (currentScope().isDeclarationSite(node.name, endKey)) {
+          return
+        }
+
+        currentScope().use(node.name)
       },
 
-      'ArrowFunctionExpression:exit'(): void {
+      Program(): void {
+        pushScope()
+      },
+
+      'Program:exit'(): void {
         popScope()
       },
 
@@ -219,6 +229,7 @@ export const noUnusedVarsRule: RuleDefinition = {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
         if (isIdentifier(n.id)) {
           const parent = n.parent as Record<string, unknown> | undefined
@@ -226,18 +237,21 @@ export const noUnusedVarsRule: RuleDefinition = {
           currentScope().declareWithRange(n.id.name, extractLocation(n.id), kind, n.id)
         }
       },
-
-      Identifier(node: unknown): void {
-        if (!isIdentifier(node)) {
-          return
-        }
-        const endKey = getEndKey(node)
-        if (currentScope().isDeclarationSite(node.name, endKey)) {
-          return
-        }
-        currentScope().use(node.name)
-      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'variables',
+      description:
+        'Disallow unused variables. Variables that are declared but never used may indicate incomplete code or refactoring leftovers.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unused-vars',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

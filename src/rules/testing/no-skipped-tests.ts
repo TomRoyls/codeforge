@@ -1,23 +1,24 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoSkippedTestsOptions {
   readonly allowSkipOnly?: boolean
 }
 
-const TEST_FUNCTIONS = new Set(['it', 'test', 'describe'])
-const SKIP_ONLY_METHODS = new Set(['skip', 'only'])
-const X_PREFIX_FUNCTIONS = new Set(['xit', 'xtest', 'xdescribe'])
+const TEST_FUNCTIONS = new Set(['describe', 'it', 'test'])
+const SKIP_ONLY_METHODS = new Set(['only', 'skip'])
+const X_PREFIX_FUNCTIONS = new Set(['xdescribe', 'xit', 'xtest'])
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -35,13 +36,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -82,13 +83,14 @@ function isSkippedTest(
       if (allowSkipOnly) {
         return { isSkipped: false, reason: '' }
       }
+
       return { isSkipped: true, reason: `${object.name}.${property.name}` }
     }
   }
 
   // Check for Identifier with x-prefix: xit(), xtest(), xdescribe()
   if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    const name = callee.name
+    const {name} = callee
     if (X_PREFIX_FUNCTIONS.has(name)) {
       return { isSkipped: true, reason: name }
     }
@@ -98,30 +100,6 @@ function isSkippedTest(
 }
 
 export const noSkippedTestsRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'warn',
-    docs: {
-      description:
-        'Detect skipped or focused tests that may hide issues or cause inconsistent test runs',
-      category: 'testing',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-skipped-tests',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          allowSkipOnly: {
-            type: 'boolean',
-            default: false,
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoSkippedTestsOptions>(context.config.options, {
       allowSkipOnly: false,
@@ -133,13 +111,37 @@ export const noSkippedTestsRule: RuleDefinition = {
 
         if (result.isSkipped) {
           context.report({
-            node,
-            message: `Unexpected use of '${result.reason}'. Skipped or focused tests can hide issues and cause inconsistent test runs.`,
             loc: extractLocation(node),
+            message: `Unexpected use of '${result.reason}'. Skipped or focused tests can hide issues and cause inconsistent test runs.`,
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'testing',
+      description:
+        'Detect skipped or focused tests that may hide issues or cause inconsistent test runs',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-skipped-tests',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          allowSkipOnly: {
+            default: false,
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'problem',
   },
 }
 

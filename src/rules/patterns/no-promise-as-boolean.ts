@@ -1,10 +1,12 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isUnaryExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'UnaryExpression'
 }
@@ -13,6 +15,7 @@ function isLogicalExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'LogicalExpression'
 }
@@ -21,6 +24,7 @@ function isCallExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'CallExpression'
 }
@@ -29,6 +33,7 @@ function isConditionalExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'ConditionalExpression'
 }
@@ -37,6 +42,7 @@ function isIfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'IfStatement'
 }
@@ -133,20 +139,6 @@ function isInBooleanContext(parent: unknown, node: unknown): boolean {
 }
 
 export const noPromiseAsBooleanRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow Promises in boolean contexts. Promises are always truthy, so using them in if statements, &&, ||, or ! conditions is almost always a bug. Use await or .then() to resolve the Promise first.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-promise-as-boolean',
-    },
-    schema: [],
-    fixable: undefined,
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -154,18 +146,32 @@ export const noPromiseAsBooleanRule: RuleDefinition = {
           return
         }
 
-        const parent = (node as Record<string, unknown>).parent
+        const {parent} = (node as Record<string, unknown>)
 
         if (isInBooleanContext(parent, node)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Promises are always truthy in boolean contexts. Use await or .then() to resolve the Promise before using it in conditions.',
-            loc: location,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow Promises in boolean contexts. Promises are always truthy, so using them in if statements, &&, ||, or ! conditions is almost always a bug. Use await or .then() to resolve the Promise first.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-promise-as-boolean',
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

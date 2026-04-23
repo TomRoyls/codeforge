@@ -1,42 +1,42 @@
 export enum LogLevel {
   DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
   ERROR = 3,
+  INFO = 1,
   SILENT = 4,
+  WARN = 2,
 }
 
 export interface LoggerOptions {
+  colorize?: boolean
   level: LogLevel
   prefix?: string
   timestamp?: boolean
-  colorize?: boolean
 }
 
 const COLORS = {
-  reset: '\x1b[0m',
-  cyan: '\x1b[36m',
-  blue: '\x1b[34m',
-  yellow: '\x1b[33m',
-  red: '\x1b[31m',
-  dim: '\x1b[2m',
-  bold: '\x1b[1m',
+  blue: '\u001B[34m',
+  bold: '\u001B[1m',
+  cyan: '\u001B[36m',
+  dim: '\u001B[2m',
+  red: '\u001B[31m',
+  reset: '\u001B[0m',
+  yellow: '\u001B[33m',
 }
 
 const LEVEL_COLORS: Record<LogLevel, string> = {
   [LogLevel.DEBUG]: COLORS.cyan,
-  [LogLevel.INFO]: COLORS.blue,
-  [LogLevel.WARN]: COLORS.yellow,
   [LogLevel.ERROR]: COLORS.red,
+  [LogLevel.INFO]: COLORS.blue,
   [LogLevel.SILENT]: COLORS.reset,
+  [LogLevel.WARN]: COLORS.yellow,
 }
 
 const LEVEL_NAMES: Record<LogLevel, string> = {
   [LogLevel.DEBUG]: 'DEBUG',
-  [LogLevel.INFO]: 'INFO',
-  [LogLevel.WARN]: 'WARN',
   [LogLevel.ERROR]: 'ERROR',
+  [LogLevel.INFO]: 'INFO',
   [LogLevel.SILENT]: 'SILENT',
+  [LogLevel.WARN]: 'WARN',
 }
 
 function safeStringify(value: unknown): string {
@@ -69,6 +69,7 @@ function safeStringify(value: unknown): string {
               if (seen.has(value)) return '[Circular]'
               seen.add(value)
             }
+
             return value
           },
           2,
@@ -93,16 +94,40 @@ function getTimestamp(): string {
 }
 
 export class Logger {
+  private colorize: boolean
   private level: LogLevel
   private prefix: string
   private showTimestamp: boolean
-  private colorize: boolean
 
   constructor(options: LoggerOptions) {
     this.level = options.level
     this.prefix = options.prefix ?? ''
     this.showTimestamp = options.timestamp ?? false
     this.colorize = options.colorize ?? true
+  }
+
+  public debug(message: string, ...args: unknown[]): void {
+    this.log(LogLevel.DEBUG, message, ...args)
+  }
+
+  public error(message: string, ...args: unknown[]): void {
+    this.log(LogLevel.ERROR, message, ...args)
+  }
+
+  public getLevel(): LogLevel {
+    return this.level
+  }
+
+  public info(message: string, ...args: unknown[]): void {
+    this.log(LogLevel.INFO, message, ...args)
+  }
+
+  public setLevel(level: LogLevel): void {
+    this.level = level
+  }
+
+  public warn(message: string, ...args: unknown[]): void {
+    this.log(LogLevel.WARN, message, ...args)
   }
 
   private log(level: LogLevel, message: string, ...args: unknown[]): void {
@@ -134,45 +159,26 @@ export class Logger {
     }
 
     switch (level) {
-      case LogLevel.ERROR:
+      case LogLevel.ERROR: {
         console.error(output)
         break
-      case LogLevel.WARN:
+      }
+
+      case LogLevel.WARN: {
         console.warn(output)
         break
-      default:
+      }
+
+      default: {
         console.log(output)
         break
+      }
     }
-  }
-
-  public debug(message: string, ...args: unknown[]): void {
-    this.log(LogLevel.DEBUG, message, ...args)
-  }
-
-  public info(message: string, ...args: unknown[]): void {
-    this.log(LogLevel.INFO, message, ...args)
-  }
-
-  public warn(message: string, ...args: unknown[]): void {
-    this.log(LogLevel.WARN, message, ...args)
-  }
-
-  public error(message: string, ...args: unknown[]): void {
-    this.log(LogLevel.ERROR, message, ...args)
-  }
-
-  public setLevel(level: LogLevel): void {
-    this.level = level
-  }
-
-  public getLevel(): LogLevel {
-    return this.level
   }
 }
 
 export const logger = new Logger({
+  colorize: true,
   level: LogLevel.INFO,
   timestamp: true,
-  colorize: true,
 })

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isYieldExpression(node: unknown): boolean {
@@ -28,23 +29,13 @@ function hasYield(body: unknown): boolean {
       if (hasYield(decl)) return true
     }
   }
+
   if (b.init && hasYield(b.init)) return true
 
   return false
 }
 
 export const requireYieldRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Require yield in generator functions.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     function checkGenerator(node: unknown): void {
       if (!node || typeof node !== 'object') return
@@ -53,8 +44,8 @@ export const requireYieldRule: RuleDefinition = {
       if (!n.body) return
       if (!hasYield(n.body)) {
         context.report({
-          message: 'This generator function does not have yield.',
           loc: extractLocation(node),
+          message: 'This generator function does not have yield.',
         })
       }
     }
@@ -67,6 +58,17 @@ export const requireYieldRule: RuleDefinition = {
         checkGenerator(node)
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: 'Require yield in generator functions.',
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default requireYieldRule

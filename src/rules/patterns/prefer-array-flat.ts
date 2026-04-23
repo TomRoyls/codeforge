@@ -1,13 +1,14 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import {
+  getNodeText,
+  getRange,
   isCallExpression,
   isMemberExpression,
-  getRange,
-  getNodeText,
 } from '../../utils/ast-helpers.js'
 
-function getMethodName(node: unknown): string | null {
+function getMethodName(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -57,6 +58,7 @@ function isArrayLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'ArrayExpression' && (!n.elements || (n.elements as unknown[]).length === 0)
 }
@@ -65,6 +67,7 @@ function isArrowFunction(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'ArrowFunctionExpression'
 }
 
@@ -72,6 +75,7 @@ function isFunctionExpression(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'FunctionExpression'
 }
 
@@ -131,7 +135,7 @@ function isSpreadConcatPattern(node: unknown): boolean {
     return false
   }
 
-  const elements = n.elements as unknown[] | undefined
+  const elements = n.elements as undefined | unknown[]
   if (!elements || elements.length < 2) {
     return false
   }
@@ -154,7 +158,7 @@ function getReduceCallback(node: unknown): unknown {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length === 0) {
     return null
@@ -174,7 +178,7 @@ function getReduceInitialValue(node: unknown): unknown {
   }
 
   const n = node as Record<string, unknown>
-  const args = n.arguments as unknown[] | undefined
+  const args = n.arguments as undefined | unknown[]
 
   if (!args || args.length < 2) {
     return null
@@ -222,6 +226,7 @@ function isForStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'ForStatement'
 }
 
@@ -229,6 +234,7 @@ function isForOfStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'ForOfStatement'
 }
 
@@ -236,6 +242,7 @@ function isForInStatement(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   return (node as Record<string, unknown>).type === 'ForInStatement'
 }
 
@@ -276,6 +283,7 @@ function getBlockStatements(node: unknown): unknown[] {
     if (body.type === 'BlockStatement' && body.body) {
       return body.body as unknown[]
     }
+
     // Single statement body
     return [body]
   }
@@ -288,12 +296,11 @@ function containsPushCall(statements: unknown[]): boolean {
     const s = stmt as Record<string, unknown>
 
     // Check expression statements for push calls
-    if (s.type === 'ExpressionStatement' && s.expression) {
-      if (isPushCall(s.expression)) {
+    if (s.type === 'ExpressionStatement' && s.expression && isPushCall(s.expression)) {
         return true
       }
-    }
   }
+
   return false
 }
 
@@ -318,20 +325,6 @@ function isNestedForLoopFlattening(node: unknown): boolean {
 }
 
 export const preferArrayFlatRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer Array.flat() over manual flattening patterns. Use arr.flat() instead of reduce with concat or nested for loops.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-array-flat',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -350,7 +343,7 @@ export const preferArrayFlatRule: RuleDefinition = {
               ? ((calleeObject as Record<string, unknown>).name as string)
               : 'array'
 
-          let fix: { range: readonly [number, number]; text: string } | undefined
+          let fix: undefined | { range: readonly [number, number]; text: string }
           const nodeRange = getRange(node)
           if (nodeRange) {
             const source = context.getSource()
@@ -364,20 +357,9 @@ export const preferArrayFlatRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Prefer .flat() over reduce with concat for array flattening. Use ${calleeName}.flat() instead.`,
-            loc: location,
             fix,
-          })
-        }
-      },
-
-      ForStatement(node: unknown): void {
-        if (isNestedForLoopFlattening(node)) {
-          const location = extractLocation(node)
-          context.report({
-            message:
-              'Prefer .flat() over nested for loops for array flattening. Use arr.flat() instead.',
             loc: location,
+            message: `Prefer .flat() over reduce with concat for array flattening. Use ${calleeName}.flat() instead.`,
           })
         }
       },
@@ -386,13 +368,38 @@ export const preferArrayFlatRule: RuleDefinition = {
         if (isNestedForLoopFlattening(node)) {
           const location = extractLocation(node)
           context.report({
+            loc: location,
             message:
               'Prefer .flat() over nested for loops for array flattening. Use arr.flat() instead.',
+          })
+        }
+      },
+
+      ForStatement(node: unknown): void {
+        if (isNestedForLoopFlattening(node)) {
+          const location = extractLocation(node)
+          context.report({
             loc: location,
+            message:
+              'Prefer .flat() over nested for loops for array flattening. Use arr.flat() instead.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer Array.flat() over manual flattening patterns. Use arr.flat() instead of reduce with concat or nested for loops.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-array-flat',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

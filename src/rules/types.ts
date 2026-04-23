@@ -1,6 +1,7 @@
 import type { SourceFile } from 'ts-morph'
+
+import type { ASTVisitor, RuleViolation } from '../ast/visitor.js'
 import type { FixResult } from '../fix/types.js'
-import type { RuleViolation, ASTVisitor } from '../ast/visitor.js'
 
 export interface RuleOptions {
   [key: string]: unknown
@@ -51,7 +52,7 @@ export interface RuleContext {
   sourceFile: SourceFile
 }
 
-export type RuleSeverity = 'error' | 'warning' | 'info'
+export type RuleSeverity = 'error' | 'info' | 'warning'
 
 export interface RuleConfig {
   options?: RuleOptions

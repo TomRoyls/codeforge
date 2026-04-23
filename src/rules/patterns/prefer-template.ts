@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { getRange, isBinaryExpression } from '../../utils/ast-helpers.js'
 
@@ -6,6 +7,7 @@ function isStringLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'Literal' && typeof n.value === 'string'
 }
@@ -14,6 +16,7 @@ function isTemplateLiteral(node: unknown): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
   const n = node as Record<string, unknown>
   return n.type === 'TemplateLiteral'
 }
@@ -30,8 +33,8 @@ function hasStringConcatenation(node: unknown): boolean {
     return false
   }
 
-  const left = n.left
-  const right = n.right
+  const {left} = n
+  const {right} = n
 
   const leftIsString = isStringLiteral(left) || isTemplateLiteral(left)
   const rightIsString = isStringLiteral(right) || isTemplateLiteral(right)
@@ -47,30 +50,18 @@ function hasStringConcatenation(node: unknown): boolean {
 }
 
 export const preferTemplateRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Prefer template literals over string concatenation. Use backticks (`Hello ${name}`) instead of + operator ("Hello " + name) for better readability.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/prefer-template',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     function getNodeSource(node: unknown): string {
       if (!node || typeof node !== 'object') {
         return ''
       }
+
       const n = node as Record<string, unknown>
       const range = n.range as [number, number] | undefined
       if (!range) {
         return ''
       }
+
       const source = context.getSource()
       return source.slice(range[0], range[1])
     }
@@ -79,7 +70,7 @@ export const preferTemplateRule: RuleDefinition = {
       if (isStringLiteral(node)) {
         const n = node as Record<string, unknown>
         const value = n.value as string
-        const escaped = value.replace(/`/g, '\\`').replace(/\$/g, '\\$')
+        const escaped = value.replaceAll('`', '\\`').replaceAll('$', String.raw`\$`)
         return escaped
       }
 
@@ -94,6 +85,7 @@ export const preferTemplateRule: RuleDefinition = {
         if (operator !== '+') {
           return getNodeSource(node)
         }
+
         const left = convertToTemplateLiteral(n.left)
         const right = convertToTemplateLiteral(n.right)
         return left + right
@@ -114,7 +106,7 @@ export const preferTemplateRule: RuleDefinition = {
           const range = getRange(node)
 
           // Build fix only if range is available
-          let fix: { range: [number, number]; text: string } | undefined
+          let fix: undefined | { range: [number, number]; text: string }
           if (range) {
             const templateContent = convertToTemplateLiteral(node)
             const fixed = `\`${templateContent}\``
@@ -122,14 +114,28 @@ export const preferTemplateRule: RuleDefinition = {
           }
 
           context.report({
+            fix,
+            loc: location,
             message:
               'Prefer template literals over string concatenation. Use backticks (`value: ${x}`) instead of + operator ("value: " + x).',
-            loc: location,
-            fix,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Prefer template literals over string concatenation. Use backticks (`Hello ${name}`) instead of + operator ("Hello " + name) for better readability.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/prefer-template',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

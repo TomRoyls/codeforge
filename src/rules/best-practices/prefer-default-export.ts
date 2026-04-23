@@ -1,36 +1,31 @@
-import type { RuleDefinition, RuleOptions } from '../types.js'
-import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { SourceFile } from 'ts-morph'
+
 import { Node } from 'ts-morph'
+
+import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
+import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import { getNodeRange } from '../../ast/visitor.js'
 
 interface PreferDefaultExportOptions extends RuleOptions {
-  target?: 'single' | 'all'
   ignoreExportedTypes?: boolean
+  target?: 'all' | 'single'
 }
 
 const DEFAULT_OPTIONS: PreferDefaultExportOptions = {
-  target: 'single',
   ignoreExportedTypes: false,
+  target: 'single',
 }
 
 export const preferDefaultExportRule: RuleDefinition<PreferDefaultExportOptions> = {
-  meta: {
-    name: 'prefer-default-export',
-    description:
-      'Enforce using default export when a module only exports one declaration',
-    category: 'style',
-    recommended: false,
-    fixable: undefined,
-  },
-  defaultOptions: DEFAULT_OPTIONS,
-  create: (options: PreferDefaultExportOptions) => {
+  create(options: PreferDefaultExportOptions) {
     const violations: RuleViolation[] = []
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options }
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitSourceFile: (sourceFile: SourceFile, _context: VisitorContext) => {
+        visitSourceFile(sourceFile: SourceFile, _context: VisitorContext) {
           const namedExports: Node[] = []
           const defaultExport = sourceFile.getDefaultExportSymbol()
 
@@ -102,19 +97,27 @@ export const preferDefaultExportRule: RuleDefinition<PreferDefaultExportOptions>
             const node = namedExports[0]!
             const range = getNodeRange(node)
             violations.push({
+              filePath: sourceFile.getFilePath(),
+              message: `Module has only one export. Consider using a default export instead.`,
+              range,
               ruleId: 'prefer-default-export',
               severity: 'warning',
-              message: `Module has only one export. Consider using a default export instead.`,
-              filePath: sourceFile.getFilePath(),
-              range,
               suggestion:
                 'Convert this to a default export for cleaner imports.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: DEFAULT_OPTIONS,
+  meta: {
+    category: 'style',
+    description:
+      'Enforce using default export when a module only exports one declaration',
+    fixable: undefined,
+    name: 'prefer-default-export',
+    recommended: false,
   },
 }
 
@@ -196,11 +199,11 @@ export function analyzePreferDefaultExport(
     const node = namedExports[0]!
     const range = getNodeRange(node)
     violations.push({
+      filePath: sourceFile.getFilePath(),
+      message: `Module has only one export. Consider using a default export instead.`,
+      range,
       ruleId: 'prefer-default-export',
       severity: 'warning',
-      message: `Module has only one export. Consider using a default export instead.`,
-      filePath: sourceFile.getFilePath(),
-      range,
       suggestion: 'Convert this to a default export for cleaner imports.',
     })
   }

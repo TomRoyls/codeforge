@@ -1,48 +1,48 @@
 import type {
   Logger,
   PluginConfig,
+  PluginContext as PluginContextType,
   ReportDescriptor,
   RuleContext as RuleContextType,
-  PluginContext as PluginContextType,
 } from './types.js'
 
 export interface PluginContextOptions {
-  logger: Logger
   config: PluginConfig
+  logger: Logger
   workspaceRoot: string
 }
 
 export interface RuleContextOptions extends PluginContextOptions {
-  source: string
-  filePath: string
   ast: unknown
-  tokens: readonly unknown[]
   comments: readonly unknown[]
+  filePath: string
   parserServices?: RuleContextType['parserServices']
+  source: string
+  tokens: readonly unknown[]
 }
 
 export interface ReportCollector {
-  reports: ReportDescriptor[]
   clear: () => void
+  reports: ReportDescriptor[]
 }
 
 function createReportCollector(): ReportCollector {
   const reports: ReportDescriptor[] = []
 
   return {
-    reports,
-    clear: (): void => {
+    clear(): void {
       reports.length = 0
     },
+    reports,
   }
 }
 
 export function createPluginContext(options: PluginContextOptions): PluginContextType {
-  const { logger, config, workspaceRoot } = options
+  const { config, logger, workspaceRoot } = options
 
   return {
-    logger,
     config,
+    logger,
     workspaceRoot,
   }
 }
@@ -50,7 +50,7 @@ export function createPluginContext(options: PluginContextOptions): PluginContex
 export function createRuleContext(
   options: RuleContextOptions,
 ): RuleContextType & { collector: ReportCollector } {
-  const { logger, config, workspaceRoot, source, filePath, ast, tokens, comments, parserServices } =
+  const { ast, comments, config, filePath, logger, parserServices, source, tokens, workspaceRoot } =
     options
 
   const collector = createReportCollector()
@@ -59,6 +59,7 @@ export function createRuleContext(
     if (!descriptor.message || typeof descriptor.message !== 'string') {
       throw new TypeError('Report descriptor must have a valid message string')
     }
+
     collector.reports.push(descriptor)
   }
 
@@ -69,42 +70,42 @@ export function createRuleContext(
   const getComments = (): readonly unknown[] => comments
 
   return {
-    logger,
-    config,
-    workspaceRoot,
-    report,
-    getSource,
-    getFilePath,
-    getAST,
-    getTokens,
-    getComments,
-    parserServices,
     collector,
+    config,
+    getAST,
+    getComments,
+    getFilePath,
+    getSource,
+    getTokens,
+    logger,
+    parserServices,
+    report,
+    workspaceRoot,
   }
 }
 
 export function createDefaultLogger(): Logger {
   return {
-    debug: (message: string, ...args: readonly unknown[]): void => {
+    debug(message: string, ...args: readonly unknown[]): void {
       console.debug(`[DEBUG] ${message}`, ...args)
     },
-    info: (message: string, ...args: readonly unknown[]): void => {
+    error(message: string, ...args: readonly unknown[]): void {
+      console.error(`[ERROR] ${message}`, ...args)
+    },
+    info(message: string, ...args: readonly unknown[]): void {
       console.info(`[INFO] ${message}`, ...args)
     },
-    warn: (message: string, ...args: readonly unknown[]): void => {
+    warn(message: string, ...args: readonly unknown[]): void {
       console.warn(`[WARN] ${message}`, ...args)
-    },
-    error: (message: string, ...args: readonly unknown[]): void => {
-      console.error(`[ERROR] ${message}`, ...args)
     },
   }
 }
 
 export function createSilentLogger(): Logger {
   return {
-    debug: (): void => {},
-    info: (): void => {},
-    warn: (): void => {},
-    error: (): void => {},
+    debug(): void {},
+    error(): void {},
+    info(): void {},
+    warn(): void {},
   }
 }

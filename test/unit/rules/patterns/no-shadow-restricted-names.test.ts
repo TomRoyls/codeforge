@@ -181,7 +181,7 @@ describe('no-shadow-restricted-names rule', () => {
     test('visitor keys should be VariableDeclarator and FunctionDeclaration', () => {
       const { context } = createMockRuleContext({ source: 'let undefined = 5' })
       const visitor = noShadowRestrictedNamesRule.create(context)
-      expect(Object.keys(visitor)).toEqual(['VariableDeclarator', 'FunctionDeclaration'])
+      expect(Object.keys(visitor)).toEqual(['FunctionDeclaration', 'VariableDeclarator'])
     })
   })
 
@@ -1025,8 +1025,12 @@ describe('no-shadow-restricted-names rule', () => {
     })
 
     test('should produce same message for VariableDeclarator and FunctionDeclaration', () => {
-      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'let undefined = 5' })
-      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'let undefined = 5' })
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({
+        source: 'let undefined = 5',
+      })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({
+        source: 'let undefined = 5',
+      })
       const visitor1 = noShadowRestrictedNamesRule.create(ctx1)
       const visitor2 = noShadowRestrictedNamesRule.create(ctx2)
       visitor1.VariableDeclarator(createVariableDeclarator('undefined'))
@@ -1264,8 +1268,12 @@ describe('no-shadow-restricted-names rule', () => {
     })
 
     test('should maintain separate reports for separate contexts', () => {
-      const { context: ctx1, reports: reports1 } = createMockRuleContext({ source: 'let undefined = 5' })
-      const { context: ctx2, reports: reports2 } = createMockRuleContext({ source: 'let undefined = 5' })
+      const { context: ctx1, reports: reports1 } = createMockRuleContext({
+        source: 'let undefined = 5',
+      })
+      const { context: ctx2, reports: reports2 } = createMockRuleContext({
+        source: 'let undefined = 5',
+      })
       const visitor1 = noShadowRestrictedNamesRule.create(ctx1)
       const visitor2 = noShadowRestrictedNamesRule.create(ctx2)
       visitor1.VariableDeclarator(createVariableDeclarator('undefined'))

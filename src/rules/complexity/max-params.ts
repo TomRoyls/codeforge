@@ -1,12 +1,14 @@
+import type { SourceFile } from 'ts-morph'
+
 import type { RuleDefinition, RuleOptions } from '../types.js'
+
 import {
   type FunctionLikeNode,
-  type RuleViolation,
-  getNodeRange,
   getFunctionName,
+  getNodeRange,
+  type RuleViolation,
   traverseAST,
 } from '../../ast/visitor.js'
-import type { SourceFile } from 'ts-morph'
 
 interface MaxParamsOptions extends RuleOptions {
   max?: number
@@ -17,47 +19,48 @@ function countParameters(node: FunctionLikeNode): number {
   if (typeof node.getParameters !== 'function') {
     return 0
   }
+
   const params = node.getParameters()
   return params.length
 }
 
 export const maxParamsRule: RuleDefinition<MaxParamsOptions> = {
-  meta: {
-    name: 'max-params',
-    description: 'Enforce a maximum number of parameters in function definitions',
-    category: 'complexity',
-    recommended: true,
-    fixable: 'code',
-  },
-  defaultOptions: {
-    max: 4,
-  },
-  create: (options: MaxParamsOptions) => {
+  create(options: MaxParamsOptions) {
     const violations: RuleViolation[] = []
     const maxParams = options.max ?? 4
 
     return {
+      onComplete: () => violations,
       visitor: {
-        visitFunction: (node: FunctionLikeNode) => {
+        visitFunction(node: FunctionLikeNode) {
           const paramCount = countParameters(node)
           const name = getFunctionName(node)
 
           if (paramCount > maxParams) {
             const range = getNodeRange(node)
             violations.push({
+              filePath: node.getSourceFile().getFilePath(),
+              message: `Function '${name}' has ${paramCount} parameters. Maximum allowed is ${maxParams}.`,
+              range,
               ruleId: 'max-params',
               severity: 'warning',
-              message: `Function '${name}' has ${paramCount} parameters. Maximum allowed is ${maxParams}.`,
-              filePath: node.getSourceFile().getFilePath(),
-              range,
               suggestion:
                 'Consider using an options object to group related parameters, or split the function into smaller ones.',
             })
           }
         },
       },
-      onComplete: () => violations,
     }
+  },
+  defaultOptions: {
+    max: 4,
+  },
+  meta: {
+    category: 'complexity',
+    description: 'Enforce a maximum number of parameters in function definitions',
+    fixable: 'code',
+    name: 'max-params',
+    recommended: true,
   },
 }
 
@@ -67,18 +70,18 @@ export function analyzeMaxParams(sourceFile: SourceFile, maxParams: number = 4):
   traverseAST(
     sourceFile,
     {
-      visitFunction: (node: FunctionLikeNode) => {
+      visitFunction(node: FunctionLikeNode) {
         const paramCount = countParameters(node)
         const name = getFunctionName(node)
 
         if (paramCount > maxParams) {
           const range = getNodeRange(node)
           violations.push({
+            filePath: sourceFile.getFilePath(),
+            message: `Function '${name}' has ${paramCount} parameters. Maximum allowed is ${maxParams}.`,
+            range,
             ruleId: 'max-params',
             severity: 'warning',
-            message: `Function '${name}' has ${paramCount} parameters. Maximum allowed is ${maxParams}.`,
-            filePath: sourceFile.getFilePath(),
-            range,
             suggestion:
               'Consider using an options object to group related parameters, or split the function into smaller ones.',
           })

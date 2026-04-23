@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isLiteral(node: unknown): boolean {
@@ -12,32 +13,30 @@ function hasNonoctalDecimalEscape(value: string): boolean {
 }
 
 export const noNonoctalDecimalEscapeRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description: 'Disallow \\8 and \\9 escape sequences in string literals.',
-      category: 'patterns',
-      recommended: true,
-    },
-    schema: [],
-    fixable: undefined,
-  },
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
         if (!isLiteral(node)) return
         const n = node as Record<string, unknown>
-        if (typeof n.value === 'string' && typeof n.raw === 'string') {
-          if (hasNonoctalDecimalEscape(n.raw)) {
+        if (typeof n.value === 'string' && typeof n.raw === 'string' && hasNonoctalDecimalEscape(n.raw)) {
             context.report({
-              message: "Invalid escape sequence '\\8' or '\\9' in string literal.",
               loc: extractLocation(node),
+              message: String.raw`Invalid escape sequence '\8' or '\9' in string literal.`,
             })
           }
-        }
       },
     }
+  },
+  meta: {
+    docs: {
+      category: 'patterns',
+      description: String.raw`Disallow \8 and \9 escape sequences in string literals.`,
+      recommended: true,
+    },
+    fixable: undefined,
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 export default noNonoctalDecimalEscapeRule

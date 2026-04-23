@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isConstructorWithReturn(node: unknown): boolean {
@@ -31,36 +32,37 @@ function isConstructorWithReturn(node: unknown): boolean {
     if (typeof stmt !== 'object' || stmt === null) {
       return false
     }
+
     return (stmt as Record<string, unknown>).type === 'ReturnStatement'
   })
 }
 
 export const noConstructorReturnRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow returning values from constructors. Constructors should only initialize the object, not return values.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-constructor-return',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
         if (isConstructorWithReturn(node)) {
           const location = extractLocation(node)
           context.report({
-            message: 'Unexpected return in constructor.',
             loc: location,
+            message: 'Unexpected return in constructor.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow returning values from constructors. Constructors should only initialize the object, not return values.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-constructor-return',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

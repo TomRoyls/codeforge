@@ -542,12 +542,12 @@ describe('CLIError - toJSON exhaustive', () => {
     const error = new CLIError('msg')
     const json = error.toJSON()
     expect(Object.keys(json)).toEqual([
-      'name',
       'code',
-      'message',
-      'suggestions',
       'context',
+      'message',
+      'name',
       'stack',
+      'suggestions',
     ])
   })
 

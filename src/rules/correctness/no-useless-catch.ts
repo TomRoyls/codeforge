@@ -1,17 +1,18 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUselessCatchOptions {}
 
 function extractLocation(node: unknown): SourceLocation {
   const defaultLoc: SourceLocation = {
-    start: { line: 1, column: 0 },
-    end: { line: 1, column: 1 },
+    end: { column: 1, line: 1 },
+    start: { column: 0, line: 1 },
   }
 
   if (!node || typeof node !== 'object') {
@@ -29,13 +30,13 @@ function extractLocation(node: unknown): SourceLocation {
   const end = loc.end as Record<string, unknown> | undefined
 
   return {
-    start: {
-      line: typeof start?.line === 'number' ? start.line : 1,
-      column: typeof start?.column === 'number' ? start.column : 0,
-    },
     end: {
-      line: typeof end?.line === 'number' ? end.line : 1,
       column: typeof end?.column === 'number' ? end.column : 0,
+      line: typeof end?.line === 'number' ? end.line : 1,
+    },
+    start: {
+      column: typeof start?.column === 'number' ? start.column : 0,
+      line: typeof start?.line === 'number' ? start.line : 1,
     },
   }
 }
@@ -51,7 +52,7 @@ function isUselessCatchBlock(node: unknown): boolean {
   }
 
   // Get the catch parameter (e.g., 'e' in catch (e))
-  const param = n.param as Record<string, unknown> | undefined | null
+  const param = n.param as null | Record<string, unknown> | undefined
   if (!param) {
     // Catch without parameter - if it throws, it's not useless
     return false
@@ -60,6 +61,7 @@ function isUselessCatchBlock(node: unknown): boolean {
   if (param.type !== 'Identifier' || typeof param.name !== 'string') {
     return false
   }
+
   const caughtParamName = param.name
 
   // Get the body
@@ -68,7 +70,7 @@ function isUselessCatchBlock(node: unknown): boolean {
     return false
   }
 
-  const bodyStatements = body.body as unknown[] | undefined
+  const bodyStatements = body.body as undefined | unknown[]
   if (!Array.isArray(bodyStatements) || bodyStatements.length !== 1) {
     // Not exactly one statement - not useless (could have logging, etc.)
     return false
@@ -80,7 +82,7 @@ function isUselessCatchBlock(node: unknown): boolean {
     return false
   }
 
-  const throwArgument = singleStatement.argument as Record<string, unknown> | undefined | null
+  const throwArgument = singleStatement.argument as null | Record<string, unknown> | undefined
   if (!throwArgument) {
     // throw without argument - not the pattern we're looking for
     return false
@@ -95,7 +97,7 @@ function isUselessCatchBlock(node: unknown): boolean {
   if (throwArgument.type === 'NewExpression') {
     const callee = throwArgument.callee as Record<string, unknown> | undefined
     if (callee && callee.type === 'Identifier' && callee.name === 'Error') {
-      const args = throwArgument.arguments as unknown[] | undefined
+      const args = throwArgument.arguments as undefined | unknown[]
       if (args && args.length === 1) {
         const firstArg = args[0] as Record<string, unknown>
         // Check if it's e.message
@@ -121,18 +123,6 @@ function isUselessCatchBlock(node: unknown): boolean {
 }
 
 export const noUselessCatchRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description: 'Disallow useless catch clauses that only rethrow the caught error unchanged',
-      category: 'correctness',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-useless-catch',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     extractRuleOptions<NoUselessCatchOptions>(context.config.options, {})
 
@@ -140,14 +130,26 @@ export const noUselessCatchRule: RuleDefinition = {
       CatchClause(node: unknown): void {
         if (isUselessCatchBlock(node)) {
           context.report({
-            node,
+            loc: extractLocation(node),
             message:
               'Useless catch clause. The catch block only rethrows the caught error without any additional handling. Remove the try-catch or add proper error handling.',
-            loc: extractLocation(node),
+            node,
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'correctness',
+      description: 'Disallow useless catch clauses that only rethrow the caught error unchanged',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-useless-catch',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

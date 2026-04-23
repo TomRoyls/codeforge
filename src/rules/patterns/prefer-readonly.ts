@@ -1,9 +1,10 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -13,33 +14,33 @@ interface PreferReadonlyOptions {
 }
 
 const MUTATING_ARRAY_METHODS = new Set([
-  'push',
-  'pop',
-  'shift',
-  'unshift',
-  'splice',
-  'sort',
-  'reverse',
-  'fill',
   'copyWithin',
+  'fill',
+  'pop',
+  'push',
+  'reverse',
+  'shift',
+  'sort',
+  'splice',
+  'unshift',
 ])
 
 interface VariableInfo {
-  name: string
-  isMutable: boolean
   isArrayOrObject: boolean
-  isPrivate: boolean
   isLocal: boolean
+  isMutable: boolean
+  isPrivate: boolean
   loc: SourceLocation
+  name: string
 }
 
 interface ClassPropertyInfo {
-  name: string
-  className: string | null
-  isReadonly: boolean
-  isPrivate: boolean
+  className: null | string
   hasInitialValue: boolean
+  isPrivate: boolean
+  isReadonly: boolean
   loc: SourceLocation
+  name: string
 }
 
 function isArrayOrObjectInitializer(node: unknown): boolean {
@@ -66,14 +67,14 @@ function isArrayOrObjectInitializer(node: unknown): boolean {
   }
 
   if (n.type === 'TSAsExpression' || n.type === 'TSTypeAssertion') {
-    const expression = (n as Record<string, unknown>).expression
+    const {expression} = (n as Record<string, unknown>)
     return isArrayOrObjectInitializer(expression)
   }
 
   return false
 }
 
-function getIdentifierName(node: unknown): string | null {
+function getIdentifierName(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
@@ -110,44 +111,18 @@ function isPrivateMember(name: string): boolean {
 }
 
 export const preferReadonlyRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Suggest using readonly for arrays and objects that are never modified for better immutability guarantees.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-readonly',
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          ignoreLocalVariables: {
-            type: 'boolean',
-          },
-          ignorePrivateMembers: {
-            type: 'boolean',
-          },
-        },
-        additionalProperties: false,
-      },
-    ],
-  },
-
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<PreferReadonlyOptions>(context.config.options, {
       ignoreLocalVariables: false,
       ignorePrivateMembers: false,
     })
 
-    const ignoreLocalVariables = options.ignoreLocalVariables
-    const ignorePrivateMembers = options.ignorePrivateMembers
+    const {ignoreLocalVariables} = options
+    const {ignorePrivateMembers} = options
 
     const variables = new Map<string, VariableInfo>()
     const classProperties = new Map<string, ClassPropertyInfo>()
-    let currentClassName: string | null = null
+    let currentClassName: null | string = null
     let inConstructor = false
 
     function markAsMutable(varName: string): void {
@@ -170,172 +145,13 @@ export const preferReadonlyRule: RuleDefinition = {
     }
 
     return {
-      VariableDeclarator(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        const init = n.init
-
-        if (!id || id.type !== 'Identifier') {
-          return
-        }
-
-        const name = id.name as string
-        if (!name) {
-          return
-        }
-
-        if (!isArrayOrObjectInitializer(init)) {
-          return
-        }
-
-        const parent = n.parent as Record<string, unknown> | undefined
-        const kind = (parent?.kind as string) ?? 'let'
-        const isConst = kind === 'const'
-
-        if (isConst) {
-          return
-        }
-
-        const isPrivate = isPrivateMember(name)
-        const loc = extractLocation(node)
-
-        variables.set(name, {
-          name,
-          isMutable: false,
-          isArrayOrObject: true,
-          isPrivate,
-          isLocal: true,
-          loc,
-        })
-      },
-
-      Property(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const key = n.key as Record<string, unknown> | undefined
-        const value = n.value
-
-        if (!key || key.type !== 'Identifier') {
-          return
-        }
-
-        const name = key.name as string
-        if (!name) {
-          return
-        }
-
-        if (!isArrayOrObjectInitializer(value)) {
-          return
-        }
-
-        const isPrivate = isPrivateMember(name)
-        const loc = extractLocation(node)
-
-        variables.set(name, {
-          name,
-          isMutable: false,
-          isArrayOrObject: true,
-          isPrivate,
-          isLocal: false,
-          loc,
-        })
-      },
-
-      ClassDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        currentClassName = id && typeof id.name === 'string' ? id.name : null
-      },
-
-      'ClassDeclaration:exit'(): void {
-        currentClassName = null
-      },
-
-      ClassExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        currentClassName = id && typeof id.name === 'string' ? id.name : null
-      },
-
-      'ClassExpression:exit'(): void {
-        currentClassName = null
-      },
-
-      MethodDefinition(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const kind = n.kind as string | undefined
-        inConstructor = kind === 'constructor'
-      },
-
-      'MethodDefinition:exit'(): void {
-        inConstructor = false
-      },
-
-      PropertyDefinition(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const key = n.key as Record<string, unknown> | undefined
-        const value = n.value
-        const readonly = n.readonly as boolean | undefined
-
-        if (readonly === true) {
-          return
-        }
-
-        let name: string | null = null
-        let isPrivate = false
-
-        if (key?.type === 'Identifier') {
-          name = key.name as string
-          isPrivate = isPrivateMember(name)
-        } else if (key?.type === 'PrivateIdentifier') {
-          name = key.name as string
-          isPrivate = true
-        }
-
-        if (!name) {
-          return
-        }
-
-        const loc = extractLocation(node)
-        const propertyKey = `${currentClassName ?? 'unknown'}.${name}`
-
-        classProperties.set(propertyKey, {
-          name,
-          className: currentClassName,
-          isReadonly: false,
-          isPrivate,
-          hasInitialValue: value !== null && value !== undefined,
-          loc,
-        })
-      },
-
       AssignmentExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
 
         const n = node as Record<string, unknown>
-        const left = n.left
+        const {left} = n
 
         if (!left) {
           return
@@ -358,25 +174,6 @@ export const preferReadonlyRule: RuleDefinition = {
               }
             }
           }
-        }
-      },
-
-      UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const argument = n.argument
-
-        if (!argument) {
-          return
-        }
-
-        const argNode = argument as Record<string, unknown>
-
-        if (argNode.type === 'MemberExpression') {
-          checkMemberMutation(argument)
         }
       },
 
@@ -405,21 +202,46 @@ export const preferReadonlyRule: RuleDefinition = {
         checkMemberMutation(callee.object)
       },
 
-      UnaryExpression(node: unknown): void {
+      ClassDeclaration(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
 
         const n = node as Record<string, unknown>
-        const operator = n.operator as string | undefined
-        const argument = n.argument
+        const id = n.id as Record<string, unknown> | undefined
+        currentClassName = id && typeof id.name === 'string' ? id.name : null
+      },
 
-        if (operator === 'delete' && argument) {
-          const argNode = argument as Record<string, unknown>
-          if (argNode.type === 'MemberExpression') {
-            checkMemberMutation(argument)
-          }
+      'ClassDeclaration:exit'(): void {
+        currentClassName = null
+      },
+
+      ClassExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
         }
+
+        const n = node as Record<string, unknown>
+        const id = n.id as Record<string, unknown> | undefined
+        currentClassName = id && typeof id.name === 'string' ? id.name : null
+      },
+
+      'ClassExpression:exit'(): void {
+        currentClassName = null
+      },
+
+      MethodDefinition(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const kind = n.kind as string | undefined
+        inConstructor = kind === 'constructor'
+      },
+
+      'MethodDefinition:exit'(): void {
+        inConstructor = false
       },
 
       'Program:exit'(): void {
@@ -441,8 +263,8 @@ export const preferReadonlyRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Variable '${info.name}' is an array or object that is never modified. Consider using 'const' with 'as const' or a 'readonly' type for better immutability.`,
             loc: info.loc,
+            message: `Variable '${info.name}' is an array or object that is never modified. Consider using 'const' with 'as const' or a 'readonly' type for better immutability.`,
           })
         }
 
@@ -456,12 +278,194 @@ export const preferReadonlyRule: RuleDefinition = {
           }
 
           context.report({
-            message: `Class property '${info.name}' is never reassigned outside the constructor. Consider using the 'readonly' modifier for better immutability.`,
             loc: info.loc,
+            message: `Class property '${info.name}' is never reassigned outside the constructor. Consider using the 'readonly' modifier for better immutability.`,
           })
         }
       },
+
+      Property(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const key = n.key as Record<string, unknown> | undefined
+        const {value} = n
+
+        if (!key || key.type !== 'Identifier') {
+          return
+        }
+
+        const name = key.name as string
+        if (!name) {
+          return
+        }
+
+        if (!isArrayOrObjectInitializer(value)) {
+          return
+        }
+
+        const isPrivate = isPrivateMember(name)
+        const loc = extractLocation(node)
+
+        variables.set(name, {
+          isArrayOrObject: true,
+          isLocal: false,
+          isMutable: false,
+          isPrivate,
+          loc,
+          name,
+        })
+      },
+
+      PropertyDefinition(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const key = n.key as Record<string, unknown> | undefined
+        const {value} = n
+        const readonly = n.readonly as boolean | undefined
+
+        if (readonly === true) {
+          return
+        }
+
+        let name: null | string = null
+        let isPrivate = false
+
+        if (key?.type === 'Identifier') {
+          name = key.name as string
+          isPrivate = isPrivateMember(name)
+        } else if (key?.type === 'PrivateIdentifier') {
+          name = key.name as string
+          isPrivate = true
+        }
+
+        if (!name) {
+          return
+        }
+
+        const loc = extractLocation(node)
+        const propertyKey = `${currentClassName ?? 'unknown'}.${name}`
+
+        classProperties.set(propertyKey, {
+          className: currentClassName,
+          hasInitialValue: value !== null && value !== undefined,
+          isPrivate,
+          isReadonly: false,
+          loc,
+          name,
+        })
+      },
+
+      UnaryExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const operator = n.operator as string | undefined
+        const {argument} = n
+
+        if (operator === 'delete' && argument) {
+          const argNode = argument as Record<string, unknown>
+          if (argNode.type === 'MemberExpression') {
+            checkMemberMutation(argument)
+          }
+        }
+      },
+
+      UpdateExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const {argument} = n
+
+        if (!argument) {
+          return
+        }
+
+        const argNode = argument as Record<string, unknown>
+
+        if (argNode.type === 'MemberExpression') {
+          checkMemberMutation(argument)
+        }
+      },
+
+      VariableDeclarator(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const id = n.id as Record<string, unknown> | undefined
+        const {init} = n
+
+        if (!id || id.type !== 'Identifier') {
+          return
+        }
+
+        const name = id.name as string
+        if (!name) {
+          return
+        }
+
+        if (!isArrayOrObjectInitializer(init)) {
+          return
+        }
+
+        const parent = n.parent as Record<string, unknown> | undefined
+        const kind = (parent?.kind as string) ?? 'let'
+        const isConst = kind === 'const'
+
+        if (isConst) {
+          return
+        }
+
+        const isPrivate = isPrivateMember(name)
+        const loc = extractLocation(node)
+
+        variables.set(name, {
+          isArrayOrObject: true,
+          isLocal: true,
+          isMutable: false,
+          isPrivate,
+          loc,
+          name,
+        })
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Suggest using readonly for arrays and objects that are never modified for better immutability guarantees.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-readonly',
+    },
+    schema: [
+      {
+        additionalProperties: false,
+        properties: {
+          ignoreLocalVariables: {
+            type: 'boolean',
+          },
+          ignorePrivateMembers: {
+            type: 'boolean',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

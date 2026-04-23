@@ -168,9 +168,9 @@ export function filterFilesByExtension(
 }
 
 export interface ApplyFixesResult {
+  fileFixReports?: import('../fix/types.js').FileFixReport[]
   fixesApplied: number
   fixesSkipped: number
-  fileFixReports?: import('../fix/types.js').FileFixReport[]
 }
 
 export interface ApplyFixesOptions {

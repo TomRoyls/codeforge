@@ -1,13 +1,14 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 import { isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
 
 interface ImportInfo {
+  importedName?: string
+  isDefault: boolean
+  isNamespace: boolean
   localName: string
   source: string
-  isNamespace: boolean
-  isDefault: boolean
-  importedName?: string
 }
 
 function collectImports(ast: unknown): ImportInfo[] {
@@ -18,7 +19,7 @@ function collectImports(ast: unknown): ImportInfo[] {
   }
 
   const n = ast as Record<string, unknown>
-  const body = n.body as unknown[] | undefined
+  const body = n.body as undefined | unknown[]
 
   if (!body || !Array.isArray(body)) {
     return imports
@@ -40,7 +41,7 @@ function collectImports(ast: unknown): ImportInfo[] {
       continue
     }
 
-    const specifiers = stmt.specifiers as unknown[] | undefined
+    const specifiers = stmt.specifiers as undefined | unknown[]
     if (!specifiers || !Array.isArray(specifiers)) {
       continue
     }
@@ -60,32 +61,45 @@ function collectImports(ast: unknown): ImportInfo[] {
 
       const specType = s.type as string
 
-      if (specType === 'ImportNamespaceSpecifier') {
+      switch (specType) {
+      case 'ImportDefaultSpecifier': {
         imports.push({
-          localName,
-          source: sourceValue,
-          isNamespace: true,
-          isDefault: false,
-        })
-      } else if (specType === 'ImportDefaultSpecifier') {
-        imports.push({
-          localName,
-          source: sourceValue,
-          isNamespace: false,
-          isDefault: true,
           importedName: 'default',
+          isDefault: true,
+          isNamespace: false,
+          localName,
+          source: sourceValue,
         })
-      } else if (specType === 'ImportSpecifier') {
+      
+      break;
+      }
+
+      case 'ImportNamespaceSpecifier': {
+        imports.push({
+          isDefault: false,
+          isNamespace: true,
+          localName,
+          source: sourceValue,
+        })
+      
+      break;
+      }
+
+      case 'ImportSpecifier': {
         const imported = s.imported as Record<string, unknown> | undefined
         const importedName = imported?.name as string | undefined
 
         imports.push({
+          importedName: importedName ?? localName,
+          isDefault: false,
+          isNamespace: false,
           localName,
           source: sourceValue,
-          isNamespace: false,
-          isDefault: false,
-          importedName: importedName ?? localName,
         })
+      
+      break;
+      }
+      // No default
       }
     }
   }
@@ -96,7 +110,7 @@ function collectImports(ast: unknown): ImportInfo[] {
 function isUnnecessaryQualifier(
   node: unknown,
   imports: ImportInfo[],
-): { qualifier: string; memberName: string } | null {
+): null | { memberName: string; qualifier: string; } {
   if (!isMemberExpression(node)) {
     return null
   }
@@ -106,11 +120,12 @@ function isUnnecessaryQualifier(
   if (n.computed === true) {
     return null
   }
+
   if (n.optional === true) {
     return null
   }
 
-  const object = n.object
+  const {object} = n
   if (!isIdentifier(object)) {
     return null
   }
@@ -139,35 +154,17 @@ function isUnnecessaryQualifier(
   )
 
   if (directImport) {
-    return { qualifier: qualifierName, memberName }
+    return { memberName, qualifier: qualifierName }
   }
 
   return null
 }
 
 export const noUnnecessaryQualifierRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow unnecessary namespace qualifiers. When a member is imported directly, using the qualified form (e.g., A.B) is unnecessary. Use the unqualified name (e.g., B) instead.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-unnecessary-qualifier',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     let imports: ImportInfo[] = []
 
     return {
-      Program(node: unknown): void {
-        imports = collectImports(node)
-      },
-
       MemberExpression(node: unknown): void {
         const result = isUnnecessaryQualifier(node, imports)
 
@@ -178,11 +175,29 @@ export const noUnnecessaryQualifierRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: `Unnecessary qualifier '${result.qualifier}'. '${result.memberName}' is already imported directly. Use '${result.memberName}' instead of '${result.qualifier}.${result.memberName}'.`,
           loc: location,
+          message: `Unnecessary qualifier '${result.qualifier}'. '${result.memberName}' is already imported directly. Use '${result.memberName}' instead of '${result.qualifier}.${result.memberName}'.`,
         })
       },
+
+      Program(node: unknown): void {
+        imports = collectImports(node)
+      },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow unnecessary namespace qualifiers. When a member is imported directly, using the qualified form (e.g., A.B) is unnecessary. Use the unqualified name (e.g., B) instead.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-unnecessary-qualifier',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

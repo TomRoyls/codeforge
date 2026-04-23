@@ -1,29 +1,30 @@
 import type {
-  RuleDefinition,
   RuleContext,
+  RuleDefinition,
   RuleVisitor,
   SourceLocation,
 } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 const MUTATING_ARRAY_METHODS = new Set([
-  'push',
-  'pop',
-  'shift',
-  'unshift',
-  'splice',
-  'sort',
-  'reverse',
-  'fill',
   'copyWithin',
+  'fill',
+  'pop',
+  'push',
+  'reverse',
+  'shift',
+  'sort',
+  'splice',
+  'unshift',
 ])
 
 interface ParameterInfo {
-  name: string
-  isMutable: boolean
   isArrayOrObjectType: boolean
+  isMutable: boolean
   loc: SourceLocation
-  typeAnnotation: string | null
+  name: string
+  typeAnnotation: null | string
 }
 
 function isArrayOrObjectType(typeAnnotation: unknown): boolean {
@@ -95,14 +96,16 @@ function isReadonlyType(typeAnnotation: unknown): boolean {
   return false
 }
 
-function getIdentifierName(node: unknown): string | null {
+function getIdentifierName(node: unknown): null | string {
   if (!node || typeof node !== 'object') {
     return null
   }
+
   const n = node as Record<string, unknown>
   if (n.type === 'Identifier') {
     return n.name as string
   }
+
   return null
 }
 
@@ -110,10 +113,12 @@ function getMemberExpressionObject(node: unknown): unknown {
   if (!node || typeof node !== 'object') {
     return null
   }
+
   const n = node as Record<string, unknown>
   if (n.type !== 'MemberExpression') {
     return null
   }
+
   return n.object
 }
 
@@ -137,20 +142,6 @@ function checkMemberMutation(objectNode: unknown, params: Map<string, ParameterI
 }
 
 export const preferReadonlyParameterRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Suggest using readonly for array/object parameters that are not modified within the function.',
-      category: 'patterns',
-      recommended: false,
-      url: 'https://codeforge.dev/docs/rules/prefer-readonly-parameter',
-    },
-    schema: [],
-    fixable: 'code',
-  },
-
   create(context: RuleContext): RuleVisitor {
     const params = new Map<string, ParameterInfo>()
 
@@ -169,10 +160,10 @@ export const preferReadonlyParameterRule: RuleDefinition = {
           const name = n.name as string
           if (name) {
             params.set(name, {
-              name,
-              isMutable: false,
               isArrayOrObjectType: true,
+              isMutable: false,
               loc: extractLocation(node),
+              name,
               typeAnnotation: null,
             })
           }
@@ -188,10 +179,10 @@ export const preferReadonlyParameterRule: RuleDefinition = {
             const name = argument.name as string
             if (name) {
               params.set(name, {
-                name,
-                isMutable: false,
                 isArrayOrObjectType: true,
+                isMutable: false,
                 loc: extractLocation(node),
+                name,
                 typeAnnotation: null,
               })
             }
@@ -200,8 +191,7 @@ export const preferReadonlyParameterRule: RuleDefinition = {
       }
 
       // Handle object/array destructuring with type: { a, b }: { a: string; b: number }
-      if (type === 'ObjectPattern' || type === 'ArrayPattern') {
-        if (n.typeAnnotation) {
+      if ((type === 'ObjectPattern' || type === 'ArrayPattern') && n.typeAnnotation) {
           const typeAnnotation = (n.typeAnnotation as Record<string, unknown>)?.typeAnnotation
           if (isArrayOrObjectType(typeAnnotation) && !isReadonlyType(typeAnnotation)) {
             // For destructured params, we need to track the individual bindings
@@ -213,14 +203,15 @@ export const preferReadonlyParameterRule: RuleDefinition = {
                 if (p.type === 'Property') {
                   value = p.value as Record<string, unknown>
                 }
+
                 if (value?.type === 'Identifier') {
                   const name = value.name as string
                   if (name) {
                     params.set(name, {
-                      name,
-                      isMutable: false,
                       isArrayOrObjectType: true,
+                      isMutable: false,
                       loc: extractLocation(prop),
+                      name,
                       typeAnnotation: null,
                     })
                   }
@@ -229,50 +220,16 @@ export const preferReadonlyParameterRule: RuleDefinition = {
             }
           }
         }
-      }
     }
 
     return {
-      FunctionDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const parameters = n.params as unknown[] | undefined
-        if (parameters) {
-          for (const param of parameters) {
-            collectParameters(param)
-          }
-        }
-      },
-
-      'FunctionDeclaration:exit'(): void {
-        reportAndClear()
-      },
-
-      FunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const parameters = n.params as unknown[] | undefined
-        if (parameters) {
-          for (const param of parameters) {
-            collectParameters(param)
-          }
-        }
-      },
-
-      'FunctionExpression:exit'(): void {
-        reportAndClear()
-      },
-
       ArrowFunctionExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
-        const parameters = n.params as unknown[] | undefined
+        const parameters = n.params as undefined | unknown[]
         if (parameters) {
           for (const param of parameters) {
             collectParameters(param)
@@ -288,11 +245,13 @@ export const preferReadonlyParameterRule: RuleDefinition = {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
-        const left = n.left
+        const {left} = n
         if (!left) {
           return
         }
+
         const leftNode = left as Record<string, unknown>
         if (leftNode.type === 'Identifier') {
           const info = params.get(leftNode.name as string)
@@ -304,52 +263,94 @@ export const preferReadonlyParameterRule: RuleDefinition = {
         }
       },
 
-      UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-        const n = node as Record<string, unknown>
-        const argument = n.argument
-        if (!argument) {
-          return
-        }
-        const argNode = argument as Record<string, unknown>
-        if (argNode.type === 'MemberExpression') {
-          checkMemberMutation(argument, params)
-        }
-      },
-
       CallExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
         const callee = n.callee as Record<string, unknown> | undefined
         if (!callee || callee.type !== 'MemberExpression') {
           return
         }
+
         const property = callee.property as Record<string, unknown> | undefined
         if (!property || property.type !== 'Identifier') {
           return
         }
+
         const methodName = property.name as string
         if (isMutatingMethod(methodName)) {
           checkMemberMutation(callee.object, params)
         }
       },
 
+      FunctionDeclaration(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const parameters = n.params as undefined | unknown[]
+        if (parameters) {
+          for (const param of parameters) {
+            collectParameters(param)
+          }
+        }
+      },
+
+      'FunctionDeclaration:exit'(): void {
+        reportAndClear()
+      },
+
+      FunctionExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const parameters = n.params as undefined | unknown[]
+        if (parameters) {
+          for (const param of parameters) {
+            collectParameters(param)
+          }
+        }
+      },
+
+      'FunctionExpression:exit'(): void {
+        reportAndClear()
+      },
+
       UnaryExpression(node: unknown): void {
         if (!node || typeof node !== 'object') {
           return
         }
+
         const n = node as Record<string, unknown>
         const operator = n.operator as string | undefined
-        const argument = n.argument
+        const {argument} = n
         if (operator === 'delete' && argument) {
           const argNode = argument as Record<string, unknown>
           if (argNode.type === 'MemberExpression') {
             checkMemberMutation(argument, params)
           }
+        }
+      },
+
+      UpdateExpression(node: unknown): void {
+        if (!node || typeof node !== 'object') {
+          return
+        }
+
+        const n = node as Record<string, unknown>
+        const {argument} = n
+        if (!argument) {
+          return
+        }
+
+        const argNode = argument as Record<string, unknown>
+        if (argNode.type === 'MemberExpression') {
+          checkMemberMutation(argument, params)
         }
       },
     }
@@ -359,16 +360,33 @@ export const preferReadonlyParameterRule: RuleDefinition = {
         if (info.isMutable) {
           continue
         }
+
         if (!info.isArrayOrObjectType) {
           continue
         }
+
         context.report({
-          message: `Parameter '${info.name}' is an array or object type that is never modified. Consider using 'readonly' for better immutability guarantees.`,
           loc: info.loc,
+          message: `Parameter '${info.name}' is an array or object type that is never modified. Consider using 'readonly' for better immutability guarantees.`,
         })
       }
+
       params.clear()
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Suggest using readonly for array/object parameters that are not modified within the function.',
+      recommended: false,
+      url: 'https://codeforge.dev/docs/rules/prefer-readonly-parameter',
+    },
+    fixable: 'code',
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 

@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isAmbiguousRegex(node: unknown): boolean {
@@ -26,19 +27,6 @@ function isAmbiguousRegex(node: unknown): boolean {
 }
 
 export const noDivRegexRule: RuleDefinition = {
-  meta: {
-    type: 'problem',
-    severity: 'error',
-    docs: {
-      description:
-        'Disallow ambiguous regex notation (= /foo/). The = operator can be confused with division. Use RegExp() or explicit comparison.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-div-regex',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
@@ -49,11 +37,24 @@ export const noDivRegexRule: RuleDefinition = {
         const location = extractLocation(node)
 
         context.report({
-          message: 'Ambiguous regex notation. Use RegExp() or wrap in parentheses.',
           loc: location,
+          message: 'Ambiguous regex notation. Use RegExp() or wrap in parentheses.',
         })
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow ambiguous regex notation (= /foo/). The = operator can be confused with division. Use RegExp() or explicit comparison.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-div-regex',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
   },
 }
 

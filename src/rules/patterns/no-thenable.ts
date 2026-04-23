@@ -1,4 +1,5 @@
-import type { RuleDefinition, RuleContext, RuleVisitor } from '../../plugins/types.js'
+import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
+
 import { extractLocation } from '../../ast/location-utils.js'
 
 function isThenable(node: unknown): boolean {
@@ -28,31 +29,31 @@ function isThenable(node: unknown): boolean {
 }
 
 export const noThenableRule: RuleDefinition = {
-  meta: {
-    type: 'suggestion',
-    severity: 'warn',
-    docs: {
-      description:
-        'Disallow use of .then() method. Prefer async/await syntax for better readability and error handling.',
-      category: 'patterns',
-      recommended: true,
-      url: 'https://codeforge.dev/docs/rules/no-thenable',
-    },
-    schema: [],
-  },
-
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
         if (isThenable(node)) {
           const location = extractLocation(node)
           context.report({
-            message: 'Prefer async/await over .then() method.',
             loc: location,
+            message: 'Prefer async/await over .then() method.',
           })
         }
       },
     }
+  },
+
+  meta: {
+    docs: {
+      category: 'patterns',
+      description:
+        'Disallow use of .then() method. Prefer async/await syntax for better readability and error handling.',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-thenable',
+    },
+    schema: [],
+    severity: 'warn',
+    type: 'suggestion',
   },
 }
 
