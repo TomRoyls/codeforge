@@ -178,13 +178,17 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report during create call', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       preferFunctionTypeRule.create(context)
       expect(reports.length).toBe(0)
     })
 
     test('should work with empty options', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Fn', [callSignature])
@@ -193,7 +197,10 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }', filePath: '/project/src/utils.ts' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+        filePath: '/project/src/utils.ts',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Fn', [callSignature])
@@ -222,7 +229,9 @@ describe('prefer-function-type rule', () => {
 
   describe('detecting interfaces with only call signatures', () => {
     test('should report interface with single call signature and no params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Callable', [callSignature])
@@ -233,7 +242,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with call signature and single identifier param', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'Identifier', name: 'x' }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -244,7 +255,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with call signature and two named params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [
         { type: 'Identifier', name: 'a' },
@@ -258,7 +271,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with call signature and three named params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [
         { type: 'Identifier', name: 'x' },
@@ -273,7 +288,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with void return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSVoidKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -284,7 +301,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with string return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSStringKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -295,7 +314,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with number return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSNumberKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -306,7 +327,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with boolean return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSBooleanKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -317,7 +340,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with any return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSAnyKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -328,7 +353,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with custom type reference return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSTypeReference', 'MyType')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -339,7 +366,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with multiple call signatures (overload)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature1 = createTSCallSignatureDeclaration()
       const callSignature2 = createTSCallSignatureDeclaration()
@@ -353,7 +382,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with three call signatures', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('TripleOverload', [
         createTSCallSignatureDeclaration(),
@@ -365,7 +396,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with rest parameters', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'RestElement', argument: { type: 'Identifier', name: 'args' } }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -376,7 +409,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with unnamed params using param index', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'unknown' }, { type: 'unknown' }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -388,7 +423,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface with mixed named and unnamed params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'Identifier', name: 'x' }, { type: 'unknown' }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -399,7 +436,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should default to void when no return type specified', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration([], undefined)
       const interfaceNode = createTSInterfaceDeclaration('NoReturn', [callSignature])
@@ -409,7 +448,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Fn', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Fn', [callSignature])
@@ -419,7 +460,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Callback', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Callback', [callSignature])
@@ -428,7 +471,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Handler', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Handler', [callSignature])
@@ -437,7 +482,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Converter', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Converter', [callSignature])
@@ -446,7 +493,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Predicate', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Predicate', [callSignature])
@@ -455,7 +504,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Resolver', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Resolver', [callSignature])
@@ -464,7 +515,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Mapper', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Mapper', [callSignature])
@@ -473,7 +526,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with type parameters', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const node = {
@@ -493,7 +548,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with five named params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [
         { type: 'Identifier', name: 'a' },
@@ -510,7 +567,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce fix starting with type keyword', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('MyFn', [callSignature])
@@ -519,7 +578,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce fix with arrow syntax', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Arrow', [callSignature])
@@ -528,7 +589,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce fix with parentheses for params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Parens', [callSignature])
@@ -537,7 +600,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature with single RestElement param', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'RestElement', argument: { type: 'Identifier', name: 'rest' } }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -548,7 +613,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with params and return type combined', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'Identifier', name: 'n' }]
       const returnType = createReturnType('TSNumberKeyword')
@@ -561,7 +628,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named with single character T', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('T', [callSignature])
@@ -571,7 +640,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with long name', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const longName = 'VeryLongInterfaceNameThatDescribesACallableType'
@@ -582,7 +653,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with call signature having empty params array', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration([])
       const interfaceNode = createTSInterfaceDeclaration('EmptyParams', [callSignature])
@@ -591,7 +664,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with TSNeverKeyword return type defaulting to void', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSNeverKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -602,7 +677,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with TSNullKeyword return defaulting to void', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSNullKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -613,7 +690,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface with TSUndefinedKeyword return defaulting to void', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSUndefinedKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -624,7 +703,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect interface named Callable', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Callable', [callSignature])
@@ -636,7 +717,9 @@ describe('prefer-function-type rule', () => {
 
   describe('not reporting non-call-signature interfaces', () => {
     test('should not report interface with property signature', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Obj', [createTSPropertySignature()])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -644,7 +727,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with method signature', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('WithMethods', [createTSMethodSignature()])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -652,7 +737,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with mixed call and property signatures', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Mixed', [
         createTSCallSignatureDeclaration(),
@@ -663,7 +750,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with mixed call and method signatures', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('MixedCallMethod', [
         createTSCallSignatureDeclaration(),
@@ -674,7 +763,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report empty interface', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Empty', [])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -682,7 +773,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with construct signature', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const constructSig = { type: 'TSConstructSignatureDeclaration' }
       const interfaceNode = createTSInterfaceDeclaration('Constructible', [constructSig])
@@ -691,7 +784,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with index signature', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const indexSig = { type: 'TSIndexSignature' }
       const interfaceNode = createTSInterfaceDeclaration('Indexable', [indexSig])
@@ -700,7 +795,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with type literal member', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const typeLiteral = { type: 'TSTypeLiteral' }
       const interfaceNode = createTSInterfaceDeclaration('WithLiteral', [typeLiteral])
@@ -709,7 +806,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with property and method (no call sigs)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('ObjectLike', [
         createTSPropertySignature(),
@@ -720,7 +819,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with null body member', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('WithNull', [null])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -728,7 +829,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with undefined body member', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('WithUndefined', [undefined])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -736,7 +839,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with empty object member', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('WithEmpty', [{}])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -744,70 +849,90 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report for null node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(null)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for undefined node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(undefined)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for string node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration('some string')
       expect(reports.length).toBe(0)
     })
 
     test('should not report for number node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(42)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for boolean node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(true)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for array node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration([])
       expect(reports.length).toBe(0)
     })
 
     test('should not report for empty object node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration({})
       expect(reports.length).toBe(0)
     })
 
     test('should not report for node with wrong type string', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration({ type: 'TSTypeAliasDeclaration' })
       expect(reports.length).toBe(0)
     })
 
     test('should not report for node with type ExpressionStatement', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration({ type: 'ExpressionStatement' })
       expect(reports.length).toBe(0)
     })
 
     test('should not report interface with two properties and a method', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Complex', [
         createTSPropertySignature('name'),
@@ -819,7 +944,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with TSEnumMember body', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const enumMember = { type: 'TSEnumMember' }
       const interfaceNode = createTSInterfaceDeclaration('WithEnum', [enumMember])
@@ -828,7 +955,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with TSAbstractProperty body', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const abstractProp = { type: 'TSAbstractProperty' }
       const interfaceNode = createTSInterfaceDeclaration('WithAbstract', [abstractProp])
@@ -837,28 +966,36 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report for false boolean node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(false)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for zero number node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(0)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for empty string node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration('')
       expect(reports.length).toBe(0)
     })
 
     test('should not report interface with call sig and construct sig mixed', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Mixed', [
         createTSCallSignatureDeclaration(),
@@ -869,7 +1006,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with member having unknown type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const unknownMember = { type: 'SomeUnknownNodeType' }
       const interfaceNode = createTSInterfaceDeclaration('UnknownMember', [unknownMember])
@@ -903,18 +1042,23 @@ describe('prefer-function-type rule', () => {
       expect(() => visitor.TSInterfaceDeclaration(123)).not.toThrow()
     })
 
-    test('should throw for node without body property', () => {
-      const { context } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+    test('should handle node without body property gracefully', () => {
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const node = {
         type: 'TSInterfaceDeclaration',
         id: { type: 'Identifier', name: 'NoBody' },
       }
-      expect(() => visitor.TSInterfaceDeclaration(node)).toThrow()
+      expect(() => visitor.TSInterfaceDeclaration(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
     test('should handle node without id with empty body', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const node = {
         type: 'TSInterfaceDeclaration',
@@ -925,7 +1069,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report node without loc or range but provide default location', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const node = {
@@ -940,7 +1086,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle malformed call signature gracefully', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const malformedCallSignature = { type: 'TSCallSignatureDeclaration' }
       const interfaceNode = createTSInterfaceDeclaration('Malformed', [malformedCallSignature])
@@ -949,7 +1097,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle call signature with null params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = { type: 'TSCallSignatureDeclaration', params: null }
       const interfaceNode = createTSInterfaceDeclaration('NullParams', [callSignature])
@@ -959,7 +1109,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle call signature with undefined params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = { type: 'TSCallSignatureDeclaration', params: undefined }
       const interfaceNode = createTSInterfaceDeclaration('UndefinedParams', [callSignature])
@@ -968,7 +1120,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle returnType as null', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration([], null)
       const interfaceNode = createTSInterfaceDeclaration('NullReturn', [callSignature])
@@ -978,7 +1132,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle returnType as non-object string', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration([], 'string')
       const interfaceNode = createTSInterfaceDeclaration('StringReturn', [callSignature])
@@ -988,7 +1144,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle returnType without typeAnnotation', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = { type: 'TSTypeAnnotation' }
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -999,7 +1157,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle returnType with unknown type keyword', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = {
         type: 'TSTypeAnnotation',
@@ -1013,7 +1173,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle interface at high line number', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('FarAway', [callSignature], 500, 100)
@@ -1024,7 +1186,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle interface at line 1 column 0', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Origin', [callSignature], 1, 0)
@@ -1035,7 +1199,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle node with type TSInterfaceDeclaration but body as non-interface-body', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const node = {
         type: 'TSInterfaceDeclaration',
@@ -1049,7 +1215,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle TSTypeReference return without typeName', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = {
         type: 'TSTypeAnnotation',
@@ -1063,7 +1231,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle TSTypeReference return with null typeName', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = {
         type: 'TSTypeAnnotation',
@@ -1077,7 +1247,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle interface name with underscores', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('__PrivateFn__', [callSignature])
@@ -1087,7 +1259,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle interface name with dollar sign', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('$Handler', [callSignature])
@@ -1097,7 +1271,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle interface name ending with numbers', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Handler123', [callSignature])
@@ -1107,7 +1283,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle call signature with typeParameters', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = {
         type: 'TSCallSignatureDeclaration',
@@ -1123,7 +1301,9 @@ describe('prefer-function-type rule', () => {
 
   describe('reporting location', () => {
     test('should report correct start line', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 10, 5)
@@ -1132,7 +1312,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report correct start column', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 25)
@@ -1141,7 +1323,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report correct end line', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 5, 0)
@@ -1150,7 +1334,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report correct end column', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 0)
@@ -1159,7 +1345,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should provide fix range as tuple', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 10)
@@ -1169,7 +1357,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should have fix range with two elements', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 5)
@@ -1178,7 +1368,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should have fix range start matching node range start', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 15)
@@ -1187,7 +1379,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should have fix range end matching node range end', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature], 1, 0)
@@ -1196,7 +1390,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report location at line 1 column 0', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('A', [callSignature], 1, 0)
@@ -1205,7 +1401,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report location at offset column', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('B', [callSignature], 3, 8)
@@ -1214,7 +1412,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should provide location with start and end objects', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('C', [callSignature], 1, 0)
@@ -1224,7 +1424,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should provide location with line and column in start', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('D', [callSignature], 1, 0)
@@ -1234,7 +1436,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should provide location with line and column in end', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('E', [callSignature], 1, 0)
@@ -1244,7 +1448,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should provide fix with range and text', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('F', [callSignature], 1, 0)
@@ -1255,7 +1461,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not provide fix when range is missing', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const node = {
@@ -1271,7 +1479,9 @@ describe('prefer-function-type rule', () => {
 
   describe('message quality', () => {
     test('should include interface name in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('MyInterface', [callSignature])
@@ -1280,7 +1490,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should mention call signature in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1289,7 +1501,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should mention function type in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1298,7 +1512,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include suggested type in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1307,7 +1523,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should wrap suggestion in backticks', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1316,7 +1534,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should start message with Interface', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1325,7 +1545,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should contain has only in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1334,7 +1556,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce non-empty message string', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1344,7 +1568,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include arrow in suggested fix within message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1353,7 +1579,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include interface name in quotes in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Quoted', [callSignature])
@@ -1362,7 +1590,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include complete suggestion for void return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Complete', [callSignature])
@@ -1371,7 +1601,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include complete suggestion for typed return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSStringKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1381,7 +1613,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should include complete suggestion for param case', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'Identifier', name: 'x' }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -1391,7 +1625,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should mention Use in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Test', [callSignature])
@@ -1402,7 +1638,9 @@ describe('prefer-function-type rule', () => {
 
   describe('multiple reports', () => {
     test('should report two different interfaces independently', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode1 = createTSInterfaceDeclaration('Fn1', [
         createTSCallSignatureDeclaration(),
@@ -1416,7 +1654,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report same interface called twice', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Repeated', [
         createTSCallSignatureDeclaration(),
@@ -1427,7 +1667,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle reportable then non-reportable', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const reportable = createTSInterfaceDeclaration('Reportable', [
         createTSCallSignatureDeclaration(),
@@ -1442,7 +1684,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle non-reportable then reportable', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const nonReportable = createTSInterfaceDeclaration('NonReportable', [
         createTSPropertySignature(),
@@ -1457,7 +1701,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report five different interfaces', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       for (let i = 0; i < 5; i++) {
         const interfaceNode = createTSInterfaceDeclaration(`Fn${i}`, [
@@ -1469,7 +1715,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should keep reports independent', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode1 = createTSInterfaceDeclaration('First', [
         createTSCallSignatureDeclaration(),
@@ -1487,7 +1735,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle null between reportable calls', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Around', [
         createTSCallSignatureDeclaration(),
@@ -1499,7 +1749,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should handle ten sequential calls', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       for (let i = 0; i < 10; i++) {
         const interfaceNode = createTSInterfaceDeclaration(`Fn${i}`, [
@@ -1511,7 +1763,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should have separate visitors from same context produce independent reports', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor1 = preferFunctionTypeRule.create(context)
       const visitor2 = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Shared', [
@@ -1523,7 +1777,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce reports with correct messages for each interface', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNodeA = createTSInterfaceDeclaration('Alpha', [
         createTSCallSignatureDeclaration(),
@@ -1538,7 +1794,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce reports with correct fix text for each interface', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNodeA = createTSInterfaceDeclaration('Alpha', [
         createTSCallSignatureDeclaration(),
@@ -1553,7 +1811,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce reports with correct locations for each interface', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNodeA = createTSInterfaceDeclaration(
         'Alpha',
@@ -1576,17 +1836,26 @@ describe('prefer-function-type rule', () => {
 
   describe('context interaction', () => {
     test('should use context getFilePath', () => {
-      const { context } = createMockRuleContext({ source: 'interface Callable { (): void }', filePath: '/custom/path.ts' })
+      const { context } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+        filePath: '/custom/path.ts',
+      })
       expect(context.getFilePath()).toBe('/custom/path.ts')
     })
 
     test('should use context getSource', () => {
-      const { context } = createMockRuleContext({ source: 'custom source', filePath: '/src/file.ts' })
+      const { context } = createMockRuleContext({
+        source: 'custom source',
+        filePath: '/src/file.ts',
+      })
       expect(context.getSource()).toBe('custom source')
     })
 
     test('should have config set on context', () => {
-      const { context } = createMockRuleContext({ options: [{ strict: true }], source: 'interface Callable { (): void }' })
+      const { context } = createMockRuleContext({
+        options: [{ strict: true }],
+        source: 'interface Callable { (): void }',
+      })
       expect(context.config).toBeDefined()
     })
 
@@ -1601,7 +1870,10 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should work with different options', () => {
-      const { context, reports } = createMockRuleContext({ options: [{ someOption: true }], source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        options: [{ someOption: true }],
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Ctx', [callSignature])
@@ -1610,7 +1882,10 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should work with different file paths', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }', filePath: '/different/project/file.ts' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+        filePath: '/different/project/file.ts',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Path', [callSignature])
@@ -1619,7 +1894,10 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should work with different source code', () => {
-      const { context, reports } = createMockRuleContext({ source: 'type MyFn = () => void', filePath: '/src/file.ts' })
+      const { context, reports } = createMockRuleContext({
+        source: 'type MyFn = () => void',
+        filePath: '/src/file.ts',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('MyFn', [callSignature])
@@ -1628,7 +1906,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not call logger debug during detection', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Logger', [callSignature])
@@ -1638,7 +1918,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not call logger info during detection', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Logger', [callSignature])
@@ -1648,7 +1930,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not call logger warn during detection', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Logger', [callSignature])
@@ -1660,7 +1944,9 @@ describe('prefer-function-type rule', () => {
 
   describe('fix generation', () => {
     test('should generate fix with type keyword', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Fix', [callSignature])
@@ -1669,7 +1955,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with equals sign', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Eq', [callSignature])
@@ -1678,7 +1966,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for void return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Arrow', [callSignature])
@@ -1687,7 +1977,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for string return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSStringKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1697,7 +1989,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for number return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSNumberKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1707,7 +2001,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for boolean return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSBooleanKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1717,7 +2013,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for any return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSAnyKeyword')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1727,7 +2025,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with arrow for custom type return', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType('TSTypeReference', 'Result')
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1737,7 +2037,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with named params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [
         { type: 'Identifier', name: 'x' },
@@ -1750,7 +2052,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with rest params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'RestElement', argument: { type: 'Identifier', name: 'args' } }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -1760,7 +2064,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with unnamed params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'unknown' }]
       const callSignature = createTSCallSignatureDeclaration(params)
@@ -1770,7 +2076,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with mixed named and unnamed params', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [
         { type: 'Identifier', name: 'a' },
@@ -1784,7 +2092,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with params and return type', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const params = [{ type: 'Identifier', name: 'n' }]
       const returnType = createReturnType('TSNumberKeyword')
@@ -1795,7 +2105,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix using first call signature for overloads', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSig1 = createTSCallSignatureDeclaration(
         [{ type: 'Identifier', name: 'x' }],
@@ -1811,7 +2123,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix text as non-empty string', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('NonEmpty', [callSignature])
@@ -1820,7 +2134,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix text starting with type keyword', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('StartType', [callSignature])
@@ -1829,7 +2145,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should generate fix with empty params parentheses', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration([])
       const interfaceNode = createTSInterfaceDeclaration('EmptyParens', [callSignature])
@@ -1848,7 +2166,9 @@ describe('prefer-function-type rule', () => {
     ])(
       'should detect interface with $keyword return type and produce => $expected',
       ({ keyword, expected }) => {
-        const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+        const { context, reports } = createMockRuleContext({
+          source: 'interface Callable { (): void }',
+        })
         const visitor = preferFunctionTypeRule.create(context)
         const returnType = createReturnType(keyword)
         const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1866,7 +2186,9 @@ describe('prefer-function-type rule', () => {
       { keyword: 'TSObjectKeyword', expected: 'void' },
       { keyword: 'TSSymbolKeyword', expected: 'void' },
     ])('should default unhandled $keyword return type to => $expected', ({ keyword, expected }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const returnType = createReturnType(keyword)
       const callSignature = createTSCallSignatureDeclaration([], returnType)
@@ -1925,7 +2247,9 @@ describe('prefer-function-type rule', () => {
         expected: '(p1, param2, ...args)',
       },
     ])('should produce fix with params $expected', ({ params, expected }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration(params)
       const interfaceNode = createTSInterfaceDeclaration('ParamTest', [callSignature])
@@ -1950,7 +2274,9 @@ describe('prefer-function-type rule', () => {
       'Fn0',
       'MyFunc',
     ])('should detect reportable interface named %s', (name) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration(name, [callSignature])
@@ -1988,7 +2314,9 @@ describe('prefer-function-type rule', () => {
       { member: undefined, desc: 'undefined member' },
       { member: {}, desc: 'empty object member' },
     ])('should not report when body has $desc', ({ member }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('NotReportable', [member])
       visitor.TSInterfaceDeclaration(interfaceNode)
@@ -2009,7 +2337,9 @@ describe('prefer-function-type rule', () => {
       { node: { type: 'Other' }, desc: 'wrong type' },
       { node: { type: 'TSTypeAliasDeclaration' }, desc: 'TSTypeAliasDeclaration' },
     ])('should not report for $desc node', ({ node }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       expect(() => visitor.TSInterfaceDeclaration(node)).not.toThrow()
       expect(reports.length).toBe(0)
@@ -2029,7 +2359,9 @@ describe('prefer-function-type rule', () => {
       { line: 99, column: 99 },
       { line: 1, column: 42 },
     ])('should report correct location at line $line column $column', ({ line, column }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration()
       const interfaceNode = createTSInterfaceDeclaration('Loc', [callSignature], line, column)
@@ -2121,7 +2453,9 @@ describe('prefer-function-type rule', () => {
         expected: 'type L = (x, y) => string',
       },
     ])('should generate fix "$expected"', ({ name, params, returnType, expected }) => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const callSignature = createTSCallSignatureDeclaration(params, returnType)
       const interfaceNode = createTSInterfaceDeclaration(name, [callSignature])
@@ -2133,7 +2467,9 @@ describe('prefer-function-type rule', () => {
 
   describe('additional individual coverage', () => {
     test('should detect call signature interface named Action', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Action', [
         createTSCallSignatureDeclaration(),
@@ -2143,7 +2479,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Effect', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Effect', [
         createTSCallSignatureDeclaration(),
@@ -2153,7 +2491,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Dispatcher', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Dispatcher', [
         createTSCallSignatureDeclaration(),
@@ -2163,7 +2503,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Subscriber', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Subscriber', [
         createTSCallSignatureDeclaration(),
@@ -2173,7 +2515,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Operator', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Operator', [
         createTSCallSignatureDeclaration(),
@@ -2183,7 +2527,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Validator', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Validator', [
         createTSCallSignatureDeclaration(),
@@ -2193,7 +2539,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should detect call signature interface named Comparator', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('Comparator', [
         createTSCallSignatureDeclaration(),
@@ -2203,7 +2551,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with two properties', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('TwoProps', [
         createTSPropertySignature('name'),
@@ -2214,7 +2564,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report interface with two methods', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration('TwoMethods', [
         createTSMethodSignature('run'),
@@ -2225,7 +2577,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should report interface at line 0 column 0', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration(
         'Zero',
@@ -2239,21 +2593,27 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should not report for NaN node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       visitor.TSInterfaceDeclaration(Number.NaN)
       expect(reports.length).toBe(0)
     })
 
     test('should not report for Symbol node', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       expect(() => visitor.TSInterfaceDeclaration(Symbol('test'))).not.toThrow()
       expect(reports.length).toBe(0)
     })
 
     test('should report with correct end location for short interface name', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration(
         'A',
@@ -2266,7 +2626,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce fix range start at column offset', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration(
         'Ranged',
@@ -2279,7 +2641,9 @@ describe('prefer-function-type rule', () => {
     })
 
     test('should produce fix range end at column plus name length', () => {
-      const { context, reports } = createMockRuleContext({ source: 'interface Callable { (): void }' })
+      const { context, reports } = createMockRuleContext({
+        source: 'interface Callable { (): void }',
+      })
       const visitor = preferFunctionTypeRule.create(context)
       const interfaceNode = createTSInterfaceDeclaration(
         'Measured',

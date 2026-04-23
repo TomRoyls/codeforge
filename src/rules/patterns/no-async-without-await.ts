@@ -11,10 +11,16 @@ function isAsync(node: unknown): boolean {
   return n.async === true
 }
 
-function containsAwait(node: unknown): boolean {
+function containsAwait(node: unknown, visited: Set<unknown> = new Set()): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
+  if (visited.has(node)) {
+    return false
+  }
+
+  visited.add(node)
 
   const n = node as Record<string, unknown>
 
@@ -32,16 +38,17 @@ function containsAwait(node: unknown): boolean {
   }
 
   for (const key of Object.keys(n)) {
+    if (key === 'parent' || key === 'loc' || key === 'range') continue
     const value = n[key]
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (containsAwait(item)) {
+        if (containsAwait(item, visited)) {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null && containsAwait(value)) {
-        return true
-      }
+    } else if (typeof value === 'object' && value !== null && containsAwait(value, visited)) {
+      return true
+    }
   }
 
   return false
@@ -65,10 +72,16 @@ function isForOfStatement(node: unknown): boolean {
   return n.type === 'ForOfStatement' && n.await === true
 }
 
-function containsForAwait(node: unknown): boolean {
+function containsForAwait(node: unknown, visited: Set<unknown> = new Set()): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
+  if (visited.has(node)) {
+    return false
+  }
+
+  visited.add(node)
 
   const n = node as Record<string, unknown>
 
@@ -86,16 +99,17 @@ function containsForAwait(node: unknown): boolean {
   }
 
   for (const key of Object.keys(n)) {
+    if (key === 'parent' || key === 'loc' || key === 'range') continue
     const value = n[key]
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (containsForAwait(item)) {
+        if (containsForAwait(item, visited)) {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null && containsForAwait(value)) {
-        return true
-      }
+    } else if (typeof value === 'object' && value !== null && containsForAwait(value, visited)) {
+      return true
+    }
   }
 
   return false

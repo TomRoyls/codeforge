@@ -30,10 +30,16 @@ function isAsyncFunctionWithReturnOrAwait(node: unknown): boolean {
   return body.type !== 'BlockStatement' || !hasReturnOrAwait(body)
 }
 
-function hasReturnOrAwait(node: unknown): boolean {
+function hasReturnOrAwait(node: unknown, visited: Set<unknown> = new Set()): boolean {
   if (typeof node !== 'object' || node === null) {
     return false
   }
+
+  if (visited.has(node)) {
+    return false
+  }
+
+  visited.add(node)
 
   const n = node as Record<string, unknown>
   const type = n.type as string
@@ -43,15 +49,16 @@ function hasReturnOrAwait(node: unknown): boolean {
   }
 
   for (const key of Object.keys(n)) {
+    if (key === 'parent' || key === 'loc' || key === 'range') continue
     const value = n[key]
     if (typeof value === 'object' && value !== null) {
-      if (hasReturnOrAwait(value)) {
+      if (hasReturnOrAwait(value, visited)) {
         return true
       }
 
       if (Array.isArray(value)) {
         for (const item of value) {
-          if (typeof item === 'object' && item !== null && hasReturnOrAwait(item)) {
+          if (typeof item === 'object' && item !== null && hasReturnOrAwait(item, visited)) {
             return true
           }
         }

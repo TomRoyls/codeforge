@@ -83,7 +83,7 @@ function isFunctionExpression(node: unknown): boolean {
     return false
   }
 
-  const {type} = (node as Record<string, unknown>)
+  const { type } = node as Record<string, unknown>
   return type === 'FunctionExpression' || type === 'FunctionDeclaration'
 }
 
@@ -106,8 +106,8 @@ export const preferAtContextRule: RuleDefinition = {
         }
 
         const n = node as Record<string, unknown>
-        const {left} = n
-        const {right} = n
+        const { left } = n
+        const { right } = n
 
         // Check for this.method = function() { ... } pattern
         if (isAssignmentToThisProperty(left) && isFunctionExpression(right)) {
@@ -202,10 +202,16 @@ function functionUsesThis(fnNode: Record<string, unknown>): boolean {
   return hasThisReference(body)
 }
 
-function hasThisReference(node: unknown): boolean {
+function hasThisReference(node: unknown, visited: Set<unknown> = new Set()): boolean {
   if (!node || typeof node !== 'object') {
     return false
   }
+
+  if (visited.has(node)) {
+    return false
+  }
+
+  visited.add(node)
 
   const n = node as Record<string, unknown>
 
@@ -225,20 +231,20 @@ function hasThisReference(node: unknown): boolean {
 
   // Check all properties recursively
   for (const key of Object.keys(n)) {
-    if (key === 'loc' || key === 'range' || key === 'type') {
+    if (key === 'loc' || key === 'range' || key === 'type' || key === 'parent') {
       continue
     }
 
     const value = n[key]
     if (Array.isArray(value)) {
       for (const item of value) {
-        if (hasThisReference(item)) {
+        if (hasThisReference(item, visited)) {
           return true
         }
       }
-    } else if (typeof value === 'object' && value !== null && hasThisReference(value)) {
-        return true
-      }
+    } else if (typeof value === 'object' && value !== null && hasThisReference(value, visited)) {
+      return true
+    }
   }
 
   return false

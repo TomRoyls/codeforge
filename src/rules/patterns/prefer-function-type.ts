@@ -143,7 +143,11 @@ export const preferFunctionTypeRule: RuleDefinition = {
           return
         }
 
-        const bodyMembers = node.body.body
+        const bodyMembers = node.body?.body
+
+        if (!Array.isArray(bodyMembers)) {
+          return
+        }
 
         // Check if the interface only has call signatures
         if (!hasOnlyCallSignatures(bodyMembers)) {
