@@ -10,6 +10,7 @@
 import type { RuleDefinition as PluginRuleDefinition } from '../plugins/types.js'
 import type { RuleDefinition } from './types.js'
 
+import { SystemError } from '../utils/errors.js'
 import { adaptPluginRule } from './adapter.js'
 
 export type RuleCategory =
@@ -778,9 +779,10 @@ export class LazyRuleLoader {
         return rule
       } catch (error) {
         this.loadPromises.delete(ruleId)
-        throw new Error(
-          `Failed to load rule '${ruleId}': ${error instanceof Error ? error.message : String(error)}`,
-        )
+        throw new SystemError(`Failed to load rule '${ruleId}'`, {
+          cause: error instanceof Error ? error : new Error(String(error)),
+          code: 'E503',
+        })
       }
     })()
 
