@@ -36,8 +36,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Additional pattern rules
   'no-array-destructuring': 'patterns',
   'no-async-promise-executor': 'patterns',
-  'no-async-without-await': 'patterns',
   'no-async-suite': 'testing',
+  'no-async-without-await': 'patterns',
   // Performance
   'no-await-in-loop': 'performance',
   'no-barrel-imports': 'dependencies',
@@ -144,8 +144,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-sql-injection': 'security',
   'no-string-concat': 'patterns',
   'no-sync-in-async': 'performance',
-  'no-test-return-statement': 'testing',
   'no-template-curly-in-string': 'patterns',
+  'no-test-return-statement': 'testing',
   'no-thenable': 'patterns',
   'no-this-before-super': 'patterns',
   'no-throw-literal': 'correctness',

@@ -19,13 +19,44 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./testing/index.js').then((m) => ({
       'expect-expect': adaptPluginRule(m.expectExpectRule, 'expect-expect'),
     })),
+  // Best-practices (ts-morph)
+  'explicit-return-type': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'explicit-return-type': m.explicitReturnTypeRule,
+    })),
+  // Complexity (ts-morph)
+  'max-complexity': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
+  'max-depth': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
+  'max-lines': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
+  'max-lines-per-function': () =>
+    import('./complexity/index.js').then((m) => ({
+      'max-lines-per-function': m.maxLinesPerFunctionRule,
+    })),
   'max-nested-describe': () =>
     import('./testing/index.js').then((m) => ({
       'max-nested-describe': adaptPluginRule(m.maxNestedDescribeRule, 'max-nested-describe'),
     })),
+  'max-params': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
   'no-async-suite': () =>
     import('./testing/index.js').then((m) => ({
       'no-async-suite': adaptPluginRule(m.noAsyncSuiteRule, 'no-async-suite'),
+    })),
+
+  // Performance (ts-morph)
+  'no-await-in-loop': () =>
+    import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
+  // Dependencies (ts-morph)
+  'no-barrel-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
+    })),
+  'no-circular-deps': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
     })),
   'no-conditional-expect': () =>
     import('./testing/index.js').then((m) => ({
@@ -42,6 +73,7 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
         'no-constant-binary-expression',
       ),
     })),
+
   // Security module
   'no-deprecated-api': () =>
     import('./security/index.js').then((m) => ({
@@ -56,7 +88,6 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./correctness/index.js').then((m) => ({
       'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
     })),
-
   'no-empty-character-class': () =>
     import('./correctness/index.js').then((m) => ({
       'no-empty-character-class': adaptPluginRule(
@@ -87,7 +118,6 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./testing/index.js').then((m) => ({
       'no-identical-title': adaptPluginRule(m.noIdenticalTitleRule, 'no-identical-title'),
     })),
-
   // Best practices module
   'no-magic-numbers': () =>
     import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
@@ -100,6 +130,7 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./security/index.js').then((m) => ({
       'no-sql-injection': adaptPluginRule(m.noSqlInjectionRule, 'no-sql-injection'),
     })),
+
   'no-sync-in-async': () =>
     import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
   'no-test-return-statement': () =>
@@ -141,7 +172,6 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./security/index.js').then((m) => ({
       'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
     })),
-
   'no-unsafe-type-assertion': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-type-assertion': adaptPluginRule(
@@ -181,10 +211,12 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-const-assertions': m.preferConstAssertionsRule,
     })),
+
   'prefer-default-export': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-default-export': m.preferDefaultExportRule,
     })),
+
   'prefer-exponent-operator': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-exponent-operator': m.preferExponentOperatorRule,
@@ -193,6 +225,7 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-flat-map': m.preferFlatMapRule,
     })),
+
   'prefer-for-of': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-for-of': m.preferForOfRule,
@@ -217,12 +250,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-return-this-type': m.preferReturnThisTypeRule,
     })),
-
   'prefer-string-start-end': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-start-end': m.preferStringStartEndRule,
     })),
-
   'prefer-string-template': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-template': m.preferStringTemplateRule,
@@ -234,41 +265,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
         'require-top-level-describe',
       ),
     })),
-
   'strict-boolean-expressions': () =>
      import('./best-practices/index.js').then((m) => ({
        'strict-boolean-expressions': m.strictBooleanExpressionsRule,
      })),
-  // Best-practices (ts-morph)
-  'explicit-return-type': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'explicit-return-type': m.explicitReturnTypeRule,
-    })),
-  // Complexity (ts-morph)
-  'max-complexity': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
-  'max-depth': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
-  'max-lines': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
-  'max-lines-per-function': () =>
-    import('./complexity/index.js').then((m) => ({
-      'max-lines-per-function': m.maxLinesPerFunctionRule,
-    })),
-  'max-params': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
-  // Performance (ts-morph)
-  'no-await-in-loop': () =>
-    import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
-  // Dependencies (ts-morph)
-  'no-barrel-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
-    })),
-  'no-circular-deps': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
-    })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)
   ...createPatternRuleLoaders(),
