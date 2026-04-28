@@ -14,7 +14,9 @@ async function findConfigInDirectory(dir: string): Promise<null | string> {
       if (stat.isFile()) {
         return configPath
       }
-    } catch {}
+    } catch {
+      // Config path does not exist or is inaccessible
+    }
   }
 
   return null

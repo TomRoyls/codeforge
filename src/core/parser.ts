@@ -7,12 +7,22 @@ import { hashContent } from '../cache/index.js'
 import { globalParseCache } from '../cache/parse-cache.js'
 import { logger } from '../utils/logger.js'
 
+export interface ParseError {
+  error: Error
+  filePath: string
+}
+
 export interface ParseResult {
   cached: boolean
   diskCached?: boolean
   filePath: string
   parseTime: number
   sourceFile: SourceFile
+}
+
+export interface ParseFilesResult {
+  errors: ParseError[]
+  results: ParseResult[]
 }
 
 export interface ParserOptions {
@@ -171,27 +181,49 @@ export class Parser {
   }
 
   async parseFiles(filePaths: string[]): Promise<ParseResult[]> {
+    const { errors, results } = await this.parseFilesWithErrors(filePaths)
+
+    if (errors.length > 0) {
+      for (const { error, filePath } of errors) {
+        logger.error(`Failed to parse ${filePath}: ${error.message}`)
+      }
+    }
+
+    return results
+  }
+
+  async parseFilesWithErrors(filePaths: string[]): Promise<ParseFilesResult> {
     if (!this.project) {
       await this.initialize()
     }
 
     const limit = pLimit(this.concurrency)
 
-    const results = await Promise.all(
+    const outcomes = await Promise.all(
       filePaths.map((filePath) =>
-        limit(async () => {
+        limit(async (): Promise<{ error?: ParseError; result?: ParseResult }> => {
           try {
             const result = await this.parseFile(filePath)
-            return result
+            return { result }
           } catch (error) {
-            logger.error(`Failed to parse ${filePath}: ${(error as Error).message}`)
-            return null
+            return { error: { error: error as Error, filePath } }
           }
         }),
       ),
     )
 
-    return results.filter((result): result is ParseResult => result !== null)
+    const results: ParseResult[] = []
+    const errors: ParseError[] = []
+
+    for (const outcome of outcomes) {
+      if (outcome.result) {
+        results.push(outcome.result)
+      } else if (outcome.error) {
+        errors.push(outcome.error)
+      }
+    }
+
+    return { errors, results }
   }
 
   releaseFile(filePath: string): void {

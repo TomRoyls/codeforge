@@ -15,6 +15,8 @@ export const RULE_SUGGESTIONS = {
   noBitwise:
     'Avoid bitwise operators unless explicitly needed for bit manipulation. They often indicate typos.',
   noCaseDeclarations: ' Move the declaration to an outer block.',
+  noCollectionSizeMischeck:
+    'Remove comparisons of collection sizes (.length, .size) with negative numbers. Sizes are always non-negative.',
   noConfusingVoidExpression: 'Avoid void expressions in positions where a value is expected.',
   noConsoleLog: 'Use a logging library like winston or pino for production code.',
   noConstantBinaryExpression:
@@ -26,6 +28,8 @@ export const RULE_SUGGESTIONS = {
   noControlRegex: String.raw`Escape control characters in regex or use \x01 notation explicitly.`,
   noDebugger: 'Remove debugger statements. Use a proper debugging tool or logging library.',
   noDeleteVar: 'Avoid delete on variables. Set to undefined or null instead.',
+  noDeprecatedImports:
+    'Replace deprecated imports with their recommended alternatives. Check the package documentation.',
   noDivRegex: String.raw`Fix regex starting with = by escaping the equals sign: /=/ should be /\=/.`,
   noDupeArgs: 'Remove duplicate parameter names from function declarations.',
   noDupeKeys: 'Remove duplicate keys in object literals to avoid unexpected behavior.',
@@ -65,6 +69,8 @@ export const RULE_SUGGESTIONS = {
     'Use explicit character ranges in regex to avoid matching unexpected characters.',
   noMisusedPromises: 'Use void return for functions that should not return promises.',
   noMultiSpaces: 'Remove extra whitespace. Configure editor to trim trailing spaces.',
+  noNamespace:
+    'Use ES modules (import/export) instead of TypeScript namespaces for better tree-shaking and standards compliance.',
   noNestedTernary: 'Refactor nested ternary expressions into if-else or separate variables.',
   noNewFunc: 'Avoid new Function(). Use regular function declarations for better debuggability.',
   noNewNativeNonconstructor: 'Avoid new with Symbol and BigInt. Call them directly without new.',
@@ -80,6 +86,8 @@ export const RULE_SUGGESTIONS = {
   noPrototypeBuiltins:
     'Use Object.hasOwnProperty.call() or Object.keys() instead of obj.hasOwnProperty().',
   noRedeclare: 'Avoid redeclaring variables in the same scope. Use different names.',
+  noRedundantBoolean:
+    'Remove redundant boolean comparisons (x === true). Use the expression directly or with negation (!).',
   noRegexSpaces: String.raw`Use explicit space quantifiers in regex: {n} or \s instead of literal spaces.`,
   noReturnAssign: 'Wrap return assignments in parentheses or use separate statements for clarity.',
   noReturnAwait: 'Remove unnecessary await in return statements. Return the promise directly.',
@@ -92,6 +100,8 @@ export const RULE_SUGGESTIONS = {
   noSimplifiablePattern: 'Simplify redundant pattern matching expressions.',
   noSparseArrays: 'Avoid sparse arrays with missing elements. Use undefined explicitly if needed.',
   noStringConcat: 'Use template literals instead of string concatenation for better readability.',
+  noTemplateCurlyInString:
+    'Use backticks (template literals) instead of quotes when using template expression syntax.',
   noThenable: 'Avoid returning thenable objects (then method) from async functions.',
   noThisBeforeSuper: 'Access this only after calling super() in derived class constructors.',
   noThrowLiteral: 'Throw Error objects instead of string literals: throw new Error("message").',
@@ -104,6 +114,8 @@ export const RULE_SUGGESTIONS = {
   noUnnecessaryCondition:
     'Remove conditions that are always true or false based on type information.',
   noUnnecessaryEscapeInRegexp: 'Remove unnecessary escape characters in regex patterns.',
+  noUnnecessaryPolyfills:
+    'Remove polyfill imports for APIs that are natively supported in modern JavaScript engines.',
   noUnnecessaryQualifier: 'Remove unnecessary type qualifiers when they can be inferred.',
   noUnnecessarySlice: 'Use the full array/string instead of slicing from 0 or to the end.',
   noUnnecessaryStringConcat: 'Use template literals instead of concatenating string literals.',
@@ -140,6 +152,8 @@ export const RULE_SUGGESTIONS = {
   noUselessFallbackInSpread: 'Remove unnecessary fallback in spread: {...obj} || {} → {...obj}.',
   noUselessUndefined:
     'Remove unnecessary undefined initializations. Variables default to undefined.',
+  noUtilityTruthiness:
+    'Use explicit comparisons like .length > 0 or .size !== 0 instead of relying on truthiness.',
   noVar: 'Use let or const instead of var for block-scoped variables.',
   noVarRequires: 'Use import statements instead of require() for ES module compatibility.',
   noVoid: 'Avoid void operator. Use undefined directly or restructure the code.',
@@ -172,6 +186,8 @@ export const RULE_SUGGESTIONS = {
   preferRegexLiterals: 'Use regex literals (/pattern/) instead of new RegExp() when possible.',
   preferRegexpExec: 'Use RegExp.exec() instead of String.match() with global regex.',
   preferRestParams: 'Use rest parameters (...args) instead of the arguments object.',
+  preferSingleBooleanReturn:
+    'Return the boolean expression directly instead of using if-else to return true/false.',
   preferSpread: 'Use the spread operator (...) instead of Function.prototype.apply().',
   preferStringReplaceAll: 'Use String.replaceAll() instead of String.replace() with global regex.',
   preferStringSlice: 'Use String.slice() instead of String.substring() for consistency.',

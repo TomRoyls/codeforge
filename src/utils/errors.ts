@@ -26,6 +26,17 @@ export class CLIError extends Error {
     return new CLIError(message, { code: 'E003', suggestions })
   }
 
+  public static configValidation(key: string, value: unknown, reason: string): CLIError {
+    return new CLIError(`Invalid config: '${key}' has invalid value. ${reason}`, {
+      code: 'E004',
+      context: { key, reason, value: String(value) },
+      suggestions: [
+        'Run codeforge config validate to check your configuration',
+        'Check the configuration reference documentation',
+      ],
+    })
+  }
+
   public static fileNotFound(filePath: string): CLIError {
     return new CLIError(`File not found: ${filePath}`, {
       code: 'E002',

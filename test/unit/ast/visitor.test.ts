@@ -40,13 +40,13 @@ vi.mock('ts-morph', () => {
   const actual = vi.importActual('ts-morph')
   const kinds = {
     SourceFile: 305,
-    FunctionDeclaration: 257,
-    FunctionExpression: 216,
-    ArrowFunction: 211,
-    MethodDeclaration: 173,
-    ConstructorDeclaration: 174,
-    GetAccessorDeclaration: 175,
-    SetAccessorDeclaration: 176,
+    FunctionDeclaration: 262,
+    FunctionExpression: 218,
+    ArrowFunction: 219,
+    MethodDeclaration: 174,
+    ConstructorDeclaration: 176,
+    GetAccessorDeclaration: 177,
+    SetAccessorDeclaration: 178,
     ClassDeclaration: 263,
     IfStatement: 244,
     ForStatement: 245,
@@ -161,22 +161,22 @@ describe('getNodeRange', () => {
 })
 
 describe('isFunctionLike', () => {
-  test('returns true for FunctionDeclaration (257)', () => {
+  test('returns true for FunctionDeclaration (262)', () => {
     const node = createMockNode({ kind: SyntaxKind.FunctionDeclaration })
     expect(isFunctionLike(node)).toBe(true)
   })
 
-  test('returns true for FunctionExpression (216)', () => {
+  test('returns true for FunctionExpression (218)', () => {
     const node = createMockNode({ kind: SyntaxKind.FunctionExpression })
     expect(isFunctionLike(node)).toBe(true)
   })
 
-  test('returns true for ArrowFunction (211)', () => {
+  test('returns true for ArrowFunction (219)', () => {
     const node = createMockNode({ kind: SyntaxKind.ArrowFunction })
     expect(isFunctionLike(node)).toBe(true)
   })
 
-  test('returns true for MethodDeclaration (173)', () => {
+  test('returns true for MethodDeclaration (174)', () => {
     const node = createMockNode({ kind: SyntaxKind.MethodDeclaration })
     expect(isFunctionLike(node)).toBe(true)
   })
@@ -186,12 +186,12 @@ describe('isFunctionLike', () => {
     expect(isFunctionLike(node)).toBe(true)
   })
 
-  test('returns true for GetAccessorDeclaration (175)', () => {
+  test('returns true for GetAccessorDeclaration (177)', () => {
     const node = createMockNode({ kind: SyntaxKind.GetAccessorDeclaration })
     expect(isFunctionLike(node)).toBe(true)
   })
 
-  test('returns true for SetAccessorDeclaration (176)', () => {
+  test('returns true for SetAccessorDeclaration (178)', () => {
     const node = createMockNode({ kind: SyntaxKind.SetAccessorDeclaration })
     expect(isFunctionLike(node)).toBe(true)
   })
@@ -3041,13 +3041,13 @@ describe('isFunctionLike boundary values', () => {
     expect(isFunctionLike(node)).toBe(false)
   })
 
-  test('returns false for kind just above MethodDeclaration range', () => {
-    const node = createMockNode({ kind: 177 })
+  test('returns false for kind just above SetAccessorDeclaration range', () => {
+    const node = createMockNode({ kind: 179 })
     expect(isFunctionLike(node)).toBe(false)
   })
 
-  test('returns true for ArrowFunction kind 211', () => {
-    const node = createMockNode({ kind: 211 })
+  test('returns true for ArrowFunction kind 219', () => {
+    const node = createMockNode({ kind: 219 })
     expect(isFunctionLike(node)).toBe(true)
   })
 

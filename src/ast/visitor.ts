@@ -117,24 +117,38 @@ export function getNodeRange(node: Node): Range {
 export function isFunctionLike(node: Node): node is FunctionLikeNode {
   const kind = node.getKind()
   return (
-    kind === 257 ||
-    kind === 216 ||
-    kind === 211 ||
-    kind === 173 ||
+    kind === 262 ||
+    kind === 218 ||
+    kind === 219 ||
     kind === 174 ||
-    kind === 175 ||
-    kind === 176
+    kind === 176 ||
+    kind === 177 ||
+    kind === 178
   )
 }
 
 export function getFunctionName(node: FunctionLikeNode): string {
-  if (Node.isFunctionDeclaration(node) || Node.isFunctionExpression(node)) {
-    const name = node.getName()
+  const kind = node.getKind()
+  const nodeAs = node as unknown as Record<string, unknown>
+
+  if (
+    Node.isFunctionDeclaration(node) ||
+    Node.isFunctionExpression(node) ||
+    kind === 262 ||
+    kind === 218
+  ) {
+    const name =
+      typeof nodeAs.getName === 'function'
+        ? (nodeAs.getName as () => string | undefined)()
+        : undefined
     if (name) return name
   }
 
-  if (Node.isMethodDeclaration(node)) {
-    const name = node.getName()
+  if (Node.isMethodDeclaration(node) || kind === 174) {
+    const name =
+      typeof nodeAs.getName === 'function'
+        ? (nodeAs.getName as () => string)()
+        : 'method'
     const parent = node.getParent()
     if (Node.isClassDeclaration(parent)) {
       return `${parent.getName() ?? 'Anonymous'}.${name}`
@@ -143,7 +157,7 @@ export function getFunctionName(node: FunctionLikeNode): string {
     return name
   }
 
-  if (Node.isConstructorDeclaration(node)) {
+  if (Node.isConstructorDeclaration(node) || kind === 176) {
     const parent = node.getParent()
     if (Node.isClassDeclaration(parent)) {
       return `constructor (${parent.getName() ?? 'Anonymous'})`
@@ -152,15 +166,15 @@ export function getFunctionName(node: FunctionLikeNode): string {
     return 'constructor'
   }
 
-  if (Node.isGetAccessorDeclaration(node)) {
-    return `get ${node.getName()}`
+  if (Node.isGetAccessorDeclaration(node) || kind === 177) {
+    return `get ${typeof nodeAs.getName === 'function' ? (nodeAs.getName as () => string)() : 'accessor'}`
   }
 
-  if (Node.isSetAccessorDeclaration(node)) {
-    return `set ${node.getName()}`
+  if (Node.isSetAccessorDeclaration(node) || kind === 178) {
+    return `set ${typeof nodeAs.getName === 'function' ? (nodeAs.getName as () => string)() : 'accessor'}`
   }
 
-  if (Node.isArrowFunction(node)) {
+  if (Node.isArrowFunction(node) || kind === 219) {
     const parent = node.getParent()
     if (Node.isVariableDeclaration(parent)) {
       const nameNode = parent.getNameNode()

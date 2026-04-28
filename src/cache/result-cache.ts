@@ -380,6 +380,100 @@ export class ResultCache {
   }
 
   /**
+   * Invalidate cache entries for multiple files at once
+   *
+   * More efficient than calling invalidateFile() in a loop.
+   *
+   * @param filePaths - Array of absolute file paths to invalidate
+   * @returns Number of invalidated entries
+   */
+  async invalidateFiles(filePaths: string[]): Promise<number> {
+    if (!this.enabled || filePaths.length === 0) return 0
+
+    const pathSet = new Set(filePaths)
+
+    try {
+      const files = await readdir(this.cacheDir)
+      let deleted = 0
+
+      for (const file of files) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const content = await readFile(path.join(this.cacheDir, file), 'utf8')
+          const raw = JSON.parse(content) as { value?: CachedResultEntry }
+
+          const entry: CachedResultEntry | undefined =
+            raw.value ?? (raw as unknown as CachedResultEntry)
+
+          if (entry?.filePath && pathSet.has(entry.filePath)) {
+            // eslint-disable-next-line no-await-in-loop
+            await unlink(path.join(this.cacheDir, file))
+            deleted++
+          }
+        } catch {
+          // Invalid cache file, continue
+        }
+      }
+
+      if (deleted > 0) {
+        logger.debug(`Invalidated ${deleted} cache entries for ${filePaths.length} files`)
+      }
+
+      return deleted
+    } catch (error) {
+      logger.debug(`Result cache bulk invalidation error:`, error)
+      return 0
+    }
+  }
+
+  /**
+   * Invalidate cache entries matching a glob pattern
+   *
+   * Useful when switching branches or changing a subset of files.
+   *
+   * @param pattern - Glob pattern to match against cached file paths
+   * @returns Number of invalidated entries
+   */
+  async invalidatePattern(pattern: string): Promise<number> {
+    if (!this.enabled) return 0
+
+    try {
+      const files = await readdir(this.cacheDir)
+      let deleted = 0
+
+      const globPrefix = pattern.replace(/\*.*$/, '')
+
+      for (const file of files) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const content = await readFile(path.join(this.cacheDir, file), 'utf8')
+          const raw = JSON.parse(content) as { value?: CachedResultEntry }
+
+          const entry: CachedResultEntry | undefined =
+            raw.value ?? (raw as unknown as CachedResultEntry)
+
+          if (entry?.filePath && entry.filePath.startsWith(globPrefix)) {
+            // eslint-disable-next-line no-await-in-loop
+            await unlink(path.join(this.cacheDir, file))
+            deleted++
+          }
+        } catch {
+          // Invalid cache file, continue
+        }
+      }
+
+      if (deleted > 0) {
+        logger.debug(`Invalidated ${deleted} cache entries matching pattern "${pattern}"`)
+      }
+
+      return deleted
+    } catch (error) {
+      logger.debug(`Result cache pattern invalidation error:`, error)
+      return 0
+    }
+  }
+
+  /**
    * Check if cache is enabled
    */
   isEnabled(): boolean {

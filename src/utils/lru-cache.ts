@@ -2,15 +2,25 @@ export interface LRUCacheOptions {
   maxSize: number
 }
 
+interface LRUNode<K, V> {
+  key: K
+  next: LRUNode<K, V> | null
+  prev: LRUNode<K, V> | null
+  timestamp: number
+  value: V
+}
+
 export class LRUCache<K, V> {
-  private accessOrder: K[]
-  private cache: Map<K, { timestamp: number; value: V }>
+  private cache: Map<K, LRUNode<K, V>>
+  private head: LRUNode<K, V> | null
   private maxSize: number
+  private tail: LRUNode<K, V> | null
 
   constructor(options: LRUCacheOptions) {
     this.cache = new Map()
+    this.head = null
+    this.tail = null
     this.maxSize = options.maxSize
-    this.accessOrder = []
   }
 
   get size(): number {
@@ -19,52 +29,43 @@ export class LRUCache<K, V> {
 
   clear(): void {
     this.cache.clear()
-    this.accessOrder = []
+    this.head = null
+    this.tail = null
   }
 
   delete(key: K): boolean {
-    if (!this.cache.has(key)) return false
+    const node = this.cache.get(key)
+    if (!node) return false
+
     this.cache.delete(key)
-    const index = this.accessOrder.indexOf(key)
-    if (index !== -1) {
-      this.accessOrder.splice(index, 1)
-    }
+    this.removeNode(node)
 
     return true
   }
 
-  /**
-   * Returns an iterable of key-value pairs
-   */
   entries(): IterableIterator<[K, V]> {
     const entries: [K, V][] = []
-    for (const [key, entry] of this.cache.entries()) {
-      entries.push([key, entry.value])
+    for (const [key, node] of this.cache.entries()) {
+      entries.push([key, node.value])
     }
 
     return entries[Symbol.iterator]()
   }
 
-  /**
-   * Iterate over all entries in the cache
-   */
   forEach(callback: (value: V, key: K) => void): void {
-    for (const [key, entry] of this.cache.entries()) {
-      callback(entry.value, key)
+    for (const [key, node] of this.cache.entries()) {
+      callback(node.value, key)
     }
   }
 
   get(key: K): undefined | V {
-    const entry = this.cache.get(key)
-    if (!entry) return undefined
+    const node = this.cache.get(key)
+    if (!node) return undefined
 
-    this.updateAccessOrder(key)
-    return entry.value
+    this.moveToHead(node)
+    return node.value
   }
 
-  /**
-   * Returns the value associated with the key, or default if not found
-   */
   getOrDefault(key: K, defaultValue: V): V {
     const value = this.get(key)
     return value === undefined ? defaultValue : value
@@ -74,19 +75,16 @@ export class LRUCache<K, V> {
     return this.cache.has(key)
   }
 
-  /**
-   * Returns an iterable of keys
-   */
   keys(): IterableIterator<K> {
     return this.cache.keys()
   }
 
   set(key: K, value: V): void {
-    if (this.cache.has(key)) {
-      const entry = this.cache.get(key)!
-      entry.value = value
-      entry.timestamp = Date.now()
-      this.updateAccessOrder(key)
+    const existing = this.cache.get(key)
+    if (existing) {
+      existing.value = value
+      existing.timestamp = Date.now()
+      this.moveToHead(existing)
       return
     }
 
@@ -94,36 +92,70 @@ export class LRUCache<K, V> {
       this.evictLRU()
     }
 
-    this.cache.set(key, { timestamp: Date.now(), value })
-    this.accessOrder.push(key)
+    const node: LRUNode<K, V> = {
+      key,
+      next: null,
+      prev: null,
+      timestamp: Date.now(),
+      value,
+    }
+
+    this.cache.set(key, node)
+    this.prependNode(node)
   }
 
-  /**
-   * Returns an iterable of values
-   */
   values(): IterableIterator<V> {
     const values: V[] = []
-    for (const [, entry] of this.cache) {
-      values.push(entry.value)
+    for (const [, node] of this.cache) {
+      values.push(node.value)
     }
 
     return values[Symbol.iterator]()
   }
 
   private evictLRU(): void {
-    if (this.accessOrder.length === 0) return
+    if (!this.tail) return
 
-    const lruKey = this.accessOrder.shift()
-    if (lruKey !== undefined) {
-      this.cache.delete(lruKey)
+    this.cache.delete(this.tail.key)
+    this.removeNode(this.tail)
+  }
+
+  private moveToHead(node: LRUNode<K, V>): void {
+    if (node === this.head) return
+
+    this.removeNode(node)
+    this.prependNode(node)
+  }
+
+  private prependNode(node: LRUNode<K, V>): void {
+    node.prev = null
+    node.next = this.head
+
+    if (this.head) {
+      this.head.prev = node
+    }
+
+    this.head = node
+
+    if (!this.tail) {
+      this.tail = node
     }
   }
 
-  private updateAccessOrder(key: K): void {
-    const index = this.accessOrder.indexOf(key)
-    if (index !== -1) {
-      this.accessOrder.splice(index, 1)
-      this.accessOrder.push(key)
+  private removeNode(node: LRUNode<K, V>): void {
+    if (node.prev) {
+      node.prev.next = node.next
+    } else {
+      this.head = node.next
     }
+
+    if (node.next) {
+      node.next.prev = node.prev
+    } else {
+      this.tail = node.prev
+    }
+
+    node.prev = null
+    node.next = null
   }
 }

@@ -2,7 +2,7 @@ export { DEFAULT_IGNORE, DEFAULT_PATTERNS, discoverFiles } from './file-discover
 export type { DiscoveredFile, FileDiscoveryOptions } from './file-discovery.js'
 
 export { Parser } from './parser.js'
-export type { ParseResult, ParserOptions } from './parser.js'
+export type { ParseError, ParseFilesResult, ParseResult, ParserOptions } from './parser.js'
 
 export { Reporter } from './reporter.js'
 export type { AnalysisReport, FileReport, OutputFormat, ReporterOptions } from './reporter.js'

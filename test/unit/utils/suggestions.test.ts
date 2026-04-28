@@ -7,6 +7,7 @@ const EXPECTED_KEYS = [
   'noAsyncPromiseExecutor',
   'noAsyncWithoutAwait',
   'noCaseDeclarations',
+  'noCollectionSizeMischeck',
   'useLoggingLibrary',
   'noConsoleLog',
   'useStrictEquality',
@@ -46,6 +47,7 @@ const EXPECTED_KEYS = [
   'noParamReassign',
   'noPrototypeBuiltins',
   'noRedeclare',
+  'noRedundantBoolean',
   'noRegexSpaces',
   'noReturnAssign',
   'noSelfAssign',
@@ -82,6 +84,7 @@ const EXPECTED_KEYS = [
   'noConstantCondition',
   'noControlRegex',
   'noDeleteVar',
+  'noDeprecatedImports',
   'noDivRegex',
   'noElseReturn',
   'noExAssign',
@@ -96,6 +99,7 @@ const EXPECTED_KEYS = [
   'noPromiseAsBoolean',
   'noReturnAwait',
   'noStringConcat',
+  'noTemplateCurlyInString',
   'noThisBeforeSuper',
   'noUnassignedVars',
   'noUndef',
@@ -144,6 +148,7 @@ const EXPECTED_KEYS = [
   'noEmptyPattern',
   'noEmptyStaticBlock',
   'noMisusedPromises',
+  'noNamespace',
   'noNonoctalDecimalEscape',
   'noShadowRestrictedNames',
   'noSimplifiablePattern',
@@ -152,6 +157,7 @@ const EXPECTED_KEYS = [
   'noTypeOnlyReturn',
   'noUnfinishedTodos',
   'noUnnecessaryEscapeInRegexp',
+  'noUnnecessaryPolyfills',
   'noUnnecessaryQualifier',
   'noUnnecessarySlice',
   'noUnnecessaryStringConcat',
@@ -163,11 +169,13 @@ const EXPECTED_KEYS = [
   'noUnsafeReturn',
   'noUnsafeTypeAssertion',
   'noUselessFallbackInSpread',
+  'noUtilityTruthiness',
   'noVarRequires',
   'preferAtContext',
   'preferAtMethod',
   'preferPrototypeMethods',
   'preferReadonlyParameter',
+  'preferSingleBooleanReturn',
 ] as const
 
 describe('suggestions', () => {
@@ -180,9 +188,9 @@ describe('suggestions', () => {
       expect(typeof RULE_SUGGESTIONS).toBe('object')
     })
 
-    it('should have exactly 167 keys', () => {
+    it('should have exactly 174 keys', () => {
       const keys = Object.keys(RULE_SUGGESTIONS)
-      expect(keys).toHaveLength(166)
+      expect(keys).toHaveLength(174)
     })
 
     it('should have all expected keys', () => {

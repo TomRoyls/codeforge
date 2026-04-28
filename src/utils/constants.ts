@@ -183,3 +183,69 @@ export const DEFAULT_IGNORE_PATTERNS = [
 ]
 
 export const DEFAULT_FILE_PATTERNS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']
+
+// ============================================================================
+// TESTING FRAMEWORK CONSTANTS
+// ============================================================================
+
+/** Common test function names (describe, it, test) */
+export const TEST_FUNCTIONS = new Set(['describe', 'it', 'test'])
+
+/** Describe-like function names that create test scopes (context, describe, suite) */
+export const DESCRIBE_FUNCTIONS = new Set(['context', 'describe', 'suite'])
+
+/** Skip/only methods on test functions */
+export const TEST_SKIP_METHODS = new Set(['only', 'skip'])
+
+/** X-prefix functions that skip tests (xdescribe, xit, xtest) */
+export const X_PREFIX_SKIP_FUNCTIONS = new Set(['xdescribe', 'xit', 'xtest'])
+
+// ============================================================================
+// REGEX CONSTANTS
+// ============================================================================
+
+/** Characters that have special meaning in regular expressions */
+export const REGEX_SPECIAL_CHARS = new Set([
+  '$',
+  '(',
+  ')',
+  '*',
+  '+',
+  '.',
+  '/',
+  '?',
+  '[',
+  '\\',
+  ']',
+  '^',
+  '{',
+  '|',
+  '}',
+])
+
+// ============================================================================
+// SECURITY CONSTANTS
+// ============================================================================
+
+/** Functions that can execute arbitrary code strings */
+export const DANGEROUS_FUNCTIONS = new Set([
+  'eval',
+  'execScript',
+  'Function',
+  'setImmediate',
+  'setInterval',
+  'setTimeout',
+])
+
+/** Array methods that mutate the original array */
+export const MUTATING_ARRAY_METHODS = new Set([
+  'copyWithin',
+  'fill',
+  'pop',
+  'push',
+  'reverse',
+  'shift',
+  'sort',
+  'splice',
+  'unshift',
+])

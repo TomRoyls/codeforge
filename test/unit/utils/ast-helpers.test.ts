@@ -8,6 +8,11 @@ import {
   isCallExpression,
   isMemberExpression,
   isBinaryExpression,
+  isLogicalExpression,
+  isUnaryExpression,
+  isTemplateLiteral,
+  isFunctionExpression,
+  isReturnStatement,
   getIdentifierName,
   getRange,
   getNodeSource,
@@ -1460,6 +1465,92 @@ describe('ast-helpers', () => {
       expect(getCalleeName(callExpr)).toBe('bar')
       expect(getArguments(newExpr)).toHaveLength(1)
       expect(getArguments(callExpr)).toHaveLength(1)
+    })
+  })
+
+  describe('isLogicalExpression', () => {
+    test('should return true for LogicalExpression node', () => {
+      expect(isLogicalExpression({ type: 'LogicalExpression', operator: '&&' })).toBe(true)
+    })
+
+    test('should return false for non-LogicalExpression node', () => {
+      expect(isLogicalExpression({ type: 'BinaryExpression' })).toBe(false)
+    })
+
+    test('should return false for null', () => {
+      expect(isLogicalExpression(null)).toBe(false)
+    })
+
+    test('should return false for undefined', () => {
+      expect(isLogicalExpression(undefined)).toBe(false)
+    })
+
+    test('should return false for primitive', () => {
+      expect(isLogicalExpression('LogicalExpression')).toBe(false)
+    })
+  })
+
+  describe('isUnaryExpression', () => {
+    test('should return true for UnaryExpression node', () => {
+      expect(isUnaryExpression({ type: 'UnaryExpression', operator: '!' })).toBe(true)
+    })
+
+    test('should return false for non-UnaryExpression node', () => {
+      expect(isUnaryExpression({ type: 'BinaryExpression' })).toBe(false)
+    })
+
+    test('should return false for null', () => {
+      expect(isUnaryExpression(null)).toBe(false)
+    })
+  })
+
+  describe('isTemplateLiteral', () => {
+    test('should return true for TemplateLiteral node', () => {
+      expect(isTemplateLiteral({ type: 'TemplateLiteral', quasis: [] })).toBe(true)
+    })
+
+    test('should return false for non-TemplateLiteral node', () => {
+      expect(isTemplateLiteral({ type: 'Literal' })).toBe(false)
+    })
+
+    test('should return false for null', () => {
+      expect(isTemplateLiteral(null)).toBe(false)
+    })
+  })
+
+  describe('isFunctionExpression', () => {
+    test('should return true for FunctionExpression node', () => {
+      expect(isFunctionExpression({ type: 'FunctionExpression', params: [] })).toBe(true)
+    })
+
+    test('should return true for ArrowFunctionExpression node', () => {
+      expect(isFunctionExpression({ type: 'ArrowFunctionExpression', params: [] })).toBe(true)
+    })
+
+    test('should return false for FunctionDeclaration', () => {
+      expect(isFunctionExpression({ type: 'FunctionDeclaration' })).toBe(false)
+    })
+
+    test('should return false for non-function node', () => {
+      expect(isFunctionExpression({ type: 'CallExpression' })).toBe(false)
+    })
+
+    test('should return false for null', () => {
+      expect(isFunctionExpression(null)).toBe(false)
+    })
+  })
+
+  describe('isReturnStatement', () => {
+    test('should return true for ReturnStatement node', () => {
+      expect(isReturnStatement({ type: 'ReturnStatement', argument: null })).toBe(true)
+    })
+
+    test('should return false for non-ReturnStatement node', () => {
+      expect(isReturnStatement({ type: 'ExpressionStatement' })).toBe(false)
+    })
+
+    test('should return false for null', () => {
+      expect(isReturnStatement(null)).toBe(false)
     })
   })
 })

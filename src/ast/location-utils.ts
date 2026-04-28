@@ -2,6 +2,8 @@
  * Shared AST utility functions for extracting source locations
  */
 
+import { toASTNode } from '../utils/ast-helpers.js'
+
 export interface SourceLocation {
   end: { column: number; line: number; }
   start: { column: number; line: number; }
@@ -19,19 +21,15 @@ export function extractLocation(node: unknown, defaultLine: number = 1): SourceL
     start: { column: 0, line: defaultLine },
   }
 
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
+  const n = toASTNode(node)
+  if (!n) return defaultLoc
 
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
+  const {loc} = n
+  if (!loc) return defaultLoc
 
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
+  const locObj = loc as Record<string, unknown>
+  const start = locObj.start as Record<string, unknown> | undefined
+  const end = locObj.end as Record<string, unknown> | undefined
 
   return {
     end: {
