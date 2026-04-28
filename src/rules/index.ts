@@ -16,6 +16,7 @@ import {
   preferFlatMapRule,
   preferForOfRule,
   preferRegexLiteralRule,
+  preferReturnThisTypeRule,
   preferStringStartEndRule,
   preferStringTemplateRule,
   strictBooleanExpressionsRule,
@@ -65,16 +66,19 @@ import {
   noCallerRule,
   noCaseDeclarationsRule,
   noClassAssignRule,
+  noCollectionSizeMischeckRule,
   noCompareNegZeroRule,
   noCondAssignRule,
   noConfusingVoidExpressionRule,
   noConsoleLogRule,
   noConstantConditionRule,
   noConstAssignRule,
+  noConstEnumRule,
   noConstructorReturnRule,
   noControlRegexRule,
   noDebuggerRule,
   noDeleteVarRule,
+  noDeprecatedImportsRule,
   noDivRegexRule,
   noDupeArgsRule,
   noDupeClassMembersRule,
@@ -83,6 +87,7 @@ import {
   noDuplicateCodeRule,
   noDuplicateElseIfRule,
   noDuplicateImportsRule,
+  noDuplicateStringsInArrayRule,
   noElseReturnRule,
   noEmptyPatternRule,
   noEmptyRule,
@@ -96,18 +101,21 @@ import {
   noFuncAssignRule,
   noGlobalAssignRule,
   noImplicitCoercionRule,
+  noImplicitSideEffectsRule,
   noImpliedEvalRule,
   noImportAssignRule,
   noInferrableTypesRule,
   noInvalidRegexpRule,
   noIrregularWhitespaceRule,
   noIteratorRule,
+  noLabelVarRule,
   noLonelyIfRule,
   noLoopFuncRule,
   noLossOfPrecisionRule,
   noMisleadingCharacterClassRule,
   noMisusedPromisesRule,
   noMultiSpacesRule,
+  noNamespaceRule,
   noNestedTernaryRule,
   noNewFuncRule,
   noNewNativeNonconstructorRule,
@@ -121,6 +129,7 @@ import {
   noPromiseAsBooleanRule,
   noPrototypeBuiltinsRule,
   noRedeclareRule,
+  noRedundantBooleanRule,
   noRegexSpacesRule,
   noReturnAssignRule,
   noReturnAwaitRule,
@@ -134,6 +143,7 @@ import {
   noSimplifiablePatternRule,
   noSparseArraysRule,
   noStringConcatRule,
+  noTemplateCurlyInStringRule,
   noThenableRule,
   noThisBeforeSuperRule,
   noThrowSyncRule,
@@ -144,11 +154,13 @@ import {
   noUnfinishedTodosRule,
   noUnnecessaryConditionRule,
   noUnnecessaryEscapeInRegexpRule,
+  noUnnecessaryPolyfillsRule,
   noUnnecessaryQualifierRule,
   noUnnecessarySliceRule,
   noUnnecessaryStringConcatRule,
   noUnnecessaryTemplateExpressionRule,
   noUnnecessaryTypeArgumentsRule,
+  noUnnecessaryTypeConstraintRule,
   noUnneededTernaryRule,
   noUnreachableRule,
   noUnsafeAssignmentRule,
@@ -167,6 +179,8 @@ import {
   noUselessConstructorRule,
   noUselessEscapeRule,
   noUselessFallbackInSpreadRule,
+  noUselessUndefinedRule,
+  noUtilityTruthinessRule,
   noVarRequiresRule,
   noVarRule,
   noVoidRule,
@@ -194,6 +208,7 @@ import {
   preferRegexLiteralsRule,
   preferRegexpExecRule,
   preferRestParamsRule,
+  preferSingleBooleanReturnRule,
   preferSpreadRule,
   preferStringReplaceAllRule,
   preferStringSliceOverSubstringRule,
@@ -223,14 +238,29 @@ import {
   noDeprecatedApiRule,
   noDynamicDeleteRule,
   noEvalRule,
+  noHardcodedCredentialsRule,
+  noSqlInjectionRule,
   noUnsafeCallRule,
+  noUnsafeHtmlRule,
   noUnsafeMemberAccessRule,
   noUnsafeRegexRule,
   noUnsafeReturnRule,
   noUnsafeTypeAssertionRule,
+  noWeakCryptoRule,
 } from './security/index.js'
 // Testing rules
-import { noFocusedTestsRule, noSkippedTestsRule } from './testing/index.js'
+import {
+  consistentTestItRule,
+  expectExpectRule,
+  maxNestedDescribeRule,
+  noAsyncSuiteRule,
+  noConditionalExpectRule,
+  noFocusedTestsRule,
+  noIdenticalTitleRule,
+  noSkippedTestsRule,
+  noTestReturnStatementRule,
+  requireTopLevelDescribeRule,
+} from './testing/index.js'
 
 const adaptedPreferObjectSpread = adaptPluginRule(preferObjectSpreadRule, 'prefer-object-spread')
 const adaptedPreferOptionalChain = adaptPluginRule(preferOptionalChainRule, 'prefer-optional-chain')
@@ -245,6 +275,16 @@ const adaptedNoUnsafeTypeAssertion = adaptPluginRule(
   noUnsafeTypeAssertionRule,
   'no-unsafe-type-assertion',
 )
+const adaptedNoHardcodedCredentials = adaptPluginRule(
+  noHardcodedCredentialsRule,
+  'no-hardcoded-credentials',
+)
+const adaptedNoSqlInjection = adaptPluginRule(
+  noSqlInjectionRule,
+  'no-sql-injection',
+)
+const adaptedNoUnsafeHtml = adaptPluginRule(noUnsafeHtmlRule, 'no-unsafe-html')
+const adaptedNoWeakCrypto = adaptPluginRule(noWeakCryptoRule, 'no-weak-crypto')
 const adaptedNoUnsafeReturn = adaptPluginRule(noUnsafeReturnRule, 'no-unsafe-return')
 const adaptedNoDynamicDelete = adaptPluginRule(noDynamicDeleteRule, 'no-dynamic-delete')
 const adaptedNoThrowLiteral = adaptPluginRule(noThrowLiteralRule, 'no-throw-literal')
@@ -319,6 +359,7 @@ const adaptedNoImplicitCoercion = adaptPluginRule(noImplicitCoercionRule, 'no-im
 const adaptedNoImpliedEval = adaptPluginRule(noImpliedEvalRule, 'no-implied-eval')
 const adaptedNoMisusedPromises = adaptPluginRule(noMisusedPromisesRule, 'no-misused-promises')
 const adaptedNoLonelyIf = adaptPluginRule(noLonelyIfRule, 'no-lonely-if')
+const adaptedNoLabelVar = adaptPluginRule(noLabelVarRule, 'no-label-var')
 const adaptedNoLossOfPrecision = adaptPluginRule(noLossOfPrecisionRule, 'no-loss-of-precision')
 const adaptedNoMultiSpaces = adaptPluginRule(noMultiSpacesRule, 'no-multi-spaces')
 const adaptedCurly = adaptPluginRule(curlyRule, 'curly')
@@ -413,6 +454,7 @@ const adaptedNoUselessFallbackInSpread = adaptPluginRule(
   noUselessFallbackInSpreadRule,
   'no-useless-fallback-in-spread',
 )
+const adaptedNoUselessUndefined = adaptPluginRule(noUselessUndefinedRule, 'no-useless-undefined')
 const adaptedPreferArrayFlat = adaptPluginRule(preferArrayFlatRule, 'prefer-array-flat')
 const adaptedPreferAtContext = adaptPluginRule(preferAtContextRule, 'prefer-at-context')
 const adaptedPreferAtMethod = adaptPluginRule(preferAtMethodRule, 'prefer-at-method')
@@ -438,6 +480,7 @@ const adaptedNoConsole = adaptPluginRule(noConsoleRule, 'no-console')
 const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex')
 const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
 const adaptedNoFocusedTests = adaptPluginRule(noFocusedTestsRule, 'no-focused-tests')
+const adaptedNoIdenticalTitle = adaptPluginRule(noIdenticalTitleRule, 'no-identical-title')
 const adaptedNoEmptyCatch = adaptPluginRule(noEmptyCatchRule, 'no-empty-catch')
 const adaptedNoUselessCatch = adaptPluginRule(noUselessCatchRule, 'no-useless-catch')
 const adaptedNoEmptyFunction = adaptPluginRule(noEmptyFunctionRule, 'no-empty-function')
@@ -560,8 +603,28 @@ const adaptedNoEmptyCharacterClass = adaptPluginRule(
   'no-empty-character-class',
 )
 
+const adaptedNoCollectionSizeMischeck = adaptPluginRule(noCollectionSizeMischeckRule, 'no-collection-size-mischeck')
+const adaptedNoConstEnum = adaptPluginRule(noConstEnumRule, 'no-const-enum')
+const adaptedNoDeprecatedImports = adaptPluginRule(noDeprecatedImportsRule, 'no-deprecated-imports')
+const adaptedNoDuplicateStringsInArray = adaptPluginRule(noDuplicateStringsInArrayRule, 'no-duplicate-strings-in-array')
+const adaptedNoNamespace = adaptPluginRule(noNamespaceRule, 'no-namespace')
+const adaptedNoRedundantBoolean = adaptPluginRule(noRedundantBooleanRule, 'no-redundant-boolean')
+const adaptedNoTemplateCurlyInString = adaptPluginRule(noTemplateCurlyInStringRule, 'no-template-curly-in-string')
+const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule, 'no-unnecessary-polyfills')
+const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
+const adaptedNoUtilityTruthiness = adaptPluginRule(noUtilityTruthinessRule, 'no-utility-truthiness')
+const adaptedPreferSingleBooleanReturn = adaptPluginRule(preferSingleBooleanReturnRule, 'prefer-single-boolean-return')
+const adaptedExpectExpect = adaptPluginRule(expectExpectRule, 'expect-expect')
+const adaptedNoConditionalExpect = adaptPluginRule(noConditionalExpectRule, 'no-conditional-expect')
+const adaptedNoAsyncSuite = adaptPluginRule(noAsyncSuiteRule, 'no-async-suite')
+const adaptedNoTestReturnStatement = adaptPluginRule(noTestReturnStatementRule, 'no-test-return-statement')
+const adaptedRequireTopLevelDescribe = adaptPluginRule(requireTopLevelDescribeRule, 'require-top-level-describe')
+const adaptedMaxNestedDescribe = adaptPluginRule(maxNestedDescribeRule, 'max-nested-describe')
+const adaptedConsistentTestIt = adaptPluginRule(consistentTestItRule, 'consistent-test-it')
+
 export const allRules: Record<string, RuleDefinition> = {
   'consistent-imports': adaptedConsistentImports,
+  'consistent-test-it': adaptedConsistentTestIt,
   // Patterns
   'consistent-type-exports': adaptedConsistentTypeExports,
   // Orphan pattern rules
@@ -570,6 +633,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'default-case': adaptedDefaultCase,
   // Patterns
   'eq-eq-eq': adaptedEqEqEq,
+  'expect-expect': adaptedExpectExpect,
   'explicit-module-boundary-types': adaptedExplicitModuleBoundaryTypes,
   // Orphan rules - best practices (native)
   'explicit-return-type': explicitReturnTypeRule,
@@ -581,6 +645,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'max-file-size': adaptedMaxFileSize,
   'max-lines': maxLinesRule,
   'max-lines-per-function': maxLinesPerFunctionRule,
+  'max-nested-describe': adaptedMaxNestedDescribe,
   'max-params': maxParamsRule,
   'max-union-size': adaptedMaxUnionSize,
   'no-alert': adaptedNoAlert,
@@ -588,6 +653,7 @@ export const allRules: Record<string, RuleDefinition> = {
   // Orphan rules - previously defined but not registered
   'no-array-destructuring': adaptedNoArrayDestructuring,
   'no-async-promise-executor': adaptedNoAsyncPromiseExecutor,
+  'no-async-suite': adaptedNoAsyncSuite,
   'no-async-without-await': adaptedNoAsyncWithoutAwait,
   // Performance
   'no-await-in-loop': noAwaitInLoopRule,
@@ -598,12 +664,15 @@ export const allRules: Record<string, RuleDefinition> = {
   // Dependencies
   'no-circular-deps': adaptedNoCircularDeps,
   'no-class-assign': adaptedNoClassAssign,
+  'no-collection-size-mischeck': adaptedNoCollectionSizeMischeck,
   'no-compare-neg-zero': adaptedNoCompareNegZero,
   'no-cond-assign': adaptedNoCondAssign,
+  'no-conditional-expect': adaptedNoConditionalExpect,
   'no-confusing-void-expression': adaptedNoConfusingVoidExpression,
   'no-console': adaptedNoConsole,
   'no-console-log': adaptedNoConsoleLog,
   'no-const-assign': adaptedNoConstAssign,
+  'no-const-enum': adaptedNoConstEnum,
   'no-constant-binary-expression': adaptedNoConstantBinaryExpression,
   'no-constant-condition': adaptedNoConstantCondition,
   'no-constructor-return': adaptedNoConstructorReturn,
@@ -612,6 +681,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-delete-var': adaptedNoDeleteVar,
   // Security
   'no-deprecated-api': adaptedNoDeprecatedApi,
+  'no-deprecated-imports': adaptedNoDeprecatedImports,
   'no-div-regex': adaptedNoDivRegex,
   'no-dupe-args': adaptedNoDupeArgs,
   'no-dupe-class-members': adaptedNoDupeClassMembers,
@@ -620,6 +690,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-duplicate-code': adaptedNoDuplicateCode,
   'no-duplicate-else-if': adaptedNoDuplicateElseIf,
   'no-duplicate-imports': adaptedNoDuplicateImports,
+  'no-duplicate-strings-in-array': adaptedNoDuplicateStringsInArray,
   'no-dynamic-delete': adaptedNoDynamicDelete,
   'no-else-return': adaptedNoElseReturn,
   'no-empty': adaptedNoEmpty,
@@ -638,13 +709,17 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-focused-tests': adaptedNoFocusedTests,
   'no-func-assign': adaptedNoFuncAssign,
   'no-global-assign': adaptedNoGlobalAssign,
+  'no-hardcoded-credentials': adaptedNoHardcodedCredentials,
+  'no-identical-title': adaptedNoIdenticalTitle,
   'no-implicit-coercion': adaptedNoImplicitCoercion,
+  'no-implicit-side-effects': noImplicitSideEffectsRule,
   'no-implied-eval': adaptedNoImpliedEval,
   'no-import-assign': adaptedNoImportAssign,
   'no-inferrable-types': adaptedNoInferrableTypes,
   'no-invalid-regexp': adaptedNoInvalidRegexp,
   'no-irregular-whitespace': adaptedNoIrregularWhitespace,
   'no-iterator': adaptedNoIterator,
+  'no-label-var': adaptedNoLabelVar,
   'no-lonely-if': adaptedNoLonelyIf,
   'no-loop-func': adaptedNoLoopFunc,
   'no-loss-of-precision': adaptedNoLossOfPrecision,
@@ -653,6 +728,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-misleading-character-class': adaptedNoMisleadingCharacterClass,
   'no-misused-promises': adaptedNoMisusedPromises,
   'no-multi-spaces': adaptedNoMultiSpaces,
+  'no-namespace': adaptedNoNamespace,
   'no-nested-ternary': adaptedNoNestedTernary,
   'no-new-func': adaptedNoNewFunc,
   'no-new-native-nonconstructor': adaptedNoNewNativeNonconstructor,
@@ -666,6 +742,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-promise-as-boolean': adaptedNoPromiseAsBoolean,
   'no-prototype-builtins': adaptedNoPrototypeBuiltins,
   'no-redeclare': adaptedNoRedeclare,
+  'no-redundant-boolean': adaptedNoRedundantBoolean,
   'no-regex-spaces': adaptedNoRegexSpaces,
   'no-return-assign': adaptedNoReturnAssign,
   'no-return-await': adaptedNoReturnAwait,
@@ -679,8 +756,11 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-simplifiable-pattern': adaptedNoSimplifiablePattern,
   'no-skipped-tests': adaptedNoSkippedTests,
   'no-sparse-arrays': adaptedNoSparseArrays,
+  'no-sql-injection': adaptedNoSqlInjection,
   'no-string-concat': adaptedNoStringConcat,
   'no-sync-in-async': noSyncInAsyncRule,
+  'no-template-curly-in-string': adaptedNoTemplateCurlyInString,
+  'no-test-return-statement': adaptedNoTestReturnStatement,
   'no-thenable': adaptedNoThenable,
   'no-this-before-super': adaptedNoThisBeforeSuper,
   'no-throw-literal': adaptedNoThrowLiteral,
@@ -692,18 +772,21 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unfinished-todos': adaptedNoUnfinishedTodos,
   'no-unnecessary-condition': adaptedNoUnnecessaryCondition,
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
+  'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
   'no-unnecessary-qualifier': adaptedNoUnnecessaryQualifier,
   'no-unnecessary-slice': adaptedNoUnnecessarySlice,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
   'no-unnecessary-type-arguments': adaptedNoUnnecessaryTypeArguments,
   'no-unnecessary-type-assertion': noUnnecessaryTypeAssertionRule,
+  'no-unnecessary-type-constraint': adaptedNoUnnecessaryTypeConstraint,
   'no-unneeded-ternary': adaptedNoUnneededTernary,
   'no-unreachable': adaptedNoUnreachable,
   'no-unsafe-assignment': adaptedNoUnsafeAssignment,
   'no-unsafe-call': adaptedNoUnsafeCall,
   'no-unsafe-declaration-merging': adaptedNoUnsafeDeclarationMerging,
   'no-unsafe-finally': adaptedNoUnsafeFinally,
+  'no-unsafe-html': adaptedNoUnsafeHtml,
   'no-unsafe-member-access': adaptedNoUnsafeMemberAccess,
   'no-unsafe-negation': adaptedNoUnsafeNegation,
   'no-unsafe-optional-chaining': adaptedNoUnsafeOptionalChaining,
@@ -723,9 +806,12 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-useless-constructor': adaptedNoUselessConstructor,
   'no-useless-escape': adaptedNoUselessEscape,
   'no-useless-fallback-in-spread': adaptedNoUselessFallbackInSpread,
+  'no-useless-undefined': adaptedNoUselessUndefined,
+  'no-utility-truthiness': adaptedNoUtilityTruthiness,
   'no-var': adaptedNoVar,
   'no-var-requires': adaptedNoVarRequires,
   'no-void': adaptedNoVoid,
+  'no-weak-crypto': adaptedNoWeakCrypto,
   'no-with': adaptedNoWith,
   'object-shorthand': adaptedObjectShorthand,
   'prefer-array-find': preferArrayFindRule,
@@ -762,6 +848,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-regex-literals': adaptedPreferRegexLiterals,
   'prefer-regexp-exec': adaptedPreferRegexpExec,
   'prefer-rest-params': adaptedPreferRestParams,
+  'prefer-return-this-type': preferReturnThisTypeRule,
+  'prefer-single-boolean-return': adaptedPreferSingleBooleanReturn,
   'prefer-spread': adaptedPreferSpread,
   'prefer-string-replace-all': adaptedPreferStringReplaceAll,
   'prefer-string-slice': adaptedPreferStringSlice,
@@ -774,6 +862,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'preserve-caught-error': adaptedPreserveCaughtError,
   'require-await': adaptedRequireAwait,
   'require-return-type': adaptedRequireReturnType,
+  'require-top-level-describe': adaptedRequireTopLevelDescribe,
   'require-yield': adaptedRequireYield,
   'restrict-template-expressions': adaptedRestrictTemplateExpressions,
   'sort-keys': adaptedSortKeys,
@@ -801,12 +890,14 @@ export function getRuleIds(): string[] {
 // Rule ID to category mapping
 const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'consistent-imports': 'dependencies',
+  'consistent-test-it': 'testing',
   // Patterns
   'consistent-type-exports': 'patterns',
   'constructor-super': 'patterns',
   curly: 'patterns',
   'default-case': 'patterns',
   'eq-eq-eq': 'patterns',
+  'expect-expect': 'testing',
   'explicit-module-boundary-types': 'patterns',
   // Orphan rules
   'explicit-return-type': 'patterns',
@@ -818,11 +909,13 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'max-file-size': 'patterns',
   'max-lines': 'complexity',
   'max-lines-per-function': 'complexity',
+  'max-nested-describe': 'testing',
   'max-params': 'complexity',
   'max-union-size': 'patterns',
   'no-alert': 'patterns',
   'no-array-constructor': 'patterns',
   'no-async-promise-executor': 'patterns',
+  'no-async-suite': 'testing',
   // Performance
   'no-await-in-loop': 'performance',
   'no-barrel-imports': 'dependencies',
@@ -832,12 +925,15 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Dependencies
   'no-circular-deps': 'dependencies',
   'no-class-assign': 'patterns',
+  'no-collection-size-mischeck': 'patterns',
   'no-compare-neg-zero': 'patterns',
   'no-cond-assign': 'patterns',
+  'no-conditional-expect': 'testing',
   'no-confusing-void-expression': 'patterns',
   'no-console': 'patterns',
   'no-console-log': 'patterns',
   'no-const-assign': 'patterns',
+  'no-const-enum': 'patterns',
   'no-constant-binary-expression': 'correctness',
   'no-constant-condition': 'patterns',
   'no-constructor-return': 'patterns',
@@ -846,6 +942,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-delete-var': 'patterns',
   // Security
   'no-deprecated-api': 'security',
+  'no-deprecated-imports': 'patterns',
   'no-div-regex': 'patterns',
   'no-dupe-args': 'patterns',
   'no-dupe-class-members': 'patterns',
@@ -854,6 +951,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-duplicate-code': 'patterns',
   'no-duplicate-else-if': 'patterns',
   'no-duplicate-imports': 'patterns',
+  'no-duplicate-strings-in-array': 'patterns',
   'no-dynamic-delete': 'security',
   'no-else-return': 'patterns',
   'no-empty': 'patterns',
@@ -872,19 +970,24 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-focused-tests': 'testing',
   'no-func-assign': 'patterns',
   'no-global-assign': 'patterns',
+  'no-hardcoded-credentials': 'security',
+  'no-identical-title': 'testing',
   'no-implicit-coercion': 'patterns',
+  'no-implicit-side-effects': 'patterns',
   'no-implied-eval': 'patterns',
   'no-import-assign': 'patterns',
   'no-inferrable-types': 'patterns',
   'no-invalid-regexp': 'patterns',
   'no-irregular-whitespace': 'patterns',
   'no-iterator': 'patterns',
+  'no-label-var': 'patterns',
   'no-lonely-if': 'patterns',
   'no-loop-func': 'patterns',
   'no-loss-of-precision': 'patterns',
   'no-misleading-character-class': 'patterns',
   'no-misused-promises': 'patterns',
   'no-multi-spaces': 'patterns',
+  'no-namespace': 'patterns',
   'no-nested-ternary': 'patterns',
   'no-new-func': 'patterns',
   'no-new-native-nonconstructor': 'patterns',
@@ -898,6 +1001,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-promise-as-boolean': 'patterns',
   'no-prototype-builtins': 'patterns',
   'no-redeclare': 'patterns',
+  'no-redundant-boolean': 'patterns',
   'no-regex-spaces': 'patterns',
   'no-return-assign': 'patterns',
   'no-return-await': 'patterns',
@@ -909,8 +1013,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-shadow-restricted-names': 'patterns',
   'no-skipped-tests': 'testing',
   'no-sparse-arrays': 'patterns',
+  'no-sql-injection': 'security',
   'no-string-concat': 'patterns',
   'no-sync-in-async': 'performance',
+  'no-template-curly-in-string': 'patterns',
+  'no-test-return-statement': 'testing',
   'no-thenable': 'patterns',
   'no-this-before-super': 'patterns',
   'no-throw-literal': 'correctness',
@@ -922,14 +1029,17 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unfinished-todos': 'patterns',
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
+  'no-unnecessary-polyfills': 'patterns',
   'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-type-assertion': 'patterns',
+  'no-unnecessary-type-constraint': 'patterns',
   'no-unneeded-ternary': 'patterns',
   'no-unreachable': 'patterns',
   'no-unsafe-call': 'security',
   'no-unsafe-declaration-merging': 'patterns',
   'no-unsafe-finally': 'patterns',
+  'no-unsafe-html': 'security',
   'no-unsafe-member-access': 'security',
   'no-unsafe-negation': 'patterns',
   'no-unsafe-optional-chaining': 'patterns',
@@ -947,9 +1057,12 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-concat': 'patterns',
   'no-useless-constructor': 'patterns',
   'no-useless-escape': 'patterns',
+  'no-useless-undefined': 'patterns',
+  'no-utility-truthiness': 'patterns',
   'no-var': 'patterns',
   'no-var-requires': 'patterns',
   'no-void': 'patterns',
+  'no-weak-crypto': 'security',
   'no-with': 'patterns',
   'object-shorthand': 'patterns',
   'prefer-array-find': 'patterns',
@@ -981,6 +1094,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'prefer-regex-literals': 'patterns',
   'prefer-regexp-exec': 'patterns',
   'prefer-rest-params': 'patterns',
+  'prefer-return-this-type': 'patterns',
+  'prefer-single-boolean-return': 'patterns',
   'prefer-spread': 'patterns',
   'prefer-string-replace-all': 'patterns',
   'prefer-string-slice': 'patterns',
@@ -991,6 +1106,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'preserve-caught-error': 'patterns',
   'require-await': 'patterns',
   'require-return-type': 'patterns',
+  'require-top-level-describe': 'testing',
   'require-yield': 'patterns',
   'restrict-template-expressions': 'patterns',
   'sort-keys': 'patterns',
@@ -1090,6 +1206,7 @@ export {
   noDeprecatedApiRule,
   noDynamicDeleteRule,
   noEvalRule,
+  noSqlInjectionRule,
   noUnsafeReturnRule,
   noUnsafeTypeAssertionRule,
 } from './security/index.js'

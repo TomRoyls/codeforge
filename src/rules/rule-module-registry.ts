@@ -1,6 +1,7 @@
 import type { RuleDefinition as PluginRuleDefinition } from '../plugins/types.js'
 import type { RuleDefinition } from './types.js'
 
+import { SystemError } from '../utils/errors.js'
 import { adaptPluginRule } from './adapter.js'
 
 const patternsModule = () => import('./patterns/index.js')
@@ -10,35 +11,26 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./dependencies/index.js').then((m) => ({
       'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
     })),
-  'explicit-return-type': () =>
-    import('./best-practices/index.js').then((m) => ({
-      'explicit-return-type': m.explicitReturnTypeRule,
+  'consistent-test-it': () =>
+    import('./testing/index.js').then((m) => ({
+      'consistent-test-it': adaptPluginRule(m.consistentTestItRule, 'consistent-test-it'),
     })),
-  // Complexity module
-  'max-complexity': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
-  'max-depth': () => import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
-  'max-lines': () => import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
-
-  'max-lines-per-function': () =>
-    import('./complexity/index.js').then((m) => ({
-      'max-lines-per-function': m.maxLinesPerFunctionRule,
+  'expect-expect': () =>
+    import('./testing/index.js').then((m) => ({
+      'expect-expect': adaptPluginRule(m.expectExpectRule, 'expect-expect'),
     })),
-  'max-params': () =>
-    import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
-  // Performance module
-  'no-await-in-loop': () =>
-    import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
-  'no-barrel-imports': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
+  'max-nested-describe': () =>
+    import('./testing/index.js').then((m) => ({
+      'max-nested-describe': adaptPluginRule(m.maxNestedDescribeRule, 'max-nested-describe'),
     })),
-  // Dependencies module
-  'no-circular-deps': () =>
-    import('./dependencies/index.js').then((m) => ({
-      'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
+  'no-async-suite': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-async-suite': adaptPluginRule(m.noAsyncSuiteRule, 'no-async-suite'),
     })),
-
+  'no-conditional-expect': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-conditional-expect': adaptPluginRule(m.noConditionalExpectRule, 'no-conditional-expect'),
+    })),
   'no-console': () =>
     import('./best-practices/index.js').then((m) => ({
       'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
@@ -84,6 +76,17 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./testing/index.js').then((m) => ({
       'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
     })),
+  'no-hardcoded-credentials': () =>
+    import('./security/index.js').then((m) => ({
+      'no-hardcoded-credentials': adaptPluginRule(
+        m.noHardcodedCredentialsRule,
+        'no-hardcoded-credentials',
+      ),
+    })),
+  'no-identical-title': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-identical-title': adaptPluginRule(m.noIdenticalTitleRule, 'no-identical-title'),
+    })),
 
   // Best practices module
   'no-magic-numbers': () =>
@@ -93,8 +96,19 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./testing/index.js').then((m) => ({
       'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
     })),
+  'no-sql-injection': () =>
+    import('./security/index.js').then((m) => ({
+      'no-sql-injection': adaptPluginRule(m.noSqlInjectionRule, 'no-sql-injection'),
+    })),
   'no-sync-in-async': () =>
     import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
+  'no-test-return-statement': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-test-return-statement': adaptPluginRule(
+        m.noTestReturnStatementRule,
+        'no-test-return-statement',
+      ),
+    })),
   // Correctness module
   'no-throw-literal': () =>
     import('./correctness/index.js').then((m) => ({
@@ -108,6 +122,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./security/index.js').then((m) => ({
       'no-unsafe-call': adaptPluginRule(m.noUnsafeCallRule, 'no-unsafe-call'),
     })),
+  'no-unsafe-html': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-html': adaptPluginRule(m.noUnsafeHtmlRule, 'no-unsafe-html'),
+    })),
   'no-unsafe-member-access': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-member-access': adaptPluginRule(
@@ -119,11 +137,11 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./security/index.js').then((m) => ({
       'no-unsafe-regex': adaptPluginRule(m.noUnsafeRegexRule, 'no-unsafe-regex'),
     })),
-
   'no-unsafe-return': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
     })),
+
   'no-unsafe-type-assertion': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-type-assertion': adaptPluginRule(
@@ -142,6 +160,10 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
   'no-useless-comparison': () =>
     import('./patterns/index.js').then((m) => ({
       'no-useless-comparison': m.noUselessComparisonRule,
+    })),
+  'no-weak-crypto': () =>
+    import('./security/index.js').then((m) => ({
+      'no-weak-crypto': adaptPluginRule(m.noWeakCryptoRule, 'no-weak-crypto'),
     })),
   'prefer-array-find': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -191,14 +213,26 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     import('./best-practices/index.js').then((m) => ({
       'prefer-regex-literal': m.preferRegexLiteralRule,
     })),
+  'prefer-return-this-type': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'prefer-return-this-type': m.preferReturnThisTypeRule,
+    })),
 
   'prefer-string-start-end': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-start-end': m.preferStringStartEndRule,
     })),
+
   'prefer-string-template': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-template': m.preferStringTemplateRule,
+    })),
+  'require-top-level-describe': () =>
+    import('./testing/index.js').then((m) => ({
+      'require-top-level-describe': adaptPluginRule(
+        m.requireTopLevelDescribeRule,
+        'require-top-level-describe',
+      ),
     })),
 
   'strict-boolean-expressions': () =>
@@ -226,24 +260,29 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-compare-neg-zero',
     'no-debugger',
     'no-delete-var',
+    'no-deprecated-imports',
     'no-confusing-void-expression',
     'no-constant-condition',
     'no-console-log',
     'no-const-assign',
+    'no-const-enum',
     'no-duplicate-code',
     'no-duplicate-else-if',
     'no-duplicate-imports',
+    'no-duplicate-strings-in-array',
     'no-else-return',
     'no-empty',
     'no-explicit-any',
     'no-floating-promises',
     'no-implicit-coercion',
     'no-implied-eval',
+    'no-implicit-side-effects',
     'no-inferrable-types',
     'no-misused-promises',
     'no-lonely-if',
     'no-loss-of-precision',
     'no-multi-spaces',
+    'no-namespace',
     'no-nested-ternary',
     'no-non-null-assertion',
     'no-object-constructor',
@@ -254,15 +293,18 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-shadow',
     'no-simplifiable-pattern',
     'no-string-concat',
+    'no-template-curly-in-string',
     'no-throw-sync',
     'no-unfinished-todos',
     'no-unnecessary-condition',
     'no-unnecessary-escape-in-regexp',
+    'no-unnecessary-polyfills',
     'no-unnecessary-qualifier',
     'no-unnecessary-slice',
     'no-unnecessary-string-concat',
     'no-unnecessary-template-expression',
     'no-unnecessary-type-arguments',
+    'no-unnecessary-type-constraint',
     'no-unsafe-assignment',
     'no-unsafe-declaration-merging',
     'no-unused-vars',
@@ -296,6 +338,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'prefer-regex-literals',
     'prefer-regexp-exec',
     'prefer-rest-params',
+    'prefer-single-boolean-return',
     'prefer-spread',
     'prefer-string-replace-all',
     'prefer-string-slice-over-substring',
@@ -315,6 +358,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-caller',
     'no-case-declarations',
     'no-class-assign',
+    'no-collection-size-mischeck',
     'no-cond-assign',
     'no-constructor-return',
     'no-control-regex',
@@ -345,6 +389,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-octal',
     'no-prototype-builtins',
     'no-redeclare',
+    'no-redundant-boolean',
     'no-regex-spaces',
     'no-return-assign',
     'no-return-or-await',
@@ -369,6 +414,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-useless-backreference',
     'no-useless-concat',
     'no-useless-escape',
+    'no-utility-truthiness',
     'no-var',
     'no-with',
     'object-shorthand',
@@ -392,7 +438,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
       patternsModule().then((m) => {
         const rule = m[exportName] as PluginRuleDefinition | undefined
         if (!rule) {
-          throw new Error(`Rule ${ruleId} not found in patterns module`)
+          throw new SystemError(`Rule ${ruleId} not found in patterns module`, { code: 'E500' })
         }
 
         return { [ruleId]: adaptPluginRule(rule, ruleId) }

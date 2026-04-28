@@ -31,6 +31,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./dependencies/index.js').then((m) => ({
       'consistent-imports': adaptPluginRule(m.consistentImportsRule, 'consistent-imports'),
     })),
+  'expect-expect': () =>
+    import('./testing/index.js').then((m) => ({
+      'expect-expect': adaptPluginRule(m.expectExpectRule, 'expect-expect'),
+    })),
   'explicit-return-type': () =>
     import('./best-practices/index.js').then((m) => ({
       'explicit-return-type': m.explicitReturnTypeRule,
@@ -45,8 +49,16 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./complexity/index.js').then((m) => ({
       'max-lines-per-function': m.maxLinesPerFunctionRule,
     })),
+  'max-nested-describe': () =>
+    import('./testing/index.js').then((m) => ({
+      'max-nested-describe': adaptPluginRule(m.maxNestedDescribeRule, 'max-nested-describe'),
+    })),
   'max-params': () =>
     import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
+  'no-async-suite': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-async-suite': adaptPluginRule(m.noAsyncSuiteRule, 'no-async-suite'),
+    })),
   // Performance module
   'no-await-in-loop': () =>
     import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
@@ -60,6 +72,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
       'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
     })),
 
+  'no-conditional-expect': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-conditional-expect': adaptPluginRule(m.noConditionalExpectRule, 'no-conditional-expect'),
+    })),
   'no-console': () =>
     import('./best-practices/index.js').then((m) => ({
       'no-console': adaptPluginRule(m.noConsoleRule, 'no-console'),
@@ -80,12 +96,12 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./security/index.js').then((m) => ({
       'no-dynamic-delete': adaptPluginRule(m.noDynamicDeleteRule, 'no-dynamic-delete'),
     })),
+
   // Correctness continued
   'no-empty-catch': () =>
     import('./correctness/index.js').then((m) => ({
       'no-empty-catch': adaptPluginRule(m.noEmptyCatchRule, 'no-empty-catch'),
     })),
-
   'no-empty-character-class': () =>
     import('./correctness/index.js').then((m) => ({
       'no-empty-character-class': adaptPluginRule(
@@ -105,17 +121,33 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./testing/index.js').then((m) => ({
       'no-focused-tests': adaptPluginRule(m.noFocusedTestsRule, 'no-focused-tests'),
     })),
-
+  'no-hardcoded-credentials': () =>
+    import('./security/index.js').then((m) => ({
+      'no-hardcoded-credentials': adaptPluginRule(m.noHardcodedCredentialsRule, 'no-hardcoded-credentials'),
+    })),
+  'no-identical-title': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-identical-title': adaptPluginRule(m.noIdenticalTitleRule, 'no-identical-title'),
+    })),
   // Best practices module
   'no-magic-numbers': () =>
     import('./best-practices/index.js').then((m) => ({ 'no-magic-numbers': m.noMagicNumbersRule })),
+
   // Testing module
   'no-skipped-tests': () =>
     import('./testing/index.js').then((m) => ({
       'no-skipped-tests': adaptPluginRule(m.noSkippedTestsRule, 'no-skipped-tests'),
     })),
+  'no-sql-injection': () =>
+    import('./security/index.js').then((m) => ({
+      'no-sql-injection': adaptPluginRule(m.noSqlInjectionRule, 'no-sql-injection'),
+    })),
   'no-sync-in-async': () =>
     import('./performance/index.js').then((m) => ({ 'no-sync-in-async': m.noSyncInAsyncRule })),
+  'no-test-return-statement': () =>
+    import('./testing/index.js').then((m) => ({
+      'no-test-return-statement': adaptPluginRule(m.noTestReturnStatementRule, 'no-test-return-statement'),
+    })),
   // Correctness module
   'no-throw-literal': () =>
     import('./correctness/index.js').then((m) => ({
@@ -129,6 +161,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./security/index.js').then((m) => ({
       'no-unsafe-call': adaptPluginRule(m.noUnsafeCallRule, 'no-unsafe-call'),
     })),
+  'no-unsafe-html': () =>
+    import('./security/index.js').then((m) => ({
+      'no-unsafe-html': adaptPluginRule(m.noUnsafeHtmlRule, 'no-unsafe-html'),
+    })),
   'no-unsafe-member-access': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-member-access': adaptPluginRule(
@@ -140,11 +176,11 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./security/index.js').then((m) => ({
       'no-unsafe-regex': adaptPluginRule(m.noUnsafeRegexRule, 'no-unsafe-regex'),
     })),
-
   'no-unsafe-return': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-return': adaptPluginRule(m.noUnsafeReturnRule, 'no-unsafe-return'),
     })),
+
   'no-unsafe-type-assertion': () =>
     import('./security/index.js').then((m) => ({
       'no-unsafe-type-assertion': adaptPluginRule(
@@ -163,6 +199,10 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
   'no-useless-comparison': () =>
     import('./patterns/index.js').then((m) => ({
       'no-useless-comparison': m.noUselessComparisonRule,
+    })),
+  'no-weak-crypto': () =>
+    import('./security/index.js').then((m) => ({
+      'no-weak-crypto': adaptPluginRule(m.noWeakCryptoRule, 'no-weak-crypto'),
     })),
   'prefer-array-find': () =>
     import('./best-practices/index.js').then((m) => ({
@@ -212,14 +252,25 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
     import('./best-practices/index.js').then((m) => ({
       'prefer-regex-literal': m.preferRegexLiteralRule,
     })),
-
+  'prefer-return-this-type': () =>
+    import('./best-practices/index.js').then((m) => ({
+      'prefer-return-this-type': m.preferReturnThisTypeRule,
+    })),
   'prefer-string-start-end': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-start-end': m.preferStringStartEndRule,
     })),
+
   'prefer-string-template': () =>
     import('./best-practices/index.js').then((m) => ({
       'prefer-string-template': m.preferStringTemplateRule,
+    })),
+  'require-top-level-describe': () =>
+    import('./testing/index.js').then((m) => ({
+      'require-top-level-describe': adaptPluginRule(
+        m.requireTopLevelDescribeRule,
+        'require-top-level-describe',
+      ),
     })),
 
   'strict-boolean-expressions': () =>
@@ -250,26 +301,34 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-async-without-await',
     'no-alert',
     'no-compare-neg-zero',
+    'no-collection-size-mischeck',
+    'no-const-enum',
     'no-debugger',
     'no-delete-var',
+    'no-deprecated-imports',
     'no-confusing-void-expression',
     'no-constant-condition',
     'no-console-log',
     'no-const-assign',
+    'no-const-enum',
     'no-duplicate-code',
     'no-duplicate-else-if',
     'no-duplicate-imports',
+    'no-duplicate-strings-in-array',
+    'no-duplicate-strings-in-array',
     'no-else-return',
     'no-empty',
     'no-explicit-any',
     'no-floating-promises',
     'no-implicit-coercion',
+    'no-implicit-side-effects',
     'no-implied-eval',
     'no-inferrable-types',
     'no-misused-promises',
     'no-lonely-if',
     'no-loss-of-precision',
     'no-multi-spaces',
+    'no-namespace',
     'no-nested-ternary',
     'no-non-null-assertion',
     'no-object-constructor',
@@ -280,20 +339,24 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-shadow',
     'no-simplifiable-pattern',
     'no-string-concat',
+    'no-template-curly-in-string',
     'no-throw-sync',
     'no-unfinished-todos',
     'no-unnecessary-condition',
     'no-unnecessary-escape-in-regexp',
+    'no-unnecessary-polyfills',
     'no-unnecessary-qualifier',
     'no-unnecessary-slice',
     'no-unnecessary-string-concat',
     'no-unnecessary-template-expression',
     'no-unnecessary-type-arguments',
+    'no-unnecessary-type-constraint',
     'no-unsafe-assignment',
     'no-unsafe-declaration-merging',
     'no-unused-vars',
     'no-unused-private-members',
     'no-useless-fallback-in-spread',
+    'no-utility-truthiness',
     'no-useless-constructor',
     'no-var-requires',
     'no-void',
@@ -320,6 +383,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'prefer-regex-literals',
     'prefer-regexp-exec',
     'prefer-rest-params',
+    'prefer-single-boolean-return',
     'prefer-spread',
     'prefer-string-replace-all',
     'prefer-string-slice-over-substring',
@@ -339,9 +403,11 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-caller',
     'no-case-declarations',
     'no-class-assign',
+    'no-collection-size-mischeck',
     'no-cond-assign',
     'no-constructor-return',
     'no-control-regex',
+    'no-deprecated-imports',
     'no-div-regex',
     'no-dupe-args',
     'no-dupe-class-members',
@@ -369,6 +435,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
     'no-octal',
     'no-prototype-builtins',
     'no-redeclare',
+    'no-redundant-boolean',
     'no-regex-spaces',
     'no-return-assign',
     'no-return-or-await',
@@ -416,7 +483,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
       patternsModule().then((m) => {
         const rule = m[exportName] as PluginRuleDefinition | undefined
         if (!rule) {
-          throw new Error(`Rule ${ruleId} not found in patterns module`)
+          throw new SystemError(`Rule ${ruleId} not found in patterns module`, { code: 'E500' })
         }
 
         return { [ruleId]: adaptPluginRule(rule, ruleId) }
@@ -431,6 +498,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
  */
 const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'consistent-imports': 'dependencies',
+  'consistent-test-it': 'testing',
   // Patterns (default for most rules)
   'consistent-type-exports': 'patterns',
   // Orphan rules - pattern rules
@@ -438,6 +506,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   curly: 'patterns',
   'default-case': 'patterns',
   'eq-eq-eq': 'patterns',
+  'expect-expect': 'testing',
   'explicit-module-boundary-types': 'patterns',
   'explicit-return-type': 'patterns',
   'for-direction': 'patterns',
@@ -448,6 +517,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'max-file-size': 'patterns',
   'max-lines': 'complexity',
   'max-lines-per-function': 'complexity',
+  'max-nested-describe': 'testing',
   'max-params': 'complexity',
   'max-union-size': 'patterns',
   'no-alert': 'patterns',
@@ -456,6 +526,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-array-destructuring': 'patterns',
   'no-async-promise-executor': 'patterns',
   'no-async-without-await': 'patterns',
+  'no-async-suite': 'testing',
   // Performance
   'no-await-in-loop': 'performance',
   'no-barrel-imports': 'dependencies',
@@ -465,12 +536,15 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Dependencies
   'no-circular-deps': 'dependencies',
   'no-class-assign': 'patterns',
+  'no-collection-size-mischeck': 'patterns',
   'no-compare-neg-zero': 'patterns',
   'no-cond-assign': 'patterns',
+  'no-conditional-expect': 'testing',
   'no-confusing-void-expression': 'patterns',
   'no-console': 'patterns',
   'no-console-log': 'patterns',
   'no-const-assign': 'patterns',
+  'no-const-enum': 'patterns',
   'no-constant-binary-expression': 'correctness',
   'no-constant-condition': 'patterns',
   'no-constructor-return': 'patterns',
@@ -479,6 +553,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-delete-var': 'patterns',
   // Security
   'no-deprecated-api': 'security',
+  'no-deprecated-imports': 'patterns',
   'no-div-regex': 'patterns',
   'no-dupe-args': 'patterns',
   'no-dupe-class-members': 'patterns',
@@ -487,6 +562,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-duplicate-code': 'patterns',
   'no-duplicate-else-if': 'patterns',
   'no-duplicate-imports': 'patterns',
+  'no-duplicate-strings-in-array': 'patterns',
   'no-dynamic-delete': 'security',
   'no-else-return': 'patterns',
   'no-empty': 'patterns',
@@ -506,7 +582,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-focused-tests': 'testing',
   'no-func-assign': 'patterns',
   'no-global-assign': 'patterns',
+  'no-hardcoded-credentials': 'security',
+  'no-identical-title': 'testing',
   'no-implicit-coercion': 'patterns',
+  'no-implicit-side-effects': 'patterns',
   'no-implied-eval': 'patterns',
   'no-import-assign': 'patterns',
   'no-inferrable-types': 'patterns',
@@ -521,6 +600,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-misleading-character-class': 'patterns',
   'no-misused-promises': 'patterns',
   'no-multi-spaces': 'patterns',
+  'no-namespace': 'patterns',
   'no-nested-ternary': 'patterns',
   'no-new-func': 'patterns',
   'no-new-native-nonconstructor': 'patterns',
@@ -534,6 +614,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-promise-as-boolean': 'patterns',
   'no-prototype-builtins': 'patterns',
   'no-redeclare': 'patterns',
+  'no-redundant-boolean': 'patterns',
   'no-regex-spaces': 'patterns',
   'no-return-assign': 'patterns',
   'no-return-await': 'patterns',
@@ -548,8 +629,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Testing
   'no-skipped-tests': 'testing',
   'no-sparse-arrays': 'patterns',
+  'no-sql-injection': 'security',
   'no-string-concat': 'patterns',
   'no-sync-in-async': 'performance',
+  'no-test-return-statement': 'testing',
+  'no-template-curly-in-string': 'patterns',
   'no-thenable': 'patterns',
   'no-this-before-super': 'patterns',
   'no-throw-literal': 'correctness',
@@ -561,18 +645,21 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unfinished-todos': 'patterns',
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
+  'no-unnecessary-polyfills': 'patterns',
   'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-slice': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-type-arguments': 'patterns',
   'no-unnecessary-type-assertion': 'patterns',
+  'no-unnecessary-type-constraint': 'patterns',
   'no-unneeded-ternary': 'patterns',
   'no-unreachable': 'patterns',
   'no-unsafe-assignment': 'patterns',
   'no-unsafe-call': 'security',
   'no-unsafe-declaration-merging': 'patterns',
   'no-unsafe-finally': 'patterns',
+  'no-unsafe-html': 'security',
   'no-unsafe-member-access': 'security',
   'no-unsafe-negation': 'patterns',
   'no-unsafe-optional-chaining': 'patterns',
@@ -592,9 +679,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-useless-constructor': 'patterns',
   'no-useless-escape': 'patterns',
   'no-useless-fallback-in-spread': 'patterns',
+  'no-utility-truthiness': 'patterns',
   'no-var': 'patterns',
   'no-var-requires': 'patterns',
   'no-void': 'patterns',
+  'no-weak-crypto': 'security',
   'no-with': 'patterns',
   'object-shorthand': 'patterns',
   'prefer-array-find': 'patterns',
@@ -632,6 +721,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'prefer-regex-literals': 'patterns',
   'prefer-regexp-exec': 'patterns',
   'prefer-rest-params': 'patterns',
+  'prefer-return-this-type': 'patterns',
+  'prefer-single-boolean-return': 'patterns',
   'prefer-spread': 'patterns',
   'prefer-string-replace-all': 'patterns',
   'prefer-string-slice': 'patterns',
@@ -644,6 +735,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'preserve-caught-error': 'patterns',
   'require-await': 'patterns',
   'require-return-type': 'patterns',
+  'require-top-level-describe': 'testing',
   'require-yield': 'patterns',
   'restrict-template-expressions': 'patterns',
   'sort-keys': 'patterns',
