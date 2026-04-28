@@ -208,8 +208,8 @@ describe('Docs Command', () => {
       expect(Docs.flags.category.options).toContain('patterns')
     })
 
-    test('category flag has exactly 7 options', () => {
-      expect(Docs.flags.category.options).toHaveLength(7)
+    test('category flag has exactly 8 options', () => {
+      expect(Docs.flags.category.options).toHaveLength(8)
     })
   })
 

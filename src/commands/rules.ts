@@ -80,6 +80,7 @@ export default class Rules extends Command {
         'performance',
         'security',
         'style',
+        'testing',
       ],
     }),
     fixable: Flags.boolean({

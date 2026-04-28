@@ -579,8 +579,8 @@ describe('Rules Command', () => {
       expect(options).toContain('style')
     })
 
-    test('category options has exactly seven values', () => {
-      expect(Rules.flags.category.options).toHaveLength(7)
+    test('category options has eight values', () => {
+      expect(Rules.flags.category.options).toHaveLength(8)
     })
 
     test('format options has exactly two values', () => {

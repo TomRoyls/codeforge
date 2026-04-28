@@ -63,6 +63,7 @@ export default class Docs extends Command {
         'performance',
         'security',
         'style',
+        'testing',
       ],
     }),
     output: Flags.string({
