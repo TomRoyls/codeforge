@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+- **refactor**: Consolidated duplicate constants between `adapter.ts` and `adapter-constants.ts` (-306 lines). `adapter.ts` now imports all constants from single source of truth.
+- **refactor**: Migrated remaining `throw new Error()` in `lazy-loader.ts` and `rule-module-registry.ts` to `SystemError`
+- **refactor**: Annotated all 8 empty catch blocks with explanatory comments across `adapter.ts`, `adapter-converter.ts`, `adapter-visitor-helpers.ts`, `discovery.ts`
+- **audit**: Verified all 43 ESLint-disable comments are legitimate (`no-await-in-loop`, `max-params`, `perfectionist/sort-*`, `eqeqeq`, etc.)
+- **audit**: Confirmed zero `any` type annotations in production code (all `any` references are in rule descriptions/examples)
+
 - **refactor**: Reduced all remaining ESLint complexity warnings to zero (4 → 0)
   - Extracted 5 helpers from `convertRawCompilerNode` in `adapter-converter.ts` (107→≤50): `applyRawLiteralValues`, `synthesizeTemplateExpression`, `synthesizeNoSubstitutionTemplate`, `assignRawProperty`, `applyRawPostFixups`
   - Extracted 12+ helpers from 3 functions in `adapter.ts` (107,72,70→≤50): same raw helpers plus `applyNodeModifiers`, `transformParameterNode`, `wrapParameterProperty`, `synthesizeMethodValue`, `synthesizeChainExpression`, `assignCompilerProperty`, `applyPostConvertFixups`

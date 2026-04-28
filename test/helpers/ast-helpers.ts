@@ -26,16 +26,16 @@ import type {
   Identifier,
 } from 'ts-morph'
 
-// SyntaxKind values from TypeScript
+// SyntaxKind values from ts-morph (differs from TypeScript compiler API)
 export const SyntaxKind = {
   SourceFile: 305,
-  FunctionDeclaration: 257,
-  FunctionExpression: 216,
-  ArrowFunction: 211,
-  MethodDeclaration: 173,
-  ConstructorDeclaration: 174,
-  GetAccessorDeclaration: 175,
-  SetAccessorDeclaration: 176,
+  FunctionDeclaration: 262,
+  FunctionExpression: 218,
+  ArrowFunction: 219,
+  MethodDeclaration: 174,
+  ConstructorDeclaration: 176,
+  GetAccessorDeclaration: 177,
+  SetAccessorDeclaration: 178,
   ClassDeclaration: 263,
   IfStatement: 244,
   ForStatement: 245,
