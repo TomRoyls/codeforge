@@ -236,8 +236,38 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
     })),
 
   'strict-boolean-expressions': () =>
+     import('./best-practices/index.js').then((m) => ({
+       'strict-boolean-expressions': m.strictBooleanExpressionsRule,
+     })),
+  // Best-practices (ts-morph)
+  'explicit-return-type': () =>
     import('./best-practices/index.js').then((m) => ({
-      'strict-boolean-expressions': m.strictBooleanExpressionsRule,
+      'explicit-return-type': m.explicitReturnTypeRule,
+    })),
+  // Complexity (ts-morph)
+  'max-complexity': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-complexity': m.maxComplexityRule })),
+  'max-depth': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-depth': m.maxDepthRule })),
+  'max-lines': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-lines': m.maxLinesRule })),
+  'max-lines-per-function': () =>
+    import('./complexity/index.js').then((m) => ({
+      'max-lines-per-function': m.maxLinesPerFunctionRule,
+    })),
+  'max-params': () =>
+    import('./complexity/index.js').then((m) => ({ 'max-params': m.maxParamsRule })),
+  // Performance (ts-morph)
+  'no-await-in-loop': () =>
+    import('./performance/index.js').then((m) => ({ 'no-await-in-loop': m.noAwaitInLoopRule })),
+  // Dependencies (ts-morph)
+  'no-barrel-imports': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-barrel-imports': adaptPluginRule(m.noBarrelImportsRule, 'no-barrel-imports'),
+    })),
+  'no-circular-deps': () =>
+    import('./dependencies/index.js').then((m) => ({
+      'no-circular-deps': adaptPluginRule(m.noCircularDepsRule, 'no-circular-deps'),
     })),
 
   // Patterns module (most rules are here - loaded in chunks for efficiency)

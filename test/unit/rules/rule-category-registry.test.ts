@@ -203,8 +203,8 @@ describe('rule-category-registry', () => {
       }
     })
 
-  test('total entry count is exactly 234', () => {
-    expect(Object.keys(RULE_CATEGORIES).length).toBe(234)
+  test('total entry count is exactly 236', () => {
+    expect(Object.keys(RULE_CATEGORIES).length).toBe(236)
     })
 
     // --- Specific rule mappings ---
@@ -314,7 +314,7 @@ describe('rule-category-registry', () => {
       expect(counts['performance']).toBe(5)
       expect(counts['dependencies']).toBe(4)
       expect(counts['security']).toBe(12)
-      expect(counts['testing']).toBe(8)
+      expect(counts['testing']).toBe(10)
       expect(counts['correctness']).toBe(6)
       expect(counts['patterns']).toBe(194)
     })
@@ -558,7 +558,9 @@ describe('rule-category-registry', () => {
       expect(testingRules).toContain('no-focused-tests')
       expect(testingRules).toContain('no-identical-title')
       expect(testingRules).toContain('consistent-test-it')
-      expect(testingRules.length).toBe(8)
+      expect(testingRules).toContain('no-async-suite')
+      expect(testingRules).toContain('no-test-return-statement')
+      expect(testingRules.length).toBe(10)
     })
 
     test('all security rules from RULE_MODULES are in registry', () => {
@@ -607,7 +609,7 @@ describe('rule-category-registry', () => {
 
     test('registry entries are enumerable with correct length', () => {
       const entries = Object.entries(RULE_CATEGORIES)
-      expect(entries.length).toBe(234)
+      expect(entries.length).toBe(236)
       expect(entries[0]!.length).toBe(2)
     })
 
@@ -880,7 +882,7 @@ describe('rule-category-registry', () => {
     test('Object.keys returns array of correct length', () => {
       const keys = Object.keys(RULE_CATEGORIES)
       expect(Array.isArray(keys)).toBe(true)
-      expect(keys.length).toBe(234)
+      expect(keys.length).toBe(236)
     })
 
     test('entries are ordered as defined in source', () => {
@@ -1091,6 +1093,8 @@ describe('rule-category-registry', () => {
       for (const [rule, category] of asyncRules) {
         if (rule === 'no-await-in-loop' || rule === 'no-sync-in-async') {
           expect(category).toBe('performance')
+        } else if (rule === 'no-async-suite') {
+          expect(category).toBe('testing')
         } else {
           expect(category).toBe('patterns')
         }
