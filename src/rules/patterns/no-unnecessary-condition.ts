@@ -1,76 +1,33 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { isLogicalExpression, isUnaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'IfStatement'
+  return toASTNode(node)?.type === 'IfStatement'
 }
 
 function isConditionalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ConditionalExpression'
+  return toASTNode(node)?.type === 'ConditionalExpression'
 }
 
 function isBooleanLiteral(node: unknown, value: boolean): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'BooleanLiteral' && n.value === value
+  const n = toASTNode(node)
+  return n?.type === 'BooleanLiteral' && n.value === value
 }
 
 function isLiteral(node: unknown, value: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === value
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === value
 }
 
 function getTestNode(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.test
-}
-
-function isUnaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'UnaryExpression'
-}
-
-function isLogicalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'LogicalExpression'
+  return toASTNode(node)?.test
 }
 
 function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean; reason: string } {
-  if (!testNode || typeof testNode !== 'object') {
-    return { isUnnecessary: false, reason: '' }
-  }
-
-  const t = testNode as Record<string, unknown>
+  const t = toASTNode(testNode)
+  if (!t) return { isUnnecessary: false, reason: '' }
 
   if (isBooleanLiteral(testNode, true) || isLiteral(testNode, true)) {
     return { isUnnecessary: true, reason: 'Unnecessary condition: always truthy' }
@@ -89,8 +46,8 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
   }
 
   if (isUnaryExpression(testNode)) {
-    const operator = t.operator as string
-    const {argument} = t
+    const {operator} = t
+    const { argument } = t
 
     if (operator === '!') {
       if (isBooleanLiteral(argument, true) || isLiteral(argument, true)) {
@@ -108,9 +65,7 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
   }
 
   if (isLogicalExpression(testNode)) {
-    const {left} = t
-    const {right} = t
-    const operator = t.operator as string
+    const { left, operator, right } = t
 
     const leftResult = checkUnnecessaryCondition(left)
     const rightResult = checkUnnecessaryCondition(right)
@@ -118,10 +73,7 @@ function checkUnnecessaryCondition(testNode: unknown): { isUnnecessary: boolean;
     if (leftResult.isUnnecessary || rightResult.isUnnecessary) {
       if (operator === '&&') {
         if (isBooleanLiteral(left, false) || isLiteral(left, false)) {
-          return {
-            isUnnecessary: true,
-            reason: 'Unnecessary condition: false && x is always false',
-          }
+          return { isUnnecessary: true, reason: 'Unnecessary condition: false && x is always false' }
         }
 
         if (isBooleanLiteral(left, true) || isLiteral(left, true)) {

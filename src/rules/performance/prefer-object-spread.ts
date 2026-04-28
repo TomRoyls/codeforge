@@ -6,7 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeText } from '../../utils/ast-helpers.js'
+import { getNodeText, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface ObjectAssignMatch {
@@ -16,58 +16,25 @@ interface ObjectAssignMatch {
 }
 
 function isEmptyObjectLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'ObjectExpression') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'ObjectExpression') {
-    return false
-  }
-
-  const {properties} = n
-  return Array.isArray(properties) && properties.length === 0
+  return Array.isArray(n.properties) && n.properties.length === 0
 }
 
-function isPropertyAccessExpression(node: unknown): node is Record<string, unknown> {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'MemberExpression'
-}
-
-function isIdentifier(node: unknown, name: string): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier' && n.name === name
+function isPropertyAccessExpression(node: unknown): boolean {
+  const n = toASTNode(node)
+  return n?.type === 'MemberExpression' && n.computed !== true
 }
 
 function isObjectAssignCall(node: unknown): null | { args: unknown[]; callee: unknown; } {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') return null
 
-  const n = node as Record<string, unknown>
+  const callee = toASTNode(n.callee)
+  if (!callee || !isPropertyAccessExpression(n.callee)) return null
 
-  if (n.type !== 'CallExpression') {
-    return null
-  }
-
-  const {callee} = n
-  if (!isPropertyAccessExpression(callee)) {
-    return null
-  }
-
-  const {object} = callee
-  const {property} = callee
-
-  if (!isIdentifier(object, 'Object') || !isIdentifier(property, 'assign')) {
+  if (!isIdentifier(callee.object, 'Object') || !isIdentifier(callee.property, 'assign')) {
     return null
   }
 
@@ -76,7 +43,7 @@ function isObjectAssignCall(node: unknown): null | { args: unknown[]; callee: un
     return null
   }
 
-  return { args, callee }
+  return { args, callee: n.callee }
 }
 
 function checkObjectAssignPattern(node: unknown, source: string): null | ObjectAssignMatch {

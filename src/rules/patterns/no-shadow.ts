@@ -1,21 +1,19 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getDeclaratorName(node: unknown): string | undefined {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return undefined
 
   if (n.type === 'Identifier') {
     return typeof n.name === 'string' ? n.name : undefined
   }
 
   if (n.type === 'VariableDeclarator') {
-    const id = n.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object' && id.type === 'Identifier') {
+    const id = toASTNode(n.id)
+    if (id && id.type === 'Identifier') {
       return typeof id.name === 'string' ? id.name : undefined
     }
   }

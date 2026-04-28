@@ -1,17 +1,13 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isSwitchStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'SwitchStatement'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasDefaultCase(cases: undefined | unknown[]): boolean {
   if (!cases) return false
   return cases.some((c) => {
-    const caseNode = c as Record<string, unknown>
+    const caseNode = toASTNode(c)
+    if (!caseNode) throw new Error('Invalid case node')
     return caseNode.test === null
   })
 }
@@ -20,8 +16,8 @@ export const defaultCaseRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       SwitchStatement(node: unknown): void {
-        if (!isSwitchStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n || n.type !== 'SwitchStatement') return
         const cases = n.cases as undefined | unknown[]
         if (!hasDefaultCase(cases)) {
           context.report({

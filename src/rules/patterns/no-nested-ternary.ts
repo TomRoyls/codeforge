@@ -1,33 +1,27 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function isConditionalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ConditionalExpression'
+  return toASTNode(node)?.type === 'ConditionalExpression'
 }
 
 function generateIfElse(
   source: string,
-  node: Record<string, unknown>,
+  node: unknown,
   indent = '  ',
 ): null | string {
-  const {test} = node
-  const {consequent} = node
-  const {alternate} = node
+  const n = toASTNode(node)
+  if (!n) return null
+
+  const {alternate, consequent, test} = n
 
   const testRange = getRange(test)
   const consequentRange = getRange(consequent)
   const alternateRange = getRange(alternate)
 
-  if (!testRange || !consequentRange || !alternateRange) {
-    return null
-  }
+  if (!testRange || !consequentRange || !alternateRange) return null
 
   const testSource = source.slice(testRange[0], testRange[1])
   const consequentSource = source.slice(consequentRange[0], consequentRange[1])
@@ -37,17 +31,13 @@ function generateIfElse(
   const alternateIsNested = isConditionalExpression(alternate)
 
   if (consequentIsNested) {
-    const nestedIfElse = generateIfElse(
-      source,
-      consequent as Record<string, unknown>,
-      indent + '  ',
-    )
+    const nestedIfElse = generateIfElse(source, consequent, indent + '  ')
     if (!nestedIfElse) return null
     return `${indent}if (${testSource}) {\n${nestedIfElse}\n${indent}} else {\n${indent}  ${alternateSource}\n${indent}}`
   }
 
   if (alternateIsNested) {
-    const nestedIfElse = generateIfElse(source, alternate as Record<string, unknown>, indent + '  ')
+    const nestedIfElse = generateIfElse(source, alternate, indent + '  ')
     if (!nestedIfElse) return null
     return `${indent}if (${testSource}) {\n${indent}  ${consequentSource}\n${indent}} else {\n${nestedIfElse}\n${indent}}`
   }
@@ -59,14 +49,10 @@ export const noNestedTernaryRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ConditionalExpression(node: unknown): void {
-        if (!isConditionalExpression(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'ConditionalExpression') return
 
-        const n = node as Record<string, unknown>
-        const {consequent} = n
-        const {alternate} = n
-
+        const {alternate, consequent} = n
         const isConsequentNested = isConditionalExpression(consequent)
         const isAlternateNested = isConditionalExpression(alternate)
 
@@ -77,12 +63,9 @@ export const noNestedTernaryRule: RuleDefinition = {
           let fix: undefined | { range: readonly [number, number]; text: string }
           if (nodeRange) {
             const source = context.getSource()
-            const ifElseCode = generateIfElse(source, n, '')
+            const ifElseCode = generateIfElse(source, node, '')
             if (ifElseCode) {
-              fix = {
-                range: nodeRange,
-                text: ifElseCode,
-              }
+              fix = { range: nodeRange, text: ifElseCode }
             }
           }
 

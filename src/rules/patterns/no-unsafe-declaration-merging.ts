@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 type DeclarationType = 'class' | 'function' | 'interface'
 
@@ -11,46 +12,32 @@ interface DeclarationInfo {
 }
 
 function getDeclarationName(node: unknown): null | { name: string; type: DeclarationType } {
-  if (!node || typeof node !== 'object') {
-    return null
+  const n = toASTNode(node)
+  if (!n) return null
+
+  let declType: DeclarationType | null = null
+  switch (n.type) {
+  case 'ClassDeclaration': {
+  declType = 'class'
+  break;
   }
 
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'ClassDeclaration') {
-    const id = n.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object' && id.type === 'Identifier') {
-      const name = typeof id.name === 'string' ? id.name : undefined
-      if (name) {
-        return { name, type: 'class' }
-      }
-    }
-
-    return null
+  case 'FunctionDeclaration': {
+    declType = 'function'
+    break;
   }
 
-  if (n.type === 'TSInterfaceDeclaration') {
-    const id = n.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object' && id.type === 'Identifier') {
-      const name = typeof id.name === 'string' ? id.name : undefined
-      if (name) {
-        return { name, type: 'interface' }
-      }
-    }
-
-    return null
+  case 'TSInterfaceDeclaration': {
+  declType = 'interface'
+  break;
+  }
   }
 
-  if (n.type === 'FunctionDeclaration') {
-    const id = n.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object' && id.type === 'Identifier') {
-      const name = typeof id.name === 'string' ? id.name : undefined
-      if (name) {
-        return { name, type: 'function' }
-      }
-    }
+  if (!declType) return null
 
-    return null
+  const id = toASTNode(n.id)
+  if (id?.type === 'Identifier' && typeof id.name === 'string') {
+    return { name: id.name, type: declType }
   }
 
   return null

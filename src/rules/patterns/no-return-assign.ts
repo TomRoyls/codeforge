@@ -1,22 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isReturnAssignment(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'ReturnStatement') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'ReturnStatement') {
-    return false
-  }
-
-  const argument = n.argument as Record<string, unknown> | undefined
-  if (!argument) {
-    return false
-  }
+  const argument = toASTNode(n.argument)
+  if (!argument) return false
 
   return argument.type === 'AssignmentExpression'
 }

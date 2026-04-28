@@ -1,14 +1,11 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression } from '../../utils/ast-helpers.js'
+import { isBinaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isEmptyStringLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'Literal' && typeof n.value === 'string' && n.value === ''
 }
 
@@ -20,7 +17,8 @@ export const noUselessConcatRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const operator = n.operator as string
 
         if (operator !== '+') {

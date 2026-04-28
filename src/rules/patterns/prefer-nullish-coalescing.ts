@@ -1,47 +1,23 @@
-/**
- * @file Suggest using `??` instead of `||` for null/undefined checks
- * @module rules/patterns/prefer-nullish-coalescing
- */
-
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferNullishCoalescingOptions {
   readonly ignoreConditionalTests?: boolean
 }
 
-function isLogicalOrExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'LogicalExpression' && n.operator === '||'
-}
-
 function isBooleanLiteral(node: unknown, value: boolean): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === value
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === value
 }
 
 function isNullishCoalescingCandidate(node: unknown): boolean {
-  if (!isLogicalOrExpression(node)) {
-    return false
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'LogicalExpression' || n.operator !== '||') return false
 
-  const n = node as Record<string, unknown>
-  const right = n.right as Record<string, unknown> | undefined
-
-  // Skip if right side is a boolean literal (common pattern for || true / || false)
-  if (isBooleanLiteral(right, true) || isBooleanLiteral(right, false)) {
-    return false
-  }
+  if (isBooleanLiteral(n.right, true) || isBooleanLiteral(n.right, false)) return false
 
   return true
 }

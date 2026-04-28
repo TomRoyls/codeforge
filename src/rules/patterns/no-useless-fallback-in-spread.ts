@@ -6,120 +6,47 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeText, getRange } from '../../utils/ast-helpers.js'
+import { getNodeText, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
-/**
- * Check if a node is a LogicalExpression with || operator
- */
 function isLogicalOrExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'LogicalExpression' && n.operator === '||'
+  const n = toASTNode(node)
+  return n?.type === 'LogicalExpression' && n.operator === '||'
 }
 
-/**
- * Check if a node is an empty object literal: {}
- */
 function isEmptyObjectLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ObjectExpression' && Array.isArray(n.properties) && n.properties.length === 0
+  const n = toASTNode(node)
+  return n?.type === 'ObjectExpression' && Array.isArray(n.properties) && n.properties.length === 0
 }
 
-/**
- * Check if a node is an empty array literal: []
- */
 function isEmptyArrayLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ArrayExpression' && Array.isArray(n.elements) && n.elements.length === 0
+  const n = toASTNode(node)
+  return n?.type === 'ArrayExpression' && Array.isArray(n.elements) && n.elements.length === 0
 }
 
-/**
- * Check if a node is a SpreadElement in an ObjectExpression
- */
 function isSpreadInObjectExpression(node: unknown, parent: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type !== 'SpreadElement') {
-    return false
-  }
-
-  if (!parent || typeof parent !== 'object') {
-    return false
-  }
-
-  const p = parent as Record<string, unknown>
-  return p.type === 'ObjectExpression'
+  const n = toASTNode(node)
+  if (n?.type !== 'SpreadElement') return false
+  return toASTNode(parent)?.type === 'ObjectExpression'
 }
 
-/**
- * Check if a node is a SpreadElement in an ArrayExpression
- */
 function isSpreadInArrayExpression(node: unknown, parent: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type !== 'SpreadElement') {
-    return false
-  }
-
-  if (!parent || typeof parent !== 'object') {
-    return false
-  }
-
-  const p = parent as Record<string, unknown>
-  return p.type === 'ArrayExpression'
+  const n = toASTNode(node)
+  if (n?.type !== 'SpreadElement') return false
+  return toASTNode(parent)?.type === 'ArrayExpression'
 }
 
-/**
- * Get the argument of a SpreadElement
- */
 function getSpreadArgument(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.argument
+  return toASTNode(node)?.argument
 }
 
-/**
- * Get the left operand of a LogicalExpression
- */
 function getLogicalLeft(node: unknown): unknown {
-  if (!isLogicalOrExpression(node)) {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.left
+  if (!isLogicalOrExpression(node)) return null
+  return toASTNode(node)?.left
 }
 
-/**
- * Get the right operand of a LogicalExpression
- */
 function getLogicalRight(node: unknown): unknown {
-  if (!isLogicalOrExpression(node)) {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.right
+  if (!isLogicalOrExpression(node)) return null
+  return toASTNode(node)?.right
 }
 
 export const noUselessFallbackInSpreadRule: RuleDefinition = {

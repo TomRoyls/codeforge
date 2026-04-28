@@ -1,51 +1,24 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { getArguments, isCallExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isParseIntCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-  if (!callee || callee.type !== 'Identifier') {
-    return false
-  }
-
+  if (!isCallExpression(node)) return false
+  const callee = toASTNode(toASTNode(node)?.callee)
+  if (callee?.type !== 'Identifier') return false
   return callee.name === 'parseInt'
 }
 
 function getLiteralNumberValue(node: unknown): number | undefined {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'Literal' && typeof n.value === 'number') {
-    return n.value
-  }
-
+  const n = toASTNode(node)
+  if (n?.type === 'Literal' && typeof n.value === 'number') return n.value
   return undefined
 }
 
 function getStringLiteralValue(node: unknown): string | undefined {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'Literal' && typeof n.value === 'string') {
-    return n.value
-  }
-
+  const n = toASTNode(node)
+  if (n?.type === 'Literal' && typeof n.value === 'string') return n.value
   return undefined
 }
 
@@ -73,34 +46,22 @@ export const preferNumericLiteralsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
-        if (!isParseIntCall(node)) {
-          return
-        }
+        if (!isParseIntCall(node)) return
 
-        const n = node as Record<string, unknown>
-        const args = n.arguments as undefined | unknown[]
-
-        if (!args || args.length !== 2) {
-          return
-        }
+        const args = getArguments(node)
+        if (args.length !== 2) return
 
         const strValue = getStringLiteralValue(args[0])
-        if (strValue === undefined) {
-          return
-        }
+        if (strValue === undefined) return
 
         const radix = getLiteralNumberValue(args[1])
-        if (radix === undefined || !Number.isInteger(radix)) {
-          return
-        }
+        if (radix === undefined || !Number.isInteger(radix)) return
 
         const prefix = getPrefixForRadix(radix)
-        if (!prefix) {
-          return
-        }
+        if (!prefix) return
 
         const location = extractLocation(node)
-        const range = n.range as [number, number] | undefined
+        const range = toASTNode(node)?.range
         const fixed = `${prefix}${strValue}`
 
         context.report({

@@ -1,20 +1,11 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isFunctionDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return (
-    n.type === 'FunctionDeclaration' ||
-    n.type === 'FunctionExpression' ||
-    n.type === 'ArrowFunctionExpression'
-  )
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getParamName(param: unknown): null | string {
-  if (!param || typeof param !== 'object') return null
-  const p = param as Record<string, unknown>
+  const p = toASTNode(param)
+  if (!p) return null
   if (p.type === 'Identifier' && typeof p.name === 'string') return p.name
   if (p.type === 'AssignmentPattern') return getParamName(p.left)
   if (p.type === 'RestElement') return getParamName(p.argument)
@@ -36,8 +27,9 @@ export const noDupeArgsRule: RuleDefinition = {
       },
     }
     function checkFunction(node: unknown): void {
-      if (!isFunctionDeclaration(node)) return
-      const n = node as Record<string, unknown>
+      const n = toASTNode(node)
+      if (!n) return
+      if (n.type !== 'FunctionDeclaration' && n.type !== 'FunctionExpression' && n.type !== 'ArrowFunctionExpression') return
       const {params} = n
       if (!Array.isArray(params)) return
 

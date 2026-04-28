@@ -1,22 +1,10 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
+import { isBinaryExpression, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isNaNIdentifier(node: unknown): boolean {
-  if (!isIdentifier(node)) return false
-  return (node as Record<string, unknown>).name === 'NaN'
+  return isIdentifier(node, 'NaN')
 }
 
 export const useIsnanRule: RuleDefinition = {
@@ -24,10 +12,12 @@ export const useIsnanRule: RuleDefinition = {
     return {
       BinaryExpression(node: unknown): void {
         if (!isBinaryExpression(node)) return
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (!n) return
 
-        if (['!=', '!==', '==', '==='].includes(operator) && (isNaNIdentifier(n.left) || isNaNIdentifier(n.right))) {
+        const {operator} = n
+
+        if (['!=', '!==', '==', '==='].includes(operator as string) && (isNaNIdentifier(n.left) || isNaNIdentifier(n.right))) {
             context.report({
               loc: extractLocation(node),
               message: 'Use the isNaN function to compare with NaN.',

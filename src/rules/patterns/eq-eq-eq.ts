@@ -1,16 +1,12 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeSource, getRange, isBinaryExpression } from '../../utils/ast-helpers.js'
+import { getNodeSource, getRange, isBinaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 function isNullLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === null
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === null
 }
 
 function isNullNullComparison(left: unknown, right: unknown): boolean {
@@ -25,7 +21,8 @@ export const eqEqEqRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const operator = n.operator as string
 
         if (operator !== '==' && operator !== '!=') {

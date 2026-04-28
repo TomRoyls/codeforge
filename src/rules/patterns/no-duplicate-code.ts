@@ -6,6 +6,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface CodeBlock {
@@ -40,19 +41,14 @@ function hashContent(content: string): string {
 }
 
 function getBlockContent(node: unknown, source: string): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
+  const loc = toASTNode(n.loc)
+  if (!loc) return null
 
-  if (!loc) {
-    return null
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
+  const start = toASTNode(loc.start)
+  const end = toASTNode(loc.end)
 
   if (typeof start?.line !== 'number' || typeof end?.line !== 'number') {
     return null
@@ -66,11 +62,9 @@ function getBlockContent(node: unknown, source: string): null | string {
 }
 
 function isImportOrExport(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
   return (
     n.type === 'ImportDeclaration' ||
     n.type === 'ExportNamedDeclaration' ||
@@ -80,11 +74,9 @@ function isImportOrExport(node: unknown): boolean {
 }
 
 function isComment(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
   return n.type === 'Block' || n.type === 'Line'
 }
 

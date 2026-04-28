@@ -1,39 +1,23 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasFunctionExpressionValue(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'Property') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'Property') return false
 
   const shorthand = n.shorthand as boolean | undefined
-  if (shorthand === true) {
-    return false
-  }
+  if (shorthand === true) return false
 
   const method = n.method as boolean | undefined
-  if (method === true) {
-    return false
-  }
+  if (method === true) return false
 
   const kind = n.kind as string | undefined
-  if (kind === 'get' || kind === 'set') {
-    return false
-  }
+  if (kind === 'get' || kind === 'set') return false
 
-  const value = n.value as Record<string, unknown> | undefined
-  if (!value || typeof value !== 'object') {
-    return false
-  }
-
-  return value.type === 'FunctionExpression'
+  const value = toASTNode(n.value)
+  return value?.type === 'FunctionExpression'
 }
 
 export const objectShorthandRule: RuleDefinition = {

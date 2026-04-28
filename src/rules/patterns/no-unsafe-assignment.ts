@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeAssignmentOptions {
@@ -8,37 +9,24 @@ interface NoUnsafeAssignmentOptions {
 }
 
 function isAnyKeyword(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'TSAnyKeyword'
 }
 
 function isArrayOfAny(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type !== 'TSArrayType') {
-    return false
-  }
-
+  const n = toASTNode(node)
+  if (n?.type !== 'TSArrayType') return false
   return isAnyKeyword(n.elementType)
 }
 
 function isUnsafeAssignment(init: unknown, options: NoUnsafeAssignmentOptions): boolean {
-  if (!init || typeof init !== 'object') {
-    return false
-  }
-
-  const initNode = init as Record<string, unknown>
+  const initNode = toASTNode(init)
+  if (!initNode) return false
 
   // Check if the value is explicitly typed as any via type assertion
   if (initNode.type === 'TSAsExpression' || initNode.type === 'TSTypeAssertion') {
-    const typeAnnotation = initNode.typeAnnotation as Record<string, unknown> | undefined
+    const typeAnnotation = toASTNode(initNode.typeAnnotation)
     if (isAnyKeyword(typeAnnotation)) {
       return true
     }
@@ -53,40 +41,28 @@ function isUnsafeAssignment(init: unknown, options: NoUnsafeAssignmentOptions): 
 }
 
 function hasSpecificTypeAnnotation(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const id = n.id as Record<string, unknown> | undefined
-  if (!id) {
-    return false
-  }
+  const id = toASTNode(n.id)
+  if (!id) return false
 
-  const typeAnnotation = id.typeAnnotation as Record<string, unknown> | undefined
-  if (!typeAnnotation) {
-    return false
-  }
+  const typeAnnotation = toASTNode(id.typeAnnotation)
+  if (!typeAnnotation) return false
 
-  const innerType = typeAnnotation.typeAnnotation as Record<string, unknown> | undefined
-  if (!innerType) {
-    return false
-  }
+  const innerType = toASTNode(typeAnnotation.typeAnnotation)
+  if (!innerType) return false
 
   // Has a type annotation that is not 'any'
   return innerType.type !== 'TSAnyKeyword'
 }
 
 function getVariableName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-  const id = n.id as Record<string, unknown> | undefined
-  if (!id) {
-    return null
-  }
+  const id = toASTNode(n.id)
+  if (!id) return null
 
   if (id.type === 'Identifier' && typeof id.name === 'string') {
     return id.name
@@ -103,18 +79,16 @@ export const noUnsafeAssignmentRule: RuleDefinition = {
 
     return {
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         const {right} = n
 
         // Check if the right side is an unsafe assignment
         if (right && isUnsafeAssignment(right, options)) {
-          const left = n.left as Record<string, unknown> | undefined
+          const left = toASTNode(n.left)
           let varName: null | string = null
-          if (left && left.type === 'Identifier' && typeof left.name === 'string') {
+          if (left?.type === 'Identifier' && typeof left.name === 'string') {
             varName = left.name
           }
 
@@ -129,18 +103,16 @@ export const noUnsafeAssignmentRule: RuleDefinition = {
       },
 
       Property(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         const {value} = n
 
         // Check if the property value is an unsafe assignment
         if (value && isUnsafeAssignment(value, options)) {
-          const key = n.key as Record<string, unknown> | undefined
+          const key = toASTNode(n.key)
           let propName: null | string = null
-          if (key && key.type === 'Identifier' && typeof key.name === 'string') {
+          if (key?.type === 'Identifier' && typeof key.name === 'string') {
             propName = key.name
           }
 
@@ -155,11 +127,9 @@ export const noUnsafeAssignmentRule: RuleDefinition = {
       },
 
       VariableDeclarator(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         const {init} = n
 
         // Check if the variable has a specific type annotation (not any)

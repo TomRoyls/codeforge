@@ -1,27 +1,16 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'IfStatement'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isLonelyIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   if (n.type === 'BlockStatement') {
     const body = n.body as unknown[]
     if (Array.isArray(body) && body.length === 1) {
-      return isIfStatement(body[0])
+      return toASTNode(body[0])?.type === 'IfStatement'
     }
   }
 
@@ -32,11 +21,9 @@ export const noLonelyIfRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       IfStatement(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         const {alternate} = n
 
         if (!alternate) {

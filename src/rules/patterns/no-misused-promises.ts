@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const NON_PROMISE_AWARE_METHODS = new Set([
   'every',
@@ -19,74 +20,37 @@ const NON_PROMISE_AWARE_METHODS = new Set([
 ])
 
 function isAsyncFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
   return (
-    (n.type === 'ArrowFunctionExpression' || n.type === 'FunctionExpression') && n.async === true
+    (n?.type === 'ArrowFunctionExpression' || n?.type === 'FunctionExpression') && n.async === true
   )
 }
 
-function isCallExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'CallExpression'
-}
-
-function isMemberExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'MemberExpression'
-}
-
 function getMethodName(node: unknown): null | string {
-  if (!isCallExpression(node)) {
-    return null
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return null
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const callee = toASTNode(n.callee)
+  if (callee?.type !== 'MemberExpression') return null
 
-  if (!callee || !isMemberExpression(callee)) {
-    return null
-  }
+  const property = toASTNode(callee.property)
+  if (property?.type !== 'Identifier') return null
 
-  const property = callee.property as Record<string, unknown> | undefined
-  if (!property || property.type !== 'Identifier') {
-    return null
-  }
-
-  return property.name as string
+  return property.name ?? null
 }
 
 function getArguments(node: unknown): unknown[] {
-  if (!isCallExpression(node)) {
-    return []
-  }
-
-  const n = node as Record<string, unknown>
-  return (n.arguments as unknown[]) ?? []
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return []
+  return n.arguments ?? []
 }
 
 function findParentAsyncFunction(node: unknown, depth = 0): boolean {
-  if (!node || typeof node !== 'object' || depth > 50) {
-    return false
-  }
+  if (depth > 50) return false
 
-  const n = node as Record<string, unknown>
-  const parent = n.parent as Record<string, unknown> | undefined
-
-  if (!parent) {
-    return false
-  }
+  const n = toASTNode(node)
+  const parent = toASTNode(n?.parent)
+  if (!parent) return false
 
   if (
     (parent.type === 'ArrowFunctionExpression' ||
@@ -103,24 +67,17 @@ function findParentAsyncFunction(node: unknown, depth = 0): boolean {
 export const noMisusedPromisesRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     function checkMisusedPromiseCallback(node: unknown): void {
-      if (!isCallExpression(node)) {
-        return
-      }
+      const n = toASTNode(node)
+      if (n?.type !== 'CallExpression') return
 
       const methodName = getMethodName(node)
-      if (!methodName || !NON_PROMISE_AWARE_METHODS.has(methodName)) {
-        return
-      }
+      if (!methodName || !NON_PROMISE_AWARE_METHODS.has(methodName)) return
 
       const args = getArguments(node)
-      if (args.length === 0) {
-        return
-      }
+      if (args.length === 0) return
 
       const callback = args[0]
-      if (!isAsyncFunction(callback)) {
-        return
-      }
+      if (!isAsyncFunction(callback)) return
 
       const location = extractLocation(callback)
       context.report({
@@ -130,15 +87,8 @@ export const noMisusedPromisesRule: RuleDefinition = {
     }
 
     function checkAwaitInSyncFunction(node: unknown): void {
-      if (!node || typeof node !== 'object') {
-        return
-      }
-
-      const n = node as Record<string, unknown>
-
-      if (n.type !== 'AwaitExpression') {
-        return
-      }
+      const n = toASTNode(node)
+      if (n?.type !== 'AwaitExpression') return
 
       if (!findParentAsyncFunction(node)) {
         const location = extractLocation(node)

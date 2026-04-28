@@ -1,30 +1,15 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, isIdentifier, isLiteral } from '../../utils/ast-helpers.js'
-
-function isUnaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'UnaryExpression'
-}
+import { getRange, isIdentifier, isLiteral, toASTNode } from '../../utils/ast-helpers.js'
 
 function isVoidExpression(node: unknown): boolean {
-  if (!isUnaryExpression(node)) {
-    return false
-  }
-
-  return (node as Record<string, unknown>).operator === 'void'
+  const n = toASTNode(node)
+  return n?.type === 'UnaryExpression' && n.operator === 'void'
 }
 
 function isLiteralZero(argument: unknown): boolean {
-  if (!isLiteral(argument)) {
-    return false
-  }
-
-  return (argument as Record<string, unknown>).value === 0
+  return isLiteral(argument) && toASTNode(argument)?.value === 0
 }
 
 function isUndefinedIdentifier(argument: unknown): boolean {
@@ -39,12 +24,10 @@ export const noVoidRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       UnaryExpression(node: unknown): void {
-        if (!isVoidExpression(node)) {
-          return
-        }
+        if (!isVoidExpression(node)) return
 
-        const n = node as Record<string, unknown>
-        const {argument} = n
+        const n = toASTNode(node)
+        const argument = n?.argument
         const location = extractLocation(node)
         const range = getRange(node)
 

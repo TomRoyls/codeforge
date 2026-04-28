@@ -1,24 +1,19 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isIdentifier } from '../../utils/ast-helpers.js'
+import { isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isNewFuncCall(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   const {type} = n
 
   if (type === 'NewExpression') {
-    const callee = n.callee as unknown
-    return isIdentifier(callee, 'Function')
+    return isIdentifier(n.callee, 'Function')
   }
 
   if (type === 'CallExpression') {
-    const callee = n.callee as unknown
-    return isIdentifier(callee, 'Function')
+    return isIdentifier(n.callee, 'Function')
   }
 
   return false

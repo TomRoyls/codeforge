@@ -10,6 +10,9 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
+import { DANGEROUS_FUNCTIONS } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
@@ -23,33 +26,22 @@ interface NoEvalOptions {
   readonly allowWith?: boolean
 }
 
-const DANGEROUS_FUNCTIONS = new Set([
-  'eval',
-  'execScript',
-  'Function',
-  'setImmediate',
-  'setInterval',
-  'setTimeout',
-])
-
 function isEvalLike(node: unknown): { callee: string; isEval: boolean; } {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return { callee: '', isEval: false }
   }
-
-  const n = node as Record<string, unknown>
 
   if (n.type !== 'CallExpression') {
     return { callee: '', isEval: false }
   }
 
-  const callee = n.callee as Record<string, unknown> | undefined
+  const callee = toASTNode(n.callee)
 
   if (!callee) {
     return { callee: '', isEval: false }
   }
 
-  // Direct eval call: eval(...)
   if (callee.type === 'Identifier' && typeof callee.name === 'string') {
     const {name} = callee
     if (name === 'eval') {
@@ -61,9 +53,8 @@ function isEvalLike(node: unknown): { callee: string; isEval: boolean; } {
     }
   }
 
-  // Member expression: global.eval, window.eval, etc.
   if (callee.type === 'MemberExpression') {
-    const property = callee.property as Record<string, unknown> | undefined
+    const property = toASTNode(callee.property)
     if (property && property.type === 'Identifier' && typeof property.name === 'string') {
       const {name} = property
       if (DANGEROUS_FUNCTIONS.has(name)) {
@@ -75,42 +66,6 @@ function isEvalLike(node: unknown): { callee: string; isEval: boolean; } {
   return { callee: '', isEval: false }
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
-/**
- * Rule: no-eval
- * Disallows use of eval() and similar dangerous functions
- */
 export const noEvalRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoEvalOptions>(context.config.options, {
@@ -125,12 +80,11 @@ export const noEvalRule: RuleDefinition = {
         const result = isEvalLike(node)
 
         if (result.isEval) {
-          // Check for indirect eval (allowIndirect option)
           if (options.allowIndirect && result.callee === 'eval') {
-            const n = node as Record<string, unknown>
-            const callee = (n as Record<string, unknown>).callee as Record<string, unknown>
+            const n = toASTNode(node)
+            const callee = toASTNode(n?.callee)
             if (callee?.type === 'MemberExpression') {
-              return // Skip indirect eval if allowed
+              return
             }
           }
 
@@ -148,12 +102,12 @@ export const noEvalRule: RuleDefinition = {
       },
 
       NewExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
+        const n = toASTNode(node)
+        if (!n) {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const callee = n.callee as Record<string, unknown> | undefined
+        const callee = toASTNode(n.callee)
 
         if (callee?.type === 'Identifier' && callee.name === 'Function') {
           context.report({

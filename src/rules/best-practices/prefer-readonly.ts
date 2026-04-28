@@ -10,6 +10,7 @@ import type { RuleViolation, VisitorContext } from '../../ast/visitor.js'
 import type { RuleDefinition, RuleOptions } from '../types.js'
 
 import { getNodeRange, traverseAST } from '../../ast/visitor.js'
+import { MUTATING_ARRAY_METHODS } from '../../utils/constants.js'
 
 interface PreferReadonlyOptions extends RuleOptions {
   ignoreLocal?: boolean
@@ -20,18 +21,6 @@ const DEFAULT_OPTIONS: PreferReadonlyOptions = {
   ignoreLocal: false,
   ignorePattern: '',
 }
-
-const MUTATING_ARRAY_METHODS = new Set([
-  'copyWithin',
-  'fill',
-  'pop',
-  'push',
-  'reverse',
-  'shift',
-  'sort',
-  'splice',
-  'unshift',
-])
 
 function isAssignmentExpression(node: Node): boolean {
   if (!Node.isBinaryExpression(node)) return false

@@ -1,68 +1,36 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isExportNamedDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ExportNamedDeclaration'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isTypeExport(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  const declaration = n.declaration as Record<string, unknown> | undefined
-  if (!declaration) {
-    return false
-  }
-
-  const declType = declaration.type as string | undefined
+  const n = toASTNode(node)
+  const declaration = toASTNode(n?.declaration)
+  if (!declaration) return false
   return (
-    declType === 'TSTypeAliasDeclaration' ||
-    declType === 'TSInterfaceDeclaration' ||
-    declType === 'TSEnumDeclaration'
+    declaration.type === 'TSTypeAliasDeclaration' ||
+    declaration.type === 'TSInterfaceDeclaration' ||
+    declaration.type === 'TSEnumDeclaration'
   )
 }
 
 function isExportType(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.exportKind === 'type'
+  return toASTNode(node)?.exportKind === 'type'
 }
 
 function hasTypeSpecifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
+  if (n.exportKind === 'type') return true
 
-  const n = node as Record<string, unknown>
-
-  if (n.exportKind === 'type') {
-    return true
-  }
-
-  const specifiers = n.specifiers as undefined | unknown[]
-  if (!specifiers || specifiers.length === 0) {
-    return false
-  }
+  const {specifiers} = n
+  if (specifiers === undefined || specifiers === null) return false
+  if (!Array.isArray(specifiers)) throw new TypeError('specifiers is not an array')
+  if (specifiers.length === 0) return false
 
   return specifiers.some((spec) => {
-    if (!spec || typeof spec !== 'object') {
-      return false
-    }
-
-    const s = spec as Record<string, unknown>
-    return s.exportKind === 'type' || s.importKind === 'type'
+    const s = toASTNode(spec)
+    return s?.exportKind === 'type' || s?.importKind === 'type'
   })
 }
 
@@ -70,22 +38,13 @@ export const consistentTypeExportsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ExportNamedDeclaration(node: unknown): void {
-        if (!isExportNamedDeclaration(node)) {
-          return
-        }
-
-        if (isExportType(node)) {
-          return
-        }
-
-        if (hasTypeSpecifier(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'ExportNamedDeclaration') return
+        if (isExportType(node) || hasTypeSpecifier(node)) return
 
         if (isTypeExport(node)) {
-          const location = extractLocation(node)
           context.report({
-            loc: location,
+            loc: extractLocation(node),
             message:
               'Use `export type` for type exports to make the intent clear. Example: `export type { MyType }` or `export type MyType = ...`',
           })

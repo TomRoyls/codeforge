@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
+import { isIdentifier, isMemberExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 interface ImportInfo {
   importedName?: string
@@ -13,55 +13,29 @@ interface ImportInfo {
 
 function collectImports(ast: unknown): ImportInfo[] {
   const imports: ImportInfo[] = []
+  const n = toASTNode(ast)
+  const body = n?.body
 
-  if (!ast || typeof ast !== 'object') {
-    return imports
-  }
-
-  const n = ast as Record<string, unknown>
-  const body = n.body as undefined | unknown[]
-
-  if (!body || !Array.isArray(body)) {
-    return imports
-  }
+  if (!Array.isArray(body)) return imports
 
   for (const node of body) {
-    if (!node || typeof node !== 'object') {
-      continue
-    }
+    const stmt = toASTNode(node)
+    if (stmt?.type !== 'ImportDeclaration') continue
 
-    const stmt = node as Record<string, unknown>
-    if (stmt.type !== 'ImportDeclaration') {
-      continue
-    }
+    const source = toASTNode(stmt.source)
+    const sourceValue = source?.value
+    if (typeof sourceValue !== 'string') continue
 
-    const source = stmt.source as Record<string, unknown> | undefined
-    const sourceValue = source?.value as string | undefined
-    if (!sourceValue) {
-      continue
-    }
-
-    const specifiers = stmt.specifiers as undefined | unknown[]
-    if (!specifiers || !Array.isArray(specifiers)) {
-      continue
-    }
+    const {specifiers} = stmt
+    if (!Array.isArray(specifiers)) continue
 
     for (const spec of specifiers) {
-      if (!spec || typeof spec !== 'object') {
-        continue
-      }
+      const s = toASTNode(spec)
+      const local = toASTNode(s?.local)
+      const localName = local?.name
+      if (typeof localName !== 'string') continue
 
-      const s = spec as Record<string, unknown>
-      const local = s.local as Record<string, unknown> | undefined
-      const localName = local?.name as string | undefined
-
-      if (!localName) {
-        continue
-      }
-
-      const specType = s.type as string
-
-      switch (specType) {
+      switch (s?.type) {
       case 'ImportDefaultSpecifier': {
         imports.push({
           importedName: 'default',
@@ -70,8 +44,7 @@ function collectImports(ast: unknown): ImportInfo[] {
           localName,
           source: sourceValue,
         })
-      
-      break;
+        break
       }
 
       case 'ImportNamespaceSpecifier': {
@@ -81,14 +54,12 @@ function collectImports(ast: unknown): ImportInfo[] {
           localName,
           source: sourceValue,
         })
-      
-      break;
+        break
       }
 
       case 'ImportSpecifier': {
-        const imported = s.imported as Record<string, unknown> | undefined
-        const importedName = imported?.name as string | undefined
-
+        const imported = toASTNode(s.imported)
+        const importedName = imported?.name
         imports.push({
           importedName: importedName ?? localName,
           isDefault: false,
@@ -96,10 +67,8 @@ function collectImports(ast: unknown): ImportInfo[] {
           localName,
           source: sourceValue,
         })
-      
-      break;
+        break
       }
-      // No default
       }
     }
   }
@@ -110,40 +79,25 @@ function collectImports(ast: unknown): ImportInfo[] {
 function isUnnecessaryQualifier(
   node: unknown,
   imports: ImportInfo[],
-): null | { memberName: string; qualifier: string; } {
-  if (!isMemberExpression(node)) {
-    return null
-  }
+): null | { memberName: string; qualifier: string } {
+  if (!isMemberExpression(node)) return null
 
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return null
+  if (n.computed === true) return null
+  if (n.optional === true) return null
 
-  if (n.computed === true) {
-    return null
-  }
+  if (!isIdentifier(n.object)) return null
+  const qualifierName = toASTNode(n.object)?.name
+  if (typeof qualifierName !== 'string') return null
 
-  if (n.optional === true) {
-    return null
-  }
-
-  const {object} = n
-  if (!isIdentifier(object)) {
-    return null
-  }
-
-  const qualifierName = (object as Record<string, unknown>).name as string
-
-  const property = n.property as Record<string, unknown> | undefined
-  if (!property || property.type !== 'Identifier') {
-    return null
-  }
-
-  const memberName = property.name as string
+  const property = toASTNode(n.property)
+  if (property?.type !== 'Identifier') return null
+  const memberName = property.name
+  if (typeof memberName !== 'string') return null
 
   const namespaceImport = imports.find((imp) => imp.isNamespace && imp.localName === qualifierName)
-
-  if (!namespaceImport) {
-    return null
-  }
+  if (!namespaceImport) return null
 
   const directImport = imports.find(
     (imp) =>

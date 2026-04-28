@@ -1,27 +1,17 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isAmbiguousRegex(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'BinaryExpression') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'BinaryExpression') return false
 
   const operator = n.operator as string | undefined
-  if (operator !== '/') {
-    return false
-  }
+  if (operator !== '/') return false
 
-  const right = n.right as Record<string, unknown> | undefined
-  if (!right || right.type !== 'Literal' || typeof right.value !== 'string') {
-    return false
-  }
+  const right = toASTNode(n.right)
+  if (!right || right.type !== 'Literal' || typeof right.value !== 'string') return false
 
   return true
 }

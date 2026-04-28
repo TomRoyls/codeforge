@@ -1,84 +1,16 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getIdentifierName(node: unknown): null | string {
-  if (!isIdentifier(node)) {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  const name = n.name as string | undefined
-  return name ?? null
-}
-
-function isAssignmentExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'AssignmentExpression'
-}
-
-function isMemberExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'MemberExpression'
-}
-
-function isFunctionDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'FunctionDeclaration'
-}
-
-function isFunctionExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'FunctionExpression'
-}
-
-function isArrowFunctionExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ArrowFunctionExpression'
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
+  return n.name ?? null
 }
 
 function getParams(node: unknown): unknown[] {
-  if (!node || typeof node !== 'object') {
-    return []
-  }
-
-  const n = node as Record<string, unknown>
-  const params = n.params as undefined | unknown[]
-
-  if (!params) {
-    return []
-  }
-
-  return params
+  return toASTNode(node)?.params ?? []
 }
 
 export const noParamReassignRule: RuleDefinition = {
@@ -87,86 +19,56 @@ export const noParamReassignRule: RuleDefinition = {
 
     return {
       ArrowFunctionExpression(node: unknown): void {
-        if (!isArrowFunctionExpression(node)) {
-          return
-        }
-
         const params = getParams(node)
         for (const param of params) {
           const name = getIdentifierName(param)
-          if (name) {
-            functionParameters.add(name)
-          }
+          if (name) functionParameters.add(name)
         }
       },
 
       AssignmentExpression(node: unknown): void {
-        if (!isAssignmentExpression(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'AssignmentExpression') return
 
-        const n = node as Record<string, unknown>
-        const left = n.left as unknown
-        const operator = n.operator as string | undefined
+        const {left} = n
+        if (n.operator && n.operator !== '=') return
 
-        if (operator && operator !== '=') {
-          return
-        }
-
-        if (isIdentifier(left)) {
+        if (getIdentifierName(left)) {
           const name = getIdentifierName(left)
           if (name && functionParameters.has(name)) {
-            const location = extractLocation(node)
             context.report({
-              loc: location,
+              loc: extractLocation(node),
               message: `Reassignment of function parameter '${name}'.`,
             })
             return
           }
         }
 
-        if (isMemberExpression(left)) {
-          const member = left as Record<string, unknown>
-          const object = member.object as unknown
-
-          if (isIdentifier(object)) {
-            const name = getIdentifierName(object)
-            if (name && functionParameters.has(name)) {
-              const location = extractLocation(node)
-              context.report({
-                loc: location,
-                message: `Reassignment of function parameter '${name}'.`,
-              })
-            }
+        const member = toASTNode(left)
+        if (member?.type === 'MemberExpression') {
+          const name = getIdentifierName(member.object)
+          if (name && functionParameters.has(name)) {
+            context.report({
+              loc: extractLocation(node),
+              message: `Reassignment of function parameter '${name}'.`,
+            })
           }
         }
       },
 
       FunctionDeclaration(node: unknown): void {
-        if (!isFunctionDeclaration(node)) {
-          return
-        }
-
         const params = getParams(node)
         for (const param of params) {
           const name = getIdentifierName(param)
-          if (name) {
-            functionParameters.add(name)
-          }
+          if (name) functionParameters.add(name)
         }
       },
 
       FunctionExpression(node: unknown): void {
-        if (!isFunctionExpression(node)) {
-          return
-        }
-
         const params = getParams(node)
         for (const param of params) {
           const name = getIdentifierName(param)
-          if (name) {
-            functionParameters.add(name)
-          }
+          if (name) functionParameters.add(name)
         }
       },
     }

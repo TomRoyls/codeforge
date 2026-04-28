@@ -12,6 +12,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ImportInfo {
@@ -159,15 +160,14 @@ class DependencyGraphBuilder {
 function extractImports(ast: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
-  if (!ast || typeof ast !== 'object') {
-    return imports
-  }
+  const a = toASTNode(ast)
+  if (!a) return imports
 
-  const a = ast as Record<string, unknown>
+  const programBody = toASTNode(a.program)
   const body = Array.isArray(a.body)
     ? a.body
-    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
-      ? ((a.program as Record<string, unknown>).body as unknown[])
+    : Array.isArray(programBody?.body)
+      ? (programBody!.body as unknown[])
       : []
 
   for (const node of body) {
@@ -181,15 +181,13 @@ function extractImports(ast: unknown, filePath: string): ImportInfo[] {
 }
 
 function extractImportFromNode(node: unknown, filePath: string): ImportInfo | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
   const location = extractLocation(node)
-  const n = node as Record<string, unknown>
 
   if (n.type === 'ImportDeclaration') {
-    const sourceNode = n.source as Record<string, unknown> | undefined
+    const sourceNode = toASTNode(n.source)
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
         location,
@@ -200,7 +198,7 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
   }
 
   if (n.type === 'ExportNamedDeclaration' || n.type === 'ExportAllDeclaration') {
-    const sourceNode = n.source as Record<string, unknown> | undefined
+    const sourceNode = toASTNode(n.source)
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
         location,
@@ -239,25 +237,22 @@ function extractImportFromNode(node: unknown, filePath: string): ImportInfo | nu
 }
 
 function findRequireCall(node: unknown): null | { argument: string } {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return null
 
   if (n.type === 'VariableDeclaration') {
     const {declarations} = n
     if (Array.isArray(declarations)) {
       for (const decl of declarations) {
-        if (!decl || typeof decl !== 'object') continue
-        const declNode = decl as Record<string, unknown>
+        const declNode = toASTNode(decl)
+        if (!declNode) continue
         const {init} = declNode
         if (init && isRequireCall(init)) {
-          const initNode = init as Record<string, unknown>
-          const arguments_ = initNode.arguments as undefined | unknown[]
+          const initNode = toASTNode(init)!
+          const arguments_ = initNode.arguments
           const arg0 =
             Array.isArray(arguments_) && arguments_.length > 0
-              ? (arguments_[0] as Record<string, unknown> | undefined)
+              ? toASTNode(arguments_[0])
               : undefined
           if (arg0?.value && typeof arg0.value === 'string') {
             return { argument: arg0.value }
@@ -270,11 +265,11 @@ function findRequireCall(node: unknown): null | { argument: string } {
   if (n.type === 'ExpressionStatement') {
     const {expression} = n
     if (expression && isRequireCall(expression)) {
-      const exprNode = expression as Record<string, unknown>
-      const arguments_ = exprNode.arguments as undefined | unknown[]
+      const exprNode = toASTNode(expression)!
+      const arguments_ = exprNode.arguments
       const arg0 =
         Array.isArray(arguments_) && arguments_.length > 0
-          ? (arguments_[0] as Record<string, unknown> | undefined)
+          ? toASTNode(arguments_[0])
           : undefined
       if (arg0?.value && typeof arg0.value === 'string') {
         return { argument: arg0.value }
@@ -286,23 +281,19 @@ function findRequireCall(node: unknown): null | { argument: string } {
 }
 
 function isRequireCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const callee = toASTNode(n.callee)
 
   return n.type === 'CallExpression' && callee?.type === 'Identifier' && callee.name === 'require'
 }
 
 function isDynamicImport(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const callee = toASTNode(n.callee)
 
   return n.type === 'CallExpression' && callee?.type === 'Import'
 }
@@ -312,11 +303,11 @@ function getDynamicImportArgument(node: unknown): null | string {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const arguments_ = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)!
+  const arguments_ = n.arguments
   const arg0 =
     Array.isArray(arguments_) && arguments_.length > 0
-      ? (arguments_[0] as Record<string, unknown> | undefined)
+      ? toASTNode(arguments_[0])
       : undefined
 
   if (
@@ -349,13 +340,14 @@ export const noCircularDepsRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
         if (isRequireCall(n)) {
-          const arguments_ = n.arguments as undefined | unknown[]
+          const arguments_ = n.arguments
           const arg0 =
             Array.isArray(arguments_) && arguments_.length > 0
-              ? (arguments_[0] as Record<string, unknown> | undefined)
+              ? toASTNode(arguments_[0])
               : undefined
           if (arg0?.value && typeof arg0.value === 'string') {
             const modulePath = arg0.value
@@ -373,8 +365,9 @@ export const noCircularDepsRule: RuleDefinition = {
       },
 
       ImportDeclaration(node: unknown): void {
-        const n = node as Record<string, unknown>
-        const sourceNode = n.source as Record<string, unknown> | undefined
+        const n = toASTNode(node)
+        if (!n) return
+        const sourceNode = toASTNode(n.source)
         if (sourceNode?.value && typeof sourceNode.value === 'string') {
           const imports = fileImports.get(filePath) ?? []
           const modulePath = sourceNode.value

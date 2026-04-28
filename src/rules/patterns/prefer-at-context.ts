@@ -2,120 +2,89 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 
 import { extractLocation } from '../../ast/location-utils.js'
 import {
+  type ASTNode,
   getNodeText,
   getRange,
   isCallExpression,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 
 function isThisExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ThisExpression'
+  return toASTNode(node)?.type === 'ThisExpression'
 }
 
 function getMethodName(node: unknown): null | string {
-  if (!isMemberExpression(node)) {
-    return null
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return null
 
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
+  const property = toASTNode(n.property)
+  if (property?.type !== 'Identifier') return null
 
-  if (!property || property.type !== 'Identifier') {
-    return null
-  }
-
-  return property.name as string
+  return property.name ?? null
 }
 
 function isBindCall(node: unknown): boolean {
-  if (!isCallExpression(node)) {
-    return false
-  }
+  if (!isCallExpression(node)) return false
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n?.callee) return false
 
-  if (!callee) {
-    return false
-  }
-
-  return getMethodName(callee) === 'bind'
+  return getMethodName(n.callee) === 'bind'
 }
 
 function isBindThisCall(node: unknown): boolean {
-  if (!isCallExpression(node)) {
-    return false
-  }
+  if (!isCallExpression(node)) return false
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  const args = n?.arguments
 
-  if (!args || args.length !== 1) {
-    return false
-  }
+  if (!args || args.length !== 1) return false
 
-  const firstArg = args[0]
-  return isThisExpression(firstArg)
+  return isThisExpression(args[0])
 }
 
 function getCalleeObject(node: unknown): unknown {
-  if (!isCallExpression(node)) {
-    return null
-  }
+  if (!isCallExpression(node)) return null
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
-  if (!callee || !isMemberExpression(callee)) {
-    return null
-  }
+  if (!callee || !isMemberExpression(callee)) return null
 
-  const c = callee as Record<string, unknown>
-  return c.object
+  return callee.object
 }
 
 function isFunctionExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const { type } = node as Record<string, unknown>
-  return type === 'FunctionExpression' || type === 'FunctionDeclaration'
+  return n.type === 'FunctionExpression' || n.type === 'FunctionDeclaration'
 }
 
 function isAssignmentToThisProperty(node: unknown): boolean {
-  if (!isMemberExpression(node)) {
-    return false
-  }
+  if (!isMemberExpression(node)) return false
 
-  const n = node as Record<string, unknown>
-  const obj = n.object as Record<string, unknown> | undefined
-  return isThisExpression(obj)
+  const n = toASTNode(node)
+  return isThisExpression(n?.object)
 }
 
 export const preferAtContextRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const { left } = n
-        const { right } = n
+        const n = toASTNode(node)
+        if (!n?.left || !n?.right) return
 
         // Check for this.method = function() { ... } pattern
-        if (isAssignmentToThisProperty(left) && isFunctionExpression(right)) {
-          const fnNode = right as Record<string, unknown>
+        if (isAssignmentToThisProperty(n.left) && isFunctionExpression(n.right)) {
+          const fnNode = toASTNode(n.right)
+          if (!fnNode) return
+
           const usesThis = functionUsesThis(fnNode)
 
           if (usesThis) {
-            const location = extractLocation(right)
+            const location = extractLocation(n.right)
 
             context.report({
               loc: location,
@@ -126,9 +95,7 @@ export const preferAtContextRule: RuleDefinition = {
       },
 
       CallExpression(node: unknown): void {
-        if (!isCallExpression(node)) {
-          return
-        }
+        if (!isCallExpression(node)) return
 
         // Check for .bind(this) pattern
         if (isBindCall(node) && isBindThisCall(node)) {
@@ -144,11 +111,11 @@ export const preferAtContextRule: RuleDefinition = {
 
             // Check if the callee is a function expression - we can convert it to arrow function
             if (isFunctionExpression(calleeObject)) {
-              const fnNode = calleeObject as Record<string, unknown>
-              const params = fnNode.params as undefined | unknown[]
-              const body = fnNode.body as Record<string, unknown> | undefined
+              const fnNode = toASTNode(calleeObject)
+              if (fnNode?.params && fnNode.body) {
+                const {params} = fnNode
+                const {body} = fnNode
 
-              if (body && params) {
                 const paramsText = params.map((p) => getNodeText(p, source)).join(', ')
                 const bodyText = getNodeText(body, source)
 
@@ -192,33 +159,24 @@ export const preferAtContextRule: RuleDefinition = {
   },
 }
 
-function functionUsesThis(fnNode: Record<string, unknown>): boolean {
-  const body = fnNode.body as Record<string, unknown> | undefined
-  if (!body) {
-    return false
-  }
+function functionUsesThis(fnNode: ASTNode): boolean {
+  const {body} = fnNode
+  if (!body) return false
 
   // Check if body has this references
   return hasThisReference(body)
 }
 
 function hasThisReference(node: unknown, visited: Set<unknown> = new Set()): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  if (visited.has(node)) {
-    return false
-  }
+  if (visited.has(node)) return false
 
   visited.add(node)
 
-  const n = node as Record<string, unknown>
-
   // Direct ThisExpression
-  if (n.type === 'ThisExpression') {
-    return true
-  }
+  if (n.type === 'ThisExpression') return true
 
   // Don't descend into nested functions (they have their own this)
   if (
@@ -235,7 +193,7 @@ function hasThisReference(node: unknown, visited: Set<unknown> = new Set()): boo
       continue
     }
 
-    const value = n[key]
+    const value = (n as Record<string, unknown>)[key]
     if (Array.isArray(value)) {
       for (const item of value) {
         if (hasThisReference(item, visited)) {

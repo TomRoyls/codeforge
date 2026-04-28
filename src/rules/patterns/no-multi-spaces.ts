@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasMultipleSpaces(value: string): boolean {
   return /[^\s\n] {2,}/.test(value) || / {2,}[^\s\n]/.test(value)
@@ -10,16 +11,10 @@ export const noMultiSpacesRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || typeof n.value !== 'string') return
 
-        const n = node as Record<string, unknown>
-        if (typeof n.value !== 'string') {
-          return
-        }
-
-        if (hasMultipleSpaces(n.value)) {
+        if (hasMultipleSpaces(n.value as string)) {
           const location = extractLocation(node)
           context.report({
             loc: location,
@@ -29,13 +24,10 @@ export const noMultiSpacesRule: RuleDefinition = {
       },
 
       TemplateElement(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const value = n.value as Record<string, unknown> | undefined
-        const raw = value?.raw as string | undefined
+        const n = toASTNode(node)
+        if (!n) return
+        const value = toASTNode(n.value)
+        const raw = value?.raw
 
         if (raw && hasMultipleSpaces(raw)) {
           const location = extractLocation(node)

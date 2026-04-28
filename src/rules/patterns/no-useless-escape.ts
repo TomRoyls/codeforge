@@ -1,30 +1,8 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
-}
-
-const REGEX_SPECIAL_CHARS = new Set([
-  '$',
-  '(',
-  ')',
-  '*',
-  '+',
-  '.',
-  '/',
-  '?',
-  '[',
-  '\\',
-  ']',
-  '^',
-  '{',
-  '|',
-  '}',
-])
+import { toASTNode } from '../../utils/ast-helpers.js'
+import { REGEX_SPECIAL_CHARS } from '../../utils/constants.js'
 
 const STRING_ESCAPABLE = new Set([
   '\n',
@@ -70,8 +48,8 @@ export const noUselessEscapeRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       Literal(node: unknown): void {
-        if (!isLiteral(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n || n.type !== 'Literal') return
         if (typeof n.raw === 'string') {
           const isRegex = Boolean(n.regex)
           if (hasUselessEscape(n.raw, isRegex)) {

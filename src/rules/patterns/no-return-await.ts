@@ -1,41 +1,22 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isReturnStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ReturnStatement'
-}
-
-function isAwaitExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'AwaitExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noReturnAwaitRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ReturnStatement(node: unknown): void {
-        if (!isReturnStatement(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ReturnStatement') return
 
-        const n = node as Record<string, unknown>
         const {argument} = n
 
         if (!argument) {
           return
         }
 
-        if (isAwaitExpression(argument)) {
+        if (toASTNode(argument)?.type === 'AwaitExpression') {
           const location = extractLocation(argument)
           context.report({
             loc: location,

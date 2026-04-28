@@ -1,28 +1,25 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const ALLOWED_UNARY_OPERATORS = ['-', '+', '~', '!'] as const
 
 function isLiteralLike(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const type = n.type as string
+  const {type} = n
 
-  if (type === 'Literal' || type === 'BigIntLiteral') {
-    return true
-  }
+  if (type === 'Literal' || type === 'BigIntLiteral') return true
 
   if (type === 'TemplateLiteral') {
-    const expressions = n.expressions as undefined | unknown[]
+    const {expressions} = n
     return !expressions || expressions.length === 0
   }
 
   if (type === 'UnaryExpression') {
-    const operator = n.operator as string | undefined
+    const {operator} = n
     if (
       operator &&
       ALLOWED_UNARY_OPERATORS.includes(operator as (typeof ALLOWED_UNARY_OPERATORS)[number])
@@ -39,24 +36,12 @@ function isLiteralLike(node: unknown): boolean {
 }
 
 function getEnumMemberName(node: unknown): string {
-  if (!node || typeof node !== 'object') {
-    return 'unknown'
-  }
+  const n = toASTNode(node)
+  const id = toASTNode(n?.id)
+  if (!id) return 'unknown'
 
-  const n = node as Record<string, unknown>
-  const id = n.id as Record<string, unknown> | undefined
-
-  if (!id) {
-    return 'unknown'
-  }
-
-  if (id.type === 'Identifier' && typeof id.name === 'string') {
-    return id.name
-  }
-
-  if (id.type === 'Literal' && typeof id.value === 'string') {
-    return id.value
-  }
+  if (id.type === 'Identifier' && typeof id.name === 'string') return id.name
+  if (id.type === 'Literal' && typeof id.value === 'string') return id.value
 
   return 'unknown'
 }
@@ -65,20 +50,10 @@ export const preferLiteralEnumMemberRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       TSEnumMember(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.initializer) return
 
-        const n = node as Record<string, unknown>
-        const {initializer} = n
-
-        if (!initializer) {
-          return
-        }
-
-        if (isLiteralLike(initializer)) {
-          return
-        }
+        if (isLiteralLike(n.initializer)) return
 
         const memberName = getEnumMemberName(node)
         const location = extractLocation(node)

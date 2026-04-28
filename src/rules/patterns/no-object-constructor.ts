@@ -1,17 +1,18 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getArguments, getRange, isIdentifier, isNewExpression } from '../../utils/ast-helpers.js'
+import { getArguments, getRange, isIdentifier, isNewExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function getCalleeName(node: unknown): null | string {
   if (!isNewExpression(node)) {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
+  const n = toASTNode(node)
+  if (!n) return null
+  const {callee} = n
   if (isIdentifier(callee)) {
-    return (callee as Record<string, unknown>).name as string
+    return toASTNode(callee)?.name as string
   }
 
   return null

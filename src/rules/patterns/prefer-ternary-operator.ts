@@ -1,49 +1,26 @@
-/**
- * @file Suggest using ternary operator instead of verbose if-else for simple assignments
- * @module rules/patterns/prefer-ternary-operator
- */
-
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { type ASTNode, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 interface AssignmentInfo {
-  left: { name?: string; type: string; }
+  left: { name?: string; type: string }
   node: unknown
   right: unknown
 }
 
-function isIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'IfStatement'
-}
-
 function isBlockStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'BlockStatement'
+  return toASTNode(node)?.type === 'BlockStatement'
 }
 
 function getSingleAssignment(node: unknown): AssignmentInfo | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-
-  // Check for expression statement containing assignment
   if (n.type === 'ExpressionStatement' && n.expression) {
-    const expr = n.expression as Record<string, unknown>
-    if (expr.type === 'AssignmentExpression' && expr.operator === '=') {
-      const left = expr.left as Record<string, unknown> | undefined
+    const expr = toASTNode(n.expression)
+    if (expr?.type === 'AssignmentExpression' && expr.operator === '=') {
+      const left = toASTNode(expr.left)
       if (left?.type === 'Identifier' && typeof left.name === 'string') {
         return {
           left: { name: left.name, type: 'Identifier' },
@@ -54,9 +31,8 @@ function getSingleAssignment(node: unknown): AssignmentInfo | null {
     }
   }
 
-  // Check for block statement with single assignment
   if (isBlockStatement(node)) {
-    const body = n.body as undefined | unknown[]
+    const body = (n as ASTNode).body as undefined | unknown[]
     if (body && body.length === 1) {
       return getSingleAssignment(body[0])
     }
@@ -66,18 +42,13 @@ function getSingleAssignment(node: unknown): AssignmentInfo | null {
 }
 
 function getAssignmentFromBranch(node: unknown): AssignmentInfo | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-
-  // Direct expression statement
   if (n.type === 'ExpressionStatement') {
     return getSingleAssignment(node)
   }
 
-  // Block statement
   if (isBlockStatement(node)) {
     const body = n.body as undefined | unknown[]
     if (body && body.length === 1) {
@@ -92,30 +63,24 @@ export const preferTernaryOperatorRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       IfStatement(node: unknown): void {
-        if (!isIfStatement(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'IfStatement') return
 
-        const n = node as Record<string, unknown>
         const {test} = n
         const {consequent} = n
         const {alternate} = n
 
-        // Must have both branches
         if (!consequent || !alternate) {
           return
         }
 
-        // Get assignments from both branches
         const consequentAssignment = getAssignmentFromBranch(consequent)
         const alternateAssignment = getAssignmentFromBranch(alternate)
 
-        // Both branches must have single assignments
         if (!consequentAssignment || !alternateAssignment) {
           return
         }
 
-        // Both assignments must be to the same variable
         if (
           consequentAssignment.left.type !== 'Identifier' ||
           alternateAssignment.left.type !== 'Identifier' ||
@@ -127,7 +92,6 @@ export const preferTernaryOperatorRule: RuleDefinition = {
         const variableName = consequentAssignment.left.name
         const location = extractLocation(node)
 
-        // Build fix
         let fix: undefined | { range: [number, number]; text: string }
 
         const ifRange = getRange(node)

@@ -6,18 +6,8 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-const MUTATING_ARRAY_METHODS = new Set([
-  'copyWithin',
-  'fill',
-  'pop',
-  'push',
-  'reverse',
-  'shift',
-  'sort',
-  'splice',
-  'unshift',
-])
+import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
+import { MUTATING_ARRAY_METHODS } from '../../utils/constants.js'
 
 interface ParameterInfo {
   isArrayOrObjectType: boolean
@@ -28,22 +18,15 @@ interface ParameterInfo {
 }
 
 function isArrayOrObjectType(typeAnnotation: unknown): boolean {
-  if (!typeAnnotation || typeof typeAnnotation !== 'object') {
-    return false
-  }
+  const t = toASTNode(typeAnnotation)
+  if (!t) return false
 
-  const t = typeAnnotation as Record<string, unknown>
+  if (t.type === 'TSArrayType' || t.type === 'TSTypeLiteral' || t.type === 'TSObjectKeyword') return true
 
-  // ArrayTypeAnnotation: string[]
-  if (t.type === 'TSArrayType') {
-    return true
-  }
-
-  // TypeReference: Array<T>, Object, Map, Set, Record<K, V>
   if (t.type === 'TSTypeReference') {
-    const typeName = t.typeName as Record<string, unknown> | undefined
+    const typeName = toASTNode(t.typeName)
     if (typeName?.type === 'Identifier') {
-      const name = typeName.name as string
+      const {name} = typeName
       return (
         name === 'Array' ||
         name === 'Object' ||
@@ -58,38 +41,18 @@ function isArrayOrObjectType(typeAnnotation: unknown): boolean {
     }
   }
 
-  // TypeLiteral: { [key: string]: any }, { foo: string }
-  if (t.type === 'TSTypeLiteral') {
-    return true
-  }
-
-  // Object keyword type
-  if (t.type === 'TSObjectKeyword') {
-    return true
-  }
-
   return false
 }
 
 function isReadonlyType(typeAnnotation: unknown): boolean {
-  if (!typeAnnotation || typeof typeAnnotation !== 'object') {
-    return false
-  }
-
-  const t = typeAnnotation as Record<string, unknown>
+  const t = toASTNode(typeAnnotation)
+  if (!t) return false
 
   if (t.type === 'TSTypeReference') {
-    const typeName = t.typeName as Record<string, unknown> | undefined
+    const typeName = toASTNode(t.typeName)
     if (typeName?.type === 'Identifier') {
-      const name = typeName.name as string
-      if (
-        name === 'ReadonlyArray' ||
-        name === 'ReadonlyMap' ||
-        name === 'ReadonlySet' ||
-        name === 'Readonly'
-      ) {
-        return true
-      }
+      const {name} = typeName
+      return name === 'ReadonlyArray' || name === 'ReadonlyMap' || name === 'ReadonlySet' || name === 'Readonly'
     }
   }
 
@@ -97,28 +60,14 @@ function isReadonlyType(typeAnnotation: unknown): boolean {
 }
 
 function getIdentifierName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type === 'Identifier') {
-    return n.name as string
-  }
-
-  return null
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
+  return n.name ?? null
 }
 
 function getMemberExpressionObject(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type !== 'MemberExpression') {
-    return null
-  }
-
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return null
   return n.object
 }
 
@@ -146,18 +95,17 @@ export const preferReadonlyParameterRule: RuleDefinition = {
     const params = new Map<string, ParameterInfo>()
 
     function collectParameters(node: unknown): void {
-      if (!node || typeof node !== 'object') {
-        return
-      }
+      const n = toASTNode(node)
+      if (!n) return
 
-      const n = node as Record<string, unknown>
-      const type = n.type as string | undefined
+      const {type} = n
 
       // Handle regular function parameters
       if (type === 'Identifier' && n.typeAnnotation) {
-        const typeAnnotation = (n.typeAnnotation as Record<string, unknown>)?.typeAnnotation
+        const ta = toASTNode(n.typeAnnotation)
+        const typeAnnotation = ta?.typeAnnotation
         if (isArrayOrObjectType(typeAnnotation) && !isReadonlyType(typeAnnotation)) {
-          const name = n.name as string
+          const {name} = n
           if (name) {
             params.set(name, {
               isArrayOrObjectType: true,
@@ -172,11 +120,12 @@ export const preferReadonlyParameterRule: RuleDefinition = {
 
       // Handle rest parameters: ...args: string[]
       if (type === 'RestElement') {
-        const argument = n.argument as Record<string, unknown> | undefined
+        const argument = toASTNode(n.argument)
         if (argument?.type === 'Identifier' && n.typeAnnotation) {
-          const typeAnnotation = (n.typeAnnotation as Record<string, unknown>)?.typeAnnotation
+          const ta = toASTNode(n.typeAnnotation)
+          const typeAnnotation = ta?.typeAnnotation
           if (isArrayOrObjectType(typeAnnotation) && !isReadonlyType(typeAnnotation)) {
-            const name = argument.name as string
+            const {name} = argument
             if (name) {
               params.set(name, {
                 isArrayOrObjectType: true,
@@ -192,46 +141,37 @@ export const preferReadonlyParameterRule: RuleDefinition = {
 
       // Handle object/array destructuring with type: { a, b }: { a: string; b: number }
       if ((type === 'ObjectPattern' || type === 'ArrayPattern') && n.typeAnnotation) {
-          const typeAnnotation = (n.typeAnnotation as Record<string, unknown>)?.typeAnnotation
-          if (isArrayOrObjectType(typeAnnotation) && !isReadonlyType(typeAnnotation)) {
-            // For destructured params, we need to track the individual bindings
-            const properties = (n.properties as unknown[]) ?? (n.elements as unknown[]) ?? []
-            for (const prop of properties) {
-              if (prop && typeof prop === 'object') {
-                const p = prop as Record<string, unknown>
-                let value = p
-                if (p.type === 'Property') {
-                  value = p.value as Record<string, unknown>
-                }
+        const ta = toASTNode(n.typeAnnotation)
+        const typeAnnotation = ta?.typeAnnotation
+        if (isArrayOrObjectType(typeAnnotation) && !isReadonlyType(typeAnnotation)) {
+          const items = n.properties ?? n.elements ?? []
+          for (const prop of items) {
+            const p = toASTNode(prop)
+            if (!p) continue
+            let value = p
+            if (p.type === 'Property') {
+              value = toASTNode(p.value) ?? p
+            }
 
-                if (value?.type === 'Identifier') {
-                  const name = value.name as string
-                  if (name) {
-                    params.set(name, {
-                      isArrayOrObjectType: true,
-                      isMutable: false,
-                      loc: extractLocation(prop),
-                      name,
-                      typeAnnotation: null,
-                    })
-                  }
-                }
-              }
+            if (value?.type === 'Identifier' && value.name) {
+              params.set(value.name, {
+                isArrayOrObjectType: true,
+                isMutable: false,
+                loc: extractLocation(prop),
+                name: value.name,
+                typeAnnotation: null,
+              })
             }
           }
         }
+      }
     }
 
     return {
       ArrowFunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const parameters = n.params as undefined | unknown[]
-        if (parameters) {
-          for (const param of parameters) {
+        const n = toASTNode(node)
+        if (n?.params) {
+          for (const param of n.params) {
             collectParameters(param)
           }
         }
@@ -242,58 +182,35 @@ export const preferReadonlyParameterRule: RuleDefinition = {
       },
 
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.left) return
 
-        const n = node as Record<string, unknown>
-        const {left} = n
-        if (!left) {
-          return
-        }
-
-        const leftNode = left as Record<string, unknown>
-        if (leftNode.type === 'Identifier') {
-          const info = params.get(leftNode.name as string)
-          if (info) {
-            info.isMutable = true
-          }
-        } else if (leftNode.type === 'MemberExpression') {
-          checkMemberMutation(left, params)
+        const left = n.left as ASTNode
+        if (left.type === 'Identifier') {
+          const info = params.get(left.name ?? '')
+          if (info) info.isMutable = true
+        } else if (left.type === 'MemberExpression') {
+          checkMemberMutation(n.left, params)
         }
       },
 
       CallExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        const callee = toASTNode(n?.callee)
+        if (callee?.type !== 'MemberExpression') return
 
-        const n = node as Record<string, unknown>
-        const callee = n.callee as Record<string, unknown> | undefined
-        if (!callee || callee.type !== 'MemberExpression') {
-          return
-        }
+        const property = toASTNode(callee.property)
+        if (property?.type !== 'Identifier') return
 
-        const property = callee.property as Record<string, unknown> | undefined
-        if (!property || property.type !== 'Identifier') {
-          return
-        }
-
-        const methodName = property.name as string
-        if (isMutatingMethod(methodName)) {
+        if (isMutatingMethod(property.name ?? '')) {
           checkMemberMutation(callee.object, params)
         }
       },
 
       FunctionDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const parameters = n.params as undefined | unknown[]
-        if (parameters) {
-          for (const param of parameters) {
+        const n = toASTNode(node)
+        if (n?.params) {
+          for (const param of n.params) {
             collectParameters(param)
           }
         }
@@ -304,14 +221,9 @@ export const preferReadonlyParameterRule: RuleDefinition = {
       },
 
       FunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const parameters = n.params as undefined | unknown[]
-        if (parameters) {
-          for (const param of parameters) {
+        const n = toASTNode(node)
+        if (n?.params) {
+          for (const param of n.params) {
             collectParameters(param)
           }
         }
@@ -322,35 +234,22 @@ export const preferReadonlyParameterRule: RuleDefinition = {
       },
 
       UnaryExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string | undefined
-        const {argument} = n
-        if (operator === 'delete' && argument) {
-          const argNode = argument as Record<string, unknown>
-          if (argNode.type === 'MemberExpression') {
-            checkMemberMutation(argument, params)
+        const n = toASTNode(node)
+        if (n?.operator === 'delete' && n.argument) {
+          const argNode = toASTNode(n.argument)
+          if (argNode?.type === 'MemberExpression') {
+            checkMemberMutation(n.argument, params)
           }
         }
       },
 
       UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.argument) return
 
-        const n = node as Record<string, unknown>
-        const {argument} = n
-        if (!argument) {
-          return
-        }
-
-        const argNode = argument as Record<string, unknown>
-        if (argNode.type === 'MemberExpression') {
-          checkMemberMutation(argument, params)
+        const argNode = toASTNode(n.argument)
+        if (argNode?.type === 'MemberExpression') {
+          checkMemberMutation(n.argument, params)
         }
       },
     }

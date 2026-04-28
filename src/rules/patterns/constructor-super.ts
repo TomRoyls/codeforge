@@ -1,31 +1,22 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isClassMethod(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'MethodDefinition'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isSuperCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return (
-    n.type === 'CallExpression' &&
-    n.callee !== null &&
-    typeof n.callee === 'object' &&
-    (n.callee as Record<string, unknown>).type === 'Super'
-  )
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') return false
+  const callee = toASTNode(n.callee)
+  return callee?.type === 'Super'
 }
 
 function hasSuperCall(body: unknown[]): boolean {
   if (!Array.isArray(body)) return false
   for (const stmt of body) {
-    if (!stmt || typeof stmt !== 'object') continue
-    const s = stmt as Record<string, unknown>
+    const s = toASTNode(stmt)
+    if (!s) continue
     if (s.type === 'ExpressionStatement' && isSuperCall(s.expression)) return true
-    if (s.type === 'BlockStatement' && hasSuperCall(s.body as unknown[])) return true
+    if (s.type === 'BlockStatement' && Array.isArray(s.body) && hasSuperCall(s.body as unknown[])) return true
   }
 
   return false
@@ -35,20 +26,20 @@ export const constructorSuperRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       MethodDefinition(node: unknown): void {
-        if (!isClassMethod(node)) return
-        const n = node as Record<string, unknown>
-        if (n.kind !== 'constructor') return
-        if (n.value && typeof n.value === 'object') {
-          const value = n.value as Record<string, unknown>
-          if (value.body && typeof value.body === 'object') {
-            const body = value.body as Record<string, unknown>
-            if (body.type === 'BlockStatement' && Array.isArray(body.body) && !hasSuperCall(body.body)) {
-                context.report({
-                  loc: extractLocation(node),
-                  message: 'Constructors of derived classes must call super().',
-                })
-              }
-          }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'MethodDefinition' || n.kind !== 'constructor') return
+
+        const value = toASTNode(n.value)
+        if (!value) return
+
+        const body = toASTNode(value.body)
+        if (!body) return
+
+        if (body.type === 'BlockStatement' && Array.isArray(body.body) && !hasSuperCall(body.body)) {
+          context.report({
+            loc: extractLocation(node),
+            message: 'Constructors of derived classes must call super().',
+          })
         }
       },
     }

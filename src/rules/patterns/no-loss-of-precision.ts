@@ -1,15 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression, isLiteral } from '../../utils/ast-helpers.js'
+import { isBinaryExpression, isLiteral, toASTNode } from '../../utils/ast-helpers.js'
 
 function getLiteralValue(node: unknown): unknown {
   if (!isLiteral(node)) {
     return undefined
   }
 
-  const n = node as Record<string, unknown>
-  return n.value
+  return toASTNode(node)?.value
 }
 
 function isFloatLiteral(node: unknown): boolean {
@@ -55,7 +54,8 @@ export const noLossOfPrecisionRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const operator = n.operator as string | undefined
 
         if (operator !== '+' && operator !== '-' && operator !== '*' && operator !== '/') {

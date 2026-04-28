@@ -1,27 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isCallExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'CallExpression'
-}
+import { isCallExpression, isLiteral, toASTNode } from '../../utils/ast-helpers.js'
 
 function isRegExpConstructor(node: unknown): boolean {
   if (!isCallExpression(node)) return false
-  const n = node as Record<string, unknown>
-  const { callee } = n
-  if (!callee || typeof callee !== 'object') return false
-  const c = callee as Record<string, unknown>
-  if (c.type === 'Identifier' && c.name === 'RegExp') return true
-  return false
-}
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
+  const n = toASTNode(node)
+  if (!n) return false
+  const callee = toASTNode(n.callee)
+  return callee?.type === 'Identifier' && callee.name === 'RegExp'
 }
 
 function isValidRegex(pattern: string, flags?: string): { error?: string; valid: boolean } {
@@ -39,7 +26,9 @@ export const noInvalidRegexpRule: RuleDefinition = {
     return {
       CallExpression(node: unknown): void {
         if (!isRegExpConstructor(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
+
         const args = n.arguments
         if (!Array.isArray(args) || args.length === 0) return
 
@@ -47,13 +36,16 @@ export const noInvalidRegexpRule: RuleDefinition = {
         const flagsArg = args[1]
 
         if (isLiteral(patternArg)) {
-          const p = patternArg as Record<string, unknown>
-          const pattern = p.value as string
+          const p = toASTNode(patternArg)
+          if (!p) return
+          const pattern = p.value
           let flags: string | undefined
 
           if (flagsArg && isLiteral(flagsArg)) {
-            const f = flagsArg as Record<string, unknown>
-            flags = f.value as string
+            const f = toASTNode(flagsArg)
+            if (f) {
+              flags = f.value as string
+            }
           }
 
           if (typeof pattern === 'string') {

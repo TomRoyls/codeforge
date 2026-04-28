@@ -1,24 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
-
-function isUnaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'UnaryExpression'
-}
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const VALID_TYPES = new Set([
   'bigint',
@@ -35,30 +18,28 @@ export const validTypeofRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
-        if (!isBinaryExpression(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n || n.type !== 'BinaryExpression') return
         if (n.operator !== '===' && n.operator !== '!==') return
 
         let typeofNode: unknown = null
         let valueNode: unknown = null
 
-        if (
-          isUnaryExpression(n.left) &&
-          (n.left as Record<string, unknown>).operator === 'typeof'
-        ) {
+        const left = toASTNode(n.left)
+        const right = toASTNode(n.right)
+
+        if (left?.type === 'UnaryExpression' && left.operator === 'typeof') {
           typeofNode = n.left
           valueNode = n.right
-        } else if (
-          isUnaryExpression(n.right) &&
-          (n.right as Record<string, unknown>).operator === 'typeof'
-        ) {
+        } else if (right?.type === 'UnaryExpression' && right.operator === 'typeof') {
           typeofNode = n.right
           valueNode = n.left
         }
 
         if (!typeofNode || !valueNode) return
-        if (!isLiteral(valueNode)) return
-        const v = valueNode as Record<string, unknown>
+
+        const v = toASTNode(valueNode)
+        if (!v || v.type !== 'Literal') return
         if (typeof v.value !== 'string') return
 
         if (!VALID_TYPES.has(v.value)) {

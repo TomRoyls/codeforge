@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 interface FunctionNode {
   body?: null | { body: unknown[] }
@@ -17,11 +18,8 @@ interface ReturnStatement {
 }
 
 function isFunctionNode(node: unknown): node is FunctionNode {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return (
     n.type === 'FunctionDeclaration' ||
     n.type === 'FunctionExpression' ||
@@ -31,11 +29,7 @@ function isFunctionNode(node: unknown): node is FunctionNode {
 }
 
 function isReturnStatement(node: unknown): node is ReturnStatement {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ReturnStatement'
+  return toASTNode(node)?.type === 'ReturnStatement'
 }
 
 function hasReturnTypeAnnotation(node: FunctionNode): boolean {

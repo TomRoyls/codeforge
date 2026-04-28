@@ -1,42 +1,12 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
-
-function isLabeledStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'LabeledStatement'
-}
-
-function isVariableDeclarator(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'VariableDeclarator'
-}
-
-function isFunctionDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'FunctionDeclaration'
-}
-
-function isClassDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ClassDeclaration'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getIdentifierName(node: unknown): null | string {
-  if (!isIdentifier(node)) return null
-  const n = node as Record<string, unknown>
-  const {name} = (n as Record<string, unknown>)
-  return typeof name === 'string' ? name : null
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
+  return n.name ?? null
 }
 
 export const noLabelVarRule: RuleDefinition = {
@@ -45,24 +15,26 @@ export const noLabelVarRule: RuleDefinition = {
 
     return {
       ClassDeclaration(node: unknown): void {
-        if (!isClassDeclaration(node)) return
-        const n = node as Record<string, unknown>
-        const name = getIdentifierName(n.id)
+        const n = toASTNode(node)
+        if (n?.type !== 'ClassDeclaration') return
+        const id = toASTNode(n.id)
+        const name = id?.name
         if (name) {
           variableNames.add(name)
         }
       },
       FunctionDeclaration(node: unknown): void {
-        if (!isFunctionDeclaration(node)) return
-        const n = node as Record<string, unknown>
-        const name = getIdentifierName(n.id)
+        const n = toASTNode(node)
+        if (n?.type !== 'FunctionDeclaration') return
+        const id = toASTNode(n.id)
+        const name = id?.name
         if (name) {
           variableNames.add(name)
         }
       },
       LabeledStatement(node: unknown): void {
-        if (!isLabeledStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const labelName = getIdentifierName(n.label)
         if (labelName && variableNames.has(labelName)) {
           context.report({
@@ -72,9 +44,9 @@ export const noLabelVarRule: RuleDefinition = {
         }
       },
       VariableDeclarator(node: unknown): void {
-        if (!isVariableDeclarator(node)) return
-        const n = node as Record<string, unknown>
-        const name = getIdentifierName(n.id)
+        const n = toASTNode(node)
+        const id = toASTNode(n?.id)
+        const name = id?.name
         if (name) {
           variableNames.add(name)
         }

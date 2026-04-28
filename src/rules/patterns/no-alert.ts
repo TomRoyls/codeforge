@@ -1,27 +1,26 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const DIALOG_FUNCTIONS = new Set(['alert', 'confirm', 'prompt'])
 
 function isDialogCall(node: unknown): null | string {
-  if (!node || typeof node !== 'object') return null
-  const n = node as Record<string, unknown>
-  if (n.type !== 'CallExpression') return null
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') return null
 
-  const {callee} = n
-  if (!callee || typeof callee !== 'object') return null
-  const c = callee as Record<string, unknown>
+  const callee = toASTNode(n.callee)
+  if (!callee) return null
 
   // Direct call: alert(), confirm(), prompt()
-  if (c.type === 'Identifier' && typeof c.name === 'string' && DIALOG_FUNCTIONS.has(c.name)) {
-    return c.name
+  if (callee.type === 'Identifier' && typeof callee.name === 'string' && DIALOG_FUNCTIONS.has(callee.name)) {
+    return callee.name
   }
 
   // Member call: window.alert(), globalThis.confirm()
-  if (c.type === 'MemberExpression') {
-    const obj = c.object as Record<string, unknown> | undefined
-    const prop = c.property as Record<string, unknown> | undefined
+  if (callee.type === 'MemberExpression') {
+    const obj = toASTNode(callee.object)
+    const prop = toASTNode(callee.property)
     if (
       obj?.type === 'Identifier' &&
       (obj.name === 'window' || obj.name === 'globalThis') &&

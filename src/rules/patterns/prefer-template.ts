@@ -1,24 +1,13 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, isBinaryExpression } from '../../utils/ast-helpers.js'
+import { getRange, isBinaryExpression, isTemplateLiteral, toASTNode } from '../../utils/ast-helpers.js'
 
 function isStringLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
   return n.type === 'Literal' && typeof n.value === 'string'
-}
-
-function isTemplateLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'TemplateLiteral'
 }
 
 function hasStringConcatenation(node: unknown): boolean {
@@ -26,25 +15,22 @@ function hasStringConcatenation(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const operator = n.operator as string
+  const n = toASTNode(node)
+  if (!n) return false
 
-  if (operator !== '+') {
+  if (n.operator !== '+') {
     return false
   }
 
-  const {left} = n
-  const {right} = n
-
-  const leftIsString = isStringLiteral(left) || isTemplateLiteral(left)
-  const rightIsString = isStringLiteral(right) || isTemplateLiteral(right)
+  const leftIsString = isStringLiteral(n.left) || isTemplateLiteral(n.left)
+  const rightIsString = isStringLiteral(n.right) || isTemplateLiteral(n.right)
 
   if (leftIsString || rightIsString) {
     return true
   }
 
-  const leftHasConcat = hasStringConcatenation(left)
-  const rightHasConcat = hasStringConcatenation(right)
+  const leftHasConcat = hasStringConcatenation(n.left)
+  const rightHasConcat = hasStringConcatenation(n.right)
 
   return leftHasConcat || rightHasConcat
 }
@@ -52,24 +38,19 @@ function hasStringConcatenation(node: unknown): boolean {
 export const preferTemplateRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     function getNodeSource(node: unknown): string {
-      if (!node || typeof node !== 'object') {
-        return ''
-      }
-
-      const n = node as Record<string, unknown>
-      const range = n.range as [number, number] | undefined
-      if (!range) {
+      const n = toASTNode(node)
+      if (!n?.range) {
         return ''
       }
 
       const source = context.getSource()
-      return source.slice(range[0], range[1])
+      return source.slice(n.range[0], n.range[1])
     }
 
     function convertToTemplateLiteral(node: unknown): string {
       if (isStringLiteral(node)) {
-        const n = node as Record<string, unknown>
-        const value = n.value as string
+        const n = toASTNode(node)
+        const value = n?.value as string
         const escaped = value.replaceAll('`', '\\`').replaceAll('$', String.raw`\$`)
         return escaped
       }
@@ -80,9 +61,8 @@ export const preferTemplateRule: RuleDefinition = {
       }
 
       if (isBinaryExpression(node)) {
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
-        if (operator !== '+') {
+        const n = toASTNode(node)
+        if (n?.operator !== '+') {
           return getNodeSource(node)
         }
 

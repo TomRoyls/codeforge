@@ -1,18 +1,13 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isYieldExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'YieldExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasYield(body: unknown): boolean {
-  if (!body || typeof body !== 'object') return false
-  const b = body as Record<string, unknown>
+  const b = toASTNode(body)
+  if (!b) return false
 
-  if (isYieldExpression(body)) return true
+  if (b.type === 'YieldExpression') return true
 
   if (Array.isArray(b.body)) {
     for (const stmt of b.body) {
@@ -38,10 +33,8 @@ function hasYield(body: unknown): boolean {
 export const requireYieldRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     function checkGenerator(node: unknown): void {
-      if (!node || typeof node !== 'object') return
-      const n = node as Record<string, unknown>
-      if (!n.generator) return
-      if (!n.body) return
+      const n = toASTNode(node)
+      if (!n || !n.generator || !n.body) return
       if (!hasYield(n.body)) {
         context.report({
           loc: extractLocation(node),

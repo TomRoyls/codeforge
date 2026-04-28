@@ -1,87 +1,72 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isLiteral } from '../../utils/ast-helpers.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
-function isBooleanLiteral(node: unknown, value: boolean): boolean {
-  if (!isLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.value === value
+function isBooleanLiteral(n: ReturnType<typeof toASTNode>): boolean {
+  if (!n) return false
+  return n.type === 'Literal' && typeof n.value === 'boolean'
 }
 
-function areNodesEqual(nodeA: unknown, nodeB: unknown): boolean {
-  if (!nodeA || !nodeB || typeof nodeA !== 'object' || typeof nodeB !== 'object') {
-    return false
-  }
+function getBooleanValue(n: ReturnType<typeof toASTNode>): boolean | null {
+  if (!n) return null
+  if (n.type === 'Literal' && typeof n.value === 'boolean') return n.value
+  return null
+}
 
-  const a = nodeA as Record<string, unknown>
-  const b = nodeB as Record<string, unknown>
-
-  // Compare literals by value
-  if (a.type === 'Literal' && b.type === 'Literal') {
-    return a.value === b.value
-  }
-
-  // Compare identifiers by name
-  if (a.type === 'Identifier' && b.type === 'Identifier') {
-    return a.name === b.name
-  }
-
-  // For other types, compare raw source if available
-  return a.raw !== undefined && a.raw === b.raw
+function nodesAreEqual(a: ReturnType<typeof toASTNode>, b: ReturnType<typeof toASTNode>, rawA?: unknown, rawB?: unknown): boolean {
+  if (!a || !b) return false
+  if (a.type === 'Identifier' && b.type === 'Identifier') return a.name === b.name
+  if (a.type === 'Literal' && b.type === 'Literal') return a.value === b.value
+  if (typeof rawA === 'string' && typeof rawB === 'string' && rawA === rawB) return true
+  return false
 }
 
 export const noUnneededTernaryRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ConditionalExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ConditionalExpression') return
+
+        const consequent = toASTNode(n.consequent)
+        const alternate = toASTNode(n.alternate)
+
+        if (isBooleanLiteral(consequent) && isBooleanLiteral(alternate)) {
+          const consVal = getBooleanValue(consequent)
+          const altVal = getBooleanValue(alternate)
+
+          if (consVal === true && altVal === false) {
+            context.report({
+              loc: extractLocation(node),
+              message:
+                'Unnecessary use of boolean literals in ternary expression. Use `!!condition` or `Boolean(condition)` instead.',
+            })
+            return
+          }
+
+          if (consVal === false && altVal === true) {
+            context.report({
+              loc: extractLocation(node),
+              message:
+                'Unnecessary use of boolean literals in ternary expression. Use `!condition` instead.',
+            })
+            return
+          }
         }
 
-        const n = node as Record<string, unknown>
-        if (n.type !== 'ConditionalExpression') {
-          return
-        }
+        const rawCons = typeof n.consequent === 'object' && n.consequent !== null
+          ? (n.consequent as Record<string, unknown>).raw
+          : undefined
+        const rawAlt = typeof n.alternate === 'object' && n.alternate !== null
+          ? (n.alternate as Record<string, unknown>).raw
+          : undefined
 
-        const {consequent} = n
-        const {alternate} = n
-
-        if (!consequent || !alternate) {
-          return
-        }
-
-        const location = extractLocation(node)
-
-        // Check for: cond ? true : false
-        if (isBooleanLiteral(consequent, true) && isBooleanLiteral(alternate, false)) {
+        if (nodesAreEqual(consequent, alternate, rawCons, rawAlt)) {
           context.report({
-            loc: location,
-            message:
-              'Unnecessary use of boolean literals in ternary expression. Use `!!condition` or `Boolean(condition)` instead.',
-          })
-          return
-        }
-
-        // Check for: cond ? false : true
-        if (isBooleanLiteral(consequent, false) && isBooleanLiteral(alternate, true)) {
-          context.report({
-            loc: location,
-            message:
-              'Unnecessary use of boolean literals in ternary expression. Use `!condition` instead.',
-          })
-          return
-        }
-
-        // Check for identical consequent and alternate: cond ? val : val
-        if (areNodesEqual(consequent, alternate)) {
-          context.report({
-            loc: location,
-            message:
-              'Unnecessary ternary expression with identical consequent and alternate branches.',
+            loc: extractLocation(node),
+          message:
+            'Unnecessary ternary expression with identical consequent and alternate branches.',
           })
         }
       },
@@ -92,7 +77,7 @@ export const noUnneededTernaryRule: RuleDefinition = {
     docs: {
       category: 'patterns',
       description:
-        'Disallow ternary expressions that can be simplified. Ternary expressions like `x ? true : false` should use `!!x` or `Boolean(x)`, and `x ? false : true` should use `!x`. Identical branches should be simplified.',
+        'Disallow unnecessary ternary expressions that can be simplified to a direct value or boolean coercion.',
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-unneeded-ternary',
     },

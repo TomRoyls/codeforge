@@ -1,24 +1,15 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { isBinaryExpression, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isMemberExpression(node: unknown, objectName: string, propertyName: string): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return false
 
-  const n = node as Record<string, unknown>
-  if (n.type !== 'MemberExpression') {
-    return false
-  }
-
-  const obj = n.object as Record<string, unknown> | undefined
-  const prop = n.property as Record<string, unknown> | undefined
-
-  if (!obj || !prop) {
-    return false
-  }
+  const obj = toASTNode(n.object)
+  const prop = toASTNode(n.property)
+  if (!obj || !prop) return false
 
   return (
     obj.type === 'Identifier' &&
@@ -33,19 +24,15 @@ function isEqualityOperator(operator: string | undefined): boolean {
 }
 
 function isNanComparison(node: unknown): null | { isNegative: boolean; operand: unknown } {
-  if (!isBinaryExpression(node)) {
-    return null
-  }
+  if (!isBinaryExpression(node)) return null
 
-  const n = node as Record<string, unknown>
-  const operator = n.operator as string | undefined
+  const n = toASTNode(node)
+  const operator = n?.operator
 
-  if (!isEqualityOperator(operator)) {
-    return null
-  }
+  if (!isEqualityOperator(operator)) return null
 
-  const left = n.left as unknown
-  const right = n.right as unknown
+  const left = n?.left
+  const right = n?.right
 
   if (isIdentifier(left, 'NaN') || isMemberExpression(left, 'Number', 'NaN')) {
     return { isNegative: operator === '!==' || operator === '!=', operand: right }
@@ -59,19 +46,15 @@ function isNanComparison(node: unknown): null | { isNegative: boolean; operand: 
 }
 
 function isInfinityComparison(node: unknown): null | { isNegative: boolean; operand: unknown } {
-  if (!isBinaryExpression(node)) {
-    return null
-  }
+  if (!isBinaryExpression(node)) return null
 
-  const n = node as Record<string, unknown>
-  const operator = n.operator as string | undefined
+  const n = toASTNode(node)
+  const operator = n?.operator
 
-  if (!isEqualityOperator(operator)) {
-    return null
-  }
+  if (!isEqualityOperator(operator)) return null
 
-  const left = n.left as unknown
-  const right = n.right as unknown
+  const left = n?.left
+  const right = n?.right
 
   if (
     isIdentifier(left, 'Infinity') ||

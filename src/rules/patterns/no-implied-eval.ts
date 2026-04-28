@@ -1,23 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isImpliedEvalCall(node: unknown): { functionName: null | string; isImpliedEval: boolean; } {
-  if (!node || typeof node !== 'object') {
-    return { functionName: null, isImpliedEval: false }
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') return { functionName: null, isImpliedEval: false }
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return { functionName: null, isImpliedEval: false }
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-
-  if (!callee || callee.type !== 'Identifier') {
-    return { functionName: null, isImpliedEval: false }
-  }
+  const callee = toASTNode(n.callee)
+  if (!callee || callee.type !== 'Identifier') return { functionName: null, isImpliedEval: false }
 
   const functionName = callee.name as string
 
@@ -29,17 +20,11 @@ function isImpliedEvalCall(node: unknown): { functionName: null | string; isImpl
     return { functionName: null, isImpliedEval: false }
   }
 
-  const args = n.arguments as Array<Record<string, unknown>> | undefined
+  const args = n.arguments as undefined | unknown[]
+  if (!args || args.length === 0) return { functionName: null, isImpliedEval: false }
 
-  if (!args || args.length === 0) {
-    return { functionName: null, isImpliedEval: false }
-  }
-
-  const firstArg = args[0]
-
-  if (!firstArg || typeof firstArg !== 'object') {
-    return { functionName: null, isImpliedEval: false }
-  }
+  const firstArg = toASTNode(args[0])
+  if (!firstArg) return { functionName: null, isImpliedEval: false }
 
   if (firstArg.type === 'Literal' && typeof firstArg.value === 'string') {
     return { functionName, isImpliedEval: true }

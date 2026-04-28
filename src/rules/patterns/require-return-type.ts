@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RequireReturnTypeOptions {
@@ -10,27 +11,18 @@ interface RequireReturnTypeOptions {
 }
 
 function hasReturnType(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
   return n.returnType !== undefined && n.returnType !== null
 }
 
 function isHigherOrderFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const {body} = n
-
-  if (!body || typeof body !== 'object') {
-    return false
-  }
-
-  const bodyNode = body as Record<string, unknown>
+  const bodyNode = toASTNode(n.body)
+  if (!bodyNode) return false
 
   if (bodyNode.type === 'FunctionExpression' || bodyNode.type === 'ArrowFunctionExpression') {
     return true
@@ -43,11 +35,11 @@ function isHigherOrderFunction(node: unknown): boolean {
     }
 
     for (const stmt of statements) {
-      if (!stmt || typeof stmt !== 'object') continue
-      const s = stmt as Record<string, unknown>
+      const s = toASTNode(stmt)
+      if (!s) continue
       if (s.type === 'ReturnStatement' && s.argument) {
-        const arg = s.argument as Record<string, unknown>
-        if (arg.type === 'FunctionExpression' || arg.type === 'ArrowFunctionExpression') {
+        const arg = toASTNode(s.argument)
+        if (arg?.type === 'FunctionExpression' || arg?.type === 'ArrowFunctionExpression') {
           return true
         }
       }
@@ -58,26 +50,16 @@ function isHigherOrderFunction(node: unknown): boolean {
 }
 
 function isVariableTypedWithFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const {parent} = n
-
-  if (!parent || typeof parent !== 'object') {
-    return false
-  }
-
-  const parentNode = parent as Record<string, unknown>
+  const parentNode = toASTNode(n.parent)
+  if (!parentNode) return false
 
   if (parentNode.type === 'VariableDeclarator') {
-    const id = parentNode.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object') {
-      const idNode = id as Record<string, unknown>
-      if (idNode.typeAnnotation !== undefined && idNode.typeAnnotation !== null) {
-        return true
-      }
+    const idNode = toASTNode(parentNode.id)
+    if (idNode && idNode.typeAnnotation !== undefined && idNode.typeAnnotation !== null) {
+      return true
     }
   }
 
@@ -85,51 +67,34 @@ function isVariableTypedWithFunction(node: unknown): boolean {
 }
 
 function getFunctionName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
+  const n = toASTNode(node)
+  if (!n) return null
+
+  const idNode = toASTNode(n.id)
+  if (idNode && typeof idNode.name === 'string') {
+    return idNode.name
   }
 
-  const n = node as Record<string, unknown>
-  const {id} = n
-
-  if (id && typeof id === 'object') {
-    const idNode = id as Record<string, unknown>
-    if (typeof idNode.name === 'string') {
-      return idNode.name
-    }
-  }
-
-  const {parent} = n
-  if (parent && typeof parent === 'object') {
-    const parentNode = parent as Record<string, unknown>
-
+  const parentNode = toASTNode(n.parent)
+  if (parentNode) {
     if (parentNode.type === 'VariableDeclarator') {
-      const parentId = parentNode.id as Record<string, unknown> | undefined
-      if (parentId && typeof parentId === 'object') {
-        const parentIdNode = parentId as Record<string, unknown>
-        if (typeof parentIdNode.name === 'string') {
-          return parentIdNode.name
-        }
+      const parentIdNode = toASTNode(parentNode.id)
+      if (parentIdNode && typeof parentIdNode.name === 'string') {
+        return parentIdNode.name
       }
     }
 
     if (parentNode.type === 'Property' || parentNode.type === 'MethodDefinition') {
-      const key = parentNode.key as Record<string, unknown> | undefined
-      if (key && typeof key === 'object') {
-        const keyNode = key as Record<string, unknown>
-        if (typeof keyNode.name === 'string') {
-          return keyNode.name
-        }
+      const keyNode = toASTNode(parentNode.key)
+      if (keyNode && typeof keyNode.name === 'string') {
+        return keyNode.name
       }
     }
 
     if (parentNode.type === 'AssignmentExpression') {
-      const left = parentNode.left as Record<string, unknown> | undefined
-      if (left && typeof left === 'object') {
-        const leftNode = left as Record<string, unknown>
-        if (leftNode.type === 'Identifier' && typeof leftNode.name === 'string') {
-          return leftNode.name
-        }
+      const leftNode = toASTNode(parentNode.left)
+      if (leftNode?.type === 'Identifier' && typeof leftNode.name === 'string') {
+        return leftNode.name
       }
     }
   }

@@ -7,9 +7,10 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeReturnOptions {
@@ -22,44 +23,11 @@ interface FunctionInfo {
   readonly returnTypeName: null | string
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
 function getTypeAnnotationName(typeAnnotation: unknown): null | string {
-  if (!typeAnnotation || typeof typeAnnotation !== 'object') {
+  const ta = toASTNode(typeAnnotation)
+  if (!ta) {
     return null
   }
-
-  const ta = typeAnnotation as Record<string, unknown>
 
   if (ta.type === 'TSAnyKeyword') {
     return 'any'
@@ -70,7 +38,7 @@ function getTypeAnnotationName(typeAnnotation: unknown): null | string {
   }
 
   if (ta.type === 'TSTypeReference') {
-    const typeName = ta.typeName as Record<string, unknown> | undefined
+    const typeName = toASTNode(ta.typeName)
     if (typeName?.type === 'Identifier' && typeof typeName.name === 'string') {
       return typeName.name
     }
@@ -89,18 +57,18 @@ function getReturnType(node: unknown): FunctionInfo {
     returnTypeName: null,
   }
 
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return defaultInfo
   }
 
-  const n = node as Record<string, unknown>
-  const returnType = n.returnType as Record<string, unknown> | undefined
+  const returnType = toASTNode(n.returnType)
 
   if (!returnType) {
     return defaultInfo
   }
 
-  const typeAnnotation = returnType.typeAnnotation as Record<string, unknown> | undefined
+  const typeAnnotation = toASTNode(returnType.typeAnnotation)
   if (!typeAnnotation) {
     return defaultInfo
   }
@@ -113,11 +81,10 @@ function getReturnType(node: unknown): FunctionInfo {
 }
 
 function getArgumentType(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return null
   }
-
-  const n = node as Record<string, unknown>
 
   if (n.type === 'TSAsExpression' && n.typeAnnotation) {
     return getTypeAnnotationName(n.typeAnnotation)
@@ -139,14 +106,13 @@ function getArgumentType(node: unknown): null | string {
 }
 
 function isTypeNarrowed(expression: unknown): boolean {
-  if (!expression || typeof expression !== 'object') {
+  const expr = toASTNode(expression)
+  if (!expr) {
     return false
   }
 
-  const expr = expression as Record<string, unknown>
-
   if (expr.type === 'CallExpression') {
-    const callee = expr.callee as Record<string, unknown> | undefined
+    const callee = toASTNode(expr.callee)
     if (callee?.type === 'Identifier') {
       const {name} = callee
       if (
@@ -216,10 +182,6 @@ export const noUnsafeReturnRule: RuleDefinition = {
 
     return {
       ArrowFunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
         const info = getReturnType(node)
         functionStack.push(info)
       },
@@ -229,10 +191,6 @@ export const noUnsafeReturnRule: RuleDefinition = {
       },
 
       FunctionDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
         const info = getReturnType(node)
         functionStack.push(info)
       },
@@ -242,10 +200,6 @@ export const noUnsafeReturnRule: RuleDefinition = {
       },
 
       FunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
         const info = getReturnType(node)
         functionStack.push(info)
       },
@@ -261,11 +215,11 @@ export const noUnsafeReturnRule: RuleDefinition = {
 
         const currentFunction = functionStack.at(-1) as FunctionInfo
 
-        if (!node || typeof node !== 'object') {
+        const n = toASTNode(node)
+        if (!n) {
           return
         }
 
-        const n = node as Record<string, unknown>
         const {argument} = n
 
         if (!argument) {

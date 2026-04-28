@@ -1,111 +1,51 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isLogicalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'LogicalExpression'
-}
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
-
-function isMemberExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'MemberExpression'
-}
+import { isBinaryExpression, isIdentifier, isLogicalExpression, isMemberExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isComputedMemberExpression(node: unknown): boolean {
-  if (!isMemberExpression(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return false
   return n.computed === true
 }
 
 function getMemberExpressionObject(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return null
   return n.object
 }
 
 function getMemberExpressionProperty(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return null
   return n.property
 }
 
 function isOptionalChain(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'ChainExpression' || n.optional === true
 }
 
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
-
 function getIdentifierName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
   return typeof n.name === 'string' ? n.name : null
 }
 
 function isNullCheck(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   if (n.type === 'BinaryExpression') {
-    const operator = n.operator as string
-    if (operator !== '!=' && operator !== '!==') {
+    if (n.operator !== '!=' && n.operator !== '!==') {
       return false
     }
 
-    const {right} = n
-
-    if (!right || typeof right !== 'object') {
-      return false
-    }
-
-    const rightNode = right as Record<string, unknown>
+    const right = toASTNode(n.right)
     return (
-      rightNode.type === 'Literal' &&
-      (rightNode.value === null || rightNode.raw === 'null' || rightNode.raw === 'undefined')
+      right?.type === 'Literal' &&
+      (right.value === null || right.raw === 'null' || right.raw === 'undefined')
     )
   }
 
@@ -113,20 +53,10 @@ function isNullCheck(node: unknown): boolean {
 }
 
 function getNullCheckIdentifier(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  const {left} = n
-
-  if (!left || typeof left !== 'object') {
-    return null
-  }
-
-  const leftNode = left as Record<string, unknown>
-  if (isIdentifier(leftNode)) {
-    return getIdentifierName(leftNode)
+  const n = toASTNode(node)
+  const left = toASTNode(n?.left)
+  if (isIdentifier(left)) {
+    return getIdentifierName(left)
   }
 
   return null
@@ -152,12 +82,10 @@ export const preferOptionalChainRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (!n) return
 
-        if (operator !== '&&') {
-          return
-        }
+        if (n.operator !== '&&') return
 
         const {left} = n
         const {right} = n
@@ -218,12 +146,10 @@ export const preferOptionalChainRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (!n) return
 
-        if (operator !== '&&') {
-          return
-        }
+        if (n.operator !== '&&') return
 
         const {left} = n
         const {right} = n

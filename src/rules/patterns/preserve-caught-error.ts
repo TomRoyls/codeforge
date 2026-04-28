@@ -1,25 +1,20 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { type ASTNode, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isCatchClause(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'CatchClause'
 }
 
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
-
 function isIdentifierUsed(body: unknown, name: string): boolean {
-  if (!body || typeof body !== 'object') return false
-  const b = body as Record<string, unknown>
+  const b = toASTNode(body)
+  if (!b) return false
 
   if (isIdentifier(body)) {
-    return (body as Record<string, unknown>).name === name
+    return (body as ASTNode).name === name
   }
 
   if (Array.isArray(b.body)) {
@@ -47,12 +42,12 @@ export const preserveCaughtErrorRule: RuleDefinition = {
     return {
       CatchClause(node: unknown): void {
         if (!isCatchClause(node)) return
-        const n = node as Record<string, unknown>
-        if (!n.param) return
+        const n = toASTNode(node)
+        if (!n?.param) return
         if (!isIdentifier(n.param)) return
 
-        const param = n.param as Record<string, unknown>
-        const name = param.name as string
+        const param = toASTNode(n.param)
+        const name = param?.name as string
 
         if (!n.body || typeof n.body !== 'object') return
         if (!isIdentifierUsed(n.body, name)) {

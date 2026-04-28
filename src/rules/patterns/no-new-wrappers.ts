@@ -1,48 +1,27 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isIdentifier } from '../../utils/ast-helpers.js'
+import { isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 const WRAPPER_TYPES = new Set(['BigInt', 'Boolean', 'Number', 'String', 'Symbol'])
-
-function isWrapperNewExpression(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const {type} = n
-
-  if (type !== 'NewExpression') {
-    return false
-  }
-
-  const callee = n.callee as unknown
-  if (!isIdentifier(callee)) {
-    return false
-  }
-
-  const name = (callee as Record<string, unknown>).name as string
-  return WRAPPER_TYPES.has(name)
-}
 
 export const noNewWrappersRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       NewExpression(node: unknown): void {
-        if (!isWrapperNewExpression(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'NewExpression') return
 
-        const n = node as Record<string, unknown>
-        const callee = n.callee as Record<string, unknown>
-        const wrapperName = callee.name as string
+        const callee = toASTNode(n.callee)
+        if (!callee || !isIdentifier(callee)) return
+
+        const {name} = callee
+        if (!name || !WRAPPER_TYPES.has(name)) return
 
         const location = extractLocation(node)
-
         context.report({
           loc: location,
-          message: `Do not use new ${wrapperName}(). Use ${wrapperName.toLowerCase()}() or a literal instead.`,
+          message: `Do not use new ${name}(). Use ${name.toLowerCase()}() or a literal instead.`,
         })
       },
     }

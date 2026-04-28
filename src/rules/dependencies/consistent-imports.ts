@@ -11,6 +11,7 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 type ImportStyle = 'default' | 'named' | 'namespace'
@@ -31,23 +32,21 @@ interface ConsistentImportsOptions {
 }
 
 function analyzeImport(node: unknown): ImportStatement | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
   if (n.type !== 'ImportDeclaration' || !n.source) {
     return null
   }
 
-  const sourceNode = n.source as Record<string, unknown> | undefined
+  const sourceNode = toASTNode(n.source)
   if (!sourceNode?.value || typeof sourceNode.value !== 'string') {
     return null
   }
 
-  const loc = n.loc as Record<string, unknown> | undefined
-  const start = loc?.start as Record<string, unknown> | undefined
-  const end = loc?.end as Record<string, unknown> | undefined
+  const loc = toASTNode(n.loc)
+  const start = toASTNode(loc?.start)
+  const end = toASTNode(loc?.end)
 
   const location: SourceLocation = {
     end: {
@@ -67,8 +66,8 @@ function analyzeImport(node: unknown): ImportStatement | null {
   const {specifiers} = n
   if (Array.isArray(specifiers)) {
     for (const spec of specifiers) {
-      if (!spec || typeof spec !== 'object') continue
-      const specNode = spec as Record<string, unknown>
+      const specNode = toASTNode(spec)
+      if (!specNode) continue
       switch (specNode.type) {
         case 'ImportDefaultSpecifier': {
           hasDefault = true
@@ -169,13 +168,14 @@ export const consistentImportsRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
-        const callee = n.callee as Record<string, unknown> | undefined
-        const arguments_ = n.arguments as undefined | unknown[]
+        const callee = toASTNode(n.callee)
+        const arguments_ = n.arguments
         const arg0 =
           Array.isArray(arguments_) && arguments_.length > 0
-            ? (arguments_[0] as Record<string, unknown> | undefined)
+            ? toASTNode(arguments_[0])
             : undefined
 
         if (
@@ -192,9 +192,9 @@ export const consistentImportsRule: RuleDefinition = {
           }
 
           if (prefer === 'named' || prefer === 'default') {
-            const loc = n.loc as Record<string, unknown> | undefined
-            const start = loc?.start as Record<string, unknown> | undefined
-            const end = loc?.end as Record<string, unknown> | undefined
+            const loc = toASTNode(n.loc)
+            const start = toASTNode(loc?.start)
+            const end = toASTNode(loc?.end)
 
             context.report({
               loc: {

@@ -1,50 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isUnaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'UnaryExpression'
-}
-
-function isLogicalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'LogicalExpression'
-}
-
-function isCallExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'CallExpression'
-}
+import { isCallExpression, isLogicalExpression, isUnaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isConditionalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ConditionalExpression'
+  return toASTNode(node)?.type === 'ConditionalExpression'
 }
 
 function isIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'IfStatement'
+  return toASTNode(node)?.type === 'IfStatement'
 }
 
 function isPromiseCall(node: unknown): boolean {
@@ -52,23 +16,21 @@ function isPromiseCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee) {
     return false
   }
 
   if (callee.type === 'MemberExpression') {
-    const c = callee as Record<string, unknown>
-    const object = c.object as Record<string, unknown> | undefined
+    const obj = toASTNode(callee.object)
 
-    if (!object || object.type !== 'Identifier') {
+    if (!obj || obj.type !== 'Identifier') {
       return false
     }
 
-    const objName = (object as Record<string, unknown>).name as string
-    return objName === 'Promise'
+    return obj.name === 'Promise'
   }
 
   return false
@@ -79,15 +41,15 @@ function isAsyncFunctionCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee || callee.type !== 'Identifier') {
     return false
   }
 
-  const name = (callee as Record<string, unknown>).name as string
-  return name.startsWith('fetch') || name === 'fetch'
+  const {name} = callee
+  return name?.startsWith('fetch') || name === 'fetch'
 }
 
 function isPromiseLike(node: unknown): boolean {
@@ -100,11 +62,14 @@ function isPromiseLike(node: unknown): boolean {
   }
 
   if (isCallExpression(node)) {
-    const n = node as Record<string, unknown>
-    const callee = n.callee as Record<string, unknown> | undefined
+    const n = toASTNode(node)
+    const callee = toASTNode(n?.callee)
     if (callee && callee.type === 'Identifier') {
-      const name = (callee as Record<string, unknown>).name as string
-      return name.toLowerCase().includes('promise') || name.toLowerCase().includes('async')
+      const {name} = callee
+      return (
+        (name?.toLowerCase()?.includes('promise') ?? false) ||
+        (name?.toLowerCase()?.includes('async') ?? false)
+      )
     }
   }
 
@@ -112,11 +77,8 @@ function isPromiseLike(node: unknown): boolean {
 }
 
 function isInBooleanContext(parent: unknown, node: unknown): boolean {
-  if (!parent || typeof parent !== 'object') {
-    return false
-  }
-
-  const p = parent as Record<string, unknown>
+  const p = toASTNode(parent)
+  if (!p) return false
 
   if (isIfStatement(p) && p.test === node) {
     return true
@@ -131,8 +93,7 @@ function isInBooleanContext(parent: unknown, node: unknown): boolean {
   }
 
   if (isUnaryExpression(p)) {
-    const op = p.operator as string
-    return op === '!'
+    return p.operator === '!'
   }
 
   return false
@@ -146,7 +107,8 @@ export const noPromiseAsBooleanRule: RuleDefinition = {
           return
         }
 
-        const {parent} = (node as Record<string, unknown>)
+        const n = toASTNode(node)
+        const parent = n?.parent
 
         if (isInBooleanContext(parent, node)) {
           const location = extractLocation(node)

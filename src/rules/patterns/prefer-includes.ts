@@ -1,77 +1,46 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isIndexOfCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return false
 
-  const n = node as Record<string, unknown>
+  const callee = toASTNode(n.callee)
+  if (callee?.type !== 'MemberExpression') return false
 
-  if (n.type !== 'CallExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-  if (!callee || callee.type !== 'MemberExpression') {
-    return false
-  }
-
-  const property = callee.property as Record<string, unknown> | undefined
-  if (!property || property.type !== 'Identifier') {
-    return false
-  }
+  const property = toASTNode(callee.property)
+  if (property?.type !== 'Identifier') return false
 
   return property.name === 'indexOf'
 }
 
 function isLiteralZero(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === 0
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === 0
 }
 
 function isLiteralMinusOne(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === -1
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === -1
 }
 
 export const preferIncludesRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
-        if (!isBinaryExpression(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'BinaryExpression') return
 
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const {operator} = n
         const {left} = n
         const {right} = n
 
         const isLeftIndexOf = isIndexOfCall(left)
         const isRightIndexOf = isIndexOfCall(right)
 
-        if (!isLeftIndexOf && !isRightIndexOf) {
-          return
-        }
+        if (!isLeftIndexOf && !isRightIndexOf) return
 
         if (operator === '>=' || operator === '!==' || operator === '==') {
           const checkNode = isLeftIndexOf ? right : left

@@ -1,17 +1,13 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isIdentifier } from '../../utils/ast-helpers.js'
+import { isCallExpression, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isDirectEvalCall(node: unknown): boolean {
-  if (!isCallExpression(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
-
-  return isIdentifier(callee, 'eval')
+  if (!isCallExpression(node)) return false
+  const n = toASTNode(node)
+  if (!n) return false
+  return isIdentifier(n.callee, 'eval')
 }
 
 export const noEvalRule: RuleDefinition = {

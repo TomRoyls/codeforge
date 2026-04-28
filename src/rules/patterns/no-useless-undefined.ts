@@ -1,35 +1,20 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isIdentifier(node: unknown, name: string): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier' && n.name === name
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isUndefinedIdentifier(node: unknown): boolean {
-  return isIdentifier(node, 'undefined')
-}
-
-function isReturnStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  return (node as Record<string, unknown>).type === 'ReturnStatement'
-}
-
-function getNodeType(node: unknown): null | string {
-  if (!node || typeof node !== 'object') return null
-  return ((node as Record<string, unknown>).type as string) ?? null
+  const n = toASTNode(node)
+  return n?.type === 'Identifier' && n.name === 'undefined'
 }
 
 export const noUselessUndefinedRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ReturnStatement(node: unknown): void {
-        if (!isReturnStatement(node)) return
-        const n = node as Record<string, unknown>
-        const {argument} = n
-        if (isUndefinedIdentifier(argument)) {
+        const n = toASTNode(node)
+        if (n?.type !== 'ReturnStatement') return
+        if (isUndefinedIdentifier(n.argument)) {
           context.report({
             loc: extractLocation(node),
             message: 'Useless return of undefined. Remove the undefined or use void return.',
@@ -38,11 +23,9 @@ export const noUselessUndefinedRule: RuleDefinition = {
       },
 
       VariableDeclarator(node: unknown): void {
-        const type = getNodeType(node)
-        if (type !== 'VariableDeclarator') return
-        const n = node as Record<string, unknown>
-        const {init} = n
-        if (isUndefinedIdentifier(init)) {
+        const n = toASTNode(node)
+        if (n?.type !== 'VariableDeclarator') return
+        if (isUndefinedIdentifier(n.init)) {
           context.report({
             loc: extractLocation(node),
             message: 'Useless undefined initialization. Variables are undefined by default.',

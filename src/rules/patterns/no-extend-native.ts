@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const NATIVE_OBJECTS = new Set([
   'Array',
@@ -31,35 +32,27 @@ const NATIVE_OBJECTS = new Set([
 ])
 
 function isPrototypeExtension(node: unknown): { isExtension: boolean; nativeName: null | string } {
-  if (!node || typeof node !== 'object') {
-    return { isExtension: false, nativeName: null }
-  }
+  const n = toASTNode(node)
+  if (!n) return { isExtension: false, nativeName: null }
 
-  const n = node as Record<string, unknown>
-
-  // Check for AssignmentExpression
   if (n.type !== 'AssignmentExpression') {
     return { isExtension: false, nativeName: null }
   }
 
-  const left = n.left as Record<string, unknown> | undefined
-
+  const left = toASTNode(n.left)
   if (!left || left.type !== 'MemberExpression') {
     return { isExtension: false, nativeName: null }
   }
 
-  // Check if we're assigning to NativeObject.prototype.property or NativeObject['prototype']['property']
-  const obj = left.object as Record<string, unknown> | undefined
-  const prop = left.property as Record<string, unknown> | undefined
-
+  const obj = toASTNode(left.object)
+  const prop = toASTNode(left.property)
   if (!obj || !prop) {
     return { isExtension: false, nativeName: null }
   }
 
-  // Case 1: NativeObject.prototype.property (direct prototype access)
   if (obj.type === 'MemberExpression') {
-    const objObj = obj.object as Record<string, unknown> | undefined
-    const objProp = obj.property as Record<string, unknown> | undefined
+    const objObj = toASTNode(obj.object)
+    const objProp = toASTNode(obj.property)
 
     if (
       objObj &&
@@ -67,17 +60,15 @@ function isPrototypeExtension(node: unknown): { isExtension: boolean; nativeName
       objObj.type === 'Identifier' &&
       objProp.type === 'Identifier' &&
       objProp.name === 'prototype' &&
-      NATIVE_OBJECTS.has(objObj.name as string)
+      NATIVE_OBJECTS.has(objObj.name ?? '')
     ) {
-      return { isExtension: true, nativeName: objObj.name as string }
+      return { isExtension: true, nativeName: objObj.name ?? null }
     }
   }
 
-  // Case 2: NativeObject['property'] (bracket notation on prototype)
-  if (obj.type === 'Identifier' && NATIVE_OBJECTS.has(obj.name as string) && prop.type === 'Identifier' && prop.name === 'prototype') {
-      // This is assignment to NativeObject.prototype itself, not an extension
-      return { isExtension: false, nativeName: null }
-    }
+  if (obj.type === 'Identifier' && NATIVE_OBJECTS.has(obj.name ?? '') && prop.type === 'Identifier' && prop.name === 'prototype') {
+    return { isExtension: false, nativeName: null }
+  }
 
   return { isExtension: false, nativeName: null }
 }

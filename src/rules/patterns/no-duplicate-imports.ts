@@ -1,31 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isImportDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ImportDeclaration'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getModuleFromImport(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'ImportDeclaration') return null
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'ImportDeclaration') {
-    return null
-  }
-
-  const source = n.source as Record<string, unknown> | undefined
-  if (!source || source.type !== 'Literal') {
-    return null
-  }
+  const source = toASTNode(n.source)
+  if (!source || source.type !== 'Literal') return null
 
   const {value} = source
   return typeof value === 'string' ? value : null
@@ -37,9 +20,8 @@ export const noDuplicateImportsRule: RuleDefinition = {
 
     return {
       ImportDeclaration(node: unknown): void {
-        if (!isImportDeclaration(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ImportDeclaration') return
 
         const module = getModuleFromImport(node)
 

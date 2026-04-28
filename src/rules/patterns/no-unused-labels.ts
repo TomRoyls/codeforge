@@ -1,30 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isLabeledStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'LabeledStatement'
-}
-
-function isBreakStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BreakStatement'
-}
-
-function isContinueStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ContinueStatement'
-}
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
+import { isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnusedLabelsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -32,36 +9,39 @@ export const noUnusedLabelsRule: RuleDefinition = {
 
     return {
       BreakStatement(node: unknown): void {
-        if (!isBreakStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (n?.type !== 'BreakStatement') return
         if (n.label && isIdentifier(n.label)) {
-          const label = n.label as Record<string, unknown>
-          const name = label.name as string
+          const label = toASTNode(n.label)
+          const name = label?.name as string
           if (labels.has(name)) {
             labels.get(name)!.used = true
           }
         }
       },
+
       ContinueStatement(node: unknown): void {
-        if (!isContinueStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (n?.type !== 'ContinueStatement') return
         if (n.label && isIdentifier(n.label)) {
-          const label = n.label as Record<string, unknown>
-          const name = label.name as string
+          const label = toASTNode(n.label)
+          const name = label?.name as string
           if (labels.has(name)) {
             labels.get(name)!.used = true
           }
         }
       },
+
       LabeledStatement(node: unknown): void {
-        if (!isLabeledStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (n?.type !== 'LabeledStatement') return
         if (isIdentifier(n.label)) {
-          const label = n.label as Record<string, unknown>
-          const name = label.name as string
+          const label = toASTNode(n.label)
+          const name = label?.name as string
           labels.set(name, { node, used: false })
         }
       },
+
       'Program:exit'(): void {
         for (const [name, info] of labels) {
           if (!info.used) {
@@ -74,6 +54,7 @@ export const noUnusedLabelsRule: RuleDefinition = {
       },
     }
   },
+
   meta: {
     docs: {
       category: 'patterns',

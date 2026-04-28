@@ -1,32 +1,16 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeSource, getRange } from '../../utils/ast-helpers.js'
-
-function hasNonNullAssertion(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'TSNonNullExpression') {
-    return true
-  }
-
-  return false
-}
+import { getNodeSource, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noNonNullAssertionRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       TSNonNullExpression(node: unknown): void {
-        if (!hasNonNullAssertion(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'TSNonNullExpression') return
 
         const location = extractLocation(node)
-        const n = node as Record<string, unknown>
         const {expression} = n
         const range = getRange(node)
         const expressionSource = expression ? getNodeSource(context, expression) : ''

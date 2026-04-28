@@ -1,18 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-function isObjectExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ObjectExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getPropertyKey(prop: unknown): null | string {
-  if (!prop || typeof prop !== 'object') return null
-  const p = prop as Record<string, unknown>
-  if (p.type === 'Property' && p.key) {
-    const key = p.key as Record<string, unknown>
-    if (key.type === 'Identifier') return key.name as string
+  const p = toASTNode(prop)
+  if (p?.type === 'Property' && p.key) {
+    const key = toASTNode(p.key)
+    if (!key) return null
+    if (key.type === 'Identifier') return key.name ?? null
     if (key.type === 'Literal') return String(key.value)
   }
 
@@ -23,19 +19,18 @@ export const noDupeKeysRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ObjectExpression(node: unknown): void {
-        if (!isObjectExpression(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (n?.type !== 'ObjectExpression') return
+
         const properties = n.properties as undefined | unknown[]
         if (!properties) return
+
         const seenKeys = new Map<string, unknown>()
         for (const prop of properties) {
           const key = getPropertyKey(prop)
           if (key === null) continue
           if (seenKeys.has(key)) {
-            context.report({
-              loc: extractLocation(prop),
-              message: `Duplicate key '${key}' in object literal.`,
-            })
+            context.report({ loc: extractLocation(prop), message: `Duplicate key '${key}' in object literal.` })
           } else {
             seenKeys.set(key, prop)
           }

@@ -1,41 +1,16 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
-
-interface ConditionalNode {
-  alternate: unknown
-  consequent: unknown
-  loc?: unknown
-  range?: [number, number]
-  test: unknown
-  type: string
-}
-
-function isConditionalExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ConditionalExpression'
-}
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function isBooleanLiteral(node: unknown, value: boolean): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === value
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === value
 }
 
 function isUnaryExpression(node: unknown, operator: string): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'UnaryExpression' && n.operator === operator
+  const n = toASTNode(node)
+  return n?.type === 'UnaryExpression' && n.operator === operator
 }
 
 function isDoubleNegation(node: unknown): boolean {
@@ -43,22 +18,20 @@ function isDoubleNegation(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  return isUnaryExpression(n.argument, '!')
+  const n = toASTNode(node)
+  return isUnaryExpression(n?.argument, '!')
 }
 
 export const noSimplifiablePatternRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ConditionalExpression(node: unknown): void {
-        if (!isConditionalExpression(node)) {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ConditionalExpression') {
           return
         }
 
-        const n = node as ConditionalNode
-        const {test} = n
-        const {consequent} = n
-        const {alternate} = n
+        const {alternate, consequent, test} = n
 
         if (
           isDoubleNegation(test) &&
@@ -157,12 +130,8 @@ export const noSimplifiablePatternRule: RuleDefinition = {
 }
 
 function getTestDescription(test: unknown): string {
-  if (!test || typeof test !== 'object') {
-    return 'condition'
-  }
-
-  const n = test as Record<string, unknown>
-  if (n.type === 'Identifier' && typeof n.name === 'string') {
+  const n = toASTNode(test)
+  if (n?.type === 'Identifier' && typeof n.name === 'string') {
     return n.name
   }
 

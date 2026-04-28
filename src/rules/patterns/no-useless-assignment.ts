@@ -1,31 +1,12 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
 
 function isAssignmentExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'AssignmentExpression'
-}
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier'
-}
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
-}
-
-function getIdentifierName(node: unknown): null | string {
-  if (isIdentifier(node)) {
-    return (node as Record<string, unknown>).name as string
-  }
-
-  return null
 }
 
 export const noUselessAssignmentRule: RuleDefinition = {
@@ -35,11 +16,13 @@ export const noUselessAssignmentRule: RuleDefinition = {
     return {
       AssignmentExpression(node: unknown): void {
         if (!isAssignmentExpression(node)) return
-        const n = node as Record<string, unknown>
-        const leftName = getIdentifierName(n.left)
-        if (!leftName) return
+        const n = toASTNode(node) as ASTNode
+        const leftNode = toASTNode(n.left)
+        if (leftNode?.type !== 'Identifier' || !leftNode.name) return
+        const leftName = leftNode.name
 
-        const rightValue = isLiteral(n.right) ? (n.right as Record<string, unknown>).value : null
+        const rightNode = toASTNode(n.right)
+        const rightValue = rightNode?.type === 'Literal' ? rightNode.value : null
 
         if (lastValues.has(leftName)) {
           const lastValue = lastValues.get(leftName)

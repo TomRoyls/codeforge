@@ -1,18 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isUnaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'UnaryExpression'
-}
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
+import { isBinaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 const RELATIONAL_OPERATORS = new Set(['in', 'instanceof'])
 
@@ -20,12 +9,11 @@ export const noUnsafeNegationRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       UnaryExpression(node: unknown): void {
-        if (!isUnaryExpression(node)) return
-        const n = node as Record<string, unknown>
-        if (n.operator !== '!') return
+        const n = toASTNode(node)
+        if (n?.type !== 'UnaryExpression' || n.operator !== '!') return
         if (isBinaryExpression(n.argument)) {
-          const arg = n.argument as Record<string, unknown>
-          if (RELATIONAL_OPERATORS.has(arg.operator as string)) {
+          const arg = toASTNode(n.argument)
+          if (arg?.operator && RELATIONAL_OPERATORS.has(arg.operator)) {
             context.report({
               loc: extractLocation(node),
               message: `Unexpected negating the left operand of '${arg.operator}' operator.`,

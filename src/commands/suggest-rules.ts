@@ -257,7 +257,7 @@ export default class SuggestRules extends Command {
     const targetPath = resolve(args.path)
 
     if (!existsSync(targetPath)) {
-      this.error(`Path does not exist: ${targetPath}`)
+      this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
     const spinner = ora('Analyzing codebase patterns...').start()

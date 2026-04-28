@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 const VALID_THROW_TYPES = new Set([
   'AwaitExpression',
@@ -66,14 +67,11 @@ function isInvalidThrowFromText(text: string): boolean {
 }
 
 function isInvalidThrowArgument(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return true
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return true
 
   if (n.argument !== undefined && n.argument !== null) {
-    const argument = n.argument as Record<string, unknown>
+    const argument = toASTNode(n.argument)!
     const type = argument.type as string | undefined
     if (!type) return false
     if (VALID_THROW_TYPES.has(type)) return false

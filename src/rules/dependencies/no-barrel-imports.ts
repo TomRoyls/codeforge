@@ -12,6 +12,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface BarrelImport {
@@ -89,15 +90,13 @@ function extractImportDetails(node: unknown): null | {
   source: string
   specifiers: string[]
 } {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
   const location = extractLocation(node)
-  const n = node as Record<string, unknown>
 
   if (n.type === 'ImportDeclaration') {
-    const sourceNode = n.source as Record<string, unknown> | undefined
+    const sourceNode = toASTNode(n.source)
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       const specifiers: string[] = []
       const isTypeOnly = n.importKind === 'type'
@@ -105,8 +104,8 @@ function extractImportDetails(node: unknown): null | {
       const specifierArray = n.specifiers
       if (Array.isArray(specifierArray)) {
         for (const spec of specifierArray) {
-          if (!spec || typeof spec !== 'object') continue
-          const specNode = spec as Record<string, unknown>
+          const specNode = toASTNode(spec)
+          if (!specNode) continue
           switch (specNode.type) {
           case 'ImportDefaultSpecifier': {
             specifiers.push('default')
@@ -121,7 +120,7 @@ function extractImportDetails(node: unknown): null | {
           }
 
           case 'ImportSpecifier': {
-            const imported = specNode.imported as Record<string, unknown> | undefined
+            const imported = toASTNode(specNode.imported)
             if (imported?.name && typeof imported.name === 'string') {
               specifiers.push(imported.name)
             }
@@ -143,7 +142,7 @@ function extractImportDetails(node: unknown): null | {
   }
 
   if (n.type === 'ExportNamedDeclaration') {
-    const sourceNode = n.source as Record<string, unknown> | undefined
+    const sourceNode = toASTNode(n.source)
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
         isTypeOnly: n.exportKind === 'type',
@@ -155,7 +154,7 @@ function extractImportDetails(node: unknown): null | {
   }
 
   if (n.type === 'ExportAllDeclaration') {
-    const sourceNode = n.source as Record<string, unknown> | undefined
+    const sourceNode = toASTNode(n.source)
     if (sourceNode?.value && typeof sourceNode.value === 'string') {
       return {
         isTypeOnly: n.exportKind === 'type',
@@ -198,13 +197,14 @@ export const noBarrelImportsRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
-        const callee = n.callee as Record<string, unknown> | undefined
-        const arguments_ = n.arguments as undefined | unknown[]
+        const callee = toASTNode(n.callee)
+        const arguments_ = n.arguments
         const arg0 =
           Array.isArray(arguments_) && arguments_.length > 0
-            ? (arguments_[0] as Record<string, unknown> | undefined)
+            ? toASTNode(arguments_[0])
             : undefined
 
         if (

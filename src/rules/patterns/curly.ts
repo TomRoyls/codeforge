@@ -1,33 +1,21 @@
 import type { Range, RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeSource, getRange } from '../../utils/ast-helpers.js'
+import { getNodeSource, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function hasBlockStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   // For IfStatement, the body is in 'consequent'
   // For ForStatement, WhileStatement, DoWhileStatement, WithStatement, the body is in 'body'
-  const body = (n.consequent || n.body) as unknown
-
-  if (!body || typeof body !== 'object') {
-    return false
-  }
-
-  const bodyNode = body as Record<string, unknown>
-  return bodyNode.type === 'BlockStatement'
+  const body = n.consequent || n.body
+  return toASTNode(body)?.type === 'BlockStatement'
 }
 
 function getBodyNode(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return null
   // For IfStatement, the body is in 'consequent'
   // For ForStatement, WhileStatement, DoWhileStatement, WithStatement, the body is in 'body'
   return n.consequent || n.body

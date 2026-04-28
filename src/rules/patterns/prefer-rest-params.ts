@@ -1,19 +1,13 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange, isIdentifier } from '../../utils/ast-helpers.js'
+import { getRange, isIdentifier, toASTNode } from '../../utils/ast-helpers.js'
 
 function isVariableDeclaratorWithIdentifier(node: unknown, name: string): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'VariableDeclarator') return false
 
-  const n = node as Record<string, unknown>
-  if (n.type !== 'VariableDeclarator') {
-    return false
-  }
-
-  const id = n.id as Record<string, unknown> | undefined
+  const id = toASTNode(n.id)
   return id?.type === 'Identifier' && id.name === name
 }
 

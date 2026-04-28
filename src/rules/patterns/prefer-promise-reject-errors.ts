@@ -1,37 +1,23 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isPromiseWithoutRejectCatch(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'NewExpression') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'NewExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown>
-  if (!callee || callee.type !== 'Identifier' || callee.name !== 'Promise') {
-    return false
-  }
+  const callee = toASTNode(n.callee)
+  if (!callee || callee.type !== 'Identifier' || callee.name !== 'Promise') return false
 
   const args = n.arguments as unknown[]
-  if (!Array.isArray(args) || args.length === 0) {
-    return false
-  }
+  if (!Array.isArray(args) || args.length === 0) return false
 
-  const executor = args[0] as Record<string, unknown>
-  if (!executor || executor.type !== 'FunctionExpression') {
-    return false
-  }
+  const executor = toASTNode(args[0])
+  if (!executor || executor.type !== 'FunctionExpression') return false
 
   const params = executor.params as unknown[]
-  if (!Array.isArray(params)) {
-    return false
-  }
+  if (!Array.isArray(params)) return false
 
   return params.length < 2
 }

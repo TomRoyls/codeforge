@@ -226,7 +226,7 @@ describe('SuggestRules Command', () => {
         { path: '/nonexistent' },
       )
 
-      await expect(cmd.run()).rejects.toThrow('Path does not exist')
+      await expect(cmd.run()).rejects.toThrow('Path not found')
     })
 
     test('handles empty file list', async () => {
@@ -1817,7 +1817,7 @@ describe('SuggestRules Command', () => {
         { format: 'console', top: 15, verbose: false, impact: '' },
         { path: '/absolutely/does/not/exist' },
       )
-      await expect(cmd.run()).rejects.toThrow('Path does not exist: /absolutely/does/not/exist')
+      await expect(cmd.run()).rejects.toThrow('Path not found: /absolutely/does/not/exist')
     })
 
     test('handles partial file read failures gracefully', async () => {
@@ -1890,7 +1890,7 @@ describe('SuggestRules Command', () => {
         { format: 'console', top: 15, verbose: false, impact: '' },
         { path: 'relative/path' },
       )
-      await expect(cmd.run()).rejects.toThrow('Path does not exist')
+      await expect(cmd.run()).rejects.toThrow('Path not found')
     })
   })
 

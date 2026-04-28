@@ -6,6 +6,7 @@ import {
   getRange,
   isCallExpression,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): null | string {
@@ -13,14 +14,15 @@ function getMethodName(node: unknown): null | string {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return null
 
+  const property = toASTNode(n.property)
   if (!property || property.type !== 'Identifier') {
     return null
   }
 
-  return property.name as string
+  return property.name ?? null
 }
 
 function getCalleeObject(node: unknown): unknown {
@@ -28,15 +30,15 @@ function getCalleeObject(node: unknown): unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return null
 
+  const callee = toASTNode(n.callee)
   if (!callee || !isMemberExpression(callee)) {
     return null
   }
 
-  const c = callee as Record<string, unknown>
-  return c.object
+  return callee.object
 }
 
 function isReduceCall(node: unknown): boolean {
@@ -44,9 +46,10 @@ function isReduceCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const callee = toASTNode(n.callee)
   if (!callee) {
     return false
   }
@@ -55,36 +58,27 @@ function isReduceCall(node: unknown): boolean {
 }
 
 function isArrayLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  return n.type === 'ArrayExpression' && (!n.elements || (n.elements as unknown[]).length === 0)
+  return n.type === 'ArrayExpression' && (!n.elements || n.elements.length === 0)
 }
 
 function isArrowFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ArrowFunctionExpression'
+  return toASTNode(node)?.type === 'ArrowFunctionExpression'
 }
 
 function isFunctionExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'FunctionExpression'
+  return toASTNode(node)?.type === 'FunctionExpression'
 }
 
 function getReduceCallbackBody(callback: unknown): unknown {
-  if (!callback || typeof callback !== 'object') {
+  const n = toASTNode(callback)
+  if (!n) {
     return null
   }
-
-  const n = callback as Record<string, unknown>
 
   // Arrow function with expression body
   if (n.type === 'ArrowFunctionExpression' && n.expression) {
@@ -93,13 +87,13 @@ function getReduceCallbackBody(callback: unknown): unknown {
 
   // Arrow function or function expression with block body
   if ((n.type === 'ArrowFunctionExpression' || n.type === 'FunctionExpression') && n.body) {
-    const body = n.body as Record<string, unknown>
-    if (body.type === 'BlockStatement' && body.body) {
+    const body = toASTNode(n.body)
+    if (body?.type === 'BlockStatement' && body.body) {
       const statements = body.body as unknown[]
       // Look for return statement
       for (const stmt of statements) {
-        const s = stmt as Record<string, unknown>
-        if (s.type === 'ReturnStatement' && s.argument) {
+        const s = toASTNode(stmt)
+        if (s?.type === 'ReturnStatement' && s.argument) {
           return s.argument
         }
       }
@@ -114,9 +108,10 @@ function isConcatCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const callee = toASTNode(n.callee)
   if (!callee) {
     return false
   }
@@ -126,24 +121,23 @@ function isConcatCall(node: unknown): boolean {
 
 function isSpreadConcatPattern(node: unknown): boolean {
   // Check for [...a, ...b] pattern
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return false
   }
 
-  const n = node as Record<string, unknown>
   if (n.type !== 'ArrayExpression') {
     return false
   }
 
-  const elements = n.elements as undefined | unknown[]
-  if (!elements || elements.length < 2) {
+  if (!n.elements || n.elements.length < 2) {
     return false
   }
 
   // Check if all elements are spread elements
   let spreadCount = 0
-  for (const elem of elements) {
-    const e = elem as Record<string, unknown>
+  for (const elem of n.elements) {
+    const e = toASTNode(elem)
     if (e && e.type === 'SpreadElement') {
       spreadCount++
     }
@@ -157,14 +151,14 @@ function getReduceCallback(node: unknown): unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  if (!n) return null
 
-  if (!args || args.length === 0) {
+  if (!n.arguments || n.arguments.length === 0) {
     return null
   }
 
-  const callback = args[0]
+  const callback = n.arguments[0]
   if (!isArrowFunction(callback) && !isFunctionExpression(callback)) {
     return null
   }
@@ -177,14 +171,14 @@ function getReduceInitialValue(node: unknown): unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  if (!n) return null
 
-  if (!args || args.length < 2) {
+  if (!n.arguments || n.arguments.length < 2) {
     return null
   }
 
-  return args[1]
+  return n.arguments[1]
 }
 
 function isFlatteningReduce(node: unknown): boolean {
@@ -223,27 +217,15 @@ function isFlatteningReduce(node: unknown): boolean {
 }
 
 function isForStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ForStatement'
+  return toASTNode(node)?.type === 'ForStatement'
 }
 
 function isForOfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ForOfStatement'
+  return toASTNode(node)?.type === 'ForOfStatement'
 }
 
 function isForInStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ForInStatement'
+  return toASTNode(node)?.type === 'ForInStatement'
 }
 
 function isAnyForLoop(node: unknown): boolean {
@@ -255,9 +237,10 @@ function isPushCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const callee = toASTNode(n.callee)
   if (!callee) {
     return false
   }
@@ -266,11 +249,10 @@ function isPushCall(node: unknown): boolean {
 }
 
 function getBlockStatements(node: unknown): unknown[] {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return []
   }
-
-  const n = node as Record<string, unknown>
 
   // If it's a block statement, return its body
   if (n.type === 'BlockStatement' && n.body) {
@@ -279,13 +261,13 @@ function getBlockStatements(node: unknown): unknown[] {
 
   // If it's a for loop, get its body
   if (isAnyForLoop(node) && n.body) {
-    const body = n.body as Record<string, unknown>
-    if (body.type === 'BlockStatement' && body.body) {
+    const body = toASTNode(n.body)
+    if (body?.type === 'BlockStatement' && body.body) {
       return body.body as unknown[]
     }
 
     // Single statement body
-    return [body]
+    return [n.body]
   }
 
   return []
@@ -293,10 +275,10 @@ function getBlockStatements(node: unknown): unknown[] {
 
 function containsPushCall(statements: unknown[]): boolean {
   for (const stmt of statements) {
-    const s = stmt as Record<string, unknown>
+    const s = toASTNode(stmt)
 
     // Check expression statements for push calls
-    if (s.type === 'ExpressionStatement' && s.expression && isPushCall(s.expression)) {
+    if (s?.type === 'ExpressionStatement' && s.expression && isPushCall(s.expression)) {
         return true
       }
   }
@@ -336,11 +318,10 @@ export const preferArrayFlatRule: RuleDefinition = {
         if (isFlatteningReduce(node)) {
           const location = extractLocation(node)
           const calleeObject = getCalleeObject(node)
+          const calleeObjNode = toASTNode(calleeObject)
           const calleeName =
-            calleeObject &&
-            typeof calleeObject === 'object' &&
-            (calleeObject as Record<string, unknown>).type === 'Identifier'
-              ? ((calleeObject as Record<string, unknown>).name as string)
+            calleeObjNode?.type === 'Identifier'
+              ? (calleeObjNode.name ?? 'array')
               : 'array'
 
           let fix: undefined | { range: readonly [number, number]; text: string }

@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 function naturalStringCompare(a: string, b: string): number {
   return a.localeCompare(b, undefined, { numeric: true })
@@ -17,19 +18,11 @@ const DEFAULT_OPTIONS: SortKeysOptions = {
 }
 
 function getPropertyKey(property: unknown): null | string {
-  if (!property || typeof property !== 'object') {
-    return null
-  }
+  const p = toASTNode(property)
+  if (!p || p.type !== 'Property') return null
 
-  const p = property as Record<string, unknown>
-  if (p.type !== 'Property') {
-    return null
-  }
-
-  const key = p.key as Record<string, unknown> | undefined
-  if (!key) {
-    return null
-  }
+  const key = toASTNode(p.key)
+  if (!key) return null
 
   if (key.type === 'Identifier') {
     return key.name as string
@@ -64,14 +57,8 @@ export const sortKeysRule: RuleDefinition = {
 
     return {
       ObjectExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        if (n.type !== 'ObjectExpression') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ObjectExpression') return
 
         const properties = n.properties as unknown[]
         if (!Array.isArray(properties) || properties.length < (options.minKeys ?? 2)) {

@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getIdentifierName, isCallExpression, isNewExpression } from '../../utils/ast-helpers.js'
+import { getIdentifierName, isCallExpression, isNewExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 const INFERRABLE_CONSTRUCTORS = new Set([
   'Array',
@@ -42,50 +42,30 @@ const INFERRABLE_FUNCTIONS = new Set([
 ])
 
 function hasTypeArguments(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const typeArgs = (n.typeParameters ?? n.typeArguments) as Record<string, unknown> | undefined
-  const params = typeArgs?.params as undefined | unknown[]
-  return Array.isArray(params) && params.length > 0
+  const n = toASTNode(node)
+  if (!n) return false
+  const typeArgs = toASTNode(n.typeParameters ?? n.typeArguments)
+  return Array.isArray(typeArgs?.params) && (typeArgs?.params?.length ?? 0) > 0
 }
 
 function getArguments(node: unknown): unknown[] {
-  if (!node || typeof node !== 'object') {
-    return []
-  }
-
-  const n = node as Record<string, unknown>
-  return (n.arguments as unknown[]) ?? []
+  const n = toASTNode(node)
+  if (!Array.isArray(n?.arguments)) return []
+  return n.arguments
 }
 
 function getCalleeFullName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
-
-  if (!callee || typeof callee !== 'object') {
-    return null
-  }
-
-  const c = callee as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return null
+  const c = toASTNode(n.callee)
+  if (!c) return null
 
   if (c.type === 'MemberExpression') {
-    const obj = c.object as unknown
-    const prop = c.property as unknown
-
-    if (obj && typeof obj === 'object' && prop && typeof prop === 'object') {
-      const objName = (obj as Record<string, unknown>).name as string
-      const propName = (prop as Record<string, unknown>).name as string
-      if (objName && propName) {
-        return `${objName}.${propName}`
-      }
-    }
+    const obj = toASTNode(c.object)
+    const prop = toASTNode(c.property)
+    const objName = obj?.name
+    const propName = prop?.name
+    if (objName && propName) return `${objName}.${propName}`
   }
 
   return null
@@ -99,13 +79,14 @@ function isInferrableFunction(fullName: string): boolean {
   return INFERRABLE_FUNCTIONS.has(fullName)
 }
 
-function shouldReport(node: unknown): { reason: string; shouldReport: boolean; } {
+function shouldReport(node: unknown): { reason: string; shouldReport: boolean } {
   if (!isNewExpression(node) && !isCallExpression(node)) {
     return { reason: '', shouldReport: false }
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
+  const n = toASTNode(node)
+  if (!n) return { reason: '', shouldReport: false }
+  const {callee} = n
 
   if (!hasTypeArguments(node)) {
     return { reason: '', shouldReport: false }

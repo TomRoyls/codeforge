@@ -2,9 +2,10 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoThrowLiteralOptions {
@@ -12,47 +13,16 @@ interface NoThrowLiteralOptions {
   readonly allowThrowingObjects?: boolean
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
 type LiteralCheckResult = { isLiteral: boolean; literalType: string }
 
-function checkIfLiteralFromAst(node: Record<string, unknown>): LiteralCheckResult {
-  const argument = node.argument as Record<string, unknown> | undefined
+function checkIfLiteralFromAst(node: unknown): LiteralCheckResult {
+  const n = toASTNode(node)
+  const argument = toASTNode(n?.argument)
   if (!argument) {
     return { isLiteral: false, literalType: '' }
   }
 
-  const type = argument.type as string | undefined
+  const {type} = argument
 
   if (type === 'StringLiteral' || type === 'Literal') {
     const {value} = argument
@@ -64,10 +34,7 @@ function checkIfLiteralFromAst(node: Record<string, unknown>): LiteralCheckResul
     if (value instanceof RegExp) return { isLiteral: true, literalType: 'regexp' }
   }
 
-  if (type === 'Identifier') {
-    const name = argument.name as string | undefined
-    if (name === 'undefined') return { isLiteral: true, literalType: 'undefined' }
-  }
+  if (type === 'Identifier' && argument.name === 'undefined') return { isLiteral: true, literalType: 'undefined' }
 
   if (type === 'ObjectLiteralExpression' || type === 'ObjectExpression') {
     return { isLiteral: true, literalType: 'object' }
@@ -80,10 +47,6 @@ function checkIfLiteralFromAst(node: Record<string, unknown>): LiteralCheckResul
   return { isLiteral: false, literalType: '' }
 }
 
-/**
- * Parse the thrown expression type from the node's text property.
- * Used when the adapter strips child properties (argument, etc.) from the node.
- */
 function checkIfLiteralFromText(text: string): LiteralCheckResult {
   let thrown = text.replace(/^throw\s+/, '').trim()
   if (thrown.endsWith(';')) thrown = thrown.slice(0, -1).trim()
@@ -125,11 +88,10 @@ function checkIfLiteralFromText(text: string): LiteralCheckResult {
 }
 
 function checkIfLiteral(node: unknown): LiteralCheckResult {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return { isLiteral: false, literalType: '' }
   }
-
-  const n = node as Record<string, unknown>
 
   if (n.argument !== undefined) {
     return checkIfLiteralFromAst(n)
@@ -192,10 +154,6 @@ export const noThrowLiteralRule: RuleDefinition = {
 
     return {
       ThrowStatement(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
         const result = checkIfLiteral(node)
         if (!result.isLiteral) {
           return

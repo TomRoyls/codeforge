@@ -2,68 +2,25 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isTruncationPattern(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
+  const n = toASTNode(node)
+  if (!n || n.type !== 'BinaryExpression') return false
+
+  if (!n.left || typeof n.left !== 'object' || !n.right || typeof n.right !== 'object') return false
+
+  const rightNode = toASTNode(n.right)
+
+  if (n.operator === '|') {
+    return rightNode?.type === 'Literal' && rightNode.value === 0
   }
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'BinaryExpression') {
-    return false
-  }
-
-  const operator = n.operator as string
-  const {left} = n
-  const {right} = n
-
-  if (!left || !right || typeof left !== 'object' || typeof right !== 'object') {
-    return false
-  }
-
-  const rightNode = right as Record<string, unknown>
-
-  if (operator === '|') {
-    return rightNode.type === 'Literal' && rightNode.value === 0
-  }
-
-  if (operator === '>>') {
-    return rightNode.type === 'Literal' && rightNode.value === 0
+  if (n.operator === '>>') {
+    return rightNode?.type === 'Literal' && rightNode.value === 0
   }
 
   return false
@@ -77,8 +34,10 @@ export const preferMathTruncRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (!n) return
+
+        const {operator} = n
 
         context.report({
           loc: extractLocation(node),

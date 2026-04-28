@@ -6,6 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 interface VariableInfo {
   declared: boolean
@@ -16,8 +17,8 @@ interface VariableInfo {
 }
 
 function getEndKey(node: unknown): string | undefined {
-  if (!node || typeof node !== 'object') return undefined
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return undefined
   if (Array.isArray(n.range) && typeof n.range[1] === 'number') {
     return String(n.range[1])
   }
@@ -92,23 +93,20 @@ class Scope {
 }
 
 function isIdentifier(node: unknown): node is { name: string; type: 'Identifier'; } {
-  return (
-    node !== null &&
-    typeof node === 'object' &&
-    (node as Record<string, unknown>).type === 'Identifier'
-  )
+  const n = toASTNode(node)
+  return n !== null && n.type === 'Identifier'
 }
 
 function extractParamInfo(param: unknown): null | { idNode: unknown; name: string; } {
-  if (!param || typeof param !== 'object') return null
-  const p = param as Record<string, unknown>
+  const p = toASTNode(param)
+  if (!p) return null
   if (p.type === 'Identifier' && typeof p.name === 'string') {
     return { idNode: param, name: p.name }
   }
 
   if (p.type === 'Parameter' && p.name && typeof p.name === 'object') {
-    const inner = p.name as Record<string, unknown>
-    if (inner.type === 'Identifier' && typeof inner.name === 'string') {
+    const inner = toASTNode(p.name)
+    if (inner?.type === 'Identifier' && typeof inner.name === 'string') {
       return { idNode: p.name, name: inner.name }
     }
   }
@@ -161,12 +159,11 @@ export const noUnusedVarsRule: RuleDefinition = {
 
     return {
       ArrowFunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
         pushScope()
-        declareParams((node as Record<string, unknown>).params)
+        declareParams(n.params)
       },
 
       'ArrowFunctionExpression:exit'(): void {
@@ -174,11 +171,9 @@ export const noUnusedVarsRule: RuleDefinition = {
       },
 
       FunctionDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         if (isIdentifier(n.id)) {
           currentScope().declareWithRange(n.id.name, extractLocation(node), 'function', n.id)
         }
@@ -192,12 +187,11 @@ export const noUnusedVarsRule: RuleDefinition = {
       },
 
       FunctionExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
         pushScope()
-        declareParams((node as Record<string, unknown>).params)
+        declareParams(n.params)
       },
 
       'FunctionExpression:exit'(): void {
@@ -226,13 +220,11 @@ export const noUnusedVarsRule: RuleDefinition = {
       },
 
       VariableDeclarator(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         if (isIdentifier(n.id)) {
-          const parent = n.parent as Record<string, unknown> | undefined
+          const parent = toASTNode(n.parent)
           const kind = (parent?.kind as VariableInfo['kind']) || 'let'
           currentScope().declareWithRange(n.id.name, extractLocation(n.id), kind, n.id)
         }

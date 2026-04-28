@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
@@ -35,42 +35,23 @@ function isConsoleCall(
   node: unknown,
   allowedMethods: readonly string[],
 ): { isConsole: boolean; method: null | string } {
-  if (!node || typeof node !== 'object') {
-    return { isConsole: false, method: null }
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return { isConsole: false, method: null }
 
-  const n = node as Record<string, unknown>
+  const callee = toASTNode(n.callee)
+  if (callee?.type !== 'MemberExpression') return { isConsole: false, method: null }
 
-  if (n.type !== 'CallExpression') {
-    return { isConsole: false, method: null }
-  }
+  const object = toASTNode(callee.object)
+  const property = toASTNode(callee.property)
 
-  const callee = n.callee as Record<string, unknown> | undefined
+  if (!object || object.type !== 'Identifier' || object.name !== 'console') return { isConsole: false, method: null }
+  if (!property || property.type !== 'Identifier') return { isConsole: false, method: null }
 
-  if (!callee || callee.type !== 'MemberExpression') {
-    return { isConsole: false, method: null }
-  }
+  const method = property.name
+  if (!method) return { isConsole: false, method: null }
 
-  const object = callee.object as Record<string, unknown> | undefined
-  const property = callee.property as Record<string, unknown> | undefined
-
-  if (!object || object.type !== 'Identifier' || object.name !== 'console') {
-    return { isConsole: false, method: null }
-  }
-
-  if (!property || property.type !== 'Identifier') {
-    return { isConsole: false, method: null }
-  }
-
-  const method = property.name as string
-
-  if (allowedMethods.includes(method)) {
-    return { isConsole: false, method: null }
-  }
-
-  if (!CONSOLE_METHODS.includes(method)) {
-    return { isConsole: false, method: null }
-  }
+  if (allowedMethods.includes(method)) return { isConsole: false, method: null }
+  if (!CONSOLE_METHODS.includes(method)) return { isConsole: false, method: null }
 
   return { isConsole: true, method }
 }

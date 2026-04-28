@@ -1,60 +1,39 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isForStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ForStatement'
-}
-
-function isUpdateExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'UpdateExpression'
-}
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getIdentifierName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') return null
-  const n = node as Record<string, unknown>
-  if (n.type === 'Identifier' && typeof n.name === 'string') return n.name
-  return null
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
+  return n.name ?? null
 }
 
 export const forDirectionRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ForStatement(node: unknown): void {
-        if (!isForStatement(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ForStatement') return
 
-        const {test} = n
-        const {update} = n
+        const test = toASTNode(n.test)
+        const update = toASTNode(n.update)
 
         if (!test || !update) return
-        if (!isBinaryExpression(test)) return
-        if (!isUpdateExpression(update)) return
+        if (test.type !== 'BinaryExpression') return
+        if (update.type !== 'UpdateExpression') return
 
-        const testExpr = test as Record<string, unknown>
-        const updateExpr = update as Record<string, unknown>
-
-        const counterName = getIdentifierName(updateExpr.argument)
+        const counterName = getIdentifierName(update.argument)
         if (!counterName) return
 
-        const leftName = getIdentifierName(testExpr.left)
-        const rightName = getIdentifierName(testExpr.right)
+        const leftName = getIdentifierName(test.left)
+        const rightName = getIdentifierName(test.right)
 
         if (leftName !== counterName && rightName !== counterName) return
 
-        const operator = testExpr.operator as string
-        const isIncrement = updateExpr.operator === '++'
-        const isDecrement = updateExpr.operator === '--'
+        const operator = test.operator as string
+        const isIncrement = update.operator === '++'
+        const isDecrement = update.operator === '--'
 
         let isValid = true
         if (rightName === counterName) {

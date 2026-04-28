@@ -6,6 +6,7 @@ import {
   getRange,
   isCallExpression,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): null | string {
@@ -13,14 +14,15 @@ function getMethodName(node: unknown): null | string {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return null
 
+  const property = toASTNode(n.property)
   if (!property || property.type !== 'Identifier') {
     return null
   }
 
-  return property.name as string
+  return property.name ?? null
 }
 
 function isApplyCall(node: unknown): boolean {
@@ -28,9 +30,10 @@ function isApplyCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const callee = toASTNode(n.callee)
   if (!callee) {
     return false
   }
@@ -43,9 +46,10 @@ function isConcatCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const callee = toASTNode(n.callee)
   if (!callee) {
     return false
   }
@@ -58,15 +62,15 @@ function getCalleeObject(node: unknown): unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  if (!n) return null
 
+  const callee = toASTNode(n.callee)
   if (!callee || !isMemberExpression(callee)) {
     return null
   }
 
-  const c = callee as Record<string, unknown>
-  return c.object
+  return callee.object
 }
 
 function hasAcceptableApplyContext(node: unknown): boolean {
@@ -74,15 +78,15 @@ function hasAcceptableApplyContext(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  if (!n) return false
 
+  const args = n.arguments
   if (!args || args.length < 2) {
     return false
   }
 
-  const thisArg = args[0] as Record<string, unknown> | undefined
-
+  const thisArg = toASTNode(args[0])
   if (!thisArg) {
     return false
   }
@@ -99,8 +103,10 @@ function getApplyArgs(node: unknown): unknown[] {
     return []
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  if (!n) return []
+
+  const args = n.arguments
   if (!args || args.length < 2) {
     return []
   }
@@ -113,8 +119,10 @@ function getConcatArgs(node: unknown): unknown[] {
     return []
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  if (!n) return []
+
+  const args = n.arguments
   return args ?? []
 }
 
@@ -129,11 +137,10 @@ export const preferSpreadRule: RuleDefinition = {
         if (isApplyCall(node) && hasAcceptableApplyContext(node)) {
           const calleeObject = getCalleeObject(node)
           const location = extractLocation(node)
+          const calleeNode = toASTNode(calleeObject)
           const calleeName =
-            calleeObject &&
-            typeof calleeObject === 'object' &&
-            (calleeObject as Record<string, unknown>).type === 'Identifier'
-              ? ((calleeObject as Record<string, unknown>).name as string)
+            calleeNode?.type === 'Identifier'
+              ? (calleeNode.name ?? 'function')
               : 'function'
 
           let fix: undefined | { range: readonly [number, number]; text: string }
@@ -169,11 +176,10 @@ export const preferSpreadRule: RuleDefinition = {
         if (isConcatCall(node)) {
           const location = extractLocation(node)
           const calleeObject = getCalleeObject(node)
+          const calleeNode = toASTNode(calleeObject)
           const calleeName =
-            calleeObject &&
-            typeof calleeObject === 'object' &&
-            (calleeObject as Record<string, unknown>).type === 'Identifier'
-              ? ((calleeObject as Record<string, unknown>).name as string)
+            calleeNode?.type === 'Identifier'
+              ? (calleeNode.name ?? 'array')
               : 'array'
 
           let fix: undefined | { range: readonly [number, number]; text: string }

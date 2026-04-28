@@ -1,21 +1,21 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isMemberExpression } from '../../utils/ast-helpers.js'
+import { isCallExpression, isMemberExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function getMethodName(node: unknown): null | string {
   if (!isMemberExpression(node)) {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const property = toASTNode(n?.property)
 
   if (!property || property.type !== 'Identifier') {
     return null
   }
 
-  return property.name as string
+  return property.name ?? null
 }
 
 function isObjectPrototypeMethod(node: unknown, methodName: string): boolean {
@@ -23,62 +23,58 @@ function isObjectPrototypeMethod(node: unknown, methodName: string): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee || !isMemberExpression(callee)) {
     return false
   }
 
-  const callCallee = callee as Record<string, unknown>
-  const callProperty = callCallee.property as Record<string, unknown> | undefined
+  const callProperty = toASTNode(callee.property)
 
   if (
     !callProperty ||
     callProperty.type !== 'Identifier' ||
-    (callProperty as Record<string, unknown>).name !== 'call'
+    callProperty.name !== 'call'
   ) {
     return false
   }
 
-  const methodCallee = callCallee.object as Record<string, unknown> | undefined
+  const methodCallee = toASTNode(callee.object)
   if (!methodCallee || !isMemberExpression(methodCallee)) {
     return false
   }
 
-  const m = methodCallee as Record<string, unknown>
-  const methodProperty = m.property as Record<string, unknown> | undefined
+  const methodProperty = toASTNode(methodCallee.property)
 
   if (!methodProperty || methodProperty.type !== 'Identifier') {
     return false
   }
 
-  const methodPropName = (methodProperty as Record<string, unknown>).name as string
-  if (methodPropName !== methodName) {
+  if (methodProperty.name !== methodName) {
     return false
   }
 
-  const prototypeCallee = m.object as Record<string, unknown> | undefined
+  const prototypeCallee = toASTNode(methodCallee.object)
   if (!prototypeCallee || !isMemberExpression(prototypeCallee)) {
     return false
   }
 
-  const p = prototypeCallee as Record<string, unknown>
-  const prototypeProperty = p.property as Record<string, unknown> | undefined
+  const prototypeProperty = toASTNode(prototypeCallee.property)
 
   if (
     !prototypeProperty ||
     prototypeProperty.type !== 'Identifier' ||
-    (prototypeProperty as Record<string, unknown>).name !== 'prototype'
+    prototypeProperty.name !== 'prototype'
   ) {
     return false
   }
 
-  const objectIdentifier = p.object as Record<string, unknown> | undefined
+  const objectIdentifier = toASTNode(prototypeCallee.object)
   if (
     !objectIdentifier ||
     objectIdentifier.type !== 'Identifier' ||
-    (objectIdentifier as Record<string, unknown>).name !== 'Object'
+    objectIdentifier.name !== 'Object'
   ) {
     return false
   }
@@ -99,15 +95,14 @@ function isPrototypeCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee || !isMemberExpression(callee)) {
     return false
   }
 
-  const c = callee as Record<string, unknown>
-  const object = c.object as Record<string, unknown> | undefined
+  const object = toASTNode(callee.object)
 
   if (!object) {
     return false
@@ -118,7 +113,7 @@ function isPrototypeCall(node: unknown): boolean {
     return false
   }
 
-  if (object.type === 'Identifier' && (object as Record<string, unknown>).name === 'Object') {
+  if (object.type === 'Identifier' && object.name === 'Object') {
     return false
   }
 
@@ -130,21 +125,20 @@ function getCallerName(node: unknown): string {
     return 'obj'
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee || !isMemberExpression(callee)) {
     return 'obj'
   }
 
-  const c = callee as Record<string, unknown>
-  const object = c.object as Record<string, unknown> | undefined
+  const object = toASTNode(callee.object)
 
   if (!object || object.type !== 'Identifier') {
     return 'obj'
   }
 
-  return (object as Record<string, unknown>).name as string
+  return object.name ?? 'obj'
 }
 
 export const preferObjectHasOwnRule: RuleDefinition = {
@@ -178,7 +172,8 @@ export const preferObjectHasOwnRule: RuleDefinition = {
         if (isPrototypeCall(node)) {
           const callerName = getCallerName(node)
           const location = extractLocation(node)
-          const callee = (node as Record<string, unknown>).callee as Record<string, unknown>
+          const n = toASTNode(node)
+          const callee = toASTNode(n?.callee)
           const methodName = getMethodName(callee)
 
           context.report({

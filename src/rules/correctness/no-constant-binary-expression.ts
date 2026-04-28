@@ -7,76 +7,37 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isConstant(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   if (n.type === 'Literal') {
     return typeof n.value === 'boolean' || typeof n.value === 'number'
   }
 
   if (n.type === 'UnaryExpression' && n.operator === '!') {
-    const {argument} = n
-    if (argument && typeof argument === 'object') {
-      const arg = argument as Record<string, unknown>
-      return arg.type === 'Literal' && typeof arg.value === 'boolean'
-    }
+    const arg = toASTNode(n.argument)
+    return arg?.type === 'Literal' && typeof arg.value === 'boolean'
   }
 
   return false
 }
 
 function getConstantValue(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return undefined
 
   if (n.type === 'Literal') {
     return n.value
   }
 
   if (n.type === 'UnaryExpression' && n.operator === '!') {
-    const argument = n.argument as Record<string, unknown> | undefined
+    const argument = toASTNode(n.argument)
     return argument?.type === 'Literal' ? !argument.value : undefined
   }
 
@@ -91,11 +52,8 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
         if (!isBinaryOperator(n.operator)) {
           return

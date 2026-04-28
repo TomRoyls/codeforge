@@ -1,35 +1,18 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isBinaryExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BinaryExpression'
-}
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isUselessOperator(left: unknown, operator: string): boolean {
-  if (left && typeof left === 'object') {
-    const n = left as Record<string, unknown>
-    if (n.type === 'RegExpLiteral' && (operator === '||' || operator === '??')) return true
+  const l = toASTNode(left)
+  if (l?.type === 'RegExpLiteral' && (operator === '||' || operator === '??')) return true
+
+  if (l?.type === 'Literal') {
+    if (operator === '||' && l.value) return true
+    if (operator === '??' && l.value !== null && l.value !== undefined) return true
   }
 
-  if ((operator === '||' || operator === '??') && isLiteral(left)) {
-      const l = left as Record<string, unknown>
-      if (operator === '||' && l.value) return true
-      if (operator === '??' && l.value !== null && l.value !== undefined) return true
-    }
-
-  if (operator === '&&' && isLiteral(left)) {
-      const l = left as Record<string, unknown>
-      if (!l.value && l.value !== 0 && l.value !== '') return true
-    }
+  if (operator === '&&' && l?.type === 'Literal' && !l.value && l.value !== 0 && l.value !== '') return true
 
   return false
 }
@@ -38,11 +21,11 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
-        if (!isBinaryExpression(node)) return
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (n?.type !== 'BinaryExpression') return
+        const {operator} = n
 
-        if (isUselessOperator(n.left, operator)) {
+        if (operator && isUselessOperator(n.left, operator)) {
           context.report({
             loc: extractLocation(node),
             message: 'Expression reduces to the left operand and has no effect.',
@@ -50,12 +33,11 @@ export const noConstantBinaryExpressionRule: RuleDefinition = {
         }
       },
       LogicalExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') return
-        const n = node as Record<string, unknown>
-        if (n.type !== 'LogicalExpression') return
-        const operator = n.operator as string
+        const n = toASTNode(node)
+        if (n?.type !== 'LogicalExpression') return
+        const {operator} = n
 
-        if (isUselessOperator(n.left, operator)) {
+        if (operator && isUselessOperator(n.left, operator)) {
           context.report({
             loc: extractLocation(node),
             message: 'Expression reduces to the left operand and has no effect.',

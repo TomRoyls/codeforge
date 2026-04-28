@@ -1,15 +1,12 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isAsyncFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   const {type} = n
-
   if (
     type === 'FunctionDeclaration' ||
     type === 'FunctionExpression' ||
@@ -19,15 +16,6 @@ function isAsyncFunction(node: unknown): boolean {
   }
 
   return false
-}
-
-function isThrowStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ThrowStatement'
 }
 
 export const noThrowSyncRule: RuleDefinition = {
@@ -72,9 +60,8 @@ export const noThrowSyncRule: RuleDefinition = {
       },
 
       ThrowStatement(node: unknown): void {
-        if (!isThrowStatement(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ThrowStatement') return
 
         if (asyncDepth > 0) {
           const location = extractLocation(node)

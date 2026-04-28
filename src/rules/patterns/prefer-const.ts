@@ -11,7 +11,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
@@ -31,15 +31,10 @@ interface PreferConstOptions {
 }
 
 function getVariableKind(node: unknown): 'const' | 'let' | 'var' | null {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'VariableDeclaration') {
-    return null
-  }
+  if (n.type !== 'VariableDeclaration') return null
 
   const {kind} = n
   if (kind === 'let' || kind === 'var' || kind === 'const') {
@@ -50,23 +45,20 @@ function getVariableKind(node: unknown): 'const' | 'let' | 'var' | null {
 }
 
 function getDeclarationNames(node: unknown): string[] {
-  if (!node || typeof node !== 'object') {
-    return []
-  }
+  const n = toASTNode(node)
+  if (!n) return []
 
-  const n = node as Record<string, unknown>
   const names: string[] = []
 
   if (n.type === 'VariableDeclaration' && Array.isArray(n.declarations)) {
     for (const decl of n.declarations) {
-      const declNode = decl as Record<string, unknown>
-      if (declNode.id) {
-        const idNode = declNode.id as Record<string, unknown>
-        if (idNode.type === 'Identifier' && typeof idNode.name === 'string') {
+      const declNode = toASTNode(decl)
+      if (declNode?.id) {
+        const idNode = toASTNode(declNode.id)
+        if (idNode?.type === 'Identifier' && typeof idNode.name === 'string') {
           names.push(idNode.name)
-        } else if (idNode.type === 'ObjectPattern' || idNode.type === 'ArrayPattern') {
-          // Destructuring - extract all names
-          extractDestructuredNames(idNode, names)
+        } else if (idNode?.type === 'ObjectPattern' || idNode?.type === 'ArrayPattern') {
+          extractDestructuredNames(declNode.id, names)
         }
       }
     }
@@ -76,11 +68,8 @@ function getDeclarationNames(node: unknown): string[] {
 }
 
 function extractDestructuredNames(node: unknown, names: string[]): void {
-  if (!node || typeof node !== 'object') {
-    return
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return
 
   if (n.type === 'Identifier' && typeof n.name === 'string') {
     names.push(n.name)
@@ -89,10 +78,10 @@ function extractDestructuredNames(node: unknown, names: string[]): void {
 
   if (n.type === 'ObjectPattern' && Array.isArray(n.properties)) {
     for (const prop of n.properties) {
-      const propNode = prop as Record<string, unknown>
-      if (propNode.type === 'Property' && propNode.value) {
+      const propNode = toASTNode(prop)
+      if (propNode?.type === 'Property' && propNode.value) {
         extractDestructuredNames(propNode.value, names)
-      } else if (propNode.type === 'RestElement' && propNode.argument) {
+      } else if (propNode?.type === 'RestElement' && propNode.argument) {
         extractDestructuredNames(propNode.argument, names)
       }
     }
@@ -128,13 +117,10 @@ export const preferConstRule: RuleDefinition = {
 
     return {
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.left) return
 
-        const n = node as Record<string, unknown>
-        const left = n.left as Record<string, unknown> | undefined
-
+        const left = toASTNode(n.left)
         if (left?.type === 'Identifier' && typeof left.name === 'string') {
           reassignments.add(left.name)
         }
@@ -170,13 +156,8 @@ export const preferConstRule: RuleDefinition = {
       },
 
       UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const arg = n.argument as Record<string, unknown> | undefined
-
+        const n = toASTNode(node)
+        const arg = toASTNode(n?.argument)
         if (arg?.type === 'Identifier' && typeof arg.name === 'string') {
           reassignments.add(arg.name)
         }

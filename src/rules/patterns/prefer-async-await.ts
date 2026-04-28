@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferAsyncAwaitOptions {
@@ -12,24 +13,17 @@ function isPromiseMethod(name: string): boolean {
 }
 
 function isPromiseMethodCall(node: unknown): { isCall: boolean; method: string } {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') {
     return { isCall: false, method: '' }
   }
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return { isCall: false, method: '' }
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-
+  const callee = toASTNode(n.callee)
   if (!callee || callee.type !== 'MemberExpression') {
     return { isCall: false, method: '' }
   }
 
-  const property = callee.property as Record<string, unknown> | undefined
-
+  const property = toASTNode(callee.property)
   if (!property || property.type !== 'Identifier') {
     return { isCall: false, method: '' }
   }

@@ -1,25 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getIdentifierName } from '../../utils/ast-helpers.js'
-
-function isVariableDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'VariableDeclaration'
-}
-
-function isAssignmentExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'AssignmentExpression'
-}
+import { getIdentifierName, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noConstAssignRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -27,17 +9,11 @@ export const noConstAssignRule: RuleDefinition = {
 
     return {
       AssignmentExpression(node: unknown): void {
-        if (!isAssignmentExpression(node)) {
-          return
-        }
+        if (toASTNode(node)?.type !== 'AssignmentExpression') return
 
-        const n = node as Record<string, unknown>
-        const left = n.left as unknown
-
-        const name = getIdentifierName(left)
-        if (!name) {
-          return
-        }
+        const n = toASTNode(node)
+        const name = getIdentifierName(n?.left)
+        if (!name) return
 
         if (constVariables.has(name)) {
           const location = extractLocation(node)
@@ -49,31 +25,15 @@ export const noConstAssignRule: RuleDefinition = {
       },
 
       VariableDeclaration(node: unknown): void {
-        if (!isVariableDeclaration(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'VariableDeclaration' || n.kind !== 'const') return
 
-        const n = node as Record<string, unknown>
-        const kind = n.kind as string | undefined
-
-        if (kind !== 'const') {
-          return
-        }
-
-        const declarations = n.declarations as undefined | unknown[]
-        if (!declarations || !Array.isArray(declarations)) {
-          return
-        }
+        const {declarations} = n
+        if (!declarations || !Array.isArray(declarations)) return
 
         for (const decl of declarations) {
-          if (!decl || typeof decl !== 'object') {
-            continue
-          }
-
-          const d = decl as Record<string, unknown>
-          const id = d.id as unknown
-
-          const name = getIdentifierName(id)
+          const d = toASTNode(decl)
+          const name = getIdentifierName(d?.id)
           if (name) {
             constVariables.add(name)
           }

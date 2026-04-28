@@ -8,42 +8,24 @@ import {
   isIdentifier,
   isLiteral,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 
 function isSliceCall(node: unknown): boolean {
-  if (!isCallExpression(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
-
-  if (!isMemberExpression(callee)) {
-    return false
-  }
-
-  const c = callee as Record<string, unknown>
-  const property = c.property as unknown
-
-  return isIdentifier(property, 'slice')
+  if (!isCallExpression(node)) return false
+  const callee = toASTNode(toASTNode(node)?.callee)
+  if (!isMemberExpression(callee)) return false
+  return isIdentifier(toASTNode(callee)?.property, 'slice')
 }
 
 function isNumericLiteral(node: unknown, value: number): boolean {
-  if (!isLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.value === value
+  if (!isLiteral(node)) return false
+  return toASTNode(node)?.value === value
 }
 
 function isUndefinedLiteral(node: unknown): boolean {
-  if (!isLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.value === undefined && n.raw === 'undefined'
+  if (!isLiteral(node)) return false
+  return toASTNode(node)?.value === undefined && toASTNode(node)?.raw === 'undefined'
 }
 
 function hasUnnecessarySliceArgs(args: unknown[]): { isUnnecessary: boolean; reason: string } {
@@ -69,18 +51,11 @@ function hasUnnecessarySliceArgs(args: unknown[]): { isUnnecessary: boolean; rea
 }
 
 function getObjectSource(context: RuleContext, node: unknown): string {
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown>
-  const object = callee.object as unknown
+  const callee = toASTNode(toASTNode(node)?.callee)
+  if (!callee) return ''
 
-  if (!object || typeof object !== 'object') {
-    return ''
-  }
-
-  const range = getRange(object)
-  if (!range) {
-    return ''
-  }
+  const range = getRange(callee.object)
+  if (!range) return ''
 
   return context.getSource().slice(range[0], range[1])
 }

@@ -6,24 +6,14 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
+import { MUTATING_ARRAY_METHODS } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface PreferReadonlyOptions {
   readonly ignoreLocalVariables?: boolean
   readonly ignorePrivateMembers?: boolean
 }
-
-const MUTATING_ARRAY_METHODS = new Set([
-  'copyWithin',
-  'fill',
-  'pop',
-  'push',
-  'reverse',
-  'shift',
-  'sort',
-  'splice',
-  'unshift',
-])
 
 interface VariableInfo {
   isArrayOrObject: boolean
@@ -44,62 +34,36 @@ interface ClassPropertyInfo {
 }
 
 function isArrayOrObjectInitializer(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'ArrayExpression') {
-    return true
-  }
-
-  if (n.type === 'ObjectExpression') {
-    return true
-  }
+  if (n.type === 'ArrayExpression' || n.type === 'ObjectExpression') return true
 
   if (n.type === 'NewExpression') {
-    const callee = (n as Record<string, unknown>).callee as Record<string, unknown> | undefined
+    const callee = toASTNode(n.callee)
     if (callee?.type === 'Identifier') {
-      const name = callee.name as string
+      const {name} = callee
       return name === 'Array' || name === 'Object' || name === 'Map' || name === 'Set'
     }
   }
 
   if (n.type === 'TSAsExpression' || n.type === 'TSTypeAssertion') {
-    const {expression} = (n as Record<string, unknown>)
-    return isArrayOrObjectInitializer(expression)
+    return isArrayOrObjectInitializer(n.expression)
   }
 
   return false
 }
 
 function getIdentifierName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type === 'Identifier') {
-    return n.name as string
-  }
-
-  return null
+  const n = toASTNode(node)
+  if (n?.type !== 'Identifier') return null
+  return n.name ?? null
 }
 
 function getMemberExpressionObject(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'MemberExpression') {
-    return null
-  }
-
-  return (n as Record<string, unknown>).object
+  const n = toASTNode(node)
+  if (n?.type !== 'MemberExpression') return null
+  return n.object
 }
 
 function isMutatingMethod(methodName: string): boolean {
@@ -146,27 +110,19 @@ export const preferReadonlyRule: RuleDefinition = {
 
     return {
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.left) return
 
-        const n = node as Record<string, unknown>
-        const {left} = n
+        const left = n.left as ASTNode
 
-        if (!left) {
-          return
-        }
-
-        const leftNode = left as Record<string, unknown>
-
-        if (leftNode.type === 'Identifier') {
-          markAsMutable(leftNode.name as string)
-        } else if (leftNode.type === 'MemberExpression') {
-          checkMemberMutation(left)
-          const obj = leftNode.object as Record<string, unknown> | undefined
+        if (left.type === 'Identifier') {
+          markAsMutable(left.name ?? '')
+        } else if (left.type === 'MemberExpression') {
+          checkMemberMutation(n.left)
+          const obj = toASTNode(left.object)
           if (obj?.type === 'ThisExpression' && !inConstructor) {
-            const prop = leftNode.property as Record<string, unknown> | undefined
-            if (prop?.type === 'Identifier' && typeof prop.name === 'string') {
+            const prop = toASTNode(left.property)
+            if (prop?.type === 'Identifier' && prop.name) {
               const propertyKey = `${currentClassName ?? 'unknown'}.${prop.name}`
               const classProp = classProperties.get(propertyKey)
               if (classProp) {
@@ -178,38 +134,25 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       CallExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
-        const callee = n.callee as Record<string, unknown> | undefined
+        const callee = toASTNode(n.callee)
+        if (callee?.type !== 'MemberExpression') return
 
-        if (!callee || callee.type !== 'MemberExpression') {
-          return
-        }
+        const property = toASTNode(callee.property)
+        if (property?.type !== 'Identifier') return
 
-        const property = callee.property as Record<string, unknown> | undefined
-        if (!property || property.type !== 'Identifier') {
-          return
-        }
-
-        const methodName = property.name as string
-        if (!isMutatingMethod(methodName)) {
-          return
-        }
+        const methodName = property.name
+        if (!methodName || !isMutatingMethod(methodName)) return
 
         checkMemberMutation(callee.object)
       },
 
       ClassDeclaration(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        currentClassName = id && typeof id.name === 'string' ? id.name : null
+        const n = toASTNode(node)
+        const id = toASTNode(n?.id)
+        currentClassName = id?.name ?? null
       },
 
       'ClassDeclaration:exit'(): void {
@@ -217,13 +160,9 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       ClassExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        currentClassName = id && typeof id.name === 'string' ? id.name : null
+        const n = toASTNode(node)
+        const id = toASTNode(n?.id)
+        currentClassName = id?.name ?? null
       },
 
       'ClassExpression:exit'(): void {
@@ -231,13 +170,8 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       MethodDefinition(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const kind = n.kind as string | undefined
-        inConstructor = kind === 'constructor'
+        const n = toASTNode(node)
+        inConstructor = n?.kind === 'constructor'
       },
 
       'MethodDefinition:exit'(): void {
@@ -285,27 +219,15 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       Property(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
-        const key = n.key as Record<string, unknown> | undefined
-        const {value} = n
+        const key = toASTNode(n.key)
+        if (key?.type !== 'Identifier' || !key.name) return
 
-        if (!key || key.type !== 'Identifier') {
-          return
-        }
+        if (!isArrayOrObjectInitializer(n.value)) return
 
-        const name = key.name as string
-        if (!name) {
-          return
-        }
-
-        if (!isArrayOrObjectInitializer(value)) {
-          return
-        }
-
+        const {name} = key
         const isPrivate = isPrivateMember(name)
         const loc = extractLocation(node)
 
@@ -320,40 +242,29 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       PropertyDefinition(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n || n.readonly === true) return
 
-        const n = node as Record<string, unknown>
-        const key = n.key as Record<string, unknown> | undefined
-        const {value} = n
-        const readonly = n.readonly as boolean | undefined
-
-        if (readonly === true) {
-          return
-        }
-
+        const key = toASTNode(n.key)
         let name: null | string = null
         let isPrivate = false
 
         if (key?.type === 'Identifier') {
-          name = key.name as string
-          isPrivate = isPrivateMember(name)
+          name = key.name ?? null
+          isPrivate = isPrivateMember(name ?? '')
         } else if (key?.type === 'PrivateIdentifier') {
-          name = key.name as string
+          name = key.name ?? null
           isPrivate = true
         }
 
-        if (!name) {
-          return
-        }
+        if (!name) return
 
         const loc = extractLocation(node)
         const propertyKey = `${currentClassName ?? 'unknown'}.${name}`
 
         classProperties.set(propertyKey, {
           className: currentClassName,
-          hasInitialValue: value !== null && value !== undefined,
+          hasInitialValue: n.value !== null && n.value !== undefined,
           isPrivate,
           isReadonly: false,
           loc,
@@ -362,70 +273,39 @@ export const preferReadonlyRule: RuleDefinition = {
       },
 
       UnaryExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const operator = n.operator as string | undefined
-        const {argument} = n
-
-        if (operator === 'delete' && argument) {
-          const argNode = argument as Record<string, unknown>
-          if (argNode.type === 'MemberExpression') {
-            checkMemberMutation(argument)
+        const n = toASTNode(node)
+        if (n?.operator === 'delete' && n.argument) {
+          const argNode = toASTNode(n.argument)
+          if (argNode?.type === 'MemberExpression') {
+            checkMemberMutation(n.argument)
           }
         }
       },
 
       UpdateExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n?.argument) return
 
-        const n = node as Record<string, unknown>
-        const {argument} = n
-
-        if (!argument) {
-          return
-        }
-
-        const argNode = argument as Record<string, unknown>
-
-        if (argNode.type === 'MemberExpression') {
-          checkMemberMutation(argument)
+        const argNode = toASTNode(n.argument)
+        if (argNode?.type === 'MemberExpression') {
+          checkMemberMutation(n.argument)
         }
       },
 
       VariableDeclarator(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
-        const id = n.id as Record<string, unknown> | undefined
-        const {init} = n
+        const id = toASTNode(n.id)
+        if (id?.type !== 'Identifier' || !id.name) return
 
-        if (!id || id.type !== 'Identifier') {
-          return
-        }
+        const {name} = id
 
-        const name = id.name as string
-        if (!name) {
-          return
-        }
+        if (!isArrayOrObjectInitializer(n.init)) return
 
-        if (!isArrayOrObjectInitializer(init)) {
-          return
-        }
-
-        const parent = n.parent as Record<string, unknown> | undefined
+        const parent = toASTNode(n.parent)
         const kind = (parent?.kind as string) ?? 'let'
-        const isConst = kind === 'const'
-
-        if (isConst) {
-          return
-        }
+        if (kind === 'const') return
 
         const isPrivate = isPrivateMember(name)
         const loc = extractLocation(node)

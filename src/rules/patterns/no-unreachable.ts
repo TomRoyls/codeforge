@@ -1,53 +1,20 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isBlockStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BlockStatement'
-}
-
-function isReturnStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ReturnStatement'
-}
-
-function isThrowStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ThrowStatement'
-}
-
-function isBreakStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'BreakStatement'
-}
-
-function isContinueStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ContinueStatement'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function terminatesFlow(node: unknown): boolean {
-  return (
-    isReturnStatement(node) ||
-    isThrowStatement(node) ||
-    isBreakStatement(node) ||
-    isContinueStatement(node)
-  )
+  const type = toASTNode(node)?.type
+  return type === 'ReturnStatement' || type === 'ThrowStatement' || type === 'BreakStatement' || type === 'ContinueStatement'
 }
 
 export const noUnreachableRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BlockStatement(node: unknown): void {
-        if (!isBlockStatement(node)) return
-        const n = node as Record<string, unknown>
-        const {body} = n
+        const n = toASTNode(node)
+        if (n?.type !== 'BlockStatement') return
+        const { body } = n
         if (!Array.isArray(body)) return
 
         let foundTerminator = false

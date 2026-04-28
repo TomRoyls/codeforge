@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExplicitModuleBoundaryTypesOptions {
@@ -10,28 +11,22 @@ interface ExplicitModuleBoundaryTypesOptions {
 }
 
 function hasReturnType(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.returnType !== undefined && n.returnType !== null
 }
 
 function isExported(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   // Check if parent is an export declaration
-  const parent = n.parent as Record<string, unknown> | undefined
+  const parent = toASTNode(n.parent)
   if (!parent) {
     return false
   }
 
-  const parentType = parent.type as string | undefined
+  const parentType = parent.type
 
   // Direct export: export function foo() {}
   if (parentType === 'ExportNamedDeclaration' || parentType === 'ExportDefaultDeclaration') {
@@ -40,9 +35,9 @@ function isExported(node: unknown): boolean {
 
   // Variable declaration in export: export const foo = () => {}
   if (parentType === 'VariableDeclarator') {
-    const varParent = parent.parent as Record<string, unknown> | undefined
+    const varParent = toASTNode(parent.parent)
     if (varParent?.type === 'VariableDeclaration') {
-      const varDeclParent = varParent.parent as Record<string, unknown> | undefined
+      const varDeclParent = toASTNode(varParent.parent)
       return varDeclParent?.type === 'ExportNamedDeclaration'
     }
   }
@@ -51,18 +46,11 @@ function isExported(node: unknown): boolean {
 }
 
 function isHigherOrderFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const {body} = n
-
-  if (!body || typeof body !== 'object') {
-    return false
-  }
-
-  const bodyNode = body as Record<string, unknown>
+  const bodyNode = toASTNode(n.body)
+  if (!bodyNode) return false
 
   // Arrow function returning function directly
   if (bodyNode.type === 'FunctionExpression' || bodyNode.type === 'ArrowFunctionExpression') {
@@ -71,17 +59,17 @@ function isHigherOrderFunction(node: unknown): boolean {
 
   // Block statement with return of function
   if (bodyNode.type === 'BlockStatement') {
-    const statements = bodyNode.body as unknown[]
+    const statements = bodyNode.body
     if (!Array.isArray(statements) || statements.length === 0) {
       return false
     }
 
     for (const stmt of statements) {
-      if (!stmt || typeof stmt !== 'object') continue
-      const s = stmt as Record<string, unknown>
+      const s = toASTNode(stmt)
+      if (!s) continue
       if (s.type === 'ReturnStatement' && s.argument) {
-        const arg = s.argument as Record<string, unknown>
-        if (arg.type === 'FunctionExpression' || arg.type === 'ArrowFunctionExpression') {
+        const arg = toASTNode(s.argument)
+        if (arg?.type === 'FunctionExpression' || arg?.type === 'ArrowFunctionExpression') {
           return true
         }
       }
@@ -92,26 +80,16 @@ function isHigherOrderFunction(node: unknown): boolean {
 }
 
 function isVariableTypedWithFunction(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n) return false
 
-  const n = node as Record<string, unknown>
-  const {parent} = n
-
-  if (!parent || typeof parent !== 'object') {
-    return false
-  }
-
-  const parentNode = parent as Record<string, unknown>
+  const parentNode = toASTNode(n.parent)
+  if (!parentNode) return false
 
   if (parentNode.type === 'VariableDeclarator') {
-    const id = parentNode.id as Record<string, unknown> | undefined
-    if (id && typeof id === 'object') {
-      const idNode = id as Record<string, unknown>
-      if (idNode.typeAnnotation !== undefined && idNode.typeAnnotation !== null) {
-        return true
-      }
+    const id = toASTNode(parentNode.id)
+    if (id && id.typeAnnotation !== undefined && id.typeAnnotation !== null) {
+      return true
     }
   }
 
@@ -119,34 +97,21 @@ function isVariableTypedWithFunction(node: unknown): boolean {
 }
 
 function getFunctionName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return null
 
   // Direct function name
-  const {id} = n
-  if (id && typeof id === 'object') {
-    const idNode = id as Record<string, unknown>
-    if (typeof idNode.name === 'string') {
-      return idNode.name
-    }
+  const idNode = toASTNode(n.id)
+  if (idNode && typeof idNode.name === 'string') {
+    return idNode.name
   }
 
   // Variable name for function expressions
-  const {parent} = n
-  if (parent && typeof parent === 'object') {
-    const parentNode = parent as Record<string, unknown>
-
-    if (parentNode.type === 'VariableDeclarator') {
-      const parentId = parentNode.id as Record<string, unknown> | undefined
-      if (parentId && typeof parentId === 'object') {
-        const parentIdNode = parentId as Record<string, unknown>
-        if (typeof parentIdNode.name === 'string') {
-          return parentIdNode.name
-        }
-      }
+  const parentNode = toASTNode(n.parent)
+  if (parentNode?.type === 'VariableDeclarator') {
+    const parentIdNode = toASTNode(parentNode.id)
+    if (parentIdNode && typeof parentIdNode.name === 'string') {
+      return parentIdNode.name
     }
   }
 

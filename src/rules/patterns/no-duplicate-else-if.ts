@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function serializeCondition(node: unknown, visited: Set<unknown> = new Set()): string {
   if (!node || typeof node !== 'object') {
@@ -13,11 +14,8 @@ function serializeCondition(node: unknown, visited: Set<unknown> = new Set()): s
 
   visited.add(node)
 
-  const n = node as Record<string, unknown>
-
-  if (n === null) {
-    return 'null'
-  }
+  const n = toASTNode(node)
+  if (!n) return 'null'
 
   const { type } = n
 
@@ -68,9 +66,9 @@ function serializeCondition(node: unknown, visited: Set<unknown> = new Set()): s
   }
 
   const parts: string[] = []
-  for (const key of Object.keys(n)) {
+  for (const key of Object.keys(node as Record<string, unknown>)) {
     if (key !== 'loc' && key !== 'range' && key !== 'start' && key !== 'end' && key !== 'parent') {
-      parts.push(`${key}:${serializeCondition(n[key], visited)}`)
+      parts.push(`${key}:${serializeCondition((node as Record<string, unknown>)[key], visited)}`)
     }
   }
 
@@ -81,15 +79,8 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
   const conditions: Array<{ condition: string; node: unknown }> = []
 
   function traverse(currentNode: unknown): void {
-    if (!currentNode || typeof currentNode !== 'object') {
-      return
-    }
-
-    const n = currentNode as Record<string, unknown>
-
-    if (n.type !== 'IfStatement') {
-      return
-    }
+    const n = toASTNode(currentNode)
+    if (!n || n.type !== 'IfStatement') return
 
     const { test } = n
     if (test) {
@@ -99,12 +90,9 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
       })
     }
 
-    const { alternate } = n
-    if (alternate && typeof alternate === 'object') {
-      const alt = alternate as Record<string, unknown>
-      if (alt.type === 'IfStatement') {
-        traverse(alternate)
-      }
+    const alt = toASTNode(n.alternate)
+    if (alt?.type === 'IfStatement') {
+      traverse(n.alternate)
     }
   }
 
@@ -115,9 +103,9 @@ function collectConditions(node: unknown): Array<{ condition: string; node: unkn
 function isChainRoot(node: unknown, allIfStatements: Set<unknown>): boolean {
   for (const otherNode of allIfStatements) {
     if (otherNode === node) continue
-    if (!otherNode || typeof otherNode !== 'object') continue
+    const n = toASTNode(otherNode)
+    if (!n) continue
 
-    const n = otherNode as Record<string, unknown>
     if (n.type === 'IfStatement' && n.alternate === node) {
       return false
     }
@@ -133,15 +121,8 @@ export const noDuplicateElseIfRule: RuleDefinition = {
 
     return {
       IfStatement(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        if (n.type !== 'IfStatement') {
-          return
-        }
-
+        const n = toASTNode(node)
+        if (n?.type !== 'IfStatement') return
         seenIfStatements.add(node)
       },
 
@@ -149,14 +130,10 @@ export const noDuplicateElseIfRule: RuleDefinition = {
         processedChains.clear()
 
         for (const ifNode of seenIfStatements) {
-          if (!ifNode || typeof ifNode !== 'object') continue
-
           if (!isChainRoot(ifNode, seenIfStatements)) continue
-
           if (processedChains.has(ifNode)) continue
 
           const conditions = collectConditions(ifNode)
-
           const seenConditions = new Map<string, unknown>()
 
           for (const { condition, node: conditionNode } of conditions) {

@@ -1,14 +1,11 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 function isBlockStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'BlockStatement'
 }
 
@@ -17,9 +14,11 @@ function isEmptyBlock(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const body = n.body as undefined | unknown[]
-  return !body || body.length === 0
+  const n = toASTNode(node)
+  const body = n?.body
+  if (!body) return true
+  if (!Array.isArray(body)) return false
+  return body.length === 0
 }
 
 function hasCommentsInRange(
@@ -34,27 +33,21 @@ function hasCommentsInRange(
   }
 
   for (const comment of comments) {
-    const c = comment as Record<string, unknown>
-    const cLoc = c.loc as Record<string, unknown> | undefined
-    if (!cLoc) {
-      continue
-    }
+    const c = toASTNode(comment)
+    if (!c) continue
 
-    const cStart = cLoc.start as Record<string, unknown> | undefined
-    const cEnd = cLoc.end as Record<string, unknown> | undefined
-    if (!cStart || !cEnd) {
-      continue
-    }
+    const cLoc = toASTNode(c.loc)
+    if (!cLoc) continue
 
-    const cStartLine = cStart.line as number
-    const cEndLine = cEnd.line as number
-    const cStartColumn = cStart.column as number
-    const cEndColumn = cEnd.column as number
+    const cStart = toASTNode(cLoc.start)
+    const cEnd = toASTNode(cLoc.end)
+    if (!cStart || !cEnd) continue
+
     if (
-      cStartLine >= startLine &&
-      cEndLine <= endLine &&
-      cStartColumn >= startColumn &&
-      cEndColumn <= endColumn
+      (cStart.line ?? 0) >= startLine &&
+      (cEnd.line ?? 0) <= endLine &&
+      (cStart.column ?? 0) >= startColumn &&
+      (cEnd.column ?? 0) <= endColumn
     ) {
       return true
     }
@@ -71,8 +64,10 @@ export const noEmptyRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const loc = n.loc as Record<string, unknown> | undefined
+        const n = toASTNode(node)
+        if (!n) return
+
+        const loc = toASTNode(n.loc)
         const range = getRange(node)
 
         if (!loc) {
@@ -82,8 +77,8 @@ export const noEmptyRule: RuleDefinition = {
           return
         }
 
-        const start = loc.start as Record<string, unknown> | undefined
-        const end = loc.end as Record<string, unknown> | undefined
+        const start = toASTNode(loc.start)
+        const end = toASTNode(loc.end)
 
         if (!start || !end) {
           context.report({
@@ -93,10 +88,10 @@ export const noEmptyRule: RuleDefinition = {
           return
         }
 
-        const startLine = start.line as number
-        const startColumn = start.column as number
-        const endLine = end.line as number
-        const endColumn = end.column as number
+        const startLine = start.line ?? 0
+        const startColumn = start.column ?? 0
+        const endLine = end.line ?? 0
+        const endColumn = end.column ?? 0
         const comments = context.getComments()
 
         if (hasCommentsInRange(startLine, startColumn, endLine, endColumn, comments)) {

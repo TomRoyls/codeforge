@@ -7,9 +7,10 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnsafeTypeAssertionOptions {
@@ -18,44 +19,11 @@ interface NoUnsafeTypeAssertionOptions {
   readonly reportRedundant?: boolean
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
 function getTypeAnnotationName(typeAnnotation: unknown): null | string {
-  if (!typeAnnotation || typeof typeAnnotation !== 'object') {
+  const ta = toASTNode(typeAnnotation)
+  if (!ta) {
     return null
   }
-
-  const ta = typeAnnotation as Record<string, unknown>
 
   if (ta.type === 'TSAnyKeyword') {
     return 'any'
@@ -66,7 +34,7 @@ function getTypeAnnotationName(typeAnnotation: unknown): null | string {
   }
 
   if (ta.type === 'TSTypeReference') {
-    const typeName = ta.typeName as Record<string, unknown> | undefined
+    const typeName = toASTNode(ta.typeName)
     if (typeName?.type === 'Identifier' && typeof typeName.name === 'string') {
       return typeName.name
     }
@@ -80,11 +48,10 @@ function getTypeAnnotationName(typeAnnotation: unknown): null | string {
 }
 
 function getTargetType(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return null
   }
-
-  const n = node as Record<string, unknown>
 
   if (n.type === 'TSAsExpression' && n.typeAnnotation) {
     return getTypeAnnotationName(n.typeAnnotation)
@@ -98,11 +65,11 @@ function getTargetType(node: unknown): null | string {
 }
 
 function getSourceExpression(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return null
   }
 
-  const n = node as Record<string, unknown>
   return n.expression
 }
 
@@ -110,18 +77,17 @@ function checkForDoubleAssertion(node: unknown): {
   intermediateType: null | string
   isDouble: boolean
 } {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return { intermediateType: null, isDouble: false }
   }
 
-  const n = node as Record<string, unknown>
   const {expression} = n
 
-  if (!expression || typeof expression !== 'object') {
+  const expr = toASTNode(expression)
+  if (!expr) {
     return { intermediateType: null, isDouble: false }
   }
-
-  const expr = expression as Record<string, unknown>
 
   if (expr.type === 'TSAsExpression' || expr.type === 'TSTypeAssertion') {
     const intermediateType = getTargetType(expr)
@@ -132,11 +98,10 @@ function checkForDoubleAssertion(node: unknown): {
 }
 
 function getExpressionType(expression: unknown): null | string {
-  if (!expression || typeof expression !== 'object') {
+  const expr = toASTNode(expression)
+  if (!expr) {
     return null
   }
-
-  const expr = expression as Record<string, unknown>
 
   if (expr.type === 'TSAsExpression' || expr.type === 'TSTypeAssertion') {
     return getTargetType(expr)
@@ -147,9 +112,9 @@ function getExpressionType(expression: unknown): null | string {
   }
 
   if (expr.type === 'TSAsExpression') {
-    const ta = expr.typeAnnotation as Record<string, unknown> | undefined
+    const ta = toASTNode(expr.typeAnnotation)
     if (ta?.type === 'TSTypeReference') {
-      const typeName = ta.typeName as Record<string, unknown> | undefined
+      const typeName = toASTNode(ta.typeName)
       if (typeName?.type === 'Identifier' && typeName.name === 'const') {
         return 'const'
       }
@@ -261,7 +226,8 @@ function checkTypeAssertion(
   context: RuleContext,
   options: NoUnsafeTypeAssertionOptions,
 ): void {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return
   }
 

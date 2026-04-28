@@ -7,6 +7,7 @@ import {
   getRange,
   isIdentifier,
   isNewExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
@@ -18,7 +19,8 @@ export const noArrayConstructorRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const callee = n.callee as unknown
 
         if (!isIdentifier(callee, 'Array')) {

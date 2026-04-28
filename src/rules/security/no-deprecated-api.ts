@@ -10,6 +10,8 @@ import type {
   SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface DeprecatedApiInfo {
@@ -165,54 +167,19 @@ const DEPRECATED_APIS: Map<string, DeprecatedApiInfo> = new Map([
   ],
 ])
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
 function isDeprecatedCall(
   node: unknown,
   apis: Map<string, DeprecatedApiInfo>,
   ignoreList: Set<string>,
 ): DeprecatedApiInfo | null {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return null
   }
 
-  const n = node as Record<string, unknown>
-
-  // Check CallExpression
   if (n.type === 'CallExpression') {
-    const callee = n.callee as Record<string, unknown> | undefined
+    const callee = toASTNode(n.callee)
 
-    // Direct call: escape(), unescape(), Buffer()
     if (callee?.type === 'Identifier' && typeof callee.name === 'string') {
       const {name} = callee
       if (!ignoreList.has(name) && apis.has(name)) {
@@ -220,13 +187,11 @@ function isDeprecatedCall(
       }
     }
 
-    // Member expression call: date.getYear(), str.substr()
     if (callee?.type === 'MemberExpression') {
-      const property = callee.property as Record<string, unknown> | undefined
+      const property = toASTNode(callee.property)
       if (property?.type === 'Identifier' && typeof property.name === 'string') {
         const methodName = property.name
 
-        // Check for prototype method patterns
         const objectName = getObjectTypeName(callee.object)
         const fullKey = objectName ? `${objectName}.prototype.${methodName}` : null
         const simpleKey = `.${methodName}`
@@ -248,9 +213,8 @@ function isDeprecatedCall(
     }
   }
 
-  // Check NewExpression for Buffer
   if (n.type === 'NewExpression') {
-    const callee = n.callee as Record<string, unknown> | undefined
+    const callee = toASTNode(n.callee)
     if (callee?.type === 'Identifier' && typeof callee.name === 'string') {
       const {name} = callee
       if (!ignoreList.has(name) && apis.has(name)) {
@@ -259,9 +223,8 @@ function isDeprecatedCall(
     }
   }
 
-  // Check property access for __proto__, __defineGetter__, etc.
   if (n.type === 'MemberExpression') {
-    const property = n.property as Record<string, unknown> | undefined
+    const property = toASTNode(n.property)
     if (property?.type === 'Identifier' && typeof property.name === 'string') {
       const propName = property.name
       const fullKey = `Object.prototype.${propName}`
@@ -276,11 +239,10 @@ function isDeprecatedCall(
 }
 
 function getObjectTypeName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (!n) {
     return null
   }
-
-  const n = node as Record<string, unknown>
 
   if (n.type === 'Identifier' && typeof n.name === 'string') {
     return n.name
@@ -288,7 +250,7 @@ function getObjectTypeName(node: unknown): null | string {
 
   if (n.type === 'MemberExpression') {
     const obj = getObjectTypeName(n.object)
-    const prop = (n.property as Record<string, unknown>)?.name
+    const prop = toASTNode(n.property)?.name
     if (obj && typeof prop === 'string') {
       return `${obj}.${prop}`
     }
@@ -297,10 +259,6 @@ function getObjectTypeName(node: unknown): null | string {
   return null
 }
 
-/**
- * Rule: no-deprecated-api
- * Disallows use of deprecated JavaScript and Node.js APIs
- */
 export const noDeprecatedApiRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoDeprecatedApiOptions>(context.config.options, {
@@ -308,7 +266,6 @@ export const noDeprecatedApiRule: RuleDefinition = {
       ignoreApis: [],
     })
 
-    // Build combined APIs map
     const apis = new Map(DEPRECATED_APIS)
     if (options.additionalApis) {
       for (const api of options.additionalApis) {

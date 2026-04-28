@@ -1,66 +1,31 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression, isLiteral } from '../../utils/ast-helpers.js'
-
-function isPlusOperator(node: unknown): boolean {
-  if (!isBinaryExpression(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.operator === '+'
-}
+import { isBinaryExpression, isLiteral, isTemplateLiteral, toASTNode } from '../../utils/ast-helpers.js'
 
 function isStringLiteral(node: unknown): boolean {
-  if (!isLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return typeof n.value === 'string'
-}
-
-function isTemplateLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'TemplateLiteral'
+  if (!isLiteral(node)) return false
+  return typeof toASTNode(node)?.value === 'string'
 }
 
 function isConcatWithStrings(node: unknown): boolean {
-  if (!isPlusOperator(node)) {
-    return false
-  }
+  if (!isBinaryExpression(node)) return false
+  const n = toASTNode(node)
+  if (n?.operator !== '+') return false
 
-  const n = node as Record<string, unknown>
-  const left = n.left as unknown
-  const right = n.right as unknown
-
-  return (
-    isStringLiteral(left) ||
-    isStringLiteral(right) ||
-    isTemplateLiteral(left) ||
-    isTemplateLiteral(right)
-  )
+  return isStringLiteral(n.left) || isStringLiteral(n.right) || isTemplateLiteral(n.left) || isTemplateLiteral(n.right)
 }
 
 export const noStringConcatRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       BinaryExpression(node: unknown): void {
-        if (!isConcatWithStrings(node)) {
-          return
-        }
+        if (!isConcatWithStrings(node)) return
 
         const location = extractLocation(node)
-
         context.report({
           loc: location,
-          message:
-            'Unexpected string concatenation. Use template literals or array.join() instead.',
+          message: 'Unexpected string concatenation. Use template literals or array.join() instead.',
         })
       },
     }

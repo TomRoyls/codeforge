@@ -1,16 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 export const noSequencesRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       SequenceExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const expressions = n.expressions as undefined | unknown[]
 
         if (expressions && expressions.length > 1) {

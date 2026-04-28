@@ -12,6 +12,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExportInfo {
@@ -44,15 +45,14 @@ const importedByTargetFile = new Map<string, Set<string>>()
 function extractExports(ast: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
 
-  if (!ast || typeof ast !== 'object') {
-    return exports
-  }
+  const a = toASTNode(ast)
+  if (!a) return exports
 
-  const a = ast as Record<string, unknown>
+  const programBody = toASTNode(a.program)
   const body = Array.isArray(a.body)
     ? a.body
-    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
-      ? ((a.program as Record<string, unknown>).body as unknown[])
+    : Array.isArray(programBody?.body)
+      ? (programBody!.body as unknown[])
       : []
 
   for (const node of body) {
@@ -74,7 +74,7 @@ function makeExport(
 }
 
 function extractVariableDeclExports(
-  declaration: Record<string, unknown>,
+  declaration: ASTNode,
   filePath: string,
   isTypeOnly: boolean,
   location: SourceLocation,
@@ -83,9 +83,9 @@ function extractVariableDeclExports(
   const { declarations } = declaration
   if (Array.isArray(declarations)) {
     for (const decl of declarations) {
-      if (!decl || typeof decl !== 'object') continue
-      const declNode = decl as Record<string, unknown>
-      const id = declNode.id as Record<string, unknown> | undefined
+      const declNode = toASTNode(decl)
+      if (!declNode) continue
+      const id = toASTNode(declNode.id)
       if (id?.type === 'Identifier' && typeof id.name === 'string') {
         results.push(makeExport(filePath, id.name, 'named', isTypeOnly, location))
       }
@@ -96,7 +96,7 @@ function extractVariableDeclExports(
 }
 
 function extractExportSpecifiers(
-  n: Record<string, unknown>,
+  n: ASTNode,
   filePath: string,
   location: SourceLocation,
 ): ExportInfo[] {
@@ -104,10 +104,10 @@ function extractExportSpecifiers(
   const { specifiers } = n
   if (Array.isArray(specifiers)) {
     for (const spec of specifiers) {
-      if (!spec || typeof spec !== 'object') continue
-      const specNode = spec as Record<string, unknown>
+      const specNode = toASTNode(spec)
+      if (!specNode) continue
       if (specNode.type === 'ExportSpecifier') {
-        const exported = specNode.exported as Record<string, unknown> | undefined
+        const exported = toASTNode(specNode.exported)
         if (exported?.name && typeof exported.name === 'string') {
           results.push(
             makeExport(
@@ -129,16 +129,14 @@ function extractExportSpecifiers(
 function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   const exports: ExportInfo[] = []
 
-  if (!node || typeof node !== 'object') {
-    return exports
-  }
+  const n = toASTNode(node)
+  if (!n) return exports
 
   const location = extractLocation(node)
-  const n = node as Record<string, unknown>
 
   switch (n.type) {
     case 'ClassDeclaration': {
-      const classId = n.id as Record<string, unknown> | undefined
+      const classId = toASTNode(n.id)
       if (classId?.name && typeof classId.name === 'string' && hasExportModifier(n)) {
         exports.push(makeExport(filePath, classId.name, 'named', false, location))
       }
@@ -157,16 +155,15 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
     }
 
     case 'ExportNamedDeclaration': {
-      const declaration = n.declaration as Record<string, unknown> | undefined
+      const declaration = toASTNode(n.declaration)
       if (declaration) {
-        const declType = declaration.type as string | undefined
         const isTypeOnly = n.exportKind === 'type'
         const name = getDeclName(declaration)
         if (name) {
           const typeIsTypeOnly =
-            declType === 'TSInterfaceDeclaration' || declType === 'TSTypeAliasDeclaration'
+            declaration.type === 'TSInterfaceDeclaration' || declaration.type === 'TSTypeAliasDeclaration'
           exports.push(makeExport(filePath, name, 'named', typeIsTypeOnly || isTypeOnly, location))
-        } else if (declType === 'VariableDeclaration') {
+        } else if (declaration.type === 'VariableDeclaration') {
           exports.push(...extractVariableDeclExports(declaration, filePath, isTypeOnly, location))
         }
       } else {
@@ -177,7 +174,7 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
     }
 
     case 'FunctionDeclaration': {
-      const funcId = n.id as Record<string, unknown> | undefined
+      const funcId = toASTNode(n.id)
       if (funcId?.name && typeof funcId.name === 'string' && hasExportModifier(n)) {
         exports.push(makeExport(filePath, funcId.name, 'named', false, location))
       }
@@ -197,20 +194,20 @@ function extractExportsFromNode(node: unknown, filePath: string): ExportInfo[] {
   return exports
 }
 
-function getDeclName(declaration: Record<string, unknown>): null | string {
-  const id = declaration.id as Record<string, unknown> | undefined
+function getDeclName(declaration: ASTNode): null | string {
+  const id = toASTNode(declaration.id)
   return id?.name && typeof id.name === 'string' ? id.name : null
 }
 
 function hasExportModifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  const { modifiers } = n
+  const n = toASTNode(node)
+  if (!n) return false
+  const {modifiers} = n
   if (!Array.isArray(modifiers)) return false
 
   return modifiers.some((mod) => {
-    if (!mod || typeof mod !== 'object') return false
-    const modNode = mod as Record<string, unknown>
+    const modNode = toASTNode(mod)
+    if (!modNode) return false
     return modNode.type === 'TSExportKeyword' || modNode.kind === 'export'
   })
 }
@@ -218,15 +215,14 @@ function hasExportModifier(node: unknown): boolean {
 function extractImports(ast: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
-  if (!ast || typeof ast !== 'object') {
-    return imports
-  }
+  const a = toASTNode(ast)
+  if (!a) return imports
 
-  const a = ast as Record<string, unknown>
+  const programBody = toASTNode(a.program)
   const body = Array.isArray(a.body)
     ? a.body
-    : Array.isArray((a.program as Record<string, unknown> | undefined)?.body)
-      ? ((a.program as Record<string, unknown>).body as unknown[])
+    : Array.isArray(programBody?.body)
+      ? (programBody!.body as unknown[])
       : []
 
   for (const node of body) {
@@ -240,23 +236,20 @@ function extractImports(ast: unknown, filePath: string): ImportInfo[] {
 function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
   const imports: ImportInfo[] = []
 
-  if (!node || typeof node !== 'object') {
-    return imports
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return imports
 
   switch (n.type) {
     case 'CallExpression': {
-      const callee = n.callee as Record<string, unknown> | undefined
-      const arguments_ = n.arguments as undefined | unknown[]
+      const callee = toASTNode(n.callee)
+      const arguments_ = n.arguments
       if (
         callee?.type === 'Identifier' &&
         callee.name === 'require' &&
         Array.isArray(arguments_) &&
         arguments_.length > 0
       ) {
-        const arg0 = arguments_[0] as Record<string, unknown> | undefined
+        const arg0 = toASTNode(arguments_[0])
         if (
           (arg0?.type === 'Literal' || arg0?.type === 'StringLiteral') &&
           typeof arg0.value === 'string'
@@ -269,7 +262,7 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
           })
         }
       } else if (callee?.type === 'Import' && Array.isArray(arguments_) && arguments_.length > 0) {
-        const arg0 = arguments_[0] as Record<string, unknown> | undefined
+        const arg0 = toASTNode(arguments_[0])
         if (arg0?.value && typeof arg0.value === 'string') {
           imports.push({
             isTypeOnly: false,
@@ -284,14 +277,14 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
     }
 
     case 'ImportDeclaration': {
-      const sourceNode = n.source as Record<string, unknown> | undefined
+      const sourceNode = toASTNode(n.source)
       const source = sourceNode?.value
       if (typeof source === 'string') {
         const { specifiers } = n
         if (Array.isArray(specifiers)) {
           for (const spec of specifiers) {
-            if (!spec || typeof spec !== 'object') continue
-            const specNode = spec as Record<string, unknown>
+            const specNode = toASTNode(spec)
+            if (!specNode) continue
             let importedName = ''
             let isTypeOnly = n.importKind === 'type'
 
@@ -307,7 +300,7 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
               }
 
               case 'ImportSpecifier': {
-                const imported = specNode.imported as Record<string, unknown> | undefined
+                const imported = toASTNode(specNode.imported)
                 importedName = imported?.name ? (imported.name as string) : ''
                 isTypeOnly = isTypeOnly || specNode.importKind === 'type'
                 break
@@ -330,11 +323,11 @@ function extractImportsFromNode(node: unknown, filePath: string): ImportInfo[] {
     }
 
     case 'TSImportEqualsDeclaration': {
-      const moduleRef = n.moduleReference as Record<string, unknown> | undefined
+      const moduleRef = toASTNode(n.moduleReference)
       if (moduleRef?.type === 'TSExternalModuleReference') {
-        const expression = moduleRef.expression as Record<string, unknown> | undefined
+        const expression = toASTNode(moduleRef.expression)
         if (expression?.value && typeof expression.value === 'string') {
-          const id = n.id as Record<string, unknown> | undefined
+          const id = toASTNode(n.id)
           imports.push({
             isTypeOnly: n.isTypeOnly === true,
             name: id?.name ? (id.name as string) : '*',

@@ -11,7 +11,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getNodeText } from '../../utils/ast-helpers.js'
+import { getNodeText, isCallExpression, toASTNode } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
 
 interface OptionalChainMatch {
@@ -22,51 +22,25 @@ interface OptionalChainMatch {
 }
 
 function isPropertyAccessExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'MemberExpression' && n.computed !== true
-}
-
-function isCallExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'CallExpression'
+  const n = toASTNode(node)
+  return n?.type === 'MemberExpression' && n.computed !== true
 }
 
 function getCallExpressionCallee(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.callee
+  return toASTNode(node)?.callee ?? null
 }
 
 function getPropertyAccessObject(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.object
+  return toASTNode(node)?.object ?? null
 }
 
 function getPropertyName(node: unknown): null | string {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
+  const n = toASTNode(node)
+  if (!n) return null
 
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
-
-  if (property && property.type === 'Identifier' && typeof property.name === 'string') {
-    return property.name
+  const prop = toASTNode(n.property)
+  if (prop?.type === 'Identifier' && typeof prop.name === 'string') {
+    return prop.name
   }
 
   return null
@@ -84,10 +58,10 @@ function nodesMatch(node1: unknown, node2: unknown, source: string): boolean {
     return text1 === text2
   }
 
-  const n1 = node1 as Record<string, unknown>
-  const n2 = node2 as Record<string, unknown>
+  const n1 = toASTNode(node1)
+  const n2 = toASTNode(node2)
 
-  if (n1.type !== n2.type) {
+  if (!n1 || !n2 || n1.type !== n2.type) {
     return false
   }
 
@@ -103,13 +77,8 @@ function nodesMatch(node1: unknown, node2: unknown, source: string): boolean {
 }
 
 function checkOptionalChainPattern(node: unknown, source: string): null | OptionalChainMatch {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'LogicalExpression' && n.type !== 'BinaryExpression') {
+  const n = toASTNode(node)
+  if (!n || (n.type !== 'LogicalExpression' && n.type !== 'BinaryExpression')) {
     return null
   }
 

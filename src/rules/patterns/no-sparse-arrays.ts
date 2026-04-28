@@ -1,12 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isArrayExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ArrayExpression'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasHole(elements: unknown[]): boolean {
   for (const el of elements) {
@@ -20,8 +15,8 @@ export const noSparseArraysRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ArrayExpression(node: unknown): void {
-        if (!isArrayExpression(node)) return
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n || n.type !== 'ArrayExpression') return
         const {elements} = n
         if (Array.isArray(elements) && hasHole(elements)) {
           context.report({

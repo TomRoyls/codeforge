@@ -1,66 +1,33 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isAsyncFunctionWithReturnOrAwait(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (
-    n.type !== 'FunctionDeclaration' &&
-    n.type !== 'FunctionExpression' &&
-    n.type !== 'ArrowFunctionExpression'
-  ) {
-    return false
-  }
-
-  const async = n.async as boolean
-  if (!async) {
-    return false
-  }
-
-  const body = n.body as Record<string, unknown>
-  if (!body) {
-    return false
-  }
-
+  const n = toASTNode(node)
+  if (!n) return false
+  const { type } = n
+  if (type !== 'FunctionDeclaration' && type !== 'FunctionExpression' && type !== 'ArrowFunctionExpression') return false
+  if (n.async !== true) return false
+  const body = toASTNode(n.body)
+  if (!body) return false
   return body.type !== 'BlockStatement' || !hasReturnOrAwait(body)
 }
 
 function hasReturnOrAwait(node: unknown, visited: Set<unknown> = new Set()): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
-
-  if (visited.has(node)) {
-    return false
-  }
-
+  if (!node || typeof node !== 'object') return false
+  if (visited.has(node)) return false
   visited.add(node)
 
-  const n = node as Record<string, unknown>
-  const type = n.type as string
+  const n = toASTNode(node)
+  if (n?.type === 'ReturnStatement' || n?.type === 'AwaitExpression') return true
 
-  if (type === 'ReturnStatement' || type === 'AwaitExpression') {
-    return true
-  }
-
-  for (const key of Object.keys(n)) {
-    if (key === 'parent' || key === 'loc' || key === 'range') continue
-    const value = n[key]
+  for (const value of Object.values(node as Record<string, unknown>)) {
     if (typeof value === 'object' && value !== null) {
-      if (hasReturnOrAwait(value, visited)) {
-        return true
-      }
-
+      if (hasReturnOrAwait(value, visited)) return true
       if (Array.isArray(value)) {
         for (const item of value) {
-          if (typeof item === 'object' && item !== null && hasReturnOrAwait(item, visited)) {
-            return true
-          }
+          if (typeof item === 'object' && item !== null && hasReturnOrAwait(item, visited)) return true
         }
       }
     }
@@ -69,57 +36,23 @@ function hasReturnOrAwait(node: unknown, visited: Set<unknown> = new Set()): boo
   return false
 }
 
+function checkFunction(node: unknown, context: RuleContext): void {
+  if (node === null || node === undefined) throw new Error('Invalid node')
+  if (isAsyncFunctionWithReturnOrAwait(node)) return
+  const n = toASTNode(node)
+  if (n?.async !== true) return
+  context.report({
+    loc: extractLocation(node),
+    message: 'Async function has no await or return.',
+  })
+}
+
 export const noReturnOrAwaitRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
-      ArrowFunctionExpression(node: unknown): void {
-        if (isAsyncFunctionWithReturnOrAwait(node)) {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        if (n.async !== true) {
-          return
-        }
-
-        const location = extractLocation(node)
-        context.report({
-          loc: location,
-          message: 'Async function has no await or return.',
-        })
-      },
-      FunctionDeclaration(node: unknown): void {
-        if (isAsyncFunctionWithReturnOrAwait(node)) {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        if (n.async !== true) {
-          return
-        }
-
-        const location = extractLocation(node)
-        context.report({
-          loc: location,
-          message: 'Async function has no await or return.',
-        })
-      },
-      FunctionExpression(node: unknown): void {
-        if (isAsyncFunctionWithReturnOrAwait(node)) {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        if (n.async !== true) {
-          return
-        }
-
-        const location = extractLocation(node)
-        context.report({
-          loc: location,
-          message: 'Async function has no await or return.',
-        })
-      },
+      ArrowFunctionExpression(node: unknown): void { checkFunction(node, context) },
+      FunctionDeclaration(node: unknown): void { checkFunction(node, context) },
+      FunctionExpression(node: unknown): void { checkFunction(node, context) },
     }
   },
 

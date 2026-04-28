@@ -1,18 +1,14 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function getEnumMemberName(node: unknown): string {
-  if (!node || typeof node !== 'object') {
-    return 'unknown'
-  }
+  const n = toASTNode(node)
+  if (!n) return 'unknown'
 
-  const n = node as Record<string, unknown>
-  const id = n.id as Record<string, unknown> | undefined
-
-  if (!id) {
-    return 'unknown'
-  }
+  const id = toASTNode(n.id)
+  if (!id) return 'unknown'
 
   if (id.type === 'Identifier' && typeof id.name === 'string') {
     return id.name
@@ -29,11 +25,9 @@ export const preferEnumInitializersRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       TSEnumMember(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
+        const n = toASTNode(node)
+        if (!n) return
 
-        const n = node as Record<string, unknown>
         const {initializer} = n
 
         // If there's no initializer, report the issue

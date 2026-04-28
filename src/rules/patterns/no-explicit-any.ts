@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { getRange, toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoExplicitAnyOptions {
@@ -10,29 +10,17 @@ interface NoExplicitAnyOptions {
 }
 
 function isAnyKeyword(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'TSAnyKeyword'
+  return toASTNode(node)?.type === 'TSAnyKeyword'
 }
 
 function isArrayOfAny(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return (n.type === 'TSArrayType' || n.type === 'ArrayType') && isAnyKeyword(n.elementType)
+  const n = toASTNode(node)
+  return (n?.type === 'TSArrayType' || n?.type === 'ArrayType') && isAnyKeyword(n.elementType)
 }
 
 function isTypeAssertionToAny(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   if (n.type === 'TSAsExpression' || n.type === 'TSTypeAssertion') {
     return isAnyKeyword(n.typeAnnotation)
   }

@@ -44,7 +44,7 @@ function removeComments(source: string): string {
   return result
 }
 
-function extractLocation(_source: string, line: number): SourceLocation {
+function lineLocation(line: number): SourceLocation {
   return {
     end: { column: 1, line },
     start: { column: 0, line },
@@ -124,7 +124,7 @@ export const maxFileSizeRule: RuleDefinition = {
         // Check line limit
         if (lineCount > maxLines) {
           context.report({
-            loc: extractLocation(source, 1),
+            loc: lineLocation(1),
             message: `File has ${lineCount} lines, which exceeds the maximum of ${maxLines} lines. Consider splitting this file into smaller modules.`,
           })
         }
@@ -132,7 +132,7 @@ export const maxFileSizeRule: RuleDefinition = {
         // Check character limit
         if (characterCount > maxCharacters) {
           context.report({
-            loc: extractLocation(source, 1),
+            loc: lineLocation(1),
             message: `File has ${characterCount} characters, which exceeds the maximum of ${maxCharacters} characters. Consider splitting this file into smaller modules.`,
           })
         }
@@ -142,7 +142,7 @@ export const maxFileSizeRule: RuleDefinition = {
         // Additional check for very large files
         if (fileInfo && fileInfo.lineCount > maxLines * 2) {
           context.report({
-            loc: extractLocation(source, 1),
+            loc: lineLocation(1),
             message: `File is critically large (${fileInfo.lineCount} lines). This significantly impacts maintainability and should be refactored immediately.`,
           })
         }

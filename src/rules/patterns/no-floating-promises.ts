@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoFloatingPromisesOptions {
@@ -9,50 +10,32 @@ interface NoFloatingPromisesOptions {
 }
 
 function isExpressionStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'ExpressionStatement'
+  return toASTNode(node)?.type === 'ExpressionStatement'
 }
 
 function isVoidOperator(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
   return n.type === 'UnaryExpression' && n.operator === 'void'
 }
 
 function isAsyncFunctionCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-
-  if (!callee) {
-    return false
-  }
+  const callee = toASTNode(n.callee)
+  if (!callee) return false
 
   if (callee.type === 'MemberExpression') {
-    const property = callee.property as Record<string, unknown> | undefined
-    if (property && property.type === 'Identifier') {
-      const name = property.name as string
+    const property = toASTNode(callee.property)
+    if (property?.type === 'Identifier') {
+      const name = property.name!
       return name.startsWith('async') || name.startsWith('fetch') || name.includes('Async')
     }
   }
 
   if (callee.type === 'Identifier') {
-    const name = callee.name as string
+    const name = callee.name!
     return name.startsWith('async') || name.startsWith('fetch') || name.includes('Async')
   }
 
@@ -60,26 +43,16 @@ function isAsyncFunctionCall(node: unknown): boolean {
 }
 
 function isPromiseReturningCall(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown> | undefined
-
-  if (!callee) {
-    return false
-  }
+  const callee = toASTNode(n.callee)
+  if (!callee) return false
 
   if (callee.type === 'MemberExpression') {
-    const property = callee.property as Record<string, unknown> | undefined
-    if (property && property.type === 'Identifier') {
-      const name = property.name as string
+    const property = toASTNode(callee.property)
+    if (property?.type === 'Identifier') {
+      const {name} = property
       return (
         name === 'then' ||
         name === 'catch' ||
@@ -112,7 +85,8 @@ export const noFloatingPromisesRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const {expression} = n
 
         if (isVoidOperator(expression)) {

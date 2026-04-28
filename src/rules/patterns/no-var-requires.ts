@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoVarRequiresOptions {
@@ -8,31 +9,17 @@ interface NoVarRequiresOptions {
 }
 
 function isRequireCall(node: unknown): { isRequire: boolean; moduleName?: string } {
-  if (!node || typeof node !== 'object') {
-    return { isRequire: false }
-  }
+  const n = toASTNode(node)
+  if (n?.type !== 'CallExpression') return { isRequire: false }
 
-  const n = node as Record<string, unknown>
+  const callee = toASTNode(n.callee)
+  if (callee?.type !== 'Identifier' || callee.name !== 'require') return { isRequire: false }
 
-  if (n.type !== 'CallExpression') {
-    return { isRequire: false }
-  }
+  const args = n.arguments
+  if (!Array.isArray(args) || args.length === 0) return { isRequire: true }
 
-  const callee = n.callee as Record<string, unknown> | undefined
-
-  if (!callee || callee.type !== 'Identifier' || callee.name !== 'require') {
-    return { isRequire: false }
-  }
-
-  const args = n.arguments as undefined | unknown[]
-
-  if (!args || args.length === 0) {
-    return { isRequire: true }
-  }
-
-  const firstArg = args[0] as Record<string, unknown> | undefined
-
-  if (firstArg && firstArg.type === 'Literal' && typeof firstArg.value === 'string') {
+  const firstArg = toASTNode(args[0])
+  if (firstArg?.type === 'Literal' && typeof firstArg.value === 'string') {
     return { isRequire: true, moduleName: firstArg.value }
   }
 
@@ -40,47 +27,32 @@ function isRequireCall(node: unknown): { isRequire: boolean; moduleName?: string
 }
 
 function isVarDeclaration(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'VariableDeclaration' && n.kind === 'var'
+  const n = toASTNode(node)
+  return n?.type === 'VariableDeclaration' && n.kind === 'var'
 }
 
 export const noVarRequiresRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoVarRequiresOptions>(context.config.options, { allow: [] })
-
     const allowedModules = options.allow ?? []
 
     return {
       VariableDeclaration(node: unknown): void {
-        if (!isVarDeclaration(node)) {
-          return
-        }
-
-        const n = node as Record<string, unknown>
-        const declarations = n.declarations as undefined | unknown[]
-
-        if (!declarations || declarations.length === 0) {
-          return
-        }
+        if (!isVarDeclaration(node)) return
+        const n = toASTNode(node)
+        const declarations = n?.declarations
+        if (!Array.isArray(declarations) || declarations.length === 0) return
 
         for (const decl of declarations) {
-          const d = decl as Record<string, unknown>
-          const {init} = d
-
-          const { isRequire, moduleName } = isRequireCall(init)
+          if (decl === null || decl === undefined) throw new Error('Invalid declaration')
+          const d = toASTNode(decl)
+          const { isRequire, moduleName } = isRequireCall(d?.init)
 
           if (isRequire) {
-            if (moduleName && allowedModules.includes(moduleName)) {
-              continue
-            }
+            if (moduleName && allowedModules.includes(moduleName)) continue
 
-            const location = extractLocation(node)
             context.report({
-              loc: location,
+              loc: extractLocation(node),
               message: `Unexpected var require(). Use ES6 import statement instead for better static analysis and tree shaking.`,
             })
             return

@@ -1,33 +1,24 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isTemplateLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'TemplateLiteral' && !n.tag
+  const n = toASTNode(node)
+  return n?.type === 'TemplateLiteral' && !n.tag
 }
 
 function hasSingleQuasi(node: unknown): boolean {
-  if (!isTemplateLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const quasis = n.quasis as undefined | unknown[]
-  return quasis?.length === 1
+  if (!isTemplateLiteral(node)) return false
+  const n = toASTNode(node)
+  const quasis = n?.quasis
+  return Array.isArray(quasis) && quasis.length === 1
 }
 
 function hasNoExpressions(node: unknown): boolean {
-  if (!isTemplateLiteral(node)) {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const expressions = n.expressions as undefined | unknown[]
+  if (!isTemplateLiteral(node)) return false
+  const n = toASTNode(node)
+  const expressions = n?.expressions
   return !expressions || expressions.length === 0
 }
 
@@ -36,29 +27,19 @@ function isSimpleTemplateLiteral(node: unknown): boolean {
 }
 
 function getQuasiValue(node: unknown): null | string {
-  if (!isTemplateLiteral(node)) {
-    return null
-  }
+  if (!isTemplateLiteral(node)) return null
+  const n = toASTNode(node)
+  const quasis = n?.quasis
 
-  const n = node as Record<string, unknown>
-  const quasis = n.quasis as undefined | unknown[]
+  if (!Array.isArray(quasis) || quasis.length !== 1) return null
 
-  if (!quasis || quasis.length !== 1) {
-    return null
-  }
+  const quasi = toASTNode(quasis[0])
+  if (!quasi) return null
 
-  const quasi = quasis[0] as Record<string, unknown> | undefined
-  if (!quasi || typeof quasi !== 'object') {
-    return null
-  }
+  const value = toASTNode(quasi.value)
+  if (!value) return null
 
-  const value = quasi.value as Record<string, unknown> | undefined
-  if (!value) {
-    return null
-  }
-
-  const raw = value.raw as string | undefined
-  return typeof raw === 'string' ? raw : null
+  return typeof value.raw === 'string' ? value.raw : null
 }
 
 function needsTemplateLiteral(value: string): boolean {
@@ -66,18 +47,10 @@ function needsTemplateLiteral(value: string): boolean {
 }
 
 function isBacktickString(node: unknown): boolean {
-  if (!isTemplateLiteral(node)) {
-    return false
-  }
-
-  if (!isSimpleTemplateLiteral(node)) {
-    return false
-  }
+  if (!isTemplateLiteral(node) || !isSimpleTemplateLiteral(node)) return false
 
   const value = getQuasiValue(node)
-  if (value === null) {
-    return false
-  }
+  if (value === null) return false
 
   return !needsTemplateLiteral(value)
 }

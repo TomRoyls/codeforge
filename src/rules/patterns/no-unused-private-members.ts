@@ -6,6 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 interface PrivateMemberInfo {
   location: SourceLocation
@@ -19,19 +20,7 @@ interface ClassInfo {
 }
 
 function isPrivateIdentifier(node: unknown): node is { name: string; type: 'PrivateIdentifier'; } {
-  return (
-    node !== null &&
-    typeof node === 'object' &&
-    (node as Record<string, unknown>).type === 'PrivateIdentifier'
-  )
-}
-
-function getNodeProperty<T>(node: unknown, prop: string): T | undefined {
-  if (!node || typeof node !== 'object') {
-    return undefined
-  }
-
-  return (node as Record<string, unknown>)[prop] as T | undefined
+  return toASTNode(node)?.type === 'PrivateIdentifier'
 }
 
 export const noUnusedPrivateMembersRule: RuleDefinition = {
@@ -94,19 +83,21 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
 
     return {
       BinaryExpression(node: unknown): void {
-        const left = getNodeProperty<unknown>(node, 'left')
-        const operator = getNodeProperty<string>(node, 'operator')
-        if (operator === 'in' && isPrivateIdentifier(left)) {
-          markPrivateMemberUsed(left.name)
+        const n = toASTNode(node)
+        if (!n || n.operator !== 'in') return
+        if (isPrivateIdentifier(n.left)) {
+          markPrivateMemberUsed(n.left.name)
         }
       },
 
       CallExpression(node: unknown): void {
-        const callee = getNodeProperty<unknown>(node, 'callee')
-        if (isMemberExpression(callee)) {
-          const property = getNodeProperty<unknown>(callee, 'property')
-          if (isPrivateIdentifier(property)) {
-            markPrivateMemberUsed(property.name)
+        const n = toASTNode(node)
+        if (!n) return
+        const callee = toASTNode(n.callee)
+        if (callee?.type === 'MemberExpression') {
+          const prop = toASTNode(callee.property)
+          if (isPrivateIdentifier(prop)) {
+            markPrivateMemberUsed(prop.name)
           }
         }
       },
@@ -128,23 +119,26 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
       },
 
       MemberExpression(node: unknown): void {
-        const property = getNodeProperty<unknown>(node, 'property')
-        if (isPrivateIdentifier(property)) {
-          markPrivateMemberUsed(property.name)
+        const n = toASTNode(node)
+        if (!n) return
+        if (isPrivateIdentifier(n.property)) {
+          markPrivateMemberUsed(n.property.name)
         }
       },
 
       MethodDefinition(node: unknown): void {
-        const key = getNodeProperty<unknown>(node, 'key')
-        if (isPrivateIdentifier(key)) {
-          registerPrivateMember(key.name, extractLocation(node), 'method')
+        const n = toASTNode(node)
+        if (!n) return
+        if (isPrivateIdentifier(n.key)) {
+          registerPrivateMember(n.key.name, extractLocation(node), 'method')
         }
       },
 
       PropertyDefinition(node: unknown): void {
-        const key = getNodeProperty<unknown>(node, 'key')
-        if (isPrivateIdentifier(key)) {
-          registerPrivateMember(key.name, extractLocation(node), 'property')
+        const n = toASTNode(node)
+        if (!n) return
+        if (isPrivateIdentifier(n.key)) {
+          registerPrivateMember(n.key.name, extractLocation(node), 'property')
         }
       },
     }
@@ -163,14 +157,6 @@ export const noUnusedPrivateMembersRule: RuleDefinition = {
     severity: 'warn',
     type: 'problem',
   },
-}
-
-function isMemberExpression(node: unknown): boolean {
-  return (
-    node !== null &&
-    typeof node === 'object' &&
-    (node as Record<string, unknown>).type === 'MemberExpression'
-  )
 }
 
 export default noUnusedPrivateMembersRule

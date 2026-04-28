@@ -1,28 +1,17 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-
-function isObjectPattern(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ObjectPattern'
-}
-
-function isArrayPattern(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  return n.type === 'ArrayPattern'
-}
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isEmpty(node: unknown): boolean {
-  if (!node || typeof node !== 'object') return false
-  const n = node as Record<string, unknown>
-  if (isObjectPattern(node)) {
+  const n = toASTNode(node)
+  if (!n) return false
+  if (n.type === 'ObjectPattern') {
     const {properties} = n
     return Array.isArray(properties) && properties.length === 0
   }
 
-  if (isArrayPattern(node)) {
+  if (n.type === 'ArrayPattern') {
     const {elements} = n
     return Array.isArray(elements) && elements.length === 0
   }

@@ -1,15 +1,15 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isLiteral, isMemberExpression } from '../../utils/ast-helpers.js'
+import { isCallExpression, isLiteral, isMemberExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 function isEmptyString(node: unknown): boolean {
   if (!isLiteral(node)) {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  return n.value === ''
+  const n = toASTNode(node)
+  return n?.value === ''
 }
 
 function isConcatCall(node: unknown): boolean {
@@ -17,22 +17,16 @@ function isConcatCall(node: unknown): boolean {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
+  const n = toASTNode(node)
+  if (!n) return false
 
-  if (!isMemberExpression(callee)) {
+  const callee = toASTNode(n.callee)
+  if (!callee || !isMemberExpression(callee)) {
     return false
   }
 
-  const calleeNode = callee as Record<string, unknown>
-  const property = calleeNode.property as unknown
-
-  if (!property || typeof property !== 'object') {
-    return false
-  }
-
-  const propNode = property as Record<string, unknown>
-  return propNode.type === 'Identifier' && propNode.name === 'concat'
+  const property = toASTNode(callee.property)
+  return property?.type === 'Identifier' && property.name === 'concat'
 }
 
 function getFirstArgument(node: unknown): null | unknown {
@@ -40,8 +34,8 @@ function getFirstArgument(node: unknown): null | unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const args = n.arguments as undefined | unknown[]
+  const n = toASTNode(node)
+  const args = n?.arguments
   if (!args || args.length === 0) {
     return null
   }
@@ -54,15 +48,15 @@ function getCalleeObject(node: unknown): null | unknown {
     return null
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
+  const n = toASTNode(node)
+  if (!n) return null
 
-  if (!isMemberExpression(callee)) {
+  const callee = toASTNode(n.callee)
+  if (!callee || !isMemberExpression(callee)) {
     return null
   }
 
-  const calleeNode = callee as Record<string, unknown>
-  return calleeNode.object as unknown
+  return callee.object
 }
 
 function isUnnecessaryConcat(node: unknown): { isUnnecessary: boolean; replacement: string } {

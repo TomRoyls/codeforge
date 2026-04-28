@@ -1,13 +1,11 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function hasSideEffects(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   switch (n.type) {
     case 'AssignmentExpression':
@@ -65,11 +63,8 @@ export const noUnusedExpressionsRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ExpressionStatement(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
         if (n.type === 'ExpressionStatement' && n.expression && !hasSideEffects(n.expression)) {
           const location = extractLocation(node)

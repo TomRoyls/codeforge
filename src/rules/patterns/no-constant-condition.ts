@@ -1,54 +1,21 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
-function isBooleanLiteral(node: unknown, value?: boolean): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  if (n.type === 'BooleanLiteral') {
-    return value === undefined || n.value === value
-  }
-
-  return false
-}
-
-function isNumericLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return (n.type === 'Literal' || n.type === 'NumericLiteral') && typeof n.value === 'number'
-}
-
-function isLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal'
-}
-
-function isConstantCondition(testNode: unknown): { description: string; isConstant: boolean; } {
-  if (!testNode || typeof testNode !== 'object') {
-    return { description: '', isConstant: false }
-  }
-
-  const t = testNode as Record<string, unknown>
+function isConstantCondition(testNode: unknown): { description: string; isConstant: boolean } {
+  const t = toASTNode(testNode)
+  if (!t) return { description: '', isConstant: false }
 
   // Check for boolean literals: true, false
-  if (isBooleanLiteral(testNode)) {
-    const val = t.value as boolean
+  if (t.type === 'BooleanLiteral') {
+    const val = t.value
     return { description: `Unexpected constant condition: always ${val}`, isConstant: true }
   }
 
   // Check for Literals with boolean values
-  if (isLiteral(testNode)) {
-    const {value} = t
+  if (t.type === 'Literal') {
+    const { value } = t
     if (typeof value === 'boolean') {
       return { description: `Unexpected constant condition: always ${value}`, isConstant: true }
     }
@@ -58,7 +25,6 @@ function isConstantCondition(testNode: unknown): { description: string; isConsta
     }
 
     if (typeof value === 'number') {
-      // Numbers 0 is falsy, non-zero numbers are truthy
       const isTruthy = value !== 0
       return {
         description: `Unexpected constant condition: always ${isTruthy ? 'truthy' : 'falsy'} (${value})`,
@@ -67,7 +33,6 @@ function isConstantCondition(testNode: unknown): { description: string; isConsta
     }
 
     if (typeof value === 'string') {
-      // Empty strings are falsy, non-empty are truthy
       const isTruthy = value !== ''
       return {
         description: `Unexpected constant condition: always ${isTruthy ? 'truthy' : 'falsy'} (string)`,
@@ -84,31 +49,24 @@ function isConstantCondition(testNode: unknown): { description: string; isConsta
   }
 
   // Check for NumericLiteral (SWC-specific)
-  if (isNumericLiteral(testNode)) {
-    const value = t.value as number
-    const isTruthy = value !== 0
-    return {
-      description: `Unexpected constant condition: always ${isTruthy ? 'truthy' : 'falsy'} (${value})`,
-      isConstant: true,
+  if (t.type === 'NumericLiteral') {
+    const {value} = t
+    if (typeof value === 'number') {
+      const isTruthy = value !== 0
+      return {
+        description: `Unexpected constant condition: always ${isTruthy ? 'truthy' : 'falsy'} (${value})`,
+        isConstant: true,
+      }
     }
   }
 
   return { description: '', isConstant: false }
 }
 
-function getTestNode(node: unknown): unknown {
-  if (!node || typeof node !== 'object') {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  return n.test
-}
-
 export const noConstantConditionRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const checkNode = (node: unknown): void => {
-      const testNode = getTestNode(node)
+      const testNode = toASTNode(node)?.test
       const result = isConstantCondition(testNode)
 
       if (result.isConstant) {

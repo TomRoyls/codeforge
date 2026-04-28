@@ -2,66 +2,23 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoEmptyCatchOptions {
   readonly allowComments?: boolean
 }
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
-/**
- * Check if a catch block body is effectively empty.
- *
- * The adapter's nodeToGeneric() strips child properties (body, etc.) from nodes,
- * so we need a two-pronged approach:
- * 1. If `body` is available (e.g. unit tests with full AST nodes), inspect it directly.
- * 2. If `body` is undefined (runtime through adapter), parse the `text` property.
- */
 function isEmptyCatchBlock(node: unknown, allowComments: boolean): boolean {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (n?.type !== 'CatchClause') {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  if (n.type !== 'CatchClause') {
-    return false
-  }
-
-  const body = n.body as Record<string, unknown> | undefined
+  const body = toASTNode(n.body)
 
   if (body && typeof body === 'object') {
     if (body.type !== 'BlockStatement') {
@@ -74,8 +31,8 @@ function isEmptyCatchBlock(node: unknown, allowComments: boolean): boolean {
     }
 
     const hasRealStatements = statements.some((stmt) => {
-      const s = stmt as Record<string, unknown>
-      return s.type !== 'EmptyStatement' && s.type !== 'BlockStatement'
+      const s = toASTNode(stmt)
+      return s?.type !== 'EmptyStatement' && s?.type !== 'BlockStatement'
     })
 
     if (hasRealStatements) {

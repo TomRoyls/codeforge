@@ -1,39 +1,24 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isCallExpression, isIdentifier, isMemberExpression } from '../../utils/ast-helpers.js'
+import { isCallExpression, isIdentifier, isMemberExpression, toASTNode } from '../../utils/ast-helpers.js'
 
-function getMemberProperty(node: unknown): null | string {
-  if (!isMemberExpression(node)) {
-    return null
-  }
-
-  const n = node as Record<string, unknown>
-  const property = n.property as Record<string, unknown> | undefined
-
-  if (!property || !isIdentifier(property)) {
-    return null
-  }
-
-  return (property as Record<string, unknown>).name as string
+function getMemberPropertyName(node: unknown): null | string {
+  if (!isMemberExpression(node)) return null
+  const property = toASTNode(toASTNode(node)?.property)
+  if (!property || !isIdentifier(property)) return null
+  return property.name ?? null
 }
 
-function isSubstringMethod(node: unknown): null | { callee: unknown; methodName: string } {
-  if (!isCallExpression(node)) {
-    return null
-  }
+function isSubstringMethod(node: unknown): null | { methodName: string } {
+  if (!isCallExpression(node)) return null
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as unknown
+  const callee = toASTNode(toASTNode(node)?.callee)
+  if (!isMemberExpression(callee)) return null
 
-  if (!isMemberExpression(callee)) {
-    return null
-  }
-
-  const methodName = getMemberProperty(callee)
-
+  const methodName = getMemberPropertyName(callee)
   if (methodName === 'substring' || methodName === 'substr') {
-    return { callee, methodName }
+    return { methodName }
   }
 
   return null
@@ -45,9 +30,7 @@ export const preferStringSliceRule: RuleDefinition = {
       CallExpression(node: unknown): void {
         const substringInfo = isSubstringMethod(node)
 
-        if (!substringInfo) {
-          return
-        }
+        if (!substringInfo) return
 
         const location = extractLocation(node)
 

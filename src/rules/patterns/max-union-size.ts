@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface MaxUnionSizeOptions {
@@ -8,21 +9,11 @@ interface MaxUnionSizeOptions {
 }
 
 function countUnionTypes(node: unknown): number {
-  if (!node || typeof node !== 'object') {
-    return 0
-  }
-
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'TSUnionType') {
-    return 0
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'TSUnionType') return 0
 
   const types = n.types as undefined | unknown[]
-
-  if (!Array.isArray(types)) {
-    return 0
-  }
+  if (!Array.isArray(types)) return 0
 
   return types.length
 }

@@ -1,6 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUnfinishedTodosOptions {
@@ -49,10 +50,8 @@ export const noUnfinishedTodosRule: RuleDefinition = {
 
     return {
       visitNode(node: unknown): void {
-        if (!node || typeof node !== 'object') return
-
-        const n = node as Record<string, unknown>
-        if (n.type !== 'Comment') return
+        const n = toASTNode(node)
+        if (!n || n.type !== 'Comment') return
 
         const text = (n.text as string) ?? ''
         const foundTerm = checkComment(text)

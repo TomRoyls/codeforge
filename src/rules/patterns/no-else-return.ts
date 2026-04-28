@@ -6,7 +6,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { getRange } from '../../utils/ast-helpers.js'
+import { type ASTNode, getRange, toASTNode } from '../../utils/ast-helpers.js'
 
 const DEDENT_PATTERN = /^( {1,2}|\t)(.*)$/
 const BLOCK_CONTENT_PATTERN = /^\s*\{([\s\S]*)\}\s*$/
@@ -36,20 +36,12 @@ function findElseKeywordStart(source: string, alternateStart: number, ifStart: n
 }
 
 function isIfStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'IfStatement'
+  return toASTNode(node)?.type === 'IfStatement'
 }
 
 function hasReturnStatement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) return false
 
   if (n.type === 'ReturnStatement') {
     return true
@@ -63,8 +55,8 @@ function hasReturnStatement(node: unknown): boolean {
   }
 
   if (n.type === 'IfStatement') {
-    const consequent = n.consequent as unknown
-    const alternate = n.alternate as undefined | unknown
+    const {consequent} = n
+    const {alternate} = n
 
     if (hasReturnStatement(consequent)) {
       return true
@@ -81,26 +73,18 @@ function hasReturnStatement(node: unknown): boolean {
 }
 
 function hasAlternate(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  const alternate = n.alternate as undefined | unknown
+  const n = toASTNode(node)
+  if (!n) return false
+  const {alternate} = n
   return alternate !== undefined && alternate !== null
 }
 
 function extractAlternateLocation(node: unknown): SourceLocation {
-  if (!node || typeof node !== 'object') {
-    return { end: { column: 1, line: 1 }, start: { column: 0, line: 1 } }
-  }
+  const n = toASTNode(node)
+  if (!n) return { end: { column: 1, line: 1 }, start: { column: 0, line: 1 } }
 
-  const n = node as Record<string, unknown>
-  const alternate = n.alternate as Record<string, unknown> | undefined
-
-  if (!alternate || typeof alternate !== 'object') {
-    return extractLocation(node)
-  }
+  const alternate = toASTNode(n.alternate)
+  if (!alternate) return extractLocation(node)
 
   return extractLocation(alternate)
 }
@@ -113,10 +97,9 @@ export const noElseReturnRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const consequent = n.consequent as unknown
+        const n = toASTNode(node) as ASTNode
 
-        if (!hasReturnStatement(consequent)) {
+        if (!hasReturnStatement(n.consequent)) {
           return
         }
 
@@ -125,7 +108,7 @@ export const noElseReturnRule: RuleDefinition = {
         }
 
         const location = extractAlternateLocation(node)
-        const alternate = n.alternate as Record<string, unknown>
+        const alternate = toASTNode(n.alternate)
 
         let fix: undefined | { range: [number, number]; text: string }
 
@@ -137,7 +120,7 @@ export const noElseReturnRule: RuleDefinition = {
           const alternateSource = source.slice(alternateRange[0], alternateRange[1])
           let fixedText: string
 
-          if (alternate.type === 'BlockStatement') {
+          if (alternate?.type === 'BlockStatement') {
             const body = alternate.body as undefined | unknown[]
             if (body && body.length > 0) {
               const blockContent = extractBlockContent(alternateSource)

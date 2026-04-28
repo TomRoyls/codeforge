@@ -6,6 +6,7 @@ import {
   getRange,
   isCallExpression,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 
 /**
@@ -18,60 +19,60 @@ function isPrototypeMethodCall(node: unknown, objectName: string, methodName: st
     return false
   }
 
-  const n = node as Record<string, unknown>
-  const callee = n.callee as Record<string, unknown> | undefined
+  const n = toASTNode(node)
+  const callee = toASTNode(n?.callee)
 
   if (!callee || !isMemberExpression(callee)) {
     return false
   }
 
   // Check that we're calling .call()
-  const callProperty = callee.property as Record<string, unknown> | undefined
+  const callProperty = toASTNode(callee.property)
   if (
     !callProperty ||
     callProperty.type !== 'Identifier' ||
-    (callProperty as Record<string, unknown>).name !== 'call'
+    callProperty.name !== 'call'
   ) {
     return false
   }
 
   // Get the method being called (e.g., slice, hasOwnProperty)
-  const methodCallee = callee.object as Record<string, unknown> | undefined
+  const methodCallee = toASTNode(callee.object)
   if (!methodCallee || !isMemberExpression(methodCallee)) {
     return false
   }
 
-  const methodProperty = methodCallee.property as Record<string, unknown> | undefined
+  const methodProperty = toASTNode(methodCallee.property)
   if (!methodProperty || methodProperty.type !== 'Identifier') {
     return false
   }
 
-  const methodPropName = (methodProperty as Record<string, unknown>).name as string
+  const methodPropName = methodProperty.name
   if (methodPropName !== methodName) {
     return false
   }
 
   // Get the prototype part (e.g., Array.prototype, Object.prototype)
-  const prototypeCallee = methodCallee.object as Record<string, unknown> | undefined
+  const prototypeCallee = toASTNode(methodCallee.object)
   if (!prototypeCallee || !isMemberExpression(prototypeCallee)) {
     return false
   }
 
-  const prototypeProperty = prototypeCallee.property as Record<string, unknown> | undefined
+  const prototypeProperty = toASTNode(prototypeCallee.property)
   if (
     !prototypeProperty ||
     prototypeProperty.type !== 'Identifier' ||
-    (prototypeProperty as Record<string, unknown>).name !== 'prototype'
+    prototypeProperty.name !== 'prototype'
   ) {
     return false
   }
 
   // Get the object name (e.g., Array, Object)
-  const objectIdentifier = prototypeCallee.object as Record<string, unknown> | undefined
+  const objectIdentifier = toASTNode(prototypeCallee.object)
   if (
     !objectIdentifier ||
     objectIdentifier.type !== 'Identifier' ||
-    (objectIdentifier as Record<string, unknown>).name !== objectName
+    objectIdentifier.name !== objectName
   ) {
     return false
   }
@@ -92,8 +93,8 @@ function getCallArguments(node: unknown): unknown[] {
     return []
   }
 
-  const n = node as Record<string, unknown>
-  return (n.arguments as unknown[]) ?? []
+  const n = toASTNode(node)
+  return n?.arguments ?? []
 }
 
 export const preferPrototypeMethodsRule: RuleDefinition = {

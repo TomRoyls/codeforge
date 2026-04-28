@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { isBinaryExpression } from '../../utils/ast-helpers.js'
+import { isBinaryExpression, toASTNode } from '../../utils/ast-helpers.js'
 
 const BITWISE_OPERATORS = new Set([
   '&',
@@ -34,11 +34,8 @@ export const noBitwiseRule: RuleDefinition = {
 
     return {
       AssignmentExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
         if (n.type === 'AssignmentExpression') {
           const operator = n.operator as string
@@ -58,7 +55,8 @@ export const noBitwiseRule: RuleDefinition = {
           return
         }
 
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
         const operator = n.operator as string
 
         if (isBitwiseOperator(operator) && !allowedOperators.has(operator)) {
@@ -71,11 +69,8 @@ export const noBitwiseRule: RuleDefinition = {
       },
 
       UnaryExpression(node: unknown): void {
-        if (!node || typeof node !== 'object') {
-          return
-        }
-
-        const n = node as Record<string, unknown>
+        const n = toASTNode(node)
+        if (!n) return
 
         if (n.type === 'UnaryExpression' && n.operator === '~' && !allowedOperators.has('~')) {
           const location = extractLocation(node)

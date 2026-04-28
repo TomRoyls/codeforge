@@ -6,6 +6,7 @@ import {
   isCallExpression,
   isIdentifier,
   isMemberExpression,
+  toASTNode,
 } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
@@ -16,58 +17,29 @@ interface RestrictTemplateExpressionsOptions {
   readonly allowUndefined?: boolean
 }
 
-function isTemplateLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'TemplateLiteral'
-}
-
 function isStringLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && typeof n.value === 'string'
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && typeof n.value === 'string'
 }
 
 function isNumberLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && typeof n.value === 'number'
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && typeof n.value === 'number'
 }
 
 function isBooleanLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && typeof n.value === 'boolean'
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && typeof n.value === 'boolean'
 }
 
 function isNullLiteral(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Literal' && n.value === null
+  const n = toASTNode(node)
+  return n?.type === 'Literal' && n.value === null
 }
 
 function isUndefinedIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  const n = node as Record<string, unknown>
-  return n.type === 'Identifier' && n.name === 'undefined'
+  const n = toASTNode(node)
+  return n?.type === 'Identifier' && n.name === 'undefined'
 }
 
 function isAllowedType(node: unknown, options: RestrictTemplateExpressionsOptions): boolean {
@@ -116,8 +88,8 @@ function getExpressionDescription(node: unknown): string {
   }
 
   if (isIdentifier(node)) {
-    const n = node as Record<string, unknown>
-    return `identifier '${n.name as string}'`
+    const n = toASTNode(node)
+    return `identifier '${n?.name ?? ''}'`
   }
 
   if (isBinaryExpression(node)) {
@@ -132,7 +104,11 @@ function getExpressionDescription(node: unknown): string {
     return 'property access'
   }
 
-  const n = node as Record<string, unknown>
+  const n = toASTNode(node)
+  if (!n) {
+    throw new TypeError('Cannot get expression description for null/undefined node')
+  }
+
   return (n.type as string) || 'expression'
 }
 
@@ -147,12 +123,12 @@ export const restrictTemplateExpressionsRule: RuleDefinition = {
 
     return {
       TemplateLiteral(node: unknown): void {
-        if (!isTemplateLiteral(node)) {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'TemplateLiteral') {
           return
         }
 
-        const n = node as Record<string, unknown>
-        const expressions = n.expressions as undefined | unknown[]
+        const {expressions} = n
 
         if (!expressions || expressions.length === 0) {
           return

@@ -2,59 +2,22 @@ import type {
   RuleContext,
   RuleDefinition,
   RuleVisitor,
-  SourceLocation,
 } from '../../plugins/types.js'
 
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoUselessCatchOptions {}
 
-function extractLocation(node: unknown): SourceLocation {
-  const defaultLoc: SourceLocation = {
-    end: { column: 1, line: 1 },
-    start: { column: 0, line: 1 },
-  }
-
-  if (!node || typeof node !== 'object') {
-    return defaultLoc
-  }
-
-  const n = node as Record<string, unknown>
-  const loc = n.loc as Record<string, unknown> | undefined
-
-  if (!loc) {
-    return defaultLoc
-  }
-
-  const start = loc.start as Record<string, unknown> | undefined
-  const end = loc.end as Record<string, unknown> | undefined
-
-  return {
-    end: {
-      column: typeof end?.column === 'number' ? end.column : 0,
-      line: typeof end?.line === 'number' ? end.line : 1,
-    },
-    start: {
-      column: typeof start?.column === 'number' ? start.column : 0,
-      line: typeof start?.line === 'number' ? start.line : 1,
-    },
-  }
-}
-
 function isUselessCatchBlock(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
+  const n = toASTNode(node)
+  if (n?.type !== 'CatchClause') {
     return false
   }
 
-  const n = node as Record<string, unknown>
-  if (n.type !== 'CatchClause') {
-    return false
-  }
-
-  // Get the catch parameter (e.g., 'e' in catch (e))
-  const param = n.param as null | Record<string, unknown> | undefined
+  const param = toASTNode(n.param)
   if (!param) {
-    // Catch without parameter - if it throws, it's not useless
     return false
   }
 
@@ -64,52 +27,43 @@ function isUselessCatchBlock(node: unknown): boolean {
 
   const caughtParamName = param.name
 
-  // Get the body
-  const body = n.body as Record<string, unknown> | undefined
-  if (!body || body.type !== 'BlockStatement') {
+  const body = toASTNode(n.body)
+  if (body?.type !== 'BlockStatement') {
     return false
   }
 
   const bodyStatements = body.body as undefined | unknown[]
   if (!Array.isArray(bodyStatements) || bodyStatements.length !== 1) {
-    // Not exactly one statement - not useless (could have logging, etc.)
     return false
   }
 
-  const singleStatement = bodyStatements[0] as Record<string, unknown>
-  if (singleStatement.type !== 'ThrowStatement') {
-    // Not a throw statement - not useless
+  const singleStatement = toASTNode(bodyStatements[0])
+  if (singleStatement?.type !== 'ThrowStatement') {
     return false
   }
 
-  const throwArgument = singleStatement.argument as null | Record<string, unknown> | undefined
+  const throwArgument = toASTNode(singleStatement.argument)
   if (!throwArgument) {
-    // throw without argument - not the pattern we're looking for
     return false
   }
 
-  // Case 1: Direct rethrow of the caught parameter: catch (e) { throw e }
   if (throwArgument.type === 'Identifier' && throwArgument.name === caughtParamName) {
     return true
   }
 
-  // Case 2: Rethrow with just the message: catch (e) { throw new Error(e.message) }
   if (throwArgument.type === 'NewExpression') {
-    const callee = throwArgument.callee as Record<string, unknown> | undefined
-    if (callee && callee.type === 'Identifier' && callee.name === 'Error') {
-      const args = throwArgument.arguments as undefined | unknown[]
+    const callee = toASTNode(throwArgument.callee)
+    if (callee?.type === 'Identifier' && callee.name === 'Error') {
+      const args = throwArgument.arguments
       if (args && args.length === 1) {
-        const firstArg = args[0] as Record<string, unknown>
-        // Check if it's e.message
-        if (firstArg.type === 'MemberExpression' && !firstArg.computed && !firstArg.optional) {
-          const obj = firstArg.object as Record<string, unknown> | undefined
-          const prop = firstArg.property as Record<string, unknown> | undefined
+        const firstArg = toASTNode(args[0])
+        if (firstArg?.type === 'MemberExpression' && !firstArg.computed && !firstArg.optional) {
+          const obj = toASTNode(firstArg.object)
+          const prop = toASTNode(firstArg.property)
           if (
-            obj &&
-            obj.type === 'Identifier' &&
+            obj?.type === 'Identifier' &&
             obj.name === caughtParamName &&
-            prop &&
-            prop.type === 'Identifier' &&
+            prop?.type === 'Identifier' &&
             prop.name === 'message'
           ) {
             return true

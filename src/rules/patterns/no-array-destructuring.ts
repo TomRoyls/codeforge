@@ -1,75 +1,33 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { getIdentifierName, toASTNode } from '../../utils/ast-helpers.js'
 import { RULE_SUGGESTIONS } from '../../utils/suggestions.js'
-
-function isArrayExpression(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'ArrayExpression'
-}
-
-function isSpreadElement(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'SpreadElement'
-}
-
-function isIdentifier(node: unknown): boolean {
-  if (!node || typeof node !== 'object') {
-    return false
-  }
-
-  return (node as Record<string, unknown>).type === 'Identifier'
-}
-
-function getIdentifierName(node: unknown): null | string {
-  if (!isIdentifier(node)) {
-    return null
-  }
-
-  return (node as Record<string, unknown>).name as string
-}
 
 export const noArrayDestructuringRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       ArrayExpression(node: unknown): void {
-        if (!isArrayExpression(node)) {
-          return
-        }
+        const n = toASTNode(node)
+        if (n?.type !== 'ArrayExpression') return
 
-        const n = node as Record<string, unknown>
-        const elements = n.elements as undefined | unknown[]
-
-        if (!elements || elements.length === 0) {
-          return
-        }
+        const {elements} = n
+        if (!elements || elements.length === 0) return
 
         for (const element of elements) {
-          if (!isSpreadElement(element)) {
-            continue
-          }
+          const el = toASTNode(element)
+          if (el?.type !== 'SpreadElement') continue
 
-          const spreadEl = element as Record<string, unknown>
-          const argument = spreadEl.argument as unknown
-
-          if (!argument) {
-            continue
-          }
+          const {argument} = el
+          if (!argument) continue
 
           const location = extractLocation(element)
-          const argName = getIdentifierName(argument)
-          const displayName = argName ?? 'array'
+          const argName = getIdentifierName(argument) ?? 'array'
 
           context.report({
             loc: location,
             message:
-              `Avoid spreading '${displayName}' in array literal. For large arrays, use ${displayName}.concat() or ${displayName}.slice() instead of [...${displayName}] for better performance.` +
+              `Avoid spreading '${argName}' in array literal. For large arrays, use ${argName}.concat() or ${argName}.slice() instead of [...${argName}] for better performance.` +
               RULE_SUGGESTIONS.noArrayDestructuring,
           })
         }

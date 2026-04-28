@@ -1,25 +1,17 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
 
 function isThenable(node: unknown): boolean {
-  if (typeof node !== 'object' || node === null) {
-    return false
-  }
+  const n = toASTNode(node)
+  if (!n || n.type !== 'CallExpression') return false
 
-  const n = node as Record<string, unknown>
-
-  if (n.type !== 'CallExpression') {
-    return false
-  }
-
-  const callee = n.callee as Record<string, unknown>
-  if (!callee) {
-    return false
-  }
+  const callee = toASTNode(n.callee)
+  if (!callee) return false
 
   if (callee.type === 'MemberExpression') {
-    const prop = callee.property as Record<string, unknown>
+    const prop = toASTNode(callee.property)
     if (prop && prop.type === 'Identifier') {
       return prop.name === 'then'
     }
