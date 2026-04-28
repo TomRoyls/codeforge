@@ -3,13 +3,29 @@ import { SyntaxKind } from 'ts-morph'
 
 import type { ASTVisitor, RuleViolation, VisitorContext } from '../ast/visitor.js'
 import type {
-  Logger,
-  PluginConfig,
   RuleContext as PluginRuleContext,
   RuleDefinition as PluginRuleDefinition,
   ReportDescriptor,
 } from '../plugins/types.js'
 import type { RuleDefinition, RuleMeta, RuleOptions } from './types.js'
+
+import {
+  ASSIGNMENT_OPERATORS,
+  defaultConfig,
+  EXPORTABLE_KINDS,
+  KIND_NAME_ALIASES,
+  KIND_SPECIFIC_MAP,
+  LOGICAL_OPERATORS,
+  MAX_DEPTH,
+  OPERATOR_TOKEN_MAP,
+  PROPERTY_MAP,
+  silentLogger,
+  SKIP_KEYS,
+} from './adapter-constants.js'
+import {
+  setRangeSourceText,
+  skipTrivia,
+} from './adapter-converter.js'
 
 function getAccessibilityModifier(
   node: ModifierableNode,
@@ -20,45 +36,6 @@ function getAccessibilityModifier(
   return undefined
 }
 
-// Module-level source text for trivia skipping in convertRawCompilerNode
-let _rangeSourceText = ''
-
-function skipTrivia(pos: number): number {
-  const text = _rangeSourceText
-  if (!text) return pos
-  let i = pos
-  while (i < text.length) {
-    const ch = text.codePointAt(i) ?? 0
-    if (ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d) {
-      i++
-      continue
-    }
-
-    if (ch === 0x2f && i + 1 < text.length) {
-      const next = text.codePointAt(i + 1) ?? 0
-      if (next === 0x2f) {
-        while (i < text.length && text.codePointAt(i) !== 0x0a) i++
-        continue
-      }
-
-      if (next === 0x2a) {
-        i += 2
-        while (
-          i + 1 < text.length &&
-          !((text.codePointAt(i) ?? 0) === 0x2a && (text.codePointAt(i + 1) ?? 0) === 0x2f)
-        )
-          i++
-        i += 2
-        continue
-      }
-    }
-
-    break
-  }
-
-  return i
-}
-
 // Build a clean kind-number-to-name map, filtering out range markers (First*, Last*)
 // that share enum values with actual node types
 const KIND_MAP: Record<number, string> = {}
@@ -67,326 +44,6 @@ for (const [name, value] of Object.entries(SyntaxKind)) {
   if (name.startsWith('First') || name.startsWith('Last')) continue
   KIND_MAP[value] = name
 }
-
-const silentLogger: Logger = {
-  debug() {},
-  error() {},
-  info() {},
-  warn() {},
-}
-
-const defaultConfig: PluginConfig = {
-  options: {},
-  rules: {},
-  transforms: [],
-}
-
-const PROPERTY_MAP: Record<string, string> = {
-  alternate: 'alternate',
-  arguments: 'arguments',
-  block: 'body',
-  body: 'body',
-  condition: 'test',
-  consequent: 'consequent',
-  declarationList: 'declarations',
-  declarations: 'declarations',
-  decorators: 'decorators',
-  defaultImport: 'local',
-  elements: 'elements',
-  elseStatement: 'alternate',
-  escapedText: 'name',
-  expression: 'argument',
-  expressions: 'expressions',
-  externalModuleReference: 'source',
-  heritageClauses: 'heritage',
-  importClause: 'importClause',
-  importSpecifier: 'imported',
-  initializer: 'init',
-  left: 'left',
-  members: 'body',
-  modifierFlags: 'modifierFlags',
-  moduleSpecifier: 'source',
-  name: 'name',
-  namedBindings: 'namedBindings',
-  namedImports: 'namedImports',
-  namespaceImport: 'namespaceImport',
-  objectLiteral: 'objectValue',
-  operand: 'argument',
-  operator: 'operator',
-  operatorToken: 'operator',
-  parameters: 'params',
-  properties: 'properties',
-  propertyName: 'imported',
-  right: 'right',
-  statements: 'body',
-  stringLiteral: 'importPath',
-  test: 'test',
-  text: 'raw',
-  thenStatement: 'consequent',
-  type: 'typeAnnotation',
-  typeArguments: 'typeParameters',
-  typeParameters: 'typeParameters',
-  variableDeclaration: 'param',
-}
-
-const KIND_NAME_ALIASES: Record<string, string> = {
-  AnyKeyword: 'TSAnyKeyword',
-  ArrayDestructuring: 'ArrayPattern',
-  ArrayLiteralExpression: 'ArrayExpression',
-  ArrowFunction: 'ArrowFunctionExpression',
-  AsExpression: 'TSAsExpression',
-  AwaitExpression: 'AwaitExpression',
-  BigIntLiteral: 'Literal',
-  BinaryExpression: 'BinaryExpression',
-  Block: 'BlockStatement',
-  BooleanKeyword: 'TSBooleanKeyword',
-  BreakStatement: 'BreakStatement',
-  CallExpression: 'CallExpression',
-  CallSignature: 'TSCallSignatureDeclaration',
-  CaseClause: 'SwitchCase',
-  CatchClause: 'CatchClause',
-  ClassDeclaration: 'ClassDeclaration',
-  ClassExpression: 'ClassExpression',
-  ComputedPropertyName: 'Literal',
-  ConditionalExpression: 'ConditionalExpression',
-  Constructor: 'MethodDefinition',
-  ContinueStatement: 'ContinueStatement',
-  DebuggerStatement: 'DebuggerStatement',
-  DefaultClause: 'SwitchCase',
-  DefaultKeyword: 'Literal',
-  DeleteExpression: 'UnaryExpression',
-  DoStatement: 'DoWhileStatement',
-  ElementAccessExpression: 'MemberExpression',
-  EnumDeclaration: 'TSEnumDeclaration',
-  ExportDeclaration: 'ExportDeclaration',
-  ExportKeyword: 'TSExportKeyword',
-  ExportSpecifier: 'ExportSpecifier',
-  ExpressionStatement: 'ExpressionStatement',
-  ExternalModuleReference: 'TSExternalModuleReference',
-  FalseKeyword: 'BooleanLiteral',
-  ForInStatement: 'ForInStatement',
-  ForOfStatement: 'ForOfStatement',
-  ForStatement: 'ForStatement',
-  FunctionDeclaration: 'FunctionDeclaration',
-  FunctionExpression: 'FunctionExpression',
-  GetAccessor: 'MethodDefinition',
-  Identifier: 'Identifier',
-  IfStatement: 'IfStatement',
-  ImportDeclaration: 'ImportDeclaration',
-  ImportEqualsDeclaration: 'TSImportEqualsDeclaration',
-  ImportExpression: 'Import',
-  ImportSpecifier: 'ImportSpecifier',
-  InExpression: 'BinaryExpression',
-  InstanceOfExpression: 'BinaryExpression',
-  InterfaceDeclaration: 'TSInterfaceDeclaration',
-  LabeledStatement: 'LabeledStatement',
-  MethodDeclaration: 'MethodDefinition',
-  ModuleDeclaration: 'TSModuleDeclaration',
-  NewExpression: 'NewExpression',
-  NonNullExpression: 'TSNonNullExpression',
-  NoSubstitutionTemplateLiteral: 'TemplateLiteral',
-  NullKeyword: 'Literal',
-  NumberKeyword: 'TSNumberKeyword',
-  NumericLiteral: 'Literal',
-  ObjectDestructuring: 'ObjectPattern',
-  ObjectKeyword: 'TSObjectKeyword',
-  ObjectLiteralExpression: 'ObjectExpression',
-  ParenthesizedExpression: 'SequenceExpression',
-  PostfixUnaryExpression: 'UpdateExpression',
-  PrefixUnaryExpression: 'UnaryExpression',
-  PrivateIdentifier: 'PrivateIdentifier',
-  PropertyAccessExpression: 'MemberExpression',
-  PropertyAssignment: 'Property',
-  PropertyDeclaration: 'PropertyDefinition',
-  RegularExpressionLiteral: 'RegExpLiteral',
-  ReturnStatement: 'ReturnStatement',
-  SetAccessor: 'MethodDefinition',
-  ShorthandPropertyAssignment: 'Property',
-  SpreadAssignment: 'SpreadElement',
-  SpreadElement: 'SpreadElement',
-  StaticBlock: 'StaticBlock',
-  StringKeyword: 'TSStringKeyword',
-  StringLiteral: 'Literal',
-  SuperKeyword: 'Super',
-  SwitchStatement: 'SwitchStatement',
-  TaggedTemplateExpression: 'TaggedTemplateExpression',
-  TemplateExpression: 'TemplateLiteral',
-  ThisKeyword: 'ThisExpression',
-  ThrowStatement: 'ThrowStatement',
-  TrueKeyword: 'BooleanLiteral',
-  TryStatement: 'TryStatement',
-  TSAnyKeyword: 'TSAnyKeyword',
-  TSArrayType: 'TSArrayType',
-  TSEnumMember: 'TSEnumMember',
-  TSInterfaceBody: 'TSInterfaceBody',
-  TSInterfaceDeclaration: 'TSInterfaceDeclaration',
-  TSUnionType: 'TSUnionType',
-  TypeAliasDeclaration: 'TSTypeAliasDeclaration',
-  TypeAnnotation: 'TSTypeAnnotation',
-  TypeAssertion: 'TSTypeAssertion',
-  TypeLiteral: 'TSTypeLiteral',
-  TypeOfExpression: 'UnaryExpression',
-  TypeReference: 'TSTypeReference',
-  UnknownKeyword: 'TSUnknownKeyword',
-  VariableDeclaration: 'VariableDeclarator',
-  VariableDeclarationList: 'VariableDeclaration',
-  VariableStatement: 'VariableDeclaration',
-  VoidExpression: 'UnaryExpression',
-  VoidKeyword: 'TSVoidKeyword',
-  WhileStatement: 'WhileStatement',
-  YieldExpression: 'YieldExpression',
-}
-
-const KIND_SPECIFIC_MAP: Record<string, Record<string, string>> = {
-  ArrowFunction: { type: 'returnType' },
-  AwaitExpression: { expression: 'argument' },
-  CallExpression: { expression: 'callee' },
-  CaseClause: { expression: 'test', statements: 'consequent' },
-  ClassDeclaration: { name: 'id' },
-  DefaultClause: { statements: 'consequent' },
-  DeleteExpression: { expression: 'argument' },
-  DoStatement: { expression: 'test', statement: 'body' },
-  ElementAccessExpression: { argumentExpression: 'property', expression: 'object' },
-  ExportSpecifier: { name: 'exported', propertyName: 'imported' },
-  ForInStatement: { expression: 'right', initializer: 'left', statement: 'body' },
-  ForOfStatement: { expression: 'right', initializer: 'left', statement: 'body' },
-  ForStatement: {
-    condition: 'test',
-    incrementor: 'update',
-    initializer: 'init',
-    statement: 'body',
-  },
-  FunctionDeclaration: { name: 'id', type: 'returnType' },
-  FunctionExpression: { type: 'returnType' },
-  GetAccessor: { name: 'key' },
-  IfStatement: { elseStatement: 'alternate', expression: 'test', thenStatement: 'consequent' },
-  ImportSpecifier: { name: 'local', propertyName: 'imported' },
-  LabeledStatement: { statement: 'body' },
-  MethodDeclaration: { name: 'key' },
-  NewExpression: { expression: 'callee' },
-  ParenthesizedExpression: { expression: 'expression' },
-  PostfixUnaryExpression: { operand: 'argument' },
-  PrefixUnaryExpression: { operand: 'argument' },
-  PropertyAccessExpression: { expression: 'object', name: 'property' },
-  PropertyAssignment: { initializer: 'value', name: 'key' },
-  PropertyDeclaration: { initializer: 'value', name: 'key' },
-  ReturnStatement: { expression: 'argument' },
-  SetAccessor: { name: 'key' },
-  SpreadAssignment: { expression: 'argument' },
-  SpreadElement: { expression: 'argument' },
-  SwitchStatement: { caseBlock: 'cases', expression: 'discriminant' },
-  TaggedTemplateExpression: { template: 'quasi' },
-  ThrowStatement: { expression: 'argument' },
-  TryStatement: { catchClause: 'handler', finallyBlock: 'finalizer', tryBlock: 'block' },
-  TypeOfExpression: { expression: 'argument' },
-  VariableDeclaration: { name: 'id', type: 'typeAnnotation' },
-  VoidExpression: { expression: 'argument' },
-  WhileStatement: { expression: 'test', statement: 'body' },
-  WithStatement: { statement: 'body' },
-  YieldExpression: { expression: 'argument' },
-}
-
-const MAX_DEPTH = 5
-
-const SKIP_KEYS = new Set([
-  'end',
-  'flags',
-  'id',
-  'jlChildren',
-  'kind',
-  'locals',
-  'modifierFlagsCache',
-  'nextContainer',
-  'original',
-  'parent',
-  'pos',
-  'symbol',
-  'transformFlags',
-])
-
-const OPERATOR_TOKEN_MAP: Record<string, string> = {
-  AmpersandAmpersandEqualsToken: '&&=',
-  AmpersandAmpersandToken: '&&',
-  AmpersandEqualsToken: '&=',
-  AmpersandToken: '&',
-  ArrowToken: '=>',
-  AsteriskAsteriskEqualsToken: '**=',
-  AsteriskAsteriskToken: '**',
-  AsteriskEqualsToken: '*=',
-  AsteriskToken: '*',
-  BarBarEqualsToken: '||=',
-  BarBarToken: '||',
-  BarEqualsToken: '|=',
-  BarToken: '|',
-  CaretEqualsToken: '^=',
-  CaretToken: '^',
-  ColonToken: ':',
-  CommaToken: ',',
-  DotDotDotToken: '...',
-  DotToken: '.',
-  EqualsEqualsEqualsToken: '===',
-  EqualsEqualsToken: '==',
-  EqualsToken: '=',
-  ExclamationEqualsEqualsToken: '!==',
-  ExclamationEqualsToken: '!=',
-  ExclamationToken: '!',
-  GreaterThanEqualsToken: '>=',
-  GreaterThanGreaterThanEqualsToken: '>>=',
-  GreaterThanGreaterThanGreaterThanEqualsToken: '>>>=',
-  GreaterThanGreaterThanGreaterThanToken: '>>>',
-  GreaterThanGreaterThanToken: '>>',
-  GreaterThanToken: '>',
-  InKeyword: 'in',
-  InstanceOfKeyword: 'instanceof',
-  LessThanEqualsToken: '<=',
-  LessThanLessThanEqualsToken: '<<=',
-  LessThanLessThanToken: '<<',
-  LessThanToken: '<',
-  MinusEqualsToken: '-=',
-  MinusToken: '-',
-  OfKeyword: 'of',
-  PercentEqualsToken: '%=',
-  PercentToken: '%',
-  PlusEqualsToken: '+=',
-  PlusToken: '+',
-  QuestionDotToken: '?.',
-  QuestionQuestionEqualsToken: '??=',
-  QuestionQuestionToken: '??',
-  SemicolonToken: ';',
-  SlashEqualsToken: '/=',
-  SlashToken: '/',
-  TildeToken: '~',
-}
-
-const ASSIGNMENT_OPERATORS = new Set([
-  '%=',
-  '&&=',
-  '&=',
-  '**=',
-  '*=',
-  '+=',
-  '-=',
-  '/=',
-  '<<=',
-  '=',
-  '>>=',
-  '>>>=',
-  '??=',
-  '^=',
-  '|=',
-  '||=',
-])
-
-const LOGICAL_OPERATORS = new Set(['&&', '??', '||'])
-
-const EXPORTABLE_KINDS = new Set([
-  'ClassDeclaration',
-  'EnumDeclaration',
-  'FunctionDeclaration',
-  'InterfaceDeclaration',
-  'ModuleDeclaration',
-  'TypeAliasDeclaration',
-])
 
 function getExportInfo(node: Node): { isDefault: boolean; isExported: boolean } {
   let isExported = false
@@ -1109,7 +766,9 @@ function convertCompilerNode(node: Node, depth: number = 0): null | Record<strin
         assignCompilerProperty(result, key, val, estreeName, depth)
       }
     }
-  } catch {}
+  } catch {
+    // Some compiler properties may not be accessible on all node types
+  }
 
   applyPostConvertFixups(result, kindName, compilerNode)
 
@@ -1186,13 +845,17 @@ function applyNodeModifiers(base: Record<string, unknown>, node: Node, kindName:
   if (Node.isExportDeclaration(node)) {
     try {
       if (node.isTypeOnly()) base.exportKind = 'type'
-    } catch {}
+    } catch {
+      // Not all export nodes support isTypeOnly
+    }
   }
 
   if (Node.isImportDeclaration(node)) {
     try {
       if (node.isTypeOnly()) base.importKind = 'type'
-    } catch {}
+    } catch {
+      // Not all import nodes support isTypeOnly
+    }
   }
 }
 
@@ -1451,6 +1114,10 @@ function mapCategory(category: string | undefined): RuleMeta['category'] {
       return 'style'
     }
 
+    case 'testing': {
+      return 'testing'
+    }
+
     default: {
       return 'style'
     }
@@ -1543,7 +1210,9 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             if (tsParent && convertedNodes.has(tsParent)) {
               genericNode.parent = convertedNodes.get(tsParent)!
             }
-          } catch {}
+          } catch {
+            // Parent may not be accessible for all node types
+          }
 
           if (
             kindName === 'BinaryExpression' &&
@@ -1718,7 +1387,7 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
           if (!sourceFile) {
             sourceFile = node.getSourceFile()
             sourceText = sourceFile.getFullText()
-            _rangeSourceText = sourceText
+            setRangeSourceText(sourceText)
           }
 
           const kindName = node.getKindName()
@@ -1733,7 +1402,9 @@ export function adaptPluginRule(pluginRule: PluginRuleDefinition, ruleId: string
             if (tsParent && convertedNodes.has(tsParent)) {
               genericNode.parent = convertedNodes.get(tsParent)!
             }
-          } catch {}
+          } catch {
+            // Parent may not be accessible for all node types
+          }
 
           // Register for child lookups
           convertedNodes.set(node, genericNode)

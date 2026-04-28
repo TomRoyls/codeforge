@@ -25,7 +25,9 @@ export function ensureGenericNode(node: Node): GenericNode {
       if (tsParent && genericNodeCache.has(tsParent)) {
         genericNode.parent = genericNodeCache.get(tsParent)!
       }
-    } catch {}
+    } catch {
+      // Parent may not be accessible for all node types
+    }
 
     genericNodeCache.set(node, genericNode)
   }

@@ -9,6 +9,7 @@ export interface RuleOptions {
 }
 
 export interface RuleDocs {
+  category?: string
   description?: string
   fixable?: 'code' | 'whitespace'
   recommended?: boolean
@@ -25,6 +26,7 @@ export interface RuleMeta {
     | 'performance'
     | 'security'
     | 'style'
+    | 'testing'
   deprecated?: boolean
   description: string
   docs?: RuleDocs

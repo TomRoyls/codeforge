@@ -13,42 +13,38 @@ import {
 } from './adapter-constants.js'
 
 // Module-level source text for trivia skipping in convertRawCompilerNode
-export let _rangeSourceText = ''
+let _rangeSourceText = ''
 
 export function setRangeSourceText(text: string): void {
   _rangeSourceText = text
 }
 
-export function clearRecord(obj: Record<string, unknown>): void {
-  for (const key of Object.keys(obj)) {
-    delete obj[key]
-  }
-}
-
 export function skipTrivia(pos: number): number {
   const text = _rangeSourceText
   if (!text) return pos
+  const len = text.length
   let i = pos
-  while (i < text.length) {
-    const ch = text.codePointAt(i) ?? 0
+  while (i < len) {
+    // eslint-disable-next-line unicorn/prefer-code-point -- charCodeAt is correct and faster for ASCII-only comparisons
+    const ch = text.charCodeAt(i)
     if (ch === 0x20 || ch === 0x09 || ch === 0x0a || ch === 0x0d) {
       i++
       continue
     }
 
-    if (ch === 0x2f && i + 1 < text.length) {
-      const next = text.codePointAt(i + 1) ?? 0
+    if (ch === 0x2f && i + 1 < len) {
+      // eslint-disable-next-line unicorn/prefer-code-point -- charCodeAt is correct and faster for ASCII-only comparisons
+      const next = text.charCodeAt(i + 1)
       if (next === 0x2f) {
-        while (i < text.length && text.codePointAt(i) !== 0x0a) i++
+        // eslint-disable-next-line unicorn/prefer-code-point -- charCodeAt is correct and faster for ASCII-only comparisons
+        while (i < len && text.charCodeAt(i) !== 0x0a) i++
         continue
       }
 
       if (next === 0x2a) {
         i += 2
-        while (
-          i + 1 < text.length &&
-          !((text.codePointAt(i) ?? 0) === 0x2a && (text.codePointAt(i + 1) ?? 0) === 0x2f)
-        )
+        // eslint-disable-next-line unicorn/prefer-code-point -- charCodeAt is correct and faster for ASCII-only comparisons
+        while (i + 1 < len && !(text.charCodeAt(i) === 0x2a && text.charCodeAt(i + 1) === 0x2f))
           i++
         i += 2
         continue
@@ -624,7 +620,9 @@ export function convertCompilerNode(node: Node, depth: number = 0): null | Recor
         assignCompilerProperty(result, key, val, estreeName, depth)
       }
     }
-  } catch {}
+  } catch {
+    // Some compiler properties may not be accessible on all node types
+  }
 
   applyPostConvertFixups(result, kindName, compilerNode)
 

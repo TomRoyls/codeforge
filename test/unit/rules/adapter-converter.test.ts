@@ -1,89 +1,41 @@
 import { describe, test, expect, beforeEach } from 'vitest'
 import { SyntaxKind, Node } from 'ts-morph'
 import {
-  clearRecord,
   skipTrivia,
   setRangeSourceText,
   convertOperatorToken,
   convertRawCompilerNode,
   convertCompilerNode,
-  _rangeSourceText,
 } from '../../../src/rules/adapter-converter.js'
 import { MAX_DEPTH } from '../../../src/rules/adapter-constants.js'
 
 describe('adapter-converter', () => {
-  describe('clearRecord', () => {
-    test('clears all keys from a record', () => {
-      const obj = { a: 1, b: 2, c: 3 }
-      clearRecord(obj)
-      expect(Object.keys(obj)).toHaveLength(0)
-    })
-
-    test('clears single key from a record', () => {
-      const obj = { x: 'test' }
-      clearRecord(obj)
-      expect(obj).not.toHaveProperty('x')
-    })
-
-    test('handles empty record', () => {
-      const obj: Record<string, unknown> = {}
-      expect(() => clearRecord(obj)).not.toThrow()
-      expect(Object.keys(obj)).toHaveLength(0)
-    })
-
-    test('clears keys with various value types', () => {
-      const obj = {
-        s: 'hello',
-        n: 42,
-        b: true,
-        nil: null,
-        undef: undefined,
-        arr: [1, 2],
-      }
-      clearRecord(obj)
-      expect(Object.keys(obj)).toHaveLength(0)
-    })
-
-    test('modifies record in place', () => {
-      const obj = { key: 'value' }
-      const ref = obj
-      clearRecord(obj)
-      expect(ref).toBe(obj)
-      expect(Object.keys(ref)).toHaveLength(0)
-    })
-  })
-
   describe('setRangeSourceText', () => {
     beforeEach(() => {
       setRangeSourceText('')
     })
 
-    test('sets _rangeSourceText to provided string', () => {
-      setRangeSourceText('const x = 1;')
-      expect(_rangeSourceText).toBe('const x = 1;')
+    test('setRangeSourceText makes text available to skipTrivia', () => {
+      setRangeSourceText('  const x = 1;')
+      expect(skipTrivia(0)).toBe(2)
     })
 
-    test('sets _rangeSourceText to empty string', () => {
+    test('setRangeSourceText with empty string returns pos unchanged', () => {
       setRangeSourceText('')
-      expect(_rangeSourceText).toBe('')
+      expect(skipTrivia(0)).toBe(0)
     })
 
-    test('overwrites previous value', () => {
-      setRangeSourceText('first')
+    test('setRangeSourceText overwrites previous value', () => {
+      setRangeSourceText('  first')
+      expect(skipTrivia(0)).toBe(2)
       setRangeSourceText('second')
-      expect(_rangeSourceText).toBe('second')
+      expect(skipTrivia(0)).toBe(0)
     })
 
-    test('handles multi-line text', () => {
-      const multi = 'line1\nline2\nline3'
+    test('setRangeSourceText handles multi-line text', () => {
+      const multi = '  \n  line2'
       setRangeSourceText(multi)
-      expect(_rangeSourceText).toBe(multi)
-    })
-
-    test('handles text with special characters', () => {
-      const special = 'const str = "hello\\nworld";'
-      setRangeSourceText(special)
-      expect(_rangeSourceText).toBe(special)
+      expect(skipTrivia(0)).toBe(5)
     })
   })
 
@@ -4135,31 +4087,6 @@ describe('adapter-converter', () => {
       const result = convertCompilerNode(node, 0)
       expect(result?.type).toBe('AssignmentExpression')
       expect(result?.operator).toBe('%=')
-    })
-  })
-
-  describe('clearRecord additional edge cases', () => {
-    test('handles record with symbol-key-like properties', () => {
-      const obj: Record<string, unknown> = { a: 1 }
-      clearRecord(obj)
-      expect('a' in obj).toBe(false)
-    })
-
-    test('handles record with inherited properties on plain object', () => {
-      const obj = Object.create({ inherited: true })
-      obj.own = 'value'
-      clearRecord(obj)
-      expect(obj.own).toBeUndefined()
-      expect((obj as Record<string, unknown>).inherited).toBe(true)
-    })
-
-    test('clears record with many properties', () => {
-      const obj: Record<string, unknown> = {}
-      for (let i = 0; i < 100; i++) {
-        obj[`key${i}`] = i
-      }
-      clearRecord(obj)
-      expect(Object.keys(obj)).toHaveLength(0)
     })
   })
 
