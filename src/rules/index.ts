@@ -289,7 +289,8 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryReduceRightRule,
    noUnnecessaryRegexpConstructorRule,
      noUnnecessaryReverseRule,
-    noUnnecessaryNumberToFixedRule,
+     noUnnecessaryNumberToFixedRule,
+    noUnnecessaryNumberWrapperRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
@@ -704,6 +705,7 @@ const adaptedNoUnnecessaryReduceRight = adaptPluginRule(noUnnecessaryReduceRight
 const adaptedNoUnnecessaryRegexpConstructor = adaptPluginRule(noUnnecessaryRegexpConstructorRule, 'no-unnecessary-regexp-constructor')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
+const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -856,6 +858,7 @@ const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
   noUnnecessaryStringConcatRule,
   'no-unnecessary-string-concat',
 )
+const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
 const adaptedNoUnnecessaryParseFloat = adaptPluginRule(noUnnecessaryParseFloatRule, 'no-unnecessary-parse-float')
@@ -1493,6 +1496,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-regexp-constructor': adaptedNoUnnecessaryRegexpConstructor,
     'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
+  'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
@@ -1502,6 +1506,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
+  'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
   'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
@@ -2031,6 +2036,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-splice': 'patterns',
    'no-unnecessary-spread': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
+  'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
@@ -2049,6 +2055,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-return-value': 'patterns',
    'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-number-to-fixed': 'patterns',
+  'no-unnecessary-number-wrapper': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
   'no-unnecessary-includes': 'patterns',
