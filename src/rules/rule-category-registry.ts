@@ -309,6 +309,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-return-value': 'patterns',
   'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-join': 'patterns',
+  'no-unnecessary-sort': 'patterns',
+  'no-unnecessary-includes': 'patterns',
   'no-unnecessary-slice': 'patterns',
   'no-unnecessary-spread': 'patterns',
 'no-unnecessary-string-concat': 'patterns',

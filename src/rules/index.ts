@@ -266,10 +266,12 @@ noUnnecessaryNullWithStrictRule,
    noUnnecessaryRegexRule,
 noUnnecessaryReturnAwaitRule,
    noUnnecessaryReturnValueRule,
-  noUnnecessaryReverseRule,
+   noUnnecessaryReverseRule,
   noUnnecessaryJoinRule,
-   noUnnecessarySliceRule,
-  noUnnecessarySpreadRule,
+   noUnnecessarySortRule,
+   noUnnecessaryIncludesRule,
+    noUnnecessarySliceRule,
+   noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
   noUnnecessaryStringSplitRule,
    noUnnecessaryStringifyRule,
@@ -648,6 +650,8 @@ const adaptedNoUnnecessaryReturnAwait = adaptPluginRule(noUnnecessaryReturnAwait
 const adaptedNoUnnecessaryReturnValue = adaptPluginRule(noUnnecessaryReturnValueRule, 'no-unnecessary-return-value')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
+const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
+const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
 const adaptedPreferRegexpExec = adaptPluginRule(preferRegexpExecRule, 'prefer-regexp-exec')
 const adaptedPreferRestParams = adaptPluginRule(preferRestParamsRule, 'prefer-rest-params')
@@ -1399,6 +1403,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
   'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
+  'no-unnecessary-sort': adaptedNoUnnecessarySort,
+  'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
   'no-unnecessary-slice': adaptedNoUnnecessarySlice,
   'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
@@ -1915,6 +1921,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-return-value': 'patterns',
   'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-join': 'patterns',
+  'no-unnecessary-sort': 'patterns',
+  'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
   'no-unnecessary-then': 'patterns',
