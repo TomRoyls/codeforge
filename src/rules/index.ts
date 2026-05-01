@@ -286,8 +286,10 @@ noUnnecessaryAwaitForeachRule,
 noUnnecessaryReturnAwaitRule,
    noUnnecessaryReduceRule,
     noUnnecessaryReturnValueRule,
-   noUnnecessaryReduceRightRule,
-    noUnnecessaryReverseRule,
+    noUnnecessaryReduceRightRule,
+   noUnnecessaryRegexpConstructorRule,
+     noUnnecessaryReverseRule,
+    noUnnecessaryNumberToFixedRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
@@ -699,7 +701,9 @@ const adaptedNoUnnecessaryReturnAwait = adaptPluginRule(noUnnecessaryReturnAwait
 const adaptedNoUnnecessaryReturnValue = adaptPluginRule(noUnnecessaryReturnValueRule, 'no-unnecessary-return-value')
 const adaptedNoUnnecessaryReduce = adaptPluginRule(noUnnecessaryReduceRule, 'no-unnecessary-reduce')
 const adaptedNoUnnecessaryReduceRight = adaptPluginRule(noUnnecessaryReduceRightRule, 'no-unnecessary-reduce-right')
+const adaptedNoUnnecessaryRegexpConstructor = adaptPluginRule(noUnnecessaryRegexpConstructorRule, 'no-unnecessary-regexp-constructor')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
+const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -1485,8 +1489,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-return-await': adaptedNoUnnecessaryReturnAwait,
    'no-unnecessary-reduce': adaptedNoUnnecessaryReduce,
    'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
-   'no-unnecessary-reduce-right': adaptedNoUnnecessaryReduceRight,
-   'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
+    'no-unnecessary-reduce-right': adaptedNoUnnecessaryReduceRight,
+   'no-unnecessary-regexp-constructor': adaptedNoUnnecessaryRegexpConstructor,
+    'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
+   'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
@@ -2038,9 +2044,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-regex': 'patterns',
   'no-unnecessary-return-await': 'patterns',
   'no-unnecessary-reduce': 'patterns',
-  'no-unnecessary-reduce-right': 'patterns',
-   'no-unnecessary-return-value': 'patterns',
-  'no-unnecessary-reverse': 'patterns',
+   'no-unnecessary-reduce-right': 'patterns',
+  'no-unnecessary-regexp-constructor': 'patterns',
+    'no-unnecessary-return-value': 'patterns',
+   'no-unnecessary-reverse': 'patterns',
+  'no-unnecessary-number-to-fixed': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
   'no-unnecessary-includes': 'patterns',
