@@ -236,7 +236,8 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
-  noUnnecessaryAsyncFunctionRule,
+   noUnnecessaryAsyncFunctionRule,
+   noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
 noUnnecessaryAwaitForeachRule,
   noUnnecessaryAssignRule,
@@ -330,7 +331,8 @@ noUnnecessaryStringConcatRule,
     noUnnecessaryNullCheckRule,
    noUnnecessaryOptionalChainRule,
 noUnnecessaryParameterPropertyRule,
-  noUnnecessaryPromiseWrapRule,
+   noUnnecessaryPromiseWrapRule,
+   noUnnecessaryPromiseResolveRule,
     noUnnecessaryEscapeRule,
     noUnnecessaryElseRule,
     noUnnecessaryEveryRule,
@@ -658,6 +660,7 @@ const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unne
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
+const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
 const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
 const adaptedNoUnnecessaryBooleanComparison = adaptPluginRule(noUnnecessaryBooleanComparisonRule, 'no-unnecessary-boolean-comparison')
 const adaptedNoUnnecessaryBooleanLiteralCompare = adaptPluginRule(noUnnecessaryBooleanLiteralCompareRule, 'no-unnecessary-boolean-literal-compare')
@@ -809,6 +812,7 @@ const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule
 const adaptedNoUnnecessaryOptionalChain = adaptPluginRule(noUnnecessaryOptionalChainRule, 'no-unnecessary-optional-chain')
 const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParameterPropertyRule, 'no-unnecessary-parameter-property')
 const adaptedNoUnnecessaryPromiseWrap = adaptPluginRule(noUnnecessaryPromiseWrapRule, 'no-unnecessary-promise-wrap')
+const adaptedNoUnnecessaryPromiseResolve = adaptPluginRule(noUnnecessaryPromiseResolveRule, 'no-unnecessary-promise-resolve')
 const adaptedNoUnnecessaryEscape = adaptPluginRule(noUnnecessaryEscapeRule, 'no-unnecessary-escape')
 const adaptedNoUnnecessaryElse = adaptPluginRule(noUnnecessaryElseRule, 'no-unnecessary-else')
 const adaptedNoUnnecessaryEvery = adaptPluginRule(noUnnecessaryEveryRule, 'no-unnecessary-every')
@@ -1463,7 +1467,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
   'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
-  'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
+   'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
+  'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
    'no-unnecessary-boolean-comparison': adaptedNoUnnecessaryBooleanComparison,
    'no-unnecessary-boolean-literal-compare': adaptedNoUnnecessaryBooleanLiteralCompare,
@@ -1557,7 +1562,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
   'no-unnecessary-parameter-property': adaptedNoUnnecessaryParameterProperty,
-  'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
+   'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
+   'no-unnecessary-promise-resolve': adaptedNoUnnecessaryPromiseResolve,
   'no-unnecessary-escape': adaptedNoUnnecessaryEscape,
   'no-unnecessary-else': adaptedNoUnnecessaryElse,
   'no-unnecessary-every': adaptedNoUnnecessaryEvery,
@@ -2015,6 +2021,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-async-function': 'patterns',
+  'no-unnecessary-async-arrow': 'patterns',
    'no-unnecessary-boolean': 'patterns',
    'no-unnecessary-boolean-comparison': 'patterns',
     'no-unnecessary-boolean-literal-compare': 'patterns',
@@ -2111,6 +2118,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-optional-chain': 'patterns',
   'no-unnecessary-parameter-property': 'patterns',
   'no-unnecessary-promise-wrap': 'patterns',
+  'no-unnecessary-promise-resolve': 'patterns',
   'no-unnecessary-escape': 'patterns',
   'no-unnecessary-else': 'patterns',
   'no-unnecessary-every': 'patterns',
