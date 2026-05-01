@@ -341,6 +341,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-encode-uri': 'patterns',
 'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
+   'no-unnecessary-to-reversed': 'patterns',
+   'no-unnecessary-to-sorted': 'patterns',
   'no-unnecessary-then': 'patterns',
   'no-unnecessary-to-string': 'patterns',
   'no-unnecessary-typeof': 'patterns',

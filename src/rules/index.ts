@@ -301,7 +301,9 @@ noUnnecessaryStringConcatRule,
      noUnnecessaryTemplateExpressionRule,
   noUnnecessaryTemplateLiteralRule,
      noUnnecessaryThenRule,
-    noUnnecessaryToStringRule,
+     noUnnecessaryToReversedRule,
+     noUnnecessaryToSortedRule,
+     noUnnecessaryToStringRule,
     noUnnecessaryTypeofRule,
     noUnnecessaryNullCheckRule,
    noUnnecessaryOptionalChainRule,
@@ -755,6 +757,8 @@ const adaptedNoUnnecessaryTemplateExpression = adaptPluginRule(
   'no-unnecessary-template-expression',
 )
 const adaptedNoUnnecessaryTemplateLiteral = adaptPluginRule(noUnnecessaryTemplateLiteralRule, 'no-unnecessary-template-literal')
+const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRule, 'no-unnecessary-to-reversed')
+const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
@@ -1472,8 +1476,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-encode-uri': adaptedNoUnnecessaryEncodeUri,
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
   'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
-  'no-unnecessary-then': adaptedNoUnnecessaryThen,
-  'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
+   'no-unnecessary-then': adaptedNoUnnecessaryThen,
+   'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
+   'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
+   'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
   'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
@@ -1996,7 +2002,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
-  'no-unnecessary-then': 'patterns',
+  'no-unnecessary-to-reversed': 'patterns',
+  'no-unnecessary-to-sorted': 'patterns',
+   'no-unnecessary-then': 'patterns',
   'no-unnecessary-to-string': 'patterns',
   'no-unnecessary-typeof': 'patterns',
   'no-unnecessary-null-check': 'patterns',
