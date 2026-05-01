@@ -332,7 +332,9 @@ noUnnecessaryStringConcatRule,
      noUnnecessaryTypeofRule,
      noUnnecessaryUndefinedReturnRule,
     noUnnecessaryNullCheckRule,
+    noUnnecessaryNullCoalesceFallbackRule,
    noUnnecessaryOptionalChainRule,
+   noUnnecessaryOptionalCallRule,
 noUnnecessaryParameterPropertyRule,
    noUnnecessaryPromiseWrapRule,
     noUnnecessaryPromiseResolveRule,
@@ -818,7 +820,9 @@ const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocale
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
 const adaptedNoUnnecessaryUndefinedReturn = adaptPluginRule(noUnnecessaryUndefinedReturnRule, 'no-unnecessary-undefined-return')
 const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
+const adaptedNoUnnecessaryNullCoalesceFallback = adaptPluginRule(noUnnecessaryNullCoalesceFallbackRule, 'no-unnecessary-null-coalesce-fallback')
 const adaptedNoUnnecessaryOptionalChain = adaptPluginRule(noUnnecessaryOptionalChainRule, 'no-unnecessary-optional-chain')
+const adaptedNoUnnecessaryOptionalCall = adaptPluginRule(noUnnecessaryOptionalCallRule, 'no-unnecessary-optional-call')
 const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParameterPropertyRule, 'no-unnecessary-parameter-property')
 const adaptedNoUnnecessaryPromiseWrap = adaptPluginRule(noUnnecessaryPromiseWrapRule, 'no-unnecessary-promise-wrap')
 const adaptedNoUnnecessaryPromiseResolve = adaptPluginRule(noUnnecessaryPromiseResolveRule, 'no-unnecessary-promise-resolve')
@@ -1574,8 +1578,10 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
    'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
   'no-unnecessary-undefined-return': adaptedNoUnnecessaryUndefinedReturn,
-  'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
-  'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
+   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
+   'no-unnecessary-null-coalesce-fallback': adaptedNoUnnecessaryNullCoalesceFallback,
+   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
+   'no-unnecessary-optional-call': adaptedNoUnnecessaryOptionalCall,
   'no-unnecessary-parameter-property': adaptedNoUnnecessaryParameterProperty,
    'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
     'no-unnecessary-promise-resolve': adaptedNoUnnecessaryPromiseResolve,
@@ -2136,7 +2142,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-typeof': 'patterns',
   'no-unnecessary-undefined-return': 'patterns',
   'no-unnecessary-null-check': 'patterns',
+  'no-unnecessary-null-coalesce-fallback': 'patterns',
   'no-unnecessary-optional-chain': 'patterns',
+  'no-unnecessary-optional-call': 'patterns',
   'no-unnecessary-parameter-property': 'patterns',
   'no-unnecessary-promise-wrap': 'patterns',
   'no-unnecessary-promise-resolve': 'patterns',
