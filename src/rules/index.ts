@@ -268,7 +268,8 @@ noUnnecessaryAwaitForeachRule,
  noUnnecessaryNullWithStrictRule,
   noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
-  noUnnecessaryPolyfillsRule,
+   noUnnecessaryPopRule,
+   noUnnecessaryPolyfillsRule,
   noUnnecessaryQualifierRule,
   noUnnecessaryReadonlyRule,
    noUnnecessaryRegexConstructorRule,
@@ -284,7 +285,8 @@ noUnnecessaryReturnAwaitRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
     noUnnecessarySomeRule,
-   noUnnecessarySpreadRule,
+    noUnnecessarySpliceRule,
+    noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
   noUnnecessaryStringSplitRule,
    noUnnecessaryStringifyRule,
@@ -817,6 +819,7 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
 const adaptedNoUnnecessaryShift = adaptPluginRule(noUnnecessaryShiftRule, 'no-unnecessary-shift')
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
+const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
   noUnnecessaryStringConcatRule,
@@ -1062,6 +1065,7 @@ const adaptedNoRedundantTypeConstituents = adaptPluginRule(noRedundantTypeConsti
 const adaptedNoRegexSpaces = adaptPluginRule(noRegexSpacesRule, 'no-regex-spaces')
 const adaptedNoTemplateCurlyInString = adaptPluginRule(noTemplateCurlyInStringRule, 'no-template-curly-in-string')
 const adaptedNoTernary = adaptPluginRule(noTernaryRule, 'no-ternary')
+const adaptedNoUnnecessaryPop = adaptPluginRule(noUnnecessaryPopRule, 'no-unnecessary-pop')
 const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule, 'no-unnecessary-polyfills')
 const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
 const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
@@ -1432,7 +1436,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
-  'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
+   'no-unnecessary-pop': adaptedNoUnnecessaryPop,
+   'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
   'no-unnecessary-qualifier': adaptedNoUnnecessaryQualifier,
   'no-unnecessary-readonly': adaptedNoUnnecessaryReadonly,
   'no-unnecessary-regex-constructor': adaptedNoUnnecessaryRegexConstructor,
@@ -1448,7 +1453,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
   'no-unnecessary-some': adaptedNoUnnecessarySome,
-  'no-unnecessary-spread': adaptedNoUnnecessarySpread,
+   'no-unnecessary-splice': adaptedNoUnnecessarySplice,
+   'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
   'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
@@ -1952,13 +1958,15 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
-   'no-unnecessary-polyfills': 'patterns',
+   'no-unnecessary-pop': 'patterns',
+    'no-unnecessary-polyfills': 'patterns',
    'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-shift': 'patterns',
    'no-unnecessary-slice': 'patterns',
   'no-unnecessary-some': 'patterns',
    'no-unnecessary-readonly': 'patterns',
-  'no-unnecessary-spread': 'patterns',
+  'no-unnecessary-splice': 'patterns',
+   'no-unnecessary-spread': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-split': 'patterns',
   'no-unnecessary-stringify': 'patterns',
