@@ -274,6 +274,7 @@ noUnnecessaryAwaitExpressionRule,
   noUnnecessaryIndexOfRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
+   noUnnecessaryJsonStringifyLiteralRule,
    noUnnecessaryNewArrayRule,
    noUnnecessaryNewBooleanRule,
    noUnnecessaryNewMapRule,
@@ -316,6 +317,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySomeRule,
     noUnnecessarySpliceRule,
     noUnnecessarySpreadRule,
+    noUnnecessarySpreadArrayRule,
 noUnnecessaryStringConcatRule,
 noUnnecessaryStringConstructorRule,
   noUnnecessaryStringSplitRule,
@@ -704,6 +706,7 @@ const adaptedNoUnnecessaryEscapeInRegexp = adaptPluginRule(
 const adaptedNoUnnecessaryExpressionStatement = adaptPluginRule(noUnnecessaryExpressionStatementRule, 'no-unnecessary-expression-statement')
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryJsonParse = adaptPluginRule(noUnnecessaryJsonParseRule, 'no-unnecessary-json-parse')
+const adaptedNoUnnecessaryJsonStringifyLiteral = adaptPluginRule(noUnnecessaryJsonStringifyLiteralRule, 'no-unnecessary-json-stringify-literal')
 const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 'no-unnecessary-new-array')
 const adaptedNoUnnecessaryNewBoolean = adaptPluginRule(noUnnecessaryNewBooleanRule, 'no-unnecessary-new-boolean')
 const adaptedNoUnnecessaryNewMap = adaptPluginRule(noUnnecessaryNewMapRule, 'no-unnecessary-new-map')
@@ -908,6 +911,7 @@ const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-un
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
+const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
 noUnnecessaryStringConcatRule,
   'no-unnecessary-string-concat',
@@ -1540,6 +1544,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
+  'no-unnecessary-json-stringify-literal': adaptedNoUnnecessaryJsonStringifyLiteral,
    'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
   'no-unnecessary-new-boolean': adaptedNoUnnecessaryNewBoolean,
   'no-unnecessary-new-map': adaptedNoUnnecessaryNewMap,
@@ -1582,6 +1587,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
+   'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
@@ -2113,6 +2119,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-instanceof-array': 'patterns',
   'no-unnecessary-initialization': 'patterns',
   'no-unnecessary-json-parse': 'patterns',
+  'no-unnecessary-json-stringify-literal': 'patterns',
    'no-unnecessary-new-array': 'patterns',
   'no-unnecessary-new-boolean': 'patterns',
   'no-unnecessary-new-map': 'patterns',
@@ -2141,6 +2148,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-splice': 'patterns',
    'no-unnecessary-spread': 'patterns',
+   'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-constructor': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
