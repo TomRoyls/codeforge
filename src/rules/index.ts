@@ -246,9 +246,11 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryComputedKeyRule,
        noUnnecessaryEscapeInRegexpRule,
  noUnnecessaryForLoopRule,
+  noUnnecessaryFindIndexRule,
  noUnnecessaryFlatRule,
-   noUnnecessaryFragmentRule,
- noUnnecessaryInitializationRule,
+    noUnnecessaryFragmentRule,
+  noUnnecessaryInitializationRule,
+ noUnnecessaryIndexOfRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
   noUnnecessaryNewArrayRule,
@@ -634,7 +636,10 @@ const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-un
 const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
+const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
+const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
+const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
@@ -1381,8 +1386,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-double-negation': adaptedNoUnnecessaryDoubleNegation,
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
   'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
+  'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
   'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
   'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
+  'no-unnecessary-index-of': adaptedNoUnnecessaryIndexOf,
   'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
@@ -1886,8 +1893,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
   'no-unnecessary-for-loop': 'patterns',
+  'no-unnecessary-find-index': 'patterns',
   'no-unnecessary-flat': 'patterns',
   'no-unnecessary-fragment': 'patterns',
+  'no-unnecessary-index-of': 'patterns',
   'no-unnecessary-initialization': 'patterns',
   'no-unnecessary-instanceof-array': 'patterns',
   'no-unnecessary-initialization': 'patterns',
