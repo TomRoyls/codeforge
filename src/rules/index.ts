@@ -285,7 +285,8 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryLogicalAndTrueRule,
     noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
- noUnnecessaryNullWithStrictRule,
+noUnnecessaryNullWithStrictRule,
+noUnnecessaryObjectAssignRule,
   noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
    noUnnecessaryPopRule,
@@ -303,6 +304,7 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryReverseRule,
      noUnnecessaryNumberToFixedRule,
     noUnnecessaryNumberWrapperRule,
+    noUnnecessaryNumberConstructorRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
@@ -724,6 +726,7 @@ const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitiali
 const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
+const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
 const adaptedNoUnnecessaryNumericSeparator = adaptPluginRule(noUnnecessaryNumericSeparatorRule, 'no-unnecessary-numeric-separator')
 const adaptedNoUnnecessaryQualifier = adaptPluginRule(
@@ -741,6 +744,7 @@ const adaptedNoUnnecessaryRegexpConstructor = adaptPluginRule(noUnnecessaryRegex
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
+const adaptedNoUnnecessaryNumberConstructor = adaptPluginRule(noUnnecessaryNumberConstructorRule, 'no-unnecessary-number-constructor')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -1540,6 +1544,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
+   'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
    'no-unnecessary-pop': adaptedNoUnnecessaryPop,
@@ -1557,6 +1562,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
   'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
+  'no-unnecessary-number-constructor': adaptedNoUnnecessaryNumberConstructor,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
@@ -2107,6 +2113,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
+   'no-unnecessary-object-assign': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-pop': 'patterns',
@@ -2142,6 +2149,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-number-to-fixed': 'patterns',
   'no-unnecessary-number-wrapper': 'patterns',
+  'no-unnecessary-number-constructor': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
   'no-unnecessary-includes': 'patterns',
