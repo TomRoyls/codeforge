@@ -247,7 +247,8 @@ noUnnecessaryAwaitForeachRule,
        noUnnecessaryEscapeInRegexpRule,
  noUnnecessaryForLoopRule,
   noUnnecessaryFindIndexRule,
- noUnnecessaryFlatRule,
+   noUnnecessaryFindRule,
+  noUnnecessaryFlatRule,
     noUnnecessaryFragmentRule,
   noUnnecessaryInitializationRule,
  noUnnecessaryIndexOfRule,
@@ -257,6 +258,7 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryNewObjectRule,
   noUnnecessaryParenthesesRule,
   noUnnecessaryLabelRule,
+  noUnnecessaryLastIndexOfRule,
   noUnnecessaryLiteralKeyRule,
 noUnnecessaryNullWithStrictRule,
   noUnnecessaryNumericLiteralRule,
@@ -633,10 +635,12 @@ const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 
 const adaptedNoUnnecessaryNewObject = adaptPluginRule(noUnnecessaryNewObjectRule, 'no-unnecessary-new-object')
 const adaptedNoUnnecessaryParentheses = adaptPluginRule(noUnnecessaryParenthesesRule, 'no-unnecessary-parentheses')
 const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-unnecessary-label')
+const adaptedNoUnnecessaryLastIndexOf = adaptPluginRule(noUnnecessaryLastIndexOfRule, 'no-unnecessary-last-index-of')
 const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
+const adaptedNoUnnecessaryFind = adaptPluginRule(noUnnecessaryFindRule, 'no-unnecessary-find')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
@@ -1387,6 +1391,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
   'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
   'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
+  'no-unnecessary-find': adaptedNoUnnecessaryFind,
   'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
   'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
   'no-unnecessary-index-of': adaptedNoUnnecessaryIndexOf,
@@ -1397,6 +1402,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
   'no-unnecessary-parentheses': adaptedNoUnnecessaryParentheses,
   'no-unnecessary-label': adaptedNoUnnecessaryLabel,
+  'no-unnecessary-last-index-of': adaptedNoUnnecessaryLastIndexOf,
   'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
   'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
@@ -1894,6 +1900,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-escape-in-regexp': 'patterns',
   'no-unnecessary-for-loop': 'patterns',
   'no-unnecessary-find-index': 'patterns',
+  'no-unnecessary-find': 'patterns',
   'no-unnecessary-flat': 'patterns',
   'no-unnecessary-fragment': 'patterns',
   'no-unnecessary-index-of': 'patterns',
@@ -1905,6 +1912,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-new-object': 'patterns',
   'no-unnecessary-parentheses': 'patterns',
   'no-unnecessary-label': 'patterns',
+  'no-unnecessary-last-index-of': 'patterns',
   'no-unnecessary-literal-key': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
