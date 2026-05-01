@@ -236,6 +236,7 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
+   noUnnecessaryArrayFlatRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
@@ -312,6 +313,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
   noUnnecessaryStringSplitRule,
+  noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringifyRule,
     noUnnecessaryStringToNumberRule,
    noUnnecessaryParseFloatRule,
@@ -670,6 +672,7 @@ const adaptedNoUnnecessaryAt = adaptPluginRule(noUnnecessaryAtRule, 'no-unnecess
 const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unnecessary-atob')
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
+const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
 const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
@@ -909,6 +912,7 @@ const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule
 const adaptedNoUnnecessaryDelete = adaptPluginRule(noUnnecessaryDeleteRule, 'no-unnecessary-delete')
 const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
+const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
   'no-unnecessary-type-arguments',
@@ -1487,7 +1491,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-at': adaptedNoUnnecessaryAt,
    'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
-  'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
+   'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
+   'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
@@ -1562,7 +1567,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
-  'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
+   'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
+   'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
@@ -2051,6 +2057,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-atob': 'patterns',
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
+  'no-unnecessary-array-flat': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
    'no-unnecessary-boolean': 'patterns',
@@ -2115,6 +2122,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
+  'no-unnecessary-string-replace-all': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
