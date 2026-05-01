@@ -289,6 +289,7 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryLogicalAndTrueRule,
     noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
+   noUnnecessaryMathMaxSingleRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
   noUnnecessaryNumericLiteralRule,
@@ -341,6 +342,7 @@ noUnnecessaryStringConstructorRule,
      noUnnecessaryToStringRule,
     noUnnecessaryToLocaleStringRule,
      noUnnecessaryTypeofRule,
+     noUnnecessaryTypeofStringRule,
      noUnnecessaryUndefinedReturnRule,
     noUnnecessaryNullCheckRule,
     noUnnecessaryNullCoalesceFallbackRule,
@@ -722,6 +724,7 @@ const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRu
 const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalAndTrueRule, 'no-unnecessary-logical-and-true')
 const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
+const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindLastIndex = adaptPluginRule(noUnnecessaryFindLastIndexRule, 'no-unnecessary-find-last-index')
 const adaptedNoUnnecessaryFindLast = adaptPluginRule(noUnnecessaryFindLastRule, 'no-unnecessary-find-last')
@@ -838,6 +841,7 @@ const adaptedNoUnnecessaryThrowNew = adaptPluginRule(noUnnecessaryThrowNewRule, 
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
 const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocaleStringRule, 'no-unnecessary-to-locale-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
+const adaptedNoUnnecessaryTypeofString = adaptPluginRule(noUnnecessaryTypeofStringRule, 'no-unnecessary-typeof-string')
 const adaptedNoUnnecessaryUndefinedReturn = adaptPluginRule(noUnnecessaryUndefinedReturnRule, 'no-unnecessary-undefined-return')
 const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
 const adaptedNoUnnecessaryNullCoalesceFallback = adaptPluginRule(noUnnecessaryNullCoalesceFallbackRule, 'no-unnecessary-null-coalesce-fallback')
@@ -1559,6 +1563,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-logical-and-true': adaptedNoUnnecessaryLogicalAndTrue,
      'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
+   'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
@@ -1612,6 +1617,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
    'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
+   'no-unnecessary-typeof-string': adaptedNoUnnecessaryTypeofString,
   'no-unnecessary-undefined-return': adaptedNoUnnecessaryUndefinedReturn,
    'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
    'no-unnecessary-null-coalesce-fallback': adaptedNoUnnecessaryNullCoalesceFallback,
@@ -2134,6 +2140,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-logical-and-true': 'patterns',
   'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
+  'no-unnecessary-math-max-single': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
@@ -2187,6 +2194,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-to-string': 'patterns',
    'no-unnecessary-to-locale-string': 'patterns',
    'no-unnecessary-typeof': 'patterns',
+   'no-unnecessary-typeof-string': 'patterns',
   'no-unnecessary-undefined-return': 'patterns',
   'no-unnecessary-null-check': 'patterns',
   'no-unnecessary-null-coalesce-fallback': 'patterns',
