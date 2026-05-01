@@ -264,7 +264,9 @@ noUnnecessaryAwaitForeachRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
   noUnnecessaryNewArrayRule,
-  noUnnecessaryNewObjectRule,
+   noUnnecessaryNewObjectRule,
+  noUnnecessaryNewStringRule,
+  noUnnecessaryNewNumberRule,
   noUnnecessaryParenthesesRule,
   noUnnecessaryLabelRule,
   noUnnecessaryLastIndexOfRule,
@@ -659,6 +661,8 @@ const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitiali
 const adaptedNoUnnecessaryJsonParse = adaptPluginRule(noUnnecessaryJsonParseRule, 'no-unnecessary-json-parse')
 const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 'no-unnecessary-new-array')
 const adaptedNoUnnecessaryNewObject = adaptPluginRule(noUnnecessaryNewObjectRule, 'no-unnecessary-new-object')
+const adaptedNoUnnecessaryNewString = adaptPluginRule(noUnnecessaryNewStringRule, 'no-unnecessary-new-string')
+const adaptedNoUnnecessaryNewNumber = adaptPluginRule(noUnnecessaryNewNumberRule, 'no-unnecessary-new-number')
 const adaptedNoUnnecessaryParentheses = adaptPluginRule(noUnnecessaryParenthesesRule, 'no-unnecessary-parentheses')
 const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-unnecessary-label')
 const adaptedNoUnnecessaryLastIndexOf = adaptPluginRule(noUnnecessaryLastIndexOfRule, 'no-unnecessary-last-index-of')
@@ -1455,7 +1459,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
   'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
-  'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
+   'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
+  'no-unnecessary-new-string': adaptedNoUnnecessaryNewString,
+  'no-unnecessary-new-number': adaptedNoUnnecessaryNewNumber,
   'no-unnecessary-parentheses': adaptedNoUnnecessaryParentheses,
   'no-unnecessary-label': adaptedNoUnnecessaryLabel,
   'no-unnecessary-last-index-of': adaptedNoUnnecessaryLastIndexOf,
@@ -1991,6 +1997,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-json-parse': 'patterns',
   'no-unnecessary-new-array': 'patterns',
   'no-unnecessary-new-object': 'patterns',
+  'no-unnecessary-new-string': 'patterns',
+  'no-unnecessary-new-number': 'patterns',
   'no-unnecessary-parentheses': 'patterns',
   'no-unnecessary-label': 'patterns',
   'no-unnecessary-last-index-of': 'patterns',
