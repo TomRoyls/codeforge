@@ -251,9 +251,10 @@ noUnnecessaryAwaitForeachRule,
    noUnnecessaryFillRule,
    noUnnecessaryFlatMapRule,
    noUnnecessaryFlatRule,
-    noUnnecessaryFragmentRule,
-  noUnnecessaryInitializationRule,
- noUnnecessaryIndexOfRule,
+    noUnnecessaryForEachRule,
+     noUnnecessaryFragmentRule,
+   noUnnecessaryInitializationRule,
+  noUnnecessaryIndexOfRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
   noUnnecessaryNewArrayRule,
@@ -261,8 +262,9 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryParenthesesRule,
   noUnnecessaryLabelRule,
   noUnnecessaryLastIndexOfRule,
-  noUnnecessaryLiteralKeyRule,
-noUnnecessaryNullWithStrictRule,
+   noUnnecessaryLiteralKeyRule,
+   noUnnecessaryMapRule,
+ noUnnecessaryNullWithStrictRule,
   noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
   noUnnecessaryPolyfillsRule,
@@ -642,12 +644,14 @@ const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-un
 const adaptedNoUnnecessaryLastIndexOf = adaptPluginRule(noUnnecessaryLastIndexOfRule, 'no-unnecessary-last-index-of')
 const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
+const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
 const adaptedNoUnnecessaryFind = adaptPluginRule(noUnnecessaryFindRule, 'no-unnecessary-find')
 const adaptedNoUnnecessaryFill = adaptPluginRule(noUnnecessaryFillRule, 'no-unnecessary-fill')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
 const adaptedNoUnnecessaryFlatMap = adaptPluginRule(noUnnecessaryFlatMapRule, 'no-unnecessary-flat-map')
+const adaptedNoUnnecessaryForEach = adaptPluginRule(noUnnecessaryForEachRule, 'no-unnecessary-for-each')
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
@@ -1397,8 +1401,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
   'no-unnecessary-double-negation': adaptedNoUnnecessaryDoubleNegation,
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
-  'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
-  'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
+   'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
+   'no-unnecessary-for-each': adaptedNoUnnecessaryForEach,
+   'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
    'no-unnecessary-find': adaptedNoUnnecessaryFind,
    'no-unnecessary-fill': adaptedNoUnnecessaryFill,
    'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
@@ -1413,8 +1418,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-parentheses': adaptedNoUnnecessaryParentheses,
   'no-unnecessary-label': adaptedNoUnnecessaryLabel,
   'no-unnecessary-last-index-of': adaptedNoUnnecessaryLastIndexOf,
-  'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
-  'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
+   'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
+   'no-unnecessary-map': adaptedNoUnnecessaryMap,
+   'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
   'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
@@ -1911,6 +1917,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
   'no-unnecessary-for-loop': 'patterns',
+  'no-unnecessary-for-each': 'patterns',
   'no-unnecessary-find-index': 'patterns',
   'no-unnecessary-find': 'patterns',
   'no-unnecessary-fill': 'patterns',
@@ -1928,6 +1935,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-label': 'patterns',
   'no-unnecessary-last-index-of': 'patterns',
   'no-unnecessary-literal-key': 'patterns',
+  'no-unnecessary-map': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
