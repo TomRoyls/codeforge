@@ -155,6 +155,7 @@ import {
      noMisleadingArrayMethodRule,
     noMisleadingCharacterClassRule,
      noMisleadingInstantiationRule,
+     noMisleadingTernaryRule,
       noMixedEnumsRule,
       noMixedOperatorsRule,
        noMisusedNewRule,
@@ -263,7 +264,8 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryIndexOfRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
-  noUnnecessaryNewArrayRule,
+   noUnnecessaryNewArrayRule,
+   noUnnecessaryNewBooleanRule,
    noUnnecessaryNewObjectRule,
   noUnnecessaryNewStringRule,
   noUnnecessaryNewNumberRule,
@@ -660,6 +662,7 @@ const adaptedNoUnnecessaryEscapeInRegexp = adaptPluginRule(
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryJsonParse = adaptPluginRule(noUnnecessaryJsonParseRule, 'no-unnecessary-json-parse')
 const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 'no-unnecessary-new-array')
+const adaptedNoUnnecessaryNewBoolean = adaptPluginRule(noUnnecessaryNewBooleanRule, 'no-unnecessary-new-boolean')
 const adaptedNoUnnecessaryNewObject = adaptPluginRule(noUnnecessaryNewObjectRule, 'no-unnecessary-new-object')
 const adaptedNoUnnecessaryNewString = adaptPluginRule(noUnnecessaryNewStringRule, 'no-unnecessary-new-string')
 const adaptedNoUnnecessaryNewNumber = adaptPluginRule(noUnnecessaryNewNumberRule, 'no-unnecessary-new-number')
@@ -989,6 +992,7 @@ const adaptedNoMisleadingCharacterClass = adaptPluginRule(
   'no-misleading-character-class',
 )
 const adaptedNoMisleadingInstantiation = adaptPluginRule(noMisleadingInstantiationRule, 'no-misleading-instantiation')
+const adaptedNoMisleadingTernary = adaptPluginRule(noMisleadingTernaryRule, 'no-misleading-ternary')
 const adaptedNoMixedEnums = adaptPluginRule(noMixedEnumsRule, 'no-mixed-enums')
 const adaptedNoMixedOperators = adaptPluginRule(noMixedOperatorsRule, 'no-mixed-operators')
 const adaptedNoMisusedNew = adaptPluginRule(noMisusedNewRule, 'no-misused-new')
@@ -1332,7 +1336,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-magic-numbers': noMagicNumbersRule,
   'no-misleading-array-method': adaptedNoMisleadingArrayMethod,
   'no-misleading-character-class': adaptedNoMisleadingCharacterClass,
-  'no-misleading-instantiation': adaptedNoMisleadingInstantiation,
+   'no-misleading-instantiation': adaptedNoMisleadingInstantiation,
+   'no-misleading-ternary': adaptedNoMisleadingTernary,
   'no-mixed-enums': adaptedNoMixedEnums,
   'no-mixed-operators': adaptedNoMixedOperators,
   'no-misused-new': adaptedNoMisusedNew,
@@ -1458,7 +1463,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
-  'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
+   'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
+  'no-unnecessary-new-boolean': adaptedNoUnnecessaryNewBoolean,
    'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
   'no-unnecessary-new-string': adaptedNoUnnecessaryNewString,
   'no-unnecessary-new-number': adaptedNoUnnecessaryNewNumber,
@@ -1872,6 +1878,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-misleading-array-method': 'patterns',
     'no-misleading-character-class': 'patterns',
    'no-misleading-instantiation': 'patterns',
+   'no-misleading-ternary': 'patterns',
     'no-mixed-enums': 'patterns',
     'no-mixed-operators': 'patterns',
     'no-misused-new': 'patterns',
@@ -1995,7 +2002,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-instanceof-array': 'patterns',
   'no-unnecessary-initialization': 'patterns',
   'no-unnecessary-json-parse': 'patterns',
-  'no-unnecessary-new-array': 'patterns',
+   'no-unnecessary-new-array': 'patterns',
+  'no-unnecessary-new-boolean': 'patterns',
   'no-unnecessary-new-object': 'patterns',
   'no-unnecessary-new-string': 'patterns',
   'no-unnecessary-new-number': 'patterns',
