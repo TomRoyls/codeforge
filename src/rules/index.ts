@@ -249,6 +249,7 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryFindIndexRule,
    noUnnecessaryFindRule,
    noUnnecessaryFillRule,
+   noUnnecessaryFilterRule,
    noUnnecessaryFlatMapRule,
    noUnnecessaryFlatRule,
     noUnnecessaryForEachRule,
@@ -273,7 +274,8 @@ noUnnecessaryAwaitForeachRule,
    noUnnecessaryRegexConstructorRule,
    noUnnecessaryRegexRule,
 noUnnecessaryReturnAwaitRule,
-   noUnnecessaryReturnValueRule,
+   noUnnecessaryReduceRule,
+    noUnnecessaryReturnValueRule,
    noUnnecessaryReverseRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
@@ -649,6 +651,7 @@ const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'n
 const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
 const adaptedNoUnnecessaryFind = adaptPluginRule(noUnnecessaryFindRule, 'no-unnecessary-find')
 const adaptedNoUnnecessaryFill = adaptPluginRule(noUnnecessaryFillRule, 'no-unnecessary-fill')
+const adaptedNoUnnecessaryFilter = adaptPluginRule(noUnnecessaryFilterRule, 'no-unnecessary-filter')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
 const adaptedNoUnnecessaryFlatMap = adaptPluginRule(noUnnecessaryFlatMapRule, 'no-unnecessary-flat-map')
 const adaptedNoUnnecessaryForEach = adaptPluginRule(noUnnecessaryForEachRule, 'no-unnecessary-for-each')
@@ -667,6 +670,7 @@ const adaptedNoUnnecessaryRegexConstructor = adaptPluginRule(noUnnecessaryRegexC
 const adaptedNoUnnecessaryRegex = adaptPluginRule(noUnnecessaryRegexRule, 'no-unnecessary-regex')
 const adaptedNoUnnecessaryReturnAwait = adaptPluginRule(noUnnecessaryReturnAwaitRule, 'no-unnecessary-return-await')
 const adaptedNoUnnecessaryReturnValue = adaptPluginRule(noUnnecessaryReturnValueRule, 'no-unnecessary-return-value')
+const adaptedNoUnnecessaryReduce = adaptPluginRule(noUnnecessaryReduceRule, 'no-unnecessary-reduce')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
@@ -1405,7 +1409,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-for-each': adaptedNoUnnecessaryForEach,
    'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
    'no-unnecessary-find': adaptedNoUnnecessaryFind,
-   'no-unnecessary-fill': adaptedNoUnnecessaryFill,
+   'no-unnecessary-filter': adaptedNoUnnecessaryFilter,
+    'no-unnecessary-fill': adaptedNoUnnecessaryFill,
    'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
    'no-unnecessary-flat-map': adaptedNoUnnecessaryFlatMap,
    'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
@@ -1429,7 +1434,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-regex-constructor': adaptedNoUnnecessaryRegexConstructor,
   'no-unnecessary-regex': adaptedNoUnnecessaryRegex,
   'no-unnecessary-return-await': adaptedNoUnnecessaryReturnAwait,
-  'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
+   'no-unnecessary-reduce': adaptedNoUnnecessaryReduce,
+   'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
   'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
@@ -1920,6 +1926,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-for-each': 'patterns',
   'no-unnecessary-find-index': 'patterns',
   'no-unnecessary-find': 'patterns',
+  'no-unnecessary-filter': 'patterns',
   'no-unnecessary-fill': 'patterns',
   'no-unnecessary-flat': 'patterns',
   'no-unnecessary-flat-map': 'patterns',
@@ -1958,6 +1965,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-regex-constructor': 'patterns',
   'no-unnecessary-regex': 'patterns',
   'no-unnecessary-return-await': 'patterns',
+  'no-unnecessary-reduce': 'patterns',
   'no-unnecessary-return-value': 'patterns',
   'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-join': 'patterns',
