@@ -225,7 +225,8 @@ import {
      noUnfinishedTodosRule,
      noUnnecessaryConditionRule,
      noUnnecessaryEntriesRule,
-     noUnnecessaryDoubleNegationRule,
+      noUnnecessaryDoubleNegationRule,
+     noUnnecessaryDoubleEqualsRule,
 noUnnecessaryAssertRule,
   noUnnecessaryBignumberRule,
   noUnnecessaryBlockRule,
@@ -242,7 +243,8 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryBooleanRule,
      noUnnecessaryBooleanComparisonRule,
  noUnnecessaryBooleanLiteralCompareRule,
-  noUnnecessaryBooleanConstructorRule,
+   noUnnecessaryBooleanConstructorRule,
+   noUnnecessaryBooleanWrapperRule,
    noUnnecessaryCallbackWrapperRule,
   noUnnecessaryClassRule,
   noUnnecessaryDestructuringRule,
@@ -651,6 +653,7 @@ const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'n
 const adaptedNoUnnecessaryBooleanComparison = adaptPluginRule(noUnnecessaryBooleanComparisonRule, 'no-unnecessary-boolean-comparison')
 const adaptedNoUnnecessaryBooleanLiteralCompare = adaptPluginRule(noUnnecessaryBooleanLiteralCompareRule, 'no-unnecessary-boolean-literal-compare')
 const adaptedNoUnnecessaryBooleanConstructor = adaptPluginRule(noUnnecessaryBooleanConstructorRule, 'no-unnecessary-boolean-constructor')
+const adaptedNoUnnecessaryBooleanWrapper = adaptPluginRule(noUnnecessaryBooleanWrapperRule, 'no-unnecessary-boolean-wrapper')
 const adaptedNoUnnecessaryCallbackWrapper = adaptPluginRule(noUnnecessaryCallbackWrapperRule, 'no-unnecessary-callback-wrapper')
 const adaptedNoUnnecessaryClass = adaptPluginRule(noUnnecessaryClassRule, 'no-unnecessary-class')
 const adaptedNoUnnecessaryDestructuring = adaptPluginRule(noUnnecessaryDestructuringRule, 'no-unnecessary-destructuring')
@@ -658,6 +661,7 @@ const adaptedNoUnnecessaryConcat = adaptPluginRule(noUnnecessaryConcatRule, 'no-
 const adaptedNoUnnecessaryComputedKey = adaptPluginRule(noUnnecessaryComputedKeyRule, 'no-unnecessary-computed-key')
 const adaptedNoUnnecessaryEntries = adaptPluginRule(noUnnecessaryEntriesRule, 'no-unnecessary-entries')
 const adaptedNoUnnecessaryDoubleNegation = adaptPluginRule(noUnnecessaryDoubleNegationRule, 'no-unnecessary-double-negation')
+const adaptedNoUnnecessaryDoubleEquals = adaptPluginRule(noUnnecessaryDoubleEqualsRule, 'no-unnecessary-double-equals')
 const adaptedNoUnnecessaryEscapeInRegexp = adaptPluginRule(
   noUnnecessaryEscapeInRegexpRule,
   'no-unnecessary-escape-in-regexp',
@@ -1446,7 +1450,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
    'no-unnecessary-boolean-comparison': adaptedNoUnnecessaryBooleanComparison,
    'no-unnecessary-boolean-literal-compare': adaptedNoUnnecessaryBooleanLiteralCompare,
-   'no-unnecessary-boolean-constructor': adaptedNoUnnecessaryBooleanConstructor,
+    'no-unnecessary-boolean-constructor': adaptedNoUnnecessaryBooleanConstructor,
+   'no-unnecessary-boolean-wrapper': adaptedNoUnnecessaryBooleanWrapper,
   'no-unnecessary-callback-wrapper': adaptedNoUnnecessaryCallbackWrapper,
   'no-unnecessary-class': adaptedNoUnnecessaryClass,
   'no-unnecessary-destructuring': adaptedNoUnnecessaryDestructuring,
@@ -1454,6 +1459,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
    'no-unnecessary-entries': adaptedNoUnnecessaryEntries,
    'no-unnecessary-double-negation': adaptedNoUnnecessaryDoubleNegation,
+   'no-unnecessary-double-equals': adaptedNoUnnecessaryDoubleEquals,
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
    'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
    'no-unnecessary-for-each': adaptedNoUnnecessaryForEach,
@@ -1987,14 +1993,16 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-boolean': 'patterns',
    'no-unnecessary-boolean-comparison': 'patterns',
     'no-unnecessary-boolean-literal-compare': 'patterns',
-    'no-unnecessary-boolean-constructor': 'patterns',
+     'no-unnecessary-boolean-constructor': 'patterns',
+    'no-unnecessary-boolean-wrapper': 'patterns',
      'no-unnecessary-callback-wrapper': 'patterns',
      'no-unnecessary-class': 'patterns',
   'no-unnecessary-destructuring': 'patterns',
      'no-unnecessary-concat': 'patterns',
     'no-unnecessary-computed-key': 'patterns',
     'no-unnecessary-entries': 'patterns',
-     'no-unnecessary-double-negation': 'patterns',
+      'no-unnecessary-double-negation': 'patterns',
+     'no-unnecessary-double-equals': 'patterns',
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
   'no-unnecessary-for-loop': 'patterns',
