@@ -275,7 +275,9 @@ noUnnecessaryAwaitExpressionRule,
    noUnnecessaryJsonParseRule,
    noUnnecessaryNewArrayRule,
    noUnnecessaryNewBooleanRule,
+   noUnnecessaryNewMapRule,
    noUnnecessaryNewObjectRule,
+   noUnnecessaryNewSetRule,
   noUnnecessaryNewStringRule,
   noUnnecessaryNewNumberRule,
   noUnnecessaryParenthesesRule,
@@ -701,7 +703,9 @@ const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitiali
 const adaptedNoUnnecessaryJsonParse = adaptPluginRule(noUnnecessaryJsonParseRule, 'no-unnecessary-json-parse')
 const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 'no-unnecessary-new-array')
 const adaptedNoUnnecessaryNewBoolean = adaptPluginRule(noUnnecessaryNewBooleanRule, 'no-unnecessary-new-boolean')
+const adaptedNoUnnecessaryNewMap = adaptPluginRule(noUnnecessaryNewMapRule, 'no-unnecessary-new-map')
 const adaptedNoUnnecessaryNewObject = adaptPluginRule(noUnnecessaryNewObjectRule, 'no-unnecessary-new-object')
+const adaptedNoUnnecessaryNewSet = adaptPluginRule(noUnnecessaryNewSetRule, 'no-unnecessary-new-set')
 const adaptedNoUnnecessaryNewString = adaptPluginRule(noUnnecessaryNewStringRule, 'no-unnecessary-new-string')
 const adaptedNoUnnecessaryNewNumber = adaptPluginRule(noUnnecessaryNewNumberRule, 'no-unnecessary-new-number')
 const adaptedNoUnnecessaryParentheses = adaptPluginRule(noUnnecessaryParenthesesRule, 'no-unnecessary-parentheses')
@@ -1533,7 +1537,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
    'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
   'no-unnecessary-new-boolean': adaptedNoUnnecessaryNewBoolean,
+  'no-unnecessary-new-map': adaptedNoUnnecessaryNewMap,
    'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
+   'no-unnecessary-new-set': adaptedNoUnnecessaryNewSet,
   'no-unnecessary-new-string': adaptedNoUnnecessaryNewString,
   'no-unnecessary-new-number': adaptedNoUnnecessaryNewNumber,
   'no-unnecessary-parentheses': adaptedNoUnnecessaryParentheses,
@@ -2102,7 +2108,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-json-parse': 'patterns',
    'no-unnecessary-new-array': 'patterns',
   'no-unnecessary-new-boolean': 'patterns',
+  'no-unnecessary-new-map': 'patterns',
   'no-unnecessary-new-object': 'patterns',
+  'no-unnecessary-new-set': 'patterns',
   'no-unnecessary-new-string': 'patterns',
   'no-unnecessary-new-number': 'patterns',
   'no-unnecessary-parentheses': 'patterns',
