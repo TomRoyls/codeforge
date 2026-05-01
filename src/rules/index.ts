@@ -45,7 +45,8 @@ import {
        noImplicitUndefinedRule,
        noMisleadingAssertionRule,
        noRequireImportsRule,
-      } from './correctness/index.js'
+      noCompareNegationRule,
+       } from './correctness/index.js'
 // Dependencies rules
  import {
    consistentImportsRule,
@@ -308,6 +309,7 @@ noUnnecessaryStringConcatRule,
      noUnnecessaryToSortedRule,
      noUnnecessaryToSplicedRule,
      noUnnecessaryToStringRule,
+    noUnnecessaryToLocaleStringRule,
     noUnnecessaryTypeofRule,
     noUnnecessaryNullCheckRule,
    noUnnecessaryOptionalChainRule,
@@ -771,6 +773,7 @@ const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
+const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocaleStringRule, 'no-unnecessary-to-locale-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
 const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
 const adaptedNoUnnecessaryOptionalChain = adaptPluginRule(noUnnecessaryOptionalChainRule, 'no-unnecessary-optional-chain')
@@ -1032,6 +1035,7 @@ const adaptedNoUnsafeEnumComparison = adaptPluginRule(noUnsafeEnumComparisonRule
 const adaptedNoUnsafeFinally = adaptPluginRule(noUnsafeFinallyRule, 'no-unsafe-finally')
 const adaptedNoUnsafeNegation = adaptPluginRule(noUnsafeNegationRule, 'no-unsafe-negation')
 const adaptedNoRequireImports = adaptPluginRule(noRequireImportsRule, 'no-require-imports')
+const adaptedNoCompareNegation = adaptPluginRule(noCompareNegationRule, 'no-compare-negation')
 const adaptedNoUnsafeOptionalChaining = adaptPluginRule(
   noUnsafeOptionalChainingRule,
   'no-unsafe-optional-chaining',
@@ -1496,6 +1500,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
     'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
     'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
+    'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
   'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
@@ -1555,6 +1560,7 @@ export const allRules: Record<string, RuleDefinition> = {
        'no-implicit-undefined': adaptedNoImplicitUndefined,
        'no-misleading-assertion': adaptedNoMisleadingAssertion,
        'no-require-imports': adaptedNoRequireImports,
+       'no-compare-negation': adaptedNoCompareNegation,
        'no-useless-promise': adaptedNoUselessPromise,
      'no-useless-rename': adaptedNoUselessRename,
   'no-useless-comparison': noUselessComparisonRule,
@@ -1838,7 +1844,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
       'no-approximate-constants': 'correctness',
       'no-implicit-undefined': 'correctness',
 'no-misleading-assertion': 'correctness',
-  'no-require-imports': 'correctness',
+   'no-require-imports': 'correctness',
+   'no-compare-negation': 'patterns',
   'no-implicit-side-effects': 'patterns',
   'no-implied-eval': 'patterns',
  'no-implicit-map': 'patterns',
@@ -2027,7 +2034,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-to-sorted': 'patterns',
   'no-unnecessary-to-spliced': 'patterns',
    'no-unnecessary-then': 'patterns',
-  'no-unnecessary-to-string': 'patterns',
+   'no-unnecessary-to-string': 'patterns',
+   'no-unnecessary-to-locale-string': 'patterns',
   'no-unnecessary-typeof': 'patterns',
   'no-unnecessary-null-check': 'patterns',
   'no-unnecessary-optional-chain': 'patterns',

@@ -242,9 +242,13 @@ export const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefin
            'no-unsafe-negation': adaptPluginRule(m.noUnsafeNegationRule, 'no-unsafe-negation'),
         })),
        'no-require-imports': () =>
-        import('./correctness/index.js').then((m) => ({
-           'no-require-imports': adaptPluginRule(m.noRequireImportsRule, 'no-require-imports'),
-        })),
+         import('./correctness/index.js').then((m) => ({
+            'no-require-imports': adaptPluginRule(m.noRequireImportsRule, 'no-require-imports'),
+         })),
+       'no-compare-negation': () =>
+         import('./correctness/index.js').then((m) => ({
+            'no-compare-negation': adaptPluginRule(m.noCompareNegationRule, 'no-compare-negation'),
+         })),
         'no-eval': () =>
      import('./security/index.js').then((m) => ({
        'no-eval': adaptPluginRule(m.noEvalRule, 'no-eval'),
@@ -810,6 +814,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
        'no-unnecessary-to-sorted',
        'no-unnecessary-to-spliced',
        'no-unnecessary-to-string',
+       'no-unnecessary-to-locale-string',
        'no-unnecessary-typeof',
      'no-unnecessary-null-check',
        'no-unnecessary-optional-chain',

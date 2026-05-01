@@ -14,6 +14,7 @@ import { noImplicitUndefinedRule } from './no-implicit-undefined.js'
 import { noMisleadingAssertionRule } from './no-misleading-assertion.js'
 import { noUnsafeNegationRule } from '../patterns/no-unsafe-negation.js'
 import { noRequireImportsRule } from './no-require-imports.js'
+import { noCompareNegationRule } from './no-compare-negation.js'
 
 
 
@@ -34,6 +35,7 @@ export const correctnessRules = {
   'no-misleading-assertion': noMisleadingAssertionRule,
   'no-unsafe-negation': noUnsafeNegationRule,
   'no-require-imports': noRequireImportsRule,
+  'no-compare-negation': noCompareNegationRule,
 }
 
 export {noAsyncConstructorRule} from './no-async-constructor.js'
@@ -52,3 +54,4 @@ export {noImplicitUndefinedRule} from './no-implicit-undefined.js'
 export {noMisleadingAssertionRule} from './no-misleading-assertion.js'
 export {noUnsafeNegationRule} from '../patterns/no-unsafe-negation.js'
 export {noRequireImportsRule} from './no-require-imports.js'
+export {noCompareNegationRule} from './no-compare-negation.js'

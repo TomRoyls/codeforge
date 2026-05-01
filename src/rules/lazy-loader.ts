@@ -253,10 +253,14 @@ const RULE_MODULES: Record<string, () => Promise<Record<string, RuleDefinition>>
        import('./correctness/index.js').then((m) => ({
          'no-unsafe-negation': adaptPluginRule(m.noUnsafeNegationRule, 'no-unsafe-negation'),
        })),
-     'no-require-imports': () =>
-       import('./correctness/index.js').then((m) => ({
-         'no-require-imports': adaptPluginRule(m.noRequireImportsRule, 'no-require-imports'),
-       })),
+      'no-require-imports': () =>
+        import('./correctness/index.js').then((m) => ({
+          'no-require-imports': adaptPluginRule(m.noRequireImportsRule, 'no-require-imports'),
+        })),
+      'no-compare-negation': () =>
+        import('./correctness/index.js').then((m) => ({
+          'no-compare-negation': adaptPluginRule(m.noCompareNegationRule, 'no-compare-negation'),
+        })),
      'no-eval': () =>
   import('./security/index.js').then((m) => ({
     'no-eval': adaptPluginRule(m.noEvalRule, 'no-eval'),
@@ -831,7 +835,8 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
   'no-unnecessary-to-reversed',
   'no-unnecessary-to-sorted',
   'no-unnecessary-to-spliced',
-  'no-unnecessary-to-string',
+   'no-unnecessary-to-string',
+   'no-unnecessary-to-locale-string',
   'no-unnecessary-typeof',
      'no-unnecessary-null-check',
        'no-unnecessary-optional-chain',
@@ -1200,6 +1205,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-implicit-undefined': 'correctness',
     'no-misleading-assertion': 'correctness',
     'no-require-imports': 'correctness',
+    'no-compare-negation': 'patterns',
     'no-implicit-side-effects': 'patterns',
   'no-implied-eval': 'patterns',
   'no-implicit-map': 'patterns',
@@ -1393,7 +1399,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-to-spliced': 'patterns',
     'no-unnecessary-to-sorted': 'patterns',
    'no-unnecessary-then': 'patterns',
-   'no-unnecessary-to-string': 'patterns',
+    'no-unnecessary-to-string': 'patterns',
+    'no-unnecessary-to-locale-string': 'patterns',
   'no-unnecessary-typeof': 'patterns',
    'no-unnecessary-null-check': 'patterns',
    'no-unnecessary-optional-chain': 'patterns',
