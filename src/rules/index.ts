@@ -228,7 +228,8 @@ import {
       noUnnecessaryDoubleNegationRule,
      noUnnecessaryDoubleEqualsRule,
 noUnnecessaryAssertRule,
-  noUnnecessaryBignumberRule,
+   noUnnecessaryBignumberRule,
+   noUnnecessaryBitwiseNotRule,
   noUnnecessaryBlockRule,
    noUnnecessaryAsExpressionRule,
    noUnnecessaryAtRule,
@@ -281,7 +282,8 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
    noUnnecessaryPopRule,
-   noUnnecessaryPolyfillsRule,
+    noUnnecessaryPolyfillsRule,
+   noUnnecessaryPlusNewRule,
   noUnnecessaryQualifierRule,
   noUnnecessaryReadonlyRule,
    noUnnecessaryRegexConstructorRule,
@@ -646,6 +648,7 @@ const adaptedNoUnnecessaryAssign = adaptPluginRule(noUnnecessaryAssignRule, 'no-
 const adaptedNoUnnecessaryBindingPattern = adaptPluginRule(noUnnecessaryBindingPatternRule, 'no-unnecessary-binding-pattern')
 const adaptedNoUnnecessaryAssert = adaptPluginRule(noUnnecessaryAssertRule, 'no-unnecessary-assert')
 const adaptedNoUnnecessaryBignumber = adaptPluginRule(noUnnecessaryBignumberRule, 'no-unnecessary-bignumber')
+const adaptedNoUnnecessaryBitwiseNot = adaptPluginRule(noUnnecessaryBitwiseNotRule, 'no-unnecessary-bitwise-not')
 const adaptedNoUnnecessaryBlock = adaptPluginRule(noUnnecessaryBlockRule, 'no-unnecessary-block')
 const adaptedNoUnnecessaryAsExpression = adaptPluginRule(noUnnecessaryAsExpressionRule, 'no-unnecessary-as-expression')
 const adaptedNoUnnecessaryAt = adaptPluginRule(noUnnecessaryAtRule, 'no-unnecessary-at')
@@ -1114,6 +1117,7 @@ const adaptedNoTemplateCurlyInString = adaptPluginRule(noTemplateCurlyInStringRu
 const adaptedNoTernary = adaptPluginRule(noTernaryRule, 'no-ternary')
 const adaptedNoUnnecessaryPop = adaptPluginRule(noUnnecessaryPopRule, 'no-unnecessary-pop')
 const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule, 'no-unnecessary-polyfills')
+const adaptedNoUnnecessaryPlusNew = adaptPluginRule(noUnnecessaryPlusNewRule, 'no-unnecessary-plus-new')
 const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
 const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
 const adaptedNoUnnecessaryUnshift = adaptPluginRule(noUnnecessaryUnshiftRule, 'no-unnecessary-unshift')
@@ -1447,7 +1451,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-assign': adaptedNoUnnecessaryAssign,
   'no-unnecessary-binding-pattern': adaptedNoUnnecessaryBindingPattern,
   'no-unnecessary-assert': adaptedNoUnnecessaryAssert,
-  'no-unnecessary-bignumber': adaptedNoUnnecessaryBignumber,
+   'no-unnecessary-bignumber': adaptedNoUnnecessaryBignumber,
+  'no-unnecessary-bitwise-not': adaptedNoUnnecessaryBitwiseNot,
   'no-unnecessary-block': adaptedNoUnnecessaryBlock,
   'no-unnecessary-as-expression': adaptedNoUnnecessaryAsExpression,
    'no-unnecessary-at': adaptedNoUnnecessaryAt,
@@ -1500,6 +1505,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
    'no-unnecessary-pop': adaptedNoUnnecessaryPop,
    'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
+  'no-unnecessary-plus-new': adaptedNoUnnecessaryPlusNew,
   'no-unnecessary-qualifier': adaptedNoUnnecessaryQualifier,
   'no-unnecessary-readonly': adaptedNoUnnecessaryReadonly,
   'no-unnecessary-regex-constructor': adaptedNoUnnecessaryRegexConstructor,
@@ -1994,7 +2000,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-assign': 'patterns',
   'no-unnecessary-binding-pattern': 'patterns',
   'no-unnecessary-assert': 'patterns',
-  'no-unnecessary-bignumber': 'patterns',
+   'no-unnecessary-bignumber': 'patterns',
+  'no-unnecessary-bitwise-not': 'patterns',
   'no-unnecessary-block': 'patterns',
   'no-unnecessary-as-expression': 'patterns',
   'no-unnecessary-at': 'patterns',
@@ -2049,6 +2056,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-pop': 'patterns',
     'no-unnecessary-polyfills': 'patterns',
+   'no-unnecessary-plus-new': 'patterns',
    'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-shift': 'patterns',
    'no-unnecessary-slice': 'patterns',
