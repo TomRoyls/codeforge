@@ -303,6 +303,7 @@ noUnnecessaryStringConcatRule,
      noUnnecessaryThenRule,
      noUnnecessaryToReversedRule,
      noUnnecessaryToSortedRule,
+     noUnnecessaryToSplicedRule,
      noUnnecessaryToStringRule,
     noUnnecessaryTypeofRule,
     noUnnecessaryNullCheckRule,
@@ -319,7 +320,8 @@ noUnnecessaryParameterPropertyRule,
 noUnnecessaryTypeConstraintRule,
    noUnnecessaryTypeParametersRule,
    noUnnecessaryUnshiftRule,
-   noUnnecessaryVoidRule,
+    noUnnecessaryWithRule,
+    noUnnecessaryVoidRule,
   noUnnecessaryWaitRule,
    noUnneededTernaryRule,
   noUnreachableRule,
@@ -758,6 +760,7 @@ const adaptedNoUnnecessaryTemplateExpression = adaptPluginRule(
 )
 const adaptedNoUnnecessaryTemplateLiteral = adaptPluginRule(noUnnecessaryTemplateLiteralRule, 'no-unnecessary-template-literal')
 const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRule, 'no-unnecessary-to-reversed')
+const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule, 'no-unnecessary-to-spliced')
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
@@ -1077,6 +1080,7 @@ const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule
 const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
 const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
 const adaptedNoUnnecessaryUnshift = adaptPluginRule(noUnnecessaryUnshiftRule, 'no-unnecessary-unshift')
+const adaptedNoUnnecessaryWith = adaptPluginRule(noUnnecessaryWithRule, 'no-unnecessary-with')
 const adaptedNoUnnecessaryVoid = adaptPluginRule(noUnnecessaryVoidRule, 'no-unnecessary-void')
 const adaptedNoUnnecessaryWait = adaptPluginRule(noUnnecessaryWaitRule, 'no-unnecessary-wait')
 const adaptedNoUtilityTruthiness = adaptPluginRule(noUtilityTruthinessRule, 'no-utility-truthiness')
@@ -1478,8 +1482,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
    'no-unnecessary-then': adaptedNoUnnecessaryThen,
    'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
-   'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
-   'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
+    'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
+    'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
+    'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
   'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
@@ -1497,7 +1502,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-type-parameters': adaptedNoUnnecessaryTypeParameters,
    'no-unnecessary-unshift': adaptedNoUnnecessaryUnshift,
    'no-unnecessary-void': adaptedNoUnnecessaryVoid,
-  'no-unnecessary-wait': adaptedNoUnnecessaryWait,
+   'no-unnecessary-with': adaptedNoUnnecessaryWith,
+   'no-unnecessary-wait': adaptedNoUnnecessaryWait,
   'no-unneeded-ternary': adaptedNoUnneededTernary,
   'no-unreachable': adaptedNoUnreachable,
   'no-undefined': adaptedNoUndefined,
@@ -2004,6 +2010,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-template-literal': 'patterns',
   'no-unnecessary-to-reversed': 'patterns',
   'no-unnecessary-to-sorted': 'patterns',
+  'no-unnecessary-to-spliced': 'patterns',
    'no-unnecessary-then': 'patterns',
   'no-unnecessary-to-string': 'patterns',
   'no-unnecessary-typeof': 'patterns',
@@ -2022,7 +2029,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-type-parameters': 'patterns',
   'no-unnecessary-unshift': 'patterns',
    'no-unnecessary-void': 'patterns',
-  'no-unnecessary-wait': 'patterns',
+  'no-unnecessary-with': 'patterns',
+   'no-unnecessary-wait': 'patterns',
   'no-unneeded-ternary': 'patterns',
    'no-unreachable': 'patterns',
   'no-undefined': 'patterns',
