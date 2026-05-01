@@ -240,7 +240,8 @@ noUnnecessaryAssertRule,
    noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
 noUnnecessaryAwaitForeachRule,
-  noUnnecessaryAssignRule,
+noUnnecessaryAwaitExpressionRule,
+   noUnnecessaryAssignRule,
   noUnnecessaryBindingPatternRule,
   noUnnecessaryBooleanRule,
      noUnnecessaryBooleanComparisonRule,
@@ -337,7 +338,8 @@ noUnnecessaryParameterPropertyRule,
     noUnnecessaryElseRule,
     noUnnecessaryEveryRule,
     noUnnecessaryConstructorRule,
-     noUnnecessaryTernaryRule,
+      noUnnecessaryTernaryRule,
+     noUnnecessaryTernaryBooleanRule,
     noUnnecessaryTernaryAssignRule,
     noUnnecessaryTypeArgumentsRule,
 noUnnecessaryTypeConstraintRule,
@@ -648,6 +650,7 @@ const adaptedNoUnnecessaryCondition = adaptPluginRule(
 )
 const adaptedNoUnnecessaryAwait = adaptPluginRule(noUnnecessaryAwaitRule, 'no-unnecessary-await')
 const adaptedNoUnnecessaryAwaitForeach = adaptPluginRule(noUnnecessaryAwaitForeachRule, 'no-unnecessary-await-foreach')
+const adaptedNoUnnecessaryAwaitExpression = adaptPluginRule(noUnnecessaryAwaitExpressionRule, 'no-unnecessary-await-expression')
 const adaptedNoUnnecessaryAssign = adaptPluginRule(noUnnecessaryAssignRule, 'no-unnecessary-assign')
 const adaptedNoUnnecessaryBindingPattern = adaptPluginRule(noUnnecessaryBindingPatternRule, 'no-unnecessary-binding-pattern')
 const adaptedNoUnnecessaryAssert = adaptPluginRule(noUnnecessaryAssertRule, 'no-unnecessary-assert')
@@ -818,6 +821,7 @@ const adaptedNoUnnecessaryElse = adaptPluginRule(noUnnecessaryElseRule, 'no-unne
 const adaptedNoUnnecessaryEvery = adaptPluginRule(noUnnecessaryEveryRule, 'no-unnecessary-every')
 const adaptedNoUnnecessaryConstructor = adaptPluginRule(noUnnecessaryConstructorRule, 'no-unnecessary-constructor')
 const adaptedNoUnnecessaryTernary = adaptPluginRule(noUnnecessaryTernaryRule, 'no-unnecessary-ternary')
+const adaptedNoUnnecessaryTernaryBoolean = adaptPluginRule(noUnnecessaryTernaryBooleanRule, 'no-unnecessary-ternary-boolean')
 const adaptedNoUnnecessaryTernaryAssign = adaptPluginRule(noUnnecessaryTernaryAssignRule, 'no-unnecessary-ternary-assign')
 const adaptedNoUnusedVars = adaptPluginRule(noUnusedVarsRule, 'no-unused-vars')
 const adaptedNoUnusedPrivateMembers = adaptPluginRule(
@@ -1455,7 +1459,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unfinished-todos': adaptedNoUnfinishedTodos,
   'no-unnecessary-condition': adaptedNoUnnecessaryCondition,
   'no-unnecessary-await': adaptedNoUnnecessaryAwait,
-  'no-unnecessary-await-foreach': adaptedNoUnnecessaryAwaitForeach,
+   'no-unnecessary-await-foreach': adaptedNoUnnecessaryAwaitForeach,
+   'no-unnecessary-await-expression': adaptedNoUnnecessaryAwaitExpression,
   'no-unnecessary-assign': adaptedNoUnnecessaryAssign,
   'no-unnecessary-binding-pattern': adaptedNoUnnecessaryBindingPattern,
   'no-unnecessary-assert': adaptedNoUnnecessaryAssert,
@@ -1569,7 +1574,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-every': adaptedNoUnnecessaryEvery,
   'no-unnecessary-constructor': adaptedNoUnnecessaryConstructor,
   'no-unnecessary-ternary': adaptedNoUnnecessaryTernary,
-  'no-unnecessary-ternary-assign': adaptedNoUnnecessaryTernaryAssign,
+   'no-unnecessary-ternary-assign': adaptedNoUnnecessaryTernaryAssign,
+   'no-unnecessary-ternary-boolean': adaptedNoUnnecessaryTernaryBoolean,
   'no-unnecessary-type-arguments': adaptedNoUnnecessaryTypeArguments,
   'no-unnecessary-type-assertion': noUnnecessaryTypeAssertionRule,
   'no-unnecessary-type-constraint': adaptedNoUnnecessaryTypeConstraint,
@@ -2009,6 +2015,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unfinished-todos': 'patterns',
   'no-unnecessary-await': 'patterns',
   'no-unnecessary-await-foreach': 'patterns',
+  'no-unnecessary-await-expression': 'patterns',
   'no-unnecessary-assign': 'patterns',
   'no-unnecessary-binding-pattern': 'patterns',
   'no-unnecessary-assert': 'patterns',
@@ -2125,6 +2132,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
  'no-unnecessary-constructor': 'patterns',
   'no-unnecessary-ternary': 'patterns',
   'no-unnecessary-ternary-assign': 'patterns',
+  'no-unnecessary-ternary-boolean': 'patterns',
   'no-unnecessary-type-assertion': 'patterns',
   'no-unnecessary-type-constraint': 'patterns',
   'no-unnecessary-type-parameters': 'patterns',
