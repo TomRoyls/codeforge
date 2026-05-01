@@ -282,6 +282,7 @@ noUnnecessaryAwaitExpressionRule,
   noUnnecessaryLastIndexOfRule,
     noUnnecessaryLiteralKeyRule,
     noUnnecessaryLogicalAndTrueRule,
+    noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
  noUnnecessaryNullWithStrictRule,
   noUnnecessaryNumericLiteralRule,
@@ -339,6 +340,7 @@ noUnnecessaryParameterPropertyRule,
    noUnnecessaryPromiseWrapRule,
     noUnnecessaryPromiseResolveRule,
     noUnnecessaryPromiseAllRule,
+    noUnnecessaryPromiseRejectRule,
     noUnnecessaryEscapeRule,
     noUnnecessaryElseRule,
     noUnnecessaryEveryRule,
@@ -703,6 +705,7 @@ const adaptedNoUnnecessaryLastIndexOf = adaptPluginRule(noUnnecessaryLastIndexOf
 const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
 const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalAndTrueRule, 'no-unnecessary-logical-and-true')
+const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindLastIndex = adaptPluginRule(noUnnecessaryFindLastIndexRule, 'no-unnecessary-find-last-index')
@@ -827,6 +830,7 @@ const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParam
 const adaptedNoUnnecessaryPromiseWrap = adaptPluginRule(noUnnecessaryPromiseWrapRule, 'no-unnecessary-promise-wrap')
 const adaptedNoUnnecessaryPromiseResolve = adaptPluginRule(noUnnecessaryPromiseResolveRule, 'no-unnecessary-promise-resolve')
 const adaptedNoUnnecessaryPromiseAll = adaptPluginRule(noUnnecessaryPromiseAllRule, 'no-unnecessary-promise-all')
+const adaptedNoUnnecessaryPromiseReject = adaptPluginRule(noUnnecessaryPromiseRejectRule, 'no-unnecessary-promise-reject')
 const adaptedNoUnnecessaryEscape = adaptPluginRule(noUnnecessaryEscapeRule, 'no-unnecessary-escape')
 const adaptedNoUnnecessaryElse = adaptPluginRule(noUnnecessaryElseRule, 'no-unnecessary-else')
 const adaptedNoUnnecessaryEvery = adaptPluginRule(noUnnecessaryEveryRule, 'no-unnecessary-every')
@@ -1527,7 +1531,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-label': adaptedNoUnnecessaryLabel,
   'no-unnecessary-last-index-of': adaptedNoUnnecessaryLastIndexOf,
     'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
-    'no-unnecessary-logical-and-true': adaptedNoUnnecessaryLogicalAndTrue,
+     'no-unnecessary-logical-and-true': adaptedNoUnnecessaryLogicalAndTrue,
+     'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
@@ -1585,7 +1590,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-parameter-property': adaptedNoUnnecessaryParameterProperty,
    'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
     'no-unnecessary-promise-resolve': adaptedNoUnnecessaryPromiseResolve,
-    'no-unnecessary-promise-all': adaptedNoUnnecessaryPromiseAll,
+     'no-unnecessary-promise-all': adaptedNoUnnecessaryPromiseAll,
+     'no-unnecessary-promise-reject': adaptedNoUnnecessaryPromiseReject,
   'no-unnecessary-escape': adaptedNoUnnecessaryEscape,
   'no-unnecessary-else': adaptedNoUnnecessaryElse,
   'no-unnecessary-every': adaptedNoUnnecessaryEvery,
@@ -2091,6 +2097,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-last-index-of': 'patterns',
   'no-unnecessary-literal-key': 'patterns',
   'no-unnecessary-logical-and-true': 'patterns',
+  'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
@@ -2149,6 +2156,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-promise-wrap': 'patterns',
   'no-unnecessary-promise-resolve': 'patterns',
   'no-unnecessary-promise-all': 'patterns',
+  'no-unnecessary-promise-reject': 'patterns',
   'no-unnecessary-escape': 'patterns',
   'no-unnecessary-else': 'patterns',
   'no-unnecessary-every': 'patterns',
