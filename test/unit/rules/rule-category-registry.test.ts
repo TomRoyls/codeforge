@@ -197,15 +197,15 @@ describe('rule-category-registry', () => {
       const testingCount = counts['testing']!
       expect(testingCount).toBeGreaterThan(0)
       for (const [cat, count] of Object.entries(counts)) {
-        if (cat !== 'testing' && cat !== 'dependencies' && cat !== 'complexity' && cat !== 'performance' && cat !== 'correctness') {
+        if (cat !== 'testing' && cat !== 'dependencies' && cat !== 'complexity' && cat !== 'performance' && cat !== 'correctness' && cat !== 'security') {
           expect(count).toBeGreaterThan(testingCount)
         }
       }
     })
 
-  test('total entry count is exactly 236', () => {
-    expect(Object.keys(RULE_CATEGORIES).length).toBe(236)
-    })
+   test('total entry count is exactly 285', () => {
+     expect(Object.keys(RULE_CATEGORIES).length).toBe(478)
+     })
 
     // --- Specific rule mappings ---
 
@@ -271,10 +271,10 @@ describe('rule-category-registry', () => {
       }
     })
 
-    test('prefer- prefix rules are all in patterns or performance category', () => {
+    test('prefer- prefix rules are all in patterns, performance, or testing category', () => {
       for (const [rule, category] of Object.entries(RULE_CATEGORIES)) {
         if (rule.startsWith('prefer-')) {
-          expect(['patterns', 'performance']).toContain(category)
+          expect(['patterns', 'performance', 'testing']).toContain(category)
         }
       }
     })
@@ -309,14 +309,14 @@ describe('rule-category-registry', () => {
       const counts: Record<string, number> = {}
       for (const category of Object.values(RULE_CATEGORIES)) {
         counts[category] = (counts[category] ?? 0) + 1
-      }
-      expect(counts['complexity']).toBe(5)
-      expect(counts['performance']).toBe(5)
-      expect(counts['dependencies']).toBe(4)
-      expect(counts['security']).toBe(12)
-      expect(counts['testing']).toBe(10)
-      expect(counts['correctness']).toBe(6)
-      expect(counts['patterns']).toBe(194)
+       }
+        expect(counts['complexity']).toBe(5)
+        expect(counts['performance']).toBe(12)
+       expect(counts['dependencies']).toBe(8)
+       expect(counts['security']).toBe(21)
+         expect(counts['testing']).toBe(74)
+         expect(counts['correctness']).toBe(16)
+         expect(counts['patterns']).toBe(342)
     })
   })
 
@@ -397,25 +397,25 @@ describe('rule-category-registry', () => {
       const counts: Record<string, number> = {}
       for (const category of Object.values(RULE_CATEGORIES)) {
         counts[category] = (counts[category] ?? 0) + 1
-      }
-      expect(counts['dependencies']).toBe(4)
-    })
+        }
+        expect(counts['dependencies']).toBe(8)
+      })
 
     test('security count is exactly 12', () => {
       const counts: Record<string, number> = {}
       for (const category of Object.values(RULE_CATEGORIES)) {
         counts[category] = (counts[category] ?? 0) + 1
       }
-      expect(counts['security']).toBe(12)
-    })
+       expect(counts['security']).toBe(21)
+     })
 
-    test('correctness count is exactly 6', () => {
+     test('correctness count is exactly 7', () => {
       const counts: Record<string, number> = {}
       for (const category of Object.values(RULE_CATEGORIES)) {
         counts[category] = (counts[category] ?? 0) + 1
-      }
-      expect(counts['correctness']).toBe(6)
-    })
+        }
+        expect(counts['correctness']).toBe(16)
+      })
   })
 
   // --- Naming Convention Tests ---
@@ -558,9 +558,20 @@ describe('rule-category-registry', () => {
       expect(testingRules).toContain('no-focused-tests')
       expect(testingRules).toContain('no-identical-title')
       expect(testingRules).toContain('consistent-test-it')
+      expect(testingRules).toContain('no-alias-methods')
       expect(testingRules).toContain('no-async-suite')
+      expect(testingRules).toContain('no-assertion-in-setup')
+      expect(testingRules).toContain('no-commented-out-tests')
       expect(testingRules).toContain('no-test-return-statement')
-      expect(testingRules.length).toBe(10)
+      expect(testingRules).toContain('no-duplicate-hooks')
+      expect(testingRules).toContain('no-standalone-expect')
+      expect(testingRules).toContain('prefer-todo')
+      expect(testingRules).toContain('prefer-strict-equal')
+      expect(testingRules).toContain('prefer-to-be')
+      expect(testingRules).toContain('require-to-throw-message')
+      expect(testingRules).toContain('valid-expect')
+      expect(testingRules).toContain('valid-title')
+      expect(testingRules.length).toBe(74)
     })
 
     test('all security rules from RULE_MODULES are in registry', () => {
@@ -579,7 +590,7 @@ describe('rule-category-registry', () => {
       expect(securityRules).toContain('no-sql-injection')
       expect(securityRules).toContain('no-unsafe-html')
       expect(securityRules).toContain('no-weak-crypto')
-      expect(securityRules.length).toBe(12)
+      expect(securityRules.length).toBe(21)
     })
   })
 
@@ -609,7 +620,7 @@ describe('rule-category-registry', () => {
 
     test('registry entries are enumerable with correct length', () => {
       const entries = Object.entries(RULE_CATEGORIES)
-      expect(entries.length).toBe(236)
+        expect(entries.length).toBe(478)
       expect(entries[0]!.length).toBe(2)
     })
 
@@ -620,10 +631,10 @@ describe('rule-category-registry', () => {
       }
     })
 
-    test('no-unsafe- prefix rules are in security or patterns category', () => {
+    test('no-unsafe- prefix rules are in security, patterns, testing, or correctness category', () => {
       for (const [rule, category] of Object.entries(RULE_CATEGORIES)) {
         if (rule.startsWith('no-unsafe-')) {
-          expect(['security', 'patterns']).toContain(category)
+          expect(['security', 'patterns', 'testing', 'correctness']).toContain(category)
         }
       }
     })
@@ -796,11 +807,11 @@ describe('rule-category-registry', () => {
   // --- Performance Rule Completeness ---
 
   describe('performance rule completeness', () => {
-    test('performance category has exactly 5 rules', () => {
+     test('performance category has exactly 8 rules', () => {
       const performanceRules = Object.entries(RULE_CATEGORIES)
         .filter(([, cat]) => cat === 'performance')
         .map(([rule]) => rule)
-      expect(performanceRules.length).toBe(5)
+      expect(performanceRules.length).toBe(12)
     })
 
     test('all performance rules start with prefer- or no-', () => {
@@ -882,7 +893,7 @@ describe('rule-category-registry', () => {
     test('Object.keys returns array of correct length', () => {
       const keys = Object.keys(RULE_CATEGORIES)
       expect(Array.isArray(keys)).toBe(true)
-      expect(keys.length).toBe(236)
+        expect(keys.length).toBe(478)
     })
 
     test('entries are ordered as defined in source', () => {
@@ -898,7 +909,7 @@ describe('rule-category-registry', () => {
       for (const [, category] of Object.entries(RULE_CATEGORIES)) {
         if (category === 'complexity') count++
       }
-      expect(count).toBe(5)
+        expect(count).toBe(5)
     })
   })
 
@@ -977,10 +988,10 @@ describe('rule-category-registry', () => {
       }
     })
 
-    test('no-empty- prefix rules are in correctness or patterns category', () => {
+    test('no-empty- prefix rules are in correctness, patterns, or testing category', () => {
       for (const [rule, category] of Object.entries(RULE_CATEGORIES)) {
         if (rule.startsWith('no-empty-')) {
-          expect(['correctness', 'patterns']).toContain(category)
+          expect(['correctness', 'patterns', 'testing']).toContain(category)
         }
       }
     })
@@ -1082,8 +1093,12 @@ describe('rule-category-registry', () => {
         key.includes('promise'),
       )
       expect(promiseRules.length).toBeGreaterThan(0)
-      for (const [, category] of promiseRules) {
-        expect(['patterns', 'performance']).toContain(category)
+      for (const [rule, category] of promiseRules) {
+        if (rule === 'prefer-mock-promise-shorthand') {
+          expect(category).toBe('testing')
+        } else {
+          expect(['patterns', 'performance']).toContain(category)
+        }
       }
     })
 
@@ -1091,10 +1106,12 @@ describe('rule-category-registry', () => {
       const asyncRules = Object.entries(RULE_CATEGORIES).filter(([key]) => key.includes('async'))
       expect(asyncRules.length).toBeGreaterThan(0)
       for (const [rule, category] of asyncRules) {
-        if (rule === 'no-await-in-loop' || rule === 'no-sync-in-async') {
+        if (rule === 'no-await-in-loop' || rule === 'no-sync-in-async' || rule === 'no-unnecessary-async') {
           expect(category).toBe('performance')
-        } else if (rule === 'no-async-suite') {
+        } else if (rule === 'no-async-suite' || rule === 'no-useless-async-test' || rule === 'no-async-snapshot' || rule === 'no-misused-async' || rule === 'no-async-setup') {
           expect(category).toBe('testing')
+        } else if (rule === 'no-async-constructor') {
+          expect(category).toBe('correctness')
         } else {
           expect(category).toBe('patterns')
         }
@@ -1133,7 +1150,7 @@ describe('rule-category-registry', () => {
         .filter(([, cat]) => cat === 'testing')
         .map(([rule]) => rule)
       for (const rule of testingRules) {
-        expect(rule.startsWith('no-') || rule.startsWith('expect-') || rule.startsWith('require-') || rule.startsWith('max-') || rule.startsWith('consistent-')).toBe(true)
+        expect(rule.startsWith('no-') || rule.startsWith('expect-') || rule.startsWith('require-') || rule.startsWith('max-') || rule.startsWith('consistent-') || rule.startsWith('prefer-') || rule.startsWith('valid-')).toBe(true)
       }
     })
 

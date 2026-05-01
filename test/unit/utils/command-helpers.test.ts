@@ -51,10 +51,23 @@ vi.mock('../../../src/utils/logger.js', () => ({
 
 vi.mock('../../../src/rules/lazy-loader.js', () => ({
   lazyRuleLoader: {
+    getRuleIds: vi.fn().mockReturnValue(['rule-one', 'rule-two', 'rule-three']),
     loadAllRules: vi.fn().mockResolvedValue({
       'rule-one': { meta: { id: 'rule-one' } },
       'rule-two': { meta: { id: 'rule-two' } },
       'rule-three': { meta: { id: 'rule-three' } },
+    }),
+    loadRules: vi.fn().mockImplementation(async (ruleIds: string[]) => {
+      const all: Record<string, { meta: { id: string } }> = {
+        'rule-one': { meta: { id: 'rule-one' } },
+        'rule-two': { meta: { id: 'rule-two' } },
+        'rule-three': { meta: { id: 'rule-three' } },
+      }
+      const result: Record<string, { meta: { id: string } }> = {}
+      for (const id of ruleIds) {
+        if (all[id]) result[id] = all[id]
+      }
+      return result
     }),
   },
 }))
@@ -2220,11 +2233,9 @@ describe('command-helpers', () => {
 
       const registry = await setupRuleRegistryLazy(['rule-one'])
 
-      expect(mockRegister).toHaveBeenCalled()
-      expect(mockDisable).toHaveBeenCalledTimes(2)
-      expect(mockDisable).toHaveBeenCalledWith('rule-two')
-      expect(mockDisable).toHaveBeenCalledWith('rule-three')
-      expect(mockDisable).not.toHaveBeenCalledWith('rule-one')
+      expect(mockRegister).toHaveBeenCalledTimes(1)
+      expect(mockRegister).toHaveBeenCalledWith('rule-one', { meta: { id: 'rule-one' } }, 'style')
+      expect(mockDisable).not.toHaveBeenCalled()
       expect(registry).toBeDefined()
     })
 
@@ -2376,7 +2387,7 @@ describe('command-helpers', () => {
       expect(mockDisable).not.toHaveBeenCalled()
     })
 
-    test('should disable all rules when only unknown rules requested', async () => {
+    test('should not register any rules when only unknown rules requested', async () => {
       const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
 
@@ -2393,7 +2404,8 @@ describe('command-helpers', () => {
 
       await setupRuleRegistryLazy(['nonexistent'])
 
-      expect(mockDisable).toHaveBeenCalledTimes(3)
+      expect(mockRegister).not.toHaveBeenCalled()
+      expect(mockDisable).not.toHaveBeenCalled()
     })
 
     test('should register rules with rule definitions from lazy loader', async () => {
@@ -2433,9 +2445,9 @@ describe('command-helpers', () => {
 
       await setupRuleRegistryLazy(['rule-two'])
 
-      expect(mockDisable).toHaveBeenCalledTimes(2)
-      expect(mockDisable).toHaveBeenCalledWith('rule-one')
-      expect(mockDisable).toHaveBeenCalledWith('rule-three')
+      expect(mockRegister).toHaveBeenCalledTimes(1)
+      expect(mockRegister).toHaveBeenCalledWith('rule-two', { meta: { id: 'rule-two' } }, 'style')
+      expect(mockDisable).not.toHaveBeenCalled()
     })
 
     test('should return a registry with runRules method', async () => {
@@ -2493,8 +2505,10 @@ describe('command-helpers', () => {
 
       await setupRuleRegistryLazy(['rule-one', 'rule-three'])
 
-      expect(mockDisable).toHaveBeenCalledTimes(1)
-      expect(mockDisable).toHaveBeenCalledWith('rule-two')
+      expect(mockRegister).toHaveBeenCalledTimes(2)
+      expect(mockRegister).toHaveBeenCalledWith('rule-one', { meta: { id: 'rule-one' } }, 'style')
+      expect(mockRegister).toHaveBeenCalledWith('rule-three', { meta: { id: 'rule-three' } }, 'style')
+      expect(mockDisable).not.toHaveBeenCalled()
     })
   })
 

@@ -35,16 +35,29 @@ import {
   noEmptyCharacterClassRule,
   noEmptyFunctionRule,
   noThrowLiteralRule,
-  noUselessCatchRule,
-} from './correctness/index.js'
+    noUselessCatchRule,
+    noInvalidUseBeforeDefRule,
+     noImplicitGlobalsRule,
+     noNonNullAssertedOptionalChainRule,
+      noMisleadingSpreadRule,
+      noAsyncConstructorRule,
+      noApproximateConstantsRule,
+       noImplicitUndefinedRule,
+       noMisleadingAssertionRule,
+       noRequireImportsRule,
+      } from './correctness/index.js'
 // Dependencies rules
-import {
-  consistentImportsRule,
-  noBarrelImportsRule,
-  noCircularDepsRule,
-  noUnusedExportsRule,
-} from './dependencies/index.js'
-// Pattern rules
+ import {
+   consistentImportsRule,
+   noBarrelImportsRule,
+   noCircularDepsRule,
+    noUnusedExportsRule,
+    noCjsImportsRule,
+    noDynamicImportRule,
+    noImplicitDependenciesRule,
+    noGitDependenciesRule,
+  } from './dependencies/index.js'
+ // Pattern rules
 import {
   consistentTypeExportsRule,
   // Orphan pattern rules
@@ -59,112 +72,240 @@ import {
   maxUnionSizeRule,
   noAlertRule,
   noArrayConstructorRule,
-  noArrayDestructuringRule,
-  noAsyncPromiseExecutorRule,
-  noAsyncWithoutAwaitRule,
-  noBitwiseRule,
-  noCallerRule,
-  noCaseDeclarationsRule,
+   noArrayDestructuringRule,
+   noAsyncPromiseExecutorRule,
+   noAsyncForeachRule,
+   noAsyncWithoutAwaitRule,
+   noBitwiseRule,
+   noBufferConstructorRule,
+   noCallerRule,
+   noCatchShadowRule,
+   noCaseDeclarationsRule,
   noClassAssignRule,
-  noCollectionSizeMischeckRule,
-  noCompareNegZeroRule,
-  noCondAssignRule,
-  noConfusingVoidExpressionRule,
-  noConsoleLogRule,
+   noCollectionSizeMischeckRule,
+   noCompareNegZeroRule,
+    noCommutativeOpEqualRule,
+    noComputedKeysRule,
+     noCondAssignRule,
+   noConfusingVoidExpressionRule,
+   noConfusingArrowRule,
+   noConsoleLogRule,
   noConstantConditionRule,
   noConstAssignRule,
   noConstEnumRule,
-  noConstructorReturnRule,
-  noControlRegexRule,
+   noConstructorReturnRule,
+   noConstructorSuperRule,
+   noContinueRule,
+   noControlRegexRule,
   noDebuggerRule,
   noDeleteVarRule,
-  noDeprecatedImportsRule,
-  noDivRegexRule,
-  noDupeArgsRule,
+   noDeprecatedImportsRule,
+   noDivRegexRule,
+   noDoubleNegationRule,
+   noDupeArgsRule,
   noDupeClassMembersRule,
   noDupeKeysRule,
-  noDuplicateCaseRule,
-  noDuplicateCodeRule,
-  noDuplicateElseIfRule,
+   noDuplicateCaseRule,
+     noDuplicateCodeRule,
+     noDuplicateConditionRule,
+     noExcessiveComplexityRule,
+      noEmptyAlternativeRule,
+     noDuplicateElseIfRule,
   noDuplicateImportsRule,
   noDuplicateStringsInArrayRule,
   noElseReturnRule,
   noEmptyPatternRule,
   noEmptyRule,
-  noEmptyStaticBlockRule,
-  noExAssignRule,
-  noExplicitAnyRule,
+   noEmptyStaticBlockRule,
+  noEqNullRule,
+   noExAssignRule,
+   noExportDefaultRule,
+   noExplicitAnyRule,
   noExtendNativeRule,
   noExtraBooleanCastRule,
+  noExtraParensRule,
+  noExtraSemiRule,
   noFallthroughRule,
-  noFloatingPromisesRule,
-  noFuncAssignRule,
-  noGlobalAssignRule,
-  noImplicitCoercionRule,
+   noFloatingPromisesRule,
+   noFloatingPromisesReturnedRule,
+   noFloatingDecimalRule,
+    noFuncAssignRule,
+    noHexEscapeRule,
+    noOctalEscapeRule,
+    noGlobalAssignRule,
+   noImplicitCoercionRule,
   noImplicitSideEffectsRule,
-  noImpliedEvalRule,
-  noImportAssignRule,
-  noInferrableTypesRule,
-  noInvalidRegexpRule,
+   noImpliedEvalRule,
+    noImplicitMapRule,
+   noImportAssignRule,
+   noInferrableTypesRule,
+   noInlineCommentsRule,
+   noInnerDeclarationsRule,
+   noInvalidRegexpRule,
   noIrregularWhitespaceRule,
   noIteratorRule,
   noLabelVarRule,
+  noLoneBlocksRule,
   noLonelyIfRule,
-  noLoopFuncRule,
-  noLossOfPrecisionRule,
-  noMisleadingCharacterClassRule,
-  noMisusedPromisesRule,
-  noMultiSpacesRule,
-  noNamespaceRule,
-  noNestedTernaryRule,
+   noLoopFuncRule,
+   noLabelsRule,
+    noLossOfPrecisionRule,
+     noMeaninglessVoidRule,
+     noMisleadingArrayMethodRule,
+    noMisleadingCharacterClassRule,
+     noMisleadingInstantiationRule,
+      noMixedEnumsRule,
+      noMixedOperatorsRule,
+       noMisusedNewRule,
+   noMultiAssignRule,
+   noMultipleEmptyLinesRule,
+    noMultiSpacesRule,
+  noMultiStrRule,
+    noNamespaceRule,
+    noNegatedConditionRule,
+    noNegatedEqNullRule,
+    noNestedTernaryRule,
   noNewFuncRule,
-  noNewNativeNonconstructorRule,
-  noNewWrappersRule,
+   noNewNativeNonconstructorRule,
+   noNewSymbolRule,
+   noNewWrappersRule,
   noNonNullAssertionRule,
   noNonoctalDecimalEscapeRule,
   noObjCallsRule,
-  noObjectConstructorRule,
-  noOctalRule,
-  noParamReassignRule,
-  noPromiseAsBooleanRule,
-  noPrototypeBuiltinsRule,
-  noRedeclareRule,
+   noObjectConstructorRule,
+   noOctalRule,
+   noParamReassignRule,
+  noPlusplusRule,
+   noPromiseAsBooleanRule,
+   noPrototypeBuiltinsRule,
+    noPropertyRenameRule,
+    noPropertySignatureStyleRule,
+   noRedeclareRule,
   noRedundantBooleanRule,
-  noRegexSpacesRule,
-  noReturnAssignRule,
+  noRedundantOptionalChainRule,
+ noRedundantUseStrictRule,
+ noRedundantTypeConstituentsRule,
+   noRegexSpacesRule,
+   noRestrictedExportsRule,
+   noRestrictedSyntaxRule,
+   noReturnAssignRule,
   noReturnAwaitRule,
   noReturnOrAwaitRule,
   noSameSideConditionsRule,
-  noSelfAssignRule,
-  noSequencesRule,
+   noSelfAssignRule,
+   noSelfCompareRule,
+   noSequencesRule,
   noSetterReturnRule,
   noShadowRestrictedNamesRule,
   noShadowRule,
+   noScriptUrlRule,
   noSimplifiablePatternRule,
-  noSparseArraysRule,
-  noStringConcatRule,
-  noTemplateCurlyInStringRule,
+    noSparseArraysRule,
+   noStaticOnlyClassRule,
+   noStringConcatRule,
+    noStringCaseConvertRule,
+   noSuspiciousCommentRule,
+   noTabsRule,
+   noTemplateCurlyInStringRule,
+  noTernaryRule,
   noThenableRule,
   noThisBeforeSuperRule,
-  noThrowSyncRule,
-  noTypeOnlyReturnRule,
-  noUnassignedVarsRule,
-  noUndefRule,
-  noUnexpectedMultilineRule,
-  noUnfinishedTodosRule,
-  noUnnecessaryConditionRule,
-  noUnnecessaryEscapeInRegexpRule,
+   noThisAliasRule,
+    noThrowSyncRule,
+   noTrailingSpacesRule,
+   noTypeOnlyReturnRule,
+   noTypeAliasSingleUnionRule,
+   noUnicodeBomRule,
+   noUnassignedVarsRule,
+   noUndefRule,
+   noUnexpectedMultilineRule,
+   noUnboundPromiseRule,
+     noUnfinishedTodosRule,
+     noUnnecessaryConditionRule,
+    noUnnecessaryDoubleNegationRule,
+noUnnecessaryAssertRule,
+  noUnnecessaryBignumberRule,
+  noUnnecessaryBlockRule,
+   noUnnecessaryAsExpressionRule,
+  noUnnecessaryAtobRule,
+  noUnnecessaryBtoaRule,
+   noUnnecessaryArrayFromRule,
+  noUnnecessaryAsyncFunctionRule,
+  noUnnecessaryAwaitRule,
+noUnnecessaryAwaitForeachRule,
+  noUnnecessaryAssignRule,
+  noUnnecessaryBindingPatternRule,
+  noUnnecessaryBooleanRule,
+     noUnnecessaryBooleanComparisonRule,
+ noUnnecessaryBooleanLiteralCompareRule,
+  noUnnecessaryBooleanConstructorRule,
+   noUnnecessaryCallbackWrapperRule,
+  noUnnecessaryClassRule,
+  noUnnecessaryDestructuringRule,
+   noUnnecessaryConcatRule,
+  noUnnecessaryComputedKeyRule,
+       noUnnecessaryEscapeInRegexpRule,
+ noUnnecessaryForLoopRule,
+ noUnnecessaryFlatRule,
+   noUnnecessaryFragmentRule,
+ noUnnecessaryInitializationRule,
+ noUnnecessaryInstanceofArrayRule,
+   noUnnecessaryJsonParseRule,
+  noUnnecessaryNewArrayRule,
+  noUnnecessaryNewObjectRule,
+  noUnnecessaryParenthesesRule,
+  noUnnecessaryLabelRule,
+  noUnnecessaryLiteralKeyRule,
+noUnnecessaryNullWithStrictRule,
+  noUnnecessaryNumericLiteralRule,
+  noUnnecessaryNumericSeparatorRule,
   noUnnecessaryPolyfillsRule,
   noUnnecessaryQualifierRule,
-  noUnnecessarySliceRule,
-  noUnnecessaryStringConcatRule,
-  noUnnecessaryTemplateExpressionRule,
-  noUnnecessaryTypeArgumentsRule,
-  noUnnecessaryTypeConstraintRule,
-  noUnneededTernaryRule,
+  noUnnecessaryReadonlyRule,
+   noUnnecessaryRegexConstructorRule,
+   noUnnecessaryRegexRule,
+noUnnecessaryReturnAwaitRule,
+   noUnnecessaryReturnValueRule,
+  noUnnecessaryReverseRule,
+  noUnnecessaryJoinRule,
+   noUnnecessarySliceRule,
+  noUnnecessarySpreadRule,
+noUnnecessaryStringConcatRule,
+  noUnnecessaryStringSplitRule,
+   noUnnecessaryStringifyRule,
+    noUnnecessaryStringToNumberRule,
+   noUnnecessaryParseFloatRule,
+    noUnnecessaryParseIntRule,
+   noUnnecessaryIsFiniteRule,
+    noUnnecessaryIsNanRule,
+   noUnnecessaryDecodeUriRule,
+   noUnnecessaryEncodeUriRule,
+     noUnnecessaryTemplateExpressionRule,
+  noUnnecessaryTemplateLiteralRule,
+     noUnnecessaryThenRule,
+    noUnnecessaryToStringRule,
+    noUnnecessaryTypeofRule,
+    noUnnecessaryNullCheckRule,
+   noUnnecessaryOptionalChainRule,
+noUnnecessaryParameterPropertyRule,
+  noUnnecessaryPromiseWrapRule,
+    noUnnecessaryEscapeRule,
+    noUnnecessaryElseRule,
+    noUnnecessaryConstructorRule,
+     noUnnecessaryTernaryRule,
+    noUnnecessaryTernaryAssignRule,
+    noUnnecessaryTypeArgumentsRule,
+noUnnecessaryTypeConstraintRule,
+   noUnnecessaryTypeParametersRule,
+  noUnnecessaryVoidRule,
+  noUnnecessaryWaitRule,
+   noUnneededTernaryRule,
   noUnreachableRule,
+  noUndefinedRule,
+  noUnderscoreDangleRule,
   noUnsafeAssignmentRule,
   noUnsafeDeclarationMergingRule,
+  noUnsafeEnumComparisonRule,
   noUnsafeFinallyRule,
   noUnsafeNegationRule,
   noUnsafeOptionalChainingRule,
@@ -172,67 +313,94 @@ import {
   noUnusedLabelsRule,
   noUnusedPrivateMembersRule,
   noUnusedVarsRule,
-  noUselessAssignmentRule,
-  noUselessBackreferenceRule,
-  noUselessComparisonRule,
-  noUselessConcatRule,
-  noUselessConstructorRule,
-  noUselessEscapeRule,
-  noUselessFallbackInSpreadRule,
-  noUselessUndefinedRule,
-  noUtilityTruthinessRule,
+   noUseBeforeDefineRule,
+   noUseExtendNativeRule,
+   noUselessAssignmentRule,
+   noUselessBackreferenceRule,
+   noUselessComparisonRule,
+    noUselessPromiseRule,
+     noUselessRenameRule,
+    noUselessCallRule,
+  noUselessComputedKeyRule,
+     noUselessConcatRule,
+   noUselessConstructorRule,
+   noUselessEscapeRule,
+   noUselessExpressionStatementRule,
+   noUselessFallbackInSpreadRule,
+   noUselessUndefinedRule,
+   noUselessReturnRule,
+   noUselessSwitchRule,
+   noUselessTypeConversionRule,
+   noUtilityTruthinessRule,
   noVarRequiresRule,
   noVarRule,
-  noVoidRule,
-  noWithRule,
-  objectShorthandRule,
+   noVoidRule,
+   noWarningCommentsRule,
+    noWithRule,
+   noWhitespaceBeforePropertyRule,
+   objectShorthandRule,
   preferArrayFlatRule,
   preferAsyncAwaitRule,
   preferAtContextRule,
   preferAtMethodRule,
   preferConstRule,
   preferDateNowRule,
-  preferEnumInitializersRule,
-  preferExponentiationOperatorRule,
-  preferFunctionTypeRule,
-  preferIncludesRule,
-  preferLiteralEnumMemberRule,
-  preferNullishCoalescingRule,
-  preferNumberPropertiesRule,
-  preferNumericLiteralsRule,
-  preferObjectHasOwnRule,
-  preferPromiseRejectErrorsRule,
-  preferPrototypeMethodsRule,
-  preferReadonlyParameterRule,
-  preferReadonlyRule,
-  preferRegexLiteralsRule,
-  preferRegexpExecRule,
-  preferRestParamsRule,
-  preferSingleBooleanReturnRule,
-  preferSpreadRule,
-  preferStringReplaceAllRule,
-  preferStringSliceOverSubstringRule,
-  preferStringSliceRule,
-  preferStringStartsEndsWithRule,
-  preferTemplateRule,
-  preferTernaryOperatorRule,
-  preserveCaughtErrorRule,
-  requireAwaitRule,
-  requireReturnTypeRule,
-  requireYieldRule,
-  restrictTemplateExpressionsRule,
-  sortKeysRule,
-  useIsnanRule,
-  validTypeofRule,
-} from './patterns/index.js'
-// Performance rules (core interface)
-import {
-  noAwaitInLoopRule,
-  noSyncInAsyncRule,
-  preferMathTruncRule,
-  preferObjectSpreadRule,
-  preferOptionalChainRule,
-} from './performance/index.js'
+   preferEnumInitializersRule,
+   preferDestructuringRule,
+    preferExponentiationOperatorRule,
+   preferFunctionTypeRule,
+   preferIncludesRule,
+   preferLiteralEnumMemberRule,
+   preferNullishCoalescingRule,
+     preferNumberPropertiesRule,
+    preferNumberIsnanRule,
+     preferNumberIsfiniteRule,
+     preferNumericLiteralsRule,
+    preferObjectHasOwnRule,
+    preferOptionalChainRule,
+      preferPromiseRejectErrorsRule,
+      preferPrototypeMethodsRule,
+      preferReadonlyRule,
+      preferReadonlyParameterRule,
+      preferRegexpExecRule,
+      preferRegexLiteralsRule,
+      preferRestParamsRule,
+      preferSingleBooleanReturnRule,
+      preferStringCharAtRule,
+      preferStringSliceRule,
+      preferStringSliceOverSubstringRule,
+      preferStringStartsEndsWithRule,
+      preferSpreadRule,
+      preferStringReplaceAllRule,
+      preferTemplateRule,
+      preferTernaryOperatorRule,
+      preserveCaughtErrorRule,
+      requireAwaitRule,
+      requireReturnTypeRule,
+      requireYieldRule,
+      restrictTemplateExpressionsRule,
+       sortKeysRule,
+       sortImportsRule,
+        spacedCommentRule,
+        strictBoolExpressionsRule,
+       useIsnanRule,
+      validTypeofRule,
+      yodaRule,
+     } from './patterns/index.js'
+ import {
+   noAwaitInLoopRule,
+   noInefficientArrayMethodsRule,
+   noMisusedPromisesRule,
+   noPrimitiveWrapperMapsRule,
+    noArrayReduceRule,
+     noInefficientStringConcatRule,
+     noConstantResponseRule,
+     noSyncInAsyncRule,
+   preferMathTruncRule,
+    preferObjectSpreadRule,
+    noUnnecessaryAsyncRule,
+    noMisusedPromiseReturnRule,
+  } from './performance/index.js'
 // Security rules
 import {
   noDeprecatedApiRule,
@@ -246,27 +414,111 @@ import {
   noUnsafeRegexRule,
   noUnsafeReturnRule,
   noUnsafeTypeAssertionRule,
-  noWeakCryptoRule,
-} from './security/index.js'
-// Testing rules
+    noWeakCryptoRule,
+     noInnerHTMLRule,
+     noBannedPropertiesRule,
+      noDocumentWriteRule,
+       noRegexConcatRule,
+       noRegexConstructorRule,
+       noUnsafeArgumentRule,
+        noRestrictedGlobalsRule,
+         noRestrictedImportsRule,
+         noRestrictedPropertiesRule,
+      } from './security/index.js'
+  // Testing rules
 import {
   consistentTestItRule,
   expectExpectRule,
+  maxExpectsRule,
   maxNestedDescribeRule,
-  noAsyncSuiteRule,
+  noAliasMethodsRule,
+   noAssertionInSetupRule,
+   noAssertionInLoopRule,
+   noAssertTruthinessRule,
+   noAsyncSuiteRule,
+  noCommentedOutTestsRule,
   noConditionalExpectRule,
+    noConfusingDoubleEqualRule,
+    noAssigningExpectResultRule,
+    noAssigningHooksReturnRule,
+    noDynamicDescribeRule,
+    noEmptyHookRule,
+    noConfusingTestNameRule,
+    noEvalInTestRule,
+    noMisusedMatchersRule,
+   noConfusingConditionalAccessRule,
+  noConditionalInTestRule,
+  noConsoleInTestsRule,
+  noDeprecatedFunctionsRule,
+  noDoneCallbackRule,
+  noDuplicateHooksRule,
+  noEmptyDescribeRule,
   noFocusedTestsRule,
   noIdenticalTitleRule,
+  noInterpolationInSnapshotsRule,
+  noJestGlobalsRule,
+   noLargeJestSnapshotsRule,
+   noRedundantActionRule,
+   noRestrictedMatchersRule,
+  noRestrictedJestMethodsRule,
   noSkippedTestsRule,
-  noTestReturnStatementRule,
+  noStandaloneExpectRule,
+  noTestPrefixRule,
+    noTestReturnStatementRule,
+noUselessAsyncTestRule,
+  noUnsafeMatchersRule,
+  noMisplacedHookRule,
+  requireHookDescriptionRule,
+    noAsyncSnapshotRule,
+   noAsyncSetupRule,
+     preferCalledWithRule,
+    preferEqualityMatcherRule,
+    preferEachRule,
+    preferExpectResolvesRule,
+    preferExpectAssertionsRule,
+     noMisusedAsyncRule,
+     noNestedDescribeRule,
+    noImplicitReturnInTestRule,
+     preferHooksOnTopRule,
+      preferInlineSnapshotRule,
+     preferLiteralMatchersRule,
+     preferMockPromiseShorthandRule,
+      preferMockReturnValueRule,
+     preferResolvesRejectsRule,
+      noRedundantExpectRule,
+     preferNamedSnapshotRule,
+    preferSnapshotHintRule,
+    preferSpyOnRule,
+   preferStrictEqualRule,
+   preferToBeRule,
+   preferToBeNullRule,
+   preferToBeUndefinedRule,
+   preferToContainRule,
+   preferToHaveLengthRule,
+   preferTodoRule,
+   requireHookRule,
+   requireToThrowMessageRule,
   requireTopLevelDescribeRule,
+  validExpectRule,
+  validTitleRule,
 } from './testing/index.js'
 
 const adaptedPreferObjectSpread = adaptPluginRule(preferObjectSpreadRule, 'prefer-object-spread')
+const adaptedNoPrimitiveWrapperMaps = adaptPluginRule(noPrimitiveWrapperMapsRule, 'no-primitive-wrapper-maps')
+const adaptedNoArrayReduce = adaptPluginRule(noArrayReduceRule, 'no-array-reduce')
+const adaptedNoInefficientStringConcat = adaptPluginRule(noInefficientStringConcatRule, 'no-inefficient-string-concat')
+const adaptedNoConstantResponse = adaptPluginRule(noConstantResponseRule, 'no-constant-response')
+const adaptedNoUnnecessaryAsync = adaptPluginRule(noUnnecessaryAsyncRule, 'no-unnecessary-async')
+const adaptedNoMisusedPromiseReturn = adaptPluginRule(noMisusedPromiseReturnRule, 'no-misused-promise-return')
 const adaptedPreferOptionalChain = adaptPluginRule(preferOptionalChainRule, 'prefer-optional-chain')
+const adaptedPreferStringCharAt = adaptPluginRule(preferStringCharAtRule, 'prefer-string-char-at')
 const adaptedPreferMathTrunc = adaptPluginRule(preferMathTruncRule, 'prefer-math-trunc')
 const adaptedNoCircularDeps = adaptPluginRule(noCircularDepsRule, 'no-circular-deps')
 const adaptedNoUnusedExports = adaptPluginRule(noUnusedExportsRule, 'no-unused-exports')
+const adaptedNoCjsImports = adaptPluginRule(noCjsImportsRule, 'no-cjs-imports')
+const adaptedNoDynamicImport = adaptPluginRule(noDynamicImportRule, 'no-dynamic-import')
+const adaptedNoImplicitDependencies = adaptPluginRule(noImplicitDependenciesRule, 'no-implicit-dependencies')
+const adaptedNoGitDependencies = adaptPluginRule(noGitDependenciesRule, 'no-git-dependencies')
 const adaptedConsistentImports = adaptPluginRule(consistentImportsRule, 'consistent-imports')
 const adaptedNoBarrelImports = adaptPluginRule(noBarrelImportsRule, 'no-barrel-imports')
 const adaptedNoDeprecatedApi = adaptPluginRule(noDeprecatedApiRule, 'no-deprecated-api')
@@ -285,6 +537,15 @@ const adaptedNoSqlInjection = adaptPluginRule(
 )
 const adaptedNoUnsafeHtml = adaptPluginRule(noUnsafeHtmlRule, 'no-unsafe-html')
 const adaptedNoWeakCrypto = adaptPluginRule(noWeakCryptoRule, 'no-weak-crypto')
+const adaptedNoInnerHTML = adaptPluginRule(noInnerHTMLRule, 'no-innerhtml')
+const adaptedNoBannedProperties = adaptPluginRule(noBannedPropertiesRule, 'no-banned-properties')
+const adaptedNoDocumentWrite = adaptPluginRule(noDocumentWriteRule, 'no-document-write')
+const adaptedNoRegexConcat = adaptPluginRule(noRegexConcatRule, 'no-regex-concat')
+const adaptedNoRegexConstructor = adaptPluginRule(noRegexConstructorRule, 'no-regex-constructor')
+const adaptedNoUnsafeArgument = adaptPluginRule(noUnsafeArgumentRule, 'no-unsafe-argument')
+const adaptedNoRestrictedGlobals = adaptPluginRule(noRestrictedGlobalsRule, 'no-restricted-globals')
+const adaptedNoRestrictedImports = adaptPluginRule(noRestrictedImportsRule, 'no-restricted-imports')
+const adaptedNoRestrictedProperties = adaptPluginRule(noRestrictedPropertiesRule, 'no-restricted-properties')
 const adaptedNoUnsafeReturn = adaptPluginRule(noUnsafeReturnRule, 'no-unsafe-return')
 const adaptedNoDynamicDelete = adaptPluginRule(noDynamicDeleteRule, 'no-dynamic-delete')
 const adaptedNoThrowLiteral = adaptPluginRule(noThrowLiteralRule, 'no-throw-literal')
@@ -295,6 +556,9 @@ const adaptedNoConstantBinaryExpression = adaptPluginRule(
 const adaptedMaxFileSize = adaptPluginRule(maxFileSizeRule, 'max-file-size')
 const adaptedMaxUnionSize = adaptPluginRule(maxUnionSizeRule, 'max-union-size')
 const adaptedNoDuplicateCode = adaptPluginRule(noDuplicateCodeRule, 'no-duplicate-code')
+const adaptedNoExcessiveComplexity = adaptPluginRule(noExcessiveComplexityRule, 'no-excessive-complexity')
+const adaptedNoDuplicateCondition = adaptPluginRule(noDuplicateConditionRule, 'no-duplicate-condition')
+const adaptedNoEmptyAlternative = adaptPluginRule(noEmptyAlternativeRule, 'no-empty-alternative')
 const adaptedNoDuplicateElseIf = adaptPluginRule(noDuplicateElseIfRule, 'no-duplicate-else-if')
 const adaptedPreferConst = adaptPluginRule(preferConstRule, 'prefer-const')
 const adaptedPreferNullishCoalescing = adaptPluginRule(
@@ -303,6 +567,7 @@ const adaptedPreferNullishCoalescing = adaptPluginRule(
 )
 const adaptedNoConsoleLog = adaptPluginRule(noConsoleLogRule, 'no-console-log')
 const adaptedNoThrowSync = adaptPluginRule(noThrowSyncRule, 'no-throw-sync')
+const adaptedNoTrailingSpaces = adaptPluginRule(noTrailingSpacesRule, 'no-trailing-spaces')
 const adaptedPreferReadonly = adaptPluginRule(preferReadonlyRule, 'prefer-readonly')
 const adaptedPreferReadonlyParameter = adaptPluginRule(
   preferReadonlyParameterRule,
@@ -311,6 +576,8 @@ const adaptedPreferReadonlyParameter = adaptPluginRule(
 const adaptedRequireReturnType = adaptPluginRule(requireReturnTypeRule, 'require-return-type')
 const adaptedNoExplicitAny = adaptPluginRule(noExplicitAnyRule, 'no-explicit-any')
 const adaptedNoFloatingPromises = adaptPluginRule(noFloatingPromisesRule, 'no-floating-promises')
+const adaptedNoFloatingPromisesReturned = adaptPluginRule(noFloatingPromisesReturnedRule, 'no-floating-promises-returned')
+const adaptedNoFloatingDecimal = adaptPluginRule(noFloatingDecimalRule, 'no-floating-decimal')
 const adaptedNoReturnAwait = adaptPluginRule(noReturnAwaitRule, 'no-return-await')
 const adaptedNoVarRequires = adaptPluginRule(noVarRequiresRule, 'no-var-requires')
 const adaptedPreferAsyncAwait = adaptPluginRule(preferAsyncAwaitRule, 'prefer-async-await')
@@ -320,6 +587,8 @@ const adaptedPreferLiteralEnumMember = adaptPluginRule(
   'prefer-literal-enum-member',
 )
 const adaptedNoInferrableTypes = adaptPluginRule(noInferrableTypesRule, 'no-inferrable-types')
+const adaptedNoInlineComments = adaptPluginRule(noInlineCommentsRule, 'no-inline-comments')
+const adaptedNoInnerDeclarations = adaptPluginRule(noInnerDeclarationsRule, 'no-inner-declarations')
 const adaptedConsistentTypeExports = adaptPluginRule(
   consistentTypeExportsRule,
   'consistent-type-exports',
@@ -328,14 +597,57 @@ const adaptedNoUnnecessaryCondition = adaptPluginRule(
   noUnnecessaryConditionRule,
   'no-unnecessary-condition',
 )
+const adaptedNoUnnecessaryAwait = adaptPluginRule(noUnnecessaryAwaitRule, 'no-unnecessary-await')
+const adaptedNoUnnecessaryAwaitForeach = adaptPluginRule(noUnnecessaryAwaitForeachRule, 'no-unnecessary-await-foreach')
+const adaptedNoUnnecessaryAssign = adaptPluginRule(noUnnecessaryAssignRule, 'no-unnecessary-assign')
+const adaptedNoUnnecessaryBindingPattern = adaptPluginRule(noUnnecessaryBindingPatternRule, 'no-unnecessary-binding-pattern')
+const adaptedNoUnnecessaryAssert = adaptPluginRule(noUnnecessaryAssertRule, 'no-unnecessary-assert')
+const adaptedNoUnnecessaryBignumber = adaptPluginRule(noUnnecessaryBignumberRule, 'no-unnecessary-bignumber')
+const adaptedNoUnnecessaryBlock = adaptPluginRule(noUnnecessaryBlockRule, 'no-unnecessary-block')
+const adaptedNoUnnecessaryAsExpression = adaptPluginRule(noUnnecessaryAsExpressionRule, 'no-unnecessary-as-expression')
+const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unnecessary-atob')
+const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
+const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
+const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
+const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
+const adaptedNoUnnecessaryBooleanComparison = adaptPluginRule(noUnnecessaryBooleanComparisonRule, 'no-unnecessary-boolean-comparison')
+const adaptedNoUnnecessaryBooleanLiteralCompare = adaptPluginRule(noUnnecessaryBooleanLiteralCompareRule, 'no-unnecessary-boolean-literal-compare')
+const adaptedNoUnnecessaryBooleanConstructor = adaptPluginRule(noUnnecessaryBooleanConstructorRule, 'no-unnecessary-boolean-constructor')
+const adaptedNoUnnecessaryCallbackWrapper = adaptPluginRule(noUnnecessaryCallbackWrapperRule, 'no-unnecessary-callback-wrapper')
+const adaptedNoUnnecessaryClass = adaptPluginRule(noUnnecessaryClassRule, 'no-unnecessary-class')
+const adaptedNoUnnecessaryDestructuring = adaptPluginRule(noUnnecessaryDestructuringRule, 'no-unnecessary-destructuring')
+const adaptedNoUnnecessaryConcat = adaptPluginRule(noUnnecessaryConcatRule, 'no-unnecessary-concat')
+const adaptedNoUnnecessaryComputedKey = adaptPluginRule(noUnnecessaryComputedKeyRule, 'no-unnecessary-computed-key')
+const adaptedNoUnnecessaryDoubleNegation = adaptPluginRule(noUnnecessaryDoubleNegationRule, 'no-unnecessary-double-negation')
 const adaptedNoUnnecessaryEscapeInRegexp = adaptPluginRule(
   noUnnecessaryEscapeInRegexpRule,
   'no-unnecessary-escape-in-regexp',
 )
+const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
+const adaptedNoUnnecessaryJsonParse = adaptPluginRule(noUnnecessaryJsonParseRule, 'no-unnecessary-json-parse')
+const adaptedNoUnnecessaryNewArray = adaptPluginRule(noUnnecessaryNewArrayRule, 'no-unnecessary-new-array')
+const adaptedNoUnnecessaryNewObject = adaptPluginRule(noUnnecessaryNewObjectRule, 'no-unnecessary-new-object')
+const adaptedNoUnnecessaryParentheses = adaptPluginRule(noUnnecessaryParenthesesRule, 'no-unnecessary-parentheses')
+const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-unnecessary-label')
+const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
+const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
+const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
+const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
+const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
+const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
+const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
+const adaptedNoUnnecessaryNumericSeparator = adaptPluginRule(noUnnecessaryNumericSeparatorRule, 'no-unnecessary-numeric-separator')
 const adaptedNoUnnecessaryQualifier = adaptPluginRule(
   noUnnecessaryQualifierRule,
   'no-unnecessary-qualifier',
 )
+const adaptedNoUnnecessaryReadonly = adaptPluginRule(noUnnecessaryReadonlyRule, 'no-unnecessary-readonly')
+const adaptedNoUnnecessaryRegexConstructor = adaptPluginRule(noUnnecessaryRegexConstructorRule, 'no-unnecessary-regex-constructor')
+const adaptedNoUnnecessaryRegex = adaptPluginRule(noUnnecessaryRegexRule, 'no-unnecessary-regex')
+const adaptedNoUnnecessaryReturnAwait = adaptPluginRule(noUnnecessaryReturnAwaitRule, 'no-unnecessary-return-await')
+const adaptedNoUnnecessaryReturnValue = adaptPluginRule(noUnnecessaryReturnValueRule, 'no-unnecessary-return-value')
+const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
+const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
 const adaptedPreferRegexpExec = adaptPluginRule(preferRegexpExecRule, 'prefer-regexp-exec')
 const adaptedPreferRestParams = adaptPluginRule(preferRestParamsRule, 'prefer-rest-params')
@@ -357,10 +669,14 @@ const adaptedRestrictTemplateExpressions = adaptPluginRule(
 )
 const adaptedNoImplicitCoercion = adaptPluginRule(noImplicitCoercionRule, 'no-implicit-coercion')
 const adaptedNoImpliedEval = adaptPluginRule(noImpliedEvalRule, 'no-implied-eval')
-const adaptedNoMisusedPromises = adaptPluginRule(noMisusedPromisesRule, 'no-misused-promises')
+const adaptedNoImplicitMap = adaptPluginRule(noImplicitMapRule, 'no-implicit-map')
+const adaptedNoMisusedPromises = noMisusedPromisesRule
+const adaptedNoLoneBlocks = adaptPluginRule(noLoneBlocksRule, 'no-lone-blocks')
 const adaptedNoLonelyIf = adaptPluginRule(noLonelyIfRule, 'no-lonely-if')
 const adaptedNoLabelVar = adaptPluginRule(noLabelVarRule, 'no-label-var')
 const adaptedNoLossOfPrecision = adaptPluginRule(noLossOfPrecisionRule, 'no-loss-of-precision')
+const adaptedNoMultiAssign = adaptPluginRule(noMultiAssignRule, 'no-multi-assign')
+const adaptedNoMultipleEmptyLines = adaptPluginRule(noMultipleEmptyLinesRule, 'no-multiple-empty-lines')
 const adaptedNoMultiSpaces = adaptPluginRule(noMultiSpacesRule, 'no-multi-spaces')
 const adaptedCurly = adaptPluginRule(curlyRule, 'curly')
 const adaptedEqEqEq = adaptPluginRule(eqEqEqRule, 'eq-eq-eq')
@@ -373,11 +689,15 @@ const adaptedNoAsyncPromiseExecutor = adaptPluginRule(
   noAsyncPromiseExecutorRule,
   'no-async-promise-executor',
 )
+const adaptedNoAsyncForeach = adaptPluginRule(noAsyncForeachRule, 'no-async-foreach')
 const adaptedNoCompareNegZero = adaptPluginRule(noCompareNegZeroRule, 'no-compare-neg-zero')
+const adaptedNoCommutativeOpEqual = adaptPluginRule(noCommutativeOpEqualRule, 'no-commutative-op-equal')
+const adaptedNoComputedKeys = adaptPluginRule(noComputedKeysRule, 'no-computed-keys')
 const adaptedNoConfusingVoidExpression = adaptPluginRule(
   noConfusingVoidExpressionRule,
   'no-confusing-void-expression',
 )
+const adaptedNoConfusingArrow = adaptPluginRule(noConfusingArrowRule, 'no-confusing-arrow')
 const adaptedNoConstantCondition = adaptPluginRule(noConstantConditionRule, 'no-constant-condition')
 const adaptedNoConstAssign = adaptPluginRule(noConstAssignRule, 'no-const-assign')
 const adaptedNoDuplicateImports = adaptPluginRule(noDuplicateImportsRule, 'no-duplicate-imports')
@@ -387,19 +707,38 @@ const adaptedNoNestedTernary = adaptPluginRule(noNestedTernaryRule, 'no-nested-t
 const adaptedNoNonNullAssertion = adaptPluginRule(noNonNullAssertionRule, 'no-non-null-assertion')
 const adaptedNoObjectConstructor = adaptPluginRule(noObjectConstructorRule, 'no-object-constructor')
 const adaptedNoParamReassign = adaptPluginRule(noParamReassignRule, 'no-param-reassign')
+const adaptedNoPlusplus = adaptPluginRule(noPlusplusRule, 'no-plusplus')
 const adaptedNoPromiseAsBoolean = adaptPluginRule(noPromiseAsBooleanRule, 'no-promise-as-boolean')
 const adaptedNoShadow = adaptPluginRule(noShadowRule, 'no-shadow')
+const adaptedNoScriptUrl = adaptPluginRule(noScriptUrlRule, 'no-script-url')
 const adaptedNoStringConcat = adaptPluginRule(noStringConcatRule, 'no-string-concat')
+const adaptedNoStringCaseConvert = adaptPluginRule(noStringCaseConvertRule, 'no-string-case-convert')
+const adaptedNoSuspiciousComment = adaptPluginRule(noSuspiciousCommentRule, 'no-suspicious-comment')
+const adaptedNoTabs = adaptPluginRule(noTabsRule, 'no-tabs')
 const adaptedNoUnnecessaryTemplateExpression = adaptPluginRule(
   noUnnecessaryTemplateExpressionRule,
   'no-unnecessary-template-expression',
 )
+const adaptedNoUnnecessaryTemplateLiteral = adaptPluginRule(noUnnecessaryTemplateLiteralRule, 'no-unnecessary-template-literal')
+const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
+const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
+const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
+const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
+const adaptedNoUnnecessaryOptionalChain = adaptPluginRule(noUnnecessaryOptionalChainRule, 'no-unnecessary-optional-chain')
+const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParameterPropertyRule, 'no-unnecessary-parameter-property')
+const adaptedNoUnnecessaryPromiseWrap = adaptPluginRule(noUnnecessaryPromiseWrapRule, 'no-unnecessary-promise-wrap')
+const adaptedNoUnnecessaryEscape = adaptPluginRule(noUnnecessaryEscapeRule, 'no-unnecessary-escape')
+const adaptedNoUnnecessaryElse = adaptPluginRule(noUnnecessaryElseRule, 'no-unnecessary-else')
+const adaptedNoUnnecessaryConstructor = adaptPluginRule(noUnnecessaryConstructorRule, 'no-unnecessary-constructor')
+const adaptedNoUnnecessaryTernary = adaptPluginRule(noUnnecessaryTernaryRule, 'no-unnecessary-ternary')
+const adaptedNoUnnecessaryTernaryAssign = adaptPluginRule(noUnnecessaryTernaryAssignRule, 'no-unnecessary-ternary-assign')
 const adaptedNoUnusedVars = adaptPluginRule(noUnusedVarsRule, 'no-unused-vars')
 const adaptedNoUnusedPrivateMembers = adaptPluginRule(
   noUnusedPrivateMembersRule,
   'no-unused-private-members',
 )
 const adaptedNoVoid = adaptPluginRule(noVoidRule, 'no-void')
+const adaptedNoWarningComments = adaptPluginRule(noWarningCommentsRule, 'no-warning-comments')
 const adaptedPreferExponentiationOperator = adaptPluginRule(
   preferExponentiationOperatorRule,
   'prefer-exponentiation-operator',
@@ -408,6 +747,8 @@ const adaptedPreferNumberProperties = adaptPluginRule(
   preferNumberPropertiesRule,
   'prefer-number-properties',
 )
+const adaptedPreferNumberIsnan = adaptPluginRule(preferNumberIsnanRule, 'prefer-number-isnan')
+const adaptedPreferNumberIsFinite = adaptPluginRule(preferNumberIsfiniteRule, 'prefer-number-isfinite')
 const adaptedPreferNumericLiterals = adaptPluginRule(
   preferNumericLiteralsRule,
   'prefer-numeric-literals',
@@ -420,6 +761,8 @@ const adaptedNoUnsafeDeclarationMerging = adaptPluginRule(
 )
 
 const adaptedNoTypeOnlyReturn = adaptPluginRule(noTypeOnlyReturnRule, 'no-type-only-return')
+const adaptedNoTypeAliasSingleUnion = adaptPluginRule(noTypeAliasSingleUnionRule, 'no-type-alias-single-union')
+const adaptedNoUnicodeBom = adaptPluginRule(noUnicodeBomRule, 'no-unicode-bom')
 
 const adaptedPreferDateNow = adaptPluginRule(preferDateNowRule, 'prefer-date-now')
 
@@ -441,10 +784,20 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
   'no-simplifiable-pattern',
 )
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
+const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
   noUnnecessaryStringConcatRule,
   'no-unnecessary-string-concat',
 )
+const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
+const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
+const adaptedNoUnnecessaryParseFloat = adaptPluginRule(noUnnecessaryParseFloatRule, 'no-unnecessary-parse-float')
+const adaptedNoUnnecessaryParseInt = adaptPluginRule(noUnnecessaryParseIntRule, 'no-unnecessary-parse-int')
+const adaptedNoUnnecessaryIsFinite = adaptPluginRule(noUnnecessaryIsFiniteRule, 'no-unnecessary-is-finite')
+const adaptedNoUnnecessaryIsNan = adaptPluginRule(noUnnecessaryIsNanRule, 'no-unnecessary-is-nan')
+const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule, 'no-unnecessary-decode-uri')
+const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
+const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
   'no-unnecessary-type-arguments',
@@ -455,13 +808,17 @@ const adaptedNoUselessFallbackInSpread = adaptPluginRule(
   'no-useless-fallback-in-spread',
 )
 const adaptedNoUselessUndefined = adaptPluginRule(noUselessUndefinedRule, 'no-useless-undefined')
-const adaptedPreferArrayFlat = adaptPluginRule(preferArrayFlatRule, 'prefer-array-flat')
+const adaptedNoUselessReturn = adaptPluginRule(noUselessReturnRule, 'no-useless-return')
+ const adaptedNoUselessSwitch = adaptPluginRule(noUselessSwitchRule, 'no-useless-switch')
+ const adaptedNoUselessTypeConversion = adaptPluginRule(noUselessTypeConversionRule, 'no-useless-type-conversion')
+ const adaptedPreferArrayFlat = adaptPluginRule(preferArrayFlatRule, 'prefer-array-flat')
 const adaptedPreferAtContext = adaptPluginRule(preferAtContextRule, 'prefer-at-context')
 const adaptedPreferAtMethod = adaptPluginRule(preferAtMethodRule, 'prefer-at-method')
 const adaptedPreferEnumInitializers = adaptPluginRule(
   preferEnumInitializersRule,
   'prefer-enum-initializers',
 )
+const adaptedPreferDestructuring = adaptPluginRule(preferDestructuringRule, 'prefer-destructuring')
 const adaptedPreferFunctionType = adaptPluginRule(preferFunctionTypeRule, 'prefer-function-type')
 const adaptedPreferPrototypeMethods = adaptPluginRule(
   preferPrototypeMethodsRule,
@@ -481,8 +838,25 @@ const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex
 const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
 const adaptedNoFocusedTests = adaptPluginRule(noFocusedTestsRule, 'no-focused-tests')
 const adaptedNoIdenticalTitle = adaptPluginRule(noIdenticalTitleRule, 'no-identical-title')
+const adaptedNoInterpolationInSnapshots = adaptPluginRule(noInterpolationInSnapshotsRule, 'no-interpolation-in-snapshots')
+const adaptedNoJestGlobals = adaptPluginRule(noJestGlobalsRule, 'no-jest-globals')
+const adaptedNoLargeJestSnapshots = adaptPluginRule(noLargeJestSnapshotsRule, 'no-large-jest-snapshots')
+const adaptedNoRedundantAction = adaptPluginRule(noRedundantActionRule, 'no-redundant-action')
 const adaptedNoEmptyCatch = adaptPluginRule(noEmptyCatchRule, 'no-empty-catch')
 const adaptedNoUselessCatch = adaptPluginRule(noUselessCatchRule, 'no-useless-catch')
+const adaptedNoInvalidUseBeforeDef = adaptPluginRule(noInvalidUseBeforeDefRule, 'no-invalid-use-before-def')
+const adaptedNoImplicitGlobals = adaptPluginRule(noImplicitGlobalsRule, 'no-implicit-globals')
+const adaptedNoNonNullAssertedOptionalChain = adaptPluginRule(noNonNullAssertedOptionalChainRule, 'no-non-null-asserted-optional-chain')
+const adaptedNoMisleadingSpread = adaptPluginRule(noMisleadingSpreadRule, 'no-misleading-spread')
+const adaptedNoAsyncConstructor = adaptPluginRule(noAsyncConstructorRule, 'no-async-constructor')
+const adaptedNoApproximateConstants = adaptPluginRule(noApproximateConstantsRule, 'no-approximate-constants')
+const adaptedNoImplicitUndefined = adaptPluginRule(noImplicitUndefinedRule, 'no-implicit-undefined')
+const adaptedNoMisleadingAssertion = adaptPluginRule(noMisleadingAssertionRule, 'no-misleading-assertion')
+const adaptedNoPropertyRename = adaptPluginRule(noPropertyRenameRule, 'no-property-rename')
+const adaptedNoPropertySignatureStyle = adaptPluginRule(noPropertySignatureStyleRule, 'no-property-signature-style')
+const adaptedNoRedeclare = adaptPluginRule(noRedeclareRule, 'no-redeclare')
+const adaptedNoUselessPromise = adaptPluginRule(noUselessPromiseRule, 'no-useless-promise')
+const adaptedNoUselessRename = adaptPluginRule(noUselessRenameRule, 'no-useless-rename')
 const adaptedNoEmptyFunction = adaptPluginRule(noEmptyFunctionRule, 'no-empty-function')
 const adaptedNoDebugger = adaptPluginRule(noDebuggerRule, 'no-debugger')
 const adaptedNoDeleteVar = adaptPluginRule(noDeleteVarRule, 'no-delete-var')
@@ -509,25 +883,36 @@ const adaptedDefaultCase = adaptPluginRule(defaultCaseRule, 'default-case')
 const adaptedForDirection = adaptPluginRule(forDirectionRule, 'for-direction')
 const adaptedGetterReturn = adaptPluginRule(getterReturnRule, 'getter-return')
 const adaptedNoBitwise = adaptPluginRule(noBitwiseRule, 'no-bitwise')
+const adaptedNoBufferConstructor = adaptPluginRule(noBufferConstructorRule, 'no-buffer-constructor')
 const adaptedNoCaller = adaptPluginRule(noCallerRule, 'no-caller')
+const adaptedNoCatchShadow = adaptPluginRule(noCatchShadowRule, 'no-catch-shadow')
 const adaptedNoCaseDeclarations = adaptPluginRule(noCaseDeclarationsRule, 'no-case-declarations')
 const adaptedNoClassAssign = adaptPluginRule(noClassAssignRule, 'no-class-assign')
 const adaptedNoCondAssign = adaptPluginRule(noCondAssignRule, 'no-cond-assign')
 const adaptedNoConstructorReturn = adaptPluginRule(noConstructorReturnRule, 'no-constructor-return')
+const adaptedNoConstructorSuper = adaptPluginRule(noConstructorSuperRule, 'no-constructor-super')
+const adaptedNoContinue = adaptPluginRule(noContinueRule, 'no-continue')
 const adaptedNoControlRegex = adaptPluginRule(noControlRegexRule, 'no-control-regex')
 const adaptedNoDivRegex = adaptPluginRule(noDivRegexRule, 'no-div-regex')
+const adaptedNoDoubleNegation = adaptPluginRule(noDoubleNegationRule, 'no-double-negation')
 const adaptedNoDupeArgs = adaptPluginRule(noDupeArgsRule, 'no-dupe-args')
 const adaptedNoDupeClassMembers = adaptPluginRule(noDupeClassMembersRule, 'no-dupe-class-members')
 const adaptedNoDupeKeys = adaptPluginRule(noDupeKeysRule, 'no-dupe-keys')
 const adaptedNoDuplicateCase = adaptPluginRule(noDuplicateCaseRule, 'no-duplicate-case')
 const adaptedNoEmptyPattern = adaptPluginRule(noEmptyPatternRule, 'no-empty-pattern')
 const adaptedNoEmptyStaticBlock = adaptPluginRule(noEmptyStaticBlockRule, 'no-empty-static-block')
+const adaptedNoEqNull = adaptPluginRule(noEqNullRule, 'no-eq-null')
 const adaptedNoExAssign = adaptPluginRule(noExAssignRule, 'no-ex-assign')
+const adaptedNoExportDefault = adaptPluginRule(noExportDefaultRule, 'no-export-default')
 const adaptedNoExtendNative = adaptPluginRule(noExtendNativeRule, 'no-extend-native')
 const adaptedNoExtraBooleanCast = adaptPluginRule(noExtraBooleanCastRule, 'no-extra-boolean-cast')
+const adaptedNoExtraParens = adaptPluginRule(noExtraParensRule, 'no-extra-parens')
+const adaptedNoExtraSemi = adaptPluginRule(noExtraSemiRule, 'no-extra-semi')
 const adaptedNoFallthrough = adaptPluginRule(noFallthroughRule, 'no-fallthrough')
 const adaptedNoFuncAssign = adaptPluginRule(noFuncAssignRule, 'no-func-assign')
 const adaptedNoGlobalAssign = adaptPluginRule(noGlobalAssignRule, 'no-global-assign')
+const adaptedNoHexEscape = adaptPluginRule(noHexEscapeRule, 'no-hex-escape')
+const adaptedNoOctalEscape = adaptPluginRule(noOctalEscapeRule, 'no-octal-escape')
 const adaptedNoImportAssign = adaptPluginRule(noImportAssignRule, 'no-import-assign')
 const adaptedNoInvalidRegexp = adaptPluginRule(noInvalidRegexpRule, 'no-invalid-regexp')
 const adaptedNoIrregularWhitespace = adaptPluginRule(
@@ -536,16 +921,25 @@ const adaptedNoIrregularWhitespace = adaptPluginRule(
 )
 const adaptedNoIterator = adaptPluginRule(noIteratorRule, 'no-iterator')
 const adaptedNoLoopFunc = adaptPluginRule(noLoopFuncRule, 'no-loop-func')
+const adaptedNoLabels = adaptPluginRule(noLabelsRule, 'no-labels')
+const adaptedNoMeaninglessVoid = adaptPluginRule(noMeaninglessVoidRule, 'no-meaningless-void')
+const adaptedNoMisleadingArrayMethod = adaptPluginRule(noMisleadingArrayMethodRule, 'no-misleading-array-method')
 const adaptedNoMisleadingCharacterClass = adaptPluginRule(
   noMisleadingCharacterClassRule,
   'no-misleading-character-class',
 )
+const adaptedNoMisleadingInstantiation = adaptPluginRule(noMisleadingInstantiationRule, 'no-misleading-instantiation')
+const adaptedNoMixedEnums = adaptPluginRule(noMixedEnumsRule, 'no-mixed-enums')
+const adaptedNoMixedOperators = adaptPluginRule(noMixedOperatorsRule, 'no-mixed-operators')
+const adaptedNoMisusedNew = adaptPluginRule(noMisusedNewRule, 'no-misused-new')
+const adaptedNoMultiStr = adaptPluginRule(noMultiStrRule, 'no-multi-str')
 const adaptedNoNewFunc = adaptPluginRule(noNewFuncRule, 'no-new-func')
 const adaptedNoNewNativeNonconstructor = adaptPluginRule(
   noNewNativeNonconstructorRule,
   'no-new-native-nonconstructor',
 )
 const adaptedNoNewWrappers = adaptPluginRule(noNewWrappersRule, 'no-new-wrappers')
+const adaptedNoNewSymbol = adaptPluginRule(noNewSymbolRule, 'no-new-symbol')
 const adaptedNoNonoctalDecimalEscape = adaptPluginRule(
   noNonoctalDecimalEscapeRule,
   'no-nonoctal-decimal-escape',
@@ -553,11 +947,12 @@ const adaptedNoNonoctalDecimalEscape = adaptPluginRule(
 const adaptedNoObjCalls = adaptPluginRule(noObjCallsRule, 'no-obj-calls')
 const adaptedNoOctal = adaptPluginRule(noOctalRule, 'no-octal')
 const adaptedNoPrototypeBuiltins = adaptPluginRule(noPrototypeBuiltinsRule, 'no-prototype-builtins')
-const adaptedNoRedeclare = adaptPluginRule(noRedeclareRule, 'no-redeclare')
-const adaptedNoRegexSpaces = adaptPluginRule(noRegexSpacesRule, 'no-regex-spaces')
-const adaptedNoReturnAssign = adaptPluginRule(noReturnAssignRule, 'no-return-assign')
+const adaptedNoRestrictedExports = adaptPluginRule(noRestrictedExportsRule, 'no-restricted-exports')
+const adaptedNoRestrictedSyntax = adaptPluginRule(noRestrictedSyntaxRule, 'no-restricted-syntax')
+ const adaptedNoReturnAssign = adaptPluginRule(noReturnAssignRule, 'no-return-assign')
 const adaptedNoReturnOrAwait = adaptPluginRule(noReturnOrAwaitRule, 'no-return-or-await')
 const adaptedNoSelfAssign = adaptPluginRule(noSelfAssignRule, 'no-self-assign')
+const adaptedNoSelfCompare = adaptPluginRule(noSelfCompareRule, 'no-self-compare')
 const adaptedNoSequences = adaptPluginRule(noSequencesRule, 'no-sequences')
 const adaptedNoSetterReturn = adaptPluginRule(noSetterReturnRule, 'no-setter-return')
 const adaptedNoShadowRestrictedNames = adaptPluginRule(
@@ -565,39 +960,56 @@ const adaptedNoShadowRestrictedNames = adaptPluginRule(
   'no-shadow-restricted-names',
 )
 const adaptedNoSparseArrays = adaptPluginRule(noSparseArraysRule, 'no-sparse-arrays')
+const adaptedNoStaticOnlyClass = adaptPluginRule(noStaticOnlyClassRule, 'no-static-only-class')
 const adaptedNoThenable = adaptPluginRule(noThenableRule, 'no-thenable')
 const adaptedNoThisBeforeSuper = adaptPluginRule(noThisBeforeSuperRule, 'no-this-before-super')
+const adaptedNoThisAlias = adaptPluginRule(noThisAliasRule, 'no-this-alias')
 const adaptedNoUnassignedVars = adaptPluginRule(noUnassignedVarsRule, 'no-unassigned-vars')
 const adaptedNoUndef = adaptPluginRule(noUndefRule, 'no-undef')
 const adaptedNoUnexpectedMultiline = adaptPluginRule(
   noUnexpectedMultilineRule,
   'no-unexpected-multiline',
 )
+const adaptedNoUnboundPromise = adaptPluginRule(noUnboundPromiseRule, 'no-unbound-promise')
 const adaptedNoUnneededTernary = adaptPluginRule(noUnneededTernaryRule, 'no-unneeded-ternary')
 const adaptedNoUnreachable = adaptPluginRule(noUnreachableRule, 'no-unreachable')
+const adaptedNoUndefined = adaptPluginRule(noUndefinedRule, 'no-undefined')
+const adaptedNoUnderscoreDangle = adaptPluginRule(noUnderscoreDangleRule, 'no-underscore-dangle')
+const adaptedNoUnsafeEnumComparison = adaptPluginRule(noUnsafeEnumComparisonRule, 'no-unsafe-enum-comparison')
 const adaptedNoUnsafeFinally = adaptPluginRule(noUnsafeFinallyRule, 'no-unsafe-finally')
 const adaptedNoUnsafeNegation = adaptPluginRule(noUnsafeNegationRule, 'no-unsafe-negation')
+const adaptedNoRequireImports = adaptPluginRule(noRequireImportsRule, 'no-require-imports')
 const adaptedNoUnsafeOptionalChaining = adaptPluginRule(
   noUnsafeOptionalChainingRule,
   'no-unsafe-optional-chaining',
 )
 const adaptedNoUnusedExpressions = adaptPluginRule(noUnusedExpressionsRule, 'no-unused-expressions')
 const adaptedNoUnusedLabels = adaptPluginRule(noUnusedLabelsRule, 'no-unused-labels')
+const adaptedNoUseBeforeDefine = adaptPluginRule(noUseBeforeDefineRule, 'no-use-before-define')
+const adaptedNoUseExtendNative = adaptPluginRule(noUseExtendNativeRule, 'no-use-extend-native')
 const adaptedNoUselessAssignment = adaptPluginRule(noUselessAssignmentRule, 'no-useless-assignment')
 const adaptedNoUselessBackreference = adaptPluginRule(
   noUselessBackreferenceRule,
   'no-useless-backreference',
 )
+const adaptedNoUselessCall = adaptPluginRule(noUselessCallRule, 'no-useless-call')
+const adaptedNoUselessComputedKey = adaptPluginRule(noUselessComputedKeyRule, 'no-useless-computed-key')
 const adaptedNoUselessConcat = adaptPluginRule(noUselessConcatRule, 'no-useless-concat')
 const adaptedNoUselessEscape = adaptPluginRule(noUselessEscapeRule, 'no-useless-escape')
+const adaptedNoUselessExpressionStatement = adaptPluginRule(noUselessExpressionStatementRule, 'no-useless-expression-statement')
 const adaptedNoVar = adaptPluginRule(noVarRule, 'no-var')
 const adaptedNoWith = adaptPluginRule(noWithRule, 'no-with')
+const adaptedNoWhitespaceBeforeProperty = adaptPluginRule(noWhitespaceBeforePropertyRule, 'no-whitespace-before-property')
 const adaptedObjectShorthand = adaptPluginRule(objectShorthandRule, 'object-shorthand')
 const adaptedPreserveCaughtError = adaptPluginRule(preserveCaughtErrorRule, 'preserve-caught-error')
 const adaptedRequireYield = adaptPluginRule(requireYieldRule, 'require-yield')
 const adaptedSortKeys = adaptPluginRule(sortKeysRule, 'sort-keys')
+const adaptedSortImports = adaptPluginRule(sortImportsRule, 'sort-imports')
+const adaptedSpacedComment = adaptPluginRule(spacedCommentRule, 'spaced-comment')
+const adaptedStrictBoolExpressions = adaptPluginRule(strictBoolExpressionsRule, 'strict-bool-expressions')
 const adaptedUseIsnan = adaptPluginRule(useIsnanRule, 'use-isnan')
 const adaptedValidTypeof = adaptPluginRule(validTypeofRule, 'valid-typeof')
+const adaptedYoda = adaptPluginRule(yodaRule, 'yoda')
 const adaptedNoEmptyCharacterClass = adaptPluginRule(
   noEmptyCharacterClassRule,
   'no-empty-character-class',
@@ -608,19 +1020,90 @@ const adaptedNoConstEnum = adaptPluginRule(noConstEnumRule, 'no-const-enum')
 const adaptedNoDeprecatedImports = adaptPluginRule(noDeprecatedImportsRule, 'no-deprecated-imports')
 const adaptedNoDuplicateStringsInArray = adaptPluginRule(noDuplicateStringsInArrayRule, 'no-duplicate-strings-in-array')
 const adaptedNoNamespace = adaptPluginRule(noNamespaceRule, 'no-namespace')
+const adaptedNoNegatedCondition = adaptPluginRule(noNegatedConditionRule, 'no-negated-condition')
+const adaptedNoNegatedEqNull = adaptPluginRule(noNegatedEqNullRule, 'no-negated-eq-null')
 const adaptedNoRedundantBoolean = adaptPluginRule(noRedundantBooleanRule, 'no-redundant-boolean')
+const adaptedNoRedundantOptionalChain = adaptPluginRule(noRedundantOptionalChainRule, 'no-redundant-optional-chain')
+const adaptedNoRedundantUseStrict = adaptPluginRule(noRedundantUseStrictRule, 'no-redundant-use-strict')
+const adaptedNoRedundantTypeConstituents = adaptPluginRule(noRedundantTypeConstituentsRule, 'no-redundant-type-constituents')
+const adaptedNoRegexSpaces = adaptPluginRule(noRegexSpacesRule, 'no-regex-spaces')
 const adaptedNoTemplateCurlyInString = adaptPluginRule(noTemplateCurlyInStringRule, 'no-template-curly-in-string')
+const adaptedNoTernary = adaptPluginRule(noTernaryRule, 'no-ternary')
 const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule, 'no-unnecessary-polyfills')
 const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
+const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
+const adaptedNoUnnecessaryVoid = adaptPluginRule(noUnnecessaryVoidRule, 'no-unnecessary-void')
+const adaptedNoUnnecessaryWait = adaptPluginRule(noUnnecessaryWaitRule, 'no-unnecessary-wait')
 const adaptedNoUtilityTruthiness = adaptPluginRule(noUtilityTruthinessRule, 'no-utility-truthiness')
 const adaptedPreferSingleBooleanReturn = adaptPluginRule(preferSingleBooleanReturnRule, 'prefer-single-boolean-return')
 const adaptedExpectExpect = adaptPluginRule(expectExpectRule, 'expect-expect')
 const adaptedNoConditionalExpect = adaptPluginRule(noConditionalExpectRule, 'no-conditional-expect')
+const adaptedNoConfusingDoubleEqual = adaptPluginRule(noConfusingDoubleEqualRule, 'no-confusing-double-equal')
+const adaptedNoAssigningExpectResult = adaptPluginRule(noAssigningExpectResultRule, 'no-assigning-expect-result')
+const adaptedNoAssigningHooksReturn = adaptPluginRule(noAssigningHooksReturnRule, 'no-assigning-hooks-return')
+const adaptedNoDynamicDescribe = adaptPluginRule(noDynamicDescribeRule, 'no-dynamic-describe')
+const adaptedNoEmptyHook = adaptPluginRule(noEmptyHookRule, 'no-empty-hook')
+const adaptedNoConfusingTestName = adaptPluginRule(noConfusingTestNameRule, 'no-confusing-test-name')
+const adaptedNoEvalInTest = adaptPluginRule(noEvalInTestRule, 'no-eval-in-test')
+const adaptedNoMisusedMatchers = adaptPluginRule(noMisusedMatchersRule, 'no-misused-matchers')
+const adaptedNoConfusingConditionalAccess = adaptPluginRule(noConfusingConditionalAccessRule, 'no-confusing-conditional-access')
+const adaptedNoConditionalInTest = adaptPluginRule(noConditionalInTestRule, 'no-conditional-in-test')
+const adaptedNoConsoleInTests = adaptPluginRule(noConsoleInTestsRule, 'no-console-in-tests')
+const adaptedNoDeprecatedFunctions = adaptPluginRule(noDeprecatedFunctionsRule, 'no-deprecated-functions')
+const adaptedNoDoneCallback = adaptPluginRule(noDoneCallbackRule, 'no-done-callback')
 const adaptedNoAsyncSuite = adaptPluginRule(noAsyncSuiteRule, 'no-async-suite')
+const adaptedNoAssertionInSetup = adaptPluginRule(noAssertionInSetupRule, 'no-assertion-in-setup')
+const adaptedNoAssertionInLoop = adaptPluginRule(noAssertionInLoopRule, 'no-assertion-in-loop')
+const adaptedNoAssertTruthiness = adaptPluginRule(noAssertTruthinessRule, 'no-assert-truthiness')
+const adaptedNoCommentedOutTests = adaptPluginRule(noCommentedOutTestsRule, 'no-commented-out-tests')
 const adaptedNoTestReturnStatement = adaptPluginRule(noTestReturnStatementRule, 'no-test-return-statement')
+const adaptedNoUselessAsyncTest = adaptPluginRule(noUselessAsyncTestRule, 'no-useless-async-test')
+const adaptedNoUnsafeMatchers = adaptPluginRule(noUnsafeMatchersRule, 'no-unsafe-matchers')
+const adaptedNoMisplacedHook = adaptPluginRule(noMisplacedHookRule, 'no-misplaced-hook')
+const adaptedRequireHookDescription = adaptPluginRule(requireHookDescriptionRule, 'require-hook-description')
+const adaptedNoAsyncSnapshot = adaptPluginRule(noAsyncSnapshotRule, 'no-async-snapshot')
+const adaptedNoAsyncSetup = adaptPluginRule(noAsyncSetupRule, 'no-async-setup')
 const adaptedRequireTopLevelDescribe = adaptPluginRule(requireTopLevelDescribeRule, 'require-top-level-describe')
+const adaptedValidTitle = adaptPluginRule(validTitleRule, 'valid-title')
+const adaptedValidExpect = adaptPluginRule(validExpectRule, 'valid-expect')
 const adaptedMaxNestedDescribe = adaptPluginRule(maxNestedDescribeRule, 'max-nested-describe')
+const adaptedMaxExpects = adaptPluginRule(maxExpectsRule, 'max-expects')
+const adaptedNoAliasMethods = adaptPluginRule(noAliasMethodsRule, 'no-alias-methods')
+const adaptedNoRestrictedMatchers = adaptPluginRule(noRestrictedMatchersRule, 'no-restricted-matchers')
+const adaptedNoRestrictedJestMethods = adaptPluginRule(noRestrictedJestMethodsRule, 'no-restricted-jest-methods')
 const adaptedConsistentTestIt = adaptPluginRule(consistentTestItRule, 'consistent-test-it')
+const adaptedNoDuplicateHooks = adaptPluginRule(noDuplicateHooksRule, 'no-duplicate-hooks')
+const adaptedNoEmptyDescribe = adaptPluginRule(noEmptyDescribeRule, 'no-empty-describe')
+const adaptedNoStandaloneExpect = adaptPluginRule(noStandaloneExpectRule, 'no-standalone-expect')
+const adaptedNoTestPrefix = adaptPluginRule(noTestPrefixRule, 'no-test-prefix')
+const adaptedPreferHooksOnTop = adaptPluginRule(preferHooksOnTopRule, 'prefer-hooks-on-top')
+const adaptedPreferInlineSnapshot = adaptPluginRule(preferInlineSnapshotRule, 'prefer-inline-snapshot')
+const adaptedPreferLiteralMatchers = adaptPluginRule(preferLiteralMatchersRule, 'prefer-literal-matchers')
+const adaptedPreferMockPromiseShorthand = adaptPluginRule(preferMockPromiseShorthandRule, 'prefer-mock-promise-shorthand')
+const adaptedPreferMockReturnValue = adaptPluginRule(preferMockReturnValueRule, 'prefer-mock-return-value')
+const adaptedPreferResolvesRejects = adaptPluginRule(preferResolvesRejectsRule, 'prefer-resolves-rejects')
+const adaptedNoRedundantExpect = adaptPluginRule(noRedundantExpectRule, 'no-redundant-expect')
+const adaptedPreferNamedSnapshot = adaptPluginRule(preferNamedSnapshotRule, 'prefer-named-snapshot')
+const adaptedPreferSnapshotHint = adaptPluginRule(preferSnapshotHintRule, 'prefer-snapshot-hint')
+const adaptedPreferCalledWith = adaptPluginRule(preferCalledWithRule, 'prefer-called-with')
+const adaptedPreferEqualityMatcher = adaptPluginRule(preferEqualityMatcherRule, 'prefer-equality-matcher')
+const adaptedPreferEach = adaptPluginRule(preferEachRule, 'prefer-each')
+const adaptedPreferExpectResolves = adaptPluginRule(preferExpectResolvesRule, 'prefer-expect-resolves')
+const adaptedPreferExpectAssertions = adaptPluginRule(preferExpectAssertionsRule, 'prefer-expect-assertions')
+const adaptedNoMisusedAsync = adaptPluginRule(noMisusedAsyncRule, 'no-misused-async')
+const adaptedNoNestedDescribe = adaptPluginRule(noNestedDescribeRule, 'no-nested-describe')
+const adaptedNoInefficientArrayMethods = adaptPluginRule(noInefficientArrayMethodsRule, 'no-inefficient-array-methods')
+const adaptedNoImplicitReturnInTest = adaptPluginRule(noImplicitReturnInTestRule, 'no-implicit-return-in-test')
+const adaptedPreferSpyOn = adaptPluginRule(preferSpyOnRule, 'prefer-spy-on')
+const adaptedPreferStrictEqual = adaptPluginRule(preferStrictEqualRule, 'prefer-strict-equal')
+const adaptedPreferToBe = adaptPluginRule(preferToBeRule, 'prefer-to-be')
+const adaptedPreferToBeNull = adaptPluginRule(preferToBeNullRule, 'prefer-to-be-null')
+const adaptedPreferToBeUndefined = adaptPluginRule(preferToBeUndefinedRule, 'prefer-to-be-undefined')
+const adaptedPreferToContain = adaptPluginRule(preferToContainRule, 'prefer-to-contain')
+const adaptedPreferToHaveLength = adaptPluginRule(preferToHaveLengthRule, 'prefer-to-have-length')
+const adaptedPreferTodo = adaptPluginRule(preferTodoRule, 'prefer-todo')
+const adaptedRequireHook = adaptPluginRule(requireHookRule, 'require-hook')
+const adaptedRequireToThrowMessage = adaptPluginRule(requireToThrowMessageRule, 'require-to-throw-message')
 
 export const allRules: Record<string, RuleDefinition> = {
   'consistent-imports': adaptedConsistentImports,
@@ -642,6 +1125,7 @@ export const allRules: Record<string, RuleDefinition> = {
   // Complexity
   'max-complexity': maxComplexityRule,
   'max-depth': maxDepthRule,
+  'max-expects': adaptedMaxExpects,
   'max-file-size': adaptedMaxFileSize,
   'max-lines': maxLinesRule,
   'max-lines-per-function': maxLinesPerFunctionRule,
@@ -649,46 +1133,84 @@ export const allRules: Record<string, RuleDefinition> = {
   'max-params': maxParamsRule,
   'max-union-size': adaptedMaxUnionSize,
   'no-alert': adaptedNoAlert,
-  'no-array-constructor': adaptedNoArrayConstructor,
-  // Orphan rules - previously defined but not registered
-  'no-array-destructuring': adaptedNoArrayDestructuring,
+  'no-alias-methods': adaptedNoAliasMethods,
+   'no-array-constructor': adaptedNoArrayConstructor,
+   'no-array-reduce': adaptedNoArrayReduce,
+    'no-inefficient-string-concat': adaptedNoInefficientStringConcat,
+    'no-constant-response': adaptedNoConstantResponse,
+    'no-unnecessary-async': adaptedNoUnnecessaryAsync,
+    'no-misused-promise-return': adaptedNoMisusedPromiseReturn,
+    // Orphan rules - previously defined but not registered
+   'no-array-destructuring': adaptedNoArrayDestructuring,
+  'no-assertion-in-setup': adaptedNoAssertionInSetup,
+  'no-assertion-in-loop': adaptedNoAssertionInLoop,
+  'no-assert-truthiness': adaptedNoAssertTruthiness,
   'no-async-promise-executor': adaptedNoAsyncPromiseExecutor,
+  'no-async-foreach': adaptedNoAsyncForeach,
   'no-async-suite': adaptedNoAsyncSuite,
   'no-async-without-await': adaptedNoAsyncWithoutAwait,
   // Performance
   'no-await-in-loop': noAwaitInLoopRule,
+  'no-inefficient-array-methods': adaptedNoInefficientArrayMethods,
   'no-barrel-imports': adaptedNoBarrelImports,
   'no-bitwise': adaptedNoBitwise,
+  'no-buffer-constructor': adaptedNoBufferConstructor,
   'no-caller': adaptedNoCaller,
+  'no-catch-shadow': adaptedNoCatchShadow,
   'no-case-declarations': adaptedNoCaseDeclarations,
   // Dependencies
   'no-circular-deps': adaptedNoCircularDeps,
   'no-class-assign': adaptedNoClassAssign,
   'no-collection-size-mischeck': adaptedNoCollectionSizeMischeck,
+  'no-commented-out-tests': adaptedNoCommentedOutTests,
   'no-compare-neg-zero': adaptedNoCompareNegZero,
+  'no-commutative-op-equal': adaptedNoCommutativeOpEqual,
+  'no-computed-keys': adaptedNoComputedKeys,
   'no-cond-assign': adaptedNoCondAssign,
   'no-conditional-expect': adaptedNoConditionalExpect,
+  'no-conditional-in-test': adaptedNoConditionalInTest,
+  'no-confusing-double-equal': adaptedNoConfusingDoubleEqual,
+  'no-assigning-expect-result': adaptedNoAssigningExpectResult,
+  'no-assigning-hooks-return': adaptedNoAssigningHooksReturn,
+  'no-dynamic-describe': adaptedNoDynamicDescribe,
+  'no-empty-hook': adaptedNoEmptyHook,
+  'no-confusing-test-name': adaptedNoConfusingTestName,
+  'no-eval-in-test': adaptedNoEvalInTest,
+  'no-misused-matchers': adaptedNoMisusedMatchers,
+  'no-confusing-conditional-access': adaptedNoConfusingConditionalAccess,
+  'no-console-in-tests': adaptedNoConsoleInTests,
+  'no-deprecated-functions': adaptedNoDeprecatedFunctions,
   'no-confusing-void-expression': adaptedNoConfusingVoidExpression,
+  'no-confusing-arrow': adaptedNoConfusingArrow,
   'no-console': adaptedNoConsole,
   'no-console-log': adaptedNoConsoleLog,
   'no-const-assign': adaptedNoConstAssign,
   'no-const-enum': adaptedNoConstEnum,
   'no-constant-binary-expression': adaptedNoConstantBinaryExpression,
   'no-constant-condition': adaptedNoConstantCondition,
-  'no-constructor-return': adaptedNoConstructorReturn,
-  'no-control-regex': adaptedNoControlRegex,
+   'no-constructor-return': adaptedNoConstructorReturn,
+   'no-constructor-super': adaptedNoConstructorSuper,
+   'no-continue': adaptedNoContinue,
+   'no-control-regex': adaptedNoControlRegex,
   'no-debugger': adaptedNoDebugger,
   'no-delete-var': adaptedNoDeleteVar,
   // Security
   'no-deprecated-api': adaptedNoDeprecatedApi,
   'no-deprecated-imports': adaptedNoDeprecatedImports,
-  'no-div-regex': adaptedNoDivRegex,
+   'no-div-regex': adaptedNoDivRegex,
+   'no-double-negation': adaptedNoDoubleNegation,
+   'no-done-callback': adaptedNoDoneCallback,
   'no-dupe-args': adaptedNoDupeArgs,
   'no-dupe-class-members': adaptedNoDupeClassMembers,
   'no-dupe-keys': adaptedNoDupeKeys,
   'no-duplicate-case': adaptedNoDuplicateCase,
   'no-duplicate-code': adaptedNoDuplicateCode,
+  'no-excessive-complexity': adaptedNoExcessiveComplexity,
+  'no-duplicate-condition': adaptedNoDuplicateCondition,
   'no-duplicate-else-if': adaptedNoDuplicateElseIf,
+  'no-empty-alternative': adaptedNoEmptyAlternative,
+  'no-duplicate-hooks': adaptedNoDuplicateHooks,
+  'no-empty-describe': adaptedNoEmptyDescribe,
   'no-duplicate-imports': adaptedNoDuplicateImports,
   'no-duplicate-strings-in-array': adaptedNoDuplicateStringsInArray,
   'no-dynamic-delete': adaptedNoDynamicDelete,
@@ -700,91 +1222,223 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-empty-pattern': adaptedNoEmptyPattern,
   'no-empty-static-block': adaptedNoEmptyStaticBlock,
   'no-eval': adaptedNoEval,
+  'no-eq-null': adaptedNoEqNull,
   'no-ex-assign': adaptedNoExAssign,
+  'no-export-default': adaptedNoExportDefault,
   'no-explicit-any': adaptedNoExplicitAny,
   'no-extend-native': adaptedNoExtendNative,
   'no-extra-boolean-cast': adaptedNoExtraBooleanCast,
+  'no-extra-parens': adaptedNoExtraParens,
+  'no-extra-semi': adaptedNoExtraSemi,
   'no-fallthrough': adaptedNoFallthrough,
-  'no-floating-promises': adaptedNoFloatingPromises,
-  'no-focused-tests': adaptedNoFocusedTests,
+   'no-floating-promises': adaptedNoFloatingPromises,
+   'no-floating-promises-returned': adaptedNoFloatingPromisesReturned,
+   'no-floating-decimal': adaptedNoFloatingDecimal,
+   'no-focused-tests': adaptedNoFocusedTests,
   'no-func-assign': adaptedNoFuncAssign,
   'no-global-assign': adaptedNoGlobalAssign,
+  'no-hex-escape': adaptedNoHexEscape,
+  'no-octal-escape': adaptedNoOctalEscape,
   'no-hardcoded-credentials': adaptedNoHardcodedCredentials,
   'no-identical-title': adaptedNoIdenticalTitle,
+  'no-interpolation-in-snapshots': adaptedNoInterpolationInSnapshots,
+  'no-jest-globals': adaptedNoJestGlobals,
+  'no-large-jest-snapshots': adaptedNoLargeJestSnapshots,
+  'no-redundant-action': adaptedNoRedundantAction,
   'no-implicit-coercion': adaptedNoImplicitCoercion,
   'no-implicit-side-effects': noImplicitSideEffectsRule,
   'no-implied-eval': adaptedNoImpliedEval,
+  'no-implicit-map': adaptedNoImplicitMap,
   'no-import-assign': adaptedNoImportAssign,
   'no-inferrable-types': adaptedNoInferrableTypes,
+  'no-inline-comments': adaptedNoInlineComments,
+  'no-inner-declarations': adaptedNoInnerDeclarations,
   'no-invalid-regexp': adaptedNoInvalidRegexp,
   'no-irregular-whitespace': adaptedNoIrregularWhitespace,
   'no-iterator': adaptedNoIterator,
   'no-label-var': adaptedNoLabelVar,
+  'no-lone-blocks': adaptedNoLoneBlocks,
   'no-lonely-if': adaptedNoLonelyIf,
-  'no-loop-func': adaptedNoLoopFunc,
-  'no-loss-of-precision': adaptedNoLossOfPrecision,
+   'no-loop-func': adaptedNoLoopFunc,
+   'no-labels': adaptedNoLabels,
+   'no-loss-of-precision': adaptedNoLossOfPrecision,
+  'no-meaningless-void': adaptedNoMeaninglessVoid,
   // Best practices
   'no-magic-numbers': noMagicNumbersRule,
+  'no-misleading-array-method': adaptedNoMisleadingArrayMethod,
   'no-misleading-character-class': adaptedNoMisleadingCharacterClass,
+  'no-misleading-instantiation': adaptedNoMisleadingInstantiation,
+  'no-mixed-enums': adaptedNoMixedEnums,
+  'no-mixed-operators': adaptedNoMixedOperators,
+  'no-misused-new': adaptedNoMisusedNew,
   'no-misused-promises': adaptedNoMisusedPromises,
+  'no-multi-assign': adaptedNoMultiAssign,
+  'no-multiple-empty-lines': adaptedNoMultipleEmptyLines,
   'no-multi-spaces': adaptedNoMultiSpaces,
+  'no-multi-str': adaptedNoMultiStr,
   'no-namespace': adaptedNoNamespace,
+  'no-negated-condition': adaptedNoNegatedCondition,
+  'no-negated-eq-null': adaptedNoNegatedEqNull,
   'no-nested-ternary': adaptedNoNestedTernary,
   'no-new-func': adaptedNoNewFunc,
   'no-new-native-nonconstructor': adaptedNoNewNativeNonconstructor,
-  'no-new-wrappers': adaptedNoNewWrappers,
-  'no-non-null-assertion': adaptedNoNonNullAssertion,
+   'no-new-wrappers': adaptedNoNewWrappers,
+   'no-new-symbol': adaptedNoNewSymbol,
+   'no-non-null-assertion': adaptedNoNonNullAssertion,
   'no-nonoctal-decimal-escape': adaptedNoNonoctalDecimalEscape,
   'no-obj-calls': adaptedNoObjCalls,
   'no-object-constructor': adaptedNoObjectConstructor,
   'no-octal': adaptedNoOctal,
   'no-param-reassign': adaptedNoParamReassign,
+  'no-plusplus': adaptedNoPlusplus,
   'no-promise-as-boolean': adaptedNoPromiseAsBoolean,
   'no-prototype-builtins': adaptedNoPrototypeBuiltins,
+  'no-property-rename': adaptedNoPropertyRename,
+  'no-property-signature-style': adaptedNoPropertySignatureStyle,
   'no-redeclare': adaptedNoRedeclare,
   'no-redundant-boolean': adaptedNoRedundantBoolean,
+  'no-redundant-optional-chain': adaptedNoRedundantOptionalChain,
+  'no-redundant-use-strict': adaptedNoRedundantUseStrict,
+  'no-redundant-type-constituents': adaptedNoRedundantTypeConstituents,
   'no-regex-spaces': adaptedNoRegexSpaces,
+  'no-restricted-exports': adaptedNoRestrictedExports,
+  'no-restricted-syntax': adaptedNoRestrictedSyntax,
+  'no-restricted-matchers': adaptedNoRestrictedMatchers,
+  'no-restricted-jest-methods': adaptedNoRestrictedJestMethods,
   'no-return-assign': adaptedNoReturnAssign,
   'no-return-await': adaptedNoReturnAwait,
   'no-return-or-await': adaptedNoReturnOrAwait,
   'no-same-side-conditions': adaptedNoSameSideConditions,
-  'no-self-assign': adaptedNoSelfAssign,
-  'no-sequences': adaptedNoSequences,
+   'no-self-assign': adaptedNoSelfAssign,
+   'no-self-compare': adaptedNoSelfCompare,
+   'no-sequences': adaptedNoSequences,
   'no-setter-return': adaptedNoSetterReturn,
   'no-shadow': adaptedNoShadow,
   'no-shadow-restricted-names': adaptedNoShadowRestrictedNames,
+  'no-script-url': adaptedNoScriptUrl,
   'no-simplifiable-pattern': adaptedNoSimplifiablePattern,
   'no-skipped-tests': adaptedNoSkippedTests,
   'no-sparse-arrays': adaptedNoSparseArrays,
+  'no-static-only-class': adaptedNoStaticOnlyClass,
   'no-sql-injection': adaptedNoSqlInjection,
+  'no-standalone-expect': adaptedNoStandaloneExpect,
   'no-string-concat': adaptedNoStringConcat,
+  'no-string-case-convert': adaptedNoStringCaseConvert,
+   'no-suspicious-comment': adaptedNoSuspiciousComment,
+   'no-tabs': adaptedNoTabs,
+   'no-test-prefix': adaptedNoTestPrefix,
   'no-sync-in-async': noSyncInAsyncRule,
+  'no-primitive-wrapper-maps': adaptedNoPrimitiveWrapperMaps,
   'no-template-curly-in-string': adaptedNoTemplateCurlyInString,
+  'no-ternary': adaptedNoTernary,
   'no-test-return-statement': adaptedNoTestReturnStatement,
+  'no-useless-async-test': adaptedNoUselessAsyncTest,
+  'no-unsafe-matchers': adaptedNoUnsafeMatchers,
+  'no-misplaced-hook': adaptedNoMisplacedHook,
+  'require-hook-description': adaptedRequireHookDescription,
+  'no-async-snapshot': adaptedNoAsyncSnapshot,
+  'no-async-setup': adaptedNoAsyncSetup,
   'no-thenable': adaptedNoThenable,
   'no-this-before-super': adaptedNoThisBeforeSuper,
+  'no-this-alias': adaptedNoThisAlias,
   'no-throw-literal': adaptedNoThrowLiteral,
   'no-throw-sync': adaptedNoThrowSync,
+  'no-trailing-spaces': adaptedNoTrailingSpaces,
   'no-type-only-return': adaptedNoTypeOnlyReturn,
+  'no-type-alias-single-union': adaptedNoTypeAliasSingleUnion,
+  'no-unicode-bom': adaptedNoUnicodeBom,
   'no-unassigned-vars': adaptedNoUnassignedVars,
   'no-undef': adaptedNoUndef,
   'no-unexpected-multiline': adaptedNoUnexpectedMultiline,
+  'no-unbound-promise': adaptedNoUnboundPromise,
   'no-unfinished-todos': adaptedNoUnfinishedTodos,
   'no-unnecessary-condition': adaptedNoUnnecessaryCondition,
+  'no-unnecessary-await': adaptedNoUnnecessaryAwait,
+  'no-unnecessary-await-foreach': adaptedNoUnnecessaryAwaitForeach,
+  'no-unnecessary-assign': adaptedNoUnnecessaryAssign,
+  'no-unnecessary-binding-pattern': adaptedNoUnnecessaryBindingPattern,
+  'no-unnecessary-assert': adaptedNoUnnecessaryAssert,
+  'no-unnecessary-bignumber': adaptedNoUnnecessaryBignumber,
+  'no-unnecessary-block': adaptedNoUnnecessaryBlock,
+  'no-unnecessary-as-expression': adaptedNoUnnecessaryAsExpression,
+  'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
+  'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
+  'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
+  'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
+   'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
+   'no-unnecessary-boolean-comparison': adaptedNoUnnecessaryBooleanComparison,
+   'no-unnecessary-boolean-literal-compare': adaptedNoUnnecessaryBooleanLiteralCompare,
+   'no-unnecessary-boolean-constructor': adaptedNoUnnecessaryBooleanConstructor,
+  'no-unnecessary-callback-wrapper': adaptedNoUnnecessaryCallbackWrapper,
+  'no-unnecessary-class': adaptedNoUnnecessaryClass,
+  'no-unnecessary-destructuring': adaptedNoUnnecessaryDestructuring,
+   'no-unnecessary-concat': adaptedNoUnnecessaryConcat,
+  'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
+  'no-unnecessary-double-negation': adaptedNoUnnecessaryDoubleNegation,
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
+  'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
+  'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
+  'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
+  'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
+  'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
+  'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
+  'no-unnecessary-new-array': adaptedNoUnnecessaryNewArray,
+  'no-unnecessary-new-object': adaptedNoUnnecessaryNewObject,
+  'no-unnecessary-parentheses': adaptedNoUnnecessaryParentheses,
+  'no-unnecessary-label': adaptedNoUnnecessaryLabel,
+  'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
+  'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
+  'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
+  'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
   'no-unnecessary-polyfills': adaptedNoUnnecessaryPolyfills,
   'no-unnecessary-qualifier': adaptedNoUnnecessaryQualifier,
+  'no-unnecessary-readonly': adaptedNoUnnecessaryReadonly,
+  'no-unnecessary-regex-constructor': adaptedNoUnnecessaryRegexConstructor,
+  'no-unnecessary-regex': adaptedNoUnnecessaryRegex,
+  'no-unnecessary-return-await': adaptedNoUnnecessaryReturnAwait,
+  'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
+  'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
+  'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-slice': adaptedNoUnnecessarySlice,
+  'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
+  'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
+  'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
+  'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
+  'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
+  'no-unnecessary-parse-int': adaptedNoUnnecessaryParseInt,
+  'no-unnecessary-is-finite': adaptedNoUnnecessaryIsFinite,
+  'no-unnecessary-is-nan': adaptedNoUnnecessaryIsNan,
+  'no-unnecessary-decode-uri': adaptedNoUnnecessaryDecodeUri,
+  'no-unnecessary-encode-uri': adaptedNoUnnecessaryEncodeUri,
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
+  'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
+  'no-unnecessary-then': adaptedNoUnnecessaryThen,
+  'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
+  'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
+  'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
+  'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
+  'no-unnecessary-parameter-property': adaptedNoUnnecessaryParameterProperty,
+  'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
+  'no-unnecessary-escape': adaptedNoUnnecessaryEscape,
+  'no-unnecessary-else': adaptedNoUnnecessaryElse,
+  'no-unnecessary-constructor': adaptedNoUnnecessaryConstructor,
+  'no-unnecessary-ternary': adaptedNoUnnecessaryTernary,
+  'no-unnecessary-ternary-assign': adaptedNoUnnecessaryTernaryAssign,
   'no-unnecessary-type-arguments': adaptedNoUnnecessaryTypeArguments,
   'no-unnecessary-type-assertion': noUnnecessaryTypeAssertionRule,
   'no-unnecessary-type-constraint': adaptedNoUnnecessaryTypeConstraint,
+  'no-unnecessary-type-parameters': adaptedNoUnnecessaryTypeParameters,
+  'no-unnecessary-void': adaptedNoUnnecessaryVoid,
+  'no-unnecessary-wait': adaptedNoUnnecessaryWait,
   'no-unneeded-ternary': adaptedNoUnneededTernary,
   'no-unreachable': adaptedNoUnreachable,
+  'no-undefined': adaptedNoUndefined,
+  'no-underscore-dangle': adaptedNoUnderscoreDangle,
   'no-unsafe-assignment': adaptedNoUnsafeAssignment,
   'no-unsafe-call': adaptedNoUnsafeCall,
   'no-unsafe-declaration-merging': adaptedNoUnsafeDeclarationMerging,
+  'no-unsafe-enum-comparison': adaptedNoUnsafeEnumComparison,
   'no-unsafe-finally': adaptedNoUnsafeFinally,
   'no-unsafe-html': adaptedNoUnsafeHtml,
   'no-unsafe-member-access': adaptedNoUnsafeMemberAccess,
@@ -793,27 +1447,61 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unsafe-regex': adaptedNoUnsafeRegex,
   'no-unsafe-return': adaptedNoUnsafeReturn,
   'no-unsafe-type-assertion': adaptedNoUnsafeTypeAssertion,
-  'no-unused-exports': adaptedNoUnusedExports,
-  'no-unused-expressions': adaptedNoUnusedExpressions,
+   'no-unused-exports': adaptedNoUnusedExports,
+    'no-cjs-imports': adaptedNoCjsImports,
+    'no-dynamic-import': adaptedNoDynamicImport,
+     'no-implicit-dependencies': adaptedNoImplicitDependencies,
+     'no-git-dependencies': adaptedNoGitDependencies,
+     'no-unused-expressions': adaptedNoUnusedExpressions,
   'no-unused-labels': adaptedNoUnusedLabels,
   'no-unused-private-members': adaptedNoUnusedPrivateMembers,
   'no-unused-vars': adaptedNoUnusedVars,
+  'no-use-before-define': adaptedNoUseBeforeDefine,
+  'no-use-extend-native': adaptedNoUseExtendNative,
   'no-useless-assignment': adaptedNoUselessAssignment,
   'no-useless-backreference': adaptedNoUselessBackreference,
-  'no-useless-catch': adaptedNoUselessCatch,
+   'no-useless-catch': adaptedNoUselessCatch,
+    'no-invalid-use-before-def': adaptedNoInvalidUseBeforeDef,
+     'no-implicit-globals': adaptedNoImplicitGlobals,
+     'no-non-null-asserted-optional-chain': adaptedNoNonNullAssertedOptionalChain,
+      'no-misleading-spread': adaptedNoMisleadingSpread,
+       'no-async-constructor': adaptedNoAsyncConstructor,
+       'no-approximate-constants': adaptedNoApproximateConstants,
+       'no-implicit-undefined': adaptedNoImplicitUndefined,
+       'no-misleading-assertion': adaptedNoMisleadingAssertion,
+       'no-require-imports': adaptedNoRequireImports,
+       'no-useless-promise': adaptedNoUselessPromise,
+     'no-useless-rename': adaptedNoUselessRename,
   'no-useless-comparison': noUselessComparisonRule,
+  'no-useless-call': adaptedNoUselessCall,
+  'no-useless-computed-key': adaptedNoUselessComputedKey,
   'no-useless-concat': adaptedNoUselessConcat,
   'no-useless-constructor': adaptedNoUselessConstructor,
   'no-useless-escape': adaptedNoUselessEscape,
+  'no-useless-expression-statement': adaptedNoUselessExpressionStatement,
   'no-useless-fallback-in-spread': adaptedNoUselessFallbackInSpread,
-  'no-useless-undefined': adaptedNoUselessUndefined,
+   'no-useless-undefined': adaptedNoUselessUndefined,
+   'no-useless-return': adaptedNoUselessReturn,
+   'no-useless-switch': adaptedNoUselessSwitch,
+   'no-useless-type-conversion': adaptedNoUselessTypeConversion,
   'no-utility-truthiness': adaptedNoUtilityTruthiness,
   'no-var': adaptedNoVar,
   'no-var-requires': adaptedNoVarRequires,
   'no-void': adaptedNoVoid,
-  'no-weak-crypto': adaptedNoWeakCrypto,
-  'no-with': adaptedNoWith,
-  'object-shorthand': adaptedObjectShorthand,
+   'no-weak-crypto': adaptedNoWeakCrypto,
+   'no-innerhtml': adaptedNoInnerHTML,
+   'no-banned-properties': adaptedNoBannedProperties,
+   'no-document-write': adaptedNoDocumentWrite,
+   'no-regex-concat': adaptedNoRegexConcat,
+   'no-regex-constructor': adaptedNoRegexConstructor,
+    'no-unsafe-argument': adaptedNoUnsafeArgument,
+    'no-restricted-globals': adaptedNoRestrictedGlobals,
+     'no-restricted-imports': adaptedNoRestrictedImports,
+     'no-restricted-properties': adaptedNoRestrictedProperties,
+     'no-with': adaptedNoWith,
+   'no-warning-comments': adaptedNoWarningComments,
+    'no-whitespace-before-property': adaptedNoWhitespaceBeforeProperty,
+   'object-shorthand': adaptedObjectShorthand,
   'prefer-array-find': preferArrayFindRule,
   'prefer-array-flat': adaptedPreferArrayFlat,
   'prefer-array-some': preferArraySomeRule,
@@ -825,22 +1513,44 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-const-assertions': preferConstAssertionsRule,
   'prefer-date-now': adaptedPreferDateNow,
   'prefer-default-export': preferDefaultExportRule,
-  'prefer-enum-initializers': adaptedPreferEnumInitializers,
+   'prefer-enum-initializers': adaptedPreferEnumInitializers,
+   'prefer-destructuring': adaptedPreferDestructuring,
+   'prefer-expect-resolves': adaptedPreferExpectResolves,
+  'prefer-expect-assertions': adaptedPreferExpectAssertions,
+  'no-misused-async': adaptedNoMisusedAsync,
+  'no-nested-describe': adaptedNoNestedDescribe,
+  'no-implicit-return-in-test': adaptedNoImplicitReturnInTest,
   'prefer-exponent-operator': preferExponentOperatorRule,
   'prefer-exponentiation-operator': adaptedPreferExponentiationOperator,
   'prefer-flat-map': preferFlatMapRule,
   'prefer-for-of': preferForOfRule,
   'prefer-function-type': adaptedPreferFunctionType,
+  'prefer-hooks-on-top': adaptedPreferHooksOnTop,
+  'prefer-inline-snapshot': adaptedPreferInlineSnapshot,
+  'prefer-literal-matchers': adaptedPreferLiteralMatchers,
   'prefer-includes': adaptedPreferIncludes,
   'prefer-literal-enum-member': adaptedPreferLiteralEnumMember,
   'prefer-math-trunc': adaptedPreferMathTrunc,
   'prefer-nullish-coalescing': adaptedPreferNullishCoalescing,
+  'prefer-called-with': adaptedPreferCalledWith,
+  'prefer-equality-matcher': adaptedPreferEqualityMatcher,
+  'prefer-each': adaptedPreferEach,
+  'prefer-mock-promise-shorthand': adaptedPreferMockPromiseShorthand,
+  'prefer-mock-return-value': adaptedPreferMockReturnValue,
+  'prefer-resolves-rejects': adaptedPreferResolvesRejects,
+  'no-redundant-expect': adaptedNoRedundantExpect,
+  'prefer-named-snapshot': adaptedPreferNamedSnapshot,
+  'prefer-snapshot-hint': adaptedPreferSnapshotHint,
+  'prefer-spy-on': adaptedPreferSpyOn,
   'prefer-number-properties': adaptedPreferNumberProperties,
+  'prefer-number-isnan': adaptedPreferNumberIsnan,
+  'prefer-number-isfinite': adaptedPreferNumberIsFinite,
   'prefer-numeric-literals': adaptedPreferNumericLiterals,
   'prefer-object-has-own': adaptedPreferObjectHasOwn,
   'prefer-object-spread': adaptedPreferObjectSpread,
-  'prefer-optional-chain': adaptedPreferOptionalChain,
-  'prefer-promise-reject-errors': adaptedPreferPromiseRejectErrors,
+   'prefer-optional-chain': adaptedPreferOptionalChain,
+   'prefer-string-char-at': adaptedPreferStringCharAt,
+   'prefer-promise-reject-errors': adaptedPreferPromiseRejectErrors,
   'prefer-prototype-methods': adaptedPreferPrototypeMethods,
   'prefer-readonly': adaptedPreferReadonly,
   'prefer-readonly-parameter': adaptedPreferReadonlyParameter,
@@ -857,18 +1567,33 @@ export const allRules: Record<string, RuleDefinition> = {
   'prefer-string-start-end': preferStringStartEndRule,
   'prefer-string-starts-ends-with': adaptedPreferStringStartsEndsWith,
   'prefer-string-template': preferStringTemplateRule,
+  'prefer-strict-equal': adaptedPreferStrictEqual,
   'prefer-template': adaptedPreferTemplate,
   'prefer-ternary-operator': adaptedPreferTernaryOperator,
+  'prefer-to-be': adaptedPreferToBe,
+  'prefer-to-be-null': adaptedPreferToBeNull,
+  'prefer-to-be-undefined': adaptedPreferToBeUndefined,
+  'prefer-to-contain': adaptedPreferToContain,
+  'prefer-to-have-length': adaptedPreferToHaveLength,
+  'prefer-todo': adaptedPreferTodo,
   'preserve-caught-error': adaptedPreserveCaughtError,
   'require-await': adaptedRequireAwait,
+  'require-hook': adaptedRequireHook,
+  'require-to-throw-message': adaptedRequireToThrowMessage,
   'require-return-type': adaptedRequireReturnType,
   'require-top-level-describe': adaptedRequireTopLevelDescribe,
   'require-yield': adaptedRequireYield,
   'restrict-template-expressions': adaptedRestrictTemplateExpressions,
   'sort-keys': adaptedSortKeys,
+  'sort-imports': adaptedSortImports,
+  'spaced-comment': adaptedSpacedComment,
+  'strict-bool-expressions': adaptedStrictBoolExpressions,
   'strict-boolean-expressions': strictBooleanExpressionsRule,
   'use-isnan': adaptedUseIsnan,
-  'valid-typeof': adaptedValidTypeof,
+  'valid-expect': adaptedValidExpect,
+  'valid-title': adaptedValidTitle,
+   'valid-typeof': adaptedValidTypeof,
+   'yoda': adaptedYoda,
 }
 
 export type RuleCategory =
@@ -906,6 +1631,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Complexity
   'max-complexity': 'complexity',
   'max-depth': 'complexity',
+  'max-expects': 'testing',
   'max-file-size': 'patterns',
   'max-lines': 'complexity',
   'max-lines-per-function': 'complexity',
@@ -913,22 +1639,49 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'max-params': 'complexity',
   'max-union-size': 'patterns',
   'no-alert': 'patterns',
+  'no-alias-methods': 'testing',
   'no-array-constructor': 'patterns',
+  'no-assertion-in-setup': 'testing',
+  'no-assertion-in-loop': 'testing',
   'no-async-promise-executor': 'patterns',
+  'no-async-foreach': 'patterns',
   'no-async-suite': 'testing',
-  // Performance
-  'no-await-in-loop': 'performance',
+   // Performance
+    'no-await-in-loop': 'performance',
+   'no-array-reduce': 'performance',
+    'no-inefficient-string-concat': 'performance',
+    'no-constant-response': 'performance',
+    'no-unnecessary-async': 'performance',
+    'no-misused-promise-return': 'performance',
+    'no-inefficient-array-methods': 'performance',
   'no-barrel-imports': 'dependencies',
-  'no-bitwise': 'patterns',
-  'no-caller': 'patterns',
-  'no-case-declarations': 'patterns',
+   'no-bitwise': 'patterns',
+   'no-buffer-constructor': 'patterns',
+   'no-caller': 'patterns',
+   'no-catch-shadow': 'patterns',
+   'no-case-declarations': 'patterns',
   // Dependencies
   'no-circular-deps': 'dependencies',
   'no-class-assign': 'patterns',
   'no-collection-size-mischeck': 'patterns',
+  'no-commented-out-tests': 'testing',
   'no-compare-neg-zero': 'patterns',
+  'no-commutative-op-equal': 'patterns',
+  'no-computed-keys': 'patterns',
   'no-cond-assign': 'patterns',
-  'no-conditional-expect': 'testing',
+    'no-conditional-expect': 'testing',
+     'no-conditional-in-test': 'testing',
+     'no-console-in-tests': 'testing',
+     'no-deprecated-functions': 'testing',
+    'no-confusing-double-equal': 'testing',
+    'no-assigning-expect-result': 'testing',
+    'no-assigning-hooks-return': 'testing',
+    'no-dynamic-describe': 'testing',
+    'no-empty-hook': 'testing',
+    'no-confusing-test-name': 'testing',
+    'no-eval-in-test': 'testing',
+    'no-misused-matchers': 'testing',
+   'no-confusing-conditional-access': 'testing',
   'no-confusing-void-expression': 'patterns',
   'no-console': 'patterns',
   'no-console-log': 'patterns',
@@ -937,19 +1690,28 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-constant-binary-expression': 'correctness',
   'no-constant-condition': 'patterns',
   'no-constructor-return': 'patterns',
+  'no-constructor-super': 'patterns',
+  'no-continue': 'patterns',
   'no-control-regex': 'patterns',
   'no-debugger': 'patterns',
   'no-delete-var': 'patterns',
   // Security
   'no-deprecated-api': 'security',
   'no-deprecated-imports': 'patterns',
-  'no-div-regex': 'patterns',
+   'no-div-regex': 'patterns',
+   'no-double-negation': 'patterns',
+   'no-done-callback': 'testing',
   'no-dupe-args': 'patterns',
   'no-dupe-class-members': 'patterns',
   'no-dupe-keys': 'patterns',
   'no-duplicate-case': 'patterns',
   'no-duplicate-code': 'patterns',
-  'no-duplicate-else-if': 'patterns',
+ 'no-excessive-complexity': 'patterns',
+   'no-duplicate-condition': 'patterns',
+ 'no-empty-alternative': 'patterns',
+   'no-duplicate-else-if': 'patterns',
+  'no-duplicate-hooks': 'testing',
+  'no-empty-describe': 'testing',
   'no-duplicate-imports': 'patterns',
   'no-duplicate-strings-in-array': 'patterns',
   'no-dynamic-delete': 'security',
@@ -961,110 +1723,273 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-empty-pattern': 'patterns',
   'no-empty-static-block': 'patterns',
   'no-eval': 'security',
+  'no-eq-null': 'patterns',
   'no-ex-assign': 'patterns',
+  'no-export-default': 'patterns',
   'no-explicit-any': 'patterns',
   'no-extend-native': 'patterns',
   'no-extra-boolean-cast': 'patterns',
+  'no-extra-parens': 'patterns',
+  'no-extra-semi': 'patterns',
   'no-fallthrough': 'patterns',
-  'no-floating-promises': 'patterns',
+   'no-floating-promises': 'patterns',
+   'no-floating-promises-returned': 'patterns',
+   'no-floating-decimal': 'patterns',
   'no-focused-tests': 'testing',
   'no-func-assign': 'patterns',
   'no-global-assign': 'patterns',
   'no-hardcoded-credentials': 'security',
   'no-identical-title': 'testing',
-  'no-implicit-coercion': 'patterns',
+  'no-interpolation-in-snapshots': 'testing',
+  'no-jest-globals': 'testing',
+  'no-large-jest-snapshots': 'testing',
+  'no-redundant-action': 'testing',
+   'no-implicit-coercion': 'patterns',
+   'no-invalid-use-before-def': 'correctness',
+    'no-implicit-globals': 'correctness',
+    'no-non-null-asserted-optional-chain': 'correctness',
+     'no-misleading-spread': 'correctness',
+      'no-async-constructor': 'correctness',
+      'no-approximate-constants': 'correctness',
+      'no-implicit-undefined': 'correctness',
+'no-misleading-assertion': 'correctness',
+  'no-require-imports': 'correctness',
   'no-implicit-side-effects': 'patterns',
   'no-implied-eval': 'patterns',
+ 'no-implicit-map': 'patterns',
   'no-import-assign': 'patterns',
-  'no-inferrable-types': 'patterns',
-  'no-invalid-regexp': 'patterns',
+   'no-inferrable-types': 'patterns',
+   'no-inline-comments': 'patterns',
+   'no-inner-declarations': 'patterns',
+   'no-invalid-regexp': 'patterns',
   'no-irregular-whitespace': 'patterns',
   'no-iterator': 'patterns',
   'no-label-var': 'patterns',
+  'no-lone-blocks': 'patterns',
   'no-lonely-if': 'patterns',
-  'no-loop-func': 'patterns',
-  'no-loss-of-precision': 'patterns',
-  'no-misleading-character-class': 'patterns',
-  'no-misused-promises': 'patterns',
-  'no-multi-spaces': 'patterns',
-  'no-namespace': 'patterns',
-  'no-nested-ternary': 'patterns',
+   'no-loop-func': 'patterns',
+   'no-labels': 'patterns',
+    'no-loss-of-precision': 'patterns',
+ 'no-meaningless-void': 'patterns',
+    'no-misleading-array-method': 'patterns',
+    'no-misleading-character-class': 'patterns',
+   'no-misleading-instantiation': 'patterns',
+    'no-mixed-enums': 'patterns',
+    'no-mixed-operators': 'patterns',
+    'no-misused-new': 'patterns',
+   'no-misused-promises': 'patterns',
+   'no-multi-assign': 'patterns',
+   'no-multiple-empty-lines': 'patterns',
+    'no-multi-spaces': 'patterns',
+  'no-multi-str': 'patterns',
+    'no-namespace': 'patterns',
+    'no-negated-condition': 'patterns',
+    'no-negated-eq-null': 'patterns',
+    'no-nested-ternary': 'patterns',
   'no-new-func': 'patterns',
   'no-new-native-nonconstructor': 'patterns',
   'no-new-wrappers': 'patterns',
+  'no-new-symbol': 'patterns',
   'no-non-null-assertion': 'patterns',
   'no-nonoctal-decimal-escape': 'patterns',
   'no-obj-calls': 'patterns',
   'no-object-constructor': 'patterns',
-  'no-octal': 'patterns',
+   'no-octal': 'patterns',
+   'no-octal-escape': 'patterns',
   'no-param-reassign': 'patterns',
+  'no-plusplus': 'patterns',
   'no-promise-as-boolean': 'patterns',
   'no-prototype-builtins': 'patterns',
-  'no-redeclare': 'patterns',
+ 'no-property-rename': 'patterns',
+ 'no-property-signature-style': 'patterns',
+ 'no-redeclare': 'patterns',
   'no-redundant-boolean': 'patterns',
-  'no-regex-spaces': 'patterns',
+  'no-redundant-optional-chain': 'patterns',
+  'no-redundant-use-strict': 'patterns',
+  'no-redundant-type-constituents': 'patterns',
+   'no-regex-spaces': 'patterns',
+   'no-restricted-exports': 'patterns',
+   'no-restricted-syntax': 'patterns',
+   'no-restricted-matchers': 'testing',
+  'no-restricted-jest-methods': 'testing',
   'no-return-assign': 'patterns',
   'no-return-await': 'patterns',
   'no-return-or-await': 'patterns',
-  'no-self-assign': 'patterns',
-  'no-sequences': 'patterns',
+   'no-self-assign': 'patterns',
+   'no-self-compare': 'patterns',
+   'no-sequences': 'patterns',
   'no-setter-return': 'patterns',
   'no-shadow': 'patterns',
-  'no-shadow-restricted-names': 'patterns',
-  'no-skipped-tests': 'testing',
+   'no-shadow-restricted-names': 'patterns',
+   'no-script-url': 'patterns',
+   'no-skipped-tests': 'testing',
   'no-sparse-arrays': 'patterns',
+  'no-static-only-class': 'patterns',
   'no-sql-injection': 'security',
+  'no-standalone-expect': 'testing',
+  'no-test-prefix': 'testing',
   'no-string-concat': 'patterns',
-  'no-sync-in-async': 'performance',
+ 'no-string-case-convert': 'patterns',
+  'no-suspicious-comment': 'patterns',
+   'no-tabs': 'patterns',
+   'no-sync-in-async': 'performance',
   'no-template-curly-in-string': 'patterns',
-  'no-test-return-statement': 'testing',
-  'no-thenable': 'patterns',
+  'no-ternary': 'patterns',
+   'no-test-return-statement': 'testing',
+   'no-useless-async-test': 'testing',
+   'no-unsafe-matchers': 'testing',
+   'no-misplaced-hook': 'testing',
+   'require-hook-description': 'testing',
+     'no-async-snapshot': 'testing',
+     'no-async-setup': 'testing',
+    'no-thenable': 'patterns',
   'no-this-before-super': 'patterns',
+  'no-this-alias': 'patterns',
   'no-throw-literal': 'correctness',
-  'no-throw-sync': 'patterns',
-  'no-type-only-return': 'patterns',
-  'no-unassigned-vars': 'patterns',
+   'no-throw-sync': 'patterns',
+   'no-trailing-spaces': 'patterns',
+   'no-type-only-return': 'patterns',
+   'no-type-alias-single-union': 'patterns',
+   'no-unicode-bom': 'patterns',
+   'no-unassigned-vars': 'patterns',
   'no-undef': 'patterns',
   'no-unexpected-multiline': 'patterns',
   'no-unfinished-todos': 'patterns',
+  'no-unnecessary-await': 'patterns',
+  'no-unnecessary-await-foreach': 'patterns',
+  'no-unnecessary-assign': 'patterns',
+  'no-unnecessary-binding-pattern': 'patterns',
+  'no-unnecessary-assert': 'patterns',
+  'no-unnecessary-bignumber': 'patterns',
+  'no-unnecessary-block': 'patterns',
+  'no-unnecessary-as-expression': 'patterns',
+  'no-unnecessary-atob': 'patterns',
+  'no-unnecessary-btoa': 'patterns',
+  'no-unnecessary-array-from': 'patterns',
+  'no-unnecessary-async-function': 'patterns',
+   'no-unnecessary-boolean': 'patterns',
+   'no-unnecessary-boolean-comparison': 'patterns',
+    'no-unnecessary-boolean-literal-compare': 'patterns',
+    'no-unnecessary-boolean-constructor': 'patterns',
+     'no-unnecessary-callback-wrapper': 'patterns',
+     'no-unnecessary-class': 'patterns',
+  'no-unnecessary-destructuring': 'patterns',
+     'no-unnecessary-concat': 'patterns',
+    'no-unnecessary-computed-key': 'patterns',
+    'no-unnecessary-double-negation': 'patterns',
   'no-unnecessary-condition': 'patterns',
   'no-unnecessary-escape-in-regexp': 'patterns',
-  'no-unnecessary-polyfills': 'patterns',
-  'no-unnecessary-qualifier': 'patterns',
+  'no-unnecessary-for-loop': 'patterns',
+  'no-unnecessary-flat': 'patterns',
+  'no-unnecessary-fragment': 'patterns',
+  'no-unnecessary-initialization': 'patterns',
+  'no-unnecessary-instanceof-array': 'patterns',
+  'no-unnecessary-initialization': 'patterns',
+  'no-unnecessary-json-parse': 'patterns',
+  'no-unnecessary-new-array': 'patterns',
+  'no-unnecessary-new-object': 'patterns',
+  'no-unnecessary-parentheses': 'patterns',
+  'no-unnecessary-label': 'patterns',
+  'no-unnecessary-literal-key': 'patterns',
+   'no-unnecessary-null-with-strict': 'patterns',
+   'no-unnecessary-numeric-literal': 'patterns',
+  'no-unnecessary-numeric-separator': 'patterns',
+   'no-unnecessary-polyfills': 'patterns',
+   'no-unnecessary-qualifier': 'patterns',
+  'no-unnecessary-slice': 'patterns',
+   'no-unnecessary-readonly': 'patterns',
+  'no-unnecessary-spread': 'patterns',
+  'no-unnecessary-string-concat': 'patterns',
+  'no-unnecessary-string-split': 'patterns',
+  'no-unnecessary-stringify': 'patterns',
+  'no-unnecessary-string-to-number': 'patterns',
+  'no-unnecessary-parse-float': 'patterns',
+  'no-unnecessary-parse-int': 'patterns',
+  'no-unnecessary-is-finite': 'patterns',
+  'no-unnecessary-is-nan': 'patterns',
+  'no-unnecessary-decode-uri': 'patterns',
+  'no-unnecessary-encode-uri': 'patterns',
+  'no-unnecessary-regex-constructor': 'patterns',
+  'no-unnecessary-regex': 'patterns',
+  'no-unnecessary-return-await': 'patterns',
+  'no-unnecessary-return-value': 'patterns',
+  'no-unnecessary-reverse': 'patterns',
+  'no-unnecessary-join': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
+  'no-unnecessary-template-literal': 'patterns',
+  'no-unnecessary-then': 'patterns',
+  'no-unnecessary-to-string': 'patterns',
+  'no-unnecessary-typeof': 'patterns',
+  'no-unnecessary-null-check': 'patterns',
+  'no-unnecessary-optional-chain': 'patterns',
+  'no-unnecessary-parameter-property': 'patterns',
+  'no-unnecessary-promise-wrap': 'patterns',
+  'no-unnecessary-escape': 'patterns',
+  'no-unnecessary-else': 'patterns',
+ 'no-unnecessary-constructor': 'patterns',
+  'no-unnecessary-ternary': 'patterns',
+  'no-unnecessary-ternary-assign': 'patterns',
   'no-unnecessary-type-assertion': 'patterns',
   'no-unnecessary-type-constraint': 'patterns',
+  'no-unnecessary-type-parameters': 'patterns',
+  'no-unnecessary-void': 'patterns',
+  'no-unnecessary-wait': 'patterns',
   'no-unneeded-ternary': 'patterns',
-  'no-unreachable': 'patterns',
-  'no-unsafe-call': 'security',
+   'no-unreachable': 'patterns',
+  'no-undefined': 'patterns',
+  'no-underscore-dangle': 'patterns',
+   'no-unsafe-call': 'security',
   'no-unsafe-declaration-merging': 'patterns',
+  'no-unsafe-enum-comparison': 'patterns',
   'no-unsafe-finally': 'patterns',
   'no-unsafe-html': 'security',
   'no-unsafe-member-access': 'security',
-  'no-unsafe-negation': 'patterns',
+  'no-unsafe-negation': 'correctness',
   'no-unsafe-optional-chaining': 'patterns',
   'no-unsafe-regex': 'security',
   'no-unsafe-return': 'security',
   'no-unsafe-type-assertion': 'security',
-  'no-unused-exports': 'dependencies',
-  'no-unused-expressions': 'patterns',
+   'no-unused-exports': 'dependencies',
+   'no-cjs-imports': 'dependencies',
+   'no-dynamic-import': 'dependencies',
+    'no-implicit-dependencies': 'dependencies',
+    'no-git-dependencies': 'dependencies',
+    'no-unused-expressions': 'patterns',
   'no-unused-labels': 'patterns',
   'no-unused-private-members': 'patterns',
   'no-unused-vars': 'patterns',
-  'no-useless-assignment': 'patterns',
+   'no-use-before-define': 'patterns',
+   'no-use-extend-native': 'patterns',
+   'no-useless-assignment': 'patterns',
   'no-useless-backreference': 'patterns',
   'no-useless-comparison': 'patterns',
+  'no-useless-call': 'patterns',
+  'no-useless-computed-key': 'patterns',
   'no-useless-concat': 'patterns',
   'no-useless-constructor': 'patterns',
   'no-useless-escape': 'patterns',
   'no-useless-undefined': 'patterns',
+  'no-useless-return': 'patterns',
+  'no-useless-switch': 'patterns',
+  'no-useless-type-conversion': 'patterns',
   'no-utility-truthiness': 'patterns',
   'no-var': 'patterns',
   'no-var-requires': 'patterns',
   'no-void': 'patterns',
-  'no-weak-crypto': 'security',
-  'no-with': 'patterns',
-  'object-shorthand': 'patterns',
+   'no-weak-crypto': 'security',
+   'no-innerhtml': 'security',
+   'no-banned-properties': 'security',
+   'no-document-write': 'security',
+   'no-regex-concat': 'security',
+   'no-regex-constructor': 'security',
+    'no-unsafe-argument': 'security',
+    'no-restricted-globals': 'security',
+     'no-restricted-imports': 'security',
+     'no-restricted-properties': 'security',
+      'no-with': 'patterns',
+   'no-warning-comments': 'patterns',
+    'no-whitespace-before-property': 'patterns',
+   'object-shorthand': 'patterns',
   'prefer-array-find': 'patterns',
   'prefer-array-some': 'patterns',
   'prefer-arrow-callback': 'patterns',
@@ -1073,46 +1998,53 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   // Best practices
   'prefer-const-assertions': 'patterns',
   'prefer-date-now': 'patterns',
-  'prefer-default-export': 'patterns',
-  'prefer-exponent-operator': 'patterns',
-  'prefer-exponentiation-operator': 'patterns',
-  'prefer-flat-map': 'patterns',
-  'prefer-for-of': 'patterns',
-  'prefer-includes': 'patterns',
-  'prefer-literal-enum-member': 'patterns',
-  'prefer-math-trunc': 'performance',
-  'prefer-nullish-coalescing': 'patterns',
-  'prefer-number-properties': 'patterns',
-  'prefer-numeric-literals': 'patterns',
-  'prefer-object-has-own': 'patterns',
-  'prefer-object-spread': 'performance',
-  'prefer-optional-chain': 'performance',
-  'prefer-promise-reject-errors': 'patterns',
-  'prefer-readonly': 'patterns',
-  'prefer-readonly-parameter': 'patterns',
-  'prefer-regex-literal': 'patterns',
-  'prefer-regex-literals': 'patterns',
-  'prefer-regexp-exec': 'patterns',
-  'prefer-rest-params': 'patterns',
-  'prefer-return-this-type': 'patterns',
-  'prefer-single-boolean-return': 'patterns',
-  'prefer-spread': 'patterns',
-  'prefer-string-replace-all': 'patterns',
-  'prefer-string-slice': 'patterns',
-  'prefer-string-slice-over-substring': 'patterns',
-  'prefer-string-start-end': 'patterns',
-  'prefer-string-template': 'patterns',
-  'prefer-template': 'patterns',
+   'prefer-default-export': 'patterns',
+   'prefer-destructuring': 'patterns',
+   'prefer-expect-resolves': 'testing',
+  'prefer-expect-assertions': 'testing',
+  'no-misused-async': 'testing',
+  'no-nested-describe': 'testing',
+  'no-implicit-return-in-test': 'testing',
+  'prefer-hooks-on-top': 'testing',
+  'prefer-inline-snapshot': 'testing',
+  'prefer-literal-matchers': 'testing',
+  'prefer-called-with': 'testing',
+  'prefer-equality-matcher': 'testing',
+  'prefer-each': 'testing',
+  'prefer-mock-promise-shorthand': 'testing',
+  'prefer-mock-return-value': 'testing',
+  'prefer-resolves-rejects': 'testing',
+  'no-redundant-expect': 'testing',
+  'prefer-named-snapshot': 'testing',
+  'prefer-snapshot-hint': 'testing',
+  'prefer-spy-on': 'testing',
+   'prefer-strict-equal': 'testing',
+   'prefer-string-char-at': 'patterns',
+   'prefer-template': 'patterns',
+  'prefer-to-be': 'testing',
+  'prefer-to-be-null': 'testing',
+  'prefer-to-be-undefined': 'testing',
+  'prefer-to-contain': 'testing',
+  'prefer-to-have-length': 'testing',
+  'prefer-todo': 'testing',
   'preserve-caught-error': 'patterns',
   'require-await': 'patterns',
+  'require-hook': 'testing',
+  'require-to-throw-message': 'testing',
   'require-return-type': 'patterns',
   'require-top-level-describe': 'testing',
   'require-yield': 'patterns',
   'restrict-template-expressions': 'patterns',
-  'sort-keys': 'patterns',
-  'strict-boolean-expressions': 'patterns',
+   'sort-keys': 'patterns',
+   'sort-imports': 'patterns',
+   'spaced-comment': 'patterns',
+   'strict-bool-expressions': 'patterns',
+   'strict-boolean-expressions': 'patterns',
   'use-isnan': 'patterns',
-  'valid-typeof': 'patterns',
+  'valid-expect': 'testing',
+  'valid-title': 'testing',
+   'valid-typeof': 'patterns',
+   'yoda': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -1131,8 +2063,12 @@ export {
   noBarrelImportsRule,
   noCircularDepsRule,
   noUnusedExportsRule,
-} from './dependencies/index.js'
-export {
+  noCjsImportsRule,
+  noDynamicImportRule,
+  noImplicitDependenciesRule,
+  noGitDependenciesRule,
+ } from './dependencies/index.js'
+ export {
   consistentTypeExportsRule,
   curlyRule,
   eqEqEqRule,
@@ -1147,7 +2083,8 @@ export {
   noConstantConditionRule,
   noConstAssignRule,
   noDuplicateCodeRule,
-  noDuplicateElseIfRule,
+   noDuplicateConditionRule,
+   noDuplicateElseIfRule,
   noDuplicateImportsRule,
   noElseReturnRule,
   noEmptyRule,
@@ -1156,21 +2093,24 @@ export {
   noImplicitCoercionRule,
   noImpliedEvalRule,
   noInferrableTypesRule,
-  noLonelyIfRule,
-  noLossOfPrecisionRule,
+   noLonelyIfRule,
+  noLoneBlocksRule,
+   noLossOfPrecisionRule,
   noMisusedPromisesRule,
   noMultiSpacesRule,
   noNestedTernaryRule,
   noNonNullAssertionRule,
   noObjectConstructorRule,
-  noParamReassignRule,
-  noPromiseAsBooleanRule,
+   noParamReassignRule,
+  noPlusplusRule,
+   noPromiseAsBooleanRule,
   noReturnAwaitRule,
   noShadowRule,
   noStringConcatRule,
-  noThrowSyncRule,
-  noUnnecessaryConditionRule,
-  noUnnecessaryEscapeInRegexpRule,
+   noThrowSyncRule,
+   noUnnecessaryConditionRule,
+   noUnnecessaryAwaitRule,
+   noUnnecessaryEscapeInRegexpRule,
   noUnnecessaryQualifierRule,
   noUnnecessaryTemplateExpressionRule,
   noUnsafeDeclarationMergingRule,
@@ -1183,9 +2123,11 @@ export {
   preferExponentiationOperatorRule,
   preferIncludesRule,
   preferLiteralEnumMemberRule,
-  preferNullishCoalescingRule,
-  preferNumberPropertiesRule,
-  preferNumericLiteralsRule,
+   preferNullishCoalescingRule,
+    preferNumberPropertiesRule,
+    preferNumberIsnanRule,
+    preferNumberIsfiniteRule,
+    preferNumericLiteralsRule,
   preferObjectHasOwnRule,
   preferReadonlyRule,
   preferRegexLiteralsRule,
@@ -1200,13 +2142,37 @@ export {
   requireReturnTypeRule,
   restrictTemplateExpressionsRule,
 } from './patterns/index.js'
-export { noAwaitInLoopRule, noSyncInAsyncRule } from './performance/index.js'
-export { preferObjectSpreadRule, preferOptionalChainRule } from './performance/index.js'
+export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
+export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
 export {
   noDeprecatedApiRule,
   noDynamicDeleteRule,
   noEvalRule,
   noSqlInjectionRule,
   noUnsafeReturnRule,
-  noUnsafeTypeAssertionRule,
-} from './security/index.js'
+   noUnsafeTypeAssertionRule,
+    noBannedPropertiesRule,
+      noDocumentWriteRule,
+       noRegexConcatRule,
+       noRegexConstructorRule,
+       noUnsafeArgumentRule,
+      noRestrictedGlobalsRule,
+       noRestrictedImportsRule,
+        noRestrictedPropertiesRule,
+      } from './security/index.js'
+export {
+  noConstantBinaryExpressionRule,
+  noEmptyCatchRule,
+  noEmptyCharacterClassRule,
+  noEmptyFunctionRule,
+  noThrowLiteralRule,
+  noUselessCatchRule,
+   noInvalidUseBeforeDefRule,
+    noImplicitGlobalsRule,
+     noNonNullAssertedOptionalChainRule,
+       noMisleadingSpreadRule,
+         noAsyncConstructorRule,
+        noApproximateConstantsRule,
+       noImplicitUndefinedRule,
+        noMisleadingAssertionRule,
+     } from './correctness/index.js'

@@ -190,6 +190,37 @@ function runRule(
   return { violations: ruleInstance.onComplete!(), context, sourceFile }
 }
 
+function runWithParamCall(
+  methodName: string,
+  paramName: string = 'items',
+  funcName: string = 'testFn',
+) {
+  const callExpr = createMockCallWithPropertyAccess(paramName, methodName)
+  const paramNode = createMockNode({ kind: SyntaxKind.Identifier, text: paramName })
+  ;(paramNode as Record<string, unknown>).getNameNode = vi.fn(() =>
+    createMockNode({ kind: SyntaxKind.Identifier, text: paramName }),
+  )
+  const funcNode = createMockFunctionWithDescendants({
+    functionName: funcName,
+    getName: funcName,
+    descendants: new Map<SyntaxKind, Node[]>([
+      [SyntaxKind.BinaryExpression, []],
+      [SyntaxKind.CallExpression, [callExpr]],
+      [SyntaxKind.ThrowStatement, []],
+      [SyntaxKind.VariableDeclaration, []],
+      [SyntaxKind.FunctionDeclaration, []],
+      [SyntaxKind.PrefixUnaryExpression, []],
+      [SyntaxKind.PostfixUnaryExpression, []],
+    ]),
+  })
+  ;(funcNode as Record<string, unknown>).getParameters = vi.fn(() => [paramNode])
+  const sourceFile = createMockSourceFile()
+  const context = createMockVisitorContext(sourceFile)
+  const ruleInstance = noImplicitSideEffectsRule.create({})
+  ruleInstance.visitor.visitFunction!(funcNode, context)
+  return ruleInstance.onComplete!()
+}
+
 describe('noImplicitSideEffectsRule', () => {
   describe('meta', () => {
     test('has correct rule name', () => {
@@ -1233,6 +1264,652 @@ describe('noImplicitSideEffectsRule', () => {
       const ioViolation = violations.find((v) => v.message.includes('I/O'))
       expect(closureViolation).toBeDefined()
       expect(ioViolation).toBeDefined()
+    })
+  })
+
+  describe('JSDoc annotation skip', () => {
+    test('skips function with @impure annotation', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'impureFn',
+        getName: 'impureFn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getJsDocs = vi.fn(() => [
+        { getText: vi.fn(() => '/** @impure */') },
+      ])
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      expect(ruleInstance.onComplete!()).toHaveLength(0)
+    })
+
+    test('skips function with @side-effect annotation', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'sideEffectFn',
+        getName: 'sideEffectFn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getJsDocs = vi.fn(() => [
+        { getText: vi.fn(() => '/** @side-effect */') },
+      ])
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      expect(ruleInstance.onComplete!()).toHaveLength(0)
+    })
+  })
+
+  describe('allowIn additional', () => {
+    test('allowIn with multiple names allows all listed', () => {
+      const binaryExpr1 = createMockBinaryExpression('var1')
+      ;(binaryExpr1 as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'var1' }),
+      )
+      const binaryExpr2 = createMockBinaryExpression('var2')
+      ;(binaryExpr2 as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'var2' }),
+      )
+      const ruleInstance = noImplicitSideEffectsRule.create({ allowIn: ['mutatorA', 'mutatorB'] })
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const func1 = createMockFunctionWithDescendants({
+        functionName: 'mutatorA',
+        getName: 'mutatorA',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr1]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      const func2 = createMockFunctionWithDescendants({
+        functionName: 'mutatorB',
+        getName: 'mutatorB',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr2]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ruleInstance.visitor.visitFunction!(func1, context)
+      ruleInstance.visitor.visitFunction!(func2, context)
+      expect(ruleInstance.onComplete!()).toHaveLength(0)
+    })
+
+    test('allowIn does not match partial names', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const { violations } = runRule(
+        {
+          functionName: 'mutateStuff',
+          descendants: new Map<SyntaxKind, Node[]>([
+            [SyntaxKind.BinaryExpression, [binaryExpr]],
+            [SyntaxKind.CallExpression, []],
+            [SyntaxKind.ThrowStatement, []],
+            [SyntaxKind.VariableDeclaration, []],
+            [SyntaxKind.FunctionDeclaration, []],
+            [SyntaxKind.PrefixUnaryExpression, []],
+            [SyntaxKind.PostfixUnaryExpression, []],
+          ]),
+          getName: 'mutateStuff',
+        },
+        {},
+        { allowIn: ['mutate'] },
+      )
+      expect(violations.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('checkPureNaming interaction with other checks', () => {
+    test('checkPureNaming false still detects closure mutations', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule(
+        {
+          functionName: 'getUser',
+          descendants: new Map<SyntaxKind, Node[]>([
+            [SyntaxKind.BinaryExpression, [binaryExpr]],
+            [SyntaxKind.CallExpression, []],
+            [SyntaxKind.ThrowStatement, [throwStmt]],
+            [SyntaxKind.VariableDeclaration, []],
+            [SyntaxKind.FunctionDeclaration, []],
+            [SyntaxKind.PrefixUnaryExpression, []],
+            [SyntaxKind.PostfixUnaryExpression, []],
+          ]),
+          getName: 'getUser',
+        },
+        {},
+        { checkPureNaming: false },
+      )
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeUndefined()
+      expect(violations.find((v) => v.message.includes('outer variable'))).toBeDefined()
+    })
+  })
+
+  describe('pure naming additional prefixes', () => {
+    test('detects throw in function named getUserName', () => {
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'getUserName',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'getUserName',
+      })
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+
+    test('detects throw in function named isActive', () => {
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'isActive',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'isActive',
+      })
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+
+    test('detects throw in function named hasAccess', () => {
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'hasAccess',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'hasAccess',
+      })
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+
+    test('detects throw in function named shouldReturn', () => {
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'shouldReturn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'shouldReturn',
+      })
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+
+    test('detects throw in function named canRead', () => {
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'canRead',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'canRead',
+      })
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+  })
+
+  describe('compound assignment on outer variables', () => {
+    test('detects ??= on outer variable', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar', SyntaxKind.QuestionQuestionEqualsToken)
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const { violations } = runRule({
+        functionName: 'fn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'fn',
+      })
+      expect(violations.find((v) => v.message.includes('outer variable'))).toBeDefined()
+    })
+
+    test('detects &&= on outer variable', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar', SyntaxKind.AmpersandAmpersandEqualsToken)
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const { violations } = runRule({
+        functionName: 'fn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'fn',
+      })
+      expect(violations.find((v) => v.message.includes('outer variable'))).toBeDefined()
+    })
+
+    test('detects ||= on outer variable', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar', SyntaxKind.BarBarEqualsToken)
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const { violations } = runRule({
+        functionName: 'fn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'fn',
+      })
+      expect(violations.find((v) => v.message.includes('outer variable'))).toBeDefined()
+    })
+  })
+
+  describe('parameter mutating methods', () => {
+    test('detects sort on parameter', () => {
+      const violations = runWithParamCall('sort', 'arr', 'sortItems')
+      expect(violations.some((v) => v.message.includes('sort'))).toBe(true)
+    })
+
+    test('detects reverse on parameter', () => {
+      const violations = runWithParamCall('reverse', 'arr', 'reverseItems')
+      expect(violations.some((v) => v.message.includes('reverse'))).toBe(true)
+    })
+
+    test('detects fill on parameter', () => {
+      const violations = runWithParamCall('fill', 'arr', 'fillItems')
+      expect(violations.some((v) => v.message.includes('fill'))).toBe(true)
+    })
+
+    test('detects pop on parameter', () => {
+      const violations = runWithParamCall('pop', 'arr', 'popItem')
+      expect(violations.some((v) => v.message.includes('pop'))).toBe(true)
+    })
+
+    test('detects shift on parameter', () => {
+      const violations = runWithParamCall('shift', 'arr', 'shiftItem')
+      expect(violations.some((v) => v.message.includes('shift'))).toBe(true)
+    })
+
+    test('detects unshift on parameter', () => {
+      const violations = runWithParamCall('unshift', 'arr', 'unshiftItem')
+      expect(violations.some((v) => v.message.includes('unshift'))).toBe(true)
+    })
+
+    test('detects copyWithin on parameter', () => {
+      const violations = runWithParamCall('copyWithin', 'arr', 'copyItems')
+      expect(violations.some((v) => v.message.includes('copyWithin'))).toBe(true)
+    })
+  })
+
+  describe('non-mutating parameter methods', () => {
+    test('does not report map on parameter', () => {
+      const violations = runWithParamCall('map', 'arr', 'transformItems')
+      expect(violations).toHaveLength(0)
+    })
+
+    test('does not report filter on parameter', () => {
+      const violations = runWithParamCall('filter', 'arr', 'filterItems')
+      expect(violations).toHaveLength(0)
+    })
+  })
+
+  describe('I/O operations additional', () => {
+    test('detects fs.appendFile call', () => {
+      const propAccess = createMockPropertyAccessExpression('fs', 'appendFile')
+      const callExpr = createMockNode({
+        kind: SyntaxKind.CallExpression,
+        text: 'fs.appendFile(path, data)',
+      })
+      ;(callExpr as Record<string, unknown>).getExpression = vi.fn(() => propAccess)
+      const { violations } = runRule({
+        functionName: 'appendData',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, [callExpr]],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'appendData',
+      })
+      expect(violations.find((v) => v.message.includes('filesystem'))).toBeDefined()
+    })
+
+    test('detects process.stderr.write call', () => {
+      const callExpr = createMockCallExpression('process.stderr.write("err")')
+      ;(callExpr as Record<string, unknown>).getText = vi.fn(() => 'process.stderr.write("err")')
+      const { violations } = runRule({
+        functionName: 'logErr',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, [callExpr]],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'logErr',
+      })
+      expect(violations.find((v) => v.message.includes('I/O'))).toBeDefined()
+    })
+  })
+
+  describe('additional skip conditions', () => {
+    test('skips async function', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'asyncFn',
+        getName: 'asyncFn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).hasModifier = vi.fn((kind: number) =>
+        kind === SyntaxKind.AsyncKeyword,
+      )
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      expect(ruleInstance.onComplete!()).toHaveLength(0)
+    })
+
+    test('skips generator function', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'genFn',
+        getName: 'genFn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getAsteriskToken = vi.fn(() =>
+        createMockNode({ text: '*' }),
+      )
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      expect(ruleInstance.onComplete!()).toHaveLength(0)
+    })
+
+    test('skips uppercase-start named function', () => {
+      const binaryExpr = createMockBinaryExpression('outerVar')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'outerVar' }),
+      )
+      const { violations } = runRule({
+        functionName: 'MyComponent',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'MyComponent',
+      })
+      expect(violations).toHaveLength(0)
+    })
+  })
+
+  describe('parameter index access mutation', () => {
+    test('detects index access mutation on parameter', () => {
+      const objNode = createMockNode({ kind: SyntaxKind.Identifier, text: 'data' })
+      const elementAccess = createMockNode({
+        kind: SyntaxKind.ElementAccessExpression,
+        text: 'data[key]',
+      })
+      ;(elementAccess as Record<string, unknown>).getExpression = vi.fn(() => objNode)
+      const rightNode = createMockNode({ kind: SyntaxKind.Identifier, text: '1' })
+      const binaryExpr = createMockNode({
+        kind: SyntaxKind.BinaryExpression,
+        text: 'data[key] = 1',
+      })
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() => elementAccess)
+      ;(binaryExpr as Record<string, unknown>).getRight = vi.fn(() => rightNode)
+      ;(binaryExpr as Record<string, unknown>).getOperatorToken = vi.fn(() => ({
+        getKind: vi.fn(() => SyntaxKind.EqualsToken),
+      }))
+
+      const paramNode = createMockNode({ kind: SyntaxKind.Identifier, text: 'data' })
+      ;(paramNode as Record<string, unknown>).getNameNode = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'data' }),
+      )
+
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'setItem',
+        getName: 'setItem',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getParameters = vi.fn(() => [paramNode])
+
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      const violations = ruleInstance.onComplete!()
+      expect(violations.some((v) => v.message.includes('index access'))).toBe(true)
+    })
+  })
+
+  describe('additional multiple violations', () => {
+    test('reports closure mutation and pure naming violation together', () => {
+      const binaryExpr = createMockBinaryExpression('counter')
+      ;(binaryExpr as Record<string, unknown>).getLeft = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'counter' }),
+      )
+      const throwStmt = createMockThrowStatement()
+      const { violations } = runRule({
+        functionName: 'getUser',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, [binaryExpr]],
+          [SyntaxKind.CallExpression, []],
+          [SyntaxKind.ThrowStatement, [throwStmt]],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'getUser',
+      })
+      expect(violations.find((v) => v.message.includes('outer variable'))).toBeDefined()
+      expect(violations.find((v) => v.message.includes('Query function'))).toBeDefined()
+    })
+
+    test('reports parameter mutation and I/O in same function', () => {
+      const callExpr = createMockCallWithPropertyAccess('data', 'push')
+      const paramNode = createMockNode({ kind: SyntaxKind.Identifier, text: 'data' })
+      ;(paramNode as Record<string, unknown>).getNameNode = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'data' }),
+      )
+      const ioCall = createMockCallExpression('process.exit(1)')
+      ;(ioCall as Record<string, unknown>).getText = vi.fn(() => 'process.exit(1)')
+
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'badFn',
+        getName: 'badFn',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, [callExpr, ioCall]],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getParameters = vi.fn(() => [paramNode])
+
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      const violations = ruleInstance.onComplete!()
+      expect(violations.some((v) => v.message.includes('push'))).toBe(true)
+      expect(violations.some((v) => v.message.includes('I/O'))).toBe(true)
+    })
+
+    test('reports multiple I/O violations in same function', () => {
+      const call1 = createMockCallExpression('process.exit(1)')
+      ;(call1 as Record<string, unknown>).getText = vi.fn(() => 'process.exit(1)')
+      const call2 = createMockCallExpression('process.stdout.write("x")')
+      ;(call2 as Record<string, unknown>).getText = vi.fn(() => 'process.stdout.write("x")')
+      const { violations } = runRule({
+        functionName: 'multiIO',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, [call1, call2]],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+        getName: 'multiIO',
+      })
+      const ioViolations = violations.filter((v) => v.message.includes('I/O'))
+      expect(ioViolations.length).toBeGreaterThanOrEqual(2)
+    })
+
+    test('reports multiple parameter method mutations in same function', () => {
+      const call1 = createMockCallWithPropertyAccess('arr', 'push')
+      const call2 = createMockCallWithPropertyAccess('arr', 'sort')
+      const paramNode = createMockNode({ kind: SyntaxKind.Identifier, text: 'arr' })
+      ;(paramNode as Record<string, unknown>).getNameNode = vi.fn(() =>
+        createMockNode({ kind: SyntaxKind.Identifier, text: 'arr' }),
+      )
+
+      const funcNode = createMockFunctionWithDescendants({
+        functionName: 'modifyArr',
+        getName: 'modifyArr',
+        descendants: new Map<SyntaxKind, Node[]>([
+          [SyntaxKind.BinaryExpression, []],
+          [SyntaxKind.CallExpression, [call1, call2]],
+          [SyntaxKind.ThrowStatement, []],
+          [SyntaxKind.VariableDeclaration, []],
+          [SyntaxKind.FunctionDeclaration, []],
+          [SyntaxKind.PrefixUnaryExpression, []],
+          [SyntaxKind.PostfixUnaryExpression, []],
+        ]),
+      })
+      ;(funcNode as Record<string, unknown>).getParameters = vi.fn(() => [paramNode])
+
+      const sourceFile = createMockSourceFile()
+      const context = createMockVisitorContext(sourceFile)
+      const ruleInstance = noImplicitSideEffectsRule.create({})
+      ruleInstance.visitor.visitFunction!(funcNode, context)
+      const violations = ruleInstance.onComplete!()
+      expect(violations.some((v) => v.message.includes('push'))).toBe(true)
+      expect(violations.some((v) => v.message.includes('sort'))).toBe(true)
     })
   })
 })

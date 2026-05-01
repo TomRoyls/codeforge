@@ -1008,9 +1008,9 @@ describe('rule-module-registry', () => {
 
   describe('completeness verification', () => {
     test('RULE_MODULES has exact expected count', () => {
-      const keys = Object.keys(RULE_MODULES)
-      expect(keys.length).toBe(236)
-    })
+       const keys = Object.keys(RULE_MODULES)
+        expect(keys.length).toBe(478)
+      })
 
     test('every rule in RULE_CATEGORIES has a loader in RULE_MODULES', () => {
       const moduleKeys = new Set(Object.keys(RULE_MODULES))
@@ -1180,12 +1180,12 @@ describe('rule-module-registry', () => {
       expect(symbols).toHaveLength(0)
     })
 
-    test('registry has exactly 236 own enumerable properties', () => {
+    test('registry has exactly 290 own enumerable properties', () => {
       const descriptors = Object.getOwnPropertyDescriptors(RULE_MODULES)
       const enumerableKeys = Object.entries(descriptors)
         .filter(([, desc]) => desc.enumerable)
         .map(([key]) => key)
-      expect(enumerableKeys).toHaveLength(236)
+      expect(enumerableKeys).toHaveLength(478)
     })
 
     test('no key contains uppercase characters', () => {
@@ -1375,9 +1375,9 @@ describe('rule-module-registry', () => {
   })
 
   describe('getRuleIds equivalence', () => {
-    test('Object.keys returns all 236 IDs as strings', () => {
+    test('Object.keys returns all IDs as strings', () => {
       const keys = Object.keys(RULE_MODULES)
-      expect(keys).toHaveLength(236)
+      expect(keys).toHaveLength(478)
       for (const key of keys) {
         expect(typeof key).toBe('string')
       }
@@ -1622,9 +1622,9 @@ describe('rule-module-registry', () => {
 
   describe('registry immutability', () => {
     test('RULE_MODULES is frozen or behaves consistently', () => {
-      const originalCount = Object.keys(RULE_MODULES).length
-      expect(originalCount).toBe(236)
-    })
+       const originalCount = Object.keys(RULE_MODULES).length
+        expect(originalCount).toBe(478)
+      })
 
     test('deleting a key does not affect the original count', () => {
       const registry = RULE_MODULES
@@ -1837,7 +1837,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be looked up in a Map', () => {
       const map = new Map(Object.entries(RULE_MODULES))
-      expect(map.size).toBe(236)
+       expect(map.size).toBe(478)
       const someKey = Object.keys(RULE_MODULES)[0]
       expect(map.has(someKey)).toBe(true)
       expect(typeof map.get(someKey)).toBe('function')
@@ -1845,7 +1845,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be stored in a Set', () => {
       const set = new Set(Object.keys(RULE_MODULES))
-      expect(set.size).toBe(236)
+       expect(set.size).toBe(478)
     })
   })
 

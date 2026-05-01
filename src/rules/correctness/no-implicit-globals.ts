@@ -1,0 +1,180 @@
+import type {
+  RuleContext,
+  RuleDefinition,
+  RuleVisitor,
+} from '../../plugins/types.js'
+
+import { extractLocation } from '../../ast/location-utils.js'
+import { toASTNode } from '../../utils/ast-helpers.js'
+
+export const noImplicitGlobalsRule: RuleDefinition = {
+  create(context: RuleContext): RuleVisitor {
+    return {
+      AssignmentExpression(node: unknown): void {
+        const n = toASTNode(node)
+        if (!n || n.type !== 'AssignmentExpression') return
+
+        const left = toASTNode((n as { left?: unknown }).left)
+        if (!left) return
+
+        if (left.type === 'Identifier') {
+          const name = (left as { name?: string }).name
+          if (!name) return
+
+          const globalNames = new Set([
+            'globalThis',
+            'self',
+            'window',
+            'global',
+            'process',
+            'console',
+            'document',
+            'navigator',
+            'location',
+            'history',
+            'localStorage',
+            'sessionStorage',
+            'fetch',
+            'Promise',
+            'Symbol',
+            'Array',
+            'Object',
+            'String',
+            'Number',
+            'Boolean',
+            'Function',
+            'Date',
+            'RegExp',
+            'Error',
+            'Map',
+            'Set',
+            'WeakMap',
+            'WeakSet',
+            'Proxy',
+            'Reflect',
+            'JSON',
+            'Math',
+            'Intl',
+            'setTimeout',
+            'setInterval',
+            'clearTimeout',
+            'clearInterval',
+            'requestAnimationFrame',
+            'cancelAnimationFrame',
+            'queueMicrotask',
+            'structuredClone',
+            'atob',
+            'btoa',
+            'escape',
+            'unescape',
+            'encodeURI',
+            'decodeURI',
+            'encodeURIComponent',
+            'decodeURIComponent',
+            'isNaN',
+            'isFinite',
+            'parseInt',
+            'parseFloat',
+            'NaN',
+            'Infinity',
+            'undefined',
+            'eval',
+            'arguments',
+            'require',
+            'module',
+            'exports',
+            '__dirname',
+            '__filename',
+            'Buffer',
+            'URL',
+            'URLSearchParams',
+            'TextEncoder',
+            'TextDecoder',
+            'AbortController',
+            'AbortSignal',
+            'ReadableStream',
+            'WritableStream',
+            'TransformStream',
+            'FormData',
+            'Headers',
+            'Request',
+            'Response',
+            'WebSocket',
+            'Worker',
+            'SharedWorker',
+            'ServiceWorker',
+            'crypto',
+            'performance',
+            'navigator',
+            'alert',
+            'confirm',
+            'prompt',
+            'open',
+            'close',
+            'print',
+            'focus',
+            'blur',
+            'scroll',
+            'scrollTo',
+            'scrollBy',
+            'getComputedStyle',
+            'matchMedia',
+            'postMessage',
+            'addEventListener',
+            'removeEventListener',
+            'dispatchEvent',
+            'MutationObserver',
+            'IntersectionObserver',
+            'ResizeObserver',
+            'PerformanceObserver',
+            'ReportingObserver',
+            'HTMLElement',
+            'Element',
+            'Node',
+            'Event',
+            'CustomEvent',
+            'MessageEvent',
+            'ErrorEvent',
+            'PromiseRejectionEvent',
+            'DOMException',
+            'DOMMatrix',
+            'DOMPoint',
+            'DOMRect',
+            'DOMStringList',
+            'File',
+            'FileList',
+            'FileReader',
+            'Blob',
+            'Image',
+            'Audio',
+            'Option',
+            'XMLHttpRequest',
+            'ActiveXObject',
+          ])
+
+          if (globalNames.has(name)) return
+
+          context.report({
+            loc: extractLocation(n),
+            message: `Implicit global variable assignment: \`${name}\`. Use \`let\`, \`const\`, or \`var\` to declare variables.`,
+            node: n,
+          })
+        }
+      },
+    }
+  },
+
+  meta: {
+    docs: {
+      category: 'correctness',
+      description: 'Disallow assignments to undeclared global variables',
+      recommended: true,
+      url: 'https://codeforge.dev/docs/rules/no-implicit-globals',
+    },
+    schema: [],
+    severity: 'error',
+    type: 'problem',
+  },
+}
+
+export default noImplicitGlobalsRule

@@ -576,4 +576,279 @@ describe('no-unnecessary-type-constraint', () => {
     const reports = runRule(node)
     expect(reports).toHaveLength(0)
   })
+
+  test('flags type alias type parameter extends any', () => {
+    const node = createTSTypeParameter('T', createTSAnyKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain('any')
+    expect(reports[0].message).toContain('does not restrict the type')
+  })
+
+  test('flags generic function type parameter extends object', () => {
+    const node = createTSTypeParameter('T', createTSObjectKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain('object')
+  })
+
+  test('flags generic class type parameter extends {}', () => {
+    const node = createTSTypeParameter('T', createEmptyTSTypeLiteral())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain('{}')
+  })
+
+  test('flags generic interface type parameter extends any[]', () => {
+    const node = createTSTypeParameter('T', createTSArrayOfAny())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain('any[]')
+  })
+
+  test('flags generic type alias type parameter extends Record<string, any>', () => {
+    const node = createTSTypeParameter('T', createRecordStringAny())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain('Record<string, any>')
+  })
+
+  test('does NOT flag type parameter with string constraint in type alias', () => {
+    const node = createTSTypeParameter('T', createTSStringKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter with number constraint in function', () => {
+    const node = createTSTypeParameter('T', createTSNumberKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter with custom interface constraint', () => {
+    const node = createTSTypeParameter('T', createCustomTypeReference('IEntity'))
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter with union type constraint', () => {
+    const constraint = {
+      type: 'TSUnionType',
+      types: [{ type: 'TSStringKeyword' }, { type: 'TSNumberKeyword' }],
+    }
+    const node = createTSTypeParameter('T', constraint)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter with intersection type constraint', () => {
+    const constraint = {
+      type: 'TSIntersectionType',
+      types: [{ type: 'TSStringKeyword' }, { type: 'TSObjectKeyword' }],
+    }
+    const node = createTSTypeParameter('T', constraint)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('flags arrow function type parameter extends any', () => {
+    const node = createTSTypeParameter('T', createTSAnyKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'T'")
+    expect(reports[0].message).toContain("'any'")
+  })
+
+  test('flags method type parameter extends object', () => {
+    const node = createTSTypeParameter('U', createTSObjectKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'U'")
+    expect(reports[0].message).toContain("'object'")
+  })
+
+  test('does NOT flag Record<string, number> constraint', () => {
+    const node = createTSTypeParameter('T', createRecordStringNumber())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag Record<number, any> constraint', () => {
+    const constraint = {
+      type: 'TSTypeReference',
+      typeName: { type: 'Identifier', name: 'Record' },
+      typeArguments: {
+        type: 'TSTypeParameterInstantiation',
+        params: [{ type: 'TSNumberKeyword' }, { type: 'TSAnyKeyword' }],
+      },
+    }
+    const node = createTSTypeParameter('T', constraint)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter extends string[]', () => {
+    const node = createTSTypeParameter('T', createTSArrayOfStrings())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter extends unknown', () => {
+    const node = createTSTypeParameter('T', { type: 'TSUnknownKeyword' })
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('handles multiple type parameters first flagged second not', () => {
+    const nodeA = createTSTypeParameter('T', createTSAnyKeyword())
+    const reportsA = runRule(nodeA)
+    expect(reportsA).toHaveLength(1)
+
+    const nodeB = createTSTypeParameter('U', createTSStringKeyword())
+    const reportsB = runRule(nodeB)
+    expect(reportsB).toHaveLength(0)
+  })
+
+  test('handles multiple type parameters both flagged', () => {
+    const nodeA = createTSTypeParameter('T', createTSAnyKeyword())
+    const reportsA = runRule(nodeA)
+    expect(reportsA).toHaveLength(1)
+
+    const nodeB = createTSTypeParameter('U', createTSObjectKeyword())
+    const reportsB = runRule(nodeB)
+    expect(reportsB).toHaveLength(1)
+  })
+
+  test('flags nested generic type parameter extends any', () => {
+    const node = createTSTypeParameter('T', createTSAnyKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+  })
+
+  test('does NOT flag nested generic type parameter extends string', () => {
+    const node = createTSTypeParameter('T', createTSStringKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('flags type parameter at different source location line 10', () => {
+    const node = createTSTypeParameter('T', createTSAnyKeyword(), 10, 5)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].loc).toBeDefined()
+  })
+
+  test('flags type parameter at different source location line 100', () => {
+    const node = createTSTypeParameter('T', createEmptyTSTypeLiteral(), 100, 0)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+  })
+
+  test('does NOT flag when constraint is missing entirely', () => {
+    const node = createNoConstraintTypeParameter('T')
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag when node is an empty object', () => {
+    const reports = runRule({})
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag when constraint property is 0', () => {
+    const node = {
+      type: 'TSTypeParameter',
+      name: { type: 'Identifier', name: 'T' },
+      constraint: 0,
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+    }
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag when constraint property is empty string', () => {
+    const node = {
+      type: 'TSTypeParameter',
+      name: { type: 'Identifier', name: 'T' },
+      constraint: '',
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+    }
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('flags V extends any with correct param name', () => {
+    const node = createTSTypeParameter('V', createTSAnyKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'V'")
+  })
+
+  test('flags TEntity extends object with correct param name', () => {
+    const node = createTSTypeParameter('TEntity', createTSObjectKeyword())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'TEntity'")
+  })
+
+  test('flags TValue extends {} with correct param name', () => {
+    const node = createTSTypeParameter('TValue', createEmptyTSTypeLiteral())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'TValue'")
+  })
+
+  test('flags TItem extends any[] with correct param name', () => {
+    const node = createTSTypeParameter('TItem', createTSArrayOfAny())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'TItem'")
+  })
+
+  test('flags TData extends Record<string, any> with correct param name', () => {
+    const node = createTSTypeParameter('TData', createRecordStringAny())
+    const reports = runRule(node)
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toContain("'TData'")
+  })
+
+  test('does NOT flag type parameter with symbol constraint', () => {
+    const node = createTSTypeParameter('T', { type: 'TSSymbolKeyword' })
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag type parameter with bigint constraint', () => {
+    const node = createTSTypeParameter('T', { type: 'TSBigIntKeyword' })
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag T extends ReadonlyArray<string>', () => {
+    const constraint = {
+      type: 'TSTypeReference',
+      typeName: { type: 'Identifier', name: 'ReadonlyArray' },
+      typeArguments: {
+        type: 'TSTypeParameterInstantiation',
+        params: [{ type: 'TSStringKeyword' }],
+      },
+    }
+    const node = createTSTypeParameter('T', constraint)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
+
+  test('does NOT flag T extends Set<string>', () => {
+    const constraint = {
+      type: 'TSTypeReference',
+      typeName: { type: 'Identifier', name: 'Set' },
+      typeArguments: {
+        type: 'TSTypeParameterInstantiation',
+        params: [{ type: 'TSStringKeyword' }],
+      },
+    }
+    const node = createTSTypeParameter('T', constraint)
+    const reports = runRule(node)
+    expect(reports).toHaveLength(0)
+  })
 })

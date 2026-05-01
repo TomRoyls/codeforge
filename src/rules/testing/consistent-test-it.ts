@@ -5,7 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { getCallRootName } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 type TestFunctionPreference = 'it' | 'test'
@@ -15,27 +15,6 @@ interface ConsistentTestItOptions {
 }
 
 const DEFAULT_FN: TestFunctionPreference = 'it'
-
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return callee.name
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return object.name
-    }
-  }
-
-  return null
-}
 
 export const consistentTestItRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -49,7 +28,7 @@ export const consistentTestItRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName === null) return
 
         if (functionName === disallowedFn) {

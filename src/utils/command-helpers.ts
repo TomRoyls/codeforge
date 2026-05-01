@@ -203,26 +203,27 @@ export async function applyFixesToFiles(
 
 export async function setupRuleRegistryLazy(requestedRules?: string[]): Promise<RuleRegistry> {
   const registry = new RuleRegistry()
-  const loadedRules = await lazyRuleLoader.loadAllRules()
-
-  for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
-    registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-  }
 
   if (requestedRules && requestedRules.length > 0) {
-    const validRuleIds = new Set(Object.keys(loadedRules))
-    const unknownRules = requestedRules.filter((r) => !validRuleIds.has(r))
+    const validRuleIds = lazyRuleLoader.getRuleIds()
+    const validSet = new Set(validRuleIds)
+    const unknownRules = requestedRules.filter((r) => !validSet.has(r))
 
     if (unknownRules.length > 0) {
       logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
     }
 
-    const requestedSet = new Set(requestedRules)
+    const knownRequested = requestedRules.filter((r) => validSet.has(r))
+    const loadedRules = await lazyRuleLoader.loadRules(knownRequested)
 
-    for (const [ruleId] of Object.entries(loadedRules)) {
-      if (!requestedSet.has(ruleId)) {
-        registry.disable(ruleId)
-      }
+    for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
+      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
+    }
+  } else {
+    const loadedRules = await lazyRuleLoader.loadAllRules()
+
+    for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
+      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }
   }
 

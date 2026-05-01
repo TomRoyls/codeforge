@@ -5,7 +5,8 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
+import { type ASTNode, getCallRootName, toASTNode } from '../../utils/ast-helpers.js'
+import { TEST_CASE_FUNCTIONS } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExpectExpectOptions {
@@ -14,29 +15,8 @@ interface ExpectExpectOptions {
 
 const DEFAULT_ASSERT_FUNCTION_NAMES = ['expect']
 
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return callee.name
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return object.name
-    }
-  }
-
-  return null
-}
-
 function isTestFunction(name: string): boolean {
-  return name === 'it' || name === 'test'
+  return TEST_CASE_FUNCTIONS.has(name)
 }
 
 function getAssertionNames(context: RuleContext): ReadonlySet<string> {
@@ -110,7 +90,7 @@ export const expectExpectRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName === null) return
 
         if (!isTestFunction(functionName)) return

@@ -1152,4 +1152,130 @@ describe('no-conditional-expect rule', () => {
       expect(noConditionalExpectRule.create).toBeDefined()
     })
   })
+
+  describe('assertFunctionNames option', () => {
+    test('should report custom assert function inside if', () => {
+      const { context, reports } = createMockContext({ assertFunctionNames: ['expect', 'assert'] })
+      const visitor = noConditionalExpectRule.create(context)
+
+      visitor.IfStatement(createIfStatementNode())
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'assert' },
+        arguments: [],
+      })
+      visitor['IfStatement:exit'](createIfStatementNode())
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report unknown function inside if', () => {
+      const { context, reports } = createMockContext({ assertFunctionNames: ['expect'] })
+      const visitor = noConditionalExpectRule.create(context)
+
+      visitor.IfStatement(createIfStatementNode())
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'unknown' },
+        arguments: [],
+      })
+      visitor['IfStatement:exit'](createIfStatementNode())
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('docs URL', () => {
+    test('should have valid URL format', () => {
+      const url = noConditionalExpectRule.meta.docs?.url
+      expect(url).toMatch(/^https?:\/\/.+/)
+      expect(url).toContain('no-conditional-expect')
+    })
+  })
+
+  describe('test function calls with MemberExpression callee inside conditionals', () => {
+    test('should not report it.skip() call inside if block', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConditionalExpectRule.create(context)
+
+      const itSkip = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'it' },
+          property: { type: 'Identifier', name: 'skip' },
+        },
+        arguments: [],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
+      }
+
+      visitor.IfStatement(createIfStatementNode())
+      visitor.CallExpression(itSkip)
+      visitor['IfStatement:exit'](createIfStatementNode())
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report test.only() call inside if block', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConditionalExpectRule.create(context)
+
+      const testOnly = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'test' },
+          property: { type: 'Identifier', name: 'only' },
+        },
+        arguments: [],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } },
+      }
+
+      visitor.IfStatement(createIfStatementNode())
+      visitor.CallExpression(testOnly)
+      visitor['IfStatement:exit'](createIfStatementNode())
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('mixed conditional nesting with switch', () => {
+    test('should report expect inside catch clause nested in switch', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConditionalExpectRule.create(context)
+
+      visitor.SwitchStatement(createSwitchStatementNode())
+      visitor.CatchClause(createCatchClauseNode())
+      visitor.CallExpression(createExpectCall())
+      visitor['CatchClause:exit'](createCatchClauseNode())
+      visitor['SwitchStatement:exit'](createSwitchStatementNode())
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report expect in ternary nested inside switch', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noConditionalExpectRule.create(context)
+
+      visitor.SwitchStatement(createSwitchStatementNode())
+      visitor.ConditionalExpression(createConditionalExpressionNode())
+      visitor.CallExpression(createExpectCall())
+      visitor['ConditionalExpression:exit'](createConditionalExpressionNode())
+      visitor['SwitchStatement:exit'](createSwitchStatementNode())
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report custom assert method call inside catch clause', () => {
+      const { context, reports } = createMockContext({ assertFunctionNames: ['expect', 'assert'] })
+      const visitor = noConditionalExpectRule.create(context)
+
+      visitor.CatchClause(createCatchClauseNode())
+      visitor.CallExpression(createAssertMethodCall())
+      visitor['CatchClause:exit'](createCatchClauseNode())
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('assert')
+    })
+  })
 })

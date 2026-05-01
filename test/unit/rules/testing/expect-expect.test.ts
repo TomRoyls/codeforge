@@ -1288,4 +1288,692 @@ describe('expect-expect rule', () => {
       expect(reports[0].message).toContain('assertion')
     })
   })
+
+  describe('lifecycle hooks', () => {
+    test('should not report beforeEach() blocks', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'beforeEach' },
+        arguments: [
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report afterEach() blocks', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'afterEach' },
+        arguments: [
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report beforeAll() blocks', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'beforeAll' },
+        arguments: [
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report afterAll() blocks', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'afterAll' },
+        arguments: [
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('it.skip / test.skip member expressions', () => {
+    test('should report it.skip without assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'it' },
+          property: { type: 'Identifier', name: 'skip' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'skipped no expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report it.skip with assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'it' },
+          property: { type: 'Identifier', name: 'skip' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'skipped with expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: { type: 'Identifier', name: 'expect' },
+                    arguments: [{ type: 'Literal', value: 1 }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 45 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report test.skip without assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'test' },
+          property: { type: 'Identifier', name: 'skip' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'skipped no expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report test.skip with assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'test' },
+          property: { type: 'Identifier', name: 'skip' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'skipped with expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: { type: 'Identifier', name: 'expect' },
+                    arguments: [{ type: 'Literal', value: 1 }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 45 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('non-test function names', () => {
+    test('should not report fit() calls', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'fit' },
+        arguments: [
+          { type: 'Literal', value: 'focused test' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report xit() calls', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'xit' },
+        arguments: [
+          { type: 'Literal', value: 'skipped test' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('content patterns without assertions', () => {
+    test('should report test with only variable declarations', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'Literal', value: 'only variables' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'VariableDeclaration',
+                  declarations: [
+                    {
+                      type: 'VariableDeclarator',
+                      id: { type: 'Identifier', name: 'x' },
+                      init: { type: 'Literal', value: 1 },
+                    },
+                  ],
+                  kind: 'const',
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report test with only console.log', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'test' },
+        arguments: [
+          { type: 'Literal', value: 'just logging' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: {
+                      type: 'MemberExpression',
+                      object: { type: 'Identifier', name: 'console' },
+                      property: { type: 'Identifier', name: 'log' },
+                    },
+                    arguments: [{ type: 'Literal', value: 'debug output' }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report it() using assert() by default', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      visitor.CallExpression(createItWithAssert())
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('async patterns', () => {
+    test('should report async test() without assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'test' },
+        arguments: [
+          { type: 'Literal', value: 'async no expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            async: true,
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: { type: 'Identifier', name: 'someAsync' },
+                    arguments: [],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('template literal titles', () => {
+    test('should handle it() with template literal title', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          {
+            type: 'TemplateLiteral',
+            quasis: [{ type: 'TemplateElement', value: { raw: 'test ', cooked: 'test ' } }],
+            expressions: [{ type: 'Identifier', name: 'name' }],
+          },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: { type: 'Identifier', name: 'expect' },
+                    arguments: [{ type: 'Literal', value: 1 }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 35 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report it() with template literal title and no assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          {
+            type: 'TemplateLiteral',
+            quasis: [{ type: 'TemplateElement', value: { raw: 'test ', cooked: 'test ' } }],
+            expressions: [{ type: 'Identifier', name: 'name' }],
+          },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 25 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('control flow with expect', () => {
+    test('should handle test with expect inside if statement', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'Literal', value: 'conditional expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'IfStatement',
+                  test: { type: 'Literal', value: true },
+                  consequent: {
+                    type: 'BlockStatement',
+                    body: [
+                      {
+                        type: 'ExpressionStatement',
+                        expression: {
+                          type: 'CallExpression',
+                          callee: { type: 'Identifier', name: 'expect' },
+                          arguments: [{ type: 'Literal', value: 1 }],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 50 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle test with expect inside try-catch block', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'test' },
+        arguments: [
+          { type: 'Literal', value: 'try catch expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'TryStatement',
+                  block: {
+                    type: 'BlockStatement',
+                    body: [
+                      {
+                        type: 'ExpressionStatement',
+                        expression: {
+                          type: 'CallExpression',
+                          callee: { type: 'Identifier', name: 'expect' },
+                          arguments: [{ type: 'Literal', value: 1 }],
+                        },
+                      },
+                    ],
+                  },
+                  handler: {
+                    type: 'CatchClause',
+                    param: { type: 'Identifier', name: 'e' },
+                    body: { type: 'BlockStatement', body: [] },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 55 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report FunctionExpression callback without expect', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'Literal', value: 'function expression no expect' },
+          {
+            type: 'FunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: { type: 'Identifier', name: 'someHelper' },
+                    arguments: [],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  // SECTION: Additional edge cases for coverage
+  describe('additional edge cases', () => {
+    test('should find expect inside forEach callback', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'Literal', value: 'forEach with expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: {
+                      type: 'MemberExpression',
+                      object: { type: 'Identifier', name: 'items' },
+                      property: { type: 'Identifier', name: 'forEach' },
+                    },
+                    arguments: [
+                      {
+                        type: 'ArrowFunctionExpression',
+                        params: [{ type: 'Identifier', name: 'item' }],
+                        body: {
+                          type: 'BlockStatement',
+                          body: [
+                            {
+                              type: 'ExpressionStatement',
+                              expression: {
+                                type: 'CallExpression',
+                                callee: { type: 'Identifier', name: 'expect' },
+                                arguments: [{ type: 'Identifier', name: 'item' }],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 60 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report test.each without assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'test' },
+          property: { type: 'Identifier', name: 'each' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'parameterized' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should find expect with .not modifier chain', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'Literal', value: 'expect.not chain' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: {
+              type: 'BlockStatement',
+              body: [
+                {
+                  type: 'ExpressionStatement',
+                  expression: {
+                    type: 'CallExpression',
+                    callee: {
+                      type: 'MemberExpression',
+                      object: {
+                        type: 'MemberExpression',
+                        object: {
+                          type: 'CallExpression',
+                          callee: { type: 'Identifier', name: 'expect' },
+                          arguments: [{ type: 'Literal', value: 1 }],
+                        },
+                        property: { type: 'Identifier', name: 'not' },
+                      },
+                      property: { type: 'Identifier', name: 'toBe' },
+                    },
+                    arguments: [{ type: 'Literal', value: 2 }],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 55 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(0)
+    })
+
+    test('should check it.concurrent member expression for assertions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = expectExpectRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'it' },
+          property: { type: 'Identifier', name: 'concurrent' },
+        },
+        arguments: [
+          { type: 'Literal', value: 'concurrent no expect' },
+          {
+            type: 'ArrowFunctionExpression',
+            params: [],
+            body: { type: 'BlockStatement', body: [] },
+          },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
 })

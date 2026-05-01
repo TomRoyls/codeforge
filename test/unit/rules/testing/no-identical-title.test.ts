@@ -827,5 +827,367 @@ describe('no-identical-title rule', () => {
 
       expect(reports.length).toBe(0)
     })
+  describe('additional meta verification', () => {
+    test('should have testing category', () => {
+      expect(noIdenticalTitleRule.meta.docs?.category).toBe('testing')
+    })
+
+    test('should have problem type', () => {
+      expect(noIdenticalTitleRule.meta.type).toBe('problem')
+    })
+
+    test('should have warn severity', () => {
+      expect(noIdenticalTitleRule.meta.severity).toBe('warn')
+    })
+
+    test('should have description mentioning duplicate', () => {
+      expect(noIdenticalTitleRule.meta.docs?.description).toContain('duplicate')
+    })
+
+    test('should have correct docs URL', () => {
+      expect(noIdenticalTitleRule.meta.docs?.url).toBe('https://codeforge.dev/docs/rules/no-identical-title')
+    })
+
+    test('should have recommended set to true', () => {
+      expect(noIdenticalTitleRule.meta.docs?.recommended).toBe(true)
+    })
+
+    test('should have create function', () => {
+      expect(typeof noIdenticalTitleRule.create).toBe('function')
+    })
+
+    test('should have meta defined', () => {
+      expect(noIdenticalTitleRule.meta).toBeDefined()
+    })
   })
+
+  describe('suite function', () => {
+    test('should detect duplicate suite titles in same scope', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('suite', 'MySuite'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'MySuite'))
+      visitor.CallExpression(createCallExpression('suite', 'MySuite'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'MySuite'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report unique suite titles', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('suite', 'suite A'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'suite A'))
+      visitor.CallExpression(createCallExpression('suite', 'suite B'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'suite B'))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should allow same suite title in different scopes', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('suite', 'outer'))
+      visitor.CallExpression(createCallExpression('suite', 'inner'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'inner'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'outer'))
+
+      visitor.CallExpression(createCallExpression('suite', 'inner'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'inner'))
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('fit xit xtest ftest variations', () => {
+    test('should detect duplicate fit titles in same scope', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('fit', 'focused test'))
+      visitor.CallExpression(createCallExpression('fit', 'focused test'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate xit titles in same scope', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('xit', 'skipped test'))
+      visitor.CallExpression(createCallExpression('xit', 'skipped test'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate xtest titles in same scope', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('xtest', 'skipped'))
+      visitor.CallExpression(createCallExpression('xtest', 'skipped'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate ftest titles in same scope', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('ftest', 'focused'))
+      visitor.CallExpression(createCallExpression('ftest', 'focused'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report unique fit titles', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('fit', 'first fit'))
+      visitor.CallExpression(createCallExpression('fit', 'second fit'))
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('special title content', () => {
+    test('should detect duplicate titles with unicode characters', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'テスト'))
+      visitor.CallExpression(createCallExpression('it', 'テスト'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate titles with special characters', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'handles @#$%^&*()'))
+      visitor.CallExpression(createCallExpression('it', 'handles @#$%^&*()'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate titles with emoji', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', '✅ works correctly'))
+      visitor.CallExpression(createCallExpression('it', '✅ works correctly'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should treat titles with different whitespace as different', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'should work'))
+      visitor.CallExpression(createCallExpression('it', 'should  work'))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should detect duplicate titles with numbers', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'test case 123'))
+      visitor.CallExpression(createCallExpression('it', 'test case 123'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should handle very long duplicate titles', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      const longTitle = 'a'.repeat(500)
+      visitor.CallExpression(createCallExpression('it', longTitle))
+      visitor.CallExpression(createCallExpression('it', longTitle))
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('Unexpected duplicate test title')
+    })
+
+    test('should not report when titles differ only in case', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'Should Work'))
+      visitor.CallExpression(createCallExpression('it', 'should work'))
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('mixed function types', () => {
+    test('should detect duplicate across describe and context with same title', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createDescribeCall('shared title'))
+      visitor['CallExpression:exit'](createDescribeCall('shared title'))
+      visitor.CallExpression(createCallExpression('context', 'shared title'))
+      visitor['CallExpression:exit'](createCallExpression('context', 'shared title'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate across describe and suite with same title', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createDescribeCall('group'))
+      visitor['CallExpression:exit'](createDescribeCall('group'))
+      visitor.CallExpression(createCallExpression('suite', 'group'))
+      visitor['CallExpression:exit'](createCallExpression('suite', 'group'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report four duplicates of the same title', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'quad'))
+      visitor.CallExpression(createCallExpression('it', 'quad'))
+      visitor.CallExpression(createCallExpression('it', 'quad'))
+      visitor.CallExpression(createCallExpression('it', 'quad'))
+
+      expect(reports.length).toBe(3)
+    })
+
+    test('should detect duplicate in member expression describe.skip', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createMemberCallExpression('describe', 'skip', 'skipped group'))
+      visitor['CallExpression:exit'](createMemberCallExpression('describe', 'skip', 'skipped group'))
+      visitor.CallExpression(createMemberCallExpression('describe', 'skip', 'skipped group'))
+      visitor['CallExpression:exit'](createMemberCallExpression('describe', 'skip', 'skipped group'))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should detect duplicate across it and xit with same title', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression(createCallExpression('it', 'same'))
+      visitor.CallExpression(createCallExpression('xit', 'same'))
+
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('suite() as describe function', () => {
+    test('should track suite() for title scoping', () => {
+      const { context, reports } = createMockContext({})
+      const visitor = noIdenticalTitleRule.create(context)
+
+      const suiteCall = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'suite' },
+        arguments: [
+          { type: 'Literal', value: 'outer' },
+          { type: 'ArrowFunctionExpression', body: { type: 'BlockStatement' } },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+
+      visitor.CallExpression(suiteCall)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [{ type: 'Literal', value: 'test1' }],
+        loc: { start: { line: 2, column: 0 }, end: { line: 2, column: 15 } },
+      })
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [{ type: 'Literal', value: 'test1' }],
+        loc: { start: { line: 3, column: 0 }, end: { line: 3, column: 15 } },
+      })
+      visitor['CallExpression:exit'](suiteCall)
+
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('additional coverage', () => {
+    test('should not report when title is a template literal without expressions', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'TemplateLiteral', quasis: [{ type: 'TemplateElement', value: { raw: 'template test', cooked: 'template test' } }], expressions: [] },
+        ],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
+      })
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [
+          { type: 'TemplateLiteral', quasis: [{ type: 'TemplateElement', value: { raw: 'template test', cooked: 'template test' } }], expressions: [] },
+        ],
+        loc: { start: { line: 2, column: 0 }, end: { line: 2, column: 20 } },
+      })
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report when first argument is a number literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [{ type: 'Literal', value: 42 }],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report when first argument is undefined literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [{ type: 'Identifier', name: 'undefined' }],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report when call has no arguments', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noIdenticalTitleRule.create(context)
+
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'it' },
+        arguments: [],
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 10 } },
+      })
+
+      expect(reports.length).toBe(0)
+    })
+  })
+})
 })

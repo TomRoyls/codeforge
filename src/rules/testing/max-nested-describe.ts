@@ -5,8 +5,7 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-import { DESCRIBE_FUNCTIONS } from '../../utils/constants.js'
+import { isDescribeCall } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface MaxNestedDescribeOptions {
@@ -14,27 +13,6 @@ interface MaxNestedDescribeOptions {
 }
 
 const DEFAULT_MAX = 5
-
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return callee.name
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return object.name
-    }
-  }
-
-  return null
-}
 
 export const maxNestedDescribeRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -49,28 +27,26 @@ export const maxNestedDescribeRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = isDescribeCall(node)
         if (functionName === null) return
 
-        if (DESCRIBE_FUNCTIONS.has(functionName)) {
-          currentDepth++
-          if (currentDepth > maxDepthReached) {
-            maxDepthReached = currentDepth
-          }
+        currentDepth++
+        if (currentDepth > maxDepthReached) {
+          maxDepthReached = currentDepth
+        }
 
-          if (currentDepth > max) {
-            context.report({
-              loc: extractLocation(node),
-              message: `Too many nested describe blocks (${currentDepth}). Maximum allowed is ${max}.`,
-              node,
-            })
-          }
+        if (currentDepth > max) {
+          context.report({
+            loc: extractLocation(node),
+            message: `Too many nested describe blocks (${currentDepth}). Maximum allowed is ${max}.`,
+            node,
+          })
         }
       },
 
       'CallExpression:exit'(node: unknown): void {
-        const functionName = getFunctionName(node)
-        if (functionName !== null && DESCRIBE_FUNCTIONS.has(functionName)) {
+        const functionName = isDescribeCall(node)
+        if (functionName !== null) {
           currentDepth--
         }
       },

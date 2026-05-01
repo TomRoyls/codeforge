@@ -897,5 +897,66 @@ describe('prefer-return-this-type rule', () => {
       const violations = analyzePreferReturnThisType(sf)
       expect(violations).toHaveLength(1)
     })
+
+    test('should handle generic class with method returning class name', () => {
+      const sf = createSourceFile(`
+        class Container<T> {
+          setValue(value: T): Container { return this; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(1)
+    })
+
+    test('should not flag method returning generic type parameter', () => {
+      const sf = createSourceFile(`
+        class Container<T> {
+          getValue(): T { return {} as T; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(0)
+    })
+
+    test('should handle abstract class method', () => {
+      const sf = createSourceFile(`
+        abstract class Base {
+          setName(name: string): Base { return this; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(1)
+    })
+
+    test('should handle class with constructor', () => {
+      const sf = createSourceFile(`
+        class Service {
+          constructor(private name: string) {}
+          setName(name: string): Service { this.name = name; return this; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(1)
+    })
+
+    test('should not flag getter returning class name', () => {
+      const sf = createSourceFile(`
+        class Builder {
+          get self(): Builder { return this; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(0)
+    })
+
+    test('should not flag setter method', () => {
+      const sf = createSourceFile(`
+        class Builder {
+          set name(value: string) { this._name = value; }
+        }
+      `)
+      const violations = analyzePreferReturnThisType(sf)
+      expect(violations).toHaveLength(0)
+    })
   })
 })

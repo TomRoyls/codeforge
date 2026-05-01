@@ -25,7 +25,7 @@ export const noUnsafeNegationRule: RuleDefinition = {
   },
   meta: {
     docs: {
-      category: 'patterns',
+      category: 'correctness',
       description: 'Disallow negating the left operand of relational operators.',
       recommended: true,
     },

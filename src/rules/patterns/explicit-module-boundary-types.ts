@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface ExplicitModuleBoundaryTypesOptions {
@@ -94,28 +94,6 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   }
 
   return false
-}
-
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n) return null
-
-  // Direct function name
-  const idNode = toASTNode(n.id)
-  if (idNode && typeof idNode.name === 'string') {
-    return idNode.name
-  }
-
-  // Variable name for function expressions
-  const parentNode = toASTNode(n.parent)
-  if (parentNode?.type === 'VariableDeclarator') {
-    const parentIdNode = toASTNode(parentNode.id)
-    if (parentIdNode && typeof parentIdNode.name === 'string') {
-      return parentIdNode.name
-    }
-  }
-
-  return null
 }
 
 function shouldReport(

@@ -5,47 +5,10 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-import { DESCRIBE_FUNCTIONS } from '../../utils/constants.js'
+import { isDescribeCall, toASTNode } from '../../utils/ast-helpers.js'
 
 const ASYNC_SUITE_MESSAGE =
   'Unexpected async test suite. Use async test cases within the suite instead.'
-
-function getDescribeFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') {
-    return null
-  }
-
-  const callee = toASTNode(n.callee)
-  if (!callee) {
-    return null
-  }
-
-  // Direct call: describe('title', async () => {})
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    if (DESCRIBE_FUNCTIONS.has(callee.name)) {
-      return callee.name
-    }
-
-    return null
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (
-      object?.type === 'Identifier' &&
-      typeof object.name === 'string' &&
-      DESCRIBE_FUNCTIONS.has(object.name)
-    ) {
-      return object.name
-    }
-
-    return null
-  }
-
-  return null
-}
 
 function isAsyncFunction(node: unknown): boolean {
   const n = toASTNode(node)
@@ -65,7 +28,7 @@ export const noAsyncSuiteRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
-        const functionName = getDescribeFunctionName(node)
+        const functionName = isDescribeCall(node)
         if (functionName === null) {
           return
         }

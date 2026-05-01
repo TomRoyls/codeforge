@@ -5,8 +5,8 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-import { DESCRIBE_FUNCTIONS } from '../../utils/constants.js'
+import { getCallRootName } from '../../utils/ast-helpers.js'
+import { DESCRIBE_FUNCTIONS, TEST_CASE_FUNCTIONS } from '../../utils/constants.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RequireTopLevelDescribeOptions {
@@ -15,29 +15,8 @@ interface RequireTopLevelDescribeOptions {
 
 const DEFAULT_DESCRIBE_FUNCTIONS = [...DESCRIBE_FUNCTIONS]
 
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return callee.name
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return object.name
-    }
-  }
-
-  return null
-}
-
 function isTestCase(name: string): boolean {
-  return name === 'it' || name === 'test'
+  return TEST_CASE_FUNCTIONS.has(name)
 }
 
 export const requireTopLevelDescribeRule: RuleDefinition = {
@@ -54,7 +33,7 @@ export const requireTopLevelDescribeRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName !== null && describeFunctions.has(functionName)) {
           describeDepth++
           return
@@ -72,7 +51,7 @@ export const requireTopLevelDescribeRule: RuleDefinition = {
       },
 
       'CallExpression:exit'(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName !== null && describeFunctions.has(functionName)) {
           describeDepth--
         }

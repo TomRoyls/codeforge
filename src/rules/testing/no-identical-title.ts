@@ -5,33 +5,11 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
-import { DESCRIBE_FUNCTIONS } from '../../utils/constants.js'
+import { getCallRootName, isDescribeCall, toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface NoIdenticalTitleOptions {
   readonly ignoreContext?: boolean
-}
-
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return callee.name
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return object.name
-    }
-  }
-
-  return null
 }
 
 function getTitle(node: unknown): null | string {
@@ -68,10 +46,6 @@ function getTitle(node: unknown): null | string {
   return null
 }
 
-function isDescribeFunction(name: string): boolean {
-  return DESCRIBE_FUNCTIONS.has(name)
-}
-
 export const noIdenticalTitleRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     const options = extractRuleOptions<NoIdenticalTitleOptions>(context.config.options, {
@@ -82,7 +56,7 @@ export const noIdenticalTitleRule: RuleDefinition = {
 
     return {
       CallExpression(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName === null) return
 
         if (options.ignoreContext && functionName === 'context') return
@@ -103,16 +77,16 @@ export const noIdenticalTitleRule: RuleDefinition = {
           currentScope.add(title)
         }
 
-        if (isDescribeFunction(functionName)) {
+        if (isDescribeCall(node) !== null) {
           titleStack.push(new Set())
         }
       },
 
       'CallExpression:exit'(node: unknown): void {
-        const functionName = getFunctionName(node)
+        const functionName = getCallRootName(node)
         if (functionName === null) return
         if (options.ignoreContext && functionName === 'context') return
-        if (isDescribeFunction(functionName)) {
+        if (isDescribeCall(node) !== null) {
           titleStack.pop()
         }
       },

@@ -223,4 +223,348 @@ describe('no-collection-size-mischeck', () => {
       expect(typeof visitor.BinaryExpression).toBe('function')
     })
   })
+
+  describe('flags .length with various negatives', () => {
+    test('flags arr.length < -2', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length < -10', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(10)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length < -100', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(100)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length > -2', () => {
+      const reports = runRule(createComparison('>', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length >= -2', () => {
+      const reports = runRule(createComparison('>=', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length <= -2', () => {
+      const reports = runRule(createComparison('<=', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length === -2', () => {
+      const reports = runRule(createComparison('===', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags arr.length !== -2', () => {
+      const reports = runRule(createComparison('!==', member('arr', 'length'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+  })
+
+  describe('flags .size with various negatives', () => {
+    test('flags map.size < -2', () => {
+      const reports = runRule(createComparison('<', member('map', 'size'), neg(2)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size <= -10', () => {
+      const reports = runRule(createComparison('<=', member('map', 'size'), neg(10)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size >= -1', () => {
+      const reports = runRule(createComparison('>=', member('map', 'size'), neg(1)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size === -5', () => {
+      const reports = runRule(createComparison('===', member('map', 'size'), neg(5)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size == -5', () => {
+      const reports = runRule(createComparison('==', member('map', 'size'), neg(5)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size !== -5', () => {
+      const reports = runRule(createComparison('!==', member('map', 'size'), neg(5)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags map.size != -5', () => {
+      const reports = runRule(createComparison('!=', member('map', 'size'), neg(5)))
+      expect(reports).toHaveLength(1)
+    })
+  })
+
+  describe('flags reversed negative < .size', () => {
+    test('flags -1 < map.size', () => {
+      const reports = runRule(createComparison('<', neg(1), member('map', 'size')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -1 <= map.size', () => {
+      const reports = runRule(createComparison('<=', neg(1), member('map', 'size')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -1 > map.size', () => {
+      const reports = runRule(createComparison('>', neg(1), member('map', 'size')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -1 >= map.size', () => {
+      const reports = runRule(createComparison('>=', neg(1), member('map', 'size')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -5 < set.size', () => {
+      const reports = runRule(createComparison('<', neg(5), member('set', 'size')))
+      expect(reports).toHaveLength(1)
+    })
+  })
+
+  describe('flags reversed negative with .length', () => {
+    test('flags -5 > arr.length', () => {
+      const reports = runRule(createComparison('>', neg(5), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -5 >= arr.length', () => {
+      const reports = runRule(createComparison('>=', neg(5), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -10 === arr.length', () => {
+      const reports = runRule(createComparison('===', neg(10), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -10 == arr.length', () => {
+      const reports = runRule(createComparison('==', neg(10), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -10 !== arr.length', () => {
+      const reports = runRule(createComparison('!==', neg(10), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags -10 != arr.length', () => {
+      const reports = runRule(createComparison('!=', neg(10), member('arr', 'length')))
+      expect(reports).toHaveLength(1)
+    })
+  })
+
+  describe('message content', () => {
+    test('message for .length < -1 mentions non-negative', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(1)))
+      expect(reports[0].message).toContain('non-negative')
+    })
+
+    test('message for .length > -1 mentions always true', () => {
+      const reports = runRule(createComparison('>', member('arr', 'length'), neg(1)))
+      expect(reports[0].message).toContain('true')
+    })
+
+    test('message for .length === -1 mentions always false', () => {
+      const reports = runRule(createComparison('===', member('arr', 'length'), neg(1)))
+      expect(reports[0].message).toContain('false')
+    })
+
+    test('message for -1 > .length mentions non-negative', () => {
+      const reports = runRule(createComparison('>', neg(1), member('arr', 'length')))
+      expect(reports[0].message).toContain('non-negative')
+    })
+
+    test('message for -1 < .length mentions always true', () => {
+      const reports = runRule(createComparison('<', neg(1), member('arr', 'length')))
+      expect(reports[0].message).toContain('true')
+    })
+
+    test('message for -1 === .length mentions always false', () => {
+      const reports = runRule(createComparison('===', neg(1), member('arr', 'length')))
+      expect(reports[0].message).toContain('false')
+    })
+
+    test('message for .size !== -1 mentions always true', () => {
+      const reports = runRule(createComparison('!==', member('map', 'size'), neg(1)))
+      expect(reports[0].message).toContain('true')
+    })
+
+    test('message for .size === -1 mentions always false', () => {
+      const reports = runRule(createComparison('===', member('map', 'size'), neg(1)))
+      expect(reports[0].message).toContain('false')
+    })
+  })
+
+  describe('location reporting', () => {
+    test('reports correct location line 3', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(1), 3, 0))
+      expect(reports[0].loc?.start.line).toBe(3)
+    })
+
+    test('reports correct location column 5', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(1), 1, 5))
+      expect(reports[0].loc?.start.column).toBe(5)
+    })
+
+    test('reports correct location line 10 column 20', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(1), 10, 20))
+      expect(reports[0].loc?.start.line).toBe(10)
+      expect(reports[0].loc?.start.column).toBe(20)
+    })
+
+    test('reports correct location line 100', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), neg(1), 100, 0))
+      expect(reports[0].loc?.start.line).toBe(100)
+    })
+
+    test('reports correct location for reversed comparison', () => {
+      const reports = runRule(createComparison('<', neg(1), member('arr', 'length'), 7, 3))
+      expect(reports[0].loc?.start.line).toBe(7)
+      expect(reports[0].loc?.start.column).toBe(3)
+    })
+  })
+
+  describe('does NOT flag other non-size properties', () => {
+    test('does NOT flag obj.count < -1', () => {
+      const reports = runRule(createComparison('<', member('obj', 'count'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag obj.index < -1', () => {
+      const reports = runRule(createComparison('<', member('obj', 'index'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag obj.value < -1', () => {
+      const reports = runRule(createComparison('<', member('obj', 'value'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag obj.pos < -1', () => {
+      const reports = runRule(createComparison('<', member('obj', 'pos'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('does NOT flag non-comparison operators', () => {
+    test('does NOT flag arr.length + -1', () => {
+      const reports = runRule(createComparison('+', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length - -1', () => {
+      const reports = runRule(createComparison('-', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length * -1', () => {
+      const reports = runRule(createComparison('*', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length / -1', () => {
+      const reports = runRule(createComparison('/', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length % -1', () => {
+      const reports = runRule(createComparison('%', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length | -1', () => {
+      const reports = runRule(createComparison('|', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length & -1', () => {
+      const reports = runRule(createComparison('&', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length ^ -1', () => {
+      const reports = runRule(createComparison('^', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length ** -1', () => {
+      const reports = runRule(createComparison('**', member('arr', 'length'), neg(1)))
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('does NOT flag both sides size property', () => {
+    test('does NOT flag arr.length < arr2.length', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), member('arr2', 'length')))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag map.size < set.size', () => {
+      const reports = runRule(createComparison('<', member('map', 'size'), member('set', 'size')))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length > arr2.length', () => {
+      const reports = runRule(createComparison('>', member('arr', 'length'), member('arr2', 'length')))
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('does NOT flag positive numbers', () => {
+    test('does NOT flag arr.length < 1', () => {
+      const reports = runRule(createComparison('<', member('arr', 'length'), lit(1)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length > 0', () => {
+      const reports = runRule(createComparison('>', member('arr', 'length'), lit(0)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length >= 0', () => {
+      const reports = runRule(createComparison('>=', member('arr', 'length'), lit(0)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length <= 5', () => {
+      const reports = runRule(createComparison('<=', member('arr', 'length'), lit(5)))
+      expect(reports).toHaveLength(0)
+    })
+
+    test('does NOT flag arr.length === 0', () => {
+      const reports = runRule(createComparison('===', member('arr', 'length'), lit(0)))
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('various object names', () => {
+    test('flags items.length < -1', () => {
+      const reports = runRule(createComparison('<', member('items', 'length'), neg(1)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags data.length < -1', () => {
+      const reports = runRule(createComparison('<', member('data', 'length'), neg(1)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags buffer.length < -1', () => {
+      const reports = runRule(createComparison('<', member('buffer', 'length'), neg(1)))
+      expect(reports).toHaveLength(1)
+    })
+
+    test('flags cache.size < -1', () => {
+      const reports = runRule(createComparison('<', member('cache', 'size'), neg(1)))
+      expect(reports).toHaveLength(1)
+    })
+  })
 })

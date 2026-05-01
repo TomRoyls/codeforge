@@ -191,14 +191,33 @@ export const DEFAULT_FILE_PATTERNS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.js
 /** Common test function names (describe, it, test) */
 export const TEST_FUNCTIONS = new Set(['describe', 'it', 'test'])
 
+/** Test case function names only (it, test) — excludes describe/suite/context */
+export const TEST_CASE_FUNCTIONS = new Set(['it', 'test'])
+
 /** Describe-like function names that create test scopes (context, describe, suite) */
 export const DESCRIBE_FUNCTIONS = new Set(['context', 'describe', 'suite'])
+
+/** Jest/Vitest hook function names (beforeEach, afterEach, beforeAll, afterAll) */
+export const HOOK_FUNCTIONS = new Set(['afterAll', 'afterEach', 'beforeAll', 'beforeEach'])
+
+/** Combined test and hook function names */
+export const TEST_AND_HOOK_FUNCTIONS = new Set([
+  'afterAll',
+  'afterEach',
+  'beforeAll',
+  'beforeEach',
+  'it',
+  'test',
+])
 
 /** Skip/only methods on test functions */
 export const TEST_SKIP_METHODS = new Set(['only', 'skip'])
 
 /** X-prefix functions that skip tests (xdescribe, xit, xtest) */
 export const X_PREFIX_SKIP_FUNCTIONS = new Set(['xdescribe', 'xit', 'xtest'])
+
+/** Equality matcher names used across prefer-to-be, prefer-to-be-null, etc. */
+export const EQUALITY_MATCHERS = new Set(['toBe', 'toEqual', 'toStrictEqual'])
 
 // ============================================================================
 // REGEX CONSTANTS

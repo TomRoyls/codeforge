@@ -1076,4 +1076,226 @@ describe('no-unsafe-html rule', () => {
       expect(reports.length).toBe(0)
     })
   })
+
+  describe('innerHTML with various HTML tags', () => {
+    test('should report innerHTML with <script> tag', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('innerHTML', '<script>alert(1)</script>', 'Literal'))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report innerHTML with <img> tag', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('innerHTML', '<img src=x>', 'Literal'))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report innerHTML with <a> tag', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('innerHTML', '<a href="#">link</a>', 'Literal'))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report innerHTML with self-closing tag', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('innerHTML', '<br/>', 'Literal'))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report innerHTML with nested tags', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('innerHTML', '<div><span>text</span></div>', 'Literal'))
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('outerHTML with various values', () => {
+    test('should report outerHTML with template literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const templateNode = createTemplateLiteral('<div>content</div>')
+      const node = {
+        type: 'AssignmentExpression', operator: '=',
+        left: { type: 'MemberExpression', object: { type: 'Identifier', name: 'el' }, property: { type: 'Identifier', name: 'outerHTML' } },
+        right: templateNode,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.AssignmentExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report outerHTML with number', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('outerHTML', 42, 'Literal'))
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('document.write variations', () => {
+    test('should report document.write with template literal containing HTML', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const templateNode = createTemplateLiteral('<b>hello</b>')
+      visitor.CallExpression(createCallExpression('document', 'write', [templateNode]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report document.write with escape() call', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const escapeCall = createCallWithIdentifierCallee('escape', [createIdentifier('input')])
+      visitor.CallExpression(createCallExpression('document', 'write', [escapeCall]))
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('insertAdjacentHTML positions', () => {
+    test('should report insertAdjacentHTML with beforebegin position', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.CallExpression(createCallExpression('el', 'insertAdjacentHTML', [
+        createLiteral('beforebegin'), createLiteral('<div>test</div>'),
+      ]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report insertAdjacentHTML with afterend position', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.CallExpression(createCallExpression('el', 'insertAdjacentHTML', [
+        createLiteral('afterend'), createIdentifier('htmlContent'),
+      ]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report insertAdjacentHTML with escape() call', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const escapeCall = createCallWithIdentifierCallee('escape', [createIdentifier('html')])
+      visitor.CallExpression(createCallExpression('el', 'insertAdjacentHTML', [
+        createLiteral('beforeend'), escapeCall,
+      ]))
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('jQuery .html() variations', () => {
+    test('should report .html() with template literal', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const templateNode = createTemplateLiteral('<span>text</span>')
+      visitor.CallExpression(createCallExpression('$el', 'html', [templateNode]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('should not report .text() calls', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.CallExpression(createCallExpression('$el', 'text', [createLiteral('<b>safe</b>')]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report .css() calls', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.CallExpression(createCallExpression('$el', 'css', [createLiteral('color'), createLiteral('red')]))
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('safe method variations', () => {
+    test('should recognize custom safeMethod for insertAdjacentHTML', () => {
+      const { context, reports } = createMockContext({ safeMethods: ['customSanitize'] })
+      const visitor = noUnsafeHtmlRule.create(context)
+      const safeCall = createCallWithMemberCallee('sanitizer', 'customSanitize', [createIdentifier('input')])
+      visitor.CallExpression(createCallExpression('el', 'insertAdjacentHTML', [
+        createLiteral('beforeend'), safeCall,
+      ]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not treat unknown methods as safe', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const unsafeCall = createCallWithMemberCallee('lib', 'unknownMethod', [createIdentifier('input')])
+      const node = {
+        type: 'AssignmentExpression', operator: '=',
+        left: { type: 'MemberExpression', object: { type: 'Identifier', name: 'el' }, property: { type: 'Identifier', name: 'innerHTML' } },
+        right: unsafeCall,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 40 } },
+      }
+      visitor.AssignmentExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('edge cases - additional', () => {
+    test('should handle empty object node in AssignmentExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      expect(() => visitor.AssignmentExpression({})).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle empty object node in CallExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      expect(() => visitor.CallExpression({})).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle innerHTML with CallExpression right value', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const callNode = createCallExpression('someLib', 'render', [createIdentifier('data')])
+      const node = {
+        type: 'AssignmentExpression', operator: '=',
+        left: { type: 'MemberExpression', object: { type: 'Identifier', name: 'el' }, property: { type: 'Identifier', name: 'innerHTML' } },
+        right: callNode,
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.AssignmentExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('should handle assignment to style property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('style', 'color: red', 'Literal'))
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle assignment to className', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('className', 'active', 'Literal'))
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle assignment to value property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      visitor.AssignmentExpression(createAssignment('value', '<b>test</b>', 'Literal'))
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle innerHTML assignment to a member expression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnsafeHtmlRule.create(context)
+      const node = {
+        type: 'AssignmentExpression', operator: '=',
+        left: { type: 'MemberExpression', object: { type: 'Identifier', name: 'el' }, property: { type: 'Identifier', name: 'innerHTML' } },
+        right: { type: 'MemberExpression', object: { type: 'Identifier', name: 'config' }, property: { type: 'Identifier', name: 'html' } },
+        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 30 } },
+      }
+      visitor.AssignmentExpression(node)
+      expect(reports.length).toBe(1)
+    })
+  })
 })

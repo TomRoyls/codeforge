@@ -5,132 +5,95 @@ import type {
 } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
-import { TEST_FUNCTIONS } from '../../utils/constants.js'
-import { extractRuleOptions } from '../../utils/options-helpers.js'
-
-interface NoConditionalExpectOptions {
-  readonly assertFunctionNames?: readonly string[]
-}
+import {
+  getCallRootName,
+  toASTNode,
+} from '../../utils/ast-helpers.js'
 
 const DEFAULT_ASSERT_FUNCTION_NAMES = ['expect']
 
-function getRootCalleeName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n) return null
-
-  if (n.type === 'Identifier' && typeof n.name === 'string') {
-    return n.name
-  }
-
-  if (n.type === 'MemberExpression') {
-    return getRootCalleeName(n.object)
-  }
-
-  return null
-}
-
-function isTestFunctionCall(node: unknown): boolean {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return false
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return false
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return TEST_FUNCTIONS.has(callee.name)
-  }
-
-  if (callee.type === 'MemberExpression') {
-    const object = toASTNode(callee.object)
-    if (object?.type === 'Identifier' && typeof object.name === 'string') {
-      return TEST_FUNCTIONS.has(object.name)
+function getAssertFunctionNames(context: RuleContext): string[] {
+  const options = context.config?.options
+  if (Array.isArray(options) && options.length > 0) {
+    const first = options[0] as Record<string, unknown> | undefined
+    if (first && Array.isArray(first.assertFunctionNames)) {
+      return first.assertFunctionNames as string[]
     }
   }
-
-  return false
+  return DEFAULT_ASSERT_FUNCTION_NAMES
 }
 
-function getAssertName(node: unknown, assertFunctions: ReadonlySet<string>): null | string {
-  const n = toASTNode(node)
-  if (!n || n.type !== 'CallExpression') return null
-
-  const callee = toASTNode(n.callee)
-  if (!callee) return null
-
-  if (callee.type === 'Identifier' && typeof callee.name === 'string') {
-    return assertFunctions.has(callee.name) ? callee.name : null
+function getAssertionName(
+  node: unknown,
+  assertFunctionNames: string[],
+): string | null {
+  const rootName = getCallRootName(node)
+  if (rootName !== null && assertFunctionNames.includes(rootName)) {
+    return rootName
   }
-
-  if (callee.type === 'MemberExpression') {
-    const rootName = getRootCalleeName(callee)
-    if (rootName !== null && assertFunctions.has(rootName)) {
-      const obj = toASTNode(callee.object) as ASTNode | null
-      if (obj?.type === 'CallExpression') {
-        return null
-      }
-
-      return rootName
-    }
-  }
-
   return null
 }
 
 export const noConditionalExpectRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
-    const options = extractRuleOptions<NoConditionalExpectOptions>(
-      context.config.options,
-      {},
-    )
-
-    const assertFunctions = new Set(options.assertFunctionNames ?? DEFAULT_ASSERT_FUNCTION_NAMES)
+    const assertFunctionNames = getAssertFunctionNames(context)
     let conditionalDepth = 0
+
+    const enterConditional = (): void => {
+      conditionalDepth++
+    }
+
+    const exitConditional = (): void => {
+      conditionalDepth--
+    }
 
     return {
       CallExpression(node: unknown): void {
-        if (conditionalDepth > 0 && !isTestFunctionCall(node)) {
-          const assertName = getAssertName(node, assertFunctions)
-          if (assertName !== null) {
-            context.report({
-              loc: extractLocation(node),
-              message: `Unexpected '${assertName}' call inside conditional statement. Assertions inside conditionals can lead to tests that silently pass when they should fail.`,
-              node,
-            })
-          }
-        }
+        if (conditionalDepth === 0) return
+
+        const n = toASTNode(node)
+        if (!n || n.type !== 'CallExpression') return
+
+        const assertName = getAssertionName(node, assertFunctionNames)
+        if (assertName === null) return
+
+        context.report({
+          loc: extractLocation(node),
+          message: `Unexpected '${assertName}' call in conditional statement. This assertion could silently pass.`,
+          node,
+        })
       },
 
-      CatchClause(): void {
-        conditionalDepth++
+      IfStatement(_node: unknown): void {
+        enterConditional()
       },
 
-      'CatchClause:exit'(): void {
-        conditionalDepth--
+      'IfStatement:exit'(_node: unknown): void {
+        exitConditional()
       },
 
-      ConditionalExpression(): void {
-        conditionalDepth++
+      ConditionalExpression(_node: unknown): void {
+        enterConditional()
       },
 
-      'ConditionalExpression:exit'(): void {
-        conditionalDepth--
+      'ConditionalExpression:exit'(_node: unknown): void {
+        exitConditional()
       },
 
-      IfStatement(): void {
-        conditionalDepth++
+      CatchClause(_node: unknown): void {
+        enterConditional()
       },
 
-      'IfStatement:exit'(): void {
-        conditionalDepth--
+      'CatchClause:exit'(_node: unknown): void {
+        exitConditional()
       },
 
-      SwitchStatement(): void {
-        conditionalDepth++
+      SwitchStatement(_node: unknown): void {
+        enterConditional()
       },
 
-      'SwitchStatement:exit'(): void {
-        conditionalDepth--
+      'SwitchStatement:exit'(_node: unknown): void {
+        exitConditional()
       },
     }
   },
@@ -138,21 +101,20 @@ export const noConditionalExpectRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'testing',
-      description:
-        'Disallow calling assertion functions inside conditional statements where tests may silently pass',
+      description: 'Disallow conditional assertions that could silently pass',
       recommended: true,
       url: 'https://codeforge.dev/docs/rules/no-conditional-expect',
     },
     schema: [
       {
-        additionalProperties: false,
+        type: 'object',
         properties: {
           assertFunctionNames: {
             items: { type: 'string' },
             type: 'array',
           },
         },
-        type: 'object',
+        additionalProperties: false,
       },
     ],
     severity: 'error',

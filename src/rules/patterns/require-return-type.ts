@@ -1,7 +1,7 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { toASTNode, getFunctionName } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
 
 interface RequireReturnTypeOptions {
@@ -64,42 +64,6 @@ function isVariableTypedWithFunction(node: unknown): boolean {
   }
 
   return false
-}
-
-function getFunctionName(node: unknown): null | string {
-  const n = toASTNode(node)
-  if (!n) return null
-
-  const idNode = toASTNode(n.id)
-  if (idNode && typeof idNode.name === 'string') {
-    return idNode.name
-  }
-
-  const parentNode = toASTNode(n.parent)
-  if (parentNode) {
-    if (parentNode.type === 'VariableDeclarator') {
-      const parentIdNode = toASTNode(parentNode.id)
-      if (parentIdNode && typeof parentIdNode.name === 'string') {
-        return parentIdNode.name
-      }
-    }
-
-    if (parentNode.type === 'Property' || parentNode.type === 'MethodDefinition') {
-      const keyNode = toASTNode(parentNode.key)
-      if (keyNode && typeof keyNode.name === 'string') {
-        return keyNode.name
-      }
-    }
-
-    if (parentNode.type === 'AssignmentExpression') {
-      const leftNode = toASTNode(parentNode.left)
-      if (leftNode?.type === 'Identifier' && typeof leftNode.name === 'string') {
-        return leftNode.name
-      }
-    }
-  }
-
-  return null
 }
 
 function shouldReport(
