@@ -248,7 +248,9 @@ noUnnecessaryAwaitForeachRule,
  noUnnecessaryForLoopRule,
   noUnnecessaryFindIndexRule,
    noUnnecessaryFindRule,
-  noUnnecessaryFlatRule,
+   noUnnecessaryFillRule,
+   noUnnecessaryFlatMapRule,
+   noUnnecessaryFlatRule,
     noUnnecessaryFragmentRule,
   noUnnecessaryInitializationRule,
  noUnnecessaryIndexOfRule,
@@ -274,7 +276,8 @@ noUnnecessaryReturnAwaitRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
-    noUnnecessarySliceRule,
+     noUnnecessarySliceRule,
+    noUnnecessarySomeRule,
    noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
   noUnnecessaryStringSplitRule,
@@ -297,6 +300,7 @@ noUnnecessaryParameterPropertyRule,
   noUnnecessaryPromiseWrapRule,
     noUnnecessaryEscapeRule,
     noUnnecessaryElseRule,
+    noUnnecessaryEveryRule,
     noUnnecessaryConstructorRule,
      noUnnecessaryTernaryRule,
     noUnnecessaryTernaryAssignRule,
@@ -641,7 +645,9 @@ const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRu
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
 const adaptedNoUnnecessaryFind = adaptPluginRule(noUnnecessaryFindRule, 'no-unnecessary-find')
+const adaptedNoUnnecessaryFill = adaptPluginRule(noUnnecessaryFillRule, 'no-unnecessary-fill')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
+const adaptedNoUnnecessaryFlatMap = adaptPluginRule(noUnnecessaryFlatMapRule, 'no-unnecessary-flat-map')
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
@@ -742,6 +748,7 @@ const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParam
 const adaptedNoUnnecessaryPromiseWrap = adaptPluginRule(noUnnecessaryPromiseWrapRule, 'no-unnecessary-promise-wrap')
 const adaptedNoUnnecessaryEscape = adaptPluginRule(noUnnecessaryEscapeRule, 'no-unnecessary-escape')
 const adaptedNoUnnecessaryElse = adaptPluginRule(noUnnecessaryElseRule, 'no-unnecessary-else')
+const adaptedNoUnnecessaryEvery = adaptPluginRule(noUnnecessaryEveryRule, 'no-unnecessary-every')
 const adaptedNoUnnecessaryConstructor = adaptPluginRule(noUnnecessaryConstructorRule, 'no-unnecessary-constructor')
 const adaptedNoUnnecessaryTernary = adaptPluginRule(noUnnecessaryTernaryRule, 'no-unnecessary-ternary')
 const adaptedNoUnnecessaryTernaryAssign = adaptPluginRule(noUnnecessaryTernaryAssignRule, 'no-unnecessary-ternary-assign')
@@ -797,6 +804,7 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
   'no-simplifiable-pattern',
 )
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
+const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
   noUnnecessaryStringConcatRule,
@@ -1391,9 +1399,11 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-escape-in-regexp': adaptedNoUnnecessaryEscapeInRegexp,
   'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
   'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
-  'no-unnecessary-find': adaptedNoUnnecessaryFind,
-  'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
-  'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
+   'no-unnecessary-find': adaptedNoUnnecessaryFind,
+   'no-unnecessary-fill': adaptedNoUnnecessaryFill,
+   'no-unnecessary-flat': adaptedNoUnnecessaryFlat,
+   'no-unnecessary-flat-map': adaptedNoUnnecessaryFlatMap,
+   'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
   'no-unnecessary-index-of': adaptedNoUnnecessaryIndexOf,
   'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
@@ -1419,6 +1429,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
   'no-unnecessary-slice': adaptedNoUnnecessarySlice,
+  'no-unnecessary-some': adaptedNoUnnecessarySome,
   'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
   'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
@@ -1441,6 +1452,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-promise-wrap': adaptedNoUnnecessaryPromiseWrap,
   'no-unnecessary-escape': adaptedNoUnnecessaryEscape,
   'no-unnecessary-else': adaptedNoUnnecessaryElse,
+  'no-unnecessary-every': adaptedNoUnnecessaryEvery,
   'no-unnecessary-constructor': adaptedNoUnnecessaryConstructor,
   'no-unnecessary-ternary': adaptedNoUnnecessaryTernary,
   'no-unnecessary-ternary-assign': adaptedNoUnnecessaryTernaryAssign,
@@ -1901,7 +1913,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-for-loop': 'patterns',
   'no-unnecessary-find-index': 'patterns',
   'no-unnecessary-find': 'patterns',
+  'no-unnecessary-fill': 'patterns',
   'no-unnecessary-flat': 'patterns',
+  'no-unnecessary-flat-map': 'patterns',
   'no-unnecessary-fragment': 'patterns',
   'no-unnecessary-index-of': 'patterns',
   'no-unnecessary-initialization': 'patterns',
@@ -1920,6 +1934,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-polyfills': 'patterns',
    'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-slice': 'patterns',
+  'no-unnecessary-some': 'patterns',
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-spread': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
@@ -1951,6 +1966,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-promise-wrap': 'patterns',
   'no-unnecessary-escape': 'patterns',
   'no-unnecessary-else': 'patterns',
+  'no-unnecessary-every': 'patterns',
  'no-unnecessary-constructor': 'patterns',
   'no-unnecessary-ternary': 'patterns',
   'no-unnecessary-ternary-assign': 'patterns',
