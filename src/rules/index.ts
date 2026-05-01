@@ -319,7 +319,8 @@ noUnnecessaryStringConcatRule,
      noUnnecessaryToSplicedRule,
      noUnnecessaryToStringRule,
     noUnnecessaryToLocaleStringRule,
-    noUnnecessaryTypeofRule,
+     noUnnecessaryTypeofRule,
+     noUnnecessaryUndefinedReturnRule,
     noUnnecessaryNullCheckRule,
    noUnnecessaryOptionalChainRule,
 noUnnecessaryParameterPropertyRule,
@@ -336,7 +337,8 @@ noUnnecessaryTypeConstraintRule,
    noUnnecessaryUnshiftRule,
     noUnnecessaryWithRule,
     noUnnecessaryValuesRule,
-     noUnnecessaryVoidRule,
+      noUnnecessaryVoidRule,
+     noUnnecessaryYieldRule,
   noUnnecessaryWaitRule,
    noUnneededTernaryRule,
   noUnreachableRule,
@@ -792,6 +794,7 @@ const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unne
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
 const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocaleStringRule, 'no-unnecessary-to-locale-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
+const adaptedNoUnnecessaryUndefinedReturn = adaptPluginRule(noUnnecessaryUndefinedReturnRule, 'no-unnecessary-undefined-return')
 const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
 const adaptedNoUnnecessaryOptionalChain = adaptPluginRule(noUnnecessaryOptionalChainRule, 'no-unnecessary-optional-chain')
 const adaptedNoUnnecessaryParameterProperty = adaptPluginRule(noUnnecessaryParameterPropertyRule, 'no-unnecessary-parameter-property')
@@ -1113,6 +1116,7 @@ const adaptedNoUnnecessaryUnshift = adaptPluginRule(noUnnecessaryUnshiftRule, 'n
 const adaptedNoUnnecessaryWith = adaptPluginRule(noUnnecessaryWithRule, 'no-unnecessary-with')
 const adaptedNoUnnecessaryValues = adaptPluginRule(noUnnecessaryValuesRule, 'no-unnecessary-values')
 const adaptedNoUnnecessaryVoid = adaptPluginRule(noUnnecessaryVoidRule, 'no-unnecessary-void')
+const adaptedNoUnnecessaryYield = adaptPluginRule(noUnnecessaryYieldRule, 'no-unnecessary-yield')
 const adaptedNoUnnecessaryWait = adaptPluginRule(noUnnecessaryWaitRule, 'no-unnecessary-wait')
 const adaptedNoUtilityTruthiness = adaptPluginRule(noUtilityTruthinessRule, 'no-utility-truthiness')
 const adaptedPreferSingleBooleanReturn = adaptPluginRule(preferSingleBooleanReturnRule, 'prefer-single-boolean-return')
@@ -1530,7 +1534,8 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
     'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
-  'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
+   'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
+  'no-unnecessary-undefined-return': adaptedNoUnnecessaryUndefinedReturn,
   'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
   'no-unnecessary-optional-chain': adaptedNoUnnecessaryOptionalChain,
   'no-unnecessary-parameter-property': adaptedNoUnnecessaryParameterProperty,
@@ -1547,6 +1552,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-type-parameters': adaptedNoUnnecessaryTypeParameters,
    'no-unnecessary-unshift': adaptedNoUnnecessaryUnshift,
    'no-unnecessary-void': adaptedNoUnnecessaryVoid,
+   'no-unnecessary-yield': adaptedNoUnnecessaryYield,
    'no-unnecessary-values': adaptedNoUnnecessaryValues,
     'no-unnecessary-with': adaptedNoUnnecessaryWith,
    'no-unnecessary-wait': adaptedNoUnnecessaryWait,
@@ -2075,7 +2081,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-then': 'patterns',
    'no-unnecessary-to-string': 'patterns',
    'no-unnecessary-to-locale-string': 'patterns',
-  'no-unnecessary-typeof': 'patterns',
+   'no-unnecessary-typeof': 'patterns',
+  'no-unnecessary-undefined-return': 'patterns',
   'no-unnecessary-null-check': 'patterns',
   'no-unnecessary-optional-chain': 'patterns',
   'no-unnecessary-parameter-property': 'patterns',
@@ -2091,6 +2098,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-type-parameters': 'patterns',
   'no-unnecessary-unshift': 'patterns',
    'no-unnecessary-void': 'patterns',
+   'no-unnecessary-yield': 'patterns',
    'no-unnecessary-values': 'patterns',
    'no-unnecessary-with': 'patterns',
    'no-unnecessary-wait': 'patterns',
