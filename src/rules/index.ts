@@ -248,6 +248,8 @@ noUnnecessaryAwaitForeachRule,
        noUnnecessaryEscapeInRegexpRule,
  noUnnecessaryForLoopRule,
   noUnnecessaryFindIndexRule,
+  noUnnecessaryFindLastIndexRule,
+  noUnnecessaryFindLastRule,
    noUnnecessaryFindRule,
    noUnnecessaryFillRule,
    noUnnecessaryFilterRule,
@@ -659,6 +661,8 @@ const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
+const adaptedNoUnnecessaryFindLastIndex = adaptPluginRule(noUnnecessaryFindLastIndexRule, 'no-unnecessary-find-last-index')
+const adaptedNoUnnecessaryFindLast = adaptPluginRule(noUnnecessaryFindLastRule, 'no-unnecessary-find-last')
 const adaptedNoUnnecessaryFindIndex = adaptPluginRule(noUnnecessaryFindIndexRule, 'no-unnecessary-find-index')
 const adaptedNoUnnecessaryFind = adaptPluginRule(noUnnecessaryFindRule, 'no-unnecessary-find')
 const adaptedNoUnnecessaryFill = adaptPluginRule(noUnnecessaryFillRule, 'no-unnecessary-fill')
@@ -1429,6 +1433,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-for-loop': adaptedNoUnnecessaryForLoop,
    'no-unnecessary-for-each': adaptedNoUnnecessaryForEach,
    'no-unnecessary-find-index': adaptedNoUnnecessaryFindIndex,
+   'no-unnecessary-find-last-index': adaptedNoUnnecessaryFindLastIndex,
+   'no-unnecessary-find-last': adaptedNoUnnecessaryFindLast,
    'no-unnecessary-find': adaptedNoUnnecessaryFind,
    'no-unnecessary-filter': adaptedNoUnnecessaryFilter,
     'no-unnecessary-fill': adaptedNoUnnecessaryFill,
@@ -1956,6 +1962,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-for-loop': 'patterns',
   'no-unnecessary-for-each': 'patterns',
   'no-unnecessary-find-index': 'patterns',
+  'no-unnecessary-find-last-index': 'patterns',
+  'no-unnecessary-find-last': 'patterns',
   'no-unnecessary-find': 'patterns',
   'no-unnecessary-filter': 'patterns',
   'no-unnecessary-fill': 'patterns',
