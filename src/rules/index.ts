@@ -227,7 +227,8 @@ noUnnecessaryAssertRule,
   noUnnecessaryBignumberRule,
   noUnnecessaryBlockRule,
    noUnnecessaryAsExpressionRule,
-  noUnnecessaryAtobRule,
+   noUnnecessaryAtRule,
+   noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
   noUnnecessaryAsyncFunctionRule,
@@ -315,7 +316,8 @@ noUnnecessaryParameterPropertyRule,
     noUnnecessaryTypeArgumentsRule,
 noUnnecessaryTypeConstraintRule,
    noUnnecessaryTypeParametersRule,
-  noUnnecessaryVoidRule,
+   noUnnecessaryUnshiftRule,
+   noUnnecessaryVoidRule,
   noUnnecessaryWaitRule,
    noUnneededTernaryRule,
   noUnreachableRule,
@@ -623,6 +625,7 @@ const adaptedNoUnnecessaryAssert = adaptPluginRule(noUnnecessaryAssertRule, 'no-
 const adaptedNoUnnecessaryBignumber = adaptPluginRule(noUnnecessaryBignumberRule, 'no-unnecessary-bignumber')
 const adaptedNoUnnecessaryBlock = adaptPluginRule(noUnnecessaryBlockRule, 'no-unnecessary-block')
 const adaptedNoUnnecessaryAsExpression = adaptPluginRule(noUnnecessaryAsExpressionRule, 'no-unnecessary-as-expression')
+const adaptedNoUnnecessaryAt = adaptPluginRule(noUnnecessaryAtRule, 'no-unnecessary-at')
 const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unnecessary-atob')
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
@@ -1069,6 +1072,7 @@ const adaptedNoUnnecessaryPop = adaptPluginRule(noUnnecessaryPopRule, 'no-unnece
 const adaptedNoUnnecessaryPolyfills = adaptPluginRule(noUnnecessaryPolyfillsRule, 'no-unnecessary-polyfills')
 const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeConstraintRule, 'no-unnecessary-type-constraint')
 const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
+const adaptedNoUnnecessaryUnshift = adaptPluginRule(noUnnecessaryUnshiftRule, 'no-unnecessary-unshift')
 const adaptedNoUnnecessaryVoid = adaptPluginRule(noUnnecessaryVoidRule, 'no-unnecessary-void')
 const adaptedNoUnnecessaryWait = adaptPluginRule(noUnnecessaryWaitRule, 'no-unnecessary-wait')
 const adaptedNoUtilityTruthiness = adaptPluginRule(noUtilityTruthinessRule, 'no-utility-truthiness')
@@ -1398,7 +1402,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-bignumber': adaptedNoUnnecessaryBignumber,
   'no-unnecessary-block': adaptedNoUnnecessaryBlock,
   'no-unnecessary-as-expression': adaptedNoUnnecessaryAsExpression,
-  'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
+   'no-unnecessary-at': adaptedNoUnnecessaryAt,
+   'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
   'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
   'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
@@ -1484,7 +1489,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-type-assertion': noUnnecessaryTypeAssertionRule,
   'no-unnecessary-type-constraint': adaptedNoUnnecessaryTypeConstraint,
   'no-unnecessary-type-parameters': adaptedNoUnnecessaryTypeParameters,
-  'no-unnecessary-void': adaptedNoUnnecessaryVoid,
+   'no-unnecessary-unshift': adaptedNoUnnecessaryUnshift,
+   'no-unnecessary-void': adaptedNoUnnecessaryVoid,
   'no-unnecessary-wait': adaptedNoUnnecessaryWait,
   'no-unneeded-ternary': adaptedNoUnneededTernary,
   'no-unreachable': adaptedNoUnreachable,
@@ -1918,7 +1924,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-bignumber': 'patterns',
   'no-unnecessary-block': 'patterns',
   'no-unnecessary-as-expression': 'patterns',
-  'no-unnecessary-atob': 'patterns',
+  'no-unnecessary-at': 'patterns',
+   'no-unnecessary-atob': 'patterns',
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-async-function': 'patterns',
@@ -2005,7 +2012,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-type-assertion': 'patterns',
   'no-unnecessary-type-constraint': 'patterns',
   'no-unnecessary-type-parameters': 'patterns',
-  'no-unnecessary-void': 'patterns',
+  'no-unnecessary-unshift': 'patterns',
+   'no-unnecessary-void': 'patterns',
   'no-unnecessary-wait': 'patterns',
   'no-unneeded-ternary': 'patterns',
    'no-unreachable': 'patterns',
