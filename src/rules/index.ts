@@ -276,11 +276,13 @@ noUnnecessaryAwaitForeachRule,
 noUnnecessaryReturnAwaitRule,
    noUnnecessaryReduceRule,
     noUnnecessaryReturnValueRule,
-   noUnnecessaryReverseRule,
+   noUnnecessaryReduceRightRule,
+    noUnnecessaryReverseRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
-     noUnnecessarySliceRule,
+      noUnnecessaryShiftRule,
+      noUnnecessarySliceRule,
     noUnnecessarySomeRule,
    noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
@@ -671,6 +673,7 @@ const adaptedNoUnnecessaryRegex = adaptPluginRule(noUnnecessaryRegexRule, 'no-un
 const adaptedNoUnnecessaryReturnAwait = adaptPluginRule(noUnnecessaryReturnAwaitRule, 'no-unnecessary-return-await')
 const adaptedNoUnnecessaryReturnValue = adaptPluginRule(noUnnecessaryReturnValueRule, 'no-unnecessary-return-value')
 const adaptedNoUnnecessaryReduce = adaptPluginRule(noUnnecessaryReduceRule, 'no-unnecessary-reduce')
+const adaptedNoUnnecessaryReduceRight = adaptPluginRule(noUnnecessaryReduceRightRule, 'no-unnecessary-reduce-right')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
@@ -811,6 +814,7 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
   noSimplifiablePatternRule,
   'no-simplifiable-pattern',
 )
+const adaptedNoUnnecessaryShift = adaptPluginRule(noUnnecessaryShiftRule, 'no-unnecessary-shift')
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
@@ -1436,11 +1440,13 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-return-await': adaptedNoUnnecessaryReturnAwait,
    'no-unnecessary-reduce': adaptedNoUnnecessaryReduce,
    'no-unnecessary-return-value': adaptedNoUnnecessaryReturnValue,
-  'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
+   'no-unnecessary-reduce-right': adaptedNoUnnecessaryReduceRight,
+   'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
-  'no-unnecessary-slice': adaptedNoUnnecessarySlice,
+   'no-unnecessary-shift': adaptedNoUnnecessaryShift,
+   'no-unnecessary-slice': adaptedNoUnnecessarySlice,
   'no-unnecessary-some': adaptedNoUnnecessarySome,
   'no-unnecessary-spread': adaptedNoUnnecessarySpread,
   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
@@ -1948,7 +1954,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-polyfills': 'patterns',
    'no-unnecessary-qualifier': 'patterns',
-  'no-unnecessary-slice': 'patterns',
+  'no-unnecessary-shift': 'patterns',
+   'no-unnecessary-slice': 'patterns',
   'no-unnecessary-some': 'patterns',
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-spread': 'patterns',
@@ -1966,7 +1973,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-regex': 'patterns',
   'no-unnecessary-return-await': 'patterns',
   'no-unnecessary-reduce': 'patterns',
-  'no-unnecessary-return-value': 'patterns',
+  'no-unnecessary-reduce-right': 'patterns',
+   'no-unnecessary-return-value': 'patterns',
   'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
