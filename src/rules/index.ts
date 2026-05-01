@@ -249,7 +249,8 @@ noUnnecessaryAwaitForeachRule,
   noUnnecessaryClassRule,
   noUnnecessaryDestructuringRule,
    noUnnecessaryConcatRule,
-  noUnnecessaryComputedKeyRule,
+   noUnnecessaryComputedKeyRule,
+   noUnnecessaryContinueRule,
        noUnnecessaryEscapeInRegexpRule,
  noUnnecessaryForLoopRule,
   noUnnecessaryFindIndexRule,
@@ -310,6 +311,7 @@ noUnnecessaryStringConcatRule,
    noUnnecessaryIsFiniteRule,
     noUnnecessaryIsNanRule,
    noUnnecessaryDecodeUriRule,
+   noUnnecessaryDeleteRule,
    noUnnecessaryEncodeUriRule,
      noUnnecessaryTemplateExpressionRule,
   noUnnecessaryTemplateLiteralRule,
@@ -661,6 +663,7 @@ const adaptedNoUnnecessaryClass = adaptPluginRule(noUnnecessaryClassRule, 'no-un
 const adaptedNoUnnecessaryDestructuring = adaptPluginRule(noUnnecessaryDestructuringRule, 'no-unnecessary-destructuring')
 const adaptedNoUnnecessaryConcat = adaptPluginRule(noUnnecessaryConcatRule, 'no-unnecessary-concat')
 const adaptedNoUnnecessaryComputedKey = adaptPluginRule(noUnnecessaryComputedKeyRule, 'no-unnecessary-computed-key')
+const adaptedNoUnnecessaryContinue = adaptPluginRule(noUnnecessaryContinueRule, 'no-unnecessary-continue')
 const adaptedNoUnnecessaryEntries = adaptPluginRule(noUnnecessaryEntriesRule, 'no-unnecessary-entries')
 const adaptedNoUnnecessaryDoubleNegation = adaptPluginRule(noUnnecessaryDoubleNegationRule, 'no-unnecessary-double-negation')
 const adaptedNoUnnecessaryDoubleEquals = adaptPluginRule(noUnnecessaryDoubleEqualsRule, 'no-unnecessary-double-equals')
@@ -873,6 +876,7 @@ const adaptedNoUnnecessaryParseInt = adaptPluginRule(noUnnecessaryParseIntRule, 
 const adaptedNoUnnecessaryIsFinite = adaptPluginRule(noUnnecessaryIsFiniteRule, 'no-unnecessary-is-finite')
 const adaptedNoUnnecessaryIsNan = adaptPluginRule(noUnnecessaryIsNanRule, 'no-unnecessary-is-nan')
 const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule, 'no-unnecessary-decode-uri')
+const adaptedNoUnnecessaryDelete = adaptPluginRule(noUnnecessaryDeleteRule, 'no-unnecessary-delete')
 const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
@@ -1460,7 +1464,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-class': adaptedNoUnnecessaryClass,
   'no-unnecessary-destructuring': adaptedNoUnnecessaryDestructuring,
    'no-unnecessary-concat': adaptedNoUnnecessaryConcat,
-  'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
+   'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
+   'no-unnecessary-continue': adaptedNoUnnecessaryContinue,
    'no-unnecessary-entries': adaptedNoUnnecessaryEntries,
    'no-unnecessary-double-negation': adaptedNoUnnecessaryDoubleNegation,
    'no-unnecessary-double-equals': adaptedNoUnnecessaryDoubleEquals,
@@ -1525,6 +1530,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-is-finite': adaptedNoUnnecessaryIsFinite,
   'no-unnecessary-is-nan': adaptedNoUnnecessaryIsNan,
   'no-unnecessary-decode-uri': adaptedNoUnnecessaryDecodeUri,
+  'no-unnecessary-delete': adaptedNoUnnecessaryDelete,
   'no-unnecessary-encode-uri': adaptedNoUnnecessaryEncodeUri,
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
   'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
@@ -2005,7 +2011,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
      'no-unnecessary-class': 'patterns',
   'no-unnecessary-destructuring': 'patterns',
      'no-unnecessary-concat': 'patterns',
-    'no-unnecessary-computed-key': 'patterns',
+     'no-unnecessary-computed-key': 'patterns',
+     'no-unnecessary-continue': 'patterns',
     'no-unnecessary-entries': 'patterns',
       'no-unnecessary-double-negation': 'patterns',
      'no-unnecessary-double-equals': 'patterns',
@@ -2059,6 +2066,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-is-finite': 'patterns',
   'no-unnecessary-is-nan': 'patterns',
   'no-unnecessary-decode-uri': 'patterns',
+  'no-unnecessary-delete': 'patterns',
   'no-unnecessary-encode-uri': 'patterns',
   'no-unnecessary-regex-constructor': 'patterns',
   'no-unnecessary-regex': 'patterns',
