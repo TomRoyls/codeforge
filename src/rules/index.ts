@@ -237,6 +237,7 @@ noUnnecessaryAssertRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
    noUnnecessaryArrayFlatRule,
+   noUnnecessaryArrayConstructorRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
@@ -316,6 +317,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySpliceRule,
     noUnnecessarySpreadRule,
 noUnnecessaryStringConcatRule,
+noUnnecessaryStringConstructorRule,
   noUnnecessaryStringSplitRule,
   noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringifyRule,
@@ -677,6 +679,7 @@ const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unne
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
+const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
 const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
@@ -906,9 +909,10 @@ const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unne
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
-  noUnnecessaryStringConcatRule,
+noUnnecessaryStringConcatRule,
   'no-unnecessary-string-concat',
 )
+const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
@@ -1500,7 +1504,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
    'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
-   'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+    'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+    'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
@@ -1577,7 +1582,8 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
-  'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
+   'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
+   'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
    'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
@@ -2070,6 +2076,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-array-flat': 'patterns',
+  'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
    'no-unnecessary-boolean': 'patterns',
@@ -2135,6 +2142,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-splice': 'patterns',
    'no-unnecessary-spread': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
+  'no-unnecessary-string-constructor': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
   'no-unnecessary-string-replace-all': 'patterns',
