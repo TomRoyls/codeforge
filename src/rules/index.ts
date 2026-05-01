@@ -246,7 +246,8 @@ noUnnecessaryAwaitForeachRule,
  noUnnecessaryBooleanLiteralCompareRule,
    noUnnecessaryBooleanConstructorRule,
    noUnnecessaryBooleanWrapperRule,
-   noUnnecessaryCallbackWrapperRule,
+    noUnnecessaryCallbackWrapperRule,
+    noUnnecessaryCatchBindingRule,
   noUnnecessaryClassRule,
   noUnnecessaryDestructuringRule,
    noUnnecessaryConcatRule,
@@ -317,7 +318,8 @@ noUnnecessaryStringConcatRule,
    noUnnecessaryEncodeUriRule,
      noUnnecessaryTemplateExpressionRule,
   noUnnecessaryTemplateLiteralRule,
-     noUnnecessaryThenRule,
+      noUnnecessaryThenRule,
+      noUnnecessaryThrowNewRule,
      noUnnecessaryToReversedRule,
      noUnnecessaryToSortedRule,
      noUnnecessaryToSplicedRule,
@@ -662,6 +664,7 @@ const adaptedNoUnnecessaryBooleanLiteralCompare = adaptPluginRule(noUnnecessaryB
 const adaptedNoUnnecessaryBooleanConstructor = adaptPluginRule(noUnnecessaryBooleanConstructorRule, 'no-unnecessary-boolean-constructor')
 const adaptedNoUnnecessaryBooleanWrapper = adaptPluginRule(noUnnecessaryBooleanWrapperRule, 'no-unnecessary-boolean-wrapper')
 const adaptedNoUnnecessaryCallbackWrapper = adaptPluginRule(noUnnecessaryCallbackWrapperRule, 'no-unnecessary-callback-wrapper')
+const adaptedNoUnnecessaryCatchBinding = adaptPluginRule(noUnnecessaryCatchBindingRule, 'no-unnecessary-catch-binding')
 const adaptedNoUnnecessaryClass = adaptPluginRule(noUnnecessaryClassRule, 'no-unnecessary-class')
 const adaptedNoUnnecessaryDestructuring = adaptPluginRule(noUnnecessaryDestructuringRule, 'no-unnecessary-destructuring')
 const adaptedNoUnnecessaryConcat = adaptPluginRule(noUnnecessaryConcatRule, 'no-unnecessary-concat')
@@ -797,6 +800,7 @@ const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRu
 const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule, 'no-unnecessary-to-spliced')
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
+const adaptedNoUnnecessaryThrowNew = adaptPluginRule(noUnnecessaryThrowNewRule, 'no-unnecessary-throw-new')
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
 const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocaleStringRule, 'no-unnecessary-to-locale-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
@@ -1466,6 +1470,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-boolean-constructor': adaptedNoUnnecessaryBooleanConstructor,
    'no-unnecessary-boolean-wrapper': adaptedNoUnnecessaryBooleanWrapper,
   'no-unnecessary-callback-wrapper': adaptedNoUnnecessaryCallbackWrapper,
+  'no-unnecessary-catch-binding': adaptedNoUnnecessaryCatchBinding,
   'no-unnecessary-class': adaptedNoUnnecessaryClass,
   'no-unnecessary-destructuring': adaptedNoUnnecessaryDestructuring,
    'no-unnecessary-concat': adaptedNoUnnecessaryConcat,
@@ -1541,6 +1546,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
   'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
    'no-unnecessary-then': adaptedNoUnnecessaryThen,
+   'no-unnecessary-throw-new': adaptedNoUnnecessaryThrowNew,
    'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
     'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
     'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
@@ -2015,6 +2021,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
      'no-unnecessary-boolean-constructor': 'patterns',
     'no-unnecessary-boolean-wrapper': 'patterns',
      'no-unnecessary-callback-wrapper': 'patterns',
+     'no-unnecessary-catch-binding': 'patterns',
      'no-unnecessary-class': 'patterns',
   'no-unnecessary-destructuring': 'patterns',
      'no-unnecessary-concat': 'patterns',
@@ -2095,6 +2102,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-to-sorted': 'patterns',
   'no-unnecessary-to-spliced': 'patterns',
    'no-unnecessary-then': 'patterns',
+   'no-unnecessary-throw-new': 'patterns',
    'no-unnecessary-to-string': 'patterns',
    'no-unnecessary-to-locale-string': 'patterns',
    'no-unnecessary-typeof': 'patterns',
