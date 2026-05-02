@@ -236,7 +236,8 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
-   noUnnecessaryArrayFlatRule,
+    noUnnecessaryArrayFlatRule,
+    noUnnecessaryArrayIsarrayLiteralRule,
    noUnnecessaryArrayConstructorRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
@@ -309,7 +310,8 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryReverseRule,
      noUnnecessaryNumberToFixedRule,
     noUnnecessaryNumberWrapperRule,
-    noUnnecessaryNumberConstructorRule,
+     noUnnecessaryNumberConstructorRule,
+     noUnnecessaryNumberIsnanLiteralRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
    noUnnecessaryIncludesRule,
@@ -683,6 +685,7 @@ const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unne
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
+const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
@@ -758,6 +761,7 @@ const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'n
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
 const adaptedNoUnnecessaryNumberConstructor = adaptPluginRule(noUnnecessaryNumberConstructorRule, 'no-unnecessary-number-constructor')
+const adaptedNoUnnecessaryNumberIsnanLiteral = adaptPluginRule(noUnnecessaryNumberIsnanLiteralRule, 'no-unnecessary-number-isnan-literal')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -1513,6 +1517,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
    'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
     'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+    'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
@@ -1584,6 +1589,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
   'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
   'no-unnecessary-number-constructor': adaptedNoUnnecessaryNumberConstructor,
+  'no-unnecessary-number-isnan-literal': adaptedNoUnnecessaryNumberIsnanLiteral,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
@@ -2088,6 +2094,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-array-flat': 'patterns',
+  'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
@@ -2181,6 +2188,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-to-fixed': 'patterns',
   'no-unnecessary-number-wrapper': 'patterns',
   'no-unnecessary-number-constructor': 'patterns',
+  'no-unnecessary-number-isnan-literal': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
   'no-unnecessary-includes': 'patterns',
