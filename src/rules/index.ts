@@ -242,6 +242,7 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayOfSingleRule,
     noUnnecessaryArrayIncludesSingleRule,
    noUnnecessaryArrayConstructorRule,
+   noUnnecessaryArrayConcatSingleRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
@@ -325,6 +326,7 @@ noUnnecessaryReturnAwaitRule,
    noUnnecessaryIncludesRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
+      noUnnecessaryArraySliceZeroRule,
     noUnnecessarySomeRule,
     noUnnecessarySpliceRule,
     noUnnecessarySpreadRule,
@@ -704,6 +706,7 @@ const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArr
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
+const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
 const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
@@ -941,6 +944,7 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
 )
 const adaptedNoUnnecessaryShift = adaptPluginRule(noUnnecessaryShiftRule, 'no-unnecessary-shift')
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
+const adaptedNoUnnecessaryArraySliceZero = adaptPluginRule(noUnnecessaryArraySliceZeroRule, 'no-unnecessary-array-slice-zero')
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
@@ -1550,6 +1554,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
+    'no-unnecessary-array-concat-single': adaptedNoUnnecessaryArrayConcatSingle,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
@@ -1631,6 +1636,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
+   'no-unnecessary-array-slice-zero': adaptedNoUnnecessaryArraySliceZero,
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
@@ -2141,6 +2147,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-of-single': 'patterns',
   'no-unnecessary-array-includes-single': 'patterns',
   'no-unnecessary-array-constructor': 'patterns',
+  'no-unnecessary-array-concat-single': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
    'no-unnecessary-boolean': 'patterns',
@@ -2207,6 +2214,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-qualifier': 'patterns',
   'no-unnecessary-shift': 'patterns',
    'no-unnecessary-slice': 'patterns',
+   'no-unnecessary-array-slice-zero': 'patterns',
   'no-unnecessary-some': 'patterns',
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-splice': 'patterns',
