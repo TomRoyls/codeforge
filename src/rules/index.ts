@@ -278,6 +278,7 @@ noUnnecessaryAwaitExpressionRule,
      noUnnecessaryFragmentRule,
    noUnnecessaryInitializationRule,
   noUnnecessaryIndexOfRule,
+  noUnnecessaryArrayIndexofZeroRule,
  noUnnecessaryInstanceofArrayRule,
    noUnnecessaryJsonParseRule,
    noUnnecessaryJsonStringifyLiteralRule,
@@ -334,7 +335,8 @@ noUnnecessaryReturnAwaitRule,
 noUnnecessaryStringConcatRule,
 noUnnecessaryStringConstructorRule,
 noUnnecessaryStringCharAtZeroRule,
-   noUnnecessaryStringSplitRule,
+noUnnecessaryStringLengthCompareRule,
+    noUnnecessaryStringSplitRule,
    noUnnecessaryStringStartsEmptyRule,
   noUnnecessaryStringReplaceAllRule,
   noUnnecessaryStringRepeatZeroRule,
@@ -762,6 +764,7 @@ const adaptedNoUnnecessaryFlatMap = adaptPluginRule(noUnnecessaryFlatMapRule, 'n
 const adaptedNoUnnecessaryForEach = adaptPluginRule(noUnnecessaryForEachRule, 'no-unnecessary-for-each')
 const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
 const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
+const adaptedNoUnnecessaryArrayIndexofZero = adaptPluginRule(noUnnecessaryArrayIndexofZeroRule, 'no-unnecessary-array-indexof-zero')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
 const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
@@ -955,6 +958,7 @@ noUnnecessaryStringConcatRule,
 )
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
+const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
@@ -1587,6 +1591,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-flat-map': adaptedNoUnnecessaryFlatMap,
    'no-unnecessary-fragment': adaptedNoUnnecessaryFragment,
   'no-unnecessary-index-of': adaptedNoUnnecessaryIndexOf,
+  'no-unnecessary-array-indexof-zero': adaptedNoUnnecessaryArrayIndexofZero,
   'no-unnecessary-initialization': adaptedNoUnnecessaryInitialization,
   'no-unnecessary-instanceof-array': adaptedNoUnnecessaryInstanceofArray,
   'no-unnecessary-json-parse': adaptedNoUnnecessaryJsonParse,
@@ -1644,6 +1649,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
+   'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
    'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
@@ -2181,6 +2187,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-flat-map': 'patterns',
   'no-unnecessary-fragment': 'patterns',
   'no-unnecessary-index-of': 'patterns',
+  'no-unnecessary-array-indexof-zero': 'patterns',
   'no-unnecessary-initialization': 'patterns',
   'no-unnecessary-instanceof-array': 'patterns',
   'no-unnecessary-initialization': 'patterns',
@@ -2223,6 +2230,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-constructor': 'patterns',
   'no-unnecessary-string-char-at-zero': 'patterns',
+  'no-unnecessary-string-length-compare': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
   'no-unnecessary-string-starts-empty': 'patterns',
