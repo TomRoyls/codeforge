@@ -274,6 +274,7 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayIncludesSpreadRule,
     noUnnecessaryArrayIndexOfLiteralRule,
     noUnnecessaryArrayJoinEmptyRule,
+    noUnnecessaryArrayJoinSpreadRule,
     noUnnecessaryArrayConstructorRule,
    noUnnecessaryArrayConcatSingleRule,
    noUnnecessaryArrayConcatSpreadRule,
@@ -381,6 +382,7 @@ noUnnecessaryReturnAwaitRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
       noUnnecessaryArraySliceZeroRule,
+      noUnnecessaryArraySliceSpreadRule,
     noUnnecessarySomeRule,
      noUnnecessarySpliceRule,
     noUnnecessaryArraySpliceNoUseRule,
@@ -841,6 +843,7 @@ const adaptedNoUnnecessaryArrayIncludesNAN = adaptPluginRule(noUnnecessaryArrayI
 const adaptedNoUnnecessaryArrayIncludesSpread = adaptPluginRule(noUnnecessaryArrayIncludesSpreadRule, 'no-unnecessary-array-includes-spread')
 const adaptedNoUnnecessaryArrayIndexOfLiteral = adaptPluginRule(noUnnecessaryArrayIndexOfLiteralRule, 'no-unnecessary-array-index-of-literal')
 const adaptedNoUnnecessaryArrayJoinEmpty = adaptPluginRule(noUnnecessaryArrayJoinEmptyRule, 'no-unnecessary-array-join-empty')
+const adaptedNoUnnecessaryArrayJoinSpread = adaptPluginRule(noUnnecessaryArrayJoinSpreadRule, 'no-unnecessary-array-join-spread')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
 const adaptedNoUnnecessaryArrayConcatSpread = adaptPluginRule(noUnnecessaryArrayConcatSpreadRule, 'no-unnecessary-array-concat-spread')
@@ -1101,6 +1104,7 @@ const adaptedNoSimplifiablePattern = adaptPluginRule(
 const adaptedNoUnnecessaryShift = adaptPluginRule(noUnnecessaryShiftRule, 'no-unnecessary-shift')
 const adaptedNoUnnecessarySlice = adaptPluginRule(noUnnecessarySliceRule, 'no-unnecessary-slice')
 const adaptedNoUnnecessaryArraySliceZero = adaptPluginRule(noUnnecessaryArraySliceZeroRule, 'no-unnecessary-array-slice-zero')
+const adaptedNoUnnecessaryArraySliceSpread = adaptPluginRule(noUnnecessaryArraySliceSpreadRule, 'no-unnecessary-array-slice-spread')
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUseRule, 'no-unnecessary-array-splice-no-use')
@@ -1789,6 +1793,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-includes-spread': adaptedNoUnnecessaryArrayIncludesSpread,
     'no-unnecessary-array-index-of-literal': adaptedNoUnnecessaryArrayIndexOfLiteral,
     'no-unnecessary-array-join-empty': adaptedNoUnnecessaryArrayJoinEmpty,
+    'no-unnecessary-array-join-spread': adaptedNoUnnecessaryArrayJoinSpread,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
     'no-unnecessary-array-concat-single': adaptedNoUnnecessaryArrayConcatSingle,
     'no-unnecessary-array-concat-spread': adaptedNoUnnecessaryArrayConcatSpread,
@@ -1894,6 +1899,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
    'no-unnecessary-array-slice-zero': adaptedNoUnnecessaryArraySliceZero,
+   'no-unnecessary-array-slice-spread': adaptedNoUnnecessaryArraySliceSpread,
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-array-splice-no-use': adaptedNoUnnecessaryArraySpliceNoUse,
@@ -2483,6 +2489,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-includes-spread': 'patterns',
    'no-unnecessary-array-index-of-literal': 'patterns',
    'no-unnecessary-array-join-empty': 'patterns',
+   'no-unnecessary-array-join-spread': 'patterns',
    'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-array-concat-single': 'patterns',
   'no-unnecessary-array-concat-spread': 'patterns',
@@ -2562,6 +2569,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-shift': 'patterns',
    'no-unnecessary-slice': 'patterns',
    'no-unnecessary-array-slice-zero': 'patterns',
+   'no-unnecessary-array-slice-spread': 'patterns',
   'no-unnecessary-some': 'patterns',
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-splice': 'patterns',
