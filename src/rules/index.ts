@@ -358,6 +358,7 @@ noUnnecessaryReturnAwaitRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
     noUnnecessaryArraySortNoUseRule,
+    noUnnecessaryArraySortSpreadRule,
     noUnnecessaryArraySomeFalseRule,
     noUnnecessaryIncludesRule,
       noUnnecessaryShiftRule,
@@ -373,7 +374,8 @@ noUnnecessaryReturnAwaitRule,
  noUnnecessaryStringConcatRule,
  noUnnecessaryStringConcatEmptyRule,
   noUnnecessaryStringConstructorRule,
- noUnnecessaryStringIncludesEmptyRule,
+  noUnnecessaryStringConstructorNonEmptyRule,
+  noUnnecessaryStringIncludesEmptyRule,
  noUnnecessaryStringIteratorEmptyRule,
  noUnnecessaryStringLastIndexOfZeroRule,
   noUnnecessaryStringCharAtZeroRule,
@@ -896,6 +898,7 @@ const adaptedNoUnnecessaryNumberIsnanLiteral = adaptPluginRule(noUnnecessaryNumb
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryArraySortNoUse = adaptPluginRule(noUnnecessaryArraySortNoUseRule, 'no-unnecessary-array-sort-no-use')
+const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySortSpreadRule, 'no-unnecessary-array-sort-spread')
 const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalseRule, 'no-unnecessary-array-some-false')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
@@ -1066,6 +1069,7 @@ const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArray
  )
 const adaptedNoUnnecessaryStringConcatEmpty = adaptPluginRule(noUnnecessaryStringConcatEmptyRule, 'no-unnecessary-string-concat-empty')
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
+const adaptedNoUnnecessaryStringConstructorNonEmpty = adaptPluginRule(noUnnecessaryStringConstructorNonEmptyRule, 'no-unnecessary-string-constructor-non-empty')
 const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
 const adaptedNoUnnecessaryStringIteratorEmpty = adaptPluginRule(noUnnecessaryStringIteratorEmptyRule, 'no-unnecessary-string-iterator-empty')
 const adaptedNoUnnecessaryStringLastIndexOfZero = adaptPluginRule(noUnnecessaryStringLastIndexOfZeroRule, 'no-unnecessary-string-last-index-of-zero')
@@ -1812,6 +1816,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-array-sort-no-use': adaptedNoUnnecessaryArraySortNoUse,
+  'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
   'no-unnecessary-array-some-false': adaptedNoUnnecessaryArraySomeFalse,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
@@ -1827,6 +1832,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-concat-empty': adaptedNoUnnecessaryStringConcatEmpty,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
+   'no-unnecessary-string-constructor-non-empty': adaptedNoUnnecessaryStringConstructorNonEmpty,
      'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
      'no-unnecessary-string-iterator-empty': adaptedNoUnnecessaryStringIteratorEmpty,
      'no-unnecessary-string-last-index-of-zero': adaptedNoUnnecessaryStringLastIndexOfZero,
@@ -2471,6 +2477,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-concat-empty': 'patterns',
    'no-unnecessary-string-constructor': 'patterns',
+   'no-unnecessary-string-constructor-non-empty': 'patterns',
     'no-unnecessary-string-includes-empty': 'patterns',
     'no-unnecessary-string-iterator-empty': 'patterns',
     'no-unnecessary-string-last-index-of-zero': 'patterns',
@@ -2538,6 +2545,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
    'no-unnecessary-array-sort-no-use': 'patterns',
+   'no-unnecessary-array-sort-spread': 'patterns',
    'no-unnecessary-array-some-false': 'patterns',
    'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
