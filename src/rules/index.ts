@@ -316,6 +316,7 @@ noUnnecessaryReturnAwaitRule,
    noUnnecessaryRegexpConstructorRule,
      noUnnecessaryReverseRule,
      noUnnecessaryNumberToFixedRule,
+     noUnnecessaryNumberTofixedZeroRule,
     noUnnecessaryNumberWrapperRule,
      noUnnecessaryNumberConstructorRule,
      noUnnecessaryNumberIsnanLiteralRule,
@@ -334,6 +335,7 @@ noUnnecessaryStringCharAtZeroRule,
    noUnnecessaryStringSplitRule,
    noUnnecessaryStringStartsEmptyRule,
   noUnnecessaryStringReplaceAllRule,
+  noUnnecessaryStringRepeatZeroRule,
    noUnnecessaryStringifyRule,
     noUnnecessaryStringToNumberRule,
    noUnnecessaryParseFloatRule,
@@ -778,6 +780,7 @@ const adaptedNoUnnecessaryReduceRight = adaptPluginRule(noUnnecessaryReduceRight
 const adaptedNoUnnecessaryRegexpConstructor = adaptPluginRule(noUnnecessaryRegexpConstructorRule, 'no-unnecessary-regexp-constructor')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
+const adaptedNoUnnecessaryNumberTofixedZero = adaptPluginRule(noUnnecessaryNumberTofixedZeroRule, 'no-unnecessary-number-tofixed-zero')
 const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
 const adaptedNoUnnecessaryNumberConstructor = adaptPluginRule(noUnnecessaryNumberConstructorRule, 'no-unnecessary-number-constructor')
 const adaptedNoUnnecessaryNumberIsnanLiteral = adaptPluginRule(noUnnecessaryNumberIsnanLiteralRule, 'no-unnecessary-number-isnan-literal')
@@ -961,6 +964,7 @@ const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
 const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
+const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
   'no-unnecessary-type-arguments',
@@ -1618,6 +1622,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-regexp-constructor': adaptedNoUnnecessaryRegexpConstructor,
     'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
+   'no-unnecessary-number-tofixed-zero': adaptedNoUnnecessaryNumberTofixedZero,
   'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
   'no-unnecessary-number-constructor': adaptedNoUnnecessaryNumberConstructor,
   'no-unnecessary-number-isnan-literal': adaptedNoUnnecessaryNumberIsnanLiteral,
@@ -1637,6 +1642,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
    'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
    'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
+   'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
@@ -2213,6 +2219,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-split': 'patterns',
   'no-unnecessary-string-starts-empty': 'patterns',
   'no-unnecessary-string-replace-all': 'patterns',
+  'no-unnecessary-string-repeat-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
@@ -2231,6 +2238,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-return-value': 'patterns',
    'no-unnecessary-reverse': 'patterns',
   'no-unnecessary-number-to-fixed': 'patterns',
+  'no-unnecessary-number-tofixed-zero': 'patterns',
   'no-unnecessary-number-wrapper': 'patterns',
   'no-unnecessary-number-constructor': 'patterns',
   'no-unnecessary-number-isnan-literal': 'patterns',
