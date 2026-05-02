@@ -252,7 +252,8 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayFindLastIndexLiteralRule,
     noUnnecessaryArrayFindIndexLiteralRule,
        noUnnecessaryArrayFillLiteralRule,
-    noUnnecessaryArrayIsarrayLiteralRule,
+       noUnnecessaryArrayFillSameRule,
+     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
      noUnnecessaryArrayOfSpreadRule,
      noUnnecessaryArrayIncludesSingleRule,
@@ -382,6 +383,7 @@ noUnnecessaryStringCodepointatZeroRule,
  noUnnecessaryStringLengthCompareRule,
  noUnnecessaryStringLocaleCompareSameRule,
  noUnnecessaryStringMatchAllEmptyRule,
+ noUnnecessaryStringMatchEmptyRule,
  noUnnecessaryStringNormalizeEmptyRule,
  noUnnecessaryStringEndsWithEmptyRule,
  noUnnecessaryStringPadStartZeroRule,
@@ -787,6 +789,7 @@ const adaptedNoUnnecessaryArrayFindLastBoolean = adaptPluginRule(noUnnecessaryAr
 const adaptedNoUnnecessaryArrayFindLastIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindLastIndexLiteralRule, 'no-unnecessary-array-find-last-index-literal')
 const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindIndexLiteralRule, 'no-unnecessary-array-find-index-literal')
 const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
+const adaptedNoUnnecessaryArrayFillSame = adaptPluginRule(noUnnecessaryArrayFillSameRule, 'no-unnecessary-array-fill-same')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayOfSpread = adaptPluginRule(noUnnecessaryArrayOfSpreadRule, 'no-unnecessary-array-of-spread')
@@ -1073,6 +1076,7 @@ const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryS
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
 const adaptedNoUnnecessaryStringLocaleCompareSame = adaptPluginRule(noUnnecessaryStringLocaleCompareSameRule, 'no-unnecessary-string-locale-compare-same')
 const adaptedNoUnnecessaryStringMatchAllEmpty = adaptPluginRule(noUnnecessaryStringMatchAllEmptyRule, 'no-unnecessary-string-match-all-empty')
+const adaptedNoUnnecessaryStringMatchEmpty = adaptPluginRule(noUnnecessaryStringMatchEmptyRule, 'no-unnecessary-string-match-empty')
 const adaptedNoUnnecessaryStringNormalizeEmpty = adaptPluginRule(noUnnecessaryStringNormalizeEmptyRule, 'no-unnecessary-string-normalize-empty')
 const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
@@ -1704,6 +1708,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-find-last-index-literal': adaptedNoUnnecessaryArrayFindLastIndexLiteral,
      'no-unnecessary-array-find-index-literal': adaptedNoUnnecessaryArrayFindIndexLiteral,
      'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
+     'no-unnecessary-array-fill-same': adaptedNoUnnecessaryArrayFillSame,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-of-spread': adaptedNoUnnecessaryArrayOfSpread,
@@ -1832,6 +1837,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
     'no-unnecessary-string-locale-compare-same': adaptedNoUnnecessaryStringLocaleCompareSame,
     'no-unnecessary-string-match-all-empty': adaptedNoUnnecessaryStringMatchAllEmpty,
+    'no-unnecessary-string-match-empty': adaptedNoUnnecessaryStringMatchEmpty,
     'no-unnecessary-string-normalize-empty': adaptedNoUnnecessaryStringNormalizeEmpty,
     'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
    'no-unnecessary-string-pad-start-zero': adaptedNoUnnecessaryStringPadStartZero,
@@ -2367,6 +2373,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-find-last-index-literal': 'patterns',
     'no-unnecessary-array-find-index-literal': 'patterns',
     'no-unnecessary-array-fill-literal': 'patterns',
+    'no-unnecessary-array-fill-same': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
   'no-unnecessary-array-of-spread': 'patterns',
@@ -2474,6 +2481,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-length-compare': 'patterns',
    'no-unnecessary-string-locale-compare-same': 'patterns',
    'no-unnecessary-string-match-all-empty': 'patterns',
+   'no-unnecessary-string-match-empty': 'patterns',
    'no-unnecessary-string-normalize-empty': 'patterns',
    'no-unnecessary-string-ends-with-empty': 'patterns',
   'no-unnecessary-string-pad-start-zero': 'patterns',
