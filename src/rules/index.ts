@@ -256,7 +256,8 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryCatchBindingRule,
   noUnnecessaryClassRule,
   noUnnecessaryDestructuringRule,
-   noUnnecessaryConcatRule,
+    noUnnecessaryConcatRule,
+    noUnnecessaryConsoleStringConcatRule,
    noUnnecessaryComputedKeyRule,
    noUnnecessaryContinueRule,
         noUnnecessaryEscapeInRegexpRule,
@@ -337,7 +338,8 @@ noUnnecessaryStringCharAtZeroRule,
    noUnnecessaryDeleteRule,
    noUnnecessaryEncodeUriRule,
      noUnnecessaryTemplateExpressionRule,
-  noUnnecessaryTemplateLiteralRule,
+   noUnnecessaryTemplateLiteralRule,
+   noUnnecessaryTemplateLiteralSingleRule,
       noUnnecessaryThenRule,
       noUnnecessaryThrowNewRule,
      noUnnecessaryToReversedRule,
@@ -704,6 +706,7 @@ const adaptedNoUnnecessaryCatchBinding = adaptPluginRule(noUnnecessaryCatchBindi
 const adaptedNoUnnecessaryClass = adaptPluginRule(noUnnecessaryClassRule, 'no-unnecessary-class')
 const adaptedNoUnnecessaryDestructuring = adaptPluginRule(noUnnecessaryDestructuringRule, 'no-unnecessary-destructuring')
 const adaptedNoUnnecessaryConcat = adaptPluginRule(noUnnecessaryConcatRule, 'no-unnecessary-concat')
+const adaptedNoUnnecessaryConsoleStringConcat = adaptPluginRule(noUnnecessaryConsoleStringConcatRule, 'no-unnecessary-console-string-concat')
 const adaptedNoUnnecessaryComputedKey = adaptPluginRule(noUnnecessaryComputedKeyRule, 'no-unnecessary-computed-key')
 const adaptedNoUnnecessaryContinue = adaptPluginRule(noUnnecessaryContinueRule, 'no-unnecessary-continue')
 const adaptedNoUnnecessaryEntries = adaptPluginRule(noUnnecessaryEntriesRule, 'no-unnecessary-entries')
@@ -842,6 +845,7 @@ const adaptedNoUnnecessaryTemplateExpression = adaptPluginRule(
   'no-unnecessary-template-expression',
 )
 const adaptedNoUnnecessaryTemplateLiteral = adaptPluginRule(noUnnecessaryTemplateLiteralRule, 'no-unnecessary-template-literal')
+const adaptedNoUnnecessaryTemplateLiteralSingle = adaptPluginRule(noUnnecessaryTemplateLiteralSingleRule, 'no-unnecessary-template-literal-single')
 const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRule, 'no-unnecessary-to-reversed')
 const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule, 'no-unnecessary-to-spliced')
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
@@ -1540,6 +1544,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-class': adaptedNoUnnecessaryClass,
   'no-unnecessary-destructuring': adaptedNoUnnecessaryDestructuring,
    'no-unnecessary-concat': adaptedNoUnnecessaryConcat,
+   'no-unnecessary-console-string-concat': adaptedNoUnnecessaryConsoleStringConcat,
    'no-unnecessary-computed-key': adaptedNoUnnecessaryComputedKey,
    'no-unnecessary-continue': adaptedNoUnnecessaryContinue,
    'no-unnecessary-entries': adaptedNoUnnecessaryEntries,
@@ -1625,6 +1630,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-encode-uri': adaptedNoUnnecessaryEncodeUri,
   'no-unnecessary-template-expression': adaptedNoUnnecessaryTemplateExpression,
   'no-unnecessary-template-literal': adaptedNoUnnecessaryTemplateLiteral,
+  'no-unnecessary-template-literal-single': adaptedNoUnnecessaryTemplateLiteralSingle,
    'no-unnecessary-then': adaptedNoUnnecessaryThen,
    'no-unnecessary-throw-new': adaptedNoUnnecessaryThrowNew,
    'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
@@ -2121,6 +2127,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
      'no-unnecessary-class': 'patterns',
   'no-unnecessary-destructuring': 'patterns',
      'no-unnecessary-concat': 'patterns',
+     'no-unnecessary-console-string-concat': 'patterns',
      'no-unnecessary-computed-key': 'patterns',
      'no-unnecessary-continue': 'patterns',
     'no-unnecessary-entries': 'patterns',
@@ -2208,6 +2215,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
+  'no-unnecessary-template-literal-single': 'patterns',
   'no-unnecessary-to-reversed': 'patterns',
   'no-unnecessary-to-sorted': 'patterns',
   'no-unnecessary-to-spliced': 'patterns',
