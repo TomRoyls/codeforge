@@ -238,7 +238,8 @@ noUnnecessaryAssertRule,
    noUnnecessaryArrayFromRule,
     noUnnecessaryArrayFlatRule,
     noUnnecessaryArrayIsarrayLiteralRule,
-    noUnnecessaryArrayOfSingleRule,
+     noUnnecessaryArrayOfSingleRule,
+    noUnnecessaryArrayIncludesSingleRule,
    noUnnecessaryArrayConstructorRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
@@ -288,7 +289,8 @@ noUnnecessaryAwaitExpressionRule,
   noUnnecessaryParenthesesRule,
   noUnnecessaryLabelRule,
   noUnnecessaryLastIndexOfRule,
-    noUnnecessaryLiteralKeyRule,
+     noUnnecessaryLiteralKeyRule,
+     noUnnecessaryLiteralTostringRule,
     noUnnecessaryLogicalAndTrueRule,
     noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
@@ -695,6 +697,7 @@ const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
+const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
@@ -734,6 +737,7 @@ const adaptedNoUnnecessaryLabel = adaptPluginRule(noUnnecessaryLabelRule, 'no-un
 const adaptedNoUnnecessaryLastIndexOf = adaptPluginRule(noUnnecessaryLastIndexOfRule, 'no-unnecessary-last-index-of')
 const adaptedNoUnnecessaryFragment = adaptPluginRule(noUnnecessaryFragmentRule, 'no-unnecessary-fragment')
 const adaptedNoUnnecessaryLiteralKey = adaptPluginRule(noUnnecessaryLiteralKeyRule, 'no-unnecessary-literal-key')
+const adaptedNoUnnecessaryLiteralTostring = adaptPluginRule(noUnnecessaryLiteralTostringRule, 'no-unnecessary-literal-tostring')
 const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalAndTrueRule, 'no-unnecessary-logical-and-true')
 const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
@@ -1535,6 +1539,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
+    'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
@@ -1583,6 +1588,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-label': adaptedNoUnnecessaryLabel,
   'no-unnecessary-last-index-of': adaptedNoUnnecessaryLastIndexOf,
     'no-unnecessary-literal-key': adaptedNoUnnecessaryLiteralKey,
+    'no-unnecessary-literal-tostring': adaptedNoUnnecessaryLiteralTostring,
      'no-unnecessary-logical-and-true': adaptedNoUnnecessaryLogicalAndTrue,
      'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
@@ -2120,6 +2126,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-flat': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
+  'no-unnecessary-array-includes-single': 'patterns',
   'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
@@ -2170,6 +2177,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-label': 'patterns',
   'no-unnecessary-last-index-of': 'patterns',
   'no-unnecessary-literal-key': 'patterns',
+  'no-unnecessary-literal-tostring': 'patterns',
   'no-unnecessary-logical-and-true': 'patterns',
   'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
