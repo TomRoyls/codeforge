@@ -300,6 +300,7 @@ noUnnecessaryAwaitExpressionRule,
    noUnnecessaryMathMaxSingleRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
+noUnnecessaryObjectAssignSameRule,
 noUnnecessaryObjectFreezeLiteralRule,
 noUnnecessaryObjectSealLiteralRule,
    noUnnecessaryNumericLiteralRule,
@@ -344,6 +345,7 @@ noUnnecessaryStringLengthCompareRule,
     noUnnecessaryStringToNumberRule,
    noUnnecessaryParseFloatRule,
     noUnnecessaryParseIntRule,
+    noUnnecessaryParseIntRadixTenRule,
    noUnnecessaryIsFiniteRule,
     noUnnecessaryIsNanRule,
    noUnnecessaryDecodeUriRule,
@@ -768,6 +770,7 @@ const adaptedNoUnnecessaryArrayIndexofZero = adaptPluginRule(noUnnecessaryArrayI
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
 const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
+const adaptedNoUnnecessaryObjectAssignSame = adaptPluginRule(noUnnecessaryObjectAssignSameRule, 'no-unnecessary-object-assign-same')
 const adaptedNoUnnecessaryObjectFreezeLiteral = adaptPluginRule(noUnnecessaryObjectFreezeLiteralRule, 'no-unnecessary-object-freeze-literal')
 const adaptedNoUnnecessaryObjectSealLiteral = adaptPluginRule(noUnnecessaryObjectSealLiteralRule, 'no-unnecessary-object-seal-literal')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
@@ -964,6 +967,7 @@ const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
 const adaptedNoUnnecessaryParseFloat = adaptPluginRule(noUnnecessaryParseFloatRule, 'no-unnecessary-parse-float')
 const adaptedNoUnnecessaryParseInt = adaptPluginRule(noUnnecessaryParseIntRule, 'no-unnecessary-parse-int')
+const adaptedNoUnnecessaryParseIntRadixTen = adaptPluginRule(noUnnecessaryParseIntRadixTenRule, 'no-unnecessary-parse-int-radix-ten')
 const adaptedNoUnnecessaryIsFinite = adaptPluginRule(noUnnecessaryIsFiniteRule, 'no-unnecessary-is-finite')
 const adaptedNoUnnecessaryIsNan = adaptPluginRule(noUnnecessaryIsNanRule, 'no-unnecessary-is-nan')
 const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule, 'no-unnecessary-decode-uri')
@@ -1614,6 +1618,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
+   'no-unnecessary-object-assign-same': adaptedNoUnnecessaryObjectAssignSame,
    'no-unnecessary-object-freeze-literal': adaptedNoUnnecessaryObjectFreezeLiteral,
    'no-unnecessary-object-seal-literal': adaptedNoUnnecessaryObjectSealLiteral,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
@@ -1659,6 +1664,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
   'no-unnecessary-parse-int': adaptedNoUnnecessaryParseInt,
+  'no-unnecessary-parse-int-radix-ten': adaptedNoUnnecessaryParseIntRadixTen,
   'no-unnecessary-is-finite': adaptedNoUnnecessaryIsFinite,
   'no-unnecessary-is-nan': adaptedNoUnnecessaryIsNan,
   'no-unnecessary-decode-uri': adaptedNoUnnecessaryDecodeUri,
@@ -2211,6 +2217,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-max-single': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
+   'no-unnecessary-object-assign-same': 'patterns',
    'no-unnecessary-object-freeze-literal': 'patterns',
    'no-unnecessary-object-seal-literal': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
@@ -2240,6 +2247,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
   'no-unnecessary-parse-int': 'patterns',
+  'no-unnecessary-parse-int-radix-ten': 'patterns',
   'no-unnecessary-is-finite': 'patterns',
   'no-unnecessary-is-nan': 'patterns',
   'no-unnecessary-decode-uri': 'patterns',
