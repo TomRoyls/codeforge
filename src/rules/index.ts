@@ -370,6 +370,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySomeRule,
      noUnnecessarySpliceRule,
     noUnnecessaryArraySpliceNoUseRule,
+    noUnnecessaryArraySpliceZeroRule,
     noUnnecessaryArrayToReversedNoUseRule,
     noUnnecessaryArrayToStringArrayRule,
      noUnnecessarySpreadRule,
@@ -382,8 +383,9 @@ noUnnecessaryReturnAwaitRule,
  noUnnecessaryStringIteratorEmptyRule,
  noUnnecessaryStringLastIndexOfZeroRule,
   noUnnecessaryStringCharAtZeroRule,
-  noUnnecessaryStringCharCodeAtZeroRule,
-  noUnnecessaryStringAtZeroRule,
+ noUnnecessaryStringCharCodeAtZeroRule,
+ noUnnecessaryStringAtEmptyRule,
+ noUnnecessaryStringAtZeroRule,
 noUnnecessaryStringCodepointatZeroRule,
  noUnnecessaryStringLengthCompareRule,
  noUnnecessaryStringLocaleCompareSameRule,
@@ -1068,6 +1070,7 @@ const adaptedNoUnnecessaryArraySliceZero = adaptPluginRule(noUnnecessaryArraySli
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUseRule, 'no-unnecessary-array-splice-no-use')
+const adaptedNoUnnecessaryArraySpliceZero = adaptPluginRule(noUnnecessaryArraySpliceZeroRule, 'no-unnecessary-array-splice-zero')
 const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUseRule, 'no-unnecessary-array-to-reversed-no-use')
 const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
@@ -1084,6 +1087,7 @@ const adaptedNoUnnecessaryStringIteratorEmpty = adaptPluginRule(noUnnecessaryStr
 const adaptedNoUnnecessaryStringLastIndexOfZero = adaptPluginRule(noUnnecessaryStringLastIndexOfZeroRule, 'no-unnecessary-string-last-index-of-zero')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
 const adaptedNoUnnecessaryStringCharCodeAtZero = adaptPluginRule(noUnnecessaryStringCharCodeAtZeroRule, 'no-unnecessary-string-char-code-at-zero')
+const adaptedNoUnnecessaryStringAtEmpty = adaptPluginRule(noUnnecessaryStringAtEmptyRule, 'no-unnecessary-string-at-empty')
 const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringAtZeroRule, 'no-unnecessary-string-at-zero')
 const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
@@ -1839,6 +1843,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-array-splice-no-use': adaptedNoUnnecessaryArraySpliceNoUse,
+   'no-unnecessary-array-splice-zero': adaptedNoUnnecessaryArraySpliceZero,
     'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
     'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
     'no-unnecessary-spread': adaptedNoUnnecessarySpread,
@@ -1852,6 +1857,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-string-last-index-of-zero': adaptedNoUnnecessaryStringLastIndexOfZero,
     'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
     'no-unnecessary-string-char-code-at-zero': adaptedNoUnnecessaryStringCharCodeAtZero,
+    'no-unnecessary-string-at-empty': adaptedNoUnnecessaryStringAtEmpty,
     'no-unnecessary-string-at-zero': adaptedNoUnnecessaryStringAtZero,
     'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
     'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
@@ -2489,6 +2495,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-splice': 'patterns',
   'no-unnecessary-array-splice-no-use': 'patterns',
+  'no-unnecessary-array-splice-zero': 'patterns',
    'no-unnecessary-array-to-reversed-no-use': 'patterns',
    'no-unnecessary-array-to-string-array': 'patterns',
     'no-unnecessary-spread': 'patterns',
@@ -2502,6 +2509,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-string-last-index-of-zero': 'patterns',
      'no-unnecessary-string-char-at-zero': 'patterns',
      'no-unnecessary-string-char-code-at-zero': 'patterns',
+     'no-unnecessary-string-at-empty': 'patterns',
    'no-unnecessary-string-at-zero': 'patterns',
    'no-unnecessary-string-codepointat-zero': 'patterns',
    'no-unnecessary-string-length-compare': 'patterns',
