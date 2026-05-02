@@ -277,6 +277,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-from-spread': 'patterns',
   'no-unnecessary-array-flat': 'patterns',
   'no-unnecessary-array-flat-single-level': 'patterns',
+  'no-unnecessary-array-every-boolean': 'patterns',
+  'no-unnecessary-array-filter-identity': 'patterns',
   'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',

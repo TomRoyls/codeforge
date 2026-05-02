@@ -8,12 +8,12 @@ export const noUnnecessaryStringTrimEmpty: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length !== 1) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (callee.type !== 'MemberExpression' || callee.computed) return
-        if (callee.property.type !== 'Identifier' || callee.property.name !== 'trim') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'trim') return
         const arg = n.arguments[0]
-        if (arg.type !== 'StringLiteral') return
+        if (!arg || arg.type !== 'StringLiteral') return
         if (arg.value !== '') return
         context.report({
           loc: extractLocation(n),
