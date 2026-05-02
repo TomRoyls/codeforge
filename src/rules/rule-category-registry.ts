@@ -335,6 +335,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-math-max-single': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
+   'no-unnecessary-object-freeze-literal': 'patterns',
+   'no-unnecessary-object-seal-literal': 'patterns',
   'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-pop': 'patterns',

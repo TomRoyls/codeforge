@@ -295,7 +295,9 @@ noUnnecessaryAwaitExpressionRule,
    noUnnecessaryMathMaxSingleRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
-  noUnnecessaryNumericLiteralRule,
+noUnnecessaryObjectFreezeLiteralRule,
+noUnnecessaryObjectSealLiteralRule,
+   noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
    noUnnecessaryPopRule,
     noUnnecessaryPolyfillsRule,
@@ -751,6 +753,8 @@ const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'n
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
 const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
+const adaptedNoUnnecessaryObjectFreezeLiteral = adaptPluginRule(noUnnecessaryObjectFreezeLiteralRule, 'no-unnecessary-object-freeze-literal')
+const adaptedNoUnnecessaryObjectSealLiteral = adaptPluginRule(noUnnecessaryObjectSealLiteralRule, 'no-unnecessary-object-seal-literal')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
 const adaptedNoUnnecessaryNumericSeparator = adaptPluginRule(noUnnecessaryNumericSeparatorRule, 'no-unnecessary-numeric-separator')
 const adaptedNoUnnecessaryQualifier = adaptPluginRule(
@@ -1585,6 +1589,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
+   'no-unnecessary-object-freeze-literal': adaptedNoUnnecessaryObjectFreezeLiteral,
+   'no-unnecessary-object-seal-literal': adaptedNoUnnecessaryObjectSealLiteral,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
    'no-unnecessary-pop': adaptedNoUnnecessaryPop,
@@ -2170,6 +2176,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-max-single': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
+   'no-unnecessary-object-freeze-literal': 'patterns',
+   'no-unnecessary-object-seal-literal': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-pop': 'patterns',
