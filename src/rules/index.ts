@@ -299,6 +299,7 @@ noUnnecessaryAwaitExpressionRule,
    noUnnecessaryMapRule,
    noUnnecessaryMathMaxSingleRule,
    noUnnecessaryMathFloorIntegerRule,
+   noUnnecessaryMathAbsPositiveRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
 noUnnecessaryObjectAssignSameRule,
@@ -327,6 +328,7 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryNumberIsnanLiteralRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
+   noUnnecessaryArraySortNoUseRule,
    noUnnecessaryIncludesRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
@@ -759,6 +761,7 @@ const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalO
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
 const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
+const adaptedNoUnnecessaryMathAbsPositive = adaptPluginRule(noUnnecessaryMathAbsPositiveRule, 'no-unnecessary-math-abs-positive')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindLastIndex = adaptPluginRule(noUnnecessaryFindLastIndexRule, 'no-unnecessary-find-last-index')
 const adaptedNoUnnecessaryFindLast = adaptPluginRule(noUnnecessaryFindLastRule, 'no-unnecessary-find-last')
@@ -801,6 +804,7 @@ const adaptedNoUnnecessaryNumberConstructor = adaptPluginRule(noUnnecessaryNumbe
 const adaptedNoUnnecessaryNumberIsnanLiteral = adaptPluginRule(noUnnecessaryNumberIsnanLiteralRule, 'no-unnecessary-number-isnan-literal')
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
+const adaptedNoUnnecessaryArraySortNoUse = adaptPluginRule(noUnnecessaryArraySortNoUseRule, 'no-unnecessary-array-sort-no-use')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
 const adaptedPreferRegexpExec = adaptPluginRule(preferRegexpExecRule, 'prefer-regexp-exec')
@@ -1625,6 +1629,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-math-floor-integer': adaptedNoUnnecessaryMathFloorInteger,
+   'no-unnecessary-math-abs-positive': adaptedNoUnnecessaryMathAbsPositive,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
    'no-unnecessary-object-assign-same': adaptedNoUnnecessaryObjectAssignSame,
@@ -1653,6 +1658,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-number-isnan-literal': adaptedNoUnnecessaryNumberIsnanLiteral,
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
+  'no-unnecessary-array-sort-no-use': adaptedNoUnnecessaryArraySortNoUse,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
@@ -2228,6 +2234,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-map': 'patterns',
   'no-unnecessary-math-max-single': 'patterns',
   'no-unnecessary-math-floor-integer': 'patterns',
+  'no-unnecessary-math-abs-positive': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
    'no-unnecessary-object-assign-same': 'patterns',
@@ -2284,6 +2291,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-isnan-literal': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
+  'no-unnecessary-array-sort-no-use': 'patterns',
   'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
