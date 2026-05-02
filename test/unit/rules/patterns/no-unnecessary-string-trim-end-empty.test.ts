@@ -900,22 +900,29 @@ describe('no-unnecessary-string-trim-end-empty rule', () => {
 
     test('does not report when StringLiteral value is undefined', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnecessaryTrimEndRule(context)
+      const visitor = noUnnecessaryStringTrimEndEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: undefined }, 'trimEnd'))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when StringLiteral value is non-empty string', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnecessaryTrimEndRule(context)
+      const visitor = noUnnecessaryStringTrimEndEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'StringLiteral', value: 'test string' }, 'trimEnd'))
       expect(reports.length).toBe(0)
     })
 
     test('does not report when StringLiteral has no value property', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnecessaryTrimEndRule(context)
+      const visitor = noUnnecessaryStringTrimEndEmptyRule.create(context)
       visitor.CallExpression(makeCallNode({ type: 'StringLiteral' }, 'trimEnd'))
+      expect(reports.length).toBe(0)
+    })
+
+    test('visitor does not report for ArrayExpression object type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryStringTrimEndEmptyRule.create(context)
+      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'trimEnd'))
       expect(reports.length).toBe(0)
     })
   })

@@ -315,6 +315,7 @@ noUnnecessaryAwaitExpressionRule,
      noUnnecessaryMathMaxSingleRule,
    noUnnecessaryMathCeilIntegerRule,
    noUnnecessaryMathRoundIntegerRule,
+   noUnnecessaryMathSignZeroRule,
     noUnnecessaryMathFloorIntegerRule,
     noUnnecessaryMathAbsPositiveRule,
 noUnnecessaryNullWithStrictRule,
@@ -359,8 +360,9 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryArrayToStringArrayRule,
      noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
-noUnnecessaryStringConcatRule,
- noUnnecessaryStringConstructorRule,
+ noUnnecessaryStringConcatRule,
+ noUnnecessaryStringConcatEmptyRule,
+  noUnnecessaryStringConstructorRule,
  noUnnecessaryStringIncludesEmptyRule,
  noUnnecessaryStringLastIndexOfZeroRule,
   noUnnecessaryStringCharAtZeroRule,
@@ -389,8 +391,9 @@ noUnnecessaryStringCodepointatZeroRule,
   noUnnecessaryStringSubstringZeroRule,
    noUnnecessaryStringifyRule,
    noUnnecessaryStringToLowerCaseSameRule,
-   noUnnecessaryStringToUpperCaseSameRule,
-    noUnnecessaryStringToNumberRule,
+    noUnnecessaryStringToUpperCaseSameRule,
+    noUnnecessaryStringWrapperRule,
+     noUnnecessaryStringToNumberRule,
    noUnnecessaryParseFloatRule,
     noUnnecessaryParseIntRule,
     noUnnecessaryParseIntRadixTenRule,
@@ -819,6 +822,7 @@ const adaptedNoUnnecessaryArrayMapIdentity = adaptPluginRule(noUnnecessaryArrayM
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
 const adaptedNoUnnecessaryMathCeilInteger = adaptPluginRule(noUnnecessaryMathCeilIntegerRule, 'no-unnecessary-math-ceil-integer')
 const adaptedNoUnnecessaryMathRoundInteger = adaptPluginRule(noUnnecessaryMathRoundIntegerRule, 'no-unnecessary-math-round-integer')
+const adaptedNoUnnecessaryMathSignZero = adaptPluginRule(noUnnecessaryMathSignZeroRule, 'no-unnecessary-math-sign-zero')
 const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
 const adaptedNoUnnecessaryMathAbsPositive = adaptPluginRule(noUnnecessaryMathAbsPositiveRule, 'no-unnecessary-math-abs-positive')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
@@ -830,9 +834,8 @@ const adaptedNoUnnecessaryFill = adaptPluginRule(noUnnecessaryFillRule, 'no-unne
 const adaptedNoUnnecessaryFilter = adaptPluginRule(noUnnecessaryFilterRule, 'no-unnecessary-filter')
 const adaptedNoUnnecessaryFlat = adaptPluginRule(noUnnecessaryFlatRule, 'no-unnecessary-flat')
 const adaptedNoUnnecessaryFlatMap = adaptPluginRule(noUnnecessaryFlatMapRule, 'no-unnecessary-flat-map')
-const adaptedNoUnnecessaryForEach = adaptPluginRule(noUnnecessaryForEachRule, 'no-unnecessary-for-each')
-const adaptedNoUnnecessaryInitialization = adaptPluginRule(noUnnecessaryInitializationRule, 'no-unnecessary-initialization')
-const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
+ const adaptedNoUnnecessaryForEach = adaptPluginRule(noUnnecessaryForEachRule, 'no-unnecessary-for-each')
+ const adaptedNoUnnecessaryIndexOf = adaptPluginRule(noUnnecessaryIndexOfRule, 'no-unnecessary-index-of')
 const adaptedNoUnnecessaryArrayIndexofZero = adaptPluginRule(noUnnecessaryArrayIndexofZeroRule, 'no-unnecessary-array-indexof-zero')
 const adaptedNoUnnecessaryInstanceofArray = adaptPluginRule(noUnnecessaryInstanceofArrayRule, 'no-unnecessary-instanceof-array')
 const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWithStrictRule, 'no-unnecessary-null-with-strict')
@@ -1029,10 +1032,11 @@ const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryAr
 const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
-const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
-noUnnecessaryStringConcatRule,
-  'no-unnecessary-string-concat',
-)
+ const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
+ noUnnecessaryStringConcatRule,
+   'no-unnecessary-string-concat',
+ )
+const adaptedNoUnnecessaryStringConcatEmpty = adaptPluginRule(noUnnecessaryStringConcatEmptyRule, 'no-unnecessary-string-concat-empty')
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
 const adaptedNoUnnecessaryStringLastIndexOfZero = adaptPluginRule(noUnnecessaryStringLastIndexOfZeroRule, 'no-unnecessary-string-last-index-of-zero')
@@ -1729,6 +1733,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-math-ceil-integer': adaptedNoUnnecessaryMathCeilInteger,
    'no-unnecessary-math-round-integer': adaptedNoUnnecessaryMathRoundInteger,
+   'no-unnecessary-math-sign-zero': adaptedNoUnnecessaryMathSignZero,
    'no-unnecessary-math-floor-integer': adaptedNoUnnecessaryMathFloorInteger,
    'no-unnecessary-math-abs-positive': adaptedNoUnnecessaryMathAbsPositive,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
@@ -1774,6 +1779,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-spread': adaptedNoUnnecessarySpread,
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
+   'no-unnecessary-string-concat-empty': adaptedNoUnnecessaryStringConcatEmpty,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
     'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
     'no-unnecessary-string-last-index-of-zero': adaptedNoUnnecessaryStringLastIndexOfZero,
@@ -2352,10 +2358,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-fragment': 'patterns',
   'no-unnecessary-index-of': 'patterns',
   'no-unnecessary-array-indexof-zero': 'patterns',
-  'no-unnecessary-initialization': 'patterns',
-  'no-unnecessary-instanceof-array': 'patterns',
-  'no-unnecessary-initialization': 'patterns',
-  'no-unnecessary-json-parse': 'patterns',
+   'no-unnecessary-initialization': 'patterns',
+   'no-unnecessary-instanceof-array': 'patterns',
+   'no-unnecessary-json-parse': 'patterns',
   'no-unnecessary-json-stringify-literal': 'patterns',
    'no-unnecessary-new-array': 'patterns',
   'no-unnecessary-new-boolean': 'patterns',
@@ -2376,6 +2381,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-math-max-single': 'patterns',
     'no-unnecessary-math-ceil-integer': 'patterns',
     'no-unnecessary-math-round-integer': 'patterns',
+    'no-unnecessary-math-sign-zero': 'patterns',
     'no-unnecessary-math-floor-integer': 'patterns',
   'no-unnecessary-math-abs-positive': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
@@ -2402,6 +2408,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
+  'no-unnecessary-string-concat-empty': 'patterns',
    'no-unnecessary-string-constructor': 'patterns',
     'no-unnecessary-string-includes-empty': 'patterns',
     'no-unnecessary-string-last-index-of-zero': 'patterns',

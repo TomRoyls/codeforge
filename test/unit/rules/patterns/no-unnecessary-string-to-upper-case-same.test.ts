@@ -125,7 +125,7 @@ describe('no-unnecessary-string-to-upper-case-same rule', () => {
     })
   })
 
-  // ===== POSITIVE CASES — REPORTS (30) =====
+  // ===== POSITIVE CASES — REPORTS (29) =====
 
   describe('positive cases — reports unnecessary toUpperCase', () => {
     test('reports for empty string "".toUpperCase()', () => {
@@ -346,7 +346,7 @@ describe('no-unnecessary-string-to-upper-case-same rule', () => {
     })
   })
 
-  // ===== NEGATIVE CASES — DOES NOT REPORT (36) =====
+  // ===== NEGATIVE CASES — DOES NOT REPORT (35) =====
 
   describe('negative cases — does NOT report', () => {
     test('does not report for lowercase string "hello".toUpperCase()', () => {
@@ -651,16 +651,9 @@ describe('no-unnecessary-string-to-upper-case-same rule', () => {
       visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'toUpperCase'))
       expect(reports.length).toBe(0)
     })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringToUpperCaseSameRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
   })
 
-  // ===== EDGE CASES (18) =====
+  // ===== EDGE CASES (19) =====
 
   describe('edge cases', () => {
     test('separate create() calls have independent state', () => {
@@ -885,6 +878,13 @@ describe('no-unnecessary-string-to-upper-case-same rule', () => {
       expect(reports.length).toBe(2)
       expect(reports[0].message).toContain('HELLO')
       expect(reports[1].message).toContain('WORLD')
+    })
+
+    test('does not report for IfStatement node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryStringToUpperCaseSameRule.create(context)
+      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
+      expect(reports.length).toBe(0)
     })
   })
 })
