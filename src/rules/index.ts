@@ -249,6 +249,7 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayOfSingleRule,
      noUnnecessaryArrayIncludesSingleRule,
     noUnnecessaryArrayIncludesNANRule,
+    noUnnecessaryArrayIndexOfLiteralRule,
     noUnnecessaryArrayJoinEmptyRule,
     noUnnecessaryArrayConstructorRule,
    noUnnecessaryArrayConcatSingleRule,
@@ -374,6 +375,7 @@ noUnnecessaryStringCodepointatZeroRule,
    noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringReplaceEmptyRule,
+   noUnnecessaryStringSearchEmptyRule,
   noUnnecessaryStringRepeatZeroRule,
    noUnnecessaryStringifyRule,
     noUnnecessaryStringToNumberRule,
@@ -751,6 +753,7 @@ const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArr
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
 const adaptedNoUnnecessaryArrayIncludesNAN = adaptPluginRule(noUnnecessaryArrayIncludesNANRule, 'no-unnecessary-array-includes-nan')
+const adaptedNoUnnecessaryArrayIndexOfLiteral = adaptPluginRule(noUnnecessaryArrayIndexOfLiteralRule, 'no-unnecessary-array-index-of-literal')
 const adaptedNoUnnecessaryArrayJoinEmpty = adaptPluginRule(noUnnecessaryArrayJoinEmptyRule, 'no-unnecessary-array-join-empty')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
@@ -1044,6 +1047,7 @@ const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessa
 const adaptedNoUnnecessaryStringTrimEmpty = adaptPluginRule(noUnnecessaryStringTrimEmptyRule, 'no-unnecessary-string-trim-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStringReplaceEmptyRule, 'no-unnecessary-string-replace-empty')
+const adaptedNoUnnecessaryStringSearchEmpty = adaptPluginRule(noUnnecessaryStringSearchEmptyRule, 'no-unnecessary-string-search-empty')
 const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
@@ -1637,6 +1641,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
     'no-unnecessary-array-includes-nan': adaptedNoUnnecessaryArrayIncludesNAN,
+    'no-unnecessary-array-index-of-literal': adaptedNoUnnecessaryArrayIndexOfLiteral,
     'no-unnecessary-array-join-empty': adaptedNoUnnecessaryArrayJoinEmpty,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
     'no-unnecessary-array-concat-single': adaptedNoUnnecessaryArrayConcatSingle,
@@ -1761,6 +1766,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-trim-empty': adaptedNoUnnecessaryStringTrimEmpty,
      'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
      'no-unnecessary-string-replace-empty': adaptedNoUnnecessaryStringReplaceEmpty,
+     'no-unnecessary-string-search-empty': adaptedNoUnnecessaryStringSearchEmpty,
     'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
@@ -2268,6 +2274,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-of-single': 'patterns',
    'no-unnecessary-array-includes-single': 'patterns',
    'no-unnecessary-array-includes-nan': 'patterns',
+   'no-unnecessary-array-index-of-literal': 'patterns',
    'no-unnecessary-array-join-empty': 'patterns',
    'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-array-concat-single': 'patterns',
@@ -2375,6 +2382,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-trim-empty': 'patterns',
     'no-unnecessary-string-replace-all': 'patterns',
     'no-unnecessary-string-replace-empty': 'patterns',
+    'no-unnecessary-string-search-empty': 'patterns',
    'no-unnecessary-string-repeat-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
