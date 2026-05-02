@@ -242,11 +242,13 @@ noUnnecessaryAssertRule,
       noUnnecessaryArrayFlatRule,
     noUnnecessaryArrayFlatSingleLevelRule,
     noUnnecessaryArrayFlatMapIdentityRule,
+    noUnnecessaryArrayFlatMapSpreadRule,
     noUnnecessaryArrayFlatInfinityRule,
     noUnnecessaryArrayKeysSpreadRule,
     noUnnecessaryArrayValuesSpreadRule,
     noUnnecessaryArrayEveryBooleanRule,
     noUnnecessaryArrayEveryTrueRule,
+    noUnnecessaryArrayEverySpreadRule,
     noUnnecessaryArrayEntriesSpreadRule,
      noUnnecessaryArrayFilterIdentityRule,
      noUnnecessaryArrayFilterSpreadRule,
@@ -805,11 +807,13 @@ const adaptedNoUnnecessaryArrayFromLength = adaptPluginRule(noUnnecessaryArrayFr
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
 const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayFlatMapIdentity = adaptPluginRule(noUnnecessaryArrayFlatMapIdentityRule, 'no-unnecessary-array-flat-map-identity')
+const adaptedNoUnnecessaryArrayFlatMapSpread = adaptPluginRule(noUnnecessaryArrayFlatMapSpreadRule, 'no-unnecessary-array-flat-map-spread')
 const adaptedNoUnnecessaryArrayFlatInfinity = adaptPluginRule(noUnnecessaryArrayFlatInfinityRule, 'no-unnecessary-array-flat-infinity')
 const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayEveryTrue = adaptPluginRule(noUnnecessaryArrayEveryTrueRule, 'no-unnecessary-array-every-true')
+const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
 const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
 const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentityRule, 'no-unnecessary-array-filter-identity')
 const adaptedNoUnnecessaryArrayFilterSpread = adaptPluginRule(noUnnecessaryArrayFilterSpreadRule, 'no-unnecessary-array-filter-spread')
@@ -1749,11 +1753,13 @@ export const allRules: Record<string, RuleDefinition> = {
       'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
      'no-unnecessary-array-flat-single-level': adaptedNoUnnecessaryArrayFlatSingleLevel,
     'no-unnecessary-array-flat-map-identity': adaptedNoUnnecessaryArrayFlatMapIdentity,
+    'no-unnecessary-array-flat-map-spread': adaptedNoUnnecessaryArrayFlatMapSpread,
     'no-unnecessary-array-flat-infinity': adaptedNoUnnecessaryArrayFlatInfinity,
     'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
      'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
     'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
     'no-unnecessary-array-every-true': adaptedNoUnnecessaryArrayEveryTrue,
+    'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
     'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
      'no-unnecessary-array-filter-identity': adaptedNoUnnecessaryArrayFilterIdentity,
      'no-unnecessary-array-filter-spread': adaptedNoUnnecessaryArrayFilterSpread,
@@ -2439,11 +2445,13 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-flat': 'patterns',
    'no-unnecessary-array-flat-single-level': 'patterns',
     'no-unnecessary-array-flat-map-identity': 'patterns',
+    'no-unnecessary-array-flat-map-spread': 'patterns',
     'no-unnecessary-array-flat-infinity': 'patterns',
     'no-unnecessary-array-keys-spread': 'patterns',
     'no-unnecessary-array-values-spread': 'patterns',
    'no-unnecessary-array-every-boolean': 'patterns',
    'no-unnecessary-array-every-true': 'patterns',
+   'no-unnecessary-array-every-spread': 'patterns',
    'no-unnecessary-array-entries-spread': 'patterns',
      'no-unnecessary-array-filter-identity': 'patterns',
      'no-unnecessary-array-filter-spread': 'patterns',
