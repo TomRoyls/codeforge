@@ -297,9 +297,10 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryLogicalAndTrueRule,
     noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
-   noUnnecessaryMathMaxSingleRule,
-   noUnnecessaryMathFloorIntegerRule,
-   noUnnecessaryMathAbsPositiveRule,
+    noUnnecessaryMathMaxSingleRule,
+   noUnnecessaryMathCeilIntegerRule,
+    noUnnecessaryMathFloorIntegerRule,
+    noUnnecessaryMathAbsPositiveRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
 noUnnecessaryObjectAssignSameRule,
@@ -339,7 +340,8 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySpreadArrayRule,
 noUnnecessaryStringConcatRule,
 noUnnecessaryStringConstructorRule,
-noUnnecessaryStringCharAtZeroRule,
+ noUnnecessaryStringCharAtZeroRule,
+ noUnnecessaryStringAtZeroRule,
 noUnnecessaryStringCodepointatZeroRule,
 noUnnecessaryStringLengthCompareRule,
     noUnnecessaryStringSplitRule,
@@ -760,6 +762,7 @@ const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalA
 const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
+const adaptedNoUnnecessaryMathCeilInteger = adaptPluginRule(noUnnecessaryMathCeilIntegerRule, 'no-unnecessary-math-ceil-integer')
 const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
 const adaptedNoUnnecessaryMathAbsPositive = adaptPluginRule(noUnnecessaryMathAbsPositiveRule, 'no-unnecessary-math-abs-positive')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
@@ -971,6 +974,7 @@ noUnnecessaryStringConcatRule,
 )
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
+const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringAtZeroRule, 'no-unnecessary-string-at-zero')
 const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
@@ -1628,6 +1632,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
+   'no-unnecessary-math-ceil-integer': adaptedNoUnnecessaryMathCeilInteger,
    'no-unnecessary-math-floor-integer': adaptedNoUnnecessaryMathFloorInteger,
    'no-unnecessary-math-abs-positive': adaptedNoUnnecessaryMathAbsPositive,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
@@ -1669,8 +1674,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
-   'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
-   'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
+    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
+    'no-unnecessary-string-at-zero': adaptedNoUnnecessaryStringAtZero,
+    'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
    'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
@@ -2232,8 +2238,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-logical-and-true': 'patterns',
   'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
-  'no-unnecessary-math-max-single': 'patterns',
-  'no-unnecessary-math-floor-integer': 'patterns',
+   'no-unnecessary-math-max-single': 'patterns',
+   'no-unnecessary-math-ceil-integer': 'patterns',
+   'no-unnecessary-math-floor-integer': 'patterns',
   'no-unnecessary-math-abs-positive': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
@@ -2256,8 +2263,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-constructor': 'patterns',
-  'no-unnecessary-string-char-at-zero': 'patterns',
-  'no-unnecessary-string-codepointat-zero': 'patterns',
+   'no-unnecessary-string-char-at-zero': 'patterns',
+   'no-unnecessary-string-at-zero': 'patterns',
+   'no-unnecessary-string-codepointat-zero': 'patterns',
   'no-unnecessary-string-length-compare': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
