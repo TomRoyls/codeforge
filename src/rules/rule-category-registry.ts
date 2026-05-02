@@ -386,6 +386,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-to-locale-string': 'patterns',
    'no-unnecessary-typeof': 'patterns',
    'no-unnecessary-typeof-string': 'patterns',
+   'no-unnecessary-typeof-number': 'patterns',
+   'no-unnecessary-typeof-boolean': 'patterns',
    'no-unnecessary-undefined-return': 'patterns',
   'no-unnecessary-null-check': 'patterns',
   'no-unnecessary-null-coalesce-fallback': 'patterns',

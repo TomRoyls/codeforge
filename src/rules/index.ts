@@ -344,7 +344,9 @@ noUnnecessaryStringConstructorRule,
      noUnnecessaryToStringRule,
     noUnnecessaryToLocaleStringRule,
      noUnnecessaryTypeofRule,
-     noUnnecessaryTypeofStringRule,
+      noUnnecessaryTypeofStringRule,
+      noUnnecessaryTypeofNumberRule,
+      noUnnecessaryTypeofBooleanRule,
      noUnnecessaryUndefinedReturnRule,
     noUnnecessaryNullCheckRule,
     noUnnecessaryNullCoalesceFallbackRule,
@@ -846,6 +848,8 @@ const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 
 const adaptedNoUnnecessaryToLocaleString = adaptPluginRule(noUnnecessaryToLocaleStringRule, 'no-unnecessary-to-locale-string')
 const adaptedNoUnnecessaryTypeof = adaptPluginRule(noUnnecessaryTypeofRule, 'no-unnecessary-typeof')
 const adaptedNoUnnecessaryTypeofString = adaptPluginRule(noUnnecessaryTypeofStringRule, 'no-unnecessary-typeof-string')
+const adaptedNoUnnecessaryTypeofNumber = adaptPluginRule(noUnnecessaryTypeofNumberRule, 'no-unnecessary-typeof-number')
+const adaptedNoUnnecessaryTypeofBoolean = adaptPluginRule(noUnnecessaryTypeofBooleanRule, 'no-unnecessary-typeof-boolean')
 const adaptedNoUnnecessaryUndefinedReturn = adaptPluginRule(noUnnecessaryUndefinedReturnRule, 'no-unnecessary-undefined-return')
 const adaptedNoUnnecessaryNullCheck = adaptPluginRule(noUnnecessaryNullCheckRule, 'no-unnecessary-null-check')
 const adaptedNoUnnecessaryNullCoalesceFallback = adaptPluginRule(noUnnecessaryNullCoalesceFallbackRule, 'no-unnecessary-null-coalesce-fallback')
@@ -1624,6 +1628,8 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
    'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
    'no-unnecessary-typeof-string': adaptedNoUnnecessaryTypeofString,
+   'no-unnecessary-typeof-number': adaptedNoUnnecessaryTypeofNumber,
+   'no-unnecessary-typeof-boolean': adaptedNoUnnecessaryTypeofBoolean,
   'no-unnecessary-undefined-return': adaptedNoUnnecessaryUndefinedReturn,
    'no-unnecessary-null-check': adaptedNoUnnecessaryNullCheck,
    'no-unnecessary-null-coalesce-fallback': adaptedNoUnnecessaryNullCoalesceFallback,
@@ -2203,6 +2209,8 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-to-locale-string': 'patterns',
    'no-unnecessary-typeof': 'patterns',
    'no-unnecessary-typeof-string': 'patterns',
+   'no-unnecessary-typeof-number': 'patterns',
+   'no-unnecessary-typeof-boolean': 'patterns',
   'no-unnecessary-undefined-return': 'patterns',
   'no-unnecessary-null-check': 'patterns',
   'no-unnecessary-null-coalesce-fallback': 'patterns',
