@@ -183,6 +183,7 @@ export { noUnnecessaryArrayFlatMapIdentityRule } from './no-unnecessary-array-fl
 export { noUnnecessaryArrayKeysSpreadRule } from './no-unnecessary-array-keys-spread.js'
 export { noUnnecessaryArrayValuesSpreadRule } from './no-unnecessary-array-values-spread.js'
 export { noUnnecessaryArrayEveryBooleanRule } from './no-unnecessary-array-every-boolean.js'
+export { noUnnecessaryArrayEveryTrueRule } from './no-unnecessary-array-every-true.js'
 export { noUnnecessaryArrayEntriesSpreadRule } from './no-unnecessary-array-entries-spread.js'
 export { noUnnecessaryArrayFilterIdentityRule } from './no-unnecessary-array-filter-identity.js'
 export { noUnnecessaryArrayForEachReturnRule } from './no-unnecessary-array-for-each-return.js'

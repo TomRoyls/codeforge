@@ -2,7 +2,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryStringTrimEmptyRule: RuleDefinition = {
+export const noUnnecessaryArrayEveryTrueRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -12,12 +12,12 @@ export const noUnnecessaryStringTrimEmptyRule: RuleDefinition = {
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier') return
-        if (callee.property.name !== 'trim') return
+        if (callee.property.name !== 'every') return
         const arg = n.arguments[0]
-        if (!arg || arg.type !== 'StringLiteral' || arg.value !== '') return
+        if (!arg || arg.type !== 'BooleanLiteral' || arg.value !== true) return
         context.report({
           loc: extractLocation(n),
-          message: `''.trim('') with an empty string argument is unnecessary. trim() takes no arguments.`,
+          message: `arr.every(true) always returns true. Use a predicate function instead.`,
           node: n,
         })
       },
@@ -26,13 +26,13 @@ export const noUnnecessaryStringTrimEmptyRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: "Warn about ''.trim('') which passes an unnecessary empty string argument.",
+      description: 'Warn about arr.every(true) which always returns true.',
       recommended: false,
-      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-trim-empty.ts',
+      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-every-true.ts',
     },
     schema: [],
     severity: 'warn',
     type: 'suggestion',
   },
 }
-export default noUnnecessaryStringTrimEmptyRule
+export default noUnnecessaryArrayEveryTrueRule

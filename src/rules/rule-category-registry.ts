@@ -282,6 +282,7 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-keys-spread': 'patterns',
   'no-unnecessary-array-values-spread': 'patterns',
   'no-unnecessary-array-every-boolean': 'patterns',
+  'no-unnecessary-array-every-true': 'patterns',
   'no-unnecessary-array-entries-spread': 'patterns',
   'no-unnecessary-array-filter-identity': 'patterns',
   'no-unnecessary-array-for-each-return': 'patterns',

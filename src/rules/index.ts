@@ -244,6 +244,7 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayKeysSpreadRule,
     noUnnecessaryArrayValuesSpreadRule,
     noUnnecessaryArrayEveryBooleanRule,
+    noUnnecessaryArrayEveryTrueRule,
     noUnnecessaryArrayEntriesSpreadRule,
      noUnnecessaryArrayFilterIdentityRule,
      noUnnecessaryArrayForEachReturnRule,
@@ -401,6 +402,7 @@ noUnnecessaryStringCodepointatZeroRule,
     noUnnecessaryStringStartsWithNonEmptyRule,
    noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringTrimStartEmptyRule,
+   noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringTrimEndEmptyRule,
    noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringReplaceEmptyRule,
@@ -783,6 +785,7 @@ const adaptedNoUnnecessaryArrayFlatMapIdentity = adaptPluginRule(noUnnecessaryAr
 const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
+const adaptedNoUnnecessaryArrayEveryTrue = adaptPluginRule(noUnnecessaryArrayEveryTrueRule, 'no-unnecessary-array-every-true')
 const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
 const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentityRule, 'no-unnecessary-array-filter-identity')
 const adaptedNoUnnecessaryArrayForEachReturn = adaptPluginRule(noUnnecessaryArrayForEachReturnRule, 'no-unnecessary-array-for-each-return')
@@ -1703,8 +1706,9 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-flat-map-identity': adaptedNoUnnecessaryArrayFlatMapIdentity,
      'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
      'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
-     'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
-     'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
+    'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
+    'no-unnecessary-array-every-true': adaptedNoUnnecessaryArrayEveryTrue,
+    'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
      'no-unnecessary-array-filter-identity': adaptedNoUnnecessaryArrayFilterIdentity,
      'no-unnecessary-array-for-each-return': adaptedNoUnnecessaryArrayForEachReturn,
      'no-unnecessary-array-find-boolean': adaptedNoUnnecessaryArrayFindBoolean,
@@ -2371,6 +2375,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-keys-spread': 'patterns',
     'no-unnecessary-array-values-spread': 'patterns',
    'no-unnecessary-array-every-boolean': 'patterns',
+   'no-unnecessary-array-every-true': 'patterns',
    'no-unnecessary-array-entries-spread': 'patterns',
     'no-unnecessary-array-filter-identity': 'patterns',
     'no-unnecessary-array-for-each-return': 'patterns',
