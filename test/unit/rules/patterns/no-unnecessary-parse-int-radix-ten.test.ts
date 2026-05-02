@@ -1,0 +1,846 @@
+import { describe, expect, test, vi } from 'vitest'
+import { noUnnecessaryParseIntRadixTenRule } from '../../../../src/rules/patterns/no-unnecessary-parse-int-radix-ten.js'
+import type { RuleContext } from '../../../../src/plugins/types.js'
+
+interface ReportDescriptor {
+  message: string
+  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
+  node?: unknown
+}
+
+function makeLoc(startLine: number, startCol: number, endLine: number, endCol: number) {
+  return {
+    start: { line: startLine, column: startCol },
+    end: { line: endLine, column: endCol },
+  }
+}
+
+function createMockContext(): { context: RuleContext; reports: ReportDescriptor[] } {
+  const reports: ReportDescriptor[] = []
+  const context: RuleContext = {
+    report: (descriptor: ReportDescriptor) => {
+      reports.push({
+        message: descriptor.message,
+        loc: descriptor.loc,
+        node: descriptor.node,
+      })
+    },
+    getFilePath: () => '/src/file.ts',
+    getAST: () => null,
+    getSource: () => '[]',
+    getTokens: () => [],
+    getComments: () => [],
+    config: { options: [{}] },
+    logger: {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    },
+    workspaceRoot: '/src',
+  } as unknown as RuleContext
+  return { context, reports }
+}
+
+function makeParseIntCall(
+  args: unknown[] = [],
+  locStartLine = 1,
+  locStartCol = 0,
+  locEndLine = 1,
+  locEndCol = 20,
+): unknown {
+  return {
+    type: 'CallExpression',
+    callee: { type: 'Identifier', name: 'parseInt' },
+    arguments: args,
+    loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
+  }
+}
+
+function radix10(): unknown {
+  return { type: 'NumericLiteral', value: 10 }
+}
+
+// ===== META TESTS (8) =====
+
+describe('no-unnecessary-parse-int-radix-ten rule', () => {
+  describe('meta', () => {
+    test('should have correct type "suggestion"', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.type).toBe('suggestion')
+    })
+
+    test('should have severity "warn"', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.severity).toBe('warn')
+    })
+
+    test('should have correct category "patterns"', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.docs?.category).toBe('patterns')
+    })
+
+    test('should not be recommended', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.docs?.recommended).toBe(false)
+    })
+
+    test('should have a description', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.docs?.description).toBeTruthy()
+    })
+
+    test('should have description mentioning parseInt', () => {
+      const desc = noUnnecessaryParseIntRadixTenRule.meta.docs?.description?.toLowerCase() ?? ''
+      expect(desc).toMatch(/parseint/)
+    })
+
+    test('should have correct docs URL', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.docs?.url).toBe(
+        'https://github.com/codeforge-dev/codeforge/blob/main/docs/rules/patterns/no-unnecessary-parse-int-radix-ten.md',
+      )
+    })
+
+    test('should have empty schema', () => {
+      expect(noUnnecessaryParseIntRadixTenRule.meta.schema).toEqual([])
+    })
+  })
+
+  // ===== STRUCTURE TESTS (2) =====
+
+  describe('structure', () => {
+    test('create() returns visitor with CallExpression', () => {
+      const { context } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(visitor).toHaveProperty('CallExpression')
+      expect(typeof visitor.CallExpression).toBe('function')
+    })
+
+    test('default export matches named export', () => {
+      expect(noUnnecessaryParseIntRadixTenRule).toBeDefined()
+      expect(noUnnecessaryParseIntRadixTenRule.meta).toBeDefined()
+      expect(noUnnecessaryParseIntRadixTenRule.create).toBeDefined()
+    })
+  })
+
+  // ===== POSITIVE CASES — REPORTS (29) =====
+
+  describe('positive cases — reports unnecessary radix 10', () => {
+    test('reports for parseInt("42", 10) with string literal first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(str, 10) with identifier first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'str' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(42, 10) with numeric literal first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'NumericLiteral', value: 42 }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(0, 10) with zero first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'NumericLiteral', value: 0 }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(3.14, 10) with float first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'NumericLiteral', value: 3.14 }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt("", 10) with empty string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(obj.prop, 10) with member expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(fn(), 10) with call expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(a + b, 10) with binary expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(arr[0], 10) with computed member expression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'NumericLiteral', value: 0 }, computed: true }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt("hello world", 10)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: 'hello world' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt("0xFF", 10) with hex-like string', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '0xFF' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(template, 10) with template literal first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'TemplateLiteral', quasis: [], expressions: [] }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt(null, 10) with null literal first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'NullLiteral' }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with array expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'ArrayExpression', elements: [] }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with object expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'ObjectExpression', properties: [] }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with arrow function first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with conditional expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'StringLiteral', value: 'a' }, alternate: { type: 'StringLiteral', value: 'b' } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with logical expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'StringLiteral', value: '42' } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with unary expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'NumericLiteral', value: 5 } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with typeof expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('reports for parseInt with sequence expression first arg', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'StringLiteral', value: '42' }] }, radix10()]))
+      expect(reports.length).toBe(1)
+    })
+
+    test('report message mentions unnecessary radix', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      expect(reports[0].message).toMatch(/radix/)
+    })
+
+    test('report message is exactly as defined in rule source', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      expect(reports[0].message).toBe(
+        'Unnecessary radix parameter 10 in parseInt(). The default radix is 10 for decimal strings.',
+      )
+    })
+
+    test('report has loc property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      expect(reports[0].loc).toBeDefined()
+    })
+
+    test('report has node property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      expect(reports[0].node).toBeDefined()
+    })
+
+    test('report node matches the input CallExpression node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      const node = makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()])
+      visitor.CallExpression(node)
+      expect(reports[0].node).toBe(node)
+    })
+
+    test('report loc values are preserved from node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()], 5, 10, 5, 30))
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(10)
+    })
+
+    test('accumulates reports across multiple calls', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'x' }, radix10()]))
+      expect(reports.length).toBe(2)
+    })
+
+    test('all reports have the same message format', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'x' }, radix10()]))
+      expect(reports[0].message).toBe(reports[1].message)
+    })
+
+  })
+
+  // ===== NEGATIVE CASES — DOES NOT REPORT (40) =====
+
+  describe('negative cases — does NOT report', () => {
+    test('does not report for parseInt("42") — only one argument', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 16) — radix 16', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 16 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 2) — radix 2', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 2 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 8) — radix 8', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 8 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", n) — variable radix', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'Identifier', name: 'n' }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 10, extra) — three arguments', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10(), { type: 'Identifier', name: 'extra' }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for Number.parseInt("42", 10) — MemberExpression callee', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Number' },
+          property: { type: 'Identifier', name: 'parseInt' },
+        },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 25),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseFloat("42") — different function name', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseFloat' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for myParseInt("42", 10) — wrong function name', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'myParseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for null node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression(null)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for undefined node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression(undefined)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for empty object node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression({})).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for string primitive node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression('not a node')).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for number primitive node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression(42)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for boolean primitive node', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(() => visitor.CallExpression(true)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt with zero arguments', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee is missing', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'CallExpression', arguments: [{ type: 'StringLiteral', value: '42' }, radix10()], loc: makeLoc(1, 0, 1, 5) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee is null', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [{ type: 'StringLiteral', value: '42' }, radix10()], loc: makeLoc(1, 0, 1, 5) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when second arg is string "10" (Literal, not NumericLiteral)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'StringLiteral', value: '10' }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when second arg is BinaryExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'BinaryExpression', operator: '+', left: { type: 'NumericLiteral', value: 5 }, right: { type: 'NumericLiteral', value: 5 } }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for Identifier node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for BinaryExpression node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for UnaryExpression node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for ReturnStatement node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for IfStatement node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for VariableDeclaration node type', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when arguments is missing', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        loc: makeLoc(1, 0, 1, 10),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when arguments is not an array', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: 'not-array',
+        loc: makeLoc(1, 0, 1, 10),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when second argument is null', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, null],
+        loc: makeLoc(1, 0, 1, 10),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 11) — radix 11', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 11 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 0) — radix 0', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 0 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 1) — radix 1', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 1 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee Identifier name is "parseINT" (case-sensitive)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseINT' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee Identifier name is "ParseInt" (case-sensitive)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'ParseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt with four arguments', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([
+        { type: 'StringLiteral', value: '42' },
+        radix10(),
+        { type: 'Identifier', name: 'extra' },
+        { type: 'Identifier', name: 'another' },
+      ]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when second arg is ConditionalExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'NumericLiteral', value: 10 }, alternate: { type: 'NumericLiteral', value: 16 } }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee Identifier name is "parseInt " (trailing space)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt ' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when callee is a FunctionExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 20),
+      })
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report for parseInt("42", 10.5) — non-integer radix', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 10.5 }]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when second arg type is Literal instead of NumericLiteral', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'Literal', value: 10 }]))
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  // ===== EDGE CASES (15) =====
+
+  describe('edge cases', () => {
+    test('separate create() calls have independent state', () => {
+      const { context: ctx1, reports: rep1 } = createMockContext()
+      const { context: ctx2, reports: rep2 } = createMockContext()
+      const visitor1 = noUnnecessaryParseIntRadixTenRule.create(ctx1)
+      const visitor2 = noUnnecessaryParseIntRadixTenRule.create(ctx2)
+      visitor1.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor2.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 16 }]))
+      expect(rep1.length).toBe(1)
+      expect(rep2.length).toBe(0)
+    })
+
+    test('visitor accumulates reports correctly', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 16 }]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'x' }, radix10()]))
+      expect(reports.length).toBe(2)
+    })
+
+    test('node without loc still reports', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('node without loc reports with default location', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+      }
+      visitor.CallExpression(node)
+      expect(reports[0].loc?.start.line).toBe(1)
+      expect(reports[0].loc?.start.column).toBe(0)
+    })
+
+    test('mixed valid/invalid count correctly', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'NumericLiteral', value: 16 }]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'x' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, { type: 'Identifier', name: 'n' }]))
+      expect(reports.length).toBe(2)
+    })
+
+    test('create returns a new visitor each call', () => {
+      const { context } = createMockContext()
+      const visitor1 = noUnnecessaryParseIntRadixTenRule.create(context)
+      const visitor2 = noUnnecessaryParseIntRadixTenRule.create(context)
+      expect(visitor1).not.toBe(visitor2)
+    })
+
+    test('meta is same reference across multiple accesses', () => {
+      const meta1 = noUnnecessaryParseIntRadixTenRule.meta
+      const meta2 = noUnnecessaryParseIntRadixTenRule.meta
+      expect(meta1).toBe(meta2)
+    })
+
+    test('handles node with extra properties', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      const node = {
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 10),
+        range: [0, 10],
+        extra: true,
+        trailingComments: [],
+      }
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(1)
+    })
+
+    test('handles node with empty loc object', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: {},
+      })
+      expect(reports.length).toBe(1)
+    })
+
+    test('handles node with partial loc (missing end)', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: { start: { line: 3, column: 5 } },
+      })
+      expect(reports.length).toBe(1)
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(5)
+    })
+
+    test('multiple same violations report separately', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      const node = makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()])
+      visitor.CallExpression(node)
+      visitor.CallExpression(node)
+      visitor.CallExpression(node)
+      expect(reports.length).toBe(3)
+    })
+
+    test('rule exports are correct', () => {
+      expect(noUnnecessaryParseIntRadixTenRule).toBeDefined()
+      expect(typeof noUnnecessaryParseIntRadixTenRule.create).toBe('function')
+      expect(typeof noUnnecessaryParseIntRadixTenRule.meta).toBe('object')
+    })
+
+    test('handles node with _parent property', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: { type: 'Identifier', name: 'parseInt' },
+        arguments: [{ type: 'StringLiteral', value: '42' }, radix10()],
+        loc: makeLoc(1, 0, 1, 10),
+        _parent: {},
+      })
+      expect(reports.length).toBe(1)
+    })
+
+    test('report loc reflects specific node location values', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()], 10, 4, 10, 25))
+      expect(reports[0].loc?.start.line).toBe(10)
+      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+
+    test('reports two violations with correct individual messages', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryParseIntRadixTenRule.create(context)
+      visitor.CallExpression(makeParseIntCall([{ type: 'StringLiteral', value: '42' }, radix10()]))
+      visitor.CallExpression(makeParseIntCall([{ type: 'Identifier', name: 'x' }, radix10()]))
+      expect(reports.length).toBe(2)
+      expect(reports[0].message).toBe(reports[1].message)
+    })
+  })
+})

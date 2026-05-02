@@ -318,6 +318,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryReduceRightRule,
    noUnnecessaryRegexpConstructorRule,
      noUnnecessaryReverseRule,
+     noUnnecessaryArrayReverseNoUseRule,
      noUnnecessaryNumberToFixedRule,
      noUnnecessaryNumberTofixedZeroRule,
     noUnnecessaryNumberWrapperRule,
@@ -338,6 +339,7 @@ noUnnecessaryStringConstructorRule,
 noUnnecessaryStringCharAtZeroRule,
 noUnnecessaryStringLengthCompareRule,
     noUnnecessaryStringSplitRule,
+    noUnnecessaryStringSplitEmptySeparatorRule,
    noUnnecessaryStringStartsEmptyRule,
   noUnnecessaryStringReplaceAllRule,
   noUnnecessaryStringRepeatZeroRule,
@@ -788,6 +790,7 @@ const adaptedNoUnnecessaryReduce = adaptPluginRule(noUnnecessaryReduceRule, 'no-
 const adaptedNoUnnecessaryReduceRight = adaptPluginRule(noUnnecessaryReduceRightRule, 'no-unnecessary-reduce-right')
 const adaptedNoUnnecessaryRegexpConstructor = adaptPluginRule(noUnnecessaryRegexpConstructorRule, 'no-unnecessary-regexp-constructor')
 const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'no-unnecessary-reverse')
+const adaptedNoUnnecessaryArrayReverseNoUse = adaptPluginRule(noUnnecessaryArrayReverseNoUseRule, 'no-unnecessary-array-reverse-no-use')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryNumberTofixedZero = adaptPluginRule(noUnnecessaryNumberTofixedZeroRule, 'no-unnecessary-number-tofixed-zero')
 const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
@@ -974,6 +977,7 @@ const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule
 const adaptedNoUnnecessaryDelete = adaptPluginRule(noUnnecessaryDeleteRule, 'no-unnecessary-delete')
 const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
+const adaptedNoUnnecessaryStringSplitEmptySeparator = adaptPluginRule(noUnnecessaryStringSplitEmptySeparatorRule, 'no-unnecessary-string-split-empty-separator')
 const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
@@ -1636,6 +1640,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-reduce-right': adaptedNoUnnecessaryReduceRight,
    'no-unnecessary-regexp-constructor': adaptedNoUnnecessaryRegexpConstructor,
     'no-unnecessary-reverse': adaptedNoUnnecessaryReverse,
+    'no-unnecessary-array-reverse-no-use': adaptedNoUnnecessaryArrayReverseNoUse,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
    'no-unnecessary-number-tofixed-zero': adaptedNoUnnecessaryNumberTofixedZero,
   'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
@@ -1657,6 +1662,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
+   'no-unnecessary-string-split-empty-separator': adaptedNoUnnecessaryStringSplitEmptySeparator,
    'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
    'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
    'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
@@ -2240,6 +2246,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-length-compare': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
+  'no-unnecessary-string-split-empty-separator': 'patterns',
   'no-unnecessary-string-starts-empty': 'patterns',
   'no-unnecessary-string-replace-all': 'patterns',
   'no-unnecessary-string-repeat-zero': 'patterns',
@@ -2261,6 +2268,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-regexp-constructor': 'patterns',
     'no-unnecessary-return-value': 'patterns',
    'no-unnecessary-reverse': 'patterns',
+   'no-unnecessary-array-reverse-no-use': 'patterns',
   'no-unnecessary-number-to-fixed': 'patterns',
   'no-unnecessary-number-tofixed-zero': 'patterns',
   'no-unnecessary-number-wrapper': 'patterns',
