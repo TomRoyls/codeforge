@@ -204,7 +204,7 @@ describe('rule-category-registry', () => {
     })
 
    test('total entry count is exactly 285', () => {
-     expect(Object.keys(RULE_CATEGORIES).length).toBe(598)
+     expect(Object.keys(RULE_CATEGORIES).length).toBe(600)
      })
 
     // --- Specific rule mappings ---
@@ -316,7 +316,7 @@ describe('rule-category-registry', () => {
        expect(counts['security']).toBe(21)
          expect(counts['testing']).toBe(74)
          expect(counts['correctness']).toBe(16)
-         expect(counts['patterns']).toBe(462)
+         expect(counts['patterns']).toBe(464)
     })
   })
 
@@ -620,7 +620,7 @@ describe('rule-category-registry', () => {
 
     test('registry entries are enumerable with correct length', () => {
       const entries = Object.entries(RULE_CATEGORIES)
-        expect(entries.length).toBe(598)
+        expect(entries.length).toBe(600)
       expect(entries[0]!.length).toBe(2)
     })
 
@@ -893,7 +893,7 @@ describe('rule-category-registry', () => {
     test('Object.keys returns array of correct length', () => {
       const keys = Object.keys(RULE_CATEGORIES)
       expect(Array.isArray(keys)).toBe(true)
-        expect(keys.length).toBe(598)
+        expect(keys.length).toBe(600)
     })
 
     test('entries are ordered as defined in source', () => {
