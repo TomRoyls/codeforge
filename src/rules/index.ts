@@ -254,6 +254,7 @@ noUnnecessaryAssertRule,
        noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
+     noUnnecessaryArrayOfSpreadRule,
      noUnnecessaryArrayIncludesSingleRule,
     noUnnecessaryArrayIncludesNANRule,
     noUnnecessaryArrayIndexOfLiteralRule,
@@ -345,6 +346,7 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryArrayReverseNoUseRule,
      noUnnecessaryNumberToFixedRule,
      noUnnecessaryNumberToExponentialDefaultRule,
+     noUnnecessaryNumberToPrecisionDefaultRule,
      noUnnecessaryNumberTofixedZeroRule,
     noUnnecessaryNumberWrapperRule,
      noUnnecessaryNumberConstructorRule,
@@ -781,6 +783,7 @@ const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryA
 const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
+const adaptedNoUnnecessaryArrayOfSpread = adaptPluginRule(noUnnecessaryArrayOfSpreadRule, 'no-unnecessary-array-of-spread')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
 const adaptedNoUnnecessaryArrayIncludesNAN = adaptPluginRule(noUnnecessaryArrayIncludesNANRule, 'no-unnecessary-array-includes-nan')
 const adaptedNoUnnecessaryArrayIndexOfLiteral = adaptPluginRule(noUnnecessaryArrayIndexOfLiteralRule, 'no-unnecessary-array-index-of-literal')
@@ -873,6 +876,7 @@ const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'n
 const adaptedNoUnnecessaryArrayReverseNoUse = adaptPluginRule(noUnnecessaryArrayReverseNoUseRule, 'no-unnecessary-array-reverse-no-use')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryNumberToExponentialDefault = adaptPluginRule(noUnnecessaryNumberToExponentialDefaultRule, 'no-unnecessary-number-to-exponential-default')
+const adaptedNoUnnecessaryNumberToPrecisionDefault = adaptPluginRule(noUnnecessaryNumberToPrecisionDefaultRule, 'no-unnecessary-number-to-precision-default')
 const adaptedNoUnnecessaryNumberTofixedZero = adaptPluginRule(noUnnecessaryNumberTofixedZeroRule, 'no-unnecessary-number-tofixed-zero')
 const adaptedNoUnnecessaryNumberWrapper = adaptPluginRule(noUnnecessaryNumberWrapperRule, 'no-unnecessary-number-wrapper')
 const adaptedNoUnnecessaryNumberConstructor = adaptPluginRule(noUnnecessaryNumberConstructorRule, 'no-unnecessary-number-constructor')
@@ -1690,6 +1694,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
+    'no-unnecessary-array-of-spread': adaptedNoUnnecessaryArrayOfSpread,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
     'no-unnecessary-array-includes-nan': adaptedNoUnnecessaryArrayIncludesNAN,
     'no-unnecessary-array-index-of-literal': adaptedNoUnnecessaryArrayIndexOfLiteral,
@@ -1779,6 +1784,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-reverse-no-use': adaptedNoUnnecessaryArrayReverseNoUse,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
    'no-unnecessary-number-to-exponential-default': adaptedNoUnnecessaryNumberToExponentialDefault,
+   'no-unnecessary-number-to-precision-default': adaptedNoUnnecessaryNumberToPrecisionDefault,
    'no-unnecessary-number-tofixed-zero': adaptedNoUnnecessaryNumberTofixedZero,
   'no-unnecessary-number-wrapper': adaptedNoUnnecessaryNumberWrapper,
   'no-unnecessary-number-constructor': adaptedNoUnnecessaryNumberConstructor,
@@ -2345,6 +2351,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
+  'no-unnecessary-array-of-spread': 'patterns',
    'no-unnecessary-array-includes-single': 'patterns',
    'no-unnecessary-array-includes-nan': 'patterns',
    'no-unnecessary-array-index-of-literal': 'patterns',
@@ -2491,6 +2498,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-reverse-no-use': 'patterns',
    'no-unnecessary-number-to-fixed': 'patterns',
    'no-unnecessary-number-to-exponential-default': 'patterns',
+   'no-unnecessary-number-to-precision-default': 'patterns',
   'no-unnecessary-number-tofixed-zero': 'patterns',
   'no-unnecessary-number-wrapper': 'patterns',
   'no-unnecessary-number-constructor': 'patterns',
