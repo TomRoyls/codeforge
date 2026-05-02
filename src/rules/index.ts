@@ -351,6 +351,7 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessarySpliceRule,
     noUnnecessaryArraySpliceNoUseRule,
     noUnnecessaryArrayToReversedNoUseRule,
+    noUnnecessaryArrayToStringArrayRule,
      noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
 noUnnecessaryStringConcatRule,
@@ -370,6 +371,7 @@ noUnnecessaryStringCodepointatZeroRule,
     noUnnecessaryStringStartsWithNonEmptyRule,
    noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringReplaceAllRule,
+   noUnnecessaryStringReplaceEmptyRule,
   noUnnecessaryStringRepeatZeroRule,
    noUnnecessaryStringifyRule,
     noUnnecessaryStringToNumberRule,
@@ -1003,6 +1005,7 @@ const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unne
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
 const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUseRule, 'no-unnecessary-array-splice-no-use')
 const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUseRule, 'no-unnecessary-array-to-reversed-no-use')
+const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
 const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
@@ -1036,6 +1039,7 @@ const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStrin
 const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessaryStringStartsWithNonEmptyRule, 'no-unnecessary-string-starts-with-non-empty')
 const adaptedNoUnnecessaryStringTrimEmpty = adaptPluginRule(noUnnecessaryStringTrimEmptyRule, 'no-unnecessary-string-trim-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
+const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStringReplaceEmptyRule, 'no-unnecessary-string-replace-empty')
 const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
@@ -1728,8 +1732,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-some': adaptedNoUnnecessarySome,
    'no-unnecessary-splice': adaptedNoUnnecessarySplice,
    'no-unnecessary-array-splice-no-use': adaptedNoUnnecessaryArraySpliceNoUse,
-   'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
-   'no-unnecessary-spread': adaptedNoUnnecessarySpread,
+    'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
+    'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
+    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
@@ -1748,8 +1753,9 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
     'no-unnecessary-string-starts-with-non-empty': adaptedNoUnnecessaryStringStartsWithNonEmpty,
     'no-unnecessary-string-trim-empty': adaptedNoUnnecessaryStringTrimEmpty,
-    'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
-   'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
+     'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
+     'no-unnecessary-string-replace-empty': adaptedNoUnnecessaryStringReplaceEmpty,
+    'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
@@ -2338,8 +2344,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-readonly': 'patterns',
   'no-unnecessary-splice': 'patterns',
   'no-unnecessary-array-splice-no-use': 'patterns',
-  'no-unnecessary-array-to-reversed-no-use': 'patterns',
-   'no-unnecessary-spread': 'patterns',
+   'no-unnecessary-array-to-reversed-no-use': 'patterns',
+   'no-unnecessary-array-to-string-array': 'patterns',
+    'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
    'no-unnecessary-string-constructor': 'patterns',
@@ -2358,8 +2365,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-starts-empty': 'patterns',
    'no-unnecessary-string-starts-with-non-empty': 'patterns',
    'no-unnecessary-string-trim-empty': 'patterns',
-   'no-unnecessary-string-replace-all': 'patterns',
-  'no-unnecessary-string-repeat-zero': 'patterns',
+    'no-unnecessary-string-replace-all': 'patterns',
+    'no-unnecessary-string-replace-empty': 'patterns',
+   'no-unnecessary-string-repeat-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
