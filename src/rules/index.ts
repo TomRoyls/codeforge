@@ -388,6 +388,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryArraySpliceNoUseRule,
     noUnnecessaryArraySpliceZeroRule,
     noUnnecessaryArrayToReversedNoUseRule,
+    noUnnecessaryArrayToReversedSpreadRule,
     noUnnecessaryArrayToStringArrayRule,
      noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
@@ -459,6 +460,7 @@ noUnnecessaryStringCodePointAtEmptyRule,
       noUnnecessaryThrowNewRule,
      noUnnecessaryToReversedRule,
      noUnnecessaryToSortedRule,
+     noUnnecessaryArrayToSortedSpreadRule,
      noUnnecessaryToSplicedRule,
      noUnnecessaryToStringRule,
     noUnnecessaryToLocaleStringRule,
@@ -1025,6 +1027,7 @@ const adaptedNoUnnecessaryTemplateLiteralSingle = adaptPluginRule(noUnnecessaryT
 const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRule, 'no-unnecessary-to-reversed')
 const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule, 'no-unnecessary-to-spliced')
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
+const adaptedNoUnnecessaryArrayToSortedSpread = adaptPluginRule(noUnnecessaryArrayToSortedSpreadRule, 'no-unnecessary-array-to-sorted-spread')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
 const adaptedNoUnnecessaryThrowNew = adaptPluginRule(noUnnecessaryThrowNewRule, 'no-unnecessary-throw-new')
 const adaptedNoUnnecessaryToString = adaptPluginRule(noUnnecessaryToStringRule, 'no-unnecessary-to-string')
@@ -1110,6 +1113,7 @@ const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-
 const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUseRule, 'no-unnecessary-array-splice-no-use')
 const adaptedNoUnnecessaryArraySpliceZero = adaptPluginRule(noUnnecessaryArraySpliceZeroRule, 'no-unnecessary-array-splice-zero')
 const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUseRule, 'no-unnecessary-array-to-reversed-no-use')
+const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
 const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
@@ -1905,6 +1909,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-array-splice-no-use': adaptedNoUnnecessaryArraySpliceNoUse,
    'no-unnecessary-array-splice-zero': adaptedNoUnnecessaryArraySpliceZero,
     'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
+    'no-unnecessary-array-to-reversed-spread': adaptedNoUnnecessaryArrayToReversedSpread,
     'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
     'no-unnecessary-spread': adaptedNoUnnecessarySpread,
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
@@ -1975,6 +1980,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-throw-new': adaptedNoUnnecessaryThrowNew,
    'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
     'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
+    'no-unnecessary-array-to-sorted-spread': adaptedNoUnnecessaryArrayToSortedSpread,
     'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
     'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
@@ -2576,6 +2582,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-splice-no-use': 'patterns',
   'no-unnecessary-array-splice-zero': 'patterns',
    'no-unnecessary-array-to-reversed-no-use': 'patterns',
+   'no-unnecessary-array-to-reversed-spread': 'patterns',
    'no-unnecessary-array-to-string-array': 'patterns',
     'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
@@ -2670,6 +2677,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-template-literal-single': 'patterns',
   'no-unnecessary-to-reversed': 'patterns',
   'no-unnecessary-to-sorted': 'patterns',
+  'no-unnecessary-array-to-sorted-spread': 'patterns',
   'no-unnecessary-to-spliced': 'patterns',
    'no-unnecessary-then': 'patterns',
    'no-unnecessary-throw-new': 'patterns',
