@@ -240,8 +240,9 @@ noUnnecessaryAssertRule,
       noUnnecessaryArrayFlatRule,
     noUnnecessaryArrayFlatSingleLevelRule,
     noUnnecessaryArrayEveryBooleanRule,
-    noUnnecessaryArrayFilterIdentityRule,
-     noUnnecessaryArrayFillLiteralRule,
+     noUnnecessaryArrayFilterIdentityRule,
+    noUnnecessaryArrayForEachReturnRule,
+      noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
      noUnnecessaryArrayIncludesSingleRule,
@@ -348,8 +349,9 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
 noUnnecessaryStringConcatRule,
-noUnnecessaryStringConstructorRule,
- noUnnecessaryStringCharAtZeroRule,
+ noUnnecessaryStringConstructorRule,
+ noUnnecessaryStringIncludesEmptyRule,
+  noUnnecessaryStringCharAtZeroRule,
  noUnnecessaryStringAtZeroRule,
 noUnnecessaryStringCodepointatZeroRule,
 noUnnecessaryStringLengthCompareRule,
@@ -727,6 +729,7 @@ const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule
 const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentityRule, 'no-unnecessary-array-filter-identity')
+const adaptedNoUnnecessaryArrayForEachReturn = adaptPluginRule(noUnnecessaryArrayForEachReturnRule, 'no-unnecessary-array-for-each-return')
 const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
@@ -992,6 +995,7 @@ noUnnecessaryStringConcatRule,
   'no-unnecessary-string-concat',
 )
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
+const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
 const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringAtZeroRule, 'no-unnecessary-string-at-zero')
 const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
@@ -1597,6 +1601,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-flat-single-level': adaptedNoUnnecessaryArrayFlatSingleLevel,
      'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
      'no-unnecessary-array-filter-identity': adaptedNoUnnecessaryArrayFilterIdentity,
+     'no-unnecessary-array-for-each-return': adaptedNoUnnecessaryArrayForEachReturn,
      'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
@@ -1703,7 +1708,8 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
-    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
+   'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
+   'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
     'no-unnecessary-string-at-zero': adaptedNoUnnecessaryStringAtZero,
     'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
    'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
@@ -2211,8 +2217,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-flat': 'patterns',
    'no-unnecessary-array-flat-single-level': 'patterns',
    'no-unnecessary-array-every-boolean': 'patterns',
-   'no-unnecessary-array-filter-identity': 'patterns',
-   'no-unnecessary-array-fill-literal': 'patterns',
+    'no-unnecessary-array-filter-identity': 'patterns',
+    'no-unnecessary-array-for-each-return': 'patterns',
+    'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
    'no-unnecessary-array-includes-single': 'patterns',
@@ -2300,8 +2307,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
-  'no-unnecessary-string-constructor': 'patterns',
-   'no-unnecessary-string-char-at-zero': 'patterns',
+   'no-unnecessary-string-constructor': 'patterns',
+   'no-unnecessary-string-includes-empty': 'patterns',
+    'no-unnecessary-string-char-at-zero': 'patterns',
    'no-unnecessary-string-at-zero': 'patterns',
    'no-unnecessary-string-codepointat-zero': 'patterns',
   'no-unnecessary-string-length-compare': 'patterns',
