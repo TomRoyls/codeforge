@@ -357,10 +357,12 @@ noUnnecessaryReturnAwaitRule,
 noUnnecessaryStringConcatRule,
  noUnnecessaryStringConstructorRule,
  noUnnecessaryStringIncludesEmptyRule,
+ noUnnecessaryStringLastIndexOfZeroRule,
   noUnnecessaryStringCharAtZeroRule,
  noUnnecessaryStringAtZeroRule,
 noUnnecessaryStringCodepointatZeroRule,
  noUnnecessaryStringLengthCompareRule,
+ noUnnecessaryStringMatchAllEmptyRule,
  noUnnecessaryStringEndsWithEmptyRule,
  noUnnecessaryStringPadStartZeroRule,
  noUnnecessaryStringPadEndZeroRule,
@@ -1014,10 +1016,12 @@ noUnnecessaryStringConcatRule,
 )
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
+const adaptedNoUnnecessaryStringLastIndexOfZero = adaptPluginRule(noUnnecessaryStringLastIndexOfZeroRule, 'no-unnecessary-string-last-index-of-zero')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
 const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringAtZeroRule, 'no-unnecessary-string-at-zero')
 const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
+const adaptedNoUnnecessaryStringMatchAllEmpty = adaptPluginRule(noUnnecessaryStringMatchAllEmptyRule, 'no-unnecessary-string-match-all-empty')
 const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
 const adaptedNoUnnecessaryStringPadEndZero = adaptPluginRule(noUnnecessaryStringPadEndZeroRule, 'no-unnecessary-string-pad-end-zero')
@@ -1738,12 +1742,14 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
-   'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
-   'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
+    'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
+    'no-unnecessary-string-last-index-of-zero': adaptedNoUnnecessaryStringLastIndexOfZero,
+    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
     'no-unnecessary-string-at-zero': adaptedNoUnnecessaryStringAtZero,
     'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
-   'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
-   'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
+    'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
+    'no-unnecessary-string-match-all-empty': adaptedNoUnnecessaryStringMatchAllEmpty,
+    'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
    'no-unnecessary-string-pad-start-zero': adaptedNoUnnecessaryStringPadStartZero,
    'no-unnecessary-string-pad-end-zero': adaptedNoUnnecessaryStringPadEndZero,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
@@ -2350,12 +2356,14 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
    'no-unnecessary-string-constructor': 'patterns',
-   'no-unnecessary-string-includes-empty': 'patterns',
-    'no-unnecessary-string-char-at-zero': 'patterns',
+    'no-unnecessary-string-includes-empty': 'patterns',
+    'no-unnecessary-string-last-index-of-zero': 'patterns',
+     'no-unnecessary-string-char-at-zero': 'patterns',
    'no-unnecessary-string-at-zero': 'patterns',
    'no-unnecessary-string-codepointat-zero': 'patterns',
-  'no-unnecessary-string-length-compare': 'patterns',
-  'no-unnecessary-string-ends-with-empty': 'patterns',
+   'no-unnecessary-string-length-compare': 'patterns',
+   'no-unnecessary-string-match-all-empty': 'patterns',
+   'no-unnecessary-string-ends-with-empty': 'patterns',
   'no-unnecessary-string-pad-start-zero': 'patterns',
   'no-unnecessary-string-pad-end-zero': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
