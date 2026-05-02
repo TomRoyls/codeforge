@@ -244,8 +244,9 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
-    noUnnecessaryArrayIncludesSingleRule,
-   noUnnecessaryArrayConstructorRule,
+     noUnnecessaryArrayIncludesSingleRule,
+    noUnnecessaryArrayJoinEmptyRule,
+    noUnnecessaryArrayConstructorRule,
    noUnnecessaryArrayConcatSingleRule,
    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
@@ -336,8 +337,9 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryNumberIsnanLiteralRule,
   noUnnecessaryJoinRule,
    noUnnecessarySortRule,
-   noUnnecessaryArraySortNoUseRule,
-   noUnnecessaryIncludesRule,
+    noUnnecessaryArraySortNoUseRule,
+    noUnnecessaryArraySomeFalseRule,
+    noUnnecessaryIncludesRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
       noUnnecessaryArraySliceZeroRule,
@@ -729,6 +731,7 @@ const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayF
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
+const adaptedNoUnnecessaryArrayJoinEmpty = adaptPluginRule(noUnnecessaryArrayJoinEmptyRule, 'no-unnecessary-array-join-empty')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
 const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
@@ -823,6 +826,7 @@ const adaptedNoUnnecessaryNumberIsnanLiteral = adaptPluginRule(noUnnecessaryNumb
 const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unnecessary-join')
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryArraySortNoUse = adaptPluginRule(noUnnecessaryArraySortNoUseRule, 'no-unnecessary-array-sort-no-use')
+const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalseRule, 'no-unnecessary-array-some-false')
 const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
 const adaptedPreferRegexpExec = adaptPluginRule(preferRegexpExecRule, 'prefer-regexp-exec')
@@ -1597,6 +1601,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
+    'no-unnecessary-array-join-empty': adaptedNoUnnecessaryArrayJoinEmpty,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
     'no-unnecessary-array-concat-single': adaptedNoUnnecessaryArrayConcatSingle,
    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
@@ -1687,6 +1692,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-array-sort-no-use': adaptedNoUnnecessaryArraySortNoUse,
+  'no-unnecessary-array-some-false': adaptedNoUnnecessaryArraySomeFalse,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
@@ -2209,8 +2215,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
-  'no-unnecessary-array-includes-single': 'patterns',
-  'no-unnecessary-array-constructor': 'patterns',
+   'no-unnecessary-array-includes-single': 'patterns',
+   'no-unnecessary-array-join-empty': 'patterns',
+   'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-array-concat-single': 'patterns',
   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
@@ -2331,8 +2338,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-isnan-literal': 'patterns',
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
-  'no-unnecessary-array-sort-no-use': 'patterns',
-  'no-unnecessary-includes': 'patterns',
+   'no-unnecessary-array-sort-no-use': 'patterns',
+   'no-unnecessary-array-some-false': 'patterns',
+   'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
   'no-unnecessary-template-literal-single': 'patterns',
