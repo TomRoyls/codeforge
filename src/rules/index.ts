@@ -235,8 +235,9 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
-    noUnnecessaryArrayFromRule,
-     noUnnecessaryArrayFlatRule,
+     noUnnecessaryArrayFromRule,
+    noUnnecessaryArrayFromSpreadRule,
+      noUnnecessaryArrayFlatRule,
     noUnnecessaryArrayFlatSingleLevelRule,
      noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
@@ -306,8 +307,9 @@ noUnnecessaryAwaitExpressionRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
 noUnnecessaryObjectAssignSameRule,
-noUnnecessaryObjectFreezeLiteralRule,
-noUnnecessaryObjectSealLiteralRule,
+ noUnnecessaryObjectFreezeLiteralRule,
+ noUnnecessaryObjectKeysLengthRule,
+ noUnnecessaryObjectSealLiteralRule,
    noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
    noUnnecessaryPopRule,
@@ -714,6 +716,7 @@ const adaptedNoUnnecessaryAt = adaptPluginRule(noUnnecessaryAtRule, 'no-unnecess
 const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unnecessary-atob')
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
+const adaptedNoUnnecessaryArrayFromSpread = adaptPluginRule(noUnnecessaryArrayFromSpreadRule, 'no-unnecessary-array-from-spread')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
 const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
@@ -787,6 +790,7 @@ const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWith
 const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
 const adaptedNoUnnecessaryObjectAssignSame = adaptPluginRule(noUnnecessaryObjectAssignSameRule, 'no-unnecessary-object-assign-same')
 const adaptedNoUnnecessaryObjectFreezeLiteral = adaptPluginRule(noUnnecessaryObjectFreezeLiteralRule, 'no-unnecessary-object-freeze-literal')
+const adaptedNoUnnecessaryObjectKeysLength = adaptPluginRule(noUnnecessaryObjectKeysLengthRule, 'no-unnecessary-object-keys-length')
 const adaptedNoUnnecessaryObjectSealLiteral = adaptPluginRule(noUnnecessaryObjectSealLiteralRule, 'no-unnecessary-object-seal-literal')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
 const adaptedNoUnnecessaryNumericSeparator = adaptPluginRule(noUnnecessaryNumericSeparatorRule, 'no-unnecessary-numeric-separator')
@@ -1575,8 +1579,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-at': adaptedNoUnnecessaryAt,
    'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
-   'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
-     'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+    'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
+    'no-unnecessary-array-from-spread': adaptedNoUnnecessaryArrayFromSpread,
+      'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
      'no-unnecessary-array-flat-single-level': adaptedNoUnnecessaryArrayFlatSingleLevel,
      'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
@@ -1644,8 +1649,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
    'no-unnecessary-object-assign-same': adaptedNoUnnecessaryObjectAssignSame,
-   'no-unnecessary-object-freeze-literal': adaptedNoUnnecessaryObjectFreezeLiteral,
-   'no-unnecessary-object-seal-literal': adaptedNoUnnecessaryObjectSealLiteral,
+    'no-unnecessary-object-freeze-literal': adaptedNoUnnecessaryObjectFreezeLiteral,
+    'no-unnecessary-object-keys-length': adaptedNoUnnecessaryObjectKeysLength,
+    'no-unnecessary-object-seal-literal': adaptedNoUnnecessaryObjectSealLiteral,
   'no-unnecessary-numeric-literal': adaptedNoUnnecessaryNumericLiteral,
   'no-unnecessary-numeric-separator': adaptedNoUnnecessaryNumericSeparator,
    'no-unnecessary-pop': adaptedNoUnnecessaryPop,
@@ -2182,8 +2188,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-at': 'patterns',
    'no-unnecessary-atob': 'patterns',
   'no-unnecessary-btoa': 'patterns',
-  'no-unnecessary-array-from': 'patterns',
-  'no-unnecessary-array-flat': 'patterns',
+   'no-unnecessary-array-from': 'patterns',
+   'no-unnecessary-array-from-spread': 'patterns',
+   'no-unnecessary-array-flat': 'patterns',
   'no-unnecessary-array-flat-single-level': 'patterns',
   'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
@@ -2253,8 +2260,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
    'no-unnecessary-object-assign-same': 'patterns',
-   'no-unnecessary-object-freeze-literal': 'patterns',
-   'no-unnecessary-object-seal-literal': 'patterns',
+    'no-unnecessary-object-freeze-literal': 'patterns',
+    'no-unnecessary-object-keys-length': 'patterns',
+    'no-unnecessary-object-seal-literal': 'patterns',
    'no-unnecessary-numeric-literal': 'patterns',
   'no-unnecessary-numeric-separator': 'patterns',
    'no-unnecessary-pop': 'patterns',
