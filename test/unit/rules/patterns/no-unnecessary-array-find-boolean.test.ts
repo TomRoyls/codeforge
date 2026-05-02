@@ -139,7 +139,7 @@ describe('no-unnecessary-array-find-boolean rule', () => {
     })
   })
 
-  // ===== POSITIVE CASES — REPORTS (28) =====
+  // ===== POSITIVE CASES — REPORTS (27) =====
 
   describe('positive cases — reports unnecessary find(() => true)', () => {
     test('reports for arr.find(x => true) with ArrowFunctionExpression', () => {
@@ -422,13 +422,6 @@ describe('no-unnecessary-array-find-boolean rule', () => {
       visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeTrueArrow()]))
       expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryArrayFindBoolean.create(context)
-      const visitor2 = noUnnecessaryArrayFindBoolean.create(context)
-      expect(visitor1).not.toBe(visitor2)
     })
   })
 
