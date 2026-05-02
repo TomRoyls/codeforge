@@ -259,6 +259,7 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayFindLastBooleanRule,
      noUnnecessaryArrayFindLastSpreadRule,
      noUnnecessaryArrayFindLastIndexLiteralRule,
+     noUnnecessaryArrayFindLastIndexSpreadRule,
     noUnnecessaryArrayFindIndexLiteralRule,
      noUnnecessaryArrayFindIndexSpreadRule,
      noUnnecessaryArrayIndexOfSpreadRule,
@@ -362,6 +363,7 @@ noUnnecessaryReturnAwaitRule,
      noUnnecessaryArrayReverseNoUseRule,
      noUnnecessaryArrayReverseSpreadRule,
      noUnnecessaryArrayReduceSpreadRule,
+     noUnnecessaryArrayReduceRightSpreadRule,
      noUnnecessaryNumberToFixedRule,
      noUnnecessaryNumberToExponentialDefaultRule,
      noUnnecessaryNumberToPrecisionDefaultRule,
@@ -824,6 +826,7 @@ const adaptedNoUnnecessaryArrayFindBoolean = adaptPluginRule(noUnnecessaryArrayF
  const adaptedNoUnnecessaryArrayFindLastBoolean = adaptPluginRule(noUnnecessaryArrayFindLastBooleanRule, 'no-unnecessary-array-find-last-boolean')
  const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
  const adaptedNoUnnecessaryArrayFindLastIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindLastIndexLiteralRule, 'no-unnecessary-array-find-last-index-literal')
+ const adaptedNoUnnecessaryArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryArrayFindLastIndexSpreadRule, 'no-unnecessary-array-find-last-index-spread')
 const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindIndexLiteralRule, 'no-unnecessary-array-find-index-literal')
  const adaptedNoUnnecessaryArrayFindIndexSpread = adaptPluginRule(noUnnecessaryArrayFindIndexSpreadRule, 'no-unnecessary-array-find-index-spread')
  const adaptedNoUnnecessaryArrayIndexOfSpread = adaptPluginRule(noUnnecessaryArrayIndexOfSpreadRule, 'no-unnecessary-array-index-of-spread')
@@ -928,6 +931,7 @@ const adaptedNoUnnecessaryReverse = adaptPluginRule(noUnnecessaryReverseRule, 'n
 const adaptedNoUnnecessaryArrayReverseNoUse = adaptPluginRule(noUnnecessaryArrayReverseNoUseRule, 'no-unnecessary-array-reverse-no-use')
 const adaptedNoUnnecessaryArrayReverseSpread = adaptPluginRule(noUnnecessaryArrayReverseSpreadRule, 'no-unnecessary-array-reverse-spread')
 const adaptedNoUnnecessaryArrayReduceSpread = adaptPluginRule(noUnnecessaryArrayReduceSpreadRule, 'no-unnecessary-array-reduce-spread')
+const adaptedNoUnnecessaryArrayReduceRightSpread = adaptPluginRule(noUnnecessaryArrayReduceRightSpreadRule, 'no-unnecessary-array-reduce-right-spread')
 const adaptedNoUnnecessaryNumberToFixed = adaptPluginRule(noUnnecessaryNumberToFixedRule, 'no-unnecessary-number-to-fixed')
 const adaptedNoUnnecessaryNumberToExponentialDefault = adaptPluginRule(noUnnecessaryNumberToExponentialDefaultRule, 'no-unnecessary-number-to-exponential-default')
 const adaptedNoUnnecessaryNumberToPrecisionDefault = adaptPluginRule(noUnnecessaryNumberToPrecisionDefaultRule, 'no-unnecessary-number-to-precision-default')
@@ -1770,6 +1774,7 @@ export const allRules: Record<string, RuleDefinition> = {
       'no-unnecessary-array-find-last-boolean': adaptedNoUnnecessaryArrayFindLastBoolean,
      'no-unnecessary-array-find-last-spread': adaptedNoUnnecessaryArrayFindLastSpread,
       'no-unnecessary-array-find-last-index-literal': adaptedNoUnnecessaryArrayFindLastIndexLiteral,
+      'no-unnecessary-array-find-last-index-spread': adaptedNoUnnecessaryArrayFindLastIndexSpread,
     'no-unnecessary-array-find-index-literal': adaptedNoUnnecessaryArrayFindIndexLiteral,
     'no-unnecessary-array-find-index-spread': adaptedNoUnnecessaryArrayFindIndexSpread,
     'no-unnecessary-array-index-of-spread': adaptedNoUnnecessaryArrayIndexOfSpread,
@@ -1871,6 +1876,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-reverse-no-use': adaptedNoUnnecessaryArrayReverseNoUse,
     'no-unnecessary-array-reverse-spread': adaptedNoUnnecessaryArrayReverseSpread,
     'no-unnecessary-array-reduce-spread': adaptedNoUnnecessaryArrayReduceSpread,
+    'no-unnecessary-array-reduce-right-spread': adaptedNoUnnecessaryArrayReduceRightSpread,
    'no-unnecessary-number-to-fixed': adaptedNoUnnecessaryNumberToFixed,
    'no-unnecessary-number-to-exponential-default': adaptedNoUnnecessaryNumberToExponentialDefault,
    'no-unnecessary-number-to-precision-default': adaptedNoUnnecessaryNumberToPrecisionDefault,
@@ -2462,6 +2468,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-find-last-boolean': 'patterns',
     'no-unnecessary-array-find-last-spread': 'patterns',
     'no-unnecessary-array-find-last-index-literal': 'patterns',
+    'no-unnecessary-array-find-last-index-spread': 'patterns',
     'no-unnecessary-array-find-index-literal': 'patterns',
     'no-unnecessary-array-find-index-spread': 'patterns',
     'no-unnecessary-array-index-of-spread': 'patterns',
@@ -2635,6 +2642,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-reverse-no-use': 'patterns',
    'no-unnecessary-array-reverse-spread': 'patterns',
    'no-unnecessary-array-reduce-spread': 'patterns',
+   'no-unnecessary-array-reduce-right-spread': 'patterns',
    'no-unnecessary-number-to-fixed': 'patterns',
    'no-unnecessary-number-to-exponential-default': 'patterns',
    'no-unnecessary-number-to-precision-default': 'patterns',
