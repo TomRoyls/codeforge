@@ -237,6 +237,7 @@ noUnnecessaryAssertRule,
   noUnnecessaryBtoaRule,
    noUnnecessaryArrayFromRule,
     noUnnecessaryArrayFlatRule,
+    noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
     noUnnecessaryArrayIncludesSingleRule,
@@ -331,6 +332,7 @@ noUnnecessaryStringConcatRule,
 noUnnecessaryStringConstructorRule,
 noUnnecessaryStringCharAtZeroRule,
    noUnnecessaryStringSplitRule,
+   noUnnecessaryStringStartsEmptyRule,
   noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringifyRule,
     noUnnecessaryStringToNumberRule,
@@ -695,6 +697,7 @@ const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unne
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
+const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
@@ -956,6 +959,7 @@ const adaptedNoUnnecessaryDecodeUri = adaptPluginRule(noUnnecessaryDecodeUriRule
 const adaptedNoUnnecessaryDelete = adaptPluginRule(noUnnecessaryDeleteRule, 'no-unnecessary-delete')
 const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
+const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
@@ -1537,6 +1541,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
    'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
     'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+    'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
@@ -1630,6 +1635,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
+   'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
    'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
@@ -2124,6 +2130,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-array-flat': 'patterns',
+  'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
   'no-unnecessary-array-includes-single': 'patterns',
@@ -2204,6 +2211,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-char-at-zero': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
+  'no-unnecessary-string-starts-empty': 'patterns',
   'no-unnecessary-string-replace-all': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
