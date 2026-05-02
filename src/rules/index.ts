@@ -298,6 +298,7 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryLogicalOrFalseRule,
    noUnnecessaryMapRule,
    noUnnecessaryMathMaxSingleRule,
+   noUnnecessaryMathFloorIntegerRule,
 noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
 noUnnecessaryObjectAssignSameRule,
@@ -337,6 +338,7 @@ noUnnecessaryReturnAwaitRule,
 noUnnecessaryStringConcatRule,
 noUnnecessaryStringConstructorRule,
 noUnnecessaryStringCharAtZeroRule,
+noUnnecessaryStringCodepointatZeroRule,
 noUnnecessaryStringLengthCompareRule,
     noUnnecessaryStringSplitRule,
     noUnnecessaryStringSplitEmptySeparatorRule,
@@ -756,6 +758,7 @@ const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalA
 const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
+const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
 const adaptedNoUnnecessaryFindLastIndex = adaptPluginRule(noUnnecessaryFindLastIndexRule, 'no-unnecessary-find-last-index')
 const adaptedNoUnnecessaryFindLast = adaptPluginRule(noUnnecessaryFindLastRule, 'no-unnecessary-find-last')
@@ -964,6 +967,7 @@ noUnnecessaryStringConcatRule,
 )
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
+const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
@@ -1620,6 +1624,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-logical-or-false': adaptedNoUnnecessaryLogicalOrFalse,
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
+   'no-unnecessary-math-floor-integer': adaptedNoUnnecessaryMathFloorInteger,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
    'no-unnecessary-object-assign': adaptedNoUnnecessaryObjectAssign,
    'no-unnecessary-object-assign-same': adaptedNoUnnecessaryObjectAssignSame,
@@ -1659,6 +1664,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
+   'no-unnecessary-string-codepointat-zero': adaptedNoUnnecessaryStringCodepointatZero,
    'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
@@ -2221,6 +2227,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-logical-or-false': 'patterns',
   'no-unnecessary-map': 'patterns',
   'no-unnecessary-math-max-single': 'patterns',
+  'no-unnecessary-math-floor-integer': 'patterns',
    'no-unnecessary-null-with-strict': 'patterns',
    'no-unnecessary-object-assign': 'patterns',
    'no-unnecessary-object-assign-same': 'patterns',
@@ -2243,6 +2250,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-constructor': 'patterns',
   'no-unnecessary-string-char-at-zero': 'patterns',
+  'no-unnecessary-string-codepointat-zero': 'patterns',
   'no-unnecessary-string-length-compare': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
