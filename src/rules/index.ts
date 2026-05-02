@@ -462,6 +462,7 @@ noUnnecessaryStringCodePointAtEmptyRule,
      noUnnecessaryToSortedRule,
      noUnnecessaryArrayToSortedSpreadRule,
      noUnnecessaryToSplicedRule,
+     noUnnecessaryArrayToSplicedSpreadRule,
      noUnnecessaryToStringRule,
     noUnnecessaryToLocaleStringRule,
      noUnnecessaryTypeofRule,
@@ -489,8 +490,9 @@ noUnnecessaryParameterPropertyRule,
 noUnnecessaryTypeConstraintRule,
    noUnnecessaryTypeParametersRule,
    noUnnecessaryUnshiftRule,
-    noUnnecessaryWithRule,
-    noUnnecessaryValuesRule,
+     noUnnecessaryWithRule,
+     noUnnecessaryArrayWithSpreadRule,
+     noUnnecessaryValuesRule,
        noUnnecessaryVoidRule,
       noUnnecessaryVoidOperatorRule,
      noUnnecessaryYieldRule,
@@ -1026,6 +1028,7 @@ const adaptedNoUnnecessaryTemplateLiteral = adaptPluginRule(noUnnecessaryTemplat
 const adaptedNoUnnecessaryTemplateLiteralSingle = adaptPluginRule(noUnnecessaryTemplateLiteralSingleRule, 'no-unnecessary-template-literal-single')
 const adaptedNoUnnecessaryToReversed = adaptPluginRule(noUnnecessaryToReversedRule, 'no-unnecessary-to-reversed')
 const adaptedNoUnnecessaryToSpliced = adaptPluginRule(noUnnecessaryToSplicedRule, 'no-unnecessary-to-spliced')
+const adaptedNoUnnecessaryArrayToSplicedSpread = adaptPluginRule(noUnnecessaryArrayToSplicedSpreadRule, 'no-unnecessary-array-to-spliced-spread')
 const adaptedNoUnnecessaryToSorted = adaptPluginRule(noUnnecessaryToSortedRule, 'no-unnecessary-to-sorted')
 const adaptedNoUnnecessaryArrayToSortedSpread = adaptPluginRule(noUnnecessaryArrayToSortedSpreadRule, 'no-unnecessary-array-to-sorted-spread')
 const adaptedNoUnnecessaryThen = adaptPluginRule(noUnnecessaryThenRule, 'no-unnecessary-then')
@@ -1420,6 +1423,7 @@ const adaptedNoUnnecessaryTypeConstraint = adaptPluginRule(noUnnecessaryTypeCons
 const adaptedNoUnnecessaryTypeParameters = adaptPluginRule(noUnnecessaryTypeParametersRule, 'no-unnecessary-type-parameters')
 const adaptedNoUnnecessaryUnshift = adaptPluginRule(noUnnecessaryUnshiftRule, 'no-unnecessary-unshift')
 const adaptedNoUnnecessaryWith = adaptPluginRule(noUnnecessaryWithRule, 'no-unnecessary-with')
+const adaptedNoUnnecessaryArrayWithSpread = adaptPluginRule(noUnnecessaryArrayWithSpreadRule, 'no-unnecessary-array-with-spread')
 const adaptedNoUnnecessaryValues = adaptPluginRule(noUnnecessaryValuesRule, 'no-unnecessary-values')
 const adaptedNoUnnecessaryVoid = adaptPluginRule(noUnnecessaryVoidRule, 'no-unnecessary-void')
 const adaptedNoUnnecessaryVoidOperator = adaptPluginRule(noUnnecessaryVoidOperatorRule, 'no-unnecessary-void-operator')
@@ -1981,8 +1985,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-to-reversed': adaptedNoUnnecessaryToReversed,
     'no-unnecessary-to-sorted': adaptedNoUnnecessaryToSorted,
     'no-unnecessary-array-to-sorted-spread': adaptedNoUnnecessaryArrayToSortedSpread,
-    'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
-    'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
+     'no-unnecessary-to-spliced': adaptedNoUnnecessaryToSpliced,
+     'no-unnecessary-array-to-spliced-spread': adaptedNoUnnecessaryArrayToSplicedSpread,
+     'no-unnecessary-to-string': adaptedNoUnnecessaryToString,
     'no-unnecessary-to-locale-string': adaptedNoUnnecessaryToLocaleString,
    'no-unnecessary-typeof': adaptedNoUnnecessaryTypeof,
    'no-unnecessary-typeof-string': adaptedNoUnnecessaryTypeofString,
@@ -2014,8 +2019,9 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-void-operator': adaptedNoUnnecessaryVoidOperator,
    'no-unnecessary-yield': adaptedNoUnnecessaryYield,
    'no-unnecessary-values': adaptedNoUnnecessaryValues,
-    'no-unnecessary-with': adaptedNoUnnecessaryWith,
-   'no-unnecessary-wait': adaptedNoUnnecessaryWait,
+     'no-unnecessary-with': adaptedNoUnnecessaryWith,
+     'no-unnecessary-array-with-spread': adaptedNoUnnecessaryArrayWithSpread,
+    'no-unnecessary-wait': adaptedNoUnnecessaryWait,
   'no-unneeded-ternary': adaptedNoUnneededTernary,
   'no-unreachable': adaptedNoUnreachable,
   'no-undefined': adaptedNoUndefined,
@@ -2678,8 +2684,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-to-reversed': 'patterns',
   'no-unnecessary-to-sorted': 'patterns',
   'no-unnecessary-array-to-sorted-spread': 'patterns',
-  'no-unnecessary-to-spliced': 'patterns',
-   'no-unnecessary-then': 'patterns',
+   'no-unnecessary-to-spliced': 'patterns',
+   'no-unnecessary-array-to-spliced-spread': 'patterns',
+    'no-unnecessary-then': 'patterns',
    'no-unnecessary-throw-new': 'patterns',
    'no-unnecessary-to-string': 'patterns',
    'no-unnecessary-to-locale-string': 'patterns',
@@ -2712,8 +2719,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-void-operator': 'patterns',
    'no-unnecessary-yield': 'patterns',
    'no-unnecessary-values': 'patterns',
-   'no-unnecessary-with': 'patterns',
-   'no-unnecessary-wait': 'patterns',
+    'no-unnecessary-with': 'patterns',
+    'no-unnecessary-array-with-spread': 'patterns',
+    'no-unnecessary-wait': 'patterns',
   'no-unneeded-ternary': 'patterns',
    'no-unreachable': 'patterns',
   'no-undefined': 'patterns',
