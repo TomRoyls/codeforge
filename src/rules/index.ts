@@ -240,6 +240,7 @@ noUnnecessaryAssertRule,
       noUnnecessaryArrayFlatRule,
     noUnnecessaryArrayFlatSingleLevelRule,
     noUnnecessaryArrayFlatMapIdentityRule,
+    noUnnecessaryArrayKeysSpreadRule,
     noUnnecessaryArrayValuesSpreadRule,
     noUnnecessaryArrayEveryBooleanRule,
     noUnnecessaryArrayEntriesSpreadRule,
@@ -389,7 +390,8 @@ noUnnecessaryStringCodepointatZeroRule,
    noUnnecessaryStringReplaceEmptyRule,
    noUnnecessaryStringSearchEmptyRule,
   noUnnecessaryStringRepeatZeroRule,
-  noUnnecessaryStringRepeatOneRule,
+   noUnnecessaryStringRepeatOneRule,
+   noUnnecessaryStringRepeatEmptyRule,
   noUnnecessaryStringSubstringZeroRule,
    noUnnecessaryStringifyRule,
    noUnnecessaryStringToLowerCaseSameRule,
@@ -761,6 +763,7 @@ const adaptedNoUnnecessaryArrayFromSpread = adaptPluginRule(noUnnecessaryArrayFr
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
 const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayFlatMapIdentity = adaptPluginRule(noUnnecessaryArrayFlatMapIdentityRule, 'no-unnecessary-array-flat-map-identity')
+const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
@@ -1080,6 +1083,7 @@ const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStri
 const adaptedNoUnnecessaryStringSearchEmpty = adaptPluginRule(noUnnecessaryStringSearchEmptyRule, 'no-unnecessary-string-search-empty')
 const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
 const adaptedNoUnnecessaryStringRepeatOne = adaptPluginRule(noUnnecessaryStringRepeatOneRule, 'no-unnecessary-string-repeat-one')
+const adaptedNoUnnecessaryStringRepeatEmpty = adaptPluginRule(noUnnecessaryStringRepeatEmptyRule, 'no-unnecessary-string-repeat-empty')
 const adaptedNoUnnecessaryStringSubstringZero = adaptPluginRule(noUnnecessaryStringSubstringZeroRule, 'no-unnecessary-string-substring-zero')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
@@ -1664,6 +1668,7 @@ export const allRules: Record<string, RuleDefinition> = {
       'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
      'no-unnecessary-array-flat-single-level': adaptedNoUnnecessaryArrayFlatSingleLevel,
      'no-unnecessary-array-flat-map-identity': adaptedNoUnnecessaryArrayFlatMapIdentity,
+     'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
      'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
      'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
      'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
@@ -1813,6 +1818,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-string-search-empty': adaptedNoUnnecessaryStringSearchEmpty,
     'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
     'no-unnecessary-string-repeat-one': adaptedNoUnnecessaryStringRepeatOne,
+    'no-unnecessary-string-repeat-empty': adaptedNoUnnecessaryStringRepeatEmpty,
     'no-unnecessary-string-substring-zero': adaptedNoUnnecessaryStringSubstringZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
@@ -2312,8 +2318,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-from-spread': 'patterns',
    'no-unnecessary-array-flat': 'patterns',
    'no-unnecessary-array-flat-single-level': 'patterns',
-   'no-unnecessary-array-flat-map-identity': 'patterns',
-   'no-unnecessary-array-values-spread': 'patterns',
+    'no-unnecessary-array-flat-map-identity': 'patterns',
+    'no-unnecessary-array-keys-spread': 'patterns',
+    'no-unnecessary-array-values-spread': 'patterns',
    'no-unnecessary-array-every-boolean': 'patterns',
    'no-unnecessary-array-entries-spread': 'patterns',
     'no-unnecessary-array-filter-identity': 'patterns',
@@ -2443,8 +2450,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-string-replace-empty': 'patterns',
     'no-unnecessary-string-search-empty': 'patterns',
    'no-unnecessary-string-repeat-zero': 'patterns',
-   'no-unnecessary-string-repeat-one': 'patterns',
-   'no-unnecessary-string-substring-zero': 'patterns',
+    'no-unnecessary-string-repeat-one': 'patterns',
+    'no-unnecessary-string-repeat-empty': 'patterns',
+    'no-unnecessary-string-substring-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-lower-case-same': 'patterns',
   'no-unnecessary-string-to-upper-case-same': 'patterns',
