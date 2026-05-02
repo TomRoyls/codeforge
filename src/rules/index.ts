@@ -235,9 +235,10 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
-   noUnnecessaryArrayFromRule,
-    noUnnecessaryArrayFlatRule,
-    noUnnecessaryArrayFillLiteralRule,
+    noUnnecessaryArrayFromRule,
+     noUnnecessaryArrayFlatRule,
+    noUnnecessaryArrayFlatSingleLevelRule,
+     noUnnecessaryArrayFillLiteralRule,
     noUnnecessaryArrayIsarrayLiteralRule,
      noUnnecessaryArrayOfSingleRule,
     noUnnecessaryArrayIncludesSingleRule,
@@ -299,6 +300,7 @@ noUnnecessaryAwaitExpressionRule,
    noUnnecessaryMapRule,
     noUnnecessaryMathMaxSingleRule,
    noUnnecessaryMathCeilIntegerRule,
+   noUnnecessaryMathRoundIntegerRule,
     noUnnecessaryMathFloorIntegerRule,
     noUnnecessaryMathAbsPositiveRule,
 noUnnecessaryNullWithStrictRule,
@@ -713,6 +715,7 @@ const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unne
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
+const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayFillLiteral = adaptPluginRule(noUnnecessaryArrayFillLiteralRule, 'no-unnecessary-array-fill-literal')
 const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArrayIsarrayLiteralRule, 'no-unnecessary-array-isarray-literal')
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
@@ -763,6 +766,7 @@ const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalO
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
 const adaptedNoUnnecessaryMathCeilInteger = adaptPluginRule(noUnnecessaryMathCeilIntegerRule, 'no-unnecessary-math-ceil-integer')
+const adaptedNoUnnecessaryMathRoundInteger = adaptPluginRule(noUnnecessaryMathRoundIntegerRule, 'no-unnecessary-math-round-integer')
 const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
 const adaptedNoUnnecessaryMathAbsPositive = adaptPluginRule(noUnnecessaryMathAbsPositiveRule, 'no-unnecessary-math-abs-positive')
 const adaptedNoUnnecessaryForLoop = adaptPluginRule(noUnnecessaryForLoopRule, 'no-unnecessary-for-loop')
@@ -1572,8 +1576,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-atob': adaptedNoUnnecessaryAtob,
   'no-unnecessary-btoa': adaptedNoUnnecessaryBtoa,
    'no-unnecessary-array-from': adaptedNoUnnecessaryArrayFrom,
-    'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
-    'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
+     'no-unnecessary-array-flat': adaptedNoUnnecessaryArrayFlat,
+     'no-unnecessary-array-flat-single-level': adaptedNoUnnecessaryArrayFlatSingleLevel,
+     'no-unnecessary-array-fill-literal': adaptedNoUnnecessaryArrayFillLiteral,
     'no-unnecessary-array-isarray-literal': adaptedNoUnnecessaryArrayIsarrayLiteral,
     'no-unnecessary-array-of-single': adaptedNoUnnecessaryArrayOfSingle,
     'no-unnecessary-array-includes-single': adaptedNoUnnecessaryArrayIncludesSingle,
@@ -1633,6 +1638,7 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-map': adaptedNoUnnecessaryMap,
    'no-unnecessary-math-max-single': adaptedNoUnnecessaryMathMaxSingle,
    'no-unnecessary-math-ceil-integer': adaptedNoUnnecessaryMathCeilInteger,
+   'no-unnecessary-math-round-integer': adaptedNoUnnecessaryMathRoundInteger,
    'no-unnecessary-math-floor-integer': adaptedNoUnnecessaryMathFloorInteger,
    'no-unnecessary-math-abs-positive': adaptedNoUnnecessaryMathAbsPositive,
    'no-unnecessary-null-with-strict': adaptedNoUnnecessaryNullWithStrict,
@@ -2178,6 +2184,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-btoa': 'patterns',
   'no-unnecessary-array-from': 'patterns',
   'no-unnecessary-array-flat': 'patterns',
+  'no-unnecessary-array-flat-single-level': 'patterns',
   'no-unnecessary-array-fill-literal': 'patterns',
   'no-unnecessary-array-isarray-literal': 'patterns',
   'no-unnecessary-array-of-single': 'patterns',
