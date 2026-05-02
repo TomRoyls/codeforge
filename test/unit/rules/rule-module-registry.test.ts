@@ -1009,7 +1009,7 @@ describe('rule-module-registry', () => {
   describe('completeness verification', () => {
     test('RULE_MODULES has exact expected count', () => {
        const keys = Object.keys(RULE_MODULES)
-        expect(keys.length).toBe(618)
+        expect(keys.length).toBe(620)
       })
 
     test('every rule in RULE_CATEGORIES has a loader in RULE_MODULES', () => {
@@ -1185,7 +1185,7 @@ describe('rule-module-registry', () => {
       const enumerableKeys = Object.entries(descriptors)
         .filter(([, desc]) => desc.enumerable)
         .map(([key]) => key)
-      expect(enumerableKeys).toHaveLength(618)
+      expect(enumerableKeys).toHaveLength(620)
     })
 
     test('no key contains uppercase characters', () => {
@@ -1377,7 +1377,7 @@ describe('rule-module-registry', () => {
   describe('getRuleIds equivalence', () => {
     test('Object.keys returns all IDs as strings', () => {
       const keys = Object.keys(RULE_MODULES)
-      expect(keys).toHaveLength(618)
+      expect(keys).toHaveLength(620)
       for (const key of keys) {
         expect(typeof key).toBe('string')
       }
@@ -1623,7 +1623,7 @@ describe('rule-module-registry', () => {
   describe('registry immutability', () => {
     test('RULE_MODULES is frozen or behaves consistently', () => {
        const originalCount = Object.keys(RULE_MODULES).length
-        expect(originalCount).toBe(618)
+        expect(originalCount).toBe(620)
       })
 
     test('deleting a key does not affect the original count', () => {
@@ -1837,7 +1837,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be looked up in a Map', () => {
       const map = new Map(Object.entries(RULE_MODULES))
-       expect(map.size).toBe(618)
+       expect(map.size).toBe(620)
       const someKey = Object.keys(RULE_MODULES)[0]
       expect(map.has(someKey)).toBe(true)
       expect(typeof map.get(someKey)).toBe('function')
@@ -1845,7 +1845,7 @@ describe('rule-module-registry', () => {
 
     test('keys can be stored in a Set', () => {
       const set = new Set(Object.keys(RULE_MODULES))
-       expect(set.size).toBe(618)
+       expect(set.size).toBe(620)
     })
   })
 
