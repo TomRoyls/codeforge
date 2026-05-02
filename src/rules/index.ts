@@ -378,12 +378,14 @@ noUnnecessaryStringCodepointatZeroRule,
      noUnnecessaryStringStartsEmptyRule,
     noUnnecessaryStringStartsWithNonEmptyRule,
    noUnnecessaryStringTrimEmptyRule,
+   noUnnecessaryStringTrimStartEmptyRule,
    noUnnecessaryStringReplaceAllRule,
    noUnnecessaryStringReplaceEmptyRule,
    noUnnecessaryStringSearchEmptyRule,
   noUnnecessaryStringRepeatZeroRule,
   noUnnecessaryStringSubstringZeroRule,
    noUnnecessaryStringifyRule,
+   noUnnecessaryStringToLowerCaseSameRule,
     noUnnecessaryStringToNumberRule,
    noUnnecessaryParseFloatRule,
     noUnnecessaryParseIntRule,
@@ -1041,6 +1043,7 @@ const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStri
 const adaptedNoUnnecessaryStringPadEndZero = adaptPluginRule(noUnnecessaryStringPadEndZeroRule, 'no-unnecessary-string-pad-end-zero')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
+const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
 const adaptedNoUnnecessaryParseFloat = adaptPluginRule(noUnnecessaryParseFloatRule, 'no-unnecessary-parse-float')
 const adaptedNoUnnecessaryParseInt = adaptPluginRule(noUnnecessaryParseIntRule, 'no-unnecessary-parse-int')
@@ -1056,6 +1059,7 @@ const adaptedNoUnnecessaryStringSliceZeroLen = adaptPluginRule(noUnnecessaryStri
 const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
 const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessaryStringStartsWithNonEmptyRule, 'no-unnecessary-string-starts-with-non-empty')
 const adaptedNoUnnecessaryStringTrimEmpty = adaptPluginRule(noUnnecessaryStringTrimEmptyRule, 'no-unnecessary-string-trim-empty')
+const adaptedNoUnnecessaryStringTrimStartEmpty = adaptPluginRule(noUnnecessaryStringTrimStartEmptyRule, 'no-unnecessary-string-trim-start-empty')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStringReplaceEmptyRule, 'no-unnecessary-string-replace-empty')
 const adaptedNoUnnecessaryStringSearchEmpty = adaptPluginRule(noUnnecessaryStringSearchEmptyRule, 'no-unnecessary-string-search-empty')
@@ -1781,12 +1785,14 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
     'no-unnecessary-string-starts-with-non-empty': adaptedNoUnnecessaryStringStartsWithNonEmpty,
     'no-unnecessary-string-trim-empty': adaptedNoUnnecessaryStringTrimEmpty,
+    'no-unnecessary-string-trim-start-empty': adaptedNoUnnecessaryStringTrimStartEmpty,
      'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
      'no-unnecessary-string-replace-empty': adaptedNoUnnecessaryStringReplaceEmpty,
      'no-unnecessary-string-search-empty': adaptedNoUnnecessaryStringSearchEmpty,
     'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
     'no-unnecessary-string-substring-zero': adaptedNoUnnecessaryStringSubstringZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
+  'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
   'no-unnecessary-parse-int': adaptedNoUnnecessaryParseInt,
@@ -2403,12 +2409,14 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-starts-empty': 'patterns',
    'no-unnecessary-string-starts-with-non-empty': 'patterns',
    'no-unnecessary-string-trim-empty': 'patterns',
+   'no-unnecessary-string-trim-start-empty': 'patterns',
     'no-unnecessary-string-replace-all': 'patterns',
     'no-unnecessary-string-replace-empty': 'patterns',
     'no-unnecessary-string-search-empty': 'patterns',
    'no-unnecessary-string-repeat-zero': 'patterns',
    'no-unnecessary-string-substring-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
+  'no-unnecessary-string-to-lower-case-same': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
   'no-unnecessary-parse-int': 'patterns',
