@@ -115,7 +115,7 @@ describe('no-unnecessary-math-sign-spread rule', () => {
 
     test('default export matches named export', () => {
       expect(noUnnecessaryMathSignSpreadRule).toBeDefined()
-      expect(noUnecessaryMathSignSpreadRule.meta).toBeDefined()
+      expect(noUnnecessaryMathSignSpreadRule.meta).toBeDefined()
       expect(noUnnecessaryMathSignSpreadRule.create).toBeDefined()
     })
   })

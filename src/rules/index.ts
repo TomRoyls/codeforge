@@ -549,6 +549,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryMathCosSpreadRule,
     noUnnecessaryMathTanSpreadRule,
     noUnnecessaryMathAtanSpreadRule,
+    noUnnecessaryMathRandomSpreadRule,
+    noUnnecessaryMathExpSpreadRule,
+    noUnnecessaryMathAtan2SpreadRule,
+    noUnnecessaryMathHypotSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1364,6 +1368,10 @@ const adaptedNoUnnecessaryMathSinSpread = adaptPluginRule(noUnnecessaryMathSinSp
 const adaptedNoUnnecessaryMathCosSpread = adaptPluginRule(noUnnecessaryMathCosSpreadRule, 'no-unnecessary-math-cos-spread')
 const adaptedNoUnnecessaryMathTanSpread = adaptPluginRule(noUnnecessaryMathTanSpreadRule, 'no-unnecessary-math-tan-spread')
 const adaptedNoUnnecessaryMathAtanSpread = adaptPluginRule(noUnnecessaryMathAtanSpreadRule, 'no-unnecessary-math-atan-spread')
+const adaptedNoUnnecessaryMathRandomSpread = adaptPluginRule(noUnnecessaryMathRandomSpreadRule, 'no-unnecessary-math-random-spread')
+const adaptedNoUnnecessaryMathExpSpread = adaptPluginRule(noUnnecessaryMathExpSpreadRule, 'no-unnecessary-math-exp-spread')
+const adaptedNoUnnecessaryMathAtan2Spread = adaptPluginRule(noUnnecessaryMathAtan2SpreadRule, 'no-unnecessary-math-atan2-spread')
+const adaptedNoUnnecessaryMathHypotSpread = adaptPluginRule(noUnnecessaryMathHypotSpreadRule, 'no-unnecessary-math-hypot-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2302,6 +2310,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-math-cos-spread': adaptedNoUnnecessaryMathCosSpread,
   'no-unnecessary-math-tan-spread': adaptedNoUnnecessaryMathTanSpread,
   'no-unnecessary-math-atan-spread': adaptedNoUnnecessaryMathAtanSpread,
+  'no-unnecessary-math-random-spread': adaptedNoUnnecessaryMathRandomSpread,
+  'no-unnecessary-math-exp-spread': adaptedNoUnnecessaryMathExpSpread,
+  'no-unnecessary-math-atan2-spread': adaptedNoUnnecessaryMathAtan2Spread,
+  'no-unnecessary-math-hypot-spread': adaptedNoUnnecessaryMathHypotSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3089,6 +3101,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-cos-spread': 'patterns',
   'no-unnecessary-math-tan-spread': 'patterns',
   'no-unnecessary-math-atan-spread': 'patterns',
+  'no-unnecessary-math-random-spread': 'patterns',
+  'no-unnecessary-math-exp-spread': 'patterns',
+  'no-unnecessary-math-atan2-spread': 'patterns',
+  'no-unnecessary-math-hypot-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
