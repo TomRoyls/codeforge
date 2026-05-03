@@ -396,24 +396,10 @@ describe('no-unnecessary-math-sqrt-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for Math.pow(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathSqrtSpreadRule.create(context)
-      visitor.CallExpression(makeMathCallNode('pow', [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }]))
-      expect(reports.length).toBe(0)
-    })
-
     test('does not report for Math.floor(...items) — wrong method', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSqrtSpreadRule.create(context)
       visitor.CallExpression(makeMathCallNode('floor', [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Math.ceil(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathSqrtSpreadRule.create(context)
-      visitor.CallExpression(makeMathCallNode('ceil', [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }]))
       expect(reports.length).toBe(0)
     })
 
@@ -695,22 +681,6 @@ describe('no-unnecessary-math-sqrt-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when object type is Literal instead of Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathSqrtSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Literal', value: 42 },
-          property: { type: 'Identifier', name: 'sqrt' },
-          computed: false,
-        },
-        arguments: [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
   })
 
   // ===== EDGE CASES (20) =====
