@@ -589,6 +589,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryReflectDefinePropertiesSpreadRule,
     noUnnecessaryReflectIsFrozenSpreadRule,
     noUnnecessaryReflectIsSealedSpreadRule,
+    noUnnecessaryEncodeUriSpreadRule,
+    noUnnecessaryDecodeUriSpreadRule,
+    noUnnecessaryEncodeUriComponentSpreadRule,
+    noUnnecessaryDecodeUriComponentSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1444,6 +1448,10 @@ const adaptedNoUnnecessaryReflectGetOwnPropertySymbolsSpread = adaptPluginRule(n
 const adaptedNoUnnecessaryReflectDefinePropertiesSpread = adaptPluginRule(noUnnecessaryReflectDefinePropertiesSpreadRule, 'no-unnecessary-reflect-define-properties-spread')
 const adaptedNoUnnecessaryReflectIsFrozenSpread = adaptPluginRule(noUnnecessaryReflectIsFrozenSpreadRule, 'no-unnecessary-reflect-is-frozen-spread')
 const adaptedNoUnnecessaryReflectIsSealedSpread = adaptPluginRule(noUnnecessaryReflectIsSealedSpreadRule, 'no-unnecessary-reflect-is-sealed-spread')
+const adaptedNoUnnecessaryEncodeUriSpread = adaptPluginRule(noUnnecessaryEncodeUriSpreadRule, 'no-unnecessary-encode-uri-spread')
+const adaptedNoUnnecessaryDecodeUriSpread = adaptPluginRule(noUnnecessaryDecodeUriSpreadRule, 'no-unnecessary-decode-uri-spread')
+const adaptedNoUnnecessaryEncodeUriComponentSpread = adaptPluginRule(noUnnecessaryEncodeUriComponentSpreadRule, 'no-unnecessary-encode-uri-component-spread')
+const adaptedNoUnnecessaryDecodeUriComponentSpread = adaptPluginRule(noUnnecessaryDecodeUriComponentSpreadRule, 'no-unnecessary-decode-uri-component-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2422,6 +2430,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-reflect-define-properties-spread': adaptedNoUnnecessaryReflectDefinePropertiesSpread,
   'no-unnecessary-reflect-is-frozen-spread': adaptedNoUnnecessaryReflectIsFrozenSpread,
   'no-unnecessary-reflect-is-sealed-spread': adaptedNoUnnecessaryReflectIsSealedSpread,
+  'no-unnecessary-encode-uri-spread': adaptedNoUnnecessaryEncodeUriSpread,
+  'no-unnecessary-decode-uri-spread': adaptedNoUnnecessaryDecodeUriSpread,
+  'no-unnecessary-encode-uri-component-spread': adaptedNoUnnecessaryEncodeUriComponentSpread,
+  'no-unnecessary-decode-uri-component-spread': adaptedNoUnnecessaryDecodeUriComponentSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3249,6 +3261,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-reflect-define-properties-spread': 'patterns',
   'no-unnecessary-reflect-is-frozen-spread': 'patterns',
   'no-unnecessary-reflect-is-sealed-spread': 'patterns',
+  'no-unnecessary-encode-uri-spread': 'patterns',
+  'no-unnecessary-decode-uri-spread': 'patterns',
+  'no-unnecessary-encode-uri-component-spread': 'patterns',
+  'no-unnecessary-decode-uri-component-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
