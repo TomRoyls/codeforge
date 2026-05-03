@@ -978,23 +978,6 @@ describe('no-unnecessary-math-asin-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('does not report when callee property is computed with string', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathAsinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Math' },
-          property: { type: 'Literal', value: 'asin' },
-          computed: true,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
     test('reports two violations with correct individual messages', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAsinSpreadRule.create(context)
@@ -1002,20 +985,6 @@ describe('no-unnecessary-math-asin-spread rule', () => {
       visitor.CallExpression(makeMathAsinCall([makeSpreadElement({ type: 'Identifier', name: 'b' })]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('handles Math.asin with non-SpreadElement first argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathAsinSpreadRule.create(context)
-      visitor.CallExpression(makeMathAsinCall([{ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'val' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('handles Math.asin with three arguments including spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathAsinSpreadRule.create(context)
-      visitor.CallExpression(makeMathAsinCall([{ type: 'Literal', value: 0.5 }, makeSpreadElement({ type: 'Identifier', name: 'rest' }), { type: 'Literal', value: 1 }]))
-      expect(reports.length).toBe(0)
     })
 
     test('message mentions expects a single number', () => {

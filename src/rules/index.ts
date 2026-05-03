@@ -565,6 +565,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryMathImulSpreadRule,
     noUnnecessaryMathFroundSpreadRule,
     noUnnecessaryReflectApplySpreadRule,
+    noUnnecessaryReflectConstructSpreadRule,
+    noUnnecessaryReflectGetSpreadRule,
+    noUnnecessaryReflectSetSpreadRule,
+    noUnnecessaryReflectDeletePropertySpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1396,6 +1400,10 @@ const adaptedNoUnnecessaryMathClz32Spread = adaptPluginRule(noUnnecessaryMathClz
 const adaptedNoUnnecessaryMathImulSpread = adaptPluginRule(noUnnecessaryMathImulSpreadRule, 'no-unnecessary-math-imul-spread')
 const adaptedNoUnnecessaryMathFroundSpread = adaptPluginRule(noUnnecessaryMathFroundSpreadRule, 'no-unnecessary-math-fround-spread')
 const adaptedNoUnnecessaryReflectApplySpread = adaptPluginRule(noUnnecessaryReflectApplySpreadRule, 'no-unnecessary-reflect-apply-spread')
+const adaptedNoUnnecessaryReflectConstructSpread = adaptPluginRule(noUnnecessaryReflectConstructSpreadRule, 'no-unnecessary-reflect-construct-spread')
+const adaptedNoUnnecessaryReflectGetSpread = adaptPluginRule(noUnnecessaryReflectGetSpreadRule, 'no-unnecessary-reflect-get-spread')
+const adaptedNoUnnecessaryReflectSetSpread = adaptPluginRule(noUnnecessaryReflectSetSpreadRule, 'no-unnecessary-reflect-set-spread')
+const adaptedNoUnnecessaryReflectDeletePropertySpread = adaptPluginRule(noUnnecessaryReflectDeletePropertySpreadRule, 'no-unnecessary-reflect-delete-property-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2350,6 +2358,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-math-imul-spread': adaptedNoUnnecessaryMathImulSpread,
   'no-unnecessary-math-fround-spread': adaptedNoUnnecessaryMathFroundSpread,
   'no-unnecessary-reflect-apply-spread': adaptedNoUnnecessaryReflectApplySpread,
+  'no-unnecessary-reflect-construct-spread': adaptedNoUnnecessaryReflectConstructSpread,
+  'no-unnecessary-reflect-get-spread': adaptedNoUnnecessaryReflectGetSpread,
+  'no-unnecessary-reflect-set-spread': adaptedNoUnnecessaryReflectSetSpread,
+  'no-unnecessary-reflect-delete-property-spread': adaptedNoUnnecessaryReflectDeletePropertySpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3153,6 +3165,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-imul-spread': 'patterns',
   'no-unnecessary-math-fround-spread': 'patterns',
   'no-unnecessary-reflect-apply-spread': 'patterns',
+  'no-unnecessary-reflect-construct-spread': 'patterns',
+  'no-unnecessary-reflect-get-spread': 'patterns',
+  'no-unnecessary-reflect-set-spread': 'patterns',
+  'no-unnecessary-reflect-delete-property-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
