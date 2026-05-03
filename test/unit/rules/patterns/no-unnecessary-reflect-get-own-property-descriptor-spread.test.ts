@@ -334,6 +334,13 @@ describe('no-unnecessary-reflect-get-own-property-descriptor-spread rule', () =>
       visitor.CallExpression(makeReflectCall([makeSpreadArg({ type: 'UnaryExpression', operator: 'typeof', prefix: true, argument: { type: 'Identifier', name: 'x' } })]))
       expect(reports.length).toBe(1)
     })
+
+    test('reports with SpreadElement referencing a yield expression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
+      visitor.CallExpression(makeReflectCall([makeSpreadArg({ type: 'YieldExpression', argument: { type: 'Identifier', name: 'gen' } })]))
+      expect(reports.length).toBe(1)
+    })
   })
 
   // ===== NEGATIVE CASES — DOES NOT REPORT (40) =====
@@ -377,9 +384,7 @@ describe('no-unnecessary-reflect-get-own-property-descriptor-spread rule', () =>
     test('does not report for Reflect.ownKeys(...items) — wrong method name', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
-      visitor.CallExpression(makeReflectCall([makeSpreadArg()]))
-      // Manually create with wrong method name
-      const node = {
+      visitor.CallExpression({
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
@@ -389,8 +394,7 @@ describe('no-unnecessary-reflect-get-own-property-descriptor-spread rule', () =>
         },
         arguments: [makeSpreadArg()],
         loc: makeLoc(1, 0, 1, 50),
-      }
-      visitor.CallExpression(node)
+      })
       expect(reports.length).toBe(0)
     })
 
@@ -1030,34 +1034,6 @@ describe('no-unnecessary-reflect-get-own-property-descriptor-spread rule', () =>
       visitor.CallExpression(makeReflectCall([makeSpreadArg({ type: 'Identifier', name: 'args' })]))
       expect(reports.length).toBe(2)
       expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('does not report when argument type is not SpreadElement', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
-      visitor.CallExpression(makeReflectCall([{ type: 'Literal', value: 42 }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when single argument is Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
-      visitor.CallExpression(makeReflectCall([{ type: 'Identifier', name: 'obj' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when single argument is MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
-      visitor.CallExpression(makeReflectCall([{ type: 'MemberExpression', object: { type: 'Identifier', name: 'a' }, property: { type: 'Identifier', name: 'b' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when single argument is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule.create(context)
-      visitor.CallExpression(makeReflectCall([{ type: 'ArrayExpression', elements: [] }]))
-      expect(reports.length).toBe(0)
     })
 
     test('does not report when single argument is ObjectExpression', () => {

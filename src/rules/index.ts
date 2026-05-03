@@ -577,6 +577,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryReflectSetPrototypeOfSpreadRule,
     noUnnecessaryReflectIsExtensibleSpreadRule,
     noUnnecessaryReflectPreventExtensionsSpreadRule,
+    noUnnecessaryJsonParseSpreadRule,
+    noUnnecessaryJsonStringifySpreadRule,
+    noUnnecessaryObjectHasOwnSpreadRule,
+    noUnnecessaryConsoleLogSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1420,6 +1424,10 @@ const adaptedNoUnnecessaryReflectGetPrototypeOfSpread = adaptPluginRule(noUnnece
 const adaptedNoUnnecessaryReflectSetPrototypeOfSpread = adaptPluginRule(noUnnecessaryReflectSetPrototypeOfSpreadRule, 'no-unnecessary-reflect-set-prototype-of-spread')
 const adaptedNoUnnecessaryReflectIsExtensibleSpread = adaptPluginRule(noUnnecessaryReflectIsExtensibleSpreadRule, 'no-unnecessary-reflect-is-extensible-spread')
 const adaptedNoUnnecessaryReflectPreventExtensionsSpread = adaptPluginRule(noUnnecessaryReflectPreventExtensionsSpreadRule, 'no-unnecessary-reflect-prevent-extensions-spread')
+const adaptedNoUnnecessaryJsonParseSpread = adaptPluginRule(noUnnecessaryJsonParseSpreadRule, 'no-unnecessary-json-parse-spread')
+const adaptedNoUnnecessaryJsonStringifySpread = adaptPluginRule(noUnnecessaryJsonStringifySpreadRule, 'no-unnecessary-json-stringify-spread')
+const adaptedNoUnnecessaryObjectHasOwnSpread = adaptPluginRule(noUnnecessaryObjectHasOwnSpreadRule, 'no-unnecessary-object-has-own-spread')
+const adaptedNoUnnecessaryConsoleLogSpread = adaptPluginRule(noUnnecessaryConsoleLogSpreadRule, 'no-unnecessary-console-log-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2386,6 +2394,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-reflect-set-prototype-of-spread': adaptedNoUnnecessaryReflectSetPrototypeOfSpread,
   'no-unnecessary-reflect-is-extensible-spread': adaptedNoUnnecessaryReflectIsExtensibleSpread,
   'no-unnecessary-reflect-prevent-extensions-spread': adaptedNoUnnecessaryReflectPreventExtensionsSpread,
+  'no-unnecessary-json-parse-spread': adaptedNoUnnecessaryJsonParseSpread,
+  'no-unnecessary-json-stringify-spread': adaptedNoUnnecessaryJsonStringifySpread,
+  'no-unnecessary-object-has-own-spread': adaptedNoUnnecessaryObjectHasOwnSpread,
+  'no-unnecessary-console-log-spread': adaptedNoUnnecessaryConsoleLogSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3201,6 +3213,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-reflect-set-prototype-of-spread': 'patterns',
   'no-unnecessary-reflect-is-extensible-spread': 'patterns',
   'no-unnecessary-reflect-prevent-extensions-spread': 'patterns',
+  'no-unnecessary-json-parse-spread': 'patterns',
+  'no-unnecessary-json-stringify-spread': 'patterns',
+  'no-unnecessary-object-has-own-spread': 'patterns',
+  'no-unnecessary-console-log-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',

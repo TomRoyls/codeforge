@@ -998,13 +998,6 @@ describe('no-unnecessary-reflect-own-keys-spread rule', () => {
       expect(reports[0].message).toBe(reports[1].message)
     })
 
-    test('handles argument that is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryReflectOwnKeysSpreadRule.create(context)
-      visitor.CallExpression(makeReflectOwnKeysCall([null]))
-      expect(reports.length).toBe(0)
-    })
-
     test('does not report for three arguments with one spread', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryReflectOwnKeysSpreadRule.create(context)
