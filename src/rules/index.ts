@@ -541,6 +541,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryMathSqrtSpreadRule,
     noUnnecessaryMathMaxSpreadRule,
     noUnnecessaryMathMinSpreadRule,
+    noUnnecessaryMathSignSpreadRule,
+    noUnnecessaryMathTruncSpreadRule,
+    noUnnecessaryMathPowSpreadRule,
+    noUnnecessaryMathLogSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1348,6 +1352,10 @@ const adaptedNoUnnecessaryMathRoundSpread = adaptPluginRule(noUnnecessaryMathRou
 const adaptedNoUnnecessaryMathSqrtSpread = adaptPluginRule(noUnnecessaryMathSqrtSpreadRule, 'no-unnecessary-math-sqrt-spread')
 const adaptedNoUnnecessaryMathMaxSpread = adaptPluginRule(noUnnecessaryMathMaxSpreadRule, 'no-unnecessary-math-max-spread')
 const adaptedNoUnnecessaryMathMinSpread = adaptPluginRule(noUnnecessaryMathMinSpreadRule, 'no-unnecessary-math-min-spread')
+const adaptedNoUnnecessaryMathSignSpread = adaptPluginRule(noUnnecessaryMathSignSpreadRule, 'no-unnecessary-math-sign-spread')
+const adaptedNoUnnecessaryMathTruncSpread = adaptPluginRule(noUnnecessaryMathTruncSpreadRule, 'no-unnecessary-math-trunc-spread')
+const adaptedNoUnnecessaryMathPowSpread = adaptPluginRule(noUnnecessaryMathPowSpreadRule, 'no-unnecessary-math-pow-spread')
+const adaptedNoUnnecessaryMathLogSpread = adaptPluginRule(noUnnecessaryMathLogSpreadRule, 'no-unnecessary-math-log-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2278,6 +2286,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-math-sqrt-spread': adaptedNoUnnecessaryMathSqrtSpread,
   'no-unnecessary-math-max-spread': adaptedNoUnnecessaryMathMaxSpread,
   'no-unnecessary-math-min-spread': adaptedNoUnnecessaryMathMinSpread,
+  'no-unnecessary-math-sign-spread': adaptedNoUnnecessaryMathSignSpread,
+  'no-unnecessary-math-trunc-spread': adaptedNoUnnecessaryMathTruncSpread,
+  'no-unnecessary-math-pow-spread': adaptedNoUnnecessaryMathPowSpread,
+  'no-unnecessary-math-log-spread': adaptedNoUnnecessaryMathLogSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3057,6 +3069,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-sqrt-spread': 'patterns',
   'no-unnecessary-math-max-spread': 'patterns',
   'no-unnecessary-math-min-spread': 'patterns',
+  'no-unnecessary-math-sign-spread': 'patterns',
+  'no-unnecessary-math-trunc-spread': 'patterns',
+  'no-unnecessary-math-pow-spread': 'patterns',
+  'no-unnecessary-math-log-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
