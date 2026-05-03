@@ -259,7 +259,8 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayForEachReturnRule,
      noUnnecessaryArrayForEachSpreadRule,
      noUnnecessaryArrayPushSpreadRule,
-    noUnnecessaryArrayFindBooleanRule,
+    noUnnecessaryArrayPopSpreadRule,
+     noUnnecessaryArrayFindBooleanRule,
      noUnnecessaryArrayFindLastBooleanRule,
      noUnnecessaryArrayFindLastSpreadRule,
      noUnnecessaryArrayFindLastIndexLiteralRule,
@@ -398,6 +399,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryArrayToReversedNoUseRule,
     noUnnecessaryArrayToReversedSpreadRule,
     noUnnecessaryArrayToStringArrayRule,
+   noUnnecessaryArrayToStringSpreadRule,
      noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
  noUnnecessaryStringConcatRule,
@@ -840,6 +842,7 @@ const adaptedNoUnnecessaryArrayFilterSpread = adaptPluginRule(noUnnecessaryArray
 const adaptedNoUnnecessaryArrayForEachReturn = adaptPluginRule(noUnnecessaryArrayForEachReturnRule, 'no-unnecessary-array-for-each-return')
 const adaptedNoUnnecessaryArrayForEachSpread = adaptPluginRule(noUnnecessaryArrayForEachSpreadRule, 'no-unnecessary-array-for-each-spread')
 const adaptedNoUnnecessaryArrayPushSpread = adaptPluginRule(noUnnecessaryArrayPushSpreadRule, 'no-unnecessary-array-push-spread')
+const adaptedNoUnnecessaryArrayPopSpread = adaptPluginRule(noUnnecessaryArrayPopSpreadRule, 'no-unnecessary-array-pop-spread')
 const adaptedNoUnnecessaryArrayFindBoolean = adaptPluginRule(noUnnecessaryArrayFindBooleanRule, 'no-unnecessary-array-find-boolean')
  const adaptedNoUnnecessaryArrayFindLastBoolean = adaptPluginRule(noUnnecessaryArrayFindLastBooleanRule, 'no-unnecessary-array-find-last-boolean')
  const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
@@ -1134,6 +1137,7 @@ const adaptedNoUnnecessaryArraySpliceZero = adaptPluginRule(noUnnecessaryArraySp
 const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUseRule, 'no-unnecessary-array-to-reversed-no-use')
 const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
 const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
+const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArrayToStringSpreadRule, 'no-unnecessary-array-to-string-spread')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
  const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
@@ -1801,8 +1805,9 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-filter-spread': adaptedNoUnnecessaryArrayFilterSpread,
     'no-unnecessary-array-for-each-return': adaptedNoUnnecessaryArrayForEachReturn,
     'no-unnecessary-array-for-each-spread': adaptedNoUnnecessaryArrayForEachSpread,
-    'no-unnecessary-array-push-spread': adaptedNoUnnecessaryArrayPushSpread,
-    'no-unnecessary-array-find-boolean': adaptedNoUnnecessaryArrayFindBoolean,
+     'no-unnecessary-array-push-spread': adaptedNoUnnecessaryArrayPushSpread,
+     'no-unnecessary-array-pop-spread': adaptedNoUnnecessaryArrayPopSpread,
+     'no-unnecessary-array-find-boolean': adaptedNoUnnecessaryArrayFindBoolean,
       'no-unnecessary-array-find-last-boolean': adaptedNoUnnecessaryArrayFindLastBoolean,
      'no-unnecessary-array-find-last-spread': adaptedNoUnnecessaryArrayFindLastSpread,
       'no-unnecessary-array-find-last-index-literal': adaptedNoUnnecessaryArrayFindLastIndexLiteral,
@@ -1938,8 +1943,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-array-splice-zero': adaptedNoUnnecessaryArraySpliceZero,
     'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
     'no-unnecessary-array-to-reversed-spread': adaptedNoUnnecessaryArrayToReversedSpread,
-    'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
-    'no-unnecessary-spread': adaptedNoUnnecessarySpread,
+     'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
+     'no-unnecessary-array-to-string-spread': adaptedNoUnnecessaryArrayToStringSpread,
+     'no-unnecessary-spread': adaptedNoUnnecessarySpread,
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-concat-empty': adaptedNoUnnecessaryStringConcatEmpty,
@@ -2509,8 +2515,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
      'no-unnecessary-array-filter-spread': 'patterns',
      'no-unnecessary-array-for-each-return': 'patterns',
     'no-unnecessary-array-for-each-spread': 'patterns',
-    'no-unnecessary-array-push-spread': 'patterns',
-    'no-unnecessary-array-find-boolean': 'patterns',
+     'no-unnecessary-array-push-spread': 'patterns',
+     'no-unnecessary-array-pop-spread': 'patterns',
+     'no-unnecessary-array-find-boolean': 'patterns',
     'no-unnecessary-array-find-last-boolean': 'patterns',
     'no-unnecessary-array-find-last-spread': 'patterns',
     'no-unnecessary-array-find-last-index-literal': 'patterns',
@@ -2619,8 +2626,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-splice-zero': 'patterns',
    'no-unnecessary-array-to-reversed-no-use': 'patterns',
    'no-unnecessary-array-to-reversed-spread': 'patterns',
-   'no-unnecessary-array-to-string-array': 'patterns',
-    'no-unnecessary-spread': 'patterns',
+    'no-unnecessary-array-to-string-array': 'patterns',
+    'no-unnecessary-array-to-string-spread': 'patterns',
+     'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-concat-empty': 'patterns',
