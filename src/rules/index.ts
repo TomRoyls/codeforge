@@ -517,7 +517,11 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryObjectSealSpreadRule,
     noUnnecessaryObjectIsSpreadRule,
     noUnnecessaryObjectAssignSpreadRule,
-   noUnnecessaryStringToLowerCaseSameRule,
+    noUnnecessaryObjectGetOwnPropertyNamesSpreadRule,
+    noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule,
+    noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule,
+    noUnnecessaryObjectIsFrozenSpreadRule,
+    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
    noUnnecessaryStringToLocaleLowerCaseSpreadRule,
@@ -1300,6 +1304,10 @@ const adaptedNoUnnecessaryObjectFreezeSpread = adaptPluginRule(noUnnecessaryObje
 const adaptedNoUnnecessaryObjectSealSpread = adaptPluginRule(noUnnecessaryObjectSealSpreadRule, 'no-unnecessary-object-seal-spread')
 const adaptedNoUnnecessaryObjectIsSpread = adaptPluginRule(noUnnecessaryObjectIsSpreadRule, 'no-unnecessary-object-is-spread')
 const adaptedNoUnnecessaryObjectAssignSpread = adaptPluginRule(noUnnecessaryObjectAssignSpreadRule, 'no-unnecessary-object-assign-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyNamesSpreadRule, 'no-unnecessary-object-get-own-property-names-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule, 'no-unnecessary-object-get-own-property-symbols-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-object-get-own-property-descriptor-spread')
+const adaptedNoUnnecessaryObjectIsFrozenSpread = adaptPluginRule(noUnnecessaryObjectIsFrozenSpreadRule, 'no-unnecessary-object-is-frozen-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2206,6 +2214,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-object-seal-spread': adaptedNoUnnecessaryObjectSealSpread,
   'no-unnecessary-object-is-spread': adaptedNoUnnecessaryObjectIsSpread,
   'no-unnecessary-object-assign-spread': adaptedNoUnnecessaryObjectAssignSpread,
+  'no-unnecessary-object-get-own-property-names-spread': adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread,
+  'no-unnecessary-object-get-own-property-symbols-spread': adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread,
+  'no-unnecessary-object-get-own-property-descriptor-spread': adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread,
+  'no-unnecessary-object-is-frozen-spread': adaptedNoUnnecessaryObjectIsFrozenSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -2961,6 +2973,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-object-seal-spread': 'patterns',
   'no-unnecessary-object-is-spread': 'patterns',
   'no-unnecessary-object-assign-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-names-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-symbols-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-descriptor-spread': 'patterns',
+  'no-unnecessary-object-is-frozen-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
