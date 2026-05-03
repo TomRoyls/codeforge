@@ -406,13 +406,17 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessarySpreadArrayRule,
  noUnnecessaryStringConcatRule,
  noUnnecessaryStringConcatEmptyRule,
+ noUnnecessaryStringConcatSpreadRule,
   noUnnecessaryStringConstructorRule,
   noUnnecessaryStringConstructorNonEmptyRule,
   noUnnecessaryStringIncludesEmptyRule,
+  noUnnecessaryStringIncludesSpreadRule,
   noUnnecessaryStringIndexOfEmptyRule,
+  noUnnecessaryStringIndexOfSpreadRule,
  noUnnecessaryStringIteratorEmptyRule,
  noUnnecessaryStringLastIndexOfZeroRule,
  noUnnecessaryStringLastIndexOfEmptyRule,
+ noUnnecessaryStringLastIndexOfSpreadRule,
   noUnnecessaryStringCharAtZeroRule,
   noUnnecessaryStringCharAtEmptyRule,
  noUnnecessaryStringCharCodeAtZeroRule,
@@ -1163,13 +1167,17 @@ const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArray
    'no-unnecessary-string-concat',
  )
 const adaptedNoUnnecessaryStringConcatEmpty = adaptPluginRule(noUnnecessaryStringConcatEmptyRule, 'no-unnecessary-string-concat-empty')
+const adaptedNoUnnecessaryStringConcatSpread = adaptPluginRule(noUnnecessaryStringConcatSpreadRule, 'no-unnecessary-string-concat-spread')
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringConstructorNonEmpty = adaptPluginRule(noUnnecessaryStringConstructorNonEmptyRule, 'no-unnecessary-string-constructor-non-empty')
 const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
+const adaptedNoUnnecessaryStringIncludesSpread = adaptPluginRule(noUnnecessaryStringIncludesSpreadRule, 'no-unnecessary-string-includes-spread')
 const adaptedNoUnnecessaryStringIndexOfEmpty = adaptPluginRule(noUnnecessaryStringIndexOfEmptyRule, 'no-unnecessary-string-index-of-empty')
+const adaptedNoUnnecessaryStringIndexOfSpread = adaptPluginRule(noUnnecessaryStringIndexOfSpreadRule, 'no-unnecessary-string-index-of-spread')
 const adaptedNoUnnecessaryStringIteratorEmpty = adaptPluginRule(noUnnecessaryStringIteratorEmptyRule, 'no-unnecessary-string-iterator-empty')
 const adaptedNoUnnecessaryStringLastIndexOfZero = adaptPluginRule(noUnnecessaryStringLastIndexOfZeroRule, 'no-unnecessary-string-last-index-of-zero')
 const adaptedNoUnnecessaryStringLastIndexOfEmpty = adaptPluginRule(noUnnecessaryStringLastIndexOfEmptyRule, 'no-unnecessary-string-last-index-of-empty')
+const adaptedNoUnnecessaryStringLastIndexOfSpread = adaptPluginRule(noUnnecessaryStringLastIndexOfSpreadRule, 'no-unnecessary-string-last-index-of-spread')
 const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-at-zero')
 const adaptedNoUnnecessaryStringCharAtEmpty = adaptPluginRule(noUnnecessaryStringCharAtEmptyRule, 'no-unnecessary-string-char-at-empty')
 const adaptedNoUnnecessaryStringCharCodeAtZero = adaptPluginRule(noUnnecessaryStringCharCodeAtZeroRule, 'no-unnecessary-string-char-code-at-zero')
@@ -1983,13 +1991,17 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-concat-empty': adaptedNoUnnecessaryStringConcatEmpty,
+   'no-unnecessary-string-concat-spread': adaptedNoUnnecessaryStringConcatSpread,
    'no-unnecessary-string-constructor': adaptedNoUnnecessaryStringConstructor,
    'no-unnecessary-string-constructor-non-empty': adaptedNoUnnecessaryStringConstructorNonEmpty,
     'no-unnecessary-string-includes-empty': adaptedNoUnnecessaryStringIncludesEmpty,
+    'no-unnecessary-string-includes-spread': adaptedNoUnnecessaryStringIncludesSpread,
     'no-unnecessary-string-index-of-empty': adaptedNoUnnecessaryStringIndexOfEmpty,
+    'no-unnecessary-string-index-of-spread': adaptedNoUnnecessaryStringIndexOfSpread,
     'no-unnecessary-string-iterator-empty': adaptedNoUnnecessaryStringIteratorEmpty,
     'no-unnecessary-string-last-index-of-zero': adaptedNoUnnecessaryStringLastIndexOfZero,
     'no-unnecessary-string-last-index-of-empty': adaptedNoUnnecessaryStringLastIndexOfEmpty,
+    'no-unnecessary-string-last-index-of-spread': adaptedNoUnnecessaryStringLastIndexOfSpread,
    'no-unnecessary-string-char-at-zero': adaptedNoUnnecessaryStringCharAtZero,
     'no-unnecessary-string-char-at-empty': adaptedNoUnnecessaryStringCharAtEmpty,
     'no-unnecessary-string-char-code-at-zero': adaptedNoUnnecessaryStringCharCodeAtZero,
@@ -2682,13 +2694,17 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-concat-empty': 'patterns',
+  'no-unnecessary-string-concat-spread': 'patterns',
    'no-unnecessary-string-constructor': 'patterns',
    'no-unnecessary-string-constructor-non-empty': 'patterns',
     'no-unnecessary-string-includes-empty': 'patterns',
+    'no-unnecessary-string-includes-spread': 'patterns',
     'no-unnecessary-string-index-of-empty': 'patterns',
+    'no-unnecessary-string-index-of-spread': 'patterns',
     'no-unnecessary-string-iterator-empty': 'patterns',
     'no-unnecessary-string-last-index-of-zero': 'patterns',
     'no-unnecessary-string-last-index-of-empty': 'patterns',
+    'no-unnecessary-string-last-index-of-spread': 'patterns',
      'no-unnecessary-string-char-at-zero': 'patterns',
      'no-unnecessary-string-char-at-empty': 'patterns',
      'no-unnecessary-string-char-code-at-zero': 'patterns',
