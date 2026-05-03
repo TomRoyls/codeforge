@@ -250,6 +250,7 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayEveryBooleanRule,
     noUnnecessaryArrayEveryTrueRule,
     noUnnecessaryArrayEverySpreadRule,
+   noUnnecessaryArrayFillSpreadRule,
      noUnnecessaryArrayEntriesSpreadRule,
    noUnnecessaryArrayAtSpreadRule,
       noUnnecessaryArrayFilterIdentityRule,
@@ -279,8 +280,9 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayJoinSpreadRule,
     noUnnecessaryArrayConstructorRule,
    noUnnecessaryArrayConcatSingleRule,
-   noUnnecessaryArrayConcatSpreadRule,
-   noUnnecessaryAsyncFunctionRule,
+    noUnnecessaryArrayConcatSpreadRule,
+   noUnnecessaryArrayCopyWithinSpreadRule,
+    noUnnecessaryAsyncFunctionRule,
    noUnnecessaryAsyncArrowRule,
   noUnnecessaryAwaitRule,
 noUnnecessaryAwaitForeachRule,
@@ -825,6 +827,7 @@ const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArray
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayEveryTrue = adaptPluginRule(noUnnecessaryArrayEveryTrueRule, 'no-unnecessary-array-every-true')
 const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
+const adaptedNoUnnecessaryArrayFillSpread = adaptPluginRule(noUnnecessaryArrayFillSpreadRule, 'no-unnecessary-array-fill-spread')
 const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
 const adaptedNoUnnecessaryArrayAtSpread = adaptPluginRule(noUnnecessaryArrayAtSpreadRule, 'no-unnecessary-array-at-spread')
 const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentityRule, 'no-unnecessary-array-filter-identity')
@@ -855,7 +858,8 @@ const adaptedNoUnnecessaryArrayJoinSpread = adaptPluginRule(noUnnecessaryArrayJo
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
 const adaptedNoUnnecessaryArrayConcatSpread = adaptPluginRule(noUnnecessaryArrayConcatSpreadRule, 'no-unnecessary-array-concat-spread')
-const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
+const adaptedNoUnnecessaryArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryArrayCopyWithinSpreadRule, 'no-unnecessary-array-copy-within-spread')
+ const adaptedNoUnnecessaryAsyncFunction = adaptPluginRule(noUnnecessaryAsyncFunctionRule, 'no-unnecessary-async-function')
 const adaptedNoUnnecessaryAsyncArrow = adaptPluginRule(noUnnecessaryAsyncArrowRule, 'no-unnecessary-async-arrow')
 const adaptedNoUnnecessaryBoolean = adaptPluginRule(noUnnecessaryBooleanRule, 'no-unnecessary-boolean')
 const adaptedNoUnnecessaryBooleanComparison = adaptPluginRule(noUnnecessaryBooleanComparisonRule, 'no-unnecessary-boolean-comparison')
@@ -1780,8 +1784,9 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
     'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
     'no-unnecessary-array-every-true': adaptedNoUnnecessaryArrayEveryTrue,
-    'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
-     'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
+     'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
+     'no-unnecessary-array-fill-spread': adaptedNoUnnecessaryArrayFillSpread,
+      'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
      'no-unnecessary-array-at-spread': adaptedNoUnnecessaryArrayAtSpread,
       'no-unnecessary-array-filter-identity': adaptedNoUnnecessaryArrayFilterIdentity,
      'no-unnecessary-array-filter-spread': adaptedNoUnnecessaryArrayFilterSpread,
@@ -1810,8 +1815,9 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-join-spread': adaptedNoUnnecessaryArrayJoinSpread,
     'no-unnecessary-array-constructor': adaptedNoUnnecessaryArrayConstructor,
     'no-unnecessary-array-concat-single': adaptedNoUnnecessaryArrayConcatSingle,
-    'no-unnecessary-array-concat-spread': adaptedNoUnnecessaryArrayConcatSpread,
-   'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
+     'no-unnecessary-array-concat-spread': adaptedNoUnnecessaryArrayConcatSpread,
+     'no-unnecessary-array-copy-within-spread': adaptedNoUnnecessaryArrayCopyWithinSpread,
+    'no-unnecessary-async-function': adaptedNoUnnecessaryAsyncFunction,
   'no-unnecessary-async-arrow': adaptedNoUnnecessaryAsyncArrow,
    'no-unnecessary-boolean': adaptedNoUnnecessaryBoolean,
    'no-unnecessary-boolean-comparison': adaptedNoUnnecessaryBooleanComparison,
@@ -2482,8 +2488,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-values-spread': 'patterns',
    'no-unnecessary-array-every-boolean': 'patterns',
    'no-unnecessary-array-every-true': 'patterns',
-   'no-unnecessary-array-every-spread': 'patterns',
-    'no-unnecessary-array-entries-spread': 'patterns',
+    'no-unnecessary-array-every-spread': 'patterns',
+    'no-unnecessary-array-fill-spread': 'patterns',
+     'no-unnecessary-array-entries-spread': 'patterns',
     'no-unnecessary-array-at-spread': 'patterns',
       'no-unnecessary-array-filter-identity': 'patterns',
      'no-unnecessary-array-filter-spread': 'patterns',
@@ -2512,8 +2519,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-join-spread': 'patterns',
    'no-unnecessary-array-constructor': 'patterns',
   'no-unnecessary-array-concat-single': 'patterns',
-  'no-unnecessary-array-concat-spread': 'patterns',
-  'no-unnecessary-async-function': 'patterns',
+   'no-unnecessary-array-concat-spread': 'patterns',
+   'no-unnecessary-array-copy-within-spread': 'patterns',
+   'no-unnecessary-async-function': 'patterns',
   'no-unnecessary-async-arrow': 'patterns',
    'no-unnecessary-boolean': 'patterns',
    'no-unnecessary-boolean-comparison': 'patterns',
