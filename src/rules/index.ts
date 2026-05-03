@@ -581,6 +581,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryJsonStringifySpreadRule,
     noUnnecessaryObjectHasOwnSpreadRule,
     noUnnecessaryConsoleLogSpreadRule,
+    noUnnecessaryConsoleWarnSpreadRule,
+    noUnnecessaryConsoleErrorSpreadRule,
+    noUnnecessaryConsoleInfoSpreadRule,
+    noUnnecessaryConsoleDebugSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1428,6 +1432,10 @@ const adaptedNoUnnecessaryJsonParseSpread = adaptPluginRule(noUnnecessaryJsonPar
 const adaptedNoUnnecessaryJsonStringifySpread = adaptPluginRule(noUnnecessaryJsonStringifySpreadRule, 'no-unnecessary-json-stringify-spread')
 const adaptedNoUnnecessaryObjectHasOwnSpread = adaptPluginRule(noUnnecessaryObjectHasOwnSpreadRule, 'no-unnecessary-object-has-own-spread')
 const adaptedNoUnnecessaryConsoleLogSpread = adaptPluginRule(noUnnecessaryConsoleLogSpreadRule, 'no-unnecessary-console-log-spread')
+const adaptedNoUnnecessaryConsoleWarnSpread = adaptPluginRule(noUnnecessaryConsoleWarnSpreadRule, 'no-unnecessary-console-warn-spread')
+const adaptedNoUnnecessaryConsoleErrorSpread = adaptPluginRule(noUnnecessaryConsoleErrorSpreadRule, 'no-unnecessary-console-error-spread')
+const adaptedNoUnnecessaryConsoleInfoSpread = adaptPluginRule(noUnnecessaryConsoleInfoSpreadRule, 'no-unnecessary-console-info-spread')
+const adaptedNoUnnecessaryConsoleDebugSpread = adaptPluginRule(noUnnecessaryConsoleDebugSpreadRule, 'no-unnecessary-console-debug-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2398,6 +2406,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-json-stringify-spread': adaptedNoUnnecessaryJsonStringifySpread,
   'no-unnecessary-object-has-own-spread': adaptedNoUnnecessaryObjectHasOwnSpread,
   'no-unnecessary-console-log-spread': adaptedNoUnnecessaryConsoleLogSpread,
+  'no-unnecessary-console-warn-spread': adaptedNoUnnecessaryConsoleWarnSpread,
+  'no-unnecessary-console-error-spread': adaptedNoUnnecessaryConsoleErrorSpread,
+  'no-unnecessary-console-info-spread': adaptedNoUnnecessaryConsoleInfoSpread,
+  'no-unnecessary-console-debug-spread': adaptedNoUnnecessaryConsoleDebugSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3217,6 +3229,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-json-stringify-spread': 'patterns',
   'no-unnecessary-object-has-own-spread': 'patterns',
   'no-unnecessary-console-log-spread': 'patterns',
+  'no-unnecessary-console-warn-spread': 'patterns',
+  'no-unnecessary-console-error-spread': 'patterns',
+  'no-unnecessary-console-info-spread': 'patterns',
+  'no-unnecessary-console-debug-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
