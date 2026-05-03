@@ -428,11 +428,13 @@ noUnnecessaryStringCodepointatZeroRule,
 noUnnecessaryStringCodePointAtEmptyRule,
  noUnnecessaryStringLengthCompareRule,
  noUnnecessaryStringLocaleCompareSameRule,
+ noUnnecessaryStringLocaleCompareSpreadRule,
   noUnnecessaryStringMatchAllEmptyRule,
   noUnnecessaryStringMatchAllSpreadRule,
   noUnnecessaryStringMatchEmptyRule,
 noUnnecessaryStringMatchSpreadRule,
  noUnnecessaryStringNormalizeEmptyRule,
+ noUnnecessaryStringNormalizeSpreadRule,
  noUnnecessaryStringEndsWithEmptyRule,
  noUnnecessaryStringEndsWithSpreadRule,
  noUnnecessaryStringPadStartZeroRule,
@@ -447,6 +449,7 @@ noUnnecessaryStringMatchSpreadRule,
      noUnnecessaryStringSplitLengthRule,
     noUnnecessaryStringSliceZeroLenRule,
     noUnnecessaryStringSliceZeroRule,
+    noUnnecessaryStringSliceSpreadRule,
      noUnnecessaryStringStartsEmptyRule,
     noUnnecessaryStringStartsWithNonEmptyRule,
     noUnnecessaryStringStartsWithEmptyRule,
@@ -470,6 +473,7 @@ noUnnecessaryStringMatchSpreadRule,
    noUnnecessaryStringRepeatEmptyRule,
   noUnnecessaryStringRepeatSpreadRule,
   noUnnecessaryStringSubstringZeroRule,
+  noUnnecessaryStringSubstringSpreadRule,
    noUnnecessaryStringifyRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
@@ -1193,11 +1197,13 @@ const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryS
 const adaptedNoUnnecessaryStringCodePointAtEmpty = adaptPluginRule(noUnnecessaryStringCodePointAtEmptyRule, 'no-unnecessary-string-code-point-at-empty')
 const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStringLengthCompareRule, 'no-unnecessary-string-length-compare')
 const adaptedNoUnnecessaryStringLocaleCompareSame = adaptPluginRule(noUnnecessaryStringLocaleCompareSameRule, 'no-unnecessary-string-locale-compare-same')
+const adaptedNoUnnecessaryStringLocaleCompareSpread = adaptPluginRule(noUnnecessaryStringLocaleCompareSpreadRule, 'no-unnecessary-string-locale-compare-spread')
 const adaptedNoUnnecessaryStringMatchAllEmpty = adaptPluginRule(noUnnecessaryStringMatchAllEmptyRule, 'no-unnecessary-string-match-all-empty')
 const adaptedNoUnnecessaryStringMatchAllSpread = adaptPluginRule(noUnnecessaryStringMatchAllSpreadRule, 'no-unnecessary-string-match-all-spread')
 const adaptedNoUnnecessaryStringMatchEmpty = adaptPluginRule(noUnnecessaryStringMatchEmptyRule, 'no-unnecessary-string-match-empty')
 const adaptedNoUnnecessaryStringMatchSpread = adaptPluginRule(noUnnecessaryStringMatchSpreadRule, 'no-unnecessary-string-match-spread')
 const adaptedNoUnnecessaryStringNormalizeEmpty = adaptPluginRule(noUnnecessaryStringNormalizeEmptyRule, 'no-unnecessary-string-normalize-empty')
+const adaptedNoUnnecessaryStringNormalizeSpread = adaptPluginRule(noUnnecessaryStringNormalizeSpreadRule, 'no-unnecessary-string-normalize-spread')
 const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringEndsWithSpread = adaptPluginRule(noUnnecessaryStringEndsWithSpreadRule, 'no-unnecessary-string-ends-with-spread')
 const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
@@ -1229,6 +1235,7 @@ const adaptedNoUnnecessaryStringSplitSpread = adaptPluginRule(noUnnecessaryStrin
 const adaptedNoUnnecessaryStringSplitLength = adaptPluginRule(noUnnecessaryStringSplitLengthRule, 'no-unnecessary-string-split-length')
 const adaptedNoUnnecessaryStringSliceZeroLen = adaptPluginRule(noUnnecessaryStringSliceZeroLenRule, 'no-unnecessary-string-slice-zero-len')
 const adaptedNoUnnecessaryStringSliceZero = adaptPluginRule(noUnnecessaryStringSliceZeroRule, 'no-unnecessary-string-slice-zero')
+const adaptedNoUnnecessaryStringSliceSpread = adaptPluginRule(noUnnecessaryStringSliceSpreadRule, 'no-unnecessary-string-slice-spread')
 const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
 const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessaryStringStartsWithNonEmptyRule, 'no-unnecessary-string-starts-with-non-empty')
 const adaptedNoUnnecessaryStringStartsWithEmpty = adaptPluginRule(noUnnecessaryStringStartsWithEmptyRule, 'no-unnecessary-string-starts-with-empty')
@@ -1251,6 +1258,7 @@ const adaptedNoUnnecessaryStringRepeatOne = adaptPluginRule(noUnnecessaryStringR
 const adaptedNoUnnecessaryStringRepeatEmpty = adaptPluginRule(noUnnecessaryStringRepeatEmptyRule, 'no-unnecessary-string-repeat-empty')
 const adaptedNoUnnecessaryStringRepeatSpread = adaptPluginRule(noUnnecessaryStringRepeatSpreadRule, 'no-unnecessary-string-repeat-spread')
 const adaptedNoUnnecessaryStringSubstringZero = adaptPluginRule(noUnnecessaryStringSubstringZeroRule, 'no-unnecessary-string-substring-zero')
+const adaptedNoUnnecessaryStringSubstringSpread = adaptPluginRule(noUnnecessaryStringSubstringSpreadRule, 'no-unnecessary-string-substring-spread')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
   'no-unnecessary-type-arguments',
@@ -2021,11 +2029,13 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-code-point-at-empty': adaptedNoUnnecessaryStringCodePointAtEmpty,
     'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
     'no-unnecessary-string-locale-compare-same': adaptedNoUnnecessaryStringLocaleCompareSame,
+    'no-unnecessary-string-locale-compare-spread': adaptedNoUnnecessaryStringLocaleCompareSpread,
     'no-unnecessary-string-match-all-empty': adaptedNoUnnecessaryStringMatchAllEmpty,
     'no-unnecessary-string-match-all-spread': adaptedNoUnnecessaryStringMatchAllSpread,
      'no-unnecessary-string-match-empty': adaptedNoUnnecessaryStringMatchEmpty,
      'no-unnecessary-string-match-spread': adaptedNoUnnecessaryStringMatchSpread,
      'no-unnecessary-string-normalize-empty': adaptedNoUnnecessaryStringNormalizeEmpty,
+     'no-unnecessary-string-normalize-spread': adaptedNoUnnecessaryStringNormalizeSpread,
     'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
     'no-unnecessary-string-ends-with-spread': adaptedNoUnnecessaryStringEndsWithSpread,
    'no-unnecessary-string-pad-start-zero': adaptedNoUnnecessaryStringPadStartZero,
@@ -2041,6 +2051,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-split-length': adaptedNoUnnecessaryStringSplitLength,
    'no-unnecessary-string-slice-zero-len': adaptedNoUnnecessaryStringSliceZeroLen,
    'no-unnecessary-string-slice-zero': adaptedNoUnnecessaryStringSliceZero,
+   'no-unnecessary-string-slice-spread': adaptedNoUnnecessaryStringSliceSpread,
     'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
     'no-unnecessary-string-starts-with-non-empty': adaptedNoUnnecessaryStringStartsWithNonEmpty,
     'no-unnecessary-string-starts-with-empty': adaptedNoUnnecessaryStringStartsWithEmpty,
@@ -2063,6 +2074,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-repeat-empty': adaptedNoUnnecessaryStringRepeatEmpty,
     'no-unnecessary-string-repeat-spread': adaptedNoUnnecessaryStringRepeatSpread,
     'no-unnecessary-string-substring-zero': adaptedNoUnnecessaryStringSubstringZero,
+    'no-unnecessary-string-substring-spread': adaptedNoUnnecessaryStringSubstringSpread,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
@@ -2728,11 +2740,13 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-code-point-at-empty': 'patterns',
    'no-unnecessary-string-length-compare': 'patterns',
    'no-unnecessary-string-locale-compare-same': 'patterns',
+   'no-unnecessary-string-locale-compare-spread': 'patterns',
    'no-unnecessary-string-match-all-empty': 'patterns',
    'no-unnecessary-string-match-all-spread': 'patterns',
     'no-unnecessary-string-match-empty': 'patterns',
     'no-unnecessary-string-match-spread': 'patterns',
     'no-unnecessary-string-normalize-empty': 'patterns',
+    'no-unnecessary-string-normalize-spread': 'patterns',
    'no-unnecessary-string-ends-with-empty': 'patterns',
    'no-unnecessary-string-ends-with-spread': 'patterns',
   'no-unnecessary-string-pad-start-zero': 'patterns',
@@ -2748,6 +2762,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-split-length': 'patterns',
   'no-unnecessary-string-slice-zero-len': 'patterns',
   'no-unnecessary-string-slice-zero': 'patterns',
+  'no-unnecessary-string-slice-spread': 'patterns',
    'no-unnecessary-string-starts-empty': 'patterns',
    'no-unnecessary-string-starts-with-non-empty': 'patterns',
    'no-unnecessary-string-starts-with-empty': 'patterns',
@@ -2770,6 +2785,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-string-repeat-empty': 'patterns',
     'no-unnecessary-string-repeat-spread': 'patterns',
     'no-unnecessary-string-substring-zero': 'patterns',
+    'no-unnecessary-string-substring-spread': 'patterns',
   'no-unnecessary-stringify': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
