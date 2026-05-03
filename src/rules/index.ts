@@ -585,6 +585,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryConsoleErrorSpreadRule,
     noUnnecessaryConsoleInfoSpreadRule,
     noUnnecessaryConsoleDebugSpreadRule,
+    noUnnecessaryReflectGetOwnPropertySymbolsSpreadRule,
+    noUnnecessaryReflectDefinePropertiesSpreadRule,
+    noUnnecessaryReflectIsFrozenSpreadRule,
+    noUnnecessaryReflectIsSealedSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1436,6 +1440,10 @@ const adaptedNoUnnecessaryConsoleWarnSpread = adaptPluginRule(noUnnecessaryConso
 const adaptedNoUnnecessaryConsoleErrorSpread = adaptPluginRule(noUnnecessaryConsoleErrorSpreadRule, 'no-unnecessary-console-error-spread')
 const adaptedNoUnnecessaryConsoleInfoSpread = adaptPluginRule(noUnnecessaryConsoleInfoSpreadRule, 'no-unnecessary-console-info-spread')
 const adaptedNoUnnecessaryConsoleDebugSpread = adaptPluginRule(noUnnecessaryConsoleDebugSpreadRule, 'no-unnecessary-console-debug-spread')
+const adaptedNoUnnecessaryReflectGetOwnPropertySymbolsSpread = adaptPluginRule(noUnnecessaryReflectGetOwnPropertySymbolsSpreadRule, 'no-unnecessary-reflect-get-own-property-symbols-spread')
+const adaptedNoUnnecessaryReflectDefinePropertiesSpread = adaptPluginRule(noUnnecessaryReflectDefinePropertiesSpreadRule, 'no-unnecessary-reflect-define-properties-spread')
+const adaptedNoUnnecessaryReflectIsFrozenSpread = adaptPluginRule(noUnnecessaryReflectIsFrozenSpreadRule, 'no-unnecessary-reflect-is-frozen-spread')
+const adaptedNoUnnecessaryReflectIsSealedSpread = adaptPluginRule(noUnnecessaryReflectIsSealedSpreadRule, 'no-unnecessary-reflect-is-sealed-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2410,6 +2418,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-console-error-spread': adaptedNoUnnecessaryConsoleErrorSpread,
   'no-unnecessary-console-info-spread': adaptedNoUnnecessaryConsoleInfoSpread,
   'no-unnecessary-console-debug-spread': adaptedNoUnnecessaryConsoleDebugSpread,
+  'no-unnecessary-reflect-get-own-property-symbols-spread': adaptedNoUnnecessaryReflectGetOwnPropertySymbolsSpread,
+  'no-unnecessary-reflect-define-properties-spread': adaptedNoUnnecessaryReflectDefinePropertiesSpread,
+  'no-unnecessary-reflect-is-frozen-spread': adaptedNoUnnecessaryReflectIsFrozenSpread,
+  'no-unnecessary-reflect-is-sealed-spread': adaptedNoUnnecessaryReflectIsSealedSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3233,6 +3245,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-console-error-spread': 'patterns',
   'no-unnecessary-console-info-spread': 'patterns',
   'no-unnecessary-console-debug-spread': 'patterns',
+  'no-unnecessary-reflect-get-own-property-symbols-spread': 'patterns',
+  'no-unnecessary-reflect-define-properties-spread': 'patterns',
+  'no-unnecessary-reflect-is-frozen-spread': 'patterns',
+  'no-unnecessary-reflect-is-sealed-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
