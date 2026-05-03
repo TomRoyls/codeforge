@@ -479,11 +479,15 @@ noUnnecessaryStringMatchSpreadRule,
    noUnnecessaryStringifyRule,
    noUnnecessaryStringToStringSpreadRule,
    noUnnecessaryStringValueOfSpreadRule,
+   noUnnecessaryStringAnchorSpreadRule,
+   noUnnecessaryStringFixedSpreadRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
+   noUnnecessaryStringToLocaleLowerCaseSpreadRule,
     noUnnecessaryStringToUpperCaseSameRule,
     noUnnecessaryStringToUpperCaseEmptyRule,
+    noUnnecessaryStringToLocaleUpperCaseSpreadRule,
     noUnnecessaryStringToUpperCaseSpreadRule,
     noUnnecessaryStringWrapperRule,
      noUnnecessaryStringToNumberRule,
@@ -1222,11 +1226,15 @@ const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWra
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
 const adaptedNoUnnecessaryStringToStringSpread = adaptPluginRule(noUnnecessaryStringToStringSpreadRule, 'no-unnecessary-string-to-string-spread')
 const adaptedNoUnnecessaryStringValueOfSpread = adaptPluginRule(noUnnecessaryStringValueOfSpreadRule, 'no-unnecessary-string-value-of-spread')
+const adaptedNoUnnecessaryStringAnchorSpread = adaptPluginRule(noUnnecessaryStringAnchorSpreadRule, 'no-unnecessary-string-anchor-spread')
+const adaptedNoUnnecessaryStringFixedSpread = adaptPluginRule(noUnnecessaryStringFixedSpreadRule, 'no-unnecessary-string-fixed-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
+const adaptedNoUnnecessaryStringToLocaleLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleLowerCaseSpreadRule, 'no-unnecessary-string-to-locale-lower-case-spread')
 const adaptedNoUnnecessaryStringToUpperCaseSame = adaptPluginRule(noUnnecessaryStringToUpperCaseSameRule, 'no-unnecessary-string-to-upper-case-same')
 const adaptedNoUnnecessaryStringToUpperCaseEmpty = adaptPluginRule(noUnnecessaryStringToUpperCaseEmptyRule, 'no-unnecessary-string-to-upper-case-empty')
+const adaptedNoUnnecessaryStringToLocaleUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleUpperCaseSpreadRule, 'no-unnecessary-string-to-locale-upper-case-spread')
 const adaptedNoUnnecessaryStringToUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToUpperCaseSpreadRule, 'no-unnecessary-string-to-upper-case-spread')
 const adaptedNoUnnecessaryStringToNumber = adaptPluginRule(noUnnecessaryStringToNumberRule, 'no-unnecessary-string-to-number')
 const adaptedNoUnnecessaryParseFloat = adaptPluginRule(noUnnecessaryParseFloatRule, 'no-unnecessary-parse-float')
@@ -2088,11 +2096,15 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
   'no-unnecessary-string-to-string-spread': adaptedNoUnnecessaryStringToStringSpread,
   'no-unnecessary-string-value-of-spread': adaptedNoUnnecessaryStringValueOfSpread,
+  'no-unnecessary-string-anchor-spread': adaptedNoUnnecessaryStringAnchorSpread,
+  'no-unnecessary-string-fixed-spread': adaptedNoUnnecessaryStringFixedSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
+   'no-unnecessary-string-to-locale-lower-case-spread': adaptedNoUnnecessaryStringToLocaleLowerCaseSpread,
    'no-unnecessary-string-to-upper-case-same': adaptedNoUnnecessaryStringToUpperCaseSame,
    'no-unnecessary-string-to-upper-case-empty': adaptedNoUnnecessaryStringToUpperCaseEmpty,
+   'no-unnecessary-string-to-locale-upper-case-spread': adaptedNoUnnecessaryStringToLocaleUpperCaseSpread,
    'no-unnecessary-string-to-upper-case-spread': adaptedNoUnnecessaryStringToUpperCaseSpread,
   'no-unnecessary-string-to-number': adaptedNoUnnecessaryStringToNumber,
   'no-unnecessary-parse-float': adaptedNoUnnecessaryParseFloat,
@@ -2803,11 +2815,15 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-stringify': 'patterns',
   'no-unnecessary-string-to-string-spread': 'patterns',
   'no-unnecessary-string-value-of-spread': 'patterns',
+  'no-unnecessary-string-anchor-spread': 'patterns',
+  'no-unnecessary-string-fixed-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
+   'no-unnecessary-string-to-locale-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-upper-case-same': 'patterns',
    'no-unnecessary-string-to-upper-case-empty': 'patterns',
+   'no-unnecessary-string-to-locale-upper-case-spread': 'patterns',
    'no-unnecessary-string-to-upper-case-spread': 'patterns',
   'no-unnecessary-string-to-number': 'patterns',
   'no-unnecessary-parse-float': 'patterns',
