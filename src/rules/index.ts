@@ -263,6 +263,7 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayFindLastSpreadRule,
      noUnnecessaryArrayFindLastIndexLiteralRule,
      noUnnecessaryArrayFindLastIndexSpreadRule,
+   noUnnecessaryArrayFindSpreadRule,
     noUnnecessaryArrayFindIndexLiteralRule,
      noUnnecessaryArrayFindIndexSpreadRule,
      noUnnecessaryArrayIndexOfSpreadRule,
@@ -380,6 +381,7 @@ noUnnecessaryReturnAwaitRule,
    noUnnecessarySortRule,
     noUnnecessaryArraySortNoUseRule,
     noUnnecessaryArraySortSpreadRule,
+   noUnnecessaryArraySpliceSpreadRule,
     noUnnecessaryArraySomeFalseRule,
     noUnnecessaryArraySomeSpreadRule,
     noUnnecessaryIncludesRule,
@@ -840,6 +842,7 @@ const adaptedNoUnnecessaryArrayFindBoolean = adaptPluginRule(noUnnecessaryArrayF
  const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
  const adaptedNoUnnecessaryArrayFindLastIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindLastIndexLiteralRule, 'no-unnecessary-array-find-last-index-literal')
  const adaptedNoUnnecessaryArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryArrayFindLastIndexSpreadRule, 'no-unnecessary-array-find-last-index-spread')
+const adaptedNoUnnecessaryArrayFindSpread = adaptPluginRule(noUnnecessaryArrayFindSpreadRule, 'no-unnecessary-array-find-spread')
 const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindIndexLiteralRule, 'no-unnecessary-array-find-index-literal')
  const adaptedNoUnnecessaryArrayFindIndexSpread = adaptPluginRule(noUnnecessaryArrayFindIndexSpreadRule, 'no-unnecessary-array-find-index-spread')
  const adaptedNoUnnecessaryArrayIndexOfSpread = adaptPluginRule(noUnnecessaryArrayIndexOfSpreadRule, 'no-unnecessary-array-index-of-spread')
@@ -958,6 +961,7 @@ const adaptedNoUnnecessaryJoin = adaptPluginRule(noUnnecessaryJoinRule, 'no-unne
 const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unnecessary-sort')
 const adaptedNoUnnecessaryArraySortNoUse = adaptPluginRule(noUnnecessaryArraySortNoUseRule, 'no-unnecessary-array-sort-no-use')
 const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySortSpreadRule, 'no-unnecessary-array-sort-spread')
+const adaptedNoUnnecessaryArraySpliceSpread = adaptPluginRule(noUnnecessaryArraySpliceSpreadRule, 'no-unnecessary-array-splice-spread')
  const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalseRule, 'no-unnecessary-array-some-false')
  const adaptedNoUnnecessaryArraySomeSpread = adaptPluginRule(noUnnecessaryArraySomeSpreadRule, 'no-unnecessary-array-some-spread')
  const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -1797,8 +1801,9 @@ export const allRules: Record<string, RuleDefinition> = {
       'no-unnecessary-array-find-last-boolean': adaptedNoUnnecessaryArrayFindLastBoolean,
      'no-unnecessary-array-find-last-spread': adaptedNoUnnecessaryArrayFindLastSpread,
       'no-unnecessary-array-find-last-index-literal': adaptedNoUnnecessaryArrayFindLastIndexLiteral,
-      'no-unnecessary-array-find-last-index-spread': adaptedNoUnnecessaryArrayFindLastIndexSpread,
-    'no-unnecessary-array-find-index-literal': adaptedNoUnnecessaryArrayFindIndexLiteral,
+       'no-unnecessary-array-find-last-index-spread': adaptedNoUnnecessaryArrayFindLastIndexSpread,
+       'no-unnecessary-array-find-spread': adaptedNoUnnecessaryArrayFindSpread,
+     'no-unnecessary-array-find-index-literal': adaptedNoUnnecessaryArrayFindIndexLiteral,
     'no-unnecessary-array-find-index-spread': adaptedNoUnnecessaryArrayFindIndexSpread,
     'no-unnecessary-array-index-of-spread': adaptedNoUnnecessaryArrayIndexOfSpread,
     'no-unnecessary-array-last-index-of-spread': adaptedNoUnnecessaryArrayLastIndexOfSpread,
@@ -1912,8 +1917,9 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-join': adaptedNoUnnecessaryJoin,
   'no-unnecessary-sort': adaptedNoUnnecessarySort,
   'no-unnecessary-array-sort-no-use': adaptedNoUnnecessaryArraySortNoUse,
-  'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
-  'no-unnecessary-array-some-false': adaptedNoUnnecessaryArraySomeFalse,
+   'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
+   'no-unnecessary-array-splice-spread': adaptedNoUnnecessaryArraySpliceSpread,
+   'no-unnecessary-array-some-false': adaptedNoUnnecessaryArraySomeFalse,
   'no-unnecessary-array-some-spread': adaptedNoUnnecessaryArraySomeSpread,
   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
@@ -2501,8 +2507,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-find-last-boolean': 'patterns',
     'no-unnecessary-array-find-last-spread': 'patterns',
     'no-unnecessary-array-find-last-index-literal': 'patterns',
-    'no-unnecessary-array-find-last-index-spread': 'patterns',
-    'no-unnecessary-array-find-index-literal': 'patterns',
+     'no-unnecessary-array-find-last-index-spread': 'patterns',
+     'no-unnecessary-array-find-spread': 'patterns',
+     'no-unnecessary-array-find-index-literal': 'patterns',
     'no-unnecessary-array-find-index-spread': 'patterns',
     'no-unnecessary-array-index-of-spread': 'patterns',
     'no-unnecessary-array-last-index-of-spread': 'patterns',
@@ -2690,8 +2697,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-join': 'patterns',
   'no-unnecessary-sort': 'patterns',
    'no-unnecessary-array-sort-no-use': 'patterns',
-   'no-unnecessary-array-sort-spread': 'patterns',
-   'no-unnecessary-array-some-false': 'patterns',
+    'no-unnecessary-array-sort-spread': 'patterns',
+    'no-unnecessary-array-splice-spread': 'patterns',
+    'no-unnecessary-array-some-false': 'patterns',
    'no-unnecessary-array-some-spread': 'patterns',
    'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
