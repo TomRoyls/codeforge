@@ -424,6 +424,7 @@ noUnnecessaryStringCodePointAtEmptyRule,
  noUnnecessaryStringLocaleCompareSameRule,
  noUnnecessaryStringMatchAllEmptyRule,
  noUnnecessaryStringMatchEmptyRule,
+noUnnecessaryStringMatchSpreadRule,
  noUnnecessaryStringNormalizeEmptyRule,
  noUnnecessaryStringEndsWithEmptyRule,
  noUnnecessaryStringPadStartZeroRule,
@@ -432,6 +433,7 @@ noUnnecessaryStringCodePointAtEmptyRule,
  noUnnecessaryStringPadEndEmptyRule,
      noUnnecessaryStringSplitRule,
      noUnnecessaryStringSplitEmptySeparatorRule,
+    noUnnecessaryStringSplitSpreadRule,
      noUnnecessaryStringSplitLengthRule,
     noUnnecessaryStringSliceZeroLenRule,
     noUnnecessaryStringSliceZeroRule,
@@ -1167,6 +1169,7 @@ const adaptedNoUnnecessaryStringLengthCompare = adaptPluginRule(noUnnecessaryStr
 const adaptedNoUnnecessaryStringLocaleCompareSame = adaptPluginRule(noUnnecessaryStringLocaleCompareSameRule, 'no-unnecessary-string-locale-compare-same')
 const adaptedNoUnnecessaryStringMatchAllEmpty = adaptPluginRule(noUnnecessaryStringMatchAllEmptyRule, 'no-unnecessary-string-match-all-empty')
 const adaptedNoUnnecessaryStringMatchEmpty = adaptPluginRule(noUnnecessaryStringMatchEmptyRule, 'no-unnecessary-string-match-empty')
+const adaptedNoUnnecessaryStringMatchSpread = adaptPluginRule(noUnnecessaryStringMatchSpreadRule, 'no-unnecessary-string-match-spread')
 const adaptedNoUnnecessaryStringNormalizeEmpty = adaptPluginRule(noUnnecessaryStringNormalizeEmptyRule, 'no-unnecessary-string-normalize-empty')
 const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
@@ -1190,6 +1193,7 @@ const adaptedNoUnnecessaryDelete = adaptPluginRule(noUnnecessaryDeleteRule, 'no-
 const adaptedNoUnnecessaryEncodeUri = adaptPluginRule(noUnnecessaryEncodeUriRule, 'no-unnecessary-encode-uri')
 const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplitRule, 'no-unnecessary-string-split')
 const adaptedNoUnnecessaryStringSplitEmptySeparator = adaptPluginRule(noUnnecessaryStringSplitEmptySeparatorRule, 'no-unnecessary-string-split-empty-separator')
+const adaptedNoUnnecessaryStringSplitSpread = adaptPluginRule(noUnnecessaryStringSplitSpreadRule, 'no-unnecessary-string-split-spread')
 const adaptedNoUnnecessaryStringSplitLength = adaptPluginRule(noUnnecessaryStringSplitLengthRule, 'no-unnecessary-string-split-length')
 const adaptedNoUnnecessaryStringSliceZeroLen = adaptPluginRule(noUnnecessaryStringSliceZeroLenRule, 'no-unnecessary-string-slice-zero-len')
 const adaptedNoUnnecessaryStringSliceZero = adaptPluginRule(noUnnecessaryStringSliceZeroRule, 'no-unnecessary-string-slice-zero')
@@ -1972,8 +1976,9 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-length-compare': adaptedNoUnnecessaryStringLengthCompare,
     'no-unnecessary-string-locale-compare-same': adaptedNoUnnecessaryStringLocaleCompareSame,
     'no-unnecessary-string-match-all-empty': adaptedNoUnnecessaryStringMatchAllEmpty,
-    'no-unnecessary-string-match-empty': adaptedNoUnnecessaryStringMatchEmpty,
-    'no-unnecessary-string-normalize-empty': adaptedNoUnnecessaryStringNormalizeEmpty,
+     'no-unnecessary-string-match-empty': adaptedNoUnnecessaryStringMatchEmpty,
+     'no-unnecessary-string-match-spread': adaptedNoUnnecessaryStringMatchSpread,
+     'no-unnecessary-string-normalize-empty': adaptedNoUnnecessaryStringNormalizeEmpty,
     'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
    'no-unnecessary-string-pad-start-zero': adaptedNoUnnecessaryStringPadStartZero,
    'no-unnecessary-string-pad-start-empty': adaptedNoUnnecessaryStringPadStartEmpty,
@@ -1981,8 +1986,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-string-pad-end-empty': adaptedNoUnnecessaryStringPadEndEmpty,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
-   'no-unnecessary-string-split-empty-separator': adaptedNoUnnecessaryStringSplitEmptySeparator,
-   'no-unnecessary-string-split-length': adaptedNoUnnecessaryStringSplitLength,
+    'no-unnecessary-string-split-empty-separator': adaptedNoUnnecessaryStringSplitEmptySeparator,
+    'no-unnecessary-string-split-spread': adaptedNoUnnecessaryStringSplitSpread,
+    'no-unnecessary-string-split-length': adaptedNoUnnecessaryStringSplitLength,
    'no-unnecessary-string-slice-zero-len': adaptedNoUnnecessaryStringSliceZeroLen,
    'no-unnecessary-string-slice-zero': adaptedNoUnnecessaryStringSliceZero,
     'no-unnecessary-string-starts-empty': adaptedNoUnnecessaryStringStartsEmpty,
@@ -2657,8 +2663,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-length-compare': 'patterns',
    'no-unnecessary-string-locale-compare-same': 'patterns',
    'no-unnecessary-string-match-all-empty': 'patterns',
-   'no-unnecessary-string-match-empty': 'patterns',
-   'no-unnecessary-string-normalize-empty': 'patterns',
+    'no-unnecessary-string-match-empty': 'patterns',
+    'no-unnecessary-string-match-spread': 'patterns',
+    'no-unnecessary-string-normalize-empty': 'patterns',
    'no-unnecessary-string-ends-with-empty': 'patterns',
   'no-unnecessary-string-pad-start-zero': 'patterns',
   'no-unnecessary-string-pad-start-empty': 'patterns',
@@ -2666,8 +2673,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-pad-end-empty': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
-  'no-unnecessary-string-split-empty-separator': 'patterns',
-  'no-unnecessary-string-split-length': 'patterns',
+   'no-unnecessary-string-split-empty-separator': 'patterns',
+   'no-unnecessary-string-split-spread': 'patterns',
+   'no-unnecessary-string-split-length': 'patterns',
   'no-unnecessary-string-slice-zero-len': 'patterns',
   'no-unnecessary-string-slice-zero': 'patterns',
    'no-unnecessary-string-starts-empty': 'patterns',
