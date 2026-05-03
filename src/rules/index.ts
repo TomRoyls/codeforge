@@ -557,6 +557,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryMathLog10SpreadRule,
     noUnnecessaryMathCbrtSpreadRule,
     noUnnecessaryMathAcosSpreadRule,
+    noUnnecessaryMathAsinSpreadRule,
+    noUnnecessaryMathAsinhSpreadRule,
+    noUnnecessaryMathAcoshSpreadRule,
+    noUnnecessaryMathAtanhSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1380,6 +1384,10 @@ const adaptedNoUnnecessaryMathLog2Spread = adaptPluginRule(noUnnecessaryMathLog2
 const adaptedNoUnnecessaryMathLog10Spread = adaptPluginRule(noUnnecessaryMathLog10SpreadRule, 'no-unnecessary-math-log10-spread')
 const adaptedNoUnnecessaryMathCbrtSpread = adaptPluginRule(noUnnecessaryMathCbrtSpreadRule, 'no-unnecessary-math-cbrt-spread')
 const adaptedNoUnnecessaryMathAcosSpread = adaptPluginRule(noUnnecessaryMathAcosSpreadRule, 'no-unnecessary-math-acos-spread')
+const adaptedNoUnnecessaryMathAsinSpread = adaptPluginRule(noUnnecessaryMathAsinSpreadRule, 'no-unnecessary-math-asin-spread')
+const adaptedNoUnnecessaryMathAsinhSpread = adaptPluginRule(noUnnecessaryMathAsinhSpreadRule, 'no-unnecessary-math-asinh-spread')
+const adaptedNoUnnecessaryMathAcoshSpread = adaptPluginRule(noUnnecessaryMathAcoshSpreadRule, 'no-unnecessary-math-acosh-spread')
+const adaptedNoUnnecessaryMathAtanhSpread = adaptPluginRule(noUnnecessaryMathAtanhSpreadRule, 'no-unnecessary-math-atanh-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2326,6 +2334,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-math-log10-spread': adaptedNoUnnecessaryMathLog10Spread,
   'no-unnecessary-math-cbrt-spread': adaptedNoUnnecessaryMathCbrtSpread,
   'no-unnecessary-math-acos-spread': adaptedNoUnnecessaryMathAcosSpread,
+  'no-unnecessary-math-asin-spread': adaptedNoUnnecessaryMathAsinSpread,
+  'no-unnecessary-math-asinh-spread': adaptedNoUnnecessaryMathAsinhSpread,
+  'no-unnecessary-math-acosh-spread': adaptedNoUnnecessaryMathAcoshSpread,
+  'no-unnecessary-math-atanh-spread': adaptedNoUnnecessaryMathAtanhSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3121,6 +3133,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-log10-spread': 'patterns',
   'no-unnecessary-math-cbrt-spread': 'patterns',
   'no-unnecessary-math-acos-spread': 'patterns',
+  'no-unnecessary-math-asin-spread': 'patterns',
+  'no-unnecessary-math-asinh-spread': 'patterns',
+  'no-unnecessary-math-acosh-spread': 'patterns',
+  'no-unnecessary-math-atanh-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
