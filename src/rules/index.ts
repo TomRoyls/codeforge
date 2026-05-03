@@ -597,6 +597,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryConsoleTraceSpreadRule,
     noUnnecessaryConsoleDirSpreadRule,
     noUnnecessaryConsoleAssertSpreadRule,
+    noUnnecessaryConsoleCountSpreadRule,
+    noUnnecessaryConsoleClearSpreadRule,
+    noUnnecessaryConsoleGroupSpreadRule,
+    noUnnecessaryConsoleGroupEndSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1460,6 +1464,10 @@ const adaptedNoUnnecessaryConsoleTableSpread = adaptPluginRule(noUnnecessaryCons
 const adaptedNoUnnecessaryConsoleTraceSpread = adaptPluginRule(noUnnecessaryConsoleTraceSpreadRule, 'no-unnecessary-console-trace-spread')
 const adaptedNoUnnecessaryConsoleDirSpread = adaptPluginRule(noUnnecessaryConsoleDirSpreadRule, 'no-unnecessary-console-dir-spread')
 const adaptedNoUnnecessaryConsoleAssertSpread = adaptPluginRule(noUnnecessaryConsoleAssertSpreadRule, 'no-unnecessary-console-assert-spread')
+const adaptedNoUnnecessaryConsoleCountSpread = adaptPluginRule(noUnnecessaryConsoleCountSpreadRule, 'no-unnecessary-console-count-spread')
+const adaptedNoUnnecessaryConsoleClearSpread = adaptPluginRule(noUnnecessaryConsoleClearSpreadRule, 'no-unnecessary-console-clear-spread')
+const adaptedNoUnnecessaryConsoleGroupSpread = adaptPluginRule(noUnnecessaryConsoleGroupSpreadRule, 'no-unnecessary-console-group-spread')
+const adaptedNoUnnecessaryConsoleGroupEndSpread = adaptPluginRule(noUnnecessaryConsoleGroupEndSpreadRule, 'no-unnecessary-console-group-end-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2446,6 +2454,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-console-trace-spread': adaptedNoUnnecessaryConsoleTraceSpread,
   'no-unnecessary-console-dir-spread': adaptedNoUnnecessaryConsoleDirSpread,
   'no-unnecessary-console-assert-spread': adaptedNoUnnecessaryConsoleAssertSpread,
+  'no-unnecessary-console-count-spread': adaptedNoUnnecessaryConsoleCountSpread,
+  'no-unnecessary-console-clear-spread': adaptedNoUnnecessaryConsoleClearSpread,
+  'no-unnecessary-console-group-spread': adaptedNoUnnecessaryConsoleGroupSpread,
+  'no-unnecessary-console-group-end-spread': adaptedNoUnnecessaryConsoleGroupEndSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3281,6 +3293,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-console-trace-spread': 'patterns',
   'no-unnecessary-console-dir-spread': 'patterns',
   'no-unnecessary-console-assert-spread': 'patterns',
+  'no-unnecessary-console-count-spread': 'patterns',
+  'no-unnecessary-console-clear-spread': 'patterns',
+  'no-unnecessary-console-group-spread': 'patterns',
+  'no-unnecessary-console-group-end-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
