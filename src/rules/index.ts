@@ -247,6 +247,7 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayFlatInfinityRule,
     noUnnecessaryArrayKeysSpreadRule,
     noUnnecessaryArrayValuesSpreadRule,
+   noUnnecessaryArrayUnshiftSpreadRule,
     noUnnecessaryArrayEveryBooleanRule,
     noUnnecessaryArrayEveryTrueRule,
     noUnnecessaryArrayEverySpreadRule,
@@ -384,6 +385,7 @@ noUnnecessaryReturnAwaitRule,
    noUnnecessaryArraySpliceSpreadRule,
     noUnnecessaryArraySomeFalseRule,
     noUnnecessaryArraySomeSpreadRule,
+   noUnnecessaryArrayShiftSpreadRule,
     noUnnecessaryIncludesRule,
       noUnnecessaryShiftRule,
       noUnnecessarySliceRule,
@@ -826,6 +828,7 @@ const adaptedNoUnnecessaryArrayFlatSpread = adaptPluginRule(noUnnecessaryArrayFl
 const adaptedNoUnnecessaryArrayFlatInfinity = adaptPluginRule(noUnnecessaryArrayFlatInfinityRule, 'no-unnecessary-array-flat-infinity')
 const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
+const adaptedNoUnnecessaryArrayUnshiftSpread = adaptPluginRule(noUnnecessaryArrayUnshiftSpreadRule, 'no-unnecessary-array-unshift-spread')
 const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayEveryTrue = adaptPluginRule(noUnnecessaryArrayEveryTrueRule, 'no-unnecessary-array-every-true')
 const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
@@ -964,6 +967,7 @@ const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySo
 const adaptedNoUnnecessaryArraySpliceSpread = adaptPluginRule(noUnnecessaryArraySpliceSpreadRule, 'no-unnecessary-array-splice-spread')
  const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalseRule, 'no-unnecessary-array-some-false')
  const adaptedNoUnnecessaryArraySomeSpread = adaptPluginRule(noUnnecessaryArraySomeSpreadRule, 'no-unnecessary-array-some-spread')
+const adaptedNoUnnecessaryArrayShiftSpread = adaptPluginRule(noUnnecessaryArrayShiftSpreadRule, 'no-unnecessary-array-shift-spread')
  const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
 const adaptedPreferRegexLiterals = adaptPluginRule(preferRegexLiteralsRule, 'prefer-regex-literals')
 const adaptedPreferRegexpExec = adaptPluginRule(preferRegexpExecRule, 'prefer-regexp-exec')
@@ -1785,8 +1789,9 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-array-flat-spread': adaptedNoUnnecessaryArrayFlatSpread,
      'no-unnecessary-array-flat-infinity': adaptedNoUnnecessaryArrayFlatInfinity,
     'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
-     'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
-    'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
+      'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
+      'no-unnecessary-array-unshift-spread': adaptedNoUnnecessaryArrayUnshiftSpread,
+     'no-unnecessary-array-every-boolean': adaptedNoUnnecessaryArrayEveryBoolean,
     'no-unnecessary-array-every-true': adaptedNoUnnecessaryArrayEveryTrue,
      'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
      'no-unnecessary-array-fill-spread': adaptedNoUnnecessaryArrayFillSpread,
@@ -1920,8 +1925,9 @@ export const allRules: Record<string, RuleDefinition> = {
    'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
    'no-unnecessary-array-splice-spread': adaptedNoUnnecessaryArraySpliceSpread,
    'no-unnecessary-array-some-false': adaptedNoUnnecessaryArraySomeFalse,
-  'no-unnecessary-array-some-spread': adaptedNoUnnecessaryArraySomeSpread,
-  'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
+   'no-unnecessary-array-some-spread': adaptedNoUnnecessaryArraySomeSpread,
+   'no-unnecessary-array-shift-spread': adaptedNoUnnecessaryArrayShiftSpread,
+   'no-unnecessary-includes': adaptedNoUnnecessaryIncludes,
    'no-unnecessary-shift': adaptedNoUnnecessaryShift,
    'no-unnecessary-slice': adaptedNoUnnecessarySlice,
    'no-unnecessary-array-slice-zero': adaptedNoUnnecessaryArraySliceZero,
@@ -2491,8 +2497,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
      'no-unnecessary-array-flat-spread': 'patterns',
      'no-unnecessary-array-flat-infinity': 'patterns',
     'no-unnecessary-array-keys-spread': 'patterns',
-    'no-unnecessary-array-values-spread': 'patterns',
-   'no-unnecessary-array-every-boolean': 'patterns',
+     'no-unnecessary-array-values-spread': 'patterns',
+     'no-unnecessary-array-unshift-spread': 'patterns',
+    'no-unnecessary-array-every-boolean': 'patterns',
    'no-unnecessary-array-every-true': 'patterns',
     'no-unnecessary-array-every-spread': 'patterns',
     'no-unnecessary-array-fill-spread': 'patterns',
@@ -2700,8 +2707,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-sort-spread': 'patterns',
     'no-unnecessary-array-splice-spread': 'patterns',
     'no-unnecessary-array-some-false': 'patterns',
-   'no-unnecessary-array-some-spread': 'patterns',
-   'no-unnecessary-includes': 'patterns',
+    'no-unnecessary-array-some-spread': 'patterns',
+    'no-unnecessary-array-shift-spread': 'patterns',
+    'no-unnecessary-includes': 'patterns',
   'no-unnecessary-template-expression': 'patterns',
   'no-unnecessary-template-literal': 'patterns',
   'no-unnecessary-template-literal-single': 'patterns',
