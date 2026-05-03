@@ -571,6 +571,13 @@ describe('no-unnecessary-console-trace-spread rule', () => {
     expect(noUnnecessaryConsoleTraceSpreadRule.check(node)).toBe(false);
   });
 
+  test('does not flag console.trace(i++) with an UpdateExpression argument', () => {
+    const node = makeConsoleTraceCall([
+      { type: 'UpdateExpression' as const, argument: makeIdentifier('i'), operator: '++' as const, prefix: false },
+    ]);
+    expect(noUnnecessaryConsoleTraceSpreadRule.check(node)).toBe(false);
+  });
+
   // ─── EDGE (17 tests) ───────────────────────────────────────────────────
   test('flags console.trace(...items) - spread of items with underscores in name', () => {
     const node = makeConsoleTraceCall([
