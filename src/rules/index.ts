@@ -430,8 +430,10 @@ noUnnecessaryStringMatchSpreadRule,
  noUnnecessaryStringEndsWithEmptyRule,
  noUnnecessaryStringPadStartZeroRule,
  noUnnecessaryStringPadStartEmptyRule,
+ noUnnecessaryStringPadStartSpreadRule,
  noUnnecessaryStringPadEndZeroRule,
  noUnnecessaryStringPadEndEmptyRule,
+ noUnnecessaryStringPadEndSpreadRule,
      noUnnecessaryStringSplitRule,
      noUnnecessaryStringSplitEmptySeparatorRule,
     noUnnecessaryStringSplitSpreadRule,
@@ -447,6 +449,7 @@ noUnnecessaryStringMatchSpreadRule,
    noUnnecessaryStringTrimStartSpreadRule,
    noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringTrimEndEmptyRule,
+  noUnnecessaryStringTrimEndSpreadRule,
     noUnnecessaryStringReplaceAllRule,
     noUnnecessaryStringReplaceAllEmptyRule,
     noUnnecessaryStringReplaceAllSpreadRule,
@@ -457,6 +460,7 @@ noUnnecessaryStringMatchSpreadRule,
   noUnnecessaryStringRepeatZeroRule,
    noUnnecessaryStringRepeatOneRule,
    noUnnecessaryStringRepeatEmptyRule,
+  noUnnecessaryStringRepeatSpreadRule,
   noUnnecessaryStringSubstringZeroRule,
    noUnnecessaryStringifyRule,
    noUnnecessaryStringToLowerCaseSameRule,
@@ -1183,8 +1187,10 @@ const adaptedNoUnnecessaryStringNormalizeEmpty = adaptPluginRule(noUnnecessarySt
 const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
 const adaptedNoUnnecessaryStringPadStartEmpty = adaptPluginRule(noUnnecessaryStringPadStartEmptyRule, 'no-unnecessary-string-pad-start-empty')
+const adaptedNoUnnecessaryStringPadStartSpread = adaptPluginRule(noUnnecessaryStringPadStartSpreadRule, 'no-unnecessary-string-pad-start-spread')
 const adaptedNoUnnecessaryStringPadEndZero = adaptPluginRule(noUnnecessaryStringPadEndZeroRule, 'no-unnecessary-string-pad-end-zero')
 const adaptedNoUnnecessaryStringPadEndEmpty = adaptPluginRule(noUnnecessaryStringPadEndEmptyRule, 'no-unnecessary-string-pad-end-empty')
+const adaptedNoUnnecessaryStringPadEndSpread = adaptPluginRule(noUnnecessaryStringPadEndSpreadRule, 'no-unnecessary-string-pad-end-spread')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
 const adaptedNoUnnecessaryStringify = adaptPluginRule(noUnnecessaryStringifyRule, 'no-unnecessary-stringify')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
@@ -1216,6 +1222,7 @@ const adaptedNoUnnecessaryStringTrimSpread = adaptPluginRule(noUnnecessaryString
 const adaptedNoUnnecessaryStringTrimStartEmpty = adaptPluginRule(noUnnecessaryStringTrimStartEmptyRule, 'no-unnecessary-string-trim-start-empty')
 const adaptedNoUnnecessaryStringTrimStartSpread = adaptPluginRule(noUnnecessaryStringTrimStartSpreadRule, 'no-unnecessary-string-trim-start-spread')
 const adaptedNoUnnecessaryStringTrimEndEmpty = adaptPluginRule(noUnnecessaryStringTrimEndEmptyRule, 'no-unnecessary-string-trim-end-empty')
+const adaptedNoUnnecessaryStringTrimEndSpread = adaptPluginRule(noUnnecessaryStringTrimEndSpreadRule, 'no-unnecessary-string-trim-end-spread')
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryStringReplaceAllEmpty = adaptPluginRule(noUnnecessaryStringReplaceAllEmptyRule, 'no-unnecessary-string-replace-all-empty')
 const adaptedNoUnnecessaryStringReplaceAllSpread = adaptPluginRule(noUnnecessaryStringReplaceAllSpreadRule, 'no-unnecessary-string-replace-all-spread')
@@ -1226,6 +1233,7 @@ const adaptedNoUnnecessaryStringSearchSpread = adaptPluginRule(noUnnecessaryStri
 const adaptedNoUnnecessaryStringRepeatZero = adaptPluginRule(noUnnecessaryStringRepeatZeroRule, 'no-unnecessary-string-repeat-zero')
 const adaptedNoUnnecessaryStringRepeatOne = adaptPluginRule(noUnnecessaryStringRepeatOneRule, 'no-unnecessary-string-repeat-one')
 const adaptedNoUnnecessaryStringRepeatEmpty = adaptPluginRule(noUnnecessaryStringRepeatEmptyRule, 'no-unnecessary-string-repeat-empty')
+const adaptedNoUnnecessaryStringRepeatSpread = adaptPluginRule(noUnnecessaryStringRepeatSpreadRule, 'no-unnecessary-string-repeat-spread')
 const adaptedNoUnnecessaryStringSubstringZero = adaptPluginRule(noUnnecessaryStringSubstringZeroRule, 'no-unnecessary-string-substring-zero')
 const adaptedNoUnnecessaryTypeArguments = adaptPluginRule(
   noUnnecessaryTypeArgumentsRule,
@@ -1999,8 +2007,10 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-ends-with-empty': adaptedNoUnnecessaryStringEndsWithEmpty,
    'no-unnecessary-string-pad-start-zero': adaptedNoUnnecessaryStringPadStartZero,
    'no-unnecessary-string-pad-start-empty': adaptedNoUnnecessaryStringPadStartEmpty,
+   'no-unnecessary-string-pad-start-spread': adaptedNoUnnecessaryStringPadStartSpread,
    'no-unnecessary-string-pad-end-zero': adaptedNoUnnecessaryStringPadEndZero,
    'no-unnecessary-string-pad-end-empty': adaptedNoUnnecessaryStringPadEndEmpty,
+   'no-unnecessary-string-pad-end-spread': adaptedNoUnnecessaryStringPadEndSpread,
   'no-unnecessary-string-wrapper': adaptedNoUnnecessaryStringWrapper,
    'no-unnecessary-string-split': adaptedNoUnnecessaryStringSplit,
     'no-unnecessary-string-split-empty-separator': adaptedNoUnnecessaryStringSplitEmptySeparator,
@@ -2016,6 +2026,7 @@ export const allRules: Record<string, RuleDefinition> = {
      'no-unnecessary-string-trim-start-empty': adaptedNoUnnecessaryStringTrimStartEmpty,
      'no-unnecessary-string-trim-start-spread': adaptedNoUnnecessaryStringTrimStartSpread,
     'no-unnecessary-string-trim-end-empty': adaptedNoUnnecessaryStringTrimEndEmpty,
+    'no-unnecessary-string-trim-end-spread': adaptedNoUnnecessaryStringTrimEndSpread,
      'no-unnecessary-string-replace-all': adaptedNoUnnecessaryStringReplaceAll,
      'no-unnecessary-string-replace-all-empty': adaptedNoUnnecessaryStringReplaceAllEmpty,
      'no-unnecessary-string-replace-all-spread': adaptedNoUnnecessaryStringReplaceAllSpread,
@@ -2026,6 +2037,7 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-string-repeat-zero': adaptedNoUnnecessaryStringRepeatZero,
     'no-unnecessary-string-repeat-one': adaptedNoUnnecessaryStringRepeatOne,
     'no-unnecessary-string-repeat-empty': adaptedNoUnnecessaryStringRepeatEmpty,
+    'no-unnecessary-string-repeat-spread': adaptedNoUnnecessaryStringRepeatSpread,
     'no-unnecessary-string-substring-zero': adaptedNoUnnecessaryStringSubstringZero,
   'no-unnecessary-stringify': adaptedNoUnnecessaryStringify,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
@@ -2694,8 +2706,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-ends-with-empty': 'patterns',
   'no-unnecessary-string-pad-start-zero': 'patterns',
   'no-unnecessary-string-pad-start-empty': 'patterns',
+  'no-unnecessary-string-pad-start-spread': 'patterns',
   'no-unnecessary-string-pad-end-zero': 'patterns',
   'no-unnecessary-string-pad-end-empty': 'patterns',
+  'no-unnecessary-string-pad-end-spread': 'patterns',
   'no-unnecessary-string-wrapper': 'patterns',
   'no-unnecessary-string-split': 'patterns',
    'no-unnecessary-string-split-empty-separator': 'patterns',
@@ -2711,6 +2725,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-trim-start-empty': 'patterns',
    'no-unnecessary-string-trim-start-spread': 'patterns',
    'no-unnecessary-string-trim-end-empty': 'patterns',
+   'no-unnecessary-string-trim-end-spread': 'patterns',
     'no-unnecessary-string-replace-all': 'patterns',
     'no-unnecessary-string-replace-all-empty': 'patterns',
     'no-unnecessary-string-replace-all-spread': 'patterns',
@@ -2721,6 +2736,7 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-string-repeat-zero': 'patterns',
     'no-unnecessary-string-repeat-one': 'patterns',
     'no-unnecessary-string-repeat-empty': 'patterns',
+    'no-unnecessary-string-repeat-spread': 'patterns',
     'no-unnecessary-string-substring-zero': 'patterns',
   'no-unnecessary-stringify': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
