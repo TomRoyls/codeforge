@@ -569,6 +569,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryReflectGetSpreadRule,
     noUnnecessaryReflectSetSpreadRule,
     noUnnecessaryReflectDeletePropertySpreadRule,
+    noUnnecessaryReflectHasSpreadRule,
+    noUnnecessaryReflectOwnKeysSpreadRule,
+    noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule,
+    noUnnecessaryReflectDefinePropertySpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1404,6 +1408,10 @@ const adaptedNoUnnecessaryReflectConstructSpread = adaptPluginRule(noUnnecessary
 const adaptedNoUnnecessaryReflectGetSpread = adaptPluginRule(noUnnecessaryReflectGetSpreadRule, 'no-unnecessary-reflect-get-spread')
 const adaptedNoUnnecessaryReflectSetSpread = adaptPluginRule(noUnnecessaryReflectSetSpreadRule, 'no-unnecessary-reflect-set-spread')
 const adaptedNoUnnecessaryReflectDeletePropertySpread = adaptPluginRule(noUnnecessaryReflectDeletePropertySpreadRule, 'no-unnecessary-reflect-delete-property-spread')
+const adaptedNoUnnecessaryReflectHasSpread = adaptPluginRule(noUnnecessaryReflectHasSpreadRule, 'no-unnecessary-reflect-has-spread')
+const adaptedNoUnnecessaryReflectOwnKeysSpread = adaptPluginRule(noUnnecessaryReflectOwnKeysSpreadRule, 'no-unnecessary-reflect-own-keys-spread')
+const adaptedNoUnnecessaryReflectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-reflect-get-own-property-descriptor-spread')
+const adaptedNoUnnecessaryReflectDefinePropertySpread = adaptPluginRule(noUnnecessaryReflectDefinePropertySpreadRule, 'no-unnecessary-reflect-define-property-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2362,6 +2370,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-reflect-get-spread': adaptedNoUnnecessaryReflectGetSpread,
   'no-unnecessary-reflect-set-spread': adaptedNoUnnecessaryReflectSetSpread,
   'no-unnecessary-reflect-delete-property-spread': adaptedNoUnnecessaryReflectDeletePropertySpread,
+  'no-unnecessary-reflect-has-spread': adaptedNoUnnecessaryReflectHasSpread,
+  'no-unnecessary-reflect-own-keys-spread': adaptedNoUnnecessaryReflectOwnKeysSpread,
+  'no-unnecessary-reflect-get-own-property-descriptor-spread': adaptedNoUnnecessaryReflectGetOwnPropertyDescriptorSpread,
+  'no-unnecessary-reflect-define-property-spread': adaptedNoUnnecessaryReflectDefinePropertySpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3169,6 +3181,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-reflect-get-spread': 'patterns',
   'no-unnecessary-reflect-set-spread': 'patterns',
   'no-unnecessary-reflect-delete-property-spread': 'patterns',
+  'no-unnecessary-reflect-has-spread': 'patterns',
+  'no-unnecessary-reflect-own-keys-spread': 'patterns',
+  'no-unnecessary-reflect-get-own-property-descriptor-spread': 'patterns',
+  'no-unnecessary-reflect-define-property-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
