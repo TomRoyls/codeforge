@@ -480,7 +480,11 @@ noUnnecessaryStringMatchSpreadRule,
    noUnnecessaryStringToStringSpreadRule,
    noUnnecessaryStringValueOfSpreadRule,
    noUnnecessaryStringAnchorSpreadRule,
-   noUnnecessaryStringFixedSpreadRule,
+    noUnnecessaryStringFixedSpreadRule,
+    noUnnecessaryStringBigSpreadRule,
+    noUnnecessaryStringLinkSpreadRule,
+    noUnnecessaryStringFontcolorSpreadRule,
+    noUnnecessaryStringFontsizeSpreadRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1228,6 +1232,10 @@ const adaptedNoUnnecessaryStringToStringSpread = adaptPluginRule(noUnnecessarySt
 const adaptedNoUnnecessaryStringValueOfSpread = adaptPluginRule(noUnnecessaryStringValueOfSpreadRule, 'no-unnecessary-string-value-of-spread')
 const adaptedNoUnnecessaryStringAnchorSpread = adaptPluginRule(noUnnecessaryStringAnchorSpreadRule, 'no-unnecessary-string-anchor-spread')
 const adaptedNoUnnecessaryStringFixedSpread = adaptPluginRule(noUnnecessaryStringFixedSpreadRule, 'no-unnecessary-string-fixed-spread')
+const adaptedNoUnnecessaryStringBigSpread = adaptPluginRule(noUnnecessaryStringBigSpreadRule, 'no-unnecessary-string-big-spread')
+const adaptedNoUnnecessaryStringLinkSpread = adaptPluginRule(noUnnecessaryStringLinkSpreadRule, 'no-unnecessary-string-link-spread')
+const adaptedNoUnnecessaryStringFontcolorSpread = adaptPluginRule(noUnnecessaryStringFontcolorSpreadRule, 'no-unnecessary-string-fontcolor-spread')
+const adaptedNoUnnecessaryStringFontsizeSpread = adaptPluginRule(noUnnecessaryStringFontsizeSpreadRule, 'no-unnecessary-string-fontsize-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2098,6 +2106,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-string-value-of-spread': adaptedNoUnnecessaryStringValueOfSpread,
   'no-unnecessary-string-anchor-spread': adaptedNoUnnecessaryStringAnchorSpread,
   'no-unnecessary-string-fixed-spread': adaptedNoUnnecessaryStringFixedSpread,
+  'no-unnecessary-string-big-spread': adaptedNoUnnecessaryStringBigSpread,
+  'no-unnecessary-string-link-spread': adaptedNoUnnecessaryStringLinkSpread,
+  'no-unnecessary-string-fontcolor-spread': adaptedNoUnnecessaryStringFontcolorSpread,
+  'no-unnecessary-string-fontsize-spread': adaptedNoUnnecessaryStringFontsizeSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -2817,6 +2829,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-value-of-spread': 'patterns',
   'no-unnecessary-string-anchor-spread': 'patterns',
   'no-unnecessary-string-fixed-spread': 'patterns',
+  'no-unnecessary-string-big-spread': 'patterns',
+  'no-unnecessary-string-link-spread': 'patterns',
+  'no-unnecessary-string-fontcolor-spread': 'patterns',
+  'no-unnecessary-string-fontsize-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
