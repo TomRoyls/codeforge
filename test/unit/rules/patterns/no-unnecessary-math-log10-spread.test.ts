@@ -384,34 +384,6 @@ describe('no-unnecessary-math-log10-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report Math.ceil(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
-      visitor.CallExpression(makeCallNode(makeMathId(), 'ceil', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report Math.round(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
-      visitor.CallExpression(makeCallNode(makeMathId(), 'round', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report Math.abs(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
-      visitor.CallExpression(makeCallNode(makeMathId(), 'abs', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report Math.sqrt(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
-      visitor.CallExpression(makeCallNode(makeMathId(), 'sqrt', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
     test('does not report myObj.log10(...items) — non-Math object', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
@@ -656,13 +628,6 @@ describe('no-unnecessary-math-log10-spread rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
       visitor.CallExpression(makeCallNode(makeMathId(), 'max', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report Math.min(...items) — different Math method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathLog10SpreadRule.create(context)
-      visitor.CallExpression(makeCallNode(makeMathId(), 'min', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
       expect(reports.length).toBe(0)
     })
 

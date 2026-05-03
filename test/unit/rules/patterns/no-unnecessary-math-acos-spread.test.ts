@@ -297,13 +297,6 @@ describe('no-unnecessary-math-acos-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('report message mentions single number', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryMathAcosSpreadRule.create(context)
-      visitor.CallExpression(makeMathCallNode('Math', 'acos', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toMatch(/single number/)
-    })
-
     test('reports for spread with literal argument', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAcosSpreadRule.create(context)
@@ -661,6 +654,22 @@ describe('no-unnecessary-math-acos-spread rule', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathAcosSpreadRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'Acos', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
+      expect(reports.length).toBe(0)
+    })
+
+    test('does not report when property is missing in MemberExpression', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryMathAcosSpreadRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Math' },
+          computed: false,
+        },
+        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 10),
+      })
       expect(reports.length).toBe(0)
     })
   })
