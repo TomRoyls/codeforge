@@ -400,6 +400,8 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryArrayToReversedSpreadRule,
     noUnnecessaryArrayToStringArrayRule,
    noUnnecessaryArrayToStringSpreadRule,
+  noUnnecessaryArrayToLocaleStringSpreadRule,
+  noUnnecessaryArrayToJSONSpreadRule,
      noUnnecessarySpreadRule,
     noUnnecessarySpreadArrayRule,
  noUnnecessaryStringConcatRule,
@@ -1138,6 +1140,8 @@ const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryAr
 const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
 const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArrayToStringSpreadRule, 'no-unnecessary-array-to-string-spread')
+const adaptedNoUnnecessaryArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryArrayToLocaleStringSpreadRule, 'no-unnecessary-array-to-locale-string-spread')
+const adaptedNoUnnecessaryArrayToJSONSpread = adaptPluginRule(noUnnecessaryArrayToJSONSpreadRule, 'no-unnecessary-array-to-json-spread')
 const adaptedNoUnnecessarySpread = adaptPluginRule(noUnnecessarySpreadRule, 'no-unnecessary-spread')
 const adaptedNoUnnecessarySpreadArray = adaptPluginRule(noUnnecessarySpreadArrayRule, 'no-unnecessary-spread-array')
  const adaptedNoUnnecessaryStringConcat = adaptPluginRule(
@@ -1944,8 +1948,10 @@ export const allRules: Record<string, RuleDefinition> = {
     'no-unnecessary-array-to-reversed-no-use': adaptedNoUnnecessaryArrayToReversedNoUse,
     'no-unnecessary-array-to-reversed-spread': adaptedNoUnnecessaryArrayToReversedSpread,
      'no-unnecessary-array-to-string-array': adaptedNoUnnecessaryArrayToStringArray,
-     'no-unnecessary-array-to-string-spread': adaptedNoUnnecessaryArrayToStringSpread,
-     'no-unnecessary-spread': adaptedNoUnnecessarySpread,
+      'no-unnecessary-array-to-string-spread': adaptedNoUnnecessaryArrayToStringSpread,
+      'no-unnecessary-array-to-locale-string-spread': adaptedNoUnnecessaryArrayToLocaleStringSpread,
+      'no-unnecessary-array-to-json-spread': adaptedNoUnnecessaryArrayToJSONSpread,
+      'no-unnecessary-spread': adaptedNoUnnecessarySpread,
    'no-unnecessary-spread-array': adaptedNoUnnecessarySpreadArray,
    'no-unnecessary-string-concat': adaptedNoUnnecessaryStringConcat,
    'no-unnecessary-string-concat-empty': adaptedNoUnnecessaryStringConcatEmpty,
@@ -2627,8 +2633,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-array-to-reversed-no-use': 'patterns',
    'no-unnecessary-array-to-reversed-spread': 'patterns',
     'no-unnecessary-array-to-string-array': 'patterns',
-    'no-unnecessary-array-to-string-spread': 'patterns',
-     'no-unnecessary-spread': 'patterns',
+     'no-unnecessary-array-to-string-spread': 'patterns',
+     'no-unnecessary-array-to-locale-string-spread': 'patterns',
+     'no-unnecessary-array-to-json-spread': 'patterns',
+      'no-unnecessary-spread': 'patterns',
    'no-unnecessary-spread-array': 'patterns',
   'no-unnecessary-string-concat': 'patterns',
   'no-unnecessary-string-concat-empty': 'patterns',

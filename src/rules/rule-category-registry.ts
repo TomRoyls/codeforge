@@ -440,6 +440,8 @@ export const RULE_CATEGORIES: Record<string, RuleCategory> = {
     'no-unnecessary-array-to-reversed-spread': 'patterns',
      'no-unnecessary-array-to-string-array': 'patterns',
      'no-unnecessary-array-to-string-spread': 'patterns',
+     'no-unnecessary-array-to-locale-string-spread': 'patterns',
+     'no-unnecessary-array-to-json-spread': 'patterns',
       'no-unnecessary-spread': 'patterns',
     'no-unnecessary-spread-array': 'patterns',
  'no-unnecessary-string-concat': 'patterns',
