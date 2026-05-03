@@ -521,6 +521,18 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule,
     noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule,
     noUnnecessaryObjectIsFrozenSpreadRule,
+    noUnnecessaryObjectIsSealedSpreadRule,
+    noUnnecessaryObjectIsExtensibleSpreadRule,
+    noUnnecessaryObjectPreventExtensionsSpreadRule,
+    noUnnecessaryObjectCreateSpreadRule,
+    noUnnecessaryObjectDefinePropertySpreadRule,
+    noUnnecessaryObjectGetOwnPropertyDescriptorsSpreadRule,
+    noUnnecessaryObjectSetPrototypeOfSpreadRule,
+    noUnnecessaryObjectDefinePropertiesSpreadRule,
+    noUnnecessaryPromiseRejectSpreadRule,
+    noUnnecessaryPromiseAllSpreadRule,
+    noUnnecessaryPromiseRaceSpreadRule,
+    noUnnecessaryPromiseAllSettledSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1308,6 +1320,18 @@ const adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread = adaptPluginRule(noUn
 const adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule, 'no-unnecessary-object-get-own-property-symbols-spread')
 const adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-object-get-own-property-descriptor-spread')
 const adaptedNoUnnecessaryObjectIsFrozenSpread = adaptPluginRule(noUnnecessaryObjectIsFrozenSpreadRule, 'no-unnecessary-object-is-frozen-spread')
+const adaptedNoUnnecessaryObjectIsSealedSpread = adaptPluginRule(noUnnecessaryObjectIsSealedSpreadRule, 'no-unnecessary-object-is-sealed-spread')
+const adaptedNoUnnecessaryObjectIsExtensibleSpread = adaptPluginRule(noUnnecessaryObjectIsExtensibleSpreadRule, 'no-unnecessary-object-is-extensible-spread')
+const adaptedNoUnnecessaryObjectPreventExtensionsSpread = adaptPluginRule(noUnnecessaryObjectPreventExtensionsSpreadRule, 'no-unnecessary-object-prevent-extensions-spread')
+const adaptedNoUnnecessaryObjectCreateSpread = adaptPluginRule(noUnnecessaryObjectCreateSpreadRule, 'no-unnecessary-object-create-spread')
+const adaptedNoUnnecessaryObjectDefinePropertySpread = adaptPluginRule(noUnnecessaryObjectDefinePropertySpreadRule, 'no-unnecessary-object-define-property-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorsSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyDescriptorsSpreadRule, 'no-unnecessary-object-get-own-property-descriptors-spread')
+const adaptedNoUnnecessaryObjectSetPrototypeOfSpread = adaptPluginRule(noUnnecessaryObjectSetPrototypeOfSpreadRule, 'no-unnecessary-object-set-prototype-of-spread')
+const adaptedNoUnnecessaryObjectDefinePropertiesSpread = adaptPluginRule(noUnnecessaryObjectDefinePropertiesSpreadRule, 'no-unnecessary-object-define-properties-spread')
+const adaptedNoUnnecessaryPromiseRejectSpread = adaptPluginRule(noUnnecessaryPromiseRejectSpreadRule, 'no-unnecessary-promise-reject-spread')
+const adaptedNoUnnecessaryPromiseAllSpread = adaptPluginRule(noUnnecessaryPromiseAllSpreadRule, 'no-unnecessary-promise-all-spread')
+const adaptedNoUnnecessaryPromiseRaceSpread = adaptPluginRule(noUnnecessaryPromiseRaceSpreadRule, 'no-unnecessary-promise-race-spread')
+const adaptedNoUnnecessaryPromiseAllSettledSpread = adaptPluginRule(noUnnecessaryPromiseAllSettledSpreadRule, 'no-unnecessary-promise-all-settled-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2218,7 +2242,19 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-object-get-own-property-symbols-spread': adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread,
   'no-unnecessary-object-get-own-property-descriptor-spread': adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread,
   'no-unnecessary-object-is-frozen-spread': adaptedNoUnnecessaryObjectIsFrozenSpread,
-   'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
+  'no-unnecessary-object-is-sealed-spread': adaptedNoUnnecessaryObjectIsSealedSpread,
+  'no-unnecessary-object-is-extensible-spread': adaptedNoUnnecessaryObjectIsExtensibleSpread,
+  'no-unnecessary-object-prevent-extensions-spread': adaptedNoUnnecessaryObjectPreventExtensionsSpread,
+  'no-unnecessary-object-create-spread': adaptedNoUnnecessaryObjectCreateSpread,
+  'no-unnecessary-object-define-property-spread': adaptedNoUnnecessaryObjectDefinePropertySpread,
+  'no-unnecessary-object-get-own-property-descriptors-spread': adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorsSpread,
+  'no-unnecessary-object-set-prototype-of-spread': adaptedNoUnnecessaryObjectSetPrototypeOfSpread,
+  'no-unnecessary-object-define-properties-spread': adaptedNoUnnecessaryObjectDefinePropertiesSpread,
+  'no-unnecessary-promise-reject-spread': adaptedNoUnnecessaryPromiseRejectSpread,
+  'no-unnecessary-promise-all-spread': adaptedNoUnnecessaryPromiseAllSpread,
+  'no-unnecessary-promise-race-spread': adaptedNoUnnecessaryPromiseRaceSpread,
+  'no-unnecessary-promise-all-settled-spread': adaptedNoUnnecessaryPromiseAllSettledSpread,
+    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
    'no-unnecessary-string-to-locale-lower-case-spread': adaptedNoUnnecessaryStringToLocaleLowerCaseSpread,
@@ -2977,7 +3013,19 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-object-get-own-property-symbols-spread': 'patterns',
   'no-unnecessary-object-get-own-property-descriptor-spread': 'patterns',
   'no-unnecessary-object-is-frozen-spread': 'patterns',
-   'no-unnecessary-string-to-lower-case-same': 'patterns',
+  'no-unnecessary-object-is-sealed-spread': 'patterns',
+  'no-unnecessary-object-is-extensible-spread': 'patterns',
+  'no-unnecessary-object-prevent-extensions-spread': 'patterns',
+  'no-unnecessary-object-create-spread': 'patterns',
+  'no-unnecessary-object-define-property-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-descriptors-spread': 'patterns',
+  'no-unnecessary-object-set-prototype-of-spread': 'patterns',
+  'no-unnecessary-object-define-properties-spread': 'patterns',
+  'no-unnecessary-promise-reject-spread': 'patterns',
+  'no-unnecessary-promise-all-spread': 'patterns',
+  'no-unnecessary-promise-race-spread': 'patterns',
+  'no-unnecessary-promise-all-settled-spread': 'patterns',
+    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
    'no-unnecessary-string-to-locale-lower-case-spread': 'patterns',
