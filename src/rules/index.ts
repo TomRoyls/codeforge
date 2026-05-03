@@ -497,6 +497,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryNumberToPrecisionSpreadRule,
     noUnnecessaryNumberToLocaleStringSpreadRule,
     noUnnecessaryNumberValueOfSpreadRule,
+    noUnnecessaryNumberToStringSpreadRule,
+    noUnnecessaryNumberToFixedSpreadRule,
+    noUnnecessaryArrayIsArraySpreadRule,
+    noUnnecessaryIsFiniteSpreadRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1260,6 +1264,10 @@ const adaptedNoUnnecessaryNumberToExponentialSpread = adaptPluginRule(noUnnecess
 const adaptedNoUnnecessaryNumberToPrecisionSpread = adaptPluginRule(noUnnecessaryNumberToPrecisionSpreadRule, 'no-unnecessary-number-to-precision-spread')
 const adaptedNoUnnecessaryNumberToLocaleStringSpread = adaptPluginRule(noUnnecessaryNumberToLocaleStringSpreadRule, 'no-unnecessary-number-to-locale-string-spread')
 const adaptedNoUnnecessaryNumberValueOfSpread = adaptPluginRule(noUnnecessaryNumberValueOfSpreadRule, 'no-unnecessary-number-value-of-spread')
+const adaptedNoUnnecessaryNumberToStringSpread = adaptPluginRule(noUnnecessaryNumberToStringSpreadRule, 'no-unnecessary-number-to-string-spread')
+const adaptedNoUnnecessaryNumberToFixedSpread = adaptPluginRule(noUnnecessaryNumberToFixedSpreadRule, 'no-unnecessary-number-to-fixed-spread')
+const adaptedNoUnnecessaryArrayIsArraySpread = adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule, 'no-unnecessary-is-nan-spread')
+const adaptedNoUnnecessaryIsFiniteSpread = adaptPluginRule(noUnnecessaryIsFiniteSpreadRule, 'no-unnecessary-is-finite-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2146,6 +2154,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-number-to-precision-spread': adaptedNoUnnecessaryNumberToPrecisionSpread,
   'no-unnecessary-number-to-locale-string-spread': adaptedNoUnnecessaryNumberToLocaleStringSpread,
   'no-unnecessary-number-value-of-spread': adaptedNoUnnecessaryNumberValueOfSpread,
+  'no-unnecessary-number-to-string-spread': adaptedNoUnnecessaryNumberToStringSpread,
+  'no-unnecessary-number-to-fixed-spread': adaptedNoUnnecessaryNumberToFixedSpread,
+  'no-unnecessary-is-nan-spread': adaptedNoUnnecessaryArrayIsArraySpread,
+  'no-unnecessary-is-finite-spread': adaptedNoUnnecessaryIsFiniteSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -2881,6 +2893,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-to-precision-spread': 'patterns',
   'no-unnecessary-number-to-locale-string-spread': 'patterns',
   'no-unnecessary-number-value-of-spread': 'patterns',
+  'no-unnecessary-number-to-string-spread': 'patterns',
+  'no-unnecessary-number-to-fixed-spread': 'patterns',
+  'no-unnecessary-is-nan-spread': 'patterns',
+  'no-unnecessary-is-finite-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
