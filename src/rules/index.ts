@@ -573,6 +573,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryReflectOwnKeysSpreadRule,
     noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule,
     noUnnecessaryReflectDefinePropertySpreadRule,
+    noUnnecessaryReflectGetPrototypeOfSpreadRule,
+    noUnnecessaryReflectSetPrototypeOfSpreadRule,
+    noUnnecessaryReflectIsExtensibleSpreadRule,
+    noUnnecessaryReflectPreventExtensionsSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1412,6 +1416,10 @@ const adaptedNoUnnecessaryReflectHasSpread = adaptPluginRule(noUnnecessaryReflec
 const adaptedNoUnnecessaryReflectOwnKeysSpread = adaptPluginRule(noUnnecessaryReflectOwnKeysSpreadRule, 'no-unnecessary-reflect-own-keys-spread')
 const adaptedNoUnnecessaryReflectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryReflectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-reflect-get-own-property-descriptor-spread')
 const adaptedNoUnnecessaryReflectDefinePropertySpread = adaptPluginRule(noUnnecessaryReflectDefinePropertySpreadRule, 'no-unnecessary-reflect-define-property-spread')
+const adaptedNoUnnecessaryReflectGetPrototypeOfSpread = adaptPluginRule(noUnnecessaryReflectGetPrototypeOfSpreadRule, 'no-unnecessary-reflect-get-prototype-of-spread')
+const adaptedNoUnnecessaryReflectSetPrototypeOfSpread = adaptPluginRule(noUnnecessaryReflectSetPrototypeOfSpreadRule, 'no-unnecessary-reflect-set-prototype-of-spread')
+const adaptedNoUnnecessaryReflectIsExtensibleSpread = adaptPluginRule(noUnnecessaryReflectIsExtensibleSpreadRule, 'no-unnecessary-reflect-is-extensible-spread')
+const adaptedNoUnnecessaryReflectPreventExtensionsSpread = adaptPluginRule(noUnnecessaryReflectPreventExtensionsSpreadRule, 'no-unnecessary-reflect-prevent-extensions-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2374,6 +2382,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-reflect-own-keys-spread': adaptedNoUnnecessaryReflectOwnKeysSpread,
   'no-unnecessary-reflect-get-own-property-descriptor-spread': adaptedNoUnnecessaryReflectGetOwnPropertyDescriptorSpread,
   'no-unnecessary-reflect-define-property-spread': adaptedNoUnnecessaryReflectDefinePropertySpread,
+  'no-unnecessary-reflect-get-prototype-of-spread': adaptedNoUnnecessaryReflectGetPrototypeOfSpread,
+  'no-unnecessary-reflect-set-prototype-of-spread': adaptedNoUnnecessaryReflectSetPrototypeOfSpread,
+  'no-unnecessary-reflect-is-extensible-spread': adaptedNoUnnecessaryReflectIsExtensibleSpread,
+  'no-unnecessary-reflect-prevent-extensions-spread': adaptedNoUnnecessaryReflectPreventExtensionsSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3185,6 +3197,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-reflect-own-keys-spread': 'patterns',
   'no-unnecessary-reflect-get-own-property-descriptor-spread': 'patterns',
   'no-unnecessary-reflect-define-property-spread': 'patterns',
+  'no-unnecessary-reflect-get-prototype-of-spread': 'patterns',
+  'no-unnecessary-reflect-set-prototype-of-spread': 'patterns',
+  'no-unnecessary-reflect-is-extensible-spread': 'patterns',
+  'no-unnecessary-reflect-prevent-extensions-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
