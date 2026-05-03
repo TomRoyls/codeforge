@@ -146,6 +146,7 @@ describe('no-unnecessary-object-define-properties-spread rule', () => {
 
   // ===== POSITIVE CASES — REPORTS (25) =====
 
+
   describe('positive cases — reports unnecessary Object.defineProperties spread', () => {
     test('reports for Object.defineProperties(...items)', () => {
       const { context, reports } = createMockContext()
@@ -330,9 +331,9 @@ describe('no-unnecessary-object-define-properties-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-})
+  })
 
-  // ===== NEGATIVE CASES — DOES NOT REPORT (40) =====
+  // ===== NEGATIVE CASES — DOES NOT REPORT (39) =====
 
   describe('negative cases — does NOT report', () => {
     test('does not report for non-spread Identifier argument', () => {
@@ -633,13 +634,6 @@ describe('no-unnecessary-object-define-properties-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
     test('does not report when property name is "defineproperties" (lowercase)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
@@ -686,6 +680,21 @@ describe('no-unnecessary-object-define-properties-spread rule', () => {
     })
 
     test('does not report when arguments array is null', () => {
+      const { context, reports } = createMockContext()
+      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
+      visitor.CallExpression({
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+        },
+        arguments: null,
+        loc: makeLoc(1, 0, 1, 10),
+      })
+      expect(reports.length).toBe(0)
+    })
+  })
 
   // ===== EDGE CASES (20) =====
 

@@ -533,6 +533,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryPromiseAllSpreadRule,
     noUnnecessaryPromiseRaceSpreadRule,
     noUnnecessaryPromiseAllSettledSpreadRule,
+    noUnnecessaryPromiseAnySpreadRule,
+    noUnnecessaryMathAbsSpreadRule,
+    noUnnecessaryMathCeilSpreadRule,
+    noUnnecessaryMathFloorSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1332,6 +1336,10 @@ const adaptedNoUnnecessaryPromiseRejectSpread = adaptPluginRule(noUnnecessaryPro
 const adaptedNoUnnecessaryPromiseAllSpread = adaptPluginRule(noUnnecessaryPromiseAllSpreadRule, 'no-unnecessary-promise-all-spread')
 const adaptedNoUnnecessaryPromiseRaceSpread = adaptPluginRule(noUnnecessaryPromiseRaceSpreadRule, 'no-unnecessary-promise-race-spread')
 const adaptedNoUnnecessaryPromiseAllSettledSpread = adaptPluginRule(noUnnecessaryPromiseAllSettledSpreadRule, 'no-unnecessary-promise-all-settled-spread')
+const adaptedNoUnnecessaryPromiseAnySpread = adaptPluginRule(noUnnecessaryPromiseAnySpreadRule, 'no-unnecessary-promise-any-spread')
+const adaptedNoUnnecessaryMathAbsSpread = adaptPluginRule(noUnnecessaryMathAbsSpreadRule, 'no-unnecessary-math-abs-spread')
+const adaptedNoUnnecessaryMathCeilSpread = adaptPluginRule(noUnnecessaryMathCeilSpreadRule, 'no-unnecessary-math-ceil-spread')
+const adaptedNoUnnecessaryMathFloorSpread = adaptPluginRule(noUnnecessaryMathFloorSpreadRule, 'no-unnecessary-math-floor-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2254,6 +2262,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-promise-all-spread': adaptedNoUnnecessaryPromiseAllSpread,
   'no-unnecessary-promise-race-spread': adaptedNoUnnecessaryPromiseRaceSpread,
   'no-unnecessary-promise-all-settled-spread': adaptedNoUnnecessaryPromiseAllSettledSpread,
+  'no-unnecessary-promise-any-spread': adaptedNoUnnecessaryPromiseAnySpread,
+  'no-unnecessary-math-abs-spread': adaptedNoUnnecessaryMathAbsSpread,
+  'no-unnecessary-math-ceil-spread': adaptedNoUnnecessaryMathCeilSpread,
+  'no-unnecessary-math-floor-spread': adaptedNoUnnecessaryMathFloorSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3025,6 +3037,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-promise-all-spread': 'patterns',
   'no-unnecessary-promise-race-spread': 'patterns',
   'no-unnecessary-promise-all-settled-spread': 'patterns',
+  'no-unnecessary-promise-any-spread': 'patterns',
+  'no-unnecessary-math-abs-spread': 'patterns',
+  'no-unnecessary-math-ceil-spread': 'patterns',
+  'no-unnecessary-math-floor-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
