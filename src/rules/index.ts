@@ -509,6 +509,14 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryNumberIsSafeIntegerSpreadRule,
     noUnnecessaryNumberParseFloatSpreadRule,
     noUnnecessaryNumberParseIntSpreadRule,
+    noUnnecessaryObjectKeysSpreadRule,
+    noUnnecessaryObjectValuesSpreadRule,
+    noUnnecessaryObjectEntriesSpreadRule,
+    noUnnecessaryObjectGetPrototypeOfSpreadRule,
+    noUnnecessaryObjectFreezeSpreadRule,
+    noUnnecessaryObjectSealSpreadRule,
+    noUnnecessaryObjectIsSpreadRule,
+    noUnnecessaryObjectAssignSpreadRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1284,6 +1292,14 @@ const adaptedNoUnnecessaryNumberIsFiniteSpread = adaptPluginRule(noUnnecessaryNu
 const adaptedNoUnnecessaryNumberIsSafeIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsSafeIntegerSpreadRule, 'no-unnecessary-number-is-safe-integer-spread')
 const adaptedNoUnnecessaryNumberParseFloatSpread = adaptPluginRule(noUnnecessaryNumberParseFloatSpreadRule, 'no-unnecessary-number-parse-float-spread')
 const adaptedNoUnnecessaryNumberParseIntSpread = adaptPluginRule(noUnnecessaryNumberParseIntSpreadRule, 'no-unnecessary-number-parse-int-spread')
+const adaptedNoUnnecessaryObjectKeysSpread = adaptPluginRule(noUnnecessaryObjectKeysSpreadRule, 'no-unnecessary-object-keys-spread')
+const adaptedNoUnnecessaryObjectValuesSpread = adaptPluginRule(noUnnecessaryObjectValuesSpreadRule, 'no-unnecessary-object-values-spread')
+const adaptedNoUnnecessaryObjectEntriesSpread = adaptPluginRule(noUnnecessaryObjectEntriesSpreadRule, 'no-unnecessary-object-entries-spread')
+const adaptedNoUnnecessaryObjectGetPrototypeOfSpread = adaptPluginRule(noUnnecessaryObjectGetPrototypeOfSpreadRule, 'no-unnecessary-object-get-prototype-of-spread')
+const adaptedNoUnnecessaryObjectFreezeSpread = adaptPluginRule(noUnnecessaryObjectFreezeSpreadRule, 'no-unnecessary-object-freeze-spread')
+const adaptedNoUnnecessaryObjectSealSpread = adaptPluginRule(noUnnecessaryObjectSealSpreadRule, 'no-unnecessary-object-seal-spread')
+const adaptedNoUnnecessaryObjectIsSpread = adaptPluginRule(noUnnecessaryObjectIsSpreadRule, 'no-unnecessary-object-is-spread')
+const adaptedNoUnnecessaryObjectAssignSpread = adaptPluginRule(noUnnecessaryObjectAssignSpreadRule, 'no-unnecessary-object-assign-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2182,6 +2198,14 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-number-is-safe-integer-spread': adaptedNoUnnecessaryNumberIsSafeIntegerSpread,
   'no-unnecessary-number-parse-float-spread': adaptedNoUnnecessaryNumberParseFloatSpread,
   'no-unnecessary-number-parse-int-spread': adaptedNoUnnecessaryNumberParseIntSpread,
+  'no-unnecessary-object-keys-spread': adaptedNoUnnecessaryObjectKeysSpread,
+  'no-unnecessary-object-values-spread': adaptedNoUnnecessaryObjectValuesSpread,
+  'no-unnecessary-object-entries-spread': adaptedNoUnnecessaryObjectEntriesSpread,
+  'no-unnecessary-object-get-prototype-of-spread': adaptedNoUnnecessaryObjectGetPrototypeOfSpread,
+  'no-unnecessary-object-freeze-spread': adaptedNoUnnecessaryObjectFreezeSpread,
+  'no-unnecessary-object-seal-spread': adaptedNoUnnecessaryObjectSealSpread,
+  'no-unnecessary-object-is-spread': adaptedNoUnnecessaryObjectIsSpread,
+  'no-unnecessary-object-assign-spread': adaptedNoUnnecessaryObjectAssignSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -2929,6 +2953,14 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-is-safe-integer-spread': 'patterns',
   'no-unnecessary-number-parse-float-spread': 'patterns',
   'no-unnecessary-number-parse-int-spread': 'patterns',
+  'no-unnecessary-object-keys-spread': 'patterns',
+  'no-unnecessary-object-values-spread': 'patterns',
+  'no-unnecessary-object-entries-spread': 'patterns',
+  'no-unnecessary-object-get-prototype-of-spread': 'patterns',
+  'no-unnecessary-object-freeze-spread': 'patterns',
+  'no-unnecessary-object-seal-spread': 'patterns',
+  'no-unnecessary-object-is-spread': 'patterns',
+  'no-unnecessary-object-assign-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
