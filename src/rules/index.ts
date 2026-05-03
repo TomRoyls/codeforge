@@ -501,6 +501,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryNumberToFixedSpreadRule,
     noUnnecessaryArrayIsArraySpreadRule,
     noUnnecessaryIsFiniteSpreadRule,
+    noUnnecessaryParseFloatSpreadRule,
+    noUnnecessaryParseIntSpreadRule,
+    noUnnecessaryNumberIsIntegerSpreadRule,
+    noUnnecessaryNumberIsNanSpreadRule,
    noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1268,6 +1272,10 @@ const adaptedNoUnnecessaryNumberToStringSpread = adaptPluginRule(noUnnecessaryNu
 const adaptedNoUnnecessaryNumberToFixedSpread = adaptPluginRule(noUnnecessaryNumberToFixedSpreadRule, 'no-unnecessary-number-to-fixed-spread')
 const adaptedNoUnnecessaryArrayIsArraySpread = adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule, 'no-unnecessary-is-nan-spread')
 const adaptedNoUnnecessaryIsFiniteSpread = adaptPluginRule(noUnnecessaryIsFiniteSpreadRule, 'no-unnecessary-is-finite-spread')
+const adaptedNoUnnecessaryParseFloatSpread = adaptPluginRule(noUnnecessaryParseFloatSpreadRule, 'no-unnecessary-parse-float-spread')
+const adaptedNoUnnecessaryParseIntSpread = adaptPluginRule(noUnnecessaryParseIntSpreadRule, 'no-unnecessary-parse-int-spread')
+const adaptedNoUnnecessaryNumberIsIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsIntegerSpreadRule, 'no-unnecessary-number-is-integer-spread')
+const adaptedNoUnnecessaryNumberIsNanSpread = adaptPluginRule(noUnnecessaryNumberIsNanSpreadRule, 'no-unnecessary-number-is-nan-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2158,6 +2166,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-number-to-fixed-spread': adaptedNoUnnecessaryNumberToFixedSpread,
   'no-unnecessary-is-nan-spread': adaptedNoUnnecessaryArrayIsArraySpread,
   'no-unnecessary-is-finite-spread': adaptedNoUnnecessaryIsFiniteSpread,
+  'no-unnecessary-parse-float-spread': adaptedNoUnnecessaryParseFloatSpread,
+  'no-unnecessary-parse-int-spread': adaptedNoUnnecessaryParseIntSpread,
+  'no-unnecessary-number-is-integer-spread': adaptedNoUnnecessaryNumberIsIntegerSpread,
+  'no-unnecessary-number-is-nan-spread': adaptedNoUnnecessaryNumberIsNanSpread,
    'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -2897,6 +2909,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-number-to-fixed-spread': 'patterns',
   'no-unnecessary-is-nan-spread': 'patterns',
   'no-unnecessary-is-finite-spread': 'patterns',
+  'no-unnecessary-parse-float-spread': 'patterns',
+  'no-unnecessary-parse-int-spread': 'patterns',
+  'no-unnecessary-number-is-integer-spread': 'patterns',
+  'no-unnecessary-number-is-nan-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
