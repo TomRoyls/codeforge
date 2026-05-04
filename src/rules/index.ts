@@ -3787,6 +3787,168 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-window-clear-timeout-spread']: adaptPluginRule(noUnnecessaryWindowClearTimeoutSpreadRule),
   ['no-unnecessary-window-set-interval-spread']: adaptPluginRule(noUnnecessaryWindowSetIntervalSpreadRule),
   ['no-unnecessary-window-clear-interval-spread']: adaptPluginRule(noUnnecessaryWindowClearIntervalSpreadRule),
+  ['no-unnecessary-process-exit-spread']: adaptPluginRule(noUnnecessaryProcessExitSpreadRule),
+  ['no-unnecessary-process-next-tick-spread']: adaptPluginRule(noUnnecessaryProcessNextTickSpreadRule),
+  ['no-unnecessary-process-cwd-spread']: adaptPluginRule(noUnnecessaryProcessCwdSpreadRule),
+  ['no-unnecessary-process-chdir-spread']: adaptPluginRule(noUnnecessaryProcessChdirSpreadRule),
+  ['no-unnecessary-process-env-spread']: adaptPluginRule(noUnnecessaryProcessEnvSpreadRule),
+  ['no-unnecessary-process-uptime-spread']: adaptPluginRule(noUnnecessaryProcessUptimeSpreadRule),
+  ['no-unnecessary-process-memory-usage-spread']: adaptPluginRule(noUnnecessaryProcessMemoryUsageSpreadRule),
+  ['no-unnecessary-process-cpu-usage-spread']: adaptPluginRule(noUnnecessaryProcessCpuUsageSpreadRule),
+  ['no-unnecessary-process-kill-spread']: adaptPluginRule(noUnnecessaryProcessKillSpreadRule),
+  ['no-unnecessary-process-abort-spread']: adaptPluginRule(noUnnecessaryProcessAbortSpreadRule),
+  ['no-unnecessary-process-umask-spread']: adaptPluginRule(noUnnecessaryProcessUmaskSpreadRule),
+  ['no-unnecessary-process-getuid-spread']: adaptPluginRule(noUnnecessaryProcessGetuidSpreadRule),
+  ['no-unnecessary-process-setuid-spread']: adaptPluginRule(noUnnecessaryProcessSetuidSpreadRule),
+  ['no-unnecessary-process-getgid-spread']: adaptPluginRule(noUnnecessaryProcessGetgidSpreadRule),
+  ['no-unnecessary-process-setgid-spread']: adaptPluginRule(noUnnecessaryProcessSetgidSpreadRule),
+  ['no-unnecessary-process-hrtime-spread']: adaptPluginRule(noUnnecessaryProcessHrtimeSpreadRule),
+  ['no-unnecessary-process-argv-spread']: adaptPluginRule(noUnnecessaryProcessArgvSpreadRule),
+  ['no-unnecessary-buffer-alloc-spread']: adaptPluginRule(noUnnecessaryBufferAllocSpreadRule),
+  ['no-unnecessary-buffer-alloc-unsafe-spread']: adaptPluginRule(noUnnecessaryBufferAllocUnsafeSpreadRule),
+  ['no-unnecessary-buffer-alloc-unsafe-slow-spread']: adaptPluginRule(noUnnecessaryBufferAllocUnsafeSlowSpreadRule),
+  ['no-unnecessary-buffer-from-spread']: adaptPluginRule(noUnnecessaryBufferFromSpreadRule),
+  ['no-unnecessary-buffer-of-spread']: adaptPluginRule(noUnnecessaryBufferOfSpreadRule),
+  ['no-unnecessary-buffer-is-buffer-spread']: adaptPluginRule(noUnnecessaryBufferIsBufferSpreadRule),
+  ['no-unnecessary-buffer-is-encoding-spread']: adaptPluginRule(noUnnecessaryBufferIsEncodingSpreadRule),
+  ['no-unnecessary-buffer-byte-length-spread']: adaptPluginRule(noUnnecessaryBufferByteLengthSpreadRule),
+  ['no-unnecessary-buffer-compare-spread']: adaptPluginRule(noUnnecessaryBufferCompareSpreadRule),
+  ['no-unnecessary-buffer-concat-spread']: adaptPluginRule(noUnnecessaryBufferConcatSpreadRule),
+  ['no-unnecessary-path-join-spread']: adaptPluginRule(noUnnecessaryPathJoinSpreadRule),
+  ['no-unnecessary-path-resolve-spread']: adaptPluginRule(noUnnecessaryPathResolveSpreadRule),
+  ['no-unnecessary-path-normalize-spread']: adaptPluginRule(noUnnecessaryPathNormalizeSpreadRule),
+  ['no-unnecessary-path-relative-spread']: adaptPluginRule(noUnnecessaryPathRelativeSpreadRule),
+  ['no-unnecessary-path-dirname-spread']: adaptPluginRule(noUnnecessaryPathDirnameSpreadRule),
+  ['no-unnecessary-path-basename-spread']: adaptPluginRule(noUnnecessaryPathBasenameSpreadRule),
+  ['no-unnecessary-path-extname-spread']: adaptPluginRule(noUnnecessaryPathExtnameSpreadRule),
+  ['no-unnecessary-path-parse-spread']: adaptPluginRule(noUnnecessaryPathParseSpreadRule),
+  ['no-unnecessary-path-format-spread']: adaptPluginRule(noUnnecessaryPathFormatSpreadRule),
+  ['no-unnecessary-path-is-absolute-spread']: adaptPluginRule(noUnnecessaryPathIsAbsoluteSpreadRule),
+  ['no-unnecessary-path-to-namespaced-path-spread']: adaptPluginRule(noUnnecessaryPathToNamespacedPathSpreadRule),
+  ['no-unnecessary-fs-read-file-spread']: adaptPluginRule(noUnnecessaryFsReadFileSpreadRule),
+  ['no-unnecessary-fs-write-file-spread']: adaptPluginRule(noUnnecessaryFsWriteFileSpreadRule),
+  ['no-unnecessary-fs-append-file-spread']: adaptPluginRule(noUnnecessaryFsAppendFileSpreadRule),
+  ['no-unnecessary-fs-copy-file-spread']: adaptPluginRule(noUnnecessaryFsCopyFileSpreadRule),
+  ['no-unnecessary-fs-rename-spread']: adaptPluginRule(noUnnecessaryFsRenameSpreadRule),
+  ['no-unnecessary-fs-unlink-spread']: adaptPluginRule(noUnnecessaryFsUnlinkSpreadRule),
+  ['no-unnecessary-fs-mkdir-spread']: adaptPluginRule(noUnnecessaryFsMkdirSpreadRule),
+  ['no-unnecessary-fs-rmdir-spread']: adaptPluginRule(noUnnecessaryFsRmdirSpreadRule),
+  ['no-unnecessary-fs-readdir-spread']: adaptPluginRule(noUnnecessaryFsReaddirSpreadRule),
+  ['no-unnecessary-fs-stat-spread']: adaptPluginRule(noUnnecessaryFsStatSpreadRule),
+  ['no-unnecessary-fs-lstat-spread']: adaptPluginRule(noUnnecessaryFsLstatSpreadRule),
+  ['no-unnecessary-fs-fstat-spread']: adaptPluginRule(noUnnecessaryFsFstatSpreadRule),
+  ['no-unnecessary-fs-exists-spread']: adaptPluginRule(noUnnecessaryFsExistsSpreadRule),
+  ['no-unnecessary-fs-exists-sync-spread']: adaptPluginRule(noUnnecessaryFsExistsSyncSpreadRule),
+  ['no-unnecessary-fs-access-spread']: adaptPluginRule(noUnnecessaryFsAccessSpreadRule),
+  ['no-unnecessary-fs-chmod-spread']: adaptPluginRule(noUnnecessaryFsChmodSpreadRule),
+  ['no-unnecessary-fs-chown-spread']: adaptPluginRule(noUnnecessaryFsChownSpreadRule),
+  ['no-unnecessary-fs-read-dir-sync-spread']: adaptPluginRule(noUnnecessaryFsReadDirSyncSpreadRule),
+  ['no-unnecessary-fs-read-file-sync-spread']: adaptPluginRule(noUnnecessaryFsReadFileSyncSpreadRule),
+  ['no-unnecessary-fs-write-file-sync-spread']: adaptPluginRule(noUnnecessaryFsWriteFileSyncSpreadRule),
+  ['no-unnecessary-fs-mkdir-sync-spread']: adaptPluginRule(noUnnecessaryFsMkdirSyncSpreadRule),
+  ['no-unnecessary-fs-rm-sync-spread']: adaptPluginRule(noUnnecessaryFsRmSyncSpreadRule),
+  ['no-unnecessary-fs-rm-spread']: adaptPluginRule(noUnnecessaryFsRmSpreadRule),
+  ['no-unnecessary-fs-watch-spread']: adaptPluginRule(noUnnecessaryFsWatchSpreadRule),
+  ['no-unnecessary-fs-watch-file-spread']: adaptPluginRule(noUnnecessaryFsWatchFileSpreadRule),
+  ['no-unnecessary-fs-unwatch-file-spread']: adaptPluginRule(noUnnecessaryFsUnwatchFileSpreadRule),
+  ['no-unnecessary-fs-create-read-stream-spread']: adaptPluginRule(noUnnecessaryFsCreateReadStreamSpreadRule),
+  ['no-unnecessary-fs-create-write-stream-spread']: adaptPluginRule(noUnnecessaryFsCreateWriteStreamSpreadRule),
+  ['no-unnecessary-util-promisify-spread']: adaptPluginRule(noUnnecessaryUtilPromisifySpreadRule),
+  ['no-unnecessary-util-callbackify-spread']: adaptPluginRule(noUnnecessaryUtilCallbackifySpreadRule),
+  ['no-unnecessary-util-inspect-spread']: adaptPluginRule(noUnnecessaryUtilInspectSpreadRule),
+  ['no-unnecessary-util-format-spread']: adaptPluginRule(noUnnecessaryUtilFormatSpreadRule),
+  ['no-unnecessary-util-deprecate-spread']: adaptPluginRule(noUnnecessaryUtilDeprecateSpreadRule),
+  ['no-unnecessary-util-is-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryUtilIsDeepStrictEqualSpreadRule),
+  ['no-unnecessary-util-types-is-date-spread']: adaptPluginRule(noUnnecessaryUtilTypesIsDateSpreadRule),
+  ['no-unnecessary-util-text-decoder-decode-spread']: adaptPluginRule(noUnnecessaryUtilTextDecoderDecodeSpreadRule),
+  ['no-unnecessary-os-homedir-spread']: adaptPluginRule(noUnnecessaryOsHomedirSpreadRule),
+  ['no-unnecessary-os-tmpdir-spread']: adaptPluginRule(noUnnecessaryOsTmpdirSpreadRule),
+  ['no-unnecessary-os-hostname-spread']: adaptPluginRule(noUnnecessaryOsHostnameSpreadRule),
+  ['no-unnecessary-os-type-spread']: adaptPluginRule(noUnnecessaryOsTypeSpreadRule),
+  ['no-unnecessary-os-platform-spread']: adaptPluginRule(noUnnecessaryOsPlatformSpreadRule),
+  ['no-unnecessary-os-arch-spread']: adaptPluginRule(noUnnecessaryOsArchSpreadRule),
+  ['no-unnecessary-os-release-spread']: adaptPluginRule(noUnnecessaryOsReleaseSpreadRule),
+  ['no-unnecessary-os-cpus-spread']: adaptPluginRule(noUnnecessaryOsCpusSpreadRule),
+  ['no-unnecessary-os-totalmem-spread']: adaptPluginRule(noUnnecessaryOsTotalmemSpreadRule),
+  ['no-unnecessary-os-freemem-spread']: adaptPluginRule(noUnnecessaryOsFreememSpreadRule),
+  ['no-unnecessary-os-uptime-spread']: adaptPluginRule(noUnnecessaryOsUptimeSpreadRule),
+  ['no-unnecessary-os-loadavg-spread']: adaptPluginRule(noUnnecessaryOsLoadavgSpreadRule),
+  ['no-unnecessary-os-network-interfaces-spread']: adaptPluginRule(noUnnecessaryOsNetworkInterfacesSpreadRule),
+  ['no-unnecessary-os-constants-spread']: adaptPluginRule(noUnnecessaryOsConstantsSpreadRule),
+  ['no-unnecessary-os-user-info-spread']: adaptPluginRule(noUnnecessaryOsUserInfoSpreadRule),
+  ['no-unnecessary-os-eol-spread']: adaptPluginRule(noUnnecessaryOsEolSpreadRule),
+  ['no-unnecessary-os-dev-null-spread']: adaptPluginRule(noUnnecessaryOsDevNullSpreadRule),
+  ['no-unnecessary-os-get-priority-spread']: adaptPluginRule(noUnnecessaryOsGetPrioritySpreadRule),
+  ['no-unnecessary-os-set-priority-spread']: adaptPluginRule(noUnnecessaryOsSetPrioritySpreadRule),
+  ['no-unnecessary-crypto-create-hash-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHashSpreadRule),
+  ['no-unnecessary-crypto-create-hmac-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHmacSpreadRule),
+  ['no-unnecessary-crypto-create-cipher-spread']: adaptPluginRule(noUnnecessaryCryptoCreateCipherSpreadRule),
+  ['no-unnecessary-crypto-create-cipher-iv-spread']: adaptPluginRule(noUnnecessaryCryptoCreateCipherIvSpreadRule),
+  ['no-unnecessary-crypto-create-decipher-spread']: adaptPluginRule(noUnnecessaryCryptoCreateDecipherSpreadRule),
+  ['no-unnecessary-crypto-create-decipher-iv-spread']: adaptPluginRule(noUnnecessaryCryptoCreateDecipherIvSpreadRule),
+  ['no-unnecessary-crypto-create-sign-spread']: adaptPluginRule(noUnnecessaryCryptoCreateSignSpreadRule),
+  ['no-unnecessary-crypto-create-verify-spread']: adaptPluginRule(noUnnecessaryCryptoCreateVerifySpreadRule),
+  ['no-unnecessary-crypto-random-bytes-spread']: adaptPluginRule(noUnnecessaryCryptoRandomBytesSpreadRule),
+  ['no-unnecessary-crypto-pbkdf2-spread']: adaptPluginRule(noUnnecessaryCryptoPbkdf2SpreadRule),
+  ['no-unnecessary-crypto-scrypt-spread']: adaptPluginRule(noUnnecessaryCryptoScryptSpreadRule),
+  ['no-unnecessary-crypto-create-secret-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreateSecretKeySpreadRule),
+  ['no-unnecessary-crypto-create-public-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreatePublicKeySpreadRule),
+  ['no-unnecessary-crypto-create-private-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreatePrivateKeySpreadRule),
+  ['no-unnecessary-crypto-get-ciphers-spread']: adaptPluginRule(noUnnecessaryCryptoGetCiphersSpreadRule),
+  ['no-unnecessary-crypto-get-hashes-spread']: adaptPluginRule(noUnnecessaryCryptoGetHashesSpreadRule),
+  ['no-unnecessary-crypto-timing-safe-equal-spread']: adaptPluginRule(noUnnecessaryCryptoTimingSafeEqualSpreadRule),
+  ['no-unnecessary-event-emitter-on-spread']: adaptPluginRule(noUnnecessaryEventEmitterOnSpreadRule),
+  ['no-unnecessary-event-emitter-off-spread']: adaptPluginRule(noUnnecessaryEventEmitterOffSpreadRule),
+  ['no-unnecessary-event-emitter-once-spread']: adaptPluginRule(noUnnecessaryEventEmitterOnceSpreadRule),
+  ['no-unnecessary-event-emitter-emit-spread']: adaptPluginRule(noUnnecessaryEventEmitterEmitSpreadRule),
+  ['no-unnecessary-event-emitter-remove-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterRemoveListenerSpreadRule),
+  ['no-unnecessary-event-emitter-remove-all-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterRemoveAllListenersSpreadRule),
+  ['no-unnecessary-event-emitter-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterListenersSpreadRule),
+  ['no-unnecessary-event-emitter-listener-count-spread']: adaptPluginRule(noUnnecessaryEventEmitterListenerCountSpreadRule),
+  ['no-unnecessary-event-emitter-prepend-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterPrependListenerSpreadRule),
+  ['no-unnecessary-event-emitter-prepend-once-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterPrependOnceListenerSpreadRule),
+  ['no-unnecessary-event-emitter-set-max-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterSetMaxListenersSpreadRule),
+  ['no-unnecessary-event-emitter-get-max-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterGetMaxListenersSpreadRule),
+  ['no-unnecessary-event-emitter-event-names-spread']: adaptPluginRule(noUnnecessaryEventEmitterEventNamesSpreadRule),
+  ['no-unnecessary-event-emitter-raw-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterRawListenersSpreadRule),
+  ['no-unnecessary-stream-pipeline-spread']: adaptPluginRule(noUnnecessaryStreamPipelineSpreadRule),
+  ['no-unnecessary-stream-compose-spread']: adaptPluginRule(noUnnecessaryStreamComposeSpreadRule),
+  ['no-unnecessary-stream-readable-from-spread']: adaptPluginRule(noUnnecessaryStreamReadableFromSpreadRule),
+  ['no-unnecessary-child-process-exec-spread']: adaptPluginRule(noUnnecessaryChildProcessExecSpreadRule),
+  ['no-unnecessary-child-process-exec-file-spread']: adaptPluginRule(noUnnecessaryChildProcessExecFileSpreadRule),
+  ['no-unnecessary-child-process-spawn-spread']: adaptPluginRule(noUnnecessaryChildProcessSpawnSpreadRule),
+  ['no-unnecessary-child-process-fork-spread']: adaptPluginRule(noUnnecessaryChildProcessForkSpreadRule),
+  ['no-unnecessary-http-request-spread']: adaptPluginRule(noUnnecessaryHttpRequestSpreadRule),
+  ['no-unnecessary-http-get-spread']: adaptPluginRule(noUnnecessaryHttpGetSpreadRule),
+  ['no-unnecessary-https-request-spread']: adaptPluginRule(noUnnecessaryHttpsRequestSpreadRule),
+  ['no-unnecessary-https-get-spread']: adaptPluginRule(noUnnecessaryHttpsGetSpreadRule),
+  ['no-unnecessary-url-parse-node-spread']: adaptPluginRule(noUnnecessaryUrlParseNodeSpreadRule),
+  ['no-unnecessary-url-format-spread']: adaptPluginRule(noUnnecessaryUrlFormatSpreadRule),
+  ['no-unnecessary-url-resolve-spread']: adaptPluginRule(noUnnecessaryUrlResolveSpreadRule),
+  ['no-unnecessary-url-domain-to-unicode-spread']: adaptPluginRule(noUnnecessaryUrlDomainToUnicodeSpreadRule),
+  ['no-unnecessary-url-domain-to-ascii-spread']: adaptPluginRule(noUnnecessaryUrlDomainToAsciiSpreadRule),
+  ['no-unnecessary-querystring-parse-spread']: adaptPluginRule(noUnnecessaryQuerystringParseSpreadRule),
+  ['no-unnecessary-querystring-stringify-spread']: adaptPluginRule(noUnnecessaryQuerystringStringifySpreadRule),
+  ['no-unnecessary-querystring-escape-spread']: adaptPluginRule(noUnnecessaryQuerystringEscapeSpreadRule),
+  ['no-unnecessary-querystring-unescape-spread']: adaptPluginRule(noUnnecessaryQuerystringUnescapeSpreadRule),
+  ['no-unnecessary-assert-ok-spread']: adaptPluginRule(noUnnecessaryAssertOkSpreadRule),
+  ['no-unnecessary-assert-equal-spread']: adaptPluginRule(noUnnecessaryAssertEqualSpreadRule),
+  ['no-unnecessary-assert-not-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotEqualSpreadRule),
+  ['no-unnecessary-assert-deep-equal-spread']: adaptPluginRule(noUnnecessaryAssertDeepEqualSpreadRule),
+  ['no-unnecessary-assert-not-deep-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotDeepEqualSpreadRule),
+  ['no-unnecessary-assert-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertDeepStrictEqualSpreadRule),
+  ['no-unnecessary-assert-not-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotDeepStrictEqualSpreadRule),
+  ['no-unnecessary-assert-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertStrictEqualSpreadRule),
+  ['no-unnecessary-assert-not-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotStrictEqualSpreadRule),
+  ['no-unnecessary-assert-throws-spread']: adaptPluginRule(noUnnecessaryAssertThrowsSpreadRule),
+  ['no-unnecessary-assert-rejects-spread']: adaptPluginRule(noUnnecessaryAssertRejectsSpreadRule),
+  ['no-unnecessary-assert-does-not-throw-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotThrowSpreadRule),
+  ['no-unnecessary-assert-does-not-reject-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotRejectSpreadRule),
+  ['no-unnecessary-assert-if-error-spread']: adaptPluginRule(noUnnecessaryAssertIfErrorSpreadRule),
+  ['no-unnecessary-assert-fail-spread']: adaptPluginRule(noUnnecessaryAssertFailSpreadRule),
+  ['no-unnecessary-assert-match-spread']: adaptPluginRule(noUnnecessaryAssertMatchSpreadRule),
+  ['no-unnecessary-assert-does-not-match-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotMatchSpreadRule),
+  ['no-unnecessary-assert-call-tracker-calls-spread']: adaptPluginRule(noUnnecessaryAssertCallTrackerCallsSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -5860,6 +6022,168 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-window-clear-timeout-spread']: 'patterns',
   ['no-unnecessary-window-set-interval-spread']: 'patterns',
   ['no-unnecessary-window-clear-interval-spread']: 'patterns',
+  ['no-unnecessary-process-exit-spread']: 'patterns',
+  ['no-unnecessary-process-next-tick-spread']: 'patterns',
+  ['no-unnecessary-process-cwd-spread']: 'patterns',
+  ['no-unnecessary-process-chdir-spread']: 'patterns',
+  ['no-unnecessary-process-env-spread']: 'patterns',
+  ['no-unnecessary-process-uptime-spread']: 'patterns',
+  ['no-unnecessary-process-memory-usage-spread']: 'patterns',
+  ['no-unnecessary-process-cpu-usage-spread']: 'patterns',
+  ['no-unnecessary-process-kill-spread']: 'patterns',
+  ['no-unnecessary-process-abort-spread']: 'patterns',
+  ['no-unnecessary-process-umask-spread']: 'patterns',
+  ['no-unnecessary-process-getuid-spread']: 'patterns',
+  ['no-unnecessary-process-setuid-spread']: 'patterns',
+  ['no-unnecessary-process-getgid-spread']: 'patterns',
+  ['no-unnecessary-process-setgid-spread']: 'patterns',
+  ['no-unnecessary-process-hrtime-spread']: 'patterns',
+  ['no-unnecessary-process-argv-spread']: 'patterns',
+  ['no-unnecessary-buffer-alloc-spread']: 'patterns',
+  ['no-unnecessary-buffer-alloc-unsafe-spread']: 'patterns',
+  ['no-unnecessary-buffer-alloc-unsafe-slow-spread']: 'patterns',
+  ['no-unnecessary-buffer-from-spread']: 'patterns',
+  ['no-unnecessary-buffer-of-spread']: 'patterns',
+  ['no-unnecessary-buffer-is-buffer-spread']: 'patterns',
+  ['no-unnecessary-buffer-is-encoding-spread']: 'patterns',
+  ['no-unnecessary-buffer-byte-length-spread']: 'patterns',
+  ['no-unnecessary-buffer-compare-spread']: 'patterns',
+  ['no-unnecessary-buffer-concat-spread']: 'patterns',
+  ['no-unnecessary-path-join-spread']: 'patterns',
+  ['no-unnecessary-path-resolve-spread']: 'patterns',
+  ['no-unnecessary-path-normalize-spread']: 'patterns',
+  ['no-unnecessary-path-relative-spread']: 'patterns',
+  ['no-unnecessary-path-dirname-spread']: 'patterns',
+  ['no-unnecessary-path-basename-spread']: 'patterns',
+  ['no-unnecessary-path-extname-spread']: 'patterns',
+  ['no-unnecessary-path-parse-spread']: 'patterns',
+  ['no-unnecessary-path-format-spread']: 'patterns',
+  ['no-unnecessary-path-is-absolute-spread']: 'patterns',
+  ['no-unnecessary-path-to-namespaced-path-spread']: 'patterns',
+  ['no-unnecessary-fs-read-file-spread']: 'patterns',
+  ['no-unnecessary-fs-write-file-spread']: 'patterns',
+  ['no-unnecessary-fs-append-file-spread']: 'patterns',
+  ['no-unnecessary-fs-copy-file-spread']: 'patterns',
+  ['no-unnecessary-fs-rename-spread']: 'patterns',
+  ['no-unnecessary-fs-unlink-spread']: 'patterns',
+  ['no-unnecessary-fs-mkdir-spread']: 'patterns',
+  ['no-unnecessary-fs-rmdir-spread']: 'patterns',
+  ['no-unnecessary-fs-readdir-spread']: 'patterns',
+  ['no-unnecessary-fs-stat-spread']: 'patterns',
+  ['no-unnecessary-fs-lstat-spread']: 'patterns',
+  ['no-unnecessary-fs-fstat-spread']: 'patterns',
+  ['no-unnecessary-fs-exists-spread']: 'patterns',
+  ['no-unnecessary-fs-exists-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-access-spread']: 'patterns',
+  ['no-unnecessary-fs-chmod-spread']: 'patterns',
+  ['no-unnecessary-fs-chown-spread']: 'patterns',
+  ['no-unnecessary-fs-read-dir-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-read-file-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-write-file-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-mkdir-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-rm-sync-spread']: 'patterns',
+  ['no-unnecessary-fs-rm-spread']: 'patterns',
+  ['no-unnecessary-fs-watch-spread']: 'patterns',
+  ['no-unnecessary-fs-watch-file-spread']: 'patterns',
+  ['no-unnecessary-fs-unwatch-file-spread']: 'patterns',
+  ['no-unnecessary-fs-create-read-stream-spread']: 'patterns',
+  ['no-unnecessary-fs-create-write-stream-spread']: 'patterns',
+  ['no-unnecessary-util-promisify-spread']: 'patterns',
+  ['no-unnecessary-util-callbackify-spread']: 'patterns',
+  ['no-unnecessary-util-inspect-spread']: 'patterns',
+  ['no-unnecessary-util-format-spread']: 'patterns',
+  ['no-unnecessary-util-deprecate-spread']: 'patterns',
+  ['no-unnecessary-util-is-deep-strict-equal-spread']: 'patterns',
+  ['no-unnecessary-util-types-is-date-spread']: 'patterns',
+  ['no-unnecessary-util-text-decoder-decode-spread']: 'patterns',
+  ['no-unnecessary-os-homedir-spread']: 'patterns',
+  ['no-unnecessary-os-tmpdir-spread']: 'patterns',
+  ['no-unnecessary-os-hostname-spread']: 'patterns',
+  ['no-unnecessary-os-type-spread']: 'patterns',
+  ['no-unnecessary-os-platform-spread']: 'patterns',
+  ['no-unnecessary-os-arch-spread']: 'patterns',
+  ['no-unnecessary-os-release-spread']: 'patterns',
+  ['no-unnecessary-os-cpus-spread']: 'patterns',
+  ['no-unnecessary-os-totalmem-spread']: 'patterns',
+  ['no-unnecessary-os-freemem-spread']: 'patterns',
+  ['no-unnecessary-os-uptime-spread']: 'patterns',
+  ['no-unnecessary-os-loadavg-spread']: 'patterns',
+  ['no-unnecessary-os-network-interfaces-spread']: 'patterns',
+  ['no-unnecessary-os-constants-spread']: 'patterns',
+  ['no-unnecessary-os-user-info-spread']: 'patterns',
+  ['no-unnecessary-os-eol-spread']: 'patterns',
+  ['no-unnecessary-os-dev-null-spread']: 'patterns',
+  ['no-unnecessary-os-get-priority-spread']: 'patterns',
+  ['no-unnecessary-os-set-priority-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-hash-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-hmac-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-cipher-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-cipher-iv-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-decipher-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-decipher-iv-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-sign-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-verify-spread']: 'patterns',
+  ['no-unnecessary-crypto-random-bytes-spread']: 'patterns',
+  ['no-unnecessary-crypto-pbkdf2-spread']: 'patterns',
+  ['no-unnecessary-crypto-scrypt-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-secret-key-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-public-key-spread']: 'patterns',
+  ['no-unnecessary-crypto-create-private-key-spread']: 'patterns',
+  ['no-unnecessary-crypto-get-ciphers-spread']: 'patterns',
+  ['no-unnecessary-crypto-get-hashes-spread']: 'patterns',
+  ['no-unnecessary-crypto-timing-safe-equal-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-on-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-off-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-once-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-emit-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-remove-listener-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-remove-all-listeners-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-listeners-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-listener-count-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-prepend-listener-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-prepend-once-listener-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-set-max-listeners-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-get-max-listeners-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-event-names-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-raw-listeners-spread']: 'patterns',
+  ['no-unnecessary-stream-pipeline-spread']: 'patterns',
+  ['no-unnecessary-stream-compose-spread']: 'patterns',
+  ['no-unnecessary-stream-readable-from-spread']: 'patterns',
+  ['no-unnecessary-child-process-exec-spread']: 'patterns',
+  ['no-unnecessary-child-process-exec-file-spread']: 'patterns',
+  ['no-unnecessary-child-process-spawn-spread']: 'patterns',
+  ['no-unnecessary-child-process-fork-spread']: 'patterns',
+  ['no-unnecessary-http-request-spread']: 'patterns',
+  ['no-unnecessary-http-get-spread']: 'patterns',
+  ['no-unnecessary-https-request-spread']: 'patterns',
+  ['no-unnecessary-https-get-spread']: 'patterns',
+  ['no-unnecessary-url-parse-node-spread']: 'patterns',
+  ['no-unnecessary-url-format-spread']: 'patterns',
+  ['no-unnecessary-url-resolve-spread']: 'patterns',
+  ['no-unnecessary-url-domain-to-unicode-spread']: 'patterns',
+  ['no-unnecessary-url-domain-to-ascii-spread']: 'patterns',
+  ['no-unnecessary-querystring-parse-spread']: 'patterns',
+  ['no-unnecessary-querystring-stringify-spread']: 'patterns',
+  ['no-unnecessary-querystring-escape-spread']: 'patterns',
+  ['no-unnecessary-querystring-unescape-spread']: 'patterns',
+  ['no-unnecessary-assert-ok-spread']: 'patterns',
+  ['no-unnecessary-assert-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-not-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-deep-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-not-deep-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-deep-strict-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-not-deep-strict-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-strict-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-not-strict-equal-spread']: 'patterns',
+  ['no-unnecessary-assert-throws-spread']: 'patterns',
+  ['no-unnecessary-assert-rejects-spread']: 'patterns',
+  ['no-unnecessary-assert-does-not-throw-spread']: 'patterns',
+  ['no-unnecessary-assert-does-not-reject-spread']: 'patterns',
+  ['no-unnecessary-assert-if-error-spread']: 'patterns',
+  ['no-unnecessary-assert-fail-spread']: 'patterns',
+  ['no-unnecessary-assert-match-spread']: 'patterns',
+  ['no-unnecessary-assert-does-not-match-spread']: 'patterns',
+  ['no-unnecessary-assert-call-tracker-calls-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -6807,6 +7131,168 @@ import { noUnnecessaryWindowSetTimeoutSpreadRule } from './patterns/no-unnecessa
 import { noUnnecessaryWindowClearTimeoutSpreadRule } from './patterns/no-unnecessary-window-clear-timeout-spread.js'
 import { noUnnecessaryWindowSetIntervalSpreadRule } from './patterns/no-unnecessary-window-set-interval-spread.js'
 import { noUnnecessaryWindowClearIntervalSpreadRule } from './patterns/no-unnecessary-window-clear-interval-spread.js'
+import { noUnnecessaryProcessExitSpreadRule } from './patterns/no-unnecessary-process-exit-spread.js'
+import { noUnnecessaryProcessNextTickSpreadRule } from './patterns/no-unnecessary-process-next-tick-spread.js'
+import { noUnnecessaryProcessCwdSpreadRule } from './patterns/no-unnecessary-process-cwd-spread.js'
+import { noUnnecessaryProcessChdirSpreadRule } from './patterns/no-unnecessary-process-chdir-spread.js'
+import { noUnnecessaryProcessEnvSpreadRule } from './patterns/no-unnecessary-process-env-spread.js'
+import { noUnnecessaryProcessUptimeSpreadRule } from './patterns/no-unnecessary-process-uptime-spread.js'
+import { noUnnecessaryProcessMemoryUsageSpreadRule } from './patterns/no-unnecessary-process-memory-usage-spread.js'
+import { noUnnecessaryProcessCpuUsageSpreadRule } from './patterns/no-unnecessary-process-cpu-usage-spread.js'
+import { noUnnecessaryProcessKillSpreadRule } from './patterns/no-unnecessary-process-kill-spread.js'
+import { noUnnecessaryProcessAbortSpreadRule } from './patterns/no-unnecessary-process-abort-spread.js'
+import { noUnnecessaryProcessUmaskSpreadRule } from './patterns/no-unnecessary-process-umask-spread.js'
+import { noUnnecessaryProcessGetuidSpreadRule } from './patterns/no-unnecessary-process-getuid-spread.js'
+import { noUnnecessaryProcessSetuidSpreadRule } from './patterns/no-unnecessary-process-setuid-spread.js'
+import { noUnnecessaryProcessGetgidSpreadRule } from './patterns/no-unnecessary-process-getgid-spread.js'
+import { noUnnecessaryProcessSetgidSpreadRule } from './patterns/no-unnecessary-process-setgid-spread.js'
+import { noUnnecessaryProcessHrtimeSpreadRule } from './patterns/no-unnecessary-process-hrtime-spread.js'
+import { noUnnecessaryProcessArgvSpreadRule } from './patterns/no-unnecessary-process-argv-spread.js'
+import { noUnnecessaryBufferAllocSpreadRule } from './patterns/no-unnecessary-buffer-alloc-spread.js'
+import { noUnnecessaryBufferAllocUnsafeSpreadRule } from './patterns/no-unnecessary-buffer-alloc-unsafe-spread.js'
+import { noUnnecessaryBufferAllocUnsafeSlowSpreadRule } from './patterns/no-unnecessary-buffer-alloc-unsafe-slow-spread.js'
+import { noUnnecessaryBufferFromSpreadRule } from './patterns/no-unnecessary-buffer-from-spread.js'
+import { noUnnecessaryBufferOfSpreadRule } from './patterns/no-unnecessary-buffer-of-spread.js'
+import { noUnnecessaryBufferIsBufferSpreadRule } from './patterns/no-unnecessary-buffer-is-buffer-spread.js'
+import { noUnnecessaryBufferIsEncodingSpreadRule } from './patterns/no-unnecessary-buffer-is-encoding-spread.js'
+import { noUnnecessaryBufferByteLengthSpreadRule } from './patterns/no-unnecessary-buffer-byte-length-spread.js'
+import { noUnnecessaryBufferCompareSpreadRule } from './patterns/no-unnecessary-buffer-compare-spread.js'
+import { noUnnecessaryBufferConcatSpreadRule } from './patterns/no-unnecessary-buffer-concat-spread.js'
+import { noUnnecessaryPathJoinSpreadRule } from './patterns/no-unnecessary-path-join-spread.js'
+import { noUnnecessaryPathResolveSpreadRule } from './patterns/no-unnecessary-path-resolve-spread.js'
+import { noUnnecessaryPathNormalizeSpreadRule } from './patterns/no-unnecessary-path-normalize-spread.js'
+import { noUnnecessaryPathRelativeSpreadRule } from './patterns/no-unnecessary-path-relative-spread.js'
+import { noUnnecessaryPathDirnameSpreadRule } from './patterns/no-unnecessary-path-dirname-spread.js'
+import { noUnnecessaryPathBasenameSpreadRule } from './patterns/no-unnecessary-path-basename-spread.js'
+import { noUnnecessaryPathExtnameSpreadRule } from './patterns/no-unnecessary-path-extname-spread.js'
+import { noUnnecessaryPathParseSpreadRule } from './patterns/no-unnecessary-path-parse-spread.js'
+import { noUnnecessaryPathFormatSpreadRule } from './patterns/no-unnecessary-path-format-spread.js'
+import { noUnnecessaryPathIsAbsoluteSpreadRule } from './patterns/no-unnecessary-path-is-absolute-spread.js'
+import { noUnnecessaryPathToNamespacedPathSpreadRule } from './patterns/no-unnecessary-path-to-namespaced-path-spread.js'
+import { noUnnecessaryFsReadFileSpreadRule } from './patterns/no-unnecessary-fs-read-file-spread.js'
+import { noUnnecessaryFsWriteFileSpreadRule } from './patterns/no-unnecessary-fs-write-file-spread.js'
+import { noUnnecessaryFsAppendFileSpreadRule } from './patterns/no-unnecessary-fs-append-file-spread.js'
+import { noUnnecessaryFsCopyFileSpreadRule } from './patterns/no-unnecessary-fs-copy-file-spread.js'
+import { noUnnecessaryFsRenameSpreadRule } from './patterns/no-unnecessary-fs-rename-spread.js'
+import { noUnnecessaryFsUnlinkSpreadRule } from './patterns/no-unnecessary-fs-unlink-spread.js'
+import { noUnnecessaryFsMkdirSpreadRule } from './patterns/no-unnecessary-fs-mkdir-spread.js'
+import { noUnnecessaryFsRmdirSpreadRule } from './patterns/no-unnecessary-fs-rmdir-spread.js'
+import { noUnnecessaryFsReaddirSpreadRule } from './patterns/no-unnecessary-fs-readdir-spread.js'
+import { noUnnecessaryFsStatSpreadRule } from './patterns/no-unnecessary-fs-stat-spread.js'
+import { noUnnecessaryFsLstatSpreadRule } from './patterns/no-unnecessary-fs-lstat-spread.js'
+import { noUnnecessaryFsFstatSpreadRule } from './patterns/no-unnecessary-fs-fstat-spread.js'
+import { noUnnecessaryFsExistsSpreadRule } from './patterns/no-unnecessary-fs-exists-spread.js'
+import { noUnnecessaryFsExistsSyncSpreadRule } from './patterns/no-unnecessary-fs-exists-sync-spread.js'
+import { noUnnecessaryFsAccessSpreadRule } from './patterns/no-unnecessary-fs-access-spread.js'
+import { noUnnecessaryFsChmodSpreadRule } from './patterns/no-unnecessary-fs-chmod-spread.js'
+import { noUnnecessaryFsChownSpreadRule } from './patterns/no-unnecessary-fs-chown-spread.js'
+import { noUnnecessaryFsReadDirSyncSpreadRule } from './patterns/no-unnecessary-fs-read-dir-sync-spread.js'
+import { noUnnecessaryFsReadFileSyncSpreadRule } from './patterns/no-unnecessary-fs-read-file-sync-spread.js'
+import { noUnnecessaryFsWriteFileSyncSpreadRule } from './patterns/no-unnecessary-fs-write-file-sync-spread.js'
+import { noUnnecessaryFsMkdirSyncSpreadRule } from './patterns/no-unnecessary-fs-mkdir-sync-spread.js'
+import { noUnnecessaryFsRmSyncSpreadRule } from './patterns/no-unnecessary-fs-rm-sync-spread.js'
+import { noUnnecessaryFsRmSpreadRule } from './patterns/no-unnecessary-fs-rm-spread.js'
+import { noUnnecessaryFsWatchSpreadRule } from './patterns/no-unnecessary-fs-watch-spread.js'
+import { noUnnecessaryFsWatchFileSpreadRule } from './patterns/no-unnecessary-fs-watch-file-spread.js'
+import { noUnnecessaryFsUnwatchFileSpreadRule } from './patterns/no-unnecessary-fs-unwatch-file-spread.js'
+import { noUnnecessaryFsCreateReadStreamSpreadRule } from './patterns/no-unnecessary-fs-create-read-stream-spread.js'
+import { noUnnecessaryFsCreateWriteStreamSpreadRule } from './patterns/no-unnecessary-fs-create-write-stream-spread.js'
+import { noUnnecessaryUtilPromisifySpreadRule } from './patterns/no-unnecessary-util-promisify-spread.js'
+import { noUnnecessaryUtilCallbackifySpreadRule } from './patterns/no-unnecessary-util-callbackify-spread.js'
+import { noUnnecessaryUtilInspectSpreadRule } from './patterns/no-unnecessary-util-inspect-spread.js'
+import { noUnnecessaryUtilFormatSpreadRule } from './patterns/no-unnecessary-util-format-spread.js'
+import { noUnnecessaryUtilDeprecateSpreadRule } from './patterns/no-unnecessary-util-deprecate-spread.js'
+import { noUnnecessaryUtilIsDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-util-is-deep-strict-equal-spread.js'
+import { noUnnecessaryUtilTypesIsDateSpreadRule } from './patterns/no-unnecessary-util-types-is-date-spread.js'
+import { noUnnecessaryUtilTextDecoderDecodeSpreadRule } from './patterns/no-unnecessary-util-text-decoder-decode-spread.js'
+import { noUnnecessaryOsHomedirSpreadRule } from './patterns/no-unnecessary-os-homedir-spread.js'
+import { noUnnecessaryOsTmpdirSpreadRule } from './patterns/no-unnecessary-os-tmpdir-spread.js'
+import { noUnnecessaryOsHostnameSpreadRule } from './patterns/no-unnecessary-os-hostname-spread.js'
+import { noUnnecessaryOsTypeSpreadRule } from './patterns/no-unnecessary-os-type-spread.js'
+import { noUnnecessaryOsPlatformSpreadRule } from './patterns/no-unnecessary-os-platform-spread.js'
+import { noUnnecessaryOsArchSpreadRule } from './patterns/no-unnecessary-os-arch-spread.js'
+import { noUnnecessaryOsReleaseSpreadRule } from './patterns/no-unnecessary-os-release-spread.js'
+import { noUnnecessaryOsCpusSpreadRule } from './patterns/no-unnecessary-os-cpus-spread.js'
+import { noUnnecessaryOsTotalmemSpreadRule } from './patterns/no-unnecessary-os-totalmem-spread.js'
+import { noUnnecessaryOsFreememSpreadRule } from './patterns/no-unnecessary-os-freemem-spread.js'
+import { noUnnecessaryOsUptimeSpreadRule } from './patterns/no-unnecessary-os-uptime-spread.js'
+import { noUnnecessaryOsLoadavgSpreadRule } from './patterns/no-unnecessary-os-loadavg-spread.js'
+import { noUnnecessaryOsNetworkInterfacesSpreadRule } from './patterns/no-unnecessary-os-network-interfaces-spread.js'
+import { noUnnecessaryOsConstantsSpreadRule } from './patterns/no-unnecessary-os-constants-spread.js'
+import { noUnnecessaryOsUserInfoSpreadRule } from './patterns/no-unnecessary-os-user-info-spread.js'
+import { noUnnecessaryOsEolSpreadRule } from './patterns/no-unnecessary-os-eol-spread.js'
+import { noUnnecessaryOsDevNullSpreadRule } from './patterns/no-unnecessary-os-dev-null-spread.js'
+import { noUnnecessaryOsGetPrioritySpreadRule } from './patterns/no-unnecessary-os-get-priority-spread.js'
+import { noUnnecessaryOsSetPrioritySpreadRule } from './patterns/no-unnecessary-os-set-priority-spread.js'
+import { noUnnecessaryCryptoCreateHashSpreadRule } from './patterns/no-unnecessary-crypto-create-hash-spread.js'
+import { noUnnecessaryCryptoCreateHmacSpreadRule } from './patterns/no-unnecessary-crypto-create-hmac-spread.js'
+import { noUnnecessaryCryptoCreateCipherSpreadRule } from './patterns/no-unnecessary-crypto-create-cipher-spread.js'
+import { noUnnecessaryCryptoCreateCipherIvSpreadRule } from './patterns/no-unnecessary-crypto-create-cipher-iv-spread.js'
+import { noUnnecessaryCryptoCreateDecipherSpreadRule } from './patterns/no-unnecessary-crypto-create-decipher-spread.js'
+import { noUnnecessaryCryptoCreateDecipherIvSpreadRule } from './patterns/no-unnecessary-crypto-create-decipher-iv-spread.js'
+import { noUnnecessaryCryptoCreateSignSpreadRule } from './patterns/no-unnecessary-crypto-create-sign-spread.js'
+import { noUnnecessaryCryptoCreateVerifySpreadRule } from './patterns/no-unnecessary-crypto-create-verify-spread.js'
+import { noUnnecessaryCryptoRandomBytesSpreadRule } from './patterns/no-unnecessary-crypto-random-bytes-spread.js'
+import { noUnnecessaryCryptoPbkdf2SpreadRule } from './patterns/no-unnecessary-crypto-pbkdf2-spread.js'
+import { noUnnecessaryCryptoScryptSpreadRule } from './patterns/no-unnecessary-crypto-scrypt-spread.js'
+import { noUnnecessaryCryptoCreateSecretKeySpreadRule } from './patterns/no-unnecessary-crypto-create-secret-key-spread.js'
+import { noUnnecessaryCryptoCreatePublicKeySpreadRule } from './patterns/no-unnecessary-crypto-create-public-key-spread.js'
+import { noUnnecessaryCryptoCreatePrivateKeySpreadRule } from './patterns/no-unnecessary-crypto-create-private-key-spread.js'
+import { noUnnecessaryCryptoGetCiphersSpreadRule } from './patterns/no-unnecessary-crypto-get-ciphers-spread.js'
+import { noUnnecessaryCryptoGetHashesSpreadRule } from './patterns/no-unnecessary-crypto-get-hashes-spread.js'
+import { noUnnecessaryCryptoTimingSafeEqualSpreadRule } from './patterns/no-unnecessary-crypto-timing-safe-equal-spread.js'
+import { noUnnecessaryEventEmitterOnSpreadRule } from './patterns/no-unnecessary-event-emitter-on-spread.js'
+import { noUnnecessaryEventEmitterOffSpreadRule } from './patterns/no-unnecessary-event-emitter-off-spread.js'
+import { noUnnecessaryEventEmitterOnceSpreadRule } from './patterns/no-unnecessary-event-emitter-once-spread.js'
+import { noUnnecessaryEventEmitterEmitSpreadRule } from './patterns/no-unnecessary-event-emitter-emit-spread.js'
+import { noUnnecessaryEventEmitterRemoveListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-remove-listener-spread.js'
+import { noUnnecessaryEventEmitterRemoveAllListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-remove-all-listeners-spread.js'
+import { noUnnecessaryEventEmitterListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-listeners-spread.js'
+import { noUnnecessaryEventEmitterListenerCountSpreadRule } from './patterns/no-unnecessary-event-emitter-listener-count-spread.js'
+import { noUnnecessaryEventEmitterPrependListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-prepend-listener-spread.js'
+import { noUnnecessaryEventEmitterPrependOnceListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-prepend-once-listener-spread.js'
+import { noUnnecessaryEventEmitterSetMaxListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-set-max-listeners-spread.js'
+import { noUnnecessaryEventEmitterGetMaxListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-get-max-listeners-spread.js'
+import { noUnnecessaryEventEmitterEventNamesSpreadRule } from './patterns/no-unnecessary-event-emitter-event-names-spread.js'
+import { noUnnecessaryEventEmitterRawListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-raw-listeners-spread.js'
+import { noUnnecessaryStreamPipelineSpreadRule } from './patterns/no-unnecessary-stream-pipeline-spread.js'
+import { noUnnecessaryStreamComposeSpreadRule } from './patterns/no-unnecessary-stream-compose-spread.js'
+import { noUnnecessaryStreamReadableFromSpreadRule } from './patterns/no-unnecessary-stream-readable-from-spread.js'
+import { noUnnecessaryChildProcessExecSpreadRule } from './patterns/no-unnecessary-child-process-exec-spread.js'
+import { noUnnecessaryChildProcessExecFileSpreadRule } from './patterns/no-unnecessary-child-process-exec-file-spread.js'
+import { noUnnecessaryChildProcessSpawnSpreadRule } from './patterns/no-unnecessary-child-process-spawn-spread.js'
+import { noUnnecessaryChildProcessForkSpreadRule } from './patterns/no-unnecessary-child-process-fork-spread.js'
+import { noUnnecessaryHttpRequestSpreadRule } from './patterns/no-unnecessary-http-request-spread.js'
+import { noUnnecessaryHttpGetSpreadRule } from './patterns/no-unnecessary-http-get-spread.js'
+import { noUnnecessaryHttpsRequestSpreadRule } from './patterns/no-unnecessary-https-request-spread.js'
+import { noUnnecessaryHttpsGetSpreadRule } from './patterns/no-unnecessary-https-get-spread.js'
+import { noUnnecessaryUrlParseNodeSpreadRule } from './patterns/no-unnecessary-url-parse-node-spread.js'
+import { noUnnecessaryUrlFormatSpreadRule } from './patterns/no-unnecessary-url-format-spread.js'
+import { noUnnecessaryUrlResolveSpreadRule } from './patterns/no-unnecessary-url-resolve-spread.js'
+import { noUnnecessaryUrlDomainToUnicodeSpreadRule } from './patterns/no-unnecessary-url-domain-to-unicode-spread.js'
+import { noUnnecessaryUrlDomainToAsciiSpreadRule } from './patterns/no-unnecessary-url-domain-to-ascii-spread.js'
+import { noUnnecessaryQuerystringParseSpreadRule } from './patterns/no-unnecessary-querystring-parse-spread.js'
+import { noUnnecessaryQuerystringStringifySpreadRule } from './patterns/no-unnecessary-querystring-stringify-spread.js'
+import { noUnnecessaryQuerystringEscapeSpreadRule } from './patterns/no-unnecessary-querystring-escape-spread.js'
+import { noUnnecessaryQuerystringUnescapeSpreadRule } from './patterns/no-unnecessary-querystring-unescape-spread.js'
+import { noUnnecessaryAssertOkSpreadRule } from './patterns/no-unnecessary-assert-ok-spread.js'
+import { noUnnecessaryAssertEqualSpreadRule } from './patterns/no-unnecessary-assert-equal-spread.js'
+import { noUnnecessaryAssertNotEqualSpreadRule } from './patterns/no-unnecessary-assert-not-equal-spread.js'
+import { noUnnecessaryAssertDeepEqualSpreadRule } from './patterns/no-unnecessary-assert-deep-equal-spread.js'
+import { noUnnecessaryAssertNotDeepEqualSpreadRule } from './patterns/no-unnecessary-assert-not-deep-equal-spread.js'
+import { noUnnecessaryAssertDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-deep-strict-equal-spread.js'
+import { noUnnecessaryAssertNotDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-not-deep-strict-equal-spread.js'
+import { noUnnecessaryAssertStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-strict-equal-spread.js'
+import { noUnnecessaryAssertNotStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-not-strict-equal-spread.js'
+import { noUnnecessaryAssertThrowsSpreadRule } from './patterns/no-unnecessary-assert-throws-spread.js'
+import { noUnnecessaryAssertRejectsSpreadRule } from './patterns/no-unnecessary-assert-rejects-spread.js'
+import { noUnnecessaryAssertDoesNotThrowSpreadRule } from './patterns/no-unnecessary-assert-does-not-throw-spread.js'
+import { noUnnecessaryAssertDoesNotRejectSpreadRule } from './patterns/no-unnecessary-assert-does-not-reject-spread.js'
+import { noUnnecessaryAssertIfErrorSpreadRule } from './patterns/no-unnecessary-assert-if-error-spread.js'
+import { noUnnecessaryAssertFailSpreadRule } from './patterns/no-unnecessary-assert-fail-spread.js'
+import { noUnnecessaryAssertMatchSpreadRule } from './patterns/no-unnecessary-assert-match-spread.js'
+import { noUnnecessaryAssertDoesNotMatchSpreadRule } from './patterns/no-unnecessary-assert-does-not-match-spread.js'
+import { noUnnecessaryAssertCallTrackerCallsSpreadRule } from './patterns/no-unnecessary-assert-call-tracker-calls-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
