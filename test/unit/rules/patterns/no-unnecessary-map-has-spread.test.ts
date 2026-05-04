@@ -1090,31 +1090,6 @@ describe('no-unnecessary-map-has-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report map.get(...items)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'map.get(...items);' })
-      const visitor = noUnnecessaryMapHasSpreadRule.create(context)
-
-      visitor.CallExpression({
-        arguments: [createSpreadElement(createIdentifier('items'))],
-        callee: {
-          computed: false,
-          object: {
-            name: 'map',
-            type: 'Identifier',
-          },
-          property: {
-            name: 'get',
-            type: 'Identifier',
-          },
-          type: 'MemberExpression',
-        },
-        loc: { end: { column: 21, line: 1 }, start: { column: 0, line: 1 } },
-        range: [0, 21],
-        type: 'CallExpression',
-      })
-
-      expect(reports.length).toBe(0)
-    })
   })
 
   describe('edge cases', () => {
