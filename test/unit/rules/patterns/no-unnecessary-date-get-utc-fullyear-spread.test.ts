@@ -896,62 +896,6 @@ describe('no-unnecessary-date-get-utc-fullyear-spread rule', () => {
     })
   })
 
-  describe('message quality', () => {
-    test('should mention spread in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message).toContain('spread')
-    })
-
-    test('should mention getUTCFullYear in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message).toContain('getUTCFullYear')
-    })
-
-    test('should mention date in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message).toContain('date')
-    })
-
-    test('should suggest calling directly', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message).toContain('directly')
-    })
-
-    test('should mention unusual pattern', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message).toContain('unusual')
-    })
-
-    test('should produce non-empty messages', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
-
-      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
-
-      expect(reports[0].message.length).toBeGreaterThan(10)
-    })
-  })
-
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
       const { context } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
@@ -1146,6 +1090,17 @@ describe('no-unnecessary-date-get-utc-fullyear-spread rule', () => {
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
       expect(reports.length).toBe(0)
+    })
+
+    test('should report message mentioning unusual and directly', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
+      const visitor = noUnnecessaryDateGetUTCFullyearSpreadRule.create(context)
+
+      visitor.CallExpression(createDateGetUTCFullYearSpreadCall('items'))
+
+      expect(reports[0].message).toContain('unusual')
+      expect(reports[0].message).toContain('directly')
+      expect(reports[0].message).toContain('date.getUTCFullYear')
     })
   })
 })

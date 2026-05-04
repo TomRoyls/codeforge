@@ -1318,5 +1318,12 @@ describe('no-unnecessary-date-value-of-spread rule', () => {
 
       expect(v1).not.toBe(v2)
     })
+
+    test('visitor has CallExpression method', () => {
+      const { context } = createMockRuleContext()
+      const visitor = noUnnecessaryDateValueOfSpreadRule.create(context)
+
+      expect(typeof visitor.CallExpression).toBe('function')
+    })
   })
 })
