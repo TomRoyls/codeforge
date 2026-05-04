@@ -3573,6 +3573,56 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-prompt-spread']: adaptPluginRule(noUnnecessaryPromptSpreadRule),
   ['no-unnecessary-print-spread']: adaptPluginRule(noUnnecessaryPrintSpreadRule),
   ['no-unnecessary-report-error-spread']: adaptPluginRule(noUnnecessaryReportErrorSpreadRule),
+  ['no-unnecessary-error-spread']: adaptPluginRule(noUnnecessaryErrorSpreadRule),
+  ['no-unnecessary-eval-error-spread']: adaptPluginRule(noUnnecessaryEvalErrorSpreadRule),
+  ['no-unnecessary-range-error-spread']: adaptPluginRule(noUnnecessaryRangeErrorSpreadRule),
+  ['no-unnecessary-reference-error-spread']: adaptPluginRule(noUnnecessaryReferenceErrorSpreadRule),
+  ['no-unnecessary-syntax-error-spread']: adaptPluginRule(noUnnecessarySyntaxErrorSpreadRule),
+  ['no-unnecessary-type-error-spread']: adaptPluginRule(noUnnecessaryTypeErrorSpreadRule),
+  ['no-unnecessary-uri-error-spread']: adaptPluginRule(noUnnecessaryURIErrorSpreadRule),
+  ['no-unnecessary-aggregate-error-spread']: adaptPluginRule(noUnnecessaryAggregateErrorSpreadRule),
+  ['no-unnecessary-map-spread']: adaptPluginRule(noUnnecessaryMapSpreadRule),
+  ['no-unnecessary-set-spread']: adaptPluginRule(noUnnecessarySetSpreadRule),
+  ['no-unnecessary-weak-map-spread']: adaptPluginRule(noUnnecessaryWeakMapSpreadRule),
+  ['no-unnecessary-weak-set-spread']: adaptPluginRule(noUnnecessaryWeakSetSpreadRule),
+  ['no-unnecessary-weak-ref-spread']: adaptPluginRule(noUnnecessaryWeakRefSpreadRule),
+  ['no-unnecessary-finalization-registry-spread']: adaptPluginRule(noUnnecessaryFinalizationRegistrySpreadRule),
+  ['no-unnecessary-promise-spread']: adaptPluginRule(noUnnecessaryPromiseSpreadRule),
+  ['no-unnecessary-array-buffer-spread']: adaptPluginRule(noUnnecessaryArrayBufferSpreadRule),
+  ['no-unnecessary-shared-array-buffer-spread']: adaptPluginRule(noUnnecessarySharedArrayBufferSpreadRule),
+  ['no-unnecessary-data-view-spread']: adaptPluginRule(noUnnecessaryDataViewSpreadRule),
+  ['no-unnecessary-date-spread']: adaptPluginRule(noUnnecessaryDateSpreadRule),
+  ['no-unnecessary-regexp-spread']: adaptPluginRule(noUnnecessaryRegExpSpreadRule),
+  ['no-unnecessary-image-spread']: adaptPluginRule(noUnnecessaryImageSpreadRule),
+  ['no-unnecessary-option-spread']: adaptPluginRule(noUnnecessaryOptionSpreadRule),
+  ['no-unnecessary-audio-spread']: adaptPluginRule(noUnnecessaryAudioSpreadRule),
+  ['no-unnecessary-headers-spread']: adaptPluginRule(noUnnecessaryHeadersSpreadRule),
+  ['no-unnecessary-request-spread']: adaptPluginRule(noUnnecessaryRequestSpreadRule),
+  ['no-unnecessary-response-spread']: adaptPluginRule(noUnnecessaryResponseSpreadRule),
+  ['no-unnecessary-form-data-spread']: adaptPluginRule(noUnnecessaryFormDataSpreadRule),
+  ['no-unnecessary-url-spread']: adaptPluginRule(noUnnecessaryURLSpreadRule),
+  ['no-unnecessary-url-search-params-spread']: adaptPluginRule(noUnnecessaryURLSearchParamsSpreadRule),
+  ['no-unnecessary-text-decoder-spread']: adaptPluginRule(noUnnecessaryTextDecoderSpreadRule),
+  ['no-unnecessary-text-encoder-spread']: adaptPluginRule(noUnnecessaryTextEncoderSpreadRule),
+  ['no-unnecessary-blob-spread']: adaptPluginRule(noUnnecessaryBlobSpreadRule),
+  ['no-unnecessary-file-spread']: adaptPluginRule(noUnnecessaryFileSpreadRule),
+  ['no-unnecessary-file-reader-spread']: adaptPluginRule(noUnnecessaryFileReaderSpreadRule),
+  ['no-unnecessary-image-data-spread']: adaptPluginRule(noUnnecessaryImageDataSpreadRule),
+  ['no-unnecessary-dom-rect-spread']: adaptPluginRule(noUnnecessaryDOMRectSpreadRule),
+  ['no-unnecessary-css-style-declaration-spread']: adaptPluginRule(noUnnecessaryCSSStyleDeclarationSpreadRule),
+  ['no-unnecessary-mutation-observer-spread']: adaptPluginRule(noUnnecessaryMutationObserverSpreadRule),
+  ['no-unnecessary-resize-observer-spread']: adaptPluginRule(noUnnecessaryResizeObserverSpreadRule),
+  ['no-unnecessary-intersection-observer-spread']: adaptPluginRule(noUnnecessaryIntersectionObserverSpreadRule),
+  ['no-unnecessary-performance-observer-spread']: adaptPluginRule(noUnnecessaryPerformanceObserverSpreadRule),
+  ['no-unnecessary-abort-controller-spread']: adaptPluginRule(noUnnecessaryAbortControllerSpreadRule),
+  ['no-unnecessary-abort-signal-spread']: adaptPluginRule(noUnnecessaryAbortSignalSpreadRule),
+  ['no-unnecessary-broadcast-channel-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelSpreadRule),
+  ['no-unnecessary-message-channel-spread']: adaptPluginRule(noUnnecessaryMessageChannelSpreadRule),
+  ['no-unnecessary-worker-spread']: adaptPluginRule(noUnnecessaryWorkerSpreadRule),
+  ['no-unnecessary-event-spread']: adaptPluginRule(noUnnecessaryEventSpreadRule),
+  ['no-unnecessary-custom-event-spread']: adaptPluginRule(noUnnecessaryCustomEventSpreadRule),
+  ['no-unnecessary-dom-parser-spread']: adaptPluginRule(noUnnecessaryDOMParserSpreadRule),
+  ['no-unnecessary-xml-http-request-spread']: adaptPluginRule(noUnnecessaryXMLHttpRequestSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -5432,6 +5482,56 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-prompt-spread']: 'patterns',
   ['no-unnecessary-print-spread']: 'patterns',
   ['no-unnecessary-report-error-spread']: 'patterns',
+  ['no-unnecessary-error-spread']: 'patterns',
+  ['no-unnecessary-eval-error-spread']: 'patterns',
+  ['no-unnecessary-range-error-spread']: 'patterns',
+  ['no-unnecessary-reference-error-spread']: 'patterns',
+  ['no-unnecessary-syntax-error-spread']: 'patterns',
+  ['no-unnecessary-type-error-spread']: 'patterns',
+  ['no-unnecessary-uri-error-spread']: 'patterns',
+  ['no-unnecessary-aggregate-error-spread']: 'patterns',
+  ['no-unnecessary-map-spread']: 'patterns',
+  ['no-unnecessary-set-spread']: 'patterns',
+  ['no-unnecessary-weak-map-spread']: 'patterns',
+  ['no-unnecessary-weak-set-spread']: 'patterns',
+  ['no-unnecessary-weak-ref-spread']: 'patterns',
+  ['no-unnecessary-finalization-registry-spread']: 'patterns',
+  ['no-unnecessary-promise-spread']: 'patterns',
+  ['no-unnecessary-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-shared-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-data-view-spread']: 'patterns',
+  ['no-unnecessary-date-spread']: 'patterns',
+  ['no-unnecessary-regexp-spread']: 'patterns',
+  ['no-unnecessary-image-spread']: 'patterns',
+  ['no-unnecessary-option-spread']: 'patterns',
+  ['no-unnecessary-audio-spread']: 'patterns',
+  ['no-unnecessary-headers-spread']: 'patterns',
+  ['no-unnecessary-request-spread']: 'patterns',
+  ['no-unnecessary-response-spread']: 'patterns',
+  ['no-unnecessary-form-data-spread']: 'patterns',
+  ['no-unnecessary-url-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-spread']: 'patterns',
+  ['no-unnecessary-text-decoder-spread']: 'patterns',
+  ['no-unnecessary-text-encoder-spread']: 'patterns',
+  ['no-unnecessary-blob-spread']: 'patterns',
+  ['no-unnecessary-file-spread']: 'patterns',
+  ['no-unnecessary-file-reader-spread']: 'patterns',
+  ['no-unnecessary-image-data-spread']: 'patterns',
+  ['no-unnecessary-dom-rect-spread']: 'patterns',
+  ['no-unnecessary-css-style-declaration-spread']: 'patterns',
+  ['no-unnecessary-mutation-observer-spread']: 'patterns',
+  ['no-unnecessary-resize-observer-spread']: 'patterns',
+  ['no-unnecessary-intersection-observer-spread']: 'patterns',
+  ['no-unnecessary-performance-observer-spread']: 'patterns',
+  ['no-unnecessary-abort-controller-spread']: 'patterns',
+  ['no-unnecessary-abort-signal-spread']: 'patterns',
+  ['no-unnecessary-broadcast-channel-spread']: 'patterns',
+  ['no-unnecessary-message-channel-spread']: 'patterns',
+  ['no-unnecessary-worker-spread']: 'patterns',
+  ['no-unnecessary-event-spread']: 'patterns',
+  ['no-unnecessary-custom-event-spread']: 'patterns',
+  ['no-unnecessary-dom-parser-spread']: 'patterns',
+  ['no-unnecessary-xml-http-request-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -6165,6 +6265,56 @@ import { noUnnecessaryConfirmSpreadRule } from './patterns/no-unnecessary-confir
 import { noUnnecessaryPromptSpreadRule } from './patterns/no-unnecessary-prompt-spread.js'
 import { noUnnecessaryPrintSpreadRule } from './patterns/no-unnecessary-print-spread.js'
 import { noUnnecessaryReportErrorSpreadRule } from './patterns/no-unnecessary-report-error-spread.js'
+import { noUnnecessaryErrorSpreadRule } from './patterns/no-unnecessary-error-spread.js'
+import { noUnnecessaryEvalErrorSpreadRule } from './patterns/no-unnecessary-eval-error-spread.js'
+import { noUnnecessaryRangeErrorSpreadRule } from './patterns/no-unnecessary-range-error-spread.js'
+import { noUnnecessaryReferenceErrorSpreadRule } from './patterns/no-unnecessary-reference-error-spread.js'
+import { noUnnecessarySyntaxErrorSpreadRule } from './patterns/no-unnecessary-syntax-error-spread.js'
+import { noUnnecessaryTypeErrorSpreadRule } from './patterns/no-unnecessary-type-error-spread.js'
+import { noUnnecessaryURIErrorSpreadRule } from './patterns/no-unnecessary-uri-error-spread.js'
+import { noUnnecessaryAggregateErrorSpreadRule } from './patterns/no-unnecessary-aggregate-error-spread.js'
+import { noUnnecessaryMapSpreadRule } from './patterns/no-unnecessary-map-spread.js'
+import { noUnnecessarySetSpreadRule } from './patterns/no-unnecessary-set-spread.js'
+import { noUnnecessaryWeakMapSpreadRule } from './patterns/no-unnecessary-weak-map-spread.js'
+import { noUnnecessaryWeakSetSpreadRule } from './patterns/no-unnecessary-weak-set-spread.js'
+import { noUnnecessaryWeakRefSpreadRule } from './patterns/no-unnecessary-weak-ref-spread.js'
+import { noUnnecessaryFinalizationRegistrySpreadRule } from './patterns/no-unnecessary-finalization-registry-spread.js'
+import { noUnnecessaryPromiseSpreadRule } from './patterns/no-unnecessary-promise-spread.js'
+import { noUnnecessaryArrayBufferSpreadRule } from './patterns/no-unnecessary-array-buffer-spread.js'
+import { noUnnecessarySharedArrayBufferSpreadRule } from './patterns/no-unnecessary-shared-array-buffer-spread.js'
+import { noUnnecessaryDataViewSpreadRule } from './patterns/no-unnecessary-data-view-spread.js'
+import { noUnnecessaryDateSpreadRule } from './patterns/no-unnecessary-date-spread.js'
+import { noUnnecessaryRegExpSpreadRule } from './patterns/no-unnecessary-regexp-spread.js'
+import { noUnnecessaryImageSpreadRule } from './patterns/no-unnecessary-image-spread.js'
+import { noUnnecessaryOptionSpreadRule } from './patterns/no-unnecessary-option-spread.js'
+import { noUnnecessaryAudioSpreadRule } from './patterns/no-unnecessary-audio-spread.js'
+import { noUnnecessaryHeadersSpreadRule } from './patterns/no-unnecessary-headers-spread.js'
+import { noUnnecessaryRequestSpreadRule } from './patterns/no-unnecessary-request-spread.js'
+import { noUnnecessaryResponseSpreadRule } from './patterns/no-unnecessary-response-spread.js'
+import { noUnnecessaryFormDataSpreadRule } from './patterns/no-unnecessary-form-data-spread.js'
+import { noUnnecessaryURLSpreadRule } from './patterns/no-unnecessary-url-spread.js'
+import { noUnnecessaryURLSearchParamsSpreadRule } from './patterns/no-unnecessary-url-search-params-spread.js'
+import { noUnnecessaryTextDecoderSpreadRule } from './patterns/no-unnecessary-text-decoder-spread.js'
+import { noUnnecessaryTextEncoderSpreadRule } from './patterns/no-unnecessary-text-encoder-spread.js'
+import { noUnnecessaryBlobSpreadRule } from './patterns/no-unnecessary-blob-spread.js'
+import { noUnnecessaryFileSpreadRule } from './patterns/no-unnecessary-file-spread.js'
+import { noUnnecessaryFileReaderSpreadRule } from './patterns/no-unnecessary-file-reader-spread.js'
+import { noUnnecessaryImageDataSpreadRule } from './patterns/no-unnecessary-image-data-spread.js'
+import { noUnnecessaryDOMRectSpreadRule } from './patterns/no-unnecessary-dom-rect-spread.js'
+import { noUnnecessaryCSSStyleDeclarationSpreadRule } from './patterns/no-unnecessary-css-style-declaration-spread.js'
+import { noUnnecessaryMutationObserverSpreadRule } from './patterns/no-unnecessary-mutation-observer-spread.js'
+import { noUnnecessaryResizeObserverSpreadRule } from './patterns/no-unnecessary-resize-observer-spread.js'
+import { noUnnecessaryIntersectionObserverSpreadRule } from './patterns/no-unnecessary-intersection-observer-spread.js'
+import { noUnnecessaryPerformanceObserverSpreadRule } from './patterns/no-unnecessary-performance-observer-spread.js'
+import { noUnnecessaryAbortControllerSpreadRule } from './patterns/no-unnecessary-abort-controller-spread.js'
+import { noUnnecessaryAbortSignalSpreadRule } from './patterns/no-unnecessary-abort-signal-spread.js'
+import { noUnnecessaryBroadcastChannelSpreadRule } from './patterns/no-unnecessary-broadcast-channel-spread.js'
+import { noUnnecessaryMessageChannelSpreadRule } from './patterns/no-unnecessary-message-channel-spread.js'
+import { noUnnecessaryWorkerSpreadRule } from './patterns/no-unnecessary-worker-spread.js'
+import { noUnnecessaryEventSpreadRule } from './patterns/no-unnecessary-event-spread.js'
+import { noUnnecessaryCustomEventSpreadRule } from './patterns/no-unnecessary-custom-event-spread.js'
+import { noUnnecessaryDOMParserSpreadRule } from './patterns/no-unnecessary-dom-parser-spread.js'
+import { noUnnecessaryXMLHttpRequestSpreadRule } from './patterns/no-unnecessary-xml-http-request-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
