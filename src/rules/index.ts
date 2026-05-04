@@ -3335,6 +3335,127 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-big-uint-64-array-every-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayEverySpreadRule),
   ['no-unnecessary-big-uint-64-array-some-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySomeSpreadRule),
   ['no-unnecessary-big-uint-64-array-for-each-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayForEachSpreadRule),
+  ['no-unnecessary-int-8-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt8ArrayReduceSpreadRule),
+  ['no-unnecessary-int-8-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt8ArrayReduceRightSpreadRule),
+  ['no-unnecessary-int-8-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindIndexSpreadRule),
+  ['no-unnecessary-int-8-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindLastSpreadRule),
+  ['no-unnecessary-int-8-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-int-8-array-includes-spread']: adaptPluginRule(noUnnecessaryInt8ArrayIncludesSpreadRule),
+  ['no-unnecessary-int-8-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt8ArrayIndexOfSpreadRule),
+  ['no-unnecessary-int-8-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt8ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-int-8-array-join-spread']: adaptPluginRule(noUnnecessaryInt8ArrayJoinSpreadRule),
+  ['no-unnecessary-int-8-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-int-8-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToStringSpreadRule),
+  ['no-unnecessary-uint-8-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint8ArrayReduceSpreadRule),
+  ['no-unnecessary-uint-8-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint8ArrayReduceRightSpreadRule),
+  ['no-unnecessary-uint-8-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindIndexSpreadRule),
+  ['no-unnecessary-uint-8-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindLastSpreadRule),
+  ['no-unnecessary-uint-8-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-uint-8-array-includes-spread']: adaptPluginRule(noUnnecessaryUint8ArrayIncludesSpreadRule),
+  ['no-unnecessary-uint-8-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ArrayIndexOfSpreadRule),
+  ['no-unnecessary-uint-8-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-uint-8-array-join-spread']: adaptPluginRule(noUnnecessaryUint8ArrayJoinSpreadRule),
+  ['no-unnecessary-uint-8-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-uint-8-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToStringSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceRightSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindIndexSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-includes-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayIncludesSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayIndexOfSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-join-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayJoinSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-uint-8-clamped-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToStringSpreadRule),
+  ['no-unnecessary-int-16-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt16ArrayReduceSpreadRule),
+  ['no-unnecessary-int-16-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt16ArrayReduceRightSpreadRule),
+  ['no-unnecessary-int-16-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindIndexSpreadRule),
+  ['no-unnecessary-int-16-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindLastSpreadRule),
+  ['no-unnecessary-int-16-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-int-16-array-includes-spread']: adaptPluginRule(noUnnecessaryInt16ArrayIncludesSpreadRule),
+  ['no-unnecessary-int-16-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt16ArrayIndexOfSpreadRule),
+  ['no-unnecessary-int-16-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt16ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-int-16-array-join-spread']: adaptPluginRule(noUnnecessaryInt16ArrayJoinSpreadRule),
+  ['no-unnecessary-int-16-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-int-16-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToStringSpreadRule),
+  ['no-unnecessary-uint-16-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint16ArrayReduceSpreadRule),
+  ['no-unnecessary-uint-16-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint16ArrayReduceRightSpreadRule),
+  ['no-unnecessary-uint-16-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindIndexSpreadRule),
+  ['no-unnecessary-uint-16-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindLastSpreadRule),
+  ['no-unnecessary-uint-16-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-uint-16-array-includes-spread']: adaptPluginRule(noUnnecessaryUint16ArrayIncludesSpreadRule),
+  ['no-unnecessary-uint-16-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint16ArrayIndexOfSpreadRule),
+  ['no-unnecessary-uint-16-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint16ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-uint-16-array-join-spread']: adaptPluginRule(noUnnecessaryUint16ArrayJoinSpreadRule),
+  ['no-unnecessary-uint-16-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-uint-16-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToStringSpreadRule),
+  ['no-unnecessary-int-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt32ArrayReduceSpreadRule),
+  ['no-unnecessary-int-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt32ArrayReduceRightSpreadRule),
+  ['no-unnecessary-int-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindIndexSpreadRule),
+  ['no-unnecessary-int-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindLastSpreadRule),
+  ['no-unnecessary-int-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-int-32-array-includes-spread']: adaptPluginRule(noUnnecessaryInt32ArrayIncludesSpreadRule),
+  ['no-unnecessary-int-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt32ArrayIndexOfSpreadRule),
+  ['no-unnecessary-int-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt32ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-int-32-array-join-spread']: adaptPluginRule(noUnnecessaryInt32ArrayJoinSpreadRule),
+  ['no-unnecessary-int-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-int-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToStringSpreadRule),
+  ['no-unnecessary-uint-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint32ArrayReduceSpreadRule),
+  ['no-unnecessary-uint-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint32ArrayReduceRightSpreadRule),
+  ['no-unnecessary-uint-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindIndexSpreadRule),
+  ['no-unnecessary-uint-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindLastSpreadRule),
+  ['no-unnecessary-uint-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-uint-32-array-includes-spread']: adaptPluginRule(noUnnecessaryUint32ArrayIncludesSpreadRule),
+  ['no-unnecessary-uint-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint32ArrayIndexOfSpreadRule),
+  ['no-unnecessary-uint-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint32ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-uint-32-array-join-spread']: adaptPluginRule(noUnnecessaryUint32ArrayJoinSpreadRule),
+  ['no-unnecessary-uint-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-uint-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToStringSpreadRule),
+  ['no-unnecessary-float-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayReduceSpreadRule),
+  ['no-unnecessary-float-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayReduceRightSpreadRule),
+  ['no-unnecessary-float-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindIndexSpreadRule),
+  ['no-unnecessary-float-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindLastSpreadRule),
+  ['no-unnecessary-float-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-float-32-array-includes-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayIncludesSpreadRule),
+  ['no-unnecessary-float-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayIndexOfSpreadRule),
+  ['no-unnecessary-float-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-float-32-array-join-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayJoinSpreadRule),
+  ['no-unnecessary-float-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-float-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToStringSpreadRule),
+  ['no-unnecessary-float-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayReduceSpreadRule),
+  ['no-unnecessary-float-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayReduceRightSpreadRule),
+  ['no-unnecessary-float-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindIndexSpreadRule),
+  ['no-unnecessary-float-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindLastSpreadRule),
+  ['no-unnecessary-float-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-float-64-array-includes-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayIncludesSpreadRule),
+  ['no-unnecessary-float-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayIndexOfSpreadRule),
+  ['no-unnecessary-float-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-float-64-array-join-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayJoinSpreadRule),
+  ['no-unnecessary-float-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-float-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToStringSpreadRule),
+  ['no-unnecessary-big-int-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayReduceSpreadRule),
+  ['no-unnecessary-big-int-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayReduceRightSpreadRule),
+  ['no-unnecessary-big-int-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindIndexSpreadRule),
+  ['no-unnecessary-big-int-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastSpreadRule),
+  ['no-unnecessary-big-int-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-big-int-64-array-includes-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayIncludesSpreadRule),
+  ['no-unnecessary-big-int-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayIndexOfSpreadRule),
+  ['no-unnecessary-big-int-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-big-int-64-array-join-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayJoinSpreadRule),
+  ['no-unnecessary-big-int-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-big-int-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToStringSpreadRule),
+  ['no-unnecessary-big-uint-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayReduceSpreadRule),
+  ['no-unnecessary-big-uint-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayReduceRightSpreadRule),
+  ['no-unnecessary-big-uint-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindIndexSpreadRule),
+  ['no-unnecessary-big-uint-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastSpreadRule),
+  ['no-unnecessary-big-uint-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-big-uint-64-array-includes-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayIncludesSpreadRule),
+  ['no-unnecessary-big-uint-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayIndexOfSpreadRule),
+  ['no-unnecessary-big-uint-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-big-uint-64-array-join-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayJoinSpreadRule),
+  ['no-unnecessary-big-uint-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-big-uint-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToStringSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -4956,6 +5077,127 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-big-uint-64-array-every-spread']: 'patterns',
   ['no-unnecessary-big-uint-64-array-some-spread']: 'patterns',
   ['no-unnecessary-big-uint-64-array-for-each-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-includes-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-join-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-int-8-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-includes-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-join-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-uint-8-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-includes-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-join-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-uint-8-clamped-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-includes-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-join-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-int-16-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-includes-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-join-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-uint-16-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-includes-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-join-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-int-32-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-includes-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-join-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-uint-32-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-includes-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-join-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-float-32-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-includes-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-join-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-float-64-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-includes-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-join-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-big-int-64-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-includes-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-join-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-big-uint-64-array-to-string-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -5451,6 +5693,127 @@ import { noUnnecessaryBigUint64ArrayFindSpreadRule } from './patterns/no-unneces
 import { noUnnecessaryBigUint64ArrayEverySpreadRule } from './patterns/no-unnecessary-big-uint-64-array-every-spread.js'
 import { noUnnecessaryBigUint64ArraySomeSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-some-spread.js'
 import { noUnnecessaryBigUint64ArrayForEachSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-for-each-spread.js'
+import { noUnnecessaryInt8ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-8-array-reduce-spread.js'
+import { noUnnecessaryInt8ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-8-array-reduce-right-spread.js'
+import { noUnnecessaryInt8ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-8-array-find-index-spread.js'
+import { noUnnecessaryInt8ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-8-array-find-last-spread.js'
+import { noUnnecessaryInt8ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-8-array-find-last-index-spread.js'
+import { noUnnecessaryInt8ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-8-array-includes-spread.js'
+import { noUnnecessaryInt8ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-8-array-index-of-spread.js'
+import { noUnnecessaryInt8ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-8-array-last-index-of-spread.js'
+import { noUnnecessaryInt8ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-8-array-join-spread.js'
+import { noUnnecessaryInt8ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-8-array-to-locale-string-spread.js'
+import { noUnnecessaryInt8ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-8-array-to-string-spread.js'
+import { noUnnecessaryUint8ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-8-array-reduce-spread.js'
+import { noUnnecessaryUint8ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-8-array-reduce-right-spread.js'
+import { noUnnecessaryUint8ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-index-spread.js'
+import { noUnnecessaryUint8ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-last-spread.js'
+import { noUnnecessaryUint8ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-last-index-spread.js'
+import { noUnnecessaryUint8ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-8-array-includes-spread.js'
+import { noUnnecessaryUint8ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-array-index-of-spread.js'
+import { noUnnecessaryUint8ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-array-last-index-of-spread.js'
+import { noUnnecessaryUint8ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-8-array-join-spread.js'
+import { noUnnecessaryUint8ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-locale-string-spread.js'
+import { noUnnecessaryUint8ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-string-spread.js'
+import { noUnnecessaryUint8ClampedArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-reduce-spread.js'
+import { noUnnecessaryUint8ClampedArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-reduce-right-spread.js'
+import { noUnnecessaryUint8ClampedArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-index-spread.js'
+import { noUnnecessaryUint8ClampedArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-last-spread.js'
+import { noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-last-index-spread.js'
+import { noUnnecessaryUint8ClampedArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-includes-spread.js'
+import { noUnnecessaryUint8ClampedArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-index-of-spread.js'
+import { noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-last-index-of-spread.js'
+import { noUnnecessaryUint8ClampedArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-join-spread.js'
+import { noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-locale-string-spread.js'
+import { noUnnecessaryUint8ClampedArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-string-spread.js'
+import { noUnnecessaryInt16ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-16-array-reduce-spread.js'
+import { noUnnecessaryInt16ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-16-array-reduce-right-spread.js'
+import { noUnnecessaryInt16ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-16-array-find-index-spread.js'
+import { noUnnecessaryInt16ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-16-array-find-last-spread.js'
+import { noUnnecessaryInt16ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-16-array-find-last-index-spread.js'
+import { noUnnecessaryInt16ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-16-array-includes-spread.js'
+import { noUnnecessaryInt16ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-16-array-index-of-spread.js'
+import { noUnnecessaryInt16ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-16-array-last-index-of-spread.js'
+import { noUnnecessaryInt16ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-16-array-join-spread.js'
+import { noUnnecessaryInt16ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-16-array-to-locale-string-spread.js'
+import { noUnnecessaryInt16ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-16-array-to-string-spread.js'
+import { noUnnecessaryUint16ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-16-array-reduce-spread.js'
+import { noUnnecessaryUint16ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-16-array-reduce-right-spread.js'
+import { noUnnecessaryUint16ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-index-spread.js'
+import { noUnnecessaryUint16ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-last-spread.js'
+import { noUnnecessaryUint16ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-last-index-spread.js'
+import { noUnnecessaryUint16ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-16-array-includes-spread.js'
+import { noUnnecessaryUint16ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-16-array-index-of-spread.js'
+import { noUnnecessaryUint16ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-16-array-last-index-of-spread.js'
+import { noUnnecessaryUint16ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-16-array-join-spread.js'
+import { noUnnecessaryUint16ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-locale-string-spread.js'
+import { noUnnecessaryUint16ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-string-spread.js'
+import { noUnnecessaryInt32ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-32-array-reduce-spread.js'
+import { noUnnecessaryInt32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-32-array-reduce-right-spread.js'
+import { noUnnecessaryInt32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-32-array-find-index-spread.js'
+import { noUnnecessaryInt32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-32-array-find-last-spread.js'
+import { noUnnecessaryInt32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-32-array-find-last-index-spread.js'
+import { noUnnecessaryInt32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-32-array-includes-spread.js'
+import { noUnnecessaryInt32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-32-array-index-of-spread.js'
+import { noUnnecessaryInt32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-32-array-last-index-of-spread.js'
+import { noUnnecessaryInt32ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-32-array-join-spread.js'
+import { noUnnecessaryInt32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-32-array-to-locale-string-spread.js'
+import { noUnnecessaryInt32ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-32-array-to-string-spread.js'
+import { noUnnecessaryUint32ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-32-array-reduce-spread.js'
+import { noUnnecessaryUint32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-32-array-reduce-right-spread.js'
+import { noUnnecessaryUint32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-index-spread.js'
+import { noUnnecessaryUint32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-last-spread.js'
+import { noUnnecessaryUint32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-last-index-spread.js'
+import { noUnnecessaryUint32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-32-array-includes-spread.js'
+import { noUnnecessaryUint32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-32-array-index-of-spread.js'
+import { noUnnecessaryUint32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-32-array-last-index-of-spread.js'
+import { noUnnecessaryUint32ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-32-array-join-spread.js'
+import { noUnnecessaryUint32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-locale-string-spread.js'
+import { noUnnecessaryUint32ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-string-spread.js'
+import { noUnnecessaryFloat32ArrayReduceSpreadRule } from './patterns/no-unnecessary-float-32-array-reduce-spread.js'
+import { noUnnecessaryFloat32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-float-32-array-reduce-right-spread.js'
+import { noUnnecessaryFloat32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-float-32-array-find-index-spread.js'
+import { noUnnecessaryFloat32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-float-32-array-find-last-spread.js'
+import { noUnnecessaryFloat32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-float-32-array-find-last-index-spread.js'
+import { noUnnecessaryFloat32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-float-32-array-includes-spread.js'
+import { noUnnecessaryFloat32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-float-32-array-index-of-spread.js'
+import { noUnnecessaryFloat32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-float-32-array-last-index-of-spread.js'
+import { noUnnecessaryFloat32ArrayJoinSpreadRule } from './patterns/no-unnecessary-float-32-array-join-spread.js'
+import { noUnnecessaryFloat32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-float-32-array-to-locale-string-spread.js'
+import { noUnnecessaryFloat32ArrayToStringSpreadRule } from './patterns/no-unnecessary-float-32-array-to-string-spread.js'
+import { noUnnecessaryFloat64ArrayReduceSpreadRule } from './patterns/no-unnecessary-float-64-array-reduce-spread.js'
+import { noUnnecessaryFloat64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-float-64-array-reduce-right-spread.js'
+import { noUnnecessaryFloat64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-float-64-array-find-index-spread.js'
+import { noUnnecessaryFloat64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-float-64-array-find-last-spread.js'
+import { noUnnecessaryFloat64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-float-64-array-find-last-index-spread.js'
+import { noUnnecessaryFloat64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-float-64-array-includes-spread.js'
+import { noUnnecessaryFloat64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-float-64-array-index-of-spread.js'
+import { noUnnecessaryFloat64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-float-64-array-last-index-of-spread.js'
+import { noUnnecessaryFloat64ArrayJoinSpreadRule } from './patterns/no-unnecessary-float-64-array-join-spread.js'
+import { noUnnecessaryFloat64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-float-64-array-to-locale-string-spread.js'
+import { noUnnecessaryFloat64ArrayToStringSpreadRule } from './patterns/no-unnecessary-float-64-array-to-string-spread.js'
+import { noUnnecessaryBigInt64ArrayReduceSpreadRule } from './patterns/no-unnecessary-big-int-64-array-reduce-spread.js'
+import { noUnnecessaryBigInt64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-big-int-64-array-reduce-right-spread.js'
+import { noUnnecessaryBigInt64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-index-spread.js'
+import { noUnnecessaryBigInt64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-last-spread.js'
+import { noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-last-index-spread.js'
+import { noUnnecessaryBigInt64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-big-int-64-array-includes-spread.js'
+import { noUnnecessaryBigInt64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-index-of-spread.js'
+import { noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-last-index-of-spread.js'
+import { noUnnecessaryBigInt64ArrayJoinSpreadRule } from './patterns/no-unnecessary-big-int-64-array-join-spread.js'
+import { noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-locale-string-spread.js'
+import { noUnnecessaryBigInt64ArrayToStringSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-string-spread.js'
+import { noUnnecessaryBigUint64ArrayReduceSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-reduce-spread.js'
+import { noUnnecessaryBigUint64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-reduce-right-spread.js'
+import { noUnnecessaryBigUint64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-index-spread.js'
+import { noUnnecessaryBigUint64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-last-spread.js'
+import { noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-last-index-spread.js'
+import { noUnnecessaryBigUint64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-includes-spread.js'
+import { noUnnecessaryBigUint64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-index-of-spread.js'
+import { noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-last-index-of-spread.js'
+import { noUnnecessaryBigUint64ArrayJoinSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-join-spread.js'
+import { noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-locale-string-spread.js'
+import { noUnnecessaryBigUint64ArrayToStringSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-string-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
