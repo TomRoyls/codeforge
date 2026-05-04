@@ -2992,6 +2992,46 @@ const adaptedNoUnnecessarySetEntriesSpread = adaptPluginRule(noUnnecessarySetEnt
 const adaptedNoUnnecessaryMapKeysSpread = adaptPluginRule(noUnnecessaryMapKeysSpreadRule, 'no-unnecessary-map-keys-spread')
 const adaptedNoUnnecessaryMapValuesSpread = adaptPluginRule(noUnnecessaryMapValuesSpreadRule, 'no-unnecessary-map-values-spread')
 const adaptedNoUnnecessaryMapEntriesSpread = adaptPluginRule(noUnnecessaryMapEntriesSpreadRule, 'no-unnecessary-map-entries-spread')
+const adaptedNoUnnecessaryErrorToStringSpread = adaptPluginRule(noUnnecessaryErrorToStringSpreadRule, 'no-unnecessary-error-to-string-spread')
+const adaptedNoUnnecessaryRegexExecSpread = adaptPluginRule(noUnnecessaryRegexExecSpreadRule, 'no-unnecessary-regex-exec-spread')
+const adaptedNoUnnecessaryRegexTestSpread = adaptPluginRule(noUnnecessaryRegexTestSpreadRule, 'no-unnecessary-regex-test-spread')
+const adaptedNoUnnecessaryArrayBufferIsViewSpread = adaptPluginRule(noUnnecessaryArrayBufferIsViewSpreadRule, 'no-unnecessary-array-buffer-is-view-spread')
+const adaptedNoUnnecessaryNumberIsFiniteSpread = adaptPluginRule(noUnnecessaryNumberIsFiniteSpreadRule, 'no-unnecessary-number-is-finite-spread')
+const adaptedNoUnnecessaryNumberIsNanSpread = adaptPluginRule(noUnnecessaryNumberIsNanSpreadRule, 'no-unnecessary-number-is-nan-spread')
+const adaptedNoUnnecessaryNumberIsIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsIntegerSpreadRule, 'no-unnecessary-number-is-integer-spread')
+const adaptedNoUnnecessaryNumberIsSafeIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsSafeIntegerSpreadRule, 'no-unnecessary-number-is-safe-integer-spread')
+const adaptedNoUnnecessaryNumberParseFloatSpread = adaptPluginRule(noUnnecessaryNumberParseFloatSpreadRule, 'no-unnecessary-number-parse-float-spread')
+const adaptedNoUnnecessaryNumberParseIntSpread = adaptPluginRule(noUnnecessaryNumberParseIntSpreadRule, 'no-unnecessary-number-parse-int-spread')
+const adaptedNoUnnecessaryStringFromCharCodeSpread = adaptPluginRule(noUnnecessaryStringFromCharCodeSpreadRule, 'no-unnecessary-string-from-char-code-spread')
+const adaptedNoUnnecessaryStringFromCodePointSpread = adaptPluginRule(noUnnecessaryStringFromCodePointSpreadRule, 'no-unnecessary-string-from-code-point-spread')
+const adaptedNoUnnecessaryStringRawSpread = adaptPluginRule(noUnnecessaryStringRawSpreadRule, 'no-unnecessary-string-raw-spread')
+const adaptedNoUnnecessaryInt8ArrayFromSpread = adaptPluginRule(noUnnecessaryInt8ArrayFromSpreadRule, 'no-unnecessary-int8-array-from-spread')
+const adaptedNoUnnecessaryInt8ArrayOfSpread = adaptPluginRule(noUnnecessaryInt8ArrayOfSpreadRule, 'no-unnecessary-int8-array-of-spread')
+const adaptedNoUnnecessaryUint8ArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ArrayFromSpreadRule, 'no-unnecessary-uint8-array-from-spread')
+const adaptedNoUnnecessaryUint8ArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ArrayOfSpreadRule, 'no-unnecessary-uint8-array-of-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule, 'no-unnecessary-uint8-clamped-array-from-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule, 'no-unnecessary-uint8-clamped-array-of-spread')
+const adaptedNoUnnecessaryInt16ArrayFromSpread = adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule, 'no-unnecessary-int16-array-from-spread')
+  'no-unnecessary-error-to-string-spread': adaptedNoUnnecessaryErrorToStringSpread,
+  'no-unnecessary-regex-exec-spread': adaptedNoUnnecessaryRegexExecSpread,
+  'no-unnecessary-regex-test-spread': adaptedNoUnnecessaryRegexTestSpread,
+  'no-unnecessary-array-buffer-is-view-spread': adaptedNoUnnecessaryArrayBufferIsViewSpread,
+  'no-unnecessary-number-is-finite-spread': adaptedNoUnnecessaryNumberIsFiniteSpread,
+  'no-unnecessary-number-is-nan-spread': adaptedNoUnnecessaryNumberIsNanSpread,
+  'no-unnecessary-number-is-integer-spread': adaptedNoUnnecessaryNumberIsIntegerSpread,
+  'no-unnecessary-number-is-safe-integer-spread': adaptedNoUnnecessaryNumberIsSafeIntegerSpread,
+  'no-unnecessary-number-parse-float-spread': adaptedNoUnnecessaryNumberParseFloatSpread,
+  'no-unnecessary-number-parse-int-spread': adaptedNoUnnecessaryNumberParseIntSpread,
+  'no-unnecessary-string-from-char-code-spread': adaptedNoUnnecessaryStringFromCharCodeSpread,
+  'no-unnecessary-string-from-code-point-spread': adaptedNoUnnecessaryStringFromCodePointSpread,
+  'no-unnecessary-string-raw-spread': adaptedNoUnnecessaryStringRawSpread,
+  'no-unnecessary-int8-array-from-spread': adaptedNoUnnecessaryInt8ArrayFromSpread,
+  'no-unnecessary-int8-array-of-spread': adaptedNoUnnecessaryInt8ArrayOfSpread,
+  'no-unnecessary-uint8-array-from-spread': adaptedNoUnnecessaryUint8ArrayFromSpread,
+  'no-unnecessary-uint8-array-of-spread': adaptedNoUnnecessaryUint8ArrayOfSpread,
+  'no-unnecessary-uint8-clamped-array-from-spread': adaptedNoUnnecessaryUint8ClampedArrayFromSpread,
+  'no-unnecessary-uint8-clamped-array-of-spread': adaptedNoUnnecessaryUint8ClampedArrayOfSpread,
+  'no-unnecessary-int16-array-from-spread': adaptedNoUnnecessaryInt16ArrayFromSpread,
   'no-unnecessary-date-set-full-year-spread': adaptedNoUnnecessaryDateSetFullYearSpread,
   'no-unnecessary-date-set-month-spread': adaptedNoUnnecessaryDateSetMonthSpread,
   'no-unnecessary-date-set-date-spread': adaptedNoUnnecessaryDateSetDateSpread,
@@ -4133,6 +4173,26 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-map-keys-spread': 'patterns',
   'no-unnecessary-map-values-spread': 'patterns',
   'no-unnecessary-map-entries-spread': 'patterns',
+  'no-unnecessary-error-to-string-spread': 'patterns',
+  'no-unnecessary-regex-exec-spread': 'patterns',
+  'no-unnecessary-regex-test-spread': 'patterns',
+  'no-unnecessary-array-buffer-is-view-spread': 'patterns',
+  'no-unnecessary-number-is-finite-spread': 'patterns',
+  'no-unnecessary-number-is-nan-spread': 'patterns',
+  'no-unnecessary-number-is-integer-spread': 'patterns',
+  'no-unnecessary-number-is-safe-integer-spread': 'patterns',
+  'no-unnecessary-number-parse-float-spread': 'patterns',
+  'no-unnecessary-number-parse-int-spread': 'patterns',
+  'no-unnecessary-string-from-char-code-spread': 'patterns',
+  'no-unnecessary-string-from-code-point-spread': 'patterns',
+  'no-unnecessary-string-raw-spread': 'patterns',
+  'no-unnecessary-int8-array-from-spread': 'patterns',
+  'no-unnecessary-int8-array-of-spread': 'patterns',
+  'no-unnecessary-uint8-array-from-spread': 'patterns',
+  'no-unnecessary-uint8-array-of-spread': 'patterns',
+  'no-unnecessary-uint8-clamped-array-from-spread': 'patterns',
+  'no-unnecessary-uint8-clamped-array-of-spread': 'patterns',
+  'no-unnecessary-int16-array-from-spread': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -4253,6 +4313,29 @@ import {
   noUnecessaryMapValuesSpreadRule,
   noUnnecessaryMapEntriesSpreadRule,
 } from './patterns/index.js'
+import {
+  noUnnecessaryErrorToStringSpreadRule,
+  noUnnecessaryRegexExecSpreadRule,
+  noUnnecessaryRegexTestSpreadRule,
+  noUnnecessaryArrayBufferIsViewSpreadRule,
+  noUnnecessaryNumberIsFiniteSpreadRule,
+  noUnnecessaryNumberIsNanSpreadRule,
+  noUnnecessaryNumberIsIntegerSpreadRule,
+  noUnnecessaryNumberIsSafeIntegerSpreadRule,
+  noUnnecessaryNumberParseFloatSpreadRule,
+  noUnnecessaryNumberParseIntSpreadRule,
+  noUnnecessaryStringFromCharCodeSpreadRule,
+  noUnnecessaryStringFromCodePointSpreadRule,
+  noUnnecessaryStringRawSpreadRule,
+  noUnnecessaryInt8ArrayFromSpreadRule,
+  noUnnecessaryInt8ArrayOfSpreadRule,
+  noUnnecessaryUint8ArrayFromSpreadRule,
+  noUnnecessaryUint8ArrayOfSpreadRule,
+  noUnnecessaryUint8ClampedArrayFromSpreadRule,
+  noUnnecessaryUint8ClampedArrayOfSpreadRule,
+  noUnnecessaryInt16ArrayFromSpreadRule,
+} from './patterns/index.js'
+---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
 export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
 export {

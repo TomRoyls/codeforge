@@ -19,7 +19,7 @@ export const noUnnecessaryNumberIsSafeIntegerSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Number.isSafeInteger(...items) with spread is unusual. isSafeInteger() expects a single value.`,
+          message: 'Number.isSafeInteger(...items) with a single spread is unusual. Consider calling Number.isSafeInteger() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryNumberIsSafeIntegerSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.isSafeInteger(...items) with spread which is likely a mistake.',
+      description: 'Warn about Number.isSafeInteger(...items) with spread which is unusual since isSafeInteger takes one argument, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-is-safe-integer-spread.ts',
     },

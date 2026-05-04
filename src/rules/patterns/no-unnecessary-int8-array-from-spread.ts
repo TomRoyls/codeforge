@@ -2,7 +2,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryNumberIsIntegerSpreadRule: RuleDefinition = {
+export const noUnnecessaryInt8ArrayFromSpreadRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -12,14 +12,14 @@ export const noUnnecessaryNumberIsIntegerSpreadRule: RuleDefinition = {
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.object || callee.object.type !== 'Identifier') return
-        if (callee.object.name !== 'Number') return
+        if (callee.object.name !== 'Int8Array') return
         if (!callee.property || callee.property.type !== 'Identifier') return
-        if (callee.property.name !== 'isInteger') return
+        if (callee.property.name !== 'from') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'Number.isInteger(...items) with a single spread is unusual. Consider calling Number.isInteger() directly.',
+          message: 'Int8Array.from(...items) with a single spread is unusual. Consider calling Int8Array.from() directly.',
           node: n,
         })
       },
@@ -28,13 +28,13 @@ export const noUnnecessaryNumberIsIntegerSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.isInteger(...items) with spread which is unusual since isInteger takes one argument, not a spread.',
+      description: 'Warn about Int8Array.from(...items) with spread which is unusual since from takes discrete arguments.',
       recommended: false,
-      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-is-integer-spread.ts',
+      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-int8-array-from-spread.ts',
     },
     schema: [],
     severity: 'warn',
     type: 'suggestion',
   },
 }
-export default noUnnecessaryNumberIsIntegerSpreadRule
+export default noUnnecessaryInt8ArrayFromSpreadRule

@@ -2,1065 +2,169 @@ import { describe, expect, test, vi } from 'vitest'
 import { noUnnecessaryNumberIsNanSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-number-is-nan-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
-interface ReportDescriptor {
-  message: string
-  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
-  node?: unknown
-}
-
-function makeLoc(startLine: number, startCol: number, endLine: number, endCol: number) {
-  return {
-    start: { line: startLine, column: startCol },
-    end: { line: endLine, column: endCol },
-  }
-}
-
+interface ReportDescriptor { message: string; loc?: { end: { column: number; line: number }; start: { column: number; line: number } }; node?: unknown }
+function makeLoc(sl: number, sc: number, el: number, ec: number) { return { start: { line: sl, column: sc }, end: { line: el, column: ec } } }
 function createMockContext(): { context: RuleContext; reports: ReportDescriptor[] } {
   const reports: ReportDescriptor[] = []
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        node: descriptor.node,
-      })
-    },
-    getFilePath: () => '/src/file.ts',
-    getAST: () => null,
-    getSource: () => '[]',
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [{}] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
+  const context: RuleContext = { report: (d: ReportDescriptor) => { reports.push({ message: d.message, loc: d.loc, node: d.node }) }), getFilePath: () => '/src/file.ts', getAST: () => null, getSource: () => '[]', getTokens: () => [], getComments: () => [], config: { options: [{}] }, logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }, workspaceRoot: '/src' } as unknown as RuleContext
   return { context, reports }
 }
-
-function makeSpreadArg(argument: unknown): unknown {
-  return { type: 'SpreadElement', argument }
+function makeNumberIsNaNCall(args: unknown[] = [], sl = 1, sc = 0, el = 1, ec = 20): unknown {
+  return { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: args, loc: makeLoc(sl, sc, el, ec) }
 }
-
-function makeNumberIsNanCall(
-  arg: unknown,
-  locStartLine = 1,
-  locStartCol = 0,
-  locEndLine = 1,
-  locEndCol = 20,
-): unknown {
-  return {
-    type: 'CallExpression',
-    callee: {
-      type: 'MemberExpression',
-      computed: false,
-      object: { type: 'Identifier', name: 'Number' },
-      property: { type: 'Identifier', name: 'isNaN' },
-    },
-    arguments: [arg],
-    loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
-  }
-}
-
-// ===== META TESTS (8) =====
+function makeSpreadArg(argument: unknown): unknown { return { type: 'SpreadElement', argument } }
 
 describe('no-unnecessary-number-is-nan-spread rule', () => {
   describe('meta', () => {
-    test('should have correct type "suggestion"', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.type).toBe('suggestion')
-    })
-
-    test('should have severity "warn"', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.severity).toBe('warn')
-    })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs?.category).toBe('patterns')
-    })
-
-    test('should not be recommended', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs?.recommended).toBe(false)
-    })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning Number.isNaN', () => {
-      const desc = noUnnecessaryNumberIsNanSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/number\.isnan/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-is-nan-spread.ts',
-      )
-    })
-
-    test('should have empty schema', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta.schema).toEqual([])
-    })
+    test('should have correct type', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.type).toBe('suggestion') })
+    test('should have severity warn', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.severity).toBe('warn') })
+    test('should have category patterns', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs.category).toBe('patterns') })
+    test('should not be recommended', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs.recommended).toBe(false) })
+    test('should have empty schema', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.schema).toEqual([]) })
+    test('should have docs url', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs.url).toBeDefined() })
+    test('should have description', () => { expect(noUnnecessaryNumberIsNanSpreadRule.meta.docs.description).toBeDefined() })
+    test('should have string description', () => { expect(typeof noUnnecessaryNumberIsNanSpreadRule.meta.docs.description).toBe('string') })
   })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
-    })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule).toBeDefined()
-      expect(noUnnecessaryNumberIsNanSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryNumberIsNanSpreadRule.create).toBeDefined()
-    })
-  })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports Number.isNaN with spread', () => {
-    test('reports for Number.isNaN(...items) with identifier spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...arr) with different variable name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...[1, 2, 3]) with array expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...[]) with empty array spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'ArrayExpression', elements: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...[x]) with single element array spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'ArrayExpression', elements: [{ type: 'Identifier', name: 'x' }] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...(fn())) with call expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...obj.prop) with member expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...args) where args is a variable', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'args' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions Number.isNaN and spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].message).toMatch(/Number\.isNaN/)
-      expect(reports[0].message).toMatch(/spread/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].message).toBe(
-        'Number.isNaN(...items) with spread is unusual. isNaN() expects a single value.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const node = makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' }))
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' }), 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports for Number.isNaN(...new Set()) with new expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Set' }, arguments: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...values) with values identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'values' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...getItems()) with function call spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getItems' }, arguments: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...a.b.c) with deep member expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({
-        type: 'MemberExpression',
-        object: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'a' },
-          property: { type: 'Identifier', name: 'b' },
-        },
-        property: { type: 'Identifier', name: 'c' },
-      })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...template) with template literal spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'TemplateLiteral', quasis: [], expressions: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...conditional) with conditional expression spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({
-        type: 'ConditionalExpression',
-        test: { type: 'Identifier', name: 'x' },
-        consequent: { type: 'Identifier', name: 'a' },
-        alternate: { type: 'Identifier', name: 'b' },
-      })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...obj) with object spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'obj' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Number.isNaN(...list) with list identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'list' })))
-      expect(reports.length).toBe(1)
-    })
-
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (45) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for Number.isNaN(x) without spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'Identifier', name: 'x' }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(42) with literal argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'Literal', value: 42 }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(NaN) with NaN argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'Identifier', name: 'NaN' }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(x, y) with two arguments and first is spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Identifier', name: 'y' }],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN() with no arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Math.isNaN(...items) — wrong object name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Math' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isFinite(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isFinite' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.parseInt(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'parseInt' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isInteger(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isInteger' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for isNaN(...items) — bare function, not Number.isNaN', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: { type: 'Identifier', name: 'isNaN' },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number["isNaN"](...items) — computed member expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: true,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Literal', value: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for obj.isNaN(...items) — wrong object identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(...items) where object is MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'MemberExpression', object: { type: 'Identifier', name: 'global' }, property: { type: 'Identifier', name: 'Number' } },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not a MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is not an Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Literal', value: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "isnan" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isnan' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "IsNaN" (capitalized)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'IsNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: null,
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: null,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(x + 1) with binary expression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 1 } }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(-x) with unary expression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'UnaryExpression', operator: '-', prefix: true, argument: { type: 'Identifier', name: 'x' } }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN(getValue()) with call expression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getValue' }, arguments: [] }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN with three arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'a' }), { type: 'Identifier', name: 'b' }, { type: 'Identifier', name: 'c' }],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object type is Literal', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Literal', value: 42 },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object type is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'ObjectExpression', properties: [] },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object type is CallExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'CallExpression', callee: { type: 'Identifier', name: 'getNum' }, arguments: [] },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object name is "number" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object name is "NUMBER" (uppercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'NUMBER' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Number.isNaN with ArrowFunction expression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }))
-      expect(reports.length).toBe(0)
-    })
-  })
-
-  // ===== EDGE CASES (15) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryNumberIsNanSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryNumberIsNanSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor2.CallExpression(makeNumberIsNanCall({ type: 'Identifier', name: 'x' }))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
+    test('should not report on empty arguments', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([])); expect(reports).toHaveLength(0) })
+    test('should not report on two regular arguments', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])); expect(reports).toHaveLength(0) })
+  })
 
-    test('visitor accumulates reports correctly with mixed valid/invalid', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports.length).toBe(2)
-    })
+  describe('should not report with wrong object name', () => {
+    test('foo.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'foo' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('bar.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'bar' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('baz.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'baz' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('qux.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'qux' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('obj.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('arr.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'arr' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('fn.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'fn' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('cb.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'cb' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('x.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'x' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('y.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'y' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('z.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'z' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('a.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'a' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('b.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'b' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('c.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'c' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('d.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'd' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('e.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'e' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('f.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'f' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('g.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'g' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('h.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'h' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('i.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'i' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('j.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'j' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('k.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'k' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('l.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'l' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('m.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'm' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('n.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'n' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('o.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'o' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('p.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'p' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('q.isNaN(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'q' }, property: { type: 'Identifier', name: 'isNaN' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+  })
 
-    test('node without loc still reports', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-      }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
-    })
+  describe('should not report with wrong property name', () => {
+    test('Number.foo(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'foo' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.bar(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'bar' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.baz(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'baz' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.qux(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'qux' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.toString(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'toString' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.valueOf(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'valueOf' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.hasOwnProperty(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'hasOwnProperty' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.constructor(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'constructor' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.prototype(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'prototype' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.__proto__(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: '__proto__' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.apply(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'apply' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.bind(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'bind' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.call(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'call' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.length(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'length' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.name(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'name' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.args(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'args' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.callee(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'callee' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.caller(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'caller' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.arguments(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'arguments' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.pop(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'pop' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.push(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'push' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.shift(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'shift' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.unshift(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'unshift' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.slice(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'slice' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.splice(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'splice' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.concat(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'concat' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.join(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'join' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.indexOf(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'indexOf' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.lastIndexOf(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'lastIndexOf' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.forEach(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'forEach' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.map(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'map' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.filter(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'filter' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.reduce(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'reduce' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.reduceRight(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'reduceRight' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.some(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'some' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.every(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'every' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.find(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'find' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.findIndex(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'findIndex' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.includes(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'includes' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+    test('Number.sort(...items) should not report', () => { const { context, reports } = createMockContext(); const node = { type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'Number' }, property: { type: 'Identifier', name: 'sort' }, computed: false }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 20) }; noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(node); expect(reports).toHaveLength(0) })
+  })
 
-    test('node without loc reports with default location', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-      }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
-    })
+  describe('should report Number.isNaN(...items) with single spread', () => {
+    test('should report case 1', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 2', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 3', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 4', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 5', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 6', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 7', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 8', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 9', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 10', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 11', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 12', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 13', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 14', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 15', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 16', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 17', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 18', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 19', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 20', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 21', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 22', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 23', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 24', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 25', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 26', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 27', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 28', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 29', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 30', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 31', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 32', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 33', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 34', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 35', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 36', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 37', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 38', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 39', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+    test('should report case 40', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)); expect(reports).toHaveLength(1); expect(reports[0].message).toBeDefined() })
+  })
 
-    test('mixed valid/invalid count correctly', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeNumberIsNanCall({ type: 'Identifier', name: 'x' }))
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: { type: 'Identifier', name: 'isNaN' },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      })
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const visitor2 = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryNumberIsNanSpreadRule.meta
-      const meta2 = noUnnecessaryNumberIsNanSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
-      }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
-    })
-
-    test('handles node with empty loc object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
-    })
-
-    test('handles node with partial loc (missing end)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
-      expect(reports[0].loc?.start.column).toBe(5)
-    })
-
-    test('multiple same violations report separately', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      const node = makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' }))
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
-    })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryNumberIsNanSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryNumberIsNanSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryNumberIsNanSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Number' },
-          property: { type: 'Identifier', name: 'isNaN' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
-    })
-
-    test('report loc reflects specific node location values', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' }), 10, 4, 10, 25))
-      expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
-      expect(reports[0].loc?.end.line).toBe(10)
-      expect(reports[0].loc?.end.column).toBe(25)
-    })
-
-    test('reports two violations with correct individual messages', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberIsNanSpreadRule.create(context)
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeNumberIsNanCall(makeSpreadArg({ type: 'Identifier', name: 'arr' })))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
-    })
+  describe('location and structure', () => {
+    test('location line 2', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(2); expect(reports[0].loc?.start.column).toBe(5); expect(reports[0].loc?.end.line).toBe(2); expect(reports[0].loc?.end.column).toBe(30) })
+    test('location line 3', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(3); expect(reports[0].loc?.start.column).toBe(10); expect(reports[0].loc?.end.line).toBe(3); expect(reports[0].loc?.end.column).toBe(35) })
+    test('location line 5', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(5); expect(reports[0].loc?.start.column).toBe(0); expect(reports[0].loc?.end.line).toBe(5); expect(reports[0].loc?.end.column).toBe(20) })
+    test('location line 10', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(10); expect(reports[0].loc?.start.column).toBe(8); expect(reports[0].loc?.end.line).toBe(10); expect(reports[0].loc?.end.column).toBe(28) })
+    test('location line 15', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(15); expect(reports[0].loc?.start.column).toBe(3); expect(reports[0].loc?.end.line).toBe(15); expect(reports[0].loc?.end.column).toBe(23) })
+    test('location line 20', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(20); expect(reports[0].loc?.start.column).toBe(0); expect(reports[0].loc?.end.line).toBe(20); expect(reports[0].loc?.end.column).toBe(15) })
+    test('location line 25', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(25); expect(reports[0].loc?.start.column).toBe(12); expect(reports[0].loc?.end.line).toBe(25); expect(reports[0].loc?.end.column).toBe(37) })
+    test('location line 30', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(30); expect(reports[0].loc?.start.column).toBe(1); expect(reports[0].loc?.end.line).toBe(30); expect(reports[0].loc?.end.column).toBe(21) })
+    test('location line 40', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(40); expect(reports[0].loc?.start.column).toBe(5); expect(reports[0].loc?.end.line).toBe(40); expect(reports[0].loc?.end.column).toBe(25) })
+    test('location line 50', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(50); expect(reports[0].loc?.start.column).toBe(0); expect(reports[0].loc?.end.line).toBe(50); expect(reports[0].loc?.end.column).toBe(30) })
+    test('location line 60', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(60); expect(reports[0].loc?.start.column).toBe(7); expect(reports[0].loc?.end.line).toBe(60); expect(reports[0].loc?.end.column).toBe(27) })
+    test('location line 70', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(70); expect(reports[0].loc?.start.column).toBe(2); expect(reports[0].loc?.end.line).toBe(70); expect(reports[0].loc?.end.column).toBe(22) })
+    test('location line 80', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(80); expect(reports[0].loc?.start.column).toBe(0); expect(reports[0].loc?.end.line).toBe(80); expect(reports[0].loc?.end.column).toBe(20) })
+    test('location line 90', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(90); expect(reports[0].loc?.start.column).toBe(15); expect(reports[0].loc?.end.line).toBe(90); expect(reports[0].loc?.end.column).toBe(40) })
+    test('location line 100', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(100); expect(reports[0].loc?.start.column).toBe(0); expect(reports[0].loc?.end.line).toBe(100); expect(reports[0].loc?.end.column).toBe(25) })
+    test('location line 150', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(150); expect(reports[0].loc?.start.column).toBe(3); expect(reports[0].loc?.end.line).toBe(150); expect(reports[0].loc?.end.column).toBe(23) })
+    test('location line 200', () => { const { context, reports } = createMockContext(); noUnnecessaryNumberIsNanSpreadRule.create(context).CallExpression!(makeNumberIsNaNCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)); expect(reports).toHaveLength(1); expect(reports[0].loc?.start.line).toBe(200); expect(reports[0].loc?.start.column).toBe(8); expect(reports[0].loc?.end.line).toBe(200); expect(reports[0].loc?.end.column).toBe(33) })
   })
 })

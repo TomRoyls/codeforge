@@ -19,7 +19,7 @@ export const noUnnecessaryNumberParseIntSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Number.parseInt(...items) with spread is unusual. parseInt() expects a string and optional radix.`,
+          message: 'Number.parseInt(...items) with a single spread is unusual. Consider calling Number.parseInt() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryNumberParseIntSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.parseInt(...items) with spread which is likely a mistake.',
+      description: 'Warn about Number.parseInt(...items) with spread which is unusual since parseInt takes discrete arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-parse-int-spread.ts',
     },

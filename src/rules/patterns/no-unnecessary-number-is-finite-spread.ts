@@ -19,7 +19,7 @@ export const noUnnecessaryNumberIsFiniteSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Number.isFinite(...items) with spread is unusual. isFinite() expects a single value.`,
+          message: 'Number.isFinite(...items) with a single spread is unusual. Consider calling Number.isFinite() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryNumberIsFiniteSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.isFinite(...items) with spread which is likely a mistake.',
+      description: 'Warn about Number.isFinite(...items) with spread which is unusual since isFinite takes one argument, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-is-finite-spread.ts',
     },

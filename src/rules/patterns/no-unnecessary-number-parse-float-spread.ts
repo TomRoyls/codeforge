@@ -19,7 +19,7 @@ export const noUnnecessaryNumberParseFloatSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Number.parseFloat(...items) with spread is unusual. parseFloat() expects a single string.`,
+          message: 'Number.parseFloat(...items) with a single spread is unusual. Consider calling Number.parseFloat() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryNumberParseFloatSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.parseFloat(...items) with spread which is likely a mistake.',
+      description: 'Warn about Number.parseFloat(...items) with spread which is unusual since parseFloat takes one argument, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-parse-float-spread.ts',
     },

@@ -19,7 +19,7 @@ export const noUnnecessaryNumberIsNanSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Number.isNaN(...items) with spread is unusual. isNaN() expects a single value.`,
+          message: 'Number.isNaN(...items) with a single spread is unusual. Consider calling Number.isNaN() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryNumberIsNanSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Number.isNaN(...items) with spread which is likely a mistake.',
+      description: 'Warn about Number.isNaN(...items) with spread which is unusual since isNaN takes one argument, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-is-nan-spread.ts',
     },
