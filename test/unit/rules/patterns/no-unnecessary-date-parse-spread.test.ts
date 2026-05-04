@@ -24,8 +24,6 @@ function lintCode(code: string): Array<{ messageId: string | undefined; message:
 }
 
 describe('no-unnecessary-date-parse-spread rule', () => {
-  // ===== Meta tests (8) =====
-
   test('rule has a meta property', () => {
     expect(noUnnecessaryDateParseSpreadRule.meta).toBeDefined();
   });
@@ -63,8 +61,6 @@ describe('no-unnecessary-date-parse-spread rule', () => {
     expect(msg).toContain('spread');
   });
 
-  // ===== Structure tests (2) =====
-
   test('rule exports a create function', () => {
     expect(typeof noUnnecessaryDateParseSpreadRule.create).toBe('function');
   });
@@ -74,8 +70,6 @@ describe('no-unnecessary-date-parse-spread rule', () => {
     expect(makeDateParseCall('arr')).toBe('Date.parse(...arr)');
     expect(makeDateParseCall('dateStrings')).toBe('Date.parse(...dateStrings)');
   });
-
-  // ===== Positive tests (28) =====
 
   test('flags Date.parse(...items)', () => {
     const errors = lintCode('Date.parse(...items)');
@@ -218,8 +212,6 @@ describe('no-unnecessary-date-parse-spread rule', () => {
     const errors = lintCode('`${Date.parse(...items)}`');
     expect(errors).toHaveLength(1);
   });
-
-  // ===== Negative tests (40) =====
 
   test('allows Date.parse with string literal', () => {
     const errors = lintCode('Date.parse("2024-01-01")');
@@ -420,8 +412,6 @@ describe('no-unnecessary-date-parse-spread rule', () => {
     const errors = lintCode('Date.parse(...items, undefined)');
     expect(errors).toHaveLength(0);
   });
-
-  // ===== Edge tests (17) =====
 
   test('flags Date.parse(...[dateString]) with spread of array literal', () => {
     const errors = lintCode('Date.parse(...[dateString])');
