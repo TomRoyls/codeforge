@@ -3693,6 +3693,100 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-element-request-fullscreen-spread']: adaptPluginRule(noUnnecessaryElementRequestFullscreenSpreadRule),
   ['no-unnecessary-element-request-pointer-lock-spread']: adaptPluginRule(noUnnecessaryElementRequestPointerLockSpreadRule),
   ['no-unnecessary-element-attach-shadow-spread']: adaptPluginRule(noUnnecessaryElementAttachShadowSpreadRule),
+  ['no-unnecessary-local-storage-get-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageGetItemSpreadRule),
+  ['no-unnecessary-local-storage-set-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageSetItemSpreadRule),
+  ['no-unnecessary-local-storage-remove-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageRemoveItemSpreadRule),
+  ['no-unnecessary-local-storage-clear-spread']: adaptPluginRule(noUnnecessaryLocalStorageClearSpreadRule),
+  ['no-unnecessary-local-storage-key-spread']: adaptPluginRule(noUnnecessaryLocalStorageKeySpreadRule),
+  ['no-unnecessary-session-storage-get-item-spread']: adaptPluginRule(noUnnecessarySessionStorageGetItemSpreadRule),
+  ['no-unnecessary-session-storage-set-item-spread']: adaptPluginRule(noUnnecessarySessionStorageSetItemSpreadRule),
+  ['no-unnecessary-session-storage-remove-item-spread']: adaptPluginRule(noUnnecessarySessionStorageRemoveItemSpreadRule),
+  ['no-unnecessary-session-storage-clear-spread']: adaptPluginRule(noUnnecessarySessionStorageClearSpreadRule),
+  ['no-unnecessary-session-storage-key-spread']: adaptPluginRule(noUnnecessarySessionStorageKeySpreadRule),
+  ['no-unnecessary-navigator-send-beacon-spread']: adaptPluginRule(noUnnecessaryNavigatorSendBeaconSpreadRule),
+  ['no-unnecessary-navigator-vibrate-spread']: adaptPluginRule(noUnnecessaryNavigatorVibrateSpreadRule),
+  ['no-unnecessary-navigator-get-battery-spread']: adaptPluginRule(noUnnecessaryNavigatorGetBatterySpreadRule),
+  ['no-unnecessary-navigator-geolocation-get-current-position-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule),
+  ['no-unnecessary-navigator-geolocation-watch-position-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule),
+  ['no-unnecessary-navigator-geolocation-clear-watch-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationClearWatchSpreadRule),
+  ['no-unnecessary-navigator-clipboard-read-text-spread']: adaptPluginRule(noUnnecessaryNavigatorClipboardReadTextSpreadRule),
+  ['no-unnecessary-navigator-clipboard-write-text-spread']: adaptPluginRule(noUnnecessaryNavigatorClipboardWriteTextSpreadRule),
+  ['no-unnecessary-navigator-media-devices-get-user-media-spread']: adaptPluginRule(noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule),
+  ['no-unnecessary-navigator-register-protocol-handler-spread']: adaptPluginRule(noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule),
+  ['no-unnecessary-navigator-request-media-key-system-access-spread']: adaptPluginRule(noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule),
+  ['no-unnecessary-navigator-can-share-spread']: adaptPluginRule(noUnnecessaryNavigatorCanShareSpreadRule),
+  ['no-unnecessary-navigator-share-spread']: adaptPluginRule(noUnnecessaryNavigatorShareSpreadRule),
+  ['no-unnecessary-navigator-get-gamepads-spread']: adaptPluginRule(noUnnecessaryNavigatorGetGamepadsSpreadRule),
+  ['no-unnecessary-navigator-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryNavigatorRequestIdleCallbackSpreadRule),
+  ['no-unnecessary-navigator-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryNavigatorCancelIdleCallbackSpreadRule),
+  ['no-unnecessary-navigator-java-enabled-spread']: adaptPluginRule(noUnnecessaryNavigatorJavaEnabledSpreadRule),
+  ['no-unnecessary-navigator-cookie-enabled-spread']: adaptPluginRule(noUnnecessaryNavigatorCookieEnabledSpreadRule),
+  ['no-unnecessary-history-push-state-spread']: adaptPluginRule(noUnnecessaryHistoryPushStateSpreadRule),
+  ['no-unnecessary-history-replace-state-spread']: adaptPluginRule(noUnnecessaryHistoryReplaceStateSpreadRule),
+  ['no-unnecessary-history-go-spread']: adaptPluginRule(noUnnecessaryHistoryGoSpreadRule),
+  ['no-unnecessary-history-back-spread']: adaptPluginRule(noUnnecessaryHistoryBackSpreadRule),
+  ['no-unnecessary-history-forward-spread']: adaptPluginRule(noUnnecessaryHistoryForwardSpreadRule),
+  ['no-unnecessary-location-assign-spread']: adaptPluginRule(noUnnecessaryLocationAssignSpreadRule),
+  ['no-unnecessary-location-reload-spread']: adaptPluginRule(noUnnecessaryLocationReloadSpreadRule),
+  ['no-unnecessary-location-replace-spread']: adaptPluginRule(noUnnecessaryLocationReplaceSpreadRule),
+  ['no-unnecessary-location-to-string-spread']: adaptPluginRule(noUnnecessaryLocationToStringSpreadRule),
+  ['no-unnecessary-performance-now-spread']: adaptPluginRule(noUnnecessaryPerformanceNowSpreadRule),
+  ['no-unnecessary-performance-mark-spread']: adaptPluginRule(noUnnecessaryPerformanceMarkSpreadRule),
+  ['no-unnecessary-performance-measure-spread']: adaptPluginRule(noUnnecessaryPerformanceMeasureSpreadRule),
+  ['no-unnecessary-performance-clear-marks-spread']: adaptPluginRule(noUnnecessaryPerformanceClearMarksSpreadRule),
+  ['no-unnecessary-performance-clear-measures-spread']: adaptPluginRule(noUnnecessaryPerformanceClearMeasuresSpreadRule),
+  ['no-unnecessary-performance-get-entries-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesSpreadRule),
+  ['no-unnecessary-performance-get-entries-by-name-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesByNameSpreadRule),
+  ['no-unnecessary-performance-get-entries-by-type-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesByTypeSpreadRule),
+  ['no-unnecessary-performance-clear-resource-timings-spread']: adaptPluginRule(noUnnecessaryPerformanceClearResourceTimingsSpreadRule),
+  ['no-unnecessary-performance-set-resource-timing-buffer-size-spread']: adaptPluginRule(noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule),
+  ['no-unnecessary-screen-orientation-lock-spread']: adaptPluginRule(noUnnecessaryScreenOrientationLockSpreadRule),
+  ['no-unnecessary-screen-orientation-unlock-spread']: adaptPluginRule(noUnnecessaryScreenOrientationUnlockSpreadRule),
+  ['no-unnecessary-crypto-get-random-values-spread']: adaptPluginRule(noUnnecessaryCryptoGetRandomValuesSpreadRule),
+  ['no-unnecessary-crypto-random-uuid-spread']: adaptPluginRule(noUnnecessaryCryptoRandomUUIDSpreadRule),
+  ['no-unnecessary-indexed-db-open-spread']: adaptPluginRule(noUnnecessaryIndexedDbOpenSpreadRule),
+  ['no-unnecessary-indexed-db-delete-database-spread']: adaptPluginRule(noUnnecessaryIndexedDbDeleteDatabaseSpreadRule),
+  ['no-unnecessary-indexed-db-cmp-spread']: adaptPluginRule(noUnnecessaryIndexedDbCmpSpreadRule),
+  ['no-unnecessary-caches-open-spread']: adaptPluginRule(noUnnecessaryCachesOpenSpreadRule),
+  ['no-unnecessary-caches-match-spread']: adaptPluginRule(noUnnecessaryCachesMatchSpreadRule),
+  ['no-unnecessary-caches-has-spread']: adaptPluginRule(noUnnecessaryCachesHasSpreadRule),
+  ['no-unnecessary-caches-delete-spread']: adaptPluginRule(noUnnecessaryCachesDeleteSpreadRule),
+  ['no-unnecessary-caches-keys-spread']: adaptPluginRule(noUnnecessaryCachesKeysSpreadRule),
+  ['no-unnecessary-window-open-spread']: adaptPluginRule(noUnnecessaryWindowOpenSpreadRule),
+  ['no-unnecessary-window-close-spread']: adaptPluginRule(noUnnecessaryWindowCloseSpreadRule),
+  ['no-unnecessary-window-stop-spread']: adaptPluginRule(noUnnecessaryWindowStopSpreadRule),
+  ['no-unnecessary-window-focus-spread']: adaptPluginRule(noUnnecessaryWindowFocusSpreadRule),
+  ['no-unnecessary-window-blur-spread']: adaptPluginRule(noUnnecessaryWindowBlurSpreadRule),
+  ['no-unnecessary-window-scroll-to-spread']: adaptPluginRule(noUnnecessaryWindowScrollToSpreadRule),
+  ['no-unnecessary-window-scroll-by-spread']: adaptPluginRule(noUnnecessaryWindowScrollBySpreadRule),
+  ['no-unnecessary-window-scroll-spread']: adaptPluginRule(noUnnecessaryWindowScrollSpreadRule),
+  ['no-unnecessary-window-print-spread']: adaptPluginRule(noUnnecessaryWindowPrintSpreadRule),
+  ['no-unnecessary-window-alert-spread']: adaptPluginRule(noUnnecessaryWindowAlertSpreadRule),
+  ['no-unnecessary-window-confirm-spread']: adaptPluginRule(noUnnecessaryWindowConfirmSpreadRule),
+  ['no-unnecessary-window-prompt-spread']: adaptPluginRule(noUnnecessaryWindowPromptSpreadRule),
+  ['no-unnecessary-window-get-computed-style-spread']: adaptPluginRule(noUnnecessaryWindowGetComputedStyleSpreadRule),
+  ['no-unnecessary-window-get-selection-spread']: adaptPluginRule(noUnnecessaryWindowGetSelectionSpreadRule),
+  ['no-unnecessary-window-match-media-spread']: adaptPluginRule(noUnnecessaryWindowMatchMediaSpreadRule),
+  ['no-unnecessary-window-move-to-spread']: adaptPluginRule(noUnnecessaryWindowMoveToSpreadRule),
+  ['no-unnecessary-window-move-by-spread']: adaptPluginRule(noUnnecessaryWindowMoveBySpreadRule),
+  ['no-unnecessary-window-resize-to-spread']: adaptPluginRule(noUnnecessaryWindowResizeToSpreadRule),
+  ['no-unnecessary-window-resize-by-spread']: adaptPluginRule(noUnnecessaryWindowResizeBySpreadRule),
+  ['no-unnecessary-window-post-message-spread']: adaptPluginRule(noUnnecessaryWindowPostMessageSpreadRule),
+  ['no-unnecessary-window-atob-spread']: adaptPluginRule(noUnnecessaryWindowAtobSpreadRule),
+  ['no-unnecessary-window-btoa-spread']: adaptPluginRule(noUnnecessaryWindowBtoaSpreadRule),
+  ['no-unnecessary-window-fetch-spread']: adaptPluginRule(noUnnecessaryWindowFetchSpreadRule),
+  ['no-unnecessary-window-create-image-bitmap-spread']: adaptPluginRule(noUnnecessaryWindowCreateImageBitmapSpreadRule),
+  ['no-unnecessary-window-queue-microtask-spread']: adaptPluginRule(noUnnecessaryWindowQueueMicrotaskSpreadRule),
+  ['no-unnecessary-window-report-error-spread']: adaptPluginRule(noUnnecessaryWindowReportErrorSpreadRule),
+  ['no-unnecessary-window-structured-clone-spread']: adaptPluginRule(noUnnecessaryWindowStructuredCloneSpreadRule),
+  ['no-unnecessary-window-request-animation-frame-spread']: adaptPluginRule(noUnnecessaryWindowRequestAnimationFrameSpreadRule),
+  ['no-unnecessary-window-cancel-animation-frame-spread']: adaptPluginRule(noUnnecessaryWindowCancelAnimationFrameSpreadRule),
+  ['no-unnecessary-window-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryWindowRequestIdleCallbackSpreadRule),
+  ['no-unnecessary-window-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryWindowCancelIdleCallbackSpreadRule),
+  ['no-unnecessary-window-set-timeout-spread']: adaptPluginRule(noUnnecessaryWindowSetTimeoutSpreadRule),
+  ['no-unnecessary-window-clear-timeout-spread']: adaptPluginRule(noUnnecessaryWindowClearTimeoutSpreadRule),
+  ['no-unnecessary-window-set-interval-spread']: adaptPluginRule(noUnnecessaryWindowSetIntervalSpreadRule),
+  ['no-unnecessary-window-clear-interval-spread']: adaptPluginRule(noUnnecessaryWindowClearIntervalSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -5672,6 +5766,100 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-element-request-fullscreen-spread']: 'patterns',
   ['no-unnecessary-element-request-pointer-lock-spread']: 'patterns',
   ['no-unnecessary-element-attach-shadow-spread']: 'patterns',
+  ['no-unnecessary-local-storage-get-item-spread']: 'patterns',
+  ['no-unnecessary-local-storage-set-item-spread']: 'patterns',
+  ['no-unnecessary-local-storage-remove-item-spread']: 'patterns',
+  ['no-unnecessary-local-storage-clear-spread']: 'patterns',
+  ['no-unnecessary-local-storage-key-spread']: 'patterns',
+  ['no-unnecessary-session-storage-get-item-spread']: 'patterns',
+  ['no-unnecessary-session-storage-set-item-spread']: 'patterns',
+  ['no-unnecessary-session-storage-remove-item-spread']: 'patterns',
+  ['no-unnecessary-session-storage-clear-spread']: 'patterns',
+  ['no-unnecessary-session-storage-key-spread']: 'patterns',
+  ['no-unnecessary-navigator-send-beacon-spread']: 'patterns',
+  ['no-unnecessary-navigator-vibrate-spread']: 'patterns',
+  ['no-unnecessary-navigator-get-battery-spread']: 'patterns',
+  ['no-unnecessary-navigator-geolocation-get-current-position-spread']: 'patterns',
+  ['no-unnecessary-navigator-geolocation-watch-position-spread']: 'patterns',
+  ['no-unnecessary-navigator-geolocation-clear-watch-spread']: 'patterns',
+  ['no-unnecessary-navigator-clipboard-read-text-spread']: 'patterns',
+  ['no-unnecessary-navigator-clipboard-write-text-spread']: 'patterns',
+  ['no-unnecessary-navigator-media-devices-get-user-media-spread']: 'patterns',
+  ['no-unnecessary-navigator-register-protocol-handler-spread']: 'patterns',
+  ['no-unnecessary-navigator-request-media-key-system-access-spread']: 'patterns',
+  ['no-unnecessary-navigator-can-share-spread']: 'patterns',
+  ['no-unnecessary-navigator-share-spread']: 'patterns',
+  ['no-unnecessary-navigator-get-gamepads-spread']: 'patterns',
+  ['no-unnecessary-navigator-request-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-navigator-cancel-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-navigator-java-enabled-spread']: 'patterns',
+  ['no-unnecessary-navigator-cookie-enabled-spread']: 'patterns',
+  ['no-unnecessary-history-push-state-spread']: 'patterns',
+  ['no-unnecessary-history-replace-state-spread']: 'patterns',
+  ['no-unnecessary-history-go-spread']: 'patterns',
+  ['no-unnecessary-history-back-spread']: 'patterns',
+  ['no-unnecessary-history-forward-spread']: 'patterns',
+  ['no-unnecessary-location-assign-spread']: 'patterns',
+  ['no-unnecessary-location-reload-spread']: 'patterns',
+  ['no-unnecessary-location-replace-spread']: 'patterns',
+  ['no-unnecessary-location-to-string-spread']: 'patterns',
+  ['no-unnecessary-performance-now-spread']: 'patterns',
+  ['no-unnecessary-performance-mark-spread']: 'patterns',
+  ['no-unnecessary-performance-measure-spread']: 'patterns',
+  ['no-unnecessary-performance-clear-marks-spread']: 'patterns',
+  ['no-unnecessary-performance-clear-measures-spread']: 'patterns',
+  ['no-unnecessary-performance-get-entries-spread']: 'patterns',
+  ['no-unnecessary-performance-get-entries-by-name-spread']: 'patterns',
+  ['no-unnecessary-performance-get-entries-by-type-spread']: 'patterns',
+  ['no-unnecessary-performance-clear-resource-timings-spread']: 'patterns',
+  ['no-unnecessary-performance-set-resource-timing-buffer-size-spread']: 'patterns',
+  ['no-unnecessary-screen-orientation-lock-spread']: 'patterns',
+  ['no-unnecessary-screen-orientation-unlock-spread']: 'patterns',
+  ['no-unnecessary-crypto-get-random-values-spread']: 'patterns',
+  ['no-unnecessary-crypto-random-uuid-spread']: 'patterns',
+  ['no-unnecessary-indexed-db-open-spread']: 'patterns',
+  ['no-unnecessary-indexed-db-delete-database-spread']: 'patterns',
+  ['no-unnecessary-indexed-db-cmp-spread']: 'patterns',
+  ['no-unnecessary-caches-open-spread']: 'patterns',
+  ['no-unnecessary-caches-match-spread']: 'patterns',
+  ['no-unnecessary-caches-has-spread']: 'patterns',
+  ['no-unnecessary-caches-delete-spread']: 'patterns',
+  ['no-unnecessary-caches-keys-spread']: 'patterns',
+  ['no-unnecessary-window-open-spread']: 'patterns',
+  ['no-unnecessary-window-close-spread']: 'patterns',
+  ['no-unnecessary-window-stop-spread']: 'patterns',
+  ['no-unnecessary-window-focus-spread']: 'patterns',
+  ['no-unnecessary-window-blur-spread']: 'patterns',
+  ['no-unnecessary-window-scroll-to-spread']: 'patterns',
+  ['no-unnecessary-window-scroll-by-spread']: 'patterns',
+  ['no-unnecessary-window-scroll-spread']: 'patterns',
+  ['no-unnecessary-window-print-spread']: 'patterns',
+  ['no-unnecessary-window-alert-spread']: 'patterns',
+  ['no-unnecessary-window-confirm-spread']: 'patterns',
+  ['no-unnecessary-window-prompt-spread']: 'patterns',
+  ['no-unnecessary-window-get-computed-style-spread']: 'patterns',
+  ['no-unnecessary-window-get-selection-spread']: 'patterns',
+  ['no-unnecessary-window-match-media-spread']: 'patterns',
+  ['no-unnecessary-window-move-to-spread']: 'patterns',
+  ['no-unnecessary-window-move-by-spread']: 'patterns',
+  ['no-unnecessary-window-resize-to-spread']: 'patterns',
+  ['no-unnecessary-window-resize-by-spread']: 'patterns',
+  ['no-unnecessary-window-post-message-spread']: 'patterns',
+  ['no-unnecessary-window-atob-spread']: 'patterns',
+  ['no-unnecessary-window-btoa-spread']: 'patterns',
+  ['no-unnecessary-window-fetch-spread']: 'patterns',
+  ['no-unnecessary-window-create-image-bitmap-spread']: 'patterns',
+  ['no-unnecessary-window-queue-microtask-spread']: 'patterns',
+  ['no-unnecessary-window-report-error-spread']: 'patterns',
+  ['no-unnecessary-window-structured-clone-spread']: 'patterns',
+  ['no-unnecessary-window-request-animation-frame-spread']: 'patterns',
+  ['no-unnecessary-window-cancel-animation-frame-spread']: 'patterns',
+  ['no-unnecessary-window-request-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-window-cancel-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-window-set-timeout-spread']: 'patterns',
+  ['no-unnecessary-window-clear-timeout-spread']: 'patterns',
+  ['no-unnecessary-window-set-interval-spread']: 'patterns',
+  ['no-unnecessary-window-clear-interval-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -6525,6 +6713,100 @@ import { noUnnecessaryElementGetComputedStyleSpreadRule } from './patterns/no-un
 import { noUnnecessaryElementRequestFullscreenSpreadRule } from './patterns/no-unnecessary-element-request-fullscreen-spread.js'
 import { noUnnecessaryElementRequestPointerLockSpreadRule } from './patterns/no-unnecessary-element-request-pointer-lock-spread.js'
 import { noUnnecessaryElementAttachShadowSpreadRule } from './patterns/no-unnecessary-element-attach-shadow-spread.js'
+import { noUnnecessaryLocalStorageGetItemSpreadRule } from './patterns/no-unnecessary-local-storage-get-item-spread.js'
+import { noUnnecessaryLocalStorageSetItemSpreadRule } from './patterns/no-unnecessary-local-storage-set-item-spread.js'
+import { noUnnecessaryLocalStorageRemoveItemSpreadRule } from './patterns/no-unnecessary-local-storage-remove-item-spread.js'
+import { noUnnecessaryLocalStorageClearSpreadRule } from './patterns/no-unnecessary-local-storage-clear-spread.js'
+import { noUnnecessaryLocalStorageKeySpreadRule } from './patterns/no-unnecessary-local-storage-key-spread.js'
+import { noUnnecessarySessionStorageGetItemSpreadRule } from './patterns/no-unnecessary-session-storage-get-item-spread.js'
+import { noUnnecessarySessionStorageSetItemSpreadRule } from './patterns/no-unnecessary-session-storage-set-item-spread.js'
+import { noUnnecessarySessionStorageRemoveItemSpreadRule } from './patterns/no-unnecessary-session-storage-remove-item-spread.js'
+import { noUnnecessarySessionStorageClearSpreadRule } from './patterns/no-unnecessary-session-storage-clear-spread.js'
+import { noUnnecessarySessionStorageKeySpreadRule } from './patterns/no-unnecessary-session-storage-key-spread.js'
+import { noUnnecessaryNavigatorSendBeaconSpreadRule } from './patterns/no-unnecessary-navigator-send-beacon-spread.js'
+import { noUnnecessaryNavigatorVibrateSpreadRule } from './patterns/no-unnecessary-navigator-vibrate-spread.js'
+import { noUnnecessaryNavigatorGetBatterySpreadRule } from './patterns/no-unnecessary-navigator-get-battery-spread.js'
+import { noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-get-current-position-spread.js'
+import { noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-watch-position-spread.js'
+import { noUnnecessaryNavigatorGeolocationClearWatchSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-clear-watch-spread.js'
+import { noUnnecessaryNavigatorClipboardReadTextSpreadRule } from './patterns/no-unnecessary-navigator-clipboard-read-text-spread.js'
+import { noUnnecessaryNavigatorClipboardWriteTextSpreadRule } from './patterns/no-unnecessary-navigator-clipboard-write-text-spread.js'
+import { noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule } from './patterns/no-unnecessary-navigator-media-devices-get-user-media-spread.js'
+import { noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule } from './patterns/no-unnecessary-navigator-register-protocol-handler-spread.js'
+import { noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule } from './patterns/no-unnecessary-navigator-request-media-key-system-access-spread.js'
+import { noUnnecessaryNavigatorCanShareSpreadRule } from './patterns/no-unnecessary-navigator-can-share-spread.js'
+import { noUnnecessaryNavigatorShareSpreadRule } from './patterns/no-unnecessary-navigator-share-spread.js'
+import { noUnnecessaryNavigatorGetGamepadsSpreadRule } from './patterns/no-unnecessary-navigator-get-gamepads-spread.js'
+import { noUnnecessaryNavigatorRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-navigator-request-idle-callback-spread.js'
+import { noUnnecessaryNavigatorCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-navigator-cancel-idle-callback-spread.js'
+import { noUnnecessaryNavigatorJavaEnabledSpreadRule } from './patterns/no-unnecessary-navigator-java-enabled-spread.js'
+import { noUnnecessaryNavigatorCookieEnabledSpreadRule } from './patterns/no-unnecessary-navigator-cookie-enabled-spread.js'
+import { noUnnecessaryHistoryPushStateSpreadRule } from './patterns/no-unnecessary-history-push-state-spread.js'
+import { noUnnecessaryHistoryReplaceStateSpreadRule } from './patterns/no-unnecessary-history-replace-state-spread.js'
+import { noUnnecessaryHistoryGoSpreadRule } from './patterns/no-unnecessary-history-go-spread.js'
+import { noUnnecessaryHistoryBackSpreadRule } from './patterns/no-unnecessary-history-back-spread.js'
+import { noUnnecessaryHistoryForwardSpreadRule } from './patterns/no-unnecessary-history-forward-spread.js'
+import { noUnnecessaryLocationAssignSpreadRule } from './patterns/no-unnecessary-location-assign-spread.js'
+import { noUnnecessaryLocationReloadSpreadRule } from './patterns/no-unnecessary-location-reload-spread.js'
+import { noUnnecessaryLocationReplaceSpreadRule } from './patterns/no-unnecessary-location-replace-spread.js'
+import { noUnnecessaryLocationToStringSpreadRule } from './patterns/no-unnecessary-location-to-string-spread.js'
+import { noUnnecessaryPerformanceNowSpreadRule } from './patterns/no-unnecessary-performance-now-spread.js'
+import { noUnnecessaryPerformanceMarkSpreadRule } from './patterns/no-unnecessary-performance-mark-spread.js'
+import { noUnnecessaryPerformanceMeasureSpreadRule } from './patterns/no-unnecessary-performance-measure-spread.js'
+import { noUnnecessaryPerformanceClearMarksSpreadRule } from './patterns/no-unnecessary-performance-clear-marks-spread.js'
+import { noUnnecessaryPerformanceClearMeasuresSpreadRule } from './patterns/no-unnecessary-performance-clear-measures-spread.js'
+import { noUnnecessaryPerformanceGetEntriesSpreadRule } from './patterns/no-unnecessary-performance-get-entries-spread.js'
+import { noUnnecessaryPerformanceGetEntriesByNameSpreadRule } from './patterns/no-unnecessary-performance-get-entries-by-name-spread.js'
+import { noUnnecessaryPerformanceGetEntriesByTypeSpreadRule } from './patterns/no-unnecessary-performance-get-entries-by-type-spread.js'
+import { noUnnecessaryPerformanceClearResourceTimingsSpreadRule } from './patterns/no-unnecessary-performance-clear-resource-timings-spread.js'
+import { noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule } from './patterns/no-unnecessary-performance-set-resource-timing-buffer-size-spread.js'
+import { noUnnecessaryScreenOrientationLockSpreadRule } from './patterns/no-unnecessary-screen-orientation-lock-spread.js'
+import { noUnnecessaryScreenOrientationUnlockSpreadRule } from './patterns/no-unnecessary-screen-orientation-unlock-spread.js'
+import { noUnnecessaryCryptoGetRandomValuesSpreadRule } from './patterns/no-unnecessary-crypto-get-random-values-spread.js'
+import { noUnnecessaryCryptoRandomUUIDSpreadRule } from './patterns/no-unnecessary-crypto-random-uuid-spread.js'
+import { noUnnecessaryIndexedDbOpenSpreadRule } from './patterns/no-unnecessary-indexed-db-open-spread.js'
+import { noUnnecessaryIndexedDbDeleteDatabaseSpreadRule } from './patterns/no-unnecessary-indexed-db-delete-database-spread.js'
+import { noUnnecessaryIndexedDbCmpSpreadRule } from './patterns/no-unnecessary-indexed-db-cmp-spread.js'
+import { noUnnecessaryCachesOpenSpreadRule } from './patterns/no-unnecessary-caches-open-spread.js'
+import { noUnnecessaryCachesMatchSpreadRule } from './patterns/no-unnecessary-caches-match-spread.js'
+import { noUnnecessaryCachesHasSpreadRule } from './patterns/no-unnecessary-caches-has-spread.js'
+import { noUnnecessaryCachesDeleteSpreadRule } from './patterns/no-unnecessary-caches-delete-spread.js'
+import { noUnnecessaryCachesKeysSpreadRule } from './patterns/no-unnecessary-caches-keys-spread.js'
+import { noUnnecessaryWindowOpenSpreadRule } from './patterns/no-unnecessary-window-open-spread.js'
+import { noUnnecessaryWindowCloseSpreadRule } from './patterns/no-unnecessary-window-close-spread.js'
+import { noUnnecessaryWindowStopSpreadRule } from './patterns/no-unnecessary-window-stop-spread.js'
+import { noUnnecessaryWindowFocusSpreadRule } from './patterns/no-unnecessary-window-focus-spread.js'
+import { noUnnecessaryWindowBlurSpreadRule } from './patterns/no-unnecessary-window-blur-spread.js'
+import { noUnnecessaryWindowScrollToSpreadRule } from './patterns/no-unnecessary-window-scroll-to-spread.js'
+import { noUnnecessaryWindowScrollBySpreadRule } from './patterns/no-unnecessary-window-scroll-by-spread.js'
+import { noUnnecessaryWindowScrollSpreadRule } from './patterns/no-unnecessary-window-scroll-spread.js'
+import { noUnnecessaryWindowPrintSpreadRule } from './patterns/no-unnecessary-window-print-spread.js'
+import { noUnnecessaryWindowAlertSpreadRule } from './patterns/no-unnecessary-window-alert-spread.js'
+import { noUnnecessaryWindowConfirmSpreadRule } from './patterns/no-unnecessary-window-confirm-spread.js'
+import { noUnnecessaryWindowPromptSpreadRule } from './patterns/no-unnecessary-window-prompt-spread.js'
+import { noUnnecessaryWindowGetComputedStyleSpreadRule } from './patterns/no-unnecessary-window-get-computed-style-spread.js'
+import { noUnnecessaryWindowGetSelectionSpreadRule } from './patterns/no-unnecessary-window-get-selection-spread.js'
+import { noUnnecessaryWindowMatchMediaSpreadRule } from './patterns/no-unnecessary-window-match-media-spread.js'
+import { noUnnecessaryWindowMoveToSpreadRule } from './patterns/no-unnecessary-window-move-to-spread.js'
+import { noUnnecessaryWindowMoveBySpreadRule } from './patterns/no-unnecessary-window-move-by-spread.js'
+import { noUnnecessaryWindowResizeToSpreadRule } from './patterns/no-unnecessary-window-resize-to-spread.js'
+import { noUnnecessaryWindowResizeBySpreadRule } from './patterns/no-unnecessary-window-resize-by-spread.js'
+import { noUnnecessaryWindowPostMessageSpreadRule } from './patterns/no-unnecessary-window-post-message-spread.js'
+import { noUnnecessaryWindowAtobSpreadRule } from './patterns/no-unnecessary-window-atob-spread.js'
+import { noUnnecessaryWindowBtoaSpreadRule } from './patterns/no-unnecessary-window-btoa-spread.js'
+import { noUnnecessaryWindowFetchSpreadRule } from './patterns/no-unnecessary-window-fetch-spread.js'
+import { noUnnecessaryWindowCreateImageBitmapSpreadRule } from './patterns/no-unnecessary-window-create-image-bitmap-spread.js'
+import { noUnnecessaryWindowQueueMicrotaskSpreadRule } from './patterns/no-unnecessary-window-queue-microtask-spread.js'
+import { noUnnecessaryWindowReportErrorSpreadRule } from './patterns/no-unnecessary-window-report-error-spread.js'
+import { noUnnecessaryWindowStructuredCloneSpreadRule } from './patterns/no-unnecessary-window-structured-clone-spread.js'
+import { noUnnecessaryWindowRequestAnimationFrameSpreadRule } from './patterns/no-unnecessary-window-request-animation-frame-spread.js'
+import { noUnnecessaryWindowCancelAnimationFrameSpreadRule } from './patterns/no-unnecessary-window-cancel-animation-frame-spread.js'
+import { noUnnecessaryWindowRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-window-request-idle-callback-spread.js'
+import { noUnnecessaryWindowCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-window-cancel-idle-callback-spread.js'
+import { noUnnecessaryWindowSetTimeoutSpreadRule } from './patterns/no-unnecessary-window-set-timeout-spread.js'
+import { noUnnecessaryWindowClearTimeoutSpreadRule } from './patterns/no-unnecessary-window-clear-timeout-spread.js'
+import { noUnnecessaryWindowSetIntervalSpreadRule } from './patterns/no-unnecessary-window-set-interval-spread.js'
+import { noUnnecessaryWindowClearIntervalSpreadRule } from './patterns/no-unnecessary-window-clear-interval-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
