@@ -11,13 +11,15 @@ export const noUnnecessaryArrayFilterSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'filter') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `arr.filter(...items) with spread is unusual. filter() expects a callback function.`,
+          message: 'arr.filter(...items) with a single spread is unusual. Consider calling arr.filter() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayFilterSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about arr.filter(...items) with spread which is likely a mistake.',
+      description: 'Warn about arr.filter(...items) with spread which is unusual since arr.filter takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-filter-spread.ts',
     },

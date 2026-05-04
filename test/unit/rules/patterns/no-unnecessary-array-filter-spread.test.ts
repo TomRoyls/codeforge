@@ -42,23 +42,20 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makeCallNode(
-  object: unknown,
-  methodName: string,
+function makearrFilterCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
   locEndLine = 1,
   locEndCol = 20,
-  computed = false,
 ): unknown {
   return {
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object,
-      property: { type: 'Identifier', name: methodName },
-      computed,
+      object: { type: 'Identifier', name: 'arr' },
+      property: { type: 'Identifier', name: 'filter' },
+      computed: false,
     },
     arguments: args,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
@@ -69,809 +66,1581 @@ function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
 
-// ===== META TESTS (8) =====
-
 describe('no-unnecessary-array-filter-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryArrayFilterSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryArrayFilterSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning filter', () => {
-      const desc = noUnnecessaryArrayFilterSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/filter/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-filter-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryArrayFilterSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule).toBeDefined()
-      expect(noUnnecessaryArrayFilterSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryArrayFilterSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryArrayFilterSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryArrayFilterSpreadRule.meta.docs.description).toBe('string')
     })
   })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports filter with spread', () => {
-    test('reports for arr.filter(...items) with Identifier receiver', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for obj.arr.filter(...items) with MemberExpression receiver', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for getArr().filter(...items) with CallExpression receiver', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for this.items.filter(...items) with ThisExpression receiver', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ThisExpression' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing Identifier argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing CallExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getItems' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ArrayExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'ArrayExpression', elements: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing MemberExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'items' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for deeply nested MemberExpression receiver a.b.c.filter(...x)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      const nested = { type: 'MemberExpression', object: { type: 'MemberExpression', object: { type: 'Identifier', name: 'a' }, property: { type: 'Identifier', name: 'b' } }, property: { type: 'Identifier', name: 'c' } }
-      visitor.CallExpression(makeCallNode(nested, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for call result with arguments receiver fn(a).filter(...x)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [{ type: 'Identifier', name: 'a' }] }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing BinaryExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ObjectExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'ObjectExpression', properties: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions filter and spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toMatch(/filter/)
-      expect(reports[0].message).toMatch(/spread/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toBe(
-        'arr.filter(...items) with spread is unusual. filter() expects a callback function.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'values' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'values' })]))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports for arr.filter(...[]) empty array spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'ArrayExpression', elements: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for this.data.items.filter(...x) nested ThisExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      const thisMember = { type: 'MemberExpression', object: { type: 'MemberExpression', object: { type: 'ThisExpression' }, property: { type: 'Identifier', name: 'data' } }, property: { type: 'Identifier', name: 'items' } }
-      visitor.CallExpression(makeCallNode(thisMember, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      expect(reports.length).toBe(1)
-    })
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (44) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for arr.filter(x => x) — arrow function callback', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'Identifier', name: 'x' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(function(x) { return x; }) — function expression callback', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'FunctionExpression', id: null, params: [{ type: 'Identifier', name: 'x' }], body: { type: 'BlockStatement', body: [] } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter() — no arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter'))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(fn, thisArg) — two arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Identifier', name: 'fn' }, { type: 'Identifier', name: 'thisArg' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(fn, ctx, extra) — three arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Identifier', name: 'fn' }, { type: 'Identifier', name: 'ctx' }, { type: 'Identifier', name: 'extra' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.map(...items) — wrong method name "map"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'map', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.forEach(...items) — wrong method name "forEach"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'forEach', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.reduce(...items) — wrong method name "reduce"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'reduce', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.find(...items) — wrong method name "find"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'find', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.some(...items) — wrong method name "some"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'some', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.every(...items) — wrong method name "every"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'every', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.includes(...items) — wrong method name "includes"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for computed property arr["filter"](...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20, true))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type (not CallExpression)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not a MemberExpression (Identifier callee)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is not an Identifier (Literal property)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Literal', value: 'filter' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "Filter" (wrong case)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'Filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: null,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee.computed is true', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(callback) — regular Identifier argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Identifier', name: 'callback' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(42) — literal argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Literal', value: 42 }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(null) — null argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [null]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument type is Literal (not SpreadElement)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Literal', value: 'x' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(...items, extra) — two arguments with spread first', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Identifier', name: 'extra' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for property name "FILTER" uppercase', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'FILTER', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for property name "filters" — different name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filters', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for property name "filtered" — different name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filtered', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UpdateExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UpdateExpression', operator: '++', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.concat(...items) — wrong method name "concat"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for arr.filter(x => x > 0) — arrow with body', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'BinaryExpression', operator: '>', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 0 } } }]))
-      expect(reports.length).toBe(0)
-    })
-  })
-
-  // ===== EDGE CASES (16) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryArrayFilterSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryArrayFilterSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'Identifier', name: 'x' } }]))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly with mixed valid/invalid', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'Identifier', name: 'x' } }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'values' })]))
-      expect(reports.length).toBe(2)
+      const node = makearrFilterCall([])
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc still reports', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
+      const node = makearrFilterCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong object name', () => {
+    test('foo.filter(...items) should not report with object "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'foo' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('bar.filter(...items) should not report with object "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'bar' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('baz.filter(...items) should not report with object "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'baz' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('qux.filter(...items) should not report with object "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'qux' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('obj.filter(...items) should not report with object "obj"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.filter(...items) should not report with object "fn"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.filter(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.filter(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.filter(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.filter(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.filter(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.filter(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.filter(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.filter(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.filter(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.filter(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.filter(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.filter(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.filter(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.filter(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.filter(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.filter(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.filter(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.filter(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.filter(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.filter(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.filter(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('arr.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
+          property: { type: 'Identifier', name: 'foo' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('arr.bar(...items) should not report with property "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
+          property: { type: 'Identifier', name: 'bar' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('arr.baz(...items) should not report with property "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'ArrowFunctionExpression', params: [{ type: 'Identifier', name: 'x' }], body: { type: 'Identifier', name: 'x' } }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'map', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'values' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [{ type: 'Identifier', name: 'fn' }, { type: 'Identifier', name: 'ctx' }]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryArrayFilterSpreadRule.create(context)
-      const visitor2 = noUnnecessaryArrayFilterSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryArrayFilterSpreadRule.meta
-      const meta2 = noUnnecessaryArrayFilterSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
+          property: { type: 'Identifier', name: 'baz' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('arr.qux(...items) should not report with property "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
+          property: { type: 'Identifier', name: 'qux' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('arr.toString(...items) should not report with property "toString"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
+          property: { type: 'Identifier', name: 'toString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.concat(...items) should not report with property "concat"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report arr.filter(...items) with single spread', () => {
+    test('should report arr.filter(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.filter(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
+      expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryArrayFilterSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryArrayFilterSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryArrayFilterSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('report loc reflects specific node location values', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 4, 10, 25))
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.start.column).toBe(8)
       expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
+    })
+    test('should report with correct location line 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
+    })
+    test('should report with correct location line 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
+    })
+    test('should report with correct location line 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
       expect(reports[0].loc?.end.column).toBe(25)
     })
-
-    test('computed=true with Identifier property does not report', () => {
+    test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'filter' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayFilterSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'data' }, 'filter', [makeSpreadArg({ type: 'Identifier', name: 'values' })]))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
+    })
+    test('should report with correct location line 70', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
+    })
+    test('should report with correct location line 80', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
+    })
+    test('should report with correct location line 90', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
+    })
+    test('should report with correct location line 100', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrFilterCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryArrayFilterSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })

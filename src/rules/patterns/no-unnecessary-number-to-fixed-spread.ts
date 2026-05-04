@@ -11,13 +11,15 @@ export const noUnnecessaryNumberToFixedSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'num') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toFixed') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `num.toFixed(...items) with spread is unusual. toFixed() expects a digits count.`,
+          message: 'num.toFixed(...items) with a single spread is unusual. Consider calling num.toFixed() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryNumberToFixedSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about num.toFixed(...items) with spread which is likely a mistake.',
+      description: 'Warn about num.toFixed(...items) with spread which is unusual since num.toFixed takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-to-fixed-spread.ts',
     },

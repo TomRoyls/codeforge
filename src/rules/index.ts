@@ -3086,6 +3086,50 @@ const adaptedNoUnnecessaryStringLinkSpread = adaptPluginRule(noUnnecessaryString
 const adaptedNoUnnecessaryStringBigSpread = adaptPluginRule(noUnnecessaryStringBigSpreadRule, 'no-unnecessary-string-big-spread')
 const adaptedNoUnnecessaryStringBlinkSpread = adaptPluginRule(noUnnecessaryStringBlinkSpreadRule, 'no-unnecessary-string-blink-spread')
 const adaptedNoUnnecessaryStringBoldSpread = adaptPluginRule(noUnnecessaryStringBoldSpreadRule, 'no-unnecessary-string-bold-spread')
+const adaptedNoUnnecessaryNumberToExponentialSpread = adaptPluginRule(noUnnecessaryNumberToExponentialSpreadRule, 'no-unnecessary-number-to-exponential-spread')
+const adaptedNoUnnecessaryNumberToFixedSpread = adaptPluginRule(noUnnecessaryNumberToFixedSpreadRule, 'no-unnecessary-number-to-fixed-spread')
+const adaptedNoUnnecessaryNumberToPrecisionSpread = adaptPluginRule(noUnnecessaryNumberToPrecisionSpreadRule, 'no-unnecessary-number-to-precision-spread')
+const adaptedNoUnnecessaryNumberToStringSpread = adaptPluginRule(noUnnecessaryNumberToStringSpreadRule, 'no-unnecessary-number-to-string-spread')
+const adaptedNoUnnecessaryNumberToLocaleStringSpread = adaptPluginRule(noUnnecessaryNumberToLocaleStringSpreadRule, 'no-unnecessary-number-to-locale-string-spread')
+const adaptedNoUnnecessaryNumberValueOfSpread = adaptPluginRule(noUnnecessaryNumberValueOfSpreadRule, 'no-unnecessary-number-value-of-spread')
+const adaptedNoUnnecessaryArrayAtSpread = adaptPluginRule(noUnnecessaryArrayAtSpreadRule, 'no-unnecessary-array-at-spread')
+const adaptedNoUnnecessaryArrayConcatSpread = adaptPluginRule(noUnnecessaryArrayConcatSpreadRule, 'no-unnecessary-array-concat-spread')
+const adaptedNoUnnecessaryArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryArrayCopyWithinSpreadRule, 'no-unnecessary-array-copy-within-spread')
+const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
+const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
+const adaptedNoUnnecessaryArrayFillSpread = adaptPluginRule(noUnnecessaryArrayFillSpreadRule, 'no-unnecessary-array-fill-spread')
+const adaptedNoUnnecessaryArrayFilterSpread = adaptPluginRule(noUnnecessaryArrayFilterSpreadRule, 'no-unnecessary-array-filter-spread')
+const adaptedNoUnnecessaryArrayFindSpread = adaptPluginRule(noUnnecessaryArrayFindSpreadRule, 'no-unnecessary-array-find-spread')
+const adaptedNoUnnecessaryArrayFindIndexSpread = adaptPluginRule(noUnnecessaryArrayFindIndexSpreadRule, 'no-unnecessary-array-find-index-spread')
+const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
+const adaptedNoUnnecessaryArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryArrayFindLastIndexSpreadRule, 'no-unnecessary-array-find-last-index-spread')
+const adaptedNoUnnecessaryArrayFlatSpread = adaptPluginRule(noUnnecessaryArrayFlatSpreadRule, 'no-unnecessary-array-flat-spread')
+const adaptedNoUnnecessaryArrayFlatMapSpread = adaptPluginRule(noUnnecessaryArrayFlatMapSpreadRule, 'no-unnecessary-array-flat-map-spread')
+const adaptedNoUnnecessaryArrayForEachSpread = adaptPluginRule(noUnnecessaryArrayForEachSpreadRule, 'no-unnecessary-array-for-each-spread')
+const adaptedNoUnnecessaryArrayIncludesSpread = adaptPluginRule(noUnnecessaryArrayIncludesSpreadRule, 'no-unnecessary-array-includes-spread')
+const adaptedNoUnnecessaryArrayIndexOfSpread = adaptPluginRule(noUnnecessaryArrayIndexOfSpreadRule, 'no-unnecessary-array-index-of-spread')
+const adaptedNoUnnecessaryArrayJoinSpread = adaptPluginRule(noUnnecessaryArrayJoinSpreadRule, 'no-unnecessary-array-join-spread')
+const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
+const adaptedNoUnnecessaryArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryArrayLastIndexOfSpreadRule, 'no-unnecessary-array-last-index-of-spread')
+const adaptedNoUnnecessaryArrayMapSpread = adaptPluginRule(noUnnecessaryArrayMapSpreadRule, 'no-unnecessary-array-map-spread')
+const adaptedNoUnnecessaryArrayPopSpread = adaptPluginRule(noUnnecessaryArrayPopSpreadRule, 'no-unnecessary-array-pop-spread')
+const adaptedNoUnnecessaryArrayPushSpread = adaptPluginRule(noUnnecessaryArrayPushSpreadRule, 'no-unnecessary-array-push-spread')
+const adaptedNoUnnecessaryArrayReduceSpread = adaptPluginRule(noUnnecessaryArrayReduceSpreadRule, 'no-unnecessary-array-reduce-spread')
+const adaptedNoUnnecessaryArrayReduceRightSpread = adaptPluginRule(noUnnecessaryArrayReduceRightSpreadRule, 'no-unnecessary-array-reduce-right-spread')
+const adaptedNoUnnecessaryArrayReverseSpread = adaptPluginRule(noUnnecessaryArrayReverseSpreadRule, 'no-unnecessary-array-reverse-spread')
+const adaptedNoUnnecessaryArrayShiftSpread = adaptPluginRule(noUnnecessaryArrayShiftSpreadRule, 'no-unnecessary-array-shift-spread')
+const adaptedNoUnnecessaryArraySliceSpread = adaptPluginRule(noUnnecessaryArraySliceSpreadRule, 'no-unnecessary-array-slice-spread')
+const adaptedNoUnnecessaryArraySomeSpread = adaptPluginRule(noUnnecessaryArraySomeSpreadRule, 'no-unnecessary-array-some-spread')
+const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySortSpreadRule, 'no-unnecessary-array-sort-spread')
+const adaptedNoUnnecessaryArraySpliceSpread = adaptPluginRule(noUnnecessaryArraySpliceSpreadRule, 'no-unnecessary-array-splice-spread')
+const adaptedNoUnnecessaryArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryArrayToLocaleStringSpreadRule, 'no-unnecessary-array-to-locale-string-spread')
+const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
+const adaptedNoUnnecessaryArrayToSortedSpread = adaptPluginRule(noUnnecessaryArrayToSortedSpreadRule, 'no-unnecessary-array-to-sorted-spread')
+const adaptedNoUnnecessaryArrayToSplicedSpread = adaptPluginRule(noUnnecessaryArrayToSplicedSpreadRule, 'no-unnecessary-array-to-spliced-spread')
+const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArrayToStringSpreadRule, 'no-unnecessary-array-to-string-spread')
+const adaptedNoUnnecessaryArrayUnshiftSpread = adaptPluginRule(noUnnecessaryArrayUnshiftSpreadRule, 'no-unnecessary-array-unshift-spread')
+const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
+const adaptedNoUnnecessaryArrayWithSpread = adaptPluginRule(noUnnecessaryArrayWithSpreadRule, 'no-unnecessary-array-with-spread')
   'no-unnecessary-object-group-by-spread': adaptedNoUnnecessaryObjectGroupBySpread,
   'no-unnecessary-array-buffer-slice-spread': adaptedNoUnnecessaryArrayBufferSliceSpread,
   'no-unnecessary-promise-try-spread': adaptedNoUnnecessaryPromiseTrySpread,
@@ -4173,6 +4217,50 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
    'no-unnecessary-values': 'patterns',
     'no-unnecessary-with': 'patterns',
     'no-unnecessary-array-with-spread': 'patterns',
+  'no-unnecessary-number-to-exponential-spread': adaptedNoUnnecessaryNumberToExponentialSpread,
+  'no-unnecessary-number-to-fixed-spread': adaptedNoUnnecessaryNumberToFixedSpread,
+  'no-unnecessary-number-to-precision-spread': adaptedNoUnnecessaryNumberToPrecisionSpread,
+  'no-unnecessary-number-to-string-spread': adaptedNoUnnecessaryNumberToStringSpread,
+  'no-unnecessary-number-to-locale-string-spread': adaptedNoUnnecessaryNumberToLocaleStringSpread,
+  'no-unnecessary-number-value-of-spread': adaptedNoUnnecessaryNumberValueOfSpread,
+  'no-unnecessary-array-at-spread': adaptedNoUnnecessaryArrayAtSpread,
+  'no-unnecessary-array-concat-spread': adaptedNoUnnecessaryArrayConcatSpread,
+  'no-unnecessary-array-copy-within-spread': adaptedNoUnnecessaryArrayCopyWithinSpread,
+  'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
+  'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
+  'no-unnecessary-array-fill-spread': adaptedNoUnnecessaryArrayFillSpread,
+  'no-unnecessary-array-filter-spread': adaptedNoUnnecessaryArrayFilterSpread,
+  'no-unnecessary-array-find-spread': adaptedNoUnnecessaryArrayFindSpread,
+  'no-unnecessary-array-find-index-spread': adaptedNoUnnecessaryArrayFindIndexSpread,
+  'no-unnecessary-array-find-last-spread': adaptedNoUnnecessaryArrayFindLastSpread,
+  'no-unnecessary-array-find-last-index-spread': adaptedNoUnnecessaryArrayFindLastIndexSpread,
+  'no-unnecessary-array-flat-spread': adaptedNoUnnecessaryArrayFlatSpread,
+  'no-unnecessary-array-flat-map-spread': adaptedNoUnnecessaryArrayFlatMapSpread,
+  'no-unnecessary-array-for-each-spread': adaptedNoUnnecessaryArrayForEachSpread,
+  'no-unnecessary-array-includes-spread': adaptedNoUnnecessaryArrayIncludesSpread,
+  'no-unnecessary-array-index-of-spread': adaptedNoUnnecessaryArrayIndexOfSpread,
+  'no-unnecessary-array-join-spread': adaptedNoUnnecessaryArrayJoinSpread,
+  'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
+  'no-unnecessary-array-last-index-of-spread': adaptedNoUnnecessaryArrayLastIndexOfSpread,
+  'no-unnecessary-array-map-spread': adaptedNoUnnecessaryArrayMapSpread,
+  'no-unnecessary-array-pop-spread': adaptedNoUnnecessaryArrayPopSpread,
+  'no-unnecessary-array-push-spread': adaptedNoUnnecessaryArrayPushSpread,
+  'no-unnecessary-array-reduce-spread': adaptedNoUnnecessaryArrayReduceSpread,
+  'no-unnecessary-array-reduce-right-spread': adaptedNoUnnecessaryArrayReduceRightSpread,
+  'no-unnecessary-array-reverse-spread': adaptedNoUnnecessaryArrayReverseSpread,
+  'no-unnecessary-array-shift-spread': adaptedNoUnnecessaryArrayShiftSpread,
+  'no-unnecessary-array-slice-spread': adaptedNoUnnecessaryArraySliceSpread,
+  'no-unnecessary-array-some-spread': adaptedNoUnnecessaryArraySomeSpread,
+  'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
+  'no-unnecessary-array-splice-spread': adaptedNoUnnecessaryArraySpliceSpread,
+  'no-unnecessary-array-to-locale-string-spread': adaptedNoUnnecessaryArrayToLocaleStringSpread,
+  'no-unnecessary-array-to-reversed-spread': adaptedNoUnnecessaryArrayToReversedSpread,
+  'no-unnecessary-array-to-sorted-spread': adaptedNoUnnecessaryArrayToSortedSpread,
+  'no-unnecessary-array-to-spliced-spread': adaptedNoUnnecessaryArrayToSplicedSpread,
+  'no-unnecessary-array-to-string-spread': adaptedNoUnnecessaryArrayToStringSpread,
+  'no-unnecessary-array-unshift-spread': adaptedNoUnnecessaryArrayUnshiftSpread,
+  'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
+  'no-unnecessary-array-with-spread': adaptedNoUnnecessaryArrayWithSpread,
     'no-unnecessary-wait': 'patterns',
   'no-unneeded-ternary': 'patterns',
    'no-unreachable': 'patterns',
@@ -4400,6 +4488,50 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-big-spread': 'patterns',
   'no-unnecessary-string-blink-spread': 'patterns',
   'no-unnecessary-string-bold-spread': 'patterns',
+  'no-unnecessary-number-to-exponential-spread': 'patterns',
+  'no-unnecessary-number-to-fixed-spread': 'patterns',
+  'no-unnecessary-number-to-precision-spread': 'patterns',
+  'no-unnecessary-number-to-string-spread': 'patterns',
+  'no-unnecessary-number-to-locale-string-spread': 'patterns',
+  'no-unnecessary-number-value-of-spread': 'patterns',
+  'no-unnecessary-array-at-spread': 'patterns',
+  'no-unnecessary-array-concat-spread': 'patterns',
+  'no-unnecessary-array-copy-within-spread': 'patterns',
+  'no-unnecessary-array-entries-spread': 'patterns',
+  'no-unnecessary-array-every-spread': 'patterns',
+  'no-unnecessary-array-fill-spread': 'patterns',
+  'no-unnecessary-array-filter-spread': 'patterns',
+  'no-unnecessary-array-find-spread': 'patterns',
+  'no-unnecessary-array-find-index-spread': 'patterns',
+  'no-unnecessary-array-find-last-spread': 'patterns',
+  'no-unnecessary-array-find-last-index-spread': 'patterns',
+  'no-unnecessary-array-flat-spread': 'patterns',
+  'no-unnecessary-array-flat-map-spread': 'patterns',
+  'no-unnecessary-array-for-each-spread': 'patterns',
+  'no-unnecessary-array-includes-spread': 'patterns',
+  'no-unnecessary-array-index-of-spread': 'patterns',
+  'no-unnecessary-array-join-spread': 'patterns',
+  'no-unnecessary-array-keys-spread': 'patterns',
+  'no-unnecessary-array-last-index-of-spread': 'patterns',
+  'no-unnecessary-array-map-spread': 'patterns',
+  'no-unnecessary-array-pop-spread': 'patterns',
+  'no-unnecessary-array-push-spread': 'patterns',
+  'no-unnecessary-array-reduce-spread': 'patterns',
+  'no-unnecessary-array-reduce-right-spread': 'patterns',
+  'no-unnecessary-array-reverse-spread': 'patterns',
+  'no-unnecessary-array-shift-spread': 'patterns',
+  'no-unnecessary-array-slice-spread': 'patterns',
+  'no-unnecessary-array-some-spread': 'patterns',
+  'no-unnecessary-array-sort-spread': 'patterns',
+  'no-unnecessary-array-splice-spread': 'patterns',
+  'no-unnecessary-array-to-locale-string-spread': 'patterns',
+  'no-unnecessary-array-to-reversed-spread': 'patterns',
+  'no-unnecessary-array-to-sorted-spread': 'patterns',
+  'no-unnecessary-array-to-spliced-spread': 'patterns',
+  'no-unnecessary-array-to-string-spread': 'patterns',
+  'no-unnecessary-array-unshift-spread': 'patterns',
+  'no-unnecessary-array-values-spread': 'patterns',
+  'no-unnecessary-array-with-spread': 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4638,6 +4770,52 @@ import {
   noUnnecessaryStringBigSpreadRule,
   noUnnecessaryStringBlinkSpreadRule,
   noUnnecessaryStringBoldSpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryNumberToExponentialSpreadRule,
+  noUnnecessaryNumberToFixedSpreadRule,
+  noUnnecessaryNumberToPrecisionSpreadRule,
+  noUnnecessaryNumberToStringSpreadRule,
+  noUnnecessaryNumberToLocaleStringSpreadRule,
+  noUnnecessaryNumberValueOfSpreadRule,
+  noUnnecessaryArrayAtSpreadRule,
+  noUnnecessaryArrayConcatSpreadRule,
+  noUnnecessaryArrayCopyWithinSpreadRule,
+  noUnnecessaryArrayEntriesSpreadRule,
+  noUnnecessaryArrayEverySpreadRule,
+  noUnnecessaryArrayFillSpreadRule,
+  noUnnecessaryArrayFilterSpreadRule,
+  noUnnecessaryArrayFindSpreadRule,
+  noUnnecessaryArrayFindIndexSpreadRule,
+  noUnnecessaryArrayFindLastSpreadRule,
+  noUnnecessaryArrayFindLastIndexSpreadRule,
+  noUnnecessaryArrayFlatSpreadRule,
+  noUnnecessaryArrayFlatMapSpreadRule,
+  noUnnecessaryArrayForEachSpreadRule,
+  noUnnecessaryArrayIncludesSpreadRule,
+  noUnnecessaryArrayIndexOfSpreadRule,
+  noUnnecessaryArrayJoinSpreadRule,
+  noUnnecessaryArrayKeysSpreadRule,
+  noUnnecessaryArrayLastIndexOfSpreadRule,
+  noUnnecessaryArrayMapSpreadRule,
+  noUnnecessaryArrayPopSpreadRule,
+  noUnnecessaryArrayPushSpreadRule,
+  noUnnecessaryArrayReduceSpreadRule,
+  noUnnecessaryArrayReduceRightSpreadRule,
+  noUnnecessaryArrayReverseSpreadRule,
+  noUnnecessaryArrayShiftSpreadRule,
+  noUnnecessaryArraySliceSpreadRule,
+  noUnnecessaryArraySomeSpreadRule,
+  noUnnecessaryArraySortSpreadRule,
+  noUnnecessaryArraySpliceSpreadRule,
+  noUnnecessaryArrayToLocaleStringSpreadRule,
+  noUnnecessaryArrayToReversedSpreadRule,
+  noUnnecessaryArrayToSortedSpreadRule,
+  noUnnecessaryArrayToSplicedSpreadRule,
+  noUnnecessaryArrayToStringSpreadRule,
+  noUnnecessaryArrayUnshiftSpreadRule,
+  noUnnecessaryArrayValuesSpreadRule,
+  noUnnecessaryArrayWithSpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'

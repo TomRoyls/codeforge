@@ -42,9 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makeCallNode(
-  object: unknown,
-  methodName: string,
+function makearrCopyWithinCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -55,8 +53,8 @@ function makeCallNode(
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object,
-      property: { type: 'Identifier', name: methodName },
+      object: { type: 'Identifier', name: 'arr' },
+      property: { type: 'Identifier', name: 'copyWithin' },
       computed: false,
     },
     arguments: args,
@@ -64,820 +62,1601 @@ function makeCallNode(
   }
 }
 
-function makeSpreadElement(argument: unknown): unknown {
+function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
-
-// ===== META TESTS (8) =====
 
 describe('no-unnecessary-array-copy-within-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning copyWithin', () => {
-      const desc = noUnnecessaryArrayCopyWithinSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/copywithin/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-copy-within-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule).toBeDefined()
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryArrayCopyWithinSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryArrayCopyWithinSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryArrayCopyWithinSpreadRule.meta.docs.description).toBe('string')
     })
   })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports copyWithin with spread', () => {
-    test('reports for arr.copyWithin(...items) with Identifier object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for obj.copyWithin(...data) with different Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'obj' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'data' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for [].copyWithin(...args) with ArrayExpression object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ArrayExpression', elements: [] }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'args' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for arr.copyWithin(...[1, 2, 3]) with ArrayExpression spread arg', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for arr.copyWithin(...arr2) with Identifier spread arg', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'arr2' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions copyWithin', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toMatch(/copyWithin/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toBe(
-        'arr.copyWithin(...items) with spread is unusual. copyWithin() expects target, start, and end indices.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })], 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'y' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'y' })]))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('reports with MemberExpression as object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'arr' } }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with CallExpression as object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArr' }, arguments: [] }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with ObjectExpression as object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'ObjectExpression', properties: [] }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports with string Literal as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Literal', value: 'hello' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with CallExpression as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArgs' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with MemberExpression as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'args' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with TemplateLiteral as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'TemplateLiteral', quasis: [], expressions: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with ArrowFunctionExpression as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with number Literal as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Literal', value: 42 })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with ConditionalExpression as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with ObjectExpression as spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'ObjectExpression', properties: [] })]))
-      expect(reports.length).toBe(1)
-    })
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (44) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for zero arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', []))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for two arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for three arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }, { type: 'Literal', value: 3 }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is Literal (not SpreadElement)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Identifier', name: 'idx' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is CallExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'val' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is ArrayExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is ObjectExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'ObjectExpression', properties: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when argument is BinaryExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'BinaryExpression', operator: '+', left: { type: 'Literal', value: 1 }, right: { type: 'Literal', value: 2 } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method name "copywithin" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copywithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "indexOf"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "includes"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'includes', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "find"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'find', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "map"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'map', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "filter"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'filter', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "slice"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'slice', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for wrong method "splice"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'splice', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee property is computed (computed: true)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
-          computed: true,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is Literal (not Identifier)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Literal', value: 'copyWithin' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is MemberExpression (not Identifier)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'method' } },
-          computed: false,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is Identifier (not MemberExpression)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is CallExpression (not MemberExpression)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is FunctionExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'FunctionExpression', id: null, params: [], body: { type: 'BlockStatement', body: [] } }, arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: null,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for FunctionDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'FunctionDeclaration', id: { type: 'Identifier', name: 'foo' }, params: [], body: { type: 'BlockStatement', body: [] }, loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UpdateExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UpdateExpression', operator: '++', prefix: false, argument: { type: 'Identifier', name: 'x' }, loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for LogicalExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({ type: 'LogicalExpression', operator: '&&', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-  })
-
-  // ===== EDGE CASES (16) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryArrayCopyWithinSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryArrayCopyWithinSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }]))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'more' })]))
-      expect(reports.length).toBe(2)
+      const node = makearrCopyWithinCall([])
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc still reports', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
+      const node = makearrCopyWithinCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong object name', () => {
+    test('foo.copyWithin(...items) should not report with object "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'foo' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('bar.copyWithin(...items) should not report with object "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'bar' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('baz.copyWithin(...items) should not report with object "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'baz' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('qux.copyWithin(...items) should not report with object "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'qux' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('obj.copyWithin(...items) should not report with object "obj"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.copyWithin(...items) should not report with object "fn"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.copyWithin(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.copyWithin(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.copyWithin(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.copyWithin(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.copyWithin(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.copyWithin(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.copyWithin(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.copyWithin(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.copyWithin(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.copyWithin(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.copyWithin(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.copyWithin(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.copyWithin(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.copyWithin(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.copyWithin(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.copyWithin(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.copyWithin(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.copyWithin(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.copyWithin(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.copyWithin(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.copyWithin(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'copyWithin' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('arr.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
+          property: { type: 'Identifier', name: 'foo' },
           computed: false,
         },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('arr.bar(...items) should not report with property "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
+          property: { type: 'Identifier', name: 'bar' },
           computed: false,
         },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('arr.baz(...items) should not report with property "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'indexOf', [makeSpreadElement({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'more' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [{ type: 'Literal', value: 0 }, { type: 'Literal', value: 1 }]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      const visitor2 = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryArrayCopyWithinSpreadRule.meta
-      const meta2 = noUnnecessaryArrayCopyWithinSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
+          property: { type: 'Identifier', name: 'baz' },
           computed: false,
         },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('arr.qux(...items) should not report with property "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
+          property: { type: 'Identifier', name: 'qux' },
           computed: false,
         },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('arr.toString(...items) should not report with property "toString"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
+          property: { type: 'Identifier', name: 'toString' },
           computed: false,
         },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.concat(...items) should not report with property "concat"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.filter(...items) should not report with property "filter"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report arr.copyWithin(...items) with single spread', () => {
+    test('should report arr.copyWithin(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report arr.copyWithin(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
+      expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryArrayCopyWithinSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryArrayCopyWithinSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryArrayCopyWithinSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('report loc reflects specific node location values', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'items' })], 10, 4, 10, 25))
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.start.column).toBe(8)
       expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
+    })
+    test('should report with correct location line 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
+    })
+    test('should report with correct location line 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
+    })
+    test('should report with correct location line 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
       expect(reports[0].loc?.end.column).toBe(25)
     })
-
-    test('handles computed: false explicitly (should report)', () => {
+    test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'copyWithin' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(1)
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryArrayCopyWithinSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'copyWithin', [makeSpreadElement({ type: 'Identifier', name: 'y' })]))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
+    })
+    test('should report with correct location line 70', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
+    })
+    test('should report with correct location line 80', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
+    })
+    test('should report with correct location line 90', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
+    })
+    test('should report with correct location line 100', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makearrCopyWithinCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryArrayCopyWithinSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })

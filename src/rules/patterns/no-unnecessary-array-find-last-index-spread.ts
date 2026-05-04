@@ -11,13 +11,15 @@ export const noUnnecessaryArrayFindLastIndexSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'findLastIndex') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `arr.findLastIndex(...items) with spread is unusual. findLastIndex() expects a callback function.`,
+          message: 'arr.findLastIndex(...items) with a single spread is unusual. Consider calling arr.findLastIndex() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayFindLastIndexSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about arr.findLastIndex(...items) with spread which is likely a mistake.',
+      description: 'Warn about arr.findLastIndex(...items) with spread which is unusual since arr.findLastIndex takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-find-last-index-spread.ts',
     },

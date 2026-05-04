@@ -8,16 +8,18 @@ export const noUnnecessaryArrayEntriesSpreadRule: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (!n.arguments || n.arguments.length !== 0) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'entries') return
-        const parent = n._parent
-        if (!parent || parent.type !== 'SpreadElement') return
+        const arg = n.arguments[0]
+        if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `[...arr.entries()] creates index-value pairs. Use [...arr] to spread values directly if indices are not needed.`,
+          message: 'arr.entries(...items) with a single spread is unusual. Consider calling arr.entries() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayEntriesSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about [...arr.entries()] where [...arr] suffices if indices are not needed.',
+      description: 'Warn about arr.entries(...items) with spread which is unusual since arr.entries takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-entries-spread.ts',
     },

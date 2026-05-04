@@ -11,13 +11,15 @@ export const noUnnecessaryArrayReduceSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'reduce') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `arr.reduce(...items) with spread is unusual. reduce() expects a callback function.`,
+          message: 'arr.reduce(...items) with a single spread is unusual. Consider calling arr.reduce() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayReduceSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about arr.reduce(...items) with spread which is likely a mistake.',
+      description: 'Warn about arr.reduce(...items) with spread which is unusual since arr.reduce takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-reduce-spread.ts',
     },

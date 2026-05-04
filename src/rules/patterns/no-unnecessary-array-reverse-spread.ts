@@ -11,13 +11,15 @@ export const noUnnecessaryArrayReverseSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'reverse') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `arr.reverse(...items) with spread is unusual. Did you mean arr.reverse() or [...items].reverse()?`,
+          message: 'arr.reverse(...items) with a single spread is unusual. Consider calling arr.reverse() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayReverseSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about arr.reverse(...items) with spread which is likely a mistake.',
+      description: 'Warn about arr.reverse(...items) with spread which is unusual since arr.reverse takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-reverse-spread.ts',
     },

@@ -8,16 +8,18 @@ export const noUnnecessaryArrayKeysSpreadRule: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (!n.arguments || n.arguments.length !== 0) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'keys') return
-        const parent = n._parent
-        if (!parent || parent.type !== 'SpreadElement') return
+        const arg = n.arguments[0]
+        if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `[...arr.keys()] creates an index array. Use Array.from({length: arr.length}, (_, i) => i) or [...Array(arr.length).keys()] instead.`,
+          message: 'arr.keys(...items) with a single spread is unusual. Consider calling arr.keys() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayKeysSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about [...arr.keys()] which may be clearer as an explicit index generation.',
+      description: 'Warn about arr.keys(...items) with spread which is unusual since arr.keys takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-keys-spread.ts',
     },

@@ -11,13 +11,15 @@ export const noUnnecessaryArrayConcatSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'arr') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'concat') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `arr.concat(...items) with spread can be simplified to arr.concat(items) or [...arr, ...items].`,
+          message: 'arr.concat(...items) with a single spread is unusual. Consider calling arr.concat() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryArrayConcatSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about arr.concat(...items) where spread is unnecessary.',
+      description: 'Warn about arr.concat(...items) with spread which is unusual since arr.concat takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-array-concat-spread.ts',
     },

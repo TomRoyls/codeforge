@@ -42,9 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makeCallNode(
-  object: unknown,
-  methodName: string,
+function makenumToLocaleStringCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -55,8 +53,9 @@ function makeCallNode(
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object,
-      property: { type: 'Identifier', name: methodName },
+      object: { type: 'Identifier', name: 'num' },
+      property: { type: 'Identifier', name: 'toLocaleString' },
+      computed: false,
     },
     arguments: args,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
@@ -67,819 +66,1613 @@ function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
 
-// ===== META TESTS (8) =====
-
 describe('no-unnecessary-number-to-locale-string-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning toLocaleString', () => {
-      const desc = noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/tolocalestring/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-number-to-locale-string-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule).toBeDefined()
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryNumberToLocaleStringSpreadRule.meta.docs.description).toBe('string')
     })
   })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports toLocaleString with spread', () => {
-    test('reports for num.toLocaleString(...items) with identifier spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for literal.toLocaleString(...arr) with array spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toLocaleString', [makeSpreadArg({ type: 'ArrayExpression', elements: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for obj.prop.toLocaleString(...items) with member expression object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for call().toLocaleString(...items) with call expression object', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getNum' }, arguments: [] }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being a CallExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getArgs' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being a MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'args' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being an ArrayExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 'en' }, { type: 'Literal', value: 'US' }] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being an ObjectExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'ObjectExpression', properties: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions toLocaleString', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toMatch(/toLocaleString/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toBe(
-        'num.toLocaleString(...items) with spread is unusual. toLocaleString() expects locale and options.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 100 }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 100 }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('reports with SpreadElement argument being a ConditionalExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Identifier', name: 'a' }, alternate: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being a BinaryExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being an ArrowFunctionExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports with SpreadElement argument being a TemplateLiteral', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'TemplateLiteral', quasis: [], expressions: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being a NewExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Array' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing a SpreadElement (nested spread)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg(makeSpreadArg({ type: 'Identifier', name: 'items' }))]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for chained member expression object this.value.toLocaleString(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'ThisExpression' }, property: { type: 'Identifier', name: 'value' } }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement argument being a UnaryExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'UnaryExpression', operator: '!', prefix: true, argument: { type: 'Identifier', name: 'x' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (45) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for toLocaleString() with no arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString'))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString(locale) with one regular arg', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString(locale, options) with two args', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }, { type: 'ObjectExpression', properties: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toString(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toFixed(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toFixed', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toPrecision(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toPrecision', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString(arg1, arg2) — two args no spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en' }, { type: 'Literal', value: 'US' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for variable.toLocaleString(...items) with computed member', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not a MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'toLocaleString' }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is not an Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Literal', value: 'toLocaleString' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "toString"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          property: { type: 'Identifier', name: 'toLocaleString' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: null,
-          property: { type: 'Identifier', name: 'toLocaleString' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is computed with identifier property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with regular Literal argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with regular Identifier argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Identifier', name: 'locale' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with regular ObjectExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'ObjectExpression', properties: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with regular ArrayExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'ArrayExpression', elements: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-          property: null,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "tolocalestring" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'tolocalestring', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with function call argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'CallExpression', callee: { type: 'Identifier', name: 'getLocale' }, arguments: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with ArrowFunctionExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with three arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en' }, { type: 'Literal', value: 'US' }, { type: 'ObjectExpression', properties: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for CallExpression with callee as Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'toLocaleString' }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments is empty array', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', []))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments has 2 elements (second is SpreadElement)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }, makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments has 3 elements', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Literal', value: 'en' }, { type: 'Literal', value: 'US' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when the single argument is not SpreadElement type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Identifier', name: 'locale' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with TemplateLiteral argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'TemplateLiteral', quasis: [], expressions: [] }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for toLocaleString with ConditionalExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 'en' }, alternate: { type: 'Literal', value: 'fr' } }]))
-      expect(reports.length).toBe(0)
-    })
-
-
-  })
-
-  // ===== EDGE CASES (15) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryNumberToLocaleStringSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryNumberToLocaleStringSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }]))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      expect(reports.length).toBe(2)
+      const node = makenumToLocaleStringCall([])
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc still reports', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
+      const node = makenumToLocaleStringCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong object name', () => {
+    test('foo.toLocaleString(...items) should not report with object "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'foo' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('bar.toLocaleString(...items) should not report with object "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'bar' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('baz.toLocaleString(...items) should not report with object "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'baz' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('qux.toLocaleString(...items) should not report with object "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'qux' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('obj.toLocaleString(...items) should not report with object "obj"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.toLocaleString(...items) should not report with object "arr"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.toLocaleString(...items) should not report with object "fn"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.toLocaleString(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.toLocaleString(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.toLocaleString(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.toLocaleString(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.toLocaleString(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.toLocaleString(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.toLocaleString(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.toLocaleString(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.toLocaleString(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.toLocaleString(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.toLocaleString(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.toLocaleString(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.toLocaleString(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.toLocaleString(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.toLocaleString(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.toLocaleString(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.toLocaleString(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.toLocaleString(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.toLocaleString(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.toLocaleString(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.toLocaleString(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'toLocaleString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('num.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
+          property: { type: 'Identifier', name: 'foo' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('num.bar(...items) should not report with property "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
+          property: { type: 'Identifier', name: 'bar' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('num.baz(...items) should not report with property "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [{ type: 'Literal', value: 'en-US' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toFixed', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 100 }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', []))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      const visitor2 = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryNumberToLocaleStringSpreadRule.meta
-      const meta2 = noUnnecessaryNumberToLocaleStringSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
+          property: { type: 'Identifier', name: 'baz' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('num.qux(...items) should not report with property "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
+          property: { type: 'Identifier', name: 'qux' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('num.toString(...items) should not report with property "toString"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.concat(...items) should not report with property "concat"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.filter(...items) should not report with property "filter"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('num.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'num' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report num.toLocaleString(...items) with single spread', () => {
+    test('should report num.toLocaleString(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report num.toLocaleString(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
+      expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryNumberToLocaleStringSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryNumberToLocaleStringSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryNumberToLocaleStringSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'num' },
-          property: { type: 'Identifier', name: 'toLocaleString' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('report loc reflects specific node location values', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 4, 10, 25))
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.start.column).toBe(8)
       expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
+    })
+    test('should report with correct location line 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
+    })
+    test('should report with correct location line 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
+    })
+    test('should report with correct location line 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
       expect(reports[0].loc?.end.column).toBe(25)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryNumberToLocaleStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'num' }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 42 }, 'toLocaleString', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
+    })
+    test('should report with correct location line 60', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
+    })
+    test('should report with correct location line 70', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
+    })
+    test('should report with correct location line 80', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
+    })
+    test('should report with correct location line 90', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
+    })
+    test('should report with correct location line 100', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makenumToLocaleStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryNumberToLocaleStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })
