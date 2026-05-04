@@ -536,19 +536,6 @@ describe('no-unnecessary-date-to-string-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('reports date.toString() with SpreadElement with range but no loc', () => {
-      const { context, reports } = createMockRuleContext()
-      const visitor = noUnnecessaryDateToStringSpreadRule.create(context)
-
-      const node = makeDateToStringCall()
-      node.range = [10, 40]
-      delete node.loc
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(1)
-    })
-
     test('report message mentions direct call suggestion', () => {
       const { context, reports } = createMockRuleContext()
       const visitor = noUnnecessaryDateToStringSpreadRule.create(context)

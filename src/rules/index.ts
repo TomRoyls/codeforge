@@ -1520,6 +1520,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2554,10 +2558,22 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-date-to-json-spread': adaptedNoUnnecessaryDateToJSONSpread,
   'no-unnecessary-date-get-utc-fullyear-spread': adaptedNoUnnecessaryDateGetUTCFullyearSpread,
   'no-unnecessary-date-get-utc-month-spread': adaptedNoUnnecessaryDateGetUTCMonthSpread,
+  'no-unnecessary-date-get-utc-date-spread': adaptedNoUnnecessaryDateGetUTCDateSpread,
+  'no-unnecessary-date-get-utc-day-spread': adaptedNoUnnecessaryDateGetUTCDaySpread,
+  'no-unnecessary-date-get-utc-hours-spread': adaptedNoUnnecessaryDateGetUTCHoursSpread,
+  'no-unnecessary-date-get-utc-minutes-spread': adaptedNoUnnecessaryDateGetUTCMinutesSpread,
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
 const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
 const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
@@ -2566,6 +2582,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
 const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
 const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
@@ -2578,6 +2598,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
 const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
 const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
@@ -2594,6 +2618,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
@@ -2614,6 +2642,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
 const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
 const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
@@ -2638,6 +2670,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
 const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
 const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
@@ -2666,6 +2702,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMapSetSpreadRule, 'no-unnecessary-weakmap-set-spread')
 const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
 const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
@@ -2698,6 +2738,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
 const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
 const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
 const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
@@ -2734,6 +2778,10 @@ const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryD
 const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
 const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
+const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
+const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
+const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
+const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3617,6 +3665,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-date-to-json-spread': 'patterns',
   'no-unnecessary-date-get-utc-fullyear-spread': 'patterns',
   'no-unnecessary-date-get-utc-month-spread': 'patterns',
+  'no-unnecessary-date-get-utc-date-spread': 'patterns',
+  'no-unnecessary-date-get-utc-day-spread': 'patterns',
+  'no-unnecessary-date-get-utc-hours-spread': 'patterns',
+  'no-unnecessary-date-get-utc-minutes-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',

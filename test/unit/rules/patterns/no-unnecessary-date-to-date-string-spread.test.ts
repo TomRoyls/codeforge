@@ -938,7 +938,54 @@ describe('no-unnecessary-date-to-date-string-spread rule', () => {
 
       expect(reports.length).toBe(0)
     })
-  })
+
+    test('should not report with member expression as object', () => {
+      const { context, reports } = createMockRuleContext({ source: 'obj.date.toDateString(...items);' })
+      const visitor = noUnnecessaryDateToDateStringSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            object: { name: 'obj', type: 'Identifier' },
+            property: { name: 'date', type: 'Identifier' },
+            type: 'MemberExpression',
+          },
+          property: { name: 'toDateString', type: 'Identifier' },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 30, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      visitor.CallExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toTimeString with wrong method', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toTimeString(...items);' })
+      const visitor = noUnnecessaryDateToDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(
+        makeDateToDateStringCall('date', 'toTimeString', [createSpreadElement(createIdentifier('items'))]),
+      )
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleString with wrong method', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleString(...items);' })
+      const visitor = noUnnecessaryDateToDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(
+        makeDateToDateStringCall('date', 'toLocaleString', [createSpreadElement(createIdentifier('items'))]),
+      )
+
+      expect(reports.length).toBe(0)
+    })
+  ])
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {
@@ -1170,6 +1217,26 @@ describe('no-unnecessary-date-to-date-string-spread rule', () => {
 
       expect(() => visitor.CallExpression(node)).not.toThrow()
       expect(reports.length).toBe(1)
+    })
+
+    test('should handle node with undefined arguments element', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toDateString(...items);' })
+      const visitor = noUnnecessaryDateToDateStringSpreadRule.create(context)
+
+      const node = {
+        arguments: [undefined],
+        callee: {
+          computed: false,
+          object: { name: 'date', type: 'Identifier' },
+          property: { name: 'toDateString', type: 'Identifier' },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
   })
 })
