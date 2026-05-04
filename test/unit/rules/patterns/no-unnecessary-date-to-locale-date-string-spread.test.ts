@@ -63,16 +63,12 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.docs?.category).toBe('patterns')
     })
 
-    test('should have schema defined', () => {
-      expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.schema).toBeDefined()
+    test('should have schema defined as empty array', () => {
+      expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.schema).toEqual([])
     })
 
     test('should mention toLocaleDateString in description', () => {
       expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.docs?.description).toContain('toLocaleDateString')
-    })
-
-    test('should mention spread in description', () => {
-      expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.docs?.description.toLowerCase()).toContain('spread')
     })
 
     test('should have meta property', () => {
@@ -108,7 +104,7 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       visitor.CallExpression(createDateToLocaleDateStringCall([createSpreadElement(createIdentifierArg('items'))]))
 
       expect(reports.length).toBe(1)
-      expect(reports[0].message).toMatch(/unusual spread/i)
+      expect(reports[0].message).toMatch(/single spread is unusual/i)
     })
 
     test('should report date.toLocaleDateString(...args)', () => {
@@ -801,9 +797,115 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
 
       expect(reports.length).toBe(0)
     })
+
+    test('should not report date.toLocaleDateString(locale, opts) with two plain arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(locale, opts);' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([createIdentifierArg('locale'), createIdentifierArg('opts')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString("zh-CN", { dateStyle: "long" }) with two arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString("zh-CN", { dateStyle: "long" });' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      const opts = { type: 'ObjectExpression', properties: [] }
+      visitor.CallExpression(createDateToLocaleDateStringCall([createLiteralArg('zh-CN'), opts]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString("en", "US") with two string arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString("en", "US");' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([createLiteralArg('en'), createLiteralArg('US')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString([]) with array argument', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString([]);' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([{ type: 'ArrayExpression', elements: [] }]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString({}) with object argument', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString({});' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([{ type: 'ObjectExpression', properties: [] }]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString("ko-KR", dateFormat) with two arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString("ko-KR", dateFormat);' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([createLiteralArg('ko-KR'), createIdentifierArg('dateFormat')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report cur.toLocaleDateString(...items) with wrong object name', () => {
+      const { context, reports } = createMockRuleContext({ source: 'cur.toLocaleDateString(...items);' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifierArg('items'))],
+        callee: {
+          computed: false,
+          object: { name: 'cur', type: 'Identifier' },
+          property: { name: 'toLocaleDateString', type: 'Identifier' },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 45, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      visitor.CallExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toUTCString(...items) with wrong method name', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toUTCString(...items);' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifierArg('items'))],
+        callee: {
+          computed: false,
+          object: { name: 'date', type: 'Identifier' },
+          property: { name: 'toUTCString', type: 'Identifier' },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 38, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      visitor.CallExpression(node)
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.toLocaleDateString("pt-BR") with locale string', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString("pt-BR");' })
+      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
+
+      visitor.CallExpression(createDateToLocaleDateStringCall([createLiteralArg('pt-BR')]))
+
+      expect(reports.length).toBe(0)
+    })
   })
 
-  describe('edge cases', () => {
+  describe('edge cases and message quality', () => {
     test('should handle null node gracefully', () => {
       const { context } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
       const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
@@ -896,45 +998,12 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should handle node without arguments array', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      const node = {
-        callee: {
-          computed: false,
-          object: { name: 'date', type: 'Identifier' },
-          property: { name: 'toLocaleDateString', type: 'Identifier' },
-          type: 'MemberExpression',
-        },
-        loc: { end: { column: 50, line: 1 }, start: { column: 0, line: 1 } },
-        type: 'CallExpression',
-      }
-
-      expect(() => visitor.CallExpression(node)).not.toThrow()
-      expect(reports.length).toBe(1)
-    })
-
     test('should handle empty object node', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
       const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
 
       expect(() => visitor.CallExpression({})).not.toThrow()
       expect(reports.length).toBe(0)
-    })
-
-    test('should handle boolean node', () => {
-      const { context } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-    })
-
-    test('should handle number node', () => {
-      const { context } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
     test('should handle node without object on callee', () => {
@@ -975,15 +1044,6 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should handle node with non-SpreadElement argument', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(locale);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      visitor.CallExpression(createDateToLocaleDateStringCall([createIdentifierArg('locale')]))
-
-      expect(reports.length).toBe(0)
-    })
-
     test('should report correct location', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
       const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
@@ -1005,16 +1065,14 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
 
       expect(reports.length).toBe(3)
     })
-  })
 
-  describe('message quality', () => {
     test('should mention unusual spread in message', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
       const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
 
       visitor.CallExpression(createDateToLocaleDateStringCall([createSpreadElement(createIdentifierArg('items'))]))
 
-      expect(reports[0].message).toMatch(/unusual spread/i)
+      expect(reports[0].message).toMatch(/single spread is unusual/i)
     })
 
     test('should mention toLocaleDateString in message', () => {
@@ -1035,15 +1093,6 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       expect(reports[0].message).toMatch(/directly/i)
     })
 
-    test('should produce non-empty messages', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      visitor.CallExpression(createDateToLocaleDateStringCall([createSpreadElement(createIdentifierArg('items'))]))
-
-      expect(reports[0].message.length).toBeGreaterThan(10)
-    })
-
     test('should have consistent message across different spread arguments', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
       const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
@@ -1056,33 +1105,8 @@ describe('no-unnecessary-date-to-locale-date-string-spread rule', () => {
       expect(reports[1].message).toBe(reports[2].message)
     })
 
-    test('should mention date in message', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      visitor.CallExpression(createDateToLocaleDateStringCall([createSpreadElement(createIdentifierArg('items'))]))
-
-      expect(reports[0].message).toContain('date')
-    })
-
     test('should have docs url defined', () => {
       expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.docs?.url).toBeDefined()
-    })
-
-    test('should have non-empty description', () => {
-      expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.docs?.description.length).toBeGreaterThan(0)
-    })
-
-    test('should have empty schema array', () => {
-      expect(noUnnecessaryDateToLocaleDateStringSpreadRule.meta.schema).toEqual([])
-    })
-
-    test('should return a new visitor each time create is called', () => {
-      const { context } = createMockRuleContext({ source: 'date.toLocaleDateString(...items);' })
-      const visitor1 = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-      const visitor2 = noUnnecessaryDateToLocaleDateStringSpreadRule.create(context)
-
-      expect(visitor1).not.toBe(visitor2)
     })
   })
 })

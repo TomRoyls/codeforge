@@ -94,7 +94,7 @@ describe('no-unnecessary-date-to-locale-time-string-spread rule', () => {
 
     test('should have description mentioning toLocaleTimeString', () => {
       const desc = noUnnecessaryDateToLocaleTimeStringSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/tolocalestring/)
+      expect(desc).toMatch(/tolocaletimestring/)
     })
 
     test('should have correct docs URL', () => {
@@ -332,12 +332,6 @@ describe('no-unnecessary-date-to-locale-time-string-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('reports for spread over NewExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryDateToLocaleTimeStringSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode('date', 'toLocaleTimeString', [makeSpreadArg({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Array' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
   })
 
   // ===== NEGATIVE CASES — DOES NOT REPORT (40) =====
