@@ -1439,6 +1439,11 @@ const adaptedNoUnnecessaryMathMaxSpread = adaptPluginRule(noUnnecessaryMathMaxSp
 const adaptedNoUnnecessaryMathMinSpread = adaptPluginRule(noUnnecessaryMathMinSpreadRule, 'no-unnecessary-math-min-spread')
 const adaptedNoUnnecessaryMathSignSpread = adaptPluginRule(noUnnecessaryMathSignSpreadRule, 'no-unnecessary-math-sign-spread')
 const adaptedNoUnnecessaryMathTruncSpread = adaptPluginRule(noUnnecessaryMathTruncSpreadRule, 'no-unnecessary-math-trunc-spread')
+  ['no-unnecessary-math-expm1-spread']: adaptPluginRule(noUnnecessaryMathExpm1SpreadRule),
+  ['no-unnecessary-math-log1p-spread']: adaptPluginRule(noUnnecessaryMathLog1pSpreadRule),
+  ['no-unnecessary-math-sinh-spread']: adaptPluginRule(noUnnecessaryMathSinhSpreadRule),
+  ['no-unnecessary-math-cosh-spread']: adaptPluginRule(noUnnecessaryMathCoshSpreadRule),
+  ['no-unnecessary-math-tanh-spread']: adaptPluginRule(noUnnecessaryMathTanhSpreadRule),
 const adaptedNoUnnecessaryMathPowSpread = adaptPluginRule(noUnnecessaryMathPowSpreadRule, 'no-unnecessary-math-pow-spread')
 const adaptedNoUnnecessaryMathLogSpread = adaptPluginRule(noUnnecessaryMathLogSpreadRule, 'no-unnecessary-math-log-spread')
 const adaptedNoUnnecessaryMathSinSpread = adaptPluginRule(noUnnecessaryMathSinSpreadRule, 'no-unnecessary-math-sin-spread')
@@ -4072,6 +4077,11 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-math-min-spread': 'patterns',
   'no-unnecessary-math-sign-spread': 'patterns',
   'no-unnecessary-math-trunc-spread': 'patterns',
+  ['no-unnecessary-math-expm1-spread']: 'patterns',
+  ['no-unnecessary-math-log1p-spread']: 'patterns',
+  ['no-unnecessary-math-sinh-spread']: 'patterns',
+  ['no-unnecessary-math-cosh-spread']: 'patterns',
+  ['no-unnecessary-math-tanh-spread']: 'patterns',
   'no-unnecessary-math-pow-spread': 'patterns',
   'no-unnecessary-math-log-spread': 'patterns',
   'no-unnecessary-math-sin-spread': 'patterns',
