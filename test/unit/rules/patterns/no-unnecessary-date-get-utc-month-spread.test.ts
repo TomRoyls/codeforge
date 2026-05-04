@@ -856,6 +856,24 @@ describe('no-unnecessary-date-get-utc-month-spread rule', () => {
 
       expect(reports.length).toBe(0)
     })
+
+    test('should not report date.setFullYear(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.setFullYear(...items);' })
+      const visitor = noUnnecessaryDateGetUTCMonthSpreadRule.create(context)
+
+      visitor.CallExpression(createCallWithMethod('setFullYear', createSpreadElement('items')))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report date.setUTCHours(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'date.setUTCHours(...items);' })
+      const visitor = noUnnecessaryDateGetUTCMonthSpreadRule.create(context)
+
+      visitor.CallExpression(createCallWithMethod('setUTCHours', createSpreadElement('items')))
+
+      expect(reports.length).toBe(0)
+    })
   })
 
   describe('edge cases and message quality', () => {

@@ -303,7 +303,7 @@ describe('no-unnecessary-date-get-utc-day-spread rule', () => {
 
     test('should report date.getUTCDay(...elements)', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.getUTCDay(...elements);' })
-      const visitor = noUnecessaryDateGetUTCDaySpreadRule.create(context)
+      const visitor = noUnnecessaryDateGetUTCDaySpreadRule.create(context)
 
       visitor.CallExpression(createDateGetUTCDayCall([createSpreadElement(createIdentifier('elements'))]))
 
@@ -614,7 +614,7 @@ describe('no-unnecessary-date-get-utc-day-spread rule', () => {
 
     test('should not report date.getUTCFullYear(...items)', () => {
       const { context, reports } = createMockRuleContext({ source: 'date.getUTCFullYear(...items);' })
-      const visitor = noUnecessaryDateGetUTCDaySpreadRule.create(context)
+      const visitor = noUnnecessaryDateGetUTCDaySpreadRule.create(context)
 
       visitor.CallExpression(createNonDateCall('date', 'getUTCFullYear', [createSpreadElement(createIdentifier('items'))]))
 
