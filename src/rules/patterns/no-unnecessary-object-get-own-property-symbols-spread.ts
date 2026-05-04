@@ -19,7 +19,7 @@ export const noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule: RuleDefinition 
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.getOwnPropertySymbols(...items) with spread is unusual. getOwnPropertySymbols() expects a single object.`,
+          message: 'Object.getOwnPropertySymbols(...items) with a single spread is unusual. Consider calling Object.getOwnPropertySymbols() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule: RuleDefinition 
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.getOwnPropertySymbols(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.getOwnPropertySymbols(...items) with spread which is unusual since Object.getOwnPropertySymbols takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-get-own-property-symbols-spread.ts',
     },

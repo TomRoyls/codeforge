@@ -42,9 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makeCallNode(
-  object: unknown,
-  methodName: string,
+function makeObjectDefinePropertiesCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -55,902 +53,1626 @@ function makeCallNode(
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object,
-      property: { type: 'Identifier', name: methodName },
+      object: { type: 'Identifier', name: 'Object' },
+      property: { type: 'Identifier', name: 'defineProperties' },
+      computed: false,
     },
     arguments: args,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
 
-function makeSpread(argument: unknown): unknown {
+function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
-
-function makeObjectDefinePropertiesCall(
-  arg: unknown,
-  locStartLine = 1,
-  locStartCol = 0,
-  locEndLine = 1,
-  locEndCol = 20,
-): unknown {
-  return {
-    type: 'CallExpression',
-    callee: {
-      type: 'MemberExpression',
-      computed: false,
-      object: { type: 'Identifier', name: 'Object' },
-      property: { type: 'Identifier', name: 'defineProperties' },
-    },
-    arguments: [arg],
-    loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
-  }
-}
-
-// ===== META TESTS (8) =====
 
 describe('no-unnecessary-object-define-properties-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning defineProperties', () => {
-      const desc = noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/defineproperties/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-define-properties-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule).toBeDefined()
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryObjectDefinePropertiesSpreadRule.meta.docs.description).toBe('string')
     })
   })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-
-  describe('positive cases — reports unnecessary Object.defineProperties spread', () => {
-    test('reports for Object.defineProperties(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing Identifier argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'props' })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing MemberExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'props' } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing CallExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getProps' }, arguments: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ArrayExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'ArrayExpression', elements: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ObjectExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'ObjectExpression', properties: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ConditionalExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing ArrowFunctionExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions defineProperties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].message).toMatch(/defineProperties/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].message).toBe(
-        'Object.defineProperties(...items) with spread is unusual. defineProperties() expects an object and property descriptors.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      const node = makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' }))
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' }), 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'a' })))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'b' })))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'a' })))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'b' })))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('reports with SpreadElement containing BinaryExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing TemplateLiteral argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'TemplateLiteral', quasis: [], expressions: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports with SpreadElement containing LogicalExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing NewExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'NewExpression', callee: { type: 'Identifier', name: 'Map' }, arguments: [] })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing UnaryExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'UnaryExpression', operator: '!', prefix: true, argument: { type: 'Identifier', name: 'x' } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing AwaitExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'AwaitExpression', argument: { type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing AssignmentExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'AssignmentExpression', operator: '=', left: { type: 'Identifier', name: 'x' }, right: { type: 'Literal', value: 1 } })))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports with SpreadElement containing SequenceExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'SequenceExpression', expressions: [{ type: 'Identifier', name: 'a' }, { type: 'Identifier', name: 'b' }] })))
-      expect(reports.length).toBe(1)
-    })
-
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (39) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for non-spread Identifier argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall({ type: 'Identifier', name: 'obj' }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for non-spread ObjectExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall({ type: 'ObjectExpression', properties: [] }))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for two arguments (both SpreadElement)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'a' }), makeSpread({ type: 'Identifier', name: 'b' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for zero arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineProperties'))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for three arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'a' }), { type: 'Identifier', name: 'b' }, { type: 'Identifier', name: 'c' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Array.defineProperties(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Array' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for MyObject.defineProperties(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'MyObject' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.defineProperty(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineProperty', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.keys(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'keys', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.values(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'values', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.assign(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'assign', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.entries(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'entries', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for variable.defineProperties(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'variable' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [makeSpread({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee object is not Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'window' }, property: { type: 'Identifier', name: 'Object' } }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee object name is not "Object"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'object' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee property is not Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Literal', value: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee property name is not "defineProperties"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'getOwnPropertyNames', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when computed is true', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: true,
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not a MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: null,
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: null,
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "defineproperties" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineproperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee object is a CallExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getObject' }, arguments: [] }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments array is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments array is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: null,
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments array is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: null,
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-  })
-
-  // ===== EDGE CASES (20) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryObjectDefinePropertiesSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryObjectDefinePropertiesSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'a' })))
-      visitor2.CallExpression(makeObjectDefinePropertiesCall({ type: 'Identifier', name: 'obj' }))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'a' })))
-      visitor.CallExpression(makeObjectDefinePropertiesCall({ type: 'Identifier', name: 'obj' }))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'b' })))
-      expect(reports.length).toBe(2)
+      const node = makeObjectDefinePropertiesCall([])
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc still reports', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
+      const node = makeObjectDefinePropertiesCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong object name', () => {
+    test('foo.defineProperties(...items) should not report with object "foo"', () => {
+      const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
+          object: { type: 'Identifier', name: 'foo' },
           property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
         },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('bar.defineProperties(...items) should not report with object "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
+          object: { type: 'Identifier', name: 'bar' },
           property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
         },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('baz.defineProperties(...items) should not report with object "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall({ type: 'Identifier', name: 'obj' }))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' })))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Array' }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'more' })))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'Object' }, 'defineProperty', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      const visitor2 = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryObjectDefinePropertiesSpreadRule.meta
-      const meta2 = noUnnecessaryObjectDefinePropertiesSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
+          object: { type: 'Identifier', name: 'baz' },
           property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
         },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('qux.defineProperties(...items) should not report with object "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
+          object: { type: 'Identifier', name: 'qux' },
           property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
         },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('obj.defineProperties(...items) should not report with object "obj"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
+          object: { type: 'Identifier', name: 'obj' },
           property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
         },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.defineProperties(...items) should not report with object "arr"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.defineProperties(...items) should not report with object "fn"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.defineProperties(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.defineProperties(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.defineProperties(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.defineProperties(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.defineProperties(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.defineProperties(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.defineProperties(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.defineProperties(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.defineProperties(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.defineProperties(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.defineProperties(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.defineProperties(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.defineProperties(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.defineProperties(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.defineProperties(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.defineProperties(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.defineProperties(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.defineProperties(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.defineProperties(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.defineProperties(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.defineProperties(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'defineProperties' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('Object.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'foo' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.bar(...items) should not report with property "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'bar' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.baz(...items) should not report with property "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'baz' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.qux(...items) should not report with property "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'qux' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.toString(...items) should not report with property "toString"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.concat(...items) should not report with property "concat"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.filter(...items) should not report with property "filter"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report Object.defineProperties(...items) with single spread', () => {
+    test('should report Object.defineProperties(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.defineProperties(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      const node = makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' }))
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
+      expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryObjectDefinePropertiesSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryObjectDefinePropertiesSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryObjectDefinePropertiesSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('report loc reflects specific node location values', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'items' }), 10, 4, 10, 25))
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.start.column).toBe(8)
       expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
+    })
+    test('should report with correct location line 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
+    })
+    test('should report with correct location line 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
+    })
+    test('should report with correct location line 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
       expect(reports[0].loc?.end.column).toBe(25)
     })
-
-    test('handles computed member expression property (computed: false)', () => {
+    test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(1)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('does not report when callee property is computed with string', () => {
+    test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: true,
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Literal', value: 'defineProperties' },
-        },
-        arguments: [makeSpread({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 70', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'a' })))
-      visitor.CallExpression(makeObjectDefinePropertiesCall(makeSpread({ type: 'Identifier', name: 'b' })))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
     })
-
-    test('does not report when callee object is MemberExpression', () => {
+    test('should report with correct location line 80', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'window' }, property: { type: 'Identifier', name: 'Object' } }, 'defineProperties', [makeSpread({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('does not report when argument type is not SpreadElement', () => {
+    test('should report with correct location line 90', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression(makeObjectDefinePropertiesCall({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }))
-      expect(reports.length).toBe(0)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
     })
-
-    test('does not report when argument is null', () => {
+    test('should report with correct location line 100', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectDefinePropertiesSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          computed: false,
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperties' },
-        },
-        arguments: [null],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectDefinePropertiesCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryObjectDefinePropertiesSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })

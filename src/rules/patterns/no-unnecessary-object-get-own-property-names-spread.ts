@@ -19,7 +19,7 @@ export const noUnnecessaryObjectGetOwnPropertyNamesSpreadRule: RuleDefinition = 
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.getOwnPropertyNames(...items) with spread is unusual. getOwnPropertyNames() expects a single object.`,
+          message: 'Object.getOwnPropertyNames(...items) with a single spread is unusual. Consider calling Object.getOwnPropertyNames() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectGetOwnPropertyNamesSpreadRule: RuleDefinition = 
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.getOwnPropertyNames(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.getOwnPropertyNames(...items) with spread which is unusual since Object.getOwnPropertyNames takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-get-own-property-names-spread.ts',
     },

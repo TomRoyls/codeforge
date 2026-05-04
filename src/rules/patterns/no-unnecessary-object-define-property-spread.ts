@@ -19,7 +19,7 @@ export const noUnnecessaryObjectDefinePropertySpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.defineProperty(...items) with spread is unusual. defineProperty() expects an object, key, and descriptor.`,
+          message: 'Object.defineProperty(...items) with a single spread is unusual. Consider calling Object.defineProperty() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectDefinePropertySpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.defineProperty(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.defineProperty(...items) with spread which is unusual since Object.defineProperty takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-define-property-spread.ts',
     },

@@ -19,7 +19,7 @@ export const noUnnecessaryObjectIsFrozenSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.isFrozen(...items) with spread is unusual. isFrozen() expects a single object.`,
+          message: 'Object.isFrozen(...items) with a single spread is unusual. Consider calling Object.isFrozen() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectIsFrozenSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.isFrozen(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.isFrozen(...items) with spread which is unusual since Object.isFrozen takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-is-frozen-spread.ts',
     },

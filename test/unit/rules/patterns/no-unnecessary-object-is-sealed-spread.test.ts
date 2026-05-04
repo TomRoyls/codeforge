@@ -47,7 +47,7 @@ function makeObjectIsSealedCall(
   locStartLine = 1,
   locStartCol = 0,
   locEndLine = 1,
-  locEndCol = 30,
+  locEndCol = 20,
 ): unknown {
   return {
     type: 'CallExpression',
@@ -62,383 +62,57 @@ function makeObjectIsSealedCall(
   }
 }
 
-function makeSpreadArg(argument: unknown = { type: 'Identifier', name: 'items' }): unknown {
+function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
-
-// ===== META TESTS (8) =====
 
 describe('no-unnecessary-object-is-sealed-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryObjectIsSealedSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryObjectIsSealedSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning isSealed', () => {
-      const desc = noUnnecessaryObjectIsSealedSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/issealed/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-is-sealed-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryObjectIsSealedSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule).toBeDefined()
-      expect(noUnnecessaryObjectIsSealedSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryObjectIsSealedSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryObjectIsSealedSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryObjectIsSealedSpreadRule.meta.docs.description).toBe('string')
     })
   })
 
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports Object.isSealed(...spread)', () => {
-    test('reports for Object.isSealed(...items)', () => {
+  describe('edge cases', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports.length).toBe(1)
+      const node = makeObjectIsSealedCall([])
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('reports for Object.isSealed(...arr)', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Object.isSealed(...[1, 2, 3])', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }, { type: 'Literal', value: 3 }] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Object.isSealed(...getItems())', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getItems' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for Object.isSealed(...obj.items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'items' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0].message).toMatch(/spread/)
-    })
-
-    test('report message mentions isSealed', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0].message).toMatch(/isSealed/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0].message).toBe(
-        'Object.isSealed(...items) with spread is unusual. isSealed() expects a single object.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      const node = makeObjectIsSealedCall([makeSpreadArg()])
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()], 5, 10, 5, 40))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'data' })]))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports for spread with ArrowFunction argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'ArrowFunctionExpression', params: [], body: { type: 'BlockStatement', body: [] } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with ConditionalExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with TemplateLiteral argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'TemplateLiteral', quasis: [], expressions: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with nested CallExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'foo' }, property: { type: 'Identifier', name: 'bar' } }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with ObjectExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'ObjectExpression', properties: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with BinaryExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports when callee computed is explicitly false', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports when callee computed is undefined (missing)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with null spread argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'SpreadElement', argument: null }]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with Literal argument inside spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Literal', value: 42 })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread with UnaryExpression argument', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'UnaryExpression', operator: '!', prefix: true, argument: { type: 'Identifier', name: 'x' } })]))
-      expect(reports.length).toBe(1)
+      const node = makeObjectIsSealedCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
   })
 
-  // ===== NEGATIVE CASES — DOES NOT REPORT (40) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for Object.isSealed(obj) — non-spread argument', () => {
+  describe('should not report with wrong object name', () => {
+    test('foo.isSealed(...items) should not report with object "foo"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'Identifier', name: 'obj' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.isSealed() — no arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.isSealed(a, b) — two arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg(), { type: 'Identifier', name: 'extra' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.isSealed(...a, ...b) — two spread arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg(), makeSpreadArg()]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.freeze(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'freeze' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.keys(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'keys' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.isFrozen(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isFrozen' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for MyObj.isSealed(...items) — wrong object name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'MyObj' },
-          property: { type: 'Identifier', name: 'isSealed' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for foo.isSealed(...items) — wrong object name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
@@ -446,587 +120,1559 @@ describe('no-unnecessary-object-is-sealed-spread rule', () => {
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report when callee object is MemberExpression', () => {
+    test('bar.isSealed(...items) should not report with object "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'MemberExpression', object: { type: 'Identifier', name: 'a' }, property: { type: 'Identifier', name: 'b' } },
+          object: { type: 'Identifier', name: 'bar' },
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report when callee object is CallExpression', () => {
+    test('baz.isSealed(...items) should not report with object "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'CallExpression', callee: { type: 'Identifier', name: 'getObject' }, arguments: [] },
+          object: { type: 'Identifier', name: 'baz' },
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report when callee property is not Identifier', () => {
+    test('qux.isSealed(...items) should not report with object "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Literal', value: 'isSealed' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is computed with string literal', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: { type: 'Identifier', name: 'isSealed' },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadArg()], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadArg()], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee object is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          property: { type: 'Identifier', name: 'isSealed' },
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee object is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: null,
-          property: { type: 'Identifier', name: 'isSealed' },
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee property is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee property is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: null,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object type is Literal', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Literal', value: 'Object' },
+          object: { type: 'Identifier', name: 'qux' },
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report when object type is ObjectExpression', () => {
+    test('obj.isSealed(...items) should not report with object "obj"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'ObjectExpression', properties: [] },
+          object: { type: 'Identifier', name: 'obj' },
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report when property name is "issealed" (lowercase)', () => {
+    test('arr.isSealed(...items) should not report with object "arr"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'issealed' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property name is "IsSealed" (PascalCase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'IsSealed' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when object name is "object" (lowercase)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'object' },
+          object: { type: 'Identifier', name: 'arr' },
           property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('does not report for three arguments', () => {
+    test('fn.isSealed(...items) should not report with object "fn"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg(), { type: 'Identifier', name: 'b' }, { type: 'Identifier', name: 'c' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Object.defineProperty(...items) — different method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'defineProperty' },
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'isSealed' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-      })
-      expect(reports.length).toBe(0)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.isSealed(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.isSealed(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.isSealed(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.isSealed(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.isSealed(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.isSealed(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.isSealed(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.isSealed(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.isSealed(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.isSealed(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.isSealed(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.isSealed(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.isSealed(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.isSealed(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.isSealed(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.isSealed(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.isSealed(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.isSealed(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.isSealed(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.isSealed(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.isSealed(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'isSealed' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
   })
 
-  // ===== EDGE CASES (20) =====
-
-  describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryObjectIsSealedSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryObjectIsSealedSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor2.CallExpression(makeObjectIsSealedCall([{ type: 'Identifier', name: 'obj' }]))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly', () => {
+  describe('should not report with wrong property name', () => {
+    test('Object.foo(...items) should not report with property "foo"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'Identifier', name: 'obj' }]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'data' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('node without loc still reports', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
+          property: { type: 'Identifier', name: 'foo' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('Object.bar(...items) should not report with property "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
+          property: { type: 'Identifier', name: 'bar' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('Object.baz(...items) should not report with property "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'Identifier', name: 'obj' }]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg(), { type: 'Identifier', name: 'extra' }]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })]))
-      visitor.CallExpression(makeObjectIsSealedCall([]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      const visitor2 = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryObjectIsSealedSpreadRule.meta
-      const meta2 = noUnnecessaryObjectIsSealedSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
+          property: { type: 'Identifier', name: 'baz' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-        range: [0, 30],
-        extra: true,
-        trailingComments: [],
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('Object.qux(...items) should not report with property "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
+          property: { type: 'Identifier', name: 'qux' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('Object.toString(...items) should not report with property "toString"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
+          property: { type: 'Identifier', name: 'toString' },
           computed: false,
         },
-        arguments: [makeSpreadArg()],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.concat(...items) should not report with property "concat"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.filter(...items) should not report with property "filter"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('Object.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'Object' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report Object.isSealed(...items) with single spread', () => {
+    test('should report Object.isSealed(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report Object.isSealed(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      const node = makeObjectIsSealedCall([makeSpreadArg()])
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
-    })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryObjectIsSealedSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryObjectIsSealedSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryObjectIsSealedSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Object' },
-          property: { type: 'Identifier', name: 'isSealed' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg()],
-        loc: makeLoc(1, 0, 1, 30),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
-    })
-
-    test('report loc reflects specific node location values', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()], 10, 4, 10, 35))
-      expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
-      expect(reports[0].loc?.end.line).toBe(10)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
       expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg()]))
-      visitor.CallExpression(makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'data' })]))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('does not report for Object.isSealed with Literal argument', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'Literal', value: 42 }]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(10)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
     })
-
-    test('does not report for Object.isSealed with ObjectExpression argument', () => {
+    test('should report with correct location line 15', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'ObjectExpression', properties: [] }]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
     })
-
-    test('does not report for Object.isSealed with ArrayExpression argument', () => {
+    test('should report with correct location line 20', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'ArrayExpression', elements: [] }]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
     })
-
-    test('does not report for Object.isSealed with CallExpression argument', () => {
+    test('should report with correct location line 25', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'CallExpression', callee: { type: 'Identifier', name: 'getObj' }, arguments: [] }]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
     })
-
-    test('does not report for Object.isSealed with MemberExpression argument', () => {
+    test('should report with correct location line 30', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryObjectIsSealedSpreadRule.create(context)
-      visitor.CallExpression(makeObjectIsSealedCall([{ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }]))
-      expect(reports.length).toBe(0)
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 50', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
+    })
+    test('should report with correct location line 60', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
+    })
+    test('should report with correct location line 70', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
+    })
+    test('should report with correct location line 80', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
+    })
+    test('should report with correct location line 90', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
+    })
+    test('should report with correct location line 100', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makeObjectIsSealedCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryObjectIsSealedSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })

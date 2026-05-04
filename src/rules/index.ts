@@ -3027,6 +3027,28 @@ const adaptedNoUnnecessaryBigInt64ArrayFromSpread = adaptPluginRule(noUnnecessar
 const adaptedNoUnnecessaryBigInt64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule, 'no-unnecessary-big-int64-array-of-spread')
 const adaptedNoUnnecessaryBigUint64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule, 'no-unnecessary-big-uint64-array-from-spread')
 const adaptedNoUnnecessaryBigUint64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule, 'no-unnecessary-big-uint64-array-of-spread')
+const adaptedNoUnnecessaryObjectDefinePropertySpread = adaptPluginRule(noUnnecessaryObjectDefinePropertySpreadRule, 'no-unnecessary-object-define-property-spread')
+const adaptedNoUnnecessaryObjectDefinePropertiesSpread = adaptPluginRule(noUnnecessaryObjectDefinePropertiesSpreadRule, 'no-unnecessary-object-define-properties-spread')
+const adaptedNoUnnecessaryObjectPreventExtensionsSpread = adaptPluginRule(noUnnecessaryObjectPreventExtensionsSpreadRule, 'no-unnecessary-object-prevent-extensions-spread')
+const adaptedNoUnnecessaryObjectGetPrototypeOfSpread = adaptPluginRule(noUnnecessaryObjectGetPrototypeOfSpreadRule, 'no-unnecessary-object-get-prototype-of-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyNamesSpreadRule, 'no-unnecessary-object-get-own-property-names-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule, 'no-unnecessary-object-get-own-property-symbols-spread')
+const adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-object-get-own-property-descriptor-spread')
+const adaptedNoUnnecessaryObjectIsFrozenSpread = adaptPluginRule(noUnnecessaryObjectIsFrozenSpreadRule, 'no-unnecessary-object-is-frozen-spread')
+const adaptedNoUnnecessaryObjectIsSealedSpread = adaptPluginRule(noUnnecessaryObjectIsSealedSpreadRule, 'no-unnecessary-object-is-sealed-spread')
+const adaptedNoUnnecessaryObjectIsExtensibleSpread = adaptPluginRule(noUnnecessaryObjectIsExtensibleSpreadRule, 'no-unnecessary-object-is-extensible-spread')
+const adaptedNoUnnecessaryObjectFromEntriesSpread = adaptPluginRule(noUnnecessaryObjectFromEntriesSpreadRule, 'no-unnecessary-object-from-entries-spread')
+  'no-unnecessary-object-define-property-spread': adaptedNoUnnecessaryObjectDefinePropertySpread,
+  'no-unnecessary-object-define-properties-spread': adaptedNoUnnecessaryObjectDefinePropertiesSpread,
+  'no-unnecessary-object-prevent-extensions-spread': adaptedNoUnnecessaryObjectPreventExtensionsSpread,
+  'no-unnecessary-object-get-prototype-of-spread': adaptedNoUnnecessaryObjectGetPrototypeOfSpread,
+  'no-unnecessary-object-get-own-property-names-spread': adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread,
+  'no-unnecessary-object-get-own-property-symbols-spread': adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread,
+  'no-unnecessary-object-get-own-property-descriptor-spread': adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread,
+  'no-unnecessary-object-is-frozen-spread': adaptedNoUnnecessaryObjectIsFrozenSpread,
+  'no-unnecessary-object-is-sealed-spread': adaptedNoUnnecessaryObjectIsSealedSpread,
+  'no-unnecessary-object-is-extensible-spread': adaptedNoUnnecessaryObjectIsExtensibleSpread,
+  'no-unnecessary-object-from-entries-spread': adaptedNoUnnecessaryObjectFromEntriesSpread,
   'no-unnecessary-error-to-string-spread': adaptedNoUnnecessaryErrorToStringSpread,
   'no-unnecessary-regex-exec-spread': adaptedNoUnnecessaryRegexExecSpread,
   'no-unnecessary-regex-test-spread': adaptedNoUnnecessaryRegexTestSpread,
@@ -4223,6 +4245,17 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-big-int64-array-of-spread': 'patterns',
   'no-unnecessary-big-uint64-array-from-spread': 'patterns',
   'no-unnecessary-big-uint64-array-of-spread': 'patterns',
+  'no-unnecessary-object-define-property-spread': 'patterns',
+  'no-unnecessary-object-define-properties-spread': 'patterns',
+  'no-unnecessary-object-prevent-extensions-spread': 'patterns',
+  'no-unnecessary-object-get-prototype-of-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-names-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-symbols-spread': 'patterns',
+  'no-unnecessary-object-get-own-property-descriptor-spread': 'patterns',
+  'no-unnecessary-object-is-frozen-spread': 'patterns',
+  'no-unnecessary-object-is-sealed-spread': 'patterns',
+  'no-unnecessary-object-is-extensible-spread': 'patterns',
+  'no-unnecessary-object-from-entries-spread': 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4396,6 +4429,19 @@ import {
   noUnnecessaryBigInt64ArrayOfSpreadRule,
   noUnnecessaryBigUint64ArrayFromSpreadRule,
   noUnnecessaryBigUint64ArrayOfSpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryObjectDefinePropertySpreadRule,
+  noUnnecessaryObjectDefinePropertiesSpreadRule,
+  noUnnecessaryObjectPreventExtensionsSpreadRule,
+  noUnnecessaryObjectGetPrototypeOfSpreadRule,
+  noUnnecessaryObjectGetOwnPropertyNamesSpreadRule,
+  noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule,
+  noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule,
+  noUnnecessaryObjectIsFrozenSpreadRule,
+  noUnnecessaryObjectIsSealedSpreadRule,
+  noUnnecessaryObjectIsExtensibleSpreadRule,
+  noUnnecessaryObjectFromEntriesSpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'

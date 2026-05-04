@@ -19,7 +19,7 @@ export const noUnnecessaryObjectGetPrototypeOfSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.getPrototypeOf(...items) with spread is unusual. getPrototypeOf() expects a single object.`,
+          message: 'Object.getPrototypeOf(...items) with a single spread is unusual. Consider calling Object.getPrototypeOf() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectGetPrototypeOfSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.getPrototypeOf(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.getPrototypeOf(...items) with spread which is unusual since Object.getPrototypeOf takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-get-prototype-of-spread.ts',
     },

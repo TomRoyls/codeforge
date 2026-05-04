@@ -19,7 +19,7 @@ export const noUnnecessaryObjectIsExtensibleSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.isExtensible(...items) with spread is unusual. isExtensible() expects a single object.`,
+          message: 'Object.isExtensible(...items) with a single spread is unusual. Consider calling Object.isExtensible() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectIsExtensibleSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.isExtensible(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.isExtensible(...items) with spread which is unusual since Object.isExtensible takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-is-extensible-spread.ts',
     },

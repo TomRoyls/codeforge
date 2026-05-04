@@ -19,7 +19,7 @@ export const noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule: RuleDefiniti
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `Object.getOwnPropertyDescriptor(...items) with spread is unusual. getOwnPropertyDescriptor() expects an object and a property name.`,
+          message: 'Object.getOwnPropertyDescriptor(...items) with a single spread is unusual. Consider calling Object.getOwnPropertyDescriptor() directly.',
           node: n,
         })
       },
@@ -28,7 +28,7 @@ export const noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule: RuleDefiniti
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.getOwnPropertyDescriptor(...items) with spread which is likely a mistake.',
+      description: 'Warn about Object.getOwnPropertyDescriptor(...items) with spread which is unusual since Object.getOwnPropertyDescriptor takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-get-own-property-descriptor-spread.ts',
     },

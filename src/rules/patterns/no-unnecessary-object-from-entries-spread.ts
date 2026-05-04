@@ -2,7 +2,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryObjectPreventExtensionsSpreadRule: RuleDefinition = {
+export const noUnnecessaryObjectFromEntriesSpreadRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -14,12 +14,12 @@ export const noUnnecessaryObjectPreventExtensionsSpreadRule: RuleDefinition = {
         if (!callee.object || callee.object.type !== 'Identifier') return
         if (callee.object.name !== 'Object') return
         if (!callee.property || callee.property.type !== 'Identifier') return
-        if (callee.property.name !== 'preventExtensions') return
+        if (callee.property.name !== 'fromEntries') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'Object.preventExtensions(...items) with a single spread is unusual. Consider calling Object.preventExtensions() directly.',
+          message: 'Object.fromEntries(...items) with a single spread is unusual. Consider calling Object.fromEntries() directly.',
           node: n,
         })
       },
@@ -28,13 +28,13 @@ export const noUnnecessaryObjectPreventExtensionsSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about Object.preventExtensions(...items) with spread which is unusual since Object.preventExtensions takes specific arguments, not a spread.',
+      description: 'Warn about Object.fromEntries(...items) with spread which is unusual since Object.fromEntries takes specific arguments, not a spread.',
       recommended: false,
-      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-prevent-extensions-spread.ts',
+      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-object-from-entries-spread.ts',
     },
     schema: [],
     severity: 'warn',
     type: 'suggestion',
   },
 }
-export default noUnnecessaryObjectPreventExtensionsSpreadRule
+export default noUnnecessaryObjectFromEntriesSpreadRule
