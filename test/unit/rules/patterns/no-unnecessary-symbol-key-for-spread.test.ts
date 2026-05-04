@@ -480,6 +480,15 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
+    test('should not report Symbol.keyFor(local)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(local)' })
+      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
+
+      visitor.CallExpression(makeSymbolKeyForCall(makeIdentifier('local')))
+
+      expect(reports.length).toBe(0)
+    })
+
     test('should not report Symbol.keyFor(Symbol("x"))', () => {
       const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(Symbol("x"))' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
@@ -495,7 +504,7 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report Symbol.keyFor(obj.sym)', () => {
+  })
 
   describe('not reporting non-Symbol.keyFor calls', () => {
     test('should not report Symbol.iterator', () => {

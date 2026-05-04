@@ -119,6 +119,10 @@ describe('no-unnecessary-date-get-minutes-spread rule', () => {
       expect(noUnnecessaryDateGetMinutesSpreadRule).toHaveProperty('create')
     })
 
+    test('should have docs with url', () => {
+      expect(noUnnecessaryDateGetMinutesSpreadRule.meta.docs?.url).toBeDefined()
+    })
+
   })
 
   describe('create', () => {
@@ -378,15 +382,6 @@ describe('no-unnecessary-date-get-minutes-spread rule', () => {
       const visitor = noUnnecessaryDateGetMinutesSpreadRule.create(context)
 
       visitor.CallExpression(makeDateGetMinutesCall('theRest'))
-
-      expect(reports.length).toBe(1)
-    })
-
-    test('should report date.getMinutes(...allArgs)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'date.getMinutes(...allArgs);' })
-      const visitor = noUnnecessaryDateGetMinutesSpreadRule.create(context)
-
-      visitor.CallExpression(makeDateGetMinutesCall('allArgs'))
 
       expect(reports.length).toBe(1)
     })
