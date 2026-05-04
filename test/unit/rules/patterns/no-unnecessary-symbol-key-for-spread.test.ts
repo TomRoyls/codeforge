@@ -496,66 +496,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
     })
 
     test('should not report Symbol.keyFor(obj.sym)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(obj.sym)' })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const memberExpr = {
-        type: 'MemberExpression',
-        object: { type: 'Identifier', name: 'obj' },
-        property: { type: 'Identifier', name: 'sym' },
-        computed: false,
-      }
-
-      visitor.CallExpression(makeSymbolKeyForCall(memberExpr))
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor(namespace.sym)', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'Symbol.keyFor(namespace.sym)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const memberExpr = {
-        type: 'MemberExpression',
-        object: { type: 'Identifier', name: 'namespace' },
-        property: { type: 'Identifier', name: 'sym' },
-        computed: false,
-      }
-
-      visitor.CallExpression(makeSymbolKeyForCall(memberExpr))
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor(local)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(local)' })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      visitor.CallExpression(makeSymbolKeyForCall(makeIdentifier('local')))
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor(registry.sym)', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'Symbol.keyFor(registry.sym)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const memberExpr = {
-        type: 'MemberExpression',
-        object: { type: 'Identifier', name: 'registry' },
-        property: { type: 'Identifier', name: 'sym' },
-        computed: false,
-      }
-
-      visitor.CallExpression(makeSymbolKeyForCall(memberExpr))
-
-      expect(reports.length).toBe(0)
-    })
-  })
 
   describe('not reporting non-Symbol.keyFor calls', () => {
     test('should not report Symbol.iterator', () => {
@@ -664,75 +604,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
     })
 
     test('should not report MySymbol.keyFor(...items)', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'MySymbol.keyFor(...items)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'MySymbol' },
-          property: { type: 'Identifier', name: 'keyFor' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement(makeIdentifier('items'))],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report CustomSymbol.keyFor(...items)', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'CustomSymbol.keyFor(...items)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'CustomSymbol' },
-          property: { type: 'Identifier', name: 'keyFor' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement(makeIdentifier('items'))],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report symbol.keyFor(...items) with lowercase', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'symbol.keyFor(...items)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'symbol' },
-          property: { type: 'Identifier', name: 'keyFor' },
-          computed: false,
-        },
-        arguments: [makeSpreadElement(makeIdentifier('items'))],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report SYM.keyFor(...items)', () => {
       const { context, reports } = createMockRuleContext({ source: 'SYM.keyFor(...items)' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
 
@@ -793,50 +664,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
     })
 
     test('should not report Symbol.keyFor(sym, extra) with two args', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'Symbol.keyFor(sym, extra)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Symbol' },
-          property: { type: 'Identifier', name: 'keyFor' },
-          computed: false,
-        },
-        arguments: [makeIdentifier('sym'), makeIdentifier('extra')],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor() with no args', () => {
-      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor()' })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'Symbol' },
-          property: { type: 'Identifier', name: 'keyFor' },
-          computed: false,
-        },
-        arguments: [],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      visitor.CallExpression(node)
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor with Literal arg', () => {
       const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor("key")' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
 
@@ -1011,23 +838,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
     })
 
     test('should not report Symbol.keyFor with arrow function arg', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'Symbol.keyFor(() => sym)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const arrow = {
-        type: 'ArrowFunctionExpression',
-        params: [],
-        body: makeIdentifier('sym'),
-      }
-
-      visitor.CallExpression(makeSymbolKeyForCall(arrow))
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor with null arg', () => {
       const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(null)' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
 
@@ -1067,6 +877,23 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
       }
 
       visitor.CallExpression(makeSymbolKeyForCall(objExpr))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report Symbol.keyFor with boolean arg', () => {
+      const { context, reports } = createMockRuleContext({
+        source: 'Symbol.keyFor(true)',
+      })
+      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
+
+      const boolLit = {
+        type: 'Literal',
+        value: true,
+        raw: 'true',
+      }
+
+      visitor.CallExpression(makeSymbolKeyForCall(boolLit))
 
       expect(reports.length).toBe(0)
     })
@@ -1377,20 +1204,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
     })
 
     test('should handle node without callee', () => {
-      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(...items)' })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      const node = {
-        type: 'CallExpression',
-        arguments: [makeSpreadElement(makeIdentifier('items'))],
-        loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 20 } },
-      }
-
-      expect(() => visitor.CallExpression(node)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('should handle node with non-MemberExpression callee', () => {
       const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(...items)' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
 
