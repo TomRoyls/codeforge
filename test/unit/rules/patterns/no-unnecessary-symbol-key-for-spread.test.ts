@@ -426,19 +426,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report Symbol.keyFor(...allSymbols)', () => {
-      const { context, reports } = createMockRuleContext({
-        source: 'Symbol.keyFor(...allSymbols)',
-      })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      visitor.CallExpression(
-        makeSymbolKeyForCall(makeSpreadElement(makeIdentifier('allSymbols'))),
-      )
-
-      expect(reports.length).toBe(1)
-    })
-
     test('should report with correct message text', () => {
       const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(...items)' })
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
@@ -480,15 +467,6 @@ describe('no-unnecessary-symbol-key-for-spread rule', () => {
       const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
 
       visitor.CallExpression(makeSymbolKeyForCall(makeIdentifier('globalSym')))
-
-      expect(reports.length).toBe(0)
-    })
-
-    test('should not report Symbol.keyFor(shared)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'Symbol.keyFor(shared)' })
-      const visitor = noUnnecessarySymbolKeyForSpreadRule.create(context)
-
-      visitor.CallExpression(makeSymbolKeyForCall(makeIdentifier('shared')))
 
       expect(reports.length).toBe(0)
     })

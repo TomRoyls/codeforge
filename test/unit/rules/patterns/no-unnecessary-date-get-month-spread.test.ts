@@ -1398,7 +1398,7 @@ describe('no-unnecessary-date-get-month-spread rule', () => {
     test('should create new visitor per create call', () => {
       const { context } = createMockRuleContext({ source: 'date.getMonth(...items);' })
       const visitor1 = noUnnecessaryDateGetMonthSpreadRule.create(context)
-      const visitor2 = noUnecessaryDateGetMonthSpreadRule.create(context)
+      const visitor2 = noUnnecessaryDateGetMonthSpreadRule.create(context)
 
       expect(visitor1).not.toBe(visitor2)
     })
