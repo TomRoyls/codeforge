@@ -3555,6 +3555,24 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-big-int-64-array-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule),
   ['no-unnecessary-big-uint-64-array-from-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule),
   ['no-unnecessary-big-uint-64-array-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule),
+  ['no-unnecessary-set-timeout-spread']: adaptPluginRule(noUnnecessarySetTimeoutSpreadRule),
+  ['no-unnecessary-set-interval-spread']: adaptPluginRule(noUnnecessarySetIntervalSpreadRule),
+  ['no-unnecessary-clear-timeout-spread']: adaptPluginRule(noUnnecessaryClearTimeoutSpreadRule),
+  ['no-unnecessary-clear-interval-spread']: adaptPluginRule(noUnnecessaryClearIntervalSpreadRule),
+  ['no-unnecessary-request-animation-frame-spread']: adaptPluginRule(noUnnecessaryRequestAnimationFrameSpreadRule),
+  ['no-unnecessary-cancel-animation-frame-spread']: adaptPluginRule(noUnnecessaryCancelAnimationFrameSpreadRule),
+  ['no-unnecessary-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryRequestIdleCallbackSpreadRule),
+  ['no-unnecessary-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryCancelIdleCallbackSpreadRule),
+  ['no-unnecessary-queue-microtask-spread']: adaptPluginRule(noUnnecessaryQueueMicrotaskSpreadRule),
+  ['no-unnecessary-structured-clone-spread']: adaptPluginRule(noUnnecessaryStructuredCloneSpreadRule),
+  ['no-unnecessary-atob-spread']: adaptPluginRule(noUnnecessaryAtobSpreadRule),
+  ['no-unnecessary-btoa-spread']: adaptPluginRule(noUnnecessaryBtoaSpreadRule),
+  ['no-unnecessary-fetch-spread']: adaptPluginRule(noUnnecessaryFetchSpreadRule),
+  ['no-unnecessary-alert-spread']: adaptPluginRule(noUnnecessaryAlertSpreadRule),
+  ['no-unnecessary-confirm-spread']: adaptPluginRule(noUnnecessaryConfirmSpreadRule),
+  ['no-unnecessary-prompt-spread']: adaptPluginRule(noUnnecessaryPromptSpreadRule),
+  ['no-unnecessary-print-spread']: adaptPluginRule(noUnnecessaryPrintSpreadRule),
+  ['no-unnecessary-report-error-spread']: adaptPluginRule(noUnnecessaryReportErrorSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -5396,6 +5414,24 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-big-int-64-array-of-spread']: 'patterns',
   ['no-unnecessary-big-uint-64-array-from-spread']: 'patterns',
   ['no-unnecessary-big-uint-64-array-of-spread']: 'patterns',
+  ['no-unnecessary-set-timeout-spread']: 'patterns',
+  ['no-unnecessary-set-interval-spread']: 'patterns',
+  ['no-unnecessary-clear-timeout-spread']: 'patterns',
+  ['no-unnecessary-clear-interval-spread']: 'patterns',
+  ['no-unnecessary-request-animation-frame-spread']: 'patterns',
+  ['no-unnecessary-cancel-animation-frame-spread']: 'patterns',
+  ['no-unnecessary-request-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-cancel-idle-callback-spread']: 'patterns',
+  ['no-unnecessary-queue-microtask-spread']: 'patterns',
+  ['no-unnecessary-structured-clone-spread']: 'patterns',
+  ['no-unnecessary-atob-spread']: 'patterns',
+  ['no-unnecessary-btoa-spread']: 'patterns',
+  ['no-unnecessary-fetch-spread']: 'patterns',
+  ['no-unnecessary-alert-spread']: 'patterns',
+  ['no-unnecessary-confirm-spread']: 'patterns',
+  ['no-unnecessary-prompt-spread']: 'patterns',
+  ['no-unnecessary-print-spread']: 'patterns',
+  ['no-unnecessary-report-error-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -6111,6 +6147,24 @@ import { noUnnecessaryBigInt64ArrayFromSpreadRule } from './patterns/no-unnecess
 import { noUnnecessaryBigInt64ArrayOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-of-spread.js'
 import { noUnnecessaryBigUint64ArrayFromSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-from-spread.js'
 import { noUnnecessaryBigUint64ArrayOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-of-spread.js'
+import { noUnnecessarySetTimeoutSpreadRule } from './patterns/no-unnecessary-set-timeout-spread.js'
+import { noUnnecessarySetIntervalSpreadRule } from './patterns/no-unnecessary-set-interval-spread.js'
+import { noUnnecessaryClearTimeoutSpreadRule } from './patterns/no-unnecessary-clear-timeout-spread.js'
+import { noUnnecessaryClearIntervalSpreadRule } from './patterns/no-unnecessary-clear-interval-spread.js'
+import { noUnnecessaryRequestAnimationFrameSpreadRule } from './patterns/no-unnecessary-request-animation-frame-spread.js'
+import { noUnnecessaryCancelAnimationFrameSpreadRule } from './patterns/no-unnecessary-cancel-animation-frame-spread.js'
+import { noUnnecessaryRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-request-idle-callback-spread.js'
+import { noUnnecessaryCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-cancel-idle-callback-spread.js'
+import { noUnnecessaryQueueMicrotaskSpreadRule } from './patterns/no-unnecessary-queue-microtask-spread.js'
+import { noUnnecessaryStructuredCloneSpreadRule } from './patterns/no-unnecessary-structured-clone-spread.js'
+import { noUnnecessaryAtobSpreadRule } from './patterns/no-unnecessary-atob-spread.js'
+import { noUnnecessaryBtoaSpreadRule } from './patterns/no-unnecessary-btoa-spread.js'
+import { noUnnecessaryFetchSpreadRule } from './patterns/no-unnecessary-fetch-spread.js'
+import { noUnnecessaryAlertSpreadRule } from './patterns/no-unnecessary-alert-spread.js'
+import { noUnnecessaryConfirmSpreadRule } from './patterns/no-unnecessary-confirm-spread.js'
+import { noUnnecessaryPromptSpreadRule } from './patterns/no-unnecessary-prompt-spread.js'
+import { noUnnecessaryPrintSpreadRule } from './patterns/no-unnecessary-print-spread.js'
+import { noUnnecessaryReportErrorSpreadRule } from './patterns/no-unnecessary-report-error-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
