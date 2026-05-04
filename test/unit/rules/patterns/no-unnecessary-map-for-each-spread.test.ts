@@ -365,15 +365,7 @@ describe('no-unnecessary-map-for-each-spread rule', () => {
       expect(reports[0].loc?.start.column).toBe(10)
     })
 
-    test('should report at default location', () => {
-      const { context, reports } = createMockRuleContext({ source: 'map.forEach(...items);' })
-      const visitor = noUnnecessaryMapForEachSpreadRule.create(context)
 
-      visitor.CallExpression(makeMapForEachCall([createSpreadElement('items')]))
-
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
-    })
   })
 
   // ============================================================

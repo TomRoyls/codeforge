@@ -85,6 +85,11 @@ describe('no-unnecessary-map-set-spread rule', () => {
       const desc = noUnnecessaryMapSetSpreadRule.meta.docs?.description.toLowerCase()
       expect(desc).toContain('map')
     })
+
+    test('should mention spread in description', () => {
+      const desc = noUnnecessaryMapSetSpreadRule.meta.docs?.description.toLowerCase()
+      expect(desc).toContain('spread')
+    })
   })
 
   // --- STRUCTURE (2) ---

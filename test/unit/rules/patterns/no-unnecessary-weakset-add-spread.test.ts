@@ -1,0 +1,1345 @@
+
+
+import { noUnnecessaryWeakSetAddSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakset-add-spread.js'
+import { createMockRuleContext, type ReportDescriptor } from '../../../helpers/ast-helpers.js'
+
+function makeWeakSetAddCall(args: unknown[], line = 1, column = 0): unknown {
+  const objectEnd = column + 'weakSet'.length
+  const propertyEnd = objectEnd + '.add'.length
+  const callEnd = propertyEnd + '(...)'.length
+
+  return {
+    arguments: args,
+    callee: {
+      computed: false,
+      object: {
+        name: 'weakSet',
+        range: [column, objectEnd],
+        type: 'Identifier',
+      },
+      property: {
+        name: 'add',
+        type: 'Identifier',
+      },
+      range: [column, propertyEnd],
+      type: 'MemberExpression',
+    },
+    loc: {
+      end: { column: callEnd, line },
+      start: { column, line },
+    },
+    range: [column, callEnd],
+    type: 'CallExpression',
+  }
+}
+
+function createSpreadElement(argument: unknown): unknown {
+  return {
+    argument,
+    type: 'SpreadElement',
+  }
+}
+
+function createIdentifier(name: string): unknown {
+  return {
+    name,
+    type: 'Identifier',
+  }
+}
+
+function createLiteral(value: unknown): unknown {
+  return {
+    raw: String(value),
+    type: 'Literal',
+    value,
+  }
+}
+
+describe('no-unnecessary-weakset-add-spread rule', () => {
+  describe('meta', () => {
+    test('should have suggestion type', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.type).toBe('suggestion')
+    })
+
+    test('should have warn severity', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.severity).toBe('warn')
+    })
+
+    test('should not be recommended', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.docs?.recommended).toBe(false)
+    })
+
+    test('should have patterns category', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.docs?.category).toBe('patterns')
+    })
+
+    test('should have schema defined', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.schema).toBeDefined()
+    })
+
+    test('should have empty schema array', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.schema).toEqual([])
+    })
+
+    test('should mention weakSet.add in description', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.docs?.description.toLowerCase()).toContain('weakset.add')
+    })
+
+    test('should mention spread in description', () => {
+      expect(noUnnecessaryWeakSetAddSpreadRule.meta.docs?.description.toLowerCase()).toContain('spread')
+    })
+  })
+
+  describe('create', () => {
+    test('should return visitor object with CallExpression method', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(visitor).toHaveProperty('CallExpression')
+    })
+
+    test('should return CallExpression as a function', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(typeof visitor.CallExpression).toBe('function')
+    })
+  })
+
+  describe('detecting weakSet.add with single spread argument', () => {
+    test('should report weakSet.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('items'))]))
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('weakSet.add(...items)')
+      expect(reports[0].message).toContain('Consider passing arguments directly')
+    })
+
+    test('should report weakSet.add(...arr)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...arr);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('arr'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...data)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...data);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('data'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...values)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...values);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('values'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...list)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...list);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('list'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...elements)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...elements);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('elements'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...nums)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...nums);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('nums'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...result)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...result);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('result'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...collection)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...collection);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('collection'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...args)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...args);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('args'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...entries)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...entries);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('entries'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...chunks)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...chunks);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('chunks'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...buffer)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...buffer);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('buffer'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...rows)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...rows);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('rows'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...options)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...options);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('options'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...output)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...output);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('output'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...array)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...array);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('array'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...tuple)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...tuple);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('tuple'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...filtered)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...filtered);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('filtered'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...mapped)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...mapped);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('mapped'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...nested)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...nested);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('nested'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...flat)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...flat);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('flat'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...rest)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...rest);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('rest'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...extra)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...extra);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('extra'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...unique)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...unique);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('unique'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...source)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...source);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('source'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...input)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...input);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('input'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakSet.add(...combined)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...combined);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('combined'))]))
+
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('not reporting non-matching calls', () => {
+    test('should not report weakSet.add(1)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(1);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(1)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add("hello")', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add("hello");' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral('hello')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(item)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(item);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('item')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(1, 2)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(1, 2);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(1), createLiteral(2)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(a, b)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(a, b);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('a'), createIdentifier('b')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(1, 2, 3)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(1, 2, 3);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(1), createLiteral(2), createLiteral(3)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(...items, extra)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items, extra);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('items')), createIdentifier('extra')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(first, ...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(first, ...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('first'), createSpreadElement(createIdentifier('items'))]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add()', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add();' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report obj.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'obj.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'obj',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 20],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report myWeakSet.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'myWeakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'myWeakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 27, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 27],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.push(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.push(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'push',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 26, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 26],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.has(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.has(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'has',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.delete(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 28, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 28],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.clear(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.clear(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'clear',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 27, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 27],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.forEach(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.forEach(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'forEach',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 29, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 29],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.map(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.map(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'map',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 21, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 21],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.filter(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.filter(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'filter',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.reduce(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.reduce(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'reduce',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report direct add(...items) call', () => {
+      const { context, reports } = createMockRuleContext({ source: 'add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          name: 'add',
+          type: 'Identifier',
+        },
+        loc: { end: { column: 16, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 16],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(true)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(true);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(true)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(null)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(null);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(null)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(42)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(42);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(42)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(0)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(0);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(0)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(-1)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(-1);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createLiteral(-1)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(value)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(value);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('value')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(x, y)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(x, y);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('x'), createIdentifier('y')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(foo, bar, baz)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(foo, bar, baz);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('foo'), createIdentifier('bar'), createIdentifier('baz')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.add(item, ...rest)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(item, ...rest);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('item'), createSpreadElement(createIdentifier('rest'))]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet["add"](...items) with computed property', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet["add"](...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: true,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            type: 'Literal',
+            value: 'add',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 27, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 27],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report set.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'set.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'set',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 21, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 21],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report map.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'map.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'map',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 21, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 21],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report ws.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'ws.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'ws',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 19, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 19],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report collection.add(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'collection.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'collection',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 27, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 27],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.concat(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.concat(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'concat',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 23, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 23],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.includes(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.includes(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'includes',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 29, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 29],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.values(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.values(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'values',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 28, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 28],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.keys(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.keys(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'keys',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 26, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 26],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.entries(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.entries(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'entries',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 29, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 29],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakSet.size(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.size(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'size',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 26, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 26],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+  })
+
+  describe('edge cases', () => {
+    test('should handle null node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression(null)).not.toThrow()
+    })
+
+    test('should handle undefined node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression()).not.toThrow()
+    })
+
+    test('should handle non-object node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression('string')).not.toThrow()
+      expect(() => visitor.CallExpression(123)).not.toThrow()
+    })
+
+    test('should handle boolean node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression(true)).not.toThrow()
+    })
+
+    test('should handle empty object node gracefully', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression({})).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node without callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node with non-MemberExpression callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          name: 'add',
+          type: 'Identifier',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node without arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 13, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 13],
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node without property on callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle node without object on callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle non-identifier object in callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            type: 'CallExpression',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should handle non-identifier property in callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            type: 'Literal',
+            value: 'add',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
+    })
+
+    test('should report correct location', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('items'))], 10, 5))
+
+      expect(reports[0].loc?.start.line).toBe(10)
+      expect(reports[0].loc?.start.column).toBe(5)
+    })
+
+    test('should handle multiple calls correctly', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('items'))]))
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createIdentifier('arr'))]))
+      visitor.CallExpression(makeWeakSetAddCall([createIdentifier('value')]))
+
+      expect(reports.length).toBe(2)
+    })
+
+    test('should handle node without loc', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakSet',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'add',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        range: [0, 23],
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(1)
+    })
+
+    test('should handle number node', () => {
+      const { context } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression(42)).not.toThrow()
+    })
+
+    test('should handle spread of literal value', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakSet.add(...items);' })
+      const visitor = noUnnecessaryWeakSetAddSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakSetAddCall([createSpreadElement(createLiteral(42))]))
+
+      expect(reports.length).toBe(1)
+    })
+  })
+})

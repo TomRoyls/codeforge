@@ -1492,6 +1492,10 @@ const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMa
 const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
 const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
 const adaptedNoUnnecessaryRegExpTestSpread = adaptPluginRule(noUnnecessaryRegExpTestSpreadRule, 'no-unnecessary-reg-exp-test-spread')
+const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
+const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
+const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
+const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2498,10 +2502,22 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-weakset-add-spread': adaptedNoUnnecessaryWeakSetAddSpread,
   'no-unnecessary-date-now-spread': adaptedNoUnnecessaryDateNowSpread,
   'no-unnecessary-reg-exp-test-spread': adaptedNoUnnecessaryRegExpTestSpread,
+  'no-unnecessary-date-parse-spread': adaptedNoUnnecessaryDateParseSpread,
+  'no-unnecessary-date-get-full-year-spread': adaptedNoUnnecessaryDateGetFullYearSpread,
+  'no-unnecessary-reg-exp-exec-spread': adaptedNoUnnecessaryRegExpExecSpread,
+  'no-unnecessary-symbol-for-spread': adaptedNoUnnecessarySymbolForSpread,
+const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
+const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
+const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
+const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
 const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMapSetSpreadRule, 'no-unnecessary-weakmap-set-spread')
 const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
 const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
 const adaptedNoUnnecessaryRegExpTestSpread = adaptPluginRule(noUnnecessaryRegExpTestSpreadRule, 'no-unnecessary-reg-exp-test-spread')
+const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
+const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
+const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
+const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
 const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
 const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
 const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
@@ -2510,6 +2526,10 @@ const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMa
 const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
 const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
 const adaptedNoUnnecessaryRegExpTestSpread = adaptPluginRule(noUnnecessaryRegExpTestSpreadRule, 'no-unnecessary-reg-exp-test-spread')
+const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
+const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
+const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
+const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3365,6 +3385,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-weakset-add-spread': 'patterns',
   'no-unnecessary-date-now-spread': 'patterns',
   'no-unnecessary-reg-exp-test-spread': 'patterns',
+  'no-unnecessary-date-parse-spread': 'patterns',
+  'no-unnecessary-date-get-full-year-spread': 'patterns',
+  'no-unnecessary-reg-exp-exec-spread': 'patterns',
+  'no-unnecessary-symbol-for-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
