@@ -3012,6 +3012,21 @@ const adaptedNoUnnecessaryUint8ArrayOfSpread = adaptPluginRule(noUnnecessaryUint
 const adaptedNoUnnecessaryUint8ClampedArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule, 'no-unnecessary-uint8-clamped-array-from-spread')
 const adaptedNoUnnecessaryUint8ClampedArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule, 'no-unnecessary-uint8-clamped-array-of-spread')
 const adaptedNoUnnecessaryInt16ArrayFromSpread = adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule, 'no-unnecessary-int16-array-from-spread')
+const adaptedNoUnnecessaryInt16ArrayOfSpread = adaptPluginRule(noUnnecessaryInt16ArrayOfSpreadRule, 'no-unnecessary-int16-array-of-spread')
+const adaptedNoUnnecessaryInt32ArrayFromSpread = adaptPluginRule(noUnnecessaryInt32ArrayFromSpreadRule, 'no-unnecessary-int32-array-from-spread')
+const adaptedNoUnnecessaryInt32ArrayOfSpread = adaptPluginRule(noUnnecessaryInt32ArrayOfSpreadRule, 'no-unnecessary-int32-array-of-spread')
+const adaptedNoUnnecessaryUint16ArrayFromSpread = adaptPluginRule(noUnnecessaryUint16ArrayFromSpreadRule, 'no-unnecessary-uint16-array-from-spread')
+const adaptedNoUnnecessaryUint16ArrayOfSpread = adaptPluginRule(noUnnecessaryUint16ArrayOfSpreadRule, 'no-unnecessary-uint16-array-of-spread')
+const adaptedNoUnnecessaryUint32ArrayFromSpread = adaptPluginRule(noUnnecessaryUint32ArrayFromSpreadRule, 'no-unnecessary-uint32-array-from-spread')
+const adaptedNoUnnecessaryUint32ArrayOfSpread = adaptPluginRule(noUnnecessaryUint32ArrayOfSpreadRule, 'no-unnecessary-uint32-array-of-spread')
+const adaptedNoUnnecessaryFloat32ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFromSpreadRule, 'no-unnecessary-float32-array-from-spread')
+const adaptedNoUnnecessaryFloat32ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat32ArrayOfSpreadRule, 'no-unnecessary-float32-array-of-spread')
+const adaptedNoUnnecessaryFloat64ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFromSpreadRule, 'no-unnecessary-float64-array-from-spread')
+const adaptedNoUnnecessaryFloat64ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat64ArrayOfSpreadRule, 'no-unnecessary-float64-array-of-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFromSpreadRule, 'no-unnecessary-big-int64-array-from-spread')
+const adaptedNoUnnecessaryBigInt64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule, 'no-unnecessary-big-int64-array-of-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule, 'no-unnecessary-big-uint64-array-from-spread')
+const adaptedNoUnnecessaryBigUint64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule, 'no-unnecessary-big-uint64-array-of-spread')
   'no-unnecessary-error-to-string-spread': adaptedNoUnnecessaryErrorToStringSpread,
   'no-unnecessary-regex-exec-spread': adaptedNoUnnecessaryRegexExecSpread,
   'no-unnecessary-regex-test-spread': adaptedNoUnnecessaryRegexTestSpread,
@@ -4193,6 +4208,36 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-uint8-clamped-array-from-spread': 'patterns',
   'no-unnecessary-uint8-clamped-array-of-spread': 'patterns',
   'no-unnecessary-int16-array-from-spread': 'patterns',
+  'no-unnecessary-int16-array-of-spread': 'patterns',
+  'no-unnecessary-int32-array-from-spread': 'patterns',
+  'no-unnecessary-int32-array-of-spread': 'patterns',
+  'no-unnecessary-uint16-array-from-spread': 'patterns',
+  'no-unnecessary-uint16-array-of-spread': 'patterns',
+  'no-unnecessary-uint32-array-from-spread': 'patterns',
+  'no-unnecessary-uint32-array-of-spread': 'patterns',
+  'no-unnecessary-float32-array-from-spread': 'patterns',
+  'no-unnecessary-float32-array-of-spread': 'patterns',
+  'no-unnecessary-float64-array-from-spread': 'patterns',
+  'no-unnecessary-float64-array-of-spread': 'patterns',
+  'no-unnecessary-big-int64-array-from-spread': 'patterns',
+  'no-unnecessary-big-int64-array-of-spread': 'patterns',
+  'no-unnecessary-big-uint64-array-from-spread': 'patterns',
+  'no-unnecessary-big-uint64-array-of-spread': 'patterns',
+  'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
+  'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
+  'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
+  'no-unnecessary-uint16-array-from-spread': adaptedNoUnnecessaryUint16ArrayFromSpread,
+  'no-unnecessary-uint16-array-of-spread': adaptedNoUnnecessaryUint16ArrayOfSpread,
+  'no-unnecessary-uint32-array-from-spread': adaptedNoUnnecessaryUint32ArrayFromSpread,
+  'no-unnecessary-uint32-array-of-spread': adaptedNoUnnecessaryUint32ArrayOfSpread,
+  'no-unnecessary-float32-array-from-spread': adaptedNoUnnecessaryFloat32ArrayFromSpread,
+  'no-unnecessary-float32-array-of-spread': adaptedNoUnnecessaryFloat32ArrayOfSpread,
+  'no-unnecessary-float64-array-from-spread': adaptedNoUnnecessaryFloat64ArrayFromSpread,
+  'no-unnecessary-float64-array-of-spread': adaptedNoUnnecessaryFloat64ArrayOfSpread,
+  'no-unnecessary-big-int64-array-from-spread': adaptedNoUnnecessaryBigInt64ArrayFromSpread,
+  'no-unnecessary-big-int64-array-of-spread': adaptedNoUnnecessaryBigInt64ArrayOfSpread,
+  'no-unnecessary-big-uint64-array-from-spread': adaptedNoUnnecessaryBigUint64ArrayFromSpread,
+  'no-unnecessary-big-uint64-array-of-spread': adaptedNoUnnecessaryBigUint64ArrayOfSpread,
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -4334,6 +4379,23 @@ import {
   noUnnecessaryUint8ClampedArrayFromSpreadRule,
   noUnnecessaryUint8ClampedArrayOfSpreadRule,
   noUnnecessaryInt16ArrayFromSpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryInt16ArrayOfSpreadRule,
+  noUnnecessaryInt32ArrayFromSpreadRule,
+  noUnnecessaryInt32ArrayOfSpreadRule,
+  noUnnecessaryUint16ArrayFromSpreadRule,
+  noUnnecessaryUint16ArrayOfSpreadRule,
+  noUnnecessaryUint32ArrayFromSpreadRule,
+  noUnnecessaryUint32ArrayOfSpreadRule,
+  noUnnecessaryFloat32ArrayFromSpreadRule,
+  noUnnecessaryFloat32ArrayOfSpreadRule,
+  noUnnecessaryFloat64ArrayFromSpreadRule,
+  noUnnecessaryFloat64ArrayOfSpreadRule,
+  noUnnecessaryBigInt64ArrayFromSpreadRule,
+  noUnnecessaryBigInt64ArrayOfSpreadRule,
+  noUnnecessaryBigUint64ArrayFromSpreadRule,
+  noUnnecessaryBigUint64ArrayOfSpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
