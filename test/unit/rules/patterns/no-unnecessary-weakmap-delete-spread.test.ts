@@ -1,1813 +1,1344 @@
-import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryWeakmapDeleteSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakmap-delete-spread.js'
-import type { RuleContext } from '../../../../src/plugins/types.js'
 
-interface ReportDescriptor {
-  message: string
-  loc?: { end: { column: number; line: number }; start: { column: number; line: number } }
-  node?: unknown
-}
+import { noUnnecessaryWeakMapDeleteSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-weakmap-delete-spread.js'
+import { createMockRuleContext } from '../../../helpers/ast-helpers.js'
 
-function makeLoc(startLine: number, startCol: number, endLine: number, endCol: number) {
+function makeWeakMapDeleteCall(args: unknown[], line = 1, column = 0): unknown {
+  const objectEnd = column + 'weakMap'.length
+  const propertyEnd = objectEnd + '.delete'.length
+  const callEnd = propertyEnd + '(...)'.length
+
   return {
-    start: { line: startLine, column: startCol },
-    end: { line: endLine, column: endCol },
-  }
-}
-
-function createMockContext(): { context: RuleContext; reports: ReportDescriptor[] } {
-  const reports: ReportDescriptor[] = []
-  const context: RuleContext = {
-    report: (descriptor: ReportDescriptor) => {
-      reports.push({
-        message: descriptor.message,
-        loc: descriptor.loc,
-        node: descriptor.node,
-      })
-    },
-    getFilePath: () => '/src/file.ts',
-    getAST: () => null,
-    getSource: () => '[]',
-    getTokens: () => [],
-    getComments: () => [],
-    config: { options: [{}] },
-    logger: {
-      debug: vi.fn(),
-      info: vi.fn(),
-      warn: vi.fn(),
-      error: vi.fn(),
-    },
-    workspaceRoot: '/src',
-  } as unknown as RuleContext
-  return { context, reports }
-}
-
-function makeweakMapDeleteCall(
-  args: unknown[] = [],
-  locStartLine = 1,
-  locStartCol = 0,
-  locEndLine = 1,
-  locEndCol = 20,
-): unknown {
-  return {
-    type: 'CallExpression',
-    callee: {
-      type: 'MemberExpression',
-      object: { type: 'Identifier', name: 'weakMap' },
-      property: { type: 'Identifier', name: 'delete' },
-      computed: false,
-    },
     arguments: args,
-    loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
+    callee: {
+      computed: false,
+      object: {
+        name: 'weakMap',
+        range: [column, objectEnd],
+        type: 'Identifier',
+      },
+      property: {
+        name: 'delete',
+        type: 'Identifier',
+      },
+      range: [column, propertyEnd],
+      type: 'MemberExpression',
+    },
+    loc: {
+      end: { column: callEnd, line },
+      start: { column, line },
+    },
+    range: [column, callEnd],
+    type: 'CallExpression',
   }
 }
 
-function makeSpreadArg(argument: unknown): unknown {
-  return { type: 'SpreadElement', argument }
+function createSpreadElement(argument: unknown): unknown {
+  return {
+    argument,
+    type: 'SpreadElement',
+  }
 }
 
-// ===== META TESTS (8) =====
+function createIdentifier(name: string): unknown {
+  return {
+    name,
+    type: 'Identifier',
+  }
+}
+
+function createLiteral(value: unknown): unknown {
+  return {
+    raw: String(value),
+    type: 'Literal',
+    value,
+  }
+}
 
 describe('no-unnecessary-weakmap-delete-spread rule', () => {
   describe('meta', () => {
-    test('should have correct type "suggestion"', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.type).toBe('suggestion')
+    test('should have suggestion type', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.type).toBe('suggestion')
     })
 
-    test('should have severity "warn"', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.severity).toBe('warn')
-    })
-
-    test('should have category "patterns"', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.docs.category).toBe('patterns')
+    test('should have warn severity', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.severity).toBe('warn')
     })
 
     test('should not be recommended', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.docs.recommended).toBe(false)
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.docs?.recommended).toBe(false)
     })
 
-    test('should have empty schema', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.schema).toEqual([])
+    test('should have patterns category', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.docs?.category).toBe('patterns')
     })
 
-    test('should have docs url', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.docs.url).toBeDefined()
+    test('should have schema defined', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.schema).toBeDefined()
     })
 
-    test('should have description', () => {
-      expect(noUnnecessaryWeakmapDeleteSpreadRule.meta.docs.description).toBeDefined()
+    test('should have empty schema array', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.schema).toEqual([])
     })
 
-    test('should have valid docs description type', () => {
-      expect(typeof noUnnecessaryWeakmapDeleteSpreadRule.meta.docs.description).toBe('string')
+    test('should mention weakMap.delete in description', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.docs?.description.toLowerCase()).toContain('weakMap.delete'.toLowerCase())
+    })
+
+    test('should mention spread in description', () => {
+      expect(noUnnecessaryWeakMapDeleteSpreadRule.meta.docs?.description.toLowerCase()).toContain('spread')
+    })
+  })
+
+  describe('create', () => {
+    test('should return visitor object with CallExpression method', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      expect(visitor).toHaveProperty('CallExpression')
+    })
+
+    test('should return CallExpression as a function', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      expect(typeof visitor.CallExpression).toBe('function')
+    })
+  })
+
+  describe('detecting weakMap.delete with single spread argument', () => {
+    test('should report weakMap.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('items'))]))
+
+      expect(reports.length).toBe(1)
+      expect(reports[0].message).toContain('weakMap.delete(...items)')
+      expect(reports[0].message).toContain('Consider passing the key directly')
+    })
+
+    test('should report weakMap.delete(...arr)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...arr);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('arr'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...data)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...data);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('data'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...values)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...values);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('values'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...list)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...list);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('list'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...elements)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...elements);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('elements'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...nums)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...nums);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('nums'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...result)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...result);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('result'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...collection)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...collection);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('collection'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...args)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...args);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('args'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...entries)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...entries);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('entries'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...chunks)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...chunks);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('chunks'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...buffer)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...buffer);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('buffer'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...rows)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...rows);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('rows'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...options)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...options);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('options'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...output)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...output);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('output'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...array)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...array);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('array'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...tuple)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...tuple);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('tuple'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...filtered)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...filtered);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('filtered'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...mapped)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...mapped);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('mapped'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...nested)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...nested);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('nested'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...flat)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...flat);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('flat'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...rest)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...rest);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('rest'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...extra)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...extra);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('extra'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...unique)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...unique);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('unique'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...source)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...source);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('source'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...input)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...input);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('input'))]))
+
+      expect(reports.length).toBe(1)
+    })
+
+    test('should report weakMap.delete(...combined)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...combined);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('combined'))]))
+
+      expect(reports.length).toBe(1)
+    })
+  })
+
+  describe('not reporting non-matching calls', () => {
+    test('should not report weakMap.delete(1)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(1);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(1)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete("hello")', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete("hello");' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral('hello')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(item)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(item);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('item')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(1, 2)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(1, 2);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(1), createLiteral(2)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(a, b)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(a, b);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('a'), createIdentifier('b')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(1, 2, 3)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(1, 2, 3);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(1), createLiteral(2), createLiteral(3)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(...items, extra)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items, extra);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('items')), createIdentifier('extra')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(first, ...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(first, ...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('first'), createSpreadElement(createIdentifier('items'))]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete()', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete();' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report obj.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'obj.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'obj',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 20],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report myWeakMap.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'myWeakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'myWeakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 30, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 30],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.set(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.set(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'set',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.get(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.get(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'get',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.has(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.has(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'has',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.clear(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.clear(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'clear',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 26, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 26],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.forEach(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.forEach(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'forEach',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 28, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 28],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.entries(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.entries(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'entries',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 28, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 28],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.values(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.values(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'values',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 27, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 27],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.keys(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.keys(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'keys',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.size(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.size(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'size',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.map(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.map(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'map',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 21, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 21],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.filter(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.filter(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'filter',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.reduce(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.reduce(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'reduce',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 24, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 24],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report direct delete(...items) call', () => {
+      const { context, reports } = createMockRuleContext({ source: 'delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          name: 'delete',
+          type: 'Identifier',
+        },
+        loc: { end: { column: 18, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 18],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(true)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(true);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(true)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(null)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(null);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(null)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(42)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(42);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(42)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(0)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(0);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(0)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(-1)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(-1);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createLiteral(-1)]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(value)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(value);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('value')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(x, y)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(x, y);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('x'), createIdentifier('y')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(foo, bar, baz)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(foo, bar, baz);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('foo'), createIdentifier('bar'), createIdentifier('baz')]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.delete(item, ...rest)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(item, ...rest);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('item'), createSpreadElement(createIdentifier('rest'))]))
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap["delete"](...items) with computed property', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap["delete"](...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: true,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            type: 'Literal',
+            value: 'delete',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 29, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 29],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report map.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'map.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'map',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 23, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 23],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report set.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'set.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'set',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 23, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 23],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report collection.delete(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'collection.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'collection',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 29, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 29],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.includes(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.includes(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'includes',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report weakMap.indexOf(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.indexOf(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'indexOf',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 28, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 28],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.concat(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.concat(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'concat',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 23, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 23],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
     })
   })
 
   describe('edge cases', () => {
-    test('should not report on empty arguments', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([])
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle null node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('should not report on two regular arguments', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-  })
-
-  describe('should not report with wrong object name', () => {
-    test('weakMap.delete(...items) should not report with object "foo"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'foo' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(null)).not.toThrow()
     })
 
-    test('weakMap.delete(...items) should not report with object "bar"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'bar' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle undefined node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "baz"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'baz' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression()).not.toThrow()
     })
 
-    test('weakMap.delete(...items) should not report with object "qux"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'qux' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle non-object node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "obj"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression('string')).not.toThrow()
+      expect(() => visitor.CallExpression(123)).not.toThrow()
     })
 
-    test('weakMap.delete(...items) should not report with object "arr"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle boolean node gracefully', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "fn"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'fn' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(true)).not.toThrow()
     })
 
-    test('weakMap.delete(...items) should not report with object "cb"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'cb' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle empty object node gracefully', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "x"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'x' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression({})).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.delete(...items) should not report with object "y"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'y' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle node without callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "z"', () => {
-      const { context, reports } = createMockContext()
       const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'z' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.delete(...items) should not report with object "a"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'a' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.delete(...items) should not report with object "b"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'b' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle node with non-MemberExpression callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "c"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
+        arguments: [createSpreadElement(createIdentifier('items'))],
         callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'c' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
+          name: 'delete',
+          type: 'Identifier',
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.delete(...items) should not report with object "d"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'd' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.delete(...items) should not report with object "e"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'e' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.delete(...items) should not report with object "f"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'f' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle node without arguments', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "g"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
         callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'g' },
-          property: { type: 'Identifier', name: 'delete' },
           computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.delete(...items) should not report with object "h"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'h' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.delete(...items) should not report with object "i"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 10, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 10],
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'i' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.delete(...items) should not report with object "j"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'j' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.delete(...items) should not report with object "k"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'k' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle node without property on callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "l"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
+        arguments: [createSpreadElement(createIdentifier('items'))],
         callee: {
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'l' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.delete(...items) should not report with object "m"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'm' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.delete(...items) should not report with object "n"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'n' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.delete(...items) should not report with object "o"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'o' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle node without object on callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.delete(...items) should not report with object "p"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
+        arguments: [createSpreadElement(createIdentifier('items'))],
         callee: {
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'p' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.delete(...items) should not report with object "q"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'q' },
-          property: { type: 'Identifier', name: 'delete' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-  })
+    test('should handle non-identifier object in callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-  describe('should not report with wrong property name', () => {
-    test('weakMap.foo(...items) should not report with property "foo"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
+        arguments: [createSpreadElement(createIdentifier('items'))],
         callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'foo' },
           computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.bar(...items) should not report with property "bar"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
+          object: {
+            type: 'CallExpression',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'bar' },
-          computed: false,
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.baz(...items) should not report with property "baz"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'baz' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.qux(...items) should not report with property "qux"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'qux' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.toString(...items) should not report with property "toString"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'toString' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
+    test('should handle non-identifier property in callee', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('weakMap.valueOf(...items) should not report with property "valueOf"', () => {
-      const { context, reports } = createMockContext()
       const node = {
-        type: 'CallExpression',
+        arguments: [createSpreadElement(createIdentifier('items'))],
         callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'valueOf' },
           computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            type: 'Literal',
+            value: 'delete',
+          },
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'hasOwnProperty' },
-          computed: false,
         },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.constructor(...items) should not report with property "constructor"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
+        loc: { end: { column: 20, line: 1 }, start: { column: 0, line: 1 } },
         type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'constructor' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
 
-    test('weakMap.prototype(...items) should not report with property "prototype"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'prototype' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(0)
     })
 
-    test('weakMap.__proto__(...items) should not report with property "__proto__"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: '__proto__' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.apply(...items) should not report with property "apply"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'apply' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.bind(...items) should not report with property "bind"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'bind' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.call(...items) should not report with property "call"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'call' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.length(...items) should not report with property "length"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'length' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.name(...items) should not report with property "name"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'name' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.args(...items) should not report with property "args"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'args' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.callee(...items) should not report with property "callee"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'callee' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.caller(...items) should not report with property "caller"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'caller' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.arguments(...items) should not report with property "arguments"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'arguments' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.pop(...items) should not report with property "pop"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'pop' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.push(...items) should not report with property "push"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'push' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.shift(...items) should not report with property "shift"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'shift' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.unshift(...items) should not report with property "unshift"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'unshift' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.slice(...items) should not report with property "slice"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'slice' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.splice(...items) should not report with property "splice"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'splice' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.concat(...items) should not report with property "concat"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'concat' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.join(...items) should not report with property "join"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'join' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.indexOf(...items) should not report with property "indexOf"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'indexOf' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'lastIndexOf' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.forEach(...items) should not report with property "forEach"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'forEach' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.map(...items) should not report with property "map"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'map' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.filter(...items) should not report with property "filter"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'filter' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.reduce(...items) should not report with property "reduce"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'reduce' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.reduceRight(...items) should not report with property "reduceRight"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'reduceRight' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.some(...items) should not report with property "some"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'some' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.every(...items) should not report with property "every"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'every' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.find(...items) should not report with property "find"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'find' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.findIndex(...items) should not report with property "findIndex"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'findIndex' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.includes(...items) should not report with property "includes"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'includes' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-    test('weakMap.sort(...items) should not report with property "sort"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'weakMap' },
-          property: { type: 'Identifier', name: 'sort' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-
-  })
-
-  describe('should report weakMap.delete(...items) with single spread', () => {
-    test('should report weakMap.delete(...items) case 1', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...arr) case 2', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...args) case 3', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...list) case 4', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...data) case 5', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...values) case 6', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...nums) case 7', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...rest) case 8', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...options) case 9', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...params) case 10', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...collection) case 11', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...elements) case 12', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...entries) case 13', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...objs) case 14', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...source) case 15', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...input) case 16', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...payload) case 17', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...buffer) case 18', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...chunk) case 19', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...segment) case 20', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...portion) case 21', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...range) case 22', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...tuple) case 23', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...seq) case 24', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...iter) case 25', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...result) case 26', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...output) case 27', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...response) case 28', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...records) case 29', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...rows) case 30', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...cols) case 31', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
+    test('should report correct location', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('should report weakMap.delete(...cells) case 32', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...fields) case 33', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...props) case 34', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...attrs) case 35', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...keys) case 36', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...vals) case 37', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...pairs) case 38', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...nodes) case 39', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-    test('should report weakMap.delete(...items2) case 40', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].message).toBeDefined()
-    })
-
-  })
-
-  describe('location and structure', () => {
-    test('should report with correct location line 2', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(2)
-      expect(reports[0].loc?.start.column).toBe(5)
-      expect(reports[0].loc?.end.line).toBe(2)
-      expect(reports[0].loc?.end.column).toBe(30)
-    })
-
-    test('should report with correct location line 3', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(3)
-      expect(reports[0].loc?.start.column).toBe(10)
-      expect(reports[0].loc?.end.line).toBe(3)
-      expect(reports[0].loc?.end.column).toBe(35)
-    })
-
-    test('should report with correct location line 5', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(0)
-      expect(reports[0].loc?.end.line).toBe(5)
-      expect(reports[0].loc?.end.column).toBe(20)
-    })
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('items'))], 10, 5))
 
-    test('should report with correct location line 10', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(8)
-      expect(reports[0].loc?.end.line).toBe(10)
-      expect(reports[0].loc?.end.column).toBe(28)
-    })
-
-    test('should report with correct location line 15', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(15)
-      expect(reports[0].loc?.start.column).toBe(3)
-      expect(reports[0].loc?.end.line).toBe(15)
-      expect(reports[0].loc?.end.column).toBe(23)
-    })
-
-    test('should report with correct location line 20', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(20)
-      expect(reports[0].loc?.start.column).toBe(0)
-      expect(reports[0].loc?.end.line).toBe(20)
-      expect(reports[0].loc?.end.column).toBe(15)
-    })
-
-    test('should report with correct location line 25', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(25)
-      expect(reports[0].loc?.start.column).toBe(12)
-      expect(reports[0].loc?.end.line).toBe(25)
-      expect(reports[0].loc?.end.column).toBe(37)
-    })
-
-    test('should report with correct location line 30', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(30)
-      expect(reports[0].loc?.start.column).toBe(1)
-      expect(reports[0].loc?.end.line).toBe(30)
-      expect(reports[0].loc?.end.column).toBe(21)
-    })
-
-    test('should report with correct location line 40', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(40)
       expect(reports[0].loc?.start.column).toBe(5)
-      expect(reports[0].loc?.end.line).toBe(40)
-      expect(reports[0].loc?.end.column).toBe(25)
     })
 
-    test('should report with correct location line 50', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(50)
-      expect(reports[0].loc?.start.column).toBe(0)
-      expect(reports[0].loc?.end.line).toBe(50)
-      expect(reports[0].loc?.end.column).toBe(30)
+    test('should handle multiple calls correctly', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('items'))]))
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createIdentifier('arr'))]))
+      visitor.CallExpression(makeWeakMapDeleteCall([createIdentifier('value')]))
+
+      expect(reports.length).toBe(2)
     })
 
-    test('should report with correct location line 60', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(60)
-      expect(reports[0].loc?.start.column).toBe(7)
-      expect(reports[0].loc?.end.line).toBe(60)
-      expect(reports[0].loc?.end.column).toBe(27)
+    test('should handle node without loc', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      const node = {
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'weakMap',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'delete',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        range: [0, 18],
+        type: 'CallExpression',
+      }
+
+      expect(() => visitor.CallExpression(node)).not.toThrow()
+      expect(reports.length).toBe(1)
     })
 
-    test('should report with correct location line 70', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(70)
-      expect(reports[0].loc?.start.column).toBe(2)
-      expect(reports[0].loc?.end.line).toBe(70)
-      expect(reports[0].loc?.end.column).toBe(22)
+    test('should handle number node', () => {
+      const { context } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
+
+      expect(() => visitor.CallExpression(42)).not.toThrow()
     })
 
-    test('should report with correct location line 80', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(80)
-      expect(reports[0].loc?.start.column).toBe(0)
-      expect(reports[0].loc?.end.line).toBe(80)
-      expect(reports[0].loc?.end.column).toBe(20)
-    })
+    test('should handle spread of literal value', () => {
+      const { context, reports } = createMockRuleContext({ source: 'weakMap.delete(...items);' })
+      const visitor = noUnnecessaryWeakMapDeleteSpreadRule.create(context)
 
-    test('should report with correct location line 90', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(90)
-      expect(reports[0].loc?.start.column).toBe(15)
-      expect(reports[0].loc?.end.line).toBe(90)
-      expect(reports[0].loc?.end.column).toBe(40)
-    })
+      visitor.CallExpression(makeWeakMapDeleteCall([createSpreadElement(createLiteral(42))]))
 
-    test('should report with correct location line 100', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(100)
-      expect(reports[0].loc?.start.column).toBe(0)
-      expect(reports[0].loc?.end.line).toBe(100)
-      expect(reports[0].loc?.end.column).toBe(25)
+      expect(reports.length).toBe(1)
     })
-
-    test('should report with correct location line 150', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(150)
-      expect(reports[0].loc?.start.column).toBe(3)
-      expect(reports[0].loc?.end.line).toBe(150)
-      expect(reports[0].loc?.end.column).toBe(23)
-    })
-
-    test('should report with correct location line 200', () => {
-      const { context, reports } = createMockContext()
-      const node = makeweakMapDeleteCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
-      noUnnecessaryWeakmapDeleteSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(1)
-      expect(reports[0].loc).toBeDefined()
-      expect(reports[0].loc?.start.line).toBe(200)
-      expect(reports[0].loc?.start.column).toBe(8)
-      expect(reports[0].loc?.end.line).toBe(200)
-      expect(reports[0].loc?.end.column).toBe(33)
-    })
-
   })
 })

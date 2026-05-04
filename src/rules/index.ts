@@ -1,4 +1,25 @@
 import type { RuleDefinition } from './types.js'
+  'no-unnecessary-date-set-full-year-spread': 'patterns',
+  'no-unnecessary-date-set-month-spread': 'patterns',
+  'no-unnecessary-date-set-date-spread': 'patterns',
+  'no-unnecessary-date-set-hours-spread': 'patterns',
+  'no-unnecessary-date-set-minutes-spread': 'patterns',
+  'no-unnecessary-date-set-seconds-spread': 'patterns',
+  'no-unnecessary-date-set-milliseconds-spread': 'patterns',
+  'no-unnecessary-date-set-utc-full-year-spread': 'patterns',
+  'no-unnecessary-date-set-utc-month-spread': 'patterns',
+  'no-unnecessary-date-set-utc-date-spread': 'patterns',
+  'no-unnecessary-date-set-utc-hours-spread': 'patterns',
+  'no-unnecessary-date-set-utc-minutes-spread': 'patterns',
+  'no-unnecessary-date-set-utc-seconds-spread': 'patterns',
+  'no-unnecessary-date-set-utc-milliseconds-spread': 'patterns',
+  'no-unnecessary-set-clear-spread': 'patterns',
+  'no-unnecessary-set-keys-spread': 'patterns',
+  'no-unnecessary-set-values-spread': 'patterns',
+  'no-unnecessary-set-entries-spread': 'patterns',
+  'no-unnecessary-map-keys-spread': 'patterns',
+  'no-unnecessary-map-values-spread': 'patterns',
+  'no-unnecessary-map-entries-spread': 'patterns',
 
 import { adaptPluginRule } from './adapter.js'
 // Best practices rules
@@ -2950,6 +2971,48 @@ const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWea
 const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
 const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
 const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
+const adaptedNoUnnecessaryDateSetFullYearSpread = adaptPluginRule(noUnnecessaryDateSetFullYearSpreadRule, 'no-unnecessary-date-set-full-year-spread')
+const adaptedNoUnnecessaryDateSetMonthSpread = adaptPluginRule(noUnnecessaryDateSetMonthSpreadRule, 'no-unnecessary-date-set-month-spread')
+const adaptedNoUnnecessaryDateSetDateSpread = adaptPluginRule(noUnnecessaryDateSetDateSpreadRule, 'no-unnecessary-date-set-date-spread')
+const adaptedNoUnnecessaryDateSetHoursSpread = adaptPluginRule(noUnnecessaryDateSetHoursSpreadRule, 'no-unnecessary-date-set-hours-spread')
+const adaptedNoUnnecessaryDateSetMinutesSpread = adaptPluginRule(noUnnecessaryDateSetMinutesSpreadRule, 'no-unnecessary-date-set-minutes-spread')
+const adaptedNoUnnecessaryDateSetSecondsSpread = adaptPluginRule(noUnnecessaryDateSetSecondsSpreadRule, 'no-unnecessary-date-set-seconds-spread')
+const adaptedNoUnnecessaryDateSetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetMillisecondsSpreadRule, 'no-unnecessary-date-set-milliseconds-spread')
+const adaptedNoUnnecessaryDateSetUtcFullYearSpread = adaptPluginRule(noUnnecessaryDateSetUtcFullYearSpreadRule, 'no-unnecessary-date-set-utc-full-year-spread')
+const adaptedNoUnnecessaryDateSetUtcMonthSpread = adaptPluginRule(noUnnecessaryDateSetUtcMonthSpreadRule, 'no-unnecessary-date-set-utc-month-spread')
+const adaptedNoUnnecessaryDateSetUtcDateSpread = adaptPluginRule(noUnnecessaryDateSetUtcDateSpreadRule, 'no-unnecessary-date-set-utc-date-spread')
+const adaptedNoUnnecessaryDateSetUtcHoursSpread = adaptPluginRule(noUnnecessaryDateSetUtcHoursSpreadRule, 'no-unnecessary-date-set-utc-hours-spread')
+const adaptedNoUnnecessaryDateSetUtcMinutesSpread = adaptPluginRule(noUnnecessaryDateSetUtcMinutesSpreadRule, 'no-unnecessary-date-set-utc-minutes-spread')
+const adaptedNoUnnecessaryDateSetUtcSecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcSecondsSpreadRule, 'no-unnecessary-date-set-utc-seconds-spread')
+const adaptedNoUnnecessaryDateSetUtcMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcMillisecondsSpreadRule, 'no-unnecessary-date-set-utc-milliseconds-spread')
+const adaptedNoUnnecessarySetClearSpread = adaptPluginRule(noUnnecessarySetClearSpreadRule, 'no-unnecessary-set-clear-spread')
+const adaptedNoUnnecessarySetKeysSpread = adaptPluginRule(noUnnecessarySetKeysSpreadRule, 'no-unnecessary-set-keys-spread')
+const adaptedNoUnnecessarySetValuesSpread = adaptPluginRule(noUnecessarySetValuesSpreadRule, 'no-unnecessary-set-values-spread')
+const adaptedNoUnnecessarySetEntriesSpread = adaptPluginRule(noUnnecessarySetEntriesSpreadRule, 'no-unnecessary-set-entries-spread')
+const adaptedNoUnnecessaryMapKeysSpread = adaptPluginRule(noUnnecessaryMapKeysSpreadRule, 'no-unnecessary-map-keys-spread')
+const adaptedNoUnnecessaryMapValuesSpread = adaptPluginRule(noUnnecessaryMapValuesSpreadRule, 'no-unnecessary-map-values-spread')
+const adaptedNoUnnecessaryMapEntriesSpread = adaptPluginRule(noUnnecessaryMapEntriesSpreadRule, 'no-unnecessary-map-entries-spread')
+  'no-unnecessary-date-set-full-year-spread': adaptedNoUnnecessaryDateSetFullYearSpread,
+  'no-unnecessary-date-set-month-spread': adaptedNoUnnecessaryDateSetMonthSpread,
+  'no-unnecessary-date-set-date-spread': adaptedNoUnnecessaryDateSetDateSpread,
+  'no-unnecessary-date-set-hours-spread': adaptedNoUnnecessaryDateSetHoursSpread,
+  'no-unnecessary-date-set-minutes-spread': adaptedNoUnnecessaryDateSetMinutesSpread,
+  'no-unnecessary-date-set-seconds-spread': adaptedNoUnnecessaryDateSetSecondsSpread,
+  'no-unnecessary-date-set-milliseconds-spread': adaptedNoUnnecessaryDateSetMillisecondsSpread,
+  'no-unnecessary-date-set-utc-full-year-spread': adaptedNoUnnecessaryDateSetUtcFullYearSpread,
+  'no-unnecessary-date-set-utc-month-spread': adaptedNoUnnecessaryDateSetUtcMonthSpread,
+  'no-unnecessary-date-set-utc-date-spread': adaptedNoUnnecessaryDateSetUtcDateSpread,
+  'no-unnecessary-date-set-utc-hours-spread': adaptedNoUnnecessaryDateSetUtcHoursSpread,
+  'no-unnecessary-date-set-utc-minutes-spread': adaptedNoUnnecessaryDateSetUtcMinutesSpread,
+  'no-unnecessary-date-set-utc-seconds-spread': adaptedNoUnnecessaryDateSetUtcSecondsSpread,
+  'no-unnecessary-date-set-utc-milliseconds-spread': adaptedNoUnnecessaryDateSetUtcMillisecondsSpread,
+  'no-unnecessary-set-clear-spread': adaptedNoUnnecessarySetClearSpread,
+  'no-unnecessary-set-keys-spread': adaptedNoUnnecessarySetKeysSpread,
+  'no-unnecessary-set-values-spread': adaptedNoUnnecessarySetValuesSpread,
+  'no-unnecessary-set-entries-spread': adaptedNoUnnecessarySetEntriesSpread,
+  'no-unnecessary-map-keys-spread': adaptedNoUnnecessaryMapKeysSpread,
+  'no-unnecessary-map-values-spread': adaptedNoUnnecessaryMapValuesSpread,
+  'no-unnecessary-map-entries-spread': adaptedNoUnnecessaryMapEntriesSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -4049,6 +4112,27 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'valid-title': 'testing',
    'valid-typeof': 'patterns',
    'yoda': 'patterns',
+  'no-unnecessary-date-set-full-year-spread': 'patterns',
+  'no-unnecessary-date-set-month-spread': 'patterns',
+  'no-unnecessary-date-set-date-spread': 'patterns',
+  'no-unnecessary-date-set-hours-spread': 'patterns',
+  'no-unnecessary-date-set-minutes-spread': 'patterns',
+  'no-unnecessary-date-set-seconds-spread': 'patterns',
+  'no-unnecessary-date-set-milliseconds-spread': 'patterns',
+  'no-unnecessary-date-set-utc-full-year-spread': 'patterns',
+  'no-unnecessary-date-set-utc-month-spread': 'patterns',
+  'no-unnecessary-date-set-utc-date-spread': 'patterns',
+  'no-unnecessary-date-set-utc-hours-spread': 'patterns',
+  'no-unnecessary-date-set-utc-minutes-spread': 'patterns',
+  'no-unnecessary-date-set-utc-seconds-spread': 'patterns',
+  'no-unnecessary-date-set-utc-milliseconds-spread': 'patterns',
+  'no-unnecessary-set-clear-spread': 'patterns',
+  'no-unnecessary-set-keys-spread': 'patterns',
+  'no-unnecessary-set-values-spread': 'patterns',
+  'no-unnecessary-set-entries-spread': 'patterns',
+  'no-unnecessary-map-keys-spread': 'patterns',
+  'no-unnecessary-map-values-spread': 'patterns',
+  'no-unnecessary-map-entries-spread': 'patterns',
 }
 export function getRuleCategory(ruleId: string): RuleCategory {
   return RULE_CATEGORIES[ruleId] ?? 'complexity'
@@ -4145,6 +4229,29 @@ export {
   requireAwaitRule,
   requireReturnTypeRule,
   restrictTemplateExpressionsRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryDateSetFullYearSpreadRule,
+  noUnnecessaryDateSetMonthSpreadRule,
+  noUnnecessaryDateSetDateSpreadRule,
+  noUnnecessaryDateSetHoursSpreadRule,
+  noUnnecessaryDateSetMinutesSpreadRule,
+  noUnnecessaryDateSetSecondsSpreadRule,
+  noUnnecessaryDateSetMillisecondsSpreadRule,
+  noUnnecessaryDateSetUtcFullYearSpreadRule,
+  noUnnecessaryDateSetUtcMonthSpreadRule,
+  noUnecessaryDateSetUtcDateSpreadRule,
+  noUnnecessaryDateSetUtcHoursSpreadRule,
+  noUnecessaryDateSetUtcMinutesSpreadRule,
+  noUnnecessaryDateSetUtcSecondsSpreadRule,
+  noUnnecessaryDateSetUtcMillisecondsSpreadRule,
+  noUnnecessarySetClearSpreadRule,
+  noUnecessarySetKeysSpreadRule,
+  noUnnecessarySetValuesSpreadRule,
+  noUnnecessarySetEntriesSpreadRule,
+  noUnnecessaryMapKeysSpreadRule,
+  noUnecessaryMapValuesSpreadRule,
+  noUnnecessaryMapEntriesSpreadRule,
 } from './patterns/index.js'
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
 export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
