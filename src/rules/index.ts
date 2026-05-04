@@ -1504,6 +1504,10 @@ const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGe
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2522,10 +2526,22 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-date-get-hours-spread': adaptedNoUnnecessaryDateGetHoursSpread,
   'no-unnecessary-date-get-minutes-spread': adaptedNoUnnecessaryDateGetMinutesSpread,
   'no-unnecessary-date-get-seconds-spread': adaptedNoUnnecessaryDateGetSecondsSpread,
+  'no-unnecessary-date-get-time-spread': adaptedNoUnnecessaryDateGetTimeSpread,
+  'no-unnecessary-date-get-timezone-offset-spread': adaptedNoUnnecessaryDateGetTimezoneOffsetSpread,
+  'no-unnecessary-date-get-milliseconds-spread': adaptedNoUnnecessaryDateGetMillisecondsSpread,
+  'no-unnecessary-date-to-string-spread': adaptedNoUnnecessaryDateToStringSpread,
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
 const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
 const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
@@ -2534,6 +2550,10 @@ const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGe
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
 const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
 const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
@@ -2546,6 +2566,10 @@ const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGe
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMapSetSpreadRule, 'no-unnecessary-weakmap-set-spread')
 const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
 const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
@@ -2562,6 +2586,10 @@ const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGe
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
 const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
 const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
 const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
@@ -2582,6 +2610,10 @@ const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGe
 const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
 const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
 const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
+const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
+const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
+const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
+const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3449,6 +3481,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-date-get-hours-spread': 'patterns',
   'no-unnecessary-date-get-minutes-spread': 'patterns',
   'no-unnecessary-date-get-seconds-spread': 'patterns',
+  'no-unnecessary-date-get-time-spread': 'patterns',
+  'no-unnecessary-date-get-timezone-offset-spread': 'patterns',
+  'no-unnecessary-date-get-milliseconds-spread': 'patterns',
+  'no-unnecessary-date-to-string-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
