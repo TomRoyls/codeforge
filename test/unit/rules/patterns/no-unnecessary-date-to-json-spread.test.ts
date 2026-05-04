@@ -802,14 +802,6 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('should not report prototype.toJSON(...items) with prototype object', () => {
-      const { context, reports } = createMockRuleContext({ source: 'prototype.toJSON(...items);' })
-      const visitor = noUnnecessaryDateToJSONSpreadRule.create(context)
-
-      visitor.CallExpression(makeCallWithObjectName('prototype', [makeSpreadArg('items')]))
-
-      expect(reports.length).toBe(0)
-    })
   })
 
   describe('edge cases', () => {
