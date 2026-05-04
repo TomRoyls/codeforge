@@ -3165,6 +3165,26 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-typed-array-to-string-spread']: adaptPluginRule(noUnnecessaryTypedArrayToStringSpreadRule),
   ['no-unnecessary-typed-array-values-spread']: adaptPluginRule(noUnnecessaryTypedArrayValuesSpreadRule),
   ['no-unnecessary-typed-array-with-spread']: adaptPluginRule(noUnnecessaryTypedArrayWithSpreadRule),
+  ['no-unnecessary-dataview-get-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewGetBigInt64SpreadRule),
+  ['no-unnecessary-dataview-get-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewGetBigUint64SpreadRule),
+  ['no-unnecessary-dataview-get-float32-spread']: adaptPluginRule(noUnnecessaryDataviewGetFloat32SpreadRule),
+  ['no-unnecessary-dataview-get-float64-spread']: adaptPluginRule(noUnnecessaryDataviewGetFloat64SpreadRule),
+  ['no-unnecessary-dataview-get-int16-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt16SpreadRule),
+  ['no-unnecessary-dataview-get-int32-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt32SpreadRule),
+  ['no-unnecessary-dataview-get-int8-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt8SpreadRule),
+  ['no-unnecessary-dataview-get-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint16SpreadRule),
+  ['no-unnecessary-dataview-get-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint32SpreadRule),
+  ['no-unnecessary-dataview-get-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint8SpreadRule),
+  ['no-unnecessary-dataview-set-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewSetBigInt64SpreadRule),
+  ['no-unnecessary-dataview-set-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewSetBigUint64SpreadRule),
+  ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
+  ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
+  ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
+  ['no-unnecessary-dataview-set-int32-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt32SpreadRule),
+  ['no-unnecessary-dataview-set-int8-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt8SpreadRule),
+  ['no-unnecessary-dataview-set-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint16SpreadRule),
+  ['no-unnecessary-dataview-set-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint32SpreadRule),
+  ['no-unnecessary-dataview-set-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint8SpreadRule),
   'no-unnecessary-function-call-spread': adaptedNoUnnecessaryFunctionCallSpread,
   'no-unnecessary-function-apply-spread': adaptedNoUnnecessaryFunctionApplySpread,
   'no-unnecessary-function-bind-spread': adaptedNoUnnecessaryFunctionBindSpread,
@@ -4608,6 +4628,26 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-typed-array-to-string-spread']: 'patterns',
   ['no-unnecessary-typed-array-values-spread']: 'patterns',
   ['no-unnecessary-typed-array-with-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-big-int64-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-big-uint64-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-float32-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-float64-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-int16-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-int32-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-int8-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-uint16-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-uint32-spread']: 'patterns',
+  ['no-unnecessary-dataview-get-uint8-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-big-int64-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-big-uint64-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-int32-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-int8-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-uint16-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-uint32-spread']: 'patterns',
+  ['no-unnecessary-dataview-set-uint8-spread']: 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4930,6 +4970,26 @@ import { noUnnecessaryTypedArrayToLocaleStringSpreadRule } from './patterns/no-u
 import { noUnnecessaryTypedArrayToStringSpreadRule } from './patterns/no-unnecessary-typed-array-to-string-spread.js'
 import { noUnnecessaryTypedArrayValuesSpreadRule } from './patterns/no-unnecessary-typed-array-values-spread.js'
 import { noUnnecessaryTypedArrayWithSpreadRule } from './patterns/no-unnecessary-typed-array-with-spread.js'
+import { noUnnecessaryDataviewGetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-get-big-int64-spread.js'
+import { noUnnecessaryDataviewGetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-get-big-uint64-spread.js'
+import { noUnnecessaryDataviewGetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-get-float32-spread.js'
+import { noUnnecessaryDataviewGetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-get-float64-spread.js'
+import { noUnnecessaryDataviewGetInt16SpreadRule } from './patterns/no-unnecessary-dataview-get-int16-spread.js'
+import { noUnnecessaryDataviewGetInt32SpreadRule } from './patterns/no-unnecessary-dataview-get-int32-spread.js'
+import { noUnnecessaryDataviewGetInt8SpreadRule } from './patterns/no-unnecessary-dataview-get-int8-spread.js'
+import { noUnnecessaryDataviewGetUint16SpreadRule } from './patterns/no-unnecessary-dataview-get-uint16-spread.js'
+import { noUnnecessaryDataviewGetUint32SpreadRule } from './patterns/no-unnecessary-dataview-get-uint32-spread.js'
+import { noUnnecessaryDataviewGetUint8SpreadRule } from './patterns/no-unnecessary-dataview-get-uint8-spread.js'
+import { noUnnecessaryDataviewSetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-set-big-int64-spread.js'
+import { noUnnecessaryDataviewSetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-set-big-uint64-spread.js'
+import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
+import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
+import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
+import { noUnnecessaryDataviewSetInt32SpreadRule } from './patterns/no-unnecessary-dataview-set-int32-spread.js'
+import { noUnnecessaryDataviewSetInt8SpreadRule } from './patterns/no-unnecessary-dataview-set-int8-spread.js'
+import { noUnnecessaryDataviewSetUint16SpreadRule } from './patterns/no-unnecessary-dataview-set-uint16-spread.js'
+import { noUnnecessaryDataviewSetUint32SpreadRule } from './patterns/no-unnecessary-dataview-set-uint32-spread.js'
+import { noUnnecessaryDataviewSetUint8SpreadRule } from './patterns/no-unnecessary-dataview-set-uint8-spread.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
 export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
