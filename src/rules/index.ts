@@ -1484,6 +1484,10 @@ const adaptedNoUnnecessaryConsoleCountResetSpread = adaptPluginRule(noUnnecessar
 const adaptedNoUnnecessaryConsoleProfileSpread = adaptPluginRule(noUnnecessaryConsoleProfileSpreadRule, 'no-unnecessary-console-profile-spread')
 const adaptedNoUnnecessaryConsoleProfileEndSpread = adaptPluginRule(noUnnecessaryConsoleProfileEndSpreadRule, 'no-unnecessary-console-profile-end-spread')
 const adaptedNoUnnecessaryConsoleDirxmlSpread = adaptPluginRule(noUnnecessaryConsoleDirxmlSpreadRule, 'no-unnecessary-console-dirxml-spread')
+const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
+const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
+const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
+const adaptedNoUnnecessarySetForEachSpread = adaptPluginRule(noUnnecessarySetForEachSpreadRule, 'no-unnecessary-set-for-each-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2482,6 +2486,14 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-console-profile-spread': adaptedNoUnnecessaryConsoleProfileSpread,
   'no-unnecessary-console-profile-end-spread': adaptedNoUnnecessaryConsoleProfileEndSpread,
   'no-unnecessary-console-dirxml-spread': adaptedNoUnnecessaryConsoleDirxmlSpread,
+  'no-unnecessary-map-set-spread': adaptedNoUnnecessaryMapSetSpread,
+  'no-unnecessary-map-for-each-spread': adaptedNoUnnecessaryMapForEachSpread,
+  'no-unnecessary-set-add-spread': adaptedNoUnnecessarySetAddSpread,
+  'no-unnecessary-set-for-each-spread': adaptedNoUnnecessarySetForEachSpread,
+const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
+const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
+const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
+const adaptedNoUnnecessarySetForEachSpread = adaptPluginRule(noUnnecessarySetForEachSpreadRule, 'no-unnecessary-set-for-each-spread')
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3329,6 +3341,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-console-profile-spread': 'patterns',
   'no-unnecessary-console-profile-end-spread': 'patterns',
   'no-unnecessary-console-dirxml-spread': 'patterns',
+  'no-unnecessary-map-set-spread': 'patterns',
+  'no-unnecessary-map-for-each-spread': 'patterns',
+  'no-unnecessary-set-add-spread': 'patterns',
+  'no-unnecessary-set-for-each-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
