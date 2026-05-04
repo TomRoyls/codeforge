@@ -605,6 +605,10 @@ noUnnecessaryStringMatchSpreadRule,
     noUnnecessaryConsoleTimeEndSpreadRule,
     noUnnecessaryConsoleTimeLogSpreadRule,
     noUnnecessaryConsoleGroupCollapsedSpreadRule,
+    noUnnecessaryConsoleCountResetSpreadRule,
+    noUnnecessaryConsoleProfileSpreadRule,
+    noUnnecessaryConsoleProfileEndSpreadRule,
+    noUnnecessaryConsoleDirxmlSpreadRule,
     noUnnecessaryStringToLowerCaseSameRule,
    noUnnecessaryStringToLowerCaseSpreadRule,
    noUnnecessaryStringToLowerCaseEmptyRule,
@@ -1476,6 +1480,10 @@ const adaptedNoUnnecessaryConsoleTimeSpread = adaptPluginRule(noUnnecessaryConso
 const adaptedNoUnnecessaryConsoleTimeEndSpread = adaptPluginRule(noUnnecessaryConsoleTimeEndSpreadRule, 'no-unnecessary-console-time-end-spread')
 const adaptedNoUnnecessaryConsoleTimeLogSpread = adaptPluginRule(noUnnecessaryConsoleTimeLogSpreadRule, 'no-unnecessary-console-time-log-spread')
 const adaptedNoUnnecessaryConsoleGroupCollapsedSpread = adaptPluginRule(noUnnecessaryConsoleGroupCollapsedSpreadRule, 'no-unnecessary-console-group-collapsed-spread')
+const adaptedNoUnnecessaryConsoleCountResetSpread = adaptPluginRule(noUnnecessaryConsoleCountResetSpreadRule, 'no-unnecessary-console-count-reset-spread')
+const adaptedNoUnnecessaryConsoleProfileSpread = adaptPluginRule(noUnnecessaryConsoleProfileSpreadRule, 'no-unnecessary-console-profile-spread')
+const adaptedNoUnnecessaryConsoleProfileEndSpread = adaptPluginRule(noUnnecessaryConsoleProfileEndSpreadRule, 'no-unnecessary-console-profile-end-spread')
+const adaptedNoUnnecessaryConsoleDirxmlSpread = adaptPluginRule(noUnnecessaryConsoleDirxmlSpreadRule, 'no-unnecessary-console-dirxml-spread')
 const adaptedNoUnnecessaryStringToLowerCaseSame = adaptPluginRule(noUnnecessaryStringToLowerCaseSameRule, 'no-unnecessary-string-to-lower-case-same')
 const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
 const adaptedNoUnnecessaryStringToLowerCaseEmpty = adaptPluginRule(noUnnecessaryStringToLowerCaseEmptyRule, 'no-unnecessary-string-to-lower-case-empty')
@@ -2470,6 +2478,10 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-console-time-end-spread': adaptedNoUnnecessaryConsoleTimeEndSpread,
   'no-unnecessary-console-time-log-spread': adaptedNoUnnecessaryConsoleTimeLogSpread,
   'no-unnecessary-console-group-collapsed-spread': adaptedNoUnnecessaryConsoleGroupCollapsedSpread,
+  'no-unnecessary-console-count-reset-spread': adaptedNoUnnecessaryConsoleCountResetSpread,
+  'no-unnecessary-console-profile-spread': adaptedNoUnnecessaryConsoleProfileSpread,
+  'no-unnecessary-console-profile-end-spread': adaptedNoUnnecessaryConsoleProfileEndSpread,
+  'no-unnecessary-console-dirxml-spread': adaptedNoUnnecessaryConsoleDirxmlSpread,
     'no-unnecessary-string-to-lower-case-same': adaptedNoUnnecessaryStringToLowerCaseSame,
    'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
    'no-unnecessary-string-to-lower-case-empty': adaptedNoUnnecessaryStringToLowerCaseEmpty,
@@ -3313,6 +3325,10 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-console-time-end-spread': 'patterns',
   'no-unnecessary-console-time-log-spread': 'patterns',
   'no-unnecessary-console-group-collapsed-spread': 'patterns',
+  'no-unnecessary-console-count-reset-spread': 'patterns',
+  'no-unnecessary-console-profile-spread': 'patterns',
+  'no-unnecessary-console-profile-end-spread': 'patterns',
+  'no-unnecessary-console-dirxml-spread': 'patterns',
     'no-unnecessary-string-to-lower-case-same': 'patterns',
    'no-unnecessary-string-to-lower-case-spread': 'patterns',
    'no-unnecessary-string-to-lower-case-empty': 'patterns',
