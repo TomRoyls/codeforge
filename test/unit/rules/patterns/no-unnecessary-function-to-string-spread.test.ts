@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryDateToJsonSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-json-spread.js'
+import { noUnnecessaryFunctionToStringSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-function-to-string-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {
@@ -42,7 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makedateToJSONCall(
+function makefnToStringCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -53,8 +53,8 @@ function makedateToJSONCall(
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object: { type: 'Identifier', name: 'date' },
-      property: { type: 'Identifier', name: 'toJSON' },
+      object: { type: 'Identifier', name: 'fn' },
+      property: { type: 'Identifier', name: 'toString' },
       computed: false,
     },
     arguments: args,
@@ -66,1421 +66,1389 @@ function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
 
-describe('no-unnecessary-date-to-json-spread rule', () => {
+describe('no-unnecessary-function-to-string-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.type).toBe('suggestion')
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.type).toBe('suggestion')
     })
     test('should have severity "warn"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.severity).toBe('warn')
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.severity).toBe('warn')
     })
     test('should have category "patterns"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.category).toBe('patterns')
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.docs.category).toBe('patterns')
     })
     test('should not be recommended', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.recommended).toBe(false)
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.docs.recommended).toBe(false)
     })
     test('should have empty schema', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.schema).toEqual([])
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.schema).toEqual([])
     })
     test('should have docs url', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.url).toBeDefined()
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.docs.url).toBeDefined()
     })
     test('should have description', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.description).toBeDefined()
+      expect(noUnnecessaryFunctionToStringSpreadRule.meta.docs.description).toBeDefined()
     })
     test('should have valid docs description type', () => {
-      expect(typeof noUnnecessaryDateToJsonSpreadRule.meta.docs.description).toBe('string')
+      expect(typeof noUnnecessaryFunctionToStringSpreadRule.meta.docs.description).toBe('string')
     })
   })
 
   describe('edge cases', () => {
     test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([])
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([])
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
   describe('should not report with wrong object name', () => {
-    test('foo.toJSON(...items) should not report with object "foo"', () => {
+    test('foo.toString(...items) should not report with object "foo"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'foo' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('bar.toJSON(...items) should not report with object "bar"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'bar' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('baz.toJSON(...items) should not report with object "baz"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'baz' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('qux.toJSON(...items) should not report with object "qux"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'qux' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('obj.toJSON(...items) should not report with object "obj"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('arr.toJSON(...items) should not report with object "arr"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('fn.toJSON(...items) should not report with object "fn"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'fn' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('cb.toJSON(...items) should not report with object "cb"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'cb' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('x.toJSON(...items) should not report with object "x"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'x' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('y.toJSON(...items) should not report with object "y"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'y' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('z.toJSON(...items) should not report with object "z"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'z' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('a.toJSON(...items) should not report with object "a"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'a' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('b.toJSON(...items) should not report with object "b"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'b' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('c.toJSON(...items) should not report with object "c"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'c' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('d.toJSON(...items) should not report with object "d"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'd' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('e.toJSON(...items) should not report with object "e"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'e' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('f.toJSON(...items) should not report with object "f"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'f' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('g.toJSON(...items) should not report with object "g"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'g' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('h.toJSON(...items) should not report with object "h"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'h' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('i.toJSON(...items) should not report with object "i"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'i' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('j.toJSON(...items) should not report with object "j"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'j' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('k.toJSON(...items) should not report with object "k"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'k' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('l.toJSON(...items) should not report with object "l"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'l' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('m.toJSON(...items) should not report with object "m"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'm' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('n.toJSON(...items) should not report with object "n"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'n' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('o.toJSON(...items) should not report with object "o"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'o' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('p.toJSON(...items) should not report with object "p"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'p' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('q.toJSON(...items) should not report with object "q"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'q' },
-          property: { type: 'Identifier', name: 'toJSON' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-  })
-
-  describe('should not report with wrong property name', () => {
-    test('date.foo(...items) should not report with property "foo"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
-          property: { type: 'Identifier', name: 'foo' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('date.bar(...items) should not report with property "bar"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
-          property: { type: 'Identifier', name: 'bar' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('date.baz(...items) should not report with property "baz"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
-          property: { type: 'Identifier', name: 'baz' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('date.qux(...items) should not report with property "qux"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
-          property: { type: 'Identifier', name: 'qux' },
-          computed: false,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 20),
-      }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
-      expect(reports).toHaveLength(0)
-    })
-    test('date.toString(...items) should not report with property "toString"', () => {
-      const { context, reports } = createMockContext()
-      const node = {
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
           property: { type: 'Identifier', name: 'toString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.valueOf(...items) should not report with property "valueOf"', () => {
+    test('bar.toString(...items) should not report with object "bar"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'bar' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('baz.toString(...items) should not report with object "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'baz' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('qux.toString(...items) should not report with object "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'qux' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('obj.toString(...items) should not report with object "obj"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.toString(...items) should not report with object "arr"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.toString(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.toString(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.toString(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.toString(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.toString(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.toString(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.toString(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.toString(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.toString(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.toString(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.toString(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.toString(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.toString(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.toString(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.toString(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.toString(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.toString(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.toString(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.toString(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.toString(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.toString(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('fn.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'foo' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.bar(...items) should not report with property "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'bar' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.baz(...items) should not report with property "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'baz' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.qux(...items) should not report with property "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'qux' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'valueOf' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+    test('fn.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'hasOwnProperty' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.constructor(...items) should not report with property "constructor"', () => {
+    test('fn.constructor(...items) should not report with property "constructor"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'constructor' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.prototype(...items) should not report with property "prototype"', () => {
+    test('fn.prototype(...items) should not report with property "prototype"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'prototype' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.__proto__(...items) should not report with property "__proto__"', () => {
+    test('fn.__proto__(...items) should not report with property "__proto__"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: '__proto__' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.apply(...items) should not report with property "apply"', () => {
+    test('fn.apply(...items) should not report with property "apply"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'apply' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.bind(...items) should not report with property "bind"', () => {
+    test('fn.bind(...items) should not report with property "bind"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'bind' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.call(...items) should not report with property "call"', () => {
+    test('fn.call(...items) should not report with property "call"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'call' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.length(...items) should not report with property "length"', () => {
+    test('fn.length(...items) should not report with property "length"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'length' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.name(...items) should not report with property "name"', () => {
+    test('fn.name(...items) should not report with property "name"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'name' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.args(...items) should not report with property "args"', () => {
+    test('fn.args(...items) should not report with property "args"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'args' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.callee(...items) should not report with property "callee"', () => {
+    test('fn.callee(...items) should not report with property "callee"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'callee' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.caller(...items) should not report with property "caller"', () => {
+    test('fn.caller(...items) should not report with property "caller"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'caller' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.arguments(...items) should not report with property "arguments"', () => {
+    test('fn.arguments(...items) should not report with property "arguments"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'arguments' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.pop(...items) should not report with property "pop"', () => {
+    test('fn.pop(...items) should not report with property "pop"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'pop' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.push(...items) should not report with property "push"', () => {
+    test('fn.push(...items) should not report with property "push"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'push' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.shift(...items) should not report with property "shift"', () => {
+    test('fn.shift(...items) should not report with property "shift"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'shift' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.unshift(...items) should not report with property "unshift"', () => {
+    test('fn.unshift(...items) should not report with property "unshift"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'unshift' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.slice(...items) should not report with property "slice"', () => {
+    test('fn.slice(...items) should not report with property "slice"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'slice' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.splice(...items) should not report with property "splice"', () => {
+    test('fn.splice(...items) should not report with property "splice"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'splice' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.concat(...items) should not report with property "concat"', () => {
+    test('fn.concat(...items) should not report with property "concat"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'concat' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.join(...items) should not report with property "join"', () => {
+    test('fn.join(...items) should not report with property "join"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'join' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.indexOf(...items) should not report with property "indexOf"', () => {
+    test('fn.indexOf(...items) should not report with property "indexOf"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'indexOf' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+    test('fn.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'lastIndexOf' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.forEach(...items) should not report with property "forEach"', () => {
+    test('fn.forEach(...items) should not report with property "forEach"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'forEach' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.map(...items) should not report with property "map"', () => {
+    test('fn.map(...items) should not report with property "map"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'map' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.filter(...items) should not report with property "filter"', () => {
+    test('fn.filter(...items) should not report with property "filter"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'filter' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.reduce(...items) should not report with property "reduce"', () => {
+    test('fn.reduce(...items) should not report with property "reduce"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'reduce' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.reduceRight(...items) should not report with property "reduceRight"', () => {
+    test('fn.reduceRight(...items) should not report with property "reduceRight"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'reduceRight' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.some(...items) should not report with property "some"', () => {
+    test('fn.some(...items) should not report with property "some"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'some' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.every(...items) should not report with property "every"', () => {
+    test('fn.every(...items) should not report with property "every"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'every' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.find(...items) should not report with property "find"', () => {
+    test('fn.find(...items) should not report with property "find"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'find' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.findIndex(...items) should not report with property "findIndex"', () => {
+    test('fn.findIndex(...items) should not report with property "findIndex"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'findIndex' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.includes(...items) should not report with property "includes"', () => {
+    test('fn.includes(...items) should not report with property "includes"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'includes' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('date.sort(...items) should not report with property "sort"', () => {
+    test('fn.sort(...items) should not report with property "sort"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'date' },
+          object: { type: 'Identifier', name: 'fn' },
           property: { type: 'Identifier', name: 'sort' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
-  describe('should report date.toJSON(...items) with single spread', () => {
-    test('should report date.toJSON(...items) case 1', () => {
+  describe('should report fn.toString(...items) with single spread', () => {
+    test('should report fn.toString(...items) case 1', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...arr) case 2', () => {
+    test('should report fn.toString(...arr) case 2', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...args) case 3', () => {
+    test('should report fn.toString(...args) case 3', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...list) case 4', () => {
+    test('should report fn.toString(...list) case 4', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...data) case 5', () => {
+    test('should report fn.toString(...data) case 5', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...values) case 6', () => {
+    test('should report fn.toString(...values) case 6', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...nums) case 7', () => {
+    test('should report fn.toString(...nums) case 7', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...rest) case 8', () => {
+    test('should report fn.toString(...rest) case 8', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...options) case 9', () => {
+    test('should report fn.toString(...options) case 9', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...params) case 10', () => {
+    test('should report fn.toString(...params) case 10', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...collection) case 11', () => {
+    test('should report fn.toString(...collection) case 11', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...elements) case 12', () => {
+    test('should report fn.toString(...elements) case 12', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...entries) case 13', () => {
+    test('should report fn.toString(...entries) case 13', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...objs) case 14', () => {
+    test('should report fn.toString(...objs) case 14', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...source) case 15', () => {
+    test('should report fn.toString(...source) case 15', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...input) case 16', () => {
+    test('should report fn.toString(...input) case 16', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...payload) case 17', () => {
+    test('should report fn.toString(...payload) case 17', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...buffer) case 18', () => {
+    test('should report fn.toString(...buffer) case 18', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...chunk) case 19', () => {
+    test('should report fn.toString(...chunk) case 19', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...segment) case 20', () => {
+    test('should report fn.toString(...segment) case 20', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...portion) case 21', () => {
+    test('should report fn.toString(...portion) case 21', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...range) case 22', () => {
+    test('should report fn.toString(...range) case 22', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...tuple) case 23', () => {
+    test('should report fn.toString(...tuple) case 23', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...seq) case 24', () => {
+    test('should report fn.toString(...seq) case 24', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...iter) case 25', () => {
+    test('should report fn.toString(...iter) case 25', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...result) case 26', () => {
+    test('should report fn.toString(...result) case 26', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...output) case 27', () => {
+    test('should report fn.toString(...output) case 27', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...response) case 28', () => {
+    test('should report fn.toString(...response) case 28', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...records) case 29', () => {
+    test('should report fn.toString(...records) case 29', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...rows) case 30', () => {
+    test('should report fn.toString(...rows) case 30', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...cols) case 31', () => {
+    test('should report fn.toString(...cols) case 31', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...cells) case 32', () => {
+    test('should report fn.toString(...cells) case 32', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...fields) case 33', () => {
+    test('should report fn.toString(...fields) case 33', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...props) case 34', () => {
+    test('should report fn.toString(...props) case 34', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...attrs) case 35', () => {
+    test('should report fn.toString(...attrs) case 35', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...keys) case 36', () => {
+    test('should report fn.toString(...keys) case 36', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...vals) case 37', () => {
+    test('should report fn.toString(...vals) case 37', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...pairs) case 38', () => {
+    test('should report fn.toString(...pairs) case 38', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...nodes) case 39', () => {
+    test('should report fn.toString(...nodes) case 39', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...items2) case 40', () => {
+    test('should report fn.toString(...items2) case 40', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1489,8 +1457,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
   describe('location and structure', () => {
     test('should report with correct location line 2', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(2)
@@ -1500,8 +1468,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(3)
@@ -1511,8 +1479,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1522,8 +1490,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1533,8 +1501,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 15', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(15)
@@ -1544,8 +1512,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 20', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(20)
@@ -1555,8 +1523,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 25', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(25)
@@ -1566,8 +1534,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 30', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(30)
@@ -1577,8 +1545,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 40', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(40)
@@ -1588,8 +1556,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(50)
@@ -1599,8 +1567,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(60)
@@ -1610,8 +1578,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 70', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(70)
@@ -1621,8 +1589,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 80', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(80)
@@ -1632,8 +1600,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 90', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(90)
@@ -1643,8 +1611,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 100', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(100)
@@ -1654,8 +1622,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 150', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(150)
@@ -1665,8 +1633,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 200', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makefnToStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryFunctionToStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(200)

@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryDateToJsonSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-json-spread.js'
+import { noUnnecessaryDateToGmtStringSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-date-to-gmt-string-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {
@@ -42,7 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makedateToJSONCall(
+function makedateToGMTStringCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -54,7 +54,7 @@ function makedateToJSONCall(
     callee: {
       type: 'MemberExpression',
       object: { type: 'Identifier', name: 'date' },
-      property: { type: 'Identifier', name: 'toJSON' },
+      property: { type: 'Identifier', name: 'toGMTString' },
       computed: false,
     },
     arguments: args,
@@ -66,496 +66,496 @@ function makeSpreadArg(argument: unknown): unknown {
   return { type: 'SpreadElement', argument }
 }
 
-describe('no-unnecessary-date-to-json-spread rule', () => {
+describe('no-unnecessary-date-to-gmt-string-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.type).toBe('suggestion')
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.type).toBe('suggestion')
     })
     test('should have severity "warn"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.severity).toBe('warn')
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.severity).toBe('warn')
     })
     test('should have category "patterns"', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.category).toBe('patterns')
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.docs.category).toBe('patterns')
     })
     test('should not be recommended', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.recommended).toBe(false)
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.docs.recommended).toBe(false)
     })
     test('should have empty schema', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.schema).toEqual([])
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.schema).toEqual([])
     })
     test('should have docs url', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.url).toBeDefined()
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.docs.url).toBeDefined()
     })
     test('should have description', () => {
-      expect(noUnnecessaryDateToJsonSpreadRule.meta.docs.description).toBeDefined()
+      expect(noUnnecessaryDateToGmtStringSpreadRule.meta.docs.description).toBeDefined()
     })
     test('should have valid docs description type', () => {
-      expect(typeof noUnnecessaryDateToJsonSpreadRule.meta.docs.description).toBe('string')
+      expect(typeof noUnnecessaryDateToGmtStringSpreadRule.meta.docs.description).toBe('string')
     })
   })
 
   describe('edge cases', () => {
     test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([])
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([])
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
   describe('should not report with wrong object name', () => {
-    test('foo.toJSON(...items) should not report with object "foo"', () => {
+    test('foo.toGMTString(...items) should not report with object "foo"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'foo' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('bar.toJSON(...items) should not report with object "bar"', () => {
+    test('bar.toGMTString(...items) should not report with object "bar"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'bar' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('baz.toJSON(...items) should not report with object "baz"', () => {
+    test('baz.toGMTString(...items) should not report with object "baz"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'baz' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('qux.toJSON(...items) should not report with object "qux"', () => {
+    test('qux.toGMTString(...items) should not report with object "qux"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'qux' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('obj.toJSON(...items) should not report with object "obj"', () => {
+    test('obj.toGMTString(...items) should not report with object "obj"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'obj' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('arr.toJSON(...items) should not report with object "arr"', () => {
+    test('arr.toGMTString(...items) should not report with object "arr"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'arr' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('fn.toJSON(...items) should not report with object "fn"', () => {
+    test('fn.toGMTString(...items) should not report with object "fn"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'fn' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('cb.toJSON(...items) should not report with object "cb"', () => {
+    test('cb.toGMTString(...items) should not report with object "cb"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'cb' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('x.toJSON(...items) should not report with object "x"', () => {
+    test('x.toGMTString(...items) should not report with object "x"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'x' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('y.toJSON(...items) should not report with object "y"', () => {
+    test('y.toGMTString(...items) should not report with object "y"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'y' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('z.toJSON(...items) should not report with object "z"', () => {
+    test('z.toGMTString(...items) should not report with object "z"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'z' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('a.toJSON(...items) should not report with object "a"', () => {
+    test('a.toGMTString(...items) should not report with object "a"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'a' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('b.toJSON(...items) should not report with object "b"', () => {
+    test('b.toGMTString(...items) should not report with object "b"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'b' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('c.toJSON(...items) should not report with object "c"', () => {
+    test('c.toGMTString(...items) should not report with object "c"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'c' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('d.toJSON(...items) should not report with object "d"', () => {
+    test('d.toGMTString(...items) should not report with object "d"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'd' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('e.toJSON(...items) should not report with object "e"', () => {
+    test('e.toGMTString(...items) should not report with object "e"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'e' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('f.toJSON(...items) should not report with object "f"', () => {
+    test('f.toGMTString(...items) should not report with object "f"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'f' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('g.toJSON(...items) should not report with object "g"', () => {
+    test('g.toGMTString(...items) should not report with object "g"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'g' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('h.toJSON(...items) should not report with object "h"', () => {
+    test('h.toGMTString(...items) should not report with object "h"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'h' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('i.toJSON(...items) should not report with object "i"', () => {
+    test('i.toGMTString(...items) should not report with object "i"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'i' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('j.toJSON(...items) should not report with object "j"', () => {
+    test('j.toGMTString(...items) should not report with object "j"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'j' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('k.toJSON(...items) should not report with object "k"', () => {
+    test('k.toGMTString(...items) should not report with object "k"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'k' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('l.toJSON(...items) should not report with object "l"', () => {
+    test('l.toGMTString(...items) should not report with object "l"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'l' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('m.toJSON(...items) should not report with object "m"', () => {
+    test('m.toGMTString(...items) should not report with object "m"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'm' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('n.toJSON(...items) should not report with object "n"', () => {
+    test('n.toGMTString(...items) should not report with object "n"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'n' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('o.toJSON(...items) should not report with object "o"', () => {
+    test('o.toGMTString(...items) should not report with object "o"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'o' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('p.toJSON(...items) should not report with object "p"', () => {
+    test('p.toGMTString(...items) should not report with object "p"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'p' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('q.toJSON(...items) should not report with object "q"', () => {
+    test('q.toGMTString(...items) should not report with object "q"', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'q' },
-          property: { type: 'Identifier', name: 'toJSON' },
+          property: { type: 'Identifier', name: 'toGMTString' },
           computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
@@ -574,7 +574,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.bar(...items) should not report with property "bar"', () => {
@@ -590,7 +590,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.baz(...items) should not report with property "baz"', () => {
@@ -606,7 +606,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.qux(...items) should not report with property "qux"', () => {
@@ -622,7 +622,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.toString(...items) should not report with property "toString"', () => {
@@ -638,7 +638,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.valueOf(...items) should not report with property "valueOf"', () => {
@@ -654,7 +654,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
@@ -670,7 +670,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.constructor(...items) should not report with property "constructor"', () => {
@@ -686,7 +686,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.prototype(...items) should not report with property "prototype"', () => {
@@ -702,7 +702,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.__proto__(...items) should not report with property "__proto__"', () => {
@@ -718,7 +718,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.apply(...items) should not report with property "apply"', () => {
@@ -734,7 +734,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.bind(...items) should not report with property "bind"', () => {
@@ -750,7 +750,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.call(...items) should not report with property "call"', () => {
@@ -766,7 +766,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.length(...items) should not report with property "length"', () => {
@@ -782,7 +782,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.name(...items) should not report with property "name"', () => {
@@ -798,7 +798,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.args(...items) should not report with property "args"', () => {
@@ -814,7 +814,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.callee(...items) should not report with property "callee"', () => {
@@ -830,7 +830,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.caller(...items) should not report with property "caller"', () => {
@@ -846,7 +846,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.arguments(...items) should not report with property "arguments"', () => {
@@ -862,7 +862,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.pop(...items) should not report with property "pop"', () => {
@@ -878,7 +878,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.push(...items) should not report with property "push"', () => {
@@ -894,7 +894,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.shift(...items) should not report with property "shift"', () => {
@@ -910,7 +910,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.unshift(...items) should not report with property "unshift"', () => {
@@ -926,7 +926,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.slice(...items) should not report with property "slice"', () => {
@@ -942,7 +942,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.splice(...items) should not report with property "splice"', () => {
@@ -958,7 +958,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.concat(...items) should not report with property "concat"', () => {
@@ -974,7 +974,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.join(...items) should not report with property "join"', () => {
@@ -990,7 +990,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.indexOf(...items) should not report with property "indexOf"', () => {
@@ -1006,7 +1006,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
@@ -1022,7 +1022,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.forEach(...items) should not report with property "forEach"', () => {
@@ -1038,7 +1038,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.map(...items) should not report with property "map"', () => {
@@ -1054,7 +1054,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.filter(...items) should not report with property "filter"', () => {
@@ -1070,7 +1070,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.reduce(...items) should not report with property "reduce"', () => {
@@ -1086,7 +1086,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.reduceRight(...items) should not report with property "reduceRight"', () => {
@@ -1102,7 +1102,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.some(...items) should not report with property "some"', () => {
@@ -1118,7 +1118,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.every(...items) should not report with property "every"', () => {
@@ -1134,7 +1134,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.find(...items) should not report with property "find"', () => {
@@ -1150,7 +1150,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.findIndex(...items) should not report with property "findIndex"', () => {
@@ -1166,7 +1166,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.includes(...items) should not report with property "includes"', () => {
@@ -1182,7 +1182,7 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
     test('date.sort(...items) should not report with property "sort"', () => {
@@ -1198,289 +1198,289 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
-  describe('should report date.toJSON(...items) with single spread', () => {
-    test('should report date.toJSON(...items) case 1', () => {
+  describe('should report date.toGMTString(...items) with single spread', () => {
+    test('should report date.toGMTString(...items) case 1', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...arr) case 2', () => {
+    test('should report date.toGMTString(...arr) case 2', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...args) case 3', () => {
+    test('should report date.toGMTString(...args) case 3', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...list) case 4', () => {
+    test('should report date.toGMTString(...list) case 4', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...data) case 5', () => {
+    test('should report date.toGMTString(...data) case 5', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...values) case 6', () => {
+    test('should report date.toGMTString(...values) case 6', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...nums) case 7', () => {
+    test('should report date.toGMTString(...nums) case 7', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...rest) case 8', () => {
+    test('should report date.toGMTString(...rest) case 8', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...options) case 9', () => {
+    test('should report date.toGMTString(...options) case 9', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...params) case 10', () => {
+    test('should report date.toGMTString(...params) case 10', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...collection) case 11', () => {
+    test('should report date.toGMTString(...collection) case 11', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...elements) case 12', () => {
+    test('should report date.toGMTString(...elements) case 12', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...entries) case 13', () => {
+    test('should report date.toGMTString(...entries) case 13', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...objs) case 14', () => {
+    test('should report date.toGMTString(...objs) case 14', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...source) case 15', () => {
+    test('should report date.toGMTString(...source) case 15', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...input) case 16', () => {
+    test('should report date.toGMTString(...input) case 16', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...payload) case 17', () => {
+    test('should report date.toGMTString(...payload) case 17', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...buffer) case 18', () => {
+    test('should report date.toGMTString(...buffer) case 18', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...chunk) case 19', () => {
+    test('should report date.toGMTString(...chunk) case 19', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...segment) case 20', () => {
+    test('should report date.toGMTString(...segment) case 20', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...portion) case 21', () => {
+    test('should report date.toGMTString(...portion) case 21', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...range) case 22', () => {
+    test('should report date.toGMTString(...range) case 22', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...tuple) case 23', () => {
+    test('should report date.toGMTString(...tuple) case 23', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...seq) case 24', () => {
+    test('should report date.toGMTString(...seq) case 24', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...iter) case 25', () => {
+    test('should report date.toGMTString(...iter) case 25', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...result) case 26', () => {
+    test('should report date.toGMTString(...result) case 26', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...output) case 27', () => {
+    test('should report date.toGMTString(...output) case 27', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...response) case 28', () => {
+    test('should report date.toGMTString(...response) case 28', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...records) case 29', () => {
+    test('should report date.toGMTString(...records) case 29', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...rows) case 30', () => {
+    test('should report date.toGMTString(...rows) case 30', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...cols) case 31', () => {
+    test('should report date.toGMTString(...cols) case 31', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...cells) case 32', () => {
+    test('should report date.toGMTString(...cells) case 32', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...fields) case 33', () => {
+    test('should report date.toGMTString(...fields) case 33', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...props) case 34', () => {
+    test('should report date.toGMTString(...props) case 34', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...attrs) case 35', () => {
+    test('should report date.toGMTString(...attrs) case 35', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...keys) case 36', () => {
+    test('should report date.toGMTString(...keys) case 36', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...vals) case 37', () => {
+    test('should report date.toGMTString(...vals) case 37', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...pairs) case 38', () => {
+    test('should report date.toGMTString(...pairs) case 38', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...nodes) case 39', () => {
+    test('should report date.toGMTString(...nodes) case 39', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
-    test('should report date.toJSON(...items2) case 40', () => {
+    test('should report date.toGMTString(...items2) case 40', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].message).toBeDefined()
     })
@@ -1489,8 +1489,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
   describe('location and structure', () => {
     test('should report with correct location line 2', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(2)
@@ -1500,8 +1500,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(3)
@@ -1511,8 +1511,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(5)
@@ -1522,8 +1522,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
@@ -1533,8 +1533,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 15', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(15)
@@ -1544,8 +1544,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 20', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(20)
@@ -1555,8 +1555,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 25', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(25)
@@ -1566,8 +1566,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 30', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(30)
@@ -1577,8 +1577,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 40', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(40)
@@ -1588,8 +1588,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(50)
@@ -1599,8 +1599,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(60)
@@ -1610,8 +1610,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 70', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(70)
@@ -1621,8 +1621,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 80', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(80)
@@ -1632,8 +1632,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 90', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(90)
@@ -1643,8 +1643,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 100', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(100)
@@ -1654,8 +1654,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 150', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(150)
@@ -1665,8 +1665,8 @@ describe('no-unnecessary-date-to-json-spread rule', () => {
     })
     test('should report with correct location line 200', () => {
       const { context, reports } = createMockContext()
-      const node = makedateToJSONCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
-      noUnnecessaryDateToJsonSpreadRule.create(context).CallExpression!(node)
+      const node = makedateToGMTStringCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryDateToGmtStringSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(200)

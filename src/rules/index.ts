@@ -3130,6 +3130,18 @@ const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArr
 const adaptedNoUnnecessaryArrayUnshiftSpread = adaptPluginRule(noUnnecessaryArrayUnshiftSpreadRule, 'no-unnecessary-array-unshift-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
 const adaptedNoUnnecessaryArrayWithSpread = adaptPluginRule(noUnnecessaryArrayWithSpreadRule, 'no-unnecessary-array-with-spread')
+const adaptedNoUnnecessaryFunctionCallSpread = adaptPluginRule(noUnnecessaryFunctionCallSpreadRule, 'no-unnecessary-function-call-spread')
+const adaptedNoUnnecessaryFunctionApplySpread = adaptPluginRule(noUnnecessaryFunctionApplySpreadRule, 'no-unnecessary-function-apply-spread')
+const adaptedNoUnnecessaryFunctionBindSpread = adaptPluginRule(noUnnecessaryFunctionBindSpreadRule, 'no-unnecessary-function-bind-spread')
+const adaptedNoUnnecessaryFunctionToStringSpread = adaptPluginRule(noUnnecessaryFunctionToStringSpreadRule, 'no-unnecessary-function-to-string-spread')
+const adaptedNoUnnecessaryDateToJsonSpread = adaptPluginRule(noUnnecessaryDateToJsonSpreadRule, 'no-unnecessary-date-to-json-spread')
+const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryDateToGmtStringSpreadRule, 'no-unnecessary-date-to-gmt-string-spread')
+  'no-unnecessary-function-call-spread': adaptedNoUnnecessaryFunctionCallSpread,
+  'no-unnecessary-function-apply-spread': adaptedNoUnnecessaryFunctionApplySpread,
+  'no-unnecessary-function-bind-spread': adaptedNoUnnecessaryFunctionBindSpread,
+  'no-unnecessary-function-to-string-spread': adaptedNoUnnecessaryFunctionToStringSpread,
+  'no-unnecessary-date-to-json-spread': adaptedNoUnnecessaryDateToJsonSpread,
+  'no-unnecessary-date-to-gmt-string-spread': adaptedNoUnnecessaryDateToGmtStringSpread,
   'no-unnecessary-object-group-by-spread': adaptedNoUnnecessaryObjectGroupBySpread,
   'no-unnecessary-array-buffer-slice-spread': adaptedNoUnnecessaryArrayBufferSliceSpread,
   'no-unnecessary-promise-try-spread': adaptedNoUnnecessaryPromiseTrySpread,
@@ -4532,6 +4544,12 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-array-unshift-spread': 'patterns',
   'no-unnecessary-array-values-spread': 'patterns',
   'no-unnecessary-array-with-spread': 'patterns',
+  'no-unnecessary-function-call-spread': 'patterns',
+  'no-unnecessary-function-apply-spread': 'patterns',
+  'no-unnecessary-function-bind-spread': 'patterns',
+  'no-unnecessary-function-to-string-spread': 'patterns',
+  'no-unnecessary-date-to-json-spread': 'patterns',
+  'no-unnecessary-date-to-gmt-string-spread': 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4816,6 +4834,14 @@ import {
   noUnnecessaryArrayUnshiftSpreadRule,
   noUnnecessaryArrayValuesSpreadRule,
   noUnnecessaryArrayWithSpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryFunctionCallSpreadRule,
+  noUnnecessaryFunctionApplySpreadRule,
+  noUnnecessaryFunctionBindSpreadRule,
+  noUnnecessaryFunctionToStringSpreadRule,
+  noUnnecessaryDateToJsonSpreadRule,
+  noUnnecessaryDateToGmtStringSpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
