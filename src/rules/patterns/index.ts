@@ -821,3 +821,6 @@ export { noUnnecessaryObjectIsFrozenSpreadRule } from './no-unnecessary-object-i
 export { noUnnecessaryObjectIsSealedSpreadRule } from './no-unnecessary-object-is-sealed-spread.js'
 export { noUnnecessaryObjectIsExtensibleSpreadRule } from './no-unnecessary-object-is-extensible-spread.js'
 export { noUnnecessaryObjectFromEntriesSpreadRule } from './no-unnecessary-object-from-entries-spread.js'
+export { noUnnecessaryObjectGroupBySpreadRule } from './no-unnecessary-object-group-by-spread.js'
+export { noUnnecessaryArrayBufferSliceSpreadRule } from './no-unnecessary-array-buffer-slice-spread.js'
+export { noUnnecessaryPromiseTrySpreadRule } from './no-unnecessary-promise-try-spread.js'

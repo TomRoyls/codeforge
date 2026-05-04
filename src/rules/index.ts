@@ -3038,6 +3038,12 @@ const adaptedNoUnnecessaryObjectIsFrozenSpread = adaptPluginRule(noUnnecessaryOb
 const adaptedNoUnnecessaryObjectIsSealedSpread = adaptPluginRule(noUnnecessaryObjectIsSealedSpreadRule, 'no-unnecessary-object-is-sealed-spread')
 const adaptedNoUnnecessaryObjectIsExtensibleSpread = adaptPluginRule(noUnnecessaryObjectIsExtensibleSpreadRule, 'no-unnecessary-object-is-extensible-spread')
 const adaptedNoUnnecessaryObjectFromEntriesSpread = adaptPluginRule(noUnnecessaryObjectFromEntriesSpreadRule, 'no-unnecessary-object-from-entries-spread')
+const adaptedNoUnnecessaryObjectGroupBySpread = adaptPluginRule(noUnnecessaryObjectGroupBySpreadRule, 'no-unnecessary-object-group-by-spread')
+const adaptedNoUnnecessaryArrayBufferSliceSpread = adaptPluginRule(noUnnecessaryArrayBufferSliceSpreadRule, 'no-unnecessary-array-buffer-slice-spread')
+const adaptedNoUnnecessaryPromiseTrySpread = adaptPluginRule(noUnnecessaryPromiseTrySpreadRule, 'no-unnecessary-promise-try-spread')
+  'no-unnecessary-object-group-by-spread': adaptedNoUnnecessaryObjectGroupBySpread,
+  'no-unnecessary-array-buffer-slice-spread': adaptedNoUnnecessaryArrayBufferSliceSpread,
+  'no-unnecessary-promise-try-spread': adaptedNoUnnecessaryPromiseTrySpread,
   'no-unnecessary-object-define-property-spread': adaptedNoUnnecessaryObjectDefinePropertySpread,
   'no-unnecessary-object-define-properties-spread': adaptedNoUnnecessaryObjectDefinePropertiesSpread,
   'no-unnecessary-object-prevent-extensions-spread': adaptedNoUnnecessaryObjectPreventExtensionsSpread,
@@ -4256,6 +4262,9 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-object-is-sealed-spread': 'patterns',
   'no-unnecessary-object-is-extensible-spread': 'patterns',
   'no-unnecessary-object-from-entries-spread': 'patterns',
+  'no-unnecessary-object-group-by-spread': 'patterns',
+  'no-unnecessary-array-buffer-slice-spread': 'patterns',
+  'no-unnecessary-promise-try-spread': 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4442,6 +4451,11 @@ import {
   noUnnecessaryObjectIsSealedSpreadRule,
   noUnnecessaryObjectIsExtensibleSpreadRule,
   noUnnecessaryObjectFromEntriesSpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryObjectGroupBySpreadRule,
+  noUnnecessaryArrayBufferSliceSpreadRule,
+  noUnnecessaryPromiseTrySpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
