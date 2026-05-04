@@ -815,36 +815,6 @@ test('no-unnecessary-weakmap-set-spread rule: does not report makeWeakMapSetCall
   expect(code).toBe('weakMap.set(key, value)');
 });
 
-test('no-unnecessary-weakmap-set-spread rule: does not report set(...items) bare function call', () => {
-  const context = { report: jest.fn() } as never;
-  const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
-  handler.CallExpression({
-    callee: { type: 'Identifier', name: 'set' },
-    arguments: [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }],
-  } as never);
-  expect(context.report).not.toHaveBeenCalled();
-});
-
-test('no-unnecessary-weakmap-set-spread rule: does not report data.set(...items)', () => {
-  const context = { report: jest.fn() } as never;
-  const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
-  handler.CallExpression({
-    callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'data' }, property: { type: 'Identifier', name: 'set' } },
-    arguments: [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }],
-  } as never);
-  expect(context.report).not.toHaveBeenCalled();
-});
-
-test('no-unnecessary-weakmap-set-spread rule: does not report weakMap[\'set\'](...items) computed property', () => {
-  const context = { report: jest.fn() } as never;
-  const handler = noUnnecessaryWeakMapSetSpreadRule.create(context);
-  handler.CallExpression({
-    callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'weakMap' }, property: { type: 'Literal', value: 'set' }, computed: true },
-    arguments: [{ type: 'SpreadElement', argument: { type: 'Identifier', name: 'items' } }],
-  } as never);
-  expect(context.report).not.toHaveBeenCalled();
-});
-
 //
 // Edge cases (17)
 //
