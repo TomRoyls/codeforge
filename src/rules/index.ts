@@ -3949,6 +3949,153 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-assert-match-spread']: adaptPluginRule(noUnnecessaryAssertMatchSpreadRule),
   ['no-unnecessary-assert-does-not-match-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotMatchSpreadRule),
   ['no-unnecessary-assert-call-tracker-calls-spread']: adaptPluginRule(noUnnecessaryAssertCallTrackerCallsSpreadRule),
+  ['no-unnecessary-promise-instance-then-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceThenSpreadRule),
+  ['no-unnecessary-promise-instance-catch-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceCatchSpreadRule),
+  ['no-unnecessary-promise-instance-finally-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceFinallySpreadRule),
+  ['no-unnecessary-intl-collator-compare-spread']: adaptPluginRule(noUnnecessaryIntlCollatorCompareSpreadRule),
+  ['no-unnecessary-intl-number-format-format-spread']: adaptPluginRule(noUnnecessaryIntlNumberFormatFormatSpreadRule),
+  ['no-unnecessary-intl-date-time-format-format-spread']: adaptPluginRule(noUnnecessaryIntlDateTimeFormatFormatSpreadRule),
+  ['no-unnecessary-intl-list-format-format-spread']: adaptPluginRule(noUnnecessaryIntlListFormatFormatSpreadRule),
+  ['no-unnecessary-intl-relative-time-format-spread']: adaptPluginRule(noUnnecessaryIntlRelativeTimeFormatSpreadRule),
+  ['no-unnecessary-intl-plural-rules-spread']: adaptPluginRule(noUnnecessaryIntlPluralRulesSpreadRule),
+  ['no-unnecessary-intl-segmenter-spread']: adaptPluginRule(noUnnecessaryIntlSegmenterSpreadRule),
+  ['no-unnecessary-intl-display-names-spread']: adaptPluginRule(noUnnecessaryIntlDisplayNamesSpreadRule),
+  ['no-unnecessary-iterator-next-spread']: adaptPluginRule(noUnnecessaryIteratorNextSpreadRule),
+  ['no-unnecessary-iterator-return-spread']: adaptPluginRule(noUnnecessaryIteratorReturnSpreadRule),
+  ['no-unnecessary-iterator-throw-spread']: adaptPluginRule(noUnnecessaryIteratorThrowSpreadRule),
+  ['no-unnecessary-iterator-for-each-spread']: adaptPluginRule(noUnnecessaryIteratorForEachSpreadRule),
+  ['no-unnecessary-iterator-map-spread']: adaptPluginRule(noUnnecessaryIteratorMapSpreadRule),
+  ['no-unnecessary-iterator-filter-spread']: adaptPluginRule(noUnnecessaryIteratorFilterSpreadRule),
+  ['no-unnecessary-iterator-take-spread']: adaptPluginRule(noUnnecessaryIteratorTakeSpreadRule),
+  ['no-unnecessary-iterator-drop-spread']: adaptPluginRule(noUnnecessaryIteratorDropSpreadRule),
+  ['no-unnecessary-iterator-flat-map-spread']: adaptPluginRule(noUnnecessaryIteratorFlatMapSpreadRule),
+  ['no-unnecessary-iterator-reduce-spread']: adaptPluginRule(noUnnecessaryIteratorReduceSpreadRule),
+  ['no-unnecessary-iterator-to-array-spread']: adaptPluginRule(noUnnecessaryIteratorToArraySpreadRule),
+  ['no-unnecessary-iterator-some-spread']: adaptPluginRule(noUnnecessaryIteratorSomeSpreadRule),
+  ['no-unnecessary-iterator-every-spread']: adaptPluginRule(noUnnecessaryIteratorEverySpreadRule),
+  ['no-unnecessary-iterator-find-spread']: adaptPluginRule(noUnnecessaryIteratorFindSpreadRule),
+  ['no-unnecessary-array-iterator-next-spread']: adaptPluginRule(noUnnecessaryArrayIteratorNextSpreadRule),
+  ['no-unnecessary-map-iterator-next-spread']: adaptPluginRule(noUnnecessaryMapIteratorNextSpreadRule),
+  ['no-unnecessary-set-iterator-next-spread']: adaptPluginRule(noUnnecessarySetIteratorNextSpreadRule),
+  ['no-unnecessary-string-iterator-next-spread']: adaptPluginRule(noUnnecessaryStringIteratorNextSpreadRule),
+  ['no-unnecessary-generator-next-spread']: adaptPluginRule(noUnnecessaryGeneratorNextSpreadRule),
+  ['no-unnecessary-generator-return-spread']: adaptPluginRule(noUnnecessaryGeneratorReturnSpreadRule),
+  ['no-unnecessary-generator-throw-spread']: adaptPluginRule(noUnnecessaryGeneratorThrowSpreadRule),
+  ['no-unnecessary-async-generator-next-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorNextSpreadRule),
+  ['no-unnecessary-async-generator-return-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorReturnSpreadRule),
+  ['no-unnecessary-async-generator-throw-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorThrowSpreadRule),
+  ['no-unnecessary-async-iterator-next-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorNextSpreadRule),
+  ['no-unnecessary-async-iterator-return-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorReturnSpreadRule),
+  ['no-unnecessary-async-iterator-throw-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorThrowSpreadRule),
+  ['no-unnecessary-response-instance-clone-spread']: adaptPluginRule(noUnnecessaryResponseInstanceCloneSpreadRule),
+  ['no-unnecessary-response-instance-json-spread']: adaptPluginRule(noUnnecessaryResponseInstanceJsonSpreadRule),
+  ['no-unnecessary-response-instance-text-spread']: adaptPluginRule(noUnnecessaryResponseInstanceTextSpreadRule),
+  ['no-unnecessary-response-instance-blob-spread']: adaptPluginRule(noUnnecessaryResponseInstanceBlobSpreadRule),
+  ['no-unnecessary-response-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryResponseInstanceArrayBufferSpreadRule),
+  ['no-unnecessary-response-instance-form-data-spread']: adaptPluginRule(noUnnecessaryResponseInstanceFormDataSpreadRule),
+  ['no-unnecessary-request-instance-clone-spread']: adaptPluginRule(noUnnecessaryRequestInstanceCloneSpreadRule),
+  ['no-unnecessary-request-instance-json-spread']: adaptPluginRule(noUnnecessaryRequestInstanceJsonSpreadRule),
+  ['no-unnecessary-request-instance-text-spread']: adaptPluginRule(noUnnecessaryRequestInstanceTextSpreadRule),
+  ['no-unnecessary-request-instance-blob-spread']: adaptPluginRule(noUnnecessaryRequestInstanceBlobSpreadRule),
+  ['no-unnecessary-request-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryRequestInstanceArrayBufferSpreadRule),
+  ['no-unnecessary-request-instance-form-data-spread']: adaptPluginRule(noUnnecessaryRequestInstanceFormDataSpreadRule),
+  ['no-unnecessary-headers-instance-get-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceGetSpreadRule),
+  ['no-unnecessary-headers-instance-set-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceSetSpreadRule),
+  ['no-unnecessary-headers-instance-has-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceHasSpreadRule),
+  ['no-unnecessary-headers-instance-delete-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceDeleteSpreadRule),
+  ['no-unnecessary-headers-instance-append-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceAppendSpreadRule),
+  ['no-unnecessary-headers-instance-entries-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceEntriesSpreadRule),
+  ['no-unnecessary-headers-instance-keys-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceKeysSpreadRule),
+  ['no-unnecessary-headers-instance-values-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceValuesSpreadRule),
+  ['no-unnecessary-headers-instance-for-each-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceForEachSpreadRule),
+  ['no-unnecessary-form-data-instance-get-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceGetSpreadRule),
+  ['no-unnecessary-form-data-instance-get-all-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceGetAllSpreadRule),
+  ['no-unnecessary-form-data-instance-set-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceSetSpreadRule),
+  ['no-unnecessary-form-data-instance-append-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceAppendSpreadRule),
+  ['no-unnecessary-form-data-instance-delete-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceDeleteSpreadRule),
+  ['no-unnecessary-form-data-instance-has-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceHasSpreadRule),
+  ['no-unnecessary-form-data-instance-entries-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceEntriesSpreadRule),
+  ['no-unnecessary-form-data-instance-keys-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceKeysSpreadRule),
+  ['no-unnecessary-form-data-instance-values-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceValuesSpreadRule),
+  ['no-unnecessary-form-data-instance-for-each-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceForEachSpreadRule),
+  ['no-unnecessary-url-instance-to-string-spread']: adaptPluginRule(noUnnecessaryUrlInstanceToStringSpreadRule),
+  ['no-unnecessary-url-instance-to-json-spread']: adaptPluginRule(noUnnecessaryUrlInstanceToJsonSpreadRule),
+  ['no-unnecessary-url-search-params-instance-get-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetSpreadRule),
+  ['no-unnecessary-url-search-params-instance-get-all-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule),
+  ['no-unnecessary-url-search-params-instance-set-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSetSpreadRule),
+  ['no-unnecessary-url-search-params-instance-append-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule),
+  ['no-unnecessary-url-search-params-instance-delete-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule),
+  ['no-unnecessary-url-search-params-instance-has-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceHasSpreadRule),
+  ['no-unnecessary-url-search-params-instance-to-string-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule),
+  ['no-unnecessary-url-search-params-instance-entries-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule),
+  ['no-unnecessary-url-search-params-instance-keys-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule),
+  ['no-unnecessary-url-search-params-instance-values-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule),
+  ['no-unnecessary-url-search-params-instance-for-each-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule),
+  ['no-unnecessary-url-search-params-instance-sort-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSortSpreadRule),
+  ['no-unnecessary-blob-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryBlobInstanceArrayBufferSpreadRule),
+  ['no-unnecessary-blob-instance-text-spread']: adaptPluginRule(noUnnecessaryBlobInstanceTextSpreadRule),
+  ['no-unnecessary-blob-instance-slice-spread']: adaptPluginRule(noUnnecessaryBlobInstanceSliceSpreadRule),
+  ['no-unnecessary-blob-instance-stream-spread']: adaptPluginRule(noUnnecessaryBlobInstanceStreamSpreadRule),
+  ['no-unnecessary-file-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryFileInstanceArrayBufferSpreadRule),
+  ['no-unnecessary-file-instance-text-spread']: adaptPluginRule(noUnnecessaryFileInstanceTextSpreadRule),
+  ['no-unnecessary-file-instance-slice-spread']: adaptPluginRule(noUnnecessaryFileInstanceSliceSpreadRule),
+  ['no-unnecessary-file-instance-stream-spread']: adaptPluginRule(noUnnecessaryFileInstanceStreamSpreadRule),
+  ['no-unnecessary-abort-signal-throw-if-aborted-spread']: adaptPluginRule(noUnnecessaryAbortSignalThrowIfAbortedSpreadRule),
+  ['no-unnecessary-broadcast-channel-instance-post-message-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule),
+  ['no-unnecessary-broadcast-channel-instance-close-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelInstanceCloseSpreadRule),
+  ['no-unnecessary-message-port-post-message-spread']: adaptPluginRule(noUnnecessaryMessagePortPostMessageSpreadRule),
+  ['no-unnecessary-message-port-close-spread']: adaptPluginRule(noUnnecessaryMessagePortCloseSpreadRule),
+  ['no-unnecessary-message-port-start-spread']: adaptPluginRule(noUnnecessaryMessagePortStartSpreadRule),
+  ['no-unnecessary-worker-instance-post-message-spread']: adaptPluginRule(noUnnecessaryWorkerInstancePostMessageSpreadRule),
+  ['no-unnecessary-worker-instance-terminate-spread']: adaptPluginRule(noUnnecessaryWorkerInstanceTerminateSpreadRule),
+  ['no-unnecessary-file-reader-instance-read-as-array-buffer-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule),
+  ['no-unnecessary-file-reader-instance-read-as-binary-string-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule),
+  ['no-unnecessary-file-reader-instance-read-as-data-url-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsDataURLSpreadRule),
+  ['no-unnecessary-file-reader-instance-read-as-text-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsTextSpreadRule),
+  ['no-unnecessary-file-reader-instance-abort-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceAbortSpreadRule),
+  ['no-unnecessary-readable-stream-read-spread']: adaptPluginRule(noUnnecessaryReadableStreamReadSpreadRule),
+  ['no-unnecessary-readable-stream-pipe-spread']: adaptPluginRule(noUnnecessaryReadableStreamPipeSpreadRule),
+  ['no-unnecessary-readable-stream-unpipe-spread']: adaptPluginRule(noUnnecessaryReadableStreamUnpipeSpreadRule),
+  ['no-unnecessary-readable-stream-pause-spread']: adaptPluginRule(noUnnecessaryReadableStreamPauseSpreadRule),
+  ['no-unnecessary-readable-stream-resume-spread']: adaptPluginRule(noUnnecessaryReadableStreamResumeSpreadRule),
+  ['no-unnecessary-readable-stream-destroy-spread']: adaptPluginRule(noUnnecessaryReadableStreamDestroySpreadRule),
+  ['no-unnecessary-readable-stream-push-spread']: adaptPluginRule(noUnnecessaryReadableStreamPushSpreadRule),
+  ['no-unnecessary-writable-stream-write-spread']: adaptPluginRule(noUnnecessaryWritableStreamWriteSpreadRule),
+  ['no-unnecessary-writable-stream-end-spread']: adaptPluginRule(noUnnecessaryWritableStreamEndSpreadRule),
+  ['no-unnecessary-writable-stream-destroy-spread']: adaptPluginRule(noUnnecessaryWritableStreamDestroySpreadRule),
+  ['no-unnecessary-transform-stream-transform-spread']: adaptPluginRule(noUnnecessaryTransformStreamTransformSpreadRule),
+  ['no-unnecessary-transform-stream-flush-spread']: adaptPluginRule(noUnnecessaryTransformStreamFlushSpreadRule),
+  ['no-unnecessary-event-emitter-add-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterAddListenerSpreadRule),
+  ['no-unnecessary-child-process-instance-kill-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceKillSpreadRule),
+  ['no-unnecessary-child-process-instance-send-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceSendSpreadRule),
+  ['no-unnecessary-child-process-instance-disconnect-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceDisconnectSpreadRule),
+  ['no-unnecessary-child-process-instance-ref-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceRefSpreadRule),
+  ['no-unnecessary-child-process-instance-unref-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceUnrefSpreadRule),
+  ['no-unnecessary-observer-instance-observe-spread']: adaptPluginRule(noUnnecessaryObserverInstanceObserveSpreadRule),
+  ['no-unnecessary-observer-instance-unobserve-spread']: adaptPluginRule(noUnnecessaryObserverInstanceUnobserveSpreadRule),
+  ['no-unnecessary-observer-instance-disconnect-spread']: adaptPluginRule(noUnnecessaryObserverInstanceDisconnectSpreadRule),
+  ['no-unnecessary-observer-instance-take-records-spread']: adaptPluginRule(noUnnecessaryObserverInstanceTakeRecordsSpreadRule),
+  ['no-unnecessary-text-decoder-instance-decode-spread']: adaptPluginRule(noUnnecessaryTextDecoderInstanceDecodeSpreadRule),
+  ['no-unnecessary-text-encoder-instance-encode-spread']: adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeSpreadRule),
+  ['no-unnecessary-text-encoder-instance-encode-into-spread']: adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule),
+  ['no-unnecessary-server-listen-spread']: adaptPluginRule(noUnnecessaryServerListenSpreadRule),
+  ['no-unnecessary-server-close-spread']: adaptPluginRule(noUnnecessaryServerCloseSpreadRule),
+  ['no-unnecessary-server-address-spread']: adaptPluginRule(noUnnecessaryServerAddressSpreadRule),
+  ['no-unnecessary-server-get-connections-spread']: adaptPluginRule(noUnnecessaryServerGetConnectionsSpreadRule),
+  ['no-unnecessary-server-ref-spread']: adaptPluginRule(noUnnecessaryServerRefSpreadRule),
+  ['no-unnecessary-server-unref-spread']: adaptPluginRule(noUnnecessaryServerUnrefSpreadRule),
+  ['no-unnecessary-socket-write-spread']: adaptPluginRule(noUnnecessarySocketWriteSpreadRule),
+  ['no-unnecessary-socket-connect-spread']: adaptPluginRule(noUnnecessarySocketConnectSpreadRule),
+  ['no-unnecessary-socket-end-spread']: adaptPluginRule(noUnnecessarySocketEndSpreadRule),
+  ['no-unnecessary-socket-destroy-spread']: adaptPluginRule(noUnnecessarySocketDestroySpreadRule),
+  ['no-unnecessary-socket-pause-spread']: adaptPluginRule(noUnnecessarySocketPauseSpreadRule),
+  ['no-unnecessary-socket-resume-spread']: adaptPluginRule(noUnnecessarySocketResumeSpreadRule),
+  ['no-unnecessary-socket-set-timeout-spread']: adaptPluginRule(noUnnecessarySocketSetTimeoutSpreadRule),
+  ['no-unnecessary-socket-set-encoding-spread']: adaptPluginRule(noUnnecessarySocketSetEncodingSpreadRule),
+  ['no-unnecessary-socket-set-keep-alive-spread']: adaptPluginRule(noUnnecessarySocketSetKeepAliveSpreadRule),
+  ['no-unnecessary-socket-set-no-delay-spread']: adaptPluginRule(noUnnecessarySocketSetNoDelaySpreadRule),
+  ['no-unnecessary-socket-ref-spread']: adaptPluginRule(noUnnecessarySocketRefSpreadRule),
+  ['no-unnecessary-socket-unref-spread']: adaptPluginRule(noUnnecessarySocketUnrefSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -6184,6 +6331,153 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-assert-match-spread']: 'patterns',
   ['no-unnecessary-assert-does-not-match-spread']: 'patterns',
   ['no-unnecessary-assert-call-tracker-calls-spread']: 'patterns',
+  ['no-unnecessary-promise-instance-then-spread']: 'patterns',
+  ['no-unnecessary-promise-instance-catch-spread']: 'patterns',
+  ['no-unnecessary-promise-instance-finally-spread']: 'patterns',
+  ['no-unnecessary-intl-collator-compare-spread']: 'patterns',
+  ['no-unnecessary-intl-number-format-format-spread']: 'patterns',
+  ['no-unnecessary-intl-date-time-format-format-spread']: 'patterns',
+  ['no-unnecessary-intl-list-format-format-spread']: 'patterns',
+  ['no-unnecessary-intl-relative-time-format-spread']: 'patterns',
+  ['no-unnecessary-intl-plural-rules-spread']: 'patterns',
+  ['no-unnecessary-intl-segmenter-spread']: 'patterns',
+  ['no-unnecessary-intl-display-names-spread']: 'patterns',
+  ['no-unnecessary-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-iterator-return-spread']: 'patterns',
+  ['no-unnecessary-iterator-throw-spread']: 'patterns',
+  ['no-unnecessary-iterator-for-each-spread']: 'patterns',
+  ['no-unnecessary-iterator-map-spread']: 'patterns',
+  ['no-unnecessary-iterator-filter-spread']: 'patterns',
+  ['no-unnecessary-iterator-take-spread']: 'patterns',
+  ['no-unnecessary-iterator-drop-spread']: 'patterns',
+  ['no-unnecessary-iterator-flat-map-spread']: 'patterns',
+  ['no-unnecessary-iterator-reduce-spread']: 'patterns',
+  ['no-unnecessary-iterator-to-array-spread']: 'patterns',
+  ['no-unnecessary-iterator-some-spread']: 'patterns',
+  ['no-unnecessary-iterator-every-spread']: 'patterns',
+  ['no-unnecessary-iterator-find-spread']: 'patterns',
+  ['no-unnecessary-array-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-map-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-set-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-string-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-generator-next-spread']: 'patterns',
+  ['no-unnecessary-generator-return-spread']: 'patterns',
+  ['no-unnecessary-generator-throw-spread']: 'patterns',
+  ['no-unnecessary-async-generator-next-spread']: 'patterns',
+  ['no-unnecessary-async-generator-return-spread']: 'patterns',
+  ['no-unnecessary-async-generator-throw-spread']: 'patterns',
+  ['no-unnecessary-async-iterator-next-spread']: 'patterns',
+  ['no-unnecessary-async-iterator-return-spread']: 'patterns',
+  ['no-unnecessary-async-iterator-throw-spread']: 'patterns',
+  ['no-unnecessary-response-instance-clone-spread']: 'patterns',
+  ['no-unnecessary-response-instance-json-spread']: 'patterns',
+  ['no-unnecessary-response-instance-text-spread']: 'patterns',
+  ['no-unnecessary-response-instance-blob-spread']: 'patterns',
+  ['no-unnecessary-response-instance-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-response-instance-form-data-spread']: 'patterns',
+  ['no-unnecessary-request-instance-clone-spread']: 'patterns',
+  ['no-unnecessary-request-instance-json-spread']: 'patterns',
+  ['no-unnecessary-request-instance-text-spread']: 'patterns',
+  ['no-unnecessary-request-instance-blob-spread']: 'patterns',
+  ['no-unnecessary-request-instance-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-request-instance-form-data-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-get-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-set-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-has-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-delete-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-append-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-entries-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-keys-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-values-spread']: 'patterns',
+  ['no-unnecessary-headers-instance-for-each-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-get-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-get-all-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-set-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-append-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-delete-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-has-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-entries-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-keys-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-values-spread']: 'patterns',
+  ['no-unnecessary-form-data-instance-for-each-spread']: 'patterns',
+  ['no-unnecessary-url-instance-to-string-spread']: 'patterns',
+  ['no-unnecessary-url-instance-to-json-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-get-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-get-all-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-set-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-append-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-delete-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-has-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-to-string-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-entries-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-keys-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-values-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-for-each-spread']: 'patterns',
+  ['no-unnecessary-url-search-params-instance-sort-spread']: 'patterns',
+  ['no-unnecessary-blob-instance-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-blob-instance-text-spread']: 'patterns',
+  ['no-unnecessary-blob-instance-slice-spread']: 'patterns',
+  ['no-unnecessary-blob-instance-stream-spread']: 'patterns',
+  ['no-unnecessary-file-instance-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-file-instance-text-spread']: 'patterns',
+  ['no-unnecessary-file-instance-slice-spread']: 'patterns',
+  ['no-unnecessary-file-instance-stream-spread']: 'patterns',
+  ['no-unnecessary-abort-signal-throw-if-aborted-spread']: 'patterns',
+  ['no-unnecessary-broadcast-channel-instance-post-message-spread']: 'patterns',
+  ['no-unnecessary-broadcast-channel-instance-close-spread']: 'patterns',
+  ['no-unnecessary-message-port-post-message-spread']: 'patterns',
+  ['no-unnecessary-message-port-close-spread']: 'patterns',
+  ['no-unnecessary-message-port-start-spread']: 'patterns',
+  ['no-unnecessary-worker-instance-post-message-spread']: 'patterns',
+  ['no-unnecessary-worker-instance-terminate-spread']: 'patterns',
+  ['no-unnecessary-file-reader-instance-read-as-array-buffer-spread']: 'patterns',
+  ['no-unnecessary-file-reader-instance-read-as-binary-string-spread']: 'patterns',
+  ['no-unnecessary-file-reader-instance-read-as-data-url-spread']: 'patterns',
+  ['no-unnecessary-file-reader-instance-read-as-text-spread']: 'patterns',
+  ['no-unnecessary-file-reader-instance-abort-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-read-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-pipe-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-unpipe-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-pause-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-resume-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-destroy-spread']: 'patterns',
+  ['no-unnecessary-readable-stream-push-spread']: 'patterns',
+  ['no-unnecessary-writable-stream-write-spread']: 'patterns',
+  ['no-unnecessary-writable-stream-end-spread']: 'patterns',
+  ['no-unnecessary-writable-stream-destroy-spread']: 'patterns',
+  ['no-unnecessary-transform-stream-transform-spread']: 'patterns',
+  ['no-unnecessary-transform-stream-flush-spread']: 'patterns',
+  ['no-unnecessary-event-emitter-add-listener-spread']: 'patterns',
+  ['no-unnecessary-child-process-instance-kill-spread']: 'patterns',
+  ['no-unnecessary-child-process-instance-send-spread']: 'patterns',
+  ['no-unnecessary-child-process-instance-disconnect-spread']: 'patterns',
+  ['no-unnecessary-child-process-instance-ref-spread']: 'patterns',
+  ['no-unnecessary-child-process-instance-unref-spread']: 'patterns',
+  ['no-unnecessary-observer-instance-observe-spread']: 'patterns',
+  ['no-unnecessary-observer-instance-unobserve-spread']: 'patterns',
+  ['no-unnecessary-observer-instance-disconnect-spread']: 'patterns',
+  ['no-unnecessary-observer-instance-take-records-spread']: 'patterns',
+  ['no-unnecessary-text-decoder-instance-decode-spread']: 'patterns',
+  ['no-unnecessary-text-encoder-instance-encode-spread']: 'patterns',
+  ['no-unnecessary-text-encoder-instance-encode-into-spread']: 'patterns',
+  ['no-unnecessary-server-listen-spread']: 'patterns',
+  ['no-unnecessary-server-close-spread']: 'patterns',
+  ['no-unnecessary-server-address-spread']: 'patterns',
+  ['no-unnecessary-server-get-connections-spread']: 'patterns',
+  ['no-unnecessary-server-ref-spread']: 'patterns',
+  ['no-unnecessary-server-unref-spread']: 'patterns',
+  ['no-unnecessary-socket-write-spread']: 'patterns',
+  ['no-unnecessary-socket-connect-spread']: 'patterns',
+  ['no-unnecessary-socket-end-spread']: 'patterns',
+  ['no-unnecessary-socket-destroy-spread']: 'patterns',
+  ['no-unnecessary-socket-pause-spread']: 'patterns',
+  ['no-unnecessary-socket-resume-spread']: 'patterns',
+  ['no-unnecessary-socket-set-timeout-spread']: 'patterns',
+  ['no-unnecessary-socket-set-encoding-spread']: 'patterns',
+  ['no-unnecessary-socket-set-keep-alive-spread']: 'patterns',
+  ['no-unnecessary-socket-set-no-delay-spread']: 'patterns',
+  ['no-unnecessary-socket-ref-spread']: 'patterns',
+  ['no-unnecessary-socket-unref-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -7293,6 +7587,153 @@ import { noUnnecessaryAssertFailSpreadRule } from './patterns/no-unnecessary-ass
 import { noUnnecessaryAssertMatchSpreadRule } from './patterns/no-unnecessary-assert-match-spread.js'
 import { noUnnecessaryAssertDoesNotMatchSpreadRule } from './patterns/no-unnecessary-assert-does-not-match-spread.js'
 import { noUnnecessaryAssertCallTrackerCallsSpreadRule } from './patterns/no-unnecessary-assert-call-tracker-calls-spread.js'
+import { noUnnecessaryPromiseInstanceThenSpreadRule } from './patterns/no-unnecessary-promise-instance-then-spread.js'
+import { noUnnecessaryPromiseInstanceCatchSpreadRule } from './patterns/no-unnecessary-promise-instance-catch-spread.js'
+import { noUnnecessaryPromiseInstanceFinallySpreadRule } from './patterns/no-unnecessary-promise-instance-finally-spread.js'
+import { noUnnecessaryIntlCollatorCompareSpreadRule } from './patterns/no-unnecessary-intl-collator-compare-spread.js'
+import { noUnnecessaryIntlNumberFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-number-format-format-spread.js'
+import { noUnnecessaryIntlDateTimeFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-date-time-format-format-spread.js'
+import { noUnnecessaryIntlListFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-list-format-format-spread.js'
+import { noUnnecessaryIntlRelativeTimeFormatSpreadRule } from './patterns/no-unnecessary-intl-relative-time-format-spread.js'
+import { noUnnecessaryIntlPluralRulesSpreadRule } from './patterns/no-unnecessary-intl-plural-rules-spread.js'
+import { noUnnecessaryIntlSegmenterSpreadRule } from './patterns/no-unnecessary-intl-segmenter-spread.js'
+import { noUnnecessaryIntlDisplayNamesSpreadRule } from './patterns/no-unnecessary-intl-display-names-spread.js'
+import { noUnnecessaryIteratorNextSpreadRule } from './patterns/no-unnecessary-iterator-next-spread.js'
+import { noUnnecessaryIteratorReturnSpreadRule } from './patterns/no-unnecessary-iterator-return-spread.js'
+import { noUnnecessaryIteratorThrowSpreadRule } from './patterns/no-unnecessary-iterator-throw-spread.js'
+import { noUnnecessaryIteratorForEachSpreadRule } from './patterns/no-unnecessary-iterator-for-each-spread.js'
+import { noUnnecessaryIteratorMapSpreadRule } from './patterns/no-unnecessary-iterator-map-spread.js'
+import { noUnnecessaryIteratorFilterSpreadRule } from './patterns/no-unnecessary-iterator-filter-spread.js'
+import { noUnnecessaryIteratorTakeSpreadRule } from './patterns/no-unnecessary-iterator-take-spread.js'
+import { noUnnecessaryIteratorDropSpreadRule } from './patterns/no-unnecessary-iterator-drop-spread.js'
+import { noUnnecessaryIteratorFlatMapSpreadRule } from './patterns/no-unnecessary-iterator-flat-map-spread.js'
+import { noUnnecessaryIteratorReduceSpreadRule } from './patterns/no-unnecessary-iterator-reduce-spread.js'
+import { noUnnecessaryIteratorToArraySpreadRule } from './patterns/no-unnecessary-iterator-to-array-spread.js'
+import { noUnnecessaryIteratorSomeSpreadRule } from './patterns/no-unnecessary-iterator-some-spread.js'
+import { noUnnecessaryIteratorEverySpreadRule } from './patterns/no-unnecessary-iterator-every-spread.js'
+import { noUnnecessaryIteratorFindSpreadRule } from './patterns/no-unnecessary-iterator-find-spread.js'
+import { noUnnecessaryArrayIteratorNextSpreadRule } from './patterns/no-unnecessary-array-iterator-next-spread.js'
+import { noUnnecessaryMapIteratorNextSpreadRule } from './patterns/no-unnecessary-map-iterator-next-spread.js'
+import { noUnnecessarySetIteratorNextSpreadRule } from './patterns/no-unnecessary-set-iterator-next-spread.js'
+import { noUnnecessaryStringIteratorNextSpreadRule } from './patterns/no-unnecessary-string-iterator-next-spread.js'
+import { noUnnecessaryGeneratorNextSpreadRule } from './patterns/no-unnecessary-generator-next-spread.js'
+import { noUnnecessaryGeneratorReturnSpreadRule } from './patterns/no-unnecessary-generator-return-spread.js'
+import { noUnnecessaryGeneratorThrowSpreadRule } from './patterns/no-unnecessary-generator-throw-spread.js'
+import { noUnnecessaryAsyncGeneratorNextSpreadRule } from './patterns/no-unnecessary-async-generator-next-spread.js'
+import { noUnnecessaryAsyncGeneratorReturnSpreadRule } from './patterns/no-unnecessary-async-generator-return-spread.js'
+import { noUnnecessaryAsyncGeneratorThrowSpreadRule } from './patterns/no-unnecessary-async-generator-throw-spread.js'
+import { noUnnecessaryAsyncIteratorNextSpreadRule } from './patterns/no-unnecessary-async-iterator-next-spread.js'
+import { noUnnecessaryAsyncIteratorReturnSpreadRule } from './patterns/no-unnecessary-async-iterator-return-spread.js'
+import { noUnnecessaryAsyncIteratorThrowSpreadRule } from './patterns/no-unnecessary-async-iterator-throw-spread.js'
+import { noUnnecessaryResponseInstanceCloneSpreadRule } from './patterns/no-unnecessary-response-instance-clone-spread.js'
+import { noUnnecessaryResponseInstanceJsonSpreadRule } from './patterns/no-unnecessary-response-instance-json-spread.js'
+import { noUnnecessaryResponseInstanceTextSpreadRule } from './patterns/no-unnecessary-response-instance-text-spread.js'
+import { noUnnecessaryResponseInstanceBlobSpreadRule } from './patterns/no-unnecessary-response-instance-blob-spread.js'
+import { noUnnecessaryResponseInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-response-instance-array-buffer-spread.js'
+import { noUnnecessaryResponseInstanceFormDataSpreadRule } from './patterns/no-unnecessary-response-instance-form-data-spread.js'
+import { noUnnecessaryRequestInstanceCloneSpreadRule } from './patterns/no-unnecessary-request-instance-clone-spread.js'
+import { noUnnecessaryRequestInstanceJsonSpreadRule } from './patterns/no-unnecessary-request-instance-json-spread.js'
+import { noUnnecessaryRequestInstanceTextSpreadRule } from './patterns/no-unnecessary-request-instance-text-spread.js'
+import { noUnnecessaryRequestInstanceBlobSpreadRule } from './patterns/no-unnecessary-request-instance-blob-spread.js'
+import { noUnnecessaryRequestInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-request-instance-array-buffer-spread.js'
+import { noUnnecessaryRequestInstanceFormDataSpreadRule } from './patterns/no-unnecessary-request-instance-form-data-spread.js'
+import { noUnnecessaryHeadersInstanceGetSpreadRule } from './patterns/no-unnecessary-headers-instance-get-spread.js'
+import { noUnnecessaryHeadersInstanceSetSpreadRule } from './patterns/no-unnecessary-headers-instance-set-spread.js'
+import { noUnnecessaryHeadersInstanceHasSpreadRule } from './patterns/no-unnecessary-headers-instance-has-spread.js'
+import { noUnnecessaryHeadersInstanceDeleteSpreadRule } from './patterns/no-unnecessary-headers-instance-delete-spread.js'
+import { noUnnecessaryHeadersInstanceAppendSpreadRule } from './patterns/no-unnecessary-headers-instance-append-spread.js'
+import { noUnnecessaryHeadersInstanceEntriesSpreadRule } from './patterns/no-unnecessary-headers-instance-entries-spread.js'
+import { noUnnecessaryHeadersInstanceKeysSpreadRule } from './patterns/no-unnecessary-headers-instance-keys-spread.js'
+import { noUnnecessaryHeadersInstanceValuesSpreadRule } from './patterns/no-unnecessary-headers-instance-values-spread.js'
+import { noUnnecessaryHeadersInstanceForEachSpreadRule } from './patterns/no-unnecessary-headers-instance-for-each-spread.js'
+import { noUnnecessaryFormDataInstanceGetSpreadRule } from './patterns/no-unnecessary-form-data-instance-get-spread.js'
+import { noUnnecessaryFormDataInstanceGetAllSpreadRule } from './patterns/no-unnecessary-form-data-instance-get-all-spread.js'
+import { noUnnecessaryFormDataInstanceSetSpreadRule } from './patterns/no-unnecessary-form-data-instance-set-spread.js'
+import { noUnnecessaryFormDataInstanceAppendSpreadRule } from './patterns/no-unnecessary-form-data-instance-append-spread.js'
+import { noUnnecessaryFormDataInstanceDeleteSpreadRule } from './patterns/no-unnecessary-form-data-instance-delete-spread.js'
+import { noUnnecessaryFormDataInstanceHasSpreadRule } from './patterns/no-unnecessary-form-data-instance-has-spread.js'
+import { noUnnecessaryFormDataInstanceEntriesSpreadRule } from './patterns/no-unnecessary-form-data-instance-entries-spread.js'
+import { noUnnecessaryFormDataInstanceKeysSpreadRule } from './patterns/no-unnecessary-form-data-instance-keys-spread.js'
+import { noUnnecessaryFormDataInstanceValuesSpreadRule } from './patterns/no-unnecessary-form-data-instance-values-spread.js'
+import { noUnnecessaryFormDataInstanceForEachSpreadRule } from './patterns/no-unnecessary-form-data-instance-for-each-spread.js'
+import { noUnnecessaryUrlInstanceToStringSpreadRule } from './patterns/no-unnecessary-url-instance-to-string-spread.js'
+import { noUnnecessaryUrlInstanceToJsonSpreadRule } from './patterns/no-unnecessary-url-instance-to-json-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceGetSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-get-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-get-all-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceSetSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-set-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-append-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-delete-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceHasSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-has-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-to-string-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-entries-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-keys-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-values-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-for-each-spread.js'
+import { noUnnecessaryUrlSearchParamsInstanceSortSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-sort-spread.js'
+import { noUnnecessaryBlobInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-blob-instance-array-buffer-spread.js'
+import { noUnnecessaryBlobInstanceTextSpreadRule } from './patterns/no-unnecessary-blob-instance-text-spread.js'
+import { noUnnecessaryBlobInstanceSliceSpreadRule } from './patterns/no-unnecessary-blob-instance-slice-spread.js'
+import { noUnnecessaryBlobInstanceStreamSpreadRule } from './patterns/no-unnecessary-blob-instance-stream-spread.js'
+import { noUnnecessaryFileInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-file-instance-array-buffer-spread.js'
+import { noUnnecessaryFileInstanceTextSpreadRule } from './patterns/no-unnecessary-file-instance-text-spread.js'
+import { noUnnecessaryFileInstanceSliceSpreadRule } from './patterns/no-unnecessary-file-instance-slice-spread.js'
+import { noUnnecessaryFileInstanceStreamSpreadRule } from './patterns/no-unnecessary-file-instance-stream-spread.js'
+import { noUnnecessaryAbortSignalThrowIfAbortedSpreadRule } from './patterns/no-unnecessary-abort-signal-throw-if-aborted-spread.js'
+import { noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule } from './patterns/no-unnecessary-broadcast-channel-instance-post-message-spread.js'
+import { noUnnecessaryBroadcastChannelInstanceCloseSpreadRule } from './patterns/no-unnecessary-broadcast-channel-instance-close-spread.js'
+import { noUnnecessaryMessagePortPostMessageSpreadRule } from './patterns/no-unnecessary-message-port-post-message-spread.js'
+import { noUnnecessaryMessagePortCloseSpreadRule } from './patterns/no-unnecessary-message-port-close-spread.js'
+import { noUnnecessaryMessagePortStartSpreadRule } from './patterns/no-unnecessary-message-port-start-spread.js'
+import { noUnnecessaryWorkerInstancePostMessageSpreadRule } from './patterns/no-unnecessary-worker-instance-post-message-spread.js'
+import { noUnnecessaryWorkerInstanceTerminateSpreadRule } from './patterns/no-unnecessary-worker-instance-terminate-spread.js'
+import { noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-array-buffer-spread.js'
+import { noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-binary-string-spread.js'
+import { noUnnecessaryFileReaderInstanceReadAsDataURLSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-data-url-spread.js'
+import { noUnnecessaryFileReaderInstanceReadAsTextSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-text-spread.js'
+import { noUnnecessaryFileReaderInstanceAbortSpreadRule } from './patterns/no-unnecessary-file-reader-instance-abort-spread.js'
+import { noUnnecessaryReadableStreamReadSpreadRule } from './patterns/no-unnecessary-readable-stream-read-spread.js'
+import { noUnnecessaryReadableStreamPipeSpreadRule } from './patterns/no-unnecessary-readable-stream-pipe-spread.js'
+import { noUnnecessaryReadableStreamUnpipeSpreadRule } from './patterns/no-unnecessary-readable-stream-unpipe-spread.js'
+import { noUnnecessaryReadableStreamPauseSpreadRule } from './patterns/no-unnecessary-readable-stream-pause-spread.js'
+import { noUnnecessaryReadableStreamResumeSpreadRule } from './patterns/no-unnecessary-readable-stream-resume-spread.js'
+import { noUnnecessaryReadableStreamDestroySpreadRule } from './patterns/no-unnecessary-readable-stream-destroy-spread.js'
+import { noUnnecessaryReadableStreamPushSpreadRule } from './patterns/no-unnecessary-readable-stream-push-spread.js'
+import { noUnnecessaryWritableStreamWriteSpreadRule } from './patterns/no-unnecessary-writable-stream-write-spread.js'
+import { noUnnecessaryWritableStreamEndSpreadRule } from './patterns/no-unnecessary-writable-stream-end-spread.js'
+import { noUnnecessaryWritableStreamDestroySpreadRule } from './patterns/no-unnecessary-writable-stream-destroy-spread.js'
+import { noUnnecessaryTransformStreamTransformSpreadRule } from './patterns/no-unnecessary-transform-stream-transform-spread.js'
+import { noUnnecessaryTransformStreamFlushSpreadRule } from './patterns/no-unnecessary-transform-stream-flush-spread.js'
+import { noUnnecessaryEventEmitterAddListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-add-listener-spread.js'
+import { noUnnecessaryChildProcessInstanceKillSpreadRule } from './patterns/no-unnecessary-child-process-instance-kill-spread.js'
+import { noUnnecessaryChildProcessInstanceSendSpreadRule } from './patterns/no-unnecessary-child-process-instance-send-spread.js'
+import { noUnnecessaryChildProcessInstanceDisconnectSpreadRule } from './patterns/no-unnecessary-child-process-instance-disconnect-spread.js'
+import { noUnnecessaryChildProcessInstanceRefSpreadRule } from './patterns/no-unnecessary-child-process-instance-ref-spread.js'
+import { noUnnecessaryChildProcessInstanceUnrefSpreadRule } from './patterns/no-unnecessary-child-process-instance-unref-spread.js'
+import { noUnnecessaryObserverInstanceObserveSpreadRule } from './patterns/no-unnecessary-observer-instance-observe-spread.js'
+import { noUnnecessaryObserverInstanceUnobserveSpreadRule } from './patterns/no-unnecessary-observer-instance-unobserve-spread.js'
+import { noUnnecessaryObserverInstanceDisconnectSpreadRule } from './patterns/no-unnecessary-observer-instance-disconnect-spread.js'
+import { noUnnecessaryObserverInstanceTakeRecordsSpreadRule } from './patterns/no-unnecessary-observer-instance-take-records-spread.js'
+import { noUnnecessaryTextDecoderInstanceDecodeSpreadRule } from './patterns/no-unnecessary-text-decoder-instance-decode-spread.js'
+import { noUnnecessaryTextEncoderInstanceEncodeSpreadRule } from './patterns/no-unnecessary-text-encoder-instance-encode-spread.js'
+import { noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule } from './patterns/no-unnecessary-text-encoder-instance-encode-into-spread.js'
+import { noUnnecessaryServerListenSpreadRule } from './patterns/no-unnecessary-server-listen-spread.js'
+import { noUnnecessaryServerCloseSpreadRule } from './patterns/no-unnecessary-server-close-spread.js'
+import { noUnnecessaryServerAddressSpreadRule } from './patterns/no-unnecessary-server-address-spread.js'
+import { noUnnecessaryServerGetConnectionsSpreadRule } from './patterns/no-unnecessary-server-get-connections-spread.js'
+import { noUnnecessaryServerRefSpreadRule } from './patterns/no-unnecessary-server-ref-spread.js'
+import { noUnnecessaryServerUnrefSpreadRule } from './patterns/no-unnecessary-server-unref-spread.js'
+import { noUnnecessarySocketWriteSpreadRule } from './patterns/no-unnecessary-socket-write-spread.js'
+import { noUnnecessarySocketConnectSpreadRule } from './patterns/no-unnecessary-socket-connect-spread.js'
+import { noUnnecessarySocketEndSpreadRule } from './patterns/no-unnecessary-socket-end-spread.js'
+import { noUnnecessarySocketDestroySpreadRule } from './patterns/no-unnecessary-socket-destroy-spread.js'
+import { noUnnecessarySocketPauseSpreadRule } from './patterns/no-unnecessary-socket-pause-spread.js'
+import { noUnnecessarySocketResumeSpreadRule } from './patterns/no-unnecessary-socket-resume-spread.js'
+import { noUnnecessarySocketSetTimeoutSpreadRule } from './patterns/no-unnecessary-socket-set-timeout-spread.js'
+import { noUnnecessarySocketSetEncodingSpreadRule } from './patterns/no-unnecessary-socket-set-encoding-spread.js'
+import { noUnnecessarySocketSetKeepAliveSpreadRule } from './patterns/no-unnecessary-socket-set-keep-alive-spread.js'
+import { noUnnecessarySocketSetNoDelaySpreadRule } from './patterns/no-unnecessary-socket-set-no-delay-spread.js'
+import { noUnnecessarySocketRefSpreadRule } from './patterns/no-unnecessary-socket-ref-spread.js'
+import { noUnnecessarySocketUnrefSpreadRule } from './patterns/no-unnecessary-socket-unref-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
