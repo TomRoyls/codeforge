@@ -11,13 +11,15 @@ export const noUnnecessaryStringStartsWithSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'str') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'startsWith') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `str.startsWith(...items) with spread is unusual. startsWith() expects a search string and optional position.`,
+          message: 'str.startsWith(...items) with a single spread is unusual. Consider calling str.startsWith() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryStringStartsWithSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about str.startsWith(...items) with spread which is likely a mistake.',
+      description: 'Warn about str.startsWith(...items) with spread which is unusual since str.startsWith takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-starts-with-spread.ts',
     },

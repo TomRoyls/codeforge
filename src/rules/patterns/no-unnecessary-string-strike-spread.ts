@@ -11,13 +11,15 @@ export const noUnnecessaryStringStrikeSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
-        if (!callee.object || !callee.property || callee.property.type !== 'Identifier') return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'str') return
+        if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'strike') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `str.strike(...items) with spread is unusual. strike() takes no arguments.`,
+          message: 'str.strike(...items) with a single spread is unusual. Consider calling str.strike() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryStringStrikeSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about str.strike(...items) with spread which is likely a mistake.',
+      description: 'Warn about str.strike(...items) with spread which is unusual since str.strike takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-strike-spread.ts',
     },

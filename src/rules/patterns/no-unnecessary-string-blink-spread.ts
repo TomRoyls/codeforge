@@ -11,13 +11,15 @@ export const noUnnecessaryStringBlinkSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'str') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'blink') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `str.blink(...items) with spread is unusual. blink() takes no arguments.`,
+          message: 'str.blink(...items) with a single spread is unusual. Consider calling str.blink() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryStringBlinkSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about str.blink(...items) with spread which is likely a mistake.',
+      description: 'Warn about str.blink(...items) with spread which is unusual since str.blink takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-blink-spread.ts',
     },

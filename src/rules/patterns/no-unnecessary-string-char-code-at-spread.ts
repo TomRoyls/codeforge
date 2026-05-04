@@ -11,13 +11,15 @@ export const noUnnecessaryStringCharCodeAtSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'str') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'charCodeAt') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `str.charCodeAt(...items) with spread is unusual. charCodeAt() expects an index number.`,
+          message: 'str.charCodeAt(...items) with a single spread is unusual. Consider calling str.charCodeAt() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryStringCharCodeAtSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about str.charCodeAt(...items) with spread which is likely a mistake.',
+      description: 'Warn about str.charCodeAt(...items) with spread which is unusual since str.charCodeAt takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-char-code-at-spread.ts',
     },

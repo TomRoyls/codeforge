@@ -3041,6 +3041,51 @@ const adaptedNoUnnecessaryObjectFromEntriesSpread = adaptPluginRule(noUnnecessar
 const adaptedNoUnnecessaryObjectGroupBySpread = adaptPluginRule(noUnnecessaryObjectGroupBySpreadRule, 'no-unnecessary-object-group-by-spread')
 const adaptedNoUnnecessaryArrayBufferSliceSpread = adaptPluginRule(noUnnecessaryArrayBufferSliceSpreadRule, 'no-unnecessary-array-buffer-slice-spread')
 const adaptedNoUnnecessaryPromiseTrySpread = adaptPluginRule(noUnnecessaryPromiseTrySpreadRule, 'no-unnecessary-promise-try-spread')
+const adaptedNoUnnecessaryStringCharAtSpread = adaptPluginRule(noUnnecessaryStringCharAtSpreadRule, 'no-unnecessary-string-char-at-spread')
+const adaptedNoUnnecessaryStringCharCodeAtSpread = adaptPluginRule(noUnnecessaryStringCharCodeAtSpreadRule, 'no-unnecessary-string-char-code-at-spread')
+const adaptedNoUnnecessaryStringCodePointAtSpread = adaptPluginRule(noUnnecessaryStringCodePointAtSpreadRule, 'no-unnecessary-string-code-point-at-spread')
+const adaptedNoUnnecessaryStringConcatSpread = adaptPluginRule(noUnnecessaryStringConcatSpreadRule, 'no-unnecessary-string-concat-spread')
+const adaptedNoUnnecessaryStringEndsWithSpread = adaptPluginRule(noUnnecessaryStringEndsWithSpreadRule, 'no-unnecessary-string-ends-with-spread')
+const adaptedNoUnnecessaryStringIncludesSpread = adaptPluginRule(noUnnecessaryStringIncludesSpreadRule, 'no-unnecessary-string-includes-spread')
+const adaptedNoUnnecessaryStringIndexOfSpread = adaptPluginRule(noUnnecessaryStringIndexOfSpreadRule, 'no-unnecessary-string-index-of-spread')
+const adaptedNoUnnecessaryStringLastIndexOfSpread = adaptPluginRule(noUnnecessaryStringLastIndexOfSpreadRule, 'no-unnecessary-string-last-index-of-spread')
+const adaptedNoUnnecessaryStringLocaleCompareSpread = adaptPluginRule(noUnnecessaryStringLocaleCompareSpreadRule, 'no-unnecessary-string-locale-compare-spread')
+const adaptedNoUnnecessaryStringMatchSpread = adaptPluginRule(noUnnecessaryStringMatchSpreadRule, 'no-unnecessary-string-match-spread')
+const adaptedNoUnnecessaryStringMatchAllSpread = adaptPluginRule(noUnnecessaryStringMatchAllSpreadRule, 'no-unnecessary-string-match-all-spread')
+const adaptedNoUnnecessaryStringNormalizeSpread = adaptPluginRule(noUnnecessaryStringNormalizeSpreadRule, 'no-unnecessary-string-normalize-spread')
+const adaptedNoUnnecessaryStringPadStartSpread = adaptPluginRule(noUnnecessaryStringPadStartSpreadRule, 'no-unnecessary-string-pad-start-spread')
+const adaptedNoUnnecessaryStringPadEndSpread = adaptPluginRule(noUnnecessaryStringPadEndSpreadRule, 'no-unnecessary-string-pad-end-spread')
+const adaptedNoUnnecessaryStringRepeatSpread = adaptPluginRule(noUnnecessaryStringRepeatSpreadRule, 'no-unnecessary-string-repeat-spread')
+const adaptedNoUnnecessaryStringReplaceSpread = adaptPluginRule(noUnnecessaryStringReplaceSpreadRule, 'no-unnecessary-string-replace-spread')
+const adaptedNoUnnecessaryStringReplaceAllSpread = adaptPluginRule(noUnnecessaryStringReplaceAllSpreadRule, 'no-unnecessary-string-replace-all-spread')
+const adaptedNoUnnecessaryStringSearchSpread = adaptPluginRule(noUnnecessaryStringSearchSpreadRule, 'no-unnecessary-string-search-spread')
+const adaptedNoUnnecessaryStringSliceSpread = adaptPluginRule(noUnnecessaryStringSliceSpreadRule, 'no-unnecessary-string-slice-spread')
+const adaptedNoUnnecessaryStringSplitSpread = adaptPluginRule(noUnnecessaryStringSplitSpreadRule, 'no-unnecessary-string-split-spread')
+const adaptedNoUnnecessaryStringStartsWithSpread = adaptPluginRule(noUnnecessaryStringStartsWithSpreadRule, 'no-unnecessary-string-starts-with-spread')
+const adaptedNoUnnecessaryStringSubstringSpread = adaptPluginRule(noUnnecessaryStringSubstringSpreadRule, 'no-unnecessary-string-substring-spread')
+const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
+const adaptedNoUnnecessaryStringToUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToUpperCaseSpreadRule, 'no-unnecessary-string-to-upper-case-spread')
+const adaptedNoUnnecessaryStringToLocaleLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleLowerCaseSpreadRule, 'no-unnecessary-string-to-locale-lower-case-spread')
+const adaptedNoUnnecessaryStringToLocaleUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleUpperCaseSpreadRule, 'no-unnecessary-string-to-locale-upper-case-spread')
+const adaptedNoUnnecessaryStringToStringSpread = adaptPluginRule(noUnnecessaryStringToStringSpreadRule, 'no-unnecessary-string-to-string-spread')
+const adaptedNoUnnecessaryStringTrimSpread = adaptPluginRule(noUnnecessaryStringTrimSpreadRule, 'no-unnecessary-string-trim-spread')
+const adaptedNoUnnecessaryStringTrimStartSpread = adaptPluginRule(noUnnecessaryStringTrimStartSpreadRule, 'no-unnecessary-string-trim-start-spread')
+const adaptedNoUnnecessaryStringTrimEndSpread = adaptPluginRule(noUnnecessaryStringTrimEndSpreadRule, 'no-unnecessary-string-trim-end-spread')
+const adaptedNoUnnecessaryStringValueOfSpread = adaptPluginRule(noUnnecessaryStringValueOfSpreadRule, 'no-unnecessary-string-value-of-spread')
+const adaptedNoUnnecessaryStringAtSpread = adaptPluginRule(noUnnecessaryStringAtSpreadRule, 'no-unnecessary-string-at-spread')
+const adaptedNoUnnecessaryStringFixedSpread = adaptPluginRule(noUnnecessaryStringFixedSpreadRule, 'no-unnecessary-string-fixed-spread')
+const adaptedNoUnnecessaryStringFontcolorSpread = adaptPluginRule(noUnnecessaryStringFontcolorSpreadRule, 'no-unnecessary-string-fontcolor-spread')
+const adaptedNoUnnecessaryStringFontsizeSpread = adaptPluginRule(noUnnecessaryStringFontsizeSpreadRule, 'no-unnecessary-string-fontsize-spread')
+const adaptedNoUnnecessaryStringItalicsSpread = adaptPluginRule(noUnnecessaryStringItalicsSpreadRule, 'no-unnecessary-string-italics-spread')
+const adaptedNoUnnecessaryStringSmallSpread = adaptPluginRule(noUnnecessaryStringSmallSpreadRule, 'no-unnecessary-string-small-spread')
+const adaptedNoUnnecessaryStringStrikeSpread = adaptPluginRule(noUnnecessaryStringStrikeSpreadRule, 'no-unnecessary-string-strike-spread')
+const adaptedNoUnnecessaryStringSubSpread = adaptPluginRule(noUnnecessaryStringSubSpreadRule, 'no-unnecessary-string-sub-spread')
+const adaptedNoUnnecessaryStringSupSpread = adaptPluginRule(noUnnecessaryStringSupSpreadRule, 'no-unnecessary-string-sup-spread')
+const adaptedNoUnnecessaryStringAnchorSpread = adaptPluginRule(noUnnecessaryStringAnchorSpreadRule, 'no-unnecessary-string-anchor-spread')
+const adaptedNoUnnecessaryStringLinkSpread = adaptPluginRule(noUnnecessaryStringLinkSpreadRule, 'no-unnecessary-string-link-spread')
+const adaptedNoUnnecessaryStringBigSpread = adaptPluginRule(noUnnecessaryStringBigSpreadRule, 'no-unnecessary-string-big-spread')
+const adaptedNoUnnecessaryStringBlinkSpread = adaptPluginRule(noUnnecessaryStringBlinkSpreadRule, 'no-unnecessary-string-blink-spread')
+const adaptedNoUnnecessaryStringBoldSpread = adaptPluginRule(noUnnecessaryStringBoldSpreadRule, 'no-unnecessary-string-bold-spread')
   'no-unnecessary-object-group-by-spread': adaptedNoUnnecessaryObjectGroupBySpread,
   'no-unnecessary-array-buffer-slice-spread': adaptedNoUnnecessaryArrayBufferSliceSpread,
   'no-unnecessary-promise-try-spread': adaptedNoUnnecessaryPromiseTrySpread,
@@ -3821,6 +3866,51 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-string-fontsize-spread': 'patterns',
   'no-unnecessary-string-blink-spread': 'patterns',
   'no-unnecessary-string-bold-spread': 'patterns',
+  'no-unnecessary-string-char-at-spread': adaptedNoUnnecessaryStringCharAtSpread,
+  'no-unnecessary-string-char-code-at-spread': adaptedNoUnnecessaryStringCharCodeAtSpread,
+  'no-unnecessary-string-code-point-at-spread': adaptedNoUnnecessaryStringCodePointAtSpread,
+  'no-unnecessary-string-concat-spread': adaptedNoUnnecessaryStringConcatSpread,
+  'no-unnecessary-string-ends-with-spread': adaptedNoUnnecessaryStringEndsWithSpread,
+  'no-unnecessary-string-includes-spread': adaptedNoUnnecessaryStringIncludesSpread,
+  'no-unnecessary-string-index-of-spread': adaptedNoUnnecessaryStringIndexOfSpread,
+  'no-unnecessary-string-last-index-of-spread': adaptedNoUnnecessaryStringLastIndexOfSpread,
+  'no-unnecessary-string-locale-compare-spread': adaptedNoUnnecessaryStringLocaleCompareSpread,
+  'no-unnecessary-string-match-spread': adaptedNoUnnecessaryStringMatchSpread,
+  'no-unnecessary-string-match-all-spread': adaptedNoUnnecessaryStringMatchAllSpread,
+  'no-unnecessary-string-normalize-spread': adaptedNoUnnecessaryStringNormalizeSpread,
+  'no-unnecessary-string-pad-start-spread': adaptedNoUnnecessaryStringPadStartSpread,
+  'no-unnecessary-string-pad-end-spread': adaptedNoUnnecessaryStringPadEndSpread,
+  'no-unnecessary-string-repeat-spread': adaptedNoUnnecessaryStringRepeatSpread,
+  'no-unnecessary-string-replace-spread': adaptedNoUnnecessaryStringReplaceSpread,
+  'no-unnecessary-string-replace-all-spread': adaptedNoUnnecessaryStringReplaceAllSpread,
+  'no-unnecessary-string-search-spread': adaptedNoUnnecessaryStringSearchSpread,
+  'no-unnecessary-string-slice-spread': adaptedNoUnnecessaryStringSliceSpread,
+  'no-unnecessary-string-split-spread': adaptedNoUnnecessaryStringSplitSpread,
+  'no-unnecessary-string-starts-with-spread': adaptedNoUnnecessaryStringStartsWithSpread,
+  'no-unnecessary-string-substring-spread': adaptedNoUnnecessaryStringSubstringSpread,
+  'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
+  'no-unnecessary-string-to-upper-case-spread': adaptedNoUnnecessaryStringToUpperCaseSpread,
+  'no-unnecessary-string-to-locale-lower-case-spread': adaptedNoUnnecessaryStringToLocaleLowerCaseSpread,
+  'no-unnecessary-string-to-locale-upper-case-spread': adaptedNoUnnecessaryStringToLocaleUpperCaseSpread,
+  'no-unnecessary-string-to-string-spread': adaptedNoUnnecessaryStringToStringSpread,
+  'no-unnecessary-string-trim-spread': adaptedNoUnnecessaryStringTrimSpread,
+  'no-unnecessary-string-trim-start-spread': adaptedNoUnnecessaryStringTrimStartSpread,
+  'no-unnecessary-string-trim-end-spread': adaptedNoUnnecessaryStringTrimEndSpread,
+  'no-unnecessary-string-value-of-spread': adaptedNoUnnecessaryStringValueOfSpread,
+  'no-unnecessary-string-at-spread': adaptedNoUnnecessaryStringAtSpread,
+  'no-unnecessary-string-fixed-spread': adaptedNoUnnecessaryStringFixedSpread,
+  'no-unnecessary-string-fontcolor-spread': adaptedNoUnnecessaryStringFontcolorSpread,
+  'no-unnecessary-string-fontsize-spread': adaptedNoUnnecessaryStringFontsizeSpread,
+  'no-unnecessary-string-italics-spread': adaptedNoUnnecessaryStringItalicsSpread,
+  'no-unnecessary-string-small-spread': adaptedNoUnnecessaryStringSmallSpread,
+  'no-unnecessary-string-strike-spread': adaptedNoUnnecessaryStringStrikeSpread,
+  'no-unnecessary-string-sub-spread': adaptedNoUnnecessaryStringSubSpread,
+  'no-unnecessary-string-sup-spread': adaptedNoUnnecessaryStringSupSpread,
+  'no-unnecessary-string-anchor-spread': adaptedNoUnnecessaryStringAnchorSpread,
+  'no-unnecessary-string-link-spread': adaptedNoUnnecessaryStringLinkSpread,
+  'no-unnecessary-string-big-spread': adaptedNoUnnecessaryStringBigSpread,
+  'no-unnecessary-string-blink-spread': adaptedNoUnnecessaryStringBlinkSpread,
+  'no-unnecessary-string-bold-spread': adaptedNoUnnecessaryStringBoldSpread,
   'no-unnecessary-string-italics-spread': 'patterns',
   'no-unnecessary-string-small-spread': 'patterns',
   'no-unnecessary-string-strike-spread': 'patterns',
@@ -4265,6 +4355,51 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-object-group-by-spread': 'patterns',
   'no-unnecessary-array-buffer-slice-spread': 'patterns',
   'no-unnecessary-promise-try-spread': 'patterns',
+  'no-unnecessary-string-char-at-spread': 'patterns',
+  'no-unnecessary-string-char-code-at-spread': 'patterns',
+  'no-unnecessary-string-code-point-at-spread': 'patterns',
+  'no-unnecessary-string-concat-spread': 'patterns',
+  'no-unnecessary-string-ends-with-spread': 'patterns',
+  'no-unnecessary-string-includes-spread': 'patterns',
+  'no-unnecessary-string-index-of-spread': 'patterns',
+  'no-unnecessary-string-last-index-of-spread': 'patterns',
+  'no-unnecessary-string-locale-compare-spread': 'patterns',
+  'no-unnecessary-string-match-spread': 'patterns',
+  'no-unnecessary-string-match-all-spread': 'patterns',
+  'no-unnecessary-string-normalize-spread': 'patterns',
+  'no-unnecessary-string-pad-start-spread': 'patterns',
+  'no-unnecessary-string-pad-end-spread': 'patterns',
+  'no-unnecessary-string-repeat-spread': 'patterns',
+  'no-unnecessary-string-replace-spread': 'patterns',
+  'no-unnecessary-string-replace-all-spread': 'patterns',
+  'no-unnecessary-string-search-spread': 'patterns',
+  'no-unnecessary-string-slice-spread': 'patterns',
+  'no-unnecessary-string-split-spread': 'patterns',
+  'no-unnecessary-string-starts-with-spread': 'patterns',
+  'no-unnecessary-string-substring-spread': 'patterns',
+  'no-unnecessary-string-to-lower-case-spread': 'patterns',
+  'no-unnecessary-string-to-upper-case-spread': 'patterns',
+  'no-unnecessary-string-to-locale-lower-case-spread': 'patterns',
+  'no-unnecessary-string-to-locale-upper-case-spread': 'patterns',
+  'no-unnecessary-string-to-string-spread': 'patterns',
+  'no-unnecessary-string-trim-spread': 'patterns',
+  'no-unnecessary-string-trim-start-spread': 'patterns',
+  'no-unnecessary-string-trim-end-spread': 'patterns',
+  'no-unnecessary-string-value-of-spread': 'patterns',
+  'no-unnecessary-string-at-spread': 'patterns',
+  'no-unnecessary-string-fixed-spread': 'patterns',
+  'no-unnecessary-string-fontcolor-spread': 'patterns',
+  'no-unnecessary-string-fontsize-spread': 'patterns',
+  'no-unnecessary-string-italics-spread': 'patterns',
+  'no-unnecessary-string-small-spread': 'patterns',
+  'no-unnecessary-string-strike-spread': 'patterns',
+  'no-unnecessary-string-sub-spread': 'patterns',
+  'no-unnecessary-string-sup-spread': 'patterns',
+  'no-unnecessary-string-anchor-spread': 'patterns',
+  'no-unnecessary-string-link-spread': 'patterns',
+  'no-unnecessary-string-big-spread': 'patterns',
+  'no-unnecessary-string-blink-spread': 'patterns',
+  'no-unnecessary-string-bold-spread': 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4456,6 +4591,53 @@ import {
   noUnnecessaryObjectGroupBySpreadRule,
   noUnnecessaryArrayBufferSliceSpreadRule,
   noUnnecessaryPromiseTrySpreadRule,
+} from './patterns/index.js'
+import {
+  noUnnecessaryStringCharAtSpreadRule,
+  noUnnecessaryStringCharCodeAtSpreadRule,
+  noUnnecessaryStringCodePointAtSpreadRule,
+  noUnnecessaryStringConcatSpreadRule,
+  noUnnecessaryStringEndsWithSpreadRule,
+  noUnnecessaryStringIncludesSpreadRule,
+  noUnnecessaryStringIndexOfSpreadRule,
+  noUnnecessaryStringLastIndexOfSpreadRule,
+  noUnnecessaryStringLocaleCompareSpreadRule,
+  noUnnecessaryStringMatchSpreadRule,
+  noUnnecessaryStringMatchAllSpreadRule,
+  noUnnecessaryStringNormalizeSpreadRule,
+  noUnnecessaryStringPadStartSpreadRule,
+  noUnnecessaryStringPadEndSpreadRule,
+  noUnnecessaryStringRepeatSpreadRule,
+  noUnnecessaryStringReplaceSpreadRule,
+  noUnnecessaryStringReplaceAllSpreadRule,
+  noUnnecessaryStringSearchSpreadRule,
+  noUnnecessaryStringSliceSpreadRule,
+  noUnnecessaryStringSplitSpreadRule,
+  noUnnecessaryStringStartsWithSpreadRule,
+  noUnnecessaryStringSubstringSpreadRule,
+  noUnnecessaryStringToLowerCaseSpreadRule,
+  noUnnecessaryStringToUpperCaseSpreadRule,
+  noUnnecessaryStringToLocaleLowerCaseSpreadRule,
+  noUnnecessaryStringToLocaleUpperCaseSpreadRule,
+  noUnnecessaryStringToStringSpreadRule,
+  noUnnecessaryStringTrimSpreadRule,
+  noUnnecessaryStringTrimStartSpreadRule,
+  noUnnecessaryStringTrimEndSpreadRule,
+  noUnnecessaryStringValueOfSpreadRule,
+  noUnnecessaryStringAtSpreadRule,
+  noUnnecessaryStringFixedSpreadRule,
+  noUnnecessaryStringFontcolorSpreadRule,
+  noUnnecessaryStringFontsizeSpreadRule,
+  noUnnecessaryStringItalicsSpreadRule,
+  noUnnecessaryStringSmallSpreadRule,
+  noUnnecessaryStringStrikeSpreadRule,
+  noUnnecessaryStringSubSpreadRule,
+  noUnnecessaryStringSupSpreadRule,
+  noUnnecessaryStringAnchorSpreadRule,
+  noUnnecessaryStringLinkSpreadRule,
+  noUnnecessaryStringBigSpreadRule,
+  noUnnecessaryStringBlinkSpreadRule,
+  noUnnecessaryStringBoldSpreadRule,
 } from './patterns/index.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'

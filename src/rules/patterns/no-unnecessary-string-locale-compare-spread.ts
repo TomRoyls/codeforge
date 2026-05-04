@@ -11,13 +11,15 @@ export const noUnnecessaryStringLocaleCompareSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier') return
+        if (callee.object.name !== 'str') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'localeCompare') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `str.localeCompare(...items) with spread is unusual. localeCompare() expects a comparison string.`,
+          message: 'str.localeCompare(...items) with a single spread is unusual. Consider calling str.localeCompare() directly.',
           node: n,
         })
       },
@@ -26,7 +28,7 @@ export const noUnnecessaryStringLocaleCompareSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about str.localeCompare(...items) with spread which is likely a mistake.',
+      description: 'Warn about str.localeCompare(...items) with spread which is unusual since str.localeCompare takes specific arguments, not a spread.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-locale-compare-spread.ts',
     },

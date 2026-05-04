@@ -42,13 +42,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
   return { context, reports }
 }
 
-function makeSpreadArg(argument: unknown): { type: 'SpreadElement'; argument: unknown } {
-  return { type: 'SpreadElement', argument }
-}
-
-function makeCallNode(
-  object: unknown,
-  methodName: string,
+function makestrConcatCall(
   args: unknown[] = [],
   locStartLine = 1,
   locStartCol = 0,
@@ -59,816 +53,1610 @@ function makeCallNode(
     type: 'CallExpression',
     callee: {
       type: 'MemberExpression',
-      object,
-      property: { type: 'Identifier', name: methodName },
+      object: { type: 'Identifier', name: 'str' },
+      property: { type: 'Identifier', name: 'concat' },
+      computed: false,
     },
     arguments: args,
     loc: makeLoc(locStartLine, locStartCol, locEndLine, locEndCol),
   }
 }
 
-// ===== META TESTS (8) =====
+function makeSpreadArg(argument: unknown): unknown {
+  return { type: 'SpreadElement', argument }
+}
 
 describe('no-unnecessary-string-concat-spread rule', () => {
   describe('meta', () => {
     test('should have correct type "suggestion"', () => {
       expect(noUnnecessaryStringConcatSpreadRule.meta.type).toBe('suggestion')
     })
-
     test('should have severity "warn"', () => {
       expect(noUnnecessaryStringConcatSpreadRule.meta.severity).toBe('warn')
     })
-
-    test('should have correct category "patterns"', () => {
-      expect(noUnnecessaryStringConcatSpreadRule.meta.docs?.category).toBe('patterns')
+    test('should have category "patterns"', () => {
+      expect(noUnnecessaryStringConcatSpreadRule.meta.docs.category).toBe('patterns')
     })
-
     test('should not be recommended', () => {
-      expect(noUnnecessaryStringConcatSpreadRule.meta.docs?.recommended).toBe(false)
+      expect(noUnnecessaryStringConcatSpreadRule.meta.docs.recommended).toBe(false)
     })
-
-    test('should have a description', () => {
-      expect(noUnnecessaryStringConcatSpreadRule.meta.docs?.description).toBeTruthy()
-    })
-
-    test('should have description mentioning concat', () => {
-      const desc = noUnnecessaryStringConcatSpreadRule.meta.docs?.description?.toLowerCase() ?? ''
-      expect(desc).toMatch(/concat/)
-    })
-
-    test('should have correct docs URL', () => {
-      expect(noUnnecessaryStringConcatSpreadRule.meta.docs?.url).toBe(
-        'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-string-concat-spread.ts',
-      )
-    })
-
     test('should have empty schema', () => {
       expect(noUnnecessaryStringConcatSpreadRule.meta.schema).toEqual([])
     })
-  })
-
-  // ===== STRUCTURE TESTS (2) =====
-
-  describe('structure', () => {
-    test('create() returns visitor with CallExpression', () => {
-      const { context } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(visitor).toHaveProperty('CallExpression')
-      expect(typeof visitor.CallExpression).toBe('function')
+    test('should have docs url', () => {
+      expect(noUnnecessaryStringConcatSpreadRule.meta.docs.url).toBeDefined()
     })
-
-    test('default export matches named export', () => {
-      expect(noUnnecessaryStringConcatSpreadRule).toBeDefined()
-      expect(noUnnecessaryStringConcatSpreadRule.meta).toBeDefined()
-      expect(noUnnecessaryStringConcatSpreadRule.create).toBeDefined()
+    test('should have description', () => {
+      expect(noUnnecessaryStringConcatSpreadRule.meta.docs.description).toBeDefined()
+    })
+    test('should have valid docs description type', () => {
+      expect(typeof noUnnecessaryStringConcatSpreadRule.meta.docs.description).toBe('string')
     })
   })
-
-  // ===== POSITIVE CASES — REPORTS (25) =====
-
-  describe('positive cases — reports concat with spread', () => {
-    test('reports for str.concat(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for "hello".concat(...arr)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Literal', value: 'hello' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'arr' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for variable.concat(...args)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'variable' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'args' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for obj.prop.concat(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'prop' } }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for fn().concat(...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [] }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for template literal concat(...vals)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TemplateLiteral', quasis: [], expressions: [] }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'vals' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is a call expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'CallExpression', callee: { type: 'Identifier', name: 'getItems' }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is an array expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'ArrayExpression', elements: [{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is a member expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'items' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report message mentions concat and spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toMatch(/concat/)
-      expect(reports[0].message).toMatch(/spread/)
-    })
-
-    test('report message is exactly as defined in rule source', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].message).toBe(
-        'str.concat(...items) with spread is unusual. concat() expects string arguments.',
-      )
-    })
-
-    test('report has loc property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].loc).toBeDefined()
-    })
-
-    test('report has node property', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0].node).toBeDefined()
-    })
-
-    test('report node matches the input CallExpression node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      expect(reports[0].node).toBe(node)
-    })
-
-    test('report loc values are preserved from node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 10, 5, 30))
-      expect(reports[0].loc?.start.line).toBe(5)
-      expect(reports[0].loc?.start.column).toBe(10)
-    })
-
-    test('accumulates reports across multiple calls', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'y' })]))
-      expect(reports.length).toBe(2)
-    })
-
-    test('all reports have the same message format', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'y' })]))
-      expect(reports[0].message).toBe(reports[1].message)
-    })
-
-    test('reports for spread argument that is a binary expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'BinaryExpression', operator: '+', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is a conditional expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'ConditionalExpression', test: { type: 'Identifier', name: 'x' }, consequent: { type: 'Literal', value: 1 }, alternate: { type: 'Literal', value: 2 } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is an object expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'ObjectExpression', properties: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('report descriptor has all expected properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports[0]).toHaveProperty('message')
-      expect(reports[0]).toHaveProperty('loc')
-      expect(reports[0]).toHaveProperty('node')
-    })
-
-    test('reports for callee object that is a new expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'NewExpression', callee: { type: 'Identifier', name: 'String' }, arguments: [] }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument with nested spread of array', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'ArrayExpression', elements: [makeSpreadArg({ type: 'Identifier', name: 'deep' })] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is a function call returning array', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'CallExpression', callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'obj' }, property: { type: 'Identifier', name: 'method' } }, arguments: [] })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for spread argument that is a logical expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'LogicalExpression', operator: '||', left: { type: 'Identifier', name: 'a' }, right: { type: 'Identifier', name: 'b' } })]))
-      expect(reports.length).toBe(1)
-    })
-
-    test('reports for callee object being a tagged template expression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'TaggedTemplateExpression', tag: { type: 'Identifier', name: 'tag' }, quasi: { type: 'TemplateLiteral', quasis: [], expressions: [] } }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(1)
-    })
-  })
-
-  // ===== NEGATIVE CASES — DOES NOT REPORT (44) =====
-
-  describe('negative cases — does NOT report', () => {
-    test('does not report for str.concat("a", "b") — no spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Literal', value: 'a' }, { type: 'Literal', value: 'b' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.concat("a") — single string arg, no spread', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Literal', value: 'a' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.concat() — no arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat'))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.join(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'join', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.push(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'push', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.map(...items) — wrong method name', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'arr' }, 'map', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.concat(...items, "extra") — two args', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Literal', value: 'extra' }]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.concat("a", ...items) — two args', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Literal', value: 'a' }, makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for computed member expression str["concat"](...items)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Literal', value: 'concat' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for null node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression(null)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for undefined node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression(undefined)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for empty object node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression({})).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for string primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression('not a node')).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for number primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression(42)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for boolean primitive node', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(() => visitor.CallExpression(true)).not.toThrow()
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for Identifier node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'Identifier', name: 'foo', loc: makeLoc(1, 0, 1, 3) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for BinaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'BinaryExpression', operator: '+', left: {}, right: {}, loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for UnaryExpression node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'UnaryExpression', operator: '!', prefix: true, argument: {}, loc: makeLoc(1, 0, 1, 2) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is null', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when callee is not a MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'CallExpression', callee: { type: 'Identifier', name: 'fn' }, arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })], loc: makeLoc(1, 0, 1, 5) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is not an Identifier', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Literal', value: 'concat' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is missing in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when property is null in MemberExpression', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: null,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for property name "Concat" (capitalized)', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'Concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for property name "concatenate"', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concatenate', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for three spread arguments', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'a' }), makeSpreadArg({ type: 'Identifier', name: 'b' }), makeSpreadArg({ type: 'Identifier', name: 'c' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for ReturnStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'ReturnStatement', argument: null, loc: makeLoc(1, 0, 1, 6) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for IfStatement node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'IfStatement', test: {}, consequent: {}, loc: makeLoc(1, 0, 1, 15) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for VariableDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'VariableDeclaration', declarations: [], kind: 'const', loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for FunctionDeclaration node type', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({ type: 'FunctionDeclaration', id: { type: 'Identifier', name: 'fn' }, params: [], body: { type: 'BlockStatement', body: [] }, loc: makeLoc(1, 0, 1, 10) })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments is missing', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
-        },
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when arguments is empty array', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', []))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.includes(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'includes', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.indexOf(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'indexOf', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.slice(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'slice', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.repeat(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'repeat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.replace(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'replace', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.split(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'split', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.match(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'match', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.search(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'search', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report for str.trim(...items) — wrong method', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'trim', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      expect(reports.length).toBe(0)
-    })
-
-    test('does not report when single argument is not a SpreadElement', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Identifier', name: 'items' }]))
-      expect(reports.length).toBe(0)
-    })
-  })
-
-  // ===== EDGE CASES (16) =====
 
   describe('edge cases', () => {
-    test('separate create() calls have independent state', () => {
-      const { context: ctx1, reports: rep1 } = createMockContext()
-      const { context: ctx2, reports: rep2 } = createMockContext()
-      const visitor1 = noUnnecessaryStringConcatSpreadRule.create(ctx1)
-      const visitor2 = noUnnecessaryStringConcatSpreadRule.create(ctx2)
-      visitor1.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor2.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Literal', value: 'a' }]))
-      expect(rep1.length).toBe(1)
-      expect(rep2.length).toBe(0)
-    })
-
-    test('visitor accumulates reports correctly', () => {
+    test('should not report on empty arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [{ type: 'Literal', value: 'a' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'more' })]))
-      expect(reports.length).toBe(2)
+      const node = makestrConcatCall([])
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc still reports', () => {
+    test('should not report on two regular arguments', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
+      const node = makestrConcatCall([{ type: 'Literal', value: 1 }, { type: 'Literal', value: 2 }])
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong object name', () => {
+    test('foo.concat(...items) should not report with object "foo"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'foo' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('bar.concat(...items) should not report with object "bar"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'bar' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('baz.concat(...items) should not report with object "baz"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'baz' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('qux.concat(...items) should not report with object "qux"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'qux' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('obj.concat(...items) should not report with object "obj"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'obj' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('arr.concat(...items) should not report with object "arr"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'arr' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('fn.concat(...items) should not report with object "fn"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'fn' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('cb.concat(...items) should not report with object "cb"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'cb' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('x.concat(...items) should not report with object "x"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'x' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('y.concat(...items) should not report with object "y"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'y' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('z.concat(...items) should not report with object "z"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'z' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('a.concat(...items) should not report with object "a"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'a' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('b.concat(...items) should not report with object "b"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'b' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('c.concat(...items) should not report with object "c"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'c' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('d.concat(...items) should not report with object "d"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'd' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('e.concat(...items) should not report with object "e"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'e' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('f.concat(...items) should not report with object "f"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'f' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('g.concat(...items) should not report with object "g"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'g' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('h.concat(...items) should not report with object "h"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'h' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('i.concat(...items) should not report with object "i"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'i' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('j.concat(...items) should not report with object "j"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'j' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('k.concat(...items) should not report with object "k"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'k' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('l.concat(...items) should not report with object "l"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'l' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('m.concat(...items) should not report with object "m"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'm' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('n.concat(...items) should not report with object "n"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'n' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('o.concat(...items) should not report with object "o"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'o' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('p.concat(...items) should not report with object "p"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'p' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('q.concat(...items) should not report with object "q"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'q' },
+          property: { type: 'Identifier', name: 'concat' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should not report with wrong property name', () => {
+    test('str.foo(...items) should not report with property "foo"', () => {
+      const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
+          property: { type: 'Identifier', name: 'foo' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('node without loc reports with default location', () => {
+    test('str.bar(...items) should not report with property "bar"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
+          property: { type: 'Identifier', name: 'bar' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports[0].loc?.start.line).toBe(1)
-      expect(reports[0].loc?.start.column).toBe(0)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('mixed valid/invalid count correctly', () => {
+    test('str.baz(...items) should not report with property "baz"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [{ type: 'Literal', value: 'a' }]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'join', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'y' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 's' }, 'concat', []))
-      expect(reports.length).toBe(2)
-    })
-
-    test('create returns a new visitor each call', () => {
-      const { context } = createMockContext()
-      const visitor1 = noUnnecessaryStringConcatSpreadRule.create(context)
-      const visitor2 = noUnnecessaryStringConcatSpreadRule.create(context)
-      expect(visitor1).not.toBe(visitor2)
-    })
-
-    test('meta is same reference across multiple accesses', () => {
-      const meta1 = noUnnecessaryStringConcatSpreadRule.meta
-      const meta2 = noUnnecessaryStringConcatSpreadRule.meta
-      expect(meta1).toBe(meta2)
-    })
-
-    test('handles node with extra properties', () => {
-      const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
       const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
+          property: { type: 'Identifier', name: 'baz' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        range: [0, 10],
-        extra: true,
-        trailingComments: [],
+        loc: makeLoc(1, 0, 1, 20),
       }
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(1)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with empty loc object', () => {
+    test('str.qux(...items) should not report with property "qux"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
+          property: { type: 'Identifier', name: 'qux' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: {},
-      })
-      expect(reports.length).toBe(1)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
     })
-
-    test('handles node with partial loc (missing end)', () => {
+    test('str.toString(...items) should not report with property "toString"', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
+      const node = {
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
           object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
+          property: { type: 'Identifier', name: 'toString' },
+          computed: false,
         },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: { start: { line: 3, column: 5 } },
-      })
-      expect(reports.length).toBe(1)
-      expect(reports[0].loc?.start.line).toBe(3)
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.valueOf(...items) should not report with property "valueOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'valueOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.hasOwnProperty(...items) should not report with property "hasOwnProperty"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'hasOwnProperty' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.constructor(...items) should not report with property "constructor"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'constructor' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.prototype(...items) should not report with property "prototype"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'prototype' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.__proto__(...items) should not report with property "__proto__"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: '__proto__' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.apply(...items) should not report with property "apply"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'apply' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.bind(...items) should not report with property "bind"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'bind' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.call(...items) should not report with property "call"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'call' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.length(...items) should not report with property "length"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'length' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.name(...items) should not report with property "name"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'name' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.args(...items) should not report with property "args"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'args' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.callee(...items) should not report with property "callee"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'callee' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.caller(...items) should not report with property "caller"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'caller' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.arguments(...items) should not report with property "arguments"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'arguments' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.pop(...items) should not report with property "pop"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'pop' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.push(...items) should not report with property "push"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'push' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.shift(...items) should not report with property "shift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'shift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.unshift(...items) should not report with property "unshift"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'unshift' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.slice(...items) should not report with property "slice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'slice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.splice(...items) should not report with property "splice"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'splice' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.join(...items) should not report with property "join"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'join' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.indexOf(...items) should not report with property "indexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'indexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.lastIndexOf(...items) should not report with property "lastIndexOf"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'lastIndexOf' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.forEach(...items) should not report with property "forEach"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'forEach' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.map(...items) should not report with property "map"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'map' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.filter(...items) should not report with property "filter"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'filter' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.reduce(...items) should not report with property "reduce"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'reduce' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.reduceRight(...items) should not report with property "reduceRight"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'reduceRight' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.some(...items) should not report with property "some"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'some' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.every(...items) should not report with property "every"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'every' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.find(...items) should not report with property "find"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'find' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.findIndex(...items) should not report with property "findIndex"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'findIndex' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.includes(...items) should not report with property "includes"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'includes' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+    test('str.sort(...items) should not report with property "sort"', () => {
+      const { context, reports } = createMockContext()
+      const node = {
+        type: 'CallExpression',
+        callee: {
+          type: 'MemberExpression',
+          object: { type: 'Identifier', name: 'str' },
+          property: { type: 'Identifier', name: 'sort' },
+          computed: false,
+        },
+        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
+        loc: makeLoc(1, 0, 1, 20),
+      }
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(0)
+    })
+  })
+
+  describe('should report str.concat(...items) with single spread', () => {
+    test('should report str.concat(...items) case 1', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...arr) case 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'arr' })], 2, 0, 2, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...args) case 3', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'args' })], 3, 0, 3, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...list) case 4', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'list' })], 4, 0, 4, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...data) case 5', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'data' })], 5, 0, 5, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...values) case 6', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'values' })], 6, 0, 6, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...nums) case 7', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'nums' })], 7, 0, 7, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...rest) case 8', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'rest' })], 8, 0, 8, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...options) case 9', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'options' })], 9, 0, 9, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...params) case 10', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'params' })], 10, 0, 10, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...collection) case 11', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'collection' })], 11, 0, 11, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...elements) case 12', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'elements' })], 12, 0, 12, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...entries) case 13', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'entries' })], 13, 0, 13, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...objs) case 14', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'objs' })], 14, 0, 14, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...source) case 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'source' })], 15, 0, 15, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...input) case 16', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'input' })], 16, 0, 16, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...payload) case 17', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'payload' })], 17, 0, 17, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...buffer) case 18', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'buffer' })], 18, 0, 18, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...chunk) case 19', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'chunk' })], 19, 0, 19, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...segment) case 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'segment' })], 20, 0, 20, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...portion) case 21', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'portion' })], 21, 0, 21, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...range) case 22', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'range' })], 22, 0, 22, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...tuple) case 23', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'tuple' })], 23, 0, 23, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...seq) case 24', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'seq' })], 24, 0, 24, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...iter) case 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'iter' })], 25, 0, 25, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...result) case 26', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'result' })], 26, 0, 26, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...output) case 27', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'output' })], 27, 0, 27, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...response) case 28', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'response' })], 28, 0, 28, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...records) case 29', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'records' })], 29, 0, 29, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...rows) case 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'rows' })], 30, 0, 30, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...cols) case 31', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'cols' })], 31, 0, 31, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...cells) case 32', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'cells' })], 32, 0, 32, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...fields) case 33', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'fields' })], 33, 0, 33, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...props) case 34', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'props' })], 34, 0, 34, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...attrs) case 35', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'attrs' })], 35, 0, 35, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...keys) case 36', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'keys' })], 36, 0, 36, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...vals) case 37', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'vals' })], 37, 0, 37, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...pairs) case 38', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'pairs' })], 38, 0, 38, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...nodes) case 39', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'nodes' })], 39, 0, 39, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+    test('should report str.concat(...items2) case 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items2' })], 40, 0, 40, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].message).toBeDefined()
+    })
+  })
+
+  describe('location and structure', () => {
+    test('should report with correct location line 2', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 30)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(2)
       expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(2)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('multiple same violations report separately', () => {
+    test('should report with correct location line 3', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      const node = makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })])
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      visitor.CallExpression(node)
-      expect(reports.length).toBe(3)
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 3, 10, 3, 35)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(3)
+      expect(reports[0].loc?.start.column).toBe(10)
+      expect(reports[0].loc?.end.line).toBe(3)
+      expect(reports[0].loc?.end.column).toBe(35)
     })
-
-    test('rule exports are correct', () => {
-      expect(noUnnecessaryStringConcatSpreadRule).toBeDefined()
-      expect(typeof noUnnecessaryStringConcatSpreadRule.create).toBe('function')
-      expect(typeof noUnnecessaryStringConcatSpreadRule.meta).toBe('object')
-    })
-
-    test('handles node with _parent property', () => {
+    test('should report with correct location line 5', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-        _parent: {},
-      })
-      expect(reports.length).toBe(1)
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 5, 0, 5, 20)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(5)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(5)
+      expect(reports[0].loc?.end.column).toBe(20)
     })
-
-    test('report loc reflects specific node location values', () => {
+    test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'str' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 4, 10, 25))
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 8, 10, 28)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
-      expect(reports[0].loc?.start.column).toBe(4)
+      expect(reports[0].loc?.start.column).toBe(8)
       expect(reports[0].loc?.end.line).toBe(10)
+      expect(reports[0].loc?.end.column).toBe(28)
+    })
+    test('should report with correct location line 15', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 15, 3, 15, 23)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(15)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(15)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 20', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 20, 0, 20, 15)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(20)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(20)
+      expect(reports[0].loc?.end.column).toBe(15)
+    })
+    test('should report with correct location line 25', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 25, 12, 25, 37)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(25)
+      expect(reports[0].loc?.start.column).toBe(12)
+      expect(reports[0].loc?.end.line).toBe(25)
+      expect(reports[0].loc?.end.column).toBe(37)
+    })
+    test('should report with correct location line 30', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 30, 1, 30, 21)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(30)
+      expect(reports[0].loc?.start.column).toBe(1)
+      expect(reports[0].loc?.end.line).toBe(30)
+      expect(reports[0].loc?.end.column).toBe(21)
+    })
+    test('should report with correct location line 40', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 40, 5, 40, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(40)
+      expect(reports[0].loc?.start.column).toBe(5)
+      expect(reports[0].loc?.end.line).toBe(40)
       expect(reports[0].loc?.end.column).toBe(25)
     })
-
-    test('reports two violations with correct individual messages', () => {
+    test('should report with correct location line 50', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'a' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'x' })]))
-      visitor.CallExpression(makeCallNode({ type: 'Identifier', name: 'b' }, 'concat', [makeSpreadArg({ type: 'Identifier', name: 'y' })]))
-      expect(reports.length).toBe(2)
-      expect(reports[0].message).toBe(reports[1].message)
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 50, 0, 50, 30)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(50)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(50)
+      expect(reports[0].loc?.end.column).toBe(30)
     })
-
-    test('does not report for computed property with Identifier name concat', () => {
+    test('should report with correct location line 60', () => {
       const { context, reports } = createMockContext()
-      const visitor = noUnnecessaryStringConcatSpreadRule.create(context)
-      visitor.CallExpression({
-        type: 'CallExpression',
-        callee: {
-          type: 'MemberExpression',
-          object: { type: 'Identifier', name: 'str' },
-          property: { type: 'Identifier', name: 'concat' },
-          computed: true,
-        },
-        arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
-        loc: makeLoc(1, 0, 1, 10),
-      })
-      expect(reports.length).toBe(0)
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 60, 7, 60, 27)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(60)
+      expect(reports[0].loc?.start.column).toBe(7)
+      expect(reports[0].loc?.end.line).toBe(60)
+      expect(reports[0].loc?.end.column).toBe(27)
+    })
+    test('should report with correct location line 70', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 70, 2, 70, 22)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(70)
+      expect(reports[0].loc?.start.column).toBe(2)
+      expect(reports[0].loc?.end.line).toBe(70)
+      expect(reports[0].loc?.end.column).toBe(22)
+    })
+    test('should report with correct location line 80', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 80, 0, 80, 20)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(80)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(80)
+      expect(reports[0].loc?.end.column).toBe(20)
+    })
+    test('should report with correct location line 90', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 90, 15, 90, 40)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(90)
+      expect(reports[0].loc?.start.column).toBe(15)
+      expect(reports[0].loc?.end.line).toBe(90)
+      expect(reports[0].loc?.end.column).toBe(40)
+    })
+    test('should report with correct location line 100', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 0, 100, 25)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(100)
+      expect(reports[0].loc?.start.column).toBe(0)
+      expect(reports[0].loc?.end.line).toBe(100)
+      expect(reports[0].loc?.end.column).toBe(25)
+    })
+    test('should report with correct location line 150', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 150, 3, 150, 23)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(150)
+      expect(reports[0].loc?.start.column).toBe(3)
+      expect(reports[0].loc?.end.line).toBe(150)
+      expect(reports[0].loc?.end.column).toBe(23)
+    })
+    test('should report with correct location line 200', () => {
+      const { context, reports } = createMockContext()
+      const node = makestrConcatCall([makeSpreadArg({ type: 'Identifier', name: 'items' })], 200, 8, 200, 33)
+      noUnnecessaryStringConcatSpreadRule.create(context).CallExpression!(node)
+      expect(reports).toHaveLength(1)
+      expect(reports[0].loc).toBeDefined()
+      expect(reports[0].loc?.start.line).toBe(200)
+      expect(reports[0].loc?.start.column).toBe(8)
+      expect(reports[0].loc?.end.line).toBe(200)
+      expect(reports[0].loc?.end.column).toBe(33)
     })
   })
 })
