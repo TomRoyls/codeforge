@@ -2,7 +2,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 
-export const noUnnecessaryParseIntSpreadRule: RuleDefinition = {
+export const noUnnecessaryEvalSpreadRule: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
     return {
       CallExpression(node: unknown): void {
@@ -11,12 +11,12 @@ export const noUnnecessaryParseIntSpreadRule: RuleDefinition = {
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
         if (!callee || callee.type !== 'Identifier') return
-        if (callee.name !== 'parseInt') return
+        if (callee.name !== 'eval') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: 'parseInt(...items) with a single spread is unusual. Consider calling parseInt() directly.',
+          message: 'eval(...items) with a single spread is unusual. Consider calling eval() directly.',
           node: n,
         })
       },
@@ -25,9 +25,9 @@ export const noUnnecessaryParseIntSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about parseInt(...items) with spread which is unusual since parses a string argument to an integer.',
+      description: 'Warn about eval(...items) with spread which is unusual since evaluates a string as JavaScript code.',
       recommended: false,
-      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-parse-int-spread.ts',
+      url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-eval-spread.ts',
     },
     schema: [],
     severity: 'warn',

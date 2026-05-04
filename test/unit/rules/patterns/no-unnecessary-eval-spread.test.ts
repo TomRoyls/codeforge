@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest'
-import { noUnnecessaryIsFiniteSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-is-finite-spread.js'
+import { noUnnecessaryEvalSpreadRule } from '../../../../src/rules/patterns/no-unnecessary-eval-spread.js'
 import type { RuleContext } from '../../../../src/plugins/types.js'
 
 interface ReportDescriptor {
@@ -27,7 +27,7 @@ function createMockContext(): { context: RuleContext; reports: ReportDescriptor[
     },
     getFilePath: () => '/src/file.ts',
     getAST: () => null,
-    getSource: () => 'isFinite()',
+    getSource: () => 'eval()',
   }
   return { context, reports }
 }
@@ -45,243 +45,243 @@ function makeSpreadArg(inner: unknown) {
   return { type: 'SpreadElement', argument: inner, loc: makeLoc(1, 0, 1, 10) }
 }
 
-describe('no-unnecessary-is-finite-spread', () => {
+describe('no-unnecessary-eval-spread', () => {
 
-  describe('reports on isFinite with single spread argument', () => {
-    test('should report isFinite(...items)', () => {
+  describe('reports on eval with single spread argument', () => {
+    test('should report eval(...items)', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
-      expect(reports[0].message).toContain('isFinite')
+      expect(reports[0].message).toContain('eval')
     })
 
-    test('should report isFinite(...arr)', () => {
+    test('should report eval(...arr)', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'arr' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'arr' })], 1, 0, 1, 20)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
     })
 
-    test('should report isFinite(...[1, 2, 3])', () => {
+    test('should report eval(...[1, 2, 3])', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'ArrayExpression', elements: [] })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'ArrayExpression', elements: [] })], 1, 0, 1, 20)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
     })
   })
 
   describe('does not report when there is no spread', () => {
-    test('should not report isFinite(x)', () => {
+    test('should not report eval(x)', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [{ type: 'Identifier', name: 'x' }], 1, 0, 1, 10)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [{ type: 'Identifier', name: 'x' }], 1, 0, 1, 10)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
-    test('should not report isFinite("hello")', () => {
+    test('should not report eval("hello")', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [{ type: 'Literal', value: 'hello' }], 1, 0, 1, 10)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [{ type: 'Literal', value: 'hello' }], 1, 0, 1, 10)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
 
-    test('should not report isFinite()', () => {
+    test('should not report eval()', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [], 1, 0, 1, 10)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [], 1, 0, 1, 10)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
   describe('does not report for wrong function name', () => {
-    test('isFinite rule should ignore decodeURI(...items)', () => {
+    test('eval rule should ignore decodeURI(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('decodeURI', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore encodeURI(...items)', () => {
+    test('eval rule should ignore encodeURI(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('encodeURI', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore decodeURIComponent(...items)', () => {
+    test('eval rule should ignore decodeURIComponent(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('decodeURIComponent', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore encodeURIComponent(...items)', () => {
+    test('eval rule should ignore encodeURIComponent(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('encodeURIComponent', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore eval(...items)', () => {
+    test('eval rule should ignore isFinite(...items)', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore isNaN(...items)', () => {
+    test('eval rule should ignore isNaN(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('isNaN', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore parseFloat(...items)', () => {
+    test('eval rule should ignore parseFloat(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('parseFloat', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore parseInt(...items)', () => {
+    test('eval rule should ignore parseInt(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('parseInt', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore console(...items)', () => {
+    test('eval rule should ignore console(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('console', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore alert(...items)', () => {
+    test('eval rule should ignore alert(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('alert', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore setTimeout(...items)', () => {
+    test('eval rule should ignore setTimeout(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('setTimeout', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore setInterval(...items)', () => {
+    test('eval rule should ignore setInterval(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('setInterval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore fetch(...items)', () => {
+    test('eval rule should ignore fetch(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('fetch', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore require(...items)', () => {
+    test('eval rule should ignore require(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('require', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore import(...items)', () => {
+    test('eval rule should ignore import(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('import', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore module(...items)', () => {
+    test('eval rule should ignore module(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('module', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore exports(...items)', () => {
+    test('eval rule should ignore exports(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('exports', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore process(...items)', () => {
+    test('eval rule should ignore process(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('process', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Object(...items)', () => {
+    test('eval rule should ignore Object(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Object', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Array(...items)', () => {
+    test('eval rule should ignore Array(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Array', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore String(...items)', () => {
+    test('eval rule should ignore String(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('String', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Number(...items)', () => {
+    test('eval rule should ignore Number(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Number', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Boolean(...items)', () => {
+    test('eval rule should ignore Boolean(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Boolean', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Symbol(...items)', () => {
+    test('eval rule should ignore Symbol(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Symbol', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Function(...items)', () => {
+    test('eval rule should ignore Function(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Function', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Error(...items)', () => {
+    test('eval rule should ignore Error(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Error', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Date(...items)', () => {
+    test('eval rule should ignore Date(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Date', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore RegExp(...items)', () => {
+    test('eval rule should ignore RegExp(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('RegExp', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Map(...items)', () => {
+    test('eval rule should ignore Map(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Map', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
-    test('isFinite rule should ignore Set(...items)', () => {
+    test('eval rule should ignore Set(...items)', () => {
       const { context, reports } = createMockContext()
       const node = makeCall('Set', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
 
   describe('does not report with multiple arguments', () => {
-    test('should not report isFinite(...items, extra)', () => {
+    test('should not report eval(...items, extra)', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Identifier', name: 'extra' }], 1, 0, 1, 30)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' }), { type: 'Identifier', name: 'extra' }], 1, 0, 1, 30)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
@@ -289,19 +289,19 @@ describe('no-unnecessary-is-finite-spread', () => {
   describe('edge cases', () => {
     test('should not report null node', () => {
       const { context, reports } = createMockContext()
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(null)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(null)
       expect(reports).toHaveLength(0)
     })
 
     test('should not report undefined node', () => {
       const { context, reports } = createMockContext()
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(undefined)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(undefined)
       expect(reports).toHaveLength(0)
     })
 
     test('should not report non-CallExpression type', () => {
       const { context, reports } = createMockContext()
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!({ type: 'Literal' })
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!({ type: 'Literal' })
       expect(reports).toHaveLength(0)
     })
 
@@ -309,11 +309,11 @@ describe('no-unnecessary-is-finite-spread', () => {
       const { context, reports } = createMockContext()
       const node = {
         type: 'CallExpression',
-        callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'foo' }, property: { type: 'Identifier', name: 'isFinite' }, computed: false },
+        callee: { type: 'MemberExpression', object: { type: 'Identifier', name: 'foo' }, property: { type: 'Identifier', name: 'eval' }, computed: false },
         arguments: [makeSpreadArg({ type: 'Identifier', name: 'items' })],
         loc: makeLoc(1, 0, 1, 20),
       }
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(0)
     })
   })
@@ -321,8 +321,8 @@ describe('no-unnecessary-is-finite-spread', () => {
   describe('location and structure', () => {
     test('should report with correct location line 1', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 15)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 0, 1, 15)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(1)
@@ -332,8 +332,8 @@ describe('no-unnecessary-is-finite-spread', () => {
     })
     test('should report with correct location line 2', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 25)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 2, 5, 2, 25)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(2)
@@ -343,8 +343,8 @@ describe('no-unnecessary-is-finite-spread', () => {
     })
     test('should report with correct location line 10', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 0, 10, 20)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 10, 0, 10, 20)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(10)
@@ -354,8 +354,8 @@ describe('no-unnecessary-is-finite-spread', () => {
     })
     test('should report with correct location line 100', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 8, 100, 30)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 100, 8, 100, 30)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(100)
@@ -365,8 +365,8 @@ describe('no-unnecessary-is-finite-spread', () => {
     })
     test('should report with correct location line 1', () => {
       const { context, reports } = createMockContext()
-      const node = makeCall('isFinite', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 20, 3, 15)
-      noUnnecessaryIsFiniteSpreadRule.create(context).CallExpression!(node)
+      const node = makeCall('eval', [makeSpreadArg({ type: 'Identifier', name: 'items' })], 1, 20, 3, 15)
+      noUnnecessaryEvalSpreadRule.create(context).CallExpression!(node)
       expect(reports).toHaveLength(1)
       expect(reports[0].loc).toBeDefined()
       expect(reports[0].loc?.start.line).toBe(1)

@@ -16,7 +16,7 @@ export const noUnnecessaryParseFloatSpreadRule: RuleDefinition = {
         if (!arg || arg.type !== 'SpreadElement') return
         context.report({
           loc: extractLocation(n),
-          message: `parseFloat(...items) with spread is unusual. parseFloat() expects a single string.`,
+          message: 'parseFloat(...items) with a single spread is unusual. Consider calling parseFloat() directly.',
           node: n,
         })
       },
@@ -25,7 +25,7 @@ export const noUnnecessaryParseFloatSpreadRule: RuleDefinition = {
   meta: {
     docs: {
       category: 'patterns',
-      description: 'Warn about parseFloat(...items) with spread which is likely a mistake.',
+      description: 'Warn about parseFloat(...items) with spread which is unusual since parses a string argument to a floating point number.',
       recommended: false,
       url: 'https://github.com/nickelser/codeforge/blob/main/src/rules/patterns/no-unnecessary-parse-float-spread.ts',
     },
@@ -34,4 +34,3 @@ export const noUnnecessaryParseFloatSpreadRule: RuleDefinition = {
     type: 'suggestion',
   },
 }
-export default noUnnecessaryParseFloatSpreadRule
