@@ -3623,6 +3623,76 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
   ['no-unnecessary-custom-event-spread']: adaptPluginRule(noUnnecessaryCustomEventSpreadRule),
   ['no-unnecessary-dom-parser-spread']: adaptPluginRule(noUnnecessaryDOMParserSpreadRule),
   ['no-unnecessary-xml-http-request-spread']: adaptPluginRule(noUnnecessaryXMLHttpRequestSpreadRule),
+  ['no-unnecessary-document-create-element-spread']: adaptPluginRule(noUnnecessaryDocumentCreateElementSpreadRule),
+  ['no-unnecessary-document-create-text-node-spread']: adaptPluginRule(noUnnecessaryDocumentCreateTextNodeSpreadRule),
+  ['no-unnecessary-document-create-comment-spread']: adaptPluginRule(noUnnecessaryDocumentCreateCommentSpreadRule),
+  ['no-unnecessary-document-create-document-fragment-spread']: adaptPluginRule(noUnnecessaryDocumentCreateDocumentFragmentSpreadRule),
+  ['no-unnecessary-document-create-attribute-spread']: adaptPluginRule(noUnnecessaryDocumentCreateAttributeSpreadRule),
+  ['no-unnecessary-document-create-event-spread']: adaptPluginRule(noUnnecessaryDocumentCreateEventSpreadRule),
+  ['no-unnecessary-document-create-tree-walker-spread']: adaptPluginRule(noUnnecessaryDocumentCreateTreeWalkerSpreadRule),
+  ['no-unnecessary-document-create-node-iterator-spread']: adaptPluginRule(noUnnecessaryDocumentCreateNodeIteratorSpreadRule),
+  ['no-unnecessary-document-create-range-spread']: adaptPluginRule(noUnnecessaryDocumentCreateRangeSpreadRule),
+  ['no-unnecessary-document-get-element-by-id-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementByIdSpreadRule),
+  ['no-unnecessary-document-query-selector-spread']: adaptPluginRule(noUnnecessaryDocumentQuerySelectorSpreadRule),
+  ['no-unnecessary-document-query-selector-all-spread']: adaptPluginRule(noUnnecessaryDocumentQuerySelectorAllSpreadRule),
+  ['no-unnecessary-document-get-elements-by-class-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByClassNameSpreadRule),
+  ['no-unnecessary-document-get-elements-by-tag-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByTagNameSpreadRule),
+  ['no-unnecessary-document-get-elements-by-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByNameSpreadRule),
+  ['no-unnecessary-document-adopt-node-spread']: adaptPluginRule(noUnnecessaryDocumentAdoptNodeSpreadRule),
+  ['no-unnecessary-document-import-node-spread']: adaptPluginRule(noUnnecessaryDocumentImportNodeSpreadRule),
+  ['no-unnecessary-document-write-spread']: adaptPluginRule(noUnnecessaryDocumentWriteSpreadRule),
+  ['no-unnecessary-document-write-ln-spread']: adaptPluginRule(noUnnecessaryDocumentWriteLnSpreadRule),
+  ['no-unnecessary-document-open-spread']: adaptPluginRule(noUnnecessaryDocumentOpenSpreadRule),
+  ['no-unnecessary-document-close-spread']: adaptPluginRule(noUnnecessaryDocumentCloseSpreadRule),
+  ['no-unnecessary-document-exit-fullscreen-spread']: adaptPluginRule(noUnnecessaryDocumentExitFullscreenSpreadRule),
+  ['no-unnecessary-document-exit-picture-in-picture-spread']: adaptPluginRule(noUnnecessaryDocumentExitPictureInPictureSpreadRule),
+  ['no-unnecessary-document-exit-pointer-lock-spread']: adaptPluginRule(noUnnecessaryDocumentExitPointerLockSpreadRule),
+  ['no-unnecessary-document-has-focus-spread']: adaptPluginRule(noUnnecessaryDocumentHasFocusSpreadRule),
+  ['no-unnecessary-document-get-selection-spread']: adaptPluginRule(noUnnecessaryDocumentGetSelectionSpreadRule),
+  ['no-unnecessary-document-element-from-point-spread']: adaptPluginRule(noUnnecessaryDocumentElementFromPointSpreadRule),
+  ['no-unnecessary-document-elements-from-point-spread']: adaptPluginRule(noUnnecessaryDocumentElementsFromPointSpreadRule),
+  ['no-unnecessary-element-query-selector-spread']: adaptPluginRule(noUnnecessaryElementQuerySelectorSpreadRule),
+  ['no-unnecessary-element-query-selector-all-spread']: adaptPluginRule(noUnnecessaryElementQuerySelectorAllSpreadRule),
+  ['no-unnecessary-element-get-attribute-spread']: adaptPluginRule(noUnnecessaryElementGetAttributeSpreadRule),
+  ['no-unnecessary-element-set-attribute-spread']: adaptPluginRule(noUnnecessaryElementSetAttributeSpreadRule),
+  ['no-unnecessary-element-remove-attribute-spread']: adaptPluginRule(noUnnecessaryElementRemoveAttributeSpreadRule),
+  ['no-unnecessary-element-has-attribute-spread']: adaptPluginRule(noUnnecessaryElementHasAttributeSpreadRule),
+  ['no-unnecessary-element-get-attribute-names-spread']: adaptPluginRule(noUnnecessaryElementGetAttributeNamesSpreadRule),
+  ['no-unnecessary-element-toggle-attribute-spread']: adaptPluginRule(noUnnecessaryElementToggleAttributeSpreadRule),
+  ['no-unnecessary-element-get-elements-by-class-name-spread']: adaptPluginRule(noUnnecessaryElementGetElementsByClassNameSpreadRule),
+  ['no-unnecessary-element-get-elements-by-tag-name-spread']: adaptPluginRule(noUnnecessaryElementGetElementsByTagNameSpreadRule),
+  ['no-unnecessary-element-closest-spread']: adaptPluginRule(noUnnecessaryElementClosestSpreadRule),
+  ['no-unnecessary-element-matches-spread']: adaptPluginRule(noUnnecessaryElementMatchesSpreadRule),
+  ['no-unnecessary-element-contains-spread']: adaptPluginRule(noUnnecessaryElementContainsSpreadRule),
+  ['no-unnecessary-element-append-child-spread']: adaptPluginRule(noUnnecessaryElementAppendChildSpreadRule),
+  ['no-unnecessary-element-remove-child-spread']: adaptPluginRule(noUnnecessaryElementRemoveChildSpreadRule),
+  ['no-unnecessary-element-insert-before-spread']: adaptPluginRule(noUnnecessaryElementInsertBeforeSpreadRule),
+  ['no-unnecessary-element-replace-child-spread']: adaptPluginRule(noUnnecessaryElementReplaceChildSpreadRule),
+  ['no-unnecessary-element-clone-node-spread']: adaptPluginRule(noUnnecessaryElementCloneNodeSpreadRule),
+  ['no-unnecessary-element-remove-spread']: adaptPluginRule(noUnnecessaryElementRemoveSpreadRule),
+  ['no-unnecessary-element-prepend-spread']: adaptPluginRule(noUnnecessaryElementPrependSpreadRule),
+  ['no-unnecessary-element-append-spread']: adaptPluginRule(noUnnecessaryElementAppendSpreadRule),
+  ['no-unnecessary-element-before-spread']: adaptPluginRule(noUnnecessaryElementBeforeSpreadRule),
+  ['no-unnecessary-element-after-spread']: adaptPluginRule(noUnnecessaryElementAfterSpreadRule),
+  ['no-unnecessary-element-replace-with-spread']: adaptPluginRule(noUnnecessaryElementReplaceWithSpreadRule),
+  ['no-unnecessary-element-insert-adjacent-html-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentHtmlSpreadRule),
+  ['no-unnecessary-element-insert-adjacent-element-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentElementSpreadRule),
+  ['no-unnecessary-element-insert-adjacent-text-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentTextSpreadRule),
+  ['no-unnecessary-element-get-bounding-client-rect-spread']: adaptPluginRule(noUnnecessaryElementGetBoundingClientRectSpreadRule),
+  ['no-unnecessary-element-get-client-rects-spread']: adaptPluginRule(noUnnecessaryElementGetClientRectsSpreadRule),
+  ['no-unnecessary-element-scroll-into-view-spread']: adaptPluginRule(noUnnecessaryElementScrollIntoViewSpreadRule),
+  ['no-unnecessary-element-scroll-into-view-if-needed-spread']: adaptPluginRule(noUnnecessaryElementScrollIntoViewIfNeededSpreadRule),
+  ['no-unnecessary-element-scroll-to-spread']: adaptPluginRule(noUnnecessaryElementScrollToSpreadRule),
+  ['no-unnecessary-element-scroll-by-spread']: adaptPluginRule(noUnnecessaryElementScrollBySpreadRule),
+  ['no-unnecessary-element-scroll-spread']: adaptPluginRule(noUnnecessaryElementScrollSpreadRule),
+  ['no-unnecessary-element-focus-spread']: adaptPluginRule(noUnnecessaryElementFocusSpreadRule),
+  ['no-unnecessary-element-blur-spread']: adaptPluginRule(noUnnecessaryElementBlurSpreadRule),
+  ['no-unnecessary-element-click-spread']: adaptPluginRule(noUnnecessaryElementClickSpreadRule),
+  ['no-unnecessary-element-animate-spread']: adaptPluginRule(noUnnecessaryElementAnimateSpreadRule),
+  ['no-unnecessary-element-get-computed-style-spread']: adaptPluginRule(noUnnecessaryElementGetComputedStyleSpreadRule),
+  ['no-unnecessary-element-request-fullscreen-spread']: adaptPluginRule(noUnnecessaryElementRequestFullscreenSpreadRule),
+  ['no-unnecessary-element-request-pointer-lock-spread']: adaptPluginRule(noUnnecessaryElementRequestPointerLockSpreadRule),
+  ['no-unnecessary-element-attach-shadow-spread']: adaptPluginRule(noUnnecessaryElementAttachShadowSpreadRule),
   ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
   ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
   ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
@@ -5532,6 +5602,76 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   ['no-unnecessary-custom-event-spread']: 'patterns',
   ['no-unnecessary-dom-parser-spread']: 'patterns',
   ['no-unnecessary-xml-http-request-spread']: 'patterns',
+  ['no-unnecessary-document-create-element-spread']: 'patterns',
+  ['no-unnecessary-document-create-text-node-spread']: 'patterns',
+  ['no-unnecessary-document-create-comment-spread']: 'patterns',
+  ['no-unnecessary-document-create-document-fragment-spread']: 'patterns',
+  ['no-unnecessary-document-create-attribute-spread']: 'patterns',
+  ['no-unnecessary-document-create-event-spread']: 'patterns',
+  ['no-unnecessary-document-create-tree-walker-spread']: 'patterns',
+  ['no-unnecessary-document-create-node-iterator-spread']: 'patterns',
+  ['no-unnecessary-document-create-range-spread']: 'patterns',
+  ['no-unnecessary-document-get-element-by-id-spread']: 'patterns',
+  ['no-unnecessary-document-query-selector-spread']: 'patterns',
+  ['no-unnecessary-document-query-selector-all-spread']: 'patterns',
+  ['no-unnecessary-document-get-elements-by-class-name-spread']: 'patterns',
+  ['no-unnecessary-document-get-elements-by-tag-name-spread']: 'patterns',
+  ['no-unnecessary-document-get-elements-by-name-spread']: 'patterns',
+  ['no-unnecessary-document-adopt-node-spread']: 'patterns',
+  ['no-unnecessary-document-import-node-spread']: 'patterns',
+  ['no-unnecessary-document-write-spread']: 'patterns',
+  ['no-unnecessary-document-write-ln-spread']: 'patterns',
+  ['no-unnecessary-document-open-spread']: 'patterns',
+  ['no-unnecessary-document-close-spread']: 'patterns',
+  ['no-unnecessary-document-exit-fullscreen-spread']: 'patterns',
+  ['no-unnecessary-document-exit-picture-in-picture-spread']: 'patterns',
+  ['no-unnecessary-document-exit-pointer-lock-spread']: 'patterns',
+  ['no-unnecessary-document-has-focus-spread']: 'patterns',
+  ['no-unnecessary-document-get-selection-spread']: 'patterns',
+  ['no-unnecessary-document-element-from-point-spread']: 'patterns',
+  ['no-unnecessary-document-elements-from-point-spread']: 'patterns',
+  ['no-unnecessary-element-query-selector-spread']: 'patterns',
+  ['no-unnecessary-element-query-selector-all-spread']: 'patterns',
+  ['no-unnecessary-element-get-attribute-spread']: 'patterns',
+  ['no-unnecessary-element-set-attribute-spread']: 'patterns',
+  ['no-unnecessary-element-remove-attribute-spread']: 'patterns',
+  ['no-unnecessary-element-has-attribute-spread']: 'patterns',
+  ['no-unnecessary-element-get-attribute-names-spread']: 'patterns',
+  ['no-unnecessary-element-toggle-attribute-spread']: 'patterns',
+  ['no-unnecessary-element-get-elements-by-class-name-spread']: 'patterns',
+  ['no-unnecessary-element-get-elements-by-tag-name-spread']: 'patterns',
+  ['no-unnecessary-element-closest-spread']: 'patterns',
+  ['no-unnecessary-element-matches-spread']: 'patterns',
+  ['no-unnecessary-element-contains-spread']: 'patterns',
+  ['no-unnecessary-element-append-child-spread']: 'patterns',
+  ['no-unnecessary-element-remove-child-spread']: 'patterns',
+  ['no-unnecessary-element-insert-before-spread']: 'patterns',
+  ['no-unnecessary-element-replace-child-spread']: 'patterns',
+  ['no-unnecessary-element-clone-node-spread']: 'patterns',
+  ['no-unnecessary-element-remove-spread']: 'patterns',
+  ['no-unnecessary-element-prepend-spread']: 'patterns',
+  ['no-unnecessary-element-append-spread']: 'patterns',
+  ['no-unnecessary-element-before-spread']: 'patterns',
+  ['no-unnecessary-element-after-spread']: 'patterns',
+  ['no-unnecessary-element-replace-with-spread']: 'patterns',
+  ['no-unnecessary-element-insert-adjacent-html-spread']: 'patterns',
+  ['no-unnecessary-element-insert-adjacent-element-spread']: 'patterns',
+  ['no-unnecessary-element-insert-adjacent-text-spread']: 'patterns',
+  ['no-unnecessary-element-get-bounding-client-rect-spread']: 'patterns',
+  ['no-unnecessary-element-get-client-rects-spread']: 'patterns',
+  ['no-unnecessary-element-scroll-into-view-spread']: 'patterns',
+  ['no-unnecessary-element-scroll-into-view-if-needed-spread']: 'patterns',
+  ['no-unnecessary-element-scroll-to-spread']: 'patterns',
+  ['no-unnecessary-element-scroll-by-spread']: 'patterns',
+  ['no-unnecessary-element-scroll-spread']: 'patterns',
+  ['no-unnecessary-element-focus-spread']: 'patterns',
+  ['no-unnecessary-element-blur-spread']: 'patterns',
+  ['no-unnecessary-element-click-spread']: 'patterns',
+  ['no-unnecessary-element-animate-spread']: 'patterns',
+  ['no-unnecessary-element-get-computed-style-spread']: 'patterns',
+  ['no-unnecessary-element-request-fullscreen-spread']: 'patterns',
+  ['no-unnecessary-element-request-pointer-lock-spread']: 'patterns',
+  ['no-unnecessary-element-attach-shadow-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
   ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
   ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
@@ -6315,6 +6455,76 @@ import { noUnnecessaryEventSpreadRule } from './patterns/no-unnecessary-event-sp
 import { noUnnecessaryCustomEventSpreadRule } from './patterns/no-unnecessary-custom-event-spread.js'
 import { noUnnecessaryDOMParserSpreadRule } from './patterns/no-unnecessary-dom-parser-spread.js'
 import { noUnnecessaryXMLHttpRequestSpreadRule } from './patterns/no-unnecessary-xml-http-request-spread.js'
+import { noUnnecessaryDocumentCreateElementSpreadRule } from './patterns/no-unnecessary-document-create-element-spread.js'
+import { noUnnecessaryDocumentCreateTextNodeSpreadRule } from './patterns/no-unnecessary-document-create-text-node-spread.js'
+import { noUnnecessaryDocumentCreateCommentSpreadRule } from './patterns/no-unnecessary-document-create-comment-spread.js'
+import { noUnnecessaryDocumentCreateDocumentFragmentSpreadRule } from './patterns/no-unnecessary-document-create-document-fragment-spread.js'
+import { noUnnecessaryDocumentCreateAttributeSpreadRule } from './patterns/no-unnecessary-document-create-attribute-spread.js'
+import { noUnnecessaryDocumentCreateEventSpreadRule } from './patterns/no-unnecessary-document-create-event-spread.js'
+import { noUnnecessaryDocumentCreateTreeWalkerSpreadRule } from './patterns/no-unnecessary-document-create-tree-walker-spread.js'
+import { noUnnecessaryDocumentCreateNodeIteratorSpreadRule } from './patterns/no-unnecessary-document-create-node-iterator-spread.js'
+import { noUnnecessaryDocumentCreateRangeSpreadRule } from './patterns/no-unnecessary-document-create-range-spread.js'
+import { noUnnecessaryDocumentGetElementByIdSpreadRule } from './patterns/no-unnecessary-document-get-element-by-id-spread.js'
+import { noUnnecessaryDocumentQuerySelectorSpreadRule } from './patterns/no-unnecessary-document-query-selector-spread.js'
+import { noUnnecessaryDocumentQuerySelectorAllSpreadRule } from './patterns/no-unnecessary-document-query-selector-all-spread.js'
+import { noUnnecessaryDocumentGetElementsByClassNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-class-name-spread.js'
+import { noUnnecessaryDocumentGetElementsByTagNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-tag-name-spread.js'
+import { noUnnecessaryDocumentGetElementsByNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-name-spread.js'
+import { noUnnecessaryDocumentAdoptNodeSpreadRule } from './patterns/no-unnecessary-document-adopt-node-spread.js'
+import { noUnnecessaryDocumentImportNodeSpreadRule } from './patterns/no-unnecessary-document-import-node-spread.js'
+import { noUnnecessaryDocumentWriteSpreadRule } from './patterns/no-unnecessary-document-write-spread.js'
+import { noUnnecessaryDocumentWriteLnSpreadRule } from './patterns/no-unnecessary-document-write-ln-spread.js'
+import { noUnnecessaryDocumentOpenSpreadRule } from './patterns/no-unnecessary-document-open-spread.js'
+import { noUnnecessaryDocumentCloseSpreadRule } from './patterns/no-unnecessary-document-close-spread.js'
+import { noUnnecessaryDocumentExitFullscreenSpreadRule } from './patterns/no-unnecessary-document-exit-fullscreen-spread.js'
+import { noUnnecessaryDocumentExitPictureInPictureSpreadRule } from './patterns/no-unnecessary-document-exit-picture-in-picture-spread.js'
+import { noUnnecessaryDocumentExitPointerLockSpreadRule } from './patterns/no-unnecessary-document-exit-pointer-lock-spread.js'
+import { noUnnecessaryDocumentHasFocusSpreadRule } from './patterns/no-unnecessary-document-has-focus-spread.js'
+import { noUnnecessaryDocumentGetSelectionSpreadRule } from './patterns/no-unnecessary-document-get-selection-spread.js'
+import { noUnnecessaryDocumentElementFromPointSpreadRule } from './patterns/no-unnecessary-document-element-from-point-spread.js'
+import { noUnnecessaryDocumentElementsFromPointSpreadRule } from './patterns/no-unnecessary-document-elements-from-point-spread.js'
+import { noUnnecessaryElementQuerySelectorSpreadRule } from './patterns/no-unnecessary-element-query-selector-spread.js'
+import { noUnnecessaryElementQuerySelectorAllSpreadRule } from './patterns/no-unnecessary-element-query-selector-all-spread.js'
+import { noUnnecessaryElementGetAttributeSpreadRule } from './patterns/no-unnecessary-element-get-attribute-spread.js'
+import { noUnnecessaryElementSetAttributeSpreadRule } from './patterns/no-unnecessary-element-set-attribute-spread.js'
+import { noUnnecessaryElementRemoveAttributeSpreadRule } from './patterns/no-unnecessary-element-remove-attribute-spread.js'
+import { noUnnecessaryElementHasAttributeSpreadRule } from './patterns/no-unnecessary-element-has-attribute-spread.js'
+import { noUnnecessaryElementGetAttributeNamesSpreadRule } from './patterns/no-unnecessary-element-get-attribute-names-spread.js'
+import { noUnnecessaryElementToggleAttributeSpreadRule } from './patterns/no-unnecessary-element-toggle-attribute-spread.js'
+import { noUnnecessaryElementGetElementsByClassNameSpreadRule } from './patterns/no-unnecessary-element-get-elements-by-class-name-spread.js'
+import { noUnnecessaryElementGetElementsByTagNameSpreadRule } from './patterns/no-unnecessary-element-get-elements-by-tag-name-spread.js'
+import { noUnnecessaryElementClosestSpreadRule } from './patterns/no-unnecessary-element-closest-spread.js'
+import { noUnnecessaryElementMatchesSpreadRule } from './patterns/no-unnecessary-element-matches-spread.js'
+import { noUnnecessaryElementContainsSpreadRule } from './patterns/no-unnecessary-element-contains-spread.js'
+import { noUnnecessaryElementAppendChildSpreadRule } from './patterns/no-unnecessary-element-append-child-spread.js'
+import { noUnnecessaryElementRemoveChildSpreadRule } from './patterns/no-unnecessary-element-remove-child-spread.js'
+import { noUnnecessaryElementInsertBeforeSpreadRule } from './patterns/no-unnecessary-element-insert-before-spread.js'
+import { noUnnecessaryElementReplaceChildSpreadRule } from './patterns/no-unnecessary-element-replace-child-spread.js'
+import { noUnnecessaryElementCloneNodeSpreadRule } from './patterns/no-unnecessary-element-clone-node-spread.js'
+import { noUnnecessaryElementRemoveSpreadRule } from './patterns/no-unnecessary-element-remove-spread.js'
+import { noUnnecessaryElementPrependSpreadRule } from './patterns/no-unnecessary-element-prepend-spread.js'
+import { noUnnecessaryElementAppendSpreadRule } from './patterns/no-unnecessary-element-append-spread.js'
+import { noUnnecessaryElementBeforeSpreadRule } from './patterns/no-unnecessary-element-before-spread.js'
+import { noUnnecessaryElementAfterSpreadRule } from './patterns/no-unnecessary-element-after-spread.js'
+import { noUnnecessaryElementReplaceWithSpreadRule } from './patterns/no-unnecessary-element-replace-with-spread.js'
+import { noUnnecessaryElementInsertAdjacentHtmlSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-html-spread.js'
+import { noUnnecessaryElementInsertAdjacentElementSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-element-spread.js'
+import { noUnnecessaryElementInsertAdjacentTextSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-text-spread.js'
+import { noUnnecessaryElementGetBoundingClientRectSpreadRule } from './patterns/no-unnecessary-element-get-bounding-client-rect-spread.js'
+import { noUnnecessaryElementGetClientRectsSpreadRule } from './patterns/no-unnecessary-element-get-client-rects-spread.js'
+import { noUnnecessaryElementScrollIntoViewSpreadRule } from './patterns/no-unnecessary-element-scroll-into-view-spread.js'
+import { noUnnecessaryElementScrollIntoViewIfNeededSpreadRule } from './patterns/no-unnecessary-element-scroll-into-view-if-needed-spread.js'
+import { noUnnecessaryElementScrollToSpreadRule } from './patterns/no-unnecessary-element-scroll-to-spread.js'
+import { noUnnecessaryElementScrollBySpreadRule } from './patterns/no-unnecessary-element-scroll-by-spread.js'
+import { noUnnecessaryElementScrollSpreadRule } from './patterns/no-unnecessary-element-scroll-spread.js'
+import { noUnnecessaryElementFocusSpreadRule } from './patterns/no-unnecessary-element-focus-spread.js'
+import { noUnnecessaryElementBlurSpreadRule } from './patterns/no-unnecessary-element-blur-spread.js'
+import { noUnnecessaryElementClickSpreadRule } from './patterns/no-unnecessary-element-click-spread.js'
+import { noUnnecessaryElementAnimateSpreadRule } from './patterns/no-unnecessary-element-animate-spread.js'
+import { noUnnecessaryElementGetComputedStyleSpreadRule } from './patterns/no-unnecessary-element-get-computed-style-spread.js'
+import { noUnnecessaryElementRequestFullscreenSpreadRule } from './patterns/no-unnecessary-element-request-fullscreen-spread.js'
+import { noUnnecessaryElementRequestPointerLockSpreadRule } from './patterns/no-unnecessary-element-request-pointer-lock-spread.js'
+import { noUnnecessaryElementAttachShadowSpreadRule } from './patterns/no-unnecessary-element-attach-shadow-spread.js'
 import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
 import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
 import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
