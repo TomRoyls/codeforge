@@ -985,7 +985,7 @@ describe('no-unnecessary-date-to-date-string-spread rule', () => {
 
       expect(reports.length).toBe(0)
     })
-  ])
+  })
 
   describe('edge cases', () => {
     test('should handle null node gracefully', () => {

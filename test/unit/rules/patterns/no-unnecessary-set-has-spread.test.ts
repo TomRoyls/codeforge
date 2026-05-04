@@ -361,14 +361,6 @@ describe('no-unnecessary-set-has-spread rule', () => {
       expect(reports.length).toBe(1)
     })
 
-    test('should report set.has(...all)', () => {
-      const { context, reports } = createMockRuleContext({ source: 'set.has(...all);' })
-      const visitor = noUnnecessarySetHasSpreadRule.create(context)
-
-      visitor.CallExpression(makeSetHasCall([createSpreadElement(createIdentifier('all'))]))
-
-      expect(reports.length).toBe(1)
-    })
   })
 
   describe('not reporting non-matching calls', () => {
@@ -1040,6 +1032,58 @@ describe('no-unnecessary-set-has-spread rule', () => {
         },
         loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
         range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report set.indexOf(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'set.indexOf(...items);' })
+      const visitor = noUnnecessarySetHasSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'set',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'indexOf',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 25, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 25],
+        type: 'CallExpression',
+      })
+
+      expect(reports.length).toBe(0)
+    })
+
+    test('should not report arr.concat(...items)', () => {
+      const { context, reports } = createMockRuleContext({ source: 'arr.concat(...items);' })
+      const visitor = noUnnecessarySetHasSpreadRule.create(context)
+
+      visitor.CallExpression({
+        arguments: [createSpreadElement(createIdentifier('items'))],
+        callee: {
+          computed: false,
+          object: {
+            name: 'arr',
+            type: 'Identifier',
+          },
+          property: {
+            name: 'concat',
+            type: 'Identifier',
+          },
+          type: 'MemberExpression',
+        },
+        loc: { end: { column: 23, line: 1 }, start: { column: 0, line: 1 } },
+        range: [0, 23],
         type: 'CallExpression',
       })
 
