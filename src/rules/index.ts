@@ -3136,6 +3136,35 @@ const adaptedNoUnnecessaryFunctionBindSpread = adaptPluginRule(noUnnecessaryFunc
 const adaptedNoUnnecessaryFunctionToStringSpread = adaptPluginRule(noUnnecessaryFunctionToStringSpreadRule, 'no-unnecessary-function-to-string-spread')
 const adaptedNoUnnecessaryDateToJsonSpread = adaptPluginRule(noUnnecessaryDateToJsonSpreadRule, 'no-unnecessary-date-to-json-spread')
 const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryDateToGmtStringSpreadRule, 'no-unnecessary-date-to-gmt-string-spread')
+  ['no-unnecessary-typed-array-at-spread']: adaptPluginRule(noUnnecessaryTypedArrayAtSpreadRule),
+  ['no-unnecessary-typed-array-copy-within-spread']: adaptPluginRule(noUnnecessaryTypedArrayCopyWithinSpreadRule),
+  ['no-unnecessary-typed-array-entries-spread']: adaptPluginRule(noUnnecessaryTypedArrayEntriesSpreadRule),
+  ['no-unnecessary-typed-array-every-spread']: adaptPluginRule(noUnnecessaryTypedArrayEverySpreadRule),
+  ['no-unnecessary-typed-array-fill-spread']: adaptPluginRule(noUnnecessaryTypedArrayFillSpreadRule),
+  ['no-unnecessary-typed-array-filter-spread']: adaptPluginRule(noUnnecessaryTypedArrayFilterSpreadRule),
+  ['no-unnecessary-typed-array-find-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindSpreadRule),
+  ['no-unnecessary-typed-array-find-index-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindIndexSpreadRule),
+  ['no-unnecessary-typed-array-find-last-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindLastSpreadRule),
+  ['no-unnecessary-typed-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindLastIndexSpreadRule),
+  ['no-unnecessary-typed-array-for-each-spread']: adaptPluginRule(noUnnecessaryTypedArrayForEachSpreadRule),
+  ['no-unnecessary-typed-array-includes-spread']: adaptPluginRule(noUnnecessaryTypedArrayIncludesSpreadRule),
+  ['no-unnecessary-typed-array-index-of-spread']: adaptPluginRule(noUnnecessaryTypedArrayIndexOfSpreadRule),
+  ['no-unnecessary-typed-array-join-spread']: adaptPluginRule(noUnnecessaryTypedArrayJoinSpreadRule),
+  ['no-unnecessary-typed-array-keys-spread']: adaptPluginRule(noUnnecessaryTypedArrayKeysSpreadRule),
+  ['no-unnecessary-typed-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryTypedArrayLastIndexOfSpreadRule),
+  ['no-unnecessary-typed-array-map-spread']: adaptPluginRule(noUnnecessaryTypedArrayMapSpreadRule),
+  ['no-unnecessary-typed-array-reduce-spread']: adaptPluginRule(noUnnecessaryTypedArrayReduceSpreadRule),
+  ['no-unnecessary-typed-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryTypedArrayReduceRightSpreadRule),
+  ['no-unnecessary-typed-array-reverse-spread']: adaptPluginRule(noUnnecessaryTypedArrayReverseSpreadRule),
+  ['no-unnecessary-typed-array-set-spread']: adaptPluginRule(noUnnecessaryTypedArraySetSpreadRule),
+  ['no-unnecessary-typed-array-slice-spread']: adaptPluginRule(noUnnecessaryTypedArraySliceSpreadRule),
+  ['no-unnecessary-typed-array-some-spread']: adaptPluginRule(noUnnecessaryTypedArraySomeSpreadRule),
+  ['no-unnecessary-typed-array-sort-spread']: adaptPluginRule(noUnnecessaryTypedArraySortSpreadRule),
+  ['no-unnecessary-typed-array-sub-array-spread']: adaptPluginRule(noUnnecessaryTypedArraySubArraySpreadRule),
+  ['no-unnecessary-typed-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryTypedArrayToLocaleStringSpreadRule),
+  ['no-unnecessary-typed-array-to-string-spread']: adaptPluginRule(noUnnecessaryTypedArrayToStringSpreadRule),
+  ['no-unnecessary-typed-array-values-spread']: adaptPluginRule(noUnnecessaryTypedArrayValuesSpreadRule),
+  ['no-unnecessary-typed-array-with-spread']: adaptPluginRule(noUnnecessaryTypedArrayWithSpreadRule),
   'no-unnecessary-function-call-spread': adaptedNoUnnecessaryFunctionCallSpread,
   'no-unnecessary-function-apply-spread': adaptedNoUnnecessaryFunctionApplySpread,
   'no-unnecessary-function-bind-spread': adaptedNoUnnecessaryFunctionBindSpread,
@@ -4550,6 +4579,35 @@ const RULE_CATEGORIES: Record<string, RuleCategory> = {
   'no-unnecessary-function-to-string-spread': 'patterns',
   'no-unnecessary-date-to-json-spread': 'patterns',
   'no-unnecessary-date-to-gmt-string-spread': 'patterns',
+  ['no-unnecessary-typed-array-at-spread']: 'patterns',
+  ['no-unnecessary-typed-array-copy-within-spread']: 'patterns',
+  ['no-unnecessary-typed-array-entries-spread']: 'patterns',
+  ['no-unnecessary-typed-array-every-spread']: 'patterns',
+  ['no-unnecessary-typed-array-fill-spread']: 'patterns',
+  ['no-unnecessary-typed-array-filter-spread']: 'patterns',
+  ['no-unnecessary-typed-array-find-spread']: 'patterns',
+  ['no-unnecessary-typed-array-find-index-spread']: 'patterns',
+  ['no-unnecessary-typed-array-find-last-spread']: 'patterns',
+  ['no-unnecessary-typed-array-find-last-index-spread']: 'patterns',
+  ['no-unnecessary-typed-array-for-each-spread']: 'patterns',
+  ['no-unnecessary-typed-array-includes-spread']: 'patterns',
+  ['no-unnecessary-typed-array-index-of-spread']: 'patterns',
+  ['no-unnecessary-typed-array-join-spread']: 'patterns',
+  ['no-unnecessary-typed-array-keys-spread']: 'patterns',
+  ['no-unnecessary-typed-array-last-index-of-spread']: 'patterns',
+  ['no-unnecessary-typed-array-map-spread']: 'patterns',
+  ['no-unnecessary-typed-array-reduce-spread']: 'patterns',
+  ['no-unnecessary-typed-array-reduce-right-spread']: 'patterns',
+  ['no-unnecessary-typed-array-reverse-spread']: 'patterns',
+  ['no-unnecessary-typed-array-set-spread']: 'patterns',
+  ['no-unnecessary-typed-array-slice-spread']: 'patterns',
+  ['no-unnecessary-typed-array-some-spread']: 'patterns',
+  ['no-unnecessary-typed-array-sort-spread']: 'patterns',
+  ['no-unnecessary-typed-array-sub-array-spread']: 'patterns',
+  ['no-unnecessary-typed-array-to-locale-string-spread']: 'patterns',
+  ['no-unnecessary-typed-array-to-string-spread']: 'patterns',
+  ['no-unnecessary-typed-array-values-spread']: 'patterns',
+  ['no-unnecessary-typed-array-with-spread']: 'patterns',
   'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
   'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
   'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
@@ -4843,6 +4901,35 @@ import {
   noUnnecessaryDateToJsonSpreadRule,
   noUnnecessaryDateToGmtStringSpreadRule,
 } from './patterns/index.js'
+import { noUnnecessaryTypedArrayAtSpreadRule } from './patterns/no-unnecessary-typed-array-at-spread.js'
+import { noUnnecessaryTypedArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-typed-array-copy-within-spread.js'
+import { noUnnecessaryTypedArrayEntriesSpreadRule } from './patterns/no-unnecessary-typed-array-entries-spread.js'
+import { noUnnecessaryTypedArrayEverySpreadRule } from './patterns/no-unnecessary-typed-array-every-spread.js'
+import { noUnnecessaryTypedArrayFillSpreadRule } from './patterns/no-unnecessary-typed-array-fill-spread.js'
+import { noUnnecessaryTypedArrayFilterSpreadRule } from './patterns/no-unnecessary-typed-array-filter-spread.js'
+import { noUnnecessaryTypedArrayFindIndexSpreadRule } from './patterns/no-unnecessary-typed-array-find-index-spread.js'
+import { noUnnecessaryTypedArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-typed-array-find-last-index-spread.js'
+import { noUnnecessaryTypedArrayFindLastSpreadRule } from './patterns/no-unnecessary-typed-array-find-last-spread.js'
+import { noUnnecessaryTypedArrayFindSpreadRule } from './patterns/no-unnecessary-typed-array-find-spread.js'
+import { noUnnecessaryTypedArrayForEachSpreadRule } from './patterns/no-unnecessary-typed-array-for-each-spread.js'
+import { noUnnecessaryTypedArrayIncludesSpreadRule } from './patterns/no-unnecessary-typed-array-includes-spread.js'
+import { noUnnecessaryTypedArrayIndexOfSpreadRule } from './patterns/no-unnecessary-typed-array-index-of-spread.js'
+import { noUnnecessaryTypedArrayJoinSpreadRule } from './patterns/no-unnecessary-typed-array-join-spread.js'
+import { noUnnecessaryTypedArrayKeysSpreadRule } from './patterns/no-unnecessary-typed-array-keys-spread.js'
+import { noUnnecessaryTypedArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-typed-array-last-index-of-spread.js'
+import { noUnnecessaryTypedArrayMapSpreadRule } from './patterns/no-unnecessary-typed-array-map-spread.js'
+import { noUnnecessaryTypedArrayReduceRightSpreadRule } from './patterns/no-unnecessary-typed-array-reduce-right-spread.js'
+import { noUnnecessaryTypedArrayReduceSpreadRule } from './patterns/no-unnecessary-typed-array-reduce-spread.js'
+import { noUnnecessaryTypedArrayReverseSpreadRule } from './patterns/no-unnecessary-typed-array-reverse-spread.js'
+import { noUnnecessaryTypedArraySetSpreadRule } from './patterns/no-unnecessary-typed-array-set-spread.js'
+import { noUnnecessaryTypedArraySliceSpreadRule } from './patterns/no-unnecessary-typed-array-slice-spread.js'
+import { noUnnecessaryTypedArraySomeSpreadRule } from './patterns/no-unnecessary-typed-array-some-spread.js'
+import { noUnnecessaryTypedArraySortSpreadRule } from './patterns/no-unnecessary-typed-array-sort-spread.js'
+import { noUnnecessaryTypedArraySubArraySpreadRule } from './patterns/no-unnecessary-typed-array-sub-array-spread.js'
+import { noUnnecessaryTypedArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-typed-array-to-locale-string-spread.js'
+import { noUnnecessaryTypedArrayToStringSpreadRule } from './patterns/no-unnecessary-typed-array-to-string-spread.js'
+import { noUnnecessaryTypedArrayValuesSpreadRule } from './patterns/no-unnecessary-typed-array-values-spread.js'
+import { noUnnecessaryTypedArrayWithSpreadRule } from './patterns/no-unnecessary-typed-array-with-spread.js'
 ---ADAPT---
 export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
 export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
