@@ -87,49 +87,10 @@ export class FileWatcher extends EventEmitter {
     this.debounceTimers.set(key, timer)
   }
 
-  private async fileExists(filePath: string): Promise<boolean> {
+  private fileExists(filePath: string): Promise<boolean> {
     return new Promise((resolve) => {
       fs.access(filePath, fs.constants.F_OK, (err) => {
         resolve(!err)
-      })
-    })
-  }
-
-  private handleChange(dirPath: string, filename: null | string): void {
-    if (!filename) return
-
-    const filePath = path.join(dirPath, filename)
-
-    if (this.shouldIgnore(filePath)) {
-      return
-    }
-
-    if (this.extensions.size > 0) {
-      const ext = path.extname(filePath)
-      if (!this.extensions.has(ext)) {
-        return
-      }
-    }
-
-    this.debounce(filePath, async () => {
-      const exists = await this.fileExists(filePath)
-      const type: WatcherEvent['type'] = exists ? 'change' : 'unlink'
-
-      this.emit('change', {
-        filePath,
-        type,
-      } as WatcherEvent)
-    })
-  }
-
-  private async isDirectory(filePath: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      fs.stat(filePath, (err, stats) => {
-        if (err) {
-          resolve(false)
-        } else {
-          resolve(stats.isDirectory())
-        }
       })
     })
   }
@@ -144,18 +105,6 @@ export class FileWatcher extends EventEmitter {
     return new RegExp(regexPattern)
   }
 
-  private async readDirSafe(dirPath: string): Promise<string[]> {
-    return new Promise((resolve) => {
-      fs.readdir(dirPath, (err, files) => {
-        if (err) {
-          resolve([])
-        } else {
-          resolve(files)
-        }
-      })
-    })
-  }
-
   private shouldIgnore(filePath: string): boolean {
     const relativePath = filePath
     for (const pattern of this.ignorePatterns) {
@@ -168,16 +117,36 @@ export class FileWatcher extends EventEmitter {
   }
 
   private async watchDirectory(dirPath: string): Promise<void> {
-    if (this.shouldIgnore(dirPath)) {
-      return
-    }
-
     try {
       const watcher = fs.watch(
         dirPath,
-        { persistent: true, recursive: false },
+        { persistent: true, recursive: true },
         (_eventType, filename) => {
-          this.handleChange(dirPath, filename)
+          if (!filename) return
+          if (typeof filename !== 'string') return
+
+          const filePath = path.join(dirPath, filename)
+
+          if (this.shouldIgnore(filePath)) {
+            return
+          }
+
+          if (this.extensions.size > 0) {
+            const ext = path.extname(filePath)
+            if (!this.extensions.has(ext)) {
+              return
+            }
+          }
+
+          this.debounce(filePath, async () => {
+            const exists = await this.fileExists(filePath)
+            const type: WatcherEvent['type'] = exists ? 'change' : 'unlink'
+
+            this.emit('change', {
+              filePath,
+              type,
+            } as WatcherEvent)
+          })
         },
       )
 
@@ -186,16 +155,6 @@ export class FileWatcher extends EventEmitter {
       })
 
       this.watchers.set(dirPath, watcher)
-
-      const entries = await this.readDirSafe(dirPath)
-      await Promise.all(
-        entries.map(async (entry) => {
-          const fullPath = path.join(dirPath, entry)
-          if (await this.isDirectory(fullPath)) {
-            await this.watchDirectory(fullPath)
-          }
-        }),
-      )
     } catch (error) {
       const code =
         error instanceof Error && 'code' in error
