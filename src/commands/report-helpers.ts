@@ -16,11 +16,41 @@ import { JSONReporter } from '../reporters/json-reporter.js'
 import { JUnitReporter } from '../reporters/junit-reporter.js'
 import { MarkdownReporter } from '../reporters/markdown-reporter.js'
 import { SARIFReporter } from '../reporters/sarif-reporter.js'
+import {
+  isCustomReporterFormat,
+  loadReporterFromPath,
+  resolveReporterModulePath,
+} from '../reporters/plugin-loader.js'
 import { CLIError } from '../utils/errors.js'
 
-export type OutputFormat = 'console' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
+export const CUSTOM_REPORTER_PREFIX = 'custom:'
 
-export function createReporter(format: OutputFormat, options: ReporterOptions): Reporter {
+export type OutputFormat =
+  | 'console'
+  | 'csv'
+  | 'gitlab'
+  | 'html'
+  | 'json'
+  | 'junit'
+  | 'markdown'
+  | 'sarif'
+  | `custom:${string}`
+
+export async function createReporter(format: OutputFormat, options: ReporterOptions): Promise<Reporter> {
+  if (isCustomReporterFormat(format)) {
+    const modulePath = format.slice(CUSTOM_REPORTER_PREFIX.length)
+    if (!modulePath) {
+      throw CLIError.invalidInput('Custom reporter format requires a module path after "custom:"', [
+        'Usage: --format custom:./path/to/reporter.js',
+        'The module must export a ReporterFactory function',
+      ])
+    }
+
+    const resolvedPath = resolveReporterModulePath(modulePath)
+    const factory = await loadReporterFromPath(resolvedPath)
+    return factory(options)
+  }
+
   switch (format) {
     case 'gitlab': {
       return new GitLabReporter(options)

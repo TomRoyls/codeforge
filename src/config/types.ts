@@ -1,9 +1,16 @@
 import type { RuleOptions, RuleSeverity } from '../rules/types.js'
 
+export interface CustomReporterConfig {
+  name: string
+  options?: Record<string, unknown>
+  path: string
+}
+
 export interface CodeForgeConfig {
   files?: string[]
   ignore?: string[]
   plugins?: string[]
+  reporters?: CustomReporterConfig[]
   rules?: RuleEnvConfig
 }
 

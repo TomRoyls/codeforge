@@ -1923,6 +1923,173 @@ describe('validateConfig', () => {
       expect(thrown!.message).toContain('first-bad')
     })
   })
+
+  describe('reporters validation', () => {
+    test('accepts valid reporters config', () => {
+      const result = validateConfig({
+        reporters: [
+          { name: 'slack', path: './reporters/slack.js' },
+        ],
+      })
+      expect(result.reporters).toEqual([
+        { name: 'slack', options: undefined, path: './reporters/slack.js' },
+      ])
+    })
+
+    test('accepts reporters with options', () => {
+      const result = validateConfig({
+        reporters: [
+          { name: 'webhook', path: './reporters/webhook.js', options: { url: 'https://example.com' } },
+        ],
+      })
+      expect(result.reporters).toEqual([
+        { name: 'webhook', options: { url: 'https://example.com' }, path: './reporters/webhook.js' },
+      ])
+    })
+
+    test('accepts multiple reporters', () => {
+      const result = validateConfig({
+        reporters: [
+          { name: 'slack', path: './reporters/slack.js' },
+          { name: 'teams', path: './reporters/teams.js', options: { channel: '#alerts' } },
+        ],
+      })
+      expect(result.reporters).toHaveLength(2)
+    })
+
+    test('accepts reporter without options', () => {
+      const result = validateConfig({
+        reporters: [
+          { name: 'csv-plus', path: './csv-plus.js' },
+        ],
+      })
+      expect(result.reporters![0].options).toBeUndefined()
+    })
+
+    test('accepts reporter with empty options object', () => {
+      const result = validateConfig({
+        reporters: [
+          { name: 'basic', path: './basic.js', options: {} },
+        ],
+      })
+      expect(result.reporters![0].options).toEqual({})
+    })
+
+    test('rejects non-array reporters', () => {
+      expect(() => validateConfig({ reporters: 'not-array' })).toThrowCLIError('E003')
+    })
+
+    test('rejects reporters as number', () => {
+      expect(() => validateConfig({ reporters: 42 })).toThrowCLIError('E003')
+    })
+
+    test('rejects reporters as object instead of array', () => {
+      expect(() => validateConfig({ reporters: { name: 'x', path: 'y' } })).toThrowCLIError('E003')
+    })
+
+    test('rejects null reporter entry', () => {
+      expect(() => validateConfig({ reporters: [null] })).toThrowCLIError('E003')
+    })
+
+    test('rejects string reporter entry', () => {
+      expect(() => validateConfig({ reporters: ['./reporter.js'] })).toThrowCLIError('E003')
+    })
+
+    test('rejects array reporter entry', () => {
+      expect(() => validateConfig({ reporters: [['./reporter.js']] })).toThrowCLIError('E003')
+    })
+
+    test('rejects missing name', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ path: './reporter.js' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects empty name', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: '', path: './reporter.js' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects non-string name', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 123, path: './reporter.js' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects missing path', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'custom' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects empty path', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'custom', path: '' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects non-string path', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'custom', path: 42 }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects array options', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'x', path: './x.js', options: [1, 2] }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects string options', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'x', path: './x.js', options: 'bad' }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('rejects null options', () => {
+      expect(() =>
+        validateConfig({ reporters: [{ name: 'x', path: './x.js', options: null }] }),
+      ).toThrowCLIError('E003')
+    })
+
+    test('error message includes index for invalid entry', () => {
+      try {
+        validateConfig({ reporters: [null] })
+      } catch (e) {
+        expect((e as CLIError).message).toContain('reporters[0]')
+      }
+    })
+
+    test('error message mentions name field', () => {
+      try {
+        validateConfig({ reporters: [{ path: './x.js' }] })
+      } catch (e) {
+        expect((e as CLIError).message).toContain('name')
+      }
+    })
+
+    test('error message mentions path field', () => {
+      try {
+        validateConfig({ reporters: [{ name: 'x' }] })
+      } catch (e) {
+        expect((e as CLIError).message).toContain('path')
+      }
+    })
+
+    test('works alongside rules and files', () => {
+      const result = validateConfig({
+        files: ['src/**/*.ts'],
+        ignore: ['dist/**'],
+        reporters: [{ name: 'custom', path: './reporter.js' }],
+        rules: { 'max-params': 'error' },
+      })
+      expect(result.files).toEqual(['src/**/*.ts'])
+      expect(result.ignore).toEqual(['dist/**'])
+      expect(result.reporters).toEqual([{ name: 'custom', options: undefined, path: './reporter.js' }])
+      expect(result.rules).toEqual({ 'max-params': 'error' })
+    })
+  })
 })
 
 expect.extend({

@@ -1,5 +1,5 @@
 import type { RuleOptions, RuleSeverity } from '../rules/types.js'
-import type { CodeForgeConfig } from './types.js'
+import type { CodeForgeConfig, CustomReporterConfig } from './types.js'
 
 import { CLIError } from '../utils/errors.js'
 
@@ -39,6 +39,10 @@ export function validateConfig(config: unknown): CodeForgeConfig {
 
   if ('plugins' in cfg) {
     result.plugins = validateFilesArray(cfg.plugins, 'plugins')
+  }
+
+  if ('reporters' in cfg) {
+    result.reporters = validateReporters(cfg.reporters)
   }
 
   if ('rules' in cfg) {
@@ -164,5 +168,49 @@ function validateSeverity(severity: string, ruleName: string): void {
       `Valid severities are: ${VALID_SEVERITIES.join(', ')}`,
       `Example: "${ruleName}": "error"`,
     ])
+  }
+}
+
+function validateReporters(value: unknown): CustomReporterConfig[] {
+  if (!Array.isArray(value)) {
+    throw CLIError.configError('"reporters" must be an array of reporter configurations', [
+      'Example: "reporters": [{ "name": "slack", "path": "./reporters/slack.js" }]',
+    ])
+  }
+
+  return value.map((entry, index) => validateReporterEntry(entry, index))
+}
+
+function validateReporterEntry(entry: unknown, index: number): CustomReporterConfig {
+  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+    throw CLIError.configError(`"reporters[${index}]" must be an object`, [
+      `Example: { "name": "custom", "path": "./my-reporter.js" }`,
+    ])
+  }
+
+  const obj = entry as Record<string, unknown>
+
+  if (typeof obj.name !== 'string' || obj.name.length === 0) {
+    throw CLIError.configError(`"reporters[${index}].name" must be a non-empty string`, [
+      'The name is used with --format to select this reporter',
+    ])
+  }
+
+  if (typeof obj.path !== 'string' || obj.path.length === 0) {
+    throw CLIError.configError(`"reporters[${index}].path" must be a non-empty string`, [
+      'Provide a module path relative to the project root or an absolute path',
+    ])
+  }
+
+  if (obj.options !== undefined && (typeof obj.options !== 'object' || obj.options === null || Array.isArray(obj.options))) {
+    throw CLIError.configError(`"reporters[${index}].options" must be an object`, [
+      'Example: { "webhookUrl": "https://..." }',
+    ])
+  }
+
+  return {
+    name: obj.name,
+    options: obj.options as Record<string, unknown> | undefined,
+    path: obj.path,
   }
 }
