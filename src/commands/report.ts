@@ -7,27 +7,22 @@ import { promisify } from 'node:util'
 import ora from 'ora'
 import pLimit from 'p-limit'
 
-import type { AnalysisResult, Reporter, ReporterOptions } from '../reporters/types.js'
+import type { AnalysisResult } from '../reporters/types.js'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { ConsoleReporter } from '../reporters/console-reporter.js'
-import { GitLabReporter } from '../reporters/gitlab-reporter.js'
-import { HTMLReporter } from '../reporters/html-reporter.js'
-import { JSONReporter } from '../reporters/json-reporter.js'
-import { JUnitReporter } from '../reporters/junit-reporter.js'
-import { MarkdownReporter } from '../reporters/markdown-reporter.js'
-import { SARIFReporter } from '../reporters/sarif-reporter.js'
+import {
+  createReporter,
+  CUSTOM_REPORTER_PREFIX,
+  type OutputFormat,
+  readAnalysisFile,
+} from './report-helpers.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { CLIError } from '../utils/errors.js'
 import { logger } from '../utils/logger.js'
-import {
-  getPlatformOpenCommand,
-  type OutputFormat,
-  readAnalysisFile,
-} from './report-helpers.js'
+import { getPlatformOpenCommand } from './report-helpers.js'
 
 const execAsync = promisify(exec)
 
@@ -90,8 +85,8 @@ export default class Report extends Command {
     format: Flags.string({
       char: 'f',
       default: 'console',
-      description: 'Output format',
-      options: ['console', 'gitlab', 'html', 'json', 'junit', 'markdown', 'sarif'],
+      description:
+        'Output format (console, json, html, junit, sarif, markdown, gitlab, csv, or custom:<path>)',
     }),
     input: Flags.string({
       char: 'i',
@@ -126,11 +121,15 @@ export default class Report extends Command {
       )
     }
 
+    if (format.startsWith(CUSTOM_REPORTER_PREFIX) && !flags.output) {
+      this.warn('Custom reporters typically need --output to write results')
+    }
+
     const results = flags.input
       ? await this.loadFromInput(flags.input)
       : await this.runAnalysis(args.path, flags.concurrency)
 
-    const reporter = this.createReporter(format, {
+    const reporter = await createReporter(format, {
       outputPath: flags.output,
       pretty: flags.pretty,
       verbose: flags.verbose,
@@ -140,38 +139,6 @@ export default class Report extends Command {
 
     if (flags.open && format === 'html' && flags.output) {
       await this.openInBrowser(flags.output)
-    }
-  }
-
-  private createReporter(format: OutputFormat, options: ReporterOptions): Reporter {
-    switch (format) {
-      case 'gitlab': {
-        return new GitLabReporter(options)
-      }
-
-      case 'html': {
-        return new HTMLReporter(options)
-      }
-
-      case 'json': {
-        return new JSONReporter(options)
-      }
-
-      case 'junit': {
-        return new JUnitReporter(options)
-      }
-
-      case 'markdown': {
-        return new MarkdownReporter(options)
-      }
-
-      case 'sarif': {
-        return new SARIFReporter(options)
-      }
-
-      default: {
-        return new ConsoleReporter(options)
-      }
     }
   }
 

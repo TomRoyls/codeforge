@@ -10,6 +10,7 @@ import { readFile } from 'node:fs/promises'
 import type { AnalysisResult, Reporter, ReporterOptions } from '../reporters/types.js'
 
 import { ConsoleReporter } from '../reporters/console-reporter.js'
+import { CSVReporter } from '../reporters/csv-reporter.js'
 import { GitLabReporter } from '../reporters/gitlab-reporter.js'
 import { HTMLReporter } from '../reporters/html-reporter.js'
 import { JSONReporter } from '../reporters/json-reporter.js'
@@ -52,6 +53,14 @@ export async function createReporter(format: OutputFormat, options: ReporterOpti
   }
 
   switch (format) {
+    case 'console': {
+      return new ConsoleReporter(options)
+    }
+
+    case 'csv': {
+      return new CSVReporter(options)
+    }
+
     case 'gitlab': {
       return new GitLabReporter(options)
     }

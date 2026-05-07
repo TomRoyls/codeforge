@@ -80,106 +80,106 @@ beforeEach(() => {
 describe('createReporter', () => {
   const options = defaultReporterOptions()
 
-  test('console format returns ConsoleReporter instance', () => {
-    const reporter = createReporter('console', options)
+  test('console format returns ConsoleReporter instance', async () => {
+    const reporter = await createReporter('console', options)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('gitlab format returns GitLabReporter instance', () => {
-    const reporter = createReporter('gitlab', options)
+  test('gitlab format returns GitLabReporter instance', async () => {
+    const reporter = await createReporter('gitlab', options)
     expect(reporter).toBeInstanceOf(GitLabReporter)
   })
 
-  test('html format returns HTMLReporter instance', () => {
-    const reporter = createReporter('html', options)
+  test('html format returns HTMLReporter instance', async () => {
+    const reporter = await createReporter('html', options)
     expect(reporter).toBeInstanceOf(HTMLReporter)
   })
 
-  test('json format returns JSONReporter instance', () => {
-    const reporter = createReporter('json', options)
+  test('json format returns JSONReporter instance', async () => {
+    const reporter = await createReporter('json', options)
     expect(reporter).toBeInstanceOf(JSONReporter)
   })
 
-  test('junit format returns JUnitReporter instance', () => {
-    const reporter = createReporter('junit', options)
+  test('junit format returns JUnitReporter instance', async () => {
+    const reporter = await createReporter('junit', options)
     expect(reporter).toBeInstanceOf(JUnitReporter)
   })
 
-  test('markdown format returns MarkdownReporter instance', () => {
-    const reporter = createReporter('markdown', options)
+  test('markdown format returns MarkdownReporter instance', async () => {
+    const reporter = await createReporter('markdown', options)
     expect(reporter).toBeInstanceOf(MarkdownReporter)
   })
 
-  test('sarif format returns SARIFReporter instance', () => {
-    const reporter = createReporter('sarif', options)
+  test('sarif format returns SARIFReporter instance', async () => {
+    const reporter = await createReporter('sarif', options)
     expect(reporter).toBeInstanceOf(SARIFReporter)
   })
 
-  test('unknown format defaults to ConsoleReporter', () => {
-    const reporter = createReporter('unknown' as OutputFormat, options)
+  test('unknown format defaults to ConsoleReporter', async () => {
+    const reporter = await createReporter('unknown' as OutputFormat, options)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('empty string format defaults to ConsoleReporter', () => {
-    const reporter = createReporter('' as OutputFormat, options)
+  test('empty string format defaults to ConsoleReporter', async () => {
+    const reporter = await createReporter('' as OutputFormat, options)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('options are passed through to ConsoleReporter constructor', () => {
+  test('options are passed through to ConsoleReporter constructor', async () => {
     const customOptions: ReporterOptions = {
       ...options,
       verbose: true,
       quiet: false,
       outputPath: '/tmp/report.txt',
     }
-    const reporter = createReporter('console', customOptions)
+    const reporter = await createReporter('console', customOptions)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('options are passed through to GitLabReporter constructor', () => {
+  test('options are passed through to GitLabReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, pretty: true }
-    const reporter = createReporter('gitlab', customOptions)
+    const reporter = await createReporter('gitlab', customOptions)
     expect(reporter).toBeInstanceOf(GitLabReporter)
   })
 
-  test('options are passed through to HTMLReporter constructor', () => {
+  test('options are passed through to HTMLReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, outputPath: '/tmp/report.html' }
-    const reporter = createReporter('html', customOptions)
+    const reporter = await createReporter('html', customOptions)
     expect(reporter).toBeInstanceOf(HTMLReporter)
   })
 
-  test('options are passed through to JSONReporter constructor', () => {
+  test('options are passed through to JSONReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, pretty: true }
-    const reporter = createReporter('json', customOptions)
+    const reporter = await createReporter('json', customOptions)
     expect(reporter).toBeInstanceOf(JSONReporter)
   })
 
-  test('options are passed through to JUnitReporter constructor', () => {
+  test('options are passed through to JUnitReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, outputPath: '/tmp/junit.xml' }
-    const reporter = createReporter('junit', customOptions)
+    const reporter = await createReporter('junit', customOptions)
     expect(reporter).toBeInstanceOf(JUnitReporter)
   })
 
-  test('options are passed through to MarkdownReporter constructor', () => {
+  test('options are passed through to MarkdownReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, verbose: true }
-    const reporter = createReporter('markdown', customOptions)
+    const reporter = await createReporter('markdown', customOptions)
     expect(reporter).toBeInstanceOf(MarkdownReporter)
   })
 
-  test('options are passed through to SARIFReporter constructor', () => {
+  test('options are passed through to SARIFReporter constructor', async () => {
     const customOptions: ReporterOptions = { ...options, outputPath: '/tmp/results.sarif' }
-    const reporter = createReporter('sarif', customOptions)
+    const reporter = await createReporter('sarif', customOptions)
     expect(reporter).toBeInstanceOf(SARIFReporter)
   })
 
-  test('each format produces a distinct reporter type', () => {
-    const console_ = createReporter('console', options)
-    const gitlab_ = createReporter('gitlab', options)
-    const html_ = createReporter('html', options)
-    const json_ = createReporter('json', options)
-    const junit_ = createReporter('junit', options)
-    const markdown_ = createReporter('markdown', options)
-    const sarif_ = createReporter('sarif', options)
+  test('each format produces a distinct reporter type', async () => {
+    const console_ = await createReporter('console', options)
+    const gitlab_ = await createReporter('gitlab', options)
+    const html_ = await createReporter('html', options)
+    const json_ = await createReporter('json', options)
+    const junit_ = await createReporter('junit', options)
+    const markdown_ = await createReporter('markdown', options)
+    const sarif_ = await createReporter('sarif', options)
 
     const types = [
       console_.constructor,
@@ -196,25 +196,25 @@ describe('createReporter', () => {
     expect(uniqueTypes.size).toBe(7)
   })
 
-  test('console format returns reporter with correct name', () => {
-    const reporter = createReporter('console', options)
+  test('console format returns reporter with correct name', async () => {
+    const reporter = await createReporter('console', options)
     expect(reporter.name).toBeDefined()
     expect(typeof reporter.name).toBe('string')
   })
 
-  test('gitlab format returns reporter with correct name', () => {
-    const reporter = createReporter('gitlab', options)
+  test('gitlab format returns reporter with correct name', async () => {
+    const reporter = await createReporter('gitlab', options)
     expect(reporter.name).toBeDefined()
     expect(typeof reporter.name).toBe('string')
   })
 
-  test('creating two console reporters produces distinct instances', () => {
-    const reporter1 = createReporter('console', options)
-    const reporter2 = createReporter('console', options)
+  test('creating two console reporters produces distinct instances', async () => {
+    const reporter1 = await createReporter('console', options)
+    const reporter2 = await createReporter('console', options)
     expect(reporter1).not.toBe(reporter2)
   })
 
-  test('all format reporters have a report method', () => {
+  test('all format reporters have a report method', async () => {
     const formats: OutputFormat[] = [
       'console',
       'gitlab',
@@ -225,7 +225,7 @@ describe('createReporter', () => {
       'sarif',
     ]
     for (const format of formats) {
-      const reporter = createReporter(format, options)
+      const reporter = await createReporter(format, options)
       expect(typeof reporter.report).toBe('function')
     }
   })
@@ -236,12 +236,12 @@ describe('createReporter', () => {
 // ============================================================================
 
 describe('validateAnalysisResult', () => {
-  test('valid data with all fields returns true', () => {
+  test('valid data with all fields returns true', async () => {
     const data = makeAnalysisResult()
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('valid data with populated files array returns true', () => {
+  test('valid data with populated files array returns true', async () => {
     const data = makeAnalysisResult({
       files: [
         {
@@ -254,122 +254,122 @@ describe('validateAnalysisResult', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('empty files array but present returns true', () => {
+  test('empty files array but present returns true', async () => {
     const data = makeAnalysisResult({ files: [] })
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('missing files returns false', () => {
+  test('missing files returns false', async () => {
     const data = makeAnalysisResult()
     delete (data as unknown as Record<string, unknown>).files
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('missing summary returns false', () => {
+  test('missing summary returns false', async () => {
     const data = makeAnalysisResult()
     delete (data as unknown as Record<string, unknown>).summary
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('missing timestamp returns false', () => {
+  test('missing timestamp returns false', async () => {
     const data = makeAnalysisResult()
     delete (data as unknown as Record<string, unknown>).timestamp
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('all fields missing returns false', () => {
+  test('all fields missing returns false', async () => {
     const data = {} as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('null files returns false', () => {
+  test('null files returns false', async () => {
     const data = makeAnalysisResult()
     data.files = null as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('null summary returns false', () => {
+  test('null summary returns false', async () => {
     const data = makeAnalysisResult()
     data.summary = null as unknown as AnalysisResult['summary']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('null timestamp returns false', () => {
+  test('null timestamp returns false', async () => {
     const data = makeAnalysisResult()
     data.timestamp = null as unknown as string
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('undefined files returns false', () => {
+  test('undefined files returns false', async () => {
     const data = makeAnalysisResult()
     data.files = undefined as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('undefined summary returns false', () => {
+  test('undefined summary returns false', async () => {
     const data = makeAnalysisResult()
     data.summary = undefined as unknown as AnalysisResult['summary']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('undefined timestamp returns false', () => {
+  test('undefined timestamp returns false', async () => {
     const data = makeAnalysisResult()
     data.timestamp = undefined as unknown as string
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('empty string timestamp returns false (falsy)', () => {
+  test('empty string timestamp returns false (falsy)', async () => {
     const data = makeAnalysisResult()
     data.timestamp = ''
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('missing version is still valid (version is optional)', () => {
+  test('missing version is still valid (version is optional)', async () => {
     const data = makeAnalysisResult()
     delete data.version
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('only files missing returns false', () => {
+  test('only files missing returns false', async () => {
     const data = { summary: {}, timestamp: '2024-01-01' } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('only summary missing returns false', () => {
+  test('only summary missing returns false', async () => {
     const data = { files: [], timestamp: '2024-01-01' } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('only timestamp missing returns false', () => {
+  test('only timestamp missing returns false', async () => {
     const data = { files: [], summary: {} } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('files set to false returns false', () => {
+  test('files set to false returns false', async () => {
     const data = makeAnalysisResult()
     data.files = false as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('summary set to false returns false', () => {
+  test('summary set to false returns false', async () => {
     const data = makeAnalysisResult()
     data.summary = false as unknown as AnalysisResult['summary']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('files set to 0 (number) returns false', () => {
+  test('files set to 0 (number) returns false', async () => {
     const data = makeAnalysisResult()
     data.files = 0 as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('summary set to 0 (number) returns false', () => {
+  test('summary set to 0 (number) returns false', async () => {
     const data = makeAnalysisResult()
     data.summary = 0 as unknown as AnalysisResult['summary']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('timestamp set to 0 (number) returns false', () => {
+  test('timestamp set to 0 (number) returns false', async () => {
     const data = makeAnalysisResult()
     data.timestamp = 0 as unknown as string
     expect(validateAnalysisResult(data)).toBe(false)
@@ -763,87 +763,87 @@ describe('readAnalysisFile', () => {
 // ============================================================================
 
 describe('getPlatformOpenCommand', () => {
-  test('darwin returns open command', () => {
+  test('darwin returns open command', async () => {
     expect(getPlatformOpenCommand('report.html', 'darwin')).toBe('open "report.html"')
   })
 
-  test('win32 returns start command', () => {
+  test('win32 returns start command', async () => {
     expect(getPlatformOpenCommand('report.html', 'win32')).toBe('start "" "report.html"')
   })
 
-  test('linux returns xdg-open command', () => {
+  test('linux returns xdg-open command', async () => {
     expect(getPlatformOpenCommand('report.html', 'linux')).toBe('xdg-open "report.html"')
   })
 
-  test('unknown platform returns xdg-open command', () => {
+  test('unknown platform returns xdg-open command', async () => {
     expect(getPlatformOpenCommand('report.html', 'freebsd')).toBe('xdg-open "report.html"')
   })
 
-  test('empty string platform returns xdg-open command', () => {
+  test('empty string platform returns xdg-open command', async () => {
     expect(getPlatformOpenCommand('report.html', '')).toBe('xdg-open "report.html"')
   })
 
-  test('aix platform returns xdg-open command', () => {
+  test('aix platform returns xdg-open command', async () => {
     expect(getPlatformOpenCommand('report.html', 'aix')).toBe('xdg-open "report.html"')
   })
 
-  test('darwin with path containing spaces is properly quoted', () => {
+  test('darwin with path containing spaces is properly quoted', async () => {
     expect(getPlatformOpenCommand('/path/to/my report.html', 'darwin')).toBe(
       'open "/path/to/my report.html"',
     )
   })
 
-  test('win32 with path containing spaces is properly quoted', () => {
+  test('win32 with path containing spaces is properly quoted', async () => {
     expect(getPlatformOpenCommand('/path/to/my report.html', 'win32')).toBe(
       'start "" "/path/to/my report.html"',
     )
   })
 
-  test('linux with path containing spaces is properly quoted', () => {
+  test('linux with path containing spaces is properly quoted', async () => {
     expect(getPlatformOpenCommand('/path/to/my report.html', 'linux')).toBe(
       'xdg-open "/path/to/my report.html"',
     )
   })
 
-  test('darwin with simple filename', () => {
+  test('darwin with simple filename', async () => {
     expect(getPlatformOpenCommand('index.html', 'darwin')).toBe('open "index.html"')
   })
 
-  test('win32 with simple filename', () => {
+  test('win32 with simple filename', async () => {
     expect(getPlatformOpenCommand('index.html', 'win32')).toBe('start "" "index.html"')
   })
 
-  test('linux with absolute path', () => {
+  test('linux with absolute path', async () => {
     expect(getPlatformOpenCommand('/home/user/report.html', 'linux')).toBe(
       'xdg-open "/home/user/report.html"',
     )
   })
 
-  test('darwin with special characters in path', () => {
+  test('darwin with special characters in path', async () => {
     expect(getPlatformOpenCommand('/path/file (copy).html', 'darwin')).toBe(
       'open "/path/file (copy).html"',
     )
   })
 
-  test('win32 with special characters in path', () => {
+  test('win32 with special characters in path', async () => {
     expect(getPlatformOpenCommand('/path/file (copy).html', 'win32')).toBe(
       'start "" "/path/file (copy).html"',
     )
   })
 
-  test('darwin with deep nested path', () => {
+  test('darwin with deep nested path', async () => {
     expect(getPlatformOpenCommand('/a/b/c/d/e/report.html', 'darwin')).toBe(
       'open "/a/b/c/d/e/report.html"',
     )
   })
 
-  test('linux with relative path', () => {
+  test('linux with relative path', async () => {
     expect(getPlatformOpenCommand('./output/report.html', 'linux')).toBe(
       'xdg-open "./output/report.html"',
     )
   })
 
-  test('all three known platforms produce different commands for same file', () => {
+  test('all three known platforms produce different commands for same file', async () => {
     const file = 'report.html'
     const darwinCmd = getPlatformOpenCommand(file, 'darwin')
     const win32Cmd = getPlatformOpenCommand(file, 'win32')
@@ -854,75 +854,75 @@ describe('getPlatformOpenCommand', () => {
     expect(win32Cmd).not.toBe(linuxCmd)
   })
 
-  test('darwin command starts with open', () => {
+  test('darwin command starts with open', async () => {
     expect(getPlatformOpenCommand('f.html', 'darwin')).toMatch(/^open\s/)
   })
 
-  test('win32 command starts with start', () => {
+  test('win32 command starts with start', async () => {
     expect(getPlatformOpenCommand('f.html', 'win32')).toMatch(/^start\s/)
   })
 
-  test('linux command starts with xdg-open', () => {
+  test('linux command starts with xdg-open', async () => {
     expect(getPlatformOpenCommand('f.html', 'linux')).toMatch(/^xdg-open\s/)
   })
 
-  test('freebsd platform returns xdg-open', () => {
+  test('freebsd platform returns xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'freebsd')).toContain('xdg-open')
   })
 
-  test('darwin with empty filename', () => {
+  test('darwin with empty filename', async () => {
     expect(getPlatformOpenCommand('', 'darwin')).toBe('open ""')
   })
 
-  test('win32 with empty filename', () => {
+  test('win32 with empty filename', async () => {
     expect(getPlatformOpenCommand('', 'win32')).toBe('start "" ""')
   })
 
-  test('linux with empty filename', () => {
+  test('linux with empty filename', async () => {
     expect(getPlatformOpenCommand('', 'linux')).toBe('xdg-open ""')
   })
 
-  test('darwin with unicode filename', () => {
+  test('darwin with unicode filename', async () => {
     expect(getPlatformOpenCommand('報告.html', 'darwin')).toBe('open "報告.html"')
   })
 
-  test('linux with unicode filename', () => {
+  test('linux with unicode filename', async () => {
     expect(getPlatformOpenCommand('レポート.html', 'linux')).toBe('xdg-open "レポート.html"')
   })
 
-  test('win32 with unicode filename', () => {
+  test('win32 with unicode filename', async () => {
     expect(getPlatformOpenCommand('отчёт.html', 'win32')).toBe('start "" "отчёт.html"')
   })
 
-  test('sunos platform defaults to xdg-open', () => {
+  test('sunos platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'sunos')).toBe('xdg-open "report.html"')
   })
 
-  test('createReporter returns object with report method', () => {
-    const reporter = createReporter('console', defaultReporterOptions())
+  test('createReporter returns object with report method', async () => {
+    const reporter = await createReporter('console', defaultReporterOptions())
     expect(typeof reporter.report).toBe('function')
   })
 
-  test('darwin with multiple spaces in path', () => {
+  test('darwin with multiple spaces in path', async () => {
     expect(getPlatformOpenCommand('/path/to/my   report.html', 'darwin')).toBe(
       'open "/path/to/my   report.html"',
     )
   })
 
-  test('win32 with UNC network path', () => {
+  test('win32 with UNC network path', async () => {
     expect(getPlatformOpenCommand('\\\\server\\share\\report.html', 'win32')).toBe(
       'start "" "\\\\server\\share\\report.html"',
     )
   })
 
-  test('linux with tilde in path', () => {
+  test('linux with tilde in path', async () => {
     expect(getPlatformOpenCommand('~/reports/output.html', 'linux')).toBe(
       'xdg-open "~/reports/output.html"',
     )
   })
 
-  test('all default reporter options produce valid reporter', () => {
-    const reporter = createReporter('console', defaultReporterOptions())
+  test('all default reporter options produce valid reporter', async () => {
+    const reporter = await createReporter('console', defaultReporterOptions())
     expect(reporter).toBeInstanceOf(ConsoleReporter)
     expect(typeof reporter.name).toBe('string')
   })
@@ -933,7 +933,7 @@ describe('getPlatformOpenCommand', () => {
 // ============================================================================
 
 describe('validateAnalysisResult — additional edge cases', () => {
-  test('files as truthy non-array string returns true (truthy check)', () => {
+  test('files as truthy non-array string returns true (truthy check)', async () => {
     const data = {
       files: 'not-an-array' as unknown as AnalysisResult['files'],
       summary: { errorCount: 0 },
@@ -942,7 +942,7 @@ describe('validateAnalysisResult — additional edge cases', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('summary as truthy non-object number returns true (truthy check)', () => {
+  test('summary as truthy non-object number returns true (truthy check)', async () => {
     const data = {
       files: [],
       summary: 42 as unknown as AnalysisResult['summary'],
@@ -951,7 +951,7 @@ describe('validateAnalysisResult — additional edge cases', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('timestamp as truthy number returns true (truthy check)', () => {
+  test('timestamp as truthy number returns true (truthy check)', async () => {
     const data = {
       files: [],
       summary: { errorCount: 0 },
@@ -960,26 +960,26 @@ describe('validateAnalysisResult — additional edge cases', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('extra fields on data do not affect validation', () => {
+  test('extra fields on data do not affect validation', async () => {
     const data = makeAnalysisResult({
       extraField: 'should be ignored',
     } as unknown as Partial<AnalysisResult>)
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('NaN files returns false (NaN is falsy)', () => {
+  test('NaN files returns false (NaN is falsy)', async () => {
     const data = makeAnalysisResult()
     data.files = Number.NaN as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('NaN timestamp returns false (NaN is falsy)', () => {
+  test('NaN timestamp returns false (NaN is falsy)', async () => {
     const data = makeAnalysisResult()
     data.timestamp = Number.NaN as unknown as string
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('validates when files is a non-empty array', () => {
+  test('validates when files is a non-empty array', async () => {
     const data = makeAnalysisResult({
       files: [
         {
@@ -1121,23 +1121,23 @@ describe('readAnalysisFile — additional edge cases', () => {
 // ============================================================================
 
 describe('getPlatformOpenCommand — additional edge cases', () => {
-  test('haiku platform defaults to xdg-open', () => {
+  test('haiku platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'haiku')).toBe('xdg-open "report.html"')
   })
 
-  test('cygwin platform defaults to xdg-open', () => {
+  test('cygwin platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'cygwin')).toBe('xdg-open "report.html"')
   })
 
-  test('darwin with file extension .pdf', () => {
+  test('darwin with file extension .pdf', async () => {
     expect(getPlatformOpenCommand('output.pdf', 'darwin')).toBe('open "output.pdf"')
   })
 
-  test('win32 with file extension .pdf', () => {
+  test('win32 with file extension .pdf', async () => {
     expect(getPlatformOpenCommand('output.pdf', 'win32')).toBe('start "" "output.pdf"')
   })
 
-  test('linux with dotfile name', () => {
+  test('linux with dotfile name', async () => {
     expect(getPlatformOpenCommand('.hidden-report.html', 'linux')).toBe(
       'xdg-open ".hidden-report.html"',
     )
@@ -1149,7 +1149,7 @@ describe('getPlatformOpenCommand — additional edge cases', () => {
 // ============================================================================
 
 describe('createReporter — exhaustive options', () => {
-  test('console with all options enabled', () => {
+  test('console with all options enabled', async () => {
     const opts: ReporterOptions = {
       color: true,
       errorsOnly: true,
@@ -1159,11 +1159,11 @@ describe('createReporter — exhaustive options', () => {
       quiet: true,
       verbose: true,
     }
-    const reporter = createReporter('console', opts)
+    const reporter = await createReporter('console', opts)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('console with all options disabled', () => {
+  test('console with all options disabled', async () => {
     const opts: ReporterOptions = {
       color: false,
       errorsOnly: false,
@@ -1173,51 +1173,51 @@ describe('createReporter — exhaustive options', () => {
       quiet: false,
       verbose: false,
     }
-    const reporter = createReporter('console', opts)
+    const reporter = await createReporter('console', opts)
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('gitlab with errorsOnly true', () => {
+  test('gitlab with errorsOnly true', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), errorsOnly: true }
-    const reporter = createReporter('gitlab', opts)
+    const reporter = await createReporter('gitlab', opts)
     expect(reporter).toBeInstanceOf(GitLabReporter)
   })
 
-  test('html with includeSource true', () => {
+  test('html with includeSource true', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), includeSource: true }
-    const reporter = createReporter('html', opts)
+    const reporter = await createReporter('html', opts)
     expect(reporter).toBeInstanceOf(HTMLReporter)
   })
 
-  test('json with quiet true', () => {
+  test('json with quiet true', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), quiet: true }
-    const reporter = createReporter('json', opts)
+    const reporter = await createReporter('json', opts)
     expect(reporter).toBeInstanceOf(JSONReporter)
   })
 
-  test('junit with verbose true', () => {
+  test('junit with verbose true', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), verbose: true }
-    const reporter = createReporter('junit', opts)
+    const reporter = await createReporter('junit', opts)
     expect(reporter).toBeInstanceOf(JUnitReporter)
   })
 
-  test('markdown with color false', () => {
+  test('markdown with color false', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), color: false }
-    const reporter = createReporter('markdown', opts)
+    const reporter = await createReporter('markdown', opts)
     expect(reporter).toBeInstanceOf(MarkdownReporter)
   })
 
-  test('sarif with pretty true and outputPath', () => {
+  test('sarif with pretty true and outputPath', async () => {
     const opts: ReporterOptions = {
       ...defaultReporterOptions(),
       pretty: true,
       outputPath: '/out.sarif',
     }
-    const reporter = createReporter('sarif', opts)
+    const reporter = await createReporter('sarif', opts)
     expect(reporter).toBeInstanceOf(SARIFReporter)
   })
 
-  test('each reporter has a name property that is a non-empty string', () => {
+  test('each reporter has a name property that is a non-empty string', async () => {
     const formats: OutputFormat[] = [
       'console',
       'gitlab',
@@ -1228,12 +1228,12 @@ describe('createReporter — exhaustive options', () => {
       'sarif',
     ]
     for (const format of formats) {
-      const reporter = createReporter(format, defaultReporterOptions())
+      const reporter = await createReporter(format, defaultReporterOptions())
       expect(reporter.name.length).toBeGreaterThan(0)
     }
   })
 
-  test('each reporter has a format method', () => {
+  test('each reporter has a format method', async () => {
     const formats: OutputFormat[] = [
       'console',
       'gitlab',
@@ -1244,44 +1244,44 @@ describe('createReporter — exhaustive options', () => {
       'sarif',
     ]
     for (const format of formats) {
-      const reporter = createReporter(format, defaultReporterOptions())
+      const reporter = await createReporter(format, defaultReporterOptions())
       expect(typeof reporter.format).toBe('function')
     }
   })
 
-  test('creating reporters with same options produces distinct instances', () => {
+  test('creating reporters with same options produces distinct instances', async () => {
     const opts = defaultReporterOptions()
-    const r1 = createReporter('json', opts)
-    const r2 = createReporter('json', opts)
+    const r1 = await createReporter('json', opts)
+    const r2 = await createReporter('json', opts)
     expect(r1).not.toBe(r2)
   })
 
-  test('creating reporters of different types produces distinct instances', () => {
+  test('creating reporters of different types produces distinct instances', async () => {
     const opts = defaultReporterOptions()
-    const r1 = createReporter('console', opts)
-    const r2 = createReporter('json', opts)
+    const r1 = await createReporter('console', opts)
+    const r2 = await createReporter('json', opts)
     expect(r1).not.toBe(r2)
     expect(r1.constructor).not.toBe(r2.constructor)
   })
 
-  test('switch default branch handles numeric-like format string', () => {
-    const reporter = createReporter('123' as OutputFormat, defaultReporterOptions())
+  test('switch default branch handles numeric-like format string', async () => {
+    const reporter = await createReporter('123' as OutputFormat, defaultReporterOptions())
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('switch default branch handles format with uppercase letters', () => {
-    const reporter = createReporter('Console' as OutputFormat, defaultReporterOptions())
+  test('switch default branch handles format with uppercase letters', async () => {
+    const reporter = await createReporter('Console' as OutputFormat, defaultReporterOptions())
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('switch default branch handles format with trailing whitespace', () => {
-    const reporter = createReporter('console ' as OutputFormat, defaultReporterOptions())
+  test('switch default branch handles format with trailing whitespace', async () => {
+    const reporter = await createReporter('console ' as OutputFormat, defaultReporterOptions())
     expect(reporter).toBeInstanceOf(ConsoleReporter)
   })
 
-  test('html reporter with undefined outputPath', () => {
+  test('html reporter with undefined outputPath', async () => {
     const opts: ReporterOptions = { ...defaultReporterOptions(), outputPath: undefined }
-    const reporter = createReporter('html', opts)
+    const reporter = await createReporter('html', opts)
     expect(reporter).toBeInstanceOf(HTMLReporter)
   })
 })
@@ -1291,7 +1291,7 @@ describe('createReporter — exhaustive options', () => {
 // ============================================================================
 
 describe('validateAnalysisResult — exhaustive type boundary checks', () => {
-  test('files as empty object returns true (truthy)', () => {
+  test('files as empty object returns true (truthy)', async () => {
     const data = {
       files: {} as unknown as AnalysisResult['files'],
       summary: { errorCount: 0 },
@@ -1300,7 +1300,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('summary as empty string returns true (truthy)', () => {
+  test('summary as empty string returns true (truthy)', async () => {
     const data = {
       files: [],
       summary: ' ' as unknown as AnalysisResult['summary'],
@@ -1309,7 +1309,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('files as boolean true returns true (truthy)', () => {
+  test('files as boolean true returns true (truthy)', async () => {
     const data = {
       files: true as unknown as AnalysisResult['files'],
       summary: { errorCount: 0 },
@@ -1318,7 +1318,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('summary as boolean true returns true (truthy)', () => {
+  test('summary as boolean true returns true (truthy)', async () => {
     const data = {
       files: [],
       summary: true as unknown as AnalysisResult['summary'],
@@ -1327,7 +1327,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('timestamp as boolean true returns true (truthy)', () => {
+  test('timestamp as boolean true returns true (truthy)', async () => {
     const data = {
       files: [],
       summary: { errorCount: 0 },
@@ -1336,7 +1336,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('files as negative number returns true (truthy)', () => {
+  test('files as negative number returns true (truthy)', async () => {
     const data = {
       files: -1 as unknown as AnalysisResult['files'],
       summary: { errorCount: 0 },
@@ -1345,7 +1345,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('summary as negative number returns true (truthy)', () => {
+  test('summary as negative number returns true (truthy)', async () => {
     const data = {
       files: [],
       summary: -1 as unknown as AnalysisResult['summary'],
@@ -1354,7 +1354,7 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('timestamp as positive number returns true (truthy)', () => {
+  test('timestamp as positive number returns true (truthy)', async () => {
     const data = {
       files: [],
       summary: { errorCount: 0 },
@@ -1363,32 +1363,32 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('data with only files present returns false', () => {
+  test('data with only files present returns false', async () => {
     const data = { files: [] } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('data with only summary present returns false', () => {
+  test('data with only summary present returns false', async () => {
     const data = { summary: { errorCount: 0 } } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('data with only timestamp present returns false', () => {
+  test('data with only timestamp present returns false', async () => {
     const data = { timestamp: '2024-01-01' } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('data with files and summary but no timestamp returns false', () => {
+  test('data with files and summary but no timestamp returns false', async () => {
     const data = { files: [], summary: { errorCount: 0 } } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('data with files and timestamp but no summary returns false', () => {
+  test('data with files and timestamp but no summary returns false', async () => {
     const data = { files: [], timestamp: '2024-01-01' } as unknown as AnalysisResult
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('data with summary and timestamp but no files returns false', () => {
+  test('data with summary and timestamp but no files returns false', async () => {
     const data = {
       summary: { errorCount: 0 },
       timestamp: '2024-01-01',
@@ -1396,36 +1396,36 @@ describe('validateAnalysisResult — exhaustive type boundary checks', () => {
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('empty string timestamp is falsy and returns false', () => {
+  test('empty string timestamp is falsy and returns false', async () => {
     const data = makeAnalysisResult()
     data.timestamp = ''
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('timestamp with whitespace-only string returns true (truthy)', () => {
+  test('timestamp with whitespace-only string returns true (truthy)', async () => {
     const data = makeAnalysisResult()
     data.timestamp = ' '
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('files set to empty string returns false (falsy)', () => {
+  test('files set to empty string returns false (falsy)', async () => {
     const data = makeAnalysisResult()
     data.files = '' as unknown as AnalysisResult['files']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('summary set to empty string returns false (falsy)', () => {
+  test('summary set to empty string returns false (falsy)', async () => {
     const data = makeAnalysisResult()
     data.summary = '' as unknown as AnalysisResult['summary']
     expect(validateAnalysisResult(data)).toBe(false)
   })
 
-  test('version field presence does not affect validation', () => {
+  test('version field presence does not affect validation', async () => {
     const data = makeAnalysisResult({ version: '3.0.0' })
     expect(validateAnalysisResult(data)).toBe(true)
   })
 
-  test('version field absence does not affect validation', () => {
+  test('version field absence does not affect validation', async () => {
     const data = makeAnalysisResult()
     delete data.version
     expect(validateAnalysisResult(data)).toBe(true)
@@ -1842,92 +1842,92 @@ describe('readAnalysisFile — exhaustive error and edge cases', () => {
 // ============================================================================
 
 describe('getPlatformOpenCommand — exhaustive checks', () => {
-  test('darwin with very long filename', () => {
+  test('darwin with very long filename', async () => {
     const longName = 'a'.repeat(200) + '.html'
     expect(getPlatformOpenCommand(longName, 'darwin')).toBe(`open "${longName}"`)
   })
 
-  test('win32 with very long filename', () => {
+  test('win32 with very long filename', async () => {
     const longName = 'a'.repeat(200) + '.html'
     expect(getPlatformOpenCommand(longName, 'win32')).toBe(`start "" "${longName}"`)
   })
 
-  test('linux with very long filename', () => {
+  test('linux with very long filename', async () => {
     const longName = 'a'.repeat(200) + '.html'
     expect(getPlatformOpenCommand(longName, 'linux')).toBe(`xdg-open "${longName}"`)
   })
 
-  test('darwin with single quote in path', () => {
+  test('darwin with single quote in path', async () => {
     expect(getPlatformOpenCommand("/path/file's.html", 'darwin')).toBe('open "/path/file\'s.html"')
   })
 
-  test('win32 with single quote in path', () => {
+  test('win32 with single quote in path', async () => {
     expect(getPlatformOpenCommand("/path/file's.html", 'win32')).toBe(
       'start "" "/path/file\'s.html"',
     )
   })
 
-  test('linux with single quote in path', () => {
+  test('linux with single quote in path', async () => {
     expect(getPlatformOpenCommand("/path/file's.html", 'linux')).toBe(
       'xdg-open "/path/file\'s.html"',
     )
   })
 
-  test('darwin with double quotes in path', () => {
+  test('darwin with double quotes in path', async () => {
     expect(getPlatformOpenCommand('/path/file"copy".html', 'darwin')).toBe(
       'open "/path/file"copy".html"',
     )
   })
 
-  test('linux with double quotes in path', () => {
+  test('linux with double quotes in path', async () => {
     expect(getPlatformOpenCommand('/path/file"copy".html', 'linux')).toBe(
       'xdg-open "/path/file"copy".html"',
     )
   })
 
-  test('darwin with hash character in path', () => {
+  test('darwin with hash character in path', async () => {
     expect(getPlatformOpenCommand('/path/file#anchor.html', 'darwin')).toBe(
       'open "/path/file#anchor.html"',
     )
   })
 
-  test('linux with hash character in path', () => {
+  test('linux with hash character in path', async () => {
     expect(getPlatformOpenCommand('/path/file#anchor.html', 'linux')).toBe(
       'xdg-open "/path/file#anchor.html"',
     )
   })
 
-  test('win32 with forward slashes in path', () => {
+  test('win32 with forward slashes in path', async () => {
     expect(getPlatformOpenCommand('C:/Users/report.html', 'win32')).toBe(
       'start "" "C:/Users/report.html"',
     )
   })
 
-  test('openbsd platform defaults to xdg-open', () => {
+  test('openbsd platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'openbsd')).toBe('xdg-open "report.html"')
   })
 
-  test('netbsd platform defaults to xdg-open', () => {
+  test('netbsd platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'netbsd')).toBe('xdg-open "report.html"')
   })
 
-  test('android platform defaults to xdg-open', () => {
+  test('android platform defaults to xdg-open', async () => {
     expect(getPlatformOpenCommand('report.html', 'android')).toBe('xdg-open "report.html"')
   })
 
-  test('darwin with file extension .sarif', () => {
+  test('darwin with file extension .sarif', async () => {
     expect(getPlatformOpenCommand('results.sarif', 'darwin')).toBe('open "results.sarif"')
   })
 
-  test('win32 with file extension .sarif', () => {
+  test('win32 with file extension .sarif', async () => {
     expect(getPlatformOpenCommand('results.sarif', 'win32')).toBe('start "" "results.sarif"')
   })
 
-  test('linux with file extension .sarif', () => {
+  test('linux with file extension .sarif', async () => {
     expect(getPlatformOpenCommand('results.sarif', 'linux')).toBe('xdg-open "results.sarif"')
   })
 
-  test('result always contains the file path', () => {
+  test('result always contains the file path', async () => {
     const platforms = ['darwin', 'win32', 'linux', 'freebsd', 'aix', 'sunos', 'unknown']
     const filePath = 'my-report.html'
     for (const platform of platforms) {
@@ -1936,7 +1936,7 @@ describe('getPlatformOpenCommand — exhaustive checks', () => {
     }
   })
 
-  test('result always wraps file path in double quotes', () => {
+  test('result always wraps file path in double quotes', async () => {
     const platforms = ['darwin', 'win32', 'linux']
     const filePath = 'report.html'
     for (const platform of platforms) {
@@ -1945,24 +1945,24 @@ describe('getPlatformOpenCommand — exhaustive checks', () => {
     }
   })
 
-  test('win32 command contains empty string argument before filepath', () => {
+  test('win32 command contains empty string argument before filepath', async () => {
     const cmd = getPlatformOpenCommand('report.html', 'win32')
     expect(cmd).toContain('start ""')
   })
 
-  test('darwin with file extension .xml', () => {
+  test('darwin with file extension .xml', async () => {
     expect(getPlatformOpenCommand('junit.xml', 'darwin')).toBe('open "junit.xml"')
   })
 
-  test('linux with file extension .md', () => {
+  test('linux with file extension .md', async () => {
     expect(getPlatformOpenCommand('report.md', 'linux')).toBe('xdg-open "report.md"')
   })
 
-  test('win32 with file extension .json', () => {
+  test('win32 with file extension .json', async () => {
     expect(getPlatformOpenCommand('report.json', 'win32')).toBe('start "" "report.json"')
   })
 
-  test('all unknown platforms fallback to xdg-open', () => {
+  test('all unknown platforms fallback to xdg-open', async () => {
     const unknownPlatforms = ['zos', 'vms', 'amiga', 'dos', 'templeos']
     for (const platform of unknownPlatforms) {
       expect(getPlatformOpenCommand('r.html', platform)).toMatch(/^xdg-open /)
