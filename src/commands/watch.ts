@@ -24,7 +24,7 @@ import chalk from 'chalk'
 import { ConfigCache } from '../config/cache.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
-import { loadCommandConfig, resolvePatterns, setupRuleRegistry } from '../utils/command-helpers.js'
+import { loadCommandConfig, resolvePatterns, setupRuleRegistryLazy } from '../utils/command-helpers.js'
 import { DEFAULT_DEBOUNCE_MS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
@@ -171,7 +171,7 @@ export default class Watch extends Command {
     this.isRunning = true
 
     try {
-      const registry = setupRuleRegistry(requestedRules)
+      const registry = await setupRuleRegistryLazy(requestedRules)
 
       if (!this.parser) {
         return

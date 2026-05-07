@@ -29,8 +29,10 @@ import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { type ChalkColorFunction } from '../types/chalk.js'
+import { logger } from '../utils/logger.js'
 import {
   DATE_FIELD_WIDTH,
   DEBT_COMPLEXITY_THRESHOLD_HIGH,
@@ -177,6 +179,7 @@ export default class Debt extends Command {
     await parser.initialize()
 
     const registry = new RuleRegistry()
+    const allRules = await lazyRuleLoader.loadAllRules()
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }
@@ -198,7 +201,8 @@ export default class Debt extends Command {
           completedCount++
           spinner.text = `Analyzing technical debt... (${completedCount}/${totalFiles})`
           return result
-        } catch {
+        } catch (error) {
+          logger.debug(`Failed to parse file ${file.path} during debt analysis: ${error}`)
           completedCount++
           spinner.text = `Analyzing technical debt... (${completedCount}/${totalFiles})`
           return null
@@ -422,7 +426,8 @@ export default class Debt extends Command {
       }
 
       return { change, direction, previous }
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to read debt history from ${this.getHistoryPath(targetPath)}: ${error}`)
       return { change: 0, direction: 'stable', previous: null }
     }
   }
@@ -436,7 +441,8 @@ export default class Debt extends Command {
     try {
       const content = await fs.readFile(historyPath, 'utf8')
       history = JSON.parse(content)
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to read existing debt history, starting fresh: ${error}`)
       history = []
     }
 
@@ -521,7 +527,8 @@ export default class Debt extends Command {
       }
 
       this.log('')
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to read debt history for display: ${error}`)
       this.log('')
       this.log(chalk.yellow('  No history found.'))
       this.log(chalk.gray('  Run `codeforge debt --save` to start tracking debt over time.'))

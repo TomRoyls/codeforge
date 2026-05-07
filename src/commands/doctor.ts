@@ -31,7 +31,7 @@ import { discoverConfig } from '../config/discovery.js'
 import { parseConfigFile } from '../config/parser.js'
 import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
-import { getRuleIds } from '../rules/index.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { FILE_COUNT_THRESHOLD, MAX_TOP_RULES_SHOWN } from '../utils/constants.js'
 
 interface CheckResult {
@@ -324,7 +324,7 @@ export default class Doctor extends Command {
 
     try {
       const config = await parseConfigFile(configPath)
-      const knownRules = new Set(getRuleIds())
+      const knownRules = new Set(lazyRuleLoader.getRuleIds())
       const unknownRules: string[] = []
 
       if (config.rules) {

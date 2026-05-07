@@ -29,6 +29,7 @@ import { type BinaryExpression, Node, type SourceFile } from 'ts-morph'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { MAX_TOP_STATS_FILES } from '../utils/constants.js'
+import { logger } from '../utils/logger.js'
 
 export default class Stats extends Command {
   static override args = {
@@ -283,7 +284,8 @@ export default class Stats extends Command {
               const parseResult = await this.parser.parseFile(file.absolutePath)
               complexity = this.calculateFileComplexity(parseResult.sourceFile)
               structures = this.countCodeStructures(parseResult.sourceFile)
-            } catch {
+            } catch (error) {
+              logger.debug(`Failed to parse ${file.path} for complexity/structures: ${error}`)
               complexity = 1
               structures = localDefaultStructures
             }

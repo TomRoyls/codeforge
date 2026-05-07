@@ -9,7 +9,7 @@ import chalk from 'chalk'
 import type { RuleDefinition } from '../rules/types.js'
 
 import { RuleRegistry } from '../core/rule-registry.js'
-import { getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   BENCHMARK_TABLE_SEPARATOR_WIDTH,

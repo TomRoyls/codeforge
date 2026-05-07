@@ -30,8 +30,8 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
-import { allRules } from '../rules/index.js'
-import { resolvePatterns, setupRuleRegistry } from '../utils/command-helpers.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
+import { resolvePatterns, setupRuleRegistryLazy } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
 
@@ -171,8 +171,9 @@ export default class Fix extends Command {
     }
   }
 
-  private getRulesWithFixes(safeOnly = false): Map<string, RuleWithFix> {
+  private async getRulesWithFixes(safeOnly = false): Promise<Map<string, RuleWithFix>> {
     const rulesWithFixes = new Map<string, RuleWithFix>()
+    const allRules = await lazyRuleLoader.loadAllRules()
 
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       if (ruleDef.fix && typeof ruleDef.fix === 'function') {
@@ -420,7 +421,7 @@ export default class Fix extends Command {
       this.log(chalk.blue(`\n🔧 Fixing ${discoveredFiles.length} file(s)...\n`))
     }
 
-    const rulesWithFixes = this.getRulesWithFixes(flags['safe-only'])
+    const rulesWithFixes = await this.getRulesWithFixes(flags['safe-only'])
 
     if (rulesWithFixes.size === 0) {
       if (ciMode) {
@@ -432,7 +433,7 @@ export default class Fix extends Command {
       return null
     }
 
-    const registry = setupRuleRegistry(requestedRules)
+    const registry = await setupRuleRegistryLazy(requestedRules)
     const parser = new Parser()
 
     const context: ProcessContext = {

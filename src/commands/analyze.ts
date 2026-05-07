@@ -34,13 +34,13 @@ import { Parser } from '../core/parser.js'
 import { type OutputFormat, Reporter } from '../core/reporter.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
-import { allRules } from '../rules/index.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   applyFixesToFiles,
   filterFilesByExtension,
   loadCommandConfig,
   normalizeFlags,
-  setupRuleRegistry,
+  setupRuleRegistryLazy,
 } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { getGitRoot, getStagedFiles, isGitRepository } from '../utils/git-helpers.js'
@@ -300,7 +300,7 @@ export default class Analyze extends Command {
       this.exit(0)
     }
 
-    const registry = setupRuleRegistry(flags.rules)
+    const registry = await setupRuleRegistryLazy(flags.rules)
     const parser = new Parser()
     await parser.initialize()
 
@@ -700,8 +700,9 @@ export default class Analyze extends Command {
     }
   }
 
-  private getRulesWithFixes(): Map<string, RuleWithFix> {
+  private async getRulesWithFixes(): Promise<Map<string, RuleWithFix>> {
     const rulesWithFixes = new Map<string, RuleWithFix>()
+    const allRules = await lazyRuleLoader.loadAllRules()
 
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       if (ruleDef.fix && typeof ruleDef.fix === 'function') {
@@ -762,7 +763,7 @@ export default class Analyze extends Command {
     const fixSpinner = quiet
       ? null
       : ora(dryRun ? 'Previewing fixes...' : 'Applying fixes...').start()
-    const rulesWithFixes = this.getRulesWithFixes()
+    const rulesWithFixes = await this.getRulesWithFixes()
 
     const fixResult = await applyFixesToFiles({
       allViolations,

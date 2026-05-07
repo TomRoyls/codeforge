@@ -28,7 +28,8 @@ import type { CodeForgeConfig } from '../config/types.js'
 import type { RuleSeverity } from '../rules/types.js'
 
 import { CONFIG_FILE_NAMES, DEFAULT_CONFIG } from '../config/types.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 
 interface InitOptions {
   dir: string
@@ -140,7 +141,7 @@ export default class Init extends Command {
       selectedRules = await this.promptForRules()
     }
 
-    const config = this.generateConfig(options, selectedRules)
+    const config = await this.generateConfig(options, selectedRules)
     const configFileName = options.format === 'js' ? 'codeforge.config.js' : '.codeforgerc.json'
     const configPath = join(configDir, configFileName)
 
@@ -201,7 +202,7 @@ export default class Init extends Command {
     return null
   }
 
-  private generateConfig(options: InitOptions, selectedRules?: string[]): CodeForgeConfig {
+  private async generateConfig(options: InitOptions, selectedRules?: string[]): Promise<CodeForgeConfig> {
     const config: CodeForgeConfig = {
       files: options.typescript
         ? ['**/*.ts', '**/*.tsx']
@@ -216,6 +217,7 @@ export default class Init extends Command {
     const rules: Record<string, RuleSeverity> = {}
 
     if (selectedRules === undefined) {
+      const allRules = await lazyRuleLoader.loadAllRules()
       for (const [ruleId, ruleDef] of Object.entries(allRules)) {
         if (ruleDef.meta.recommended) {
           rules[ruleId] = 'error'
@@ -244,7 +246,8 @@ export default ${JSON.stringify(config, null, 2)};
     return JSON.stringify(config, null, 2)
   }
 
-  private getRuleInfos(): RuleInfo[] {
+  private async getRuleInfos(): Promise<RuleInfo[]> {
+    const allRules = await lazyRuleLoader.loadAllRules()
     return Object.entries(allRules).map(([id, def]) => ({
       category: getRuleCategory(id),
       description: def.meta.description,
@@ -254,7 +257,7 @@ export default ${JSON.stringify(config, null, 2)};
   }
 
   private async promptForRules(): Promise<string[]> {
-    const rules = this.getRuleInfos()
+    const rules = await this.getRuleInfos()
     const categories = [...new Set(rules.map((r) => r.category))]
 
     this.log('')

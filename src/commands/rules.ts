@@ -22,7 +22,8 @@
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 
 function colorizeSeverity(sev: string): string {
   if (sev === 'error') return chalk.red(sev)
@@ -106,7 +107,7 @@ export default class Rules extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Rules)
 
-    let rules = this.getRules()
+    let rules = await this.getRules()
 
     if (flags.category) {
       rules = rules.filter((r) => r.category === flags.category)
@@ -190,8 +191,9 @@ export default class Rules extends Command {
     this.log(chalk.gray(`★ = recommended, ✓ = fixable`))
   }
 
-  private getRules(): RuleInfo[] {
+  private async getRules(): Promise<RuleInfo[]> {
     const rules: RuleInfo[] = []
+    const allRules = await lazyRuleLoader.loadAllRules()
 
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       const isFixable = Boolean(ruleDef.fix || ruleDef.meta.fixable)

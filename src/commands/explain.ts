@@ -22,7 +22,8 @@ import chalk from 'chalk'
 
 import type { RuleMeta } from '../rules/types.js'
 
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 
 interface RuleExample {
   bad: string
@@ -56,7 +57,8 @@ export default class Explain extends Command {
     const { args } = await this.parse(Explain)
     const ruleId = args['rule-id']
 
-    const rule = allRules[ruleId]
+    const loadedRules = await lazyRuleLoader.loadRules([ruleId])
+    const rule = loadedRules[ruleId]
 
     if (!rule) {
       this.error(
@@ -83,7 +85,7 @@ export default class Explain extends Command {
 
     this.displayBestPractices(ruleId)
 
-    this.displayRelatedRules(ruleId, category)
+    await this.displayRelatedRules(ruleId, category)
 
     this.displayUrl(rule.meta)
   }
@@ -153,8 +155,8 @@ export default class Explain extends Command {
     this.log('')
   }
 
-  private displayRelatedRules(ruleId: string, category: string): void {
-    const related = this.getRelatedRules(ruleId, category)
+  private async displayRelatedRules(ruleId: string, category: string): Promise<void> {
+    const related = await this.getRelatedRules(ruleId, category)
 
     if (related.length > 0) {
       this.log(chalk.bold('Related Rules'))
@@ -302,7 +304,7 @@ export default class Explain extends Command {
     return examplesMap[ruleId] ?? null
   }
 
-  private getRelatedRules(ruleId: string, category: string): string[] {
+  private async getRelatedRules(ruleId: string, category: string): Promise<string[]> {
     const relatedRulesMap: Record<string, string[]> = {
       'no-console-log': ['no-debugger', 'no-alert'],
       'no-duplicate-imports': ['no-unused-vars', 'consistent-imports'],
@@ -311,6 +313,7 @@ export default class Explain extends Command {
       'prefer-const': ['no-var', 'no-const-assign'],
     }
 
+    const allRules = await lazyRuleLoader.loadAllRules()
     const categoryRules = Object.entries(allRules)
       .filter(([id, rule]) => {
         const ruleCategory = rule.meta.category ?? getRuleCategory(id)

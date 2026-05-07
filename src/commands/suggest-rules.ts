@@ -26,7 +26,7 @@ import { resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
 import { MAX_TOP_SUGGESTIONS, RULE_ID_FIELD_WIDTH } from '../utils/constants.js'
 
 interface RuleSuggestion {

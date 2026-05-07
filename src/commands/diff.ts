@@ -29,8 +29,10 @@ import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { MAX_DIFF_VIOLATIONS, MAX_FILES_TO_PROCESS } from '../utils/constants.js'
+import { logger } from '../utils/logger.js'
 
 interface DiffReport {
   added: RuleViolation[]
@@ -188,6 +190,7 @@ export default class Diff extends Command {
     await parser.initialize()
 
     const registry = new RuleRegistry()
+    const allRules = await lazyRuleLoader.loadAllRules()
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }
@@ -202,7 +205,8 @@ export default class Diff extends Command {
             filePath: file.path,
             parseResult: await parser.parseFile(file.absolutePath),
           }
-        } catch {
+        } catch (error) {
+          logger.debug(`Failed to parse file ${file.path} during diff analysis: ${error}`)
           return null
         }
       }),
@@ -306,7 +310,8 @@ export default class Diff extends Command {
           stdio: 'pipe',
         },
       )
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to checkout git ref "${ref}" via worktree/clone: ${error}`)
       try {
         execSync(`git archive "${ref}" | tar -x -C "${tempDir}"`, {
           cwd: targetPath,
@@ -314,7 +319,8 @@ export default class Diff extends Command {
           stdio: 'pipe',
         })
         await fs.mkdir(tempDir, { recursive: true })
-      } catch {
+      } catch (error) {
+        logger.debug(`Failed to checkout git ref "${ref}" via archive: ${error}`)
         return this.analyzeViolations(targetPath)
       }
     }
@@ -330,6 +336,7 @@ export default class Diff extends Command {
           stdio: 'pipe',
         })
       } catch (error) {
+        logger.debug(`Failed to cleanup temp diff directory "${tempDir}": ${error}`)
         error satisfies unknown
       }
     }
@@ -339,7 +346,8 @@ export default class Diff extends Command {
     try {
       execSync('git rev-parse --git-dir', { cwd: targetPath, encoding: 'utf8', stdio: 'pipe' })
       return true
-    } catch {
+    } catch (error) {
+      logger.debug(`Git repository check failed for ${targetPath}: ${error}`)
       return false
     }
   }

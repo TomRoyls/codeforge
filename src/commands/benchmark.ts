@@ -27,7 +27,9 @@ import pLimit from 'p-limit'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import type { RuleDefinition } from '../rules/types.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   BENCHMARK_TABLE_SEPARATOR_WIDTH,
   DECIMAL_PRECISION_TIME,
@@ -150,7 +152,7 @@ export default class Benchmark extends Command {
     this.log(`  Parse time: ${parseTime.toFixed(2)}ms`)
     this.log('')
 
-    const rulesToBenchmark = this.getRulesToBenchmark(flags.rules)
+    const rulesToBenchmark = await this.getRulesToBenchmark(flags.rules)
 
     if (flags.warmup && rulesToBenchmark.length > 0) {
       this.log(chalk.cyan('Running warmup...'))
@@ -198,7 +200,7 @@ export default class Benchmark extends Command {
 
   private async benchmarkRule(
     ruleId: string,
-    ruleDef: (typeof allRules)[string],
+    ruleDef: RuleDefinition,
     parseCache: Map<string, Awaited<ReturnType<Parser['parseFile']>>>,
     iterations: number,
   ): Promise<BenchmarkResult> {
@@ -238,9 +240,10 @@ export default class Benchmark extends Command {
     })
   }
 
-  private getRulesToBenchmark(
+  private async getRulesToBenchmark(
     requestedRules: string[] | undefined,
-  ): [string, (typeof allRules)[string]][] {
+  ): Promise<[string, RuleDefinition][]> {
+    const allRules = await lazyRuleLoader.loadAllRules()
     const allEntries = Object.entries(allRules)
 
     if (!requestedRules || requestedRules.length === 0) {

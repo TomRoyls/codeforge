@@ -22,7 +22,9 @@ import { Command, Flags } from '@oclif/core'
 import * as fs from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import type { RuleDefinition } from '../rules/types.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 
 interface RuleDoc {
   category: string
@@ -80,7 +82,7 @@ export default class Docs extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Docs)
 
-    const rules = this.getRules()
+    const rules = await this.getRules()
 
     const filteredRules = flags.category
       ? rules.filter((r) => r.category === flags.category)
@@ -160,7 +162,7 @@ export default class Docs extends Command {
     )
   }
 
-  private generateRuleDoc(ruleId: string, ruleDef: (typeof allRules)[string]): RuleDoc {
+  private generateRuleDoc(ruleId: string, ruleDef: RuleDefinition): RuleDoc {
     const { meta } = ruleDef
     return {
       category: meta.category ?? getRuleCategory(ruleId),
@@ -259,8 +261,9 @@ ${fixableNote}`
     return badges.join('')
   }
 
-  private getRules(): RuleDoc[] {
+  private async getRules(): Promise<RuleDoc[]> {
     const rules: RuleDoc[] = []
+    const allRules = await lazyRuleLoader.loadAllRules()
 
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       rules.push(this.generateRuleDoc(ruleId, ruleDef))

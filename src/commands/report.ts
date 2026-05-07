@@ -39,8 +39,10 @@ import { JSONReporter } from '../reporters/json-reporter.js'
 import { JUnitReporter } from '../reporters/junit-reporter.js'
 import { MarkdownReporter } from '../reporters/markdown-reporter.js'
 import { SARIFReporter } from '../reporters/sarif-reporter.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { CLIError } from '../utils/errors.js'
+import { logger } from '../utils/logger.js'
 
 const execAsync = promisify(exec)
 
@@ -266,6 +268,7 @@ export default class Report extends Command {
     })
 
     const registry = new RuleRegistry()
+    const allRules = await lazyRuleLoader.loadAllRules()
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }
@@ -309,7 +312,8 @@ export default class Report extends Command {
                 suggestion: v.suggestion,
               })),
             }
-          } catch {
+          } catch (error) {
+            logger.debug(`Failed to parse file ${file.path} during report analysis: ${error}`)
             completedCount++
             spinner.text = `Analyzing files... (${completedCount}/${totalFiles})`
             return null

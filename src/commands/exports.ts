@@ -30,6 +30,7 @@ import { Node, type SourceFile } from 'ts-morph'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
+import { logger } from '../utils/logger.js'
 
 interface ExportInfo {
   file: string
@@ -573,7 +574,8 @@ export default class Exports extends Command {
       }
 
       return this.truncateSignature(signature)
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to extract function signature: ${error}`)
       return ''
     }
   }

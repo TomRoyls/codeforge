@@ -19,7 +19,8 @@
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 
-import { getRule, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 
 export default class Why extends Command {
   static override args = {
@@ -53,7 +54,8 @@ export default class Why extends Command {
     const { args, flags } = await this.parse(Why)
 
     const ruleId = args.ruleId as string
-    const rule = getRule(ruleId)
+    const loadedRules = await lazyRuleLoader.loadRules([ruleId])
+    const rule = loadedRules[ruleId]
     const ruleMeta = rule?.meta
 
     if (!ruleMeta) {

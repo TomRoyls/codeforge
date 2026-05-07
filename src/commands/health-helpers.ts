@@ -8,7 +8,7 @@ import chalk from 'chalk'
 
 import type { RuleViolation } from '../ast/visitor.js'
 
-import { getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
 import {
   HEALTH_SCORE_MAX,
   HEALTH_SCORE_THRESHOLD_A,

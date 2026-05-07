@@ -28,7 +28,8 @@ import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   MAX_FILES_TO_PROCESS,
   SEVERITY_ERROR,
@@ -163,6 +164,7 @@ export default class Interactive extends Command {
     await parser.initialize()
 
     const registry = new RuleRegistry()
+    const allRules = await lazyRuleLoader.loadAllRules()
     for (const [ruleId, ruleDef] of Object.entries(allRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }

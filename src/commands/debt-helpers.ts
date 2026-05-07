@@ -2,7 +2,7 @@ import { join } from 'node:path'
 
 import { type RuleViolation } from '../ast/visitor.js'
 import { type RuleCategory, RuleRegistry } from '../core/rule-registry.js'
-import { getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   DEBT_COST_PER_POINT_MINUTES,
