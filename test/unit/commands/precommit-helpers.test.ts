@@ -4,9 +4,11 @@ import {
   type PrecommitOptions,
   displayPostInstallMessage,
   generateHookContent,
+  generatePrecommitFrameworkConfig,
   getGitHookPath,
   getHookDir,
   getHuskyHookPath,
+  getPrecommitFrameworkConfigPath,
   isGitRepository,
   resolvePrecommitOptions,
 } from '../../../src/commands/precommit-helpers.js'
@@ -1461,9 +1463,9 @@ describe('PrecommitOptions - type validation', () => {
     expect(opts).toHaveProperty('installer')
   })
 
-  test('installer is one of git or husky', () => {
+  test('installer is one of git, husky, or pre-commit-framework', () => {
     const opts = makeOptions({ installer: 'git' })
-    expect(opts.installer === 'git' || opts.installer === 'husky').toBe(true)
+    expect(opts.installer === 'git' || opts.installer === 'husky' || opts.installer === 'pre-commit-framework').toBe(true)
   })
 
   test('force is a boolean', () => {
@@ -1727,5 +1729,221 @@ describe('DEFAULT_COMMAND - value properties', () => {
 
   test('is trimmed (no leading/trailing whitespace)', () => {
     expect(DEFAULT_COMMAND).toBe(DEFAULT_COMMAND.trim())
+  })
+})
+
+describe('getPrecommitFrameworkConfigPath', () => {
+  test('returns path ending with .pre-commit-config.yaml', () => {
+    const result = getPrecommitFrameworkConfigPath('/home/user/project')
+    expect(result.endsWith('.pre-commit-config.yaml')).toBe(true)
+  })
+
+  test('returns correct path for root directory', () => {
+    const result = getPrecommitFrameworkConfigPath('/')
+    expect(result).toBe(join('/', '.pre-commit-config.yaml'))
+  })
+
+  test('returns correct path for nested directory', () => {
+    const result = getPrecommitFrameworkConfigPath('/a/b/c/d')
+    expect(result).toBe(join('/a/b/c/d', '.pre-commit-config.yaml'))
+  })
+
+  test('uses provided cwd verbatim', () => {
+    const result = getPrecommitFrameworkConfigPath('/tmp/my-project')
+    expect(result).toContain('/tmp/my-project/')
+  })
+
+  test('result ends with .pre-commit-config.yaml', () => {
+    const result = getPrecommitFrameworkConfigPath('/project')
+    expect(result.endsWith('.pre-commit-config.yaml')).toBe(true)
+  })
+
+  test('differs from git hook path', () => {
+    const cwd = '/project'
+    expect(getPrecommitFrameworkConfigPath(cwd)).not.toBe(getGitHookPath(cwd))
+  })
+
+  test('differs from husky hook path', () => {
+    const cwd = '/project'
+    expect(getPrecommitFrameworkConfigPath(cwd)).not.toBe(getHuskyHookPath(cwd))
+  })
+})
+
+describe('generatePrecommitFrameworkConfig', () => {
+  test('generates valid YAML with repos key', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('repos:')
+  })
+
+  test('includes local repo', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('repo: local')
+  })
+
+  test('includes codeforge hook id', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('id: codeforge')
+  })
+
+  test('includes CodeForge name', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('name: CodeForge')
+  })
+
+  test('includes default command as entry', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('entry: codeforge analyze --staged')
+  })
+
+  test('includes custom command as entry', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework', command: 'npm test' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('entry: npm test')
+  })
+
+  test('includes language: system', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('language: system')
+  })
+
+  test('includes types: [file]', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('types: [file]')
+  })
+
+  test('includes stages: [pre-commit]', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('stages: [pre-commit]')
+  })
+
+  test('starts with repos:', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content.startsWith('repos:')).toBe(true)
+  })
+
+  test('contains repo: local', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('repo: local')
+  })
+})
+
+describe('generatePrecommitFrameworkConfig - structure', () => {
+  test('has proper YAML indentation', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    const lines = content.split('\n')
+    const repoLine = lines.find((l) => l.includes('repo: local'))
+    expect(repoLine).toBeDefined()
+    expect(repoLine!.startsWith('  -')).toBe(true)
+  })
+
+  test('hook entry contains all required fields', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).toContain('id:')
+    expect(content).toContain('name:')
+    expect(content).toContain('entry:')
+    expect(content).toContain('language:')
+    expect(content).toContain('types:')
+    expect(content).toContain('stages:')
+  })
+
+  test('output is valid YAML', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const content = generatePrecommitFrameworkConfig(options)
+    expect(content).not.toContain(', "')
+    expect(content).not.toContain('",')
+    const lines = content.split('\n').filter((l) => l.trim().length > 0)
+    for (const line of lines) {
+      if (!line.startsWith('repos')) {
+        expect(line.match(/^(\s+)/)).toBeDefined()
+      }
+    }
+  })
+})
+
+describe('getHookDir - pre-commit-framework', () => {
+  test('returns cwd for pre-commit-framework installer', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const result = getHookDir(options, '/project')
+    expect(result).toBe('/project')
+  })
+
+  test('returns project root', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const result = getHookDir(options, '/project')
+    expect(result).not.toContain('.git')
+    expect(result).not.toContain('.husky')
+  })
+})
+
+describe('displayPostInstallMessage - pre-commit-framework', () => {
+  function captureLog(options: PrecommitOptions, hookPath: string): string[] {
+    const lines: string[] = []
+    displayPostInstallMessage(options, hookPath, (msg) => lines.push(msg))
+    return lines
+  }
+
+  test('outputs pip install step', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const lines = captureLog(options, '/path')
+    const output = lines.join('\n')
+    expect(output).toContain('pip install pre-commit')
+  })
+
+  test('outputs pre-commit install step', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const lines = captureLog(options, '/path')
+    const output = lines.join('\n')
+    expect(output).toContain('pre-commit install')
+  })
+
+  test('outputs git commit step', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const lines = captureLog(options, '/path')
+    const output = lines.join('\n')
+    expect(output).toContain('git commit')
+  })
+
+  test('has 3 numbered steps', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const lines = captureLog(options, '/path')
+    const output = lines.join('\n')
+    expect(output).toContain('1.')
+    expect(output).toContain('2.')
+    expect(output).toContain('3.')
+  })
+
+  test('mentions pre-commit framework in output', () => {
+    const options = makeOptions({ installer: 'pre-commit-framework' })
+    const lines = captureLog(options, '/path')
+    const output = lines.join('\n')
+    expect(output).toContain('pre-commit')
+  })
+})
+
+describe('resolvePrecommitOptions - pre-commit-framework', () => {
+  test('preserves pre-commit-framework installer', () => {
+    const result = resolvePrecommitOptions({ installer: 'pre-commit-framework' })
+    expect(result.installer).toBe('pre-commit-framework')
+  })
+})
+
+describe('makeOptions - pre-commit-framework', () => {
+  test('allows overriding installer to pre-commit-framework', () => {
+    const opts = makeOptions({ installer: 'pre-commit-framework' })
+    expect(opts.installer).toBe('pre-commit-framework')
+    expect(opts.command).toBe('codeforge analyze --staged')
+    expect(opts.force).toBe(false)
   })
 })

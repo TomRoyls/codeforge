@@ -52,6 +52,7 @@ describe('Precommit Command', () => {
     test('installer flag has correct options', () => {
       expect(Precommit.flags.installer.options).toContain('git')
       expect(Precommit.flags.installer.options).toContain('husky')
+      expect(Precommit.flags.installer.options).toContain('pre-commit-framework')
     })
 
     test('installer flag has default value git', () => {
@@ -289,6 +290,131 @@ describe('Precommit Command', () => {
 
       const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
       expect(output).toContain('Ensure husky is installed')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('creates .pre-commit-config.yaml with pre-commit-framework installer', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const cmd = createCommandWithMockedParse({
+        command: 'codeforge analyze --staged',
+        force: false,
+        installer: 'pre-commit-framework',
+      })
+      await cmd.run()
+
+      const configPath = path.join(tempDir, '.pre-commit-config.yaml')
+      const exists = await fs
+        .access(configPath)
+        .then(() => true)
+        .catch(() => false)
+      expect(exists).toBe(true)
+
+      const content = await fs.readFile(configPath, 'utf-8')
+      expect(content).toContain('repos:')
+      expect(content).toContain('codeforge')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('pre-commit framework config uses custom command', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const cmd = createCommandWithMockedParse({
+        command: 'npm test',
+        force: false,
+        installer: 'pre-commit-framework',
+      })
+      await cmd.run()
+
+      const configPath = path.join(tempDir, '.pre-commit-config.yaml')
+      const content = await fs.readFile(configPath, 'utf-8')
+      expect(content).toContain('entry: npm test')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('pre-commit framework does not set executable permissions', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const cmd = createCommandWithMockedParse({
+        command: 'codeforge analyze --staged',
+        force: false,
+        installer: 'pre-commit-framework',
+      })
+      await cmd.run()
+
+      const configPath = path.join(tempDir, '.pre-commit-config.yaml')
+      const stats = await fs.stat(configPath)
+      const mode = stats.mode & 0o777
+      expect(mode).not.toBe(0o755)
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('pre-commit framework outputs framework-specific next steps', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const cmd = createCommandWithMockedParse({
+        command: 'codeforge analyze --staged',
+        force: false,
+        installer: 'pre-commit-framework',
+      })
+      await cmd.run()
+
+      const output = mockConsoleLog.mock.calls.map((c) => c[0]).join('\n')
+      expect(output).toContain('pip install pre-commit')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('errors when config exists and force is false for pre-commit-framework', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const configPath = path.join(tempDir, '.pre-commit-config.yaml')
+      await fs.writeFile(configPath, 'old: config', 'utf-8')
+
+      const cmd = createCommandWithMockedParse({
+        command: 'codeforge analyze --staged',
+        force: false,
+        installer: 'pre-commit-framework',
+      })
+
+      await expect(cmd.run()).rejects.toThrow('already exists')
+
+      vi.spyOn(process, 'cwd').mockRestore()
+    })
+
+    test('overwrites existing config when force is true for pre-commit-framework', async () => {
+      const originalCwd = process.cwd
+      vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+      await createGitRepository(tempDir)
+
+      const configPath = path.join(tempDir, '.pre-commit-config.yaml')
+      await fs.writeFile(configPath, 'old: config', 'utf-8')
+
+      const cmd = createCommandWithMockedParse({
+        command: 'codeforge analyze --staged',
+        force: true,
+        installer: 'pre-commit-framework',
+      })
+      await cmd.run()
+
+      const content = await fs.readFile(configPath, 'utf-8')
+      expect(content).not.toContain('old: config')
+      expect(content).toContain('repos:')
+      expect(content).toContain('codeforge')
 
       vi.spyOn(process, 'cwd').mockRestore()
     })
