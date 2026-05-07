@@ -6,7 +6,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 ### Core Features
 
-- [ ] Enhanced plugin system with hot-reload
+- [x] Enhanced plugin system with hot-reload
 - [x] Interactive rule configuration wizard
 - [ ] Real-time file watching with incremental analysis
 - [x] Custom rule creation CLI (`codeforge create-rule`)
