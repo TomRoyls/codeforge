@@ -55,7 +55,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 - [ ] Centralized rule configuration server
 - [ ] Team-based rule profiles
-- [ ] Audit logging and compliance reports
+- [x] Audit logging and compliance reports
 - [ ] SSO integration (SAML, OAuth)
 
 ### Advanced Performance
