@@ -8,6 +8,7 @@ import readline from 'node:readline'
 import type { CodeForgeConfig } from '../config/types.js'
 
 import { CONFIG_FILE_NAMES } from '../config/types.js'
+import { getProfileConfig, type SeverityProfile } from '../profiles/index.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
@@ -21,6 +22,11 @@ import {
   resolveConfigFileName,
   type RuleInfo,
 } from './init-helpers.js'
+import {
+  formatProfileOptions,
+  getProfileOptionsFromConfigs,
+  type WizardRuleInfo,
+} from './init-wizard-helpers.js'
 
 interface InitOptions {
   dir: string
@@ -28,6 +34,7 @@ interface InitOptions {
   format: 'js' | 'json'
   interactive: boolean
   minimal: boolean
+  profile: SeverityProfile | undefined
   typescript: boolean
 }
 
@@ -60,6 +67,10 @@ export default class Init extends Command {
       description: 'Overwrite existing config',
     },
     {
+      command: '<%= config.bin %> <%= command.id %> --profile strict',
+      description: 'Create config with strict severity profile',
+    },
+    {
       command: '<%= config.bin %> <%= command.id %> --dir ./my-project',
       description: 'Create config in a specific directory',
     },
@@ -90,6 +101,12 @@ export default class Init extends Command {
       default: false,
       description: 'Create minimal configuration with recommended rules only',
     }),
+    profile: Flags.string({
+      char: 'p',
+      default: undefined,
+      description: 'Severity profile for rule configuration',
+      options: ['lenient', 'moderate', 'strict'],
+    }),
     typescript: Flags.boolean({
       char: 't',
       default: true,
@@ -106,6 +123,7 @@ export default class Init extends Command {
       format: flags.format as 'js' | 'json',
       interactive: flags.interactive,
       minimal: flags.minimal,
+      profile: flags.profile as SeverityProfile | undefined,
       typescript: flags.typescript,
     }
 
@@ -122,7 +140,14 @@ export default class Init extends Command {
 
     let selectedRules: string[] | undefined
     if (options.interactive && options.minimal === false) {
-      selectedRules = await this.promptForRules()
+      if (!options.profile) {
+        const profileChoice = await this.promptForProfile()
+        if (profileChoice) {
+          options.profile = profileChoice
+        } else {
+          selectedRules = await this.promptForRules()
+        }
+      }
     }
 
     const config = await this.generateConfig(options, selectedRules)
@@ -171,7 +196,7 @@ export default class Init extends Command {
   ): Promise<CodeForgeConfig> {
     const allRules = await lazyRuleLoader.loadAllRules()
     return generateConfigHelper(
-      { ...options, profile: undefined },
+      options,
       allRules,
       selectedRules,
       getRuleCategory,
@@ -249,6 +274,58 @@ export default class Init extends Command {
 
         resolve(valid)
       })
+    })
+  }
+
+  private async promptForProfile(): Promise<SeverityProfile | undefined> {
+    const allRules = await lazyRuleLoader.loadAllRules()
+    const ruleInfos = getRuleInfosHelper(allRules, getRuleCategory)
+
+    const wizardRules: WizardRuleInfo[] = ruleInfos.map((r) => ({
+      category: r.category,
+      description: r.description,
+      fixable: false,
+      id: r.id,
+      recommended: r.recommended,
+    }))
+
+    const recommendedIds = new Set(wizardRules.filter((r) => r.recommended).map((r) => r.id))
+    const isRecommended = (id: string) => recommendedIds.has(id)
+
+    const profileConfigs = {
+      lenient: getProfileConfig('lenient', allRules, getRuleCategory, isRecommended),
+      moderate: getProfileConfig('moderate', allRules, getRuleCategory, isRecommended),
+      strict: getProfileConfig('strict', allRules, getRuleCategory, isRecommended),
+    }
+
+    const profileOptions = getProfileOptionsFromConfigs(profileConfigs)
+    const formattedLines = formatProfileOptions(profileOptions)
+
+    this.log('')
+    this.log(chalk.bold('Choose a severity profile:'))
+    for (const line of formattedLines) {
+      this.log(chalk.gray(line))
+    }
+    this.log('')
+
+    return new Promise((resolve) => {
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      })
+
+      rl.question(
+        chalk.bold('Enter profile name (lenient/moderate/strict/custom): '),
+        (answer) => {
+          rl.close()
+          const input = answer.trim().toLowerCase()
+          if (input === 'lenient' || input === 'moderate' || input === 'strict') {
+            resolve(input as SeverityProfile)
+          } else {
+            resolve(undefined)
+          }
+        },
+      )
     })
   }
 }

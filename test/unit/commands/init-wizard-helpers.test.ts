@@ -1,20 +1,20 @@
 import { describe, test, expect } from 'vitest'
 import {
-  type CategorySummary,
-  type ProfileOption,
   type WizardRuleInfo,
-  buildConfigFromSelection,
-  formatCategoryMenu,
-  formatConfigPreview,
+  type ProfileOption,
+  type CategorySummary,
   formatProfileOptions,
-  formatRuleList,
   getCategorySummaries,
-  getProfileOptionsFromConfigs,
-  getSeveritiesForCategory,
-  setCategorySeverity,
-  setRuleSeverity,
-  toggleCategorySelection,
+  formatCategoryMenu,
+  formatRuleList,
   toggleRuleSelection,
+  toggleCategorySelection,
+  setRuleSeverity,
+  setCategorySeverity,
+  buildConfigFromSelection,
+  formatConfigPreview,
+  getSeveritiesForCategory,
+  getProfileOptionsFromConfigs,
 } from '../../../src/commands/init-wizard-helpers.js'
 import type { RuleEnvConfig } from '../../../src/config/types.js'
 import type { SeverityProfile } from '../../../src/profiles/index.js'
@@ -716,7 +716,7 @@ describe('formatConfigPreview', () => {
   test('shows header', () => {
     const lines = formatConfigPreview({}, sampleRules)
     expect(lines[0]).toBe('Configuration Preview:')
-    expect(lines[1]).toBe('=====================')
+    expect(lines[1]).toBe('======================')
   })
 
   test('counts errors warnings info', () => {
@@ -1488,5 +1488,417 @@ describe('full wizard flow simulation', () => {
     const preview = formatConfigPreview(strictConfig, rules)
     expect(preview).toContain('Total rules enabled: 2')
     expect(preview).toContain('Errors: 2, Warnings: 0, Info: 0')
+  })
+})
+
+describe('formatProfileOptions — additional coverage', () => {
+  test('three profiles produce six lines', () => {
+    const profiles = [
+      makeProfileOption({ key: 'a', label: 'A' }),
+      makeProfileOption({ key: 'b', label: 'B' }),
+      makeProfileOption({ key: 'c', label: 'C' }),
+    ]
+    expect(formatProfileOptions(profiles)).toHaveLength(6)
+  })
+
+  test('each profile produces two lines', () => {
+    const profiles = [makeProfileOption()]
+    const lines = formatProfileOptions(profiles)
+    expect(lines[0]).toMatch(/^\[/)
+    expect(lines[1]).toMatch(/^\s+\d+ errors/)
+  })
+
+  test('description with special characters', () => {
+    const profiles = [makeProfileOption({ description: 'Rules: "strict" & <safe>' })]
+    const lines = formatProfileOptions(profiles)
+    expect(lines[0]).toContain('Rules: "strict" & <safe>')
+  })
+})
+
+describe('getCategorySummaries — additional coverage', () => {
+  test('handles rules in many categories', () => {
+    const rules: WizardRuleInfo[] = []
+    const categories = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
+    for (const cat of categories) {
+      rules.push(makeRule({ category: cat, id: `${cat}-r1`, recommended: true }))
+      rules.push(makeRule({ category: cat, id: `${cat}-r2`, recommended: false }))
+    }
+    const summaries = getCategorySummaries(rules, new Set())
+    expect(summaries).toHaveLength(5)
+    for (const s of summaries) {
+      expect(s.ruleCount).toBe(2)
+      expect(s.recommendedCount).toBe(1)
+    }
+  })
+
+  test('selections spanning multiple categories', () => {
+    const rules = [
+      makeRule({ category: 'a', id: 'a1' }),
+      makeRule({ category: 'b', id: 'b1' }),
+      makeRule({ category: 'c', id: 'c1' }),
+    ]
+    const summaries = getCategorySummaries(rules, new Set(['a1', 'c1']))
+    expect(summaries.find((s) => s.id === 'a')?.selectedCount).toBe(1)
+    expect(summaries.find((s) => s.id === 'b')?.selectedCount).toBe(0)
+    expect(summaries.find((s) => s.id === 'c')?.selectedCount).toBe(1)
+  })
+})
+
+describe('formatCategoryMenu — additional coverage', () => {
+  test('category with zero counts shows zeros', () => {
+    const cats = [makeCategorySummary({ id: 'empty', recommendedCount: 0, ruleCount: 0, selectedCount: 0 })]
+    const lines = formatCategoryMenu(cats)
+    expect(lines[1]).toBe('[1] empty (0 rules, 0 recommended, 0 selected)')
+  })
+
+  test('Done option always has index 0', () => {
+    const cats = [makeCategorySummary(), makeCategorySummary()]
+    const lines = formatCategoryMenu(cats)
+    expect(lines[lines.length - 1]).toMatch(/^\[0\]/)
+  })
+})
+
+describe('formatRuleList — additional coverage', () => {
+  test('selected recommended fixable rule format', () => {
+    const rules = [makeRule({ id: 'sr', recommended: true, fixable: true, description: 'SRF' })]
+    const lines = formatRuleList(rules, new Set(['sr']))
+    expect(lines[0]).toBe('[x] sr (recommended) - SRF \u{1F527}')
+  })
+
+  test('unselected non-fixable non-recommended rule', () => {
+    const rules = [makeRule({ id: 'unf', recommended: false, fixable: false, description: 'UNF' })]
+    const lines = formatRuleList(rules, new Set())
+    expect(lines[0]).toBe('[ ] unf - UNF')
+  })
+
+  test('selected non-fixable non-recommended rule', () => {
+    const rules = [makeRule({ id: 'snf', recommended: false, fixable: false, description: 'SNF' })]
+    const lines = formatRuleList(rules, new Set(['snf']))
+    expect(lines[0]).toMatch(/^\[x\] snf - SNF$/)
+  })
+
+  test('unselected recommended fixable rule', () => {
+    const rules = [makeRule({ id: 'urf', recommended: true, fixable: true, description: 'URF' })]
+    const lines = formatRuleList(rules, new Set())
+    expect(lines[0]).toBe('[ ] urf (recommended) - URF \u{1F527}')
+  })
+
+  test('rule with empty description', () => {
+    const rules = [makeRule({ id: 'empty-desc', description: '' })]
+    const lines = formatRuleList(rules, new Set())
+    expect(lines[0]).toContain('empty-desc - ')
+  })
+
+  test('rule with long description', () => {
+    const longDesc = 'A'.repeat(200)
+    const rules = [makeRule({ id: 'long', description: longDesc })]
+    const lines = formatRuleList(rules, new Set())
+    expect(lines[0]).toContain(longDesc)
+  })
+})
+
+describe('toggleRuleSelection — additional coverage', () => {
+  test('toggling in set with many rules', () => {
+    const many = new Set<string>()
+    for (let i = 0; i < 100; i++) many.add(`rule-${i}`)
+    const result = toggleRuleSelection('rule-50', many)
+    expect(result.has('rule-50')).toBe(false)
+    expect(result.size).toBe(99)
+  })
+
+  test('toggling added rule back removes it', () => {
+    const start = new Set<string>()
+    const added = toggleRuleSelection('r1', start)
+    expect(added.has('r1')).toBe(true)
+    const removed = toggleRuleSelection('r1', added)
+    expect(removed.has('r1')).toBe(false)
+    expect(removed.size).toBe(0)
+  })
+})
+
+describe('toggleCategorySelection — additional coverage', () => {
+  test('toggling twice returns to original', () => {
+    const rules = [
+      makeRule({ category: 'sec', id: 's1' }),
+      makeRule({ category: 'sec', id: 's2' }),
+    ]
+    const original = new Set<string>()
+    const first = toggleCategorySelection(rules, 'sec', original)
+    const second = toggleCategorySelection(rules, 'sec', first)
+    expect(second.size).toBe(0)
+  })
+
+  test('toggling category with existing other-category selections', () => {
+    const rules = [
+      makeRule({ category: 'a', id: 'a1' }),
+      makeRule({ category: 'a', id: 'a2' }),
+      makeRule({ category: 'b', id: 'b1' }),
+    ]
+    const selected = new Set(['b1'])
+    const result = toggleCategorySelection(rules, 'a', selected)
+    expect(result.has('a1')).toBe(true)
+    expect(result.has('a2')).toBe(true)
+    expect(result.has('b1')).toBe(true)
+  })
+})
+
+describe('setRuleSeverity — additional coverage', () => {
+  test('setting same severity returns copy', () => {
+    const config: RuleEnvConfig = { r1: 'error' }
+    const result = setRuleSeverity('r1', 'error', config)
+    expect(result['r1']).toBe('error')
+    expect(result).not.toBe(config)
+  })
+
+  test('setting severity preserves other rules with array values', () => {
+    const config: RuleEnvConfig = {
+      r1: ['warning', { max: 5 }] as unknown as RuleEnvConfig[string],
+      r2: 'error',
+    }
+    const result = setRuleSeverity('r3', 'info', config)
+    expect(result['r1']).toEqual(['warning', { max: 5 }])
+    expect(result['r2']).toBe('error')
+    expect(result['r3']).toBe('info')
+  })
+})
+
+describe('setCategorySeverity — additional coverage', () => {
+  test('setting severity for all categories', () => {
+    const allCategories = [...new Set(sampleRules.map((r) => r.category))]
+    let config: RuleEnvConfig = {}
+    for (const cat of allCategories) {
+      config = setCategorySeverity(sampleRules, cat, 'error', config)
+    }
+    for (const rule of sampleRules) {
+      expect(config[rule.id]).toBe('error')
+    }
+  })
+
+  test('changing category severity from warning to error', () => {
+    let config = setCategorySeverity(sampleRules, 'security', 'warning', {})
+    config = setCategorySeverity(sampleRules, 'security', 'error', config)
+    for (const rule of sampleRules.filter((r) => r.category === 'security')) {
+      expect(config[rule.id]).toBe('error')
+    }
+  })
+})
+
+describe('buildConfigFromSelection — additional coverage', () => {
+  test('large selection set', () => {
+    const selected = new Set<string>()
+    for (let i = 0; i < 50; i++) selected.add(`rule-${i}`)
+    const config = buildConfigFromSelection(selected, 'error', [])
+    expect(Object.keys(config)).toHaveLength(50)
+  })
+
+  test('selection with special characters in rule id', () => {
+    const selected = new Set(['@scope/rule-name', 'rule_with_underscore'])
+    const config = buildConfigFromSelection(selected, 'warning', [])
+    expect(config['@scope/rule-name']).toBe('warning')
+    expect(config['rule_with_underscore']).toBe('warning')
+  })
+})
+
+describe('formatConfigPreview — additional coverage', () => {
+  test('config with only warnings', () => {
+    const config: RuleEnvConfig = { r1: 'warning', r2: 'warning' }
+    const lines = formatConfigPreview(config, [
+      makeRule({ id: 'r1', category: 'security' }),
+      makeRule({ id: 'r2', category: 'security' }),
+    ])
+    expect(lines).toContain('Errors: 0, Warnings: 2, Info: 0')
+  })
+
+  test('config with only info', () => {
+    const config: RuleEnvConfig = { r1: 'info' }
+    const lines = formatConfigPreview(config, [makeRule({ id: 'r1', category: 'security' })])
+    expect(lines).toContain('Errors: 0, Warnings: 0, Info: 1')
+  })
+
+  test('single rule config', () => {
+    const config: RuleEnvConfig = { 'no-eval': 'error' }
+    const lines = formatConfigPreview(config, sampleRules)
+    expect(lines).toContain('Total rules enabled: 1')
+    expect(lines).toContain('Errors: 1, Warnings: 0, Info: 0')
+  })
+
+  test('preview header format', () => {
+    const lines = formatConfigPreview({}, [])
+    expect(lines[0]).toBe('Configuration Preview:')
+    expect(lines[1]).toBe('======================')
+    expect(lines[1].length).toBe(lines[0].length)
+  })
+})
+
+describe('getSeveritiesForCategory — additional coverage', () => {
+  test('all errors in large category', () => {
+    const rules: WizardRuleInfo[] = []
+    const config: RuleEnvConfig = {}
+    for (let i = 0; i < 10; i++) {
+      rules.push(makeRule({ category: 'security', id: `s${i}` }))
+      config[`s${i}`] = 'error'
+    }
+    const result = getSeveritiesForCategory(config, rules, 'security')
+    expect(result.error).toBe(10)
+    expect(result.warning).toBe(0)
+    expect(result.info).toBe(0)
+  })
+
+  test('equal distribution of severities', () => {
+    const rules: WizardRuleInfo[] = []
+    const config: RuleEnvConfig = {}
+    for (let i = 0; i < 9; i++) {
+      rules.push(makeRule({ category: 'security', id: `s${i}` }))
+      if (i < 3) config[`s${i}`] = 'error'
+      else if (i < 6) config[`s${i}`] = 'warning'
+      else config[`s${i}`] = 'info'
+    }
+    const result = getSeveritiesForCategory(config, rules, 'security')
+    expect(result).toEqual({ error: 3, info: 3, warning: 3 })
+  })
+})
+
+describe('getProfileOptionsFromConfigs — additional coverage', () => {
+  test('mixed severities across profiles', () => {
+    const configs: Record<SeverityProfile, RuleEnvConfig> = {
+      lenient: { r1: 'warning', r2: 'info', r3: 'info' },
+      moderate: { r1: 'error', r2: 'warning', r3: 'info' },
+      strict: { r1: 'error', r2: 'error', r3: 'error' },
+    }
+    const options = getProfileOptionsFromConfigs(configs)
+    const lenient = options.find((o) => o.key === 'lenient')!
+    const moderate = options.find((o) => o.key === 'moderate')!
+    const strictOpt = options.find((o) => o.key === 'strict')!
+    expect(lenient.errorCount).toBe(0)
+    expect(lenient.warningCount).toBe(1)
+    expect(moderate.errorCount).toBe(1)
+    expect(moderate.warningCount).toBe(1)
+    expect(strictOpt.errorCount).toBe(3)
+    expect(strictOpt.warningCount).toBe(0)
+  })
+
+  test('returns correct number of options', () => {
+    const configs: Record<SeverityProfile, RuleEnvConfig> = {
+      lenient: {},
+      moderate: {},
+      strict: {},
+    }
+    const options = getProfileOptionsFromConfigs(configs)
+    expect(options).toHaveLength(4)
+  })
+})
+
+describe('immutability — additional coverage', () => {
+  test('buildConfigFromSelection does not modify input set', () => {
+    const selected = new Set(['r1'])
+    buildConfigFromSelection(selected, 'error', sampleRules)
+    expect(selected.size).toBe(1)
+    expect(selected.has('r1')).toBe(true)
+  })
+
+  test('getCategorySummaries does not modify input set', () => {
+    const selected = new Set(['r1'])
+    getCategorySummaries(sampleRules, selected)
+    expect(selected.size).toBe(1)
+  })
+})
+
+describe('type guards and interface shapes', () => {
+  test('WizardRuleInfo has expected shape', () => {
+    const rule: WizardRuleInfo = {
+      category: 'security',
+      description: 'Test',
+      fixable: true,
+      id: 'test-rule',
+      recommended: true,
+    }
+    expect(rule.category).toBe('security')
+    expect(rule.fixable).toBe(true)
+  })
+
+  test('ProfileOption has expected shape', () => {
+    const opt: ProfileOption = {
+      description: 'desc',
+      errorCount: 1,
+      key: 'k',
+      label: 'Label',
+      warningCount: 2,
+    }
+    expect(opt.key).toBe('k')
+    expect(opt.warningCount).toBe(2)
+  })
+
+  test('CategorySummary has expected shape', () => {
+    const cat: CategorySummary = {
+      id: 'security',
+      recommendedCount: 5,
+      ruleCount: 10,
+      selectedCount: 3,
+    }
+    expect(cat.ruleCount).toBe(10)
+    expect(cat.selectedCount).toBe(3)
+  })
+})
+
+describe('setRuleSeverity then setCategorySeverity combined', () => {
+  test('individual rule override persists through category set', () => {
+    let config: RuleEnvConfig = {}
+    config = setRuleSeverity('no-eval', 'warning', config)
+    config = setCategorySeverity(sampleRules, 'patterns', 'error', config)
+    expect(config['no-eval']).toBe('warning')
+    expect(config['prefer-const']).toBe('error')
+  })
+})
+
+describe('formatConfigPreview — By Category section', () => {
+  test('By Category header exists when categories present', () => {
+    const config: RuleEnvConfig = { r1: 'error' }
+    const lines = formatConfigPreview(config, [makeRule({ id: 'r1', category: 'security' })])
+    expect(lines).toContain('By Category:')
+  })
+
+  test('By Category shows indented entries', () => {
+    const config: RuleEnvConfig = { r1: 'error' }
+    const lines = formatConfigPreview(config, [makeRule({ id: 'r1', category: 'security' })])
+    const catLines = lines.filter((l) => l.startsWith('  ') && l.includes('rules'))
+    expect(catLines.length).toBeGreaterThan(0)
+    for (const cl of catLines) {
+      expect(cl).toMatch(/^  \w+: \d+ rules$/)
+    }
+  })
+})
+
+describe('additional boundary tests', () => {
+  test('toggleCategorySelection with single rule category toggles correctly', () => {
+    const rules = [makeRule({ category: 'solo', id: 'only-one' })]
+    const on = toggleCategorySelection(rules, 'solo', new Set())
+    expect(on.has('only-one')).toBe(true)
+    const off = toggleCategorySelection(rules, 'solo', on)
+    expect(off.has('only-one')).toBe(false)
+  })
+
+  test('formatProfileOptions handles single profile', () => {
+    const lines = formatProfileOptions([makeProfileOption({ key: 'only', label: 'Only' })])
+    expect(lines).toHaveLength(2)
+    expect(lines[0]).toContain('[only]')
+  })
+
+  test('getSeveritiesForCategory with empty rules list', () => {
+    const config: RuleEnvConfig = { r1: 'error' }
+    const result = getSeveritiesForCategory(config, [], 'security')
+    expect(result).toEqual({ error: 0, info: 0, warning: 0 })
+  })
+
+  test('buildConfigFromSelection with single rule', () => {
+    const config = buildConfigFromSelection(new Set(['single-rule']), 'error', [])
+    expect(Object.keys(config)).toHaveLength(1)
+    expect(config['single-rule']).toBe('error')
+  })
+
+  test('formatRuleList with selection containing non-existent rule id', () => {
+    const rules = [makeRule({ id: 'exists' })]
+    const lines = formatRuleList(rules, new Set(['exists', 'nonexistent']))
+    expect(lines[0]).toMatch(/^\[x\]/)
+    expect(lines).toHaveLength(1)
   })
 })

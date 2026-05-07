@@ -176,7 +176,7 @@ export function formatConfigPreview(
   config: RuleEnvConfig,
   allRules: WizardRuleInfo[],
 ): string[] {
-  const lines: string[] = ['Configuration Preview:', '=====================']
+  const lines: string[] = ['Configuration Preview:', '======================']
 
   const entries = Object.entries(config)
   lines.push(`Total rules enabled: ${entries.length}`)
