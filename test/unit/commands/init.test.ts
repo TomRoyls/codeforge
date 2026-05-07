@@ -2646,5 +2646,238 @@ const result1 = await (cmd as any).getRuleInfos()
         expect(result.length).toBe(2)
       })
     })
+
+    describe('Profile flag', () => {
+      test('profile flag is defined', () => {
+        expect(Init.flags.profile).toBeDefined()
+      })
+
+      test('profile flag has char p', () => {
+        expect(Init.flags.profile.char).toBe('p')
+      })
+
+      test('profile flag has correct options', () => {
+        expect(Init.flags.profile.options).toContain('lenient')
+        expect(Init.flags.profile.options).toContain('moderate')
+        expect(Init.flags.profile.options).toContain('strict')
+      })
+
+      test('profile flag has default undefined', () => {
+        expect(Init.flags.profile.default).toBeUndefined()
+      })
+
+      test('profile flag has description', () => {
+        expect(Init.flags.profile.description).toBeDefined()
+        expect(Init.flags.profile.description.length).toBeGreaterThan(0)
+      })
+
+      test('non-interactive with --profile strict creates config with strict profile', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: false,
+          minimal: false,
+          profile: 'strict',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('error')
+        cwdSpy.mockRestore()
+      })
+
+      test('non-interactive with --profile moderate creates config with moderate profile', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: false,
+          minimal: false,
+          profile: 'moderate',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('warning')
+        cwdSpy.mockRestore()
+      })
+
+      test('non-interactive with --profile lenient creates config with lenient profile', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: false,
+          minimal: false,
+          profile: 'lenient',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('warning')
+        expect(config.rules['max-params']).toBe('warning')
+        expect(config.rules['no-await-in-loop']).toBe('info')
+        cwdSpy.mockRestore()
+      })
+
+      test('non-interactive --profile strict --minimal=true creates config with profile overriding minimal', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: false,
+          minimal: true,
+          profile: 'strict',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('error')
+        cwdSpy.mockRestore()
+      })
+
+      test('non-interactive --profile strict --minimal=false creates full config with profile', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: false,
+          minimal: false,
+          profile: 'strict',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('error')
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive with profile set skips wizard and uses profile', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'should-not-be-used'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: false,
+          profile: 'strict',
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('error')
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive without profile and user picks lenient', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'lenient'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: false,
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('warning')
+        expect(config.rules['max-params']).toBe('warning')
+        expect(config.rules['no-await-in-loop']).toBe('info')
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive without profile and user picks strict', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'strict'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: false,
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('error')
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive without profile and user picks custom falls through to promptForRules', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'all'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: false,
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBeUndefined()
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive without profile and user picks moderate', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'moderate'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: false,
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules['max-complexity']).toBe('error')
+        expect(config.rules['max-params']).toBe('error')
+        expect(config.rules['no-await-in-loop']).toBe('warning')
+        cwdSpy.mockRestore()
+      })
+
+      test('interactive minimal=true skips profile prompt', async () => {
+        const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue(tempDir)
+        mockReadlineAnswer = 'strict'
+        const cmd = createCommandWithMockedParse({
+          format: 'json',
+          force: false,
+          interactive: true,
+          minimal: true,
+          typescript: true,
+        })
+        await cmd.run()
+        const content = await fs.readFile(path.join(tempDir, '.codeforgerc.json'), 'utf-8')
+        const config = JSON.parse(content)
+        expect(config.rules).toBeUndefined()
+        cwdSpy.mockRestore()
+      })
+    })
   })
 })
