@@ -56,6 +56,61 @@ vi.mock('../../../src/rules/index.js', () => ({
   }),
 }))
 
+vi.mock('../../../src/rules/lazy-loader.js', () => {
+  const mockRules = {
+    'max-complexity': {
+      meta: {
+        name: 'max-complexity',
+        description: 'Enforce a maximum cyclomatic complexity threshold',
+        category: 'complexity',
+        recommended: true,
+      },
+      defaultOptions: { max: 10 },
+      create: vi.fn(),
+    },
+    'max-params': {
+      meta: {
+        name: 'max-params',
+        description: 'Enforce maximum number of parameters',
+        category: 'complexity',
+        recommended: true,
+      },
+      defaultOptions: { max: 4 },
+      create: vi.fn(),
+    },
+    'no-await-in-loop': {
+      meta: {
+        name: 'no-await-in-loop',
+        description: 'Disallow await inside loops',
+        category: 'performance',
+        recommended: false,
+      },
+      defaultOptions: {},
+      create: vi.fn(),
+    },
+  }
+  return {
+    lazyRuleLoader: {
+      getRuleIds: vi.fn(() => Object.keys(mockRules)),
+      loadAllRules: vi.fn(() => Promise.resolve(mockRules)),
+      loadRules: vi.fn((ruleIds: string[]) => {
+        const filtered: Record<string, unknown> = {}
+        for (const id of ruleIds) {
+          if (mockRules[id as keyof typeof mockRules]) filtered[id] = mockRules[id as keyof typeof mockRules]
+        }
+        return Promise.resolve(filtered)
+      }),
+    },
+  }
+})
+
+vi.mock('../../../src/rules/categories.js', () => ({
+  getRuleCategory: vi.fn((ruleId: string) => {
+    if (ruleId.startsWith('max-')) return 'complexity'
+    return 'performance'
+  }),
+}))
+
 describe('Init Command', () => {
   let Init: typeof import('../../../src/commands/init.js').default
   let mockConsoleLog: ReturnType<typeof vi.spyOn>
@@ -366,17 +421,17 @@ describe('Init Command', () => {
 
     describe('Private methods', () => {
       describe('getRuleInfos', () => {
-        test('returns array of rule infos', () => {
+        test('returns array of rule infos', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
 
           expect(Array.isArray(result)).toBe(true)
           expect(result.length).toBeGreaterThan(0)
         })
 
-        test('each rule info has required properties', () => {
+        test('each rule info has required properties', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
 
           result.forEach((rule: any) => {
             expect(rule).toHaveProperty('id')
@@ -390,9 +445,9 @@ describe('Init Command', () => {
           })
         })
 
-        test('includes all mocked rules', () => {
+        test('includes all mocked rules', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
 
           const ruleIds = result.map((r: any) => r.id)
           expect(ruleIds).toContain('max-complexity')
@@ -400,9 +455,9 @@ describe('Init Command', () => {
           expect(ruleIds).toContain('no-await-in-loop')
         })
 
-        test('correctly identifies recommended rules', () => {
+        test('correctly identifies recommended rules', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
 
           const maxComplexity = result.find((r: any) => r.id === 'max-complexity')
           const maxParams = result.find((r: any) => r.id === 'max-params')
@@ -413,9 +468,9 @@ describe('Init Command', () => {
           expect(noAwaitInLoop?.recommended).toBe(false)
         })
 
-        test('correctly assigns categories', () => {
+        test('correctly assigns categories', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
 
           const maxComplexity = result.find((r: any) => r.id === 'max-complexity')
           const maxParams = result.find((r: any) => r.id === 'max-params')
@@ -426,52 +481,52 @@ describe('Init Command', () => {
           expect(noAwaitInLoop?.category).toBe('performance')
         })
 
-        test('returns exactly 3 rules matching mock data', () => {
+        test('returns exactly 3 rules matching mock data', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           expect(result.length).toBe(3)
         })
 
-        test('each rule description is a non-empty string', () => {
+        test('each rule description is a non-empty string', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           for (const rule of result) {
             expect(rule.description.length).toBeGreaterThan(0)
           }
         })
 
-        test('max-complexity has correct description', () => {
+        test('max-complexity has correct description', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           const mc = result.find((r: any) => r.id === 'max-complexity')
           expect(mc.description).toBe('Enforce a maximum cyclomatic complexity threshold')
         })
 
-        test('max-params has correct description', () => {
+        test('max-params has correct description', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           const mp = result.find((r: any) => r.id === 'max-params')
           expect(mp.description).toBe('Enforce maximum number of parameters')
         })
 
-        test('no-await-in-loop has correct description', () => {
+        test('no-await-in-loop has correct description', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           const nal = result.find((r: any) => r.id === 'no-await-in-loop')
           expect(nal.description).toBe('Disallow await inside loops')
         })
 
-        test('returns consistent results on multiple calls', () => {
+        test('returns consistent results on multiple calls', async () => {
           const cmd = new Init([], {} as never)
-          const result1 = (cmd as any).getRuleInfos()
-          const result2 = (cmd as any).getRuleInfos()
+const result1 = await (cmd as any).getRuleInfos()
+        const result2 = await (cmd as any).getRuleInfos()
           expect(result1.length).toBe(result2.length)
           expect(result1.map((r: any) => r.id).sort()).toEqual(result2.map((r: any) => r.id).sort())
         })
 
-        test('rule ids are unique', () => {
+        test('rule ids are unique', async () => {
           const cmd = new Init([], {} as never)
-          const result = (cmd as any).getRuleInfos()
+          const result = await (cmd as any).getRuleInfos()
           const ids = result.map((r: any) => r.id)
           expect(new Set(ids).size).toBe(ids.length)
         })
@@ -836,7 +891,7 @@ describe('Init Command', () => {
       })
 
       describe('generateConfig', () => {
-        test('includes JS file patterns when typescript is false', () => {
+        test('includes JS file patterns when typescript is false', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -846,7 +901,7 @@ describe('Init Command', () => {
             typescript: false,
           }
 
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
 
           expect(config.files).toContain('**/*.js')
           expect(config.files).toContain('**/*.jsx')
@@ -854,7 +909,7 @@ describe('Init Command', () => {
           expect(config.files).toContain('**/*.tsx')
         })
 
-        test('only includes TS file patterns when typescript is true', () => {
+        test('only includes TS file patterns when typescript is true', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -864,7 +919,7 @@ describe('Init Command', () => {
             typescript: true,
           }
 
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
 
           expect(config.files).toContain('**/*.ts')
           expect(config.files).toContain('**/*.tsx')
@@ -872,7 +927,7 @@ describe('Init Command', () => {
           expect(config.files).not.toContain('**/*.jsx')
         })
 
-        test('includes only selected rules when provided', () => {
+        test('includes only selected rules when provided', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -882,7 +937,7 @@ describe('Init Command', () => {
             typescript: true,
           }
 
-          const config = (cmd as any).generateConfig(options, [
+          const config = await (cmd as any).generateConfig(options, [
             'max-complexity',
             'no-await-in-loop',
           ])
@@ -893,7 +948,7 @@ describe('Init Command', () => {
           expect(config.rules['max-params']).toBeUndefined()
         })
 
-        test('includes recommended rules when selectedRules is undefined', () => {
+        test('includes recommended rules when selectedRules is undefined', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -903,7 +958,7 @@ describe('Init Command', () => {
             typescript: true,
           }
 
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
 
           expect(config.rules).toBeDefined()
           expect(config.rules['max-complexity']).toBe('error')
@@ -911,7 +966,7 @@ describe('Init Command', () => {
           expect(config.rules['no-await-in-loop']).toBeUndefined()
         })
 
-        test('has no rules when selectedRules is empty array', () => {
+        test('has no rules when selectedRules is empty array', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -921,12 +976,12 @@ describe('Init Command', () => {
             typescript: true,
           }
 
-          const config = (cmd as any).generateConfig(options, [])
+          const config = await (cmd as any).generateConfig(options, [])
 
           expect(config.rules).toBeUndefined()
         })
 
-        test('returns minimal config when minimal is true', () => {
+        test('returns minimal config when minimal is true', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -936,14 +991,14 @@ describe('Init Command', () => {
             typescript: true,
           }
 
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
 
           expect(config.rules).toBeUndefined()
           expect(config.files).toBeDefined()
           expect(config.ignore).toBeDefined()
         })
 
-        test('always includes files property', () => {
+        test('always includes files property', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -952,13 +1007,13 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.files).toBeDefined()
           expect(Array.isArray(config.files)).toBe(true)
           expect(config.files.length).toBeGreaterThan(0)
         })
 
-        test('always includes ignore property', () => {
+        test('always includes ignore property', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -967,13 +1022,13 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.ignore).toBeDefined()
           expect(Array.isArray(config.ignore)).toBe(true)
           expect(config.ignore.length).toBeGreaterThan(0)
         })
 
-        test('ignore includes node_modules', () => {
+        test('ignore includes node_modules', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -982,11 +1037,11 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.ignore).toContain('node_modules/**')
         })
 
-        test('ignore includes dist', () => {
+        test('ignore includes dist', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -995,11 +1050,11 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.ignore).toContain('dist/**')
         })
 
-        test('ignore includes coverage', () => {
+        test('ignore includes coverage', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1008,11 +1063,11 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.ignore).toContain('coverage/**')
         })
 
-        test('typescript=false minimal=true has no rules', () => {
+        test('typescript=false minimal=true has no rules', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1021,12 +1076,12 @@ describe('Init Command', () => {
             minimal: true,
             typescript: false,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.rules).toBeUndefined()
           expect(config.files).toHaveLength(4)
         })
 
-        test('minimal=true ignores selectedRules argument', () => {
+        test('minimal=true ignores selectedRules argument', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1035,11 +1090,11 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options, ['max-complexity'])
+          const config = await (cmd as any).generateConfig(options, ['max-complexity'])
           expect(config.rules).toBeUndefined()
         })
 
-        test('non-minimal with single rule selection', () => {
+        test('non-minimal with single rule selection', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1048,12 +1103,12 @@ describe('Init Command', () => {
             minimal: false,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options, ['no-await-in-loop'])
+          const config = await (cmd as any).generateConfig(options, ['no-await-in-loop'])
           expect(Object.keys(config.rules)).toHaveLength(1)
           expect(config.rules['no-await-in-loop']).toBe('error')
         })
 
-        test('non-minimal without selectedRules includes recommended', () => {
+        test('non-minimal without selectedRules includes recommended', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1062,12 +1117,12 @@ describe('Init Command', () => {
             minimal: false,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           const recommendedCount = Object.keys(config.rules).length
           expect(recommendedCount).toBe(2)
         })
 
-        test('all selected rules have error severity', () => {
+        test('all selected rules have error severity', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1076,7 +1131,7 @@ describe('Init Command', () => {
             minimal: false,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options, [
+          const config = await (cmd as any).generateConfig(options, [
             'max-complexity',
             'max-params',
             'no-await-in-loop',
@@ -1086,7 +1141,7 @@ describe('Init Command', () => {
           }
         })
 
-        test('typescript=false files array has exactly 4 entries', () => {
+        test('typescript=false files array has exactly 4 entries', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1095,11 +1150,11 @@ describe('Init Command', () => {
             minimal: true,
             typescript: false,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.files).toHaveLength(4)
         })
 
-        test('typescript=true files array has exactly 2 entries', () => {
+        test('typescript=true files array has exactly 2 entries', async () => {
           const cmd = new Init([], {} as never)
           const options: any = {
             force: false,
@@ -1108,7 +1163,7 @@ describe('Init Command', () => {
             minimal: true,
             typescript: true,
           }
-          const config = (cmd as any).generateConfig(options)
+          const config = await (cmd as any).generateConfig(options)
           expect(config.files).toHaveLength(2)
         })
       })

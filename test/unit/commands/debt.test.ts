@@ -45,6 +45,57 @@ vi.mock('../../../src/rules/index.js', () => ({
   }),
 }))
 
+vi.mock('../../../src/rules/lazy-loader.js', () => {
+  const mockRules = {
+    'max-complexity': {
+      meta: {
+        name: 'max-complexity',
+        description: 'Enforce a maximum cyclomatic complexity threshold',
+        category: 'complexity',
+        recommended: true,
+      },
+      defaultOptions: { max: 10 },
+      create: vi.fn(),
+    },
+    'no-circular-deps': {
+      meta: {
+        name: 'no-circular-deps',
+        description: 'Disallow circular dependencies',
+        category: 'dependencies',
+        recommended: true,
+      },
+      defaultOptions: {},
+      create: vi.fn(),
+    },
+  }
+  return {
+    lazyRuleLoader: {
+      getRuleIds: vi.fn(() => Object.keys(mockRules)),
+      loadAllRules: vi.fn(() => Promise.resolve(mockRules)),
+      loadRules: vi.fn((ruleIds: string[]) => {
+        const filtered: Record<string, unknown> = {}
+        for (const id of ruleIds) {
+          if (mockRules[id as keyof typeof mockRules]) filtered[id] = mockRules[id as keyof typeof mockRules]
+        }
+        return Promise.resolve(filtered)
+      }),
+    },
+  }
+})
+
+vi.mock('../../../src/rules/categories.js', () => ({
+  getRuleCategory: vi.fn((ruleId: string) => {
+    if (ruleId.includes('complexity')) return 'complexity'
+    if (ruleId.includes('dependencies')) return 'dependencies'
+    if (ruleId.includes('security')) return 'security'
+    if (ruleId.includes('patterns')) return 'patterns'
+    if (ruleId.includes('documentation') || ruleId.includes('jsdoc')) {
+      return 'documentation'
+    }
+    return 'complexity'
+  }),
+}))
+
 vi.mock('../../../src/core/file-discovery.js', () => ({
   discoverFiles: vi.fn().mockResolvedValue([]),
 }))

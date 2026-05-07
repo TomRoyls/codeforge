@@ -6,8 +6,8 @@ vi.mock('node:fs/promises', () => ({
   writeFile: vi.fn().mockResolvedValue(undefined),
 }))
 
-vi.mock('../../../src/rules/index.js', () => ({
-  allRules: {
+vi.mock('../../../src/rules/lazy-loader.js', () => {
+  const mockDocsRules: Record<string, { meta: Record<string, unknown>; defaultOptions: Record<string, unknown>; create: ReturnType<typeof vi.fn> }> = {
     'max-complexity': {
       meta: {
         name: 'max-complexity',
@@ -51,7 +51,24 @@ vi.mock('../../../src/rules/index.js', () => ({
       defaultOptions: {},
       create: vi.fn(),
     },
-  },
+  }
+
+  return {
+    lazyRuleLoader: {
+      loadAllRules: vi.fn().mockResolvedValue(mockDocsRules),
+      loadRules: vi.fn().mockImplementation(async (ruleIds: string[]) => {
+        const result: Record<string, unknown> = {}
+        for (const id of ruleIds) {
+          if (mockDocsRules[id]) result[id] = mockDocsRules[id]
+        }
+        return result
+      }),
+      getRuleIds: vi.fn(() => Object.keys(mockDocsRules)),
+    },
+  }
+})
+
+vi.mock('../../../src/rules/categories.js', () => ({
   getRuleCategory: vi.fn((ruleId: string) => {
     if (ruleId.startsWith('max-')) return 'complexity'
     if (ruleId.startsWith('no-')) return 'performance'
@@ -79,7 +96,7 @@ describe('Docs Command', () => {
 
   // Helper: create a testable Docs instance (exposes private methods)
   function createTestableInstance(): {
-    getRules: () => RuleDoc[]
+    getRules: () => Promise<RuleDoc[]>
     generateRuleMarkdown: (rule: RuleDoc) => string
     groupByCategory: (rules: RuleDoc[]) => Record<string, RuleDoc[]>
     getBadges: (rule: RuleDoc) => string
@@ -217,14 +234,14 @@ describe('Docs Command', () => {
   // 2. getRules (16 tests)
   // ────────────────────────────────────────────────────────────────────────
   describe('getRules', () => {
-    test('returns array of rules', () => {
-      const rules = createTestableInstance().getRules()
+    test('returns array of rules', async () => {
+      const rules = await createTestableInstance().getRules()
       expect(Array.isArray(rules)).toBe(true)
       expect(rules.length).toBe(4)
     })
 
-    test('each rule has required properties', () => {
-      const rules = createTestableInstance().getRules()
+    test('each rule has required properties', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(rule).toHaveProperty('name')
         expect(rule).toHaveProperty('category')
@@ -235,99 +252,99 @@ describe('Docs Command', () => {
       }
     })
 
-    test('rules are sorted by name', () => {
-      const rules = createTestableInstance().getRules()
+    test('rules are sorted by name', async () => {
+      const rules = await createTestableInstance().getRules()
       const names = rules.map((r) => r.name)
       const sorted = [...names].sort()
       expect(names).toEqual(sorted)
     })
 
-    test('detects fixable rules from fix function', () => {
-      const rules = createTestableInstance().getRules()
+    test('detects fixable rules from fix function', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxParams = rules.find((r) => r.name === 'max-params')
       expect(maxParams?.fixable).toBe(true)
     })
 
-    test('detects fixable rules from meta.fixable', () => {
-      const rules = createTestableInstance().getRules()
+    test('detects fixable rules from meta.fixable', async () => {
+      const rules = await createTestableInstance().getRules()
       const noAwaitInLoop = rules.find((r) => r.name === 'no-await-in-loop')
       expect(noAwaitInLoop?.fixable).toBe(true)
     })
 
-    test('non-fixable rules have fixable false', () => {
-      const rules = createTestableInstance().getRules()
+    test('non-fixable rules have fixable false', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.fixable).toBe(false)
     })
 
-    test('detects deprecated rules', () => {
-      const rules = createTestableInstance().getRules()
+    test('detects deprecated rules', async () => {
+      const rules = await createTestableInstance().getRules()
       const deprecatedRule = rules.find((r) => r.name === 'deprecated-rule')
       expect(deprecatedRule?.deprecated).toBe(true)
     })
 
-    test('non-deprecated rules have deprecated false', () => {
-      const rules = createTestableInstance().getRules()
+    test('non-deprecated rules have deprecated false', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.deprecated).toBe(false)
     })
 
-    test('extracts description from meta', () => {
-      const rules = createTestableInstance().getRules()
+    test('extracts description from meta', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.description).toBe('Enforce a maximum cyclomatic complexity threshold')
     })
 
-    test('extracts category from meta', () => {
-      const rules = createTestableInstance().getRules()
+    test('extracts category from meta', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.category).toBe('complexity')
     })
 
-    test('detects recommended rules', () => {
-      const rules = createTestableInstance().getRules()
+    test('detects recommended rules', async () => {
+      const rules = await createTestableInstance().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.recommended).toBe(true)
     })
 
-    test('non-recommended rules have recommended false', () => {
-      const rules = createTestableInstance().getRules()
+    test('non-recommended rules have recommended false', async () => {
+      const rules = await createTestableInstance().getRules()
       const noAwaitInLoop = rules.find((r) => r.name === 'no-await-in-loop')
       expect(noAwaitInLoop?.recommended).toBe(false)
     })
 
-    test('all rule names are strings', () => {
-      const rules = createTestableInstance().getRules()
+    test('all rule names are strings', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(typeof rule.name).toBe('string')
         expect(rule.name.length).toBeGreaterThan(0)
       }
     })
 
-    test('all descriptions are non-empty strings', () => {
-      const rules = createTestableInstance().getRules()
+    test('all descriptions are non-empty strings', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(typeof rule.description).toBe('string')
         expect(rule.description.length).toBeGreaterThan(0)
       }
     })
 
-    test('all fixable values are booleans', () => {
-      const rules = createTestableInstance().getRules()
+    test('all fixable values are booleans', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(typeof rule.fixable).toBe('boolean')
       }
     })
 
-    test('all deprecated values are booleans', () => {
-      const rules = createTestableInstance().getRules()
+    test('all deprecated values are booleans', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(typeof rule.deprecated).toBe('boolean')
       }
     })
 
-    test('all recommended values are booleans', () => {
-      const rules = createTestableInstance().getRules()
+    test('all recommended values are booleans', async () => {
+      const rules = await createTestableInstance().getRules()
       for (const rule of rules) {
         expect(typeof rule.recommended).toBe('boolean')
       }
@@ -1930,18 +1947,18 @@ describe('Docs Command', () => {
   // 10. Integration-style tests (cross-method behavior)
   // ────────────────────────────────────────────────────────────────────────
   describe('Integration behavior', () => {
-    test('getRules output feeds groupByCategory correctly', () => {
+    test('getRules output feeds groupByCategory correctly', async () => {
       const instance = createTestableInstance()
-      const rules = instance.getRules()
+      const rules = await instance.getRules()
       const groups = instance.groupByCategory(rules)
       expect(Object.keys(groups).length).toBeGreaterThan(0)
       const totalRules = Object.values(groups).reduce((sum, g) => sum + g.length, 0)
       expect(totalRules).toBe(rules.length)
     })
 
-    test('getRules output feeds generateRuleMarkdown correctly', () => {
+    test('getRules output feeds generateRuleMarkdown correctly', async () => {
       const instance = createTestableInstance()
-      const rules = instance.getRules()
+      const rules = await instance.getRules()
       for (const rule of rules) {
         const md = instance.generateRuleMarkdown(rule)
         expect(md).toContain(`# ${rule.name}`)
@@ -1951,7 +1968,7 @@ describe('Docs Command', () => {
 
     test('getRules output feeds generateSingleFile correctly', async () => {
       const instance = createTestableInstance()
-      const rules = instance.getRules()
+      const rules = await instance.getRules()
       await instance.generateSingleFile(rules, '/tmp/out')
       const content = vi.mocked(fs.writeFile).mock.calls[0][1] as string
       for (const rule of rules) {
@@ -1961,7 +1978,7 @@ describe('Docs Command', () => {
 
     test('getRules output feeds generateIndexFile correctly', async () => {
       const instance = createTestableInstance()
-      const rules = instance.getRules()
+      const rules = await instance.getRules()
       await instance.generateIndexFile(rules, '/tmp/out')
       const content = vi.mocked(fs.writeFile).mock.calls[0][1] as string
       expect(content).toContain(`${rules.length} available rules`)
@@ -1969,7 +1986,7 @@ describe('Docs Command', () => {
 
     test('getRules output feeds generatePerRuleFiles correctly', async () => {
       const instance = createTestableInstance()
-      const rules = instance.getRules()
+      const rules = await instance.getRules()
       await instance.generatePerRuleFiles(rules, '/tmp/out')
       expect(fs.writeFile).toHaveBeenCalledTimes(rules.length)
     })

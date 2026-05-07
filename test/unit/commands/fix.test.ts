@@ -190,6 +190,34 @@ vi.mock('../../../src/rules/index.js', () => ({
   getRuleCategory: vi.fn().mockReturnValue('test'),
 }))
 
+const { mockLazyRules } = vi.hoisted(() => {
+  const mockLazyRules = {
+    'test-fixable-rule': {
+      meta: { id: 'test-fixable-rule', description: 'Test fixable rule', fixable: true },
+      fix: vi.fn(),
+    },
+    'another-fixable-rule': {
+      meta: { id: 'another-fixable-rule', description: 'Another fixable rule' },
+      fix: vi.fn(),
+    },
+    'non-fixable-rule': {
+      meta: { id: 'non-fixable-rule', description: 'Non fixable rule' },
+    },
+  }
+  return { mockLazyRules }
+})
+
+vi.mock('../../../src/rules/lazy-loader.js', () => ({
+  lazyRuleLoader: {
+    loadAllRules: vi.fn().mockResolvedValue(mockLazyRules),
+    loadRules: vi.fn().mockResolvedValue(mockLazyRules),
+    loadRule: vi.fn().mockImplementation((ruleId: string) => Promise.resolve(mockLazyRules[ruleId as keyof typeof mockLazyRules])),
+    getRuleIds: vi.fn().mockReturnValue(Object.keys(mockLazyRules)),
+    hasRule: vi.fn().mockImplementation((ruleId: string) => ruleId in mockLazyRules),
+    isEagerLoadingEnabled: vi.fn().mockReturnValue(false),
+  },
+}))
+
 vi.mock('../../../src/config/types.js', () => ({
   DEFAULT_CONFIG: {
     files: ['src/**/*.ts'],
@@ -401,11 +429,11 @@ describe('Fix Command', () => {
   })
 
   describe('getRulesWithFixes', () => {
-    it('returns rules with fix functions when safeOnly is false', () => {
+    it('returns rules with fix functions when safeOnly is false', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes(false)
 
@@ -414,22 +442,22 @@ describe('Fix Command', () => {
       expect(rulesWithFixes.has('another-fixable-rule')).toBe(true)
     })
 
-    it('excludes rules without fix function', () => {
+    it('excludes rules without fix function', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes(false)
 
       expect(rulesWithFixes.has('non-fixable-rule')).toBe(false)
     })
 
-    it('filters to only meta.fixable rules when safeOnly is true', () => {
+    it('filters to only meta.fixable rules when safeOnly is true', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes(true)
 
@@ -438,11 +466,11 @@ describe('Fix Command', () => {
       expect(rulesWithFixes.has('another-fixable-rule')).toBe(false)
     })
 
-    it('sets priority to 10 for each rule', () => {
+    it('sets priority to 10 for each rule', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, { priority: number }>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, { priority: number }>>
         }
       ).getRulesWithFixes(false)
 
@@ -451,11 +479,11 @@ describe('Fix Command', () => {
       }
     })
 
-    it('sets id to ruleId for each rule', () => {
+    it('sets id to ruleId for each rule', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, { id: string }>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, { id: string }>>
         }
       ).getRulesWithFixes(false)
 
@@ -463,13 +491,13 @@ describe('Fix Command', () => {
       expect(rulesWithFixes.get('another-fixable-rule')?.id).toBe('another-fixable-rule')
     })
 
-    it('includes fix function for each rule', () => {
+    it('includes fix function for each rule', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
           getRulesWithFixes: (
             safeOnly: boolean,
-          ) => Map<string, { fix: (...args: unknown[]) => unknown }>
+          ) => Promise<Map<string, { fix: (...args: unknown[]) => unknown }>>
         }
       ).getRulesWithFixes(false)
 
@@ -478,35 +506,35 @@ describe('Fix Command', () => {
       }
     })
 
-    it('defaults safeOnly parameter to false', () => {
+    it('defaults safeOnly parameter to false', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly?: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly?: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes()
 
       expect(rulesWithFixes.size).toBe(2)
     })
 
-    it('returns same Map instance for same parameters', () => {
+    it('returns same Map instance for same parameters', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
       const getRulesWithFixes = (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes
 
-      const result1 = getRulesWithFixes(false)
-      const result2 = getRulesWithFixes(false)
+      const result1 = await getRulesWithFixes(false)
+      const result2 = await getRulesWithFixes(false)
       expect(result1).not.toBe(result2)
     })
 
-    it('wraps fix function to accept sourceFile and violation', () => {
+    it('wraps fix function to accept sourceFile and violation', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rulesWithFixes = (
+      const rulesWithFixes = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, { fix: (ctx: unknown) => unknown }>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, { fix: (ctx: unknown) => unknown }>>
         }
       ).getRulesWithFixes(false)
 
@@ -2311,11 +2339,11 @@ describe('Fix Command', () => {
       expect(FixCommand.flags['safe-only'].default).toBe(false)
     })
 
-    it('safe-only filters to fixable rules', () => {
+    it('safe-only filters to fixable rules', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rules = (
+      const rules = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes(true)
 
@@ -2323,11 +2351,11 @@ describe('Fix Command', () => {
       expect(rules.has('test-fixable-rule')).toBe(true)
     })
 
-    it('without safe-only includes all rules with fix', () => {
+    it('without safe-only includes all rules with fix', async () => {
       const cmd = createCommandWithMockedParse(FixCommand)
-      const rules = (
+      const rules = await (
         cmd as unknown as {
-          getRulesWithFixes: (safeOnly: boolean) => Map<string, unknown>
+          getRulesWithFixes: (safeOnly: boolean) => Promise<Map<string, unknown>>
         }
       ).getRulesWithFixes(false)
 
@@ -2856,28 +2884,28 @@ describe('Fix Command', () => {
     })
   })
 
-  describe('utility function setupRuleRegistry', () => {
+  describe('utility function setupRuleRegistryLazy', () => {
     it('returns a registry instance', async () => {
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
-      const registry = setupRuleRegistry()
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
+      const registry = await setupRuleRegistryLazy()
       expect(registry).toBeDefined()
     })
 
     it('handles empty requested rules array', async () => {
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
-      const registry = setupRuleRegistry([])
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
+      const registry = await setupRuleRegistryLazy([])
       expect(registry).toBeDefined()
     })
 
     it('handles specific requested rules', async () => {
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
-      const registry = setupRuleRegistry(['test-fixable-rule'])
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
+      const registry = await setupRuleRegistryLazy(['test-fixable-rule'])
       expect(registry).toBeDefined()
     })
 
     it('handles undefined requested rules', async () => {
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
-      const registry = setupRuleRegistry(undefined)
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
+      const registry = await setupRuleRegistryLazy(undefined)
       expect(registry).toBeDefined()
     })
   })

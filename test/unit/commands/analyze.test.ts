@@ -214,7 +214,7 @@ vi.mock('../../../src/utils/command-helpers.js', () => ({
   loadCommandConfig: mockLoadCommandConfig,
   normalizeFlags: mockNormalizeFlags,
   filterFilesByExtension: mockFilterFilesByExtension,
-  setupRuleRegistry: mockSetupRuleRegistry,
+  setupRuleRegistryLazy: mockSetupRuleRegistry,
   applyFixesToFiles: mockApplyFixesToFiles,
 }))
 
@@ -1215,44 +1215,44 @@ describe('Analyze Command', () => {
   // getRulesWithFixes
   // =====================================================
   describe('getRulesWithFixes', () => {
-    it('returns empty map when no rules have fixes', () => {
+    it('returns empty map when no rules have fixes', async () => {
       const cmd = createCommand()
-      const result = (
-        cmd as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const result = await (
+        cmd as unknown as { getRulesWithFixes: () => Promise<Map<string, unknown>> }
       ).getRulesWithFixes()
       expect(result).toBeInstanceOf(Map)
       expect(result.size).toBe(0)
     })
 
-    it('returns map with rules that have fix functions', () => {
+    it('returns map with rules that have fix functions', async () => {
       const cmd = createCommand()
-      const result = (
-        cmd as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const result = await (
+        cmd as unknown as { getRulesWithFixes: () => Promise<Map<string, unknown>> }
       ).getRulesWithFixes()
       expect(result).toBeInstanceOf(Map)
       expect(result.size).toBe(0)
     })
 
-    it('fix entry would have correct properties when rules have fixes', () => {
+    it('fix entry would have correct properties when rules have fixes', async () => {
       const cmd = createCommand()
-      const result = (
-        cmd as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const result = await (
+        cmd as unknown as { getRulesWithFixes: () => Promise<Map<string, unknown>> }
       ).getRulesWithFixes()
       expect(result).toBeInstanceOf(Map)
     })
 
-    it('filters out non-function fix properties', () => {
+    it('filters out non-function fix properties', async () => {
       const cmd = createCommand()
-      const result = (
-        cmd as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const result = await (
+        cmd as unknown as { getRulesWithFixes: () => Promise<Map<string, unknown>> }
       ).getRulesWithFixes()
       expect(result.size).toBe(0)
     })
 
-    it('handles multiple fixable rules', () => {
+    it('handles multiple fixable rules', async () => {
       const cmd = createCommand()
-      const result = (
-        cmd as unknown as { getRulesWithFixes: () => Map<string, unknown> }
+      const result = await (
+        cmd as unknown as { getRulesWithFixes: () => Promise<Map<string, unknown>> }
       ).getRulesWithFixes()
       expect(result).toBeInstanceOf(Map)
       expect(typeof result.get).toBe('function')
@@ -2391,14 +2391,14 @@ describe('Analyze Command', () => {
   // run integration - rule registry
   // =====================================================
   describe('run integration - rule registry', () => {
-    it('calls setupRuleRegistry with requested rules', async () => {
+    it('calls setupRuleRegistryLazy with requested rules', async () => {
       const cmd = createCommandWithMockedParse({ rules: ['rule-a', 'rule-b'] })
       mockExit(cmd)
       await runQuietly(cmd)
       expect(mockSetupRuleRegistry).toHaveBeenCalledWith(['rule-a', 'rule-b'])
     })
 
-    it('calls setupRuleRegistry with undefined when no rules specified', async () => {
+    it('calls setupRuleRegistryLazy with undefined when no rules specified', async () => {
       const cmd = createCommandWithMockedParse({})
       mockExit(cmd)
       await runQuietly(cmd)

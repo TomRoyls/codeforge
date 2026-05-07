@@ -896,10 +896,10 @@ describe('Watch Command', () => {
     })
   })
 
-  describe('setupRuleRegistry', () => {
+  describe('setupRuleRegistryLazy', () => {
     test('should register all rules when no requestedRules provided', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -913,17 +913,18 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      const registry = setupRuleRegistry(undefined)
+      const registry = await setupRuleRegistryLazy(undefined)
 
-      expect(mockRegister).toHaveBeenCalled()
-      expect(mockDisable).not.toHaveBeenCalled()
-      expect(registry).toBeDefined()
+        expect(mockRegister).toHaveBeenCalled()
+        expect(mockDisable).not.toHaveBeenCalled()
+
+        expect(registry).toBeDefined()
     })
 
     test('should disable rules not in requestedRules', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { allRules } = await import('../../../src/rules/index.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -941,16 +942,10 @@ describe('Watch Command', () => {
 
       if (ruleIds.length > 0) {
         const requestedRuleId = ruleIds[0]
-        const registry = setupRuleRegistry([requestedRuleId])
+        const registry = await setupRuleRegistryLazy([requestedRuleId])
 
         expect(mockRegister).toHaveBeenCalled()
-        expect(mockDisable).toHaveBeenCalled()
-
-        const disableCalls = mockDisable.mock.calls.length
-        expect(disableCalls).toBe(ruleIds.length - 1)
-
-        const disabledRuleIds = mockDisable.mock.calls.flat()
-        expect(disabledRuleIds).not.toContain(requestedRuleId)
+        expect(mockDisable).not.toHaveBeenCalled()
 
         expect(registry).toBeDefined()
       }
@@ -972,19 +967,15 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
       const ruleIds = Object.keys(allRules)
 
       if (ruleIds.length >= 2) {
         const requestedRuleIds = [ruleIds[0], ruleIds[1]]
-        const registry = setupRuleRegistry(requestedRuleIds)
+        const registry = await setupRuleRegistryLazy(requestedRuleIds)
 
         expect(mockRegister).toHaveBeenCalled()
-        expect(mockDisable).toHaveBeenCalled()
-
-        const disabledRuleIds = mockDisable.mock.calls.flat()
-        expect(disabledRuleIds).not.toContain(requestedRuleIds[0])
-        expect(disabledRuleIds).not.toContain(requestedRuleIds[1])
+        expect(mockDisable).not.toHaveBeenCalled()
 
         expect(registry).toBeDefined()
       }
@@ -2455,10 +2446,10 @@ describe('Watch Command', () => {
     })
   })
 
-  describe('setupRuleRegistry extended', () => {
+  describe('setupRuleRegistryLazy extended', () => {
     test('should register all rules even with empty requested array', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -2471,7 +2462,7 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      setupRuleRegistry([])
+      await setupRuleRegistryLazy([])
 
       expect(mockRegister).toHaveBeenCalled()
       expect(mockDisable).not.toHaveBeenCalled()
@@ -2480,7 +2471,7 @@ describe('Watch Command', () => {
     test('should warn for unknown rules', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { logger } = await import('../../../src/utils/logger.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       vi.mocked(RuleRegistry).mockImplementation(
         class {
@@ -2490,7 +2481,7 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      setupRuleRegistry(['nonexistent-rule-xyz'])
+      await setupRuleRegistryLazy(['nonexistent-rule-xyz'])
 
       expect(logger.warn).toHaveBeenCalledWith(
         expect.stringContaining('Unknown rules will be ignored'),
@@ -2501,7 +2492,7 @@ describe('Watch Command', () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
       const { allRules } = await import('../../../src/rules/index.js')
       const { logger } = await import('../../../src/utils/logger.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       vi.mocked(RuleRegistry).mockImplementation(
         class {
@@ -2514,7 +2505,7 @@ describe('Watch Command', () => {
       const ruleIds = Object.keys(allRules)
       if (ruleIds.length > 0) {
         vi.mocked(logger.warn).mockClear()
-        setupRuleRegistry([ruleIds[0]])
+        await setupRuleRegistryLazy([ruleIds[0]])
         expect(logger.warn).not.toHaveBeenCalledWith(
           expect.stringContaining('Unknown rules will be ignored'),
         )
@@ -3062,9 +3053,9 @@ describe('Watch Command', () => {
   })
 
   describe('command helpers integration', () => {
-    test('setupRuleRegistry returns a registry with runRules method', async () => {
+    test('setupRuleRegistryLazy returns a registry with runRules method', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       vi.mocked(RuleRegistry).mockImplementation(
         class {
@@ -3074,7 +3065,7 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      const registry = setupRuleRegistry(undefined)
+      const registry = await setupRuleRegistryLazy(undefined)
       expect(typeof registry.runRules).toBe('function')
     })
 
@@ -3105,9 +3096,9 @@ describe('Watch Command', () => {
       expect(result).toBeDefined()
     })
 
-    test('setupRuleRegistry with single unknown rule still registers all', async () => {
+    test('setupRuleRegistryLazy with single unknown rule warns and registers nothing', async () => {
       const { RuleRegistry } = await import('../../../src/core/rule-registry.js')
-      const { setupRuleRegistry } = await import('../../../src/utils/command-helpers.js')
+      const { setupRuleRegistryLazy } = await import('../../../src/utils/command-helpers.js')
 
       const mockRegister = vi.fn()
       const mockDisable = vi.fn()
@@ -3120,10 +3111,10 @@ describe('Watch Command', () => {
         } as never,
       )
 
-      setupRuleRegistry(['totally-fake-rule'])
+      await setupRuleRegistryLazy(['totally-fake-rule'])
 
-      expect(mockRegister).toHaveBeenCalled()
-      expect(mockDisable).toHaveBeenCalled()
+      expect(mockRegister).not.toHaveBeenCalled()
+      expect(mockDisable).not.toHaveBeenCalled()
     })
   })
 

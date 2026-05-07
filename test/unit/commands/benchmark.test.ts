@@ -56,6 +56,36 @@ vi.mock('../../../src/rules/index.js', () => ({
   getRuleCategory: vi.fn(() => 'patterns'),
 }))
 
+vi.mock('../../../src/rules/lazy-loader.js', () => {
+  const mockRules = {
+    'test-rule-1': {
+      meta: { name: 'test-rule-1', description: 'Test rule 1' },
+      create: () => ({ visitor: {}, onComplete: () => [] }),
+    },
+    'test-rule-2': {
+      meta: { name: 'test-rule-2', description: 'Test rule 2' },
+      create: () => ({ visitor: {}, onComplete: () => [] }),
+    },
+  }
+  return {
+    lazyRuleLoader: {
+      getRuleIds: vi.fn(() => ['test-rule-1', 'test-rule-2']),
+      loadAllRules: vi.fn(() => Promise.resolve(mockRules)),
+      loadRules: vi.fn((ruleIds: string[]) => {
+        const filtered: Record<string, unknown> = {}
+        for (const id of ruleIds) {
+          if (mockRules[id as keyof typeof mockRules]) filtered[id] = mockRules[id as keyof typeof mockRules]
+        }
+        return Promise.resolve(filtered)
+      }),
+    },
+  }
+})
+
+vi.mock('../../../src/rules/categories.js', () => ({
+  getRuleCategory: vi.fn(() => 'patterns'),
+}))
+
 // ─── Helper factories ──────────────────────────────────────────────────────
 
 function makeResult(overrides: Partial<BenchmarkResult> = {}): BenchmarkResult {
@@ -337,9 +367,9 @@ describe('Benchmark Command', () => {
       )
 
       const cmdAny = cmd as unknown as {
-        getRulesToBenchmark: (rules: string[] | undefined) => [string, unknown][]
+        getRulesToBenchmark: (rules: string[] | undefined) => Promise<[string, unknown][]>
       }
-      const result = cmdAny.getRulesToBenchmark(undefined)
+      const result = await cmdAny.getRulesToBenchmark(undefined)
 
       expect(result.length).toBeGreaterThan(0)
     })
@@ -360,9 +390,9 @@ describe('Benchmark Command', () => {
       )
 
       const cmdAny = cmd as unknown as {
-        getRulesToBenchmark: (rules: string[] | undefined) => [string, unknown][]
+        getRulesToBenchmark: (rules: string[] | undefined) => Promise<[string, unknown][]>
       }
-      const result = cmdAny.getRulesToBenchmark(['test-rule-1'])
+      const result = await cmdAny.getRulesToBenchmark(['test-rule-1'])
 
       expect(result.length).toBe(1)
       expect(result[0]![0]).toBe('test-rule-1')

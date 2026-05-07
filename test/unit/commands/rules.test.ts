@@ -9,191 +9,208 @@ interface MockRuleInfo {
   severity: string
 }
 
-vi.mock('../../../src/rules/index.js', () => ({
-  allRules: {
-    'max-complexity': {
-      meta: {
-        name: 'max-complexity',
-        description: 'Enforce a maximum cyclomatic complexity threshold',
-        category: 'complexity',
-        recommended: true,
-      },
-      defaultOptions: { max: 10 },
-      create: vi.fn(),
+const mockAllRules = {
+  'max-complexity': {
+    meta: {
+      name: 'max-complexity',
+      description: 'Enforce a maximum cyclomatic complexity threshold',
+      category: 'complexity',
+      recommended: true,
     },
-    'max-params': {
-      meta: {
-        name: 'max-params',
-        description: 'Enforce maximum number of parameters',
-        category: 'complexity',
-        recommended: true,
-      },
-      defaultOptions: { max: 4 },
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'no-await-in-loop': {
-      meta: {
-        name: 'no-await-in-loop',
-        description: 'Disallow await inside loops',
-        category: 'performance',
-        recommended: false,
-        fixable: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'no-eval': {
-      meta: {
-        name: 'no-eval',
-        description: 'Disallow the use of eval',
-        category: 'security',
-        severity: 'error',
-        recommended: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-console': {
-      meta: {
-        name: 'no-console',
-        description: 'Disallow console statements in production code',
-        category: 'style',
-        severity: 'warning',
-        recommended: false,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'prefer-const': {
-      meta: {
-        name: 'prefer-const',
-        description: 'Prefer const declarations for variables',
-        category: 'style',
-        severity: 'warning',
-        recommended: true,
-        fixable: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'no-circular-deps': {
-      meta: {
-        name: 'no-circular-deps',
-        description: 'Detect circular dependencies in module imports',
-        category: 'dependencies',
-        severity: 'error',
-        recommended: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-unsafe-regex': {
-      meta: {
-        name: 'no-unsafe-regex',
-        description: 'Disallow unsafe regular expressions that could cause ReDoS',
-        category: 'security',
-        severity: 'warning',
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-magic-numbers': {
-      meta: {
-        name: 'no-magic-numbers',
-        description: 'Disallow magic numbers in code',
-        category: 'patterns',
-        severity: 'info',
-        recommended: false,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-duplicate-imports': {
-      meta: {
-        name: 'no-duplicate-imports',
-        description: 'Disallow duplicate import statements',
-        category: 'dependencies',
-        severity: 'warning',
-        recommended: true,
-        fixable: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'consistent-return': {
-      meta: {
-        name: 'consistent-return',
-        description: 'Require consistent return statements in functions',
-        category: 'correctness',
-        severity: 'error',
-        recommended: false,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-dead-code': {
-      meta: {
-        name: 'no-dead-code',
-        description: 'Detect unreachable code after return statements',
-        category: 'correctness',
-        severity: 'error',
-        recommended: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'no-nested-ternary': {
-      meta: {
-        name: 'no-nested-ternary',
-        description: 'Disallow nested ternary expressions',
-        category: 'complexity',
-        severity: 'warning',
-        recommended: false,
-        fixable: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'prefer-template': {
-      meta: {
-        name: 'prefer-template',
-        description: 'Prefer template literals over string concatenation',
-        category: 'style',
-        severity: 'info',
-        recommended: false,
-        fixable: true,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-      fix: vi.fn(),
-    },
-    'test-fallback-category': {
-      meta: {
-        name: 'test-fallback-category',
-        description: 'A test rule for category fallback testing',
-        severity: 'info',
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
-    'long-desc-rule': {
-      meta: {
-        name: 'long-desc-rule',
-        description:
-          'This is a very long description that exceeds the normal column width and should be truncated in table output when it goes beyond the maximum description column width',
-        category: 'patterns',
-        severity: 'info',
-        recommended: false,
-      },
-      defaultOptions: {},
-      create: vi.fn(),
-    },
+    defaultOptions: { max: 10 },
+    create: vi.fn(),
   },
+  'max-params': {
+    meta: {
+      name: 'max-params',
+      description: 'Enforce maximum number of parameters',
+      category: 'complexity',
+      recommended: true,
+    },
+    defaultOptions: { max: 4 },
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'no-await-in-loop': {
+    meta: {
+      name: 'no-await-in-loop',
+      description: 'Disallow await inside loops',
+      category: 'performance',
+      recommended: false,
+      fixable: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'no-eval': {
+    meta: {
+      name: 'no-eval',
+      description: 'Disallow the use of eval',
+      category: 'security',
+      severity: 'error',
+      recommended: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-console': {
+    meta: {
+      name: 'no-console',
+      description: 'Disallow console statements in production code',
+      category: 'style',
+      severity: 'warning',
+      recommended: false,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'prefer-const': {
+    meta: {
+      name: 'prefer-const',
+      description: 'Prefer const declarations for variables',
+      category: 'style',
+      severity: 'warning',
+      recommended: true,
+      fixable: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'no-circular-deps': {
+    meta: {
+      name: 'no-circular-deps',
+      description: 'Detect circular dependencies in module imports',
+      category: 'dependencies',
+      severity: 'error',
+      recommended: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-unsafe-regex': {
+    meta: {
+      name: 'no-unsafe-regex',
+      description: 'Disallow unsafe regular expressions that could cause ReDoS',
+      category: 'security',
+      severity: 'warning',
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-magic-numbers': {
+    meta: {
+      name: 'no-magic-numbers',
+      description: 'Disallow magic numbers in code',
+      category: 'patterns',
+      severity: 'info',
+      recommended: false,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-duplicate-imports': {
+    meta: {
+      name: 'no-duplicate-imports',
+      description: 'Disallow duplicate import statements',
+      category: 'dependencies',
+      severity: 'warning',
+      recommended: true,
+      fixable: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'consistent-return': {
+    meta: {
+      name: 'consistent-return',
+      description: 'Require consistent return statements in functions',
+      category: 'correctness',
+      severity: 'error',
+      recommended: false,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-dead-code': {
+    meta: {
+      name: 'no-dead-code',
+      description: 'Detect unreachable code after return statements',
+      category: 'correctness',
+      severity: 'error',
+      recommended: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'no-nested-ternary': {
+    meta: {
+      name: 'no-nested-ternary',
+      description: 'Disallow nested ternary expressions',
+      category: 'complexity',
+      severity: 'warning',
+      recommended: false,
+      fixable: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'prefer-template': {
+    meta: {
+      name: 'prefer-template',
+      description: 'Prefer template literals over string concatenation',
+      category: 'style',
+      severity: 'info',
+      recommended: false,
+      fixable: true,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+    fix: vi.fn(),
+  },
+  'test-fallback-category': {
+    meta: {
+      name: 'test-fallback-category',
+      description: 'A test rule for category fallback testing',
+      severity: 'info',
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+  'long-desc-rule': {
+    meta: {
+      name: 'long-desc-rule',
+      description:
+        'This is a very long description that exceeds the normal column width and should be truncated in table output when it goes beyond the maximum description column width',
+      category: 'patterns',
+      severity: 'info',
+      recommended: false,
+    },
+    defaultOptions: {},
+    create: vi.fn(),
+  },
+}
+
+vi.mock('../../../src/rules/lazy-loader.js', () => ({
+  lazyRuleLoader: {
+    loadAllRules: vi.fn(async () => mockAllRules),
+    loadRules: vi.fn(async (ids: string[]) => {
+      const result: Record<string, unknown> = {}
+      for (const id of ids) {
+        if (mockAllRules[id as keyof typeof mockAllRules]) {
+          result[id] = mockAllRules[id as keyof typeof mockAllRules]
+        }
+      }
+      return result
+    }),
+    getRuleIds: vi.fn(() => Object.keys(mockAllRules)),
+  },
+}))
+
+vi.mock('../../../src/rules/categories.js', () => ({
   getRuleCategory: vi.fn((ruleId: string) => {
     if (ruleId.startsWith('max-')) return 'complexity'
     if (ruleId.startsWith('no-')) return 'performance'
@@ -297,25 +314,25 @@ describe('Rules Command', () => {
 
   describe('getRules', () => {
     function getTestableCommand(): {
-      getRules: () => Array<{
+      getRules: () => Promise<Array<{
         category: string
         description: string
         fixable: boolean
         name: string
         recommended: boolean
-      }>
+      }>>
     } {
       return new Rules([], {} as never) as unknown as ReturnType<typeof getTestableCommand>
     }
 
-    test('returns array of rules', () => {
-      const rules = getTestableCommand().getRules()
+    test('returns array of rules', async () => {
+      const rules = await getTestableCommand().getRules()
       expect(Array.isArray(rules)).toBe(true)
       expect(rules.length).toBeGreaterThan(0)
     })
 
-    test('each rule has required properties', () => {
-      const rules = getTestableCommand().getRules()
+    test('each rule has required properties', async () => {
+      const rules = await getTestableCommand().getRules()
       for (const rule of rules) {
         expect(rule).toHaveProperty('name')
         expect(rule).toHaveProperty('category')
@@ -325,27 +342,27 @@ describe('Rules Command', () => {
       }
     })
 
-    test('rules are sorted by name', () => {
-      const rules = getTestableCommand().getRules()
+    test('rules are sorted by name', async () => {
+      const rules = await getTestableCommand().getRules()
       const names = rules.map((r) => r.name)
       const sorted = [...names].sort()
       expect(names).toEqual(sorted)
     })
 
-    test('detects fixable rules from fix function', () => {
-      const rules = getTestableCommand().getRules()
+    test('detects fixable rules from fix function', async () => {
+      const rules = await getTestableCommand().getRules()
       const maxParams = rules.find((r) => r.name === 'max-params')
       expect(maxParams?.fixable).toBe(true)
     })
 
-    test('detects fixable rules from meta.fixable', () => {
-      const rules = getTestableCommand().getRules()
+    test('detects fixable rules from meta.fixable', async () => {
+      const rules = await getTestableCommand().getRules()
       const noAwaitInLoop = rules.find((r) => r.name === 'no-await-in-loop')
       expect(noAwaitInLoop?.fixable).toBe(true)
     })
 
-    test('non-fixable rules have fixable false', () => {
-      const rules = getTestableCommand().getRules()
+    test('non-fixable rules have fixable false', async () => {
+      const rules = await getTestableCommand().getRules()
       const maxComplexity = rules.find((r) => r.name === 'max-complexity')
       expect(maxComplexity?.fixable).toBe(false)
     })
@@ -589,17 +606,17 @@ describe('Rules Command', () => {
   })
 
   describe('getRules - rule count and completeness', () => {
-    function getRules(): MockRuleInfo[] {
+    async function getRules(): Promise<MockRuleInfo[]> {
       const cmd = new Rules([], {} as never)
-      return (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      return await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
     }
 
-    test('returns 16 rules from mock data', () => {
-      expect(getRules()).toHaveLength(16)
+    test('returns 16 rules from mock data', async () => {
+      expect(await getRules()).toHaveLength(16)
     })
 
-    test('includes all expected rule names', () => {
-      const names = getRules().map((r) => r.name)
+    test('includes all expected rule names', async () => {
+      const names = (await getRules()).map((r) => r.name)
       expect(names).toContain('max-complexity')
       expect(names).toContain('max-params')
       expect(names).toContain('no-await-in-loop')
@@ -618,295 +635,295 @@ describe('Rules Command', () => {
       expect(names).toContain('long-desc-rule')
     })
 
-    test('all rule names are unique', () => {
-      const names = getRules().map((r) => r.name)
+    test('all rule names are unique', async () => {
+      const names = (await getRules()).map((r) => r.name)
       expect(new Set(names).size).toBe(names.length)
     })
 
-    test('every rule has a non-empty name', () => {
-      for (const rule of getRules()) {
+    test('every rule has a non-empty name', async () => {
+      for (const rule of await getRules()) {
         expect(rule.name.length).toBeGreaterThan(0)
       }
     })
 
-    test('every rule has a non-empty description', () => {
-      for (const rule of getRules()) {
+    test('every rule has a non-empty description', async () => {
+      for (const rule of await getRules()) {
         expect(rule.description.length).toBeGreaterThan(0)
       }
     })
 
-    test('every rule has a non-empty category', () => {
-      for (const rule of getRules()) {
+    test('every rule has a non-empty category', async () => {
+      for (const rule of await getRules()) {
         expect(rule.category.length).toBeGreaterThan(0)
       }
     })
 
-    test('every rule fixable is boolean', () => {
-      for (const rule of getRules()) {
+    test('every rule fixable is boolean', async () => {
+      for (const rule of await getRules()) {
         expect(typeof rule.fixable).toBe('boolean')
       }
     })
 
-    test('every rule recommended is boolean', () => {
-      for (const rule of getRules()) {
+    test('every rule recommended is boolean', async () => {
+      for (const rule of await getRules()) {
         expect(typeof rule.recommended).toBe('boolean')
       }
     })
 
-    test('every rule severity is a string', () => {
-      for (const rule of getRules()) {
+    test('every rule severity is a string', async () => {
+      for (const rule of await getRules()) {
         expect(typeof rule.severity).toBe('string')
       }
     })
   })
 
   describe('getRules - individual rule properties', () => {
-    function getRules(): MockRuleInfo[] {
+    async function getRules(): Promise<MockRuleInfo[]> {
       const cmd = new Rules([], {} as never)
-      return (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      return await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
     }
 
-    test('max-complexity has category complexity', () => {
-      const rule = getRules().find((r) => r.name === 'max-complexity')
+    test('max-complexity has category complexity', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-complexity')
       expect(rule?.category).toBe('complexity')
     })
 
-    test('max-complexity is recommended', () => {
-      const rule = getRules().find((r) => r.name === 'max-complexity')
+    test('max-complexity is recommended', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-complexity')
       expect(rule?.recommended).toBe(true)
     })
 
-    test('max-complexity is not fixable', () => {
-      const rule = getRules().find((r) => r.name === 'max-complexity')
+    test('max-complexity is not fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-complexity')
       expect(rule?.fixable).toBe(false)
     })
 
-    test('max-params has category complexity', () => {
-      const rule = getRules().find((r) => r.name === 'max-params')
+    test('max-params has category complexity', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-params')
       expect(rule?.category).toBe('complexity')
     })
 
-    test('max-params is fixable via fix function', () => {
-      const rule = getRules().find((r) => r.name === 'max-params')
+    test('max-params is fixable via fix function', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-params')
       expect(rule?.fixable).toBe(true)
     })
 
-    test('no-await-in-loop has category performance', () => {
-      const rule = getRules().find((r) => r.name === 'no-await-in-loop')
+    test('no-await-in-loop has category performance', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-await-in-loop')
       expect(rule?.category).toBe('performance')
     })
 
-    test('no-await-in-loop is not recommended', () => {
-      const rule = getRules().find((r) => r.name === 'no-await-in-loop')
+    test('no-await-in-loop is not recommended', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-await-in-loop')
       expect(rule?.recommended).toBe(false)
     })
 
-    test('no-eval has category security', () => {
-      const rule = getRules().find((r) => r.name === 'no-eval')
+    test('no-eval has category security', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-eval')
       expect(rule?.category).toBe('security')
     })
 
-    test('no-eval has severity error', () => {
-      const rule = getRules().find((r) => r.name === 'no-eval')
+    test('no-eval has severity error', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-eval')
       expect(rule?.severity).toBe('error')
     })
 
-    test('no-eval is recommended', () => {
-      const rule = getRules().find((r) => r.name === 'no-eval')
+    test('no-eval is recommended', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-eval')
       expect(rule?.recommended).toBe(true)
     })
 
-    test('no-console has category style', () => {
-      const rule = getRules().find((r) => r.name === 'no-console')
+    test('no-console has category style', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-console')
       expect(rule?.category).toBe('style')
     })
 
-    test('no-console has severity warning', () => {
-      const rule = getRules().find((r) => r.name === 'no-console')
+    test('no-console has severity warning', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-console')
       expect(rule?.severity).toBe('warning')
     })
 
-    test('prefer-const is fixable', () => {
-      const rule = getRules().find((r) => r.name === 'prefer-const')
+    test('prefer-const is fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'prefer-const')
       expect(rule?.fixable).toBe(true)
     })
 
-    test('prefer-const is recommended', () => {
-      const rule = getRules().find((r) => r.name === 'prefer-const')
+    test('prefer-const is recommended', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'prefer-const')
       expect(rule?.recommended).toBe(true)
     })
 
-    test('no-circular-deps has category dependencies', () => {
-      const rule = getRules().find((r) => r.name === 'no-circular-deps')
+    test('no-circular-deps has category dependencies', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-circular-deps')
       expect(rule?.category).toBe('dependencies')
     })
 
-    test('no-circular-deps has severity error', () => {
-      const rule = getRules().find((r) => r.name === 'no-circular-deps')
+    test('no-circular-deps has severity error', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-circular-deps')
       expect(rule?.severity).toBe('error')
     })
 
-    test('consistent-return has category correctness', () => {
-      const rule = getRules().find((r) => r.name === 'consistent-return')
+    test('consistent-return has category correctness', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'consistent-return')
       expect(rule?.category).toBe('correctness')
     })
 
-    test('no-magic-numbers has category patterns', () => {
-      const rule = getRules().find((r) => r.name === 'no-magic-numbers')
+    test('no-magic-numbers has category patterns', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-magic-numbers')
       expect(rule?.category).toBe('patterns')
     })
 
-    test('long-desc-rule has category patterns', () => {
-      const rule = getRules().find((r) => r.name === 'long-desc-rule')
+    test('long-desc-rule has category patterns', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'long-desc-rule')
       expect(rule?.category).toBe('patterns')
     })
   })
 
   describe('getRules - severity defaults and fallbacks', () => {
-    function getRules(): MockRuleInfo[] {
+    async function getRules(): Promise<MockRuleInfo[]> {
       const cmd = new Rules([], {} as never)
-      return (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      return await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
     }
 
-    test('rules without severity default to info', () => {
-      const rule = getRules().find((r) => r.name === 'max-complexity')
+    test('rules without severity default to info', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-complexity')
       expect(rule?.severity).toBe('info')
     })
 
-    test('max-params severity defaults to info', () => {
-      const rule = getRules().find((r) => r.name === 'max-params')
+    test('max-params severity defaults to info', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'max-params')
       expect(rule?.severity).toBe('info')
     })
 
-    test('no-await-in-loop severity defaults to info', () => {
-      const rule = getRules().find((r) => r.name === 'no-await-in-loop')
+    test('no-await-in-loop severity defaults to info', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-await-in-loop')
       expect(rule?.severity).toBe('info')
     })
 
-    test('explicit error severity is preserved', () => {
-      const rule = getRules().find((r) => r.name === 'no-eval')
+    test('explicit error severity is preserved', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-eval')
       expect(rule?.severity).toBe('error')
     })
 
-    test('explicit warning severity is preserved', () => {
-      const rule = getRules().find((r) => r.name === 'no-console')
+    test('explicit warning severity is preserved', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-console')
       expect(rule?.severity).toBe('warning')
     })
 
-    test('test-fallback-category severity is info', () => {
-      const rule = getRules().find((r) => r.name === 'test-fallback-category')
+    test('test-fallback-category severity is info', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'test-fallback-category')
       expect(rule?.severity).toBe('info')
     })
 
-    test('no-unsafe-regex recommended defaults to false', () => {
-      const rule = getRules().find((r) => r.name === 'no-unsafe-regex')
+    test('no-unsafe-regex recommended defaults to false', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-unsafe-regex')
       expect(rule?.recommended).toBe(false)
     })
 
-    test('test-fallback-category recommended defaults to false', () => {
-      const rule = getRules().find((r) => r.name === 'test-fallback-category')
+    test('test-fallback-category recommended defaults to false', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'test-fallback-category')
       expect(rule?.recommended).toBe(false)
     })
   })
 
   describe('getRules - category fallback', () => {
-    test('test-fallback-category uses getRuleCategory when meta.category missing', () => {
+    test('test-fallback-category uses getRuleCategory when meta.category missing', async () => {
       const cmd = new Rules([], {} as never)
-      const rules = (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      const rules = await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
       const rule = rules.find((r) => r.name === 'test-fallback-category')
       expect(rule?.category).toBe('complexity')
     })
   })
 
   describe('getRules - fixable detection details', () => {
-    function getRules(): MockRuleInfo[] {
+    async function getRules(): Promise<MockRuleInfo[]> {
       const cmd = new Rules([], {} as never)
-      return (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      return await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
     }
 
-    test('fixable count is 6', () => {
-      const fixable = getRules().filter((r) => r.fixable)
+    test('fixable count is 6', async () => {
+      const fixable = (await getRules()).filter((r) => r.fixable)
       expect(fixable).toHaveLength(6)
     })
 
-    test('recommended count is 7', () => {
-      const recommended = getRules().filter((r) => r.recommended)
+    test('recommended count is 7', async () => {
+      const recommended = (await getRules()).filter((r) => r.recommended)
       expect(recommended).toHaveLength(7)
     })
 
-    test('error severity count is 4', () => {
-      const errors = getRules().filter((r) => r.severity === 'error')
+    test('error severity count is 4', async () => {
+      const errors = (await getRules()).filter((r) => r.severity === 'error')
       expect(errors).toHaveLength(4)
     })
 
-    test('warning severity count is 5', () => {
-      const warnings = getRules().filter((r) => r.severity === 'warning')
+    test('warning severity count is 5', async () => {
+      const warnings = (await getRules()).filter((r) => r.severity === 'warning')
       expect(warnings).toHaveLength(5)
     })
 
-    test('info severity count is 7', () => {
-      const infos = getRules().filter((r) => r.severity === 'info')
+    test('info severity count is 7', async () => {
+      const infos = (await getRules()).filter((r) => r.severity === 'info')
       expect(infos).toHaveLength(7)
     })
 
-    test('no-duplicate-imports is fixable via both fix and meta.fixable', () => {
-      const rule = getRules().find((r) => r.name === 'no-duplicate-imports')
+    test('no-duplicate-imports is fixable via both fix and meta.fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-duplicate-imports')
       expect(rule?.fixable).toBe(true)
     })
 
-    test('no-nested-ternary is fixable', () => {
-      const rule = getRules().find((r) => r.name === 'no-nested-ternary')
+    test('no-nested-ternary is fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-nested-ternary')
       expect(rule?.fixable).toBe(true)
     })
 
-    test('prefer-template is fixable', () => {
-      const rule = getRules().find((r) => r.name === 'prefer-template')
+    test('prefer-template is fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'prefer-template')
       expect(rule?.fixable).toBe(true)
     })
 
-    test('no-dead-code is not fixable', () => {
-      const rule = getRules().find((r) => r.name === 'no-dead-code')
+    test('no-dead-code is not fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'no-dead-code')
       expect(rule?.fixable).toBe(false)
     })
 
-    test('consistent-return is not fixable', () => {
-      const rule = getRules().find((r) => r.name === 'consistent-return')
+    test('consistent-return is not fixable', async () => {
+      const rule = (await getRules()).find((r) => r.name === 'consistent-return')
       expect(rule?.fixable).toBe(false)
     })
   })
 
   describe('getRules - category counts', () => {
-    function getRules(): MockRuleInfo[] {
+    async function getRules(): Promise<MockRuleInfo[]> {
       const cmd = new Rules([], {} as never)
-      return (cmd as unknown as { getRules: () => MockRuleInfo[] }).getRules()
+      return await (cmd as unknown as { getRules: () => Promise<MockRuleInfo[]> }).getRules()
     }
 
-    test('complexity category has 4 rules', () => {
-      expect(getRules().filter((r) => r.category === 'complexity')).toHaveLength(4)
+    test('complexity category has 4 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'complexity')).toHaveLength(4)
     })
 
-    test('performance category has 1 rule', () => {
-      expect(getRules().filter((r) => r.category === 'performance')).toHaveLength(1)
+    test('performance category has 1 rule', async () => {
+      expect((await getRules()).filter((r) => r.category === 'performance')).toHaveLength(1)
     })
 
-    test('security category has 2 rules', () => {
-      expect(getRules().filter((r) => r.category === 'security')).toHaveLength(2)
+    test('security category has 2 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'security')).toHaveLength(2)
     })
 
-    test('style category has 3 rules', () => {
-      expect(getRules().filter((r) => r.category === 'style')).toHaveLength(3)
+    test('style category has 3 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'style')).toHaveLength(3)
     })
 
-    test('dependencies category has 2 rules', () => {
-      expect(getRules().filter((r) => r.category === 'dependencies')).toHaveLength(2)
+    test('dependencies category has 2 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'dependencies')).toHaveLength(2)
     })
 
-    test('correctness category has 2 rules', () => {
-      expect(getRules().filter((r) => r.category === 'correctness')).toHaveLength(2)
+    test('correctness category has 2 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'correctness')).toHaveLength(2)
     })
 
-    test('patterns category has 2 rules', () => {
-      expect(getRules().filter((r) => r.category === 'patterns')).toHaveLength(2)
+    test('patterns category has 2 rules', async () => {
+      expect((await getRules()).filter((r) => r.category === 'patterns')).toHaveLength(2)
     })
   })
 

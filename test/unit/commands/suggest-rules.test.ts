@@ -12,7 +12,7 @@ vi.mock('node:fs/promises', () => ({
   readFile: vi.fn(),
 }))
 
-vi.mock('../../../src/rules/index.js', () => ({
+vi.mock('../../../src/rules/categories.js', () => ({
   getRuleCategory: vi.fn((ruleId: string) => {
     const categories: Record<string, string> = {
       'no-console-log': 'patterns',
@@ -1290,7 +1290,7 @@ describe('SuggestRules Command', () => {
     })
 
     test('sets category from getRuleCategory', async () => {
-      const { getRuleCategory } = await import('../../../src/rules/index.js')
+      const { getRuleCategory } = await import('../../../src/rules/categories.js')
       const internals = getInternals()
       const map = new Map<string, RuleSuggestion>()
       internals.addSuggestion(map, 'no-eval', 1, {
@@ -1926,7 +1926,7 @@ describe('SuggestRules Command', () => {
     })
 
     test('getRuleCategory called for each detected rule', async () => {
-      const { getRuleCategory } = await import('../../../src/rules/index.js')
+      const { getRuleCategory } = await import('../../../src/rules/categories.js')
       mockExistsSync.mockReturnValue(true)
       mockDiscoverFiles.mockResolvedValue([{ absolutePath: '/test/f.ts', path: 'f.ts' }])
       mockReadFile.mockResolvedValue('console.log("a"); eval("b")')
@@ -1942,7 +1942,7 @@ describe('SuggestRules Command', () => {
     })
 
     test('getRuleCategory returns patterns for unknown rule', async () => {
-      const { getRuleCategory } = await import('../../../src/rules/index.js')
+      const { getRuleCategory } = await import('../../../src/rules/categories.js')
       expect(getRuleCategory('unknown-rule-id')).toBe('patterns')
     })
 

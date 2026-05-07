@@ -62,6 +62,55 @@ vi.mock('../../../src/rules/index.js', function () {
   }
 })
 
+vi.mock('../../../src/rules/lazy-loader.js', function () {
+  const mockRules = {
+    'max-complexity': {
+      meta: {
+        name: 'max-complexity',
+        description: 'Enforce a maximum cyclomatic complexity threshold',
+        category: 'complexity',
+        recommended: true,
+      },
+      defaultOptions: { max: 10 },
+      create: vi.fn(),
+    },
+    'no-await-in-loop': {
+      meta: {
+        name: 'no-await-in-loop',
+        description: 'Disallow await inside loops',
+        category: 'performance',
+        recommended: false,
+        fixable: 'code' as const,
+      },
+      defaultOptions: {},
+      create: vi.fn(),
+    },
+  }
+  return {
+    lazyRuleLoader: {
+      getRuleIds: vi.fn(() => Object.keys(mockRules)),
+      loadAllRules: vi.fn(() => Promise.resolve(mockRules)),
+      loadRules: vi.fn((ruleIds: string[]) => {
+        const filtered: Record<string, unknown> = {}
+        for (const id of ruleIds) {
+          if (mockRules[id as keyof typeof mockRules]) filtered[id] = mockRules[id as keyof typeof mockRules]
+        }
+        return Promise.resolve(filtered)
+      }),
+    },
+  }
+})
+
+vi.mock('../../../src/rules/categories.js', function () {
+  return {
+    getRuleCategory: vi.fn((ruleId: string) => {
+      if (ruleId.includes('complexity')) return 'complexity'
+      if (ruleId.includes('security')) return 'security'
+      return 'patterns'
+    }),
+  }
+})
+
 describe('Health Command', () => {
   let Health: typeof import('../../../src/commands/health.js').default
 
