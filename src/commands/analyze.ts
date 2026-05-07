@@ -33,6 +33,7 @@ import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { type OutputFormat, Reporter } from '../core/reporter.js'
 import { RuleRegistry } from '../core/rule-registry.js'
+import { filterSuppressedViolations, parseSuppressionsFromSourceFile } from '../core/suppression-parser.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
@@ -439,7 +440,10 @@ export default class Analyze extends Command {
 
             const violations = registry.runRules(parseResult.sourceFile)
 
-            const violationsWithFilePath = violations.map((v) => ({
+            const { suppressions } = parseSuppressionsFromSourceFile(parseResult.sourceFile)
+            const unsuppressedViolations = filterSuppressedViolations(violations, suppressions)
+
+            const violationsWithFilePath = unsuppressedViolations.map((v) => ({
               ...v,
               filePath: file.path,
             }))

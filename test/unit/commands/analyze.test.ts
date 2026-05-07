@@ -250,6 +250,19 @@ vi.mock('../../../src/utils/command-helpers.js', () => ({
   getProfileSeverityOverrides: mockGetProfileSeverityOverrides,
 }))
 
+const mockParseSuppressionsFromSourceFile = vi.fn().mockReturnValue({
+  count: 0,
+  suppressions: [],
+})
+const mockFilterSuppressedViolations = vi.fn(
+  (violations: RuleViolation[]) => violations,
+)
+
+vi.mock('../../../src/core/suppression-parser.js', () => ({
+  parseSuppressionsFromSourceFile: mockParseSuppressionsFromSourceFile,
+  filterSuppressedViolations: mockFilterSuppressedViolations,
+}))
+
 vi.mock('../../../src/fix/fixer.js', () => {
   const mockFn = vi.fn()
   mockFn.mockReturnValue({
@@ -3471,6 +3484,220 @@ describe('Analyze Command', () => {
     it('has example for --profile flag', () => {
       const cmds = Analyze.examples.map((e: { command: string }) => e.command)
       expect(cmds.some((c: string) => c.includes('--profile'))).toBe(true)
+    })
+  })
+
+  // =====================================================
+  // Suppression filtering
+  // =====================================================
+  describe('Suppression filtering', () => {
+    it('calls parseSuppressionsFromSourceFile during file analysis', async () => {
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'const x = 1 // codeforge-disable-next-line no-console',
+      }
+      mockParserCtor.mockImplementation(function () {
+        return {
+          initialize: vi.fn().mockResolvedValue(undefined),
+          dispose: vi.fn(),
+          parseFile: vi.fn().mockResolvedValue({
+            sourceFile: mockSourceFile,
+            filePath: '/test/file.ts',
+            parseTime: 10,
+          }),
+        }
+      })
+      const cmd = createCommand()
+      const result = await (
+        cmd as unknown as {
+          analyzeFiles: (o: {
+            concurrency: number
+            configHash: string
+            discoveredFiles: DiscoveredFile[]
+            parseCache: Map<string, unknown>
+            parser: unknown
+            registry: unknown
+            resultCache: null
+            spinner: null
+            verbose: boolean
+          }) => Promise<{
+            allViolations: RuleViolation[]
+            failedFiles: unknown[]
+            fileReports: unknown[]
+          }>
+        }
+      ).analyzeFiles({
+        concurrency: 1,
+        configHash: '',
+        discoveredFiles: [createMockFile('test.ts')],
+        parseCache: new Map(),
+        parser: { parseFile: vi.fn().mockResolvedValue({ sourceFile: mockSourceFile, filePath: '/test/file.ts', parseTime: 10 }) },
+        registry: { runRules: vi.fn().mockReturnValue([]) },
+        resultCache: null,
+        spinner: null,
+        verbose: false,
+      })
+      expect(mockParseSuppressionsFromSourceFile).toHaveBeenCalledWith(
+        expect.objectContaining({ getFilePath: expect.any(Function) }),
+      )
+    })
+
+    it('calls filterSuppressedViolations with violations and suppressions', async () => {
+      const violation = createMockViolation({ ruleId: 'no-console' })
+      const mockRegistry = { runRules: vi.fn().mockReturnValue([violation]) }
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => '// codeforge-disable-next-line no-console',
+      }
+      const mockParser = {
+        parseFile: vi.fn().mockResolvedValue({
+          sourceFile: mockSourceFile,
+          filePath: '/test/file.ts',
+          parseTime: 10,
+        }),
+      }
+      mockParseSuppressionsFromSourceFile.mockReturnValueOnce({
+        count: 1,
+        suppressions: [{ line: 1, ruleIds: ['no-console'], type: 'next-line' }],
+      })
+      const cmd = createCommand()
+      await (
+        cmd as unknown as {
+          analyzeFiles: (o: {
+            concurrency: number
+            configHash: string
+            discoveredFiles: DiscoveredFile[]
+            parseCache: Map<string, unknown>
+            parser: unknown
+            registry: unknown
+            resultCache: null
+            spinner: null
+            verbose: boolean
+          }) => Promise<{
+            allViolations: RuleViolation[]
+            failedFiles: unknown[]
+            fileReports: unknown[]
+          }>
+        }
+      ).analyzeFiles({
+        concurrency: 1,
+        configHash: '',
+        discoveredFiles: [createMockFile('test.ts')],
+        parseCache: new Map(),
+        parser: mockParser,
+        registry: mockRegistry,
+        resultCache: null,
+        spinner: null,
+        verbose: false,
+      })
+      expect(mockFilterSuppressedViolations).toHaveBeenCalledWith(
+        [violation],
+        [{ line: 1, ruleIds: ['no-console'], type: 'next-line' }],
+      )
+    })
+
+    it('filters suppressed violations from results', async () => {
+      const violation1 = createMockViolation({ ruleId: 'no-console' })
+      const violation2 = createMockViolation({ ruleId: 'no-debugger' })
+      const mockRegistry = { runRules: vi.fn().mockReturnValue([violation1, violation2]) }
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => '// codeforge-disable-next-line no-console',
+      }
+      const mockParser = {
+        parseFile: vi.fn().mockResolvedValue({
+          sourceFile: mockSourceFile,
+          filePath: '/test/file.ts',
+          parseTime: 10,
+        }),
+      }
+      mockParseSuppressionsFromSourceFile.mockReturnValueOnce({
+        count: 1,
+        suppressions: [{ line: 1, ruleIds: ['no-console'], type: 'next-line' }],
+      })
+      mockFilterSuppressedViolations.mockReturnValueOnce([violation2])
+      const cmd = createCommand()
+      const result = await (
+        cmd as unknown as {
+          analyzeFiles: (o: {
+            concurrency: number
+            configHash: string
+            discoveredFiles: DiscoveredFile[]
+            parseCache: Map<string, unknown>
+            parser: unknown
+            registry: unknown
+            resultCache: null
+            spinner: null
+            verbose: boolean
+          }) => Promise<{
+            allViolations: RuleViolation[]
+            failedFiles: unknown[]
+            fileReports: unknown[]
+          }>
+        }
+      ).analyzeFiles({
+        concurrency: 1,
+        configHash: '',
+        discoveredFiles: [createMockFile('test.ts')],
+        parseCache: new Map(),
+        parser: mockParser,
+        registry: mockRegistry,
+        resultCache: null,
+        spinner: null,
+        verbose: false,
+      })
+      expect(result.allViolations).toHaveLength(1)
+      expect(result.allViolations[0].ruleId).toBe('no-debugger')
+    })
+
+    it('returns all violations when no suppressions exist', async () => {
+      const violation1 = createMockViolation({ ruleId: 'no-console' })
+      const violation2 = createMockViolation({ ruleId: 'no-debugger' })
+      const mockRegistry = { runRules: vi.fn().mockReturnValue([violation1, violation2]) }
+      const mockSourceFile = {
+        getFilePath: () => '/test/file.ts',
+        getText: () => 'const x = 1',
+      }
+      const mockParser = {
+        parseFile: vi.fn().mockResolvedValue({
+          sourceFile: mockSourceFile,
+          filePath: '/test/file.ts',
+          parseTime: 10,
+        }),
+      }
+      mockParseSuppressionsFromSourceFile.mockReturnValueOnce({ count: 0, suppressions: [] })
+      mockFilterSuppressedViolations.mockImplementationOnce((v) => v)
+      const cmd = createCommand()
+      const result = await (
+        cmd as unknown as {
+          analyzeFiles: (o: {
+            concurrency: number
+            configHash: string
+            discoveredFiles: DiscoveredFile[]
+            parseCache: Map<string, unknown>
+            parser: unknown
+            registry: unknown
+            resultCache: null
+            spinner: null
+            verbose: boolean
+          }) => Promise<{
+            allViolations: RuleViolation[]
+            failedFiles: unknown[]
+            fileReports: unknown[]
+          }>
+        }
+      ).analyzeFiles({
+        concurrency: 1,
+        configHash: '',
+        discoveredFiles: [createMockFile('test.ts')],
+        parseCache: new Map(),
+        parser: mockParser,
+        registry: mockRegistry,
+        resultCache: null,
+        spinner: null,
+        verbose: false,
+      })
+      expect(result.allViolations).toHaveLength(2)
     })
   })
 })
