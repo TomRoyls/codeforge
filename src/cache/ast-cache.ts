@@ -131,7 +131,8 @@ export class ASTCache {
             await unlink(filePath)
             cleaned++
           }
-        } catch {
+        } catch (error) {
+          logger.debug(`Failed to clean cache entry: ${error}`)
           // Invalid cache file, remove it
           const filePath = path.join(this.cacheDir, file)
           // eslint-disable-next-line no-await-in-loop
@@ -287,7 +288,8 @@ export class ASTCache {
 
       // Verify version and TTL
       return entry.version === this.version && Date.now() <= entry.timestamp + this.ttl
-    } catch {
+    } catch (error) {
+      logger.debug(`Cache validation failed for entry: ${error}`)
       return false
     }
   }

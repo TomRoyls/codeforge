@@ -155,8 +155,9 @@ export class ResultCache {
             await unlink(filePath)
             cleaned++
           }
-        } catch {
+        } catch (error) {
           // Invalid cache file, remove it
+          logger.debug(`Failed to read cache entry during cleanup (${file}): ${error}`)
           const filePath = path.join(this.cacheDir, file)
           // eslint-disable-next-line no-await-in-loop
           await unlink(filePath).catch((error: Error) => {
@@ -319,7 +320,8 @@ export class ResultCache {
         entry.configHash === configHash &&
         Date.now() <= entry.timestamp + this.ttl
       )
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to check cache entry for ${filePath}: ${error}`)
       return false
     }
   }
@@ -363,8 +365,9 @@ export class ResultCache {
             await unlink(path.join(this.cacheDir, file))
             deleted++
           }
-        } catch {
+        } catch (error) {
           // Invalid cache file, continue
+          logger.debug(`Skipping invalid cache entry during invalidation of ${filePath}: ${error}`)
         }
       }
 
@@ -410,8 +413,9 @@ export class ResultCache {
             await unlink(path.join(this.cacheDir, file))
             deleted++
           }
-        } catch {
+        } catch (error) {
           // Invalid cache file, continue
+          logger.debug(`Skipping invalid cache entry during bulk invalidation: ${error}`)
         }
       }
 
@@ -457,8 +461,9 @@ export class ResultCache {
             await unlink(path.join(this.cacheDir, file))
             deleted++
           }
-        } catch {
+        } catch (error) {
           // Invalid cache file, continue
+          logger.debug(`Skipping invalid cache entry during pattern invalidation ("${pattern}"): ${error}`)
         }
       }
 
