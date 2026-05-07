@@ -1,8 +1,14 @@
 import { Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import { rm } from 'node:fs/promises'
-import { join } from 'node:path'
+
+import {
+  type CleanFlags,
+  displayCleanResult,
+  formatCleanHeader,
+  formatTargetStatus,
+  getCleanTargets,
+} from './clean-helpers.js'
 
 export default class Clean extends Command {
   static override description = 'Clean generated files and caches'
@@ -46,49 +52,31 @@ export default class Clean extends Command {
     const { flags } = await this.parse(Clean)
 
     const cwd = process.cwd()
-    const targets: Array<{ name: string; path: string }> = []
+    const cleanFlags: CleanFlags = { cache: flags.cache, dist: flags.dist }
+    const targets = getCleanTargets(cleanFlags, cwd)
+    const dryRun = flags['dry-run']
 
-    if (flags.cache) {
-      targets.push(
-        { name: 'Cache directory', path: join(cwd, '.cache') },
-        { name: 'CodeForge cache', path: join(cwd, '.codeforge') },
-      )
-    } else if (flags.dist) {
-      targets.push({ name: 'Dist directory', path: join(cwd, 'dist') })
-    } else {
-      targets.push(
-        { name: 'Dist directory', path: join(cwd, 'dist') },
-        { name: 'Cache directory', path: join(cwd, '.cache') },
-        { name: 'CodeForge cache', path: join(cwd, '.codeforge') },
-        { name: 'Coverage directory', path: join(cwd, 'coverage') },
-      )
-    }
-
-    if (flags['dry-run']) {
-      this.log(chalk.bold('Would clean the following:\n'))
-    } else {
-      this.log(chalk.bold('Cleaning generated files...\n'))
-    }
+    this.log(formatCleanHeader(dryRun))
 
     let cleaned = 0
     const cleanPromises = targets.map(async (target) => {
       if (existsSync(target.path)) {
-        if (flags['dry-run']) {
-          this.log(chalk.cyan(`  • ${target.name}`))
+        if (dryRun) {
+          this.log(formatTargetStatus(target, true, false, undefined, true))
           return 1
         }
 
         try {
           await rm(target.path, { recursive: true })
-          this.log(chalk.green(`  ✓ ${target.name}`))
+          this.log(formatTargetStatus(target, true, true))
           return 1
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Unknown error'
-          this.log(chalk.red(`  ✗ ${target.name}: ${message}`))
+          this.log(formatTargetStatus(target, true, false, message))
           return 0
         }
       } else {
-        this.log(chalk.gray(`  - ${target.name} (not found)`))
+        this.log(formatTargetStatus(target, false, false))
         return 0
       }
     })
@@ -96,15 +84,6 @@ export default class Clean extends Command {
     const results = await Promise.all(cleanPromises)
     cleaned = results.reduce((sum: number, count: number) => sum + count, 0)
 
-    this.log('')
-    if (cleaned > 0) {
-      if (flags['dry-run']) {
-        this.log(chalk.cyan(`Would clean ${cleaned} director${cleaned === 1 ? 'y' : 'ies'}`))
-      } else {
-        this.log(chalk.green(`Cleaned ${cleaned} director${cleaned === 1 ? 'y' : 'ies'}`))
-      }
-    } else {
-      this.log(chalk.yellow('Nothing to clean'))
-    }
+    displayCleanResult(cleaned, dryRun, (msg) => this.log(msg))
   }
 }

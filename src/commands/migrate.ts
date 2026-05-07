@@ -1,27 +1,7 @@
-/**
- * Migrate command - migrates configuration from other linters to CodeForge.
- *
- * Converts configuration files from other linters (currently ESLint) to CodeForge
- * format, mapping rules and settings where possible.
- *
- * Features:
- * - ESLint to CodeForge configuration conversion
- * - Rule mapping with suggestions for unmapped rules
- * - Dry-run mode for previewing migrations
- *
- * @example
- * ```bash
- * codeforge migrate --from eslint
- * codeforge migrate --from eslint --dry-run
- * ```
- */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
 import { join } from 'node:path'
-
-import type { CodeForgeConfig } from '../config/types.js'
-import type { RuleSeverity } from '../rules/types.js'
 
 import {
   detectESLintConfig,
@@ -29,6 +9,13 @@ import {
   readESLintConfig,
 } from '../core/migrators/eslint.js'
 import { MAX_UNMAPPED_RULES_TO_SHOW } from '../utils/constants.js'
+import {
+  type MigrationResult,
+  buildCodeForgeConfig,
+  formatDryRunOutput,
+  formatMigrationSummary,
+  formatNextSteps,
+} from './migrate-helpers.js'
 
 export default class Migrate extends Command {
   static override description = 'Migrate from another linter to CodeForge'
@@ -103,37 +90,13 @@ export default class Migrate extends Command {
 
     this.log(chalk.gray('Migrating rules...'))
 
-    const result = migrateESLintConfig(config)
+    const result = migrateESLintConfig(config) as unknown as MigrationResult
+    const codeforgeConfig = buildCodeForgeConfig(result.rules)
 
-    const codeforgeConfig: CodeForgeConfig = {
-      files: ['**/*.ts', '**/*.tsx'],
-      ignore: ['**/node_modules/**', '**/dist/**'],
-      rules: result.rules as Record<string, [RuleSeverity, Record<string, unknown>] | RuleSeverity>,
-    }
-
-    this.log('')
-    this.log(chalk.bold('Migration Summary:'))
-    this.log(chalk.gray(`  Mapped rules: ${Object.keys(result.rules).length}`))
-    this.log(chalk.gray(`  Unmapped rules: ${result.unmapped.length}`))
-
-    if (result.unmapped.length > 0) {
-      this.log('')
-      this.log(chalk.yellow('Unmapped ESLint rules:'))
-      for (const rule of result.unmapped.slice(0, MAX_UNMAPPED_RULES_TO_SHOW)) {
-        this.log(chalk.gray(`  - ${rule}`))
-      }
-
-      if (result.unmapped.length > MAX_UNMAPPED_RULES_TO_SHOW) {
-        this.log(
-          chalk.gray(`  ... and ${result.unmapped.length - MAX_UNMAPPED_RULES_TO_SHOW} more`),
-        )
-      }
-    }
+    formatMigrationSummary(result, MAX_UNMAPPED_RULES_TO_SHOW, (msg) => this.log(msg))
 
     if (flags.dryRun) {
-      this.log('')
-      this.log(chalk.bold('Generated config (dry run):'))
-      this.log(chalk.gray(JSON.stringify(codeforgeConfig, null, 2)))
+      formatDryRunOutput(codeforgeConfig, (msg) => this.log(msg))
       return
     }
 
@@ -158,10 +121,6 @@ export default class Migrate extends Command {
 
     this.log('')
     this.log(chalk.green(`✓ Created ${flags.output}`))
-    this.log('')
-    this.log(chalk.bold('Next steps:'))
-    this.log(chalk.gray('  1. Review the generated configuration'))
-    this.log(chalk.gray('  2. Run `codeforge analyze` to check your code'))
-    this.log(chalk.gray('  3. Address any unmapped rules manually'))
+    formatNextSteps((msg) => this.log(msg))
   }
 }

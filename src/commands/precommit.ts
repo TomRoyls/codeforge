@@ -1,35 +1,18 @@
-/**
- * Precommit command - sets up git pre-commit hooks to run CodeForge.
- *
- * Creates or updates git pre-commit hooks that automatically run CodeForge
- * analysis before commits, supporting both git native hooks and husky.
- *
- * Features:
- * - Git native pre-commit hook support
- * - Husky hook support
- * - Custom command configuration
- * - Force overwrite capability
- *
- * @example
- * ```bash
- * codeforge precommit
- * codeforge precommit --installer husky
- * codeforge precommit --force
- * ```
- */
 import { Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { join } from 'node:path'
 
-interface PrecommitOptions {
-  command: string
-  force: boolean
-  installer: 'git' | 'husky'
-}
-
-const DEFAULT_COMMAND = 'codeforge analyze --staged'
+import {
+  type PrecommitOptions,
+  DEFAULT_COMMAND,
+  displayPostInstallMessage,
+  generateHookContent as generateHookContentHelper,
+  getGitHookPath as getGitHookPathHelper,
+  getHookDir,
+  getHuskyHookPath as getHuskyHookPathHelper,
+  isGitRepository as isGitRepositoryHelper,
+  resolvePrecommitOptions,
+} from './precommit-helpers.js'
 
 export default class Precommit extends Command {
   static override description = 'Set up git pre-commit hooks to run CodeForge'
@@ -74,22 +57,16 @@ export default class Precommit extends Command {
 
   async run(): Promise<void> {
     const { flags } = await this.parse(Precommit)
+    const cwd = process.cwd()
 
-    const options: PrecommitOptions = {
-      command: flags.command,
-      force: flags.force,
-      installer: flags.installer as 'git' | 'husky',
-    }
+    const options = resolvePrecommitOptions(flags)
 
     if (!this.isGitRepository()) {
       this.error('Not a git repository. Please run this command from within a git repository.')
     }
 
     const hookPath = options.installer === 'husky' ? this.getHuskyHookPath() : this.getGitHookPath()
-    const hookDir =
-      options.installer === 'husky'
-        ? join(process.cwd(), '.husky')
-        : join(process.cwd(), '.git', 'hooks')
+    const hookDir = getHookDir(options, cwd)
 
     if (existsSync(hookPath) && !options.force) {
       this.error(`Pre-commit hook already exists at ${hookPath}. Use --force to overwrite.`)
@@ -107,41 +84,22 @@ export default class Precommit extends Command {
       )
     }
 
-    this.log(chalk.green(`✓ Created pre-commit hook at ${hookPath}`))
-    this.log('')
-    this.log(chalk.bold('Hook configuration:'))
-    this.log(chalk.gray(`  Installer: ${options.installer}`))
-    this.log(chalk.gray(`  Command: ${options.command}`))
-    this.log('')
-    this.log(chalk.bold('Next steps:'))
-    if (options.installer === 'husky') {
-      this.log(chalk.gray('  1. Ensure husky is installed (npm install husky --save-dev)'))
-      this.log(chalk.gray('  2. Run `git commit` to trigger the hook'))
-    } else {
-      this.log(chalk.gray('  1. Run `git commit` to trigger the hook'))
-    }
+    displayPostInstallMessage(options, hookPath, (msg) => this.log(msg))
   }
 
-  private generateHookContent(options: PrecommitOptions): string {
-    const huskySource =
-      options.installer === 'husky'
-        ? '. "$(dirname -- "$0")/_/husky.sh" 2>/dev/null || true\n\n'
-        : ''
-
-    return `#!/usr/bin/env sh
-${huskySource}${options.command}
-`
+  generateHookContent(options: PrecommitOptions): string {
+    return generateHookContentHelper(options)
   }
 
-  private getGitHookPath(): string {
-    return join(process.cwd(), '.git', 'hooks', 'pre-commit')
+  getGitHookPath(): string {
+    return getGitHookPathHelper(process.cwd())
   }
 
-  private getHuskyHookPath(): string {
-    return join(process.cwd(), '.husky', 'pre-commit')
+  getHuskyHookPath(): string {
+    return getHuskyHookPathHelper(process.cwd())
   }
 
-  private isGitRepository(): boolean {
-    return existsSync(join(process.cwd(), '.git'))
+  isGitRepository(): boolean {
+    return isGitRepositoryHelper(process.cwd(), existsSync)
   }
 }
