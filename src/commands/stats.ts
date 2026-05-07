@@ -1,35 +1,27 @@
-/**
- * Stats command - displays codebase statistics and metrics.
- *
- * Analyzes source files to collect metrics like lines of code, complexity,
- * file sizes, and code structure counts (classes, functions, etc.).
- *
- * Features:
- * - File-by-file statistics
- * - Aggregate metrics (LOC, complexity, size)
- * - Code structure counting (classes, functions, interfaces, etc.)
- * - Multiple output formats (table, JSON, CSV)
- * - Sortable results
- *
- * @example
- * ```bash
- * codeforge stats
- * codeforge stats --top 10
- * codeforge stats --format json --output stats.json
- * ```
- */
 import { Args, Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
 import ora from 'ora'
-import { type BinaryExpression, Node, type SourceFile } from 'ts-morph'
+import { type BinaryExpression, type SourceFile } from 'ts-morph'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
-import { MAX_TOP_STATS_FILES } from '../utils/constants.js'
 import { logger } from '../utils/logger.js'
+
+import {
+  aggregateStats,
+  buildStatsResult,
+  calculateFileComplexity,
+  countCodeStructures as countCodeStructuresHelper,
+  countLines,
+  formatOutput,
+  isLogicalOperator as isLogicalOperatorHelper,
+  sortFileStats,
+  type CodeStructures,
+  type ProcessedFileResult,
+  type StatsResult,
+} from './stats-helpers.js'
 
 export default class Stats extends Command {
   static override args = {
@@ -93,7 +85,7 @@ export default class Stats extends Command {
     }),
     top: Flags.integer({
       char: 't',
-      default: MAX_TOP_STATS_FILES,
+      default: 10,
       description: 'Number of top files to show',
     }),
     verbose: Flags.boolean({
@@ -105,9 +97,8 @@ export default class Stats extends Command {
 
   private parser: null | Parser = null
 
-  private static isLogicalOperator(node: BinaryExpression): boolean {
-    const operator = node.getOperatorToken().getKind()
-    return operator === 56 || operator === 57
+  static isLogicalOperator(node: BinaryExpression): boolean {
+    return isLogicalOperatorHelper(node)
   }
 
   async run(): Promise<void> {
@@ -165,7 +156,7 @@ export default class Stats extends Command {
     const outputData =
       format === 'json'
         ? JSON.stringify(stats, null, 2)
-        : this.formatOutput(stats, format, flags.top)
+        : formatOutput(stats, format, flags.top)
 
     if (flags.output) {
       try {
@@ -183,36 +174,8 @@ export default class Stats extends Command {
     }
   }
 
-  private calculateFileComplexity(sourceFile: SourceFile): number {
-    let complexity = 0
-
-    function visit(node: Node): void {
-      if (
-        Node.isIfStatement(node) ||
-        Node.isForStatement(node) ||
-        Node.isForInStatement(node) ||
-        Node.isForOfStatement(node) ||
-        Node.isWhileStatement(node) ||
-        Node.isDoStatement(node) ||
-        Node.isCatchClause(node) ||
-        Node.isConditionalExpression(node)
-      ) {
-        complexity += 1
-      }
-
-      if (Node.isCaseClause(node)) {
-        complexity += 1
-      }
-
-      if (Node.isBinaryExpression(node) && Stats.isLogicalOperator(node)) {
-        complexity += 1
-      }
-
-      node.forEachChild(visit)
-    }
-
-    sourceFile.forEachChild(visit)
-    return Math.max(complexity, 1)
+  private countCodeStructures(sourceFile: SourceFile): CodeStructures {
+    return countCodeStructuresHelper(sourceFile)
   }
 
   private async collectStats(
@@ -221,20 +184,6 @@ export default class Stats extends Command {
     sortBy: string,
     format: 'json' | 'table',
   ): Promise<StatsResult> {
-    const fileStats: FileStats[] = []
-    let totalLoc = 0
-    let totalComments = 0
-    let totalBlank = 0
-    let totalComplexity = 0
-    const totalStructures: CodeStructures = {
-      classes: 0,
-      enums: 0,
-      functions: 0,
-      interfaces: 0,
-      methods: 0,
-      typeAliases: 0,
-    }
-    const fileTypes: Record<string, number> = {}
     const tsExtensions = new Set(['.ts', '.tsx'])
     const defaultStructures: CodeStructures = {
       classes: 0,
@@ -245,62 +194,31 @@ export default class Stats extends Command {
       typeAliases: 0,
     }
 
-    const results = await Promise.all(
+    const results: (null | ProcessedFileResult)[] = await Promise.all(
       files.map(async (file) => {
         if (!file) return null
 
         try {
           const content = await fs.readFile(file.absolutePath, 'utf8')
-          const lines = content.split('\n')
-          let loc = 0
-          let comments = 0
-          let blank = 0
-          for (const line of lines) {
-            const trimmed = line.trim()
-            if (trimmed.length === 0) {
-              blank++
-            } else if (trimmed.startsWith('//') || trimmed.startsWith('/*')) {
-              comments++
-            } else {
-              loc++
-            }
-          }
-
+          const { blank, comments, loc } = countLines(content)
           const ext = extname(file.path).toLowerCase()
 
-          const localDefaultStructures: CodeStructures = {
-            classes: 0,
-            enums: 0,
-            functions: 0,
-            interfaces: 0,
-            methods: 0,
-            typeAliases: 0,
-          }
           let complexity = 1
-          let structures = localDefaultStructures
+          let structures: CodeStructures = { ...defaultStructures }
 
           if (this.parser && tsExtensions.has(ext)) {
             try {
               const parseResult = await this.parser.parseFile(file.absolutePath)
-              complexity = this.calculateFileComplexity(parseResult.sourceFile)
+              complexity = calculateFileComplexity(parseResult.sourceFile)
               structures = this.countCodeStructures(parseResult.sourceFile)
             } catch (error) {
               logger.debug(`Failed to parse ${file.path} for complexity/structures: ${error}`)
               complexity = 1
-              structures = localDefaultStructures
+              structures = { ...defaultStructures }
             }
           }
 
-          return {
-            blank,
-            comments,
-            complexity,
-            ext,
-            file,
-            loc,
-            size: content.length,
-            structures,
-          }
+          return { blank, comments, complexity, ext, file, loc, size: content.length, structures }
         } catch (error) {
           if (format !== 'json') {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -315,219 +233,14 @@ export default class Stats extends Command {
             file,
             loc: 0,
             size: 0,
-            structures: defaultStructures,
+            structures: { ...defaultStructures },
           }
         }
       }),
     )
 
-    for (const result of results) {
-      if (!result) continue
-
-      const { blank, comments, complexity, ext, file, loc, size, structures } = result
-
-      fileTypes[ext] = (fileTypes[ext] || 0) + 1
-
-      totalLoc += loc
-      totalComments += comments
-      totalBlank += blank
-      totalComplexity += complexity
-      totalStructures.classes += structures.classes
-      totalStructures.enums += structures.enums
-      totalStructures.functions += structures.functions
-      totalStructures.interfaces += structures.interfaces
-      totalStructures.methods += structures.methods
-      totalStructures.typeAliases += structures.typeAliases
-
-      if (verbose) {
-        fileStats.push({
-          blankLines: blank,
-          commentLines: comments,
-          complexity,
-          loc,
-          name: file.path,
-          size,
-          structures,
-          type: ext || 'unknown',
-        })
-      }
-    }
-
-    fileStats.sort((a, b) => {
-      switch (sortBy) {
-        case 'complexity': {
-          return b.complexity - a.complexity
-        }
-
-        case 'loc': {
-          return b.loc - a.loc
-        }
-
-        case 'name': {
-          return a.name.localeCompare(b.name)
-        }
-
-        default: {
-          return b.size - a.size
-        }
-      }
-    })
-
-    return {
-      files: fileStats.slice(0, MAX_TOP_STATS_FILES),
-      fileTypes,
-      summary: {
-        averageComplexity: files.length > 0 ? Math.round(totalComplexity / files.length) : 0,
-        averageLoc: files.length > 0 ? Math.round(totalLoc / files.length) : 0,
-        blankLines: totalBlank,
-        classes: totalStructures.classes,
-        commentLines: totalComments,
-        complexity: totalComplexity,
-        enums: totalStructures.enums,
-        files: files.length,
-        functions: totalStructures.functions,
-        interfaces: totalStructures.interfaces,
-        loc: totalLoc,
-        methods: totalStructures.methods,
-        typeAliases: totalStructures.typeAliases,
-      },
-    }
-  }
-
-  private countCodeStructures(sourceFile: SourceFile): CodeStructures {
-    const structures: CodeStructures = {
-      classes: 0,
-      enums: 0,
-      functions: 0,
-      interfaces: 0,
-      methods: 0,
-      typeAliases: 0,
-    }
-
-    function visit(node: Node): void {
-      if (Node.isFunctionDeclaration(node)) {
-        structures.functions++
-      }
-
-      if (Node.isMethodDeclaration(node) || Node.isConstructorDeclaration(node)) {
-        structures.methods++
-      }
-
-      if (Node.isClassDeclaration(node)) {
-        structures.classes++
-      }
-
-      if (Node.isInterfaceDeclaration(node)) {
-        structures.interfaces++
-      }
-
-      if (Node.isTypeAliasDeclaration(node)) {
-        structures.typeAliases++
-      }
-
-      if (Node.isEnumDeclaration(node)) {
-        structures.enums++
-      }
-
-      node.forEachChild(visit)
-    }
-
-    sourceFile.forEachChild(visit)
-    return structures
-  }
-
-  private formatCsv(stats: StatsResult): string {
-    const headers = ['File', 'LOC', 'Complexity', 'Size (bytes)', 'Type']
-    const rows = stats.files.map((f) => [
-      f.name,
-      f.loc.toString(),
-      f.complexity.toString(),
-      f.size.toString(),
-      f.type,
-    ])
-    return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n')
-  }
-
-  private formatOutput(stats: StatsResult, format: string, top: number): string {
-    if (format === 'csv') {
-      return this.formatCsv(stats)
-    }
-
-    return this.formatTable(stats, top)
-  }
-
-  private formatTable(stats: StatsResult, top: number): string {
-    const { summary } = stats
-
-    const lines = [
-      chalk.bold('\n📊 Codebase Statistics\n'),
-      chalk.dim('Summary:'),
-      `  Total files: ${summary.files}`,
-      `  Lines of code: ${summary.loc.toLocaleString()}`,
-      `  Total complexity: ${summary.complexity.toLocaleString()}`,
-      `  Blank lines: ${summary.blankLines.toLocaleString()}`,
-      `  Comment lines: ${summary.commentLines.toLocaleString()}`,
-      '',
-      chalk.dim('Code structures:'),
-      `  Classes: ${summary.classes}`,
-      `  Functions: ${summary.functions}`,
-      `  Methods: ${summary.methods}`,
-      `  Interfaces: ${summary.interfaces}`,
-      `  Type aliases: ${summary.typeAliases}`,
-      `  Enums: ${summary.enums}`,
-      '',
-      chalk.dim('File Types:'),
-      ...Object.entries(stats.fileTypes).map(([ext, count]) => `  ${ext}: ${count}`),
-      '',
-      chalk.dim(`Top ${top} Largest Files:`),
-      ...stats.files
-        .slice(0, top)
-        .flatMap((file) => [
-          `  ${file.name}`,
-          `    LOC: ${file.loc}, Complexity: ${file.complexity}, Size: ${file.size} bytes`,
-        ]),
-    ]
-
-    return lines.join('\n')
-  }
-}
-
-interface CodeStructures {
-  classes: number
-  enums: number
-  functions: number
-  interfaces: number
-  methods: number
-  typeAliases: number
-}
-
-interface FileStats {
-  blankLines: number
-  commentLines: number
-  complexity: number
-  loc: number
-  name: string
-  size: number
-  structures: CodeStructures
-  type: string
-}
-
-interface StatsResult {
-  files: FileStats[]
-  fileTypes: Record<string, number>
-  summary: {
-    averageComplexity: number
-    averageLoc: number
-    blankLines: number
-    classes: number
-    commentLines: number
-    complexity: number
-    enums: number
-    files: number
-    functions: number
-    interfaces: number
-    loc: number
-    methods: number
-    typeAliases: number
+    const aggregated = aggregateStats(results, verbose)
+    const sortedStats = sortFileStats(aggregated.fileStats, sortBy)
+    return buildStatsResult(files.length, sortedStats, aggregated)
   }
 }

@@ -1,26 +1,6 @@
-/**
- * Interactive command - interactively reviews and fixes violations.
- *
- * Provides an interactive terminal-based interface for reviewing violations one-by-one
- * and choosing whether to apply fixes, skip them, or quit.
- *
- * Features:
- * - Step-by-step violation review
- * - Fix application with confirmation
- * - Severity filtering
- * - Auto-safe mode for automatic safe fix application
- *
- * @example
- * ```bash
- * codeforge interactive
- * codeforge interactive src/
- * codeforge interactive --auto-safe
- * ```
- */
 import { Args, Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'
-import * as fs from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { createInterface } from 'node:readline'
 
@@ -30,19 +10,15 @@ import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import {
-  MAX_FILES_TO_PROCESS,
-  SEVERITY_ERROR,
-  SEVERITY_INFO,
-  SEVERITY_WARNING,
-  TABLE_DASH_SEPARATOR_WIDTH,
-} from '../utils/constants.js'
+import { MAX_FILES_TO_PROCESS, TABLE_DASH_SEPARATOR_WIDTH } from '../utils/constants.js'
 
-interface FixResult {
-  applied: number
-  skipped: number
-  total: number
-}
+import {
+  type FixResult,
+  applyFix as helperApplyFix,
+  filterBySeverity as helperFilterBySeverity,
+  formatSeverity as helperFormatSeverity,
+  formatSummary,
+} from './interactive-helpers.js'
 
 export default class Interactive extends Command {
   static override args = {
@@ -118,39 +94,14 @@ export default class Interactive extends Command {
 
     const result = await this.reviewViolations(filtered, flags['auto-safe'], flags.verbose)
 
-    this.log('')
-    this.log(chalk.bold('  Summary:'))
-    this.log(`    Applied: ${chalk.green(result.applied.toString())}`)
-    this.log(`    Skipped: ${chalk.yellow(result.skipped.toString())}`)
-    this.log(`    Total:   ${result.total}`)
-    this.log('')
+    const summaryLines = formatSummary(result)
+    for (const line of summaryLines) {
+      this.log(line)
+    }
   }
 
   private async applyFix(filePath: string, violation: RuleViolation): Promise<boolean> {
-    if (!violation.suggestion) {
-      return false
-    }
-
-    try {
-      const content = await fs.readFile(filePath, 'utf8')
-      const lines = content.split('\n')
-      const lineIndex = violation.range.start.line - 1
-
-      if (lineIndex < 0 || lineIndex >= lines.length) {
-        return false
-      }
-
-      const originalLine = lines[lineIndex]
-      if (originalLine === undefined) {
-        return false
-      }
-
-      lines[lineIndex] = violation.suggestion
-      await fs.writeFile(filePath, lines.join('\n'), 'utf8')
-      return true
-    } catch {
-      return false
-    }
+    return helperApplyFix(filePath, violation)
   }
 
   private async collectViolations(targetPath: string): Promise<RuleViolation[]> {
@@ -226,25 +177,11 @@ export default class Interactive extends Command {
     violations: RuleViolation[],
     minSeverity: 'error' | 'info' | 'warning',
   ): RuleViolation[] {
-    const severityOrder = { error: SEVERITY_ERROR, info: SEVERITY_INFO, warning: SEVERITY_WARNING }
-
-    return violations.filter((v) => severityOrder[v.severity] >= severityOrder[minSeverity])
+    return helperFilterBySeverity(violations, minSeverity)
   }
 
   private formatSeverity(severity: 'error' | 'info' | 'warning'): string {
-    switch (severity) {
-      case 'error': {
-        return chalk.red('error')
-      }
-
-      case 'info': {
-        return chalk.blue('info')
-      }
-
-      case 'warning': {
-        return chalk.yellow('warning')
-      }
-    }
+    return helperFormatSeverity(severity)
   }
 
   private async processViolation(

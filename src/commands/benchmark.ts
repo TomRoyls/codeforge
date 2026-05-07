@@ -29,25 +29,14 @@ import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import type { RuleDefinition } from '../rules/types.js'
-import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import {
-  BENCHMARK_TABLE_SEPARATOR_WIDTH,
-  DECIMAL_PRECISION_TIME,
-  LINE_CLEAR_WIDTH,
-  METRIC_FIELD_WIDTH,
-  PERFORMANCE_SLOW_THRESHOLD_MS,
-  PERFORMANCE_VERY_SLOW_THRESHOLD_MS,
-  TOTAL_FIELD_WIDTH,
-} from '../utils/constants.js'
+import { DECIMAL_PRECISION_TIME, LINE_CLEAR_WIDTH } from '../utils/constants.js'
 
-interface BenchmarkResult {
-  avgTime: number
-  maxTime: number
-  minTime: number
-  ruleId: string
-  runCount: number
-  totalTime: number
-}
+import {
+  type BenchmarkResult,
+  getRulesToBenchmark as getRulesToBenchmarkHelper,
+  printResults,
+  writeResults,
+} from './benchmark-helpers.js'
 
 export default class Benchmark extends Command {
   static override args = {
@@ -189,13 +178,27 @@ export default class Benchmark extends Command {
 
     results.sort((a, b) => b.avgTime - a.avgTime)
 
-    this.printResults(results, flags.top)
+    for (const line of printResults(results, flags.top)) {
+      this.log(line)
+    }
 
     if (flags.output) {
-      await this.writeResults(results, flags.output)
+      try {
+        await writeResults(results, flags.output)
+      } catch (error) {
+        this.error(
+          `Failed to write benchmark results to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
       this.log('')
       this.log(chalk.green(`Results written to: ${flags.output}`))
     }
+  }
+
+  async getRulesToBenchmark(
+    requestedRules: string[] | undefined,
+  ): Promise<[string, RuleDefinition][]> {
+    return getRulesToBenchmarkHelper(requestedRules)
   }
 
   private async benchmarkRule(
@@ -238,79 +241,5 @@ export default class Benchmark extends Command {
       ignore: ['node_modules/**', 'dist/**', 'coverage/**', '**/*.d.ts'],
       patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     })
-  }
-
-  private async getRulesToBenchmark(
-    requestedRules: string[] | undefined,
-  ): Promise<[string, RuleDefinition][]> {
-    const allRules = await lazyRuleLoader.loadAllRules()
-    const allEntries = Object.entries(allRules)
-
-    if (!requestedRules || requestedRules.length === 0) {
-      return allEntries
-    }
-
-    const requestedSet = new Set(requestedRules)
-    return allEntries.filter(([ruleId]) => requestedSet.has(ruleId))
-  }
-
-  private printResults(results: BenchmarkResult[], topCount: number): void {
-    this.log(chalk.bold('Results (sorted by average time):'))
-    this.log('')
-
-    const header =
-      'Rule ID'.padEnd(40) +
-      'Avg (ms)'.padStart(METRIC_FIELD_WIDTH) +
-      'Min (ms)'.padStart(METRIC_FIELD_WIDTH) +
-      'Max (ms)'.padStart(METRIC_FIELD_WIDTH) +
-      'Total (ms)'.padStart(TOTAL_FIELD_WIDTH)
-    this.log(chalk.gray(header))
-    this.log(chalk.gray('-'.repeat(BENCHMARK_TABLE_SEPARATOR_WIDTH)))
-
-    const topResults = results.slice(0, topCount)
-
-    for (const result of topResults) {
-      const row =
-        result.ruleId.padEnd(40) +
-        result.avgTime.toFixed(DECIMAL_PRECISION_TIME).padStart(METRIC_FIELD_WIDTH) +
-        result.minTime.toFixed(DECIMAL_PRECISION_TIME).padStart(METRIC_FIELD_WIDTH) +
-        result.maxTime.toFixed(DECIMAL_PRECISION_TIME).padStart(METRIC_FIELD_WIDTH) +
-        result.totalTime.toFixed(2).padStart(TOTAL_FIELD_WIDTH)
-
-      if (result.avgTime > PERFORMANCE_VERY_SLOW_THRESHOLD_MS) {
-        this.log(chalk.red(row))
-      } else if (result.avgTime > PERFORMANCE_SLOW_THRESHOLD_MS) {
-        this.log(chalk.yellow(row))
-      } else {
-        this.log(row)
-      }
-    }
-
-    this.log('')
-    this.log(chalk.cyan('Summary:'))
-    this.log(`  Total rules benchmarked: ${results.length}`)
-    this.log(`  Total time: ${results.reduce((sum, r) => sum + r.totalTime, 0).toFixed(2)}ms`)
-
-    if (results.length > 0) {
-      const slowest = results[0]!
-      const fastest = results.at(-1)!
-      this.log(
-        `  Slowest rule: ${slowest.ruleId} (${slowest.avgTime.toFixed(DECIMAL_PRECISION_TIME)}ms avg)`,
-      )
-      this.log(
-        `  Fastest rule: ${fastest.ruleId} (${fastest.avgTime.toFixed(DECIMAL_PRECISION_TIME)}ms avg)`,
-      )
-    }
-  }
-
-  private async writeResults(results: BenchmarkResult[], outputPath: string): Promise<void> {
-    const { writeFile } = await import('node:fs/promises')
-    try {
-      await writeFile(outputPath, JSON.stringify(results, null, 2))
-    } catch (error) {
-      this.error(
-        `Failed to write benchmark results to ${outputPath}: ${error instanceof Error ? error.message : String(error)}`,
-      )
-    }
   }
 }

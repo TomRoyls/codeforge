@@ -1,22 +1,3 @@
-/**
- * Init command - initializes a new CodeForge configuration file.
- *
- * Creates a CodeForge configuration file (.codeforgerc.json or codeforge.config.js)
- * in the specified directory with default settings for code analysis.
- *
- * Features:
- * - Interactive mode for custom rule selection
- * - Support for both JSON and JavaScript config formats
- * - Minimal mode for quick setup with recommended rules only
- * - TypeScript-aware defaults
- *
- * @example
- * ```bash
- * codeforge init
- * codeforge init --interactive
- * codeforge init --format js
- * ```
- */
 import { Command, Flags } from '@oclif/core'
 import chalk from 'chalk'
 import { existsSync } from 'node:fs'
@@ -25,11 +6,22 @@ import { dirname, join, resolve } from 'node:path'
 import readline from 'node:readline'
 
 import type { CodeForgeConfig } from '../config/types.js'
-import type { RuleSeverity } from '../rules/types.js'
 
-import { CONFIG_FILE_NAMES, DEFAULT_CONFIG } from '../config/types.js'
+import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
+
+import {
+  detectExistingConfig as detectExistingConfigHelper,
+  displayConfigSummary,
+  filterValidRules,
+  generateConfig as generateConfigHelper,
+  generateJsContent as generateJsContentHelper,
+  generateJsonContent as generateJsonContentHelper,
+  getRuleInfos as getRuleInfosHelper,
+  resolveConfigFileName,
+  type RuleInfo,
+} from './init-helpers.js'
 
 interface InitOptions {
   dir: string
@@ -38,13 +30,6 @@ interface InitOptions {
   interactive: boolean
   minimal: boolean
   typescript: boolean
-}
-
-interface RuleInfo {
-  category: string
-  description: string
-  id: string
-  recommended: boolean
 }
 
 export default class Init extends Command {
@@ -142,7 +127,7 @@ export default class Init extends Command {
     }
 
     const config = await this.generateConfig(options, selectedRules)
-    const configFileName = options.format === 'js' ? 'codeforge.config.js' : '.codeforgerc.json'
+    const configFileName = resolveConfigFileName(options.format)
     const configPath = join(configDir, configFileName)
 
     const content =
@@ -157,21 +142,7 @@ export default class Init extends Command {
       )
     }
 
-    this.log(chalk.green(`✓ Created ${configFileName} in ${configDir}`))
-    this.log('')
-    this.log(chalk.bold('Configuration:'))
-    this.log(chalk.gray(`  Files: ${(config.files ?? []).join(', ')}`))
-    this.log(chalk.gray(`  Ignore: ${(config.ignore ?? []).join(', ')}`))
-
-    if (config.rules && Object.keys(config.rules).length > 0) {
-      this.log(chalk.gray(`  Rules: ${Object.keys(config.rules).length} enabled`))
-    }
-
-    this.log('')
-    this.log(chalk.bold('Next steps:'))
-    this.log(chalk.gray('  1. Review and customize the configuration'))
-    this.log(chalk.gray('  2. Run `codeforge analyze` to check your code'))
-    this.log(chalk.gray('  3. Use `codeforge rules` to see all available rules'))
+    displayConfigSummary(config, configFileName, configDir, (msg) => this.log(msg))
   }
 
   private async confirmOverwrite(filePath: string): Promise<boolean> {
@@ -192,68 +163,34 @@ export default class Init extends Command {
   }
 
   private detectExistingConfig(configDir: string): null | string {
-    for (const fileName of CONFIG_FILE_NAMES) {
-      const filePath = join(configDir, fileName)
-      if (existsSync(filePath)) {
-        return filePath
-      }
-    }
-
-    return null
+    return detectExistingConfigHelper(configDir, CONFIG_FILE_NAMES, existsSync)
   }
 
-  private async generateConfig(options: InitOptions, selectedRules?: string[]): Promise<CodeForgeConfig> {
-    const config: CodeForgeConfig = {
-      files: options.typescript
-        ? ['**/*.ts', '**/*.tsx']
-        : ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
-      ignore: [...DEFAULT_CONFIG.ignore!],
-    }
-
-    if (options.minimal) {
-      return config
-    }
-
-    const rules: Record<string, RuleSeverity> = {}
-
-    if (selectedRules === undefined) {
-      const allRules = await lazyRuleLoader.loadAllRules()
-      for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-        if (ruleDef.meta.recommended) {
-          rules[ruleId] = 'error'
-        }
-      }
-    } else {
-      for (const ruleId of selectedRules) {
-        rules[ruleId] = 'error'
-      }
-    }
-
-    if (Object.keys(rules).length > 0) {
-      config.rules = rules as Record<string, [RuleSeverity, never] | RuleSeverity>
-    }
-
-    return config
+  private async generateConfig(
+    options: InitOptions,
+    selectedRules?: string[],
+  ): Promise<CodeForgeConfig> {
+    const allRules = await lazyRuleLoader.loadAllRules()
+    return generateConfigHelper(
+      { ...options, profile: undefined },
+      allRules,
+      selectedRules,
+      getRuleCategory,
+      (msg) => this.log(msg),
+    )
   }
 
   private generateJsContent(config: CodeForgeConfig): string {
-    return `/** @type {import('codeforge').CodeForgeConfig} */
-export default ${JSON.stringify(config, null, 2)};
-`
+    return generateJsContentHelper(config)
   }
 
   private generateJsonContent(config: CodeForgeConfig): string {
-    return JSON.stringify(config, null, 2)
+    return generateJsonContentHelper(config)
   }
 
   private async getRuleInfos(): Promise<RuleInfo[]> {
     const allRules = await lazyRuleLoader.loadAllRules()
-    return Object.entries(allRules).map(([id, def]) => ({
-      category: getRuleCategory(id),
-      description: def.meta.description,
-      id,
-      recommended: def.meta.recommended,
-    }))
+    return getRuleInfosHelper(allRules, getRuleCategory)
   }
 
   private async promptForRules(): Promise<string[]> {
@@ -262,7 +199,9 @@ export default ${JSON.stringify(config, null, 2)};
 
     this.log('')
     this.log(chalk.bold('Select rules to enable:'))
-    this.log(chalk.gray('Enter rule numbers separated by commas, or "all" for recommended rules'))
+    this.log(
+      chalk.gray('Enter rule numbers separated by commas, or "all" for recommended rules'),
+    )
     this.log(chalk.gray('Press Enter to skip (no rules selected)'))
     this.log('')
 
@@ -300,14 +239,10 @@ export default ${JSON.stringify(config, null, 2)};
           return
         }
 
-        const selected = input
-          .split(',')
-          .map((s) => s.trim().toLowerCase())
-          .filter((s) => s.length > 0)
-
-        const validRules = new Set(rules.map((r) => r.id.toLowerCase()))
-        const valid = selected.filter((s) => validRules.has(s))
-        const invalid = selected.filter((s) => !validRules.has(s))
+        const { valid, invalid } = filterValidRules(
+          input,
+          rules.map((r) => r.id),
+        )
 
         if (invalid.length > 0) {
           this.log(chalk.yellow(`Unknown rules ignored: ${invalid.join(', ')}`))

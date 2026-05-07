@@ -1,22 +1,3 @@
-/**
- * OrganizeImports command - organizes and sorts imports in TypeScript files.
- *
- * Analyzes import statements in TypeScript files and reorganizes them according
- * to best practices: external imports first, then internal, then relative.
- *
- * Features:
- * - Import grouping (external, internal, relative)
- * - Alphabetical sorting within groups
- * - Dry-run mode for previewing changes
- * - Configurable sort and group options
- *
- * @example
- * ```bash
- * codeforge organize-imports
- * codeforge organize-imports src/
- * codeforge organize-imports --dry-run
- * ```
- */
 import type { ImportDeclaration, SourceFile } from 'ts-morph'
 
 import { Args, Command, Flags } from '@oclif/core'
@@ -29,20 +10,15 @@ import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { MAX_ORGANIZE_IMPORTS_FILES } from '../utils/constants.js'
 
-interface ImportGroup {
-  external: ImportDeclaration[]
-  internal: ImportDeclaration[]
-  relative: ImportDeclaration[]
-  sideEffects: ImportDeclaration[]
-}
-
-interface OrganizeResult {
-  filesModified: number
-  importsOrganized: number
-  skipped: number
-}
-
-const GROUP_ORDER = ['external', 'internal', 'relative', 'sideEffects'] as const
+import {
+  type ImportGroup,
+  type OrganizeResult,
+  GROUP_ORDER,
+  categorizeImport as helperCategorizeImport,
+  detectInternalPatterns as helperDetectInternalPatterns,
+  displayOrganizeResult,
+  shouldWriteChanges,
+} from './organize-imports-helpers.js'
 
 export default class OrganizeImports extends Command {
   static override args = {
@@ -129,11 +105,7 @@ export default class OrganizeImports extends Command {
       skipped: 0,
     }
 
-    const options = {
-      dryRun: flags['dry-run'],
-      group: flags.group,
-      sort: flags.sort,
-    }
+    const options = { dryRun: flags['dry-run'] ?? false, group: flags.group ?? false, sort: flags.sort ?? false }
 
     const filesToProcess = files.slice(0, MAX_ORGANIZE_IMPORTS_FILES)
 
@@ -160,7 +132,7 @@ export default class OrganizeImports extends Command {
       const organizeResult = this.organizeFile(parseResult.sourceFile, options)
 
       if (organizeResult.changed) {
-        if (flags.write || !flags['dry-run']) {
+        if (shouldWriteChanges(flags)) {
           writePromises.push(
             fs.writeFile(file.absolutePath, organizeResult.organized, 'utf8').then(
               () => {
@@ -189,39 +161,15 @@ export default class OrganizeImports extends Command {
 
     parser.dispose()
 
-    this.log('')
-    this.log(chalk.bold('  Import Organization Complete'))
-    this.log('')
-    this.log(`    Files processed: ${files.length.toString()}`)
-    this.log(`    Imports organized: ${chalk.green(result.importsOrganized.toString())}`)
-    this.log(`    Skipped: ${chalk.yellow(result.skipped.toString())}`)
-
-    if (flags['dry-run']) {
-      this.log('')
-      this.log(chalk.gray('  (dry-run mode - no files were modified)'))
-    }
-
-    this.log('')
+    displayOrganizeResult(result, files.length, flags['dry-run'], (msg) => this.log(msg ?? ''))
   }
 
   private categorizeImport(imp: ImportDeclaration, internalPatterns: string[]): keyof ImportGroup {
-    const source = imp.getModuleSpecifierValue()
-
-    if (!source.startsWith('.') && !source.startsWith('/')) {
-      for (const pattern of internalPatterns) {
-        if (source.startsWith(pattern)) {
-          return 'internal'
-        }
-      }
-
-      return 'external'
-    }
-
-    return 'relative'
+    return helperCategorizeImport(imp, internalPatterns)
   }
 
   private detectInternalPatterns(_sourceFile: SourceFile): string[] {
-    return ['@/', '~/src/', '@/src/']
+    return helperDetectInternalPatterns(_sourceFile)
   }
 
   private getImportGroups(sourceFile: SourceFile, internalPatterns: string[]): ImportGroup {
