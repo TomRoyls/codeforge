@@ -40,7 +40,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [x] GitHub Actions deep integration
 - [x] GitLab CI/CD templates
 - [x] Pre-commit framework hooks
-- [ ] Danger.js integration
+- [x] Danger.js integration
 
 ### Reporting
 
