@@ -21,7 +21,6 @@ import { Args, Command } from '@oclif/core'
 
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
-
 import {
   displayExplainOutput,
   getBestPractices,

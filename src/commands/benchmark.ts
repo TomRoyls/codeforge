@@ -24,13 +24,13 @@ import os from 'node:os'
 import path from 'node:path'
 import pLimit from 'p-limit'
 
+import type { RuleDefinition } from '../rules/types.js'
+
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
-import type { RuleDefinition } from '../rules/types.js'
 import { DECIMAL_PRECISION_TIME, LINE_CLEAR_WIDTH } from '../utils/constants.js'
-
 import {
   type BenchmarkResult,
   getRulesToBenchmark as getRulesToBenchmarkHelper,
@@ -92,6 +92,12 @@ export default class Benchmark extends Command {
       default: true,
       description: 'Run warmup iteration before benchmarking',
     }),
+  }
+
+  async getRulesToBenchmark(
+    requestedRules: string[] | undefined,
+  ): Promise<[string, RuleDefinition][]> {
+    return getRulesToBenchmarkHelper(requestedRules)
   }
 
   async run(): Promise<void> {
@@ -190,15 +196,10 @@ export default class Benchmark extends Command {
           `Failed to write benchmark results to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
+
       this.log('')
       this.log(chalk.green(`Results written to: ${flags.output}`))
     }
-  }
-
-  async getRulesToBenchmark(
-    requestedRules: string[] | undefined,
-  ): Promise<[string, RuleDefinition][]> {
-    return getRulesToBenchmarkHelper(requestedRules)
   }
 
   private async benchmarkRule(

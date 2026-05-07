@@ -24,15 +24,14 @@ import { join, resolve } from 'node:path'
 
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
-
 import {
   buildRuleDocsFromLoaded,
-  type RuleDoc,
   generateIndexContent,
   generateRuleMarkdown as generateRuleMarkdownHelper,
   generateSingleFileContent,
   getBadges as getBadgesHelper,
   groupByCategory as groupByCategoryHelper,
+  type RuleDoc,
 } from './docs-helpers.js'
 
 export default class Docs extends Command {
@@ -77,6 +76,18 @@ export default class Docs extends Command {
       default: false,
       description: 'Generate a single combined file instead of per-rule files',
     }),
+  }
+
+  generateRuleMarkdown(rule: RuleDoc): string {
+    return generateRuleMarkdownHelper(rule)
+  }
+
+  getBadges(rule: RuleDoc): string {
+    return getBadgesHelper(rule)
+  }
+
+  groupByCategory(rules: RuleDoc[]): Record<string, RuleDoc[]> {
+    return groupByCategoryHelper(rules)
   }
 
   async run(): Promise<void> {
@@ -148,18 +159,6 @@ export default class Docs extends Command {
         `Failed to write combined rules doc: ${writeError instanceof Error ? writeError.message : String(writeError)}`,
       )
     }
-  }
-
-  generateRuleMarkdown(rule: RuleDoc): string {
-    return generateRuleMarkdownHelper(rule)
-  }
-
-  getBadges(rule: RuleDoc): string {
-    return getBadgesHelper(rule)
-  }
-
-  groupByCategory(rules: RuleDoc[]): Record<string, RuleDoc[]> {
-    return groupByCategoryHelper(rules)
   }
 
   private async getRules(): Promise<RuleDoc[]> {

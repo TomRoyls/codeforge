@@ -7,15 +7,14 @@ import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { MAX_TOP_SUGGESTIONS } from '../utils/constants.js'
-
 import {
   addSuggestion as addSuggestionHelper,
   displaySuggestions as displaySuggestionsHelper,
   filterSuggestions as filterSuggestionsHelper,
   findMatches as findMatchesHelper,
   PATTERN_DETECTORS,
-  sortSuggestions as sortSuggestionsHelper,
   type RuleSuggestion,
+  sortSuggestions as sortSuggestionsHelper,
   type SuggestedRule,
 } from './suggest-rules-helpers.js'
 

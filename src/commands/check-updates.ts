@@ -24,10 +24,8 @@ import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 
 import { CLIError, SystemError } from '../utils/errors.js'
-
 import {
   type AuditMetadata,
-  type OutdatedPackage,
   buildJsonResult,
   createAuditError,
   createFixSecurityError,
@@ -36,6 +34,7 @@ import {
   formatJsonOutput,
   formatOutdatedTable,
   formatSecuritySummary,
+  type OutdatedPackage,
   parseAuditOutput,
   parseNpmOutput,
 } from './check-updates-helpers.js'

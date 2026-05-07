@@ -10,7 +10,6 @@ import type { CodeForgeConfig } from '../config/types.js'
 import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
-
 import {
   detectExistingConfig as detectExistingConfigHelper,
   displayConfigSummary,
@@ -239,7 +238,7 @@ export default class Init extends Command {
           return
         }
 
-        const { valid, invalid } = filterValidRules(
+        const { invalid, valid } = filterValidRules(
           input,
           rules.map((r) => r.id),
         )

@@ -23,11 +23,10 @@ import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { CLIError } from '../utils/errors.js'
 import { logger } from '../utils/logger.js'
-
 import {
   getPlatformOpenCommand,
-  readAnalysisFile,
   type OutputFormat,
+  readAnalysisFile,
 } from './report-helpers.js'
 
 const execAsync = promisify(exec)
@@ -183,6 +182,7 @@ export default class Report extends Command {
       if (error instanceof CLIError) {
         this.error(error.message, { exit: 1 })
       }
+
       throw error
     }
   }

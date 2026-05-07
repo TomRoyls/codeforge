@@ -33,8 +33,8 @@ import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { MAX_FILES_TO_PROCESS } from '../utils/constants.js'
 import { logger } from '../utils/logger.js'
 import {
-  type DiffReport,
   buildDiffReport,
+  type DiffReport,
   displayDiffReport,
 } from './diff-helpers.js'
 
@@ -87,6 +87,10 @@ export default class Diff extends Command {
       default: false,
       description: 'Show detailed violation changes',
     }),
+  }
+
+  createViolationKey(v: RuleViolation): string {
+    return `${v.filePath}:${v.range.start.line}:${v.ruleId}`
   }
 
   async run(): Promise<void> {
@@ -172,10 +176,6 @@ export default class Diff extends Command {
 
     parser.dispose()
     return allViolations
-  }
-
-  createViolationKey(v: RuleViolation): string {
-    return `${v.filePath}:${v.range.start.line}:${v.ruleId}`
   }
 
   private displayReport(report: DiffReport, verbose: boolean): void {

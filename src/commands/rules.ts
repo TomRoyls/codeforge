@@ -24,10 +24,10 @@ import { Command, Flags } from '@oclif/core'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
-  type OutputFormat,
   filterRules,
   formatTable,
   mapRulesToInfo,
+  type OutputFormat,
 } from './rules-helpers.js'
 
 export default class Rules extends Command {
@@ -91,6 +91,18 @@ export default class Rules extends Command {
     }),
   }
 
+  async getRules(): Promise<Array<{
+    category: string
+    description: string
+    fixable: boolean
+    name: string
+    recommended: boolean
+    severity: string
+  }>> {
+    const allRules = await lazyRuleLoader.loadAllRules()
+    return mapRulesToInfo(allRules, getRuleCategory)
+  }
+
   async run(): Promise<void> {
     const { flags } = await this.parse(Rules)
 
@@ -111,17 +123,5 @@ export default class Rules extends Command {
     } else {
       formatTable(rules, (msg) => this.log(msg))
     }
-  }
-
-  async getRules(): Promise<Array<{
-    category: string
-    description: string
-    fixable: boolean
-    name: string
-    recommended: boolean
-    severity: string
-  }>> {
-    const allRules = await lazyRuleLoader.loadAllRules()
-    return mapRulesToInfo(allRules, getRuleCategory)
   }
 }

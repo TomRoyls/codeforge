@@ -57,6 +57,14 @@ export default class Ci extends Command {
     }),
   }
 
+  generateGitHubActionsContent(): string {
+    return generateGitHubActionsContent()
+  }
+
+  generateGitLabCiContent(): string {
+    return generateGitLabCiContent()
+  }
+
   async run(): Promise<void> {
     const { flags } = await this.parse(Ci)
 
@@ -77,14 +85,6 @@ export default class Ci extends Command {
     }
 
     displayNextSteps((msg) => this.log(msg))
-  }
-
-  generateGitHubActionsContent(): string {
-    return generateGitHubActionsContent()
-  }
-
-  generateGitLabCiContent(): string {
-    return generateGitLabCiContent()
   }
 
   private async generateGitHubActions(outputDir: string, force: boolean): Promise<void> {

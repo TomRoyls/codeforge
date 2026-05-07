@@ -28,25 +28,25 @@ import ora from 'ora'
 import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
-import { logger } from '../utils/logger.js'
 import {
   DATE_FIELD_WIDTH,
   MAX_FILES_TO_PROCESS,
   TABLE_DASH_SEPARATOR_WIDTH,
 } from '../utils/constants.js'
+import { logger } from '../utils/logger.js'
 import {
-  type DebtBreakdown,
-  type DebtHistoryEntry,
-  type DebtReport,
   appendHistoryEntry,
   calculateBreakdown as calcBreakdown,
   calculateInterest as calcInterest,
   calculateOverall as calcOverall,
   computeTrend,
-  formatDebt as fmtDebt,
+  type DebtBreakdown,
   getDebtColor as debtColorFn,
-  getHistoryPath as histPath,
+  type DebtHistoryEntry,
+  type DebtReport,
+  formatDebt as fmtDebt,
   getRecommendations as getRecs,
+  getHistoryPath as histPath,
   setupDebtRuleRegistry,
 } from './debt-helpers.js'
 

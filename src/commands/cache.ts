@@ -66,6 +66,22 @@ export default class Cache extends Command {
     }),
   }
 
+  formatSize(bytes: number): string {
+    return formatSize(bytes)
+  }
+
+  async getCacheStats(cachePath: string): Promise<{ entries: number; size: number }> {
+    try {
+      const files = await fs.readdir(cachePath)
+      const stats = await Promise.all(files.map((file) => fs.stat(join(cachePath, file))))
+      const totalSize = stats.reduce((sum, stat) => sum + stat.size, 0)
+
+      return { entries: files.length, size: totalSize }
+    } catch {
+      return { entries: 0, size: 0 }
+    }
+  }
+
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Cache)
 
@@ -99,24 +115,8 @@ export default class Cache extends Command {
     }
   }
 
-  async getCacheStats(cachePath: string): Promise<{ entries: number; size: number }> {
-    try {
-      const files = await fs.readdir(cachePath)
-      const stats = await Promise.all(files.map((file) => fs.stat(join(cachePath, file))))
-      const totalSize = stats.reduce((sum, stat) => sum + stat.size, 0)
-
-      return { entries: files.length, size: totalSize }
-    } catch {
-      return { entries: 0, size: 0 }
-    }
-  }
-
   private getDefaultCachePath(): string {
     return join(process.cwd(), '.codeforge', 'cache')
-  }
-
-  formatSize(bytes: number): string {
-    return formatSize(bytes)
   }
 
   private async showStatus(cachePath: string): Promise<void> {

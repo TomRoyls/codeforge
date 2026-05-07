@@ -11,13 +11,12 @@ import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { MAX_FILES_TO_PROCESS, TABLE_DASH_SEPARATOR_WIDTH } from '../utils/constants.js'
-
 import {
   type FixResult,
+  formatSummary,
   applyFix as helperApplyFix,
   filterBySeverity as helperFilterBySeverity,
   formatSeverity as helperFormatSeverity,
-  formatSummary,
 } from './interactive-helpers.js'
 
 export default class Interactive extends Command {

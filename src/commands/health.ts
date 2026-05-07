@@ -30,7 +30,6 @@ import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { MAX_FILES_TO_PROCESS } from '../utils/constants.js'
-
 import {
   analyzeComplexity as analyzeComplexityHelper,
   calculateScores,
@@ -80,6 +79,39 @@ export default class Health extends Command {
     }),
   }
 
+  analyzeComplexity(violations: RuleViolation[]): {
+    avgComplexity: number
+    filesAnalyzed: number
+    highComplexityFiles: number
+  } {
+    return analyzeComplexityHelper(violations)
+  }
+
+  displayReport(report: HealthReport, verbose: boolean): void {
+    for (const line of displayReportHelper(report, verbose)) {
+      this.log(line)
+    }
+  }
+
+  formatScore(score: number): string {
+    return formatScoreHelper(score)
+  }
+
+  getGrade(score: number): string {
+    return getGradeHelper(score)
+  }
+
+  getRecommendations(
+    scores: HealthReport['scores'],
+    details: { errors: number; hasTests: boolean; security: number },
+  ): string[] {
+    return getRecommendationsHelper(scores, details)
+  }
+
+  getScoreColor(score: number) {
+    return getScoreColorHelper(score)
+  }
+
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Health)
 
@@ -96,39 +128,6 @@ export default class Health extends Command {
     } else {
       this.displayReport(report, flags.verbose)
     }
-  }
-
-  displayReport(report: HealthReport, verbose: boolean): void {
-    for (const line of displayReportHelper(report, verbose)) {
-      this.log(line)
-    }
-  }
-
-  getGrade(score: number): string {
-    return getGradeHelper(score)
-  }
-
-  getScoreColor(score: number) {
-    return getScoreColorHelper(score)
-  }
-
-  formatScore(score: number): string {
-    return formatScoreHelper(score)
-  }
-
-  getRecommendations(
-    scores: HealthReport['scores'],
-    details: { errors: number; hasTests: boolean; security: number },
-  ): string[] {
-    return getRecommendationsHelper(scores, details)
-  }
-
-  analyzeComplexity(violations: RuleViolation[]): {
-    avgComplexity: number
-    filesAnalyzed: number
-    highComplexityFiles: number
-  } {
-    return analyzeComplexityHelper(violations)
   }
 
   private async analyzeHealth(targetPath: string): Promise<HealthReport> {

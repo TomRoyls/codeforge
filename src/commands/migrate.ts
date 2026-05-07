@@ -10,11 +10,11 @@ import {
 } from '../core/migrators/eslint.js'
 import { MAX_UNMAPPED_RULES_TO_SHOW } from '../utils/constants.js'
 import {
-  type MigrationResult,
   buildCodeForgeConfig,
   formatDryRunOutput,
   formatMigrationSummary,
   formatNextSteps,
+  type MigrationResult,
 } from './migrate-helpers.js'
 
 export default class Migrate extends Command {

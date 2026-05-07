@@ -12,11 +12,11 @@ import {
   checkRulesValid,
   checkTsConfig,
   checkTypeScript,
-  colorMessage as helperColorMessage,
   displayResults,
+  type DoctorResult,
+  colorMessage as helperColorMessage,
   fileExists as helperFileExists,
   getStatusSymbol as helperGetStatusSymbol,
-  type DoctorResult,
 } from './doctor-helpers.js'
 
 export default class Doctor extends Command {
@@ -94,6 +94,7 @@ export default class Doctor extends Command {
       for (const line of displayResults(results, flags.verbose)) {
         this.log(line)
       }
+
       if (flags.verbose) {
         await this.fileExists(process.cwd())
         this.getStatusSymbol('ok')

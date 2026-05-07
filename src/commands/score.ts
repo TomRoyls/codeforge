@@ -30,16 +30,16 @@ import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
+  MAX_FILES_TO_PROCESS,
+  MAX_TOP_STATS_FILES,
+} from '../utils/constants.js'
+import {
   calculateCategoryScore,
   calculateCorrectnessScore,
   calculateFileScore,
 } from './score-calculations.js'
-import { type FileScore, type ScoreReport } from './score-helpers.js'
 import { formatDisplayOutput, generateSuggestions } from './score-formatting.js'
-import {
-  MAX_FILES_TO_PROCESS,
-  MAX_TOP_STATS_FILES,
-} from '../utils/constants.js'
+import { type FileScore, type ScoreReport } from './score-helpers.js'
 
 export default class Score extends Command {
   static override args = {

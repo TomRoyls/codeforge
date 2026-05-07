@@ -3,7 +3,6 @@ import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 
 import {
-  type PrecommitOptions,
   DEFAULT_COMMAND,
   displayPostInstallMessage,
   generateHookContent as generateHookContentHelper,
@@ -11,6 +10,7 @@ import {
   getHookDir,
   getHuskyHookPath as getHuskyHookPathHelper,
   isGitRepository as isGitRepositoryHelper,
+  type PrecommitOptions,
   resolvePrecommitOptions,
 } from './precommit-helpers.js'
 
@@ -55,6 +55,22 @@ export default class Precommit extends Command {
     }),
   }
 
+  generateHookContent(options: PrecommitOptions): string {
+    return generateHookContentHelper(options)
+  }
+
+  getGitHookPath(): string {
+    return getGitHookPathHelper(process.cwd())
+  }
+
+  getHuskyHookPath(): string {
+    return getHuskyHookPathHelper(process.cwd())
+  }
+
+  isGitRepository(): boolean {
+    return isGitRepositoryHelper(process.cwd(), existsSync)
+  }
+
   async run(): Promise<void> {
     const { flags } = await this.parse(Precommit)
     const cwd = process.cwd()
@@ -85,21 +101,5 @@ export default class Precommit extends Command {
     }
 
     displayPostInstallMessage(options, hookPath, (msg) => this.log(msg))
-  }
-
-  generateHookContent(options: PrecommitOptions): string {
-    return generateHookContentHelper(options)
-  }
-
-  getGitHookPath(): string {
-    return getGitHookPathHelper(process.cwd())
-  }
-
-  getHuskyHookPath(): string {
-    return getHuskyHookPathHelper(process.cwd())
-  }
-
-  isGitRepository(): boolean {
-    return isGitRepositoryHelper(process.cwd(), existsSync)
   }
 }

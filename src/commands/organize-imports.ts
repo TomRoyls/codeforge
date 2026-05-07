@@ -9,14 +9,13 @@ import { resolve } from 'node:path'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { MAX_ORGANIZE_IMPORTS_FILES } from '../utils/constants.js'
-
 import {
-  type ImportGroup,
-  type OrganizeResult,
+  displayOrganizeResult,
   GROUP_ORDER,
   categorizeImport as helperCategorizeImport,
   detectInternalPatterns as helperDetectInternalPatterns,
-  displayOrganizeResult,
+  type ImportGroup,
+  type OrganizeResult,
   shouldWriteChanges,
 } from './organize-imports-helpers.js'
 

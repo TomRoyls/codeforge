@@ -10,11 +10,10 @@ import { logger } from '../utils/logger.js'
 import {
   type CircularDependency,
   type CycleDetectionContext,
+  deduplicateCycles as deduplicateCyclesHelper,
   type DependenciesReport,
   type DependencyGraph,
   type DependencyNode,
-  type ImportInfo,
-  deduplicateCycles as deduplicateCyclesHelper,
   detectCircularDependencies as detectCircularDependenciesHelper,
   detectCyclesFromNode as detectCyclesFromNodeHelper,
   displayCircularDependencies as displayCircularDependenciesHelper,
@@ -27,6 +26,7 @@ import {
   finishNodeVisit as finishNodeVisitHelper,
   formatOutput as formatOutputHelper,
   graphToDotFormat as graphToDotFormatHelper,
+  type ImportInfo,
   normalizeCycle as normalizeCycleHelper,
   processDependency as processDependencyHelper,
   recordCycle as recordCycleHelper,
@@ -93,6 +93,46 @@ export default class Dependencies extends Command {
       default: false,
       description: 'Display dependency tree visualization',
     }),
+  }
+
+  deduplicateCycles(cycles: CircularDependency[]): CircularDependency[] {
+    return deduplicateCyclesHelper(cycles)
+  }
+
+  detectCyclesFromNode(currentPath: string, context: CycleDetectionContext): void {
+    return detectCyclesFromNodeHelper(currentPath, context)
+  }
+
+  displayDotFormat(report: DependenciesReport): void {
+    displayDotFormatHelper(report, (msg) => this.log(msg))
+  }
+
+  extractImports(sourceCode: string, filePath: string): ImportInfo[] {
+    return extractImportsHelper(sourceCode, filePath)
+  }
+
+  finishNodeVisit(currentPath: string, path: string[], recursionStack: Set<string>): void {
+    return finishNodeVisitHelper(currentPath, path, recursionStack)
+  }
+
+  normalizeCycle(cycle: readonly string[]): string[] {
+    return normalizeCycleHelper(cycle)
+  }
+
+  processDependency(
+    dependency: string,
+    node: DependencyNode,
+    context: CycleDetectionContext,
+  ): void {
+    return processDependencyHelper(dependency, node, context)
+  }
+
+  recordCycle(
+    dependency: string,
+    node: DependencyNode,
+    context: { cycles: CircularDependency[]; path: string[] },
+  ): void {
+    return recordCycleHelper(dependency, node, context)
   }
 
   async run(): Promise<void> {
@@ -199,20 +239,8 @@ export default class Dependencies extends Command {
     }
   }
 
-  extractImports(sourceCode: string, filePath: string): ImportInfo[] {
-    return extractImportsHelper(sourceCode, filePath)
-  }
-
   private detectCircularDependencies(graph: DependencyGraph): CircularDependency[] {
     return detectCircularDependenciesHelper(graph)
-  }
-
-  private findOrphanFiles(graph: DependencyGraph): string[] {
-    return findOrphanFilesHelper(graph)
-  }
-
-  private graphToDotFormat(graph: DependencyGraph): { edges: [string, string][]; nodes: string[] } {
-    return graphToDotFormatHelper(graph)
   }
 
   private displayCircularDependencies(report: DependenciesReport, format: string): void {
@@ -231,6 +259,10 @@ export default class Dependencies extends Command {
     displayFullReportHelper(report, format, (msg) => this.log(msg))
   }
 
+  private findOrphanFiles(graph: DependencyGraph): string[] {
+    return findOrphanFilesHelper(graph)
+  }
+
   private formatOutput(
     report: DependenciesReport,
     flags: { circular?: boolean; external?: boolean; format?: string },
@@ -238,39 +270,7 @@ export default class Dependencies extends Command {
     return formatOutputHelper(report, flags)
   }
 
-  normalizeCycle(cycle: readonly string[]): string[] {
-    return normalizeCycleHelper(cycle)
-  }
-
-  deduplicateCycles(cycles: CircularDependency[]): CircularDependency[] {
-    return deduplicateCyclesHelper(cycles)
-  }
-
-  displayDotFormat(report: DependenciesReport): void {
-    displayDotFormatHelper(report, (msg) => this.log(msg))
-  }
-
-  processDependency(
-    dependency: string,
-    node: DependencyNode,
-    context: CycleDetectionContext,
-  ): void {
-    return processDependencyHelper(dependency, node, context)
-  }
-
-  recordCycle(
-    dependency: string,
-    node: DependencyNode,
-    context: { cycles: CircularDependency[]; path: string[] },
-  ): void {
-    return recordCycleHelper(dependency, node, context)
-  }
-
-  finishNodeVisit(currentPath: string, path: string[], recursionStack: Set<string>): void {
-    return finishNodeVisitHelper(currentPath, path, recursionStack)
-  }
-
-  detectCyclesFromNode(currentPath: string, context: CycleDetectionContext): void {
-    return detectCyclesFromNodeHelper(currentPath, context)
+  private graphToDotFormat(graph: DependencyGraph): { edges: [string, string][]; nodes: string[] } {
+    return graphToDotFormatHelper(graph)
   }
 }

@@ -8,18 +8,17 @@ import { type BinaryExpression, type SourceFile } from 'ts-morph'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { logger } from '../utils/logger.js'
-
 import {
   aggregateStats,
   buildStatsResult,
   calculateFileComplexity,
+  type CodeStructures,
   countCodeStructures as countCodeStructuresHelper,
   countLines,
   formatOutput,
   isLogicalOperator as isLogicalOperatorHelper,
-  sortFileStats,
-  type CodeStructures,
   type ProcessedFileResult,
+  sortFileStats,
   type StatsResult,
 } from './stats-helpers.js'
 
@@ -174,10 +173,6 @@ export default class Stats extends Command {
     }
   }
 
-  private countCodeStructures(sourceFile: SourceFile): CodeStructures {
-    return countCodeStructuresHelper(sourceFile)
-  }
-
   private async collectStats(
     files: Array<{ absolutePath: string; path: string }>,
     verbose: boolean,
@@ -242,5 +237,9 @@ export default class Stats extends Command {
     const aggregated = aggregateStats(results, verbose)
     const sortedStats = sortFileStats(aggregated.fileStats, sortBy)
     return buildStatsResult(files.length, sortedStats, aggregated)
+  }
+
+  private countCodeStructures(sourceFile: SourceFile): CodeStructures {
+    return countCodeStructuresHelper(sourceFile)
   }
 }

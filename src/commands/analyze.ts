@@ -37,11 +37,6 @@ import { filterSuppressedViolations, parseSuppressionsFromSourceFile } from '../
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
-  compareWithBaselineReport,
-  saveBaselineReport,
-} from './analyze-baseline-helpers.js'
-import { resolveTargetFiles } from './analyze-git-helpers.js'
-import {
   applyFixesToFiles,
   filterFilesByExtension,
   getProfileSeverityOverrides,
@@ -51,6 +46,11 @@ import {
 } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
+import {
+  compareWithBaselineReport,
+  saveBaselineReport,
+} from './analyze-baseline-helpers.js'
+import { resolveTargetFiles } from './analyze-git-helpers.js'
 
 interface FileReport {
   filePath: string
@@ -193,10 +193,18 @@ export default class Analyze extends Command {
   ]
 
   static override flags = {
+    baseline: Flags.string({
+      char: 'B',
+      description: 'Save or compare against a violation baseline for regression detection',
+      options: ['compare', 'save'],
+    }),
     'cache-results': Flags.boolean({
       allowNo: true,
       default: true,
       description: 'Enable caching of analysis results for unchanged files',
+    }),
+    changed: Flags.string({
+      description: 'Analyze files changed compared to a git ref (e.g., main, HEAD~5)',
     }),
     ci: Flags.boolean({
       default: false,
@@ -257,6 +265,12 @@ export default class Analyze extends Command {
       char: 'o',
       description: 'Output file path',
     }),
+    profile: Flags.string({
+      char: 'p',
+      description:
+        'Use a severity profile to override rule severities (strict, moderate, lenient)',
+      options: ['strict', 'moderate', 'lenient'],
+    }),
     quiet: Flags.boolean({
       char: 'q',
       default: false,
@@ -272,23 +286,9 @@ export default class Analyze extends Command {
       description: 'Minimum severity level to report (error, warning, info)',
       options: ['error', 'info', 'warning'],
     }),
-    profile: Flags.string({
-      char: 'p',
-      description:
-        'Use a severity profile to override rule severities (strict, moderate, lenient)',
-      options: ['strict', 'moderate', 'lenient'],
-    }),
-    baseline: Flags.string({
-      char: 'B',
-      description: 'Save or compare against a violation baseline for regression detection',
-      options: ['compare', 'save'],
-    }),
     staged: Flags.boolean({
       default: false,
       description: 'Analyze only staged files in git',
-    }),
-    changed: Flags.string({
-      description: 'Analyze files changed compared to a git ref (e.g., main, HEAD~5)',
     }),
     verbose: Flags.boolean({
       char: 'v',
@@ -418,6 +418,7 @@ export default class Analyze extends Command {
       for (const msg of result.messages) {
         this.log(msg)
       }
+
       if (result.noBaseline || result.exitCode > 0) {
         this.exit(result.exitCode)
       }
@@ -618,6 +619,33 @@ export default class Analyze extends Command {
     return { fixesApplied, fixesSkipped }
   }
 
+  private applyProfileOverrides(
+    violations: RuleViolation[],
+    profile: 'lenient' | 'moderate' | 'strict',
+  ): RuleViolation[] {
+    const overrides = getProfileSeverityOverrides(profile)
+    if (Object.keys(overrides).length === 0) return violations
+    return violations.map((v) => {
+      const override = overrides[v.ruleId]
+      return override ? { ...v, severity: override } : v
+    })
+  }
+
+  private applyProfileOverridesToFileReports(
+    reports: FileReport[],
+    profile: 'lenient' | 'moderate' | 'strict',
+  ): FileReport[] {
+    const overrides = getProfileSeverityOverrides(profile)
+    if (Object.keys(overrides).length === 0) return reports
+    return reports.map((report) => ({
+      ...report,
+      violations: report.violations.map((v) => {
+        const override = overrides[v.ruleId]
+        return override ? { ...v, severity: override } : v
+      }),
+    }))
+  }
+
   private async collectFiles(options: {
     changedMode: string | undefined
     cwd: string
@@ -716,33 +744,6 @@ export default class Analyze extends Command {
         }),
       }))
       .filter((report) => report.violations.length > 0)
-  }
-
-  private applyProfileOverrides(
-    violations: RuleViolation[],
-    profile: 'lenient' | 'moderate' | 'strict',
-  ): RuleViolation[] {
-    const overrides = getProfileSeverityOverrides(profile)
-    if (Object.keys(overrides).length === 0) return violations
-    return violations.map((v) => {
-      const override = overrides[v.ruleId]
-      return override ? { ...v, severity: override } : v
-    })
-  }
-
-  private applyProfileOverridesToFileReports(
-    reports: FileReport[],
-    profile: 'lenient' | 'moderate' | 'strict',
-  ): FileReport[] {
-    const overrides = getProfileSeverityOverrides(profile)
-    if (Object.keys(overrides).length === 0) return reports
-    return reports.map((report) => ({
-      ...report,
-      violations: report.violations.map((v) => {
-        const override = overrides[v.ruleId]
-        return override ? { ...v, severity: override } : v
-      }),
-    }))
   }
 
   private generateSummary(

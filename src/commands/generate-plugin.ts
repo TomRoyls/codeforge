@@ -121,9 +121,8 @@ export default class GeneratePlugin extends Command {
     try {
       // Create directory structure
       this.log(chalk.dim('Creating directory structure...'))
-      for (const dir of getDirectoryPaths(outputDir)) {
-        await fs.mkdir(dir, { recursive: true })
-      }
+      await Promise.all(getDirectoryPaths(outputDir).map((dir) => fs.mkdir(dir, { recursive: true })))
+
       this.log(chalk.dim('✓ Directory structure created'))
 
       // Generate files

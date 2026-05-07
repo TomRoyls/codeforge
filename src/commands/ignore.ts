@@ -10,10 +10,10 @@ import {
   formatNoFileMessage,
   formatPatternList,
   formatRemoveResult,
+  type IgnoreOptions,
   isDuplicatePattern,
   removePatternFromContent,
   resolveIgnoreOptions,
-  type IgnoreOptions,
 } from './ignore-helpers.js'
 
 export default class Ignore extends Command {

@@ -10,10 +10,10 @@ import { Parser } from '../core/parser.js'
 import {
   type AnalysisResult,
   type ExportInfo,
-  type TypeSummary,
   extractExports as extractExportsHelper,
   extractImports as extractImportsHelper,
   formatOutput as formatOutputHelper,
+  type TypeSummary,
 } from './exports-helpers.js'
 
 export default class Exports extends Command {
