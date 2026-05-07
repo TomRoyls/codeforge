@@ -6,9 +6,11 @@ import {
   DEFAULT_COMMAND,
   displayPostInstallMessage,
   generateHookContent as generateHookContentHelper,
+  generatePrecommitFrameworkConfig,
   getGitHookPath as getGitHookPathHelper,
   getHookDir,
   getHuskyHookPath as getHuskyHookPathHelper,
+  getPrecommitFrameworkConfigPath as getPrecommitFrameworkConfigPathHelper,
   isGitRepository as isGitRepositoryHelper,
   type PrecommitOptions,
   resolvePrecommitOptions,
@@ -31,6 +33,10 @@ export default class Precommit extends Command {
       description: 'Overwrite existing pre-commit hook',
     },
     {
+      command: '<%= config.bin %> <%= command.id %> --installer pre-commit-framework',
+      description: 'Set up pre-commit framework hook',
+    },
+    {
       command: '<%= config.bin %> <%= command.id %> --command "npm test"',
       description: 'Use custom command in pre-commit hook',
     },
@@ -51,7 +57,7 @@ export default class Precommit extends Command {
       char: 'i',
       default: 'git',
       description: 'Hook installation method',
-      options: ['git', 'husky'],
+      options: ['git', 'husky', 'pre-commit-framework'],
     }),
   }
 
@@ -65,6 +71,10 @@ export default class Precommit extends Command {
 
   getHuskyHookPath(): string {
     return getHuskyHookPathHelper(process.cwd())
+  }
+
+  getPrecommitFrameworkConfigPath(): string {
+    return getPrecommitFrameworkConfigPathHelper(process.cwd())
   }
 
   isGitRepository(): boolean {
@@ -81,19 +91,27 @@ export default class Precommit extends Command {
       this.error('Not a git repository. Please run this command from within a git repository.')
     }
 
-    const hookPath = options.installer === 'husky' ? this.getHuskyHookPath() : this.getGitHookPath()
+    const hookPath = options.installer === 'husky'
+      ? this.getHuskyHookPath()
+      : options.installer === 'pre-commit-framework'
+        ? this.getPrecommitFrameworkConfigPath()
+        : this.getGitHookPath()
     const hookDir = getHookDir(options, cwd)
 
     if (existsSync(hookPath) && !options.force) {
       this.error(`Pre-commit hook already exists at ${hookPath}. Use --force to overwrite.`)
     }
 
-    const hookContent = this.generateHookContent(options)
+    const hookContent = options.installer === 'pre-commit-framework'
+      ? generatePrecommitFrameworkConfig(options)
+      : this.generateHookContent(options)
 
     try {
       await fs.mkdir(hookDir, { recursive: true })
       await fs.writeFile(hookPath, hookContent, 'utf8')
-      await fs.chmod(hookPath, 0o755)
+      if (options.installer !== 'pre-commit-framework') {
+        await fs.chmod(hookPath, 0o755)
+      }
     } catch (error) {
       this.error(
         `Failed to create pre-commit hook at ${hookPath}: ${error instanceof Error ? error.message : String(error)}`,
