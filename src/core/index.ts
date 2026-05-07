@@ -7,6 +7,8 @@ export type { ParseError, ParseFilesResult, ParseResult, ParserOptions } from '.
 export { Reporter } from './reporter.js'
 export type { AnalysisReport, FileReport, OutputFormat, ReporterOptions } from './reporter.js'
 
+export { formatGitlab, formatJunit, formatSarif } from './reporter-formatters.js'
+
 export {
   filterSuppressedViolations,
   isViolationSuppressed,

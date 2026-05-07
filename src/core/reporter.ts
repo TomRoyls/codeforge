@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path'
 import type { RuleViolation } from '../ast/visitor.js'
 
 import { CLIError } from '../utils/errors.js'
+import { COLORS, formatGitlab, formatJunit, formatSarif } from './reporter-formatters.js'
 
 export type OutputFormat = 'console' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
 
@@ -32,15 +33,6 @@ export interface AnalysisReport {
   }
 }
 
-const COLORS = {
-  blue: '\u001B[34m',
-  bold: '\u001B[1m',
-  dim: '\u001B[2m',
-  red: '\u001B[31m',
-  reset: '\u001B[0m',
-  yellow: '\u001B[33m',
-}
-
 export class Reporter {
   private colors: typeof COLORS
   private options: ReporterOptions
@@ -57,7 +49,7 @@ export class Reporter {
       }
 
       case 'gitlab': {
-        return this.formatGitlab(report)
+        return formatGitlab(report)
       }
 
       case 'html': {
@@ -69,7 +61,7 @@ export class Reporter {
       }
 
       case 'junit': {
-        return this.formatJunit(report)
+        return formatJunit(report)
       }
 
       case 'markdown': {
@@ -77,7 +69,7 @@ export class Reporter {
       }
 
       case 'sarif': {
-        return this.formatSarif(report)
+        return formatSarif(report)
       }
 
       default: {
@@ -131,65 +123,6 @@ export class Reporter {
     return text.replaceAll(/[&<>"']/g, (char) => escapeMap[char] ?? char)
   }
 
-  private escapeXml(text: string): string {
-    const escapeMap: Record<string, string> = {
-      '"': '&quot;',
-      '&': '&amp;',
-      "'": '&#039;',
-      '<': '&lt;',
-      '>': '&gt;',
-    }
-    return text.replaceAll(/[&<>"']/g, (char) => escapeMap[char] ?? char)
-  }
-
-  private extractSarifResults(report: AnalysisReport): unknown[] {
-    const results: unknown[] = []
-
-    for (const file of report.files) {
-      for (const violation of file.violations) {
-        results.push({
-          level: this.mapSeverityToSarifLevel(violation.severity),
-          locations: [
-            {
-              physicalLocation: {
-                artifactLocation: {
-                  uri: file.filePath,
-                },
-                region: {
-                  startColumn: violation.range.start.column,
-                  startLine: violation.range.start.line,
-                },
-              },
-            },
-          ],
-          message: {
-            text: violation.message,
-          },
-          ruleId: violation.ruleId,
-        })
-      }
-    }
-
-    return results
-  }
-
-  private extractSarifRules(report: AnalysisReport): unknown[] {
-    const rulesMap = new Map<string, { id: string; shortDescription: string }>()
-
-    for (const file of report.files) {
-      for (const violation of file.violations) {
-        if (!rulesMap.has(violation.ruleId)) {
-          rulesMap.set(violation.ruleId, {
-            id: violation.ruleId,
-            shortDescription: violation.message.split('.')[0] + '.',
-          })
-        }
-      }
-    }
-
-    return [...rulesMap.values()]
-  }
-
   private formatConsole(report: AnalysisReport): string {
     const lines: string[] = []
 
@@ -236,29 +169,6 @@ export class Reporter {
     )
 
     return lines.join('\n')
-  }
-
-  private formatGitlab(report: AnalysisReport): string {
-    const results: unknown[] = []
-    for (const file of report.files) {
-      for (const v of file.violations) {
-        results.push({
-          check_name: v.ruleId,
-          description: v.message,
-          fingerprint: `${file.filePath}:${v.ruleId}:${v.range.start.line}`,
-          location: {
-            lines: {
-              begin: v.range.start.line,
-            },
-            path: file.filePath,
-          },
-          severity:
-            v.severity === 'error' ? 'critical' : v.severity === 'warning' ? 'major' : 'minor',
-        })
-      }
-    }
-
-    return JSON.stringify(results, null, 2)
   }
 
   private formatHtml(report: AnalysisReport): string {
@@ -327,34 +237,6 @@ export class Reporter {
     return JSON.stringify(report, null, 2)
   }
 
-  private formatJunit(report: AnalysisReport): string {
-    const lines: string[] = []
-    lines.push(
-      '<?xml version="1.0" encoding="UTF-8"?>',
-      '<testsuit name="codeforge-analysis" tests="1" errors="0" failures="0" skipped="0">',
-      `  <properties>`,
-      '    <property name="files-analyzed" value="1" />',
-      `  </properties>`,
-    )
-
-    for (const file of report.files) {
-      if (file.violations.length === 0) continue
-      lines.push(
-        '  <testsuite name="' + file.filePath + '" tests="' + file.violations.length + '">',
-        '    <properties>',
-      )
-      for (const violation of file.violations) {
-        const testcase = this.formatTestCase(violation)
-        lines.push(`      ${testcase}`)
-      }
-
-      lines.push('  </testsuite>')
-    }
-
-    lines.push('</testsuit>')
-    return lines.join('\n')
-  }
-
   private formatMarkdown(report: AnalysisReport): string {
     const lines: string[] = []
     lines.push(
@@ -394,38 +276,6 @@ export class Reporter {
     return lines.join('\n')
   }
 
-  private formatSarif(report: AnalysisReport): string {
-    const sarifLog = {
-      $schema:
-        'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
-      runs: [
-        {
-          results: this.extractSarifResults(report),
-          tool: {
-            driver: {
-              informationUri: 'https://github.com/codeforge-dev/codeforge',
-              name: 'CodeForge',
-              rules: this.extractSarifRules(report),
-              version: '0.1.0',
-            },
-          },
-        },
-      ],
-      version: '2.1.0',
-    }
-    return JSON.stringify(sarifLog, null, 2)
-  }
-
-  private formatTestCase(violation: RuleViolation): string {
-    const location = `${violation.filePath}:${violation.range.start.line}:${violation.range.start.column}`
-    const message = this.escapeXml(violation.message)
-    const ruleId = this.escapeXml(violation.ruleId)
-
-    return `<testcase name="${ruleId}: ${message}" classname="${violation.ruleId}">
-      <failure message="${location}">${message}</failure>
-    </testcase>`
-  }
-
   private getNoColorColors(): typeof COLORS {
     return {
       blue: '',
@@ -457,23 +307,4 @@ export class Reporter {
     }
   }
 
-  private mapSeverityToSarifLevel(severity: string): string {
-    switch (severity) {
-      case 'error': {
-        return 'error'
-      }
-
-      case 'info': {
-        return 'note'
-      }
-
-      case 'warning': {
-        return 'warning'
-      }
-
-      default: {
-        return 'none'
-      }
-    }
-  }
 }
