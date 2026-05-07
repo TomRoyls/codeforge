@@ -4,7 +4,7 @@ import { applyFixesToFile, applyFixesToFiles, type RuleWithFix } from '../../../
 import type { FileFixReport, FixReport, FixResult, TextChange } from '../../../src/fix/types.js'
 import type { RuleViolation } from '../../../src/ast/visitor.js'
 import { RuleRegistry, createDefaultRegistry } from '../../../src/core/rule-registry.js'
-import { allRules, getRule, getRuleIds, getRuleCategory } from '../../../src/rules/index.js'
+import { allRules, getRule, getRuleIds, getRuleCategory } from '../../helpers/rule-helpers.js'
 import { renderTextChangesAsDiff, formatDiffForConsole } from '../../../src/fix/diff-renderer.js'
 
 function createMockSourceFile(text: string): SourceFile {

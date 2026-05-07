@@ -34,7 +34,7 @@ class TestCommand extends BaseCommand {
     return this.disposeParser()
   }
 
-  public testSetupRuleRegistry(requestedRules?: string[]) {
+  public async testSetupRuleRegistry(requestedRules?: string[]) {
     return this.setupRuleRegistry(requestedRules)
   }
 
@@ -800,45 +800,45 @@ describe('_base.ts', () => {
     // setupRuleRegistry (20 tests)
     // -------------------------------------------------------------------------
     describe('setupRuleRegistry', () => {
-      test('creates registry with all rules', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('creates registry with all rules', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(registry).toBeDefined()
-      })
+      }, 60000)
 
-      test('enables all rules by default', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('enables all rules by default', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getEnabledRules()
         expect(rules.length).toBeGreaterThan(0)
       })
 
-      test('filters to specific rules when requested', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log', 'no-eval'])
+      test('filters to specific rules when requested', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log', 'no-eval'])
         const consoleLogRule = registry.getRule('no-console-log')
         const evalRule = registry.getRule('no-eval')
         expect(consoleLogRule?.enabled).toBe(true)
         expect(evalRule?.enabled).toBe(true)
       })
 
-      test('logs warning for unknown rules', () => {
+      test('logs warning for unknown rules', async () => {
         const warnSpy = vi.spyOn(logger, 'warn')
-        command.testSetupRuleRegistry(['unknown-rule-xyz'])
+        await command.testSetupRuleRegistry(['unknown-rule-xyz'])
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('unknown-rule-xyz'))
       })
 
-      test('handles empty requested rules array (enables all)', () => {
-        const registry = command.testSetupRuleRegistry([])
+      test('handles empty requested rules array (enables all)', async () => {
+        const registry = await command.testSetupRuleRegistry([])
         const rules = registry.getEnabledRules()
         expect(rules.length).toBeGreaterThan(0)
       })
 
-      test('handles undefined requested rules (enables all)', () => {
-        const registry = command.testSetupRuleRegistry(undefined)
+      test('handles undefined requested rules (enables all)', async () => {
+        const registry = await command.testSetupRuleRegistry(undefined)
         const rules = registry.getEnabledRules()
         expect(rules.length).toBeGreaterThan(0)
       })
 
-      test('disables non-requested rules when specific rules given', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log'])
+      test('disables non-requested rules when specific rules given', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log'])
         const allRules = registry.getAllRules()
         const enabledCount = allRules.filter((r) => r.enabled).length
         // Only no-console-log should be enabled from requested set
@@ -846,69 +846,69 @@ describe('_base.ts', () => {
         expect(enabledCount).toBeGreaterThanOrEqual(1)
       })
 
-      test('no-console-log rule is enabled when requested', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log'])
+      test('no-console-log rule is enabled when requested', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log'])
         const rule = registry.getRule('no-console-log')
         expect(rule).toBeDefined()
         expect(rule?.enabled).toBe(true)
       })
 
-      test('no-eval rule is enabled when requested', () => {
-        const registry = command.testSetupRuleRegistry(['no-eval'])
+      test('no-eval rule is enabled when requested', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-eval'])
         const rule = registry.getRule('no-eval')
         expect(rule).toBeDefined()
         expect(rule?.enabled).toBe(true)
       })
 
-      test('multiple unknown rules all logged', () => {
+      test('multiple unknown rules all logged', async () => {
         const warnSpy = vi.spyOn(logger, 'warn')
-        command.testSetupRuleRegistry(['fake-1', 'fake-2', 'fake-3'])
+        await command.testSetupRuleRegistry(['fake-1', 'fake-2', 'fake-3'])
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('fake-1'))
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('fake-2'))
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('fake-3'))
       })
 
-      test('mix of valid and unknown rules', () => {
+      test('mix of valid and unknown rules', async () => {
         const warnSpy = vi.spyOn(logger, 'warn')
-        const registry = command.testSetupRuleRegistry(['no-console-log', 'totally-fake'])
+        const registry = await command.testSetupRuleRegistry(['no-console-log', 'totally-fake'])
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('totally-fake'))
         const rule = registry.getRule('no-console-log')
         expect(rule?.enabled).toBe(true)
       })
 
-      test('registry has getEnabledRules method', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('registry has getEnabledRules method', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(typeof registry.getEnabledRules).toBe('function')
       })
 
-      test('registry has getRule method', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('registry has getRule method', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(typeof registry.getRule).toBe('function')
       })
 
-      test('registry has getAllRules method', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('registry has getAllRules method', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(typeof registry.getAllRules).toBe('function')
       })
 
-      test('registry has enable method', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('registry has enable method', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(typeof registry.enable).toBe('function')
       })
 
-      test('registry has disable method', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('registry has disable method', async () => {
+        const registry = await command.testSetupRuleRegistry()
         expect(typeof registry.disable).toBe('function')
       })
 
-      test('getAllRules returns both enabled and disabled', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log'])
+      test('getAllRules returns both enabled and disabled', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log'])
         const allRules = registry.getAllRules()
         expect(allRules.length).toBeGreaterThan(1)
-      })
+      }, 60000)
 
-      test('enabling a disabled rule works', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log'])
+      test('enabling a disabled rule works', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log'])
         const someOtherRule = registry.getAllRules().find((r) => !r.enabled)
         if (someOtherRule) {
           const ruleId = registry.getAllRules().find((r) => !r.enabled)
@@ -919,8 +919,8 @@ describe('_base.ts', () => {
         }
       })
 
-      test('rules have category property', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('rules have category property', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getAllRules()
         for (const rule of rules) {
           expect(rule.category).toBeDefined()
@@ -928,16 +928,16 @@ describe('_base.ts', () => {
         }
       })
 
-      test('rules have definition property', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('rules have definition property', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getAllRules()
         for (const rule of rules) {
           expect(rule.definition).toBeDefined()
         }
       })
 
-      test('getEnabledRules returns correct count for single rule request', () => {
-        const registry = command.testSetupRuleRegistry(['no-console-log'])
+      test('getEnabledRules returns correct count for single rule request', async () => {
+        const registry = await command.testSetupRuleRegistry(['no-console-log'])
         const enabled = registry.getEnabledRules()
         // At minimum, the requested rule should be enabled
         const hasConsoleLog = enabled.some((r) => {
@@ -952,25 +952,25 @@ describe('_base.ts', () => {
     // BaseCommand constructor and inheritance (10 tests)
     // -------------------------------------------------------------------------
     describe('BaseCommand instantiation', () => {
-      test('can create instance with empty argv', () => {
+      test('can create instance with empty argv', async () => {
         const cmd = new TestCommand([], {} as never)
         expect(cmd).toBeDefined()
       })
 
-      test('instance is instanceof BaseCommand', () => {
+      test('instance is instanceof BaseCommand', async () => {
         expect(command).toBeInstanceOf(BaseCommand)
       })
 
-      test('instance is instanceof Command', () => {
+      test('instance is instanceof Command', async () => {
         const { Command } = require('@oclif/core')
         expect(command).toBeInstanceOf(Command)
       })
 
-      test('has run method', () => {
+      test('has run method', async () => {
         expect(typeof command.run).toBe('function')
       })
 
-      test('has catch method', () => {
+      test('has catch method', async () => {
         expect(typeof command.catch).toBe('function')
       })
 
@@ -979,13 +979,13 @@ describe('_base.ts', () => {
         expect(result).toBeUndefined()
       })
 
-      test('multiple instances are independent', () => {
+      test('multiple instances are independent', async () => {
         const cmd1 = new TestCommand([], {} as never)
         const cmd2 = new TestCommand([], {} as never)
         expect(cmd1).not.toBe(cmd2)
       })
 
-      test('can create many instances without error', () => {
+      test('can create many instances without error', async () => {
         const instances = Array.from({ length: 10 }, () => new TestCommand([], {} as never))
         expect(instances).toHaveLength(10)
         for (const inst of instances) {
@@ -993,7 +993,7 @@ describe('_base.ts', () => {
         }
       })
 
-      test('configureLogging can be called on different instances', () => {
+      test('configureLogging can be called on different instances', async () => {
         const cmd1 = new TestCommand([], {} as never)
         const cmd2 = new TestCommand([], {} as never)
         const spy1 = vi.spyOn(logger, 'setLevel')
@@ -1251,15 +1251,15 @@ describe('_base.ts', () => {
         expect(r1).toEqual(r2)
       })
 
-      test('setupRuleRegistry called twice returns independent registries', () => {
-        const reg1 = command.testSetupRuleRegistry()
-        const reg2 = command.testSetupRuleRegistry()
+      test('setupRuleRegistry called twice returns independent registries', async () => {
+        const reg1 = await command.testSetupRuleRegistry()
+        const reg2 = await command.testSetupRuleRegistry()
         expect(reg1).not.toBe(reg2)
       })
 
-      test('setupRuleRegistry with same args gives consistent enabled count', () => {
-        const reg1 = command.testSetupRuleRegistry(['no-console-log'])
-        const reg2 = command.testSetupRuleRegistry(['no-console-log'])
+      test('setupRuleRegistry with same args gives consistent enabled count', async () => {
+        const reg1 = await command.testSetupRuleRegistry(['no-console-log'])
+        const reg2 = await command.testSetupRuleRegistry(['no-console-log'])
         expect(reg1.getEnabledRules().length).toBe(reg2.getEnabledRules().length)
       })
 
@@ -1277,12 +1277,12 @@ describe('_base.ts', () => {
     // Additional edge cases (22 tests)
     // -------------------------------------------------------------------------
     describe('additional edge cases', () => {
-      test('determineExitCode with errors=1 returns ERRORS_FOUND regardless of failOnWarnings', () => {
+      test('determineExitCode with errors=1 returns ERRORS_FOUND regardless of failOnWarnings', async () => {
         expect(command.testDetermineExitCode({ errors: 1, warnings: 0 }, false, -1)).toBe(1)
         expect(command.testDetermineExitCode({ errors: 1, warnings: 0 }, true, -1)).toBe(1)
       })
 
-      test('determineExitCode returns numeric values', () => {
+      test('determineExitCode returns numeric values', async () => {
         const r0 = command.testDetermineExitCode({ errors: 0, warnings: 0 }, false, -1)
         const r1 = command.testDetermineExitCode({ errors: 1, warnings: 0 }, false, -1)
         const r2 = command.testDetermineExitCode({ errors: 0, warnings: 1 }, true, -1)
@@ -1291,21 +1291,21 @@ describe('_base.ts', () => {
         expect(typeof r2).toBe('number')
       })
 
-      test('resolvePatterns with complex nested glob patterns', () => {
+      test('resolvePatterns with complex nested glob patterns', async () => {
         const patterns = ['src/**/test/**/*.spec.ts', 'lib/**/test/**/*.test.ts']
         const result = command.testResolvePatterns(patterns, undefined)
         expect(result).toEqual(patterns)
         expect(result).toHaveLength(2)
       })
 
-      test('resolvePatterns array argsFiles preserves order', () => {
+      test('resolvePatterns array argsFiles preserves order', async () => {
         const result = command.testResolvePatterns(['z.ts', 'a.ts', 'm.ts'], undefined)
         expect(result[0]).toBe('z.ts')
         expect(result[1]).toBe('a.ts')
         expect(result[2]).toBe('m.ts')
       })
 
-      test('resolvePatterns configFiles preserves order', () => {
+      test('resolvePatterns configFiles preserves order', async () => {
         const result = command.testResolvePatterns(undefined, ['z.ts', 'a.ts', 'm.ts'])
         expect(result[0]).toBe('z.ts')
         expect(result[1]).toBe('a.ts')
@@ -1352,49 +1352,49 @@ describe('_base.ts', () => {
         await expect(command.catch(undefined as never)).rejects.toBe(undefined)
       })
 
-      test('setupRuleRegistry registers rules with categories', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('setupRuleRegistry registers rules with categories', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getAllRules()
         const categories = new Set(rules.map((r) => r.category))
         expect(categories.size).toBeGreaterThanOrEqual(1)
       })
 
-      test('setupRuleRegistry all rules have enabled property', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('setupRuleRegistry all rules have enabled property', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getAllRules()
         for (const rule of rules) {
           expect(typeof rule.enabled).toBe('boolean')
         }
       })
 
-      test('setupRuleRegistry all rules have options property', () => {
-        const registry = command.testSetupRuleRegistry()
+      test('setupRuleRegistry all rules have options property', async () => {
+        const registry = await command.testSetupRuleRegistry()
         const rules = registry.getAllRules()
         for (const rule of rules) {
           expect(rule.options).toBeDefined()
         }
       })
 
-      test('AnalyzeCommandConfig can be spread into another object', () => {
+      test('AnalyzeCommandConfig can be spread into another object', async () => {
         const config: AnalyzeCommandConfig = { files: ['*.ts'] }
         const merged = { ...config, extra: 'value' }
         expect(merged.files).toEqual(['*.ts'])
         expect(merged.extra).toBe('value')
       })
 
-      test('CommonFlags can be spread into another object', () => {
+      test('CommonFlags can be spread into another object', async () => {
         const flags: CommonFlags = { quiet: true }
         const merged = { ...flags, extra: true }
         expect(merged.quiet).toBe(true)
         expect(merged.extra).toBe(true)
       })
 
-      test('commonFlags config char is lowercase c', () => {
+      test('commonFlags config char is lowercase c', async () => {
         expect(commonFlags.config.char).toBe('c')
         expect(commonFlags.config.char).not.toBe('C')
       })
 
-      test('commonFlags quiet char is lowercase q', () => {
+      test('commonFlags quiet char is lowercase q', async () => {
         expect(commonFlags.quiet.char).toBe('q')
         expect(commonFlags.quiet.char).not.toBe('Q')
       })

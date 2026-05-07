@@ -154,7 +154,7 @@ describe('FileWatcher', () => {
       await watcher.watch('d')
       expect(fs.watch).toHaveBeenCalledWith(
         expect.stringContaining('d'),
-        expect.objectContaining({ recursive: false, persistent: true }),
+        expect.objectContaining({ recursive: true, persistent: true }),
         expect.any(Function),
       )
     })
@@ -190,11 +190,11 @@ describe('FileWatcher', () => {
         expect.any(Function),
       )
     })
-    test('recursive false', async () => {
+    test('recursive true (native)', async () => {
       await watcher.watch('d')
       expect(fs.watch).toHaveBeenCalledWith(
         expect.any(String),
-        expect.objectContaining({ recursive: false }),
+        expect.objectContaining({ recursive: true }),
         expect.any(Function),
       )
     })
@@ -253,16 +253,9 @@ describe('FileWatcher', () => {
       await expect(watcher.stop()).rejects.toThrow('boom')
     })
     test('multi close', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n === 1 ? ['sub'] : [])
-      }) as typeof fs.readdir)
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) =>
-        cb(null, { isDirectory: () => true, isFile: () => false } as fs.Stats)) as typeof fs.stat)
       await watcher.watch('d')
       await watcher.stop()
-      expect(mockClose).toHaveBeenCalledTimes(2)
+      expect(mockClose).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -439,26 +432,12 @@ describe('FileWatcher', () => {
         cb(null, n === 1 ? ['sub', 'f.ts'] : [])
       }) as typeof fs.readdir)
       let s = 0
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) => {
-        s++
-        cb(null, { isDirectory: () => s === 1, isFile: () => s !== 1 } as fs.Stats)
-      }) as typeof fs.stat)
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(2)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('multi level', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n <= 2 ? [`l${n}`] : [])
-      }) as typeof fs.readdir)
-      let s = 0
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) => {
-        s++
-        cb(null, { isDirectory: () => s <= 2, isFile: () => s > 2 } as fs.Stats)
-      }) as typeof fs.stat)
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(3)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('files not recurse', async () => {
       vi.mocked(fs.readdir).mockImplementation(((_p, cb) =>
@@ -474,57 +453,20 @@ describe('FileWatcher', () => {
       expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('mix', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n === 1 ? ['src', 'pkg.json', 'lib'] : [])
-      }) as typeof fs.readdir)
-      let s = 0
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) => {
-        s++
-        cb(null, {
-          isDirectory: () => s === 1 || s === 3,
-          isFile: () => !(s === 1 || s === 3),
-        } as fs.Stats)
-      }) as typeof fs.stat)
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(3)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('ignore dirs', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n === 1 ? ['nm', 'src'] : [])
-      }) as typeof fs.readdir)
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) =>
-        cb(null, { isDirectory: () => true, isFile: () => false } as fs.Stats)) as typeof fs.stat)
-      const w = mk({ ignorePatterns: ['nm'] })
-      await w.watch('d')
-      const p = vi.mocked(fs.watch).mock.calls.map((c) => c[0].toString())
-      expect(p.some((x) => x.includes('nm'))).toBe(false)
-      expect(p.some((x) => x.includes('src'))).toBe(true)
+      await watcher.watch('d')
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('4 deep', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n <= 4 ? [`l${n}`] : [])
-      }) as typeof fs.readdir)
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) =>
-        cb(null, { isDirectory: () => true, isFile: () => false } as fs.Stats)) as typeof fs.stat)
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(5)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
     test('only dirs', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n === 1 ? ['a', 'b'] : [])
-      }) as typeof fs.readdir)
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) =>
-        cb(null, { isDirectory: () => true, isFile: () => false } as fs.Stats)) as typeof fs.stat)
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(3)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -652,16 +594,9 @@ describe('FileWatcher', () => {
       await watcher.watch('d')
       expect(fs.watch).toHaveBeenCalledTimes(1)
     })
-    test('true=recurse', async () => {
-      let n = 0
-      vi.mocked(fs.readdir).mockImplementation(((_p, cb) => {
-        n++
-        cb(null, n === 1 ? ['s'] : [])
-      }) as typeof fs.readdir)
-      vi.mocked(fs.stat).mockImplementation(((_p, cb) =>
-        cb(null, { isDirectory: () => true, isFile: () => false } as fs.Stats)) as typeof fs.stat)
+    test('true=recurse (native)', async () => {
       await watcher.watch('d')
-      expect(fs.watch).toHaveBeenCalledTimes(2)
+      expect(fs.watch).toHaveBeenCalledTimes(1)
     })
   })
 

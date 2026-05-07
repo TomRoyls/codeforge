@@ -629,17 +629,17 @@ describe('no-unnecessary-math-round-integer rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee is missing — throws instead', () => {
+    test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathRoundInteger.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', arguments: [makeNumericLiteral(5)], loc: makeLoc(1, 0, 1, 15) })).toThrow()
+      visitor.CallExpression({ type: 'CallExpression', arguments: [makeNumericLiteral(5)], loc: makeLoc(1, 0, 1, 15) })
       expect(reports.length).toBe(0)
     })
 
-    test('does not report when callee is null — throws instead', () => {
+    test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathRoundInteger.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeNumericLiteral(5)], loc: makeLoc(1, 0, 1, 15) })).toThrow()
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeNumericLiteral(5)], loc: makeLoc(1, 0, 1, 15) })
       expect(reports.length).toBe(0)
     })
 

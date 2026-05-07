@@ -23,7 +23,7 @@ import {
 import { discoverConfig } from '../../../src/config/discovery.js'
 import { parseConfigFile } from '../../../src/config/parser.js'
 import { discoverFiles } from '../../../src/core/file-discovery.js'
-import { getRuleIds } from '../../../src/rules/index.js'
+import { lazyRuleLoader } from '../../../src/rules/lazy-loader.js'
 
 // ============================================================================
 // Mocks
@@ -50,8 +50,12 @@ vi.mock('../../../src/core/file-discovery.js', () => ({
   discoverFiles: vi.fn(() => []),
 }))
 
-vi.mock('../../../src/rules/index.js', () => ({
-  getRuleIds: vi.fn(() => ['rule-a', 'rule-b']),
+vi.mock('../../../src/rules/lazy-loader.js', () => ({
+  lazyRuleLoader: {
+    getRuleIds: vi.fn(() => ['rule-a', 'rule-b']),
+    loadAllRules: vi.fn(),
+    loadRules: vi.fn(),
+  },
 }))
 
 // ============================================================================
@@ -1233,7 +1237,7 @@ describe('checkRulesValid', () => {
   test('pushes ok when all configured rules are known', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'rule-a': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks).toHaveLength(1)
@@ -1244,7 +1248,7 @@ describe('checkRulesValid', () => {
   test('pushes error when unknown rules found', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'unknown-rule': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks).toHaveLength(1)
@@ -1262,7 +1266,7 @@ describe('checkRulesValid', () => {
   test('details show valid rules list on unknown rule error', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'bad-rule': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.details).toContain('rule-a')
@@ -1279,7 +1283,7 @@ describe('checkRulesValid', () => {
   test('pushes ok when config has no rules property', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ files: ['**/*.ts'] })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks).toHaveLength(1)
@@ -1291,7 +1295,7 @@ describe('checkRulesValid', () => {
     vi.mocked(parseConfigFile).mockResolvedValue({
       rules: { 'bad-a': 'error', 'bad-b': 'warn', 'rule-a': 'off' },
     })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.status).toBe('error')
@@ -1302,7 +1306,7 @@ describe('checkRulesValid', () => {
   test('handles empty rules object', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: {} })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks).toHaveLength(1)
@@ -1312,7 +1316,7 @@ describe('checkRulesValid', () => {
   test('details on error show valid rules with ellipsis', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'bad-rule': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['r1', 'r2', 'r3', 'r4', 'r5', 'r6'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['r1', 'r2', 'r3', 'r4', 'r5', 'r6'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.details).toContain('r1')
@@ -1322,7 +1326,7 @@ describe('checkRulesValid', () => {
   test('ok message when all configured rules match known rules', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'rule-a': 'error', 'rule-b': 'warn' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a', 'rule-b'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.status).toBe('ok')
@@ -1332,7 +1336,7 @@ describe('checkRulesValid', () => {
   test('ok check has no details', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'rule-a': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.details).toBeUndefined()
@@ -1341,7 +1345,7 @@ describe('checkRulesValid', () => {
   test('error details include all valid rules up to max shown', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'bad-rule': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['r1', 'r2'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['r1', 'r2'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.details).toContain('r1')
@@ -1351,7 +1355,7 @@ describe('checkRulesValid', () => {
   test('single unknown rule message format', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'unknown-rule': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.message).toBe('Unknown rules found: unknown-rule')
@@ -1360,7 +1364,7 @@ describe('checkRulesValid', () => {
   test('handles all rules being unknown', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { x: 'error', y: 'warn', z: 'off' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks[0]!.status).toBe('error')
@@ -1372,7 +1376,7 @@ describe('checkRulesValid', () => {
   test('pushes exactly one check', async () => {
     vi.mocked(discoverConfig).mockResolvedValue('/project/.codeforgerc.json')
     vi.mocked(parseConfigFile).mockResolvedValue({ rules: { 'rule-a': 'error' } })
-    vi.mocked(getRuleIds).mockReturnValue(['rule-a'])
+    vi.mocked(lazyRuleLoader.getRuleIds).mockReturnValue(['rule-a'])
     const results = makeDoctorResult()
     await checkRulesValid(results, cwd)
     expect(results.checks).toHaveLength(1)

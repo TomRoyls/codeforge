@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import Explain from '../../../src/commands/explain.js'
-import { allRules, getRuleCategory } from '../../../src/rules/index.js'
+import { allRules, getRuleCategory } from '../../helpers/rule-helpers.js'
 
 // Helper to create a command with mocked internals
 function createCommand(ruleId?: string) {

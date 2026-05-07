@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import Why from '../../../src/commands/why.js'
-import { getRule, getRuleCategory } from '../../../src/rules/index.js'
+import { getRule, getRuleCategory } from '../../helpers/rule-helpers.js'
 
 describe('Why Command', () => {
   describe('Command metadata', () => {

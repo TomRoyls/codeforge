@@ -43,6 +43,30 @@ vi.mock('../../../src/rules/index.js', () => ({
   getRuleCategory: vi.fn().mockReturnValue('best-practices'),
 }))
 
+vi.mock('../../../src/rules/categories.js', () => ({
+  RULE_CATEGORIES: {},
+  getRuleCategory: vi.fn().mockReturnValue('best-practices'),
+}))
+
+vi.mock('../../../src/rules/lazy-loader.js', () => ({
+  lazyRuleLoader: {
+    getRuleIds: vi.fn().mockReturnValue(['test-rule']),
+    loadAllRules: vi.fn().mockResolvedValue({
+      'test-rule': { id: 'test-rule', meta: { name: 'Test Rule' } },
+    }),
+    loadRules: vi.fn().mockImplementation(async (ruleIds: string[]) => {
+      const all: Record<string, object> = {
+        'test-rule': { id: 'test-rule', meta: { name: 'Test Rule' } },
+      }
+      const result: Record<string, object> = {}
+      for (const id of ruleIds) {
+        if (all[id]) result[id] = all[id]
+      }
+      return result
+    }),
+  },
+}))
+
 describe('ExitCode', () => {
   test('should have correct constant values', () => {
     expect(ExitCode.CONFIG_ERROR).toBe(3)
@@ -327,7 +351,7 @@ class TestableBaseCommand extends BaseCommand {
     return this.loadConfig(flags)
   }
 
-  public testSetupRuleRegistry(requestedRules?: string[]) {
+  public async testSetupRuleRegistry(requestedRules?: string[]) {
     return this.setupRuleRegistry(requestedRules)
   }
 
@@ -780,83 +804,83 @@ describe('TestableBaseCommand', () => {
   })
 
   describe('setupRuleRegistry', () => {
-    test('should register all rules when no filter', () => {
-      const registry = cmd.testSetupRuleRegistry()
+    test('should register all rules when no filter', async () => {
+      const registry = await cmd.testSetupRuleRegistry()
       expect(registry).toBeDefined()
     })
 
-    test('should filter to requested rules', () => {
-      const registry = cmd.testSetupRuleRegistry(['test-rule'])
+    test('should filter to requested rules', async () => {
+      const registry = await cmd.testSetupRuleRegistry(['test-rule'])
       expect(registry).toBeDefined()
     })
 
-    test('should warn on unknown rules', () => {
+    test('should warn on unknown rules', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      cmd.testSetupRuleRegistry(['unknown-rule'])
+      await cmd.testSetupRuleRegistry(['unknown-rule'])
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown rules'))
     })
 
-    test('should return a RuleRegistry instance', () => {
-      const registry = cmd.testSetupRuleRegistry()
+    test('should return a RuleRegistry instance', async () => {
+      const registry = await cmd.testSetupRuleRegistry()
       expect(registry).toBeDefined()
       expect(typeof registry.register).toBe('function')
     })
 
-    test('should return a registry with register method', () => {
-      const registry = cmd.testSetupRuleRegistry()
+    test('should return a registry with register method', async () => {
+      const registry = await cmd.testSetupRuleRegistry()
       expect(typeof registry.register).toBe('function')
     })
 
-    test('should return a registry with disable method', () => {
-      const registry = cmd.testSetupRuleRegistry()
+    test('should return a registry with disable method', async () => {
+      const registry = await cmd.testSetupRuleRegistry()
       expect(typeof registry.disable).toBe('function')
     })
 
-    test('should not warn when no requested rules', () => {
+    test('should not warn when no requested rules', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      cmd.testSetupRuleRegistry()
+      await cmd.testSetupRuleRegistry()
       expect(warnSpy).not.toHaveBeenCalled()
     })
 
-    test('should not warn when all requested rules are valid', () => {
+    test('should not warn when all requested rules are valid', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      cmd.testSetupRuleRegistry(['test-rule'])
+      await cmd.testSetupRuleRegistry(['test-rule'])
       expect(warnSpy).not.toHaveBeenCalled()
     })
 
-    test('should warn with rule name in message', () => {
+    test('should warn with rule name in message', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      cmd.testSetupRuleRegistry(['nonexistent-rule'])
+      await cmd.testSetupRuleRegistry(['nonexistent-rule'])
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('nonexistent-rule'))
     })
 
-    test('should warn for multiple unknown rules', () => {
+    test('should warn for multiple unknown rules', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      cmd.testSetupRuleRegistry(['fake-1', 'fake-2'])
+      await cmd.testSetupRuleRegistry(['fake-1', 'fake-2'])
       const call = warnSpy.mock.calls[0][0]
       expect(call).toContain('fake-1')
       expect(call).toContain('fake-2')
     })
 
-    test('should handle empty requested rules array', () => {
-      const registry = cmd.testSetupRuleRegistry([])
+    test('should handle empty requested rules array', async () => {
+      const registry = await cmd.testSetupRuleRegistry([])
       expect(registry).toBeDefined()
     })
 
-    test('should handle mix of valid and invalid rules', () => {
+    test('should handle mix of valid and invalid rules', async () => {
       const warnSpy = vi.spyOn(logger, 'warn')
-      const registry = cmd.testSetupRuleRegistry(['test-rule', 'invalid-rule'])
+      const registry = await cmd.testSetupRuleRegistry(['test-rule', 'invalid-rule'])
       expect(registry).toBeDefined()
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('invalid-rule'))
     })
 
-    test('should disable non-requested rules', () => {
-      const registry = cmd.testSetupRuleRegistry(['test-rule'])
+    test('should disable non-requested rules', async () => {
+      const registry = await cmd.testSetupRuleRegistry(['test-rule'])
       expect(registry).toBeDefined()
     })
 
-    test('should not throw for valid rules', () => {
-      expect(() => cmd.testSetupRuleRegistry(['test-rule'])).not.toThrow()
+    test('should not throw for valid rules', async () => {
+      await expect(cmd.testSetupRuleRegistry(['test-rule'])).resolves.toBeDefined()
     })
 
     test('should not throw for unknown rules', () => {

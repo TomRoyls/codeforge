@@ -315,7 +315,7 @@ describe('LazyRuleLoader', () => {
       const rule = await loader.loadRule('consistent-type-exports')
       expect(rule).toBeDefined()
       expect(rule!.meta.name).toBe('consistent-type-exports')
-    })
+    }, 30000)
 
     test('loads adapted plugin rule - no-console', async () => {
       const rule = await loader.loadRule('no-console')

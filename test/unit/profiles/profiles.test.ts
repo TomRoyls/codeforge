@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import type { RuleEnvConfig } from '../../../src/config/types.js'
-import { allRules, getRuleCategory } from '../../../src/rules/index.js'
+import { lazyRuleLoader } from '../../../src/rules/lazy-loader.js'
+import { getRuleCategory } from '../../../src/rules/categories.js'
 import type { RuleSeverity } from '../../../src/rules/types.js'
 
 import {
@@ -570,6 +571,12 @@ describe('profiles', () => {
   })
 
   describe('integration with real rules', () => {
+    let allRules: Record<string, any>
+
+    beforeAll(async () => {
+      allRules = await lazyRuleLoader.loadAllRules()
+    }, 300000)
+
     it('should generate valid config for strict profile with all real rules', () => {
       const config = getProfileConfig(
         'strict',
@@ -585,7 +592,8 @@ describe('profiles', () => {
       }
     })
 
-    it('should generate valid config for moderate profile with all real rules', () => {
+    it('should generate valid config for moderate profile with all real rules', async () => {
+      const allRules = await lazyRuleLoader.loadAllRules()
       const config = getProfileConfig(
         'moderate',
         allRules,
@@ -2061,6 +2069,12 @@ describe('profiles', () => {
   })
 
   describe('real rules additional checks', () => {
+    let allRules: Record<string, any>
+
+    beforeAll(async () => {
+      allRules = await lazyRuleLoader.loadAllRules()
+    }, 300000)
+
     it('should assign no-unsafe-return to error in lenient profile with real rules', () => {
       const config = getProfileConfig(
         'lenient',

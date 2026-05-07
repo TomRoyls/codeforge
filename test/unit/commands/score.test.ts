@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import Score from '../../../src/commands/score.js'
 import { Parser } from '../../../src/core/parser.js'
 import { RuleRegistry } from '../../../src/core/rule-registry.js'
-import { allRules, getRuleCategory } from '../../../src/rules/index.js'
+import { allRules, getRuleCategory } from '../../helpers/rule-helpers.js'
 import {
   calculateCategoryScore,
   calculateCorrectnessScore,

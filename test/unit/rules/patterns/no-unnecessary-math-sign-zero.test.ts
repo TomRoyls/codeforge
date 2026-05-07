@@ -122,62 +122,62 @@ describe('no-unnecessary-math-sign-zero rule', () => {
 
   // ===== POSITIVE CASES — Math.sign(0) PATTERNS (15) =====
 
-  describe('positive cases — Math.sign(0) patterns', () => {
-    test('does not report for Math.sign(0) — basic MemberExpression callee', () => {
+  describe('positive cases — reports Math.sign(0) patterns', () => {
+    test('reports for Math.sign(0) — basic MemberExpression callee', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) with custom location', () => {
+    test('reports for Math.sign(0) with custom location', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }], 5, 10, 5, 25))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(-0) — negative zero', () => {
+    test('reports for Math.sign(-0) — negative zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: -0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(+0) — positive zero', () => {
+    test('reports for Math.sign(+0) — positive zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: +0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0.0) — zero with decimal', () => {
+    test('reports for Math.sign(0.0) — zero with decimal', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0.0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0x0) — hex zero', () => {
+    test('reports for Math.sign(0x0) — hex zero', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0x0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) on different line', () => {
+    test('reports for Math.sign(0) on different line', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }], 10, 4, 10, 20))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) as part of larger expression', () => {
+    test('reports for Math.sign(0) as part of larger expression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       const signNode = makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }])
       visitor.CallExpression(signNode)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report for Math.sign(0) inside conditional expression', () => {
@@ -218,7 +218,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('does not report for Math.sign(0) with extra node properties', () => {
+    test('reports for Math.sign(0) with extra node properties', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       const node = {
@@ -235,10 +235,10 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         trailingComments: [] as unknown[],
       }
       visitor.CallExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) with computed member expression', () => {
+    test('reports for Math.sign(0) with computed member expression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression({
@@ -252,10 +252,10 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         arguments: [{ type: 'NumericLiteral', value: 0 }],
         loc: makeLoc(1, 0, 1, 15),
       })
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) without loc', () => {
+    test('reports for Math.sign(0) without loc', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       const node = {
@@ -268,16 +268,16 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         arguments: [{ type: 'NumericLiteral', value: 0 }],
       }
       visitor.CallExpression(node)
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
-    test('does not report for Math.sign(0) multiple invocations', () => {
+    test('reports for Math.sign(0) multiple invocations', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(3)
     })
   })
 
@@ -800,17 +800,17 @@ describe('no-unnecessary-math-sign-zero rule', () => {
       const visitor2 = noUnnecessaryMathSignZeroRule.create(ctx2)
       visitor1.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
       visitor2.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 5 }]))
-      expect(rep1.length).toBe(0)
+      expect(rep1.length).toBe(1)
       expect(rep2.length).toBe(0)
     })
 
-    test('multiple calls never produce reports', () => {
+    test('multiple calls produce reports for zero values', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: -5 }]))
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'Identifier', name: 'x' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('create returns a new visitor each call', () => {
@@ -840,7 +840,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         loc: makeLoc(1, 0, 1, 10),
         _parent: {},
       })
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('handles node with empty loc object', () => {
@@ -856,7 +856,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         arguments: [{ type: 'NumericLiteral', value: 0 }],
         loc: {},
       })
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('handles node with partial loc (missing end)', () => {
@@ -872,7 +872,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
         arguments: [{ type: 'NumericLiteral', value: 0 }],
         loc: { start: { line: 3, column: 5 } },
       })
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('rule exports are correct', () => {
@@ -881,7 +881,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
       expect(typeof noUnnecessaryMathSignZeroRule.meta).toBe('object')
     })
 
-    test('mixed valid inputs all produce no reports', () => {
+    test('mixed inputs produce report only for Math.sign(0)', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryMathSignZeroRule.create(context)
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
@@ -889,7 +889,7 @@ describe('no-unnecessary-math-sign-zero rule', () => {
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'NumericLiteral', value: 5 }]))
       visitor.CallExpression(makeMathCallNode('console', 'sign', [{ type: 'NumericLiteral', value: 0 }]))
       visitor.CallExpression(makeMathCallNode('Math', 'sign', [{ type: 'Identifier', name: 'x' }]))
-      expect(reports.length).toBe(0)
+      expect(reports.length).toBe(1)
     })
 
     test('does not report when callee object is missing in MemberExpression', () => {

@@ -642,17 +642,17 @@ describe('no-unnecessary-array-filter-identity rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('throws when callee is missing', () => {
+    test('does not report when callee is missing', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFilterIdentity.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', arguments: [makeArrowIdentity('x')], loc: makeLoc(1, 0, 1, 5) })).toThrow()
+      visitor.CallExpression({ type: 'CallExpression', arguments: [makeArrowIdentity('x')], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
-    test('throws when callee is null', () => {
+    test('does not report when callee is null', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFilterIdentity.create(context)
-      expect(() => visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeArrowIdentity('x')], loc: makeLoc(1, 0, 1, 5) })).toThrow()
+      visitor.CallExpression({ type: 'CallExpression', callee: null, arguments: [makeArrowIdentity('x')], loc: makeLoc(1, 0, 1, 5) })
       expect(reports.length).toBe(0)
     })
 
@@ -786,10 +786,10 @@ describe('no-unnecessary-array-filter-identity rule', () => {
       expect(reports.length).toBe(0)
     })
 
-    test('throws when property is missing in MemberExpression', () => {
+    test('does not report when property is missing in MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFilterIdentity.create(context)
-      expect(() => visitor.CallExpression({
+      visitor.CallExpression({
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
@@ -797,14 +797,14 @@ describe('no-unnecessary-array-filter-identity rule', () => {
         },
         arguments: [makeArrowIdentity('x')],
         loc: makeLoc(1, 0, 1, 10),
-      })).toThrow()
+      })
       expect(reports.length).toBe(0)
     })
 
-    test('throws when property is null in MemberExpression', () => {
+    test('does not report when property is null in MemberExpression', () => {
       const { context, reports } = createMockContext()
       const visitor = noUnnecessaryArrayFilterIdentity.create(context)
-      expect(() => visitor.CallExpression({
+      visitor.CallExpression({
         type: 'CallExpression',
         callee: {
           type: 'MemberExpression',
@@ -813,7 +813,7 @@ describe('no-unnecessary-array-filter-identity rule', () => {
         },
         arguments: [makeArrowIdentity('x')],
         loc: makeLoc(1, 0, 1, 10),
-      })).toThrow()
+      })
       expect(reports.length).toBe(0)
     })
 

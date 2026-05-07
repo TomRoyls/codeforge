@@ -8,7 +8,7 @@ import type { HealthReport, ScoreBreakdown } from '../../../src/commands/health-
 // Mocks — must come before imports of mocked modules
 // ============================================================================
 
-vi.mock('../../../src/rules/index.js', () => ({
+vi.mock('../../../src/rules/categories.js', () => ({
   getRuleCategory: vi.fn((ruleId: string) => {
     if (ruleId.includes('security')) return 'security'
     if (ruleId.includes('pattern')) return 'patterns'
@@ -31,7 +31,7 @@ import {
   getScoreColor,
 } from '../../../src/commands/health-helpers.js'
 
-import { getRuleCategory } from '../../../src/rules/index.js'
+import { getRuleCategory } from '../../../src/rules/categories.js'
 
 // ============================================================================
 // Factory Helpers
