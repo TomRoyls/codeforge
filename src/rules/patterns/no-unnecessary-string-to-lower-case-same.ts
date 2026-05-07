@@ -14,7 +14,7 @@ export const noUnnecessaryStringToLowerCaseSameRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toLowerCase') return
         if (!callee.object || callee.object.type !== 'StringLiteral') return
-        const val = callee.object.value
+        const val = callee.object.value as string
         if (val === val.toLowerCase()) {
           context.report({
             loc: extractLocation(n),

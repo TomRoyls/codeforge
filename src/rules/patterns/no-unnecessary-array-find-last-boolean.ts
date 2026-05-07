@@ -15,7 +15,7 @@ export const noUnnecessaryArrayFindLastBooleanRule: RuleDefinition = {
         if (callee.property.name !== 'findLast') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'ArrowFunctionExpression') return
-        if (!arg.body) return
+        if (!arg.body || Array.isArray(arg.body)) return
         if (arg.body.type === 'BooleanLiteral' && arg.body.value === true) {
           context.report({
             loc: extractLocation(n),

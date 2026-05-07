@@ -8,14 +8,14 @@ export const noUnnecessaryMathRoundInteger: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length !== 1) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (callee.type !== 'MemberExpression' || callee.computed) return
-        if (callee.object.type !== 'Identifier' || callee.object.name !== 'Math') return
-        if (callee.property.type !== 'Identifier' || callee.property.name !== 'round') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Math') return
+        if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'round') return
         const arg = n.arguments[0]
-        if (arg.type !== 'NumericLiteral') return
-        if (!Number.isInteger(arg.value)) return
+        if (!arg || arg.type !== 'NumericLiteral') return
+        if (typeof arg.value !== 'number' || !Number.isInteger(arg.value)) return
         if (arg.value < 0) return
         context.report({
           loc: extractLocation(n),

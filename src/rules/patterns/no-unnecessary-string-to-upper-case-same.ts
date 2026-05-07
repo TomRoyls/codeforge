@@ -14,7 +14,7 @@ export const noUnnecessaryStringToUpperCaseSameRule: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toUpperCase') return
         if (!callee.object || callee.object.type !== 'StringLiteral') return
-        const val = callee.object.value
+        const val = callee.object.value as string
         if (val === val.toUpperCase()) {
           context.report({
             loc: extractLocation(n),

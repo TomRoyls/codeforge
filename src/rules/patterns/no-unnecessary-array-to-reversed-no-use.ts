@@ -13,7 +13,7 @@ export const noUnnecessaryArrayToReversedNoUse: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'toReversed' && callee.property.name !== 'toSorted') return
-        const parent = n.parent
+        const parent = n.parent as Record<string, unknown> | null | undefined
         if (!parent) return
         if (parent.type === 'ExpressionStatement') {
           context.report({

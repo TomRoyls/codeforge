@@ -10,10 +10,10 @@ export const noUnnecessaryMathSignZeroRule: RuleDefinition = {
         if (!n || n.type !== 'CallExpression') return
         if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (!callee || callee.type !== 'Identifier' || callee.name !== 'Math') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Math') return
         if (!callee.property || callee.property.type !== 'Identifier') return
         if (callee.property.name !== 'sign') return
-        if (callee.type !== 'MemberExpression') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'NumericLiteral') return
         if (arg.value === 0) {

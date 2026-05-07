@@ -13,12 +13,12 @@ export const noUnnecessaryRegexpConstructorRule: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        checkNewOrCall(n, context)
+        checkNewOrCall(n as Record<string, unknown>, context)
       },
       NewExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'NewExpression') return
-        checkNewOrCall(n, context)
+        checkNewOrCall(n as Record<string, unknown>, context)
       },
     }
   },

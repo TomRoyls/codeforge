@@ -15,12 +15,12 @@ export const noUnnecessaryArrayFlatMapIdentityRule: RuleDefinition = {
         if (callee.property.name !== 'flatMap') return
         const arg = n.arguments[0]
         if (!arg || arg.type !== 'ArrowFunctionExpression') return
-        if (!arg.body) return
+        if (!arg.body || Array.isArray(arg.body)) return
         if (arg.body.type !== 'Identifier') return
         if (!arg.params || arg.params.length !== 1) return
         const param = arg.params[0]
         if (!param || param.type !== 'Identifier') return
-        if (param.name === arg.body.name) {
+        if (!Array.isArray(arg.body) && param.name === arg.body.name) {
           context.report({
             loc: extractLocation(n),
             message: `arr.flatMap(x => x) is equivalent to arr.flat(). Use arr.flat() directly.`,

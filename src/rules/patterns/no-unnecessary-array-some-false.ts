@@ -13,9 +13,10 @@ export const noUnnecessaryArraySomeFalse: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'some') return
         const arg = n.arguments[0]
-        if (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression') return
-        if (arg.params.length !== 1) return
+        if (!arg || (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression')) return
+        if (!arg.params || arg.params.length !== 1) return
         const body = arg.body
+        if (!body || Array.isArray(body)) return
         if (body.type === 'BlockStatement') return
         if (body.type === 'BooleanLiteral' && body.value === false) {
           context.report({

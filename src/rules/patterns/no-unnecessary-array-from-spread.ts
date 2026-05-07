@@ -8,14 +8,14 @@ export const noUnnecessaryArrayFromSpread: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length !== 1) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (callee.type !== 'MemberExpression' || callee.computed) return
-        if (callee.object.type !== 'Identifier' || callee.object.name !== 'Array') return
-        if (callee.property.type !== 'Identifier' || callee.property.name !== 'from') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Array') return
+        if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'from') return
         const arg = n.arguments[0]
-        if (arg.type !== 'ArrayExpression') return
-        const hasSpread = arg.elements.some(
+        if (!arg || arg.type !== 'ArrayExpression') return
+        const hasSpread = arg.elements && arg.elements.some(
           (el: unknown) => el !== null && toASTNode(el)?.type === 'SpreadElement',
         )
         if (!hasSpread) return

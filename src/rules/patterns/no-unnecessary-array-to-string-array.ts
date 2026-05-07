@@ -14,7 +14,7 @@ export const noUnnecessaryArrayToStringArray: RuleDefinition = {
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'from') return
         if (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Array') return
         const arg = n.arguments[0]
-        if (arg.type !== 'CallExpression') return
+        if (!arg || arg.type !== 'CallExpression') return
         const innerCallee = arg.callee
         if (!innerCallee || innerCallee.type !== 'MemberExpression' || innerCallee.computed) return
         if (!innerCallee.property || innerCallee.property.type !== 'Identifier' || innerCallee.property.name !== 'toString') return

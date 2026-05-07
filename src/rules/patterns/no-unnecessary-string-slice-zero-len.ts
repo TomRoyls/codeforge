@@ -16,7 +16,7 @@ export const noUnnecessaryStringSliceZeroLen: RuleDefinition = {
         if (!startArg || startArg.type !== 'NumericLiteral' || startArg.value !== 0) return
         const endArg = n.arguments[1]
         if (!endArg || endArg.type !== 'NumericLiteral') return
-        if (endArg.value <= 0) return
+        if ((endArg.value as number) <= 0) return
         context.report({
           loc: extractLocation(n),
           message: `String.prototype.slice(0, ${endArg.value}) can be simplified. Consider using substring() or direct indexing.`,

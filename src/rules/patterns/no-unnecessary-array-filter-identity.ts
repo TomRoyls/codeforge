@@ -8,20 +8,21 @@ export const noUnnecessaryArrayFilterIdentity: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length !== 1) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
-        if (callee.type !== 'MemberExpression' || callee.computed) return
-        if (callee.property.type !== 'Identifier' || callee.property.name !== 'filter') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'filter') return
         const arg = n.arguments[0]
-        if (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression') return
-        if (arg.params.length !== 1) return
+        if (!arg || (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression')) return
+        if (!arg.params || arg.params.length !== 1) return
         const param = arg.params[0]
-        if (param.type !== 'Identifier') return
+        if (!param || param.type !== 'Identifier') return
         const body = arg.body
+        if (!body || Array.isArray(body)) return
         if (body.type === 'BlockStatement') {
-          if (body.body.length !== 1) return
+          if (!body.body || !Array.isArray(body.body) || body.body.length !== 1) return
           const stmt = body.body[0]
-          if (stmt.type !== 'ReturnStatement' || !stmt.argument) return
+          if (!stmt || stmt.type !== 'ReturnStatement' || !stmt.argument) return
           if (stmt.argument.type !== 'Identifier' || stmt.argument.name !== param.name) return
         } else {
           if (body.type !== 'Identifier' || body.name !== param.name) return

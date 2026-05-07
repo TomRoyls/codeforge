@@ -8,13 +8,13 @@ export const noUnnecessaryArrayFlatSingleLevel: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length > 1) return
+        if (!n.arguments || n.arguments.length > 1) return
         const callee = n.callee
-        if (callee.type !== 'MemberExpression' || callee.computed) return
-        if (callee.property.type !== 'Identifier' || callee.property.name !== 'flat') return
+        if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
+        if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'flat') return
         if (n.arguments.length === 0) return
         const arg = n.arguments[0]
-        if (arg.type !== 'NumericLiteral' || arg.value !== 1) return
+        if (!arg || arg.type !== 'NumericLiteral' || arg.value !== 1) return
         context.report({
           loc: extractLocation(n),
           message: `Array.prototype.flat(1) is unnecessary. flat() without arguments defaults to depth 1.`,

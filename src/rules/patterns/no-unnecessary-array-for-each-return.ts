@@ -1,6 +1,6 @@
 import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/types.js'
 import { extractLocation } from '../../ast/location-utils.js'
-import { toASTNode } from '../../utils/ast-helpers.js'
+import { type ASTNode, toASTNode } from '../../utils/ast-helpers.js'
 
 export const noUnnecessaryArrayForEachReturn: RuleDefinition = {
   create(context: RuleContext): RuleVisitor {
@@ -12,7 +12,7 @@ export const noUnnecessaryArrayForEachReturn: RuleDefinition = {
         const callee = n.callee
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'forEach') return
-        const parent = n.parent
+        const parent = n.parent as ASTNode | undefined
         if (!parent) return
         if (parent.type === 'ReturnStatement') {
           context.report({

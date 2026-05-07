@@ -8,25 +8,30 @@ export const noUnnecessaryMathCeilInteger: RuleDefinition = {
       CallExpression(node: unknown): void {
         const n = toASTNode(node)
         if (!n || n.type !== 'CallExpression') return
-        if (n.arguments.length !== 1) return
+        if (!n.arguments || n.arguments.length !== 1) return
         const callee = n.callee
+        if (!callee) return
         if (
           callee.type !== 'MemberExpression' ||
           !callee.computed ||
-          (callee.object.type !== 'Identifier' || callee.object.name !== 'Math') ||
-          (callee.property.type !== 'Identifier' || callee.property.name !== 'ceil')
+          (!callee.object || callee.object.type !== 'Identifier' || callee.object.name !== 'Math') ||
+          (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'ceil')
         ) {
           if (
             callee.type === 'MemberExpression' &&
             !callee.computed &&
+            callee.object &&
             callee.object.type === 'Identifier' &&
             callee.object.name === 'Math' &&
+            callee.property &&
             callee.property.type === 'Identifier' &&
             callee.property.name === 'ceil'
           ) {
             const arg = n.arguments[0]
             if (
+              arg &&
               arg.type === 'NumericLiteral' &&
+              typeof arg.value === 'number' &&
               Number.isInteger(arg.value) &&
               arg.value >= 0
             ) {
@@ -41,7 +46,9 @@ export const noUnnecessaryMathCeilInteger: RuleDefinition = {
         }
         const arg = n.arguments[0]
         if (
+          arg &&
           arg.type === 'NumericLiteral' &&
+          typeof arg.value === 'number' &&
           Number.isInteger(arg.value) &&
           arg.value >= 0
         ) {

@@ -13,19 +13,21 @@ export const noUnnecessaryArrayFindIndexLiteral: RuleDefinition = {
         if (!callee || callee.type !== 'MemberExpression' || callee.computed) return
         if (!callee.property || callee.property.type !== 'Identifier' || callee.property.name !== 'findIndex') return
         const arg = n.arguments[0]
-        if (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression') return
-        if (arg.params.length !== 1) return
+        if (!arg || (arg.type !== 'ArrowFunctionExpression' && arg.type !== 'FunctionExpression')) return
+        if (!arg.params || arg.params.length !== 1) return
         const param = arg.params[0]
-        if (param.type !== 'Identifier') return
+        if (!param || param.type !== 'Identifier') return
         const body = arg.body
+        if (!body || Array.isArray(body)) return
         if (body.type === 'BlockStatement') {
-          if (body.body.length !== 1) return
+          if (!body.body || !Array.isArray(body.body) || body.body.length !== 1) return
           const stmt = body.body[0]
-          if (stmt.type !== 'ReturnStatement' || !stmt.argument) return
+          if (!stmt || stmt.type !== 'ReturnStatement' || !stmt.argument) return
           if (stmt.argument.type !== 'BinaryExpression') return
           if (stmt.argument.operator !== '===' && stmt.argument.operator !== '==') return
           const left = stmt.argument.left
           const right = stmt.argument.right
+          if (!left || !right) return
           const identifierSide = left.type === 'Identifier' && left.name === param.name ? left : right.type === 'Identifier' && right.name === param.name ? right : null
           if (!identifierSide) return
           const literalSide = identifierSide === left ? right : left
@@ -39,9 +41,12 @@ export const noUnnecessaryArrayFindIndexLiteral: RuleDefinition = {
         } else {
           if (body.type !== 'BinaryExpression') return
           if (body.operator !== '===' && body.operator !== '==') return
-          const identifierSide = body.left.type === 'Identifier' && body.left.name === param.name ? body.left : body.right.type === 'Identifier' && body.right.name === param.name ? body.right : null
+          const left = body.left
+          const right = body.right
+          if (!left || !right) return
+          const identifierSide = left.type === 'Identifier' && left.name === param.name ? left : right.type === 'Identifier' && right.name === param.name ? right : null
           if (!identifierSide) return
-          const literalSide = identifierSide === body.left ? body.right : body.left
+          const literalSide = identifierSide === left ? right : left
           if (literalSide.type === 'NumericLiteral' || literalSide.type === 'StringLiteral') {
             context.report({
               loc: extractLocation(n),
