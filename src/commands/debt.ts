@@ -28,62 +28,27 @@ import ora from 'ora'
 import { type RuleViolation } from '../ast/visitor.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
-import { RuleRegistry } from '../core/rule-registry.js'
-import { getRuleCategory } from '../rules/categories.js'
-import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import { type ChalkColorFunction } from '../types/chalk.js'
 import { logger } from '../utils/logger.js'
 import {
   DATE_FIELD_WIDTH,
-  DEBT_COMPLEXITY_THRESHOLD_HIGH,
-  DEBT_COST_PER_POINT_MINUTES,
-  DEBT_DEPENDENCIES_THRESHOLD_HIGH,
-  DEBT_OVERALL_THRESHOLD_HIGH,
-  DEBT_SECURITY_THRESHOLD_HIGH,
-  DEBT_WEIGHT_COMPLEXITY,
-  DEBT_WEIGHT_DEPENDENCIES,
-  DEBT_WEIGHT_DOCUMENTATION,
-  DEBT_WEIGHT_PATTERNS,
-  DEBT_WEIGHT_SECURITY,
-  MAX_DEBT_HISTORY_ENTRIES,
   MAX_FILES_TO_PROCESS,
-  MAX_RECOMMENDATIONS,
   TABLE_DASH_SEPARATOR_WIDTH,
 } from '../utils/constants.js'
-
-interface DebtBreakdown {
-  complexity: number
-  dependencies: number
-  documentation: number
-  patterns: number
-  security: number
-}
-
-interface DebtHistoryEntry {
-  breakdown: DebtBreakdown
-  filesAnalyzed: number
-  overall: number
-  timestamp: string
-}
-
-interface DebtReport {
-  breakdown: DebtBreakdown
-  filesAnalyzed: number
-  interest: {
-    annual: number
-    monthly: number
-    weekly: number
-  }
-  overall: number
-  path: string
-  trend: {
-    change: number
-    direction: 'decreasing' | 'increasing' | 'stable'
-    previous: null | number
-  }
-}
-
-const WEEKS_PER_YEAR = 52
+import {
+  type DebtBreakdown,
+  type DebtHistoryEntry,
+  type DebtReport,
+  appendHistoryEntry,
+  calculateBreakdown as calcBreakdown,
+  calculateInterest as calcInterest,
+  calculateOverall as calcOverall,
+  computeTrend,
+  formatDebt as fmtDebt,
+  getDebtColor as debtColorFn,
+  getHistoryPath as histPath,
+  getRecommendations as getRecs,
+  setupDebtRuleRegistry,
+} from './debt-helpers.js'
 
 export default class Debt extends Command {
   static override args = {
@@ -115,7 +80,7 @@ export default class Debt extends Command {
     },
     {
       command: '<%= config.bin %> <%= command.id %> --save',
-      description: 'Save current debt snapshot for trend tracking',
+      description: 'Save debt snapshot for trend tracking',
     },
   ]
 
@@ -178,11 +143,7 @@ export default class Debt extends Command {
     const parser = new Parser()
     await parser.initialize()
 
-    const registry = new RuleRegistry()
-    const allRules = await lazyRuleLoader.loadAllRules()
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-    }
+    const registry = await setupDebtRuleRegistry()
 
     const allViolations: RuleViolation[] = []
     const filesToProcess = files.slice(0, MAX_FILES_TO_PROCESS)
@@ -242,64 +203,15 @@ export default class Debt extends Command {
   }
 
   private calculateBreakdown(violations: RuleViolation[]): DebtBreakdown {
-    const weights = {
-      complexity: DEBT_WEIGHT_COMPLEXITY,
-      dependencies: DEBT_WEIGHT_DEPENDENCIES,
-      documentation: DEBT_WEIGHT_DOCUMENTATION,
-      patterns: DEBT_WEIGHT_PATTERNS,
-      security: DEBT_WEIGHT_SECURITY,
-    }
-
-    const counts = {
-      complexity: 0,
-      dependencies: 0,
-      documentation: 0,
-      patterns: 0,
-      security: 0,
-    }
-
-    for (const v of violations) {
-      const category = getRuleCategory(v.ruleId)
-      if (category in counts) {
-        counts[category as keyof typeof counts]++
-      }
-    }
-
-    const undocumented = violations.filter(
-      (v) => v.ruleId.includes('documentation') || v.ruleId.includes('jsdoc'),
-    ).length
-
-    return {
-      complexity: counts.complexity * weights.complexity,
-      dependencies: counts.dependencies * weights.dependencies,
-      documentation: counts.documentation * weights.documentation + undocumented,
-      patterns: counts.patterns * weights.patterns,
-      security: counts.security * weights.security,
-    }
+    return calcBreakdown(violations)
   }
 
   private calculateInterest(debtPoints: number): DebtReport['interest'] {
-    const hoursPerPoint = DEBT_COST_PER_POINT_MINUTES / 60
-    const weeklyHours = debtPoints * hoursPerPoint
-
-    return {
-      annual: Math.round(weeklyHours * WEEKS_PER_YEAR),
-      monthly: Math.round(weeklyHours * 4),
-      weekly: Math.round(weeklyHours),
-    }
+    return calcInterest(debtPoints)
   }
 
   private calculateOverall(breakdown: DebtBreakdown, filesCount: number): number {
-    const total =
-      breakdown.complexity +
-      breakdown.dependencies +
-      breakdown.documentation +
-      breakdown.patterns +
-      breakdown.security
-
-    const normalizedFiles = Math.max(filesCount, 1)
-
-    return Math.round(total / normalizedFiles)
+    return calcOverall(breakdown, filesCount)
   }
 
   private displayReport(report: DebtReport, verbose: boolean): void {
@@ -364,68 +276,26 @@ export default class Debt extends Command {
   }
 
   private formatDebt(score: number): string {
-    const colorFn = this.getDebtColor(score)
-    return colorFn(score.toString().padStart(3))
+    return fmtDebt(score)
   }
 
-  private getDebtColor(score: number): ChalkColorFunction {
-    if (score <= 5) return chalk.green
-    if (score <= 15) return chalk.yellow
-
-    return chalk.red
+  private getDebtColor(score: number) {
+    return debtColorFn(score)
   }
 
   private getHistoryPath(targetPath: string): string {
-    return join(targetPath, '.codeforge', 'debt-history.json')
+    return histPath(targetPath)
   }
 
   private getRecommendations(report: DebtReport): string[] {
-    const recommendations: string[] = []
-
-    if (report.breakdown.security > DEBT_SECURITY_THRESHOLD_HIGH) {
-      recommendations.push('Address security issues - these have the highest debt cost')
-    }
-
-    if (report.breakdown.complexity > DEBT_COMPLEXITY_THRESHOLD_HIGH) {
-      recommendations.push('Reduce code complexity by refactoring large functions')
-    }
-
-    if (report.breakdown.dependencies > DEBT_DEPENDENCIES_THRESHOLD_HIGH) {
-      recommendations.push('Review and clean up circular dependencies')
-    }
-
-    if (report.breakdown.documentation > DEBT_COMPLEXITY_THRESHOLD_HIGH) {
-      recommendations.push('Add JSDoc comments to improve code maintainability')
-    }
-
-    if (report.overall > DEBT_OVERALL_THRESHOLD_HIGH) {
-      recommendations.push('Consider dedicating time to debt reduction in your next sprint')
-    }
-
-    return recommendations.slice(0, MAX_RECOMMENDATIONS)
+    return getRecs(report)
   }
 
   private async getTrend(targetPath: string, current: number): Promise<DebtReport['trend']> {
     try {
-      const historyPath = this.getHistoryPath(targetPath)
-      const content = await fs.readFile(historyPath, 'utf8')
+      const content = await fs.readFile(this.getHistoryPath(targetPath), 'utf8')
       const history: DebtHistoryEntry[] = JSON.parse(content)
-
-      if (history.length === 0) {
-        return { change: 0, direction: 'stable', previous: null }
-      }
-
-      const previous = history.at(-1)!.overall
-      const change = current - previous
-
-      let direction: DebtReport['trend']['direction'] = 'stable'
-      if (change < -1) {
-        direction = 'decreasing'
-      } else if (change > 1) {
-        direction = 'increasing'
-      }
-
-      return { change, direction, previous }
+      return computeTrend(history, current)
     } catch (error) {
       logger.debug(`Failed to read debt history from ${this.getHistoryPath(targetPath)}: ${error}`)
       return { change: 0, direction: 'stable', previous: null }
@@ -446,22 +316,11 @@ export default class Debt extends Command {
       history = []
     }
 
-    const entry: DebtHistoryEntry = {
-      breakdown: report.breakdown,
-      filesAnalyzed: report.filesAnalyzed,
-      overall: report.overall,
-      timestamp: new Date().toISOString(),
-    }
-
-    history.push(entry)
-
-    if (history.length > MAX_DEBT_HISTORY_ENTRIES) {
-      history = history.slice(-MAX_DEBT_HISTORY_ENTRIES)
-    }
+    const updated = appendHistoryEntry(history, report, new Date().toISOString())
 
     try {
       await fs.mkdir(historyDir, { recursive: true })
-      await fs.writeFile(historyPath, JSON.stringify(history, null, 2), 'utf8')
+      await fs.writeFile(historyPath, JSON.stringify(updated, null, 2), 'utf8')
     } catch (error) {
       this.warn(
         `Failed to save debt history to ${historyPath}: ${error instanceof Error ? error.message : String(error)}`,

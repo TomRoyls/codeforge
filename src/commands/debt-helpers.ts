@@ -130,7 +130,7 @@ export async function setupDebtRuleRegistry(): Promise<RuleRegistry> {
   const loadedRules = await lazyRuleLoader.loadAllRules()
 
   for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
-    registry.register(ruleId, ruleDef, lazyRuleLoader.getRuleCategory(ruleId) as RuleCategory)
+    registry.register(ruleId, ruleDef, getRuleCategory(ruleId) as RuleCategory)
   }
 
   return registry
