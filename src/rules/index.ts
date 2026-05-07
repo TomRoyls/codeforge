@@ -1,27 +1,7 @@
 import type { RuleDefinition } from './types.js'
-  'no-unnecessary-date-set-full-year-spread': 'patterns',
-  'no-unnecessary-date-set-month-spread': 'patterns',
-  'no-unnecessary-date-set-date-spread': 'patterns',
-  'no-unnecessary-date-set-hours-spread': 'patterns',
-  'no-unnecessary-date-set-minutes-spread': 'patterns',
-  'no-unnecessary-date-set-seconds-spread': 'patterns',
-  'no-unnecessary-date-set-milliseconds-spread': 'patterns',
-  'no-unnecessary-date-set-utc-full-year-spread': 'patterns',
-  'no-unnecessary-date-set-utc-month-spread': 'patterns',
-  'no-unnecessary-date-set-utc-date-spread': 'patterns',
-  'no-unnecessary-date-set-utc-hours-spread': 'patterns',
-  'no-unnecessary-date-set-utc-minutes-spread': 'patterns',
-  'no-unnecessary-date-set-utc-seconds-spread': 'patterns',
-  'no-unnecessary-date-set-utc-milliseconds-spread': 'patterns',
-  'no-unnecessary-set-clear-spread': 'patterns',
-  'no-unnecessary-set-keys-spread': 'patterns',
-  'no-unnecessary-set-values-spread': 'patterns',
-  'no-unnecessary-set-entries-spread': 'patterns',
-  'no-unnecessary-map-keys-spread': 'patterns',
-  'no-unnecessary-map-values-spread': 'patterns',
-  'no-unnecessary-map-entries-spread': 'patterns',
 
 import { adaptPluginRule } from './adapter.js'
+export { type RuleCategory, getRuleCategory } from './categories.js'
 // Best practices rules
 import {
   explicitReturnTypeRule,
@@ -257,11 +237,11 @@ noUnnecessaryAssertRule,
    noUnnecessaryAtobRule,
   noUnnecessaryBtoaRule,
      noUnnecessaryArrayFromRule,
-    noUnnecessaryArrayFromSpreadRule,
+    noUnnecessaryArrayFromSpread,
     noUnnecessaryArrayFromSetSpreadRule,
     noUnnecessaryArrayFromLengthRule,
       noUnnecessaryArrayFlatRule,
-    noUnnecessaryArrayFlatSingleLevelRule,
+    noUnnecessaryArrayFlatSingleLevel,
     noUnnecessaryArrayFlatMapIdentityRule,
     noUnnecessaryArrayFlatMapSpreadRule,
    noUnnecessaryArrayFlatSpreadRule,
@@ -269,25 +249,25 @@ noUnnecessaryAssertRule,
     noUnnecessaryArrayKeysSpreadRule,
     noUnnecessaryArrayValuesSpreadRule,
    noUnnecessaryArrayUnshiftSpreadRule,
-    noUnnecessaryArrayEveryBooleanRule,
+    noUnnecessaryArrayEveryBoolean,
     noUnnecessaryArrayEveryTrueRule,
     noUnnecessaryArrayEverySpreadRule,
    noUnnecessaryArrayFillSpreadRule,
      noUnnecessaryArrayEntriesSpreadRule,
    noUnnecessaryArrayAtSpreadRule,
-      noUnnecessaryArrayFilterIdentityRule,
+      noUnnecessaryArrayFilterIdentity,
      noUnnecessaryArrayFilterSpreadRule,
-     noUnnecessaryArrayForEachReturnRule,
+     noUnnecessaryArrayForEachReturn,
      noUnnecessaryArrayForEachSpreadRule,
      noUnnecessaryArrayPushSpreadRule,
     noUnnecessaryArrayPopSpreadRule,
-     noUnnecessaryArrayFindBooleanRule,
+     noUnnecessaryArrayFindBoolean,
      noUnnecessaryArrayFindLastBooleanRule,
      noUnnecessaryArrayFindLastSpreadRule,
      noUnnecessaryArrayFindLastIndexLiteralRule,
      noUnnecessaryArrayFindLastIndexSpreadRule,
    noUnnecessaryArrayFindSpreadRule,
-    noUnnecessaryArrayFindIndexLiteralRule,
+    noUnnecessaryArrayFindIndexLiteral,
      noUnnecessaryArrayFindIndexSpreadRule,
      noUnnecessaryArrayIndexOfSpreadRule,
      noUnnecessaryArrayLastIndexOfSpreadRule,
@@ -297,10 +277,10 @@ noUnnecessaryAssertRule,
      noUnnecessaryArrayOfSingleRule,
      noUnnecessaryArrayOfSpreadRule,
      noUnnecessaryArrayIncludesSingleRule,
-    noUnnecessaryArrayIncludesNANRule,
+    noUnnecessaryArrayIncludesNaN,
     noUnnecessaryArrayIncludesSpreadRule,
     noUnnecessaryArrayIndexOfLiteralRule,
-    noUnnecessaryArrayJoinEmptyRule,
+    noUnnecessaryArrayJoinEmpty,
     noUnnecessaryArrayJoinSpreadRule,
     noUnnecessaryArrayConstructorRule,
    noUnnecessaryArrayConcatSingleRule,
@@ -360,11 +340,11 @@ noUnnecessaryAwaitExpressionRule,
     noUnnecessaryLogicalAndTrueRule,
     noUnnecessaryLogicalOrFalseRule,
     noUnnecessaryMapRule,
-   noUnnecessaryArrayMapIdentityRule,
+   noUnnecessaryArrayMapIdentity,
    noUnnecessaryArrayMapSpreadRule,
      noUnnecessaryMathMaxSingleRule,
-   noUnnecessaryMathCeilIntegerRule,
-   noUnnecessaryMathRoundIntegerRule,
+   noUnnecessaryMathCeilInteger,
+   noUnnecessaryMathRoundInteger,
    noUnnecessaryMathSignZeroRule,
     noUnnecessaryMathFloorIntegerRule,
     noUnnecessaryMathAbsPositiveRule,
@@ -372,7 +352,7 @@ noUnnecessaryNullWithStrictRule,
 noUnnecessaryObjectAssignRule,
 noUnnecessaryObjectAssignSameRule,
  noUnnecessaryObjectFreezeLiteralRule,
- noUnnecessaryObjectKeysLengthRule,
+ noUnnecessaryObjectKeysLength,
  noUnnecessaryObjectSealLiteralRule,
    noUnnecessaryNumericLiteralRule,
   noUnnecessaryNumericSeparatorRule,
@@ -405,7 +385,7 @@ noUnnecessaryReturnAwaitRule,
     noUnnecessaryArraySortNoUseRule,
     noUnnecessaryArraySortSpreadRule,
    noUnnecessaryArraySpliceSpreadRule,
-    noUnnecessaryArraySomeFalseRule,
+    noUnnecessaryArraySomeFalse,
     noUnnecessaryArraySomeSpreadRule,
    noUnnecessaryArrayShiftSpreadRule,
     noUnnecessaryIncludesRule,
@@ -415,11 +395,11 @@ noUnnecessaryReturnAwaitRule,
       noUnnecessaryArraySliceSpreadRule,
     noUnnecessarySomeRule,
      noUnnecessarySpliceRule,
-    noUnnecessaryArraySpliceNoUseRule,
+    noUnnecessaryArraySpliceNoUse,
     noUnnecessaryArraySpliceZeroRule,
-    noUnnecessaryArrayToReversedNoUseRule,
+    noUnnecessaryArrayToReversedNoUse,
     noUnnecessaryArrayToReversedSpreadRule,
-    noUnnecessaryArrayToStringArrayRule,
+    noUnnecessaryArrayToStringArray,
    noUnnecessaryArrayToStringSpreadRule,
   noUnnecessaryArrayToLocaleStringSpreadRule,
   noUnnecessaryArrayToJSONSpreadRule,
@@ -430,22 +410,21 @@ noUnnecessaryReturnAwaitRule,
  noUnnecessaryStringConcatSpreadRule,
   noUnnecessaryStringConstructorRule,
   noUnnecessaryStringConstructorNonEmptyRule,
-  noUnnecessaryStringIncludesEmptyRule,
+  noUnnecessaryStringIncludesEmpty,
   noUnnecessaryStringIncludesSpreadRule,
   noUnnecessaryStringIndexOfEmptyRule,
   noUnnecessaryStringIndexOfSpreadRule,
  noUnnecessaryStringIteratorEmptyRule,
  noUnnecessaryStringLastIndexOfZeroRule,
  noUnnecessaryStringLastIndexOfEmptyRule,
- noUnnecessaryStringLastIndexOfSpreadRule,
-  noUnnecessaryStringCharAtZeroRule,
-  noUnnecessaryStringCharAtEmptyRule,
-  noUnnecessaryStringCharAtSpreadRule,
-  noUnnecessaryStringCharCodeAtSpreadRule,
- noUnnecessaryStringCharCodeAtZeroRule,
- noUnnecessaryStringAtEmptyRule,
- noUnnecessaryStringAtSpreadRule,
- noUnnecessaryStringAtZeroRule,
+  noUnnecessaryStringLastIndexOfSpreadRule,
+   noUnnecessaryStringCharAtZeroRule,
+   noUnnecessaryStringCharAtEmptyRule,
+   noUnnecessaryStringCharAtSpreadRule,
+   noUnnecessaryStringCharCodeAtSpreadRule,
+
+  noUnnecessaryStringAtEmptyRule,
+   noUnnecessaryStringAtSpreadRule,
 noUnnecessaryStringCodepointatZeroRule,
  noUnnecessaryStringCodePointAtEmptyRule,
  noUnnecessaryStringCodePointAtSpreadRule,
@@ -458,36 +437,36 @@ noUnnecessaryStringCodepointatZeroRule,
 noUnnecessaryStringMatchSpreadRule,
  noUnnecessaryStringNormalizeEmptyRule,
  noUnnecessaryStringNormalizeSpreadRule,
- noUnnecessaryStringEndsWithEmptyRule,
+ noUnnecessaryStringEndsWithEmpty,
  noUnnecessaryStringEndsWithSpreadRule,
- noUnnecessaryStringPadStartZeroRule,
+ noUnnecessaryStringPadStartZero,
  noUnnecessaryStringPadStartEmptyRule,
  noUnnecessaryStringPadStartSpreadRule,
- noUnnecessaryStringPadEndZeroRule,
+ noUnnecessaryStringPadEndZero,
  noUnnecessaryStringPadEndEmptyRule,
  noUnnecessaryStringPadEndSpreadRule,
      noUnnecessaryStringSplitRule,
      noUnnecessaryStringSplitEmptySeparatorRule,
     noUnnecessaryStringSplitSpreadRule,
      noUnnecessaryStringSplitLengthRule,
-    noUnnecessaryStringSliceZeroLenRule,
+    noUnnecessaryStringSliceZeroLen,
     noUnnecessaryStringSliceZeroRule,
     noUnnecessaryStringSliceSpreadRule,
      noUnnecessaryStringStartsEmptyRule,
-    noUnnecessaryStringStartsWithNonEmptyRule,
+    noUnnecessaryStringStartsWithNonEmpty,
     noUnnecessaryStringStartsWithEmptyRule,
     noUnnecessaryStringStartsWithSpreadRule,
    noUnnecessaryStringTrimEmptyRule,
    noUnnecessaryStringTrimSpreadRule,
    noUnnecessaryStringTrimStartEmptyRule,
    noUnnecessaryStringTrimStartSpreadRule,
-   noUnnecessaryStringTrimEmptyRule,
+
    noUnnecessaryStringTrimEndEmptyRule,
   noUnnecessaryStringTrimEndSpreadRule,
     noUnnecessaryStringReplaceAllRule,
     noUnnecessaryStringReplaceAllEmptyRule,
     noUnnecessaryStringReplaceAllSpreadRule,
-    noUnnecessaryStringReplaceEmptyRule,
+    noUnnecessaryStringReplaceEmpty,
     noUnnecessaryStringReplaceSpreadRule,
     noUnnecessaryStringSearchEmptyRule,
     noUnnecessaryStringSearchSpreadRule,
@@ -779,6 +758,43 @@ noUnnecessaryTypeConstraintRule,
        useIsnanRule,
       validTypeofRule,
       yodaRule,
+  noUnnecessaryFunctionCallSpreadRule,
+  noUnnecessaryFunctionApplySpreadRule,
+  noUnnecessaryFunctionBindSpreadRule,
+  noUnnecessaryFunctionToStringSpreadRule,
+  noUnnecessaryDateToGmtStringSpreadRule,
+  noUnnecessaryObjectGroupBySpreadRule,
+  noUnnecessaryArrayBufferSliceSpreadRule,
+  noUnnecessaryPromiseTrySpreadRule,
+  noUnnecessaryObjectFromEntriesSpreadRule,
+  noUnnecessaryErrorToStringSpreadRule,
+  noUnnecessaryRegexExecSpreadRule,
+  noUnnecessaryRegexTestSpreadRule,
+  noUnnecessaryArrayBufferIsViewSpreadRule,
+  noUnnecessaryStringFromCharCodeSpreadRule,
+  noUnnecessaryStringFromCodePointSpreadRule,
+  noUnnecessaryStringRawSpreadRule,
+  noUnnecessaryDateSetFullYearSpreadRule,
+  noUnnecessaryDateSetMonthSpreadRule,
+  noUnnecessaryDateSetDateSpreadRule,
+  noUnnecessaryDateSetHoursSpreadRule,
+  noUnnecessaryDateSetMinutesSpreadRule,
+  noUnnecessaryDateSetSecondsSpreadRule,
+  noUnnecessaryDateSetMillisecondsSpreadRule,
+  noUnnecessaryDateSetUtcFullYearSpreadRule,
+  noUnnecessaryDateSetUtcMonthSpreadRule,
+  noUnnecessaryDateSetUtcDateSpreadRule,
+  noUnnecessaryDateSetUtcHoursSpreadRule,
+  noUnnecessaryDateSetUtcMinutesSpreadRule,
+  noUnnecessaryDateSetUtcSecondsSpreadRule,
+  noUnnecessaryDateSetUtcMillisecondsSpreadRule,
+  noUnnecessarySetClearSpreadRule,
+  noUnnecessarySetKeysSpreadRule,
+  noUnnecessarySetValuesSpreadRule,
+  noUnnecessarySetEntriesSpreadRule,
+  noUnnecessaryMapKeysSpreadRule,
+  noUnnecessaryMapValuesSpreadRule,
+  noUnnecessaryMapEntriesSpreadRule,
      } from './patterns/index.js'
  import {
    noAwaitInLoopRule,
@@ -1004,11 +1020,11 @@ const adaptedNoUnnecessaryAt = adaptPluginRule(noUnnecessaryAtRule, 'no-unnecess
 const adaptedNoUnnecessaryAtob = adaptPluginRule(noUnnecessaryAtobRule, 'no-unnecessary-atob')
 const adaptedNoUnnecessaryBtoa = adaptPluginRule(noUnnecessaryBtoaRule, 'no-unnecessary-btoa')
 const adaptedNoUnnecessaryArrayFrom = adaptPluginRule(noUnnecessaryArrayFromRule, 'no-unnecessary-array-from')
-const adaptedNoUnnecessaryArrayFromSpread = adaptPluginRule(noUnnecessaryArrayFromSpreadRule, 'no-unnecessary-array-from-spread')
+const adaptedNoUnnecessaryArrayFromSpread = adaptPluginRule(noUnnecessaryArrayFromSpread, 'no-unnecessary-array-from-spread')
 const adaptedNoUnnecessaryArrayFromSetSpread = adaptPluginRule(noUnnecessaryArrayFromSetSpreadRule, 'no-unnecessary-array-from-set-spread')
 const adaptedNoUnnecessaryArrayFromLength = adaptPluginRule(noUnnecessaryArrayFromLengthRule, 'no-unnecessary-array-from-length')
 const adaptedNoUnnecessaryArrayFlat = adaptPluginRule(noUnnecessaryArrayFlatRule, 'no-unnecessary-array-flat')
-const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevelRule, 'no-unnecessary-array-flat-single-level')
+const adaptedNoUnnecessaryArrayFlatSingleLevel = adaptPluginRule(noUnnecessaryArrayFlatSingleLevel, 'no-unnecessary-array-flat-single-level')
 const adaptedNoUnnecessaryArrayFlatMapIdentity = adaptPluginRule(noUnnecessaryArrayFlatMapIdentityRule, 'no-unnecessary-array-flat-map-identity')
 const adaptedNoUnnecessaryArrayFlatMapSpread = adaptPluginRule(noUnnecessaryArrayFlatMapSpreadRule, 'no-unnecessary-array-flat-map-spread')
 const adaptedNoUnnecessaryArrayFlatSpread = adaptPluginRule(noUnnecessaryArrayFlatSpreadRule, 'no-unnecessary-array-flat-spread')
@@ -1016,25 +1032,25 @@ const adaptedNoUnnecessaryArrayFlatInfinity = adaptPluginRule(noUnnecessaryArray
 const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
 const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
 const adaptedNoUnnecessaryArrayUnshiftSpread = adaptPluginRule(noUnnecessaryArrayUnshiftSpreadRule, 'no-unnecessary-array-unshift-spread')
-const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBooleanRule, 'no-unnecessary-array-every-boolean')
+const adaptedNoUnnecessaryArrayEveryBoolean = adaptPluginRule(noUnnecessaryArrayEveryBoolean, 'no-unnecessary-array-every-boolean')
 const adaptedNoUnnecessaryArrayEveryTrue = adaptPluginRule(noUnnecessaryArrayEveryTrueRule, 'no-unnecessary-array-every-true')
 const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
 const adaptedNoUnnecessaryArrayFillSpread = adaptPluginRule(noUnnecessaryArrayFillSpreadRule, 'no-unnecessary-array-fill-spread')
 const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
 const adaptedNoUnnecessaryArrayAtSpread = adaptPluginRule(noUnnecessaryArrayAtSpreadRule, 'no-unnecessary-array-at-spread')
-const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentityRule, 'no-unnecessary-array-filter-identity')
+const adaptedNoUnnecessaryArrayFilterIdentity = adaptPluginRule(noUnnecessaryArrayFilterIdentity, 'no-unnecessary-array-filter-identity')
 const adaptedNoUnnecessaryArrayFilterSpread = adaptPluginRule(noUnnecessaryArrayFilterSpreadRule, 'no-unnecessary-array-filter-spread')
-const adaptedNoUnnecessaryArrayForEachReturn = adaptPluginRule(noUnnecessaryArrayForEachReturnRule, 'no-unnecessary-array-for-each-return')
+const adaptedNoUnnecessaryArrayForEachReturn = adaptPluginRule(noUnnecessaryArrayForEachReturn, 'no-unnecessary-array-for-each-return')
 const adaptedNoUnnecessaryArrayForEachSpread = adaptPluginRule(noUnnecessaryArrayForEachSpreadRule, 'no-unnecessary-array-for-each-spread')
 const adaptedNoUnnecessaryArrayPushSpread = adaptPluginRule(noUnnecessaryArrayPushSpreadRule, 'no-unnecessary-array-push-spread')
 const adaptedNoUnnecessaryArrayPopSpread = adaptPluginRule(noUnnecessaryArrayPopSpreadRule, 'no-unnecessary-array-pop-spread')
-const adaptedNoUnnecessaryArrayFindBoolean = adaptPluginRule(noUnnecessaryArrayFindBooleanRule, 'no-unnecessary-array-find-boolean')
+const adaptedNoUnnecessaryArrayFindBoolean = adaptPluginRule(noUnnecessaryArrayFindBoolean, 'no-unnecessary-array-find-boolean')
  const adaptedNoUnnecessaryArrayFindLastBoolean = adaptPluginRule(noUnnecessaryArrayFindLastBooleanRule, 'no-unnecessary-array-find-last-boolean')
  const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
  const adaptedNoUnnecessaryArrayFindLastIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindLastIndexLiteralRule, 'no-unnecessary-array-find-last-index-literal')
  const adaptedNoUnnecessaryArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryArrayFindLastIndexSpreadRule, 'no-unnecessary-array-find-last-index-spread')
 const adaptedNoUnnecessaryArrayFindSpread = adaptPluginRule(noUnnecessaryArrayFindSpreadRule, 'no-unnecessary-array-find-spread')
-const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindIndexLiteralRule, 'no-unnecessary-array-find-index-literal')
+const adaptedNoUnnecessaryArrayFindIndexLiteral = adaptPluginRule(noUnnecessaryArrayFindIndexLiteral, 'no-unnecessary-array-find-index-literal')
  const adaptedNoUnnecessaryArrayFindIndexSpread = adaptPluginRule(noUnnecessaryArrayFindIndexSpreadRule, 'no-unnecessary-array-find-index-spread')
  const adaptedNoUnnecessaryArrayIndexOfSpread = adaptPluginRule(noUnnecessaryArrayIndexOfSpreadRule, 'no-unnecessary-array-index-of-spread')
  const adaptedNoUnnecessaryArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryArrayLastIndexOfSpreadRule, 'no-unnecessary-array-last-index-of-spread')
@@ -1044,10 +1060,10 @@ const adaptedNoUnnecessaryArrayIsarrayLiteral = adaptPluginRule(noUnnecessaryArr
 const adaptedNoUnnecessaryArrayOfSingle = adaptPluginRule(noUnnecessaryArrayOfSingleRule, 'no-unnecessary-array-of-single')
 const adaptedNoUnnecessaryArrayOfSpread = adaptPluginRule(noUnnecessaryArrayOfSpreadRule, 'no-unnecessary-array-of-spread')
 const adaptedNoUnnecessaryArrayIncludesSingle = adaptPluginRule(noUnnecessaryArrayIncludesSingleRule, 'no-unnecessary-array-includes-single')
-const adaptedNoUnnecessaryArrayIncludesNAN = adaptPluginRule(noUnnecessaryArrayIncludesNANRule, 'no-unnecessary-array-includes-nan')
+const adaptedNoUnnecessaryArrayIncludesNAN = adaptPluginRule(noUnnecessaryArrayIncludesNaN, 'no-unnecessary-array-includes-nan')
 const adaptedNoUnnecessaryArrayIncludesSpread = adaptPluginRule(noUnnecessaryArrayIncludesSpreadRule, 'no-unnecessary-array-includes-spread')
 const adaptedNoUnnecessaryArrayIndexOfLiteral = adaptPluginRule(noUnnecessaryArrayIndexOfLiteralRule, 'no-unnecessary-array-index-of-literal')
-const adaptedNoUnnecessaryArrayJoinEmpty = adaptPluginRule(noUnnecessaryArrayJoinEmptyRule, 'no-unnecessary-array-join-empty')
+const adaptedNoUnnecessaryArrayJoinEmpty = adaptPluginRule(noUnnecessaryArrayJoinEmpty, 'no-unnecessary-array-join-empty')
 const adaptedNoUnnecessaryArrayJoinSpread = adaptPluginRule(noUnnecessaryArrayJoinSpreadRule, 'no-unnecessary-array-join-spread')
 const adaptedNoUnnecessaryArrayConstructor = adaptPluginRule(noUnnecessaryArrayConstructorRule, 'no-unnecessary-array-constructor')
 const adaptedNoUnnecessaryArrayConcatSingle = adaptPluginRule(noUnnecessaryArrayConcatSingleRule, 'no-unnecessary-array-concat-single')
@@ -1095,11 +1111,11 @@ const adaptedNoUnnecessaryLiteralTostring = adaptPluginRule(noUnnecessaryLiteral
 const adaptedNoUnnecessaryLogicalAndTrue = adaptPluginRule(noUnnecessaryLogicalAndTrueRule, 'no-unnecessary-logical-and-true')
 const adaptedNoUnnecessaryLogicalOrFalse = adaptPluginRule(noUnnecessaryLogicalOrFalseRule, 'no-unnecessary-logical-or-false')
 const adaptedNoUnnecessaryMap = adaptPluginRule(noUnnecessaryMapRule, 'no-unnecessary-map')
-const adaptedNoUnnecessaryArrayMapIdentity = adaptPluginRule(noUnnecessaryArrayMapIdentityRule, 'no-unnecessary-array-map-identity')
+const adaptedNoUnnecessaryArrayMapIdentity = adaptPluginRule(noUnnecessaryArrayMapIdentity, 'no-unnecessary-array-map-identity')
 const adaptedNoUnnecessaryArrayMapSpread = adaptPluginRule(noUnnecessaryArrayMapSpreadRule, 'no-unnecessary-array-map-spread')
 const adaptedNoUnnecessaryMathMaxSingle = adaptPluginRule(noUnnecessaryMathMaxSingleRule, 'no-unnecessary-math-max-single')
-const adaptedNoUnnecessaryMathCeilInteger = adaptPluginRule(noUnnecessaryMathCeilIntegerRule, 'no-unnecessary-math-ceil-integer')
-const adaptedNoUnnecessaryMathRoundInteger = adaptPluginRule(noUnnecessaryMathRoundIntegerRule, 'no-unnecessary-math-round-integer')
+const adaptedNoUnnecessaryMathCeilInteger = adaptPluginRule(noUnnecessaryMathCeilInteger, 'no-unnecessary-math-ceil-integer')
+const adaptedNoUnnecessaryMathRoundInteger = adaptPluginRule(noUnnecessaryMathRoundInteger, 'no-unnecessary-math-round-integer')
 const adaptedNoUnnecessaryMathSignZero = adaptPluginRule(noUnnecessaryMathSignZeroRule, 'no-unnecessary-math-sign-zero')
 const adaptedNoUnnecessaryMathFloorInteger = adaptPluginRule(noUnnecessaryMathFloorIntegerRule, 'no-unnecessary-math-floor-integer')
 const adaptedNoUnnecessaryMathAbsPositive = adaptPluginRule(noUnnecessaryMathAbsPositiveRule, 'no-unnecessary-math-abs-positive')
@@ -1120,7 +1136,7 @@ const adaptedNoUnnecessaryNullWithStrict = adaptPluginRule(noUnnecessaryNullWith
 const adaptedNoUnnecessaryObjectAssign = adaptPluginRule(noUnnecessaryObjectAssignRule, 'no-unnecessary-object-assign')
 const adaptedNoUnnecessaryObjectAssignSame = adaptPluginRule(noUnnecessaryObjectAssignSameRule, 'no-unnecessary-object-assign-same')
 const adaptedNoUnnecessaryObjectFreezeLiteral = adaptPluginRule(noUnnecessaryObjectFreezeLiteralRule, 'no-unnecessary-object-freeze-literal')
-const adaptedNoUnnecessaryObjectKeysLength = adaptPluginRule(noUnnecessaryObjectKeysLengthRule, 'no-unnecessary-object-keys-length')
+const adaptedNoUnnecessaryObjectKeysLength = adaptPluginRule(noUnnecessaryObjectKeysLength, 'no-unnecessary-object-keys-length')
 const adaptedNoUnnecessaryObjectSealLiteral = adaptPluginRule(noUnnecessaryObjectSealLiteralRule, 'no-unnecessary-object-seal-literal')
 const adaptedNoUnnecessaryNumericLiteral = adaptPluginRule(noUnnecessaryNumericLiteralRule, 'no-unnecessary-numeric-literal')
 const adaptedNoUnnecessaryNumericSeparator = adaptPluginRule(noUnnecessaryNumericSeparatorRule, 'no-unnecessary-numeric-separator')
@@ -1153,7 +1169,7 @@ const adaptedNoUnnecessarySort = adaptPluginRule(noUnnecessarySortRule, 'no-unne
 const adaptedNoUnnecessaryArraySortNoUse = adaptPluginRule(noUnnecessaryArraySortNoUseRule, 'no-unnecessary-array-sort-no-use')
 const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySortSpreadRule, 'no-unnecessary-array-sort-spread')
 const adaptedNoUnnecessaryArraySpliceSpread = adaptPluginRule(noUnnecessaryArraySpliceSpreadRule, 'no-unnecessary-array-splice-spread')
- const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalseRule, 'no-unnecessary-array-some-false')
+ const adaptedNoUnnecessaryArraySomeFalse = adaptPluginRule(noUnnecessaryArraySomeFalse, 'no-unnecessary-array-some-false')
  const adaptedNoUnnecessaryArraySomeSpread = adaptPluginRule(noUnnecessaryArraySomeSpreadRule, 'no-unnecessary-array-some-spread')
 const adaptedNoUnnecessaryArrayShiftSpread = adaptPluginRule(noUnnecessaryArrayShiftSpreadRule, 'no-unnecessary-array-shift-spread')
  const adaptedNoUnnecessaryIncludes = adaptPluginRule(noUnnecessaryIncludesRule, 'no-unnecessary-includes')
@@ -1317,11 +1333,11 @@ const adaptedNoUnnecessaryArraySliceZero = adaptPluginRule(noUnnecessaryArraySli
 const adaptedNoUnnecessaryArraySliceSpread = adaptPluginRule(noUnnecessaryArraySliceSpreadRule, 'no-unnecessary-array-slice-spread')
 const adaptedNoUnnecessarySome = adaptPluginRule(noUnnecessarySomeRule, 'no-unnecessary-some')
 const adaptedNoUnnecessarySplice = adaptPluginRule(noUnnecessarySpliceRule, 'no-unnecessary-splice')
-const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUseRule, 'no-unnecessary-array-splice-no-use')
+const adaptedNoUnnecessaryArraySpliceNoUse = adaptPluginRule(noUnnecessaryArraySpliceNoUse, 'no-unnecessary-array-splice-no-use')
 const adaptedNoUnnecessaryArraySpliceZero = adaptPluginRule(noUnnecessaryArraySpliceZeroRule, 'no-unnecessary-array-splice-zero')
-const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUseRule, 'no-unnecessary-array-to-reversed-no-use')
+const adaptedNoUnnecessaryArrayToReversedNoUse = adaptPluginRule(noUnnecessaryArrayToReversedNoUse, 'no-unnecessary-array-to-reversed-no-use')
 const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
-const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArrayRule, 'no-unnecessary-array-to-string-array')
+const adaptedNoUnnecessaryArrayToStringArray = adaptPluginRule(noUnnecessaryArrayToStringArray, 'no-unnecessary-array-to-string-array')
 const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArrayToStringSpreadRule, 'no-unnecessary-array-to-string-spread')
 const adaptedNoUnnecessaryArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryArrayToLocaleStringSpreadRule, 'no-unnecessary-array-to-locale-string-spread')
 const adaptedNoUnnecessaryArrayToJSONSpread = adaptPluginRule(noUnnecessaryArrayToJSONSpreadRule, 'no-unnecessary-array-to-json-spread')
@@ -1335,7 +1351,7 @@ const adaptedNoUnnecessaryStringConcatEmpty = adaptPluginRule(noUnnecessaryStrin
 const adaptedNoUnnecessaryStringConcatSpread = adaptPluginRule(noUnnecessaryStringConcatSpreadRule, 'no-unnecessary-string-concat-spread')
 const adaptedNoUnnecessaryStringConstructor = adaptPluginRule(noUnnecessaryStringConstructorRule, 'no-unnecessary-string-constructor')
 const adaptedNoUnnecessaryStringConstructorNonEmpty = adaptPluginRule(noUnnecessaryStringConstructorNonEmptyRule, 'no-unnecessary-string-constructor-non-empty')
-const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmptyRule, 'no-unnecessary-string-includes-empty')
+const adaptedNoUnnecessaryStringIncludesEmpty = adaptPluginRule(noUnnecessaryStringIncludesEmpty, 'no-unnecessary-string-includes-empty')
 const adaptedNoUnnecessaryStringIncludesSpread = adaptPluginRule(noUnnecessaryStringIncludesSpreadRule, 'no-unnecessary-string-includes-spread')
 const adaptedNoUnnecessaryStringIndexOfEmpty = adaptPluginRule(noUnnecessaryStringIndexOfEmptyRule, 'no-unnecessary-string-index-of-empty')
 const adaptedNoUnnecessaryStringIndexOfSpread = adaptPluginRule(noUnnecessaryStringIndexOfSpreadRule, 'no-unnecessary-string-index-of-spread')
@@ -1347,10 +1363,10 @@ const adaptedNoUnnecessaryStringCharAtZero = adaptPluginRule(noUnnecessaryString
 const adaptedNoUnnecessaryStringCharAtEmpty = adaptPluginRule(noUnnecessaryStringCharAtEmptyRule, 'no-unnecessary-string-char-at-empty')
 const adaptedNoUnnecessaryStringCharAtSpread = adaptPluginRule(noUnnecessaryStringCharAtSpreadRule, 'no-unnecessary-string-char-at-spread')
 const adaptedNoUnnecessaryStringCharCodeAtSpread = adaptPluginRule(noUnnecessaryStringCharCodeAtSpreadRule, 'no-unnecessary-string-char-code-at-spread')
-const adaptedNoUnnecessaryStringCharCodeAtZero = adaptPluginRule(noUnnecessaryStringCharCodeAtZeroRule, 'no-unnecessary-string-char-code-at-zero')
+const adaptedNoUnnecessaryStringCharCodeAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-char-code-at-zero')
 const adaptedNoUnnecessaryStringAtEmpty = adaptPluginRule(noUnnecessaryStringAtEmptyRule, 'no-unnecessary-string-at-empty')
 const adaptedNoUnnecessaryStringAtSpread = adaptPluginRule(noUnnecessaryStringAtSpreadRule, 'no-unnecessary-string-at-spread')
-const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringAtZeroRule, 'no-unnecessary-string-at-zero')
+const adaptedNoUnnecessaryStringAtZero = adaptPluginRule(noUnnecessaryStringCharAtZeroRule, 'no-unnecessary-string-at-zero')
 const adaptedNoUnnecessaryStringCodepointatZero = adaptPluginRule(noUnnecessaryStringCodepointatZeroRule, 'no-unnecessary-string-codepointat-zero')
 const adaptedNoUnnecessaryStringCodePointAtEmpty = adaptPluginRule(noUnnecessaryStringCodePointAtEmptyRule, 'no-unnecessary-string-code-point-at-empty')
 const adaptedNoUnnecessaryStringCodePointAtSpread = adaptPluginRule(noUnnecessaryStringCodePointAtSpreadRule, 'no-unnecessary-string-code-point-at-spread')
@@ -1363,12 +1379,12 @@ const adaptedNoUnnecessaryStringMatchEmpty = adaptPluginRule(noUnnecessaryString
 const adaptedNoUnnecessaryStringMatchSpread = adaptPluginRule(noUnnecessaryStringMatchSpreadRule, 'no-unnecessary-string-match-spread')
 const adaptedNoUnnecessaryStringNormalizeEmpty = adaptPluginRule(noUnnecessaryStringNormalizeEmptyRule, 'no-unnecessary-string-normalize-empty')
 const adaptedNoUnnecessaryStringNormalizeSpread = adaptPluginRule(noUnnecessaryStringNormalizeSpreadRule, 'no-unnecessary-string-normalize-spread')
-const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmptyRule, 'no-unnecessary-string-ends-with-empty')
+const adaptedNoUnnecessaryStringEndsWithEmpty = adaptPluginRule(noUnnecessaryStringEndsWithEmpty, 'no-unnecessary-string-ends-with-empty')
 const adaptedNoUnnecessaryStringEndsWithSpread = adaptPluginRule(noUnnecessaryStringEndsWithSpreadRule, 'no-unnecessary-string-ends-with-spread')
-const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZeroRule, 'no-unnecessary-string-pad-start-zero')
+const adaptedNoUnnecessaryStringPadStartZero = adaptPluginRule(noUnnecessaryStringPadStartZero, 'no-unnecessary-string-pad-start-zero')
 const adaptedNoUnnecessaryStringPadStartEmpty = adaptPluginRule(noUnnecessaryStringPadStartEmptyRule, 'no-unnecessary-string-pad-start-empty')
 const adaptedNoUnnecessaryStringPadStartSpread = adaptPluginRule(noUnnecessaryStringPadStartSpreadRule, 'no-unnecessary-string-pad-start-spread')
-const adaptedNoUnnecessaryStringPadEndZero = adaptPluginRule(noUnnecessaryStringPadEndZeroRule, 'no-unnecessary-string-pad-end-zero')
+const adaptedNoUnnecessaryStringPadEndZero = adaptPluginRule(noUnnecessaryStringPadEndZero, 'no-unnecessary-string-pad-end-zero')
 const adaptedNoUnnecessaryStringPadEndEmpty = adaptPluginRule(noUnnecessaryStringPadEndEmptyRule, 'no-unnecessary-string-pad-end-empty')
 const adaptedNoUnnecessaryStringPadEndSpread = adaptPluginRule(noUnnecessaryStringPadEndSpreadRule, 'no-unnecessary-string-pad-end-spread')
 const adaptedNoUnnecessaryStringWrapper = adaptPluginRule(noUnnecessaryStringWrapperRule, 'no-unnecessary-string-wrapper')
@@ -1395,7 +1411,8 @@ const adaptedNoUnnecessaryNumberToLocaleStringSpread = adaptPluginRule(noUnneces
 const adaptedNoUnnecessaryNumberValueOfSpread = adaptPluginRule(noUnnecessaryNumberValueOfSpreadRule, 'no-unnecessary-number-value-of-spread')
 const adaptedNoUnnecessaryNumberToStringSpread = adaptPluginRule(noUnnecessaryNumberToStringSpreadRule, 'no-unnecessary-number-to-string-spread')
 const adaptedNoUnnecessaryNumberToFixedSpread = adaptPluginRule(noUnnecessaryNumberToFixedSpreadRule, 'no-unnecessary-number-to-fixed-spread')
-const adaptedNoUnnecessaryArrayIsArraySpread = adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule, 'no-unnecessary-is-nan-spread')
+const adaptedNoUnnecessaryArrayIsArraySpread = adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule, 'no-unnecessary-array-is-array-spread')
+const adaptedNoUnnecessaryIsNanSpread = adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule, 'no-unnecessary-is-nan-spread')
 const adaptedNoUnnecessaryIsFiniteSpread = adaptPluginRule(noUnnecessaryIsFiniteSpreadRule, 'no-unnecessary-is-finite-spread')
 const adaptedNoUnnecessaryParseFloatSpread = adaptPluginRule(noUnnecessaryParseFloatSpreadRule, 'no-unnecessary-parse-float-spread')
 const adaptedNoUnnecessaryParseIntSpread = adaptPluginRule(noUnnecessaryParseIntSpreadRule, 'no-unnecessary-parse-int-spread')
@@ -1439,11 +1456,6 @@ const adaptedNoUnnecessaryMathMaxSpread = adaptPluginRule(noUnnecessaryMathMaxSp
 const adaptedNoUnnecessaryMathMinSpread = adaptPluginRule(noUnnecessaryMathMinSpreadRule, 'no-unnecessary-math-min-spread')
 const adaptedNoUnnecessaryMathSignSpread = adaptPluginRule(noUnnecessaryMathSignSpreadRule, 'no-unnecessary-math-sign-spread')
 const adaptedNoUnnecessaryMathTruncSpread = adaptPluginRule(noUnnecessaryMathTruncSpreadRule, 'no-unnecessary-math-trunc-spread')
-  ['no-unnecessary-math-expm1-spread']: adaptPluginRule(noUnnecessaryMathExpm1SpreadRule),
-  ['no-unnecessary-math-log1p-spread']: adaptPluginRule(noUnnecessaryMathLog1pSpreadRule),
-  ['no-unnecessary-math-sinh-spread']: adaptPluginRule(noUnnecessaryMathSinhSpreadRule),
-  ['no-unnecessary-math-cosh-spread']: adaptPluginRule(noUnnecessaryMathCoshSpreadRule),
-  ['no-unnecessary-math-tanh-spread']: adaptPluginRule(noUnnecessaryMathTanhSpreadRule),
 const adaptedNoUnnecessaryMathPowSpread = adaptPluginRule(noUnnecessaryMathPowSpreadRule, 'no-unnecessary-math-pow-spread')
 const adaptedNoUnnecessaryMathLogSpread = adaptPluginRule(noUnnecessaryMathLogSpreadRule, 'no-unnecessary-math-log-spread')
 const adaptedNoUnnecessaryMathSinSpread = adaptPluginRule(noUnnecessaryMathSinSpreadRule, 'no-unnecessary-math-sin-spread')
@@ -1583,11 +1595,11 @@ const adaptedNoUnnecessaryStringSplit = adaptPluginRule(noUnnecessaryStringSplit
 const adaptedNoUnnecessaryStringSplitEmptySeparator = adaptPluginRule(noUnnecessaryStringSplitEmptySeparatorRule, 'no-unnecessary-string-split-empty-separator')
 const adaptedNoUnnecessaryStringSplitSpread = adaptPluginRule(noUnnecessaryStringSplitSpreadRule, 'no-unnecessary-string-split-spread')
 const adaptedNoUnnecessaryStringSplitLength = adaptPluginRule(noUnnecessaryStringSplitLengthRule, 'no-unnecessary-string-split-length')
-const adaptedNoUnnecessaryStringSliceZeroLen = adaptPluginRule(noUnnecessaryStringSliceZeroLenRule, 'no-unnecessary-string-slice-zero-len')
+const adaptedNoUnnecessaryStringSliceZeroLen = adaptPluginRule(noUnnecessaryStringSliceZeroLen, 'no-unnecessary-string-slice-zero-len')
 const adaptedNoUnnecessaryStringSliceZero = adaptPluginRule(noUnnecessaryStringSliceZeroRule, 'no-unnecessary-string-slice-zero')
 const adaptedNoUnnecessaryStringSliceSpread = adaptPluginRule(noUnnecessaryStringSliceSpreadRule, 'no-unnecessary-string-slice-spread')
 const adaptedNoUnnecessaryStringStartsEmpty = adaptPluginRule(noUnnecessaryStringStartsEmptyRule, 'no-unnecessary-string-starts-empty')
-const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessaryStringStartsWithNonEmptyRule, 'no-unnecessary-string-starts-with-non-empty')
+const adaptedNoUnnecessaryStringStartsWithNonEmpty = adaptPluginRule(noUnnecessaryStringStartsWithNonEmpty, 'no-unnecessary-string-starts-with-non-empty')
 const adaptedNoUnnecessaryStringStartsWithEmpty = adaptPluginRule(noUnnecessaryStringStartsWithEmptyRule, 'no-unnecessary-string-starts-with-empty')
 const adaptedNoUnnecessaryStringStartsWithSpread = adaptPluginRule(noUnnecessaryStringStartsWithSpreadRule, 'no-unnecessary-string-starts-with-spread')
 const adaptedNoUnnecessaryStringTrimEmpty = adaptPluginRule(noUnnecessaryStringTrimEmptyRule, 'no-unnecessary-string-trim-empty')
@@ -1599,7 +1611,7 @@ const adaptedNoUnnecessaryStringTrimEndSpread = adaptPluginRule(noUnnecessaryStr
 const adaptedNoUnnecessaryStringReplaceAll = adaptPluginRule(noUnnecessaryStringReplaceAllRule, 'no-unnecessary-string-replace-all')
 const adaptedNoUnnecessaryStringReplaceAllEmpty = adaptPluginRule(noUnnecessaryStringReplaceAllEmptyRule, 'no-unnecessary-string-replace-all-empty')
 const adaptedNoUnnecessaryStringReplaceAllSpread = adaptPluginRule(noUnnecessaryStringReplaceAllSpreadRule, 'no-unnecessary-string-replace-all-spread')
-const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStringReplaceEmptyRule, 'no-unnecessary-string-replace-empty')
+const adaptedNoUnnecessaryStringReplaceEmpty = adaptPluginRule(noUnnecessaryStringReplaceEmpty, 'no-unnecessary-string-replace-empty')
 const adaptedNoUnnecessaryStringReplaceSpread = adaptPluginRule(noUnnecessaryStringReplaceSpreadRule, 'no-unnecessary-string-replace-spread')
 const adaptedNoUnnecessaryStringSearchEmpty = adaptPluginRule(noUnnecessaryStringSearchEmptyRule, 'no-unnecessary-string-search-empty')
 const adaptedNoUnnecessaryStringSearchSpread = adaptPluginRule(noUnnecessaryStringSearchSpreadRule, 'no-unnecessary-string-search-spread')
@@ -1926,6 +1938,1182 @@ const adaptedPreferTodo = adaptPluginRule(preferTodoRule, 'prefer-todo')
 const adaptedRequireHook = adaptPluginRule(requireHookRule, 'require-hook')
 const adaptedRequireToThrowMessage = adaptPluginRule(requireToThrowMessageRule, 'require-to-throw-message')
 
+
+const adaptedNoUnnecessaryTypedArrayAtSpread = adaptPluginRule(noUnnecessaryTypedArrayAtSpreadRule, 'no-unnecessary-typed-array-at-spread')
+const adaptedNoUnnecessaryTypedArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryTypedArrayCopyWithinSpreadRule, 'no-unnecessary-typed-array-copy-within-spread')
+const adaptedNoUnnecessaryTypedArrayEntriesSpread = adaptPluginRule(noUnnecessaryTypedArrayEntriesSpreadRule, 'no-unnecessary-typed-array-entries-spread')
+const adaptedNoUnnecessaryTypedArrayEverySpread = adaptPluginRule(noUnnecessaryTypedArrayEverySpreadRule, 'no-unnecessary-typed-array-every-spread')
+const adaptedNoUnnecessaryTypedArrayFillSpread = adaptPluginRule(noUnnecessaryTypedArrayFillSpreadRule, 'no-unnecessary-typed-array-fill-spread')
+const adaptedNoUnnecessaryTypedArrayFilterSpread = adaptPluginRule(noUnnecessaryTypedArrayFilterSpreadRule, 'no-unnecessary-typed-array-filter-spread')
+const adaptedNoUnnecessaryTypedArrayFindSpread = adaptPluginRule(noUnnecessaryTypedArrayFindSpreadRule, 'no-unnecessary-typed-array-find-spread')
+const adaptedNoUnnecessaryTypedArrayFindIndexSpread = adaptPluginRule(noUnnecessaryTypedArrayFindIndexSpreadRule, 'no-unnecessary-typed-array-find-index-spread')
+const adaptedNoUnnecessaryTypedArrayFindLastSpread = adaptPluginRule(noUnnecessaryTypedArrayFindLastSpreadRule, 'no-unnecessary-typed-array-find-last-spread')
+const adaptedNoUnnecessaryTypedArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryTypedArrayFindLastIndexSpreadRule, 'no-unnecessary-typed-array-find-last-index-spread')
+const adaptedNoUnnecessaryTypedArrayForEachSpread = adaptPluginRule(noUnnecessaryTypedArrayForEachSpreadRule, 'no-unnecessary-typed-array-for-each-spread')
+const adaptedNoUnnecessaryTypedArrayIncludesSpread = adaptPluginRule(noUnnecessaryTypedArrayIncludesSpreadRule, 'no-unnecessary-typed-array-includes-spread')
+const adaptedNoUnnecessaryTypedArrayIndexOfSpread = adaptPluginRule(noUnnecessaryTypedArrayIndexOfSpreadRule, 'no-unnecessary-typed-array-index-of-spread')
+const adaptedNoUnnecessaryTypedArrayJoinSpread = adaptPluginRule(noUnnecessaryTypedArrayJoinSpreadRule, 'no-unnecessary-typed-array-join-spread')
+const adaptedNoUnnecessaryTypedArrayKeysSpread = adaptPluginRule(noUnnecessaryTypedArrayKeysSpreadRule, 'no-unnecessary-typed-array-keys-spread')
+const adaptedNoUnnecessaryTypedArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryTypedArrayLastIndexOfSpreadRule, 'no-unnecessary-typed-array-last-index-of-spread')
+const adaptedNoUnnecessaryTypedArrayMapSpread = adaptPluginRule(noUnnecessaryTypedArrayMapSpreadRule, 'no-unnecessary-typed-array-map-spread')
+const adaptedNoUnnecessaryTypedArrayReduceSpread = adaptPluginRule(noUnnecessaryTypedArrayReduceSpreadRule, 'no-unnecessary-typed-array-reduce-spread')
+const adaptedNoUnnecessaryTypedArrayReduceRightSpread = adaptPluginRule(noUnnecessaryTypedArrayReduceRightSpreadRule, 'no-unnecessary-typed-array-reduce-right-spread')
+const adaptedNoUnnecessaryTypedArrayReverseSpread = adaptPluginRule(noUnnecessaryTypedArrayReverseSpreadRule, 'no-unnecessary-typed-array-reverse-spread')
+const adaptedNoUnnecessaryTypedArraySetSpread = adaptPluginRule(noUnnecessaryTypedArraySetSpreadRule, 'no-unnecessary-typed-array-set-spread')
+const adaptedNoUnnecessaryTypedArraySliceSpread = adaptPluginRule(noUnnecessaryTypedArraySliceSpreadRule, 'no-unnecessary-typed-array-slice-spread')
+const adaptedNoUnnecessaryTypedArraySomeSpread = adaptPluginRule(noUnnecessaryTypedArraySomeSpreadRule, 'no-unnecessary-typed-array-some-spread')
+const adaptedNoUnnecessaryTypedArraySortSpread = adaptPluginRule(noUnnecessaryTypedArraySortSpreadRule, 'no-unnecessary-typed-array-sort-spread')
+const adaptedNoUnnecessaryTypedArraySubArraySpread = adaptPluginRule(noUnnecessaryTypedArraySubArraySpreadRule, 'no-unnecessary-typed-array-sub-array-spread')
+const adaptedNoUnnecessaryTypedArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryTypedArrayToLocaleStringSpreadRule, 'no-unnecessary-typed-array-to-locale-string-spread')
+const adaptedNoUnnecessaryTypedArrayToStringSpread = adaptPluginRule(noUnnecessaryTypedArrayToStringSpreadRule, 'no-unnecessary-typed-array-to-string-spread')
+const adaptedNoUnnecessaryTypedArrayValuesSpread = adaptPluginRule(noUnnecessaryTypedArrayValuesSpreadRule, 'no-unnecessary-typed-array-values-spread')
+const adaptedNoUnnecessaryTypedArrayWithSpread = adaptPluginRule(noUnnecessaryTypedArrayWithSpreadRule, 'no-unnecessary-typed-array-with-spread')
+const adaptedNoUnnecessaryDataviewGetBigInt64Spread = adaptPluginRule(noUnnecessaryDataviewGetBigInt64SpreadRule, 'no-unnecessary-dataview-get-big-int64-spread')
+const adaptedNoUnnecessaryDataviewGetBigUint64Spread = adaptPluginRule(noUnnecessaryDataviewGetBigUint64SpreadRule, 'no-unnecessary-dataview-get-big-uint64-spread')
+const adaptedNoUnnecessaryDataviewGetFloat32Spread = adaptPluginRule(noUnnecessaryDataviewGetFloat32SpreadRule, 'no-unnecessary-dataview-get-float32-spread')
+const adaptedNoUnnecessaryDataviewGetFloat64Spread = adaptPluginRule(noUnnecessaryDataviewGetFloat64SpreadRule, 'no-unnecessary-dataview-get-float64-spread')
+const adaptedNoUnnecessaryDataviewGetInt16Spread = adaptPluginRule(noUnnecessaryDataviewGetInt16SpreadRule, 'no-unnecessary-dataview-get-int16-spread')
+const adaptedNoUnnecessaryDataviewGetInt32Spread = adaptPluginRule(noUnnecessaryDataviewGetInt32SpreadRule, 'no-unnecessary-dataview-get-int32-spread')
+const adaptedNoUnnecessaryDataviewGetInt8Spread = adaptPluginRule(noUnnecessaryDataviewGetInt8SpreadRule, 'no-unnecessary-dataview-get-int8-spread')
+const adaptedNoUnnecessaryDataviewGetUint16Spread = adaptPluginRule(noUnnecessaryDataviewGetUint16SpreadRule, 'no-unnecessary-dataview-get-uint16-spread')
+const adaptedNoUnnecessaryDataviewGetUint32Spread = adaptPluginRule(noUnnecessaryDataviewGetUint32SpreadRule, 'no-unnecessary-dataview-get-uint32-spread')
+const adaptedNoUnnecessaryDataviewGetUint8Spread = adaptPluginRule(noUnnecessaryDataviewGetUint8SpreadRule, 'no-unnecessary-dataview-get-uint8-spread')
+const adaptedNoUnnecessaryDataviewSetBigInt64Spread = adaptPluginRule(noUnnecessaryDataviewSetBigInt64SpreadRule, 'no-unnecessary-dataview-set-big-int64-spread')
+const adaptedNoUnnecessaryDataviewSetBigUint64Spread = adaptPluginRule(noUnnecessaryDataviewSetBigUint64SpreadRule, 'no-unnecessary-dataview-set-big-uint64-spread')
+const adaptedNoUnnecessaryEvalSpread = adaptPluginRule(noUnnecessaryEvalSpreadRule, 'no-unnecessary-eval-spread')
+const adaptedNoUnnecessarySharedArrayBufferSliceSpread = adaptPluginRule(noUnnecessarySharedArrayBufferSliceSpreadRule, 'no-unnecessary-shared-array-buffer-slice-spread')
+const adaptedNoUnnecessaryInt8ArraySetSpread = adaptPluginRule(noUnnecessaryInt8ArraySetSpreadRule, 'no-unnecessary-int-8-array-set-spread')
+const adaptedNoUnnecessaryInt8ArraySubarraySpread = adaptPluginRule(noUnnecessaryInt8ArraySubarraySpreadRule, 'no-unnecessary-int-8-array-subarray-spread')
+const adaptedNoUnnecessaryInt8ArraySliceSpread = adaptPluginRule(noUnnecessaryInt8ArraySliceSpreadRule, 'no-unnecessary-int-8-array-slice-spread')
+const adaptedNoUnnecessaryUint8ArraySetSpread = adaptPluginRule(noUnnecessaryUint8ArraySetSpreadRule, 'no-unnecessary-uint-8-array-set-spread')
+const adaptedNoUnnecessaryUint8ArraySubarraySpread = adaptPluginRule(noUnnecessaryUint8ArraySubarraySpreadRule, 'no-unnecessary-uint-8-array-subarray-spread')
+const adaptedNoUnnecessaryUint8ArraySliceSpread = adaptPluginRule(noUnnecessaryUint8ArraySliceSpreadRule, 'no-unnecessary-uint-8-array-slice-spread')
+const adaptedNoUnnecessaryUint8ClampedArraySetSpread = adaptPluginRule(noUnnecessaryUint8ClampedArraySetSpreadRule, 'no-unnecessary-uint-8-clamped-array-set-spread')
+const adaptedNoUnnecessaryUint8ClampedArraySubarraySpread = adaptPluginRule(noUnnecessaryUint8ClampedArraySubarraySpreadRule, 'no-unnecessary-uint-8-clamped-array-subarray-spread')
+const adaptedNoUnnecessaryUint8ClampedArraySliceSpread = adaptPluginRule(noUnnecessaryUint8ClampedArraySliceSpreadRule, 'no-unnecessary-uint-8-clamped-array-slice-spread')
+const adaptedNoUnnecessaryInt16ArraySetSpread = adaptPluginRule(noUnnecessaryInt16ArraySetSpreadRule, 'no-unnecessary-int-16-array-set-spread')
+const adaptedNoUnnecessaryInt16ArraySubarraySpread = adaptPluginRule(noUnnecessaryInt16ArraySubarraySpreadRule, 'no-unnecessary-int-16-array-subarray-spread')
+const adaptedNoUnnecessaryInt16ArraySliceSpread = adaptPluginRule(noUnnecessaryInt16ArraySliceSpreadRule, 'no-unnecessary-int-16-array-slice-spread')
+const adaptedNoUnnecessaryUint16ArraySetSpread = adaptPluginRule(noUnnecessaryUint16ArraySetSpreadRule, 'no-unnecessary-uint-16-array-set-spread')
+const adaptedNoUnnecessaryUint16ArraySubarraySpread = adaptPluginRule(noUnnecessaryUint16ArraySubarraySpreadRule, 'no-unnecessary-uint-16-array-subarray-spread')
+const adaptedNoUnnecessaryUint16ArraySliceSpread = adaptPluginRule(noUnnecessaryUint16ArraySliceSpreadRule, 'no-unnecessary-uint-16-array-slice-spread')
+const adaptedNoUnnecessaryInt32ArraySetSpread = adaptPluginRule(noUnnecessaryInt32ArraySetSpreadRule, 'no-unnecessary-int-32-array-set-spread')
+const adaptedNoUnnecessaryInt32ArraySubarraySpread = adaptPluginRule(noUnnecessaryInt32ArraySubarraySpreadRule, 'no-unnecessary-int-32-array-subarray-spread')
+const adaptedNoUnnecessaryInt32ArraySliceSpread = adaptPluginRule(noUnnecessaryInt32ArraySliceSpreadRule, 'no-unnecessary-int-32-array-slice-spread')
+const adaptedNoUnnecessaryUint32ArraySetSpread = adaptPluginRule(noUnnecessaryUint32ArraySetSpreadRule, 'no-unnecessary-uint-32-array-set-spread')
+const adaptedNoUnnecessaryUint32ArraySubarraySpread = adaptPluginRule(noUnnecessaryUint32ArraySubarraySpreadRule, 'no-unnecessary-uint-32-array-subarray-spread')
+const adaptedNoUnnecessaryUint32ArraySliceSpread = adaptPluginRule(noUnnecessaryUint32ArraySliceSpreadRule, 'no-unnecessary-uint-32-array-slice-spread')
+const adaptedNoUnnecessaryFloat32ArraySetSpread = adaptPluginRule(noUnnecessaryFloat32ArraySetSpreadRule, 'no-unnecessary-float-32-array-set-spread')
+const adaptedNoUnnecessaryFloat32ArraySubarraySpread = adaptPluginRule(noUnnecessaryFloat32ArraySubarraySpreadRule, 'no-unnecessary-float-32-array-subarray-spread')
+const adaptedNoUnnecessaryFloat32ArraySliceSpread = adaptPluginRule(noUnnecessaryFloat32ArraySliceSpreadRule, 'no-unnecessary-float-32-array-slice-spread')
+const adaptedNoUnnecessaryFloat64ArraySetSpread = adaptPluginRule(noUnnecessaryFloat64ArraySetSpreadRule, 'no-unnecessary-float-64-array-set-spread')
+const adaptedNoUnnecessaryFloat64ArraySubarraySpread = adaptPluginRule(noUnnecessaryFloat64ArraySubarraySpreadRule, 'no-unnecessary-float-64-array-subarray-spread')
+const adaptedNoUnnecessaryFloat64ArraySliceSpread = adaptPluginRule(noUnnecessaryFloat64ArraySliceSpreadRule, 'no-unnecessary-float-64-array-slice-spread')
+const adaptedNoUnnecessaryBigInt64ArraySetSpread = adaptPluginRule(noUnnecessaryBigInt64ArraySetSpreadRule, 'no-unnecessary-big-int-64-array-set-spread')
+const adaptedNoUnnecessaryBigInt64ArraySubarraySpread = adaptPluginRule(noUnnecessaryBigInt64ArraySubarraySpreadRule, 'no-unnecessary-big-int-64-array-subarray-spread')
+const adaptedNoUnnecessaryBigInt64ArraySliceSpread = adaptPluginRule(noUnnecessaryBigInt64ArraySliceSpreadRule, 'no-unnecessary-big-int-64-array-slice-spread')
+const adaptedNoUnnecessaryBigUint64ArraySetSpread = adaptPluginRule(noUnnecessaryBigUint64ArraySetSpreadRule, 'no-unnecessary-big-uint-64-array-set-spread')
+const adaptedNoUnnecessaryBigUint64ArraySubarraySpread = adaptPluginRule(noUnnecessaryBigUint64ArraySubarraySpreadRule, 'no-unnecessary-big-uint-64-array-subarray-spread')
+const adaptedNoUnnecessaryBigUint64ArraySliceSpread = adaptPluginRule(noUnnecessaryBigUint64ArraySliceSpreadRule, 'no-unnecessary-big-uint-64-array-slice-spread')
+const adaptedNoUnnecessaryInt8ArrayFillSpread = adaptPluginRule(noUnnecessaryInt8ArrayFillSpreadRule, 'no-unnecessary-int-8-array-fill-spread')
+const adaptedNoUnnecessaryInt8ArraySortSpread = adaptPluginRule(noUnnecessaryInt8ArraySortSpreadRule, 'no-unnecessary-int-8-array-sort-spread')
+const adaptedNoUnnecessaryInt8ArrayReverseSpread = adaptPluginRule(noUnnecessaryInt8ArrayReverseSpreadRule, 'no-unnecessary-int-8-array-reverse-spread')
+const adaptedNoUnnecessaryInt8ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryInt8ArrayCopyWithinSpreadRule, 'no-unnecessary-int-8-array-copy-within-spread')
+const adaptedNoUnnecessaryUint8ArrayFillSpread = adaptPluginRule(noUnnecessaryUint8ArrayFillSpreadRule, 'no-unnecessary-uint-8-array-fill-spread')
+const adaptedNoUnnecessaryUint8ArraySortSpread = adaptPluginRule(noUnnecessaryUint8ArraySortSpreadRule, 'no-unnecessary-uint-8-array-sort-spread')
+const adaptedNoUnnecessaryUint8ArrayReverseSpread = adaptPluginRule(noUnnecessaryUint8ArrayReverseSpreadRule, 'no-unnecessary-uint-8-array-reverse-spread')
+const adaptedNoUnnecessaryUint8ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryUint8ArrayCopyWithinSpreadRule, 'no-unnecessary-uint-8-array-copy-within-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFillSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFillSpreadRule, 'no-unnecessary-uint-8-clamped-array-fill-spread')
+const adaptedNoUnnecessaryUint8ClampedArraySortSpread = adaptPluginRule(noUnnecessaryUint8ClampedArraySortSpreadRule, 'no-unnecessary-uint-8-clamped-array-sort-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayReverseSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayReverseSpreadRule, 'no-unnecessary-uint-8-clamped-array-reverse-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayCopyWithinSpreadRule, 'no-unnecessary-uint-8-clamped-array-copy-within-spread')
+const adaptedNoUnnecessaryInt16ArrayFillSpread = adaptPluginRule(noUnnecessaryInt16ArrayFillSpreadRule, 'no-unnecessary-int-16-array-fill-spread')
+const adaptedNoUnnecessaryInt16ArraySortSpread = adaptPluginRule(noUnnecessaryInt16ArraySortSpreadRule, 'no-unnecessary-int-16-array-sort-spread')
+const adaptedNoUnnecessaryInt16ArrayReverseSpread = adaptPluginRule(noUnnecessaryInt16ArrayReverseSpreadRule, 'no-unnecessary-int-16-array-reverse-spread')
+const adaptedNoUnnecessaryInt16ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryInt16ArrayCopyWithinSpreadRule, 'no-unnecessary-int-16-array-copy-within-spread')
+const adaptedNoUnnecessaryUint16ArrayFillSpread = adaptPluginRule(noUnnecessaryUint16ArrayFillSpreadRule, 'no-unnecessary-uint-16-array-fill-spread')
+const adaptedNoUnnecessaryUint16ArraySortSpread = adaptPluginRule(noUnnecessaryUint16ArraySortSpreadRule, 'no-unnecessary-uint-16-array-sort-spread')
+const adaptedNoUnnecessaryUint16ArrayReverseSpread = adaptPluginRule(noUnnecessaryUint16ArrayReverseSpreadRule, 'no-unnecessary-uint-16-array-reverse-spread')
+const adaptedNoUnnecessaryUint16ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryUint16ArrayCopyWithinSpreadRule, 'no-unnecessary-uint-16-array-copy-within-spread')
+const adaptedNoUnnecessaryInt32ArrayFillSpread = adaptPluginRule(noUnnecessaryInt32ArrayFillSpreadRule, 'no-unnecessary-int-32-array-fill-spread')
+const adaptedNoUnnecessaryInt32ArraySortSpread = adaptPluginRule(noUnnecessaryInt32ArraySortSpreadRule, 'no-unnecessary-int-32-array-sort-spread')
+const adaptedNoUnnecessaryInt32ArrayReverseSpread = adaptPluginRule(noUnnecessaryInt32ArrayReverseSpreadRule, 'no-unnecessary-int-32-array-reverse-spread')
+const adaptedNoUnnecessaryInt32ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryInt32ArrayCopyWithinSpreadRule, 'no-unnecessary-int-32-array-copy-within-spread')
+const adaptedNoUnnecessaryUint32ArrayFillSpread = adaptPluginRule(noUnnecessaryUint32ArrayFillSpreadRule, 'no-unnecessary-uint-32-array-fill-spread')
+const adaptedNoUnnecessaryUint32ArraySortSpread = adaptPluginRule(noUnnecessaryUint32ArraySortSpreadRule, 'no-unnecessary-uint-32-array-sort-spread')
+const adaptedNoUnnecessaryUint32ArrayReverseSpread = adaptPluginRule(noUnnecessaryUint32ArrayReverseSpreadRule, 'no-unnecessary-uint-32-array-reverse-spread')
+const adaptedNoUnnecessaryUint32ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryUint32ArrayCopyWithinSpreadRule, 'no-unnecessary-uint-32-array-copy-within-spread')
+const adaptedNoUnnecessaryFloat32ArrayFillSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFillSpreadRule, 'no-unnecessary-float-32-array-fill-spread')
+const adaptedNoUnnecessaryFloat32ArraySortSpread = adaptPluginRule(noUnnecessaryFloat32ArraySortSpreadRule, 'no-unnecessary-float-32-array-sort-spread')
+const adaptedNoUnnecessaryFloat32ArrayReverseSpread = adaptPluginRule(noUnnecessaryFloat32ArrayReverseSpreadRule, 'no-unnecessary-float-32-array-reverse-spread')
+const adaptedNoUnnecessaryFloat32ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryFloat32ArrayCopyWithinSpreadRule, 'no-unnecessary-float-32-array-copy-within-spread')
+const adaptedNoUnnecessaryFloat64ArrayFillSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFillSpreadRule, 'no-unnecessary-float-64-array-fill-spread')
+const adaptedNoUnnecessaryFloat64ArraySortSpread = adaptPluginRule(noUnnecessaryFloat64ArraySortSpreadRule, 'no-unnecessary-float-64-array-sort-spread')
+const adaptedNoUnnecessaryFloat64ArrayReverseSpread = adaptPluginRule(noUnnecessaryFloat64ArrayReverseSpreadRule, 'no-unnecessary-float-64-array-reverse-spread')
+const adaptedNoUnnecessaryFloat64ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryFloat64ArrayCopyWithinSpreadRule, 'no-unnecessary-float-64-array-copy-within-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFillSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFillSpreadRule, 'no-unnecessary-big-int-64-array-fill-spread')
+const adaptedNoUnnecessaryBigInt64ArraySortSpread = adaptPluginRule(noUnnecessaryBigInt64ArraySortSpreadRule, 'no-unnecessary-big-int-64-array-sort-spread')
+const adaptedNoUnnecessaryBigInt64ArrayReverseSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayReverseSpreadRule, 'no-unnecessary-big-int-64-array-reverse-spread')
+const adaptedNoUnnecessaryBigInt64ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayCopyWithinSpreadRule, 'no-unnecessary-big-int-64-array-copy-within-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFillSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFillSpreadRule, 'no-unnecessary-big-uint-64-array-fill-spread')
+const adaptedNoUnnecessaryBigUint64ArraySortSpread = adaptPluginRule(noUnnecessaryBigUint64ArraySortSpreadRule, 'no-unnecessary-big-uint-64-array-sort-spread')
+const adaptedNoUnnecessaryBigUint64ArrayReverseSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayReverseSpreadRule, 'no-unnecessary-big-uint-64-array-reverse-spread')
+const adaptedNoUnnecessaryBigUint64ArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayCopyWithinSpreadRule, 'no-unnecessary-big-uint-64-array-copy-within-spread')
+const adaptedNoUnnecessaryInt8ArrayMapSpread = adaptPluginRule(noUnnecessaryInt8ArrayMapSpreadRule, 'no-unnecessary-int-8-array-map-spread')
+const adaptedNoUnnecessaryInt8ArrayFilterSpread = adaptPluginRule(noUnnecessaryInt8ArrayFilterSpreadRule, 'no-unnecessary-int-8-array-filter-spread')
+const adaptedNoUnnecessaryInt8ArrayFindSpread = adaptPluginRule(noUnnecessaryInt8ArrayFindSpreadRule, 'no-unnecessary-int-8-array-find-spread')
+const adaptedNoUnnecessaryInt8ArrayEverySpread = adaptPluginRule(noUnnecessaryInt8ArrayEverySpreadRule, 'no-unnecessary-int-8-array-every-spread')
+const adaptedNoUnnecessaryInt8ArraySomeSpread = adaptPluginRule(noUnnecessaryInt8ArraySomeSpreadRule, 'no-unnecessary-int-8-array-some-spread')
+const adaptedNoUnnecessaryInt8ArrayForEachSpread = adaptPluginRule(noUnnecessaryInt8ArrayForEachSpreadRule, 'no-unnecessary-int-8-array-for-each-spread')
+const adaptedNoUnnecessaryUint8ArrayMapSpread = adaptPluginRule(noUnnecessaryUint8ArrayMapSpreadRule, 'no-unnecessary-uint-8-array-map-spread')
+const adaptedNoUnnecessaryUint8ArrayFilterSpread = adaptPluginRule(noUnnecessaryUint8ArrayFilterSpreadRule, 'no-unnecessary-uint-8-array-filter-spread')
+const adaptedNoUnnecessaryUint8ArrayFindSpread = adaptPluginRule(noUnnecessaryUint8ArrayFindSpreadRule, 'no-unnecessary-uint-8-array-find-spread')
+const adaptedNoUnnecessaryUint8ArrayEverySpread = adaptPluginRule(noUnnecessaryUint8ArrayEverySpreadRule, 'no-unnecessary-uint-8-array-every-spread')
+const adaptedNoUnnecessaryUint8ArraySomeSpread = adaptPluginRule(noUnnecessaryUint8ArraySomeSpreadRule, 'no-unnecessary-uint-8-array-some-spread')
+const adaptedNoUnnecessaryUint8ArrayForEachSpread = adaptPluginRule(noUnnecessaryUint8ArrayForEachSpreadRule, 'no-unnecessary-uint-8-array-for-each-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayMapSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayMapSpreadRule, 'no-unnecessary-uint-8-clamped-array-map-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFilterSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFilterSpreadRule, 'no-unnecessary-uint-8-clamped-array-filter-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFindSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFindSpreadRule, 'no-unnecessary-uint-8-clamped-array-find-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayEverySpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayEverySpreadRule, 'no-unnecessary-uint-8-clamped-array-every-spread')
+const adaptedNoUnnecessaryUint8ClampedArraySomeSpread = adaptPluginRule(noUnnecessaryUint8ClampedArraySomeSpreadRule, 'no-unnecessary-uint-8-clamped-array-some-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayForEachSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayForEachSpreadRule, 'no-unnecessary-uint-8-clamped-array-for-each-spread')
+const adaptedNoUnnecessaryInt16ArrayMapSpread = adaptPluginRule(noUnnecessaryInt16ArrayMapSpreadRule, 'no-unnecessary-int-16-array-map-spread')
+const adaptedNoUnnecessaryInt16ArrayFilterSpread = adaptPluginRule(noUnnecessaryInt16ArrayFilterSpreadRule, 'no-unnecessary-int-16-array-filter-spread')
+const adaptedNoUnnecessaryInt16ArrayFindSpread = adaptPluginRule(noUnnecessaryInt16ArrayFindSpreadRule, 'no-unnecessary-int-16-array-find-spread')
+const adaptedNoUnnecessaryInt16ArrayEverySpread = adaptPluginRule(noUnnecessaryInt16ArrayEverySpreadRule, 'no-unnecessary-int-16-array-every-spread')
+const adaptedNoUnnecessaryInt16ArraySomeSpread = adaptPluginRule(noUnnecessaryInt16ArraySomeSpreadRule, 'no-unnecessary-int-16-array-some-spread')
+const adaptedNoUnnecessaryInt16ArrayForEachSpread = adaptPluginRule(noUnnecessaryInt16ArrayForEachSpreadRule, 'no-unnecessary-int-16-array-for-each-spread')
+const adaptedNoUnnecessaryUint16ArrayMapSpread = adaptPluginRule(noUnnecessaryUint16ArrayMapSpreadRule, 'no-unnecessary-uint-16-array-map-spread')
+const adaptedNoUnnecessaryUint16ArrayFilterSpread = adaptPluginRule(noUnnecessaryUint16ArrayFilterSpreadRule, 'no-unnecessary-uint-16-array-filter-spread')
+const adaptedNoUnnecessaryUint16ArrayFindSpread = adaptPluginRule(noUnnecessaryUint16ArrayFindSpreadRule, 'no-unnecessary-uint-16-array-find-spread')
+const adaptedNoUnnecessaryUint16ArrayEverySpread = adaptPluginRule(noUnnecessaryUint16ArrayEverySpreadRule, 'no-unnecessary-uint-16-array-every-spread')
+const adaptedNoUnnecessaryUint16ArraySomeSpread = adaptPluginRule(noUnnecessaryUint16ArraySomeSpreadRule, 'no-unnecessary-uint-16-array-some-spread')
+const adaptedNoUnnecessaryUint16ArrayForEachSpread = adaptPluginRule(noUnnecessaryUint16ArrayForEachSpreadRule, 'no-unnecessary-uint-16-array-for-each-spread')
+const adaptedNoUnnecessaryInt32ArrayMapSpread = adaptPluginRule(noUnnecessaryInt32ArrayMapSpreadRule, 'no-unnecessary-int-32-array-map-spread')
+const adaptedNoUnnecessaryInt32ArrayFilterSpread = adaptPluginRule(noUnnecessaryInt32ArrayFilterSpreadRule, 'no-unnecessary-int-32-array-filter-spread')
+const adaptedNoUnnecessaryInt32ArrayFindSpread = adaptPluginRule(noUnnecessaryInt32ArrayFindSpreadRule, 'no-unnecessary-int-32-array-find-spread')
+const adaptedNoUnnecessaryInt32ArrayEverySpread = adaptPluginRule(noUnnecessaryInt32ArrayEverySpreadRule, 'no-unnecessary-int-32-array-every-spread')
+const adaptedNoUnnecessaryInt32ArraySomeSpread = adaptPluginRule(noUnnecessaryInt32ArraySomeSpreadRule, 'no-unnecessary-int-32-array-some-spread')
+const adaptedNoUnnecessaryInt32ArrayForEachSpread = adaptPluginRule(noUnnecessaryInt32ArrayForEachSpreadRule, 'no-unnecessary-int-32-array-for-each-spread')
+const adaptedNoUnnecessaryUint32ArrayMapSpread = adaptPluginRule(noUnnecessaryUint32ArrayMapSpreadRule, 'no-unnecessary-uint-32-array-map-spread')
+const adaptedNoUnnecessaryUint32ArrayFilterSpread = adaptPluginRule(noUnnecessaryUint32ArrayFilterSpreadRule, 'no-unnecessary-uint-32-array-filter-spread')
+const adaptedNoUnnecessaryUint32ArrayFindSpread = adaptPluginRule(noUnnecessaryUint32ArrayFindSpreadRule, 'no-unnecessary-uint-32-array-find-spread')
+const adaptedNoUnnecessaryUint32ArrayEverySpread = adaptPluginRule(noUnnecessaryUint32ArrayEverySpreadRule, 'no-unnecessary-uint-32-array-every-spread')
+const adaptedNoUnnecessaryUint32ArraySomeSpread = adaptPluginRule(noUnnecessaryUint32ArraySomeSpreadRule, 'no-unnecessary-uint-32-array-some-spread')
+const adaptedNoUnnecessaryUint32ArrayForEachSpread = adaptPluginRule(noUnnecessaryUint32ArrayForEachSpreadRule, 'no-unnecessary-uint-32-array-for-each-spread')
+const adaptedNoUnnecessaryFloat32ArrayMapSpread = adaptPluginRule(noUnnecessaryFloat32ArrayMapSpreadRule, 'no-unnecessary-float-32-array-map-spread')
+const adaptedNoUnnecessaryFloat32ArrayFilterSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFilterSpreadRule, 'no-unnecessary-float-32-array-filter-spread')
+const adaptedNoUnnecessaryFloat32ArrayFindSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFindSpreadRule, 'no-unnecessary-float-32-array-find-spread')
+const adaptedNoUnnecessaryFloat32ArrayEverySpread = adaptPluginRule(noUnnecessaryFloat32ArrayEverySpreadRule, 'no-unnecessary-float-32-array-every-spread')
+const adaptedNoUnnecessaryFloat32ArraySomeSpread = adaptPluginRule(noUnnecessaryFloat32ArraySomeSpreadRule, 'no-unnecessary-float-32-array-some-spread')
+const adaptedNoUnnecessaryFloat32ArrayForEachSpread = adaptPluginRule(noUnnecessaryFloat32ArrayForEachSpreadRule, 'no-unnecessary-float-32-array-for-each-spread')
+const adaptedNoUnnecessaryFloat64ArrayMapSpread = adaptPluginRule(noUnnecessaryFloat64ArrayMapSpreadRule, 'no-unnecessary-float-64-array-map-spread')
+const adaptedNoUnnecessaryFloat64ArrayFilterSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFilterSpreadRule, 'no-unnecessary-float-64-array-filter-spread')
+const adaptedNoUnnecessaryFloat64ArrayFindSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFindSpreadRule, 'no-unnecessary-float-64-array-find-spread')
+const adaptedNoUnnecessaryFloat64ArrayEverySpread = adaptPluginRule(noUnnecessaryFloat64ArrayEverySpreadRule, 'no-unnecessary-float-64-array-every-spread')
+const adaptedNoUnnecessaryFloat64ArraySomeSpread = adaptPluginRule(noUnnecessaryFloat64ArraySomeSpreadRule, 'no-unnecessary-float-64-array-some-spread')
+const adaptedNoUnnecessaryFloat64ArrayForEachSpread = adaptPluginRule(noUnnecessaryFloat64ArrayForEachSpreadRule, 'no-unnecessary-float-64-array-for-each-spread')
+const adaptedNoUnnecessaryBigInt64ArrayMapSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayMapSpreadRule, 'no-unnecessary-big-int-64-array-map-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFilterSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFilterSpreadRule, 'no-unnecessary-big-int-64-array-filter-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFindSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFindSpreadRule, 'no-unnecessary-big-int-64-array-find-spread')
+const adaptedNoUnnecessaryBigInt64ArrayEverySpread = adaptPluginRule(noUnnecessaryBigInt64ArrayEverySpreadRule, 'no-unnecessary-big-int-64-array-every-spread')
+const adaptedNoUnnecessaryBigInt64ArraySomeSpread = adaptPluginRule(noUnnecessaryBigInt64ArraySomeSpreadRule, 'no-unnecessary-big-int-64-array-some-spread')
+const adaptedNoUnnecessaryBigInt64ArrayForEachSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayForEachSpreadRule, 'no-unnecessary-big-int-64-array-for-each-spread')
+const adaptedNoUnnecessaryBigUint64ArrayMapSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayMapSpreadRule, 'no-unnecessary-big-uint-64-array-map-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFilterSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFilterSpreadRule, 'no-unnecessary-big-uint-64-array-filter-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFindSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFindSpreadRule, 'no-unnecessary-big-uint-64-array-find-spread')
+const adaptedNoUnnecessaryBigUint64ArrayEverySpread = adaptPluginRule(noUnnecessaryBigUint64ArrayEverySpreadRule, 'no-unnecessary-big-uint-64-array-every-spread')
+const adaptedNoUnnecessaryBigUint64ArraySomeSpread = adaptPluginRule(noUnnecessaryBigUint64ArraySomeSpreadRule, 'no-unnecessary-big-uint-64-array-some-spread')
+const adaptedNoUnnecessaryBigUint64ArrayForEachSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayForEachSpreadRule, 'no-unnecessary-big-uint-64-array-for-each-spread')
+const adaptedNoUnnecessaryInt8ArrayReduceSpread = adaptPluginRule(noUnnecessaryInt8ArrayReduceSpreadRule, 'no-unnecessary-int-8-array-reduce-spread')
+const adaptedNoUnnecessaryInt8ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryInt8ArrayReduceRightSpreadRule, 'no-unnecessary-int-8-array-reduce-right-spread')
+const adaptedNoUnnecessaryInt8ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryInt8ArrayFindIndexSpreadRule, 'no-unnecessary-int-8-array-find-index-spread')
+const adaptedNoUnnecessaryInt8ArrayFindLastSpread = adaptPluginRule(noUnnecessaryInt8ArrayFindLastSpreadRule, 'no-unnecessary-int-8-array-find-last-spread')
+const adaptedNoUnnecessaryInt8ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryInt8ArrayFindLastIndexSpreadRule, 'no-unnecessary-int-8-array-find-last-index-spread')
+const adaptedNoUnnecessaryInt8ArrayIncludesSpread = adaptPluginRule(noUnnecessaryInt8ArrayIncludesSpreadRule, 'no-unnecessary-int-8-array-includes-spread')
+const adaptedNoUnnecessaryInt8ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryInt8ArrayIndexOfSpreadRule, 'no-unnecessary-int-8-array-index-of-spread')
+const adaptedNoUnnecessaryInt8ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryInt8ArrayLastIndexOfSpreadRule, 'no-unnecessary-int-8-array-last-index-of-spread')
+const adaptedNoUnnecessaryInt8ArrayJoinSpread = adaptPluginRule(noUnnecessaryInt8ArrayJoinSpreadRule, 'no-unnecessary-int-8-array-join-spread')
+const adaptedNoUnnecessaryInt8ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryInt8ArrayToLocaleStringSpreadRule, 'no-unnecessary-int-8-array-to-locale-string-spread')
+const adaptedNoUnnecessaryInt8ArrayToStringSpread = adaptPluginRule(noUnnecessaryInt8ArrayToStringSpreadRule, 'no-unnecessary-int-8-array-to-string-spread')
+const adaptedNoUnnecessaryUint8ArrayReduceSpread = adaptPluginRule(noUnnecessaryUint8ArrayReduceSpreadRule, 'no-unnecessary-uint-8-array-reduce-spread')
+const adaptedNoUnnecessaryUint8ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryUint8ArrayReduceRightSpreadRule, 'no-unnecessary-uint-8-array-reduce-right-spread')
+const adaptedNoUnnecessaryUint8ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryUint8ArrayFindIndexSpreadRule, 'no-unnecessary-uint-8-array-find-index-spread')
+const adaptedNoUnnecessaryUint8ArrayFindLastSpread = adaptPluginRule(noUnnecessaryUint8ArrayFindLastSpreadRule, 'no-unnecessary-uint-8-array-find-last-spread')
+const adaptedNoUnnecessaryUint8ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryUint8ArrayFindLastIndexSpreadRule, 'no-unnecessary-uint-8-array-find-last-index-spread')
+const adaptedNoUnnecessaryUint8ArrayIncludesSpread = adaptPluginRule(noUnnecessaryUint8ArrayIncludesSpreadRule, 'no-unnecessary-uint-8-array-includes-spread')
+const adaptedNoUnnecessaryUint8ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryUint8ArrayIndexOfSpreadRule, 'no-unnecessary-uint-8-array-index-of-spread')
+const adaptedNoUnnecessaryUint8ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryUint8ArrayLastIndexOfSpreadRule, 'no-unnecessary-uint-8-array-last-index-of-spread')
+const adaptedNoUnnecessaryUint8ArrayJoinSpread = adaptPluginRule(noUnnecessaryUint8ArrayJoinSpreadRule, 'no-unnecessary-uint-8-array-join-spread')
+const adaptedNoUnnecessaryUint8ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryUint8ArrayToLocaleStringSpreadRule, 'no-unnecessary-uint-8-array-to-locale-string-spread')
+const adaptedNoUnnecessaryUint8ArrayToStringSpread = adaptPluginRule(noUnnecessaryUint8ArrayToStringSpreadRule, 'no-unnecessary-uint-8-array-to-string-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayReduceSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceSpreadRule, 'no-unnecessary-uint-8-clamped-array-reduce-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayReduceRightSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceRightSpreadRule, 'no-unnecessary-uint-8-clamped-array-reduce-right-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFindIndexSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFindIndexSpreadRule, 'no-unnecessary-uint-8-clamped-array-find-index-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFindLastSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastSpreadRule, 'no-unnecessary-uint-8-clamped-array-find-last-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule, 'no-unnecessary-uint-8-clamped-array-find-last-index-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayIncludesSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayIncludesSpreadRule, 'no-unnecessary-uint-8-clamped-array-includes-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayIndexOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayIndexOfSpreadRule, 'no-unnecessary-uint-8-clamped-array-index-of-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule, 'no-unnecessary-uint-8-clamped-array-last-index-of-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayJoinSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayJoinSpreadRule, 'no-unnecessary-uint-8-clamped-array-join-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule, 'no-unnecessary-uint-8-clamped-array-to-locale-string-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayToStringSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayToStringSpreadRule, 'no-unnecessary-uint-8-clamped-array-to-string-spread')
+const adaptedNoUnnecessaryInt16ArrayReduceSpread = adaptPluginRule(noUnnecessaryInt16ArrayReduceSpreadRule, 'no-unnecessary-int-16-array-reduce-spread')
+const adaptedNoUnnecessaryInt16ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryInt16ArrayReduceRightSpreadRule, 'no-unnecessary-int-16-array-reduce-right-spread')
+const adaptedNoUnnecessaryInt16ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryInt16ArrayFindIndexSpreadRule, 'no-unnecessary-int-16-array-find-index-spread')
+const adaptedNoUnnecessaryInt16ArrayFindLastSpread = adaptPluginRule(noUnnecessaryInt16ArrayFindLastSpreadRule, 'no-unnecessary-int-16-array-find-last-spread')
+const adaptedNoUnnecessaryInt16ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryInt16ArrayFindLastIndexSpreadRule, 'no-unnecessary-int-16-array-find-last-index-spread')
+const adaptedNoUnnecessaryInt16ArrayIncludesSpread = adaptPluginRule(noUnnecessaryInt16ArrayIncludesSpreadRule, 'no-unnecessary-int-16-array-includes-spread')
+const adaptedNoUnnecessaryInt16ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryInt16ArrayIndexOfSpreadRule, 'no-unnecessary-int-16-array-index-of-spread')
+const adaptedNoUnnecessaryInt16ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryInt16ArrayLastIndexOfSpreadRule, 'no-unnecessary-int-16-array-last-index-of-spread')
+const adaptedNoUnnecessaryInt16ArrayJoinSpread = adaptPluginRule(noUnnecessaryInt16ArrayJoinSpreadRule, 'no-unnecessary-int-16-array-join-spread')
+const adaptedNoUnnecessaryInt16ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryInt16ArrayToLocaleStringSpreadRule, 'no-unnecessary-int-16-array-to-locale-string-spread')
+const adaptedNoUnnecessaryInt16ArrayToStringSpread = adaptPluginRule(noUnnecessaryInt16ArrayToStringSpreadRule, 'no-unnecessary-int-16-array-to-string-spread')
+const adaptedNoUnnecessaryUint16ArrayReduceSpread = adaptPluginRule(noUnnecessaryUint16ArrayReduceSpreadRule, 'no-unnecessary-uint-16-array-reduce-spread')
+const adaptedNoUnnecessaryUint16ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryUint16ArrayReduceRightSpreadRule, 'no-unnecessary-uint-16-array-reduce-right-spread')
+const adaptedNoUnnecessaryUint16ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryUint16ArrayFindIndexSpreadRule, 'no-unnecessary-uint-16-array-find-index-spread')
+const adaptedNoUnnecessaryUint16ArrayFindLastSpread = adaptPluginRule(noUnnecessaryUint16ArrayFindLastSpreadRule, 'no-unnecessary-uint-16-array-find-last-spread')
+const adaptedNoUnnecessaryUint16ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryUint16ArrayFindLastIndexSpreadRule, 'no-unnecessary-uint-16-array-find-last-index-spread')
+const adaptedNoUnnecessaryUint16ArrayIncludesSpread = adaptPluginRule(noUnnecessaryUint16ArrayIncludesSpreadRule, 'no-unnecessary-uint-16-array-includes-spread')
+const adaptedNoUnnecessaryUint16ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryUint16ArrayIndexOfSpreadRule, 'no-unnecessary-uint-16-array-index-of-spread')
+const adaptedNoUnnecessaryUint16ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryUint16ArrayLastIndexOfSpreadRule, 'no-unnecessary-uint-16-array-last-index-of-spread')
+const adaptedNoUnnecessaryUint16ArrayJoinSpread = adaptPluginRule(noUnnecessaryUint16ArrayJoinSpreadRule, 'no-unnecessary-uint-16-array-join-spread')
+const adaptedNoUnnecessaryUint16ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryUint16ArrayToLocaleStringSpreadRule, 'no-unnecessary-uint-16-array-to-locale-string-spread')
+const adaptedNoUnnecessaryUint16ArrayToStringSpread = adaptPluginRule(noUnnecessaryUint16ArrayToStringSpreadRule, 'no-unnecessary-uint-16-array-to-string-spread')
+const adaptedNoUnnecessaryInt32ArrayReduceSpread = adaptPluginRule(noUnnecessaryInt32ArrayReduceSpreadRule, 'no-unnecessary-int-32-array-reduce-spread')
+const adaptedNoUnnecessaryInt32ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryInt32ArrayReduceRightSpreadRule, 'no-unnecessary-int-32-array-reduce-right-spread')
+const adaptedNoUnnecessaryInt32ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryInt32ArrayFindIndexSpreadRule, 'no-unnecessary-int-32-array-find-index-spread')
+const adaptedNoUnnecessaryInt32ArrayFindLastSpread = adaptPluginRule(noUnnecessaryInt32ArrayFindLastSpreadRule, 'no-unnecessary-int-32-array-find-last-spread')
+const adaptedNoUnnecessaryInt32ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryInt32ArrayFindLastIndexSpreadRule, 'no-unnecessary-int-32-array-find-last-index-spread')
+const adaptedNoUnnecessaryInt32ArrayIncludesSpread = adaptPluginRule(noUnnecessaryInt32ArrayIncludesSpreadRule, 'no-unnecessary-int-32-array-includes-spread')
+const adaptedNoUnnecessaryInt32ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryInt32ArrayIndexOfSpreadRule, 'no-unnecessary-int-32-array-index-of-spread')
+const adaptedNoUnnecessaryInt32ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryInt32ArrayLastIndexOfSpreadRule, 'no-unnecessary-int-32-array-last-index-of-spread')
+const adaptedNoUnnecessaryInt32ArrayJoinSpread = adaptPluginRule(noUnnecessaryInt32ArrayJoinSpreadRule, 'no-unnecessary-int-32-array-join-spread')
+const adaptedNoUnnecessaryInt32ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryInt32ArrayToLocaleStringSpreadRule, 'no-unnecessary-int-32-array-to-locale-string-spread')
+const adaptedNoUnnecessaryInt32ArrayToStringSpread = adaptPluginRule(noUnnecessaryInt32ArrayToStringSpreadRule, 'no-unnecessary-int-32-array-to-string-spread')
+const adaptedNoUnnecessaryUint32ArrayReduceSpread = adaptPluginRule(noUnnecessaryUint32ArrayReduceSpreadRule, 'no-unnecessary-uint-32-array-reduce-spread')
+const adaptedNoUnnecessaryUint32ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryUint32ArrayReduceRightSpreadRule, 'no-unnecessary-uint-32-array-reduce-right-spread')
+const adaptedNoUnnecessaryUint32ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryUint32ArrayFindIndexSpreadRule, 'no-unnecessary-uint-32-array-find-index-spread')
+const adaptedNoUnnecessaryUint32ArrayFindLastSpread = adaptPluginRule(noUnnecessaryUint32ArrayFindLastSpreadRule, 'no-unnecessary-uint-32-array-find-last-spread')
+const adaptedNoUnnecessaryUint32ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryUint32ArrayFindLastIndexSpreadRule, 'no-unnecessary-uint-32-array-find-last-index-spread')
+const adaptedNoUnnecessaryUint32ArrayIncludesSpread = adaptPluginRule(noUnnecessaryUint32ArrayIncludesSpreadRule, 'no-unnecessary-uint-32-array-includes-spread')
+const adaptedNoUnnecessaryUint32ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryUint32ArrayIndexOfSpreadRule, 'no-unnecessary-uint-32-array-index-of-spread')
+const adaptedNoUnnecessaryUint32ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryUint32ArrayLastIndexOfSpreadRule, 'no-unnecessary-uint-32-array-last-index-of-spread')
+const adaptedNoUnnecessaryUint32ArrayJoinSpread = adaptPluginRule(noUnnecessaryUint32ArrayJoinSpreadRule, 'no-unnecessary-uint-32-array-join-spread')
+const adaptedNoUnnecessaryUint32ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryUint32ArrayToLocaleStringSpreadRule, 'no-unnecessary-uint-32-array-to-locale-string-spread')
+const adaptedNoUnnecessaryUint32ArrayToStringSpread = adaptPluginRule(noUnnecessaryUint32ArrayToStringSpreadRule, 'no-unnecessary-uint-32-array-to-string-spread')
+const adaptedNoUnnecessaryFloat32ArrayReduceSpread = adaptPluginRule(noUnnecessaryFloat32ArrayReduceSpreadRule, 'no-unnecessary-float-32-array-reduce-spread')
+const adaptedNoUnnecessaryFloat32ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryFloat32ArrayReduceRightSpreadRule, 'no-unnecessary-float-32-array-reduce-right-spread')
+const adaptedNoUnnecessaryFloat32ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFindIndexSpreadRule, 'no-unnecessary-float-32-array-find-index-spread')
+const adaptedNoUnnecessaryFloat32ArrayFindLastSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFindLastSpreadRule, 'no-unnecessary-float-32-array-find-last-spread')
+const adaptedNoUnnecessaryFloat32ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFindLastIndexSpreadRule, 'no-unnecessary-float-32-array-find-last-index-spread')
+const adaptedNoUnnecessaryFloat32ArrayIncludesSpread = adaptPluginRule(noUnnecessaryFloat32ArrayIncludesSpreadRule, 'no-unnecessary-float-32-array-includes-spread')
+const adaptedNoUnnecessaryFloat32ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryFloat32ArrayIndexOfSpreadRule, 'no-unnecessary-float-32-array-index-of-spread')
+const adaptedNoUnnecessaryFloat32ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryFloat32ArrayLastIndexOfSpreadRule, 'no-unnecessary-float-32-array-last-index-of-spread')
+const adaptedNoUnnecessaryFloat32ArrayJoinSpread = adaptPluginRule(noUnnecessaryFloat32ArrayJoinSpreadRule, 'no-unnecessary-float-32-array-join-spread')
+const adaptedNoUnnecessaryFloat32ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryFloat32ArrayToLocaleStringSpreadRule, 'no-unnecessary-float-32-array-to-locale-string-spread')
+const adaptedNoUnnecessaryFloat32ArrayToStringSpread = adaptPluginRule(noUnnecessaryFloat32ArrayToStringSpreadRule, 'no-unnecessary-float-32-array-to-string-spread')
+const adaptedNoUnnecessaryFloat64ArrayReduceSpread = adaptPluginRule(noUnnecessaryFloat64ArrayReduceSpreadRule, 'no-unnecessary-float-64-array-reduce-spread')
+const adaptedNoUnnecessaryFloat64ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryFloat64ArrayReduceRightSpreadRule, 'no-unnecessary-float-64-array-reduce-right-spread')
+const adaptedNoUnnecessaryFloat64ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFindIndexSpreadRule, 'no-unnecessary-float-64-array-find-index-spread')
+const adaptedNoUnnecessaryFloat64ArrayFindLastSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFindLastSpreadRule, 'no-unnecessary-float-64-array-find-last-spread')
+const adaptedNoUnnecessaryFloat64ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFindLastIndexSpreadRule, 'no-unnecessary-float-64-array-find-last-index-spread')
+const adaptedNoUnnecessaryFloat64ArrayIncludesSpread = adaptPluginRule(noUnnecessaryFloat64ArrayIncludesSpreadRule, 'no-unnecessary-float-64-array-includes-spread')
+const adaptedNoUnnecessaryFloat64ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryFloat64ArrayIndexOfSpreadRule, 'no-unnecessary-float-64-array-index-of-spread')
+const adaptedNoUnnecessaryFloat64ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryFloat64ArrayLastIndexOfSpreadRule, 'no-unnecessary-float-64-array-last-index-of-spread')
+const adaptedNoUnnecessaryFloat64ArrayJoinSpread = adaptPluginRule(noUnnecessaryFloat64ArrayJoinSpreadRule, 'no-unnecessary-float-64-array-join-spread')
+const adaptedNoUnnecessaryFloat64ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryFloat64ArrayToLocaleStringSpreadRule, 'no-unnecessary-float-64-array-to-locale-string-spread')
+const adaptedNoUnnecessaryFloat64ArrayToStringSpread = adaptPluginRule(noUnnecessaryFloat64ArrayToStringSpreadRule, 'no-unnecessary-float-64-array-to-string-spread')
+const adaptedNoUnnecessaryBigInt64ArrayReduceSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayReduceSpreadRule, 'no-unnecessary-big-int-64-array-reduce-spread')
+const adaptedNoUnnecessaryBigInt64ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayReduceRightSpreadRule, 'no-unnecessary-big-int-64-array-reduce-right-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFindIndexSpreadRule, 'no-unnecessary-big-int-64-array-find-index-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFindLastSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastSpreadRule, 'no-unnecessary-big-int-64-array-find-last-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule, 'no-unnecessary-big-int-64-array-find-last-index-spread')
+const adaptedNoUnnecessaryBigInt64ArrayIncludesSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayIncludesSpreadRule, 'no-unnecessary-big-int-64-array-includes-spread')
+const adaptedNoUnnecessaryBigInt64ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayIndexOfSpreadRule, 'no-unnecessary-big-int-64-array-index-of-spread')
+const adaptedNoUnnecessaryBigInt64ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule, 'no-unnecessary-big-int-64-array-last-index-of-spread')
+const adaptedNoUnnecessaryBigInt64ArrayJoinSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayJoinSpreadRule, 'no-unnecessary-big-int-64-array-join-spread')
+const adaptedNoUnnecessaryBigInt64ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule, 'no-unnecessary-big-int-64-array-to-locale-string-spread')
+const adaptedNoUnnecessaryBigInt64ArrayToStringSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayToStringSpreadRule, 'no-unnecessary-big-int-64-array-to-string-spread')
+const adaptedNoUnnecessaryBigUint64ArrayReduceSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayReduceSpreadRule, 'no-unnecessary-big-uint-64-array-reduce-spread')
+const adaptedNoUnnecessaryBigUint64ArrayReduceRightSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayReduceRightSpreadRule, 'no-unnecessary-big-uint-64-array-reduce-right-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFindIndexSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFindIndexSpreadRule, 'no-unnecessary-big-uint-64-array-find-index-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFindLastSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastSpreadRule, 'no-unnecessary-big-uint-64-array-find-last-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule, 'no-unnecessary-big-uint-64-array-find-last-index-spread')
+const adaptedNoUnnecessaryBigUint64ArrayIncludesSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayIncludesSpreadRule, 'no-unnecessary-big-uint-64-array-includes-spread')
+const adaptedNoUnnecessaryBigUint64ArrayIndexOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayIndexOfSpreadRule, 'no-unnecessary-big-uint-64-array-index-of-spread')
+const adaptedNoUnnecessaryBigUint64ArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule, 'no-unnecessary-big-uint-64-array-last-index-of-spread')
+const adaptedNoUnnecessaryBigUint64ArrayJoinSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayJoinSpreadRule, 'no-unnecessary-big-uint-64-array-join-spread')
+const adaptedNoUnnecessaryBigUint64ArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule, 'no-unnecessary-big-uint-64-array-to-locale-string-spread')
+const adaptedNoUnnecessaryBigUint64ArrayToStringSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayToStringSpreadRule, 'no-unnecessary-big-uint-64-array-to-string-spread')
+const adaptedNoUnnecessaryInt8ArrayAtSpread = adaptPluginRule(noUnnecessaryInt8ArrayAtSpreadRule, 'no-unnecessary-int-8-array-at-spread')
+const adaptedNoUnnecessaryInt8ArrayEntriesSpread = adaptPluginRule(noUnnecessaryInt8ArrayEntriesSpreadRule, 'no-unnecessary-int-8-array-entries-spread')
+const adaptedNoUnnecessaryInt8ArrayKeysSpread = adaptPluginRule(noUnnecessaryInt8ArrayKeysSpreadRule, 'no-unnecessary-int-8-array-keys-spread')
+const adaptedNoUnnecessaryInt8ArrayValuesSpread = adaptPluginRule(noUnnecessaryInt8ArrayValuesSpreadRule, 'no-unnecessary-int-8-array-values-spread')
+const adaptedNoUnnecessaryInt8ArrayWithSpread = adaptPluginRule(noUnnecessaryInt8ArrayWithSpreadRule, 'no-unnecessary-int-8-array-with-spread')
+const adaptedNoUnnecessaryInt8ArrayToReversedSpread = adaptPluginRule(noUnnecessaryInt8ArrayToReversedSpreadRule, 'no-unnecessary-int-8-array-to-reversed-spread')
+const adaptedNoUnnecessaryInt8ArrayToSortedSpread = adaptPluginRule(noUnnecessaryInt8ArrayToSortedSpreadRule, 'no-unnecessary-int-8-array-to-sorted-spread')
+const adaptedNoUnnecessaryUint8ArrayAtSpread = adaptPluginRule(noUnnecessaryUint8ArrayAtSpreadRule, 'no-unnecessary-uint-8-array-at-spread')
+const adaptedNoUnnecessaryUint8ArrayEntriesSpread = adaptPluginRule(noUnnecessaryUint8ArrayEntriesSpreadRule, 'no-unnecessary-uint-8-array-entries-spread')
+const adaptedNoUnnecessaryUint8ArrayKeysSpread = adaptPluginRule(noUnnecessaryUint8ArrayKeysSpreadRule, 'no-unnecessary-uint-8-array-keys-spread')
+const adaptedNoUnnecessaryUint8ArrayValuesSpread = adaptPluginRule(noUnnecessaryUint8ArrayValuesSpreadRule, 'no-unnecessary-uint-8-array-values-spread')
+const adaptedNoUnnecessaryUint8ArrayWithSpread = adaptPluginRule(noUnnecessaryUint8ArrayWithSpreadRule, 'no-unnecessary-uint-8-array-with-spread')
+const adaptedNoUnnecessaryUint8ArrayToReversedSpread = adaptPluginRule(noUnnecessaryUint8ArrayToReversedSpreadRule, 'no-unnecessary-uint-8-array-to-reversed-spread')
+const adaptedNoUnnecessaryUint8ArrayToSortedSpread = adaptPluginRule(noUnnecessaryUint8ArrayToSortedSpreadRule, 'no-unnecessary-uint-8-array-to-sorted-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayAtSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayAtSpreadRule, 'no-unnecessary-uint-8-clamped-array-at-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayEntriesSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayEntriesSpreadRule, 'no-unnecessary-uint-8-clamped-array-entries-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayKeysSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayKeysSpreadRule, 'no-unnecessary-uint-8-clamped-array-keys-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayValuesSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayValuesSpreadRule, 'no-unnecessary-uint-8-clamped-array-values-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayWithSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayWithSpreadRule, 'no-unnecessary-uint-8-clamped-array-with-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayToReversedSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayToReversedSpreadRule, 'no-unnecessary-uint-8-clamped-array-to-reversed-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayToSortedSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayToSortedSpreadRule, 'no-unnecessary-uint-8-clamped-array-to-sorted-spread')
+const adaptedNoUnnecessaryInt16ArrayAtSpread = adaptPluginRule(noUnnecessaryInt16ArrayAtSpreadRule, 'no-unnecessary-int-16-array-at-spread')
+const adaptedNoUnnecessaryInt16ArrayEntriesSpread = adaptPluginRule(noUnnecessaryInt16ArrayEntriesSpreadRule, 'no-unnecessary-int-16-array-entries-spread')
+const adaptedNoUnnecessaryInt16ArrayKeysSpread = adaptPluginRule(noUnnecessaryInt16ArrayKeysSpreadRule, 'no-unnecessary-int-16-array-keys-spread')
+const adaptedNoUnnecessaryInt16ArrayValuesSpread = adaptPluginRule(noUnnecessaryInt16ArrayValuesSpreadRule, 'no-unnecessary-int-16-array-values-spread')
+const adaptedNoUnnecessaryInt16ArrayWithSpread = adaptPluginRule(noUnnecessaryInt16ArrayWithSpreadRule, 'no-unnecessary-int-16-array-with-spread')
+const adaptedNoUnnecessaryInt16ArrayToReversedSpread = adaptPluginRule(noUnnecessaryInt16ArrayToReversedSpreadRule, 'no-unnecessary-int-16-array-to-reversed-spread')
+const adaptedNoUnnecessaryInt16ArrayToSortedSpread = adaptPluginRule(noUnnecessaryInt16ArrayToSortedSpreadRule, 'no-unnecessary-int-16-array-to-sorted-spread')
+const adaptedNoUnnecessaryUint16ArrayAtSpread = adaptPluginRule(noUnnecessaryUint16ArrayAtSpreadRule, 'no-unnecessary-uint-16-array-at-spread')
+const adaptedNoUnnecessaryUint16ArrayEntriesSpread = adaptPluginRule(noUnnecessaryUint16ArrayEntriesSpreadRule, 'no-unnecessary-uint-16-array-entries-spread')
+const adaptedNoUnnecessaryUint16ArrayKeysSpread = adaptPluginRule(noUnnecessaryUint16ArrayKeysSpreadRule, 'no-unnecessary-uint-16-array-keys-spread')
+const adaptedNoUnnecessaryUint16ArrayValuesSpread = adaptPluginRule(noUnnecessaryUint16ArrayValuesSpreadRule, 'no-unnecessary-uint-16-array-values-spread')
+const adaptedNoUnnecessaryUint16ArrayWithSpread = adaptPluginRule(noUnnecessaryUint16ArrayWithSpreadRule, 'no-unnecessary-uint-16-array-with-spread')
+const adaptedNoUnnecessaryUint16ArrayToReversedSpread = adaptPluginRule(noUnnecessaryUint16ArrayToReversedSpreadRule, 'no-unnecessary-uint-16-array-to-reversed-spread')
+const adaptedNoUnnecessaryUint16ArrayToSortedSpread = adaptPluginRule(noUnnecessaryUint16ArrayToSortedSpreadRule, 'no-unnecessary-uint-16-array-to-sorted-spread')
+const adaptedNoUnnecessaryInt32ArrayAtSpread = adaptPluginRule(noUnnecessaryInt32ArrayAtSpreadRule, 'no-unnecessary-int-32-array-at-spread')
+const adaptedNoUnnecessaryInt32ArrayEntriesSpread = adaptPluginRule(noUnnecessaryInt32ArrayEntriesSpreadRule, 'no-unnecessary-int-32-array-entries-spread')
+const adaptedNoUnnecessaryInt32ArrayKeysSpread = adaptPluginRule(noUnnecessaryInt32ArrayKeysSpreadRule, 'no-unnecessary-int-32-array-keys-spread')
+const adaptedNoUnnecessaryInt32ArrayValuesSpread = adaptPluginRule(noUnnecessaryInt32ArrayValuesSpreadRule, 'no-unnecessary-int-32-array-values-spread')
+const adaptedNoUnnecessaryInt32ArrayWithSpread = adaptPluginRule(noUnnecessaryInt32ArrayWithSpreadRule, 'no-unnecessary-int-32-array-with-spread')
+const adaptedNoUnnecessaryInt32ArrayToReversedSpread = adaptPluginRule(noUnnecessaryInt32ArrayToReversedSpreadRule, 'no-unnecessary-int-32-array-to-reversed-spread')
+const adaptedNoUnnecessaryInt32ArrayToSortedSpread = adaptPluginRule(noUnnecessaryInt32ArrayToSortedSpreadRule, 'no-unnecessary-int-32-array-to-sorted-spread')
+const adaptedNoUnnecessaryUint32ArrayAtSpread = adaptPluginRule(noUnnecessaryUint32ArrayAtSpreadRule, 'no-unnecessary-uint-32-array-at-spread')
+const adaptedNoUnnecessaryUint32ArrayEntriesSpread = adaptPluginRule(noUnnecessaryUint32ArrayEntriesSpreadRule, 'no-unnecessary-uint-32-array-entries-spread')
+const adaptedNoUnnecessaryUint32ArrayKeysSpread = adaptPluginRule(noUnnecessaryUint32ArrayKeysSpreadRule, 'no-unnecessary-uint-32-array-keys-spread')
+const adaptedNoUnnecessaryUint32ArrayValuesSpread = adaptPluginRule(noUnnecessaryUint32ArrayValuesSpreadRule, 'no-unnecessary-uint-32-array-values-spread')
+const adaptedNoUnnecessaryUint32ArrayWithSpread = adaptPluginRule(noUnnecessaryUint32ArrayWithSpreadRule, 'no-unnecessary-uint-32-array-with-spread')
+const adaptedNoUnnecessaryUint32ArrayToReversedSpread = adaptPluginRule(noUnnecessaryUint32ArrayToReversedSpreadRule, 'no-unnecessary-uint-32-array-to-reversed-spread')
+const adaptedNoUnnecessaryUint32ArrayToSortedSpread = adaptPluginRule(noUnnecessaryUint32ArrayToSortedSpreadRule, 'no-unnecessary-uint-32-array-to-sorted-spread')
+const adaptedNoUnnecessaryFloat32ArrayAtSpread = adaptPluginRule(noUnnecessaryFloat32ArrayAtSpreadRule, 'no-unnecessary-float-32-array-at-spread')
+const adaptedNoUnnecessaryFloat32ArrayEntriesSpread = adaptPluginRule(noUnnecessaryFloat32ArrayEntriesSpreadRule, 'no-unnecessary-float-32-array-entries-spread')
+const adaptedNoUnnecessaryFloat32ArrayKeysSpread = adaptPluginRule(noUnnecessaryFloat32ArrayKeysSpreadRule, 'no-unnecessary-float-32-array-keys-spread')
+const adaptedNoUnnecessaryFloat32ArrayValuesSpread = adaptPluginRule(noUnnecessaryFloat32ArrayValuesSpreadRule, 'no-unnecessary-float-32-array-values-spread')
+const adaptedNoUnnecessaryFloat32ArrayWithSpread = adaptPluginRule(noUnnecessaryFloat32ArrayWithSpreadRule, 'no-unnecessary-float-32-array-with-spread')
+const adaptedNoUnnecessaryFloat32ArrayToReversedSpread = adaptPluginRule(noUnnecessaryFloat32ArrayToReversedSpreadRule, 'no-unnecessary-float-32-array-to-reversed-spread')
+const adaptedNoUnnecessaryFloat32ArrayToSortedSpread = adaptPluginRule(noUnnecessaryFloat32ArrayToSortedSpreadRule, 'no-unnecessary-float-32-array-to-sorted-spread')
+const adaptedNoUnnecessaryFloat64ArrayAtSpread = adaptPluginRule(noUnnecessaryFloat64ArrayAtSpreadRule, 'no-unnecessary-float-64-array-at-spread')
+const adaptedNoUnnecessaryFloat64ArrayEntriesSpread = adaptPluginRule(noUnnecessaryFloat64ArrayEntriesSpreadRule, 'no-unnecessary-float-64-array-entries-spread')
+const adaptedNoUnnecessaryFloat64ArrayKeysSpread = adaptPluginRule(noUnnecessaryFloat64ArrayKeysSpreadRule, 'no-unnecessary-float-64-array-keys-spread')
+const adaptedNoUnnecessaryFloat64ArrayValuesSpread = adaptPluginRule(noUnnecessaryFloat64ArrayValuesSpreadRule, 'no-unnecessary-float-64-array-values-spread')
+const adaptedNoUnnecessaryFloat64ArrayWithSpread = adaptPluginRule(noUnnecessaryFloat64ArrayWithSpreadRule, 'no-unnecessary-float-64-array-with-spread')
+const adaptedNoUnnecessaryFloat64ArrayToReversedSpread = adaptPluginRule(noUnnecessaryFloat64ArrayToReversedSpreadRule, 'no-unnecessary-float-64-array-to-reversed-spread')
+const adaptedNoUnnecessaryFloat64ArrayToSortedSpread = adaptPluginRule(noUnnecessaryFloat64ArrayToSortedSpreadRule, 'no-unnecessary-float-64-array-to-sorted-spread')
+const adaptedNoUnnecessaryBigInt64ArrayAtSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayAtSpreadRule, 'no-unnecessary-big-int-64-array-at-spread')
+const adaptedNoUnnecessaryBigInt64ArrayEntriesSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayEntriesSpreadRule, 'no-unnecessary-big-int-64-array-entries-spread')
+const adaptedNoUnnecessaryBigInt64ArrayKeysSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayKeysSpreadRule, 'no-unnecessary-big-int-64-array-keys-spread')
+const adaptedNoUnnecessaryBigInt64ArrayValuesSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayValuesSpreadRule, 'no-unnecessary-big-int-64-array-values-spread')
+const adaptedNoUnnecessaryBigInt64ArrayWithSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayWithSpreadRule, 'no-unnecessary-big-int-64-array-with-spread')
+const adaptedNoUnnecessaryBigInt64ArrayToReversedSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayToReversedSpreadRule, 'no-unnecessary-big-int-64-array-to-reversed-spread')
+const adaptedNoUnnecessaryBigInt64ArrayToSortedSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayToSortedSpreadRule, 'no-unnecessary-big-int-64-array-to-sorted-spread')
+const adaptedNoUnnecessaryBigUint64ArrayAtSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayAtSpreadRule, 'no-unnecessary-big-uint-64-array-at-spread')
+const adaptedNoUnnecessaryBigUint64ArrayEntriesSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayEntriesSpreadRule, 'no-unnecessary-big-uint-64-array-entries-spread')
+const adaptedNoUnnecessaryBigUint64ArrayKeysSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayKeysSpreadRule, 'no-unnecessary-big-uint-64-array-keys-spread')
+const adaptedNoUnnecessaryBigUint64ArrayValuesSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayValuesSpreadRule, 'no-unnecessary-big-uint-64-array-values-spread')
+const adaptedNoUnnecessaryBigUint64ArrayWithSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayWithSpreadRule, 'no-unnecessary-big-uint-64-array-with-spread')
+const adaptedNoUnnecessaryBigUint64ArrayToReversedSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayToReversedSpreadRule, 'no-unnecessary-big-uint-64-array-to-reversed-spread')
+const adaptedNoUnnecessaryBigUint64ArrayToSortedSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayToSortedSpreadRule, 'no-unnecessary-big-uint-64-array-to-sorted-spread')
+const adaptedNoUnnecessaryInt8ArrayFromSpread = adaptPluginRule(noUnnecessaryInt8ArrayFromSpreadRule, 'no-unnecessary-int-8-array-from-spread')
+const adaptedNoUnnecessaryInt8ArrayFromSpreadAlias = adaptPluginRule(noUnnecessaryInt8ArrayFromSpreadRule, 'no-unnecessary-int8-array-from-spread')
+const adaptedNoUnnecessaryInt8ArrayOfSpread = adaptPluginRule(noUnnecessaryInt8ArrayOfSpreadRule, 'no-unnecessary-int-8-array-of-spread')
+const adaptedNoUnnecessaryInt8ArrayOfSpreadAlias = adaptPluginRule(noUnnecessaryInt8ArrayOfSpreadRule, 'no-unnecessary-int8-array-of-spread')
+const adaptedNoUnnecessaryUint8ArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ArrayFromSpreadRule, 'no-unnecessary-uint-8-array-from-spread')
+const adaptedNoUnnecessaryUint8ArrayFromSpreadAlias = adaptPluginRule(noUnnecessaryUint8ArrayFromSpreadRule, 'no-unnecessary-uint8-array-from-spread')
+const adaptedNoUnnecessaryUint8ArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ArrayOfSpreadRule, 'no-unnecessary-uint-8-array-of-spread')
+const adaptedNoUnnecessaryUint8ArrayOfSpreadAlias = adaptPluginRule(noUnnecessaryUint8ArrayOfSpreadRule, 'no-unnecessary-uint8-array-of-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule, 'no-unnecessary-uint-8-clamped-array-from-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayFromSpreadAlias = adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule, 'no-unnecessary-uint8-clamped-array-from-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule, 'no-unnecessary-uint-8-clamped-array-of-spread')
+const adaptedNoUnnecessaryUint8ClampedArrayOfSpreadAlias = adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule, 'no-unnecessary-uint8-clamped-array-of-spread')
+const adaptedNoUnnecessaryInt16ArrayFromSpread = adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule, 'no-unnecessary-int-16-array-from-spread')
+const adaptedNoUnnecessaryInt16ArrayFromSpreadAlias = adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule, 'no-unnecessary-int16-array-from-spread')
+const adaptedNoUnnecessaryInt16ArrayOfSpread = adaptPluginRule(noUnnecessaryInt16ArrayOfSpreadRule, 'no-unnecessary-int-16-array-of-spread')
+const adaptedNoUnnecessaryUint16ArrayFromSpread = adaptPluginRule(noUnnecessaryUint16ArrayFromSpreadRule, 'no-unnecessary-uint-16-array-from-spread')
+const adaptedNoUnnecessaryUint16ArrayOfSpread = adaptPluginRule(noUnnecessaryUint16ArrayOfSpreadRule, 'no-unnecessary-uint-16-array-of-spread')
+const adaptedNoUnnecessaryInt32ArrayFromSpread = adaptPluginRule(noUnnecessaryInt32ArrayFromSpreadRule, 'no-unnecessary-int-32-array-from-spread')
+const adaptedNoUnnecessaryInt32ArrayOfSpread = adaptPluginRule(noUnnecessaryInt32ArrayOfSpreadRule, 'no-unnecessary-int-32-array-of-spread')
+const adaptedNoUnnecessaryUint32ArrayFromSpread = adaptPluginRule(noUnnecessaryUint32ArrayFromSpreadRule, 'no-unnecessary-uint-32-array-from-spread')
+const adaptedNoUnnecessaryUint32ArrayOfSpread = adaptPluginRule(noUnnecessaryUint32ArrayOfSpreadRule, 'no-unnecessary-uint-32-array-of-spread')
+const adaptedNoUnnecessaryFloat32ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFromSpreadRule, 'no-unnecessary-float-32-array-from-spread')
+const adaptedNoUnnecessaryFloat32ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat32ArrayOfSpreadRule, 'no-unnecessary-float-32-array-of-spread')
+const adaptedNoUnnecessaryFloat64ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFromSpreadRule, 'no-unnecessary-float-64-array-from-spread')
+const adaptedNoUnnecessaryFloat64ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat64ArrayOfSpreadRule, 'no-unnecessary-float-64-array-of-spread')
+const adaptedNoUnnecessaryBigInt64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFromSpreadRule, 'no-unnecessary-big-int-64-array-from-spread')
+const adaptedNoUnnecessaryBigInt64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule, 'no-unnecessary-big-int-64-array-of-spread')
+const adaptedNoUnnecessaryBigUint64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule, 'no-unnecessary-big-uint-64-array-from-spread')
+const adaptedNoUnnecessaryBigUint64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule, 'no-unnecessary-big-uint-64-array-of-spread')
+const adaptedNoUnnecessarySetTimeoutSpread = adaptPluginRule(noUnnecessarySetTimeoutSpreadRule, 'no-unnecessary-set-timeout-spread')
+const adaptedNoUnnecessarySetIntervalSpread = adaptPluginRule(noUnnecessarySetIntervalSpreadRule, 'no-unnecessary-set-interval-spread')
+const adaptedNoUnnecessaryClearTimeoutSpread = adaptPluginRule(noUnnecessaryClearTimeoutSpreadRule, 'no-unnecessary-clear-timeout-spread')
+const adaptedNoUnnecessaryClearIntervalSpread = adaptPluginRule(noUnnecessaryClearIntervalSpreadRule, 'no-unnecessary-clear-interval-spread')
+const adaptedNoUnnecessaryRequestAnimationFrameSpread = adaptPluginRule(noUnnecessaryRequestAnimationFrameSpreadRule, 'no-unnecessary-request-animation-frame-spread')
+const adaptedNoUnnecessaryCancelAnimationFrameSpread = adaptPluginRule(noUnnecessaryCancelAnimationFrameSpreadRule, 'no-unnecessary-cancel-animation-frame-spread')
+const adaptedNoUnnecessaryRequestIdleCallbackSpread = adaptPluginRule(noUnnecessaryRequestIdleCallbackSpreadRule, 'no-unnecessary-request-idle-callback-spread')
+const adaptedNoUnnecessaryCancelIdleCallbackSpread = adaptPluginRule(noUnnecessaryCancelIdleCallbackSpreadRule, 'no-unnecessary-cancel-idle-callback-spread')
+const adaptedNoUnnecessaryQueueMicrotaskSpread = adaptPluginRule(noUnnecessaryQueueMicrotaskSpreadRule, 'no-unnecessary-queue-microtask-spread')
+const adaptedNoUnnecessaryStructuredCloneSpread = adaptPluginRule(noUnnecessaryStructuredCloneSpreadRule, 'no-unnecessary-structured-clone-spread')
+const adaptedNoUnnecessaryAtobSpread = adaptPluginRule(noUnnecessaryAtobSpreadRule, 'no-unnecessary-atob-spread')
+const adaptedNoUnnecessaryBtoaSpread = adaptPluginRule(noUnnecessaryBtoaSpreadRule, 'no-unnecessary-btoa-spread')
+const adaptedNoUnnecessaryFetchSpread = adaptPluginRule(noUnnecessaryFetchSpreadRule, 'no-unnecessary-fetch-spread')
+const adaptedNoUnnecessaryAlertSpread = adaptPluginRule(noUnnecessaryAlertSpreadRule, 'no-unnecessary-alert-spread')
+const adaptedNoUnnecessaryConfirmSpread = adaptPluginRule(noUnnecessaryConfirmSpreadRule, 'no-unnecessary-confirm-spread')
+const adaptedNoUnnecessaryPromptSpread = adaptPluginRule(noUnnecessaryPromptSpreadRule, 'no-unnecessary-prompt-spread')
+const adaptedNoUnnecessaryPrintSpread = adaptPluginRule(noUnnecessaryPrintSpreadRule, 'no-unnecessary-print-spread')
+const adaptedNoUnnecessaryReportErrorSpread = adaptPluginRule(noUnnecessaryReportErrorSpreadRule, 'no-unnecessary-report-error-spread')
+const adaptedNoUnnecessaryErrorSpread = adaptPluginRule(noUnnecessaryErrorSpreadRule, 'no-unnecessary-error-spread')
+const adaptedNoUnnecessaryEvalErrorSpread = adaptPluginRule(noUnnecessaryEvalErrorSpreadRule, 'no-unnecessary-eval-error-spread')
+const adaptedNoUnnecessaryRangeErrorSpread = adaptPluginRule(noUnnecessaryRangeErrorSpreadRule, 'no-unnecessary-range-error-spread')
+const adaptedNoUnnecessaryReferenceErrorSpread = adaptPluginRule(noUnnecessaryReferenceErrorSpreadRule, 'no-unnecessary-reference-error-spread')
+const adaptedNoUnnecessarySyntaxErrorSpread = adaptPluginRule(noUnnecessarySyntaxErrorSpreadRule, 'no-unnecessary-syntax-error-spread')
+const adaptedNoUnnecessaryTypeErrorSpread = adaptPluginRule(noUnnecessaryTypeErrorSpreadRule, 'no-unnecessary-type-error-spread')
+const adaptedNoUnnecessaryUriErrorSpread = adaptPluginRule(noUnnecessaryUriErrorSpreadRule, 'no-unnecessary-uri-error-spread')
+const adaptedNoUnnecessaryAggregateErrorSpread = adaptPluginRule(noUnnecessaryAggregateErrorSpreadRule, 'no-unnecessary-aggregate-error-spread')
+const adaptedNoUnnecessaryMapSpread = adaptPluginRule(noUnnecessaryMapSpreadRule, 'no-unnecessary-map-spread')
+const adaptedNoUnnecessarySetSpread = adaptPluginRule(noUnnecessarySetSpreadRule, 'no-unnecessary-set-spread')
+const adaptedNoUnnecessaryWeakMapSpread = adaptPluginRule(noUnnecessaryWeakMapSpreadRule, 'no-unnecessary-weak-map-spread')
+const adaptedNoUnnecessaryWeakSetSpread = adaptPluginRule(noUnnecessaryWeakSetSpreadRule, 'no-unnecessary-weak-set-spread')
+const adaptedNoUnnecessaryWeakRefSpread = adaptPluginRule(noUnnecessaryWeakRefSpreadRule, 'no-unnecessary-weak-ref-spread')
+const adaptedNoUnnecessaryFinalizationRegistrySpread = adaptPluginRule(noUnnecessaryFinalizationRegistrySpreadRule, 'no-unnecessary-finalization-registry-spread')
+const adaptedNoUnnecessaryPromiseSpread = adaptPluginRule(noUnnecessaryPromiseSpreadRule, 'no-unnecessary-promise-spread')
+const adaptedNoUnnecessaryArrayBufferSpread = adaptPluginRule(noUnnecessaryArrayBufferSpreadRule, 'no-unnecessary-array-buffer-spread')
+const adaptedNoUnnecessarySharedArrayBufferSpread = adaptPluginRule(noUnnecessarySharedArrayBufferSpreadRule, 'no-unnecessary-shared-array-buffer-spread')
+const adaptedNoUnnecessaryDataViewSpread = adaptPluginRule(noUnnecessaryDataViewSpreadRule, 'no-unnecessary-data-view-spread')
+const adaptedNoUnnecessaryDateSpread = adaptPluginRule(noUnnecessaryDateSpreadRule, 'no-unnecessary-date-spread')
+const adaptedNoUnnecessaryRegexpSpread = adaptPluginRule(noUnnecessaryRegexpSpreadRule, 'no-unnecessary-regexp-spread')
+const adaptedNoUnnecessaryImageSpread = adaptPluginRule(noUnnecessaryImageSpreadRule, 'no-unnecessary-image-spread')
+const adaptedNoUnnecessaryOptionSpread = adaptPluginRule(noUnnecessaryOptionSpreadRule, 'no-unnecessary-option-spread')
+const adaptedNoUnnecessaryAudioSpread = adaptPluginRule(noUnnecessaryAudioSpreadRule, 'no-unnecessary-audio-spread')
+const adaptedNoUnnecessaryHeadersSpread = adaptPluginRule(noUnnecessaryHeadersSpreadRule, 'no-unnecessary-headers-spread')
+const adaptedNoUnnecessaryRequestSpread = adaptPluginRule(noUnnecessaryRequestSpreadRule, 'no-unnecessary-request-spread')
+const adaptedNoUnnecessaryResponseSpread = adaptPluginRule(noUnnecessaryResponseSpreadRule, 'no-unnecessary-response-spread')
+const adaptedNoUnnecessaryFormDataSpread = adaptPluginRule(noUnnecessaryFormDataSpreadRule, 'no-unnecessary-form-data-spread')
+const adaptedNoUnnecessaryUrlSpread = adaptPluginRule(noUnnecessaryUrlSpreadRule, 'no-unnecessary-url-spread')
+const adaptedNoUnnecessaryUrlSearchParamsSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsSpreadRule, 'no-unnecessary-url-search-params-spread')
+const adaptedNoUnnecessaryTextDecoderSpread = adaptPluginRule(noUnnecessaryTextDecoderSpreadRule, 'no-unnecessary-text-decoder-spread')
+const adaptedNoUnnecessaryTextEncoderSpread = adaptPluginRule(noUnnecessaryTextEncoderSpreadRule, 'no-unnecessary-text-encoder-spread')
+const adaptedNoUnnecessaryBlobSpread = adaptPluginRule(noUnnecessaryBlobSpreadRule, 'no-unnecessary-blob-spread')
+const adaptedNoUnnecessaryFileSpread = adaptPluginRule(noUnnecessaryFileSpreadRule, 'no-unnecessary-file-spread')
+const adaptedNoUnnecessaryFileReaderSpread = adaptPluginRule(noUnnecessaryFileReaderSpreadRule, 'no-unnecessary-file-reader-spread')
+const adaptedNoUnnecessaryImageDataSpread = adaptPluginRule(noUnnecessaryImageDataSpreadRule, 'no-unnecessary-image-data-spread')
+const adaptedNoUnnecessaryDomRectSpread = adaptPluginRule(noUnnecessaryDomRectSpreadRule, 'no-unnecessary-dom-rect-spread')
+const adaptedNoUnnecessaryCssStyleDeclarationSpread = adaptPluginRule(noUnnecessaryCssStyleDeclarationSpreadRule, 'no-unnecessary-css-style-declaration-spread')
+const adaptedNoUnnecessaryMutationObserverSpread = adaptPluginRule(noUnnecessaryMutationObserverSpreadRule, 'no-unnecessary-mutation-observer-spread')
+const adaptedNoUnnecessaryResizeObserverSpread = adaptPluginRule(noUnnecessaryResizeObserverSpreadRule, 'no-unnecessary-resize-observer-spread')
+const adaptedNoUnnecessaryIntersectionObserverSpread = adaptPluginRule(noUnnecessaryIntersectionObserverSpreadRule, 'no-unnecessary-intersection-observer-spread')
+const adaptedNoUnnecessaryPerformanceObserverSpread = adaptPluginRule(noUnnecessaryPerformanceObserverSpreadRule, 'no-unnecessary-performance-observer-spread')
+const adaptedNoUnnecessaryAbortControllerSpread = adaptPluginRule(noUnnecessaryAbortControllerSpreadRule, 'no-unnecessary-abort-controller-spread')
+const adaptedNoUnnecessaryAbortSignalSpread = adaptPluginRule(noUnnecessaryAbortSignalSpreadRule, 'no-unnecessary-abort-signal-spread')
+const adaptedNoUnnecessaryBroadcastChannelSpread = adaptPluginRule(noUnnecessaryBroadcastChannelSpreadRule, 'no-unnecessary-broadcast-channel-spread')
+const adaptedNoUnnecessaryMessageChannelSpread = adaptPluginRule(noUnnecessaryMessageChannelSpreadRule, 'no-unnecessary-message-channel-spread')
+const adaptedNoUnnecessaryWorkerSpread = adaptPluginRule(noUnnecessaryWorkerSpreadRule, 'no-unnecessary-worker-spread')
+const adaptedNoUnnecessaryEventSpread = adaptPluginRule(noUnnecessaryEventSpreadRule, 'no-unnecessary-event-spread')
+const adaptedNoUnnecessaryCustomEventSpread = adaptPluginRule(noUnnecessaryCustomEventSpreadRule, 'no-unnecessary-custom-event-spread')
+const adaptedNoUnnecessaryDomParserSpread = adaptPluginRule(noUnnecessaryDomParserSpreadRule, 'no-unnecessary-dom-parser-spread')
+const adaptedNoUnnecessaryXmlHttpRequestSpread = adaptPluginRule(noUnnecessaryXmlHttpRequestSpreadRule, 'no-unnecessary-xml-http-request-spread')
+const adaptedNoUnnecessaryDocumentCreateElementSpread = adaptPluginRule(noUnnecessaryDocumentCreateElementSpreadRule, 'no-unnecessary-document-create-element-spread')
+const adaptedNoUnnecessaryDocumentCreateTextNodeSpread = adaptPluginRule(noUnnecessaryDocumentCreateTextNodeSpreadRule, 'no-unnecessary-document-create-text-node-spread')
+const adaptedNoUnnecessaryDocumentCreateCommentSpread = adaptPluginRule(noUnnecessaryDocumentCreateCommentSpreadRule, 'no-unnecessary-document-create-comment-spread')
+const adaptedNoUnnecessaryDocumentCreateDocumentFragmentSpread = adaptPluginRule(noUnnecessaryDocumentCreateDocumentFragmentSpreadRule, 'no-unnecessary-document-create-document-fragment-spread')
+const adaptedNoUnnecessaryDocumentCreateAttributeSpread = adaptPluginRule(noUnnecessaryDocumentCreateAttributeSpreadRule, 'no-unnecessary-document-create-attribute-spread')
+const adaptedNoUnnecessaryDocumentCreateEventSpread = adaptPluginRule(noUnnecessaryDocumentCreateEventSpreadRule, 'no-unnecessary-document-create-event-spread')
+const adaptedNoUnnecessaryDocumentCreateTreeWalkerSpread = adaptPluginRule(noUnnecessaryDocumentCreateTreeWalkerSpreadRule, 'no-unnecessary-document-create-tree-walker-spread')
+const adaptedNoUnnecessaryDocumentCreateNodeIteratorSpread = adaptPluginRule(noUnnecessaryDocumentCreateNodeIteratorSpreadRule, 'no-unnecessary-document-create-node-iterator-spread')
+const adaptedNoUnnecessaryDocumentCreateRangeSpread = adaptPluginRule(noUnnecessaryDocumentCreateRangeSpreadRule, 'no-unnecessary-document-create-range-spread')
+const adaptedNoUnnecessaryDocumentGetElementByIdSpread = adaptPluginRule(noUnnecessaryDocumentGetElementByIdSpreadRule, 'no-unnecessary-document-get-element-by-id-spread')
+const adaptedNoUnnecessaryDocumentQuerySelectorSpread = adaptPluginRule(noUnnecessaryDocumentQuerySelectorSpreadRule, 'no-unnecessary-document-query-selector-spread')
+const adaptedNoUnnecessaryDocumentQuerySelectorAllSpread = adaptPluginRule(noUnnecessaryDocumentQuerySelectorAllSpreadRule, 'no-unnecessary-document-query-selector-all-spread')
+const adaptedNoUnnecessaryDocumentGetElementsByClassNameSpread = adaptPluginRule(noUnnecessaryDocumentGetElementsByClassNameSpreadRule, 'no-unnecessary-document-get-elements-by-class-name-spread')
+const adaptedNoUnnecessaryDocumentGetElementsByTagNameSpread = adaptPluginRule(noUnnecessaryDocumentGetElementsByTagNameSpreadRule, 'no-unnecessary-document-get-elements-by-tag-name-spread')
+const adaptedNoUnnecessaryDocumentGetElementsByNameSpread = adaptPluginRule(noUnnecessaryDocumentGetElementsByNameSpreadRule, 'no-unnecessary-document-get-elements-by-name-spread')
+const adaptedNoUnnecessaryDocumentAdoptNodeSpread = adaptPluginRule(noUnnecessaryDocumentAdoptNodeSpreadRule, 'no-unnecessary-document-adopt-node-spread')
+const adaptedNoUnnecessaryDocumentImportNodeSpread = adaptPluginRule(noUnnecessaryDocumentImportNodeSpreadRule, 'no-unnecessary-document-import-node-spread')
+const adaptedNoUnnecessaryDocumentWriteSpread = adaptPluginRule(noUnnecessaryDocumentWriteSpreadRule, 'no-unnecessary-document-write-spread')
+const adaptedNoUnnecessaryDocumentWriteLnSpread = adaptPluginRule(noUnnecessaryDocumentWriteLnSpreadRule, 'no-unnecessary-document-write-ln-spread')
+const adaptedNoUnnecessaryDocumentOpenSpread = adaptPluginRule(noUnnecessaryDocumentOpenSpreadRule, 'no-unnecessary-document-open-spread')
+const adaptedNoUnnecessaryDocumentCloseSpread = adaptPluginRule(noUnnecessaryDocumentCloseSpreadRule, 'no-unnecessary-document-close-spread')
+const adaptedNoUnnecessaryDocumentExitFullscreenSpread = adaptPluginRule(noUnnecessaryDocumentExitFullscreenSpreadRule, 'no-unnecessary-document-exit-fullscreen-spread')
+const adaptedNoUnnecessaryDocumentExitPictureInPictureSpread = adaptPluginRule(noUnnecessaryDocumentExitPictureInPictureSpreadRule, 'no-unnecessary-document-exit-picture-in-picture-spread')
+const adaptedNoUnnecessaryDocumentExitPointerLockSpread = adaptPluginRule(noUnnecessaryDocumentExitPointerLockSpreadRule, 'no-unnecessary-document-exit-pointer-lock-spread')
+const adaptedNoUnnecessaryDocumentHasFocusSpread = adaptPluginRule(noUnnecessaryDocumentHasFocusSpreadRule, 'no-unnecessary-document-has-focus-spread')
+const adaptedNoUnnecessaryDocumentGetSelectionSpread = adaptPluginRule(noUnnecessaryDocumentGetSelectionSpreadRule, 'no-unnecessary-document-get-selection-spread')
+const adaptedNoUnnecessaryDocumentElementFromPointSpread = adaptPluginRule(noUnnecessaryDocumentElementFromPointSpreadRule, 'no-unnecessary-document-element-from-point-spread')
+const adaptedNoUnnecessaryDocumentElementsFromPointSpread = adaptPluginRule(noUnnecessaryDocumentElementsFromPointSpreadRule, 'no-unnecessary-document-elements-from-point-spread')
+const adaptedNoUnnecessaryElementQuerySelectorSpread = adaptPluginRule(noUnnecessaryElementQuerySelectorSpreadRule, 'no-unnecessary-element-query-selector-spread')
+const adaptedNoUnnecessaryElementQuerySelectorAllSpread = adaptPluginRule(noUnnecessaryElementQuerySelectorAllSpreadRule, 'no-unnecessary-element-query-selector-all-spread')
+const adaptedNoUnnecessaryElementGetAttributeSpread = adaptPluginRule(noUnnecessaryElementGetAttributeSpreadRule, 'no-unnecessary-element-get-attribute-spread')
+const adaptedNoUnnecessaryElementSetAttributeSpread = adaptPluginRule(noUnnecessaryElementSetAttributeSpreadRule, 'no-unnecessary-element-set-attribute-spread')
+const adaptedNoUnnecessaryElementRemoveAttributeSpread = adaptPluginRule(noUnnecessaryElementRemoveAttributeSpreadRule, 'no-unnecessary-element-remove-attribute-spread')
+const adaptedNoUnnecessaryElementHasAttributeSpread = adaptPluginRule(noUnnecessaryElementHasAttributeSpreadRule, 'no-unnecessary-element-has-attribute-spread')
+const adaptedNoUnnecessaryElementGetAttributeNamesSpread = adaptPluginRule(noUnnecessaryElementGetAttributeNamesSpreadRule, 'no-unnecessary-element-get-attribute-names-spread')
+const adaptedNoUnnecessaryElementToggleAttributeSpread = adaptPluginRule(noUnnecessaryElementToggleAttributeSpreadRule, 'no-unnecessary-element-toggle-attribute-spread')
+const adaptedNoUnnecessaryElementGetElementsByClassNameSpread = adaptPluginRule(noUnnecessaryElementGetElementsByClassNameSpreadRule, 'no-unnecessary-element-get-elements-by-class-name-spread')
+const adaptedNoUnnecessaryElementGetElementsByTagNameSpread = adaptPluginRule(noUnnecessaryElementGetElementsByTagNameSpreadRule, 'no-unnecessary-element-get-elements-by-tag-name-spread')
+const adaptedNoUnnecessaryElementClosestSpread = adaptPluginRule(noUnnecessaryElementClosestSpreadRule, 'no-unnecessary-element-closest-spread')
+const adaptedNoUnnecessaryElementMatchesSpread = adaptPluginRule(noUnnecessaryElementMatchesSpreadRule, 'no-unnecessary-element-matches-spread')
+const adaptedNoUnnecessaryElementContainsSpread = adaptPluginRule(noUnnecessaryElementContainsSpreadRule, 'no-unnecessary-element-contains-spread')
+const adaptedNoUnnecessaryElementAppendChildSpread = adaptPluginRule(noUnnecessaryElementAppendChildSpreadRule, 'no-unnecessary-element-append-child-spread')
+const adaptedNoUnnecessaryElementRemoveChildSpread = adaptPluginRule(noUnnecessaryElementRemoveChildSpreadRule, 'no-unnecessary-element-remove-child-spread')
+const adaptedNoUnnecessaryElementInsertBeforeSpread = adaptPluginRule(noUnnecessaryElementInsertBeforeSpreadRule, 'no-unnecessary-element-insert-before-spread')
+const adaptedNoUnnecessaryElementReplaceChildSpread = adaptPluginRule(noUnnecessaryElementReplaceChildSpreadRule, 'no-unnecessary-element-replace-child-spread')
+const adaptedNoUnnecessaryElementCloneNodeSpread = adaptPluginRule(noUnnecessaryElementCloneNodeSpreadRule, 'no-unnecessary-element-clone-node-spread')
+const adaptedNoUnnecessaryElementRemoveSpread = adaptPluginRule(noUnnecessaryElementRemoveSpreadRule, 'no-unnecessary-element-remove-spread')
+const adaptedNoUnnecessaryElementPrependSpread = adaptPluginRule(noUnnecessaryElementPrependSpreadRule, 'no-unnecessary-element-prepend-spread')
+const adaptedNoUnnecessaryElementAppendSpread = adaptPluginRule(noUnnecessaryElementAppendSpreadRule, 'no-unnecessary-element-append-spread')
+const adaptedNoUnnecessaryElementBeforeSpread = adaptPluginRule(noUnnecessaryElementBeforeSpreadRule, 'no-unnecessary-element-before-spread')
+const adaptedNoUnnecessaryElementAfterSpread = adaptPluginRule(noUnnecessaryElementAfterSpreadRule, 'no-unnecessary-element-after-spread')
+const adaptedNoUnnecessaryElementReplaceWithSpread = adaptPluginRule(noUnnecessaryElementReplaceWithSpreadRule, 'no-unnecessary-element-replace-with-spread')
+const adaptedNoUnnecessaryElementInsertAdjacentHtmlSpread = adaptPluginRule(noUnnecessaryElementInsertAdjacentHtmlSpreadRule, 'no-unnecessary-element-insert-adjacent-html-spread')
+const adaptedNoUnnecessaryElementInsertAdjacentElementSpread = adaptPluginRule(noUnnecessaryElementInsertAdjacentElementSpreadRule, 'no-unnecessary-element-insert-adjacent-element-spread')
+const adaptedNoUnnecessaryElementInsertAdjacentTextSpread = adaptPluginRule(noUnnecessaryElementInsertAdjacentTextSpreadRule, 'no-unnecessary-element-insert-adjacent-text-spread')
+const adaptedNoUnnecessaryElementGetBoundingClientRectSpread = adaptPluginRule(noUnnecessaryElementGetBoundingClientRectSpreadRule, 'no-unnecessary-element-get-bounding-client-rect-spread')
+const adaptedNoUnnecessaryElementGetClientRectsSpread = adaptPluginRule(noUnnecessaryElementGetClientRectsSpreadRule, 'no-unnecessary-element-get-client-rects-spread')
+const adaptedNoUnnecessaryElementScrollIntoViewSpread = adaptPluginRule(noUnnecessaryElementScrollIntoViewSpreadRule, 'no-unnecessary-element-scroll-into-view-spread')
+const adaptedNoUnnecessaryElementScrollIntoViewIfNeededSpread = adaptPluginRule(noUnnecessaryElementScrollIntoViewIfNeededSpreadRule, 'no-unnecessary-element-scroll-into-view-if-needed-spread')
+const adaptedNoUnnecessaryElementScrollToSpread = adaptPluginRule(noUnnecessaryElementScrollToSpreadRule, 'no-unnecessary-element-scroll-to-spread')
+const adaptedNoUnnecessaryElementScrollBySpread = adaptPluginRule(noUnnecessaryElementScrollBySpreadRule, 'no-unnecessary-element-scroll-by-spread')
+const adaptedNoUnnecessaryElementScrollSpread = adaptPluginRule(noUnnecessaryElementScrollSpreadRule, 'no-unnecessary-element-scroll-spread')
+const adaptedNoUnnecessaryElementFocusSpread = adaptPluginRule(noUnnecessaryElementFocusSpreadRule, 'no-unnecessary-element-focus-spread')
+const adaptedNoUnnecessaryElementBlurSpread = adaptPluginRule(noUnnecessaryElementBlurSpreadRule, 'no-unnecessary-element-blur-spread')
+const adaptedNoUnnecessaryElementClickSpread = adaptPluginRule(noUnnecessaryElementClickSpreadRule, 'no-unnecessary-element-click-spread')
+const adaptedNoUnnecessaryElementAnimateSpread = adaptPluginRule(noUnnecessaryElementAnimateSpreadRule, 'no-unnecessary-element-animate-spread')
+const adaptedNoUnnecessaryElementGetComputedStyleSpread = adaptPluginRule(noUnnecessaryElementGetComputedStyleSpreadRule, 'no-unnecessary-element-get-computed-style-spread')
+const adaptedNoUnnecessaryElementRequestFullscreenSpread = adaptPluginRule(noUnnecessaryElementRequestFullscreenSpreadRule, 'no-unnecessary-element-request-fullscreen-spread')
+const adaptedNoUnnecessaryElementRequestPointerLockSpread = adaptPluginRule(noUnnecessaryElementRequestPointerLockSpreadRule, 'no-unnecessary-element-request-pointer-lock-spread')
+const adaptedNoUnnecessaryElementAttachShadowSpread = adaptPluginRule(noUnnecessaryElementAttachShadowSpreadRule, 'no-unnecessary-element-attach-shadow-spread')
+const adaptedNoUnnecessaryLocalStorageGetItemSpread = adaptPluginRule(noUnnecessaryLocalStorageGetItemSpreadRule, 'no-unnecessary-local-storage-get-item-spread')
+const adaptedNoUnnecessaryLocalStorageSetItemSpread = adaptPluginRule(noUnnecessaryLocalStorageSetItemSpreadRule, 'no-unnecessary-local-storage-set-item-spread')
+const adaptedNoUnnecessaryLocalStorageRemoveItemSpread = adaptPluginRule(noUnnecessaryLocalStorageRemoveItemSpreadRule, 'no-unnecessary-local-storage-remove-item-spread')
+const adaptedNoUnnecessaryLocalStorageClearSpread = adaptPluginRule(noUnnecessaryLocalStorageClearSpreadRule, 'no-unnecessary-local-storage-clear-spread')
+const adaptedNoUnnecessaryLocalStorageKeySpread = adaptPluginRule(noUnnecessaryLocalStorageKeySpreadRule, 'no-unnecessary-local-storage-key-spread')
+const adaptedNoUnnecessarySessionStorageGetItemSpread = adaptPluginRule(noUnnecessarySessionStorageGetItemSpreadRule, 'no-unnecessary-session-storage-get-item-spread')
+const adaptedNoUnnecessarySessionStorageSetItemSpread = adaptPluginRule(noUnnecessarySessionStorageSetItemSpreadRule, 'no-unnecessary-session-storage-set-item-spread')
+const adaptedNoUnnecessarySessionStorageRemoveItemSpread = adaptPluginRule(noUnnecessarySessionStorageRemoveItemSpreadRule, 'no-unnecessary-session-storage-remove-item-spread')
+const adaptedNoUnnecessarySessionStorageClearSpread = adaptPluginRule(noUnnecessarySessionStorageClearSpreadRule, 'no-unnecessary-session-storage-clear-spread')
+const adaptedNoUnnecessarySessionStorageKeySpread = adaptPluginRule(noUnnecessarySessionStorageKeySpreadRule, 'no-unnecessary-session-storage-key-spread')
+const adaptedNoUnnecessaryNavigatorSendBeaconSpread = adaptPluginRule(noUnnecessaryNavigatorSendBeaconSpreadRule, 'no-unnecessary-navigator-send-beacon-spread')
+const adaptedNoUnnecessaryNavigatorVibrateSpread = adaptPluginRule(noUnnecessaryNavigatorVibrateSpreadRule, 'no-unnecessary-navigator-vibrate-spread')
+const adaptedNoUnnecessaryNavigatorGetBatterySpread = adaptPluginRule(noUnnecessaryNavigatorGetBatterySpreadRule, 'no-unnecessary-navigator-get-battery-spread')
+const adaptedNoUnnecessaryNavigatorGeolocationGetCurrentPositionSpread = adaptPluginRule(noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule, 'no-unnecessary-navigator-geolocation-get-current-position-spread')
+const adaptedNoUnnecessaryNavigatorGeolocationWatchPositionSpread = adaptPluginRule(noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule, 'no-unnecessary-navigator-geolocation-watch-position-spread')
+const adaptedNoUnnecessaryNavigatorGeolocationClearWatchSpread = adaptPluginRule(noUnnecessaryNavigatorGeolocationClearWatchSpreadRule, 'no-unnecessary-navigator-geolocation-clear-watch-spread')
+const adaptedNoUnnecessaryNavigatorClipboardReadTextSpread = adaptPluginRule(noUnnecessaryNavigatorClipboardReadTextSpreadRule, 'no-unnecessary-navigator-clipboard-read-text-spread')
+const adaptedNoUnnecessaryNavigatorClipboardWriteTextSpread = adaptPluginRule(noUnnecessaryNavigatorClipboardWriteTextSpreadRule, 'no-unnecessary-navigator-clipboard-write-text-spread')
+const adaptedNoUnnecessaryNavigatorMediaDevicesGetUserMediaSpread = adaptPluginRule(noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule, 'no-unnecessary-navigator-media-devices-get-user-media-spread')
+const adaptedNoUnnecessaryNavigatorRegisterProtocolHandlerSpread = adaptPluginRule(noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule, 'no-unnecessary-navigator-register-protocol-handler-spread')
+const adaptedNoUnnecessaryNavigatorRequestMediaKeySystemAccessSpread = adaptPluginRule(noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule, 'no-unnecessary-navigator-request-media-key-system-access-spread')
+const adaptedNoUnnecessaryNavigatorCanShareSpread = adaptPluginRule(noUnnecessaryNavigatorCanShareSpreadRule, 'no-unnecessary-navigator-can-share-spread')
+const adaptedNoUnnecessaryNavigatorShareSpread = adaptPluginRule(noUnnecessaryNavigatorShareSpreadRule, 'no-unnecessary-navigator-share-spread')
+const adaptedNoUnnecessaryNavigatorGetGamepadsSpread = adaptPluginRule(noUnnecessaryNavigatorGetGamepadsSpreadRule, 'no-unnecessary-navigator-get-gamepads-spread')
+const adaptedNoUnnecessaryNavigatorRequestIdleCallbackSpread = adaptPluginRule(noUnnecessaryNavigatorRequestIdleCallbackSpreadRule, 'no-unnecessary-navigator-request-idle-callback-spread')
+const adaptedNoUnnecessaryNavigatorCancelIdleCallbackSpread = adaptPluginRule(noUnnecessaryNavigatorCancelIdleCallbackSpreadRule, 'no-unnecessary-navigator-cancel-idle-callback-spread')
+const adaptedNoUnnecessaryNavigatorJavaEnabledSpread = adaptPluginRule(noUnnecessaryNavigatorJavaEnabledSpreadRule, 'no-unnecessary-navigator-java-enabled-spread')
+const adaptedNoUnnecessaryNavigatorCookieEnabledSpread = adaptPluginRule(noUnnecessaryNavigatorCookieEnabledSpreadRule, 'no-unnecessary-navigator-cookie-enabled-spread')
+const adaptedNoUnnecessaryHistoryPushStateSpread = adaptPluginRule(noUnnecessaryHistoryPushStateSpreadRule, 'no-unnecessary-history-push-state-spread')
+const adaptedNoUnnecessaryHistoryReplaceStateSpread = adaptPluginRule(noUnnecessaryHistoryReplaceStateSpreadRule, 'no-unnecessary-history-replace-state-spread')
+const adaptedNoUnnecessaryHistoryGoSpread = adaptPluginRule(noUnnecessaryHistoryGoSpreadRule, 'no-unnecessary-history-go-spread')
+const adaptedNoUnnecessaryHistoryBackSpread = adaptPluginRule(noUnnecessaryHistoryBackSpreadRule, 'no-unnecessary-history-back-spread')
+const adaptedNoUnnecessaryHistoryForwardSpread = adaptPluginRule(noUnnecessaryHistoryForwardSpreadRule, 'no-unnecessary-history-forward-spread')
+const adaptedNoUnnecessaryLocationAssignSpread = adaptPluginRule(noUnnecessaryLocationAssignSpreadRule, 'no-unnecessary-location-assign-spread')
+const adaptedNoUnnecessaryLocationReloadSpread = adaptPluginRule(noUnnecessaryLocationReloadSpreadRule, 'no-unnecessary-location-reload-spread')
+const adaptedNoUnnecessaryLocationReplaceSpread = adaptPluginRule(noUnnecessaryLocationReplaceSpreadRule, 'no-unnecessary-location-replace-spread')
+const adaptedNoUnnecessaryLocationToStringSpread = adaptPluginRule(noUnnecessaryLocationToStringSpreadRule, 'no-unnecessary-location-to-string-spread')
+const adaptedNoUnnecessaryPerformanceNowSpread = adaptPluginRule(noUnnecessaryPerformanceNowSpreadRule, 'no-unnecessary-performance-now-spread')
+const adaptedNoUnnecessaryPerformanceMarkSpread = adaptPluginRule(noUnnecessaryPerformanceMarkSpreadRule, 'no-unnecessary-performance-mark-spread')
+const adaptedNoUnnecessaryPerformanceMeasureSpread = adaptPluginRule(noUnnecessaryPerformanceMeasureSpreadRule, 'no-unnecessary-performance-measure-spread')
+const adaptedNoUnnecessaryPerformanceClearMarksSpread = adaptPluginRule(noUnnecessaryPerformanceClearMarksSpreadRule, 'no-unnecessary-performance-clear-marks-spread')
+const adaptedNoUnnecessaryPerformanceClearMeasuresSpread = adaptPluginRule(noUnnecessaryPerformanceClearMeasuresSpreadRule, 'no-unnecessary-performance-clear-measures-spread')
+const adaptedNoUnnecessaryPerformanceGetEntriesSpread = adaptPluginRule(noUnnecessaryPerformanceGetEntriesSpreadRule, 'no-unnecessary-performance-get-entries-spread')
+const adaptedNoUnnecessaryPerformanceGetEntriesByNameSpread = adaptPluginRule(noUnnecessaryPerformanceGetEntriesByNameSpreadRule, 'no-unnecessary-performance-get-entries-by-name-spread')
+const adaptedNoUnnecessaryPerformanceGetEntriesByTypeSpread = adaptPluginRule(noUnnecessaryPerformanceGetEntriesByTypeSpreadRule, 'no-unnecessary-performance-get-entries-by-type-spread')
+const adaptedNoUnnecessaryPerformanceClearResourceTimingsSpread = adaptPluginRule(noUnnecessaryPerformanceClearResourceTimingsSpreadRule, 'no-unnecessary-performance-clear-resource-timings-spread')
+const adaptedNoUnnecessaryPerformanceSetResourceTimingBufferSizeSpread = adaptPluginRule(noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule, 'no-unnecessary-performance-set-resource-timing-buffer-size-spread')
+const adaptedNoUnnecessaryScreenOrientationLockSpread = adaptPluginRule(noUnnecessaryScreenOrientationLockSpreadRule, 'no-unnecessary-screen-orientation-lock-spread')
+const adaptedNoUnnecessaryScreenOrientationUnlockSpread = adaptPluginRule(noUnnecessaryScreenOrientationUnlockSpreadRule, 'no-unnecessary-screen-orientation-unlock-spread')
+const adaptedNoUnnecessaryCryptoGetRandomValuesSpread = adaptPluginRule(noUnnecessaryCryptoGetRandomValuesSpreadRule, 'no-unnecessary-crypto-get-random-values-spread')
+const adaptedNoUnnecessaryCryptoRandomUuidSpread = adaptPluginRule(noUnnecessaryCryptoRandomUuidSpreadRule, 'no-unnecessary-crypto-random-uuid-spread')
+const adaptedNoUnnecessaryIndexedDbOpenSpread = adaptPluginRule(noUnnecessaryIndexedDbOpenSpreadRule, 'no-unnecessary-indexed-db-open-spread')
+const adaptedNoUnnecessaryIndexedDbDeleteDatabaseSpread = adaptPluginRule(noUnnecessaryIndexedDbDeleteDatabaseSpreadRule, 'no-unnecessary-indexed-db-delete-database-spread')
+const adaptedNoUnnecessaryIndexedDbCmpSpread = adaptPluginRule(noUnnecessaryIndexedDbCmpSpreadRule, 'no-unnecessary-indexed-db-cmp-spread')
+const adaptedNoUnnecessaryCachesOpenSpread = adaptPluginRule(noUnnecessaryCachesOpenSpreadRule, 'no-unnecessary-caches-open-spread')
+const adaptedNoUnnecessaryCachesMatchSpread = adaptPluginRule(noUnnecessaryCachesMatchSpreadRule, 'no-unnecessary-caches-match-spread')
+const adaptedNoUnnecessaryCachesHasSpread = adaptPluginRule(noUnnecessaryCachesHasSpreadRule, 'no-unnecessary-caches-has-spread')
+const adaptedNoUnnecessaryCachesDeleteSpread = adaptPluginRule(noUnnecessaryCachesDeleteSpreadRule, 'no-unnecessary-caches-delete-spread')
+const adaptedNoUnnecessaryCachesKeysSpread = adaptPluginRule(noUnnecessaryCachesKeysSpreadRule, 'no-unnecessary-caches-keys-spread')
+const adaptedNoUnnecessaryWindowOpenSpread = adaptPluginRule(noUnnecessaryWindowOpenSpreadRule, 'no-unnecessary-window-open-spread')
+const adaptedNoUnnecessaryWindowCloseSpread = adaptPluginRule(noUnnecessaryWindowCloseSpreadRule, 'no-unnecessary-window-close-spread')
+const adaptedNoUnnecessaryWindowStopSpread = adaptPluginRule(noUnnecessaryWindowStopSpreadRule, 'no-unnecessary-window-stop-spread')
+const adaptedNoUnnecessaryWindowFocusSpread = adaptPluginRule(noUnnecessaryWindowFocusSpreadRule, 'no-unnecessary-window-focus-spread')
+const adaptedNoUnnecessaryWindowBlurSpread = adaptPluginRule(noUnnecessaryWindowBlurSpreadRule, 'no-unnecessary-window-blur-spread')
+const adaptedNoUnnecessaryWindowScrollToSpread = adaptPluginRule(noUnnecessaryWindowScrollToSpreadRule, 'no-unnecessary-window-scroll-to-spread')
+const adaptedNoUnnecessaryWindowScrollBySpread = adaptPluginRule(noUnnecessaryWindowScrollBySpreadRule, 'no-unnecessary-window-scroll-by-spread')
+const adaptedNoUnnecessaryWindowScrollSpread = adaptPluginRule(noUnnecessaryWindowScrollSpreadRule, 'no-unnecessary-window-scroll-spread')
+const adaptedNoUnnecessaryWindowPrintSpread = adaptPluginRule(noUnnecessaryWindowPrintSpreadRule, 'no-unnecessary-window-print-spread')
+const adaptedNoUnnecessaryWindowAlertSpread = adaptPluginRule(noUnnecessaryWindowAlertSpreadRule, 'no-unnecessary-window-alert-spread')
+const adaptedNoUnnecessaryWindowConfirmSpread = adaptPluginRule(noUnnecessaryWindowConfirmSpreadRule, 'no-unnecessary-window-confirm-spread')
+const adaptedNoUnnecessaryWindowPromptSpread = adaptPluginRule(noUnnecessaryWindowPromptSpreadRule, 'no-unnecessary-window-prompt-spread')
+const adaptedNoUnnecessaryWindowGetComputedStyleSpread = adaptPluginRule(noUnnecessaryWindowGetComputedStyleSpreadRule, 'no-unnecessary-window-get-computed-style-spread')
+const adaptedNoUnnecessaryWindowGetSelectionSpread = adaptPluginRule(noUnnecessaryWindowGetSelectionSpreadRule, 'no-unnecessary-window-get-selection-spread')
+const adaptedNoUnnecessaryWindowMatchMediaSpread = adaptPluginRule(noUnnecessaryWindowMatchMediaSpreadRule, 'no-unnecessary-window-match-media-spread')
+const adaptedNoUnnecessaryWindowMoveToSpread = adaptPluginRule(noUnnecessaryWindowMoveToSpreadRule, 'no-unnecessary-window-move-to-spread')
+const adaptedNoUnnecessaryWindowMoveBySpread = adaptPluginRule(noUnnecessaryWindowMoveBySpreadRule, 'no-unnecessary-window-move-by-spread')
+const adaptedNoUnnecessaryWindowResizeToSpread = adaptPluginRule(noUnnecessaryWindowResizeToSpreadRule, 'no-unnecessary-window-resize-to-spread')
+const adaptedNoUnnecessaryWindowResizeBySpread = adaptPluginRule(noUnnecessaryWindowResizeBySpreadRule, 'no-unnecessary-window-resize-by-spread')
+const adaptedNoUnnecessaryWindowPostMessageSpread = adaptPluginRule(noUnnecessaryWindowPostMessageSpreadRule, 'no-unnecessary-window-post-message-spread')
+const adaptedNoUnnecessaryWindowAtobSpread = adaptPluginRule(noUnnecessaryWindowAtobSpreadRule, 'no-unnecessary-window-atob-spread')
+const adaptedNoUnnecessaryWindowBtoaSpread = adaptPluginRule(noUnnecessaryWindowBtoaSpreadRule, 'no-unnecessary-window-btoa-spread')
+const adaptedNoUnnecessaryWindowFetchSpread = adaptPluginRule(noUnnecessaryWindowFetchSpreadRule, 'no-unnecessary-window-fetch-spread')
+const adaptedNoUnnecessaryWindowCreateImageBitmapSpread = adaptPluginRule(noUnnecessaryWindowCreateImageBitmapSpreadRule, 'no-unnecessary-window-create-image-bitmap-spread')
+const adaptedNoUnnecessaryWindowQueueMicrotaskSpread = adaptPluginRule(noUnnecessaryWindowQueueMicrotaskSpreadRule, 'no-unnecessary-window-queue-microtask-spread')
+const adaptedNoUnnecessaryWindowReportErrorSpread = adaptPluginRule(noUnnecessaryWindowReportErrorSpreadRule, 'no-unnecessary-window-report-error-spread')
+const adaptedNoUnnecessaryWindowStructuredCloneSpread = adaptPluginRule(noUnnecessaryWindowStructuredCloneSpreadRule, 'no-unnecessary-window-structured-clone-spread')
+const adaptedNoUnnecessaryWindowRequestAnimationFrameSpread = adaptPluginRule(noUnnecessaryWindowRequestAnimationFrameSpreadRule, 'no-unnecessary-window-request-animation-frame-spread')
+const adaptedNoUnnecessaryWindowCancelAnimationFrameSpread = adaptPluginRule(noUnnecessaryWindowCancelAnimationFrameSpreadRule, 'no-unnecessary-window-cancel-animation-frame-spread')
+const adaptedNoUnnecessaryWindowRequestIdleCallbackSpread = adaptPluginRule(noUnnecessaryWindowRequestIdleCallbackSpreadRule, 'no-unnecessary-window-request-idle-callback-spread')
+const adaptedNoUnnecessaryWindowCancelIdleCallbackSpread = adaptPluginRule(noUnnecessaryWindowCancelIdleCallbackSpreadRule, 'no-unnecessary-window-cancel-idle-callback-spread')
+const adaptedNoUnnecessaryWindowSetTimeoutSpread = adaptPluginRule(noUnnecessaryWindowSetTimeoutSpreadRule, 'no-unnecessary-window-set-timeout-spread')
+const adaptedNoUnnecessaryWindowClearTimeoutSpread = adaptPluginRule(noUnnecessaryWindowClearTimeoutSpreadRule, 'no-unnecessary-window-clear-timeout-spread')
+const adaptedNoUnnecessaryWindowSetIntervalSpread = adaptPluginRule(noUnnecessaryWindowSetIntervalSpreadRule, 'no-unnecessary-window-set-interval-spread')
+const adaptedNoUnnecessaryWindowClearIntervalSpread = adaptPluginRule(noUnnecessaryWindowClearIntervalSpreadRule, 'no-unnecessary-window-clear-interval-spread')
+const adaptedNoUnnecessaryProcessExitSpread = adaptPluginRule(noUnnecessaryProcessExitSpreadRule, 'no-unnecessary-process-exit-spread')
+const adaptedNoUnnecessaryProcessNextTickSpread = adaptPluginRule(noUnnecessaryProcessNextTickSpreadRule, 'no-unnecessary-process-next-tick-spread')
+const adaptedNoUnnecessaryProcessCwdSpread = adaptPluginRule(noUnnecessaryProcessCwdSpreadRule, 'no-unnecessary-process-cwd-spread')
+const adaptedNoUnnecessaryProcessChdirSpread = adaptPluginRule(noUnnecessaryProcessChdirSpreadRule, 'no-unnecessary-process-chdir-spread')
+const adaptedNoUnnecessaryProcessEnvSpread = adaptPluginRule(noUnnecessaryProcessEnvSpreadRule, 'no-unnecessary-process-env-spread')
+const adaptedNoUnnecessaryProcessUptimeSpread = adaptPluginRule(noUnnecessaryProcessUptimeSpreadRule, 'no-unnecessary-process-uptime-spread')
+const adaptedNoUnnecessaryProcessMemoryUsageSpread = adaptPluginRule(noUnnecessaryProcessMemoryUsageSpreadRule, 'no-unnecessary-process-memory-usage-spread')
+const adaptedNoUnnecessaryProcessCpuUsageSpread = adaptPluginRule(noUnnecessaryProcessCpuUsageSpreadRule, 'no-unnecessary-process-cpu-usage-spread')
+const adaptedNoUnnecessaryProcessKillSpread = adaptPluginRule(noUnnecessaryProcessKillSpreadRule, 'no-unnecessary-process-kill-spread')
+const adaptedNoUnnecessaryProcessAbortSpread = adaptPluginRule(noUnnecessaryProcessAbortSpreadRule, 'no-unnecessary-process-abort-spread')
+const adaptedNoUnnecessaryProcessUmaskSpread = adaptPluginRule(noUnnecessaryProcessUmaskSpreadRule, 'no-unnecessary-process-umask-spread')
+const adaptedNoUnnecessaryProcessGetuidSpread = adaptPluginRule(noUnnecessaryProcessGetuidSpreadRule, 'no-unnecessary-process-getuid-spread')
+const adaptedNoUnnecessaryProcessSetuidSpread = adaptPluginRule(noUnnecessaryProcessSetuidSpreadRule, 'no-unnecessary-process-setuid-spread')
+const adaptedNoUnnecessaryProcessGetgidSpread = adaptPluginRule(noUnnecessaryProcessGetgidSpreadRule, 'no-unnecessary-process-getgid-spread')
+const adaptedNoUnnecessaryProcessSetgidSpread = adaptPluginRule(noUnnecessaryProcessSetgidSpreadRule, 'no-unnecessary-process-setgid-spread')
+const adaptedNoUnnecessaryProcessHrtimeSpread = adaptPluginRule(noUnnecessaryProcessHrtimeSpreadRule, 'no-unnecessary-process-hrtime-spread')
+const adaptedNoUnnecessaryProcessArgvSpread = adaptPluginRule(noUnnecessaryProcessArgvSpreadRule, 'no-unnecessary-process-argv-spread')
+const adaptedNoUnnecessaryBufferAllocSpread = adaptPluginRule(noUnnecessaryBufferAllocSpreadRule, 'no-unnecessary-buffer-alloc-spread')
+const adaptedNoUnnecessaryBufferAllocUnsafeSpread = adaptPluginRule(noUnnecessaryBufferAllocUnsafeSpreadRule, 'no-unnecessary-buffer-alloc-unsafe-spread')
+const adaptedNoUnnecessaryBufferAllocUnsafeSlowSpread = adaptPluginRule(noUnnecessaryBufferAllocUnsafeSlowSpreadRule, 'no-unnecessary-buffer-alloc-unsafe-slow-spread')
+const adaptedNoUnnecessaryBufferFromSpread = adaptPluginRule(noUnnecessaryBufferFromSpreadRule, 'no-unnecessary-buffer-from-spread')
+const adaptedNoUnnecessaryBufferOfSpread = adaptPluginRule(noUnnecessaryBufferOfSpreadRule, 'no-unnecessary-buffer-of-spread')
+const adaptedNoUnnecessaryBufferIsBufferSpread = adaptPluginRule(noUnnecessaryBufferIsBufferSpreadRule, 'no-unnecessary-buffer-is-buffer-spread')
+const adaptedNoUnnecessaryBufferIsEncodingSpread = adaptPluginRule(noUnnecessaryBufferIsEncodingSpreadRule, 'no-unnecessary-buffer-is-encoding-spread')
+const adaptedNoUnnecessaryBufferByteLengthSpread = adaptPluginRule(noUnnecessaryBufferByteLengthSpreadRule, 'no-unnecessary-buffer-byte-length-spread')
+const adaptedNoUnnecessaryBufferCompareSpread = adaptPluginRule(noUnnecessaryBufferCompareSpreadRule, 'no-unnecessary-buffer-compare-spread')
+const adaptedNoUnnecessaryBufferConcatSpread = adaptPluginRule(noUnnecessaryBufferConcatSpreadRule, 'no-unnecessary-buffer-concat-spread')
+const adaptedNoUnnecessaryPathJoinSpread = adaptPluginRule(noUnnecessaryPathJoinSpreadRule, 'no-unnecessary-path-join-spread')
+const adaptedNoUnnecessaryPathResolveSpread = adaptPluginRule(noUnnecessaryPathResolveSpreadRule, 'no-unnecessary-path-resolve-spread')
+const adaptedNoUnnecessaryPathNormalizeSpread = adaptPluginRule(noUnnecessaryPathNormalizeSpreadRule, 'no-unnecessary-path-normalize-spread')
+const adaptedNoUnnecessaryPathRelativeSpread = adaptPluginRule(noUnnecessaryPathRelativeSpreadRule, 'no-unnecessary-path-relative-spread')
+const adaptedNoUnnecessaryPathDirnameSpread = adaptPluginRule(noUnnecessaryPathDirnameSpreadRule, 'no-unnecessary-path-dirname-spread')
+const adaptedNoUnnecessaryPathBasenameSpread = adaptPluginRule(noUnnecessaryPathBasenameSpreadRule, 'no-unnecessary-path-basename-spread')
+const adaptedNoUnnecessaryPathExtnameSpread = adaptPluginRule(noUnnecessaryPathExtnameSpreadRule, 'no-unnecessary-path-extname-spread')
+const adaptedNoUnnecessaryPathParseSpread = adaptPluginRule(noUnnecessaryPathParseSpreadRule, 'no-unnecessary-path-parse-spread')
+const adaptedNoUnnecessaryPathFormatSpread = adaptPluginRule(noUnnecessaryPathFormatSpreadRule, 'no-unnecessary-path-format-spread')
+const adaptedNoUnnecessaryPathIsAbsoluteSpread = adaptPluginRule(noUnnecessaryPathIsAbsoluteSpreadRule, 'no-unnecessary-path-is-absolute-spread')
+const adaptedNoUnnecessaryPathToNamespacedPathSpread = adaptPluginRule(noUnnecessaryPathToNamespacedPathSpreadRule, 'no-unnecessary-path-to-namespaced-path-spread')
+const adaptedNoUnnecessaryFsReadFileSpread = adaptPluginRule(noUnnecessaryFsReadFileSpreadRule, 'no-unnecessary-fs-read-file-spread')
+const adaptedNoUnnecessaryFsWriteFileSpread = adaptPluginRule(noUnnecessaryFsWriteFileSpreadRule, 'no-unnecessary-fs-write-file-spread')
+const adaptedNoUnnecessaryFsAppendFileSpread = adaptPluginRule(noUnnecessaryFsAppendFileSpreadRule, 'no-unnecessary-fs-append-file-spread')
+const adaptedNoUnnecessaryFsCopyFileSpread = adaptPluginRule(noUnnecessaryFsCopyFileSpreadRule, 'no-unnecessary-fs-copy-file-spread')
+const adaptedNoUnnecessaryFsRenameSpread = adaptPluginRule(noUnnecessaryFsRenameSpreadRule, 'no-unnecessary-fs-rename-spread')
+const adaptedNoUnnecessaryFsUnlinkSpread = adaptPluginRule(noUnnecessaryFsUnlinkSpreadRule, 'no-unnecessary-fs-unlink-spread')
+const adaptedNoUnnecessaryFsMkdirSpread = adaptPluginRule(noUnnecessaryFsMkdirSpreadRule, 'no-unnecessary-fs-mkdir-spread')
+const adaptedNoUnnecessaryFsRmdirSpread = adaptPluginRule(noUnnecessaryFsRmdirSpreadRule, 'no-unnecessary-fs-rmdir-spread')
+const adaptedNoUnnecessaryFsReaddirSpread = adaptPluginRule(noUnnecessaryFsReaddirSpreadRule, 'no-unnecessary-fs-readdir-spread')
+const adaptedNoUnnecessaryFsStatSpread = adaptPluginRule(noUnnecessaryFsStatSpreadRule, 'no-unnecessary-fs-stat-spread')
+const adaptedNoUnnecessaryFsLstatSpread = adaptPluginRule(noUnnecessaryFsLstatSpreadRule, 'no-unnecessary-fs-lstat-spread')
+const adaptedNoUnnecessaryFsFstatSpread = adaptPluginRule(noUnnecessaryFsFstatSpreadRule, 'no-unnecessary-fs-fstat-spread')
+const adaptedNoUnnecessaryFsExistsSpread = adaptPluginRule(noUnnecessaryFsExistsSpreadRule, 'no-unnecessary-fs-exists-spread')
+const adaptedNoUnnecessaryFsExistsSyncSpread = adaptPluginRule(noUnnecessaryFsExistsSyncSpreadRule, 'no-unnecessary-fs-exists-sync-spread')
+const adaptedNoUnnecessaryFsAccessSpread = adaptPluginRule(noUnnecessaryFsAccessSpreadRule, 'no-unnecessary-fs-access-spread')
+const adaptedNoUnnecessaryFsChmodSpread = adaptPluginRule(noUnnecessaryFsChmodSpreadRule, 'no-unnecessary-fs-chmod-spread')
+const adaptedNoUnnecessaryFsChownSpread = adaptPluginRule(noUnnecessaryFsChownSpreadRule, 'no-unnecessary-fs-chown-spread')
+const adaptedNoUnnecessaryFsReadDirSyncSpread = adaptPluginRule(noUnnecessaryFsReadDirSyncSpreadRule, 'no-unnecessary-fs-read-dir-sync-spread')
+const adaptedNoUnnecessaryFsReadFileSyncSpread = adaptPluginRule(noUnnecessaryFsReadFileSyncSpreadRule, 'no-unnecessary-fs-read-file-sync-spread')
+const adaptedNoUnnecessaryFsWriteFileSyncSpread = adaptPluginRule(noUnnecessaryFsWriteFileSyncSpreadRule, 'no-unnecessary-fs-write-file-sync-spread')
+const adaptedNoUnnecessaryFsMkdirSyncSpread = adaptPluginRule(noUnnecessaryFsMkdirSyncSpreadRule, 'no-unnecessary-fs-mkdir-sync-spread')
+const adaptedNoUnnecessaryFsRmSyncSpread = adaptPluginRule(noUnnecessaryFsRmSyncSpreadRule, 'no-unnecessary-fs-rm-sync-spread')
+const adaptedNoUnnecessaryFsRmSpread = adaptPluginRule(noUnnecessaryFsRmSpreadRule, 'no-unnecessary-fs-rm-spread')
+const adaptedNoUnnecessaryFsWatchSpread = adaptPluginRule(noUnnecessaryFsWatchSpreadRule, 'no-unnecessary-fs-watch-spread')
+const adaptedNoUnnecessaryFsWatchFileSpread = adaptPluginRule(noUnnecessaryFsWatchFileSpreadRule, 'no-unnecessary-fs-watch-file-spread')
+const adaptedNoUnnecessaryFsUnwatchFileSpread = adaptPluginRule(noUnnecessaryFsUnwatchFileSpreadRule, 'no-unnecessary-fs-unwatch-file-spread')
+const adaptedNoUnnecessaryFsCreateReadStreamSpread = adaptPluginRule(noUnnecessaryFsCreateReadStreamSpreadRule, 'no-unnecessary-fs-create-read-stream-spread')
+const adaptedNoUnnecessaryFsCreateWriteStreamSpread = adaptPluginRule(noUnnecessaryFsCreateWriteStreamSpreadRule, 'no-unnecessary-fs-create-write-stream-spread')
+const adaptedNoUnnecessaryUtilPromisifySpread = adaptPluginRule(noUnnecessaryUtilPromisifySpreadRule, 'no-unnecessary-util-promisify-spread')
+const adaptedNoUnnecessaryUtilCallbackifySpread = adaptPluginRule(noUnnecessaryUtilCallbackifySpreadRule, 'no-unnecessary-util-callbackify-spread')
+const adaptedNoUnnecessaryUtilInspectSpread = adaptPluginRule(noUnnecessaryUtilInspectSpreadRule, 'no-unnecessary-util-inspect-spread')
+const adaptedNoUnnecessaryUtilFormatSpread = adaptPluginRule(noUnnecessaryUtilFormatSpreadRule, 'no-unnecessary-util-format-spread')
+const adaptedNoUnnecessaryUtilDeprecateSpread = adaptPluginRule(noUnnecessaryUtilDeprecateSpreadRule, 'no-unnecessary-util-deprecate-spread')
+const adaptedNoUnnecessaryUtilIsDeepStrictEqualSpread = adaptPluginRule(noUnnecessaryUtilIsDeepStrictEqualSpreadRule, 'no-unnecessary-util-is-deep-strict-equal-spread')
+const adaptedNoUnnecessaryUtilTypesIsDateSpread = adaptPluginRule(noUnnecessaryUtilTypesIsDateSpreadRule, 'no-unnecessary-util-types-is-date-spread')
+const adaptedNoUnnecessaryUtilTextDecoderDecodeSpread = adaptPluginRule(noUnnecessaryUtilTextDecoderDecodeSpreadRule, 'no-unnecessary-util-text-decoder-decode-spread')
+const adaptedNoUnnecessaryOsHomedirSpread = adaptPluginRule(noUnnecessaryOsHomedirSpreadRule, 'no-unnecessary-os-homedir-spread')
+const adaptedNoUnnecessaryOsTmpdirSpread = adaptPluginRule(noUnnecessaryOsTmpdirSpreadRule, 'no-unnecessary-os-tmpdir-spread')
+const adaptedNoUnnecessaryOsHostnameSpread = adaptPluginRule(noUnnecessaryOsHostnameSpreadRule, 'no-unnecessary-os-hostname-spread')
+const adaptedNoUnnecessaryOsTypeSpread = adaptPluginRule(noUnnecessaryOsTypeSpreadRule, 'no-unnecessary-os-type-spread')
+const adaptedNoUnnecessaryOsPlatformSpread = adaptPluginRule(noUnnecessaryOsPlatformSpreadRule, 'no-unnecessary-os-platform-spread')
+const adaptedNoUnnecessaryOsArchSpread = adaptPluginRule(noUnnecessaryOsArchSpreadRule, 'no-unnecessary-os-arch-spread')
+const adaptedNoUnnecessaryOsReleaseSpread = adaptPluginRule(noUnnecessaryOsReleaseSpreadRule, 'no-unnecessary-os-release-spread')
+const adaptedNoUnnecessaryOsCpusSpread = adaptPluginRule(noUnnecessaryOsCpusSpreadRule, 'no-unnecessary-os-cpus-spread')
+const adaptedNoUnnecessaryOsTotalmemSpread = adaptPluginRule(noUnnecessaryOsTotalmemSpreadRule, 'no-unnecessary-os-totalmem-spread')
+const adaptedNoUnnecessaryOsFreememSpread = adaptPluginRule(noUnnecessaryOsFreememSpreadRule, 'no-unnecessary-os-freemem-spread')
+const adaptedNoUnnecessaryOsUptimeSpread = adaptPluginRule(noUnnecessaryOsUptimeSpreadRule, 'no-unnecessary-os-uptime-spread')
+const adaptedNoUnnecessaryOsLoadavgSpread = adaptPluginRule(noUnnecessaryOsLoadavgSpreadRule, 'no-unnecessary-os-loadavg-spread')
+const adaptedNoUnnecessaryOsNetworkInterfacesSpread = adaptPluginRule(noUnnecessaryOsNetworkInterfacesSpreadRule, 'no-unnecessary-os-network-interfaces-spread')
+const adaptedNoUnnecessaryOsConstantsSpread = adaptPluginRule(noUnnecessaryOsConstantsSpreadRule, 'no-unnecessary-os-constants-spread')
+const adaptedNoUnnecessaryOsUserInfoSpread = adaptPluginRule(noUnnecessaryOsUserInfoSpreadRule, 'no-unnecessary-os-user-info-spread')
+const adaptedNoUnnecessaryOsEolSpread = adaptPluginRule(noUnnecessaryOsEolSpreadRule, 'no-unnecessary-os-eol-spread')
+const adaptedNoUnnecessaryOsDevNullSpread = adaptPluginRule(noUnnecessaryOsDevNullSpreadRule, 'no-unnecessary-os-dev-null-spread')
+const adaptedNoUnnecessaryOsGetPrioritySpread = adaptPluginRule(noUnnecessaryOsGetPrioritySpreadRule, 'no-unnecessary-os-get-priority-spread')
+const adaptedNoUnnecessaryOsSetPrioritySpread = adaptPluginRule(noUnnecessaryOsSetPrioritySpreadRule, 'no-unnecessary-os-set-priority-spread')
+const adaptedNoUnnecessaryCryptoCreateHashSpread = adaptPluginRule(noUnnecessaryCryptoCreateHashSpreadRule, 'no-unnecessary-crypto-create-hash-spread')
+const adaptedNoUnnecessaryCryptoCreateHmacSpread = adaptPluginRule(noUnnecessaryCryptoCreateHmacSpreadRule, 'no-unnecessary-crypto-create-hmac-spread')
+const adaptedNoUnnecessaryCryptoCreateCipherSpread = adaptPluginRule(noUnnecessaryCryptoCreateCipherSpreadRule, 'no-unnecessary-crypto-create-cipher-spread')
+const adaptedNoUnnecessaryCryptoCreateCipherIvSpread = adaptPluginRule(noUnnecessaryCryptoCreateCipherIvSpreadRule, 'no-unnecessary-crypto-create-cipher-iv-spread')
+const adaptedNoUnnecessaryCryptoCreateDecipherSpread = adaptPluginRule(noUnnecessaryCryptoCreateDecipherSpreadRule, 'no-unnecessary-crypto-create-decipher-spread')
+const adaptedNoUnnecessaryCryptoCreateDecipherIvSpread = adaptPluginRule(noUnnecessaryCryptoCreateDecipherIvSpreadRule, 'no-unnecessary-crypto-create-decipher-iv-spread')
+const adaptedNoUnnecessaryCryptoCreateSignSpread = adaptPluginRule(noUnnecessaryCryptoCreateSignSpreadRule, 'no-unnecessary-crypto-create-sign-spread')
+const adaptedNoUnnecessaryCryptoCreateVerifySpread = adaptPluginRule(noUnnecessaryCryptoCreateVerifySpreadRule, 'no-unnecessary-crypto-create-verify-spread')
+const adaptedNoUnnecessaryCryptoRandomBytesSpread = adaptPluginRule(noUnnecessaryCryptoRandomBytesSpreadRule, 'no-unnecessary-crypto-random-bytes-spread')
+const adaptedNoUnnecessaryCryptoPbkdf2Spread = adaptPluginRule(noUnnecessaryCryptoPbkdf2SpreadRule, 'no-unnecessary-crypto-pbkdf2-spread')
+const adaptedNoUnnecessaryCryptoScryptSpread = adaptPluginRule(noUnnecessaryCryptoScryptSpreadRule, 'no-unnecessary-crypto-scrypt-spread')
+const adaptedNoUnnecessaryCryptoCreateSecretKeySpread = adaptPluginRule(noUnnecessaryCryptoCreateSecretKeySpreadRule, 'no-unnecessary-crypto-create-secret-key-spread')
+const adaptedNoUnnecessaryCryptoCreatePublicKeySpread = adaptPluginRule(noUnnecessaryCryptoCreatePublicKeySpreadRule, 'no-unnecessary-crypto-create-public-key-spread')
+const adaptedNoUnnecessaryCryptoCreatePrivateKeySpread = adaptPluginRule(noUnnecessaryCryptoCreatePrivateKeySpreadRule, 'no-unnecessary-crypto-create-private-key-spread')
+const adaptedNoUnnecessaryCryptoGetCiphersSpread = adaptPluginRule(noUnnecessaryCryptoGetCiphersSpreadRule, 'no-unnecessary-crypto-get-ciphers-spread')
+const adaptedNoUnnecessaryCryptoGetHashesSpread = adaptPluginRule(noUnnecessaryCryptoGetHashesSpreadRule, 'no-unnecessary-crypto-get-hashes-spread')
+const adaptedNoUnnecessaryCryptoTimingSafeEqualSpread = adaptPluginRule(noUnnecessaryCryptoTimingSafeEqualSpreadRule, 'no-unnecessary-crypto-timing-safe-equal-spread')
+const adaptedNoUnnecessaryEventEmitterOnSpread = adaptPluginRule(noUnnecessaryEventEmitterOnSpreadRule, 'no-unnecessary-event-emitter-on-spread')
+const adaptedNoUnnecessaryEventEmitterOffSpread = adaptPluginRule(noUnnecessaryEventEmitterOffSpreadRule, 'no-unnecessary-event-emitter-off-spread')
+const adaptedNoUnnecessaryEventEmitterOnceSpread = adaptPluginRule(noUnnecessaryEventEmitterOnceSpreadRule, 'no-unnecessary-event-emitter-once-spread')
+const adaptedNoUnnecessaryEventEmitterEmitSpread = adaptPluginRule(noUnnecessaryEventEmitterEmitSpreadRule, 'no-unnecessary-event-emitter-emit-spread')
+const adaptedNoUnnecessaryEventEmitterRemoveListenerSpread = adaptPluginRule(noUnnecessaryEventEmitterRemoveListenerSpreadRule, 'no-unnecessary-event-emitter-remove-listener-spread')
+const adaptedNoUnnecessaryEventEmitterRemoveAllListenersSpread = adaptPluginRule(noUnnecessaryEventEmitterRemoveAllListenersSpreadRule, 'no-unnecessary-event-emitter-remove-all-listeners-spread')
+const adaptedNoUnnecessaryEventEmitterListenersSpread = adaptPluginRule(noUnnecessaryEventEmitterListenersSpreadRule, 'no-unnecessary-event-emitter-listeners-spread')
+const adaptedNoUnnecessaryEventEmitterListenerCountSpread = adaptPluginRule(noUnnecessaryEventEmitterListenerCountSpreadRule, 'no-unnecessary-event-emitter-listener-count-spread')
+const adaptedNoUnnecessaryEventEmitterPrependListenerSpread = adaptPluginRule(noUnnecessaryEventEmitterPrependListenerSpreadRule, 'no-unnecessary-event-emitter-prepend-listener-spread')
+const adaptedNoUnnecessaryEventEmitterPrependOnceListenerSpread = adaptPluginRule(noUnnecessaryEventEmitterPrependOnceListenerSpreadRule, 'no-unnecessary-event-emitter-prepend-once-listener-spread')
+const adaptedNoUnnecessaryEventEmitterSetMaxListenersSpread = adaptPluginRule(noUnnecessaryEventEmitterSetMaxListenersSpreadRule, 'no-unnecessary-event-emitter-set-max-listeners-spread')
+const adaptedNoUnnecessaryEventEmitterGetMaxListenersSpread = adaptPluginRule(noUnnecessaryEventEmitterGetMaxListenersSpreadRule, 'no-unnecessary-event-emitter-get-max-listeners-spread')
+const adaptedNoUnnecessaryEventEmitterEventNamesSpread = adaptPluginRule(noUnnecessaryEventEmitterEventNamesSpreadRule, 'no-unnecessary-event-emitter-event-names-spread')
+const adaptedNoUnnecessaryEventEmitterRawListenersSpread = adaptPluginRule(noUnnecessaryEventEmitterRawListenersSpreadRule, 'no-unnecessary-event-emitter-raw-listeners-spread')
+const adaptedNoUnnecessaryStreamPipelineSpread = adaptPluginRule(noUnnecessaryStreamPipelineSpreadRule, 'no-unnecessary-stream-pipeline-spread')
+const adaptedNoUnnecessaryStreamComposeSpread = adaptPluginRule(noUnnecessaryStreamComposeSpreadRule, 'no-unnecessary-stream-compose-spread')
+const adaptedNoUnnecessaryStreamReadableFromSpread = adaptPluginRule(noUnnecessaryStreamReadableFromSpreadRule, 'no-unnecessary-stream-readable-from-spread')
+const adaptedNoUnnecessaryChildProcessExecSpread = adaptPluginRule(noUnnecessaryChildProcessExecSpreadRule, 'no-unnecessary-child-process-exec-spread')
+const adaptedNoUnnecessaryChildProcessExecFileSpread = adaptPluginRule(noUnnecessaryChildProcessExecFileSpreadRule, 'no-unnecessary-child-process-exec-file-spread')
+const adaptedNoUnnecessaryChildProcessSpawnSpread = adaptPluginRule(noUnnecessaryChildProcessSpawnSpreadRule, 'no-unnecessary-child-process-spawn-spread')
+const adaptedNoUnnecessaryChildProcessForkSpread = adaptPluginRule(noUnnecessaryChildProcessForkSpreadRule, 'no-unnecessary-child-process-fork-spread')
+const adaptedNoUnnecessaryHttpRequestSpread = adaptPluginRule(noUnnecessaryHttpRequestSpreadRule, 'no-unnecessary-http-request-spread')
+const adaptedNoUnnecessaryHttpGetSpread = adaptPluginRule(noUnnecessaryHttpGetSpreadRule, 'no-unnecessary-http-get-spread')
+const adaptedNoUnnecessaryHttpsRequestSpread = adaptPluginRule(noUnnecessaryHttpsRequestSpreadRule, 'no-unnecessary-https-request-spread')
+const adaptedNoUnnecessaryHttpsGetSpread = adaptPluginRule(noUnnecessaryHttpsGetSpreadRule, 'no-unnecessary-https-get-spread')
+const adaptedNoUnnecessaryUrlParseNodeSpread = adaptPluginRule(noUnnecessaryUrlParseNodeSpreadRule, 'no-unnecessary-url-parse-node-spread')
+const adaptedNoUnnecessaryUrlFormatSpread = adaptPluginRule(noUnnecessaryUrlFormatSpreadRule, 'no-unnecessary-url-format-spread')
+const adaptedNoUnnecessaryUrlResolveSpread = adaptPluginRule(noUnnecessaryUrlResolveSpreadRule, 'no-unnecessary-url-resolve-spread')
+const adaptedNoUnnecessaryUrlDomainToUnicodeSpread = adaptPluginRule(noUnnecessaryUrlDomainToUnicodeSpreadRule, 'no-unnecessary-url-domain-to-unicode-spread')
+const adaptedNoUnnecessaryUrlDomainToAsciiSpread = adaptPluginRule(noUnnecessaryUrlDomainToAsciiSpreadRule, 'no-unnecessary-url-domain-to-ascii-spread')
+const adaptedNoUnnecessaryQuerystringParseSpread = adaptPluginRule(noUnnecessaryQuerystringParseSpreadRule, 'no-unnecessary-querystring-parse-spread')
+const adaptedNoUnnecessaryQuerystringStringifySpread = adaptPluginRule(noUnnecessaryQuerystringStringifySpreadRule, 'no-unnecessary-querystring-stringify-spread')
+const adaptedNoUnnecessaryQuerystringEscapeSpread = adaptPluginRule(noUnnecessaryQuerystringEscapeSpreadRule, 'no-unnecessary-querystring-escape-spread')
+const adaptedNoUnnecessaryQuerystringUnescapeSpread = adaptPluginRule(noUnnecessaryQuerystringUnescapeSpreadRule, 'no-unnecessary-querystring-unescape-spread')
+const adaptedNoUnnecessaryAssertOkSpread = adaptPluginRule(noUnnecessaryAssertOkSpreadRule, 'no-unnecessary-assert-ok-spread')
+const adaptedNoUnnecessaryAssertEqualSpread = adaptPluginRule(noUnnecessaryAssertEqualSpreadRule, 'no-unnecessary-assert-equal-spread')
+const adaptedNoUnnecessaryAssertNotEqualSpread = adaptPluginRule(noUnnecessaryAssertNotEqualSpreadRule, 'no-unnecessary-assert-not-equal-spread')
+const adaptedNoUnnecessaryAssertDeepEqualSpread = adaptPluginRule(noUnnecessaryAssertDeepEqualSpreadRule, 'no-unnecessary-assert-deep-equal-spread')
+const adaptedNoUnnecessaryAssertNotDeepEqualSpread = adaptPluginRule(noUnnecessaryAssertNotDeepEqualSpreadRule, 'no-unnecessary-assert-not-deep-equal-spread')
+const adaptedNoUnnecessaryAssertDeepStrictEqualSpread = adaptPluginRule(noUnnecessaryAssertDeepStrictEqualSpreadRule, 'no-unnecessary-assert-deep-strict-equal-spread')
+const adaptedNoUnnecessaryAssertNotDeepStrictEqualSpread = adaptPluginRule(noUnnecessaryAssertNotDeepStrictEqualSpreadRule, 'no-unnecessary-assert-not-deep-strict-equal-spread')
+const adaptedNoUnnecessaryAssertStrictEqualSpread = adaptPluginRule(noUnnecessaryAssertStrictEqualSpreadRule, 'no-unnecessary-assert-strict-equal-spread')
+const adaptedNoUnnecessaryAssertNotStrictEqualSpread = adaptPluginRule(noUnnecessaryAssertNotStrictEqualSpreadRule, 'no-unnecessary-assert-not-strict-equal-spread')
+const adaptedNoUnnecessaryAssertThrowsSpread = adaptPluginRule(noUnnecessaryAssertThrowsSpreadRule, 'no-unnecessary-assert-throws-spread')
+const adaptedNoUnnecessaryAssertRejectsSpread = adaptPluginRule(noUnnecessaryAssertRejectsSpreadRule, 'no-unnecessary-assert-rejects-spread')
+const adaptedNoUnnecessaryAssertDoesNotThrowSpread = adaptPluginRule(noUnnecessaryAssertDoesNotThrowSpreadRule, 'no-unnecessary-assert-does-not-throw-spread')
+const adaptedNoUnnecessaryAssertDoesNotRejectSpread = adaptPluginRule(noUnnecessaryAssertDoesNotRejectSpreadRule, 'no-unnecessary-assert-does-not-reject-spread')
+const adaptedNoUnnecessaryAssertIfErrorSpread = adaptPluginRule(noUnnecessaryAssertIfErrorSpreadRule, 'no-unnecessary-assert-if-error-spread')
+const adaptedNoUnnecessaryAssertFailSpread = adaptPluginRule(noUnnecessaryAssertFailSpreadRule, 'no-unnecessary-assert-fail-spread')
+const adaptedNoUnnecessaryAssertMatchSpread = adaptPluginRule(noUnnecessaryAssertMatchSpreadRule, 'no-unnecessary-assert-match-spread')
+const adaptedNoUnnecessaryAssertDoesNotMatchSpread = adaptPluginRule(noUnnecessaryAssertDoesNotMatchSpreadRule, 'no-unnecessary-assert-does-not-match-spread')
+const adaptedNoUnnecessaryAssertCallTrackerCallsSpread = adaptPluginRule(noUnnecessaryAssertCallTrackerCallsSpreadRule, 'no-unnecessary-assert-call-tracker-calls-spread')
+const adaptedNoUnnecessaryPromiseInstanceThenSpread = adaptPluginRule(noUnnecessaryPromiseInstanceThenSpreadRule, 'no-unnecessary-promise-instance-then-spread')
+const adaptedNoUnnecessaryPromiseInstanceCatchSpread = adaptPluginRule(noUnnecessaryPromiseInstanceCatchSpreadRule, 'no-unnecessary-promise-instance-catch-spread')
+const adaptedNoUnnecessaryPromiseInstanceFinallySpread = adaptPluginRule(noUnnecessaryPromiseInstanceFinallySpreadRule, 'no-unnecessary-promise-instance-finally-spread')
+const adaptedNoUnnecessaryIntlCollatorCompareSpread = adaptPluginRule(noUnnecessaryIntlCollatorCompareSpreadRule, 'no-unnecessary-intl-collator-compare-spread')
+const adaptedNoUnnecessaryIntlNumberFormatFormatSpread = adaptPluginRule(noUnnecessaryIntlNumberFormatFormatSpreadRule, 'no-unnecessary-intl-number-format-format-spread')
+const adaptedNoUnnecessaryIntlDateTimeFormatFormatSpread = adaptPluginRule(noUnnecessaryIntlDateTimeFormatFormatSpreadRule, 'no-unnecessary-intl-date-time-format-format-spread')
+const adaptedNoUnnecessaryIntlListFormatFormatSpread = adaptPluginRule(noUnnecessaryIntlListFormatFormatSpreadRule, 'no-unnecessary-intl-list-format-format-spread')
+const adaptedNoUnnecessaryIntlRelativeTimeFormatSpread = adaptPluginRule(noUnnecessaryIntlRelativeTimeFormatSpreadRule, 'no-unnecessary-intl-relative-time-format-spread')
+const adaptedNoUnnecessaryIntlPluralRulesSpread = adaptPluginRule(noUnnecessaryIntlPluralRulesSpreadRule, 'no-unnecessary-intl-plural-rules-spread')
+const adaptedNoUnnecessaryIntlSegmenterSpread = adaptPluginRule(noUnnecessaryIntlSegmenterSpreadRule, 'no-unnecessary-intl-segmenter-spread')
+const adaptedNoUnnecessaryIntlDisplayNamesSpread = adaptPluginRule(noUnnecessaryIntlDisplayNamesSpreadRule, 'no-unnecessary-intl-display-names-spread')
+const adaptedNoUnnecessaryIteratorNextSpread = adaptPluginRule(noUnnecessaryIteratorNextSpreadRule, 'no-unnecessary-iterator-next-spread')
+const adaptedNoUnnecessaryIteratorReturnSpread = adaptPluginRule(noUnnecessaryIteratorReturnSpreadRule, 'no-unnecessary-iterator-return-spread')
+const adaptedNoUnnecessaryIteratorThrowSpread = adaptPluginRule(noUnnecessaryIteratorThrowSpreadRule, 'no-unnecessary-iterator-throw-spread')
+const adaptedNoUnnecessaryIteratorForEachSpread = adaptPluginRule(noUnnecessaryIteratorForEachSpreadRule, 'no-unnecessary-iterator-for-each-spread')
+const adaptedNoUnnecessaryIteratorMapSpread = adaptPluginRule(noUnnecessaryIteratorMapSpreadRule, 'no-unnecessary-iterator-map-spread')
+const adaptedNoUnnecessaryIteratorFilterSpread = adaptPluginRule(noUnnecessaryIteratorFilterSpreadRule, 'no-unnecessary-iterator-filter-spread')
+const adaptedNoUnnecessaryIteratorTakeSpread = adaptPluginRule(noUnnecessaryIteratorTakeSpreadRule, 'no-unnecessary-iterator-take-spread')
+const adaptedNoUnnecessaryIteratorDropSpread = adaptPluginRule(noUnnecessaryIteratorDropSpreadRule, 'no-unnecessary-iterator-drop-spread')
+const adaptedNoUnnecessaryIteratorFlatMapSpread = adaptPluginRule(noUnnecessaryIteratorFlatMapSpreadRule, 'no-unnecessary-iterator-flat-map-spread')
+const adaptedNoUnnecessaryIteratorReduceSpread = adaptPluginRule(noUnnecessaryIteratorReduceSpreadRule, 'no-unnecessary-iterator-reduce-spread')
+const adaptedNoUnnecessaryIteratorToArraySpread = adaptPluginRule(noUnnecessaryIteratorToArraySpreadRule, 'no-unnecessary-iterator-to-array-spread')
+const adaptedNoUnnecessaryIteratorSomeSpread = adaptPluginRule(noUnnecessaryIteratorSomeSpreadRule, 'no-unnecessary-iterator-some-spread')
+const adaptedNoUnnecessaryIteratorEverySpread = adaptPluginRule(noUnnecessaryIteratorEverySpreadRule, 'no-unnecessary-iterator-every-spread')
+const adaptedNoUnnecessaryIteratorFindSpread = adaptPluginRule(noUnnecessaryIteratorFindSpreadRule, 'no-unnecessary-iterator-find-spread')
+const adaptedNoUnnecessaryArrayIteratorNextSpread = adaptPluginRule(noUnnecessaryArrayIteratorNextSpreadRule, 'no-unnecessary-array-iterator-next-spread')
+const adaptedNoUnnecessaryMapIteratorNextSpread = adaptPluginRule(noUnnecessaryMapIteratorNextSpreadRule, 'no-unnecessary-map-iterator-next-spread')
+const adaptedNoUnnecessarySetIteratorNextSpread = adaptPluginRule(noUnnecessarySetIteratorNextSpreadRule, 'no-unnecessary-set-iterator-next-spread')
+const adaptedNoUnnecessaryStringIteratorNextSpread = adaptPluginRule(noUnnecessaryStringIteratorNextSpreadRule, 'no-unnecessary-string-iterator-next-spread')
+const adaptedNoUnnecessaryGeneratorNextSpread = adaptPluginRule(noUnnecessaryGeneratorNextSpreadRule, 'no-unnecessary-generator-next-spread')
+const adaptedNoUnnecessaryGeneratorReturnSpread = adaptPluginRule(noUnnecessaryGeneratorReturnSpreadRule, 'no-unnecessary-generator-return-spread')
+const adaptedNoUnnecessaryGeneratorThrowSpread = adaptPluginRule(noUnnecessaryGeneratorThrowSpreadRule, 'no-unnecessary-generator-throw-spread')
+const adaptedNoUnnecessaryAsyncGeneratorNextSpread = adaptPluginRule(noUnnecessaryAsyncGeneratorNextSpreadRule, 'no-unnecessary-async-generator-next-spread')
+const adaptedNoUnnecessaryAsyncGeneratorReturnSpread = adaptPluginRule(noUnnecessaryAsyncGeneratorReturnSpreadRule, 'no-unnecessary-async-generator-return-spread')
+const adaptedNoUnnecessaryAsyncGeneratorThrowSpread = adaptPluginRule(noUnnecessaryAsyncGeneratorThrowSpreadRule, 'no-unnecessary-async-generator-throw-spread')
+const adaptedNoUnnecessaryAsyncIteratorNextSpread = adaptPluginRule(noUnnecessaryAsyncIteratorNextSpreadRule, 'no-unnecessary-async-iterator-next-spread')
+const adaptedNoUnnecessaryAsyncIteratorReturnSpread = adaptPluginRule(noUnnecessaryAsyncIteratorReturnSpreadRule, 'no-unnecessary-async-iterator-return-spread')
+const adaptedNoUnnecessaryAsyncIteratorThrowSpread = adaptPluginRule(noUnnecessaryAsyncIteratorThrowSpreadRule, 'no-unnecessary-async-iterator-throw-spread')
+const adaptedNoUnnecessaryResponseInstanceCloneSpread = adaptPluginRule(noUnnecessaryResponseInstanceCloneSpreadRule, 'no-unnecessary-response-instance-clone-spread')
+const adaptedNoUnnecessaryResponseInstanceJsonSpread = adaptPluginRule(noUnnecessaryResponseInstanceJsonSpreadRule, 'no-unnecessary-response-instance-json-spread')
+const adaptedNoUnnecessaryResponseInstanceTextSpread = adaptPluginRule(noUnnecessaryResponseInstanceTextSpreadRule, 'no-unnecessary-response-instance-text-spread')
+const adaptedNoUnnecessaryResponseInstanceBlobSpread = adaptPluginRule(noUnnecessaryResponseInstanceBlobSpreadRule, 'no-unnecessary-response-instance-blob-spread')
+const adaptedNoUnnecessaryResponseInstanceArrayBufferSpread = adaptPluginRule(noUnnecessaryResponseInstanceArrayBufferSpreadRule, 'no-unnecessary-response-instance-array-buffer-spread')
+const adaptedNoUnnecessaryResponseInstanceFormDataSpread = adaptPluginRule(noUnnecessaryResponseInstanceFormDataSpreadRule, 'no-unnecessary-response-instance-form-data-spread')
+const adaptedNoUnnecessaryRequestInstanceCloneSpread = adaptPluginRule(noUnnecessaryRequestInstanceCloneSpreadRule, 'no-unnecessary-request-instance-clone-spread')
+const adaptedNoUnnecessaryRequestInstanceJsonSpread = adaptPluginRule(noUnnecessaryRequestInstanceJsonSpreadRule, 'no-unnecessary-request-instance-json-spread')
+const adaptedNoUnnecessaryRequestInstanceTextSpread = adaptPluginRule(noUnnecessaryRequestInstanceTextSpreadRule, 'no-unnecessary-request-instance-text-spread')
+const adaptedNoUnnecessaryRequestInstanceBlobSpread = adaptPluginRule(noUnnecessaryRequestInstanceBlobSpreadRule, 'no-unnecessary-request-instance-blob-spread')
+const adaptedNoUnnecessaryRequestInstanceArrayBufferSpread = adaptPluginRule(noUnnecessaryRequestInstanceArrayBufferSpreadRule, 'no-unnecessary-request-instance-array-buffer-spread')
+const adaptedNoUnnecessaryRequestInstanceFormDataSpread = adaptPluginRule(noUnnecessaryRequestInstanceFormDataSpreadRule, 'no-unnecessary-request-instance-form-data-spread')
+const adaptedNoUnnecessaryHeadersInstanceGetSpread = adaptPluginRule(noUnnecessaryHeadersInstanceGetSpreadRule, 'no-unnecessary-headers-instance-get-spread')
+const adaptedNoUnnecessaryHeadersInstanceSetSpread = adaptPluginRule(noUnnecessaryHeadersInstanceSetSpreadRule, 'no-unnecessary-headers-instance-set-spread')
+const adaptedNoUnnecessaryHeadersInstanceHasSpread = adaptPluginRule(noUnnecessaryHeadersInstanceHasSpreadRule, 'no-unnecessary-headers-instance-has-spread')
+const adaptedNoUnnecessaryHeadersInstanceDeleteSpread = adaptPluginRule(noUnnecessaryHeadersInstanceDeleteSpreadRule, 'no-unnecessary-headers-instance-delete-spread')
+const adaptedNoUnnecessaryHeadersInstanceAppendSpread = adaptPluginRule(noUnnecessaryHeadersInstanceAppendSpreadRule, 'no-unnecessary-headers-instance-append-spread')
+const adaptedNoUnnecessaryHeadersInstanceEntriesSpread = adaptPluginRule(noUnnecessaryHeadersInstanceEntriesSpreadRule, 'no-unnecessary-headers-instance-entries-spread')
+const adaptedNoUnnecessaryHeadersInstanceKeysSpread = adaptPluginRule(noUnnecessaryHeadersInstanceKeysSpreadRule, 'no-unnecessary-headers-instance-keys-spread')
+const adaptedNoUnnecessaryHeadersInstanceValuesSpread = adaptPluginRule(noUnnecessaryHeadersInstanceValuesSpreadRule, 'no-unnecessary-headers-instance-values-spread')
+const adaptedNoUnnecessaryHeadersInstanceForEachSpread = adaptPluginRule(noUnnecessaryHeadersInstanceForEachSpreadRule, 'no-unnecessary-headers-instance-for-each-spread')
+const adaptedNoUnnecessaryFormDataInstanceGetSpread = adaptPluginRule(noUnnecessaryFormDataInstanceGetSpreadRule, 'no-unnecessary-form-data-instance-get-spread')
+const adaptedNoUnnecessaryFormDataInstanceGetAllSpread = adaptPluginRule(noUnnecessaryFormDataInstanceGetAllSpreadRule, 'no-unnecessary-form-data-instance-get-all-spread')
+const adaptedNoUnnecessaryFormDataInstanceSetSpread = adaptPluginRule(noUnnecessaryFormDataInstanceSetSpreadRule, 'no-unnecessary-form-data-instance-set-spread')
+const adaptedNoUnnecessaryFormDataInstanceAppendSpread = adaptPluginRule(noUnnecessaryFormDataInstanceAppendSpreadRule, 'no-unnecessary-form-data-instance-append-spread')
+const adaptedNoUnnecessaryFormDataInstanceDeleteSpread = adaptPluginRule(noUnnecessaryFormDataInstanceDeleteSpreadRule, 'no-unnecessary-form-data-instance-delete-spread')
+const adaptedNoUnnecessaryFormDataInstanceHasSpread = adaptPluginRule(noUnnecessaryFormDataInstanceHasSpreadRule, 'no-unnecessary-form-data-instance-has-spread')
+const adaptedNoUnnecessaryFormDataInstanceEntriesSpread = adaptPluginRule(noUnnecessaryFormDataInstanceEntriesSpreadRule, 'no-unnecessary-form-data-instance-entries-spread')
+const adaptedNoUnnecessaryFormDataInstanceKeysSpread = adaptPluginRule(noUnnecessaryFormDataInstanceKeysSpreadRule, 'no-unnecessary-form-data-instance-keys-spread')
+const adaptedNoUnnecessaryFormDataInstanceValuesSpread = adaptPluginRule(noUnnecessaryFormDataInstanceValuesSpreadRule, 'no-unnecessary-form-data-instance-values-spread')
+const adaptedNoUnnecessaryFormDataInstanceForEachSpread = adaptPluginRule(noUnnecessaryFormDataInstanceForEachSpreadRule, 'no-unnecessary-form-data-instance-for-each-spread')
+const adaptedNoUnnecessaryUrlInstanceToStringSpread = adaptPluginRule(noUnnecessaryUrlInstanceToStringSpreadRule, 'no-unnecessary-url-instance-to-string-spread')
+const adaptedNoUnnecessaryUrlInstanceToJsonSpread = adaptPluginRule(noUnnecessaryUrlInstanceToJsonSpreadRule, 'no-unnecessary-url-instance-to-json-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceGetSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetSpreadRule, 'no-unnecessary-url-search-params-instance-get-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceGetAllSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule, 'no-unnecessary-url-search-params-instance-get-all-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceSetSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSetSpreadRule, 'no-unnecessary-url-search-params-instance-set-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceAppendSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule, 'no-unnecessary-url-search-params-instance-append-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceDeleteSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule, 'no-unnecessary-url-search-params-instance-delete-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceHasSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceHasSpreadRule, 'no-unnecessary-url-search-params-instance-has-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceToStringSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule, 'no-unnecessary-url-search-params-instance-to-string-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceEntriesSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule, 'no-unnecessary-url-search-params-instance-entries-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceKeysSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule, 'no-unnecessary-url-search-params-instance-keys-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceValuesSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule, 'no-unnecessary-url-search-params-instance-values-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceForEachSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule, 'no-unnecessary-url-search-params-instance-for-each-spread')
+const adaptedNoUnnecessaryUrlSearchParamsInstanceSortSpread = adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSortSpreadRule, 'no-unnecessary-url-search-params-instance-sort-spread')
+const adaptedNoUnnecessaryBlobInstanceArrayBufferSpread = adaptPluginRule(noUnnecessaryBlobInstanceArrayBufferSpreadRule, 'no-unnecessary-blob-instance-array-buffer-spread')
+const adaptedNoUnnecessaryBlobInstanceTextSpread = adaptPluginRule(noUnnecessaryBlobInstanceTextSpreadRule, 'no-unnecessary-blob-instance-text-spread')
+const adaptedNoUnnecessaryBlobInstanceSliceSpread = adaptPluginRule(noUnnecessaryBlobInstanceSliceSpreadRule, 'no-unnecessary-blob-instance-slice-spread')
+const adaptedNoUnnecessaryBlobInstanceStreamSpread = adaptPluginRule(noUnnecessaryBlobInstanceStreamSpreadRule, 'no-unnecessary-blob-instance-stream-spread')
+const adaptedNoUnnecessaryFileInstanceArrayBufferSpread = adaptPluginRule(noUnnecessaryFileInstanceArrayBufferSpreadRule, 'no-unnecessary-file-instance-array-buffer-spread')
+const adaptedNoUnnecessaryFileInstanceTextSpread = adaptPluginRule(noUnnecessaryFileInstanceTextSpreadRule, 'no-unnecessary-file-instance-text-spread')
+const adaptedNoUnnecessaryFileInstanceSliceSpread = adaptPluginRule(noUnnecessaryFileInstanceSliceSpreadRule, 'no-unnecessary-file-instance-slice-spread')
+const adaptedNoUnnecessaryFileInstanceStreamSpread = adaptPluginRule(noUnnecessaryFileInstanceStreamSpreadRule, 'no-unnecessary-file-instance-stream-spread')
+const adaptedNoUnnecessaryAbortSignalThrowIfAbortedSpread = adaptPluginRule(noUnnecessaryAbortSignalThrowIfAbortedSpreadRule, 'no-unnecessary-abort-signal-throw-if-aborted-spread')
+const adaptedNoUnnecessaryBroadcastChannelInstancePostMessageSpread = adaptPluginRule(noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule, 'no-unnecessary-broadcast-channel-instance-post-message-spread')
+const adaptedNoUnnecessaryBroadcastChannelInstanceCloseSpread = adaptPluginRule(noUnnecessaryBroadcastChannelInstanceCloseSpreadRule, 'no-unnecessary-broadcast-channel-instance-close-spread')
+const adaptedNoUnnecessaryMessagePortPostMessageSpread = adaptPluginRule(noUnnecessaryMessagePortPostMessageSpreadRule, 'no-unnecessary-message-port-post-message-spread')
+const adaptedNoUnnecessaryMessagePortCloseSpread = adaptPluginRule(noUnnecessaryMessagePortCloseSpreadRule, 'no-unnecessary-message-port-close-spread')
+const adaptedNoUnnecessaryMessagePortStartSpread = adaptPluginRule(noUnnecessaryMessagePortStartSpreadRule, 'no-unnecessary-message-port-start-spread')
+const adaptedNoUnnecessaryWorkerInstancePostMessageSpread = adaptPluginRule(noUnnecessaryWorkerInstancePostMessageSpreadRule, 'no-unnecessary-worker-instance-post-message-spread')
+const adaptedNoUnnecessaryWorkerInstanceTerminateSpread = adaptPluginRule(noUnnecessaryWorkerInstanceTerminateSpreadRule, 'no-unnecessary-worker-instance-terminate-spread')
+const adaptedNoUnnecessaryFileReaderInstanceReadAsArrayBufferSpread = adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule, 'no-unnecessary-file-reader-instance-read-as-array-buffer-spread')
+const adaptedNoUnnecessaryFileReaderInstanceReadAsBinaryStringSpread = adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule, 'no-unnecessary-file-reader-instance-read-as-binary-string-spread')
+const adaptedNoUnnecessaryFileReaderInstanceReadAsDataUrlSpread = adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsDataUrlSpreadRule, 'no-unnecessary-file-reader-instance-read-as-data-url-spread')
+const adaptedNoUnnecessaryFileReaderInstanceReadAsTextSpread = adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsTextSpreadRule, 'no-unnecessary-file-reader-instance-read-as-text-spread')
+const adaptedNoUnnecessaryFileReaderInstanceAbortSpread = adaptPluginRule(noUnnecessaryFileReaderInstanceAbortSpreadRule, 'no-unnecessary-file-reader-instance-abort-spread')
+const adaptedNoUnnecessaryReadableStreamReadSpread = adaptPluginRule(noUnnecessaryReadableStreamReadSpreadRule, 'no-unnecessary-readable-stream-read-spread')
+const adaptedNoUnnecessaryReadableStreamPipeSpread = adaptPluginRule(noUnnecessaryReadableStreamPipeSpreadRule, 'no-unnecessary-readable-stream-pipe-spread')
+const adaptedNoUnnecessaryReadableStreamUnpipeSpread = adaptPluginRule(noUnnecessaryReadableStreamUnpipeSpreadRule, 'no-unnecessary-readable-stream-unpipe-spread')
+const adaptedNoUnnecessaryReadableStreamPauseSpread = adaptPluginRule(noUnnecessaryReadableStreamPauseSpreadRule, 'no-unnecessary-readable-stream-pause-spread')
+const adaptedNoUnnecessaryReadableStreamResumeSpread = adaptPluginRule(noUnnecessaryReadableStreamResumeSpreadRule, 'no-unnecessary-readable-stream-resume-spread')
+const adaptedNoUnnecessaryReadableStreamDestroySpread = adaptPluginRule(noUnnecessaryReadableStreamDestroySpreadRule, 'no-unnecessary-readable-stream-destroy-spread')
+const adaptedNoUnnecessaryReadableStreamPushSpread = adaptPluginRule(noUnnecessaryReadableStreamPushSpreadRule, 'no-unnecessary-readable-stream-push-spread')
+const adaptedNoUnnecessaryWritableStreamWriteSpread = adaptPluginRule(noUnnecessaryWritableStreamWriteSpreadRule, 'no-unnecessary-writable-stream-write-spread')
+const adaptedNoUnnecessaryWritableStreamEndSpread = adaptPluginRule(noUnnecessaryWritableStreamEndSpreadRule, 'no-unnecessary-writable-stream-end-spread')
+const adaptedNoUnnecessaryWritableStreamDestroySpread = adaptPluginRule(noUnnecessaryWritableStreamDestroySpreadRule, 'no-unnecessary-writable-stream-destroy-spread')
+const adaptedNoUnnecessaryTransformStreamTransformSpread = adaptPluginRule(noUnnecessaryTransformStreamTransformSpreadRule, 'no-unnecessary-transform-stream-transform-spread')
+const adaptedNoUnnecessaryTransformStreamFlushSpread = adaptPluginRule(noUnnecessaryTransformStreamFlushSpreadRule, 'no-unnecessary-transform-stream-flush-spread')
+const adaptedNoUnnecessaryEventEmitterAddListenerSpread = adaptPluginRule(noUnnecessaryEventEmitterAddListenerSpreadRule, 'no-unnecessary-event-emitter-add-listener-spread')
+const adaptedNoUnnecessaryChildProcessInstanceKillSpread = adaptPluginRule(noUnnecessaryChildProcessInstanceKillSpreadRule, 'no-unnecessary-child-process-instance-kill-spread')
+const adaptedNoUnnecessaryChildProcessInstanceSendSpread = adaptPluginRule(noUnnecessaryChildProcessInstanceSendSpreadRule, 'no-unnecessary-child-process-instance-send-spread')
+const adaptedNoUnnecessaryChildProcessInstanceDisconnectSpread = adaptPluginRule(noUnnecessaryChildProcessInstanceDisconnectSpreadRule, 'no-unnecessary-child-process-instance-disconnect-spread')
+const adaptedNoUnnecessaryChildProcessInstanceRefSpread = adaptPluginRule(noUnnecessaryChildProcessInstanceRefSpreadRule, 'no-unnecessary-child-process-instance-ref-spread')
+const adaptedNoUnnecessaryChildProcessInstanceUnrefSpread = adaptPluginRule(noUnnecessaryChildProcessInstanceUnrefSpreadRule, 'no-unnecessary-child-process-instance-unref-spread')
+const adaptedNoUnnecessaryObserverInstanceObserveSpread = adaptPluginRule(noUnnecessaryObserverInstanceObserveSpreadRule, 'no-unnecessary-observer-instance-observe-spread')
+const adaptedNoUnnecessaryObserverInstanceUnobserveSpread = adaptPluginRule(noUnnecessaryObserverInstanceUnobserveSpreadRule, 'no-unnecessary-observer-instance-unobserve-spread')
+const adaptedNoUnnecessaryObserverInstanceDisconnectSpread = adaptPluginRule(noUnnecessaryObserverInstanceDisconnectSpreadRule, 'no-unnecessary-observer-instance-disconnect-spread')
+const adaptedNoUnnecessaryObserverInstanceTakeRecordsSpread = adaptPluginRule(noUnnecessaryObserverInstanceTakeRecordsSpreadRule, 'no-unnecessary-observer-instance-take-records-spread')
+const adaptedNoUnnecessaryTextDecoderInstanceDecodeSpread = adaptPluginRule(noUnnecessaryTextDecoderInstanceDecodeSpreadRule, 'no-unnecessary-text-decoder-instance-decode-spread')
+const adaptedNoUnnecessaryTextEncoderInstanceEncodeSpread = adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeSpreadRule, 'no-unnecessary-text-encoder-instance-encode-spread')
+const adaptedNoUnnecessaryTextEncoderInstanceEncodeIntoSpread = adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule, 'no-unnecessary-text-encoder-instance-encode-into-spread')
+const adaptedNoUnnecessaryServerListenSpread = adaptPluginRule(noUnnecessaryServerListenSpreadRule, 'no-unnecessary-server-listen-spread')
+const adaptedNoUnnecessaryServerCloseSpread = adaptPluginRule(noUnnecessaryServerCloseSpreadRule, 'no-unnecessary-server-close-spread')
+const adaptedNoUnnecessaryServerAddressSpread = adaptPluginRule(noUnnecessaryServerAddressSpreadRule, 'no-unnecessary-server-address-spread')
+const adaptedNoUnnecessaryServerGetConnectionsSpread = adaptPluginRule(noUnnecessaryServerGetConnectionsSpreadRule, 'no-unnecessary-server-get-connections-spread')
+const adaptedNoUnnecessaryServerRefSpread = adaptPluginRule(noUnnecessaryServerRefSpreadRule, 'no-unnecessary-server-ref-spread')
+const adaptedNoUnnecessaryServerUnrefSpread = adaptPluginRule(noUnnecessaryServerUnrefSpreadRule, 'no-unnecessary-server-unref-spread')
+const adaptedNoUnnecessarySocketWriteSpread = adaptPluginRule(noUnnecessarySocketWriteSpreadRule, 'no-unnecessary-socket-write-spread')
+const adaptedNoUnnecessarySocketConnectSpread = adaptPluginRule(noUnnecessarySocketConnectSpreadRule, 'no-unnecessary-socket-connect-spread')
+const adaptedNoUnnecessarySocketEndSpread = adaptPluginRule(noUnnecessarySocketEndSpreadRule, 'no-unnecessary-socket-end-spread')
+const adaptedNoUnnecessarySocketDestroySpread = adaptPluginRule(noUnnecessarySocketDestroySpreadRule, 'no-unnecessary-socket-destroy-spread')
+const adaptedNoUnnecessarySocketPauseSpread = adaptPluginRule(noUnnecessarySocketPauseSpreadRule, 'no-unnecessary-socket-pause-spread')
+const adaptedNoUnnecessarySocketResumeSpread = adaptPluginRule(noUnnecessarySocketResumeSpreadRule, 'no-unnecessary-socket-resume-spread')
+const adaptedNoUnnecessarySocketSetTimeoutSpread = adaptPluginRule(noUnnecessarySocketSetTimeoutSpreadRule, 'no-unnecessary-socket-set-timeout-spread')
+const adaptedNoUnnecessarySocketSetEncodingSpread = adaptPluginRule(noUnnecessarySocketSetEncodingSpreadRule, 'no-unnecessary-socket-set-encoding-spread')
+const adaptedNoUnnecessarySocketSetKeepAliveSpread = adaptPluginRule(noUnnecessarySocketSetKeepAliveSpreadRule, 'no-unnecessary-socket-set-keep-alive-spread')
+const adaptedNoUnnecessarySocketSetNoDelaySpread = adaptPluginRule(noUnnecessarySocketSetNoDelaySpreadRule, 'no-unnecessary-socket-set-no-delay-spread')
+const adaptedNoUnnecessarySocketRefSpread = adaptPluginRule(noUnnecessarySocketRefSpreadRule, 'no-unnecessary-socket-ref-spread')
+const adaptedNoUnnecessarySocketUnrefSpread = adaptPluginRule(noUnnecessarySocketUnrefSpreadRule, 'no-unnecessary-socket-unref-spread')
+const adaptedNoUnnecessaryDataviewSetFloat32Spread = adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule, 'no-unnecessary-dataview-set-float32-spread')
+const adaptedNoUnnecessaryDataviewSetFloat64Spread = adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule, 'no-unnecessary-dataview-set-float64-spread')
+const adaptedNoUnnecessaryDataviewSetInt16Spread = adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule, 'no-unnecessary-dataview-set-int16-spread')
+const adaptedNoUnnecessaryDataviewSetInt32Spread = adaptPluginRule(noUnnecessaryDataviewSetInt32SpreadRule, 'no-unnecessary-dataview-set-int32-spread')
+const adaptedNoUnnecessaryDataviewSetInt8Spread = adaptPluginRule(noUnnecessaryDataviewSetInt8SpreadRule, 'no-unnecessary-dataview-set-int8-spread')
+const adaptedNoUnnecessaryDataviewSetUint16Spread = adaptPluginRule(noUnnecessaryDataviewSetUint16SpreadRule, 'no-unnecessary-dataview-set-uint16-spread')
+const adaptedNoUnnecessaryDataviewSetUint32Spread = adaptPluginRule(noUnnecessaryDataviewSetUint32SpreadRule, 'no-unnecessary-dataview-set-uint32-spread')
+const adaptedNoUnnecessaryDataviewSetUint8Spread = adaptPluginRule(noUnnecessaryDataviewSetUint8SpreadRule, 'no-unnecessary-dataview-set-uint8-spread')
+const adaptedNoUnnecessaryArrayBufferInstanceResizeSpread = adaptPluginRule(noUnnecessaryArrayBufferInstanceResizeSpreadRule, 'no-unnecessary-array-buffer-instance-resize-spread')
+const adaptedNoUnnecessaryArrayBufferInstanceSliceSpread = adaptPluginRule(noUnnecessaryArrayBufferInstanceSliceSpreadRule, 'no-unnecessary-array-buffer-instance-slice-spread')
+const adaptedNoUnnecessaryArrayBufferInstanceTransferSpread = adaptPluginRule(noUnnecessaryArrayBufferInstanceTransferSpreadRule, 'no-unnecessary-array-buffer-instance-transfer-spread')
+const adaptedNoUnnecessaryArrayFromAsyncSpread = adaptPluginRule(noUnnecessaryArrayFromAsyncSpreadRule, 'no-unnecessary-array-from-async-spread')
+const adaptedNoUnnecessaryBigIntInstanceToLocaleStringSpread = adaptPluginRule(noUnnecessaryBigIntInstanceToLocaleStringSpreadRule, 'no-unnecessary-big-int-instance-to-locale-string-spread')
+const adaptedNoUnnecessaryBigIntInstanceToStringSpread = adaptPluginRule(noUnnecessaryBigIntInstanceToStringSpreadRule, 'no-unnecessary-big-int-instance-to-string-spread')
+const adaptedNoUnnecessaryBigIntInstanceValueOfSpread = adaptPluginRule(noUnnecessaryBigIntInstanceValueOfSpreadRule, 'no-unnecessary-big-int-instance-value-of-spread')
+const adaptedNoUnnecessaryBooleanInstanceToStringSpread = adaptPluginRule(noUnnecessaryBooleanInstanceToStringSpreadRule, 'no-unnecessary-boolean-instance-to-string-spread')
+const adaptedNoUnnecessaryBooleanInstanceValueOfSpread = adaptPluginRule(noUnnecessaryBooleanInstanceValueOfSpreadRule, 'no-unnecessary-boolean-instance-value-of-spread')
+const adaptedNoUnnecessaryCanvasGetContextSpread = adaptPluginRule(noUnnecessaryCanvasGetContextSpreadRule, 'no-unnecessary-canvas-get-context-spread')
+const adaptedNoUnnecessaryCryptoCipherInstanceFinalSpread = adaptPluginRule(noUnnecessaryCryptoCipherInstanceFinalSpreadRule, 'no-unnecessary-crypto-cipher-instance-final-spread')
+const adaptedNoUnnecessaryCryptoCipherInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoCipherInstanceUpdateSpreadRule, 'no-unnecessary-crypto-cipher-instance-update-spread')
+const adaptedNoUnnecessaryCryptoCreateHashInstanceDigestSpread = adaptPluginRule(noUnnecessaryCryptoCreateHashInstanceDigestSpreadRule, 'no-unnecessary-crypto-create-hash-instance-digest-spread')
+const adaptedNoUnnecessaryCryptoCreateHashInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoCreateHashInstanceUpdateSpreadRule, 'no-unnecessary-crypto-create-hash-instance-update-spread')
+const adaptedNoUnnecessaryCryptoDecipherInstanceFinalSpread = adaptPluginRule(noUnnecessaryCryptoDecipherInstanceFinalSpreadRule, 'no-unnecessary-crypto-decipher-instance-final-spread')
+const adaptedNoUnnecessaryCryptoDecipherInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoDecipherInstanceUpdateSpreadRule, 'no-unnecessary-crypto-decipher-instance-update-spread')
+const adaptedNoUnnecessaryCryptoHmacInstanceDigestSpread = adaptPluginRule(noUnnecessaryCryptoHmacInstanceDigestSpreadRule, 'no-unnecessary-crypto-hmac-instance-digest-spread')
+const adaptedNoUnnecessaryCryptoHmacInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoHmacInstanceUpdateSpreadRule, 'no-unnecessary-crypto-hmac-instance-update-spread')
+const adaptedNoUnnecessaryCryptoSignInstanceSignSpread = adaptPluginRule(noUnnecessaryCryptoSignInstanceSignSpreadRule, 'no-unnecessary-crypto-sign-instance-sign-spread')
+const adaptedNoUnnecessaryCryptoSignInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoSignInstanceUpdateSpreadRule, 'no-unnecessary-crypto-sign-instance-update-spread')
+const adaptedNoUnnecessaryCryptoVerifyInstanceUpdateSpread = adaptPluginRule(noUnnecessaryCryptoVerifyInstanceUpdateSpreadRule, 'no-unnecessary-crypto-verify-instance-update-spread')
+const adaptedNoUnnecessaryCryptoVerifyInstanceVerifySpread = adaptPluginRule(noUnnecessaryCryptoVerifyInstanceVerifySpreadRule, 'no-unnecessary-crypto-verify-instance-verify-spread')
+const adaptedNoUnnecessaryCtxArcSpread = adaptPluginRule(noUnnecessaryCtxArcSpreadRule, 'no-unnecessary-ctx-arc-spread')
+const adaptedNoUnnecessaryCtxArcToSpread = adaptPluginRule(noUnnecessaryCtxArcToSpreadRule, 'no-unnecessary-ctx-arc-to-spread')
+const adaptedNoUnnecessaryCtxBeginPathSpread = adaptPluginRule(noUnnecessaryCtxBeginPathSpreadRule, 'no-unnecessary-ctx-begin-path-spread')
+const adaptedNoUnnecessaryCtxBezierCurveToSpread = adaptPluginRule(noUnnecessaryCtxBezierCurveToSpreadRule, 'no-unnecessary-ctx-bezier-curve-to-spread')
+const adaptedNoUnnecessaryCtxClearRectSpread = adaptPluginRule(noUnnecessaryCtxClearRectSpreadRule, 'no-unnecessary-ctx-clear-rect-spread')
+const adaptedNoUnnecessaryCtxClipSpread = adaptPluginRule(noUnnecessaryCtxClipSpreadRule, 'no-unnecessary-ctx-clip-spread')
+const adaptedNoUnnecessaryCtxClosePathSpread = adaptPluginRule(noUnnecessaryCtxClosePathSpreadRule, 'no-unnecessary-ctx-close-path-spread')
+const adaptedNoUnnecessaryCtxCreateLinearGradientSpread = adaptPluginRule(noUnnecessaryCtxCreateLinearGradientSpreadRule, 'no-unnecessary-ctx-create-linear-gradient-spread')
+const adaptedNoUnnecessaryCtxCreatePatternSpread = adaptPluginRule(noUnnecessaryCtxCreatePatternSpreadRule, 'no-unnecessary-ctx-create-pattern-spread')
+const adaptedNoUnnecessaryCtxCreateRadialGradientSpread = adaptPluginRule(noUnnecessaryCtxCreateRadialGradientSpreadRule, 'no-unnecessary-ctx-create-radial-gradient-spread')
+const adaptedNoUnnecessaryCtxDrawImageSpread = adaptPluginRule(noUnnecessaryCtxDrawImageSpreadRule, 'no-unnecessary-ctx-draw-image-spread')
+const adaptedNoUnnecessaryCtxFillRectSpread = adaptPluginRule(noUnnecessaryCtxFillRectSpreadRule, 'no-unnecessary-ctx-fill-rect-spread')
+const adaptedNoUnnecessaryCtxFillSpread = adaptPluginRule(noUnnecessaryCtxFillSpreadRule, 'no-unnecessary-ctx-fill-spread')
+const adaptedNoUnnecessaryCtxFillTextSpread = adaptPluginRule(noUnnecessaryCtxFillTextSpreadRule, 'no-unnecessary-ctx-fill-text-spread')
+const adaptedNoUnnecessaryCtxGetImageDataSpread = adaptPluginRule(noUnnecessaryCtxGetImageDataSpreadRule, 'no-unnecessary-ctx-get-image-data-spread')
+const adaptedNoUnnecessaryCtxGetLineDashSpread = adaptPluginRule(noUnnecessaryCtxGetLineDashSpreadRule, 'no-unnecessary-ctx-get-line-dash-spread')
+const adaptedNoUnnecessaryCtxLineToSpread = adaptPluginRule(noUnnecessaryCtxLineToSpreadRule, 'no-unnecessary-ctx-line-to-spread')
+const adaptedNoUnnecessaryCtxMeasureTextSpread = adaptPluginRule(noUnnecessaryCtxMeasureTextSpreadRule, 'no-unnecessary-ctx-measure-text-spread')
+const adaptedNoUnnecessaryCtxMoveToSpread = adaptPluginRule(noUnnecessaryCtxMoveToSpreadRule, 'no-unnecessary-ctx-move-to-spread')
+const adaptedNoUnnecessaryCtxPutImageDataSpread = adaptPluginRule(noUnnecessaryCtxPutImageDataSpreadRule, 'no-unnecessary-ctx-put-image-data-spread')
+const adaptedNoUnnecessaryCtxQuadraticCurveToSpread = adaptPluginRule(noUnnecessaryCtxQuadraticCurveToSpreadRule, 'no-unnecessary-ctx-quadratic-curve-to-spread')
+const adaptedNoUnnecessaryCtxResetTransformSpread = adaptPluginRule(noUnnecessaryCtxResetTransformSpreadRule, 'no-unnecessary-ctx-reset-transform-spread')
+const adaptedNoUnnecessaryCtxRestoreSpread = adaptPluginRule(noUnnecessaryCtxRestoreSpreadRule, 'no-unnecessary-ctx-restore-spread')
+const adaptedNoUnnecessaryCtxRotateSpread = adaptPluginRule(noUnnecessaryCtxRotateSpreadRule, 'no-unnecessary-ctx-rotate-spread')
+const adaptedNoUnnecessaryCtxSaveSpread = adaptPluginRule(noUnnecessaryCtxSaveSpreadRule, 'no-unnecessary-ctx-save-spread')
+const adaptedNoUnnecessaryCtxScaleSpread = adaptPluginRule(noUnnecessaryCtxScaleSpreadRule, 'no-unnecessary-ctx-scale-spread')
+const adaptedNoUnnecessaryCtxSetLineDashSpread = adaptPluginRule(noUnnecessaryCtxSetLineDashSpreadRule, 'no-unnecessary-ctx-set-line-dash-spread')
+const adaptedNoUnnecessaryCtxSetTransformSpread = adaptPluginRule(noUnnecessaryCtxSetTransformSpreadRule, 'no-unnecessary-ctx-set-transform-spread')
+const adaptedNoUnnecessaryCtxStrokeRectSpread = adaptPluginRule(noUnnecessaryCtxStrokeRectSpreadRule, 'no-unnecessary-ctx-stroke-rect-spread')
+const adaptedNoUnnecessaryCtxStrokeSpread = adaptPluginRule(noUnnecessaryCtxStrokeSpreadRule, 'no-unnecessary-ctx-stroke-spread')
+const adaptedNoUnnecessaryCtxStrokeTextSpread = adaptPluginRule(noUnnecessaryCtxStrokeTextSpreadRule, 'no-unnecessary-ctx-stroke-text-spread')
+const adaptedNoUnnecessaryCtxTransformSpread = adaptPluginRule(noUnnecessaryCtxTransformSpreadRule, 'no-unnecessary-ctx-transform-spread')
+const adaptedNoUnnecessaryCtxTranslateSpread = adaptPluginRule(noUnnecessaryCtxTranslateSpreadRule, 'no-unnecessary-ctx-translate-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetBigInt64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetBigInt64SpreadRule, 'no-unnecessary-dataview-instance-get-big-int64-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetBigUint64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetBigUint64SpreadRule, 'no-unnecessary-dataview-instance-get-big-uint64-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetFloat32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetFloat32SpreadRule, 'no-unnecessary-dataview-instance-get-float32-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetFloat64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetFloat64SpreadRule, 'no-unnecessary-dataview-instance-get-float64-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetInt16Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetInt16SpreadRule, 'no-unnecessary-dataview-instance-get-int16-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetInt32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetInt32SpreadRule, 'no-unnecessary-dataview-instance-get-int32-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetInt8Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetInt8SpreadRule, 'no-unnecessary-dataview-instance-get-int8-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetUint16Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetUint16SpreadRule, 'no-unnecessary-dataview-instance-get-uint16-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetUint32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetUint32SpreadRule, 'no-unnecessary-dataview-instance-get-uint32-spread')
+const adaptedNoUnnecessaryDataviewInstanceGetUint8Spread = adaptPluginRule(noUnnecessaryDataviewInstanceGetUint8SpreadRule, 'no-unnecessary-dataview-instance-get-uint8-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetBigInt64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetBigInt64SpreadRule, 'no-unnecessary-dataview-instance-set-big-int64-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetBigUint64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetBigUint64SpreadRule, 'no-unnecessary-dataview-instance-set-big-uint64-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetFloat32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetFloat32SpreadRule, 'no-unnecessary-dataview-instance-set-float32-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetFloat64Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetFloat64SpreadRule, 'no-unnecessary-dataview-instance-set-float64-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetInt16Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetInt16SpreadRule, 'no-unnecessary-dataview-instance-set-int16-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetInt32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetInt32SpreadRule, 'no-unnecessary-dataview-instance-set-int32-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetInt8Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetInt8SpreadRule, 'no-unnecessary-dataview-instance-set-int8-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetUint16Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetUint16SpreadRule, 'no-unnecessary-dataview-instance-set-uint16-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetUint32Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetUint32SpreadRule, 'no-unnecessary-dataview-instance-set-uint32-spread')
+const adaptedNoUnnecessaryDataviewInstanceSetUint8Spread = adaptPluginRule(noUnnecessaryDataviewInstanceSetUint8SpreadRule, 'no-unnecessary-dataview-instance-set-uint8-spread')
+const adaptedNoUnnecessaryDateInstanceGetTimeSpread = adaptPluginRule(noUnnecessaryDateInstanceGetTimeSpreadRule, 'no-unnecessary-date-instance-get-time-spread')
+const adaptedNoUnnecessaryDateInstanceSetTimeSpread = adaptPluginRule(noUnnecessaryDateInstanceSetTimeSpreadRule, 'no-unnecessary-date-instance-set-time-spread')
+const adaptedNoUnnecessaryDateInstanceToJsonSpread = adaptPluginRule(noUnnecessaryDateInstanceToJsonSpreadRule, 'no-unnecessary-date-instance-to-json-spread')
+const adaptedNoUnnecessaryDateInstanceValueOfSpread = adaptPluginRule(noUnnecessaryDateInstanceValueOfSpreadRule, 'no-unnecessary-date-instance-value-of-spread')
+const adaptedNoUnnecessaryDnsGetServersSpread = adaptPluginRule(noUnnecessaryDnsGetServersSpreadRule, 'no-unnecessary-dns-get-servers-spread')
+const adaptedNoUnnecessaryDnsLookupSpread = adaptPluginRule(noUnnecessaryDnsLookupSpreadRule, 'no-unnecessary-dns-lookup-spread')
+const adaptedNoUnnecessaryDnsResolve4Spread = adaptPluginRule(noUnnecessaryDnsResolve4SpreadRule, 'no-unnecessary-dns-resolve-4-spread')
+const adaptedNoUnnecessaryDnsResolve6Spread = adaptPluginRule(noUnnecessaryDnsResolve6SpreadRule, 'no-unnecessary-dns-resolve-6-spread')
+const adaptedNoUnnecessaryDnsResolveAnySpread = adaptPluginRule(noUnnecessaryDnsResolveAnySpreadRule, 'no-unnecessary-dns-resolve-any-spread')
+const adaptedNoUnnecessaryDnsResolveCnameSpread = adaptPluginRule(noUnnecessaryDnsResolveCnameSpreadRule, 'no-unnecessary-dns-resolve-cname-spread')
+const adaptedNoUnnecessaryDnsResolveMxSpread = adaptPluginRule(noUnnecessaryDnsResolveMxSpreadRule, 'no-unnecessary-dns-resolve-mx-spread')
+const adaptedNoUnnecessaryDnsResolveNsSpread = adaptPluginRule(noUnnecessaryDnsResolveNsSpreadRule, 'no-unnecessary-dns-resolve-ns-spread')
+const adaptedNoUnnecessaryDnsResolvePtrSpread = adaptPluginRule(noUnnecessaryDnsResolvePtrSpreadRule, 'no-unnecessary-dns-resolve-ptr-spread')
+const adaptedNoUnnecessaryDnsResolveSpread = adaptPluginRule(noUnnecessaryDnsResolveSpreadRule, 'no-unnecessary-dns-resolve-spread')
+const adaptedNoUnnecessaryDnsResolveSrvSpread = adaptPluginRule(noUnnecessaryDnsResolveSrvSpreadRule, 'no-unnecessary-dns-resolve-srv-spread')
+const adaptedNoUnnecessaryDnsResolveTxtSpread = adaptPluginRule(noUnnecessaryDnsResolveTxtSpreadRule, 'no-unnecessary-dns-resolve-txt-spread')
+const adaptedNoUnnecessaryDnsReverseSpread = adaptPluginRule(noUnnecessaryDnsReverseSpreadRule, 'no-unnecessary-dns-reverse-spread')
+const adaptedNoUnnecessaryDnsSetServersSpread = adaptPluginRule(noUnnecessaryDnsSetServersSpreadRule, 'no-unnecessary-dns-set-servers-spread')
+const adaptedNoUnnecessaryErrorInstanceToStringSpread = adaptPluginRule(noUnnecessaryErrorInstanceToStringSpreadRule, 'no-unnecessary-error-instance-to-string-spread')
+const adaptedNoUnnecessaryFinalizationRegistryInstanceRegisterSpread = adaptPluginRule(noUnnecessaryFinalizationRegistryInstanceRegisterSpreadRule, 'no-unnecessary-finalization-registry-instance-register-spread')
+const adaptedNoUnnecessaryFinalizationRegistryInstanceUnregisterSpread = adaptPluginRule(noUnnecessaryFinalizationRegistryInstanceUnregisterSpreadRule, 'no-unnecessary-finalization-registry-instance-unregister-spread')
+const adaptedNoUnnecessaryGlAttachShaderSpread = adaptPluginRule(noUnnecessaryGlAttachShaderSpreadRule, 'no-unnecessary-gl-attach-shader-spread')
+const adaptedNoUnnecessaryGlBindBufferSpread = adaptPluginRule(noUnnecessaryGlBindBufferSpreadRule, 'no-unnecessary-gl-bind-buffer-spread')
+const adaptedNoUnnecessaryGlBlendFuncSpread = adaptPluginRule(noUnnecessaryGlBlendFuncSpreadRule, 'no-unnecessary-gl-blend-func-spread')
+const adaptedNoUnnecessaryGlBufferDataSpread = adaptPluginRule(noUnnecessaryGlBufferDataSpreadRule, 'no-unnecessary-gl-buffer-data-spread')
+const adaptedNoUnnecessaryGlClearColorSpread = adaptPluginRule(noUnnecessaryGlClearColorSpreadRule, 'no-unnecessary-gl-clear-color-spread')
+const adaptedNoUnnecessaryGlClearSpread = adaptPluginRule(noUnnecessaryGlClearSpreadRule, 'no-unnecessary-gl-clear-spread')
+const adaptedNoUnnecessaryGlCompileShaderSpread = adaptPluginRule(noUnnecessaryGlCompileShaderSpreadRule, 'no-unnecessary-gl-compile-shader-spread')
+const adaptedNoUnnecessaryGlCreateBufferSpread = adaptPluginRule(noUnnecessaryGlCreateBufferSpreadRule, 'no-unnecessary-gl-create-buffer-spread')
+const adaptedNoUnnecessaryGlCreateProgramSpread = adaptPluginRule(noUnnecessaryGlCreateProgramSpreadRule, 'no-unnecessary-gl-create-program-spread')
+const adaptedNoUnnecessaryGlCreateShaderSpread = adaptPluginRule(noUnnecessaryGlCreateShaderSpreadRule, 'no-unnecessary-gl-create-shader-spread')
+const adaptedNoUnnecessaryGlDepthFuncSpread = adaptPluginRule(noUnnecessaryGlDepthFuncSpreadRule, 'no-unnecessary-gl-depth-func-spread')
+const adaptedNoUnnecessaryGlDisableSpread = adaptPluginRule(noUnnecessaryGlDisableSpreadRule, 'no-unnecessary-gl-disable-spread')
+const adaptedNoUnnecessaryGlDrawArraysSpread = adaptPluginRule(noUnnecessaryGlDrawArraysSpreadRule, 'no-unnecessary-gl-draw-arrays-spread')
+const adaptedNoUnnecessaryGlDrawElementsSpread = adaptPluginRule(noUnnecessaryGlDrawElementsSpreadRule, 'no-unnecessary-gl-draw-elements-spread')
+const adaptedNoUnnecessaryGlEnableSpread = adaptPluginRule(noUnnecessaryGlEnableSpreadRule, 'no-unnecessary-gl-enable-spread')
+const adaptedNoUnnecessaryGlEnableVertexAttribArraySpread = adaptPluginRule(noUnnecessaryGlEnableVertexAttribArraySpreadRule, 'no-unnecessary-gl-enable-vertex-attrib-array-spread')
+const adaptedNoUnnecessaryGlGetAttribLocationSpread = adaptPluginRule(noUnnecessaryGlGetAttribLocationSpreadRule, 'no-unnecessary-gl-get-attrib-location-spread')
+const adaptedNoUnnecessaryGlGetUniformLocationSpread = adaptPluginRule(noUnnecessaryGlGetUniformLocationSpreadRule, 'no-unnecessary-gl-get-uniform-location-spread')
+const adaptedNoUnnecessaryGlLinkProgramSpread = adaptPluginRule(noUnnecessaryGlLinkProgramSpreadRule, 'no-unnecessary-gl-link-program-spread')
+const adaptedNoUnnecessaryGlShaderSourceSpread = adaptPluginRule(noUnnecessaryGlShaderSourceSpreadRule, 'no-unnecessary-gl-shader-source-spread')
+const adaptedNoUnnecessaryGlUseProgramSpread = adaptPluginRule(noUnnecessaryGlUseProgramSpreadRule, 'no-unnecessary-gl-use-program-spread')
+const adaptedNoUnnecessaryGlVertexAttribPointerSpread = adaptPluginRule(noUnnecessaryGlVertexAttribPointerSpreadRule, 'no-unnecessary-gl-vertex-attrib-pointer-spread')
+const adaptedNoUnnecessaryGlViewportSpread = adaptPluginRule(noUnnecessaryGlViewportSpreadRule, 'no-unnecessary-gl-viewport-spread')
+const adaptedNoUnnecessaryMathClampSpread = adaptPluginRule(noUnnecessaryMathClampSpreadRule, 'no-unnecessary-math-clamp-spread')
+const adaptedNoUnnecessaryMathScaleSpread = adaptPluginRule(noUnnecessaryMathScaleSpreadRule, 'no-unnecessary-math-scale-spread')
+const adaptedNoUnnecessaryNetConnectSpread = adaptPluginRule(noUnnecessaryNetConnectSpreadRule, 'no-unnecessary-net-connect-spread')
+const adaptedNoUnnecessaryNetCreateConnectionSpread = adaptPluginRule(noUnnecessaryNetCreateConnectionSpreadRule, 'no-unnecessary-net-create-connection-spread')
+const adaptedNoUnnecessaryNetCreateServerSpread = adaptPluginRule(noUnnecessaryNetCreateServerSpreadRule, 'no-unnecessary-net-create-server-spread')
+const adaptedNoUnnecessaryNumberInstanceToExponentialSpread = adaptPluginRule(noUnnecessaryNumberInstanceToExponentialSpreadRule, 'no-unnecessary-number-instance-to-exponential-spread')
+const adaptedNoUnnecessaryNumberInstanceToFixedSpread = adaptPluginRule(noUnnecessaryNumberInstanceToFixedSpreadRule, 'no-unnecessary-number-instance-to-fixed-spread')
+const adaptedNoUnnecessaryNumberInstanceToLocaleStringSpread = adaptPluginRule(noUnnecessaryNumberInstanceToLocaleStringSpreadRule, 'no-unnecessary-number-instance-to-locale-string-spread')
+const adaptedNoUnnecessaryNumberInstanceToPrecisionSpread = adaptPluginRule(noUnnecessaryNumberInstanceToPrecisionSpreadRule, 'no-unnecessary-number-instance-to-precision-spread')
+const adaptedNoUnnecessaryNumberInstanceToStringSpread = adaptPluginRule(noUnnecessaryNumberInstanceToStringSpreadRule, 'no-unnecessary-number-instance-to-string-spread')
+const adaptedNoUnnecessaryNumberInstanceValueOfSpread = adaptPluginRule(noUnnecessaryNumberInstanceValueOfSpreadRule, 'no-unnecessary-number-instance-value-of-spread')
+const adaptedNoUnnecessaryObjectHasOwnPropertySpread = adaptPluginRule(noUnnecessaryObjectHasOwnPropertySpreadRule, 'no-unnecessary-object-has-own-property-spread')
+const adaptedNoUnnecessaryObjectIsPrototypeOfSpread = adaptPluginRule(noUnnecessaryObjectIsPrototypeOfSpreadRule, 'no-unnecessary-object-is-prototype-of-spread')
+const adaptedNoUnnecessaryObjectPropertyIsEnumerableSpread = adaptPluginRule(noUnnecessaryObjectPropertyIsEnumerableSpreadRule, 'no-unnecessary-object-property-is-enumerable-spread')
+const adaptedNoUnnecessaryObjectToLocaleStringSpread = adaptPluginRule(noUnnecessaryObjectToLocaleStringSpreadRule, 'no-unnecessary-object-to-locale-string-spread')
+const adaptedNoUnnecessaryObjectToStringSpread = adaptPluginRule(noUnnecessaryObjectToStringSpreadRule, 'no-unnecessary-object-to-string-spread')
+const adaptedNoUnnecessaryObjectValueOfSpread = adaptPluginRule(noUnnecessaryObjectValueOfSpreadRule, 'no-unnecessary-object-value-of-spread')
+const adaptedNoUnnecessaryPromiseResolveSpread = adaptPluginRule(noUnnecessaryPromiseResolveSpreadRule, 'no-unnecessary-promise-resolve-spread')
+const adaptedNoUnnecessaryPromiseWithResolversSpread = adaptPluginRule(noUnnecessaryPromiseWithResolversSpreadRule, 'no-unnecessary-promise-with-resolvers-spread')
+const adaptedNoUnnecessaryReadlineCloseSpread = adaptPluginRule(noUnnecessaryReadlineCloseSpreadRule, 'no-unnecessary-readline-close-spread')
+const adaptedNoUnnecessaryReadlineCreateInterfaceSpread = adaptPluginRule(noUnnecessaryReadlineCreateInterfaceSpreadRule, 'no-unnecessary-readline-create-interface-spread')
+const adaptedNoUnnecessaryReadlinePromptSpread = adaptPluginRule(noUnnecessaryReadlinePromptSpreadRule, 'no-unnecessary-readline-prompt-spread')
+const adaptedNoUnnecessaryReadlineQuestionSpread = adaptPluginRule(noUnnecessaryReadlineQuestionSpreadRule, 'no-unnecessary-readline-question-spread')
+const adaptedNoUnnecessaryReadlineWriteSpread = adaptPluginRule(noUnnecessaryReadlineWriteSpreadRule, 'no-unnecessary-readline-write-spread')
+const adaptedNoUnnecessaryRegexpInstanceExecSpread = adaptPluginRule(noUnnecessaryRegexpInstanceExecSpreadRule, 'no-unnecessary-regexp-instance-exec-spread')
+const adaptedNoUnnecessaryRegexpInstanceTestSpread = adaptPluginRule(noUnnecessaryRegexpInstanceTestSpreadRule, 'no-unnecessary-regexp-instance-test-spread')
+const adaptedNoUnnecessaryRegexpInstanceToStringSpread = adaptPluginRule(noUnnecessaryRegexpInstanceToStringSpreadRule, 'no-unnecessary-regexp-instance-to-string-spread')
+const adaptedNoUnnecessarySharedArrayBufferInstanceGrowSpread = adaptPluginRule(noUnnecessarySharedArrayBufferInstanceGrowSpreadRule, 'no-unnecessary-shared-array-buffer-instance-grow-spread')
+const adaptedNoUnnecessarySharedArrayBufferInstanceSliceSpread = adaptPluginRule(noUnnecessarySharedArrayBufferInstanceSliceSpreadRule, 'no-unnecessary-shared-array-buffer-instance-slice-spread')
+const adaptedNoUnnecessaryStderrEndSpread = adaptPluginRule(noUnnecessaryStderrEndSpreadRule, 'no-unnecessary-stderr-end-spread')
+const adaptedNoUnnecessaryStderrWriteSpread = adaptPluginRule(noUnnecessaryStderrWriteSpreadRule, 'no-unnecessary-stderr-write-spread')
+const adaptedNoUnnecessaryStdinPipeSpread = adaptPluginRule(noUnnecessaryStdinPipeSpreadRule, 'no-unnecessary-stdin-pipe-spread')
+const adaptedNoUnnecessaryStdinPushSpread = adaptPluginRule(noUnnecessaryStdinPushSpreadRule, 'no-unnecessary-stdin-push-spread')
+const adaptedNoUnnecessaryStdinReadSpread = adaptPluginRule(noUnnecessaryStdinReadSpreadRule, 'no-unnecessary-stdin-read-spread')
+const adaptedNoUnnecessaryStdoutEndSpread = adaptPluginRule(noUnnecessaryStdoutEndSpreadRule, 'no-unnecessary-stdout-end-spread')
+const adaptedNoUnnecessaryStdoutWriteSpread = adaptPluginRule(noUnnecessaryStdoutWriteSpreadRule, 'no-unnecessary-stdout-write-spread')
+const adaptedNoUnnecessarySymbolInstanceDescriptionSpread = adaptPluginRule(noUnnecessarySymbolInstanceDescriptionSpreadRule, 'no-unnecessary-symbol-instance-description-spread')
+const adaptedNoUnnecessarySymbolInstanceToStringSpread = adaptPluginRule(noUnnecessarySymbolInstanceToStringSpreadRule, 'no-unnecessary-symbol-instance-to-string-spread')
+const adaptedNoUnnecessarySymbolInstanceValueOfSpread = adaptPluginRule(noUnnecessarySymbolInstanceValueOfSpreadRule, 'no-unnecessary-symbol-instance-value-of-spread')
+const adaptedNoUnnecessaryWeakRefInstanceDerefSpread = adaptPluginRule(noUnnecessaryWeakRefInstanceDerefSpreadRule, 'no-unnecessary-weak-ref-instance-deref-spread')
+const adaptedNoUnnecessaryZlibBrotliCompressSpread = adaptPluginRule(noUnnecessaryZlibBrotliCompressSpreadRule, 'no-unnecessary-zlib-brotli-compress-spread')
+const adaptedNoUnnecessaryZlibBrotliCompressSyncSpread = adaptPluginRule(noUnnecessaryZlibBrotliCompressSyncSpreadRule, 'no-unnecessary-zlib-brotli-compress-sync-spread')
+const adaptedNoUnnecessaryZlibBrotliDecompressSpread = adaptPluginRule(noUnnecessaryZlibBrotliDecompressSpreadRule, 'no-unnecessary-zlib-brotli-decompress-spread')
+const adaptedNoUnnecessaryZlibBrotliDecompressSyncSpread = adaptPluginRule(noUnnecessaryZlibBrotliDecompressSyncSpreadRule, 'no-unnecessary-zlib-brotli-decompress-sync-spread')
+const adaptedNoUnnecessaryZlibDeflateSpread = adaptPluginRule(noUnnecessaryZlibDeflateSpreadRule, 'no-unnecessary-zlib-deflate-spread')
+const adaptedNoUnnecessaryZlibDeflateSyncSpread = adaptPluginRule(noUnnecessaryZlibDeflateSyncSpreadRule, 'no-unnecessary-zlib-deflate-sync-spread')
+const adaptedNoUnnecessaryZlibGunzipSpread = adaptPluginRule(noUnnecessaryZlibGunzipSpreadRule, 'no-unnecessary-zlib-gunzip-spread')
+const adaptedNoUnnecessaryZlibGunzipSyncSpread = adaptPluginRule(noUnnecessaryZlibGunzipSyncSpreadRule, 'no-unnecessary-zlib-gunzip-sync-spread')
+const adaptedNoUnnecessaryZlibGzipSpread = adaptPluginRule(noUnnecessaryZlibGzipSpreadRule, 'no-unnecessary-zlib-gzip-spread')
+const adaptedNoUnnecessaryZlibGzipSyncSpread = adaptPluginRule(noUnnecessaryZlibGzipSyncSpreadRule, 'no-unnecessary-zlib-gzip-sync-spread')
+const adaptedNoUnnecessaryZlibInflateSpread = adaptPluginRule(noUnnecessaryZlibInflateSpreadRule, 'no-unnecessary-zlib-inflate-spread')
+const adaptedNoUnnecessaryZlibInflateSyncSpread = adaptPluginRule(noUnnecessaryZlibInflateSyncSpreadRule, 'no-unnecessary-zlib-inflate-sync-spread')
+const adaptedNoUnnecessaryMathExpm1Spread = adaptPluginRule(noUnnecessaryMathExpm1SpreadRule, 'no-unnecessary-math-expm1-spread')
+const adaptedNoUnnecessaryMathLog1pSpread = adaptPluginRule(noUnnecessaryMathLog1pSpreadRule, 'no-unnecessary-math-log1p-spread')
+const adaptedNoUnnecessaryMathSinhSpread = adaptPluginRule(noUnnecessaryMathSinhSpreadRule, 'no-unnecessary-math-sinh-spread')
+const adaptedNoUnnecessaryMathCoshSpread = adaptPluginRule(noUnnecessaryMathCoshSpreadRule, 'no-unnecessary-math-cosh-spread')
+const adaptedNoUnnecessaryMathTanhSpread = adaptPluginRule(noUnnecessaryMathTanhSpreadRule, 'no-unnecessary-math-tanh-spread')
+const adaptedNoUnnecessaryFunctionCallSpread = adaptPluginRule(noUnnecessaryFunctionCallSpreadRule, 'no-unnecessary-function-call-spread')
+const adaptedNoUnnecessaryFunctionApplySpread = adaptPluginRule(noUnnecessaryFunctionApplySpreadRule, 'no-unnecessary-function-apply-spread')
+const adaptedNoUnnecessaryFunctionBindSpread = adaptPluginRule(noUnnecessaryFunctionBindSpreadRule, 'no-unnecessary-function-bind-spread')
+const adaptedNoUnnecessaryFunctionToStringSpread = adaptPluginRule(noUnnecessaryFunctionToStringSpreadRule, 'no-unnecessary-function-to-string-spread')
+const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryDateToGmtStringSpreadRule, 'no-unnecessary-date-to-gmt-string-spread')
+const adaptedNoUnnecessaryObjectGroupBySpread = adaptPluginRule(noUnnecessaryObjectGroupBySpreadRule, 'no-unnecessary-object-group-by-spread')
+const adaptedNoUnnecessaryArrayBufferSliceSpread = adaptPluginRule(noUnnecessaryArrayBufferSliceSpreadRule, 'no-unnecessary-array-buffer-slice-spread')
+const adaptedNoUnnecessaryPromiseTrySpread = adaptPluginRule(noUnnecessaryPromiseTrySpreadRule, 'no-unnecessary-promise-try-spread')
+const adaptedNoUnnecessaryObjectFromEntriesSpread = adaptPluginRule(noUnnecessaryObjectFromEntriesSpreadRule, 'no-unnecessary-object-from-entries-spread')
+const adaptedNoUnnecessaryErrorToStringSpread = adaptPluginRule(noUnnecessaryErrorToStringSpreadRule, 'no-unnecessary-error-to-string-spread')
+const adaptedNoUnnecessaryRegexExecSpread = adaptPluginRule(noUnnecessaryRegexExecSpreadRule, 'no-unnecessary-regex-exec-spread')
+const adaptedNoUnnecessaryRegexTestSpread = adaptPluginRule(noUnnecessaryRegexTestSpreadRule, 'no-unnecessary-regex-test-spread')
+const adaptedNoUnnecessaryArrayBufferIsViewSpread = adaptPluginRule(noUnnecessaryArrayBufferIsViewSpreadRule, 'no-unnecessary-array-buffer-is-view-spread')
+const adaptedNoUnnecessaryStringFromCharCodeSpread = adaptPluginRule(noUnnecessaryStringFromCharCodeSpreadRule, 'no-unnecessary-string-from-char-code-spread')
+const adaptedNoUnnecessaryStringFromCodePointSpread = adaptPluginRule(noUnnecessaryStringFromCodePointSpreadRule, 'no-unnecessary-string-from-code-point-spread')
+const adaptedNoUnnecessaryStringRawSpread = adaptPluginRule(noUnnecessaryStringRawSpreadRule, 'no-unnecessary-string-raw-spread')
+const adaptedNoUnnecessaryDateSetFullYearSpread = adaptPluginRule(noUnnecessaryDateSetFullYearSpreadRule, 'no-unnecessary-date-set-full-year-spread')
+const adaptedNoUnnecessaryDateSetMonthSpread = adaptPluginRule(noUnnecessaryDateSetMonthSpreadRule, 'no-unnecessary-date-set-month-spread')
+const adaptedNoUnnecessaryDateSetDateSpread = adaptPluginRule(noUnnecessaryDateSetDateSpreadRule, 'no-unnecessary-date-set-date-spread')
+const adaptedNoUnnecessaryDateSetHoursSpread = adaptPluginRule(noUnnecessaryDateSetHoursSpreadRule, 'no-unnecessary-date-set-hours-spread')
+const adaptedNoUnnecessaryDateSetMinutesSpread = adaptPluginRule(noUnnecessaryDateSetMinutesSpreadRule, 'no-unnecessary-date-set-minutes-spread')
+const adaptedNoUnnecessaryDateSetSecondsSpread = adaptPluginRule(noUnnecessaryDateSetSecondsSpreadRule, 'no-unnecessary-date-set-seconds-spread')
+const adaptedNoUnnecessaryDateSetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetMillisecondsSpreadRule, 'no-unnecessary-date-set-milliseconds-spread')
+const adaptedNoUnnecessaryDateSetUtcFullYearSpread = adaptPluginRule(noUnnecessaryDateSetUtcFullYearSpreadRule, 'no-unnecessary-date-set-utc-full-year-spread')
+const adaptedNoUnnecessaryDateSetUtcMonthSpread = adaptPluginRule(noUnnecessaryDateSetUtcMonthSpreadRule, 'no-unnecessary-date-set-utc-month-spread')
+const adaptedNoUnnecessaryDateSetUtcDateSpread = adaptPluginRule(noUnnecessaryDateSetUtcDateSpreadRule, 'no-unnecessary-date-set-utc-date-spread')
+const adaptedNoUnnecessaryDateSetUtcHoursSpread = adaptPluginRule(noUnnecessaryDateSetUtcHoursSpreadRule, 'no-unnecessary-date-set-utc-hours-spread')
+const adaptedNoUnnecessaryDateSetUtcMinutesSpread = adaptPluginRule(noUnnecessaryDateSetUtcMinutesSpreadRule, 'no-unnecessary-date-set-utc-minutes-spread')
+const adaptedNoUnnecessaryDateSetUtcSecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcSecondsSpreadRule, 'no-unnecessary-date-set-utc-seconds-spread')
+const adaptedNoUnnecessaryDateSetUtcMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcMillisecondsSpreadRule, 'no-unnecessary-date-set-utc-milliseconds-spread')
+const adaptedNoUnnecessarySetClearSpread = adaptPluginRule(noUnnecessarySetClearSpreadRule, 'no-unnecessary-set-clear-spread')
+const adaptedNoUnnecessarySetKeysSpread = adaptPluginRule(noUnnecessarySetKeysSpreadRule, 'no-unnecessary-set-keys-spread')
+const adaptedNoUnnecessarySetValuesSpread = adaptPluginRule(noUnnecessarySetValuesSpreadRule, 'no-unnecessary-set-values-spread')
+const adaptedNoUnnecessarySetEntriesSpread = adaptPluginRule(noUnnecessarySetEntriesSpreadRule, 'no-unnecessary-set-entries-spread')
+const adaptedNoUnnecessaryMapKeysSpread = adaptPluginRule(noUnnecessaryMapKeysSpreadRule, 'no-unnecessary-map-keys-spread')
+const adaptedNoUnnecessaryMapValuesSpread = adaptPluginRule(noUnnecessaryMapValuesSpreadRule, 'no-unnecessary-map-values-spread')
+const adaptedNoUnnecessaryMapEntriesSpread = adaptPluginRule(noUnnecessaryMapEntriesSpreadRule, 'no-unnecessary-map-entries-spread')
 export const allRules: Record<string, RuleDefinition> = {
   'consistent-imports': adaptedConsistentImports,
   'consistent-test-it': adaptedConsistentTestIt,
@@ -2450,7 +3638,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-number-value-of-spread': adaptedNoUnnecessaryNumberValueOfSpread,
   'no-unnecessary-number-to-string-spread': adaptedNoUnnecessaryNumberToStringSpread,
   'no-unnecessary-number-to-fixed-spread': adaptedNoUnnecessaryNumberToFixedSpread,
-  'no-unnecessary-is-nan-spread': adaptedNoUnnecessaryArrayIsArraySpread,
+   'no-unnecessary-is-nan-spread': adaptedNoUnnecessaryIsNanSpread,
   'no-unnecessary-is-finite-spread': adaptedNoUnnecessaryIsFiniteSpread,
   'no-unnecessary-parse-float-spread': adaptedNoUnnecessaryParseFloatSpread,
   'no-unnecessary-parse-int-spread': adaptedNoUnnecessaryParseIntSpread,
@@ -2612,1710 +3800,1161 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-unnecessary-weakset-has-spread': adaptedNoUnnecessaryWeakSetHasSpread,
   'no-unnecessary-weakset-delete-spread': adaptedNoUnnecessaryWeakSetDeleteSpread,
   'no-unnecessary-map-clear-spread': adaptedNoUnnecessaryMapClearSpread,
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
-const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
-const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
-const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
-const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
-const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
-const adaptedNoUnnecessaryDateToISOStringSpread = adaptPluginRule(noUnnecessaryDateToISOStringSpreadRule, 'no-unnecessary-date-to-iso-string-spread')
-const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
-const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
-const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
-const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
-const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
-const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
-const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
-const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
-const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
-const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
-const adaptedNoUnnecessaryDateToISOStringSpread = adaptPluginRule(noUnnecessaryDateToISOStringSpreadRule, 'no-unnecessary-date-to-iso-string-spread')
-const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
-const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
-const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
-const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMapSetSpreadRule, 'no-unnecessary-weakmap-set-spread')
-const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
-const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
-const adaptedNoUnnecessaryRegExpTestSpread = adaptPluginRule(noUnnecessaryRegExpTestSpreadRule, 'no-unnecessary-reg-exp-test-spread')
-const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
-const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
-const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
-const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
-const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
-const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
-const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
-const adaptedNoUnnecessaryDateToISOStringSpread = adaptPluginRule(noUnnecessaryDateToISOStringSpreadRule, 'no-unnecessary-date-to-iso-string-spread')
-const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
-const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
-const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
-const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryMapSetSpread = adaptPluginRule(noUnnecessaryMapSetSpreadRule, 'no-unnecessary-map-set-spread')
-const adaptedNoUnnecessaryMapForEachSpread = adaptPluginRule(noUnnecessaryMapForEachSpreadRule, 'no-unnecessary-map-for-each-spread')
-const adaptedNoUnnecessarySetAddSpread = adaptPluginRule(noUnnecessarySetAddSpreadRule, 'no-unnecessary-set-add-spread')
-const adaptedNoUnnecessarySetForEachSpread = adaptPluginRule(noUnnecessarySetForEachSpreadRule, 'no-unnecessary-set-for-each-spread')
-const adaptedNoUnnecessaryWeakMapSetSpread = adaptPluginRule(noUnnecessaryWeakMapSetSpreadRule, 'no-unnecessary-weakmap-set-spread')
-const adaptedNoUnnecessaryWeakSetAddSpread = adaptPluginRule(noUnnecessaryWeakSetAddSpreadRule, 'no-unnecessary-weakset-add-spread')
-const adaptedNoUnnecessaryDateNowSpread = adaptPluginRule(noUnnecessaryDateNowSpreadRule, 'no-unnecessary-date-now-spread')
-const adaptedNoUnnecessaryRegExpTestSpread = adaptPluginRule(noUnnecessaryRegExpTestSpreadRule, 'no-unnecessary-reg-exp-test-spread')
-const adaptedNoUnnecessaryDateParseSpread = adaptPluginRule(noUnnecessaryDateParseSpreadRule, 'no-unnecessary-date-parse-spread')
-const adaptedNoUnnecessaryDateGetFullYearSpread = adaptPluginRule(noUnnecessaryDateGetFullYearSpreadRule, 'no-unnecessary-date-get-full-year-spread')
-const adaptedNoUnnecessaryRegExpExecSpread = adaptPluginRule(noUnnecessaryRegExpExecSpreadRule, 'no-unnecessary-reg-exp-exec-spread')
-const adaptedNoUnnecessarySymbolForSpread = adaptPluginRule(noUnnecessarySymbolForSpreadRule, 'no-unnecessary-symbol-for-spread')
-const adaptedNoUnnecessaryDateGetMonthSpread = adaptPluginRule(noUnnecessaryDateGetMonthSpreadRule, 'no-unnecessary-date-get-month-spread')
-const adaptedNoUnnecessaryDateGetDateSpread = adaptPluginRule(noUnnecessaryDateGetDateSpreadRule, 'no-unnecessary-date-get-date-spread')
-const adaptedNoUnnecessarySymbolKeyForSpread = adaptPluginRule(noUnnecessarySymbolKeyForSpreadRule, 'no-unnecessary-symbol-key-for-spread')
-const adaptedNoUnnecessaryDateToISOStringSpread = adaptPluginRule(noUnnecessaryDateToISOStringSpreadRule, 'no-unnecessary-date-to-iso-string-spread')
-const adaptedNoUnnecessaryDateGetDaySpread = adaptPluginRule(noUnnecessaryDateGetDaySpreadRule, 'no-unnecessary-date-get-day-spread')
-const adaptedNoUnnecessaryDateGetHoursSpread = adaptPluginRule(noUnnecessaryDateGetHoursSpreadRule, 'no-unnecessary-date-get-hours-spread')
-const adaptedNoUnnecessaryDateGetMinutesSpread = adaptPluginRule(noUnnecessaryDateGetMinutesSpreadRule, 'no-unnecessary-date-get-minutes-spread')
-const adaptedNoUnnecessaryDateGetSecondsSpread = adaptPluginRule(noUnnecessaryDateGetSecondsSpreadRule, 'no-unnecessary-date-get-seconds-spread')
-const adaptedNoUnnecessaryDateGetTimeSpread = adaptPluginRule(noUnnecessaryDateGetTimeSpreadRule, 'no-unnecessary-date-get-time-spread')
-const adaptedNoUnnecessaryDateGetTimezoneOffsetSpread = adaptPluginRule(noUnnecessaryDateGetTimezoneOffsetSpreadRule, 'no-unnecessary-date-get-timezone-offset-spread')
-const adaptedNoUnnecessaryDateGetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetMillisecondsSpreadRule, 'no-unnecessary-date-get-milliseconds-spread')
-const adaptedNoUnnecessaryDateToStringSpread = adaptPluginRule(noUnnecessaryDateToStringSpreadRule, 'no-unnecessary-date-to-string-spread')
-const adaptedNoUnnecessaryDateToDateStringSpread = adaptPluginRule(noUnnecessaryDateToDateStringSpreadRule, 'no-unnecessary-date-to-date-string-spread')
-const adaptedNoUnnecessaryDateToTimeStringSpread = adaptPluginRule(noUnnecessaryDateToTimeStringSpreadRule, 'no-unnecessary-date-to-time-string-spread')
-const adaptedNoUnnecessaryMapGetSpread = adaptPluginRule(noUnnecessaryMapGetSpreadRule, 'no-unnecessary-map-get-spread')
-const adaptedNoUnnecessaryMapHasSpread = adaptPluginRule(noUnnecessaryMapHasSpreadRule, 'no-unnecessary-map-has-spread')
-const adaptedNoUnnecessaryMapDeleteSpread = adaptPluginRule(noUnnecessaryMapDeleteSpreadRule, 'no-unnecessary-map-delete-spread')
-const adaptedNoUnnecessarySetHasSpread = adaptPluginRule(noUnnecessarySetHasSpreadRule, 'no-unnecessary-set-has-spread')
-const adaptedNoUnnecessarySetDeleteSpread = adaptPluginRule(noUnnecessarySetDeleteSpreadRule, 'no-unnecessary-set-delete-spread')
-const adaptedNoUnnecessaryDateValueOfSpread = adaptPluginRule(noUnnecessaryDateValueOfSpreadRule, 'no-unnecessary-date-value-of-spread')
-const adaptedNoUnnecessaryDateToUTCStringSpread = adaptPluginRule(noUnnecessaryDateToUTCStringSpreadRule, 'no-unnecessary-date-to-utc-string-spread')
-const adaptedNoUnnecessaryDateToJSONSpread = adaptPluginRule(noUnnecessaryDateToJSONSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateGetUTCFullyearSpread = adaptPluginRule(noUnnecessaryDateGetUTCFullyearSpreadRule, 'no-unnecessary-date-get-utc-fullyear-spread')
-const adaptedNoUnnecessaryDateGetUTCMonthSpread = adaptPluginRule(noUnnecessaryDateGetUTCMonthSpreadRule, 'no-unnecessary-date-get-utc-month-spread')
-const adaptedNoUnnecessaryDateGetUTCDateSpread = adaptPluginRule(noUnnecessaryDateGetUTCDateSpreadRule, 'no-unnecessary-date-get-utc-date-spread')
-const adaptedNoUnnecessaryDateGetUTCDaySpread = adaptPluginRule(noUnnecessaryDateGetUTCDaySpreadRule, 'no-unnecessary-date-get-utc-day-spread')
-const adaptedNoUnnecessaryDateGetUTCHoursSpread = adaptPluginRule(noUnnecessaryDateGetUTCHoursSpreadRule, 'no-unnecessary-date-get-utc-hours-spread')
-const adaptedNoUnnecessaryDateGetUTCMinutesSpread = adaptPluginRule(noUnnecessaryDateGetUTCMinutesSpreadRule, 'no-unnecessary-date-get-utc-minutes-spread')
-const adaptedNoUnnecessaryDateGetUTCSecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCSecondsSpreadRule, 'no-unnecessary-date-get-utc-seconds-spread')
-const adaptedNoUnnecessaryDateGetUTCMillisecondsSpread = adaptPluginRule(noUnnecessaryDateGetUTCMillisecondsSpreadRule, 'no-unnecessary-date-get-utc-milliseconds-spread')
-const adaptedNoUnnecessaryDateToLocaleStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleStringSpreadRule, 'no-unnecessary-date-to-locale-string-spread')
-const adaptedNoUnnecessaryDateToLocaleDateStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleDateStringSpreadRule, 'no-unnecessary-date-to-locale-date-string-spread')
-const adaptedNoUnnecessaryDateToLocaleTimeStringSpread = adaptPluginRule(noUnnecessaryDateToLocaleTimeStringSpreadRule, 'no-unnecessary-date-to-locale-time-string-spread')
-const adaptedNoUnnecessaryDateUTCSpread = adaptPluginRule(noUnnecessaryDateUTCSpreadRule, 'no-unnecessary-date-utc-spread')
-const adaptedNoUnnecessaryWeakMapGetSpread = adaptPluginRule(noUnnecessaryWeakMapGetSpreadRule, 'no-unnecessary-weakmap-get-spread')
-const adaptedNoUnnecessaryWeakMapHasSpread = adaptPluginRule(noUnnecessaryWeakMapHasSpreadRule, 'no-unnecessary-weakmap-has-spread')
-const adaptedNoUnnecessaryWeakMapDeleteSpread = adaptPluginRule(noUnnecessaryWeakMapDeleteSpreadRule, 'no-unnecessary-weakmap-delete-spread')
-const adaptedNoUnnecessaryWeakSetHasSpread = adaptPluginRule(noUnnecessaryWeakSetHasSpreadRule, 'no-unnecessary-weakset-has-spread')
-const adaptedNoUnnecessaryWeakSetDeleteSpread = adaptPluginRule(noUnnecessaryWeakSetDeleteSpreadRule, 'no-unnecessary-weakset-delete-spread')
-const adaptedNoUnnecessaryMapClearSpread = adaptPluginRule(noUnnecessaryMapClearSpreadRule, 'no-unnecessary-map-clear-spread')
-const adaptedNoUnnecessaryDateSetFullYearSpread = adaptPluginRule(noUnnecessaryDateSetFullYearSpreadRule, 'no-unnecessary-date-set-full-year-spread')
-const adaptedNoUnnecessaryDateSetMonthSpread = adaptPluginRule(noUnnecessaryDateSetMonthSpreadRule, 'no-unnecessary-date-set-month-spread')
-const adaptedNoUnnecessaryDateSetDateSpread = adaptPluginRule(noUnnecessaryDateSetDateSpreadRule, 'no-unnecessary-date-set-date-spread')
-const adaptedNoUnnecessaryDateSetHoursSpread = adaptPluginRule(noUnnecessaryDateSetHoursSpreadRule, 'no-unnecessary-date-set-hours-spread')
-const adaptedNoUnnecessaryDateSetMinutesSpread = adaptPluginRule(noUnnecessaryDateSetMinutesSpreadRule, 'no-unnecessary-date-set-minutes-spread')
-const adaptedNoUnnecessaryDateSetSecondsSpread = adaptPluginRule(noUnnecessaryDateSetSecondsSpreadRule, 'no-unnecessary-date-set-seconds-spread')
-const adaptedNoUnnecessaryDateSetMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetMillisecondsSpreadRule, 'no-unnecessary-date-set-milliseconds-spread')
-const adaptedNoUnnecessaryDateSetUtcFullYearSpread = adaptPluginRule(noUnnecessaryDateSetUtcFullYearSpreadRule, 'no-unnecessary-date-set-utc-full-year-spread')
-const adaptedNoUnnecessaryDateSetUtcMonthSpread = adaptPluginRule(noUnnecessaryDateSetUtcMonthSpreadRule, 'no-unnecessary-date-set-utc-month-spread')
-const adaptedNoUnnecessaryDateSetUtcDateSpread = adaptPluginRule(noUnnecessaryDateSetUtcDateSpreadRule, 'no-unnecessary-date-set-utc-date-spread')
-const adaptedNoUnnecessaryDateSetUtcHoursSpread = adaptPluginRule(noUnnecessaryDateSetUtcHoursSpreadRule, 'no-unnecessary-date-set-utc-hours-spread')
-const adaptedNoUnnecessaryDateSetUtcMinutesSpread = adaptPluginRule(noUnnecessaryDateSetUtcMinutesSpreadRule, 'no-unnecessary-date-set-utc-minutes-spread')
-const adaptedNoUnnecessaryDateSetUtcSecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcSecondsSpreadRule, 'no-unnecessary-date-set-utc-seconds-spread')
-const adaptedNoUnnecessaryDateSetUtcMillisecondsSpread = adaptPluginRule(noUnnecessaryDateSetUtcMillisecondsSpreadRule, 'no-unnecessary-date-set-utc-milliseconds-spread')
-const adaptedNoUnnecessarySetClearSpread = adaptPluginRule(noUnnecessarySetClearSpreadRule, 'no-unnecessary-set-clear-spread')
-const adaptedNoUnnecessarySetKeysSpread = adaptPluginRule(noUnnecessarySetKeysSpreadRule, 'no-unnecessary-set-keys-spread')
-const adaptedNoUnnecessarySetValuesSpread = adaptPluginRule(noUnecessarySetValuesSpreadRule, 'no-unnecessary-set-values-spread')
-const adaptedNoUnnecessarySetEntriesSpread = adaptPluginRule(noUnnecessarySetEntriesSpreadRule, 'no-unnecessary-set-entries-spread')
-const adaptedNoUnnecessaryMapKeysSpread = adaptPluginRule(noUnnecessaryMapKeysSpreadRule, 'no-unnecessary-map-keys-spread')
-const adaptedNoUnnecessaryMapValuesSpread = adaptPluginRule(noUnnecessaryMapValuesSpreadRule, 'no-unnecessary-map-values-spread')
-const adaptedNoUnnecessaryMapEntriesSpread = adaptPluginRule(noUnnecessaryMapEntriesSpreadRule, 'no-unnecessary-map-entries-spread')
-const adaptedNoUnnecessaryErrorToStringSpread = adaptPluginRule(noUnnecessaryErrorToStringSpreadRule, 'no-unnecessary-error-to-string-spread')
-const adaptedNoUnnecessaryRegexExecSpread = adaptPluginRule(noUnnecessaryRegexExecSpreadRule, 'no-unnecessary-regex-exec-spread')
-const adaptedNoUnnecessaryRegexTestSpread = adaptPluginRule(noUnnecessaryRegexTestSpreadRule, 'no-unnecessary-regex-test-spread')
-const adaptedNoUnnecessaryArrayBufferIsViewSpread = adaptPluginRule(noUnnecessaryArrayBufferIsViewSpreadRule, 'no-unnecessary-array-buffer-is-view-spread')
-const adaptedNoUnnecessaryNumberIsFiniteSpread = adaptPluginRule(noUnnecessaryNumberIsFiniteSpreadRule, 'no-unnecessary-number-is-finite-spread')
-const adaptedNoUnnecessaryNumberIsNanSpread = adaptPluginRule(noUnnecessaryNumberIsNanSpreadRule, 'no-unnecessary-number-is-nan-spread')
-const adaptedNoUnnecessaryNumberIsIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsIntegerSpreadRule, 'no-unnecessary-number-is-integer-spread')
-const adaptedNoUnnecessaryNumberIsSafeIntegerSpread = adaptPluginRule(noUnnecessaryNumberIsSafeIntegerSpreadRule, 'no-unnecessary-number-is-safe-integer-spread')
-const adaptedNoUnnecessaryNumberParseFloatSpread = adaptPluginRule(noUnnecessaryNumberParseFloatSpreadRule, 'no-unnecessary-number-parse-float-spread')
-const adaptedNoUnnecessaryNumberParseIntSpread = adaptPluginRule(noUnnecessaryNumberParseIntSpreadRule, 'no-unnecessary-number-parse-int-spread')
-const adaptedNoUnnecessaryStringFromCharCodeSpread = adaptPluginRule(noUnnecessaryStringFromCharCodeSpreadRule, 'no-unnecessary-string-from-char-code-spread')
-const adaptedNoUnnecessaryStringFromCodePointSpread = adaptPluginRule(noUnnecessaryStringFromCodePointSpreadRule, 'no-unnecessary-string-from-code-point-spread')
-const adaptedNoUnnecessaryStringRawSpread = adaptPluginRule(noUnnecessaryStringRawSpreadRule, 'no-unnecessary-string-raw-spread')
-const adaptedNoUnnecessaryInt8ArrayFromSpread = adaptPluginRule(noUnnecessaryInt8ArrayFromSpreadRule, 'no-unnecessary-int8-array-from-spread')
-const adaptedNoUnnecessaryInt8ArrayOfSpread = adaptPluginRule(noUnnecessaryInt8ArrayOfSpreadRule, 'no-unnecessary-int8-array-of-spread')
-const adaptedNoUnnecessaryUint8ArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ArrayFromSpreadRule, 'no-unnecessary-uint8-array-from-spread')
-const adaptedNoUnnecessaryUint8ArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ArrayOfSpreadRule, 'no-unnecessary-uint8-array-of-spread')
-const adaptedNoUnnecessaryUint8ClampedArrayFromSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule, 'no-unnecessary-uint8-clamped-array-from-spread')
-const adaptedNoUnnecessaryUint8ClampedArrayOfSpread = adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule, 'no-unnecessary-uint8-clamped-array-of-spread')
-const adaptedNoUnnecessaryInt16ArrayFromSpread = adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule, 'no-unnecessary-int16-array-from-spread')
-const adaptedNoUnnecessaryInt16ArrayOfSpread = adaptPluginRule(noUnnecessaryInt16ArrayOfSpreadRule, 'no-unnecessary-int16-array-of-spread')
-const adaptedNoUnnecessaryInt32ArrayFromSpread = adaptPluginRule(noUnnecessaryInt32ArrayFromSpreadRule, 'no-unnecessary-int32-array-from-spread')
-const adaptedNoUnnecessaryInt32ArrayOfSpread = adaptPluginRule(noUnnecessaryInt32ArrayOfSpreadRule, 'no-unnecessary-int32-array-of-spread')
-const adaptedNoUnnecessaryUint16ArrayFromSpread = adaptPluginRule(noUnnecessaryUint16ArrayFromSpreadRule, 'no-unnecessary-uint16-array-from-spread')
-const adaptedNoUnnecessaryUint16ArrayOfSpread = adaptPluginRule(noUnnecessaryUint16ArrayOfSpreadRule, 'no-unnecessary-uint16-array-of-spread')
-const adaptedNoUnnecessaryUint32ArrayFromSpread = adaptPluginRule(noUnnecessaryUint32ArrayFromSpreadRule, 'no-unnecessary-uint32-array-from-spread')
-const adaptedNoUnnecessaryUint32ArrayOfSpread = adaptPluginRule(noUnnecessaryUint32ArrayOfSpreadRule, 'no-unnecessary-uint32-array-of-spread')
-const adaptedNoUnnecessaryFloat32ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat32ArrayFromSpreadRule, 'no-unnecessary-float32-array-from-spread')
-const adaptedNoUnnecessaryFloat32ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat32ArrayOfSpreadRule, 'no-unnecessary-float32-array-of-spread')
-const adaptedNoUnnecessaryFloat64ArrayFromSpread = adaptPluginRule(noUnnecessaryFloat64ArrayFromSpreadRule, 'no-unnecessary-float64-array-from-spread')
-const adaptedNoUnnecessaryFloat64ArrayOfSpread = adaptPluginRule(noUnnecessaryFloat64ArrayOfSpreadRule, 'no-unnecessary-float64-array-of-spread')
-const adaptedNoUnnecessaryBigInt64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayFromSpreadRule, 'no-unnecessary-big-int64-array-from-spread')
-const adaptedNoUnnecessaryBigInt64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule, 'no-unnecessary-big-int64-array-of-spread')
-const adaptedNoUnnecessaryBigUint64ArrayFromSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule, 'no-unnecessary-big-uint64-array-from-spread')
-const adaptedNoUnnecessaryBigUint64ArrayOfSpread = adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule, 'no-unnecessary-big-uint64-array-of-spread')
-const adaptedNoUnnecessaryObjectDefinePropertySpread = adaptPluginRule(noUnnecessaryObjectDefinePropertySpreadRule, 'no-unnecessary-object-define-property-spread')
-const adaptedNoUnnecessaryObjectDefinePropertiesSpread = adaptPluginRule(noUnnecessaryObjectDefinePropertiesSpreadRule, 'no-unnecessary-object-define-properties-spread')
-const adaptedNoUnnecessaryObjectPreventExtensionsSpread = adaptPluginRule(noUnnecessaryObjectPreventExtensionsSpreadRule, 'no-unnecessary-object-prevent-extensions-spread')
-const adaptedNoUnnecessaryObjectGetPrototypeOfSpread = adaptPluginRule(noUnnecessaryObjectGetPrototypeOfSpreadRule, 'no-unnecessary-object-get-prototype-of-spread')
-const adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyNamesSpreadRule, 'no-unnecessary-object-get-own-property-names-spread')
-const adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule, 'no-unnecessary-object-get-own-property-symbols-spread')
-const adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread = adaptPluginRule(noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule, 'no-unnecessary-object-get-own-property-descriptor-spread')
-const adaptedNoUnnecessaryObjectIsFrozenSpread = adaptPluginRule(noUnnecessaryObjectIsFrozenSpreadRule, 'no-unnecessary-object-is-frozen-spread')
-const adaptedNoUnnecessaryObjectIsSealedSpread = adaptPluginRule(noUnnecessaryObjectIsSealedSpreadRule, 'no-unnecessary-object-is-sealed-spread')
-const adaptedNoUnnecessaryObjectIsExtensibleSpread = adaptPluginRule(noUnnecessaryObjectIsExtensibleSpreadRule, 'no-unnecessary-object-is-extensible-spread')
-const adaptedNoUnnecessaryObjectFromEntriesSpread = adaptPluginRule(noUnnecessaryObjectFromEntriesSpreadRule, 'no-unnecessary-object-from-entries-spread')
-const adaptedNoUnnecessaryObjectGroupBySpread = adaptPluginRule(noUnnecessaryObjectGroupBySpreadRule, 'no-unnecessary-object-group-by-spread')
-const adaptedNoUnnecessaryArrayBufferSliceSpread = adaptPluginRule(noUnnecessaryArrayBufferSliceSpreadRule, 'no-unnecessary-array-buffer-slice-spread')
-const adaptedNoUnnecessaryPromiseTrySpread = adaptPluginRule(noUnnecessaryPromiseTrySpreadRule, 'no-unnecessary-promise-try-spread')
-const adaptedNoUnnecessaryStringCharAtSpread = adaptPluginRule(noUnnecessaryStringCharAtSpreadRule, 'no-unnecessary-string-char-at-spread')
-const adaptedNoUnnecessaryStringCharCodeAtSpread = adaptPluginRule(noUnnecessaryStringCharCodeAtSpreadRule, 'no-unnecessary-string-char-code-at-spread')
-const adaptedNoUnnecessaryStringCodePointAtSpread = adaptPluginRule(noUnnecessaryStringCodePointAtSpreadRule, 'no-unnecessary-string-code-point-at-spread')
-const adaptedNoUnnecessaryStringConcatSpread = adaptPluginRule(noUnnecessaryStringConcatSpreadRule, 'no-unnecessary-string-concat-spread')
-const adaptedNoUnnecessaryStringEndsWithSpread = adaptPluginRule(noUnnecessaryStringEndsWithSpreadRule, 'no-unnecessary-string-ends-with-spread')
-const adaptedNoUnnecessaryStringIncludesSpread = adaptPluginRule(noUnnecessaryStringIncludesSpreadRule, 'no-unnecessary-string-includes-spread')
-const adaptedNoUnnecessaryStringIndexOfSpread = adaptPluginRule(noUnnecessaryStringIndexOfSpreadRule, 'no-unnecessary-string-index-of-spread')
-const adaptedNoUnnecessaryStringLastIndexOfSpread = adaptPluginRule(noUnnecessaryStringLastIndexOfSpreadRule, 'no-unnecessary-string-last-index-of-spread')
-const adaptedNoUnnecessaryStringLocaleCompareSpread = adaptPluginRule(noUnnecessaryStringLocaleCompareSpreadRule, 'no-unnecessary-string-locale-compare-spread')
-const adaptedNoUnnecessaryStringMatchSpread = adaptPluginRule(noUnnecessaryStringMatchSpreadRule, 'no-unnecessary-string-match-spread')
-const adaptedNoUnnecessaryStringMatchAllSpread = adaptPluginRule(noUnnecessaryStringMatchAllSpreadRule, 'no-unnecessary-string-match-all-spread')
-const adaptedNoUnnecessaryStringNormalizeSpread = adaptPluginRule(noUnnecessaryStringNormalizeSpreadRule, 'no-unnecessary-string-normalize-spread')
-const adaptedNoUnnecessaryStringPadStartSpread = adaptPluginRule(noUnnecessaryStringPadStartSpreadRule, 'no-unnecessary-string-pad-start-spread')
-const adaptedNoUnnecessaryStringPadEndSpread = adaptPluginRule(noUnnecessaryStringPadEndSpreadRule, 'no-unnecessary-string-pad-end-spread')
-const adaptedNoUnnecessaryStringRepeatSpread = adaptPluginRule(noUnnecessaryStringRepeatSpreadRule, 'no-unnecessary-string-repeat-spread')
-const adaptedNoUnnecessaryStringReplaceSpread = adaptPluginRule(noUnnecessaryStringReplaceSpreadRule, 'no-unnecessary-string-replace-spread')
-const adaptedNoUnnecessaryStringReplaceAllSpread = adaptPluginRule(noUnnecessaryStringReplaceAllSpreadRule, 'no-unnecessary-string-replace-all-spread')
-const adaptedNoUnnecessaryStringSearchSpread = adaptPluginRule(noUnnecessaryStringSearchSpreadRule, 'no-unnecessary-string-search-spread')
-const adaptedNoUnnecessaryStringSliceSpread = adaptPluginRule(noUnnecessaryStringSliceSpreadRule, 'no-unnecessary-string-slice-spread')
-const adaptedNoUnnecessaryStringSplitSpread = adaptPluginRule(noUnnecessaryStringSplitSpreadRule, 'no-unnecessary-string-split-spread')
-const adaptedNoUnnecessaryStringStartsWithSpread = adaptPluginRule(noUnnecessaryStringStartsWithSpreadRule, 'no-unnecessary-string-starts-with-spread')
-const adaptedNoUnnecessaryStringSubstringSpread = adaptPluginRule(noUnnecessaryStringSubstringSpreadRule, 'no-unnecessary-string-substring-spread')
-const adaptedNoUnnecessaryStringToLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLowerCaseSpreadRule, 'no-unnecessary-string-to-lower-case-spread')
-const adaptedNoUnnecessaryStringToUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToUpperCaseSpreadRule, 'no-unnecessary-string-to-upper-case-spread')
-const adaptedNoUnnecessaryStringToLocaleLowerCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleLowerCaseSpreadRule, 'no-unnecessary-string-to-locale-lower-case-spread')
-const adaptedNoUnnecessaryStringToLocaleUpperCaseSpread = adaptPluginRule(noUnnecessaryStringToLocaleUpperCaseSpreadRule, 'no-unnecessary-string-to-locale-upper-case-spread')
-const adaptedNoUnnecessaryStringToStringSpread = adaptPluginRule(noUnnecessaryStringToStringSpreadRule, 'no-unnecessary-string-to-string-spread')
-const adaptedNoUnnecessaryStringTrimSpread = adaptPluginRule(noUnnecessaryStringTrimSpreadRule, 'no-unnecessary-string-trim-spread')
-const adaptedNoUnnecessaryStringTrimStartSpread = adaptPluginRule(noUnnecessaryStringTrimStartSpreadRule, 'no-unnecessary-string-trim-start-spread')
-const adaptedNoUnnecessaryStringTrimEndSpread = adaptPluginRule(noUnnecessaryStringTrimEndSpreadRule, 'no-unnecessary-string-trim-end-spread')
-const adaptedNoUnnecessaryStringValueOfSpread = adaptPluginRule(noUnnecessaryStringValueOfSpreadRule, 'no-unnecessary-string-value-of-spread')
-const adaptedNoUnnecessaryStringAtSpread = adaptPluginRule(noUnnecessaryStringAtSpreadRule, 'no-unnecessary-string-at-spread')
-const adaptedNoUnnecessaryStringFixedSpread = adaptPluginRule(noUnnecessaryStringFixedSpreadRule, 'no-unnecessary-string-fixed-spread')
-const adaptedNoUnnecessaryStringFontcolorSpread = adaptPluginRule(noUnnecessaryStringFontcolorSpreadRule, 'no-unnecessary-string-fontcolor-spread')
-const adaptedNoUnnecessaryStringFontsizeSpread = adaptPluginRule(noUnnecessaryStringFontsizeSpreadRule, 'no-unnecessary-string-fontsize-spread')
-const adaptedNoUnnecessaryStringItalicsSpread = adaptPluginRule(noUnnecessaryStringItalicsSpreadRule, 'no-unnecessary-string-italics-spread')
-const adaptedNoUnnecessaryStringSmallSpread = adaptPluginRule(noUnnecessaryStringSmallSpreadRule, 'no-unnecessary-string-small-spread')
-const adaptedNoUnnecessaryStringStrikeSpread = adaptPluginRule(noUnnecessaryStringStrikeSpreadRule, 'no-unnecessary-string-strike-spread')
-const adaptedNoUnnecessaryStringSubSpread = adaptPluginRule(noUnnecessaryStringSubSpreadRule, 'no-unnecessary-string-sub-spread')
-const adaptedNoUnnecessaryStringSupSpread = adaptPluginRule(noUnnecessaryStringSupSpreadRule, 'no-unnecessary-string-sup-spread')
-const adaptedNoUnnecessaryStringAnchorSpread = adaptPluginRule(noUnnecessaryStringAnchorSpreadRule, 'no-unnecessary-string-anchor-spread')
-const adaptedNoUnnecessaryStringLinkSpread = adaptPluginRule(noUnnecessaryStringLinkSpreadRule, 'no-unnecessary-string-link-spread')
-const adaptedNoUnnecessaryStringBigSpread = adaptPluginRule(noUnnecessaryStringBigSpreadRule, 'no-unnecessary-string-big-spread')
-const adaptedNoUnnecessaryStringBlinkSpread = adaptPluginRule(noUnnecessaryStringBlinkSpreadRule, 'no-unnecessary-string-blink-spread')
-const adaptedNoUnnecessaryStringBoldSpread = adaptPluginRule(noUnnecessaryStringBoldSpreadRule, 'no-unnecessary-string-bold-spread')
-const adaptedNoUnnecessaryNumberToExponentialSpread = adaptPluginRule(noUnnecessaryNumberToExponentialSpreadRule, 'no-unnecessary-number-to-exponential-spread')
-const adaptedNoUnnecessaryNumberToFixedSpread = adaptPluginRule(noUnnecessaryNumberToFixedSpreadRule, 'no-unnecessary-number-to-fixed-spread')
-const adaptedNoUnnecessaryNumberToPrecisionSpread = adaptPluginRule(noUnnecessaryNumberToPrecisionSpreadRule, 'no-unnecessary-number-to-precision-spread')
-const adaptedNoUnnecessaryNumberToStringSpread = adaptPluginRule(noUnnecessaryNumberToStringSpreadRule, 'no-unnecessary-number-to-string-spread')
-const adaptedNoUnnecessaryNumberToLocaleStringSpread = adaptPluginRule(noUnnecessaryNumberToLocaleStringSpreadRule, 'no-unnecessary-number-to-locale-string-spread')
-const adaptedNoUnnecessaryNumberValueOfSpread = adaptPluginRule(noUnnecessaryNumberValueOfSpreadRule, 'no-unnecessary-number-value-of-spread')
-const adaptedNoUnnecessaryArrayAtSpread = adaptPluginRule(noUnnecessaryArrayAtSpreadRule, 'no-unnecessary-array-at-spread')
-const adaptedNoUnnecessaryArrayConcatSpread = adaptPluginRule(noUnnecessaryArrayConcatSpreadRule, 'no-unnecessary-array-concat-spread')
-const adaptedNoUnnecessaryArrayCopyWithinSpread = adaptPluginRule(noUnnecessaryArrayCopyWithinSpreadRule, 'no-unnecessary-array-copy-within-spread')
-const adaptedNoUnnecessaryArrayEntriesSpread = adaptPluginRule(noUnnecessaryArrayEntriesSpreadRule, 'no-unnecessary-array-entries-spread')
-const adaptedNoUnnecessaryArrayEverySpread = adaptPluginRule(noUnnecessaryArrayEverySpreadRule, 'no-unnecessary-array-every-spread')
-const adaptedNoUnnecessaryArrayFillSpread = adaptPluginRule(noUnnecessaryArrayFillSpreadRule, 'no-unnecessary-array-fill-spread')
-const adaptedNoUnnecessaryArrayFilterSpread = adaptPluginRule(noUnnecessaryArrayFilterSpreadRule, 'no-unnecessary-array-filter-spread')
-const adaptedNoUnnecessaryArrayFindSpread = adaptPluginRule(noUnnecessaryArrayFindSpreadRule, 'no-unnecessary-array-find-spread')
-const adaptedNoUnnecessaryArrayFindIndexSpread = adaptPluginRule(noUnnecessaryArrayFindIndexSpreadRule, 'no-unnecessary-array-find-index-spread')
-const adaptedNoUnnecessaryArrayFindLastSpread = adaptPluginRule(noUnnecessaryArrayFindLastSpreadRule, 'no-unnecessary-array-find-last-spread')
-const adaptedNoUnnecessaryArrayFindLastIndexSpread = adaptPluginRule(noUnnecessaryArrayFindLastIndexSpreadRule, 'no-unnecessary-array-find-last-index-spread')
-const adaptedNoUnnecessaryArrayFlatSpread = adaptPluginRule(noUnnecessaryArrayFlatSpreadRule, 'no-unnecessary-array-flat-spread')
-const adaptedNoUnnecessaryArrayFlatMapSpread = adaptPluginRule(noUnnecessaryArrayFlatMapSpreadRule, 'no-unnecessary-array-flat-map-spread')
-const adaptedNoUnnecessaryArrayForEachSpread = adaptPluginRule(noUnnecessaryArrayForEachSpreadRule, 'no-unnecessary-array-for-each-spread')
-const adaptedNoUnnecessaryArrayIncludesSpread = adaptPluginRule(noUnnecessaryArrayIncludesSpreadRule, 'no-unnecessary-array-includes-spread')
-const adaptedNoUnnecessaryArrayIndexOfSpread = adaptPluginRule(noUnnecessaryArrayIndexOfSpreadRule, 'no-unnecessary-array-index-of-spread')
-const adaptedNoUnnecessaryArrayJoinSpread = adaptPluginRule(noUnnecessaryArrayJoinSpreadRule, 'no-unnecessary-array-join-spread')
-const adaptedNoUnnecessaryArrayKeysSpread = adaptPluginRule(noUnnecessaryArrayKeysSpreadRule, 'no-unnecessary-array-keys-spread')
-const adaptedNoUnnecessaryArrayLastIndexOfSpread = adaptPluginRule(noUnnecessaryArrayLastIndexOfSpreadRule, 'no-unnecessary-array-last-index-of-spread')
-const adaptedNoUnnecessaryArrayMapSpread = adaptPluginRule(noUnnecessaryArrayMapSpreadRule, 'no-unnecessary-array-map-spread')
-const adaptedNoUnnecessaryArrayPopSpread = adaptPluginRule(noUnnecessaryArrayPopSpreadRule, 'no-unnecessary-array-pop-spread')
-const adaptedNoUnnecessaryArrayPushSpread = adaptPluginRule(noUnnecessaryArrayPushSpreadRule, 'no-unnecessary-array-push-spread')
-const adaptedNoUnnecessaryArrayReduceSpread = adaptPluginRule(noUnnecessaryArrayReduceSpreadRule, 'no-unnecessary-array-reduce-spread')
-const adaptedNoUnnecessaryArrayReduceRightSpread = adaptPluginRule(noUnnecessaryArrayReduceRightSpreadRule, 'no-unnecessary-array-reduce-right-spread')
-const adaptedNoUnnecessaryArrayReverseSpread = adaptPluginRule(noUnnecessaryArrayReverseSpreadRule, 'no-unnecessary-array-reverse-spread')
-const adaptedNoUnnecessaryArrayShiftSpread = adaptPluginRule(noUnnecessaryArrayShiftSpreadRule, 'no-unnecessary-array-shift-spread')
-const adaptedNoUnnecessaryArraySliceSpread = adaptPluginRule(noUnnecessaryArraySliceSpreadRule, 'no-unnecessary-array-slice-spread')
-const adaptedNoUnnecessaryArraySomeSpread = adaptPluginRule(noUnnecessaryArraySomeSpreadRule, 'no-unnecessary-array-some-spread')
-const adaptedNoUnnecessaryArraySortSpread = adaptPluginRule(noUnnecessaryArraySortSpreadRule, 'no-unnecessary-array-sort-spread')
-const adaptedNoUnnecessaryArraySpliceSpread = adaptPluginRule(noUnnecessaryArraySpliceSpreadRule, 'no-unnecessary-array-splice-spread')
-const adaptedNoUnnecessaryArrayToLocaleStringSpread = adaptPluginRule(noUnnecessaryArrayToLocaleStringSpreadRule, 'no-unnecessary-array-to-locale-string-spread')
-const adaptedNoUnnecessaryArrayToReversedSpread = adaptPluginRule(noUnnecessaryArrayToReversedSpreadRule, 'no-unnecessary-array-to-reversed-spread')
-const adaptedNoUnnecessaryArrayToSortedSpread = adaptPluginRule(noUnnecessaryArrayToSortedSpreadRule, 'no-unnecessary-array-to-sorted-spread')
-const adaptedNoUnnecessaryArrayToSplicedSpread = adaptPluginRule(noUnnecessaryArrayToSplicedSpreadRule, 'no-unnecessary-array-to-spliced-spread')
-const adaptedNoUnnecessaryArrayToStringSpread = adaptPluginRule(noUnnecessaryArrayToStringSpreadRule, 'no-unnecessary-array-to-string-spread')
-const adaptedNoUnnecessaryArrayUnshiftSpread = adaptPluginRule(noUnnecessaryArrayUnshiftSpreadRule, 'no-unnecessary-array-unshift-spread')
-const adaptedNoUnnecessaryArrayValuesSpread = adaptPluginRule(noUnnecessaryArrayValuesSpreadRule, 'no-unnecessary-array-values-spread')
-const adaptedNoUnnecessaryArrayWithSpread = adaptPluginRule(noUnnecessaryArrayWithSpreadRule, 'no-unnecessary-array-with-spread')
-const adaptedNoUnnecessaryFunctionCallSpread = adaptPluginRule(noUnnecessaryFunctionCallSpreadRule, 'no-unnecessary-function-call-spread')
-const adaptedNoUnnecessaryFunctionApplySpread = adaptPluginRule(noUnnecessaryFunctionApplySpreadRule, 'no-unnecessary-function-apply-spread')
-const adaptedNoUnnecessaryFunctionBindSpread = adaptPluginRule(noUnnecessaryFunctionBindSpreadRule, 'no-unnecessary-function-bind-spread')
-const adaptedNoUnnecessaryFunctionToStringSpread = adaptPluginRule(noUnnecessaryFunctionToStringSpreadRule, 'no-unnecessary-function-to-string-spread')
-const adaptedNoUnnecessaryDateToJsonSpread = adaptPluginRule(noUnnecessaryDateToJsonSpreadRule, 'no-unnecessary-date-to-json-spread')
-const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryDateToGmtStringSpreadRule, 'no-unnecessary-date-to-gmt-string-spread')
-  ['no-unnecessary-typed-array-at-spread']: adaptPluginRule(noUnnecessaryTypedArrayAtSpreadRule),
-  ['no-unnecessary-typed-array-copy-within-spread']: adaptPluginRule(noUnnecessaryTypedArrayCopyWithinSpreadRule),
-  ['no-unnecessary-typed-array-entries-spread']: adaptPluginRule(noUnnecessaryTypedArrayEntriesSpreadRule),
-  ['no-unnecessary-typed-array-every-spread']: adaptPluginRule(noUnnecessaryTypedArrayEverySpreadRule),
-  ['no-unnecessary-typed-array-fill-spread']: adaptPluginRule(noUnnecessaryTypedArrayFillSpreadRule),
-  ['no-unnecessary-typed-array-filter-spread']: adaptPluginRule(noUnnecessaryTypedArrayFilterSpreadRule),
-  ['no-unnecessary-typed-array-find-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindSpreadRule),
-  ['no-unnecessary-typed-array-find-index-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindIndexSpreadRule),
-  ['no-unnecessary-typed-array-find-last-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindLastSpreadRule),
-  ['no-unnecessary-typed-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryTypedArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-typed-array-for-each-spread']: adaptPluginRule(noUnnecessaryTypedArrayForEachSpreadRule),
-  ['no-unnecessary-typed-array-includes-spread']: adaptPluginRule(noUnnecessaryTypedArrayIncludesSpreadRule),
-  ['no-unnecessary-typed-array-index-of-spread']: adaptPluginRule(noUnnecessaryTypedArrayIndexOfSpreadRule),
-  ['no-unnecessary-typed-array-join-spread']: adaptPluginRule(noUnnecessaryTypedArrayJoinSpreadRule),
-  ['no-unnecessary-typed-array-keys-spread']: adaptPluginRule(noUnnecessaryTypedArrayKeysSpreadRule),
-  ['no-unnecessary-typed-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryTypedArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-typed-array-map-spread']: adaptPluginRule(noUnnecessaryTypedArrayMapSpreadRule),
-  ['no-unnecessary-typed-array-reduce-spread']: adaptPluginRule(noUnnecessaryTypedArrayReduceSpreadRule),
-  ['no-unnecessary-typed-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryTypedArrayReduceRightSpreadRule),
-  ['no-unnecessary-typed-array-reverse-spread']: adaptPluginRule(noUnnecessaryTypedArrayReverseSpreadRule),
-  ['no-unnecessary-typed-array-set-spread']: adaptPluginRule(noUnnecessaryTypedArraySetSpreadRule),
-  ['no-unnecessary-typed-array-slice-spread']: adaptPluginRule(noUnnecessaryTypedArraySliceSpreadRule),
-  ['no-unnecessary-typed-array-some-spread']: adaptPluginRule(noUnnecessaryTypedArraySomeSpreadRule),
-  ['no-unnecessary-typed-array-sort-spread']: adaptPluginRule(noUnnecessaryTypedArraySortSpreadRule),
-  ['no-unnecessary-typed-array-sub-array-spread']: adaptPluginRule(noUnnecessaryTypedArraySubArraySpreadRule),
-  ['no-unnecessary-typed-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryTypedArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-typed-array-to-string-spread']: adaptPluginRule(noUnnecessaryTypedArrayToStringSpreadRule),
-  ['no-unnecessary-typed-array-values-spread']: adaptPluginRule(noUnnecessaryTypedArrayValuesSpreadRule),
-  ['no-unnecessary-typed-array-with-spread']: adaptPluginRule(noUnnecessaryTypedArrayWithSpreadRule),
-  ['no-unnecessary-dataview-get-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewGetBigInt64SpreadRule),
-  ['no-unnecessary-dataview-get-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewGetBigUint64SpreadRule),
-  ['no-unnecessary-dataview-get-float32-spread']: adaptPluginRule(noUnnecessaryDataviewGetFloat32SpreadRule),
-  ['no-unnecessary-dataview-get-float64-spread']: adaptPluginRule(noUnnecessaryDataviewGetFloat64SpreadRule),
-  ['no-unnecessary-dataview-get-int16-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt16SpreadRule),
-  ['no-unnecessary-dataview-get-int32-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt32SpreadRule),
-  ['no-unnecessary-dataview-get-int8-spread']: adaptPluginRule(noUnnecessaryDataviewGetInt8SpreadRule),
-  ['no-unnecessary-dataview-get-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint16SpreadRule),
-  ['no-unnecessary-dataview-get-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint32SpreadRule),
-  ['no-unnecessary-dataview-get-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewGetUint8SpreadRule),
-  ['no-unnecessary-dataview-set-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewSetBigInt64SpreadRule),
-  ['no-unnecessary-dataview-set-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewSetBigUint64SpreadRule),
-  ['no-unnecessary-encode-uri-spread']: adaptPluginRule(noUnnecessaryEncodeUriSpreadRule),
-  ['no-unnecessary-decode-uri-spread']: adaptPluginRule(noUnnecessaryDecodeUriSpreadRule),
-  ['no-unnecessary-encode-uri-component-spread']: adaptPluginRule(noUnnecessaryEncodeUriComponentSpreadRule),
-  ['no-unnecessary-decode-uri-component-spread']: adaptPluginRule(noUnnecessaryDecodeUriComponentSpreadRule),
-  ['no-unnecessary-eval-spread']: adaptPluginRule(noUnnecessaryEvalSpreadRule),
-  ['no-unnecessary-is-finite-spread']: adaptPluginRule(noUnnecessaryIsFiniteSpreadRule),
-  ['no-unnecessary-is-nan-spread']: adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule),
-  ['no-unnecessary-parse-float-spread']: adaptPluginRule(noUnnecessaryParseFloatSpreadRule),
-  ['no-unnecessary-parse-int-spread']: adaptPluginRule(noUnnecessaryParseIntSpreadRule),
-  ['no-unnecessary-shared-array-buffer-slice-spread']: adaptPluginRule(noUnnecessarySharedArrayBufferSliceSpreadRule),
-  ['no-unnecessary-int-8-array-set-spread']: adaptPluginRule(noUnnecessaryInt8ArraySetSpreadRule),
-  ['no-unnecessary-int-8-array-subarray-spread']: adaptPluginRule(noUnnecessaryInt8ArraySubarraySpreadRule),
-  ['no-unnecessary-int-8-array-slice-spread']: adaptPluginRule(noUnnecessaryInt8ArraySliceSpreadRule),
-  ['no-unnecessary-uint-8-array-set-spread']: adaptPluginRule(noUnnecessaryUint8ArraySetSpreadRule),
-  ['no-unnecessary-uint-8-array-subarray-spread']: adaptPluginRule(noUnnecessaryUint8ArraySubarraySpreadRule),
-  ['no-unnecessary-uint-8-array-slice-spread']: adaptPluginRule(noUnnecessaryUint8ArraySliceSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-set-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArraySetSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-subarray-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArraySubarraySpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-slice-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArraySliceSpreadRule),
-  ['no-unnecessary-int-16-array-set-spread']: adaptPluginRule(noUnnecessaryInt16ArraySetSpreadRule),
-  ['no-unnecessary-int-16-array-subarray-spread']: adaptPluginRule(noUnnecessaryInt16ArraySubarraySpreadRule),
-  ['no-unnecessary-int-16-array-slice-spread']: adaptPluginRule(noUnnecessaryInt16ArraySliceSpreadRule),
-  ['no-unnecessary-uint-16-array-set-spread']: adaptPluginRule(noUnnecessaryUint16ArraySetSpreadRule),
-  ['no-unnecessary-uint-16-array-subarray-spread']: adaptPluginRule(noUnnecessaryUint16ArraySubarraySpreadRule),
-  ['no-unnecessary-uint-16-array-slice-spread']: adaptPluginRule(noUnnecessaryUint16ArraySliceSpreadRule),
-  ['no-unnecessary-int-32-array-set-spread']: adaptPluginRule(noUnnecessaryInt32ArraySetSpreadRule),
-  ['no-unnecessary-int-32-array-subarray-spread']: adaptPluginRule(noUnnecessaryInt32ArraySubarraySpreadRule),
-  ['no-unnecessary-int-32-array-slice-spread']: adaptPluginRule(noUnnecessaryInt32ArraySliceSpreadRule),
-  ['no-unnecessary-uint-32-array-set-spread']: adaptPluginRule(noUnnecessaryUint32ArraySetSpreadRule),
-  ['no-unnecessary-uint-32-array-subarray-spread']: adaptPluginRule(noUnnecessaryUint32ArraySubarraySpreadRule),
-  ['no-unnecessary-uint-32-array-slice-spread']: adaptPluginRule(noUnnecessaryUint32ArraySliceSpreadRule),
-  ['no-unnecessary-float-32-array-set-spread']: adaptPluginRule(noUnnecessaryFloat32ArraySetSpreadRule),
-  ['no-unnecessary-float-32-array-subarray-spread']: adaptPluginRule(noUnnecessaryFloat32ArraySubarraySpreadRule),
-  ['no-unnecessary-float-32-array-slice-spread']: adaptPluginRule(noUnnecessaryFloat32ArraySliceSpreadRule),
-  ['no-unnecessary-float-64-array-set-spread']: adaptPluginRule(noUnnecessaryFloat64ArraySetSpreadRule),
-  ['no-unnecessary-float-64-array-subarray-spread']: adaptPluginRule(noUnnecessaryFloat64ArraySubarraySpreadRule),
-  ['no-unnecessary-float-64-array-slice-spread']: adaptPluginRule(noUnnecessaryFloat64ArraySliceSpreadRule),
-  ['no-unnecessary-big-int-64-array-set-spread']: adaptPluginRule(noUnnecessaryBigInt64ArraySetSpreadRule),
-  ['no-unnecessary-big-int-64-array-subarray-spread']: adaptPluginRule(noUnnecessaryBigInt64ArraySubarraySpreadRule),
-  ['no-unnecessary-big-int-64-array-slice-spread']: adaptPluginRule(noUnnecessaryBigInt64ArraySliceSpreadRule),
-  ['no-unnecessary-big-uint-64-array-set-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySetSpreadRule),
-  ['no-unnecessary-big-uint-64-array-subarray-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySubarraySpreadRule),
-  ['no-unnecessary-big-uint-64-array-slice-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySliceSpreadRule),
-  ['no-unnecessary-int-8-array-fill-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFillSpreadRule),
-  ['no-unnecessary-int-8-array-sort-spread']: adaptPluginRule(noUnnecessaryInt8ArraySortSpreadRule),
-  ['no-unnecessary-int-8-array-reverse-spread']: adaptPluginRule(noUnnecessaryInt8ArrayReverseSpreadRule),
-  ['no-unnecessary-int-8-array-copy-within-spread']: adaptPluginRule(noUnnecessaryInt8ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-uint-8-array-fill-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFillSpreadRule),
-  ['no-unnecessary-uint-8-array-sort-spread']: adaptPluginRule(noUnnecessaryUint8ArraySortSpreadRule),
-  ['no-unnecessary-uint-8-array-reverse-spread']: adaptPluginRule(noUnnecessaryUint8ArrayReverseSpreadRule),
-  ['no-unnecessary-uint-8-array-copy-within-spread']: adaptPluginRule(noUnnecessaryUint8ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-fill-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFillSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-sort-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArraySortSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-reverse-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayReverseSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-copy-within-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayCopyWithinSpreadRule),
-  ['no-unnecessary-int-16-array-fill-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFillSpreadRule),
-  ['no-unnecessary-int-16-array-sort-spread']: adaptPluginRule(noUnnecessaryInt16ArraySortSpreadRule),
-  ['no-unnecessary-int-16-array-reverse-spread']: adaptPluginRule(noUnnecessaryInt16ArrayReverseSpreadRule),
-  ['no-unnecessary-int-16-array-copy-within-spread']: adaptPluginRule(noUnnecessaryInt16ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-uint-16-array-fill-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFillSpreadRule),
-  ['no-unnecessary-uint-16-array-sort-spread']: adaptPluginRule(noUnnecessaryUint16ArraySortSpreadRule),
-  ['no-unnecessary-uint-16-array-reverse-spread']: adaptPluginRule(noUnnecessaryUint16ArrayReverseSpreadRule),
-  ['no-unnecessary-uint-16-array-copy-within-spread']: adaptPluginRule(noUnnecessaryUint16ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-int-32-array-fill-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFillSpreadRule),
-  ['no-unnecessary-int-32-array-sort-spread']: adaptPluginRule(noUnnecessaryInt32ArraySortSpreadRule),
-  ['no-unnecessary-int-32-array-reverse-spread']: adaptPluginRule(noUnnecessaryInt32ArrayReverseSpreadRule),
-  ['no-unnecessary-int-32-array-copy-within-spread']: adaptPluginRule(noUnnecessaryInt32ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-uint-32-array-fill-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFillSpreadRule),
-  ['no-unnecessary-uint-32-array-sort-spread']: adaptPluginRule(noUnnecessaryUint32ArraySortSpreadRule),
-  ['no-unnecessary-uint-32-array-reverse-spread']: adaptPluginRule(noUnnecessaryUint32ArrayReverseSpreadRule),
-  ['no-unnecessary-uint-32-array-copy-within-spread']: adaptPluginRule(noUnnecessaryUint32ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-float-32-array-fill-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFillSpreadRule),
-  ['no-unnecessary-float-32-array-sort-spread']: adaptPluginRule(noUnnecessaryFloat32ArraySortSpreadRule),
-  ['no-unnecessary-float-32-array-reverse-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayReverseSpreadRule),
-  ['no-unnecessary-float-32-array-copy-within-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-float-64-array-fill-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFillSpreadRule),
-  ['no-unnecessary-float-64-array-sort-spread']: adaptPluginRule(noUnnecessaryFloat64ArraySortSpreadRule),
-  ['no-unnecessary-float-64-array-reverse-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayReverseSpreadRule),
-  ['no-unnecessary-float-64-array-copy-within-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-big-int-64-array-fill-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFillSpreadRule),
-  ['no-unnecessary-big-int-64-array-sort-spread']: adaptPluginRule(noUnnecessaryBigInt64ArraySortSpreadRule),
-  ['no-unnecessary-big-int-64-array-reverse-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayReverseSpreadRule),
-  ['no-unnecessary-big-int-64-array-copy-within-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-big-uint-64-array-fill-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFillSpreadRule),
-  ['no-unnecessary-big-uint-64-array-sort-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySortSpreadRule),
-  ['no-unnecessary-big-uint-64-array-reverse-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayReverseSpreadRule),
-  ['no-unnecessary-big-uint-64-array-copy-within-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayCopyWithinSpreadRule),
-  ['no-unnecessary-int-8-array-map-spread']: adaptPluginRule(noUnnecessaryInt8ArrayMapSpreadRule),
-  ['no-unnecessary-int-8-array-filter-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFilterSpreadRule),
-  ['no-unnecessary-int-8-array-find-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindSpreadRule),
-  ['no-unnecessary-int-8-array-every-spread']: adaptPluginRule(noUnnecessaryInt8ArrayEverySpreadRule),
-  ['no-unnecessary-int-8-array-some-spread']: adaptPluginRule(noUnnecessaryInt8ArraySomeSpreadRule),
-  ['no-unnecessary-int-8-array-for-each-spread']: adaptPluginRule(noUnnecessaryInt8ArrayForEachSpreadRule),
-  ['no-unnecessary-uint-8-array-map-spread']: adaptPluginRule(noUnnecessaryUint8ArrayMapSpreadRule),
-  ['no-unnecessary-uint-8-array-filter-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFilterSpreadRule),
-  ['no-unnecessary-uint-8-array-find-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindSpreadRule),
-  ['no-unnecessary-uint-8-array-every-spread']: adaptPluginRule(noUnnecessaryUint8ArrayEverySpreadRule),
-  ['no-unnecessary-uint-8-array-some-spread']: adaptPluginRule(noUnnecessaryUint8ArraySomeSpreadRule),
-  ['no-unnecessary-uint-8-array-for-each-spread']: adaptPluginRule(noUnnecessaryUint8ArrayForEachSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-map-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayMapSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-filter-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFilterSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-find-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-every-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayEverySpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-some-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArraySomeSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-for-each-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayForEachSpreadRule),
-  ['no-unnecessary-int-16-array-map-spread']: adaptPluginRule(noUnnecessaryInt16ArrayMapSpreadRule),
-  ['no-unnecessary-int-16-array-filter-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFilterSpreadRule),
-  ['no-unnecessary-int-16-array-find-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindSpreadRule),
-  ['no-unnecessary-int-16-array-every-spread']: adaptPluginRule(noUnnecessaryInt16ArrayEverySpreadRule),
-  ['no-unnecessary-int-16-array-some-spread']: adaptPluginRule(noUnnecessaryInt16ArraySomeSpreadRule),
-  ['no-unnecessary-int-16-array-for-each-spread']: adaptPluginRule(noUnnecessaryInt16ArrayForEachSpreadRule),
-  ['no-unnecessary-uint-16-array-map-spread']: adaptPluginRule(noUnnecessaryUint16ArrayMapSpreadRule),
-  ['no-unnecessary-uint-16-array-filter-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFilterSpreadRule),
-  ['no-unnecessary-uint-16-array-find-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindSpreadRule),
-  ['no-unnecessary-uint-16-array-every-spread']: adaptPluginRule(noUnnecessaryUint16ArrayEverySpreadRule),
-  ['no-unnecessary-uint-16-array-some-spread']: adaptPluginRule(noUnnecessaryUint16ArraySomeSpreadRule),
-  ['no-unnecessary-uint-16-array-for-each-spread']: adaptPluginRule(noUnnecessaryUint16ArrayForEachSpreadRule),
-  ['no-unnecessary-int-32-array-map-spread']: adaptPluginRule(noUnnecessaryInt32ArrayMapSpreadRule),
-  ['no-unnecessary-int-32-array-filter-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFilterSpreadRule),
-  ['no-unnecessary-int-32-array-find-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindSpreadRule),
-  ['no-unnecessary-int-32-array-every-spread']: adaptPluginRule(noUnnecessaryInt32ArrayEverySpreadRule),
-  ['no-unnecessary-int-32-array-some-spread']: adaptPluginRule(noUnnecessaryInt32ArraySomeSpreadRule),
-  ['no-unnecessary-int-32-array-for-each-spread']: adaptPluginRule(noUnnecessaryInt32ArrayForEachSpreadRule),
-  ['no-unnecessary-uint-32-array-map-spread']: adaptPluginRule(noUnnecessaryUint32ArrayMapSpreadRule),
-  ['no-unnecessary-uint-32-array-filter-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFilterSpreadRule),
-  ['no-unnecessary-uint-32-array-find-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindSpreadRule),
-  ['no-unnecessary-uint-32-array-every-spread']: adaptPluginRule(noUnnecessaryUint32ArrayEverySpreadRule),
-  ['no-unnecessary-uint-32-array-some-spread']: adaptPluginRule(noUnnecessaryUint32ArraySomeSpreadRule),
-  ['no-unnecessary-uint-32-array-for-each-spread']: adaptPluginRule(noUnnecessaryUint32ArrayForEachSpreadRule),
-  ['no-unnecessary-float-32-array-map-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayMapSpreadRule),
-  ['no-unnecessary-float-32-array-filter-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFilterSpreadRule),
-  ['no-unnecessary-float-32-array-find-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindSpreadRule),
-  ['no-unnecessary-float-32-array-every-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayEverySpreadRule),
-  ['no-unnecessary-float-32-array-some-spread']: adaptPluginRule(noUnnecessaryFloat32ArraySomeSpreadRule),
-  ['no-unnecessary-float-32-array-for-each-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayForEachSpreadRule),
-  ['no-unnecessary-float-64-array-map-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayMapSpreadRule),
-  ['no-unnecessary-float-64-array-filter-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFilterSpreadRule),
-  ['no-unnecessary-float-64-array-find-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindSpreadRule),
-  ['no-unnecessary-float-64-array-every-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayEverySpreadRule),
-  ['no-unnecessary-float-64-array-some-spread']: adaptPluginRule(noUnnecessaryFloat64ArraySomeSpreadRule),
-  ['no-unnecessary-float-64-array-for-each-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayForEachSpreadRule),
-  ['no-unnecessary-big-int-64-array-map-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayMapSpreadRule),
-  ['no-unnecessary-big-int-64-array-filter-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFilterSpreadRule),
-  ['no-unnecessary-big-int-64-array-find-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindSpreadRule),
-  ['no-unnecessary-big-int-64-array-every-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayEverySpreadRule),
-  ['no-unnecessary-big-int-64-array-some-spread']: adaptPluginRule(noUnnecessaryBigInt64ArraySomeSpreadRule),
-  ['no-unnecessary-big-int-64-array-for-each-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayForEachSpreadRule),
-  ['no-unnecessary-big-uint-64-array-map-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayMapSpreadRule),
-  ['no-unnecessary-big-uint-64-array-filter-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFilterSpreadRule),
-  ['no-unnecessary-big-uint-64-array-find-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindSpreadRule),
-  ['no-unnecessary-big-uint-64-array-every-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayEverySpreadRule),
-  ['no-unnecessary-big-uint-64-array-some-spread']: adaptPluginRule(noUnnecessaryBigUint64ArraySomeSpreadRule),
-  ['no-unnecessary-big-uint-64-array-for-each-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayForEachSpreadRule),
-  ['no-unnecessary-int-8-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt8ArrayReduceSpreadRule),
-  ['no-unnecessary-int-8-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt8ArrayReduceRightSpreadRule),
-  ['no-unnecessary-int-8-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindIndexSpreadRule),
-  ['no-unnecessary-int-8-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindLastSpreadRule),
-  ['no-unnecessary-int-8-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-int-8-array-includes-spread']: adaptPluginRule(noUnnecessaryInt8ArrayIncludesSpreadRule),
-  ['no-unnecessary-int-8-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt8ArrayIndexOfSpreadRule),
-  ['no-unnecessary-int-8-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt8ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-int-8-array-join-spread']: adaptPluginRule(noUnnecessaryInt8ArrayJoinSpreadRule),
-  ['no-unnecessary-int-8-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-int-8-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToStringSpreadRule),
-  ['no-unnecessary-uint-8-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint8ArrayReduceSpreadRule),
-  ['no-unnecessary-uint-8-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint8ArrayReduceRightSpreadRule),
-  ['no-unnecessary-uint-8-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindIndexSpreadRule),
-  ['no-unnecessary-uint-8-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindLastSpreadRule),
-  ['no-unnecessary-uint-8-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-uint-8-array-includes-spread']: adaptPluginRule(noUnnecessaryUint8ArrayIncludesSpreadRule),
-  ['no-unnecessary-uint-8-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ArrayIndexOfSpreadRule),
-  ['no-unnecessary-uint-8-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-uint-8-array-join-spread']: adaptPluginRule(noUnnecessaryUint8ArrayJoinSpreadRule),
-  ['no-unnecessary-uint-8-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-uint-8-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToStringSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayReduceRightSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindIndexSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-includes-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayIncludesSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayIndexOfSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-join-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayJoinSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToStringSpreadRule),
-  ['no-unnecessary-int-16-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt16ArrayReduceSpreadRule),
-  ['no-unnecessary-int-16-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt16ArrayReduceRightSpreadRule),
-  ['no-unnecessary-int-16-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindIndexSpreadRule),
-  ['no-unnecessary-int-16-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindLastSpreadRule),
-  ['no-unnecessary-int-16-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-int-16-array-includes-spread']: adaptPluginRule(noUnnecessaryInt16ArrayIncludesSpreadRule),
-  ['no-unnecessary-int-16-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt16ArrayIndexOfSpreadRule),
-  ['no-unnecessary-int-16-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt16ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-int-16-array-join-spread']: adaptPluginRule(noUnnecessaryInt16ArrayJoinSpreadRule),
-  ['no-unnecessary-int-16-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-int-16-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToStringSpreadRule),
-  ['no-unnecessary-uint-16-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint16ArrayReduceSpreadRule),
-  ['no-unnecessary-uint-16-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint16ArrayReduceRightSpreadRule),
-  ['no-unnecessary-uint-16-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindIndexSpreadRule),
-  ['no-unnecessary-uint-16-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindLastSpreadRule),
-  ['no-unnecessary-uint-16-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-uint-16-array-includes-spread']: adaptPluginRule(noUnnecessaryUint16ArrayIncludesSpreadRule),
-  ['no-unnecessary-uint-16-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint16ArrayIndexOfSpreadRule),
-  ['no-unnecessary-uint-16-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint16ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-uint-16-array-join-spread']: adaptPluginRule(noUnnecessaryUint16ArrayJoinSpreadRule),
-  ['no-unnecessary-uint-16-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-uint-16-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToStringSpreadRule),
-  ['no-unnecessary-int-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryInt32ArrayReduceSpreadRule),
-  ['no-unnecessary-int-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryInt32ArrayReduceRightSpreadRule),
-  ['no-unnecessary-int-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindIndexSpreadRule),
-  ['no-unnecessary-int-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindLastSpreadRule),
-  ['no-unnecessary-int-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-int-32-array-includes-spread']: adaptPluginRule(noUnnecessaryInt32ArrayIncludesSpreadRule),
-  ['no-unnecessary-int-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryInt32ArrayIndexOfSpreadRule),
-  ['no-unnecessary-int-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryInt32ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-int-32-array-join-spread']: adaptPluginRule(noUnnecessaryInt32ArrayJoinSpreadRule),
-  ['no-unnecessary-int-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-int-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToStringSpreadRule),
-  ['no-unnecessary-uint-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryUint32ArrayReduceSpreadRule),
-  ['no-unnecessary-uint-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryUint32ArrayReduceRightSpreadRule),
-  ['no-unnecessary-uint-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindIndexSpreadRule),
-  ['no-unnecessary-uint-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindLastSpreadRule),
-  ['no-unnecessary-uint-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-uint-32-array-includes-spread']: adaptPluginRule(noUnnecessaryUint32ArrayIncludesSpreadRule),
-  ['no-unnecessary-uint-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryUint32ArrayIndexOfSpreadRule),
-  ['no-unnecessary-uint-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryUint32ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-uint-32-array-join-spread']: adaptPluginRule(noUnnecessaryUint32ArrayJoinSpreadRule),
-  ['no-unnecessary-uint-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-uint-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToStringSpreadRule),
-  ['no-unnecessary-float-32-array-reduce-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayReduceSpreadRule),
-  ['no-unnecessary-float-32-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayReduceRightSpreadRule),
-  ['no-unnecessary-float-32-array-find-index-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindIndexSpreadRule),
-  ['no-unnecessary-float-32-array-find-last-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindLastSpreadRule),
-  ['no-unnecessary-float-32-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-float-32-array-includes-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayIncludesSpreadRule),
-  ['no-unnecessary-float-32-array-index-of-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayIndexOfSpreadRule),
-  ['no-unnecessary-float-32-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-float-32-array-join-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayJoinSpreadRule),
-  ['no-unnecessary-float-32-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-float-32-array-to-string-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToStringSpreadRule),
-  ['no-unnecessary-float-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayReduceSpreadRule),
-  ['no-unnecessary-float-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayReduceRightSpreadRule),
-  ['no-unnecessary-float-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindIndexSpreadRule),
-  ['no-unnecessary-float-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindLastSpreadRule),
-  ['no-unnecessary-float-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-float-64-array-includes-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayIncludesSpreadRule),
-  ['no-unnecessary-float-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayIndexOfSpreadRule),
-  ['no-unnecessary-float-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-float-64-array-join-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayJoinSpreadRule),
-  ['no-unnecessary-float-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-float-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToStringSpreadRule),
-  ['no-unnecessary-big-int-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayReduceSpreadRule),
-  ['no-unnecessary-big-int-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayReduceRightSpreadRule),
-  ['no-unnecessary-big-int-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindIndexSpreadRule),
-  ['no-unnecessary-big-int-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastSpreadRule),
-  ['no-unnecessary-big-int-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-big-int-64-array-includes-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayIncludesSpreadRule),
-  ['no-unnecessary-big-int-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayIndexOfSpreadRule),
-  ['no-unnecessary-big-int-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-big-int-64-array-join-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayJoinSpreadRule),
-  ['no-unnecessary-big-int-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-big-int-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToStringSpreadRule),
-  ['no-unnecessary-big-uint-64-array-reduce-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayReduceSpreadRule),
-  ['no-unnecessary-big-uint-64-array-reduce-right-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayReduceRightSpreadRule),
-  ['no-unnecessary-big-uint-64-array-find-index-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindIndexSpreadRule),
-  ['no-unnecessary-big-uint-64-array-find-last-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastSpreadRule),
-  ['no-unnecessary-big-uint-64-array-find-last-index-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule),
-  ['no-unnecessary-big-uint-64-array-includes-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayIncludesSpreadRule),
-  ['no-unnecessary-big-uint-64-array-index-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayIndexOfSpreadRule),
-  ['no-unnecessary-big-uint-64-array-last-index-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule),
-  ['no-unnecessary-big-uint-64-array-join-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayJoinSpreadRule),
-  ['no-unnecessary-big-uint-64-array-to-locale-string-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule),
-  ['no-unnecessary-big-uint-64-array-to-string-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToStringSpreadRule),
-  ['no-unnecessary-int-8-array-at-spread']: adaptPluginRule(noUnnecessaryInt8ArrayAtSpreadRule),
-  ['no-unnecessary-int-8-array-entries-spread']: adaptPluginRule(noUnnecessaryInt8ArrayEntriesSpreadRule),
-  ['no-unnecessary-int-8-array-keys-spread']: adaptPluginRule(noUnnecessaryInt8ArrayKeysSpreadRule),
-  ['no-unnecessary-int-8-array-values-spread']: adaptPluginRule(noUnnecessaryInt8ArrayValuesSpreadRule),
-  ['no-unnecessary-int-8-array-with-spread']: adaptPluginRule(noUnnecessaryInt8ArrayWithSpreadRule),
-  ['no-unnecessary-int-8-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToReversedSpreadRule),
-  ['no-unnecessary-int-8-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryInt8ArrayToSortedSpreadRule),
-  ['no-unnecessary-uint-8-array-at-spread']: adaptPluginRule(noUnnecessaryUint8ArrayAtSpreadRule),
-  ['no-unnecessary-uint-8-array-entries-spread']: adaptPluginRule(noUnnecessaryUint8ArrayEntriesSpreadRule),
-  ['no-unnecessary-uint-8-array-keys-spread']: adaptPluginRule(noUnnecessaryUint8ArrayKeysSpreadRule),
-  ['no-unnecessary-uint-8-array-values-spread']: adaptPluginRule(noUnnecessaryUint8ArrayValuesSpreadRule),
-  ['no-unnecessary-uint-8-array-with-spread']: adaptPluginRule(noUnnecessaryUint8ArrayWithSpreadRule),
-  ['no-unnecessary-uint-8-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToReversedSpreadRule),
-  ['no-unnecessary-uint-8-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryUint8ArrayToSortedSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-at-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayAtSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-entries-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayEntriesSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-keys-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayKeysSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-values-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayValuesSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-with-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayWithSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToReversedSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayToSortedSpreadRule),
-  ['no-unnecessary-int-16-array-at-spread']: adaptPluginRule(noUnnecessaryInt16ArrayAtSpreadRule),
-  ['no-unnecessary-int-16-array-entries-spread']: adaptPluginRule(noUnnecessaryInt16ArrayEntriesSpreadRule),
-  ['no-unnecessary-int-16-array-keys-spread']: adaptPluginRule(noUnnecessaryInt16ArrayKeysSpreadRule),
-  ['no-unnecessary-int-16-array-values-spread']: adaptPluginRule(noUnnecessaryInt16ArrayValuesSpreadRule),
-  ['no-unnecessary-int-16-array-with-spread']: adaptPluginRule(noUnnecessaryInt16ArrayWithSpreadRule),
-  ['no-unnecessary-int-16-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToReversedSpreadRule),
-  ['no-unnecessary-int-16-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryInt16ArrayToSortedSpreadRule),
-  ['no-unnecessary-uint-16-array-at-spread']: adaptPluginRule(noUnnecessaryUint16ArrayAtSpreadRule),
-  ['no-unnecessary-uint-16-array-entries-spread']: adaptPluginRule(noUnnecessaryUint16ArrayEntriesSpreadRule),
-  ['no-unnecessary-uint-16-array-keys-spread']: adaptPluginRule(noUnnecessaryUint16ArrayKeysSpreadRule),
-  ['no-unnecessary-uint-16-array-values-spread']: adaptPluginRule(noUnnecessaryUint16ArrayValuesSpreadRule),
-  ['no-unnecessary-uint-16-array-with-spread']: adaptPluginRule(noUnnecessaryUint16ArrayWithSpreadRule),
-  ['no-unnecessary-uint-16-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToReversedSpreadRule),
-  ['no-unnecessary-uint-16-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryUint16ArrayToSortedSpreadRule),
-  ['no-unnecessary-int-32-array-at-spread']: adaptPluginRule(noUnnecessaryInt32ArrayAtSpreadRule),
-  ['no-unnecessary-int-32-array-entries-spread']: adaptPluginRule(noUnnecessaryInt32ArrayEntriesSpreadRule),
-  ['no-unnecessary-int-32-array-keys-spread']: adaptPluginRule(noUnnecessaryInt32ArrayKeysSpreadRule),
-  ['no-unnecessary-int-32-array-values-spread']: adaptPluginRule(noUnnecessaryInt32ArrayValuesSpreadRule),
-  ['no-unnecessary-int-32-array-with-spread']: adaptPluginRule(noUnnecessaryInt32ArrayWithSpreadRule),
-  ['no-unnecessary-int-32-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToReversedSpreadRule),
-  ['no-unnecessary-int-32-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryInt32ArrayToSortedSpreadRule),
-  ['no-unnecessary-uint-32-array-at-spread']: adaptPluginRule(noUnnecessaryUint32ArrayAtSpreadRule),
-  ['no-unnecessary-uint-32-array-entries-spread']: adaptPluginRule(noUnnecessaryUint32ArrayEntriesSpreadRule),
-  ['no-unnecessary-uint-32-array-keys-spread']: adaptPluginRule(noUnnecessaryUint32ArrayKeysSpreadRule),
-  ['no-unnecessary-uint-32-array-values-spread']: adaptPluginRule(noUnnecessaryUint32ArrayValuesSpreadRule),
-  ['no-unnecessary-uint-32-array-with-spread']: adaptPluginRule(noUnnecessaryUint32ArrayWithSpreadRule),
-  ['no-unnecessary-uint-32-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToReversedSpreadRule),
-  ['no-unnecessary-uint-32-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryUint32ArrayToSortedSpreadRule),
-  ['no-unnecessary-float-32-array-at-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayAtSpreadRule),
-  ['no-unnecessary-float-32-array-entries-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayEntriesSpreadRule),
-  ['no-unnecessary-float-32-array-keys-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayKeysSpreadRule),
-  ['no-unnecessary-float-32-array-values-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayValuesSpreadRule),
-  ['no-unnecessary-float-32-array-with-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayWithSpreadRule),
-  ['no-unnecessary-float-32-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToReversedSpreadRule),
-  ['no-unnecessary-float-32-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayToSortedSpreadRule),
-  ['no-unnecessary-float-64-array-at-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayAtSpreadRule),
-  ['no-unnecessary-float-64-array-entries-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayEntriesSpreadRule),
-  ['no-unnecessary-float-64-array-keys-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayKeysSpreadRule),
-  ['no-unnecessary-float-64-array-values-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayValuesSpreadRule),
-  ['no-unnecessary-float-64-array-with-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayWithSpreadRule),
-  ['no-unnecessary-float-64-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToReversedSpreadRule),
-  ['no-unnecessary-float-64-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayToSortedSpreadRule),
-  ['no-unnecessary-big-int-64-array-at-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayAtSpreadRule),
-  ['no-unnecessary-big-int-64-array-entries-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayEntriesSpreadRule),
-  ['no-unnecessary-big-int-64-array-keys-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayKeysSpreadRule),
-  ['no-unnecessary-big-int-64-array-values-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayValuesSpreadRule),
-  ['no-unnecessary-big-int-64-array-with-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayWithSpreadRule),
-  ['no-unnecessary-big-int-64-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToReversedSpreadRule),
-  ['no-unnecessary-big-int-64-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayToSortedSpreadRule),
-  ['no-unnecessary-big-uint-64-array-at-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayAtSpreadRule),
-  ['no-unnecessary-big-uint-64-array-entries-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayEntriesSpreadRule),
-  ['no-unnecessary-big-uint-64-array-keys-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayKeysSpreadRule),
-  ['no-unnecessary-big-uint-64-array-values-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayValuesSpreadRule),
-  ['no-unnecessary-big-uint-64-array-with-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayWithSpreadRule),
-  ['no-unnecessary-big-uint-64-array-to-reversed-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToReversedSpreadRule),
-  ['no-unnecessary-big-uint-64-array-to-sorted-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayToSortedSpreadRule),
-  ['no-unnecessary-int-8-array-from-spread']: adaptPluginRule(noUnnecessaryInt8ArrayFromSpreadRule),
-  ['no-unnecessary-int-8-array-of-spread']: adaptPluginRule(noUnnecessaryInt8ArrayOfSpreadRule),
-  ['no-unnecessary-uint-8-array-from-spread']: adaptPluginRule(noUnnecessaryUint8ArrayFromSpreadRule),
-  ['no-unnecessary-uint-8-array-of-spread']: adaptPluginRule(noUnnecessaryUint8ArrayOfSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-from-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayFromSpreadRule),
-  ['no-unnecessary-uint-8-clamped-array-of-spread']: adaptPluginRule(noUnnecessaryUint8ClampedArrayOfSpreadRule),
-  ['no-unnecessary-int-16-array-from-spread']: adaptPluginRule(noUnnecessaryInt16ArrayFromSpreadRule),
-  ['no-unnecessary-int-16-array-of-spread']: adaptPluginRule(noUnnecessaryInt16ArrayOfSpreadRule),
-  ['no-unnecessary-uint-16-array-from-spread']: adaptPluginRule(noUnnecessaryUint16ArrayFromSpreadRule),
-  ['no-unnecessary-uint-16-array-of-spread']: adaptPluginRule(noUnnecessaryUint16ArrayOfSpreadRule),
-  ['no-unnecessary-int-32-array-from-spread']: adaptPluginRule(noUnnecessaryInt32ArrayFromSpreadRule),
-  ['no-unnecessary-int-32-array-of-spread']: adaptPluginRule(noUnnecessaryInt32ArrayOfSpreadRule),
-  ['no-unnecessary-uint-32-array-from-spread']: adaptPluginRule(noUnnecessaryUint32ArrayFromSpreadRule),
-  ['no-unnecessary-uint-32-array-of-spread']: adaptPluginRule(noUnnecessaryUint32ArrayOfSpreadRule),
-  ['no-unnecessary-float-32-array-from-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayFromSpreadRule),
-  ['no-unnecessary-float-32-array-of-spread']: adaptPluginRule(noUnnecessaryFloat32ArrayOfSpreadRule),
-  ['no-unnecessary-float-64-array-from-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayFromSpreadRule),
-  ['no-unnecessary-float-64-array-of-spread']: adaptPluginRule(noUnnecessaryFloat64ArrayOfSpreadRule),
-  ['no-unnecessary-big-int-64-array-from-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayFromSpreadRule),
-  ['no-unnecessary-big-int-64-array-of-spread']: adaptPluginRule(noUnnecessaryBigInt64ArrayOfSpreadRule),
-  ['no-unnecessary-big-uint-64-array-from-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayFromSpreadRule),
-  ['no-unnecessary-big-uint-64-array-of-spread']: adaptPluginRule(noUnnecessaryBigUint64ArrayOfSpreadRule),
-  ['no-unnecessary-set-timeout-spread']: adaptPluginRule(noUnnecessarySetTimeoutSpreadRule),
-  ['no-unnecessary-set-interval-spread']: adaptPluginRule(noUnnecessarySetIntervalSpreadRule),
-  ['no-unnecessary-clear-timeout-spread']: adaptPluginRule(noUnnecessaryClearTimeoutSpreadRule),
-  ['no-unnecessary-clear-interval-spread']: adaptPluginRule(noUnnecessaryClearIntervalSpreadRule),
-  ['no-unnecessary-request-animation-frame-spread']: adaptPluginRule(noUnnecessaryRequestAnimationFrameSpreadRule),
-  ['no-unnecessary-cancel-animation-frame-spread']: adaptPluginRule(noUnnecessaryCancelAnimationFrameSpreadRule),
-  ['no-unnecessary-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryRequestIdleCallbackSpreadRule),
-  ['no-unnecessary-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryCancelIdleCallbackSpreadRule),
-  ['no-unnecessary-queue-microtask-spread']: adaptPluginRule(noUnnecessaryQueueMicrotaskSpreadRule),
-  ['no-unnecessary-structured-clone-spread']: adaptPluginRule(noUnnecessaryStructuredCloneSpreadRule),
-  ['no-unnecessary-atob-spread']: adaptPluginRule(noUnnecessaryAtobSpreadRule),
-  ['no-unnecessary-btoa-spread']: adaptPluginRule(noUnnecessaryBtoaSpreadRule),
-  ['no-unnecessary-fetch-spread']: adaptPluginRule(noUnnecessaryFetchSpreadRule),
-  ['no-unnecessary-alert-spread']: adaptPluginRule(noUnnecessaryAlertSpreadRule),
-  ['no-unnecessary-confirm-spread']: adaptPluginRule(noUnnecessaryConfirmSpreadRule),
-  ['no-unnecessary-prompt-spread']: adaptPluginRule(noUnnecessaryPromptSpreadRule),
-  ['no-unnecessary-print-spread']: adaptPluginRule(noUnnecessaryPrintSpreadRule),
-  ['no-unnecessary-report-error-spread']: adaptPluginRule(noUnnecessaryReportErrorSpreadRule),
-  ['no-unnecessary-error-spread']: adaptPluginRule(noUnnecessaryErrorSpreadRule),
-  ['no-unnecessary-eval-error-spread']: adaptPluginRule(noUnnecessaryEvalErrorSpreadRule),
-  ['no-unnecessary-range-error-spread']: adaptPluginRule(noUnnecessaryRangeErrorSpreadRule),
-  ['no-unnecessary-reference-error-spread']: adaptPluginRule(noUnnecessaryReferenceErrorSpreadRule),
-  ['no-unnecessary-syntax-error-spread']: adaptPluginRule(noUnnecessarySyntaxErrorSpreadRule),
-  ['no-unnecessary-type-error-spread']: adaptPluginRule(noUnnecessaryTypeErrorSpreadRule),
-  ['no-unnecessary-uri-error-spread']: adaptPluginRule(noUnnecessaryURIErrorSpreadRule),
-  ['no-unnecessary-aggregate-error-spread']: adaptPluginRule(noUnnecessaryAggregateErrorSpreadRule),
-  ['no-unnecessary-map-spread']: adaptPluginRule(noUnnecessaryMapSpreadRule),
-  ['no-unnecessary-set-spread']: adaptPluginRule(noUnnecessarySetSpreadRule),
-  ['no-unnecessary-weak-map-spread']: adaptPluginRule(noUnnecessaryWeakMapSpreadRule),
-  ['no-unnecessary-weak-set-spread']: adaptPluginRule(noUnnecessaryWeakSetSpreadRule),
-  ['no-unnecessary-weak-ref-spread']: adaptPluginRule(noUnnecessaryWeakRefSpreadRule),
-  ['no-unnecessary-finalization-registry-spread']: adaptPluginRule(noUnnecessaryFinalizationRegistrySpreadRule),
-  ['no-unnecessary-promise-spread']: adaptPluginRule(noUnnecessaryPromiseSpreadRule),
-  ['no-unnecessary-array-buffer-spread']: adaptPluginRule(noUnnecessaryArrayBufferSpreadRule),
-  ['no-unnecessary-shared-array-buffer-spread']: adaptPluginRule(noUnnecessarySharedArrayBufferSpreadRule),
-  ['no-unnecessary-data-view-spread']: adaptPluginRule(noUnnecessaryDataViewSpreadRule),
-  ['no-unnecessary-date-spread']: adaptPluginRule(noUnnecessaryDateSpreadRule),
-  ['no-unnecessary-regexp-spread']: adaptPluginRule(noUnnecessaryRegExpSpreadRule),
-  ['no-unnecessary-image-spread']: adaptPluginRule(noUnnecessaryImageSpreadRule),
-  ['no-unnecessary-option-spread']: adaptPluginRule(noUnnecessaryOptionSpreadRule),
-  ['no-unnecessary-audio-spread']: adaptPluginRule(noUnnecessaryAudioSpreadRule),
-  ['no-unnecessary-headers-spread']: adaptPluginRule(noUnnecessaryHeadersSpreadRule),
-  ['no-unnecessary-request-spread']: adaptPluginRule(noUnnecessaryRequestSpreadRule),
-  ['no-unnecessary-response-spread']: adaptPluginRule(noUnnecessaryResponseSpreadRule),
-  ['no-unnecessary-form-data-spread']: adaptPluginRule(noUnnecessaryFormDataSpreadRule),
-  ['no-unnecessary-url-spread']: adaptPluginRule(noUnnecessaryURLSpreadRule),
-  ['no-unnecessary-url-search-params-spread']: adaptPluginRule(noUnnecessaryURLSearchParamsSpreadRule),
-  ['no-unnecessary-text-decoder-spread']: adaptPluginRule(noUnnecessaryTextDecoderSpreadRule),
-  ['no-unnecessary-text-encoder-spread']: adaptPluginRule(noUnnecessaryTextEncoderSpreadRule),
-  ['no-unnecessary-blob-spread']: adaptPluginRule(noUnnecessaryBlobSpreadRule),
-  ['no-unnecessary-file-spread']: adaptPluginRule(noUnnecessaryFileSpreadRule),
-  ['no-unnecessary-file-reader-spread']: adaptPluginRule(noUnnecessaryFileReaderSpreadRule),
-  ['no-unnecessary-image-data-spread']: adaptPluginRule(noUnnecessaryImageDataSpreadRule),
-  ['no-unnecessary-dom-rect-spread']: adaptPluginRule(noUnnecessaryDOMRectSpreadRule),
-  ['no-unnecessary-css-style-declaration-spread']: adaptPluginRule(noUnnecessaryCSSStyleDeclarationSpreadRule),
-  ['no-unnecessary-mutation-observer-spread']: adaptPluginRule(noUnnecessaryMutationObserverSpreadRule),
-  ['no-unnecessary-resize-observer-spread']: adaptPluginRule(noUnnecessaryResizeObserverSpreadRule),
-  ['no-unnecessary-intersection-observer-spread']: adaptPluginRule(noUnnecessaryIntersectionObserverSpreadRule),
-  ['no-unnecessary-performance-observer-spread']: adaptPluginRule(noUnnecessaryPerformanceObserverSpreadRule),
-  ['no-unnecessary-abort-controller-spread']: adaptPluginRule(noUnnecessaryAbortControllerSpreadRule),
-  ['no-unnecessary-abort-signal-spread']: adaptPluginRule(noUnnecessaryAbortSignalSpreadRule),
-  ['no-unnecessary-broadcast-channel-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelSpreadRule),
-  ['no-unnecessary-message-channel-spread']: adaptPluginRule(noUnnecessaryMessageChannelSpreadRule),
-  ['no-unnecessary-worker-spread']: adaptPluginRule(noUnnecessaryWorkerSpreadRule),
-  ['no-unnecessary-event-spread']: adaptPluginRule(noUnnecessaryEventSpreadRule),
-  ['no-unnecessary-custom-event-spread']: adaptPluginRule(noUnnecessaryCustomEventSpreadRule),
-  ['no-unnecessary-dom-parser-spread']: adaptPluginRule(noUnnecessaryDOMParserSpreadRule),
-  ['no-unnecessary-xml-http-request-spread']: adaptPluginRule(noUnnecessaryXMLHttpRequestSpreadRule),
-  ['no-unnecessary-document-create-element-spread']: adaptPluginRule(noUnnecessaryDocumentCreateElementSpreadRule),
-  ['no-unnecessary-document-create-text-node-spread']: adaptPluginRule(noUnnecessaryDocumentCreateTextNodeSpreadRule),
-  ['no-unnecessary-document-create-comment-spread']: adaptPluginRule(noUnnecessaryDocumentCreateCommentSpreadRule),
-  ['no-unnecessary-document-create-document-fragment-spread']: adaptPluginRule(noUnnecessaryDocumentCreateDocumentFragmentSpreadRule),
-  ['no-unnecessary-document-create-attribute-spread']: adaptPluginRule(noUnnecessaryDocumentCreateAttributeSpreadRule),
-  ['no-unnecessary-document-create-event-spread']: adaptPluginRule(noUnnecessaryDocumentCreateEventSpreadRule),
-  ['no-unnecessary-document-create-tree-walker-spread']: adaptPluginRule(noUnnecessaryDocumentCreateTreeWalkerSpreadRule),
-  ['no-unnecessary-document-create-node-iterator-spread']: adaptPluginRule(noUnnecessaryDocumentCreateNodeIteratorSpreadRule),
-  ['no-unnecessary-document-create-range-spread']: adaptPluginRule(noUnnecessaryDocumentCreateRangeSpreadRule),
-  ['no-unnecessary-document-get-element-by-id-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementByIdSpreadRule),
-  ['no-unnecessary-document-query-selector-spread']: adaptPluginRule(noUnnecessaryDocumentQuerySelectorSpreadRule),
-  ['no-unnecessary-document-query-selector-all-spread']: adaptPluginRule(noUnnecessaryDocumentQuerySelectorAllSpreadRule),
-  ['no-unnecessary-document-get-elements-by-class-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByClassNameSpreadRule),
-  ['no-unnecessary-document-get-elements-by-tag-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByTagNameSpreadRule),
-  ['no-unnecessary-document-get-elements-by-name-spread']: adaptPluginRule(noUnnecessaryDocumentGetElementsByNameSpreadRule),
-  ['no-unnecessary-document-adopt-node-spread']: adaptPluginRule(noUnnecessaryDocumentAdoptNodeSpreadRule),
-  ['no-unnecessary-document-import-node-spread']: adaptPluginRule(noUnnecessaryDocumentImportNodeSpreadRule),
-  ['no-unnecessary-document-write-spread']: adaptPluginRule(noUnnecessaryDocumentWriteSpreadRule),
-  ['no-unnecessary-document-write-ln-spread']: adaptPluginRule(noUnnecessaryDocumentWriteLnSpreadRule),
-  ['no-unnecessary-document-open-spread']: adaptPluginRule(noUnnecessaryDocumentOpenSpreadRule),
-  ['no-unnecessary-document-close-spread']: adaptPluginRule(noUnnecessaryDocumentCloseSpreadRule),
-  ['no-unnecessary-document-exit-fullscreen-spread']: adaptPluginRule(noUnnecessaryDocumentExitFullscreenSpreadRule),
-  ['no-unnecessary-document-exit-picture-in-picture-spread']: adaptPluginRule(noUnnecessaryDocumentExitPictureInPictureSpreadRule),
-  ['no-unnecessary-document-exit-pointer-lock-spread']: adaptPluginRule(noUnnecessaryDocumentExitPointerLockSpreadRule),
-  ['no-unnecessary-document-has-focus-spread']: adaptPluginRule(noUnnecessaryDocumentHasFocusSpreadRule),
-  ['no-unnecessary-document-get-selection-spread']: adaptPluginRule(noUnnecessaryDocumentGetSelectionSpreadRule),
-  ['no-unnecessary-document-element-from-point-spread']: adaptPluginRule(noUnnecessaryDocumentElementFromPointSpreadRule),
-  ['no-unnecessary-document-elements-from-point-spread']: adaptPluginRule(noUnnecessaryDocumentElementsFromPointSpreadRule),
-  ['no-unnecessary-element-query-selector-spread']: adaptPluginRule(noUnnecessaryElementQuerySelectorSpreadRule),
-  ['no-unnecessary-element-query-selector-all-spread']: adaptPluginRule(noUnnecessaryElementQuerySelectorAllSpreadRule),
-  ['no-unnecessary-element-get-attribute-spread']: adaptPluginRule(noUnnecessaryElementGetAttributeSpreadRule),
-  ['no-unnecessary-element-set-attribute-spread']: adaptPluginRule(noUnnecessaryElementSetAttributeSpreadRule),
-  ['no-unnecessary-element-remove-attribute-spread']: adaptPluginRule(noUnnecessaryElementRemoveAttributeSpreadRule),
-  ['no-unnecessary-element-has-attribute-spread']: adaptPluginRule(noUnnecessaryElementHasAttributeSpreadRule),
-  ['no-unnecessary-element-get-attribute-names-spread']: adaptPluginRule(noUnnecessaryElementGetAttributeNamesSpreadRule),
-  ['no-unnecessary-element-toggle-attribute-spread']: adaptPluginRule(noUnnecessaryElementToggleAttributeSpreadRule),
-  ['no-unnecessary-element-get-elements-by-class-name-spread']: adaptPluginRule(noUnnecessaryElementGetElementsByClassNameSpreadRule),
-  ['no-unnecessary-element-get-elements-by-tag-name-spread']: adaptPluginRule(noUnnecessaryElementGetElementsByTagNameSpreadRule),
-  ['no-unnecessary-element-closest-spread']: adaptPluginRule(noUnnecessaryElementClosestSpreadRule),
-  ['no-unnecessary-element-matches-spread']: adaptPluginRule(noUnnecessaryElementMatchesSpreadRule),
-  ['no-unnecessary-element-contains-spread']: adaptPluginRule(noUnnecessaryElementContainsSpreadRule),
-  ['no-unnecessary-element-append-child-spread']: adaptPluginRule(noUnnecessaryElementAppendChildSpreadRule),
-  ['no-unnecessary-element-remove-child-spread']: adaptPluginRule(noUnnecessaryElementRemoveChildSpreadRule),
-  ['no-unnecessary-element-insert-before-spread']: adaptPluginRule(noUnnecessaryElementInsertBeforeSpreadRule),
-  ['no-unnecessary-element-replace-child-spread']: adaptPluginRule(noUnnecessaryElementReplaceChildSpreadRule),
-  ['no-unnecessary-element-clone-node-spread']: adaptPluginRule(noUnnecessaryElementCloneNodeSpreadRule),
-  ['no-unnecessary-element-remove-spread']: adaptPluginRule(noUnnecessaryElementRemoveSpreadRule),
-  ['no-unnecessary-element-prepend-spread']: adaptPluginRule(noUnnecessaryElementPrependSpreadRule),
-  ['no-unnecessary-element-append-spread']: adaptPluginRule(noUnnecessaryElementAppendSpreadRule),
-  ['no-unnecessary-element-before-spread']: adaptPluginRule(noUnnecessaryElementBeforeSpreadRule),
-  ['no-unnecessary-element-after-spread']: adaptPluginRule(noUnnecessaryElementAfterSpreadRule),
-  ['no-unnecessary-element-replace-with-spread']: adaptPluginRule(noUnnecessaryElementReplaceWithSpreadRule),
-  ['no-unnecessary-element-insert-adjacent-html-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentHtmlSpreadRule),
-  ['no-unnecessary-element-insert-adjacent-element-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentElementSpreadRule),
-  ['no-unnecessary-element-insert-adjacent-text-spread']: adaptPluginRule(noUnnecessaryElementInsertAdjacentTextSpreadRule),
-  ['no-unnecessary-element-get-bounding-client-rect-spread']: adaptPluginRule(noUnnecessaryElementGetBoundingClientRectSpreadRule),
-  ['no-unnecessary-element-get-client-rects-spread']: adaptPluginRule(noUnnecessaryElementGetClientRectsSpreadRule),
-  ['no-unnecessary-element-scroll-into-view-spread']: adaptPluginRule(noUnnecessaryElementScrollIntoViewSpreadRule),
-  ['no-unnecessary-element-scroll-into-view-if-needed-spread']: adaptPluginRule(noUnnecessaryElementScrollIntoViewIfNeededSpreadRule),
-  ['no-unnecessary-element-scroll-to-spread']: adaptPluginRule(noUnnecessaryElementScrollToSpreadRule),
-  ['no-unnecessary-element-scroll-by-spread']: adaptPluginRule(noUnnecessaryElementScrollBySpreadRule),
-  ['no-unnecessary-element-scroll-spread']: adaptPluginRule(noUnnecessaryElementScrollSpreadRule),
-  ['no-unnecessary-element-focus-spread']: adaptPluginRule(noUnnecessaryElementFocusSpreadRule),
-  ['no-unnecessary-element-blur-spread']: adaptPluginRule(noUnnecessaryElementBlurSpreadRule),
-  ['no-unnecessary-element-click-spread']: adaptPluginRule(noUnnecessaryElementClickSpreadRule),
-  ['no-unnecessary-element-animate-spread']: adaptPluginRule(noUnnecessaryElementAnimateSpreadRule),
-  ['no-unnecessary-element-get-computed-style-spread']: adaptPluginRule(noUnnecessaryElementGetComputedStyleSpreadRule),
-  ['no-unnecessary-element-request-fullscreen-spread']: adaptPluginRule(noUnnecessaryElementRequestFullscreenSpreadRule),
-  ['no-unnecessary-element-request-pointer-lock-spread']: adaptPluginRule(noUnnecessaryElementRequestPointerLockSpreadRule),
-  ['no-unnecessary-element-attach-shadow-spread']: adaptPluginRule(noUnnecessaryElementAttachShadowSpreadRule),
-  ['no-unnecessary-local-storage-get-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageGetItemSpreadRule),
-  ['no-unnecessary-local-storage-set-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageSetItemSpreadRule),
-  ['no-unnecessary-local-storage-remove-item-spread']: adaptPluginRule(noUnnecessaryLocalStorageRemoveItemSpreadRule),
-  ['no-unnecessary-local-storage-clear-spread']: adaptPluginRule(noUnnecessaryLocalStorageClearSpreadRule),
-  ['no-unnecessary-local-storage-key-spread']: adaptPluginRule(noUnnecessaryLocalStorageKeySpreadRule),
-  ['no-unnecessary-session-storage-get-item-spread']: adaptPluginRule(noUnnecessarySessionStorageGetItemSpreadRule),
-  ['no-unnecessary-session-storage-set-item-spread']: adaptPluginRule(noUnnecessarySessionStorageSetItemSpreadRule),
-  ['no-unnecessary-session-storage-remove-item-spread']: adaptPluginRule(noUnnecessarySessionStorageRemoveItemSpreadRule),
-  ['no-unnecessary-session-storage-clear-spread']: adaptPluginRule(noUnnecessarySessionStorageClearSpreadRule),
-  ['no-unnecessary-session-storage-key-spread']: adaptPluginRule(noUnnecessarySessionStorageKeySpreadRule),
-  ['no-unnecessary-navigator-send-beacon-spread']: adaptPluginRule(noUnnecessaryNavigatorSendBeaconSpreadRule),
-  ['no-unnecessary-navigator-vibrate-spread']: adaptPluginRule(noUnnecessaryNavigatorVibrateSpreadRule),
-  ['no-unnecessary-navigator-get-battery-spread']: adaptPluginRule(noUnnecessaryNavigatorGetBatterySpreadRule),
-  ['no-unnecessary-navigator-geolocation-get-current-position-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule),
-  ['no-unnecessary-navigator-geolocation-watch-position-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule),
-  ['no-unnecessary-navigator-geolocation-clear-watch-spread']: adaptPluginRule(noUnnecessaryNavigatorGeolocationClearWatchSpreadRule),
-  ['no-unnecessary-navigator-clipboard-read-text-spread']: adaptPluginRule(noUnnecessaryNavigatorClipboardReadTextSpreadRule),
-  ['no-unnecessary-navigator-clipboard-write-text-spread']: adaptPluginRule(noUnnecessaryNavigatorClipboardWriteTextSpreadRule),
-  ['no-unnecessary-navigator-media-devices-get-user-media-spread']: adaptPluginRule(noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule),
-  ['no-unnecessary-navigator-register-protocol-handler-spread']: adaptPluginRule(noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule),
-  ['no-unnecessary-navigator-request-media-key-system-access-spread']: adaptPluginRule(noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule),
-  ['no-unnecessary-navigator-can-share-spread']: adaptPluginRule(noUnnecessaryNavigatorCanShareSpreadRule),
-  ['no-unnecessary-navigator-share-spread']: adaptPluginRule(noUnnecessaryNavigatorShareSpreadRule),
-  ['no-unnecessary-navigator-get-gamepads-spread']: adaptPluginRule(noUnnecessaryNavigatorGetGamepadsSpreadRule),
-  ['no-unnecessary-navigator-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryNavigatorRequestIdleCallbackSpreadRule),
-  ['no-unnecessary-navigator-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryNavigatorCancelIdleCallbackSpreadRule),
-  ['no-unnecessary-navigator-java-enabled-spread']: adaptPluginRule(noUnnecessaryNavigatorJavaEnabledSpreadRule),
-  ['no-unnecessary-navigator-cookie-enabled-spread']: adaptPluginRule(noUnnecessaryNavigatorCookieEnabledSpreadRule),
-  ['no-unnecessary-history-push-state-spread']: adaptPluginRule(noUnnecessaryHistoryPushStateSpreadRule),
-  ['no-unnecessary-history-replace-state-spread']: adaptPluginRule(noUnnecessaryHistoryReplaceStateSpreadRule),
-  ['no-unnecessary-history-go-spread']: adaptPluginRule(noUnnecessaryHistoryGoSpreadRule),
-  ['no-unnecessary-history-back-spread']: adaptPluginRule(noUnnecessaryHistoryBackSpreadRule),
-  ['no-unnecessary-history-forward-spread']: adaptPluginRule(noUnnecessaryHistoryForwardSpreadRule),
-  ['no-unnecessary-location-assign-spread']: adaptPluginRule(noUnnecessaryLocationAssignSpreadRule),
-  ['no-unnecessary-location-reload-spread']: adaptPluginRule(noUnnecessaryLocationReloadSpreadRule),
-  ['no-unnecessary-location-replace-spread']: adaptPluginRule(noUnnecessaryLocationReplaceSpreadRule),
-  ['no-unnecessary-location-to-string-spread']: adaptPluginRule(noUnnecessaryLocationToStringSpreadRule),
-  ['no-unnecessary-performance-now-spread']: adaptPluginRule(noUnnecessaryPerformanceNowSpreadRule),
-  ['no-unnecessary-performance-mark-spread']: adaptPluginRule(noUnnecessaryPerformanceMarkSpreadRule),
-  ['no-unnecessary-performance-measure-spread']: adaptPluginRule(noUnnecessaryPerformanceMeasureSpreadRule),
-  ['no-unnecessary-performance-clear-marks-spread']: adaptPluginRule(noUnnecessaryPerformanceClearMarksSpreadRule),
-  ['no-unnecessary-performance-clear-measures-spread']: adaptPluginRule(noUnnecessaryPerformanceClearMeasuresSpreadRule),
-  ['no-unnecessary-performance-get-entries-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesSpreadRule),
-  ['no-unnecessary-performance-get-entries-by-name-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesByNameSpreadRule),
-  ['no-unnecessary-performance-get-entries-by-type-spread']: adaptPluginRule(noUnnecessaryPerformanceGetEntriesByTypeSpreadRule),
-  ['no-unnecessary-performance-clear-resource-timings-spread']: adaptPluginRule(noUnnecessaryPerformanceClearResourceTimingsSpreadRule),
-  ['no-unnecessary-performance-set-resource-timing-buffer-size-spread']: adaptPluginRule(noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule),
-  ['no-unnecessary-screen-orientation-lock-spread']: adaptPluginRule(noUnnecessaryScreenOrientationLockSpreadRule),
-  ['no-unnecessary-screen-orientation-unlock-spread']: adaptPluginRule(noUnnecessaryScreenOrientationUnlockSpreadRule),
-  ['no-unnecessary-crypto-get-random-values-spread']: adaptPluginRule(noUnnecessaryCryptoGetRandomValuesSpreadRule),
-  ['no-unnecessary-crypto-random-uuid-spread']: adaptPluginRule(noUnnecessaryCryptoRandomUUIDSpreadRule),
-  ['no-unnecessary-indexed-db-open-spread']: adaptPluginRule(noUnnecessaryIndexedDbOpenSpreadRule),
-  ['no-unnecessary-indexed-db-delete-database-spread']: adaptPluginRule(noUnnecessaryIndexedDbDeleteDatabaseSpreadRule),
-  ['no-unnecessary-indexed-db-cmp-spread']: adaptPluginRule(noUnnecessaryIndexedDbCmpSpreadRule),
-  ['no-unnecessary-caches-open-spread']: adaptPluginRule(noUnnecessaryCachesOpenSpreadRule),
-  ['no-unnecessary-caches-match-spread']: adaptPluginRule(noUnnecessaryCachesMatchSpreadRule),
-  ['no-unnecessary-caches-has-spread']: adaptPluginRule(noUnnecessaryCachesHasSpreadRule),
-  ['no-unnecessary-caches-delete-spread']: adaptPluginRule(noUnnecessaryCachesDeleteSpreadRule),
-  ['no-unnecessary-caches-keys-spread']: adaptPluginRule(noUnnecessaryCachesKeysSpreadRule),
-  ['no-unnecessary-window-open-spread']: adaptPluginRule(noUnnecessaryWindowOpenSpreadRule),
-  ['no-unnecessary-window-close-spread']: adaptPluginRule(noUnnecessaryWindowCloseSpreadRule),
-  ['no-unnecessary-window-stop-spread']: adaptPluginRule(noUnnecessaryWindowStopSpreadRule),
-  ['no-unnecessary-window-focus-spread']: adaptPluginRule(noUnnecessaryWindowFocusSpreadRule),
-  ['no-unnecessary-window-blur-spread']: adaptPluginRule(noUnnecessaryWindowBlurSpreadRule),
-  ['no-unnecessary-window-scroll-to-spread']: adaptPluginRule(noUnnecessaryWindowScrollToSpreadRule),
-  ['no-unnecessary-window-scroll-by-spread']: adaptPluginRule(noUnnecessaryWindowScrollBySpreadRule),
-  ['no-unnecessary-window-scroll-spread']: adaptPluginRule(noUnnecessaryWindowScrollSpreadRule),
-  ['no-unnecessary-window-print-spread']: adaptPluginRule(noUnnecessaryWindowPrintSpreadRule),
-  ['no-unnecessary-window-alert-spread']: adaptPluginRule(noUnnecessaryWindowAlertSpreadRule),
-  ['no-unnecessary-window-confirm-spread']: adaptPluginRule(noUnnecessaryWindowConfirmSpreadRule),
-  ['no-unnecessary-window-prompt-spread']: adaptPluginRule(noUnnecessaryWindowPromptSpreadRule),
-  ['no-unnecessary-window-get-computed-style-spread']: adaptPluginRule(noUnnecessaryWindowGetComputedStyleSpreadRule),
-  ['no-unnecessary-window-get-selection-spread']: adaptPluginRule(noUnnecessaryWindowGetSelectionSpreadRule),
-  ['no-unnecessary-window-match-media-spread']: adaptPluginRule(noUnnecessaryWindowMatchMediaSpreadRule),
-  ['no-unnecessary-window-move-to-spread']: adaptPluginRule(noUnnecessaryWindowMoveToSpreadRule),
-  ['no-unnecessary-window-move-by-spread']: adaptPluginRule(noUnnecessaryWindowMoveBySpreadRule),
-  ['no-unnecessary-window-resize-to-spread']: adaptPluginRule(noUnnecessaryWindowResizeToSpreadRule),
-  ['no-unnecessary-window-resize-by-spread']: adaptPluginRule(noUnnecessaryWindowResizeBySpreadRule),
-  ['no-unnecessary-window-post-message-spread']: adaptPluginRule(noUnnecessaryWindowPostMessageSpreadRule),
-  ['no-unnecessary-window-atob-spread']: adaptPluginRule(noUnnecessaryWindowAtobSpreadRule),
-  ['no-unnecessary-window-btoa-spread']: adaptPluginRule(noUnnecessaryWindowBtoaSpreadRule),
-  ['no-unnecessary-window-fetch-spread']: adaptPluginRule(noUnnecessaryWindowFetchSpreadRule),
-  ['no-unnecessary-window-create-image-bitmap-spread']: adaptPluginRule(noUnnecessaryWindowCreateImageBitmapSpreadRule),
-  ['no-unnecessary-window-queue-microtask-spread']: adaptPluginRule(noUnnecessaryWindowQueueMicrotaskSpreadRule),
-  ['no-unnecessary-window-report-error-spread']: adaptPluginRule(noUnnecessaryWindowReportErrorSpreadRule),
-  ['no-unnecessary-window-structured-clone-spread']: adaptPluginRule(noUnnecessaryWindowStructuredCloneSpreadRule),
-  ['no-unnecessary-window-request-animation-frame-spread']: adaptPluginRule(noUnnecessaryWindowRequestAnimationFrameSpreadRule),
-  ['no-unnecessary-window-cancel-animation-frame-spread']: adaptPluginRule(noUnnecessaryWindowCancelAnimationFrameSpreadRule),
-  ['no-unnecessary-window-request-idle-callback-spread']: adaptPluginRule(noUnnecessaryWindowRequestIdleCallbackSpreadRule),
-  ['no-unnecessary-window-cancel-idle-callback-spread']: adaptPluginRule(noUnnecessaryWindowCancelIdleCallbackSpreadRule),
-  ['no-unnecessary-window-set-timeout-spread']: adaptPluginRule(noUnnecessaryWindowSetTimeoutSpreadRule),
-  ['no-unnecessary-window-clear-timeout-spread']: adaptPluginRule(noUnnecessaryWindowClearTimeoutSpreadRule),
-  ['no-unnecessary-window-set-interval-spread']: adaptPluginRule(noUnnecessaryWindowSetIntervalSpreadRule),
-  ['no-unnecessary-window-clear-interval-spread']: adaptPluginRule(noUnnecessaryWindowClearIntervalSpreadRule),
-  ['no-unnecessary-process-exit-spread']: adaptPluginRule(noUnnecessaryProcessExitSpreadRule),
-  ['no-unnecessary-process-next-tick-spread']: adaptPluginRule(noUnnecessaryProcessNextTickSpreadRule),
-  ['no-unnecessary-process-cwd-spread']: adaptPluginRule(noUnnecessaryProcessCwdSpreadRule),
-  ['no-unnecessary-process-chdir-spread']: adaptPluginRule(noUnnecessaryProcessChdirSpreadRule),
-  ['no-unnecessary-process-env-spread']: adaptPluginRule(noUnnecessaryProcessEnvSpreadRule),
-  ['no-unnecessary-process-uptime-spread']: adaptPluginRule(noUnnecessaryProcessUptimeSpreadRule),
-  ['no-unnecessary-process-memory-usage-spread']: adaptPluginRule(noUnnecessaryProcessMemoryUsageSpreadRule),
-  ['no-unnecessary-process-cpu-usage-spread']: adaptPluginRule(noUnnecessaryProcessCpuUsageSpreadRule),
-  ['no-unnecessary-process-kill-spread']: adaptPluginRule(noUnnecessaryProcessKillSpreadRule),
-  ['no-unnecessary-process-abort-spread']: adaptPluginRule(noUnnecessaryProcessAbortSpreadRule),
-  ['no-unnecessary-process-umask-spread']: adaptPluginRule(noUnnecessaryProcessUmaskSpreadRule),
-  ['no-unnecessary-process-getuid-spread']: adaptPluginRule(noUnnecessaryProcessGetuidSpreadRule),
-  ['no-unnecessary-process-setuid-spread']: adaptPluginRule(noUnnecessaryProcessSetuidSpreadRule),
-  ['no-unnecessary-process-getgid-spread']: adaptPluginRule(noUnnecessaryProcessGetgidSpreadRule),
-  ['no-unnecessary-process-setgid-spread']: adaptPluginRule(noUnnecessaryProcessSetgidSpreadRule),
-  ['no-unnecessary-process-hrtime-spread']: adaptPluginRule(noUnnecessaryProcessHrtimeSpreadRule),
-  ['no-unnecessary-process-argv-spread']: adaptPluginRule(noUnnecessaryProcessArgvSpreadRule),
-  ['no-unnecessary-buffer-alloc-spread']: adaptPluginRule(noUnnecessaryBufferAllocSpreadRule),
-  ['no-unnecessary-buffer-alloc-unsafe-spread']: adaptPluginRule(noUnnecessaryBufferAllocUnsafeSpreadRule),
-  ['no-unnecessary-buffer-alloc-unsafe-slow-spread']: adaptPluginRule(noUnnecessaryBufferAllocUnsafeSlowSpreadRule),
-  ['no-unnecessary-buffer-from-spread']: adaptPluginRule(noUnnecessaryBufferFromSpreadRule),
-  ['no-unnecessary-buffer-of-spread']: adaptPluginRule(noUnnecessaryBufferOfSpreadRule),
-  ['no-unnecessary-buffer-is-buffer-spread']: adaptPluginRule(noUnnecessaryBufferIsBufferSpreadRule),
-  ['no-unnecessary-buffer-is-encoding-spread']: adaptPluginRule(noUnnecessaryBufferIsEncodingSpreadRule),
-  ['no-unnecessary-buffer-byte-length-spread']: adaptPluginRule(noUnnecessaryBufferByteLengthSpreadRule),
-  ['no-unnecessary-buffer-compare-spread']: adaptPluginRule(noUnnecessaryBufferCompareSpreadRule),
-  ['no-unnecessary-buffer-concat-spread']: adaptPluginRule(noUnnecessaryBufferConcatSpreadRule),
-  ['no-unnecessary-path-join-spread']: adaptPluginRule(noUnnecessaryPathJoinSpreadRule),
-  ['no-unnecessary-path-resolve-spread']: adaptPluginRule(noUnnecessaryPathResolveSpreadRule),
-  ['no-unnecessary-path-normalize-spread']: adaptPluginRule(noUnnecessaryPathNormalizeSpreadRule),
-  ['no-unnecessary-path-relative-spread']: adaptPluginRule(noUnnecessaryPathRelativeSpreadRule),
-  ['no-unnecessary-path-dirname-spread']: adaptPluginRule(noUnnecessaryPathDirnameSpreadRule),
-  ['no-unnecessary-path-basename-spread']: adaptPluginRule(noUnnecessaryPathBasenameSpreadRule),
-  ['no-unnecessary-path-extname-spread']: adaptPluginRule(noUnnecessaryPathExtnameSpreadRule),
-  ['no-unnecessary-path-parse-spread']: adaptPluginRule(noUnnecessaryPathParseSpreadRule),
-  ['no-unnecessary-path-format-spread']: adaptPluginRule(noUnnecessaryPathFormatSpreadRule),
-  ['no-unnecessary-path-is-absolute-spread']: adaptPluginRule(noUnnecessaryPathIsAbsoluteSpreadRule),
-  ['no-unnecessary-path-to-namespaced-path-spread']: adaptPluginRule(noUnnecessaryPathToNamespacedPathSpreadRule),
-  ['no-unnecessary-fs-read-file-spread']: adaptPluginRule(noUnnecessaryFsReadFileSpreadRule),
-  ['no-unnecessary-fs-write-file-spread']: adaptPluginRule(noUnnecessaryFsWriteFileSpreadRule),
-  ['no-unnecessary-fs-append-file-spread']: adaptPluginRule(noUnnecessaryFsAppendFileSpreadRule),
-  ['no-unnecessary-fs-copy-file-spread']: adaptPluginRule(noUnnecessaryFsCopyFileSpreadRule),
-  ['no-unnecessary-fs-rename-spread']: adaptPluginRule(noUnnecessaryFsRenameSpreadRule),
-  ['no-unnecessary-fs-unlink-spread']: adaptPluginRule(noUnnecessaryFsUnlinkSpreadRule),
-  ['no-unnecessary-fs-mkdir-spread']: adaptPluginRule(noUnnecessaryFsMkdirSpreadRule),
-  ['no-unnecessary-fs-rmdir-spread']: adaptPluginRule(noUnnecessaryFsRmdirSpreadRule),
-  ['no-unnecessary-fs-readdir-spread']: adaptPluginRule(noUnnecessaryFsReaddirSpreadRule),
-  ['no-unnecessary-fs-stat-spread']: adaptPluginRule(noUnnecessaryFsStatSpreadRule),
-  ['no-unnecessary-fs-lstat-spread']: adaptPluginRule(noUnnecessaryFsLstatSpreadRule),
-  ['no-unnecessary-fs-fstat-spread']: adaptPluginRule(noUnnecessaryFsFstatSpreadRule),
-  ['no-unnecessary-fs-exists-spread']: adaptPluginRule(noUnnecessaryFsExistsSpreadRule),
-  ['no-unnecessary-fs-exists-sync-spread']: adaptPluginRule(noUnnecessaryFsExistsSyncSpreadRule),
-  ['no-unnecessary-fs-access-spread']: adaptPluginRule(noUnnecessaryFsAccessSpreadRule),
-  ['no-unnecessary-fs-chmod-spread']: adaptPluginRule(noUnnecessaryFsChmodSpreadRule),
-  ['no-unnecessary-fs-chown-spread']: adaptPluginRule(noUnnecessaryFsChownSpreadRule),
-  ['no-unnecessary-fs-read-dir-sync-spread']: adaptPluginRule(noUnnecessaryFsReadDirSyncSpreadRule),
-  ['no-unnecessary-fs-read-file-sync-spread']: adaptPluginRule(noUnnecessaryFsReadFileSyncSpreadRule),
-  ['no-unnecessary-fs-write-file-sync-spread']: adaptPluginRule(noUnnecessaryFsWriteFileSyncSpreadRule),
-  ['no-unnecessary-fs-mkdir-sync-spread']: adaptPluginRule(noUnnecessaryFsMkdirSyncSpreadRule),
-  ['no-unnecessary-fs-rm-sync-spread']: adaptPluginRule(noUnnecessaryFsRmSyncSpreadRule),
-  ['no-unnecessary-fs-rm-spread']: adaptPluginRule(noUnnecessaryFsRmSpreadRule),
-  ['no-unnecessary-fs-watch-spread']: adaptPluginRule(noUnnecessaryFsWatchSpreadRule),
-  ['no-unnecessary-fs-watch-file-spread']: adaptPluginRule(noUnnecessaryFsWatchFileSpreadRule),
-  ['no-unnecessary-fs-unwatch-file-spread']: adaptPluginRule(noUnnecessaryFsUnwatchFileSpreadRule),
-  ['no-unnecessary-fs-create-read-stream-spread']: adaptPluginRule(noUnnecessaryFsCreateReadStreamSpreadRule),
-  ['no-unnecessary-fs-create-write-stream-spread']: adaptPluginRule(noUnnecessaryFsCreateWriteStreamSpreadRule),
-  ['no-unnecessary-util-promisify-spread']: adaptPluginRule(noUnnecessaryUtilPromisifySpreadRule),
-  ['no-unnecessary-util-callbackify-spread']: adaptPluginRule(noUnnecessaryUtilCallbackifySpreadRule),
-  ['no-unnecessary-util-inspect-spread']: adaptPluginRule(noUnnecessaryUtilInspectSpreadRule),
-  ['no-unnecessary-util-format-spread']: adaptPluginRule(noUnnecessaryUtilFormatSpreadRule),
-  ['no-unnecessary-util-deprecate-spread']: adaptPluginRule(noUnnecessaryUtilDeprecateSpreadRule),
-  ['no-unnecessary-util-is-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryUtilIsDeepStrictEqualSpreadRule),
-  ['no-unnecessary-util-types-is-date-spread']: adaptPluginRule(noUnnecessaryUtilTypesIsDateSpreadRule),
-  ['no-unnecessary-util-text-decoder-decode-spread']: adaptPluginRule(noUnnecessaryUtilTextDecoderDecodeSpreadRule),
-  ['no-unnecessary-os-homedir-spread']: adaptPluginRule(noUnnecessaryOsHomedirSpreadRule),
-  ['no-unnecessary-os-tmpdir-spread']: adaptPluginRule(noUnnecessaryOsTmpdirSpreadRule),
-  ['no-unnecessary-os-hostname-spread']: adaptPluginRule(noUnnecessaryOsHostnameSpreadRule),
-  ['no-unnecessary-os-type-spread']: adaptPluginRule(noUnnecessaryOsTypeSpreadRule),
-  ['no-unnecessary-os-platform-spread']: adaptPluginRule(noUnnecessaryOsPlatformSpreadRule),
-  ['no-unnecessary-os-arch-spread']: adaptPluginRule(noUnnecessaryOsArchSpreadRule),
-  ['no-unnecessary-os-release-spread']: adaptPluginRule(noUnnecessaryOsReleaseSpreadRule),
-  ['no-unnecessary-os-cpus-spread']: adaptPluginRule(noUnnecessaryOsCpusSpreadRule),
-  ['no-unnecessary-os-totalmem-spread']: adaptPluginRule(noUnnecessaryOsTotalmemSpreadRule),
-  ['no-unnecessary-os-freemem-spread']: adaptPluginRule(noUnnecessaryOsFreememSpreadRule),
-  ['no-unnecessary-os-uptime-spread']: adaptPluginRule(noUnnecessaryOsUptimeSpreadRule),
-  ['no-unnecessary-os-loadavg-spread']: adaptPluginRule(noUnnecessaryOsLoadavgSpreadRule),
-  ['no-unnecessary-os-network-interfaces-spread']: adaptPluginRule(noUnnecessaryOsNetworkInterfacesSpreadRule),
-  ['no-unnecessary-os-constants-spread']: adaptPluginRule(noUnnecessaryOsConstantsSpreadRule),
-  ['no-unnecessary-os-user-info-spread']: adaptPluginRule(noUnnecessaryOsUserInfoSpreadRule),
-  ['no-unnecessary-os-eol-spread']: adaptPluginRule(noUnnecessaryOsEolSpreadRule),
-  ['no-unnecessary-os-dev-null-spread']: adaptPluginRule(noUnnecessaryOsDevNullSpreadRule),
-  ['no-unnecessary-os-get-priority-spread']: adaptPluginRule(noUnnecessaryOsGetPrioritySpreadRule),
-  ['no-unnecessary-os-set-priority-spread']: adaptPluginRule(noUnnecessaryOsSetPrioritySpreadRule),
-  ['no-unnecessary-crypto-create-hash-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHashSpreadRule),
-  ['no-unnecessary-crypto-create-hmac-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHmacSpreadRule),
-  ['no-unnecessary-crypto-create-cipher-spread']: adaptPluginRule(noUnnecessaryCryptoCreateCipherSpreadRule),
-  ['no-unnecessary-crypto-create-cipher-iv-spread']: adaptPluginRule(noUnnecessaryCryptoCreateCipherIvSpreadRule),
-  ['no-unnecessary-crypto-create-decipher-spread']: adaptPluginRule(noUnnecessaryCryptoCreateDecipherSpreadRule),
-  ['no-unnecessary-crypto-create-decipher-iv-spread']: adaptPluginRule(noUnnecessaryCryptoCreateDecipherIvSpreadRule),
-  ['no-unnecessary-crypto-create-sign-spread']: adaptPluginRule(noUnnecessaryCryptoCreateSignSpreadRule),
-  ['no-unnecessary-crypto-create-verify-spread']: adaptPluginRule(noUnnecessaryCryptoCreateVerifySpreadRule),
-  ['no-unnecessary-crypto-random-bytes-spread']: adaptPluginRule(noUnnecessaryCryptoRandomBytesSpreadRule),
-  ['no-unnecessary-crypto-pbkdf2-spread']: adaptPluginRule(noUnnecessaryCryptoPbkdf2SpreadRule),
-  ['no-unnecessary-crypto-scrypt-spread']: adaptPluginRule(noUnnecessaryCryptoScryptSpreadRule),
-  ['no-unnecessary-crypto-create-secret-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreateSecretKeySpreadRule),
-  ['no-unnecessary-crypto-create-public-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreatePublicKeySpreadRule),
-  ['no-unnecessary-crypto-create-private-key-spread']: adaptPluginRule(noUnnecessaryCryptoCreatePrivateKeySpreadRule),
-  ['no-unnecessary-crypto-get-ciphers-spread']: adaptPluginRule(noUnnecessaryCryptoGetCiphersSpreadRule),
-  ['no-unnecessary-crypto-get-hashes-spread']: adaptPluginRule(noUnnecessaryCryptoGetHashesSpreadRule),
-  ['no-unnecessary-crypto-timing-safe-equal-spread']: adaptPluginRule(noUnnecessaryCryptoTimingSafeEqualSpreadRule),
-  ['no-unnecessary-event-emitter-on-spread']: adaptPluginRule(noUnnecessaryEventEmitterOnSpreadRule),
-  ['no-unnecessary-event-emitter-off-spread']: adaptPluginRule(noUnnecessaryEventEmitterOffSpreadRule),
-  ['no-unnecessary-event-emitter-once-spread']: adaptPluginRule(noUnnecessaryEventEmitterOnceSpreadRule),
-  ['no-unnecessary-event-emitter-emit-spread']: adaptPluginRule(noUnnecessaryEventEmitterEmitSpreadRule),
-  ['no-unnecessary-event-emitter-remove-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterRemoveListenerSpreadRule),
-  ['no-unnecessary-event-emitter-remove-all-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterRemoveAllListenersSpreadRule),
-  ['no-unnecessary-event-emitter-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterListenersSpreadRule),
-  ['no-unnecessary-event-emitter-listener-count-spread']: adaptPluginRule(noUnnecessaryEventEmitterListenerCountSpreadRule),
-  ['no-unnecessary-event-emitter-prepend-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterPrependListenerSpreadRule),
-  ['no-unnecessary-event-emitter-prepend-once-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterPrependOnceListenerSpreadRule),
-  ['no-unnecessary-event-emitter-set-max-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterSetMaxListenersSpreadRule),
-  ['no-unnecessary-event-emitter-get-max-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterGetMaxListenersSpreadRule),
-  ['no-unnecessary-event-emitter-event-names-spread']: adaptPluginRule(noUnnecessaryEventEmitterEventNamesSpreadRule),
-  ['no-unnecessary-event-emitter-raw-listeners-spread']: adaptPluginRule(noUnnecessaryEventEmitterRawListenersSpreadRule),
-  ['no-unnecessary-stream-pipeline-spread']: adaptPluginRule(noUnnecessaryStreamPipelineSpreadRule),
-  ['no-unnecessary-stream-compose-spread']: adaptPluginRule(noUnnecessaryStreamComposeSpreadRule),
-  ['no-unnecessary-stream-readable-from-spread']: adaptPluginRule(noUnnecessaryStreamReadableFromSpreadRule),
-  ['no-unnecessary-child-process-exec-spread']: adaptPluginRule(noUnnecessaryChildProcessExecSpreadRule),
-  ['no-unnecessary-child-process-exec-file-spread']: adaptPluginRule(noUnnecessaryChildProcessExecFileSpreadRule),
-  ['no-unnecessary-child-process-spawn-spread']: adaptPluginRule(noUnnecessaryChildProcessSpawnSpreadRule),
-  ['no-unnecessary-child-process-fork-spread']: adaptPluginRule(noUnnecessaryChildProcessForkSpreadRule),
-  ['no-unnecessary-http-request-spread']: adaptPluginRule(noUnnecessaryHttpRequestSpreadRule),
-  ['no-unnecessary-http-get-spread']: adaptPluginRule(noUnnecessaryHttpGetSpreadRule),
-  ['no-unnecessary-https-request-spread']: adaptPluginRule(noUnnecessaryHttpsRequestSpreadRule),
-  ['no-unnecessary-https-get-spread']: adaptPluginRule(noUnnecessaryHttpsGetSpreadRule),
-  ['no-unnecessary-url-parse-node-spread']: adaptPluginRule(noUnnecessaryUrlParseNodeSpreadRule),
-  ['no-unnecessary-url-format-spread']: adaptPluginRule(noUnnecessaryUrlFormatSpreadRule),
-  ['no-unnecessary-url-resolve-spread']: adaptPluginRule(noUnnecessaryUrlResolveSpreadRule),
-  ['no-unnecessary-url-domain-to-unicode-spread']: adaptPluginRule(noUnnecessaryUrlDomainToUnicodeSpreadRule),
-  ['no-unnecessary-url-domain-to-ascii-spread']: adaptPluginRule(noUnnecessaryUrlDomainToAsciiSpreadRule),
-  ['no-unnecessary-querystring-parse-spread']: adaptPluginRule(noUnnecessaryQuerystringParseSpreadRule),
-  ['no-unnecessary-querystring-stringify-spread']: adaptPluginRule(noUnnecessaryQuerystringStringifySpreadRule),
-  ['no-unnecessary-querystring-escape-spread']: adaptPluginRule(noUnnecessaryQuerystringEscapeSpreadRule),
-  ['no-unnecessary-querystring-unescape-spread']: adaptPluginRule(noUnnecessaryQuerystringUnescapeSpreadRule),
-  ['no-unnecessary-assert-ok-spread']: adaptPluginRule(noUnnecessaryAssertOkSpreadRule),
-  ['no-unnecessary-assert-equal-spread']: adaptPluginRule(noUnnecessaryAssertEqualSpreadRule),
-  ['no-unnecessary-assert-not-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotEqualSpreadRule),
-  ['no-unnecessary-assert-deep-equal-spread']: adaptPluginRule(noUnnecessaryAssertDeepEqualSpreadRule),
-  ['no-unnecessary-assert-not-deep-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotDeepEqualSpreadRule),
-  ['no-unnecessary-assert-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertDeepStrictEqualSpreadRule),
-  ['no-unnecessary-assert-not-deep-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotDeepStrictEqualSpreadRule),
-  ['no-unnecessary-assert-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertStrictEqualSpreadRule),
-  ['no-unnecessary-assert-not-strict-equal-spread']: adaptPluginRule(noUnnecessaryAssertNotStrictEqualSpreadRule),
-  ['no-unnecessary-assert-throws-spread']: adaptPluginRule(noUnnecessaryAssertThrowsSpreadRule),
-  ['no-unnecessary-assert-rejects-spread']: adaptPluginRule(noUnnecessaryAssertRejectsSpreadRule),
-  ['no-unnecessary-assert-does-not-throw-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotThrowSpreadRule),
-  ['no-unnecessary-assert-does-not-reject-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotRejectSpreadRule),
-  ['no-unnecessary-assert-if-error-spread']: adaptPluginRule(noUnnecessaryAssertIfErrorSpreadRule),
-  ['no-unnecessary-assert-fail-spread']: adaptPluginRule(noUnnecessaryAssertFailSpreadRule),
-  ['no-unnecessary-assert-match-spread']: adaptPluginRule(noUnnecessaryAssertMatchSpreadRule),
-  ['no-unnecessary-assert-does-not-match-spread']: adaptPluginRule(noUnnecessaryAssertDoesNotMatchSpreadRule),
-  ['no-unnecessary-assert-call-tracker-calls-spread']: adaptPluginRule(noUnnecessaryAssertCallTrackerCallsSpreadRule),
-  ['no-unnecessary-promise-instance-then-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceThenSpreadRule),
-  ['no-unnecessary-promise-instance-catch-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceCatchSpreadRule),
-  ['no-unnecessary-promise-instance-finally-spread']: adaptPluginRule(noUnnecessaryPromiseInstanceFinallySpreadRule),
-  ['no-unnecessary-intl-collator-compare-spread']: adaptPluginRule(noUnnecessaryIntlCollatorCompareSpreadRule),
-  ['no-unnecessary-intl-number-format-format-spread']: adaptPluginRule(noUnnecessaryIntlNumberFormatFormatSpreadRule),
-  ['no-unnecessary-intl-date-time-format-format-spread']: adaptPluginRule(noUnnecessaryIntlDateTimeFormatFormatSpreadRule),
-  ['no-unnecessary-intl-list-format-format-spread']: adaptPluginRule(noUnnecessaryIntlListFormatFormatSpreadRule),
-  ['no-unnecessary-intl-relative-time-format-spread']: adaptPluginRule(noUnnecessaryIntlRelativeTimeFormatSpreadRule),
-  ['no-unnecessary-intl-plural-rules-spread']: adaptPluginRule(noUnnecessaryIntlPluralRulesSpreadRule),
-  ['no-unnecessary-intl-segmenter-spread']: adaptPluginRule(noUnnecessaryIntlSegmenterSpreadRule),
-  ['no-unnecessary-intl-display-names-spread']: adaptPluginRule(noUnnecessaryIntlDisplayNamesSpreadRule),
-  ['no-unnecessary-iterator-next-spread']: adaptPluginRule(noUnnecessaryIteratorNextSpreadRule),
-  ['no-unnecessary-iterator-return-spread']: adaptPluginRule(noUnnecessaryIteratorReturnSpreadRule),
-  ['no-unnecessary-iterator-throw-spread']: adaptPluginRule(noUnnecessaryIteratorThrowSpreadRule),
-  ['no-unnecessary-iterator-for-each-spread']: adaptPluginRule(noUnnecessaryIteratorForEachSpreadRule),
-  ['no-unnecessary-iterator-map-spread']: adaptPluginRule(noUnnecessaryIteratorMapSpreadRule),
-  ['no-unnecessary-iterator-filter-spread']: adaptPluginRule(noUnnecessaryIteratorFilterSpreadRule),
-  ['no-unnecessary-iterator-take-spread']: adaptPluginRule(noUnnecessaryIteratorTakeSpreadRule),
-  ['no-unnecessary-iterator-drop-spread']: adaptPluginRule(noUnnecessaryIteratorDropSpreadRule),
-  ['no-unnecessary-iterator-flat-map-spread']: adaptPluginRule(noUnnecessaryIteratorFlatMapSpreadRule),
-  ['no-unnecessary-iterator-reduce-spread']: adaptPluginRule(noUnnecessaryIteratorReduceSpreadRule),
-  ['no-unnecessary-iterator-to-array-spread']: adaptPluginRule(noUnnecessaryIteratorToArraySpreadRule),
-  ['no-unnecessary-iterator-some-spread']: adaptPluginRule(noUnnecessaryIteratorSomeSpreadRule),
-  ['no-unnecessary-iterator-every-spread']: adaptPluginRule(noUnnecessaryIteratorEverySpreadRule),
-  ['no-unnecessary-iterator-find-spread']: adaptPluginRule(noUnnecessaryIteratorFindSpreadRule),
-  ['no-unnecessary-array-iterator-next-spread']: adaptPluginRule(noUnnecessaryArrayIteratorNextSpreadRule),
-  ['no-unnecessary-map-iterator-next-spread']: adaptPluginRule(noUnnecessaryMapIteratorNextSpreadRule),
-  ['no-unnecessary-set-iterator-next-spread']: adaptPluginRule(noUnnecessarySetIteratorNextSpreadRule),
-  ['no-unnecessary-string-iterator-next-spread']: adaptPluginRule(noUnnecessaryStringIteratorNextSpreadRule),
-  ['no-unnecessary-generator-next-spread']: adaptPluginRule(noUnnecessaryGeneratorNextSpreadRule),
-  ['no-unnecessary-generator-return-spread']: adaptPluginRule(noUnnecessaryGeneratorReturnSpreadRule),
-  ['no-unnecessary-generator-throw-spread']: adaptPluginRule(noUnnecessaryGeneratorThrowSpreadRule),
-  ['no-unnecessary-async-generator-next-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorNextSpreadRule),
-  ['no-unnecessary-async-generator-return-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorReturnSpreadRule),
-  ['no-unnecessary-async-generator-throw-spread']: adaptPluginRule(noUnnecessaryAsyncGeneratorThrowSpreadRule),
-  ['no-unnecessary-async-iterator-next-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorNextSpreadRule),
-  ['no-unnecessary-async-iterator-return-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorReturnSpreadRule),
-  ['no-unnecessary-async-iterator-throw-spread']: adaptPluginRule(noUnnecessaryAsyncIteratorThrowSpreadRule),
-  ['no-unnecessary-response-instance-clone-spread']: adaptPluginRule(noUnnecessaryResponseInstanceCloneSpreadRule),
-  ['no-unnecessary-response-instance-json-spread']: adaptPluginRule(noUnnecessaryResponseInstanceJsonSpreadRule),
-  ['no-unnecessary-response-instance-text-spread']: adaptPluginRule(noUnnecessaryResponseInstanceTextSpreadRule),
-  ['no-unnecessary-response-instance-blob-spread']: adaptPluginRule(noUnnecessaryResponseInstanceBlobSpreadRule),
-  ['no-unnecessary-response-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryResponseInstanceArrayBufferSpreadRule),
-  ['no-unnecessary-response-instance-form-data-spread']: adaptPluginRule(noUnnecessaryResponseInstanceFormDataSpreadRule),
-  ['no-unnecessary-request-instance-clone-spread']: adaptPluginRule(noUnnecessaryRequestInstanceCloneSpreadRule),
-  ['no-unnecessary-request-instance-json-spread']: adaptPluginRule(noUnnecessaryRequestInstanceJsonSpreadRule),
-  ['no-unnecessary-request-instance-text-spread']: adaptPluginRule(noUnnecessaryRequestInstanceTextSpreadRule),
-  ['no-unnecessary-request-instance-blob-spread']: adaptPluginRule(noUnnecessaryRequestInstanceBlobSpreadRule),
-  ['no-unnecessary-request-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryRequestInstanceArrayBufferSpreadRule),
-  ['no-unnecessary-request-instance-form-data-spread']: adaptPluginRule(noUnnecessaryRequestInstanceFormDataSpreadRule),
-  ['no-unnecessary-headers-instance-get-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceGetSpreadRule),
-  ['no-unnecessary-headers-instance-set-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceSetSpreadRule),
-  ['no-unnecessary-headers-instance-has-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceHasSpreadRule),
-  ['no-unnecessary-headers-instance-delete-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceDeleteSpreadRule),
-  ['no-unnecessary-headers-instance-append-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceAppendSpreadRule),
-  ['no-unnecessary-headers-instance-entries-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceEntriesSpreadRule),
-  ['no-unnecessary-headers-instance-keys-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceKeysSpreadRule),
-  ['no-unnecessary-headers-instance-values-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceValuesSpreadRule),
-  ['no-unnecessary-headers-instance-for-each-spread']: adaptPluginRule(noUnnecessaryHeadersInstanceForEachSpreadRule),
-  ['no-unnecessary-form-data-instance-get-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceGetSpreadRule),
-  ['no-unnecessary-form-data-instance-get-all-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceGetAllSpreadRule),
-  ['no-unnecessary-form-data-instance-set-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceSetSpreadRule),
-  ['no-unnecessary-form-data-instance-append-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceAppendSpreadRule),
-  ['no-unnecessary-form-data-instance-delete-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceDeleteSpreadRule),
-  ['no-unnecessary-form-data-instance-has-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceHasSpreadRule),
-  ['no-unnecessary-form-data-instance-entries-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceEntriesSpreadRule),
-  ['no-unnecessary-form-data-instance-keys-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceKeysSpreadRule),
-  ['no-unnecessary-form-data-instance-values-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceValuesSpreadRule),
-  ['no-unnecessary-form-data-instance-for-each-spread']: adaptPluginRule(noUnnecessaryFormDataInstanceForEachSpreadRule),
-  ['no-unnecessary-url-instance-to-string-spread']: adaptPluginRule(noUnnecessaryUrlInstanceToStringSpreadRule),
-  ['no-unnecessary-url-instance-to-json-spread']: adaptPluginRule(noUnnecessaryUrlInstanceToJsonSpreadRule),
-  ['no-unnecessary-url-search-params-instance-get-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetSpreadRule),
-  ['no-unnecessary-url-search-params-instance-get-all-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule),
-  ['no-unnecessary-url-search-params-instance-set-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSetSpreadRule),
-  ['no-unnecessary-url-search-params-instance-append-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule),
-  ['no-unnecessary-url-search-params-instance-delete-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule),
-  ['no-unnecessary-url-search-params-instance-has-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceHasSpreadRule),
-  ['no-unnecessary-url-search-params-instance-to-string-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule),
-  ['no-unnecessary-url-search-params-instance-entries-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule),
-  ['no-unnecessary-url-search-params-instance-keys-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule),
-  ['no-unnecessary-url-search-params-instance-values-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule),
-  ['no-unnecessary-url-search-params-instance-for-each-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule),
-  ['no-unnecessary-url-search-params-instance-sort-spread']: adaptPluginRule(noUnnecessaryUrlSearchParamsInstanceSortSpreadRule),
-  ['no-unnecessary-blob-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryBlobInstanceArrayBufferSpreadRule),
-  ['no-unnecessary-blob-instance-text-spread']: adaptPluginRule(noUnnecessaryBlobInstanceTextSpreadRule),
-  ['no-unnecessary-blob-instance-slice-spread']: adaptPluginRule(noUnnecessaryBlobInstanceSliceSpreadRule),
-  ['no-unnecessary-blob-instance-stream-spread']: adaptPluginRule(noUnnecessaryBlobInstanceStreamSpreadRule),
-  ['no-unnecessary-file-instance-array-buffer-spread']: adaptPluginRule(noUnnecessaryFileInstanceArrayBufferSpreadRule),
-  ['no-unnecessary-file-instance-text-spread']: adaptPluginRule(noUnnecessaryFileInstanceTextSpreadRule),
-  ['no-unnecessary-file-instance-slice-spread']: adaptPluginRule(noUnnecessaryFileInstanceSliceSpreadRule),
-  ['no-unnecessary-file-instance-stream-spread']: adaptPluginRule(noUnnecessaryFileInstanceStreamSpreadRule),
-  ['no-unnecessary-abort-signal-throw-if-aborted-spread']: adaptPluginRule(noUnnecessaryAbortSignalThrowIfAbortedSpreadRule),
-  ['no-unnecessary-broadcast-channel-instance-post-message-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule),
-  ['no-unnecessary-broadcast-channel-instance-close-spread']: adaptPluginRule(noUnnecessaryBroadcastChannelInstanceCloseSpreadRule),
-  ['no-unnecessary-message-port-post-message-spread']: adaptPluginRule(noUnnecessaryMessagePortPostMessageSpreadRule),
-  ['no-unnecessary-message-port-close-spread']: adaptPluginRule(noUnnecessaryMessagePortCloseSpreadRule),
-  ['no-unnecessary-message-port-start-spread']: adaptPluginRule(noUnnecessaryMessagePortStartSpreadRule),
-  ['no-unnecessary-worker-instance-post-message-spread']: adaptPluginRule(noUnnecessaryWorkerInstancePostMessageSpreadRule),
-  ['no-unnecessary-worker-instance-terminate-spread']: adaptPluginRule(noUnnecessaryWorkerInstanceTerminateSpreadRule),
-  ['no-unnecessary-file-reader-instance-read-as-array-buffer-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule),
-  ['no-unnecessary-file-reader-instance-read-as-binary-string-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule),
-  ['no-unnecessary-file-reader-instance-read-as-data-url-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsDataURLSpreadRule),
-  ['no-unnecessary-file-reader-instance-read-as-text-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceReadAsTextSpreadRule),
-  ['no-unnecessary-file-reader-instance-abort-spread']: adaptPluginRule(noUnnecessaryFileReaderInstanceAbortSpreadRule),
-  ['no-unnecessary-readable-stream-read-spread']: adaptPluginRule(noUnnecessaryReadableStreamReadSpreadRule),
-  ['no-unnecessary-readable-stream-pipe-spread']: adaptPluginRule(noUnnecessaryReadableStreamPipeSpreadRule),
-  ['no-unnecessary-readable-stream-unpipe-spread']: adaptPluginRule(noUnnecessaryReadableStreamUnpipeSpreadRule),
-  ['no-unnecessary-readable-stream-pause-spread']: adaptPluginRule(noUnnecessaryReadableStreamPauseSpreadRule),
-  ['no-unnecessary-readable-stream-resume-spread']: adaptPluginRule(noUnnecessaryReadableStreamResumeSpreadRule),
-  ['no-unnecessary-readable-stream-destroy-spread']: adaptPluginRule(noUnnecessaryReadableStreamDestroySpreadRule),
-  ['no-unnecessary-readable-stream-push-spread']: adaptPluginRule(noUnnecessaryReadableStreamPushSpreadRule),
-  ['no-unnecessary-writable-stream-write-spread']: adaptPluginRule(noUnnecessaryWritableStreamWriteSpreadRule),
-  ['no-unnecessary-writable-stream-end-spread']: adaptPluginRule(noUnnecessaryWritableStreamEndSpreadRule),
-  ['no-unnecessary-writable-stream-destroy-spread']: adaptPluginRule(noUnnecessaryWritableStreamDestroySpreadRule),
-  ['no-unnecessary-transform-stream-transform-spread']: adaptPluginRule(noUnnecessaryTransformStreamTransformSpreadRule),
-  ['no-unnecessary-transform-stream-flush-spread']: adaptPluginRule(noUnnecessaryTransformStreamFlushSpreadRule),
-  ['no-unnecessary-event-emitter-add-listener-spread']: adaptPluginRule(noUnnecessaryEventEmitterAddListenerSpreadRule),
-  ['no-unnecessary-child-process-instance-kill-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceKillSpreadRule),
-  ['no-unnecessary-child-process-instance-send-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceSendSpreadRule),
-  ['no-unnecessary-child-process-instance-disconnect-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceDisconnectSpreadRule),
-  ['no-unnecessary-child-process-instance-ref-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceRefSpreadRule),
-  ['no-unnecessary-child-process-instance-unref-spread']: adaptPluginRule(noUnnecessaryChildProcessInstanceUnrefSpreadRule),
-  ['no-unnecessary-observer-instance-observe-spread']: adaptPluginRule(noUnnecessaryObserverInstanceObserveSpreadRule),
-  ['no-unnecessary-observer-instance-unobserve-spread']: adaptPluginRule(noUnnecessaryObserverInstanceUnobserveSpreadRule),
-  ['no-unnecessary-observer-instance-disconnect-spread']: adaptPluginRule(noUnnecessaryObserverInstanceDisconnectSpreadRule),
-  ['no-unnecessary-observer-instance-take-records-spread']: adaptPluginRule(noUnnecessaryObserverInstanceTakeRecordsSpreadRule),
-  ['no-unnecessary-text-decoder-instance-decode-spread']: adaptPluginRule(noUnnecessaryTextDecoderInstanceDecodeSpreadRule),
-  ['no-unnecessary-text-encoder-instance-encode-spread']: adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeSpreadRule),
-  ['no-unnecessary-text-encoder-instance-encode-into-spread']: adaptPluginRule(noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule),
-  ['no-unnecessary-server-listen-spread']: adaptPluginRule(noUnnecessaryServerListenSpreadRule),
-  ['no-unnecessary-server-close-spread']: adaptPluginRule(noUnnecessaryServerCloseSpreadRule),
-  ['no-unnecessary-server-address-spread']: adaptPluginRule(noUnnecessaryServerAddressSpreadRule),
-  ['no-unnecessary-server-get-connections-spread']: adaptPluginRule(noUnnecessaryServerGetConnectionsSpreadRule),
-  ['no-unnecessary-server-ref-spread']: adaptPluginRule(noUnnecessaryServerRefSpreadRule),
-  ['no-unnecessary-server-unref-spread']: adaptPluginRule(noUnnecessaryServerUnrefSpreadRule),
-  ['no-unnecessary-socket-write-spread']: adaptPluginRule(noUnnecessarySocketWriteSpreadRule),
-  ['no-unnecessary-socket-connect-spread']: adaptPluginRule(noUnnecessarySocketConnectSpreadRule),
-  ['no-unnecessary-socket-end-spread']: adaptPluginRule(noUnnecessarySocketEndSpreadRule),
-  ['no-unnecessary-socket-destroy-spread']: adaptPluginRule(noUnnecessarySocketDestroySpreadRule),
-  ['no-unnecessary-socket-pause-spread']: adaptPluginRule(noUnnecessarySocketPauseSpreadRule),
-  ['no-unnecessary-socket-resume-spread']: adaptPluginRule(noUnnecessarySocketResumeSpreadRule),
-  ['no-unnecessary-socket-set-timeout-spread']: adaptPluginRule(noUnnecessarySocketSetTimeoutSpreadRule),
-  ['no-unnecessary-socket-set-encoding-spread']: adaptPluginRule(noUnnecessarySocketSetEncodingSpreadRule),
-  ['no-unnecessary-socket-set-keep-alive-spread']: adaptPluginRule(noUnnecessarySocketSetKeepAliveSpreadRule),
-  ['no-unnecessary-socket-set-no-delay-spread']: adaptPluginRule(noUnnecessarySocketSetNoDelaySpreadRule),
-  ['no-unnecessary-socket-ref-spread']: adaptPluginRule(noUnnecessarySocketRefSpreadRule),
-  ['no-unnecessary-socket-unref-spread']: adaptPluginRule(noUnnecessarySocketUnrefSpreadRule),
-  ['no-unnecessary-dataview-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat32SpreadRule),
-  ['no-unnecessary-dataview-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewSetFloat64SpreadRule),
-  ['no-unnecessary-dataview-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt16SpreadRule),
-  ['no-unnecessary-dataview-set-int32-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt32SpreadRule),
-  ['no-unnecessary-dataview-set-int8-spread']: adaptPluginRule(noUnnecessaryDataviewSetInt8SpreadRule),
-  ['no-unnecessary-dataview-set-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint16SpreadRule),
-  ['no-unnecessary-dataview-set-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint32SpreadRule),
-  ['no-unnecessary-dataview-set-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewSetUint8SpreadRule),
-  ['no-unnecessary-array-buffer-instance-resize-spread']: adaptPluginRule(noUnnecessaryArrayBufferInstanceResizeSpreadRule),
-  ['no-unnecessary-array-buffer-instance-slice-spread']: adaptPluginRule(noUnnecessaryArrayBufferInstanceSliceSpreadRule),
-  ['no-unnecessary-array-buffer-instance-transfer-spread']: adaptPluginRule(noUnnecessaryArrayBufferInstanceTransferSpreadRule),
-  ['no-unnecessary-array-from-async-spread']: adaptPluginRule(noUnnecessaryArrayFromAsyncSpreadRule),
-  ['no-unnecessary-array-is-array-spread']: adaptPluginRule(noUnnecessaryArrayIsArraySpreadRule),
-  ['no-unnecessary-big-int-instance-to-locale-string-spread']: adaptPluginRule(noUnnecessaryBigIntInstanceToLocaleStringSpreadRule),
-  ['no-unnecessary-big-int-instance-to-string-spread']: adaptPluginRule(noUnnecessaryBigIntInstanceToStringSpreadRule),
-  ['no-unnecessary-big-int-instance-value-of-spread']: adaptPluginRule(noUnnecessaryBigIntInstanceValueOfSpreadRule),
-  ['no-unnecessary-boolean-instance-to-string-spread']: adaptPluginRule(noUnnecessaryBooleanInstanceToStringSpreadRule),
-  ['no-unnecessary-boolean-instance-value-of-spread']: adaptPluginRule(noUnnecessaryBooleanInstanceValueOfSpreadRule),
-  ['no-unnecessary-canvas-get-context-spread']: adaptPluginRule(noUnnecessaryCanvasGetContextSpreadRule),
-  ['no-unnecessary-crypto-cipher-instance-final-spread']: adaptPluginRule(noUnnecessaryCryptoCipherInstanceFinalSpreadRule),
-  ['no-unnecessary-crypto-cipher-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoCipherInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-create-hash-instance-digest-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHashInstanceDigestSpreadRule),
-  ['no-unnecessary-crypto-create-hash-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoCreateHashInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-decipher-instance-final-spread']: adaptPluginRule(noUnnecessaryCryptoDecipherInstanceFinalSpreadRule),
-  ['no-unnecessary-crypto-decipher-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoDecipherInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-hmac-instance-digest-spread']: adaptPluginRule(noUnnecessaryCryptoHmacInstanceDigestSpreadRule),
-  ['no-unnecessary-crypto-hmac-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoHmacInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-sign-instance-sign-spread']: adaptPluginRule(noUnnecessaryCryptoSignInstanceSignSpreadRule),
-  ['no-unnecessary-crypto-sign-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoSignInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-verify-instance-update-spread']: adaptPluginRule(noUnnecessaryCryptoVerifyInstanceUpdateSpreadRule),
-  ['no-unnecessary-crypto-verify-instance-verify-spread']: adaptPluginRule(noUnnecessaryCryptoVerifyInstanceVerifySpreadRule),
-  ['no-unnecessary-ctx-arc-spread']: adaptPluginRule(noUnnecessaryCtxArcSpreadRule),
-  ['no-unnecessary-ctx-arc-to-spread']: adaptPluginRule(noUnnecessaryCtxArcToSpreadRule),
-  ['no-unnecessary-ctx-begin-path-spread']: adaptPluginRule(noUnnecessaryCtxBeginPathSpreadRule),
-  ['no-unnecessary-ctx-bezier-curve-to-spread']: adaptPluginRule(noUnnecessaryCtxBezierCurveToSpreadRule),
-  ['no-unnecessary-ctx-clear-rect-spread']: adaptPluginRule(noUnnecessaryCtxClearRectSpreadRule),
-  ['no-unnecessary-ctx-clip-spread']: adaptPluginRule(noUnnecessaryCtxClipSpreadRule),
-  ['no-unnecessary-ctx-close-path-spread']: adaptPluginRule(noUnnecessaryCtxClosePathSpreadRule),
-  ['no-unnecessary-ctx-create-linear-gradient-spread']: adaptPluginRule(noUnnecessaryCtxCreateLinearGradientSpreadRule),
-  ['no-unnecessary-ctx-create-pattern-spread']: adaptPluginRule(noUnnecessaryCtxCreatePatternSpreadRule),
-  ['no-unnecessary-ctx-create-radial-gradient-spread']: adaptPluginRule(noUnnecessaryCtxCreateRadialGradientSpreadRule),
-  ['no-unnecessary-ctx-draw-image-spread']: adaptPluginRule(noUnnecessaryCtxDrawImageSpreadRule),
-  ['no-unnecessary-ctx-fill-rect-spread']: adaptPluginRule(noUnnecessaryCtxFillRectSpreadRule),
-  ['no-unnecessary-ctx-fill-spread']: adaptPluginRule(noUnnecessaryCtxFillSpreadRule),
-  ['no-unnecessary-ctx-fill-text-spread']: adaptPluginRule(noUnnecessaryCtxFillTextSpreadRule),
-  ['no-unnecessary-ctx-get-image-data-spread']: adaptPluginRule(noUnnecessaryCtxGetImageDataSpreadRule),
-  ['no-unnecessary-ctx-get-line-dash-spread']: adaptPluginRule(noUnnecessaryCtxGetLineDashSpreadRule),
-  ['no-unnecessary-ctx-line-to-spread']: adaptPluginRule(noUnnecessaryCtxLineToSpreadRule),
-  ['no-unnecessary-ctx-measure-text-spread']: adaptPluginRule(noUnnecessaryCtxMeasureTextSpreadRule),
-  ['no-unnecessary-ctx-move-to-spread']: adaptPluginRule(noUnnecessaryCtxMoveToSpreadRule),
-  ['no-unnecessary-ctx-put-image-data-spread']: adaptPluginRule(noUnnecessaryCtxPutImageDataSpreadRule),
-  ['no-unnecessary-ctx-quadratic-curve-to-spread']: adaptPluginRule(noUnnecessaryCtxQuadraticCurveToSpreadRule),
-  ['no-unnecessary-ctx-reset-transform-spread']: adaptPluginRule(noUnnecessaryCtxResetTransformSpreadRule),
-  ['no-unnecessary-ctx-restore-spread']: adaptPluginRule(noUnnecessaryCtxRestoreSpreadRule),
-  ['no-unnecessary-ctx-rotate-spread']: adaptPluginRule(noUnnecessaryCtxRotateSpreadRule),
-  ['no-unnecessary-ctx-save-spread']: adaptPluginRule(noUnnecessaryCtxSaveSpreadRule),
-  ['no-unnecessary-ctx-scale-spread']: adaptPluginRule(noUnnecessaryCtxScaleSpreadRule),
-  ['no-unnecessary-ctx-set-line-dash-spread']: adaptPluginRule(noUnnecessaryCtxSetLineDashSpreadRule),
-  ['no-unnecessary-ctx-set-transform-spread']: adaptPluginRule(noUnnecessaryCtxSetTransformSpreadRule),
-  ['no-unnecessary-ctx-stroke-rect-spread']: adaptPluginRule(noUnnecessaryCtxStrokeRectSpreadRule),
-  ['no-unnecessary-ctx-stroke-spread']: adaptPluginRule(noUnnecessaryCtxStrokeSpreadRule),
-  ['no-unnecessary-ctx-stroke-text-spread']: adaptPluginRule(noUnnecessaryCtxStrokeTextSpreadRule),
-  ['no-unnecessary-ctx-transform-spread']: adaptPluginRule(noUnnecessaryCtxTransformSpreadRule),
-  ['no-unnecessary-ctx-translate-spread']: adaptPluginRule(noUnnecessaryCtxTranslateSpreadRule),
-  ['no-unnecessary-dataview-instance-get-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetBigInt64SpreadRule),
-  ['no-unnecessary-dataview-instance-get-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetBigUint64SpreadRule),
-  ['no-unnecessary-dataview-instance-get-float32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetFloat32SpreadRule),
-  ['no-unnecessary-dataview-instance-get-float64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetFloat64SpreadRule),
-  ['no-unnecessary-dataview-instance-get-int16-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetInt16SpreadRule),
-  ['no-unnecessary-dataview-instance-get-int32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetInt32SpreadRule),
-  ['no-unnecessary-dataview-instance-get-int8-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetInt8SpreadRule),
-  ['no-unnecessary-dataview-instance-get-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetUint16SpreadRule),
-  ['no-unnecessary-dataview-instance-get-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetUint32SpreadRule),
-  ['no-unnecessary-dataview-instance-get-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceGetUint8SpreadRule),
-  ['no-unnecessary-dataview-instance-set-big-int64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetBigInt64SpreadRule),
-  ['no-unnecessary-dataview-instance-set-big-uint64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetBigUint64SpreadRule),
-  ['no-unnecessary-dataview-instance-set-float32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetFloat32SpreadRule),
-  ['no-unnecessary-dataview-instance-set-float64-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetFloat64SpreadRule),
-  ['no-unnecessary-dataview-instance-set-int16-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetInt16SpreadRule),
-  ['no-unnecessary-dataview-instance-set-int32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetInt32SpreadRule),
-  ['no-unnecessary-dataview-instance-set-int8-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetInt8SpreadRule),
-  ['no-unnecessary-dataview-instance-set-uint16-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetUint16SpreadRule),
-  ['no-unnecessary-dataview-instance-set-uint32-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetUint32SpreadRule),
-  ['no-unnecessary-dataview-instance-set-uint8-spread']: adaptPluginRule(noUnnecessaryDataviewInstanceSetUint8SpreadRule),
-  ['no-unnecessary-date-instance-get-time-spread']: adaptPluginRule(noUnnecessaryDateInstanceGetTimeSpreadRule),
-  ['no-unnecessary-date-instance-set-time-spread']: adaptPluginRule(noUnnecessaryDateInstanceSetTimeSpreadRule),
-  ['no-unnecessary-date-instance-to-json-spread']: adaptPluginRule(noUnnecessaryDateInstanceToJsonSpreadRule),
-  ['no-unnecessary-date-instance-value-of-spread']: adaptPluginRule(noUnnecessaryDateInstanceValueOfSpreadRule),
-  ['no-unnecessary-dns-get-servers-spread']: adaptPluginRule(noUnnecessaryDnsGetServersSpreadRule),
-  ['no-unnecessary-dns-lookup-spread']: adaptPluginRule(noUnnecessaryDnsLookupSpreadRule),
-  ['no-unnecessary-dns-resolve-4-spread']: adaptPluginRule(noUnnecessaryDnsResolve4SpreadRule),
-  ['no-unnecessary-dns-resolve-6-spread']: adaptPluginRule(noUnnecessaryDnsResolve6SpreadRule),
-  ['no-unnecessary-dns-resolve-any-spread']: adaptPluginRule(noUnnecessaryDnsResolveAnySpreadRule),
-  ['no-unnecessary-dns-resolve-cname-spread']: adaptPluginRule(noUnnecessaryDnsResolveCnameSpreadRule),
-  ['no-unnecessary-dns-resolve-mx-spread']: adaptPluginRule(noUnnecessaryDnsResolveMxSpreadRule),
-  ['no-unnecessary-dns-resolve-ns-spread']: adaptPluginRule(noUnnecessaryDnsResolveNsSpreadRule),
-  ['no-unnecessary-dns-resolve-ptr-spread']: adaptPluginRule(noUnnecessaryDnsResolvePtrSpreadRule),
-  ['no-unnecessary-dns-resolve-spread']: adaptPluginRule(noUnnecessaryDnsResolveSpreadRule),
-  ['no-unnecessary-dns-resolve-srv-spread']: adaptPluginRule(noUnnecessaryDnsResolveSrvSpreadRule),
-  ['no-unnecessary-dns-resolve-txt-spread']: adaptPluginRule(noUnnecessaryDnsResolveTxtSpreadRule),
-  ['no-unnecessary-dns-reverse-spread']: adaptPluginRule(noUnnecessaryDnsReverseSpreadRule),
-  ['no-unnecessary-dns-set-servers-spread']: adaptPluginRule(noUnnecessaryDnsSetServersSpreadRule),
-  ['no-unnecessary-error-instance-to-string-spread']: adaptPluginRule(noUnnecessaryErrorInstanceToStringSpreadRule),
-  ['no-unnecessary-finalization-registry-instance-register-spread']: adaptPluginRule(noUnnecessaryFinalizationRegistryInstanceRegisterSpreadRule),
-  ['no-unnecessary-finalization-registry-instance-unregister-spread']: adaptPluginRule(noUnnecessaryFinalizationRegistryInstanceUnregisterSpreadRule),
-  ['no-unnecessary-gl-attach-shader-spread']: adaptPluginRule(noUnnecessaryGlAttachShaderSpreadRule),
-  ['no-unnecessary-gl-bind-buffer-spread']: adaptPluginRule(noUnnecessaryGlBindBufferSpreadRule),
-  ['no-unnecessary-gl-blend-func-spread']: adaptPluginRule(noUnnecessaryGlBlendFuncSpreadRule),
-  ['no-unnecessary-gl-buffer-data-spread']: adaptPluginRule(noUnnecessaryGlBufferDataSpreadRule),
-  ['no-unnecessary-gl-clear-color-spread']: adaptPluginRule(noUnnecessaryGlClearColorSpreadRule),
-  ['no-unnecessary-gl-clear-spread']: adaptPluginRule(noUnnecessaryGlClearSpreadRule),
-  ['no-unnecessary-gl-compile-shader-spread']: adaptPluginRule(noUnnecessaryGlCompileShaderSpreadRule),
-  ['no-unnecessary-gl-create-buffer-spread']: adaptPluginRule(noUnnecessaryGlCreateBufferSpreadRule),
-  ['no-unnecessary-gl-create-program-spread']: adaptPluginRule(noUnnecessaryGlCreateProgramSpreadRule),
-  ['no-unnecessary-gl-create-shader-spread']: adaptPluginRule(noUnnecessaryGlCreateShaderSpreadRule),
-  ['no-unnecessary-gl-depth-func-spread']: adaptPluginRule(noUnnecessaryGlDepthFuncSpreadRule),
-  ['no-unnecessary-gl-disable-spread']: adaptPluginRule(noUnnecessaryGlDisableSpreadRule),
-  ['no-unnecessary-gl-draw-arrays-spread']: adaptPluginRule(noUnnecessaryGlDrawArraysSpreadRule),
-  ['no-unnecessary-gl-draw-elements-spread']: adaptPluginRule(noUnnecessaryGlDrawElementsSpreadRule),
-  ['no-unnecessary-gl-enable-spread']: adaptPluginRule(noUnnecessaryGlEnableSpreadRule),
-  ['no-unnecessary-gl-enable-vertex-attrib-array-spread']: adaptPluginRule(noUnnecessaryGlEnableVertexAttribArraySpreadRule),
-  ['no-unnecessary-gl-get-attrib-location-spread']: adaptPluginRule(noUnnecessaryGlGetAttribLocationSpreadRule),
-  ['no-unnecessary-gl-get-uniform-location-spread']: adaptPluginRule(noUnnecessaryGlGetUniformLocationSpreadRule),
-  ['no-unnecessary-gl-link-program-spread']: adaptPluginRule(noUnnecessaryGlLinkProgramSpreadRule),
-  ['no-unnecessary-gl-shader-source-spread']: adaptPluginRule(noUnnecessaryGlShaderSourceSpreadRule),
-  ['no-unnecessary-gl-use-program-spread']: adaptPluginRule(noUnnecessaryGlUseProgramSpreadRule),
-  ['no-unnecessary-gl-vertex-attrib-pointer-spread']: adaptPluginRule(noUnnecessaryGlVertexAttribPointerSpreadRule),
-  ['no-unnecessary-gl-viewport-spread']: adaptPluginRule(noUnnecessaryGlViewportSpreadRule),
-  ['no-unnecessary-math-clamp-spread']: adaptPluginRule(noUnnecessaryMathClampSpreadRule),
-  ['no-unnecessary-math-scale-spread']: adaptPluginRule(noUnnecessaryMathScaleSpreadRule),
-  ['no-unnecessary-net-connect-spread']: adaptPluginRule(noUnnecessaryNetConnectSpreadRule),
-  ['no-unnecessary-net-create-connection-spread']: adaptPluginRule(noUnnecessaryNetCreateConnectionSpreadRule),
-  ['no-unnecessary-net-create-server-spread']: adaptPluginRule(noUnnecessaryNetCreateServerSpreadRule),
-  ['no-unnecessary-number-instance-to-exponential-spread']: adaptPluginRule(noUnnecessaryNumberInstanceToExponentialSpreadRule),
-  ['no-unnecessary-number-instance-to-fixed-spread']: adaptPluginRule(noUnnecessaryNumberInstanceToFixedSpreadRule),
-  ['no-unnecessary-number-instance-to-locale-string-spread']: adaptPluginRule(noUnnecessaryNumberInstanceToLocaleStringSpreadRule),
-  ['no-unnecessary-number-instance-to-precision-spread']: adaptPluginRule(noUnnecessaryNumberInstanceToPrecisionSpreadRule),
-  ['no-unnecessary-number-instance-to-string-spread']: adaptPluginRule(noUnnecessaryNumberInstanceToStringSpreadRule),
-  ['no-unnecessary-number-instance-value-of-spread']: adaptPluginRule(noUnnecessaryNumberInstanceValueOfSpreadRule),
-  ['no-unnecessary-object-has-own-property-spread']: adaptPluginRule(noUnnecessaryObjectHasOwnPropertySpreadRule),
-  ['no-unnecessary-object-is-prototype-of-spread']: adaptPluginRule(noUnnecessaryObjectIsPrototypeOfSpreadRule),
-  ['no-unnecessary-object-property-is-enumerable-spread']: adaptPluginRule(noUnnecessaryObjectPropertyIsEnumerableSpreadRule),
-  ['no-unnecessary-object-to-locale-string-spread']: adaptPluginRule(noUnnecessaryObjectToLocaleStringSpreadRule),
-  ['no-unnecessary-object-to-string-spread']: adaptPluginRule(noUnnecessaryObjectToStringSpreadRule),
-  ['no-unnecessary-object-value-of-spread']: adaptPluginRule(noUnnecessaryObjectValueOfSpreadRule),
-  ['no-unnecessary-promise-resolve-spread']: adaptPluginRule(noUnnecessaryPromiseResolveSpreadRule),
-  ['no-unnecessary-promise-with-resolvers-spread']: adaptPluginRule(noUnnecessaryPromiseWithResolversSpreadRule),
-  ['no-unnecessary-readline-close-spread']: adaptPluginRule(noUnnecessaryReadlineCloseSpreadRule),
-  ['no-unnecessary-readline-create-interface-spread']: adaptPluginRule(noUnnecessaryReadlineCreateInterfaceSpreadRule),
-  ['no-unnecessary-readline-prompt-spread']: adaptPluginRule(noUnnecessaryReadlinePromptSpreadRule),
-  ['no-unnecessary-readline-question-spread']: adaptPluginRule(noUnnecessaryReadlineQuestionSpreadRule),
-  ['no-unnecessary-readline-write-spread']: adaptPluginRule(noUnnecessaryReadlineWriteSpreadRule),
-  ['no-unnecessary-regexp-instance-exec-spread']: adaptPluginRule(noUnnecessaryRegexpInstanceExecSpreadRule),
-  ['no-unnecessary-regexp-instance-test-spread']: adaptPluginRule(noUnnecessaryRegexpInstanceTestSpreadRule),
-  ['no-unnecessary-regexp-instance-to-string-spread']: adaptPluginRule(noUnnecessaryRegexpInstanceToStringSpreadRule),
-  ['no-unnecessary-shared-array-buffer-instance-grow-spread']: adaptPluginRule(noUnnecessarySharedArrayBufferInstanceGrowSpreadRule),
-  ['no-unnecessary-shared-array-buffer-instance-slice-spread']: adaptPluginRule(noUnnecessarySharedArrayBufferInstanceSliceSpreadRule),
-  ['no-unnecessary-stderr-end-spread']: adaptPluginRule(noUnnecessaryStderrEndSpreadRule),
-  ['no-unnecessary-stderr-write-spread']: adaptPluginRule(noUnnecessaryStderrWriteSpreadRule),
-  ['no-unnecessary-stdin-pipe-spread']: adaptPluginRule(noUnnecessaryStdinPipeSpreadRule),
-  ['no-unnecessary-stdin-push-spread']: adaptPluginRule(noUnnecessaryStdinPushSpreadRule),
-  ['no-unnecessary-stdin-read-spread']: adaptPluginRule(noUnnecessaryStdinReadSpreadRule),
-  ['no-unnecessary-stdout-end-spread']: adaptPluginRule(noUnnecessaryStdoutEndSpreadRule),
-  ['no-unnecessary-stdout-write-spread']: adaptPluginRule(noUnnecessaryStdoutWriteSpreadRule),
-  ['no-unnecessary-symbol-instance-description-spread']: adaptPluginRule(noUnnecessarySymbolInstanceDescriptionSpreadRule),
-  ['no-unnecessary-symbol-instance-to-string-spread']: adaptPluginRule(noUnnecessarySymbolInstanceToStringSpreadRule),
-  ['no-unnecessary-symbol-instance-value-of-spread']: adaptPluginRule(noUnnecessarySymbolInstanceValueOfSpreadRule),
-  ['no-unnecessary-weak-ref-instance-deref-spread']: adaptPluginRule(noUnnecessaryWeakRefInstanceDerefSpreadRule),
-  ['no-unnecessary-zlib-brotli-compress-spread']: adaptPluginRule(noUnnecessaryZlibBrotliCompressSpreadRule),
-  ['no-unnecessary-zlib-brotli-compress-sync-spread']: adaptPluginRule(noUnnecessaryZlibBrotliCompressSyncSpreadRule),
-  ['no-unnecessary-zlib-brotli-decompress-spread']: adaptPluginRule(noUnnecessaryZlibBrotliDecompressSpreadRule),
-  ['no-unnecessary-zlib-brotli-decompress-sync-spread']: adaptPluginRule(noUnnecessaryZlibBrotliDecompressSyncSpreadRule),
-  ['no-unnecessary-zlib-deflate-spread']: adaptPluginRule(noUnnecessaryZlibDeflateSpreadRule),
-  ['no-unnecessary-zlib-deflate-sync-spread']: adaptPluginRule(noUnnecessaryZlibDeflateSyncSpreadRule),
-  ['no-unnecessary-zlib-gunzip-spread']: adaptPluginRule(noUnnecessaryZlibGunzipSpreadRule),
-  ['no-unnecessary-zlib-gunzip-sync-spread']: adaptPluginRule(noUnnecessaryZlibGunzipSyncSpreadRule),
-  ['no-unnecessary-zlib-gzip-spread']: adaptPluginRule(noUnnecessaryZlibGzipSpreadRule),
-  ['no-unnecessary-zlib-gzip-sync-spread']: adaptPluginRule(noUnnecessaryZlibGzipSyncSpreadRule),
-  ['no-unnecessary-zlib-inflate-spread']: adaptPluginRule(noUnnecessaryZlibInflateSpreadRule),
-  ['no-unnecessary-zlib-inflate-sync-spread']: adaptPluginRule(noUnnecessaryZlibInflateSyncSpreadRule),
+  'no-unnecessary-typed-array-at-spread': adaptedNoUnnecessaryTypedArrayAtSpread,
+  'no-unnecessary-typed-array-copy-within-spread': adaptedNoUnnecessaryTypedArrayCopyWithinSpread,
+  'no-unnecessary-typed-array-entries-spread': adaptedNoUnnecessaryTypedArrayEntriesSpread,
+  'no-unnecessary-typed-array-every-spread': adaptedNoUnnecessaryTypedArrayEverySpread,
+  'no-unnecessary-typed-array-fill-spread': adaptedNoUnnecessaryTypedArrayFillSpread,
+  'no-unnecessary-typed-array-filter-spread': adaptedNoUnnecessaryTypedArrayFilterSpread,
+  'no-unnecessary-typed-array-find-spread': adaptedNoUnnecessaryTypedArrayFindSpread,
+  'no-unnecessary-typed-array-find-index-spread': adaptedNoUnnecessaryTypedArrayFindIndexSpread,
+  'no-unnecessary-typed-array-find-last-spread': adaptedNoUnnecessaryTypedArrayFindLastSpread,
+  'no-unnecessary-typed-array-find-last-index-spread': adaptedNoUnnecessaryTypedArrayFindLastIndexSpread,
+  'no-unnecessary-typed-array-for-each-spread': adaptedNoUnnecessaryTypedArrayForEachSpread,
+  'no-unnecessary-typed-array-includes-spread': adaptedNoUnnecessaryTypedArrayIncludesSpread,
+  'no-unnecessary-typed-array-index-of-spread': adaptedNoUnnecessaryTypedArrayIndexOfSpread,
+  'no-unnecessary-typed-array-join-spread': adaptedNoUnnecessaryTypedArrayJoinSpread,
+  'no-unnecessary-typed-array-keys-spread': adaptedNoUnnecessaryTypedArrayKeysSpread,
+  'no-unnecessary-typed-array-last-index-of-spread': adaptedNoUnnecessaryTypedArrayLastIndexOfSpread,
+  'no-unnecessary-typed-array-map-spread': adaptedNoUnnecessaryTypedArrayMapSpread,
+  'no-unnecessary-typed-array-reduce-spread': adaptedNoUnnecessaryTypedArrayReduceSpread,
+  'no-unnecessary-typed-array-reduce-right-spread': adaptedNoUnnecessaryTypedArrayReduceRightSpread,
+  'no-unnecessary-typed-array-reverse-spread': adaptedNoUnnecessaryTypedArrayReverseSpread,
+  'no-unnecessary-typed-array-set-spread': adaptedNoUnnecessaryTypedArraySetSpread,
+  'no-unnecessary-typed-array-slice-spread': adaptedNoUnnecessaryTypedArraySliceSpread,
+  'no-unnecessary-typed-array-some-spread': adaptedNoUnnecessaryTypedArraySomeSpread,
+  'no-unnecessary-typed-array-sort-spread': adaptedNoUnnecessaryTypedArraySortSpread,
+  'no-unnecessary-typed-array-sub-array-spread': adaptedNoUnnecessaryTypedArraySubArraySpread,
+  'no-unnecessary-typed-array-to-locale-string-spread': adaptedNoUnnecessaryTypedArrayToLocaleStringSpread,
+  'no-unnecessary-typed-array-to-string-spread': adaptedNoUnnecessaryTypedArrayToStringSpread,
+  'no-unnecessary-typed-array-values-spread': adaptedNoUnnecessaryTypedArrayValuesSpread,
+  'no-unnecessary-typed-array-with-spread': adaptedNoUnnecessaryTypedArrayWithSpread,
+  'no-unnecessary-dataview-get-big-int64-spread': adaptedNoUnnecessaryDataviewGetBigInt64Spread,
+  'no-unnecessary-dataview-get-big-uint64-spread': adaptedNoUnnecessaryDataviewGetBigUint64Spread,
+  'no-unnecessary-dataview-get-float32-spread': adaptedNoUnnecessaryDataviewGetFloat32Spread,
+  'no-unnecessary-dataview-get-float64-spread': adaptedNoUnnecessaryDataviewGetFloat64Spread,
+  'no-unnecessary-dataview-get-int16-spread': adaptedNoUnnecessaryDataviewGetInt16Spread,
+  'no-unnecessary-dataview-get-int32-spread': adaptedNoUnnecessaryDataviewGetInt32Spread,
+  'no-unnecessary-dataview-get-int8-spread': adaptedNoUnnecessaryDataviewGetInt8Spread,
+  'no-unnecessary-dataview-get-uint16-spread': adaptedNoUnnecessaryDataviewGetUint16Spread,
+  'no-unnecessary-dataview-get-uint32-spread': adaptedNoUnnecessaryDataviewGetUint32Spread,
+  'no-unnecessary-dataview-get-uint8-spread': adaptedNoUnnecessaryDataviewGetUint8Spread,
+  'no-unnecessary-dataview-set-big-int64-spread': adaptedNoUnnecessaryDataviewSetBigInt64Spread,
+  'no-unnecessary-dataview-set-big-uint64-spread': adaptedNoUnnecessaryDataviewSetBigUint64Spread,
+  'no-unnecessary-eval-spread': adaptedNoUnnecessaryEvalSpread,
+  'no-unnecessary-shared-array-buffer-slice-spread': adaptedNoUnnecessarySharedArrayBufferSliceSpread,
+  'no-unnecessary-int-8-array-set-spread': adaptedNoUnnecessaryInt8ArraySetSpread,
+  'no-unnecessary-int-8-array-subarray-spread': adaptedNoUnnecessaryInt8ArraySubarraySpread,
+  'no-unnecessary-int-8-array-slice-spread': adaptedNoUnnecessaryInt8ArraySliceSpread,
+  'no-unnecessary-uint-8-array-set-spread': adaptedNoUnnecessaryUint8ArraySetSpread,
+  'no-unnecessary-uint-8-array-subarray-spread': adaptedNoUnnecessaryUint8ArraySubarraySpread,
+  'no-unnecessary-uint-8-array-slice-spread': adaptedNoUnnecessaryUint8ArraySliceSpread,
+  'no-unnecessary-uint-8-clamped-array-set-spread': adaptedNoUnnecessaryUint8ClampedArraySetSpread,
+  'no-unnecessary-uint-8-clamped-array-subarray-spread': adaptedNoUnnecessaryUint8ClampedArraySubarraySpread,
+  'no-unnecessary-uint-8-clamped-array-slice-spread': adaptedNoUnnecessaryUint8ClampedArraySliceSpread,
+  'no-unnecessary-int-16-array-set-spread': adaptedNoUnnecessaryInt16ArraySetSpread,
+  'no-unnecessary-int-16-array-subarray-spread': adaptedNoUnnecessaryInt16ArraySubarraySpread,
+  'no-unnecessary-int-16-array-slice-spread': adaptedNoUnnecessaryInt16ArraySliceSpread,
+  'no-unnecessary-uint-16-array-set-spread': adaptedNoUnnecessaryUint16ArraySetSpread,
+  'no-unnecessary-uint-16-array-subarray-spread': adaptedNoUnnecessaryUint16ArraySubarraySpread,
+  'no-unnecessary-uint-16-array-slice-spread': adaptedNoUnnecessaryUint16ArraySliceSpread,
+  'no-unnecessary-int-32-array-set-spread': adaptedNoUnnecessaryInt32ArraySetSpread,
+  'no-unnecessary-int-32-array-subarray-spread': adaptedNoUnnecessaryInt32ArraySubarraySpread,
+  'no-unnecessary-int-32-array-slice-spread': adaptedNoUnnecessaryInt32ArraySliceSpread,
+  'no-unnecessary-uint-32-array-set-spread': adaptedNoUnnecessaryUint32ArraySetSpread,
+  'no-unnecessary-uint-32-array-subarray-spread': adaptedNoUnnecessaryUint32ArraySubarraySpread,
+  'no-unnecessary-uint-32-array-slice-spread': adaptedNoUnnecessaryUint32ArraySliceSpread,
+  'no-unnecessary-float-32-array-set-spread': adaptedNoUnnecessaryFloat32ArraySetSpread,
+  'no-unnecessary-float-32-array-subarray-spread': adaptedNoUnnecessaryFloat32ArraySubarraySpread,
+  'no-unnecessary-float-32-array-slice-spread': adaptedNoUnnecessaryFloat32ArraySliceSpread,
+  'no-unnecessary-float-64-array-set-spread': adaptedNoUnnecessaryFloat64ArraySetSpread,
+  'no-unnecessary-float-64-array-subarray-spread': adaptedNoUnnecessaryFloat64ArraySubarraySpread,
+  'no-unnecessary-float-64-array-slice-spread': adaptedNoUnnecessaryFloat64ArraySliceSpread,
+  'no-unnecessary-big-int-64-array-set-spread': adaptedNoUnnecessaryBigInt64ArraySetSpread,
+  'no-unnecessary-big-int-64-array-subarray-spread': adaptedNoUnnecessaryBigInt64ArraySubarraySpread,
+  'no-unnecessary-big-int-64-array-slice-spread': adaptedNoUnnecessaryBigInt64ArraySliceSpread,
+  'no-unnecessary-big-uint-64-array-set-spread': adaptedNoUnnecessaryBigUint64ArraySetSpread,
+  'no-unnecessary-big-uint-64-array-subarray-spread': adaptedNoUnnecessaryBigUint64ArraySubarraySpread,
+  'no-unnecessary-big-uint-64-array-slice-spread': adaptedNoUnnecessaryBigUint64ArraySliceSpread,
+  'no-unnecessary-int-8-array-fill-spread': adaptedNoUnnecessaryInt8ArrayFillSpread,
+  'no-unnecessary-int-8-array-sort-spread': adaptedNoUnnecessaryInt8ArraySortSpread,
+  'no-unnecessary-int-8-array-reverse-spread': adaptedNoUnnecessaryInt8ArrayReverseSpread,
+  'no-unnecessary-int-8-array-copy-within-spread': adaptedNoUnnecessaryInt8ArrayCopyWithinSpread,
+  'no-unnecessary-uint-8-array-fill-spread': adaptedNoUnnecessaryUint8ArrayFillSpread,
+  'no-unnecessary-uint-8-array-sort-spread': adaptedNoUnnecessaryUint8ArraySortSpread,
+  'no-unnecessary-uint-8-array-reverse-spread': adaptedNoUnnecessaryUint8ArrayReverseSpread,
+  'no-unnecessary-uint-8-array-copy-within-spread': adaptedNoUnnecessaryUint8ArrayCopyWithinSpread,
+  'no-unnecessary-uint-8-clamped-array-fill-spread': adaptedNoUnnecessaryUint8ClampedArrayFillSpread,
+  'no-unnecessary-uint-8-clamped-array-sort-spread': adaptedNoUnnecessaryUint8ClampedArraySortSpread,
+  'no-unnecessary-uint-8-clamped-array-reverse-spread': adaptedNoUnnecessaryUint8ClampedArrayReverseSpread,
+  'no-unnecessary-uint-8-clamped-array-copy-within-spread': adaptedNoUnnecessaryUint8ClampedArrayCopyWithinSpread,
+  'no-unnecessary-int-16-array-fill-spread': adaptedNoUnnecessaryInt16ArrayFillSpread,
+  'no-unnecessary-int-16-array-sort-spread': adaptedNoUnnecessaryInt16ArraySortSpread,
+  'no-unnecessary-int-16-array-reverse-spread': adaptedNoUnnecessaryInt16ArrayReverseSpread,
+  'no-unnecessary-int-16-array-copy-within-spread': adaptedNoUnnecessaryInt16ArrayCopyWithinSpread,
+  'no-unnecessary-uint-16-array-fill-spread': adaptedNoUnnecessaryUint16ArrayFillSpread,
+  'no-unnecessary-uint-16-array-sort-spread': adaptedNoUnnecessaryUint16ArraySortSpread,
+  'no-unnecessary-uint-16-array-reverse-spread': adaptedNoUnnecessaryUint16ArrayReverseSpread,
+  'no-unnecessary-uint-16-array-copy-within-spread': adaptedNoUnnecessaryUint16ArrayCopyWithinSpread,
+  'no-unnecessary-int-32-array-fill-spread': adaptedNoUnnecessaryInt32ArrayFillSpread,
+  'no-unnecessary-int-32-array-sort-spread': adaptedNoUnnecessaryInt32ArraySortSpread,
+  'no-unnecessary-int-32-array-reverse-spread': adaptedNoUnnecessaryInt32ArrayReverseSpread,
+  'no-unnecessary-int-32-array-copy-within-spread': adaptedNoUnnecessaryInt32ArrayCopyWithinSpread,
+  'no-unnecessary-uint-32-array-fill-spread': adaptedNoUnnecessaryUint32ArrayFillSpread,
+  'no-unnecessary-uint-32-array-sort-spread': adaptedNoUnnecessaryUint32ArraySortSpread,
+  'no-unnecessary-uint-32-array-reverse-spread': adaptedNoUnnecessaryUint32ArrayReverseSpread,
+  'no-unnecessary-uint-32-array-copy-within-spread': adaptedNoUnnecessaryUint32ArrayCopyWithinSpread,
+  'no-unnecessary-float-32-array-fill-spread': adaptedNoUnnecessaryFloat32ArrayFillSpread,
+  'no-unnecessary-float-32-array-sort-spread': adaptedNoUnnecessaryFloat32ArraySortSpread,
+  'no-unnecessary-float-32-array-reverse-spread': adaptedNoUnnecessaryFloat32ArrayReverseSpread,
+  'no-unnecessary-float-32-array-copy-within-spread': adaptedNoUnnecessaryFloat32ArrayCopyWithinSpread,
+  'no-unnecessary-float-64-array-fill-spread': adaptedNoUnnecessaryFloat64ArrayFillSpread,
+  'no-unnecessary-float-64-array-sort-spread': adaptedNoUnnecessaryFloat64ArraySortSpread,
+  'no-unnecessary-float-64-array-reverse-spread': adaptedNoUnnecessaryFloat64ArrayReverseSpread,
+  'no-unnecessary-float-64-array-copy-within-spread': adaptedNoUnnecessaryFloat64ArrayCopyWithinSpread,
+  'no-unnecessary-big-int-64-array-fill-spread': adaptedNoUnnecessaryBigInt64ArrayFillSpread,
+  'no-unnecessary-big-int-64-array-sort-spread': adaptedNoUnnecessaryBigInt64ArraySortSpread,
+  'no-unnecessary-big-int-64-array-reverse-spread': adaptedNoUnnecessaryBigInt64ArrayReverseSpread,
+  'no-unnecessary-big-int-64-array-copy-within-spread': adaptedNoUnnecessaryBigInt64ArrayCopyWithinSpread,
+  'no-unnecessary-big-uint-64-array-fill-spread': adaptedNoUnnecessaryBigUint64ArrayFillSpread,
+  'no-unnecessary-big-uint-64-array-sort-spread': adaptedNoUnnecessaryBigUint64ArraySortSpread,
+  'no-unnecessary-big-uint-64-array-reverse-spread': adaptedNoUnnecessaryBigUint64ArrayReverseSpread,
+  'no-unnecessary-big-uint-64-array-copy-within-spread': adaptedNoUnnecessaryBigUint64ArrayCopyWithinSpread,
+  'no-unnecessary-int-8-array-map-spread': adaptedNoUnnecessaryInt8ArrayMapSpread,
+  'no-unnecessary-int-8-array-filter-spread': adaptedNoUnnecessaryInt8ArrayFilterSpread,
+  'no-unnecessary-int-8-array-find-spread': adaptedNoUnnecessaryInt8ArrayFindSpread,
+  'no-unnecessary-int-8-array-every-spread': adaptedNoUnnecessaryInt8ArrayEverySpread,
+  'no-unnecessary-int-8-array-some-spread': adaptedNoUnnecessaryInt8ArraySomeSpread,
+  'no-unnecessary-int-8-array-for-each-spread': adaptedNoUnnecessaryInt8ArrayForEachSpread,
+  'no-unnecessary-uint-8-array-map-spread': adaptedNoUnnecessaryUint8ArrayMapSpread,
+  'no-unnecessary-uint-8-array-filter-spread': adaptedNoUnnecessaryUint8ArrayFilterSpread,
+  'no-unnecessary-uint-8-array-find-spread': adaptedNoUnnecessaryUint8ArrayFindSpread,
+  'no-unnecessary-uint-8-array-every-spread': adaptedNoUnnecessaryUint8ArrayEverySpread,
+  'no-unnecessary-uint-8-array-some-spread': adaptedNoUnnecessaryUint8ArraySomeSpread,
+  'no-unnecessary-uint-8-array-for-each-spread': adaptedNoUnnecessaryUint8ArrayForEachSpread,
+  'no-unnecessary-uint-8-clamped-array-map-spread': adaptedNoUnnecessaryUint8ClampedArrayMapSpread,
+  'no-unnecessary-uint-8-clamped-array-filter-spread': adaptedNoUnnecessaryUint8ClampedArrayFilterSpread,
+  'no-unnecessary-uint-8-clamped-array-find-spread': adaptedNoUnnecessaryUint8ClampedArrayFindSpread,
+  'no-unnecessary-uint-8-clamped-array-every-spread': adaptedNoUnnecessaryUint8ClampedArrayEverySpread,
+  'no-unnecessary-uint-8-clamped-array-some-spread': adaptedNoUnnecessaryUint8ClampedArraySomeSpread,
+  'no-unnecessary-uint-8-clamped-array-for-each-spread': adaptedNoUnnecessaryUint8ClampedArrayForEachSpread,
+  'no-unnecessary-int-16-array-map-spread': adaptedNoUnnecessaryInt16ArrayMapSpread,
+  'no-unnecessary-int-16-array-filter-spread': adaptedNoUnnecessaryInt16ArrayFilterSpread,
+  'no-unnecessary-int-16-array-find-spread': adaptedNoUnnecessaryInt16ArrayFindSpread,
+  'no-unnecessary-int-16-array-every-spread': adaptedNoUnnecessaryInt16ArrayEverySpread,
+  'no-unnecessary-int-16-array-some-spread': adaptedNoUnnecessaryInt16ArraySomeSpread,
+  'no-unnecessary-int-16-array-for-each-spread': adaptedNoUnnecessaryInt16ArrayForEachSpread,
+  'no-unnecessary-uint-16-array-map-spread': adaptedNoUnnecessaryUint16ArrayMapSpread,
+  'no-unnecessary-uint-16-array-filter-spread': adaptedNoUnnecessaryUint16ArrayFilterSpread,
+  'no-unnecessary-uint-16-array-find-spread': adaptedNoUnnecessaryUint16ArrayFindSpread,
+  'no-unnecessary-uint-16-array-every-spread': adaptedNoUnnecessaryUint16ArrayEverySpread,
+  'no-unnecessary-uint-16-array-some-spread': adaptedNoUnnecessaryUint16ArraySomeSpread,
+  'no-unnecessary-uint-16-array-for-each-spread': adaptedNoUnnecessaryUint16ArrayForEachSpread,
+  'no-unnecessary-int-32-array-map-spread': adaptedNoUnnecessaryInt32ArrayMapSpread,
+  'no-unnecessary-int-32-array-filter-spread': adaptedNoUnnecessaryInt32ArrayFilterSpread,
+  'no-unnecessary-int-32-array-find-spread': adaptedNoUnnecessaryInt32ArrayFindSpread,
+  'no-unnecessary-int-32-array-every-spread': adaptedNoUnnecessaryInt32ArrayEverySpread,
+  'no-unnecessary-int-32-array-some-spread': adaptedNoUnnecessaryInt32ArraySomeSpread,
+  'no-unnecessary-int-32-array-for-each-spread': adaptedNoUnnecessaryInt32ArrayForEachSpread,
+  'no-unnecessary-uint-32-array-map-spread': adaptedNoUnnecessaryUint32ArrayMapSpread,
+  'no-unnecessary-uint-32-array-filter-spread': adaptedNoUnnecessaryUint32ArrayFilterSpread,
+  'no-unnecessary-uint-32-array-find-spread': adaptedNoUnnecessaryUint32ArrayFindSpread,
+  'no-unnecessary-uint-32-array-every-spread': adaptedNoUnnecessaryUint32ArrayEverySpread,
+  'no-unnecessary-uint-32-array-some-spread': adaptedNoUnnecessaryUint32ArraySomeSpread,
+  'no-unnecessary-uint-32-array-for-each-spread': adaptedNoUnnecessaryUint32ArrayForEachSpread,
+  'no-unnecessary-float-32-array-map-spread': adaptedNoUnnecessaryFloat32ArrayMapSpread,
+  'no-unnecessary-float-32-array-filter-spread': adaptedNoUnnecessaryFloat32ArrayFilterSpread,
+  'no-unnecessary-float-32-array-find-spread': adaptedNoUnnecessaryFloat32ArrayFindSpread,
+  'no-unnecessary-float-32-array-every-spread': adaptedNoUnnecessaryFloat32ArrayEverySpread,
+  'no-unnecessary-float-32-array-some-spread': adaptedNoUnnecessaryFloat32ArraySomeSpread,
+  'no-unnecessary-float-32-array-for-each-spread': adaptedNoUnnecessaryFloat32ArrayForEachSpread,
+  'no-unnecessary-float-64-array-map-spread': adaptedNoUnnecessaryFloat64ArrayMapSpread,
+  'no-unnecessary-float-64-array-filter-spread': adaptedNoUnnecessaryFloat64ArrayFilterSpread,
+  'no-unnecessary-float-64-array-find-spread': adaptedNoUnnecessaryFloat64ArrayFindSpread,
+  'no-unnecessary-float-64-array-every-spread': adaptedNoUnnecessaryFloat64ArrayEverySpread,
+  'no-unnecessary-float-64-array-some-spread': adaptedNoUnnecessaryFloat64ArraySomeSpread,
+  'no-unnecessary-float-64-array-for-each-spread': adaptedNoUnnecessaryFloat64ArrayForEachSpread,
+  'no-unnecessary-big-int-64-array-map-spread': adaptedNoUnnecessaryBigInt64ArrayMapSpread,
+  'no-unnecessary-big-int-64-array-filter-spread': adaptedNoUnnecessaryBigInt64ArrayFilterSpread,
+  'no-unnecessary-big-int-64-array-find-spread': adaptedNoUnnecessaryBigInt64ArrayFindSpread,
+  'no-unnecessary-big-int-64-array-every-spread': adaptedNoUnnecessaryBigInt64ArrayEverySpread,
+  'no-unnecessary-big-int-64-array-some-spread': adaptedNoUnnecessaryBigInt64ArraySomeSpread,
+  'no-unnecessary-big-int-64-array-for-each-spread': adaptedNoUnnecessaryBigInt64ArrayForEachSpread,
+  'no-unnecessary-big-uint-64-array-map-spread': adaptedNoUnnecessaryBigUint64ArrayMapSpread,
+  'no-unnecessary-big-uint-64-array-filter-spread': adaptedNoUnnecessaryBigUint64ArrayFilterSpread,
+  'no-unnecessary-big-uint-64-array-find-spread': adaptedNoUnnecessaryBigUint64ArrayFindSpread,
+  'no-unnecessary-big-uint-64-array-every-spread': adaptedNoUnnecessaryBigUint64ArrayEverySpread,
+  'no-unnecessary-big-uint-64-array-some-spread': adaptedNoUnnecessaryBigUint64ArraySomeSpread,
+  'no-unnecessary-big-uint-64-array-for-each-spread': adaptedNoUnnecessaryBigUint64ArrayForEachSpread,
+  'no-unnecessary-int-8-array-reduce-spread': adaptedNoUnnecessaryInt8ArrayReduceSpread,
+  'no-unnecessary-int-8-array-reduce-right-spread': adaptedNoUnnecessaryInt8ArrayReduceRightSpread,
+  'no-unnecessary-int-8-array-find-index-spread': adaptedNoUnnecessaryInt8ArrayFindIndexSpread,
+  'no-unnecessary-int-8-array-find-last-spread': adaptedNoUnnecessaryInt8ArrayFindLastSpread,
+  'no-unnecessary-int-8-array-find-last-index-spread': adaptedNoUnnecessaryInt8ArrayFindLastIndexSpread,
+  'no-unnecessary-int-8-array-includes-spread': adaptedNoUnnecessaryInt8ArrayIncludesSpread,
+  'no-unnecessary-int-8-array-index-of-spread': adaptedNoUnnecessaryInt8ArrayIndexOfSpread,
+  'no-unnecessary-int-8-array-last-index-of-spread': adaptedNoUnnecessaryInt8ArrayLastIndexOfSpread,
+  'no-unnecessary-int-8-array-join-spread': adaptedNoUnnecessaryInt8ArrayJoinSpread,
+  'no-unnecessary-int-8-array-to-locale-string-spread': adaptedNoUnnecessaryInt8ArrayToLocaleStringSpread,
+  'no-unnecessary-int-8-array-to-string-spread': adaptedNoUnnecessaryInt8ArrayToStringSpread,
+  'no-unnecessary-uint-8-array-reduce-spread': adaptedNoUnnecessaryUint8ArrayReduceSpread,
+  'no-unnecessary-uint-8-array-reduce-right-spread': adaptedNoUnnecessaryUint8ArrayReduceRightSpread,
+  'no-unnecessary-uint-8-array-find-index-spread': adaptedNoUnnecessaryUint8ArrayFindIndexSpread,
+  'no-unnecessary-uint-8-array-find-last-spread': adaptedNoUnnecessaryUint8ArrayFindLastSpread,
+  'no-unnecessary-uint-8-array-find-last-index-spread': adaptedNoUnnecessaryUint8ArrayFindLastIndexSpread,
+  'no-unnecessary-uint-8-array-includes-spread': adaptedNoUnnecessaryUint8ArrayIncludesSpread,
+  'no-unnecessary-uint-8-array-index-of-spread': adaptedNoUnnecessaryUint8ArrayIndexOfSpread,
+  'no-unnecessary-uint-8-array-last-index-of-spread': adaptedNoUnnecessaryUint8ArrayLastIndexOfSpread,
+  'no-unnecessary-uint-8-array-join-spread': adaptedNoUnnecessaryUint8ArrayJoinSpread,
+  'no-unnecessary-uint-8-array-to-locale-string-spread': adaptedNoUnnecessaryUint8ArrayToLocaleStringSpread,
+  'no-unnecessary-uint-8-array-to-string-spread': adaptedNoUnnecessaryUint8ArrayToStringSpread,
+  'no-unnecessary-uint-8-clamped-array-reduce-spread': adaptedNoUnnecessaryUint8ClampedArrayReduceSpread,
+  'no-unnecessary-uint-8-clamped-array-reduce-right-spread': adaptedNoUnnecessaryUint8ClampedArrayReduceRightSpread,
+  'no-unnecessary-uint-8-clamped-array-find-index-spread': adaptedNoUnnecessaryUint8ClampedArrayFindIndexSpread,
+  'no-unnecessary-uint-8-clamped-array-find-last-spread': adaptedNoUnnecessaryUint8ClampedArrayFindLastSpread,
+  'no-unnecessary-uint-8-clamped-array-find-last-index-spread': adaptedNoUnnecessaryUint8ClampedArrayFindLastIndexSpread,
+  'no-unnecessary-uint-8-clamped-array-includes-spread': adaptedNoUnnecessaryUint8ClampedArrayIncludesSpread,
+  'no-unnecessary-uint-8-clamped-array-index-of-spread': adaptedNoUnnecessaryUint8ClampedArrayIndexOfSpread,
+  'no-unnecessary-uint-8-clamped-array-last-index-of-spread': adaptedNoUnnecessaryUint8ClampedArrayLastIndexOfSpread,
+  'no-unnecessary-uint-8-clamped-array-join-spread': adaptedNoUnnecessaryUint8ClampedArrayJoinSpread,
+  'no-unnecessary-uint-8-clamped-array-to-locale-string-spread': adaptedNoUnnecessaryUint8ClampedArrayToLocaleStringSpread,
+  'no-unnecessary-uint-8-clamped-array-to-string-spread': adaptedNoUnnecessaryUint8ClampedArrayToStringSpread,
+  'no-unnecessary-int-16-array-reduce-spread': adaptedNoUnnecessaryInt16ArrayReduceSpread,
+  'no-unnecessary-int-16-array-reduce-right-spread': adaptedNoUnnecessaryInt16ArrayReduceRightSpread,
+  'no-unnecessary-int-16-array-find-index-spread': adaptedNoUnnecessaryInt16ArrayFindIndexSpread,
+  'no-unnecessary-int-16-array-find-last-spread': adaptedNoUnnecessaryInt16ArrayFindLastSpread,
+  'no-unnecessary-int-16-array-find-last-index-spread': adaptedNoUnnecessaryInt16ArrayFindLastIndexSpread,
+  'no-unnecessary-int-16-array-includes-spread': adaptedNoUnnecessaryInt16ArrayIncludesSpread,
+  'no-unnecessary-int-16-array-index-of-spread': adaptedNoUnnecessaryInt16ArrayIndexOfSpread,
+  'no-unnecessary-int-16-array-last-index-of-spread': adaptedNoUnnecessaryInt16ArrayLastIndexOfSpread,
+  'no-unnecessary-int-16-array-join-spread': adaptedNoUnnecessaryInt16ArrayJoinSpread,
+  'no-unnecessary-int-16-array-to-locale-string-spread': adaptedNoUnnecessaryInt16ArrayToLocaleStringSpread,
+  'no-unnecessary-int-16-array-to-string-spread': adaptedNoUnnecessaryInt16ArrayToStringSpread,
+  'no-unnecessary-uint-16-array-reduce-spread': adaptedNoUnnecessaryUint16ArrayReduceSpread,
+  'no-unnecessary-uint-16-array-reduce-right-spread': adaptedNoUnnecessaryUint16ArrayReduceRightSpread,
+  'no-unnecessary-uint-16-array-find-index-spread': adaptedNoUnnecessaryUint16ArrayFindIndexSpread,
+  'no-unnecessary-uint-16-array-find-last-spread': adaptedNoUnnecessaryUint16ArrayFindLastSpread,
+  'no-unnecessary-uint-16-array-find-last-index-spread': adaptedNoUnnecessaryUint16ArrayFindLastIndexSpread,
+  'no-unnecessary-uint-16-array-includes-spread': adaptedNoUnnecessaryUint16ArrayIncludesSpread,
+  'no-unnecessary-uint-16-array-index-of-spread': adaptedNoUnnecessaryUint16ArrayIndexOfSpread,
+  'no-unnecessary-uint-16-array-last-index-of-spread': adaptedNoUnnecessaryUint16ArrayLastIndexOfSpread,
+  'no-unnecessary-uint-16-array-join-spread': adaptedNoUnnecessaryUint16ArrayJoinSpread,
+  'no-unnecessary-uint-16-array-to-locale-string-spread': adaptedNoUnnecessaryUint16ArrayToLocaleStringSpread,
+  'no-unnecessary-uint-16-array-to-string-spread': adaptedNoUnnecessaryUint16ArrayToStringSpread,
+  'no-unnecessary-int-32-array-reduce-spread': adaptedNoUnnecessaryInt32ArrayReduceSpread,
+  'no-unnecessary-int-32-array-reduce-right-spread': adaptedNoUnnecessaryInt32ArrayReduceRightSpread,
+  'no-unnecessary-int-32-array-find-index-spread': adaptedNoUnnecessaryInt32ArrayFindIndexSpread,
+  'no-unnecessary-int-32-array-find-last-spread': adaptedNoUnnecessaryInt32ArrayFindLastSpread,
+  'no-unnecessary-int-32-array-find-last-index-spread': adaptedNoUnnecessaryInt32ArrayFindLastIndexSpread,
+  'no-unnecessary-int-32-array-includes-spread': adaptedNoUnnecessaryInt32ArrayIncludesSpread,
+  'no-unnecessary-int-32-array-index-of-spread': adaptedNoUnnecessaryInt32ArrayIndexOfSpread,
+  'no-unnecessary-int-32-array-last-index-of-spread': adaptedNoUnnecessaryInt32ArrayLastIndexOfSpread,
+  'no-unnecessary-int-32-array-join-spread': adaptedNoUnnecessaryInt32ArrayJoinSpread,
+  'no-unnecessary-int-32-array-to-locale-string-spread': adaptedNoUnnecessaryInt32ArrayToLocaleStringSpread,
+  'no-unnecessary-int-32-array-to-string-spread': adaptedNoUnnecessaryInt32ArrayToStringSpread,
+  'no-unnecessary-uint-32-array-reduce-spread': adaptedNoUnnecessaryUint32ArrayReduceSpread,
+  'no-unnecessary-uint-32-array-reduce-right-spread': adaptedNoUnnecessaryUint32ArrayReduceRightSpread,
+  'no-unnecessary-uint-32-array-find-index-spread': adaptedNoUnnecessaryUint32ArrayFindIndexSpread,
+  'no-unnecessary-uint-32-array-find-last-spread': adaptedNoUnnecessaryUint32ArrayFindLastSpread,
+  'no-unnecessary-uint-32-array-find-last-index-spread': adaptedNoUnnecessaryUint32ArrayFindLastIndexSpread,
+  'no-unnecessary-uint-32-array-includes-spread': adaptedNoUnnecessaryUint32ArrayIncludesSpread,
+  'no-unnecessary-uint-32-array-index-of-spread': adaptedNoUnnecessaryUint32ArrayIndexOfSpread,
+  'no-unnecessary-uint-32-array-last-index-of-spread': adaptedNoUnnecessaryUint32ArrayLastIndexOfSpread,
+  'no-unnecessary-uint-32-array-join-spread': adaptedNoUnnecessaryUint32ArrayJoinSpread,
+  'no-unnecessary-uint-32-array-to-locale-string-spread': adaptedNoUnnecessaryUint32ArrayToLocaleStringSpread,
+  'no-unnecessary-uint-32-array-to-string-spread': adaptedNoUnnecessaryUint32ArrayToStringSpread,
+  'no-unnecessary-float-32-array-reduce-spread': adaptedNoUnnecessaryFloat32ArrayReduceSpread,
+  'no-unnecessary-float-32-array-reduce-right-spread': adaptedNoUnnecessaryFloat32ArrayReduceRightSpread,
+  'no-unnecessary-float-32-array-find-index-spread': adaptedNoUnnecessaryFloat32ArrayFindIndexSpread,
+  'no-unnecessary-float-32-array-find-last-spread': adaptedNoUnnecessaryFloat32ArrayFindLastSpread,
+  'no-unnecessary-float-32-array-find-last-index-spread': adaptedNoUnnecessaryFloat32ArrayFindLastIndexSpread,
+  'no-unnecessary-float-32-array-includes-spread': adaptedNoUnnecessaryFloat32ArrayIncludesSpread,
+  'no-unnecessary-float-32-array-index-of-spread': adaptedNoUnnecessaryFloat32ArrayIndexOfSpread,
+  'no-unnecessary-float-32-array-last-index-of-spread': adaptedNoUnnecessaryFloat32ArrayLastIndexOfSpread,
+  'no-unnecessary-float-32-array-join-spread': adaptedNoUnnecessaryFloat32ArrayJoinSpread,
+  'no-unnecessary-float-32-array-to-locale-string-spread': adaptedNoUnnecessaryFloat32ArrayToLocaleStringSpread,
+  'no-unnecessary-float-32-array-to-string-spread': adaptedNoUnnecessaryFloat32ArrayToStringSpread,
+  'no-unnecessary-float-64-array-reduce-spread': adaptedNoUnnecessaryFloat64ArrayReduceSpread,
+  'no-unnecessary-float-64-array-reduce-right-spread': adaptedNoUnnecessaryFloat64ArrayReduceRightSpread,
+  'no-unnecessary-float-64-array-find-index-spread': adaptedNoUnnecessaryFloat64ArrayFindIndexSpread,
+  'no-unnecessary-float-64-array-find-last-spread': adaptedNoUnnecessaryFloat64ArrayFindLastSpread,
+  'no-unnecessary-float-64-array-find-last-index-spread': adaptedNoUnnecessaryFloat64ArrayFindLastIndexSpread,
+  'no-unnecessary-float-64-array-includes-spread': adaptedNoUnnecessaryFloat64ArrayIncludesSpread,
+  'no-unnecessary-float-64-array-index-of-spread': adaptedNoUnnecessaryFloat64ArrayIndexOfSpread,
+  'no-unnecessary-float-64-array-last-index-of-spread': adaptedNoUnnecessaryFloat64ArrayLastIndexOfSpread,
+  'no-unnecessary-float-64-array-join-spread': adaptedNoUnnecessaryFloat64ArrayJoinSpread,
+  'no-unnecessary-float-64-array-to-locale-string-spread': adaptedNoUnnecessaryFloat64ArrayToLocaleStringSpread,
+  'no-unnecessary-float-64-array-to-string-spread': adaptedNoUnnecessaryFloat64ArrayToStringSpread,
+  'no-unnecessary-big-int-64-array-reduce-spread': adaptedNoUnnecessaryBigInt64ArrayReduceSpread,
+  'no-unnecessary-big-int-64-array-reduce-right-spread': adaptedNoUnnecessaryBigInt64ArrayReduceRightSpread,
+  'no-unnecessary-big-int-64-array-find-index-spread': adaptedNoUnnecessaryBigInt64ArrayFindIndexSpread,
+  'no-unnecessary-big-int-64-array-find-last-spread': adaptedNoUnnecessaryBigInt64ArrayFindLastSpread,
+  'no-unnecessary-big-int-64-array-find-last-index-spread': adaptedNoUnnecessaryBigInt64ArrayFindLastIndexSpread,
+  'no-unnecessary-big-int-64-array-includes-spread': adaptedNoUnnecessaryBigInt64ArrayIncludesSpread,
+  'no-unnecessary-big-int-64-array-index-of-spread': adaptedNoUnnecessaryBigInt64ArrayIndexOfSpread,
+  'no-unnecessary-big-int-64-array-last-index-of-spread': adaptedNoUnnecessaryBigInt64ArrayLastIndexOfSpread,
+  'no-unnecessary-big-int-64-array-join-spread': adaptedNoUnnecessaryBigInt64ArrayJoinSpread,
+  'no-unnecessary-big-int-64-array-to-locale-string-spread': adaptedNoUnnecessaryBigInt64ArrayToLocaleStringSpread,
+  'no-unnecessary-big-int-64-array-to-string-spread': adaptedNoUnnecessaryBigInt64ArrayToStringSpread,
+  'no-unnecessary-big-uint-64-array-reduce-spread': adaptedNoUnnecessaryBigUint64ArrayReduceSpread,
+  'no-unnecessary-big-uint-64-array-reduce-right-spread': adaptedNoUnnecessaryBigUint64ArrayReduceRightSpread,
+  'no-unnecessary-big-uint-64-array-find-index-spread': adaptedNoUnnecessaryBigUint64ArrayFindIndexSpread,
+  'no-unnecessary-big-uint-64-array-find-last-spread': adaptedNoUnnecessaryBigUint64ArrayFindLastSpread,
+  'no-unnecessary-big-uint-64-array-find-last-index-spread': adaptedNoUnnecessaryBigUint64ArrayFindLastIndexSpread,
+  'no-unnecessary-big-uint-64-array-includes-spread': adaptedNoUnnecessaryBigUint64ArrayIncludesSpread,
+  'no-unnecessary-big-uint-64-array-index-of-spread': adaptedNoUnnecessaryBigUint64ArrayIndexOfSpread,
+  'no-unnecessary-big-uint-64-array-last-index-of-spread': adaptedNoUnnecessaryBigUint64ArrayLastIndexOfSpread,
+  'no-unnecessary-big-uint-64-array-join-spread': adaptedNoUnnecessaryBigUint64ArrayJoinSpread,
+  'no-unnecessary-big-uint-64-array-to-locale-string-spread': adaptedNoUnnecessaryBigUint64ArrayToLocaleStringSpread,
+  'no-unnecessary-big-uint-64-array-to-string-spread': adaptedNoUnnecessaryBigUint64ArrayToStringSpread,
+  'no-unnecessary-int-8-array-at-spread': adaptedNoUnnecessaryInt8ArrayAtSpread,
+  'no-unnecessary-int-8-array-entries-spread': adaptedNoUnnecessaryInt8ArrayEntriesSpread,
+  'no-unnecessary-int-8-array-keys-spread': adaptedNoUnnecessaryInt8ArrayKeysSpread,
+  'no-unnecessary-int-8-array-values-spread': adaptedNoUnnecessaryInt8ArrayValuesSpread,
+  'no-unnecessary-int-8-array-with-spread': adaptedNoUnnecessaryInt8ArrayWithSpread,
+  'no-unnecessary-int-8-array-to-reversed-spread': adaptedNoUnnecessaryInt8ArrayToReversedSpread,
+  'no-unnecessary-int-8-array-to-sorted-spread': adaptedNoUnnecessaryInt8ArrayToSortedSpread,
+  'no-unnecessary-uint-8-array-at-spread': adaptedNoUnnecessaryUint8ArrayAtSpread,
+  'no-unnecessary-uint-8-array-entries-spread': adaptedNoUnnecessaryUint8ArrayEntriesSpread,
+  'no-unnecessary-uint-8-array-keys-spread': adaptedNoUnnecessaryUint8ArrayKeysSpread,
+  'no-unnecessary-uint-8-array-values-spread': adaptedNoUnnecessaryUint8ArrayValuesSpread,
+  'no-unnecessary-uint-8-array-with-spread': adaptedNoUnnecessaryUint8ArrayWithSpread,
+  'no-unnecessary-uint-8-array-to-reversed-spread': adaptedNoUnnecessaryUint8ArrayToReversedSpread,
+  'no-unnecessary-uint-8-array-to-sorted-spread': adaptedNoUnnecessaryUint8ArrayToSortedSpread,
+  'no-unnecessary-uint-8-clamped-array-at-spread': adaptedNoUnnecessaryUint8ClampedArrayAtSpread,
+  'no-unnecessary-uint-8-clamped-array-entries-spread': adaptedNoUnnecessaryUint8ClampedArrayEntriesSpread,
+  'no-unnecessary-uint-8-clamped-array-keys-spread': adaptedNoUnnecessaryUint8ClampedArrayKeysSpread,
+  'no-unnecessary-uint-8-clamped-array-values-spread': adaptedNoUnnecessaryUint8ClampedArrayValuesSpread,
+  'no-unnecessary-uint-8-clamped-array-with-spread': adaptedNoUnnecessaryUint8ClampedArrayWithSpread,
+  'no-unnecessary-uint-8-clamped-array-to-reversed-spread': adaptedNoUnnecessaryUint8ClampedArrayToReversedSpread,
+  'no-unnecessary-uint-8-clamped-array-to-sorted-spread': adaptedNoUnnecessaryUint8ClampedArrayToSortedSpread,
+  'no-unnecessary-int-16-array-at-spread': adaptedNoUnnecessaryInt16ArrayAtSpread,
+  'no-unnecessary-int-16-array-entries-spread': adaptedNoUnnecessaryInt16ArrayEntriesSpread,
+  'no-unnecessary-int-16-array-keys-spread': adaptedNoUnnecessaryInt16ArrayKeysSpread,
+  'no-unnecessary-int-16-array-values-spread': adaptedNoUnnecessaryInt16ArrayValuesSpread,
+  'no-unnecessary-int-16-array-with-spread': adaptedNoUnnecessaryInt16ArrayWithSpread,
+  'no-unnecessary-int-16-array-to-reversed-spread': adaptedNoUnnecessaryInt16ArrayToReversedSpread,
+  'no-unnecessary-int-16-array-to-sorted-spread': adaptedNoUnnecessaryInt16ArrayToSortedSpread,
+  'no-unnecessary-uint-16-array-at-spread': adaptedNoUnnecessaryUint16ArrayAtSpread,
+  'no-unnecessary-uint-16-array-entries-spread': adaptedNoUnnecessaryUint16ArrayEntriesSpread,
+  'no-unnecessary-uint-16-array-keys-spread': adaptedNoUnnecessaryUint16ArrayKeysSpread,
+  'no-unnecessary-uint-16-array-values-spread': adaptedNoUnnecessaryUint16ArrayValuesSpread,
+  'no-unnecessary-uint-16-array-with-spread': adaptedNoUnnecessaryUint16ArrayWithSpread,
+  'no-unnecessary-uint-16-array-to-reversed-spread': adaptedNoUnnecessaryUint16ArrayToReversedSpread,
+  'no-unnecessary-uint-16-array-to-sorted-spread': adaptedNoUnnecessaryUint16ArrayToSortedSpread,
+  'no-unnecessary-int-32-array-at-spread': adaptedNoUnnecessaryInt32ArrayAtSpread,
+  'no-unnecessary-int-32-array-entries-spread': adaptedNoUnnecessaryInt32ArrayEntriesSpread,
+  'no-unnecessary-int-32-array-keys-spread': adaptedNoUnnecessaryInt32ArrayKeysSpread,
+  'no-unnecessary-int-32-array-values-spread': adaptedNoUnnecessaryInt32ArrayValuesSpread,
+  'no-unnecessary-int-32-array-with-spread': adaptedNoUnnecessaryInt32ArrayWithSpread,
+  'no-unnecessary-int-32-array-to-reversed-spread': adaptedNoUnnecessaryInt32ArrayToReversedSpread,
+  'no-unnecessary-int-32-array-to-sorted-spread': adaptedNoUnnecessaryInt32ArrayToSortedSpread,
+  'no-unnecessary-uint-32-array-at-spread': adaptedNoUnnecessaryUint32ArrayAtSpread,
+  'no-unnecessary-uint-32-array-entries-spread': adaptedNoUnnecessaryUint32ArrayEntriesSpread,
+  'no-unnecessary-uint-32-array-keys-spread': adaptedNoUnnecessaryUint32ArrayKeysSpread,
+  'no-unnecessary-uint-32-array-values-spread': adaptedNoUnnecessaryUint32ArrayValuesSpread,
+  'no-unnecessary-uint-32-array-with-spread': adaptedNoUnnecessaryUint32ArrayWithSpread,
+  'no-unnecessary-uint-32-array-to-reversed-spread': adaptedNoUnnecessaryUint32ArrayToReversedSpread,
+  'no-unnecessary-uint-32-array-to-sorted-spread': adaptedNoUnnecessaryUint32ArrayToSortedSpread,
+  'no-unnecessary-float-32-array-at-spread': adaptedNoUnnecessaryFloat32ArrayAtSpread,
+  'no-unnecessary-float-32-array-entries-spread': adaptedNoUnnecessaryFloat32ArrayEntriesSpread,
+  'no-unnecessary-float-32-array-keys-spread': adaptedNoUnnecessaryFloat32ArrayKeysSpread,
+  'no-unnecessary-float-32-array-values-spread': adaptedNoUnnecessaryFloat32ArrayValuesSpread,
+  'no-unnecessary-float-32-array-with-spread': adaptedNoUnnecessaryFloat32ArrayWithSpread,
+  'no-unnecessary-float-32-array-to-reversed-spread': adaptedNoUnnecessaryFloat32ArrayToReversedSpread,
+  'no-unnecessary-float-32-array-to-sorted-spread': adaptedNoUnnecessaryFloat32ArrayToSortedSpread,
+  'no-unnecessary-float-64-array-at-spread': adaptedNoUnnecessaryFloat64ArrayAtSpread,
+  'no-unnecessary-float-64-array-entries-spread': adaptedNoUnnecessaryFloat64ArrayEntriesSpread,
+  'no-unnecessary-float-64-array-keys-spread': adaptedNoUnnecessaryFloat64ArrayKeysSpread,
+  'no-unnecessary-float-64-array-values-spread': adaptedNoUnnecessaryFloat64ArrayValuesSpread,
+  'no-unnecessary-float-64-array-with-spread': adaptedNoUnnecessaryFloat64ArrayWithSpread,
+  'no-unnecessary-float-64-array-to-reversed-spread': adaptedNoUnnecessaryFloat64ArrayToReversedSpread,
+  'no-unnecessary-float-64-array-to-sorted-spread': adaptedNoUnnecessaryFloat64ArrayToSortedSpread,
+  'no-unnecessary-big-int-64-array-at-spread': adaptedNoUnnecessaryBigInt64ArrayAtSpread,
+  'no-unnecessary-big-int-64-array-entries-spread': adaptedNoUnnecessaryBigInt64ArrayEntriesSpread,
+  'no-unnecessary-big-int-64-array-keys-spread': adaptedNoUnnecessaryBigInt64ArrayKeysSpread,
+  'no-unnecessary-big-int-64-array-values-spread': adaptedNoUnnecessaryBigInt64ArrayValuesSpread,
+  'no-unnecessary-big-int-64-array-with-spread': adaptedNoUnnecessaryBigInt64ArrayWithSpread,
+  'no-unnecessary-big-int-64-array-to-reversed-spread': adaptedNoUnnecessaryBigInt64ArrayToReversedSpread,
+  'no-unnecessary-big-int-64-array-to-sorted-spread': adaptedNoUnnecessaryBigInt64ArrayToSortedSpread,
+  'no-unnecessary-big-uint-64-array-at-spread': adaptedNoUnnecessaryBigUint64ArrayAtSpread,
+  'no-unnecessary-big-uint-64-array-entries-spread': adaptedNoUnnecessaryBigUint64ArrayEntriesSpread,
+  'no-unnecessary-big-uint-64-array-keys-spread': adaptedNoUnnecessaryBigUint64ArrayKeysSpread,
+  'no-unnecessary-big-uint-64-array-values-spread': adaptedNoUnnecessaryBigUint64ArrayValuesSpread,
+  'no-unnecessary-big-uint-64-array-with-spread': adaptedNoUnnecessaryBigUint64ArrayWithSpread,
+  'no-unnecessary-big-uint-64-array-to-reversed-spread': adaptedNoUnnecessaryBigUint64ArrayToReversedSpread,
+  'no-unnecessary-big-uint-64-array-to-sorted-spread': adaptedNoUnnecessaryBigUint64ArrayToSortedSpread,
+  'no-unnecessary-int-8-array-from-spread': adaptedNoUnnecessaryInt8ArrayFromSpread,
+  'no-unnecessary-int-8-array-of-spread': adaptedNoUnnecessaryInt8ArrayOfSpread,
+  'no-unnecessary-uint-8-array-from-spread': adaptedNoUnnecessaryUint8ArrayFromSpread,
+  'no-unnecessary-uint-8-array-of-spread': adaptedNoUnnecessaryUint8ArrayOfSpread,
+  'no-unnecessary-uint-8-clamped-array-from-spread': adaptedNoUnnecessaryUint8ClampedArrayFromSpread,
+  'no-unnecessary-uint-8-clamped-array-of-spread': adaptedNoUnnecessaryUint8ClampedArrayOfSpread,
+  'no-unnecessary-int-16-array-from-spread': adaptedNoUnnecessaryInt16ArrayFromSpread,
+  'no-unnecessary-int-16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
+  'no-unnecessary-uint-16-array-from-spread': adaptedNoUnnecessaryUint16ArrayFromSpread,
+  'no-unnecessary-uint-16-array-of-spread': adaptedNoUnnecessaryUint16ArrayOfSpread,
+  'no-unnecessary-int-32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
+  'no-unnecessary-int-32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
+  'no-unnecessary-uint-32-array-from-spread': adaptedNoUnnecessaryUint32ArrayFromSpread,
+  'no-unnecessary-uint-32-array-of-spread': adaptedNoUnnecessaryUint32ArrayOfSpread,
+  'no-unnecessary-float-32-array-from-spread': adaptedNoUnnecessaryFloat32ArrayFromSpread,
+  'no-unnecessary-float-32-array-of-spread': adaptedNoUnnecessaryFloat32ArrayOfSpread,
+  'no-unnecessary-float-64-array-from-spread': adaptedNoUnnecessaryFloat64ArrayFromSpread,
+  'no-unnecessary-float-64-array-of-spread': adaptedNoUnnecessaryFloat64ArrayOfSpread,
+  'no-unnecessary-big-int-64-array-from-spread': adaptedNoUnnecessaryBigInt64ArrayFromSpread,
+  'no-unnecessary-big-int-64-array-of-spread': adaptedNoUnnecessaryBigInt64ArrayOfSpread,
+  'no-unnecessary-big-uint-64-array-from-spread': adaptedNoUnnecessaryBigUint64ArrayFromSpread,
+  'no-unnecessary-big-uint-64-array-of-spread': adaptedNoUnnecessaryBigUint64ArrayOfSpread,
+  'no-unnecessary-set-timeout-spread': adaptedNoUnnecessarySetTimeoutSpread,
+  'no-unnecessary-set-interval-spread': adaptedNoUnnecessarySetIntervalSpread,
+  'no-unnecessary-clear-timeout-spread': adaptedNoUnnecessaryClearTimeoutSpread,
+  'no-unnecessary-clear-interval-spread': adaptedNoUnnecessaryClearIntervalSpread,
+  'no-unnecessary-request-animation-frame-spread': adaptedNoUnnecessaryRequestAnimationFrameSpread,
+  'no-unnecessary-cancel-animation-frame-spread': adaptedNoUnnecessaryCancelAnimationFrameSpread,
+  'no-unnecessary-request-idle-callback-spread': adaptedNoUnnecessaryRequestIdleCallbackSpread,
+  'no-unnecessary-cancel-idle-callback-spread': adaptedNoUnnecessaryCancelIdleCallbackSpread,
+  'no-unnecessary-queue-microtask-spread': adaptedNoUnnecessaryQueueMicrotaskSpread,
+  'no-unnecessary-structured-clone-spread': adaptedNoUnnecessaryStructuredCloneSpread,
+  'no-unnecessary-atob-spread': adaptedNoUnnecessaryAtobSpread,
+  'no-unnecessary-btoa-spread': adaptedNoUnnecessaryBtoaSpread,
+  'no-unnecessary-fetch-spread': adaptedNoUnnecessaryFetchSpread,
+  'no-unnecessary-alert-spread': adaptedNoUnnecessaryAlertSpread,
+  'no-unnecessary-confirm-spread': adaptedNoUnnecessaryConfirmSpread,
+  'no-unnecessary-prompt-spread': adaptedNoUnnecessaryPromptSpread,
+  'no-unnecessary-print-spread': adaptedNoUnnecessaryPrintSpread,
+  'no-unnecessary-report-error-spread': adaptedNoUnnecessaryReportErrorSpread,
+  'no-unnecessary-error-spread': adaptedNoUnnecessaryErrorSpread,
+  'no-unnecessary-eval-error-spread': adaptedNoUnnecessaryEvalErrorSpread,
+  'no-unnecessary-range-error-spread': adaptedNoUnnecessaryRangeErrorSpread,
+  'no-unnecessary-reference-error-spread': adaptedNoUnnecessaryReferenceErrorSpread,
+  'no-unnecessary-syntax-error-spread': adaptedNoUnnecessarySyntaxErrorSpread,
+  'no-unnecessary-type-error-spread': adaptedNoUnnecessaryTypeErrorSpread,
+  'no-unnecessary-uri-error-spread': adaptedNoUnnecessaryUriErrorSpread,
+  'no-unnecessary-aggregate-error-spread': adaptedNoUnnecessaryAggregateErrorSpread,
+  'no-unnecessary-map-spread': adaptedNoUnnecessaryMapSpread,
+  'no-unnecessary-set-spread': adaptedNoUnnecessarySetSpread,
+  'no-unnecessary-weak-map-spread': adaptedNoUnnecessaryWeakMapSpread,
+  'no-unnecessary-weak-set-spread': adaptedNoUnnecessaryWeakSetSpread,
+  'no-unnecessary-weak-ref-spread': adaptedNoUnnecessaryWeakRefSpread,
+  'no-unnecessary-finalization-registry-spread': adaptedNoUnnecessaryFinalizationRegistrySpread,
+  'no-unnecessary-promise-spread': adaptedNoUnnecessaryPromiseSpread,
+  'no-unnecessary-array-buffer-spread': adaptedNoUnnecessaryArrayBufferSpread,
+  'no-unnecessary-shared-array-buffer-spread': adaptedNoUnnecessarySharedArrayBufferSpread,
+  'no-unnecessary-data-view-spread': adaptedNoUnnecessaryDataViewSpread,
+  'no-unnecessary-date-spread': adaptedNoUnnecessaryDateSpread,
+  'no-unnecessary-regexp-spread': adaptedNoUnnecessaryRegexpSpread,
+  'no-unnecessary-image-spread': adaptedNoUnnecessaryImageSpread,
+  'no-unnecessary-option-spread': adaptedNoUnnecessaryOptionSpread,
+  'no-unnecessary-audio-spread': adaptedNoUnnecessaryAudioSpread,
+  'no-unnecessary-headers-spread': adaptedNoUnnecessaryHeadersSpread,
+  'no-unnecessary-request-spread': adaptedNoUnnecessaryRequestSpread,
+  'no-unnecessary-response-spread': adaptedNoUnnecessaryResponseSpread,
+  'no-unnecessary-form-data-spread': adaptedNoUnnecessaryFormDataSpread,
+  'no-unnecessary-url-spread': adaptedNoUnnecessaryUrlSpread,
+  'no-unnecessary-url-search-params-spread': adaptedNoUnnecessaryUrlSearchParamsSpread,
+  'no-unnecessary-text-decoder-spread': adaptedNoUnnecessaryTextDecoderSpread,
+  'no-unnecessary-text-encoder-spread': adaptedNoUnnecessaryTextEncoderSpread,
+  'no-unnecessary-blob-spread': adaptedNoUnnecessaryBlobSpread,
+  'no-unnecessary-file-spread': adaptedNoUnnecessaryFileSpread,
+  'no-unnecessary-file-reader-spread': adaptedNoUnnecessaryFileReaderSpread,
+  'no-unnecessary-image-data-spread': adaptedNoUnnecessaryImageDataSpread,
+  'no-unnecessary-dom-rect-spread': adaptedNoUnnecessaryDomRectSpread,
+  'no-unnecessary-css-style-declaration-spread': adaptedNoUnnecessaryCssStyleDeclarationSpread,
+  'no-unnecessary-mutation-observer-spread': adaptedNoUnnecessaryMutationObserverSpread,
+  'no-unnecessary-resize-observer-spread': adaptedNoUnnecessaryResizeObserverSpread,
+  'no-unnecessary-intersection-observer-spread': adaptedNoUnnecessaryIntersectionObserverSpread,
+  'no-unnecessary-performance-observer-spread': adaptedNoUnnecessaryPerformanceObserverSpread,
+  'no-unnecessary-abort-controller-spread': adaptedNoUnnecessaryAbortControllerSpread,
+  'no-unnecessary-abort-signal-spread': adaptedNoUnnecessaryAbortSignalSpread,
+  'no-unnecessary-broadcast-channel-spread': adaptedNoUnnecessaryBroadcastChannelSpread,
+  'no-unnecessary-message-channel-spread': adaptedNoUnnecessaryMessageChannelSpread,
+  'no-unnecessary-worker-spread': adaptedNoUnnecessaryWorkerSpread,
+  'no-unnecessary-event-spread': adaptedNoUnnecessaryEventSpread,
+  'no-unnecessary-custom-event-spread': adaptedNoUnnecessaryCustomEventSpread,
+  'no-unnecessary-dom-parser-spread': adaptedNoUnnecessaryDomParserSpread,
+  'no-unnecessary-xml-http-request-spread': adaptedNoUnnecessaryXmlHttpRequestSpread,
+  'no-unnecessary-document-create-element-spread': adaptedNoUnnecessaryDocumentCreateElementSpread,
+  'no-unnecessary-document-create-text-node-spread': adaptedNoUnnecessaryDocumentCreateTextNodeSpread,
+  'no-unnecessary-document-create-comment-spread': adaptedNoUnnecessaryDocumentCreateCommentSpread,
+  'no-unnecessary-document-create-document-fragment-spread': adaptedNoUnnecessaryDocumentCreateDocumentFragmentSpread,
+  'no-unnecessary-document-create-attribute-spread': adaptedNoUnnecessaryDocumentCreateAttributeSpread,
+  'no-unnecessary-document-create-event-spread': adaptedNoUnnecessaryDocumentCreateEventSpread,
+  'no-unnecessary-document-create-tree-walker-spread': adaptedNoUnnecessaryDocumentCreateTreeWalkerSpread,
+  'no-unnecessary-document-create-node-iterator-spread': adaptedNoUnnecessaryDocumentCreateNodeIteratorSpread,
+  'no-unnecessary-document-create-range-spread': adaptedNoUnnecessaryDocumentCreateRangeSpread,
+  'no-unnecessary-document-get-element-by-id-spread': adaptedNoUnnecessaryDocumentGetElementByIdSpread,
+  'no-unnecessary-document-query-selector-spread': adaptedNoUnnecessaryDocumentQuerySelectorSpread,
+  'no-unnecessary-document-query-selector-all-spread': adaptedNoUnnecessaryDocumentQuerySelectorAllSpread,
+  'no-unnecessary-document-get-elements-by-class-name-spread': adaptedNoUnnecessaryDocumentGetElementsByClassNameSpread,
+  'no-unnecessary-document-get-elements-by-tag-name-spread': adaptedNoUnnecessaryDocumentGetElementsByTagNameSpread,
+  'no-unnecessary-document-get-elements-by-name-spread': adaptedNoUnnecessaryDocumentGetElementsByNameSpread,
+  'no-unnecessary-document-adopt-node-spread': adaptedNoUnnecessaryDocumentAdoptNodeSpread,
+  'no-unnecessary-document-import-node-spread': adaptedNoUnnecessaryDocumentImportNodeSpread,
+  'no-unnecessary-document-write-spread': adaptedNoUnnecessaryDocumentWriteSpread,
+  'no-unnecessary-document-write-ln-spread': adaptedNoUnnecessaryDocumentWriteLnSpread,
+  'no-unnecessary-document-open-spread': adaptedNoUnnecessaryDocumentOpenSpread,
+  'no-unnecessary-document-close-spread': adaptedNoUnnecessaryDocumentCloseSpread,
+  'no-unnecessary-document-exit-fullscreen-spread': adaptedNoUnnecessaryDocumentExitFullscreenSpread,
+  'no-unnecessary-document-exit-picture-in-picture-spread': adaptedNoUnnecessaryDocumentExitPictureInPictureSpread,
+  'no-unnecessary-document-exit-pointer-lock-spread': adaptedNoUnnecessaryDocumentExitPointerLockSpread,
+  'no-unnecessary-document-has-focus-spread': adaptedNoUnnecessaryDocumentHasFocusSpread,
+  'no-unnecessary-document-get-selection-spread': adaptedNoUnnecessaryDocumentGetSelectionSpread,
+  'no-unnecessary-document-element-from-point-spread': adaptedNoUnnecessaryDocumentElementFromPointSpread,
+  'no-unnecessary-document-elements-from-point-spread': adaptedNoUnnecessaryDocumentElementsFromPointSpread,
+  'no-unnecessary-element-query-selector-spread': adaptedNoUnnecessaryElementQuerySelectorSpread,
+  'no-unnecessary-element-query-selector-all-spread': adaptedNoUnnecessaryElementQuerySelectorAllSpread,
+  'no-unnecessary-element-get-attribute-spread': adaptedNoUnnecessaryElementGetAttributeSpread,
+  'no-unnecessary-element-set-attribute-spread': adaptedNoUnnecessaryElementSetAttributeSpread,
+  'no-unnecessary-element-remove-attribute-spread': adaptedNoUnnecessaryElementRemoveAttributeSpread,
+  'no-unnecessary-element-has-attribute-spread': adaptedNoUnnecessaryElementHasAttributeSpread,
+  'no-unnecessary-element-get-attribute-names-spread': adaptedNoUnnecessaryElementGetAttributeNamesSpread,
+  'no-unnecessary-element-toggle-attribute-spread': adaptedNoUnnecessaryElementToggleAttributeSpread,
+  'no-unnecessary-element-get-elements-by-class-name-spread': adaptedNoUnnecessaryElementGetElementsByClassNameSpread,
+  'no-unnecessary-element-get-elements-by-tag-name-spread': adaptedNoUnnecessaryElementGetElementsByTagNameSpread,
+  'no-unnecessary-element-closest-spread': adaptedNoUnnecessaryElementClosestSpread,
+  'no-unnecessary-element-matches-spread': adaptedNoUnnecessaryElementMatchesSpread,
+  'no-unnecessary-element-contains-spread': adaptedNoUnnecessaryElementContainsSpread,
+  'no-unnecessary-element-append-child-spread': adaptedNoUnnecessaryElementAppendChildSpread,
+  'no-unnecessary-element-remove-child-spread': adaptedNoUnnecessaryElementRemoveChildSpread,
+  'no-unnecessary-element-insert-before-spread': adaptedNoUnnecessaryElementInsertBeforeSpread,
+  'no-unnecessary-element-replace-child-spread': adaptedNoUnnecessaryElementReplaceChildSpread,
+  'no-unnecessary-element-clone-node-spread': adaptedNoUnnecessaryElementCloneNodeSpread,
+  'no-unnecessary-element-remove-spread': adaptedNoUnnecessaryElementRemoveSpread,
+  'no-unnecessary-element-prepend-spread': adaptedNoUnnecessaryElementPrependSpread,
+  'no-unnecessary-element-append-spread': adaptedNoUnnecessaryElementAppendSpread,
+  'no-unnecessary-element-before-spread': adaptedNoUnnecessaryElementBeforeSpread,
+  'no-unnecessary-element-after-spread': adaptedNoUnnecessaryElementAfterSpread,
+  'no-unnecessary-element-replace-with-spread': adaptedNoUnnecessaryElementReplaceWithSpread,
+  'no-unnecessary-element-insert-adjacent-html-spread': adaptedNoUnnecessaryElementInsertAdjacentHtmlSpread,
+  'no-unnecessary-element-insert-adjacent-element-spread': adaptedNoUnnecessaryElementInsertAdjacentElementSpread,
+  'no-unnecessary-element-insert-adjacent-text-spread': adaptedNoUnnecessaryElementInsertAdjacentTextSpread,
+  'no-unnecessary-element-get-bounding-client-rect-spread': adaptedNoUnnecessaryElementGetBoundingClientRectSpread,
+  'no-unnecessary-element-get-client-rects-spread': adaptedNoUnnecessaryElementGetClientRectsSpread,
+  'no-unnecessary-element-scroll-into-view-spread': adaptedNoUnnecessaryElementScrollIntoViewSpread,
+  'no-unnecessary-element-scroll-into-view-if-needed-spread': adaptedNoUnnecessaryElementScrollIntoViewIfNeededSpread,
+  'no-unnecessary-element-scroll-to-spread': adaptedNoUnnecessaryElementScrollToSpread,
+  'no-unnecessary-element-scroll-by-spread': adaptedNoUnnecessaryElementScrollBySpread,
+  'no-unnecessary-element-scroll-spread': adaptedNoUnnecessaryElementScrollSpread,
+  'no-unnecessary-element-focus-spread': adaptedNoUnnecessaryElementFocusSpread,
+  'no-unnecessary-element-blur-spread': adaptedNoUnnecessaryElementBlurSpread,
+  'no-unnecessary-element-click-spread': adaptedNoUnnecessaryElementClickSpread,
+  'no-unnecessary-element-animate-spread': adaptedNoUnnecessaryElementAnimateSpread,
+  'no-unnecessary-element-get-computed-style-spread': adaptedNoUnnecessaryElementGetComputedStyleSpread,
+  'no-unnecessary-element-request-fullscreen-spread': adaptedNoUnnecessaryElementRequestFullscreenSpread,
+  'no-unnecessary-element-request-pointer-lock-spread': adaptedNoUnnecessaryElementRequestPointerLockSpread,
+  'no-unnecessary-element-attach-shadow-spread': adaptedNoUnnecessaryElementAttachShadowSpread,
+  'no-unnecessary-local-storage-get-item-spread': adaptedNoUnnecessaryLocalStorageGetItemSpread,
+  'no-unnecessary-local-storage-set-item-spread': adaptedNoUnnecessaryLocalStorageSetItemSpread,
+  'no-unnecessary-local-storage-remove-item-spread': adaptedNoUnnecessaryLocalStorageRemoveItemSpread,
+  'no-unnecessary-local-storage-clear-spread': adaptedNoUnnecessaryLocalStorageClearSpread,
+  'no-unnecessary-local-storage-key-spread': adaptedNoUnnecessaryLocalStorageKeySpread,
+  'no-unnecessary-session-storage-get-item-spread': adaptedNoUnnecessarySessionStorageGetItemSpread,
+  'no-unnecessary-session-storage-set-item-spread': adaptedNoUnnecessarySessionStorageSetItemSpread,
+  'no-unnecessary-session-storage-remove-item-spread': adaptedNoUnnecessarySessionStorageRemoveItemSpread,
+  'no-unnecessary-session-storage-clear-spread': adaptedNoUnnecessarySessionStorageClearSpread,
+  'no-unnecessary-session-storage-key-spread': adaptedNoUnnecessarySessionStorageKeySpread,
+  'no-unnecessary-navigator-send-beacon-spread': adaptedNoUnnecessaryNavigatorSendBeaconSpread,
+  'no-unnecessary-navigator-vibrate-spread': adaptedNoUnnecessaryNavigatorVibrateSpread,
+  'no-unnecessary-navigator-get-battery-spread': adaptedNoUnnecessaryNavigatorGetBatterySpread,
+  'no-unnecessary-navigator-geolocation-get-current-position-spread': adaptedNoUnnecessaryNavigatorGeolocationGetCurrentPositionSpread,
+  'no-unnecessary-navigator-geolocation-watch-position-spread': adaptedNoUnnecessaryNavigatorGeolocationWatchPositionSpread,
+  'no-unnecessary-navigator-geolocation-clear-watch-spread': adaptedNoUnnecessaryNavigatorGeolocationClearWatchSpread,
+  'no-unnecessary-navigator-clipboard-read-text-spread': adaptedNoUnnecessaryNavigatorClipboardReadTextSpread,
+  'no-unnecessary-navigator-clipboard-write-text-spread': adaptedNoUnnecessaryNavigatorClipboardWriteTextSpread,
+  'no-unnecessary-navigator-media-devices-get-user-media-spread': adaptedNoUnnecessaryNavigatorMediaDevicesGetUserMediaSpread,
+  'no-unnecessary-navigator-register-protocol-handler-spread': adaptedNoUnnecessaryNavigatorRegisterProtocolHandlerSpread,
+  'no-unnecessary-navigator-request-media-key-system-access-spread': adaptedNoUnnecessaryNavigatorRequestMediaKeySystemAccessSpread,
+  'no-unnecessary-navigator-can-share-spread': adaptedNoUnnecessaryNavigatorCanShareSpread,
+  'no-unnecessary-navigator-share-spread': adaptedNoUnnecessaryNavigatorShareSpread,
+  'no-unnecessary-navigator-get-gamepads-spread': adaptedNoUnnecessaryNavigatorGetGamepadsSpread,
+  'no-unnecessary-navigator-request-idle-callback-spread': adaptedNoUnnecessaryNavigatorRequestIdleCallbackSpread,
+  'no-unnecessary-navigator-cancel-idle-callback-spread': adaptedNoUnnecessaryNavigatorCancelIdleCallbackSpread,
+  'no-unnecessary-navigator-java-enabled-spread': adaptedNoUnnecessaryNavigatorJavaEnabledSpread,
+  'no-unnecessary-navigator-cookie-enabled-spread': adaptedNoUnnecessaryNavigatorCookieEnabledSpread,
+  'no-unnecessary-history-push-state-spread': adaptedNoUnnecessaryHistoryPushStateSpread,
+  'no-unnecessary-history-replace-state-spread': adaptedNoUnnecessaryHistoryReplaceStateSpread,
+  'no-unnecessary-history-go-spread': adaptedNoUnnecessaryHistoryGoSpread,
+  'no-unnecessary-history-back-spread': adaptedNoUnnecessaryHistoryBackSpread,
+  'no-unnecessary-history-forward-spread': adaptedNoUnnecessaryHistoryForwardSpread,
+  'no-unnecessary-location-assign-spread': adaptedNoUnnecessaryLocationAssignSpread,
+  'no-unnecessary-location-reload-spread': adaptedNoUnnecessaryLocationReloadSpread,
+  'no-unnecessary-location-replace-spread': adaptedNoUnnecessaryLocationReplaceSpread,
+  'no-unnecessary-location-to-string-spread': adaptedNoUnnecessaryLocationToStringSpread,
+  'no-unnecessary-performance-now-spread': adaptedNoUnnecessaryPerformanceNowSpread,
+  'no-unnecessary-performance-mark-spread': adaptedNoUnnecessaryPerformanceMarkSpread,
+  'no-unnecessary-performance-measure-spread': adaptedNoUnnecessaryPerformanceMeasureSpread,
+  'no-unnecessary-performance-clear-marks-spread': adaptedNoUnnecessaryPerformanceClearMarksSpread,
+  'no-unnecessary-performance-clear-measures-spread': adaptedNoUnnecessaryPerformanceClearMeasuresSpread,
+  'no-unnecessary-performance-get-entries-spread': adaptedNoUnnecessaryPerformanceGetEntriesSpread,
+  'no-unnecessary-performance-get-entries-by-name-spread': adaptedNoUnnecessaryPerformanceGetEntriesByNameSpread,
+  'no-unnecessary-performance-get-entries-by-type-spread': adaptedNoUnnecessaryPerformanceGetEntriesByTypeSpread,
+  'no-unnecessary-performance-clear-resource-timings-spread': adaptedNoUnnecessaryPerformanceClearResourceTimingsSpread,
+  'no-unnecessary-performance-set-resource-timing-buffer-size-spread': adaptedNoUnnecessaryPerformanceSetResourceTimingBufferSizeSpread,
+  'no-unnecessary-screen-orientation-lock-spread': adaptedNoUnnecessaryScreenOrientationLockSpread,
+  'no-unnecessary-screen-orientation-unlock-spread': adaptedNoUnnecessaryScreenOrientationUnlockSpread,
+  'no-unnecessary-crypto-get-random-values-spread': adaptedNoUnnecessaryCryptoGetRandomValuesSpread,
+  'no-unnecessary-crypto-random-uuid-spread': adaptedNoUnnecessaryCryptoRandomUuidSpread,
+  'no-unnecessary-indexed-db-open-spread': adaptedNoUnnecessaryIndexedDbOpenSpread,
+  'no-unnecessary-indexed-db-delete-database-spread': adaptedNoUnnecessaryIndexedDbDeleteDatabaseSpread,
+  'no-unnecessary-indexed-db-cmp-spread': adaptedNoUnnecessaryIndexedDbCmpSpread,
+  'no-unnecessary-caches-open-spread': adaptedNoUnnecessaryCachesOpenSpread,
+  'no-unnecessary-caches-match-spread': adaptedNoUnnecessaryCachesMatchSpread,
+  'no-unnecessary-caches-has-spread': adaptedNoUnnecessaryCachesHasSpread,
+  'no-unnecessary-caches-delete-spread': adaptedNoUnnecessaryCachesDeleteSpread,
+  'no-unnecessary-caches-keys-spread': adaptedNoUnnecessaryCachesKeysSpread,
+  'no-unnecessary-window-open-spread': adaptedNoUnnecessaryWindowOpenSpread,
+  'no-unnecessary-window-close-spread': adaptedNoUnnecessaryWindowCloseSpread,
+  'no-unnecessary-window-stop-spread': adaptedNoUnnecessaryWindowStopSpread,
+  'no-unnecessary-window-focus-spread': adaptedNoUnnecessaryWindowFocusSpread,
+  'no-unnecessary-window-blur-spread': adaptedNoUnnecessaryWindowBlurSpread,
+  'no-unnecessary-window-scroll-to-spread': adaptedNoUnnecessaryWindowScrollToSpread,
+  'no-unnecessary-window-scroll-by-spread': adaptedNoUnnecessaryWindowScrollBySpread,
+  'no-unnecessary-window-scroll-spread': adaptedNoUnnecessaryWindowScrollSpread,
+  'no-unnecessary-window-print-spread': adaptedNoUnnecessaryWindowPrintSpread,
+  'no-unnecessary-window-alert-spread': adaptedNoUnnecessaryWindowAlertSpread,
+  'no-unnecessary-window-confirm-spread': adaptedNoUnnecessaryWindowConfirmSpread,
+  'no-unnecessary-window-prompt-spread': adaptedNoUnnecessaryWindowPromptSpread,
+  'no-unnecessary-window-get-computed-style-spread': adaptedNoUnnecessaryWindowGetComputedStyleSpread,
+  'no-unnecessary-window-get-selection-spread': adaptedNoUnnecessaryWindowGetSelectionSpread,
+  'no-unnecessary-window-match-media-spread': adaptedNoUnnecessaryWindowMatchMediaSpread,
+  'no-unnecessary-window-move-to-spread': adaptedNoUnnecessaryWindowMoveToSpread,
+  'no-unnecessary-window-move-by-spread': adaptedNoUnnecessaryWindowMoveBySpread,
+  'no-unnecessary-window-resize-to-spread': adaptedNoUnnecessaryWindowResizeToSpread,
+  'no-unnecessary-window-resize-by-spread': adaptedNoUnnecessaryWindowResizeBySpread,
+  'no-unnecessary-window-post-message-spread': adaptedNoUnnecessaryWindowPostMessageSpread,
+  'no-unnecessary-window-atob-spread': adaptedNoUnnecessaryWindowAtobSpread,
+  'no-unnecessary-window-btoa-spread': adaptedNoUnnecessaryWindowBtoaSpread,
+  'no-unnecessary-window-fetch-spread': adaptedNoUnnecessaryWindowFetchSpread,
+  'no-unnecessary-window-create-image-bitmap-spread': adaptedNoUnnecessaryWindowCreateImageBitmapSpread,
+  'no-unnecessary-window-queue-microtask-spread': adaptedNoUnnecessaryWindowQueueMicrotaskSpread,
+  'no-unnecessary-window-report-error-spread': adaptedNoUnnecessaryWindowReportErrorSpread,
+  'no-unnecessary-window-structured-clone-spread': adaptedNoUnnecessaryWindowStructuredCloneSpread,
+  'no-unnecessary-window-request-animation-frame-spread': adaptedNoUnnecessaryWindowRequestAnimationFrameSpread,
+  'no-unnecessary-window-cancel-animation-frame-spread': adaptedNoUnnecessaryWindowCancelAnimationFrameSpread,
+  'no-unnecessary-window-request-idle-callback-spread': adaptedNoUnnecessaryWindowRequestIdleCallbackSpread,
+  'no-unnecessary-window-cancel-idle-callback-spread': adaptedNoUnnecessaryWindowCancelIdleCallbackSpread,
+  'no-unnecessary-window-set-timeout-spread': adaptedNoUnnecessaryWindowSetTimeoutSpread,
+  'no-unnecessary-window-clear-timeout-spread': adaptedNoUnnecessaryWindowClearTimeoutSpread,
+  'no-unnecessary-window-set-interval-spread': adaptedNoUnnecessaryWindowSetIntervalSpread,
+  'no-unnecessary-window-clear-interval-spread': adaptedNoUnnecessaryWindowClearIntervalSpread,
+  'no-unnecessary-process-exit-spread': adaptedNoUnnecessaryProcessExitSpread,
+  'no-unnecessary-process-next-tick-spread': adaptedNoUnnecessaryProcessNextTickSpread,
+  'no-unnecessary-process-cwd-spread': adaptedNoUnnecessaryProcessCwdSpread,
+  'no-unnecessary-process-chdir-spread': adaptedNoUnnecessaryProcessChdirSpread,
+  'no-unnecessary-process-env-spread': adaptedNoUnnecessaryProcessEnvSpread,
+  'no-unnecessary-process-uptime-spread': adaptedNoUnnecessaryProcessUptimeSpread,
+  'no-unnecessary-process-memory-usage-spread': adaptedNoUnnecessaryProcessMemoryUsageSpread,
+  'no-unnecessary-process-cpu-usage-spread': adaptedNoUnnecessaryProcessCpuUsageSpread,
+  'no-unnecessary-process-kill-spread': adaptedNoUnnecessaryProcessKillSpread,
+  'no-unnecessary-process-abort-spread': adaptedNoUnnecessaryProcessAbortSpread,
+  'no-unnecessary-process-umask-spread': adaptedNoUnnecessaryProcessUmaskSpread,
+  'no-unnecessary-process-getuid-spread': adaptedNoUnnecessaryProcessGetuidSpread,
+  'no-unnecessary-process-setuid-spread': adaptedNoUnnecessaryProcessSetuidSpread,
+  'no-unnecessary-process-getgid-spread': adaptedNoUnnecessaryProcessGetgidSpread,
+  'no-unnecessary-process-setgid-spread': adaptedNoUnnecessaryProcessSetgidSpread,
+  'no-unnecessary-process-hrtime-spread': adaptedNoUnnecessaryProcessHrtimeSpread,
+  'no-unnecessary-process-argv-spread': adaptedNoUnnecessaryProcessArgvSpread,
+  'no-unnecessary-buffer-alloc-spread': adaptedNoUnnecessaryBufferAllocSpread,
+  'no-unnecessary-buffer-alloc-unsafe-spread': adaptedNoUnnecessaryBufferAllocUnsafeSpread,
+  'no-unnecessary-buffer-alloc-unsafe-slow-spread': adaptedNoUnnecessaryBufferAllocUnsafeSlowSpread,
+  'no-unnecessary-buffer-from-spread': adaptedNoUnnecessaryBufferFromSpread,
+  'no-unnecessary-buffer-of-spread': adaptedNoUnnecessaryBufferOfSpread,
+  'no-unnecessary-buffer-is-buffer-spread': adaptedNoUnnecessaryBufferIsBufferSpread,
+  'no-unnecessary-buffer-is-encoding-spread': adaptedNoUnnecessaryBufferIsEncodingSpread,
+  'no-unnecessary-buffer-byte-length-spread': adaptedNoUnnecessaryBufferByteLengthSpread,
+  'no-unnecessary-buffer-compare-spread': adaptedNoUnnecessaryBufferCompareSpread,
+  'no-unnecessary-buffer-concat-spread': adaptedNoUnnecessaryBufferConcatSpread,
+  'no-unnecessary-path-join-spread': adaptedNoUnnecessaryPathJoinSpread,
+  'no-unnecessary-path-resolve-spread': adaptedNoUnnecessaryPathResolveSpread,
+  'no-unnecessary-path-normalize-spread': adaptedNoUnnecessaryPathNormalizeSpread,
+  'no-unnecessary-path-relative-spread': adaptedNoUnnecessaryPathRelativeSpread,
+  'no-unnecessary-path-dirname-spread': adaptedNoUnnecessaryPathDirnameSpread,
+  'no-unnecessary-path-basename-spread': adaptedNoUnnecessaryPathBasenameSpread,
+  'no-unnecessary-path-extname-spread': adaptedNoUnnecessaryPathExtnameSpread,
+  'no-unnecessary-path-parse-spread': adaptedNoUnnecessaryPathParseSpread,
+  'no-unnecessary-path-format-spread': adaptedNoUnnecessaryPathFormatSpread,
+  'no-unnecessary-path-is-absolute-spread': adaptedNoUnnecessaryPathIsAbsoluteSpread,
+  'no-unnecessary-path-to-namespaced-path-spread': adaptedNoUnnecessaryPathToNamespacedPathSpread,
+  'no-unnecessary-fs-read-file-spread': adaptedNoUnnecessaryFsReadFileSpread,
+  'no-unnecessary-fs-write-file-spread': adaptedNoUnnecessaryFsWriteFileSpread,
+  'no-unnecessary-fs-append-file-spread': adaptedNoUnnecessaryFsAppendFileSpread,
+  'no-unnecessary-fs-copy-file-spread': adaptedNoUnnecessaryFsCopyFileSpread,
+  'no-unnecessary-fs-rename-spread': adaptedNoUnnecessaryFsRenameSpread,
+  'no-unnecessary-fs-unlink-spread': adaptedNoUnnecessaryFsUnlinkSpread,
+  'no-unnecessary-fs-mkdir-spread': adaptedNoUnnecessaryFsMkdirSpread,
+  'no-unnecessary-fs-rmdir-spread': adaptedNoUnnecessaryFsRmdirSpread,
+  'no-unnecessary-fs-readdir-spread': adaptedNoUnnecessaryFsReaddirSpread,
+  'no-unnecessary-fs-stat-spread': adaptedNoUnnecessaryFsStatSpread,
+  'no-unnecessary-fs-lstat-spread': adaptedNoUnnecessaryFsLstatSpread,
+  'no-unnecessary-fs-fstat-spread': adaptedNoUnnecessaryFsFstatSpread,
+  'no-unnecessary-fs-exists-spread': adaptedNoUnnecessaryFsExistsSpread,
+  'no-unnecessary-fs-exists-sync-spread': adaptedNoUnnecessaryFsExistsSyncSpread,
+  'no-unnecessary-fs-access-spread': adaptedNoUnnecessaryFsAccessSpread,
+  'no-unnecessary-fs-chmod-spread': adaptedNoUnnecessaryFsChmodSpread,
+  'no-unnecessary-fs-chown-spread': adaptedNoUnnecessaryFsChownSpread,
+  'no-unnecessary-fs-read-dir-sync-spread': adaptedNoUnnecessaryFsReadDirSyncSpread,
+  'no-unnecessary-fs-read-file-sync-spread': adaptedNoUnnecessaryFsReadFileSyncSpread,
+  'no-unnecessary-fs-write-file-sync-spread': adaptedNoUnnecessaryFsWriteFileSyncSpread,
+  'no-unnecessary-fs-mkdir-sync-spread': adaptedNoUnnecessaryFsMkdirSyncSpread,
+  'no-unnecessary-fs-rm-sync-spread': adaptedNoUnnecessaryFsRmSyncSpread,
+  'no-unnecessary-fs-rm-spread': adaptedNoUnnecessaryFsRmSpread,
+  'no-unnecessary-fs-watch-spread': adaptedNoUnnecessaryFsWatchSpread,
+  'no-unnecessary-fs-watch-file-spread': adaptedNoUnnecessaryFsWatchFileSpread,
+  'no-unnecessary-fs-unwatch-file-spread': adaptedNoUnnecessaryFsUnwatchFileSpread,
+  'no-unnecessary-fs-create-read-stream-spread': adaptedNoUnnecessaryFsCreateReadStreamSpread,
+  'no-unnecessary-fs-create-write-stream-spread': adaptedNoUnnecessaryFsCreateWriteStreamSpread,
+  'no-unnecessary-util-promisify-spread': adaptedNoUnnecessaryUtilPromisifySpread,
+  'no-unnecessary-util-callbackify-spread': adaptedNoUnnecessaryUtilCallbackifySpread,
+  'no-unnecessary-util-inspect-spread': adaptedNoUnnecessaryUtilInspectSpread,
+  'no-unnecessary-util-format-spread': adaptedNoUnnecessaryUtilFormatSpread,
+  'no-unnecessary-util-deprecate-spread': adaptedNoUnnecessaryUtilDeprecateSpread,
+  'no-unnecessary-util-is-deep-strict-equal-spread': adaptedNoUnnecessaryUtilIsDeepStrictEqualSpread,
+  'no-unnecessary-util-types-is-date-spread': adaptedNoUnnecessaryUtilTypesIsDateSpread,
+  'no-unnecessary-util-text-decoder-decode-spread': adaptedNoUnnecessaryUtilTextDecoderDecodeSpread,
+  'no-unnecessary-os-homedir-spread': adaptedNoUnnecessaryOsHomedirSpread,
+  'no-unnecessary-os-tmpdir-spread': adaptedNoUnnecessaryOsTmpdirSpread,
+  'no-unnecessary-os-hostname-spread': adaptedNoUnnecessaryOsHostnameSpread,
+  'no-unnecessary-os-type-spread': adaptedNoUnnecessaryOsTypeSpread,
+  'no-unnecessary-os-platform-spread': adaptedNoUnnecessaryOsPlatformSpread,
+  'no-unnecessary-os-arch-spread': adaptedNoUnnecessaryOsArchSpread,
+  'no-unnecessary-os-release-spread': adaptedNoUnnecessaryOsReleaseSpread,
+  'no-unnecessary-os-cpus-spread': adaptedNoUnnecessaryOsCpusSpread,
+  'no-unnecessary-os-totalmem-spread': adaptedNoUnnecessaryOsTotalmemSpread,
+  'no-unnecessary-os-freemem-spread': adaptedNoUnnecessaryOsFreememSpread,
+  'no-unnecessary-os-uptime-spread': adaptedNoUnnecessaryOsUptimeSpread,
+  'no-unnecessary-os-loadavg-spread': adaptedNoUnnecessaryOsLoadavgSpread,
+  'no-unnecessary-os-network-interfaces-spread': adaptedNoUnnecessaryOsNetworkInterfacesSpread,
+  'no-unnecessary-os-constants-spread': adaptedNoUnnecessaryOsConstantsSpread,
+  'no-unnecessary-os-user-info-spread': adaptedNoUnnecessaryOsUserInfoSpread,
+  'no-unnecessary-os-eol-spread': adaptedNoUnnecessaryOsEolSpread,
+  'no-unnecessary-os-dev-null-spread': adaptedNoUnnecessaryOsDevNullSpread,
+  'no-unnecessary-os-get-priority-spread': adaptedNoUnnecessaryOsGetPrioritySpread,
+  'no-unnecessary-os-set-priority-spread': adaptedNoUnnecessaryOsSetPrioritySpread,
+  'no-unnecessary-crypto-create-hash-spread': adaptedNoUnnecessaryCryptoCreateHashSpread,
+  'no-unnecessary-crypto-create-hmac-spread': adaptedNoUnnecessaryCryptoCreateHmacSpread,
+  'no-unnecessary-crypto-create-cipher-spread': adaptedNoUnnecessaryCryptoCreateCipherSpread,
+  'no-unnecessary-crypto-create-cipher-iv-spread': adaptedNoUnnecessaryCryptoCreateCipherIvSpread,
+  'no-unnecessary-crypto-create-decipher-spread': adaptedNoUnnecessaryCryptoCreateDecipherSpread,
+  'no-unnecessary-crypto-create-decipher-iv-spread': adaptedNoUnnecessaryCryptoCreateDecipherIvSpread,
+  'no-unnecessary-crypto-create-sign-spread': adaptedNoUnnecessaryCryptoCreateSignSpread,
+  'no-unnecessary-crypto-create-verify-spread': adaptedNoUnnecessaryCryptoCreateVerifySpread,
+  'no-unnecessary-crypto-random-bytes-spread': adaptedNoUnnecessaryCryptoRandomBytesSpread,
+  'no-unnecessary-crypto-pbkdf2-spread': adaptedNoUnnecessaryCryptoPbkdf2Spread,
+  'no-unnecessary-crypto-scrypt-spread': adaptedNoUnnecessaryCryptoScryptSpread,
+  'no-unnecessary-crypto-create-secret-key-spread': adaptedNoUnnecessaryCryptoCreateSecretKeySpread,
+  'no-unnecessary-crypto-create-public-key-spread': adaptedNoUnnecessaryCryptoCreatePublicKeySpread,
+  'no-unnecessary-crypto-create-private-key-spread': adaptedNoUnnecessaryCryptoCreatePrivateKeySpread,
+  'no-unnecessary-crypto-get-ciphers-spread': adaptedNoUnnecessaryCryptoGetCiphersSpread,
+  'no-unnecessary-crypto-get-hashes-spread': adaptedNoUnnecessaryCryptoGetHashesSpread,
+  'no-unnecessary-crypto-timing-safe-equal-spread': adaptedNoUnnecessaryCryptoTimingSafeEqualSpread,
+  'no-unnecessary-event-emitter-on-spread': adaptedNoUnnecessaryEventEmitterOnSpread,
+  'no-unnecessary-event-emitter-off-spread': adaptedNoUnnecessaryEventEmitterOffSpread,
+  'no-unnecessary-event-emitter-once-spread': adaptedNoUnnecessaryEventEmitterOnceSpread,
+  'no-unnecessary-event-emitter-emit-spread': adaptedNoUnnecessaryEventEmitterEmitSpread,
+  'no-unnecessary-event-emitter-remove-listener-spread': adaptedNoUnnecessaryEventEmitterRemoveListenerSpread,
+  'no-unnecessary-event-emitter-remove-all-listeners-spread': adaptedNoUnnecessaryEventEmitterRemoveAllListenersSpread,
+  'no-unnecessary-event-emitter-listeners-spread': adaptedNoUnnecessaryEventEmitterListenersSpread,
+  'no-unnecessary-event-emitter-listener-count-spread': adaptedNoUnnecessaryEventEmitterListenerCountSpread,
+  'no-unnecessary-event-emitter-prepend-listener-spread': adaptedNoUnnecessaryEventEmitterPrependListenerSpread,
+  'no-unnecessary-event-emitter-prepend-once-listener-spread': adaptedNoUnnecessaryEventEmitterPrependOnceListenerSpread,
+  'no-unnecessary-event-emitter-set-max-listeners-spread': adaptedNoUnnecessaryEventEmitterSetMaxListenersSpread,
+  'no-unnecessary-event-emitter-get-max-listeners-spread': adaptedNoUnnecessaryEventEmitterGetMaxListenersSpread,
+  'no-unnecessary-event-emitter-event-names-spread': adaptedNoUnnecessaryEventEmitterEventNamesSpread,
+  'no-unnecessary-event-emitter-raw-listeners-spread': adaptedNoUnnecessaryEventEmitterRawListenersSpread,
+  'no-unnecessary-stream-pipeline-spread': adaptedNoUnnecessaryStreamPipelineSpread,
+  'no-unnecessary-stream-compose-spread': adaptedNoUnnecessaryStreamComposeSpread,
+  'no-unnecessary-stream-readable-from-spread': adaptedNoUnnecessaryStreamReadableFromSpread,
+  'no-unnecessary-child-process-exec-spread': adaptedNoUnnecessaryChildProcessExecSpread,
+  'no-unnecessary-child-process-exec-file-spread': adaptedNoUnnecessaryChildProcessExecFileSpread,
+  'no-unnecessary-child-process-spawn-spread': adaptedNoUnnecessaryChildProcessSpawnSpread,
+  'no-unnecessary-child-process-fork-spread': adaptedNoUnnecessaryChildProcessForkSpread,
+  'no-unnecessary-http-request-spread': adaptedNoUnnecessaryHttpRequestSpread,
+  'no-unnecessary-http-get-spread': adaptedNoUnnecessaryHttpGetSpread,
+  'no-unnecessary-https-request-spread': adaptedNoUnnecessaryHttpsRequestSpread,
+  'no-unnecessary-https-get-spread': adaptedNoUnnecessaryHttpsGetSpread,
+  'no-unnecessary-url-parse-node-spread': adaptedNoUnnecessaryUrlParseNodeSpread,
+  'no-unnecessary-url-format-spread': adaptedNoUnnecessaryUrlFormatSpread,
+  'no-unnecessary-url-resolve-spread': adaptedNoUnnecessaryUrlResolveSpread,
+  'no-unnecessary-url-domain-to-unicode-spread': adaptedNoUnnecessaryUrlDomainToUnicodeSpread,
+  'no-unnecessary-url-domain-to-ascii-spread': adaptedNoUnnecessaryUrlDomainToAsciiSpread,
+  'no-unnecessary-querystring-parse-spread': adaptedNoUnnecessaryQuerystringParseSpread,
+  'no-unnecessary-querystring-stringify-spread': adaptedNoUnnecessaryQuerystringStringifySpread,
+  'no-unnecessary-querystring-escape-spread': adaptedNoUnnecessaryQuerystringEscapeSpread,
+  'no-unnecessary-querystring-unescape-spread': adaptedNoUnnecessaryQuerystringUnescapeSpread,
+  'no-unnecessary-assert-ok-spread': adaptedNoUnnecessaryAssertOkSpread,
+  'no-unnecessary-assert-equal-spread': adaptedNoUnnecessaryAssertEqualSpread,
+  'no-unnecessary-assert-not-equal-spread': adaptedNoUnnecessaryAssertNotEqualSpread,
+  'no-unnecessary-assert-deep-equal-spread': adaptedNoUnnecessaryAssertDeepEqualSpread,
+  'no-unnecessary-assert-not-deep-equal-spread': adaptedNoUnnecessaryAssertNotDeepEqualSpread,
+  'no-unnecessary-assert-deep-strict-equal-spread': adaptedNoUnnecessaryAssertDeepStrictEqualSpread,
+  'no-unnecessary-assert-not-deep-strict-equal-spread': adaptedNoUnnecessaryAssertNotDeepStrictEqualSpread,
+  'no-unnecessary-assert-strict-equal-spread': adaptedNoUnnecessaryAssertStrictEqualSpread,
+  'no-unnecessary-assert-not-strict-equal-spread': adaptedNoUnnecessaryAssertNotStrictEqualSpread,
+  'no-unnecessary-assert-throws-spread': adaptedNoUnnecessaryAssertThrowsSpread,
+  'no-unnecessary-assert-rejects-spread': adaptedNoUnnecessaryAssertRejectsSpread,
+  'no-unnecessary-assert-does-not-throw-spread': adaptedNoUnnecessaryAssertDoesNotThrowSpread,
+  'no-unnecessary-assert-does-not-reject-spread': adaptedNoUnnecessaryAssertDoesNotRejectSpread,
+  'no-unnecessary-assert-if-error-spread': adaptedNoUnnecessaryAssertIfErrorSpread,
+  'no-unnecessary-assert-fail-spread': adaptedNoUnnecessaryAssertFailSpread,
+  'no-unnecessary-assert-match-spread': adaptedNoUnnecessaryAssertMatchSpread,
+  'no-unnecessary-assert-does-not-match-spread': adaptedNoUnnecessaryAssertDoesNotMatchSpread,
+  'no-unnecessary-assert-call-tracker-calls-spread': adaptedNoUnnecessaryAssertCallTrackerCallsSpread,
+  'no-unnecessary-promise-instance-then-spread': adaptedNoUnnecessaryPromiseInstanceThenSpread,
+  'no-unnecessary-promise-instance-catch-spread': adaptedNoUnnecessaryPromiseInstanceCatchSpread,
+  'no-unnecessary-promise-instance-finally-spread': adaptedNoUnnecessaryPromiseInstanceFinallySpread,
+  'no-unnecessary-intl-collator-compare-spread': adaptedNoUnnecessaryIntlCollatorCompareSpread,
+  'no-unnecessary-intl-number-format-format-spread': adaptedNoUnnecessaryIntlNumberFormatFormatSpread,
+  'no-unnecessary-intl-date-time-format-format-spread': adaptedNoUnnecessaryIntlDateTimeFormatFormatSpread,
+  'no-unnecessary-intl-list-format-format-spread': adaptedNoUnnecessaryIntlListFormatFormatSpread,
+  'no-unnecessary-intl-relative-time-format-spread': adaptedNoUnnecessaryIntlRelativeTimeFormatSpread,
+  'no-unnecessary-intl-plural-rules-spread': adaptedNoUnnecessaryIntlPluralRulesSpread,
+  'no-unnecessary-intl-segmenter-spread': adaptedNoUnnecessaryIntlSegmenterSpread,
+  'no-unnecessary-intl-display-names-spread': adaptedNoUnnecessaryIntlDisplayNamesSpread,
+  'no-unnecessary-iterator-next-spread': adaptedNoUnnecessaryIteratorNextSpread,
+  'no-unnecessary-iterator-return-spread': adaptedNoUnnecessaryIteratorReturnSpread,
+  'no-unnecessary-iterator-throw-spread': adaptedNoUnnecessaryIteratorThrowSpread,
+  'no-unnecessary-iterator-for-each-spread': adaptedNoUnnecessaryIteratorForEachSpread,
+  'no-unnecessary-iterator-map-spread': adaptedNoUnnecessaryIteratorMapSpread,
+  'no-unnecessary-iterator-filter-spread': adaptedNoUnnecessaryIteratorFilterSpread,
+  'no-unnecessary-iterator-take-spread': adaptedNoUnnecessaryIteratorTakeSpread,
+  'no-unnecessary-iterator-drop-spread': adaptedNoUnnecessaryIteratorDropSpread,
+  'no-unnecessary-iterator-flat-map-spread': adaptedNoUnnecessaryIteratorFlatMapSpread,
+  'no-unnecessary-iterator-reduce-spread': adaptedNoUnnecessaryIteratorReduceSpread,
+  'no-unnecessary-iterator-to-array-spread': adaptedNoUnnecessaryIteratorToArraySpread,
+  'no-unnecessary-iterator-some-spread': adaptedNoUnnecessaryIteratorSomeSpread,
+  'no-unnecessary-iterator-every-spread': adaptedNoUnnecessaryIteratorEverySpread,
+  'no-unnecessary-iterator-find-spread': adaptedNoUnnecessaryIteratorFindSpread,
+  'no-unnecessary-array-iterator-next-spread': adaptedNoUnnecessaryArrayIteratorNextSpread,
+  'no-unnecessary-map-iterator-next-spread': adaptedNoUnnecessaryMapIteratorNextSpread,
+  'no-unnecessary-set-iterator-next-spread': adaptedNoUnnecessarySetIteratorNextSpread,
+  'no-unnecessary-string-iterator-next-spread': adaptedNoUnnecessaryStringIteratorNextSpread,
+  'no-unnecessary-generator-next-spread': adaptedNoUnnecessaryGeneratorNextSpread,
+  'no-unnecessary-generator-return-spread': adaptedNoUnnecessaryGeneratorReturnSpread,
+  'no-unnecessary-generator-throw-spread': adaptedNoUnnecessaryGeneratorThrowSpread,
+  'no-unnecessary-async-generator-next-spread': adaptedNoUnnecessaryAsyncGeneratorNextSpread,
+  'no-unnecessary-async-generator-return-spread': adaptedNoUnnecessaryAsyncGeneratorReturnSpread,
+  'no-unnecessary-async-generator-throw-spread': adaptedNoUnnecessaryAsyncGeneratorThrowSpread,
+  'no-unnecessary-async-iterator-next-spread': adaptedNoUnnecessaryAsyncIteratorNextSpread,
+  'no-unnecessary-async-iterator-return-spread': adaptedNoUnnecessaryAsyncIteratorReturnSpread,
+  'no-unnecessary-async-iterator-throw-spread': adaptedNoUnnecessaryAsyncIteratorThrowSpread,
+  'no-unnecessary-response-instance-clone-spread': adaptedNoUnnecessaryResponseInstanceCloneSpread,
+  'no-unnecessary-response-instance-json-spread': adaptedNoUnnecessaryResponseInstanceJsonSpread,
+  'no-unnecessary-response-instance-text-spread': adaptedNoUnnecessaryResponseInstanceTextSpread,
+  'no-unnecessary-response-instance-blob-spread': adaptedNoUnnecessaryResponseInstanceBlobSpread,
+  'no-unnecessary-response-instance-array-buffer-spread': adaptedNoUnnecessaryResponseInstanceArrayBufferSpread,
+  'no-unnecessary-response-instance-form-data-spread': adaptedNoUnnecessaryResponseInstanceFormDataSpread,
+  'no-unnecessary-request-instance-clone-spread': adaptedNoUnnecessaryRequestInstanceCloneSpread,
+  'no-unnecessary-request-instance-json-spread': adaptedNoUnnecessaryRequestInstanceJsonSpread,
+  'no-unnecessary-request-instance-text-spread': adaptedNoUnnecessaryRequestInstanceTextSpread,
+  'no-unnecessary-request-instance-blob-spread': adaptedNoUnnecessaryRequestInstanceBlobSpread,
+  'no-unnecessary-request-instance-array-buffer-spread': adaptedNoUnnecessaryRequestInstanceArrayBufferSpread,
+  'no-unnecessary-request-instance-form-data-spread': adaptedNoUnnecessaryRequestInstanceFormDataSpread,
+  'no-unnecessary-headers-instance-get-spread': adaptedNoUnnecessaryHeadersInstanceGetSpread,
+  'no-unnecessary-headers-instance-set-spread': adaptedNoUnnecessaryHeadersInstanceSetSpread,
+  'no-unnecessary-headers-instance-has-spread': adaptedNoUnnecessaryHeadersInstanceHasSpread,
+  'no-unnecessary-headers-instance-delete-spread': adaptedNoUnnecessaryHeadersInstanceDeleteSpread,
+  'no-unnecessary-headers-instance-append-spread': adaptedNoUnnecessaryHeadersInstanceAppendSpread,
+  'no-unnecessary-headers-instance-entries-spread': adaptedNoUnnecessaryHeadersInstanceEntriesSpread,
+  'no-unnecessary-headers-instance-keys-spread': adaptedNoUnnecessaryHeadersInstanceKeysSpread,
+  'no-unnecessary-headers-instance-values-spread': adaptedNoUnnecessaryHeadersInstanceValuesSpread,
+  'no-unnecessary-headers-instance-for-each-spread': adaptedNoUnnecessaryHeadersInstanceForEachSpread,
+  'no-unnecessary-form-data-instance-get-spread': adaptedNoUnnecessaryFormDataInstanceGetSpread,
+  'no-unnecessary-form-data-instance-get-all-spread': adaptedNoUnnecessaryFormDataInstanceGetAllSpread,
+  'no-unnecessary-form-data-instance-set-spread': adaptedNoUnnecessaryFormDataInstanceSetSpread,
+  'no-unnecessary-form-data-instance-append-spread': adaptedNoUnnecessaryFormDataInstanceAppendSpread,
+  'no-unnecessary-form-data-instance-delete-spread': adaptedNoUnnecessaryFormDataInstanceDeleteSpread,
+  'no-unnecessary-form-data-instance-has-spread': adaptedNoUnnecessaryFormDataInstanceHasSpread,
+  'no-unnecessary-form-data-instance-entries-spread': adaptedNoUnnecessaryFormDataInstanceEntriesSpread,
+  'no-unnecessary-form-data-instance-keys-spread': adaptedNoUnnecessaryFormDataInstanceKeysSpread,
+  'no-unnecessary-form-data-instance-values-spread': adaptedNoUnnecessaryFormDataInstanceValuesSpread,
+  'no-unnecessary-form-data-instance-for-each-spread': adaptedNoUnnecessaryFormDataInstanceForEachSpread,
+  'no-unnecessary-url-instance-to-string-spread': adaptedNoUnnecessaryUrlInstanceToStringSpread,
+  'no-unnecessary-url-instance-to-json-spread': adaptedNoUnnecessaryUrlInstanceToJsonSpread,
+  'no-unnecessary-url-search-params-instance-get-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceGetSpread,
+  'no-unnecessary-url-search-params-instance-get-all-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceGetAllSpread,
+  'no-unnecessary-url-search-params-instance-set-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceSetSpread,
+  'no-unnecessary-url-search-params-instance-append-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceAppendSpread,
+  'no-unnecessary-url-search-params-instance-delete-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceDeleteSpread,
+  'no-unnecessary-url-search-params-instance-has-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceHasSpread,
+  'no-unnecessary-url-search-params-instance-to-string-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceToStringSpread,
+  'no-unnecessary-url-search-params-instance-entries-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceEntriesSpread,
+  'no-unnecessary-url-search-params-instance-keys-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceKeysSpread,
+  'no-unnecessary-url-search-params-instance-values-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceValuesSpread,
+  'no-unnecessary-url-search-params-instance-for-each-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceForEachSpread,
+  'no-unnecessary-url-search-params-instance-sort-spread': adaptedNoUnnecessaryUrlSearchParamsInstanceSortSpread,
+  'no-unnecessary-blob-instance-array-buffer-spread': adaptedNoUnnecessaryBlobInstanceArrayBufferSpread,
+  'no-unnecessary-blob-instance-text-spread': adaptedNoUnnecessaryBlobInstanceTextSpread,
+  'no-unnecessary-blob-instance-slice-spread': adaptedNoUnnecessaryBlobInstanceSliceSpread,
+  'no-unnecessary-blob-instance-stream-spread': adaptedNoUnnecessaryBlobInstanceStreamSpread,
+  'no-unnecessary-file-instance-array-buffer-spread': adaptedNoUnnecessaryFileInstanceArrayBufferSpread,
+  'no-unnecessary-file-instance-text-spread': adaptedNoUnnecessaryFileInstanceTextSpread,
+  'no-unnecessary-file-instance-slice-spread': adaptedNoUnnecessaryFileInstanceSliceSpread,
+  'no-unnecessary-file-instance-stream-spread': adaptedNoUnnecessaryFileInstanceStreamSpread,
+  'no-unnecessary-abort-signal-throw-if-aborted-spread': adaptedNoUnnecessaryAbortSignalThrowIfAbortedSpread,
+  'no-unnecessary-broadcast-channel-instance-post-message-spread': adaptedNoUnnecessaryBroadcastChannelInstancePostMessageSpread,
+  'no-unnecessary-broadcast-channel-instance-close-spread': adaptedNoUnnecessaryBroadcastChannelInstanceCloseSpread,
+  'no-unnecessary-message-port-post-message-spread': adaptedNoUnnecessaryMessagePortPostMessageSpread,
+  'no-unnecessary-message-port-close-spread': adaptedNoUnnecessaryMessagePortCloseSpread,
+  'no-unnecessary-message-port-start-spread': adaptedNoUnnecessaryMessagePortStartSpread,
+  'no-unnecessary-worker-instance-post-message-spread': adaptedNoUnnecessaryWorkerInstancePostMessageSpread,
+  'no-unnecessary-worker-instance-terminate-spread': adaptedNoUnnecessaryWorkerInstanceTerminateSpread,
+  'no-unnecessary-file-reader-instance-read-as-array-buffer-spread': adaptedNoUnnecessaryFileReaderInstanceReadAsArrayBufferSpread,
+  'no-unnecessary-file-reader-instance-read-as-binary-string-spread': adaptedNoUnnecessaryFileReaderInstanceReadAsBinaryStringSpread,
+  'no-unnecessary-file-reader-instance-read-as-data-url-spread': adaptedNoUnnecessaryFileReaderInstanceReadAsDataUrlSpread,
+  'no-unnecessary-file-reader-instance-read-as-text-spread': adaptedNoUnnecessaryFileReaderInstanceReadAsTextSpread,
+  'no-unnecessary-file-reader-instance-abort-spread': adaptedNoUnnecessaryFileReaderInstanceAbortSpread,
+  'no-unnecessary-readable-stream-read-spread': adaptedNoUnnecessaryReadableStreamReadSpread,
+  'no-unnecessary-readable-stream-pipe-spread': adaptedNoUnnecessaryReadableStreamPipeSpread,
+  'no-unnecessary-readable-stream-unpipe-spread': adaptedNoUnnecessaryReadableStreamUnpipeSpread,
+  'no-unnecessary-readable-stream-pause-spread': adaptedNoUnnecessaryReadableStreamPauseSpread,
+  'no-unnecessary-readable-stream-resume-spread': adaptedNoUnnecessaryReadableStreamResumeSpread,
+  'no-unnecessary-readable-stream-destroy-spread': adaptedNoUnnecessaryReadableStreamDestroySpread,
+  'no-unnecessary-readable-stream-push-spread': adaptedNoUnnecessaryReadableStreamPushSpread,
+  'no-unnecessary-writable-stream-write-spread': adaptedNoUnnecessaryWritableStreamWriteSpread,
+  'no-unnecessary-writable-stream-end-spread': adaptedNoUnnecessaryWritableStreamEndSpread,
+  'no-unnecessary-writable-stream-destroy-spread': adaptedNoUnnecessaryWritableStreamDestroySpread,
+  'no-unnecessary-transform-stream-transform-spread': adaptedNoUnnecessaryTransformStreamTransformSpread,
+  'no-unnecessary-transform-stream-flush-spread': adaptedNoUnnecessaryTransformStreamFlushSpread,
+  'no-unnecessary-event-emitter-add-listener-spread': adaptedNoUnnecessaryEventEmitterAddListenerSpread,
+  'no-unnecessary-child-process-instance-kill-spread': adaptedNoUnnecessaryChildProcessInstanceKillSpread,
+  'no-unnecessary-child-process-instance-send-spread': adaptedNoUnnecessaryChildProcessInstanceSendSpread,
+  'no-unnecessary-child-process-instance-disconnect-spread': adaptedNoUnnecessaryChildProcessInstanceDisconnectSpread,
+  'no-unnecessary-child-process-instance-ref-spread': adaptedNoUnnecessaryChildProcessInstanceRefSpread,
+  'no-unnecessary-child-process-instance-unref-spread': adaptedNoUnnecessaryChildProcessInstanceUnrefSpread,
+  'no-unnecessary-observer-instance-observe-spread': adaptedNoUnnecessaryObserverInstanceObserveSpread,
+  'no-unnecessary-observer-instance-unobserve-spread': adaptedNoUnnecessaryObserverInstanceUnobserveSpread,
+  'no-unnecessary-observer-instance-disconnect-spread': adaptedNoUnnecessaryObserverInstanceDisconnectSpread,
+  'no-unnecessary-observer-instance-take-records-spread': adaptedNoUnnecessaryObserverInstanceTakeRecordsSpread,
+  'no-unnecessary-text-decoder-instance-decode-spread': adaptedNoUnnecessaryTextDecoderInstanceDecodeSpread,
+  'no-unnecessary-text-encoder-instance-encode-spread': adaptedNoUnnecessaryTextEncoderInstanceEncodeSpread,
+  'no-unnecessary-text-encoder-instance-encode-into-spread': adaptedNoUnnecessaryTextEncoderInstanceEncodeIntoSpread,
+  'no-unnecessary-server-listen-spread': adaptedNoUnnecessaryServerListenSpread,
+  'no-unnecessary-server-close-spread': adaptedNoUnnecessaryServerCloseSpread,
+  'no-unnecessary-server-address-spread': adaptedNoUnnecessaryServerAddressSpread,
+  'no-unnecessary-server-get-connections-spread': adaptedNoUnnecessaryServerGetConnectionsSpread,
+  'no-unnecessary-server-ref-spread': adaptedNoUnnecessaryServerRefSpread,
+  'no-unnecessary-server-unref-spread': adaptedNoUnnecessaryServerUnrefSpread,
+  'no-unnecessary-socket-write-spread': adaptedNoUnnecessarySocketWriteSpread,
+  'no-unnecessary-socket-connect-spread': adaptedNoUnnecessarySocketConnectSpread,
+  'no-unnecessary-socket-end-spread': adaptedNoUnnecessarySocketEndSpread,
+  'no-unnecessary-socket-destroy-spread': adaptedNoUnnecessarySocketDestroySpread,
+  'no-unnecessary-socket-pause-spread': adaptedNoUnnecessarySocketPauseSpread,
+  'no-unnecessary-socket-resume-spread': adaptedNoUnnecessarySocketResumeSpread,
+  'no-unnecessary-socket-set-timeout-spread': adaptedNoUnnecessarySocketSetTimeoutSpread,
+  'no-unnecessary-socket-set-encoding-spread': adaptedNoUnnecessarySocketSetEncodingSpread,
+  'no-unnecessary-socket-set-keep-alive-spread': adaptedNoUnnecessarySocketSetKeepAliveSpread,
+  'no-unnecessary-socket-set-no-delay-spread': adaptedNoUnnecessarySocketSetNoDelaySpread,
+  'no-unnecessary-socket-ref-spread': adaptedNoUnnecessarySocketRefSpread,
+  'no-unnecessary-socket-unref-spread': adaptedNoUnnecessarySocketUnrefSpread,
+  'no-unnecessary-dataview-set-float32-spread': adaptedNoUnnecessaryDataviewSetFloat32Spread,
+  'no-unnecessary-dataview-set-float64-spread': adaptedNoUnnecessaryDataviewSetFloat64Spread,
+  'no-unnecessary-dataview-set-int16-spread': adaptedNoUnnecessaryDataviewSetInt16Spread,
+  'no-unnecessary-dataview-set-int32-spread': adaptedNoUnnecessaryDataviewSetInt32Spread,
+  'no-unnecessary-dataview-set-int8-spread': adaptedNoUnnecessaryDataviewSetInt8Spread,
+  'no-unnecessary-dataview-set-uint16-spread': adaptedNoUnnecessaryDataviewSetUint16Spread,
+  'no-unnecessary-dataview-set-uint32-spread': adaptedNoUnnecessaryDataviewSetUint32Spread,
+  'no-unnecessary-dataview-set-uint8-spread': adaptedNoUnnecessaryDataviewSetUint8Spread,
+  'no-unnecessary-array-buffer-instance-resize-spread': adaptedNoUnnecessaryArrayBufferInstanceResizeSpread,
+  'no-unnecessary-array-buffer-instance-slice-spread': adaptedNoUnnecessaryArrayBufferInstanceSliceSpread,
+  'no-unnecessary-array-buffer-instance-transfer-spread': adaptedNoUnnecessaryArrayBufferInstanceTransferSpread,
+  'no-unnecessary-array-from-async-spread': adaptedNoUnnecessaryArrayFromAsyncSpread,
+  'no-unnecessary-array-is-array-spread': adaptedNoUnnecessaryArrayIsArraySpread,
+  'no-unnecessary-big-int-instance-to-locale-string-spread': adaptedNoUnnecessaryBigIntInstanceToLocaleStringSpread,
+  'no-unnecessary-big-int-instance-to-string-spread': adaptedNoUnnecessaryBigIntInstanceToStringSpread,
+  'no-unnecessary-big-int-instance-value-of-spread': adaptedNoUnnecessaryBigIntInstanceValueOfSpread,
+  'no-unnecessary-boolean-instance-to-string-spread': adaptedNoUnnecessaryBooleanInstanceToStringSpread,
+  'no-unnecessary-boolean-instance-value-of-spread': adaptedNoUnnecessaryBooleanInstanceValueOfSpread,
+  'no-unnecessary-canvas-get-context-spread': adaptedNoUnnecessaryCanvasGetContextSpread,
+  'no-unnecessary-crypto-cipher-instance-final-spread': adaptedNoUnnecessaryCryptoCipherInstanceFinalSpread,
+  'no-unnecessary-crypto-cipher-instance-update-spread': adaptedNoUnnecessaryCryptoCipherInstanceUpdateSpread,
+  'no-unnecessary-crypto-create-hash-instance-digest-spread': adaptedNoUnnecessaryCryptoCreateHashInstanceDigestSpread,
+  'no-unnecessary-crypto-create-hash-instance-update-spread': adaptedNoUnnecessaryCryptoCreateHashInstanceUpdateSpread,
+  'no-unnecessary-crypto-decipher-instance-final-spread': adaptedNoUnnecessaryCryptoDecipherInstanceFinalSpread,
+  'no-unnecessary-crypto-decipher-instance-update-spread': adaptedNoUnnecessaryCryptoDecipherInstanceUpdateSpread,
+  'no-unnecessary-crypto-hmac-instance-digest-spread': adaptedNoUnnecessaryCryptoHmacInstanceDigestSpread,
+  'no-unnecessary-crypto-hmac-instance-update-spread': adaptedNoUnnecessaryCryptoHmacInstanceUpdateSpread,
+  'no-unnecessary-crypto-sign-instance-sign-spread': adaptedNoUnnecessaryCryptoSignInstanceSignSpread,
+  'no-unnecessary-crypto-sign-instance-update-spread': adaptedNoUnnecessaryCryptoSignInstanceUpdateSpread,
+  'no-unnecessary-crypto-verify-instance-update-spread': adaptedNoUnnecessaryCryptoVerifyInstanceUpdateSpread,
+  'no-unnecessary-crypto-verify-instance-verify-spread': adaptedNoUnnecessaryCryptoVerifyInstanceVerifySpread,
+  'no-unnecessary-ctx-arc-spread': adaptedNoUnnecessaryCtxArcSpread,
+  'no-unnecessary-ctx-arc-to-spread': adaptedNoUnnecessaryCtxArcToSpread,
+  'no-unnecessary-ctx-begin-path-spread': adaptedNoUnnecessaryCtxBeginPathSpread,
+  'no-unnecessary-ctx-bezier-curve-to-spread': adaptedNoUnnecessaryCtxBezierCurveToSpread,
+  'no-unnecessary-ctx-clear-rect-spread': adaptedNoUnnecessaryCtxClearRectSpread,
+  'no-unnecessary-ctx-clip-spread': adaptedNoUnnecessaryCtxClipSpread,
+  'no-unnecessary-ctx-close-path-spread': adaptedNoUnnecessaryCtxClosePathSpread,
+  'no-unnecessary-ctx-create-linear-gradient-spread': adaptedNoUnnecessaryCtxCreateLinearGradientSpread,
+  'no-unnecessary-ctx-create-pattern-spread': adaptedNoUnnecessaryCtxCreatePatternSpread,
+  'no-unnecessary-ctx-create-radial-gradient-spread': adaptedNoUnnecessaryCtxCreateRadialGradientSpread,
+  'no-unnecessary-ctx-draw-image-spread': adaptedNoUnnecessaryCtxDrawImageSpread,
+  'no-unnecessary-ctx-fill-rect-spread': adaptedNoUnnecessaryCtxFillRectSpread,
+  'no-unnecessary-ctx-fill-spread': adaptedNoUnnecessaryCtxFillSpread,
+  'no-unnecessary-ctx-fill-text-spread': adaptedNoUnnecessaryCtxFillTextSpread,
+  'no-unnecessary-ctx-get-image-data-spread': adaptedNoUnnecessaryCtxGetImageDataSpread,
+  'no-unnecessary-ctx-get-line-dash-spread': adaptedNoUnnecessaryCtxGetLineDashSpread,
+  'no-unnecessary-ctx-line-to-spread': adaptedNoUnnecessaryCtxLineToSpread,
+  'no-unnecessary-ctx-measure-text-spread': adaptedNoUnnecessaryCtxMeasureTextSpread,
+  'no-unnecessary-ctx-move-to-spread': adaptedNoUnnecessaryCtxMoveToSpread,
+  'no-unnecessary-ctx-put-image-data-spread': adaptedNoUnnecessaryCtxPutImageDataSpread,
+  'no-unnecessary-ctx-quadratic-curve-to-spread': adaptedNoUnnecessaryCtxQuadraticCurveToSpread,
+  'no-unnecessary-ctx-reset-transform-spread': adaptedNoUnnecessaryCtxResetTransformSpread,
+  'no-unnecessary-ctx-restore-spread': adaptedNoUnnecessaryCtxRestoreSpread,
+  'no-unnecessary-ctx-rotate-spread': adaptedNoUnnecessaryCtxRotateSpread,
+  'no-unnecessary-ctx-save-spread': adaptedNoUnnecessaryCtxSaveSpread,
+  'no-unnecessary-ctx-scale-spread': adaptedNoUnnecessaryCtxScaleSpread,
+  'no-unnecessary-ctx-set-line-dash-spread': adaptedNoUnnecessaryCtxSetLineDashSpread,
+  'no-unnecessary-ctx-set-transform-spread': adaptedNoUnnecessaryCtxSetTransformSpread,
+  'no-unnecessary-ctx-stroke-rect-spread': adaptedNoUnnecessaryCtxStrokeRectSpread,
+  'no-unnecessary-ctx-stroke-spread': adaptedNoUnnecessaryCtxStrokeSpread,
+  'no-unnecessary-ctx-stroke-text-spread': adaptedNoUnnecessaryCtxStrokeTextSpread,
+  'no-unnecessary-ctx-transform-spread': adaptedNoUnnecessaryCtxTransformSpread,
+  'no-unnecessary-ctx-translate-spread': adaptedNoUnnecessaryCtxTranslateSpread,
+  'no-unnecessary-dataview-instance-get-big-int64-spread': adaptedNoUnnecessaryDataviewInstanceGetBigInt64Spread,
+  'no-unnecessary-dataview-instance-get-big-uint64-spread': adaptedNoUnnecessaryDataviewInstanceGetBigUint64Spread,
+  'no-unnecessary-dataview-instance-get-float32-spread': adaptedNoUnnecessaryDataviewInstanceGetFloat32Spread,
+  'no-unnecessary-dataview-instance-get-float64-spread': adaptedNoUnnecessaryDataviewInstanceGetFloat64Spread,
+  'no-unnecessary-dataview-instance-get-int16-spread': adaptedNoUnnecessaryDataviewInstanceGetInt16Spread,
+  'no-unnecessary-dataview-instance-get-int32-spread': adaptedNoUnnecessaryDataviewInstanceGetInt32Spread,
+  'no-unnecessary-dataview-instance-get-int8-spread': adaptedNoUnnecessaryDataviewInstanceGetInt8Spread,
+  'no-unnecessary-dataview-instance-get-uint16-spread': adaptedNoUnnecessaryDataviewInstanceGetUint16Spread,
+  'no-unnecessary-dataview-instance-get-uint32-spread': adaptedNoUnnecessaryDataviewInstanceGetUint32Spread,
+  'no-unnecessary-dataview-instance-get-uint8-spread': adaptedNoUnnecessaryDataviewInstanceGetUint8Spread,
+  'no-unnecessary-dataview-instance-set-big-int64-spread': adaptedNoUnnecessaryDataviewInstanceSetBigInt64Spread,
+  'no-unnecessary-dataview-instance-set-big-uint64-spread': adaptedNoUnnecessaryDataviewInstanceSetBigUint64Spread,
+  'no-unnecessary-dataview-instance-set-float32-spread': adaptedNoUnnecessaryDataviewInstanceSetFloat32Spread,
+  'no-unnecessary-dataview-instance-set-float64-spread': adaptedNoUnnecessaryDataviewInstanceSetFloat64Spread,
+  'no-unnecessary-dataview-instance-set-int16-spread': adaptedNoUnnecessaryDataviewInstanceSetInt16Spread,
+  'no-unnecessary-dataview-instance-set-int32-spread': adaptedNoUnnecessaryDataviewInstanceSetInt32Spread,
+  'no-unnecessary-dataview-instance-set-int8-spread': adaptedNoUnnecessaryDataviewInstanceSetInt8Spread,
+  'no-unnecessary-dataview-instance-set-uint16-spread': adaptedNoUnnecessaryDataviewInstanceSetUint16Spread,
+  'no-unnecessary-dataview-instance-set-uint32-spread': adaptedNoUnnecessaryDataviewInstanceSetUint32Spread,
+  'no-unnecessary-dataview-instance-set-uint8-spread': adaptedNoUnnecessaryDataviewInstanceSetUint8Spread,
+  'no-unnecessary-date-instance-get-time-spread': adaptedNoUnnecessaryDateInstanceGetTimeSpread,
+  'no-unnecessary-date-instance-set-time-spread': adaptedNoUnnecessaryDateInstanceSetTimeSpread,
+  'no-unnecessary-date-instance-to-json-spread': adaptedNoUnnecessaryDateInstanceToJsonSpread,
+  'no-unnecessary-date-instance-value-of-spread': adaptedNoUnnecessaryDateInstanceValueOfSpread,
+  'no-unnecessary-dns-get-servers-spread': adaptedNoUnnecessaryDnsGetServersSpread,
+  'no-unnecessary-dns-lookup-spread': adaptedNoUnnecessaryDnsLookupSpread,
+  'no-unnecessary-dns-resolve-4-spread': adaptedNoUnnecessaryDnsResolve4Spread,
+  'no-unnecessary-dns-resolve-6-spread': adaptedNoUnnecessaryDnsResolve6Spread,
+  'no-unnecessary-dns-resolve-any-spread': adaptedNoUnnecessaryDnsResolveAnySpread,
+  'no-unnecessary-dns-resolve-cname-spread': adaptedNoUnnecessaryDnsResolveCnameSpread,
+  'no-unnecessary-dns-resolve-mx-spread': adaptedNoUnnecessaryDnsResolveMxSpread,
+  'no-unnecessary-dns-resolve-ns-spread': adaptedNoUnnecessaryDnsResolveNsSpread,
+  'no-unnecessary-dns-resolve-ptr-spread': adaptedNoUnnecessaryDnsResolvePtrSpread,
+  'no-unnecessary-dns-resolve-spread': adaptedNoUnnecessaryDnsResolveSpread,
+  'no-unnecessary-dns-resolve-srv-spread': adaptedNoUnnecessaryDnsResolveSrvSpread,
+  'no-unnecessary-dns-resolve-txt-spread': adaptedNoUnnecessaryDnsResolveTxtSpread,
+  'no-unnecessary-dns-reverse-spread': adaptedNoUnnecessaryDnsReverseSpread,
+  'no-unnecessary-dns-set-servers-spread': adaptedNoUnnecessaryDnsSetServersSpread,
+  'no-unnecessary-error-instance-to-string-spread': adaptedNoUnnecessaryErrorInstanceToStringSpread,
+  'no-unnecessary-finalization-registry-instance-register-spread': adaptedNoUnnecessaryFinalizationRegistryInstanceRegisterSpread,
+  'no-unnecessary-finalization-registry-instance-unregister-spread': adaptedNoUnnecessaryFinalizationRegistryInstanceUnregisterSpread,
+  'no-unnecessary-gl-attach-shader-spread': adaptedNoUnnecessaryGlAttachShaderSpread,
+  'no-unnecessary-gl-bind-buffer-spread': adaptedNoUnnecessaryGlBindBufferSpread,
+  'no-unnecessary-gl-blend-func-spread': adaptedNoUnnecessaryGlBlendFuncSpread,
+  'no-unnecessary-gl-buffer-data-spread': adaptedNoUnnecessaryGlBufferDataSpread,
+  'no-unnecessary-gl-clear-color-spread': adaptedNoUnnecessaryGlClearColorSpread,
+  'no-unnecessary-gl-clear-spread': adaptedNoUnnecessaryGlClearSpread,
+  'no-unnecessary-gl-compile-shader-spread': adaptedNoUnnecessaryGlCompileShaderSpread,
+  'no-unnecessary-gl-create-buffer-spread': adaptedNoUnnecessaryGlCreateBufferSpread,
+  'no-unnecessary-gl-create-program-spread': adaptedNoUnnecessaryGlCreateProgramSpread,
+  'no-unnecessary-gl-create-shader-spread': adaptedNoUnnecessaryGlCreateShaderSpread,
+  'no-unnecessary-gl-depth-func-spread': adaptedNoUnnecessaryGlDepthFuncSpread,
+  'no-unnecessary-gl-disable-spread': adaptedNoUnnecessaryGlDisableSpread,
+  'no-unnecessary-gl-draw-arrays-spread': adaptedNoUnnecessaryGlDrawArraysSpread,
+  'no-unnecessary-gl-draw-elements-spread': adaptedNoUnnecessaryGlDrawElementsSpread,
+  'no-unnecessary-gl-enable-spread': adaptedNoUnnecessaryGlEnableSpread,
+  'no-unnecessary-gl-enable-vertex-attrib-array-spread': adaptedNoUnnecessaryGlEnableVertexAttribArraySpread,
+  'no-unnecessary-gl-get-attrib-location-spread': adaptedNoUnnecessaryGlGetAttribLocationSpread,
+  'no-unnecessary-gl-get-uniform-location-spread': adaptedNoUnnecessaryGlGetUniformLocationSpread,
+  'no-unnecessary-gl-link-program-spread': adaptedNoUnnecessaryGlLinkProgramSpread,
+  'no-unnecessary-gl-shader-source-spread': adaptedNoUnnecessaryGlShaderSourceSpread,
+  'no-unnecessary-gl-use-program-spread': adaptedNoUnnecessaryGlUseProgramSpread,
+  'no-unnecessary-gl-vertex-attrib-pointer-spread': adaptedNoUnnecessaryGlVertexAttribPointerSpread,
+  'no-unnecessary-gl-viewport-spread': adaptedNoUnnecessaryGlViewportSpread,
+  'no-unnecessary-math-clamp-spread': adaptedNoUnnecessaryMathClampSpread,
+  'no-unnecessary-math-scale-spread': adaptedNoUnnecessaryMathScaleSpread,
+  'no-unnecessary-math-expm1-spread': adaptedNoUnnecessaryMathExpm1Spread,
+  'no-unnecessary-math-log1p-spread': adaptedNoUnnecessaryMathLog1pSpread,
+  'no-unnecessary-math-sinh-spread': adaptedNoUnnecessaryMathSinhSpread,
+  'no-unnecessary-math-cosh-spread': adaptedNoUnnecessaryMathCoshSpread,
+  'no-unnecessary-math-tanh-spread': adaptedNoUnnecessaryMathTanhSpread,
+  'no-unnecessary-net-connect-spread': adaptedNoUnnecessaryNetConnectSpread,
+  'no-unnecessary-net-create-connection-spread': adaptedNoUnnecessaryNetCreateConnectionSpread,
+  'no-unnecessary-net-create-server-spread': adaptedNoUnnecessaryNetCreateServerSpread,
+  'no-unnecessary-number-instance-to-exponential-spread': adaptedNoUnnecessaryNumberInstanceToExponentialSpread,
+  'no-unnecessary-number-instance-to-fixed-spread': adaptedNoUnnecessaryNumberInstanceToFixedSpread,
+  'no-unnecessary-number-instance-to-locale-string-spread': adaptedNoUnnecessaryNumberInstanceToLocaleStringSpread,
+  'no-unnecessary-number-instance-to-precision-spread': adaptedNoUnnecessaryNumberInstanceToPrecisionSpread,
+  'no-unnecessary-number-instance-to-string-spread': adaptedNoUnnecessaryNumberInstanceToStringSpread,
+  'no-unnecessary-number-instance-value-of-spread': adaptedNoUnnecessaryNumberInstanceValueOfSpread,
+  'no-unnecessary-object-has-own-property-spread': adaptedNoUnnecessaryObjectHasOwnPropertySpread,
+  'no-unnecessary-object-is-prototype-of-spread': adaptedNoUnnecessaryObjectIsPrototypeOfSpread,
+  'no-unnecessary-object-property-is-enumerable-spread': adaptedNoUnnecessaryObjectPropertyIsEnumerableSpread,
+  'no-unnecessary-object-to-locale-string-spread': adaptedNoUnnecessaryObjectToLocaleStringSpread,
+  'no-unnecessary-object-to-string-spread': adaptedNoUnnecessaryObjectToStringSpread,
+  'no-unnecessary-object-value-of-spread': adaptedNoUnnecessaryObjectValueOfSpread,
+  'no-unnecessary-promise-resolve-spread': adaptedNoUnnecessaryPromiseResolveSpread,
+  'no-unnecessary-promise-with-resolvers-spread': adaptedNoUnnecessaryPromiseWithResolversSpread,
+  'no-unnecessary-readline-close-spread': adaptedNoUnnecessaryReadlineCloseSpread,
+  'no-unnecessary-readline-create-interface-spread': adaptedNoUnnecessaryReadlineCreateInterfaceSpread,
+  'no-unnecessary-readline-prompt-spread': adaptedNoUnnecessaryReadlinePromptSpread,
+  'no-unnecessary-readline-question-spread': adaptedNoUnnecessaryReadlineQuestionSpread,
+  'no-unnecessary-readline-write-spread': adaptedNoUnnecessaryReadlineWriteSpread,
+  'no-unnecessary-regexp-instance-exec-spread': adaptedNoUnnecessaryRegexpInstanceExecSpread,
+  'no-unnecessary-regexp-instance-test-spread': adaptedNoUnnecessaryRegexpInstanceTestSpread,
+  'no-unnecessary-regexp-instance-to-string-spread': adaptedNoUnnecessaryRegexpInstanceToStringSpread,
+  'no-unnecessary-shared-array-buffer-instance-grow-spread': adaptedNoUnnecessarySharedArrayBufferInstanceGrowSpread,
+  'no-unnecessary-shared-array-buffer-instance-slice-spread': adaptedNoUnnecessarySharedArrayBufferInstanceSliceSpread,
+  'no-unnecessary-stderr-end-spread': adaptedNoUnnecessaryStderrEndSpread,
+  'no-unnecessary-stderr-write-spread': adaptedNoUnnecessaryStderrWriteSpread,
+  'no-unnecessary-stdin-pipe-spread': adaptedNoUnnecessaryStdinPipeSpread,
+  'no-unnecessary-stdin-push-spread': adaptedNoUnnecessaryStdinPushSpread,
+  'no-unnecessary-stdin-read-spread': adaptedNoUnnecessaryStdinReadSpread,
+  'no-unnecessary-stdout-end-spread': adaptedNoUnnecessaryStdoutEndSpread,
+  'no-unnecessary-stdout-write-spread': adaptedNoUnnecessaryStdoutWriteSpread,
+  'no-unnecessary-symbol-instance-description-spread': adaptedNoUnnecessarySymbolInstanceDescriptionSpread,
+  'no-unnecessary-symbol-instance-to-string-spread': adaptedNoUnnecessarySymbolInstanceToStringSpread,
+  'no-unnecessary-symbol-instance-value-of-spread': adaptedNoUnnecessarySymbolInstanceValueOfSpread,
+  'no-unnecessary-weak-ref-instance-deref-spread': adaptedNoUnnecessaryWeakRefInstanceDerefSpread,
+  'no-unnecessary-zlib-brotli-compress-spread': adaptedNoUnnecessaryZlibBrotliCompressSpread,
+  'no-unnecessary-zlib-brotli-compress-sync-spread': adaptedNoUnnecessaryZlibBrotliCompressSyncSpread,
+  'no-unnecessary-zlib-brotli-decompress-spread': adaptedNoUnnecessaryZlibBrotliDecompressSpread,
+  'no-unnecessary-zlib-brotli-decompress-sync-spread': adaptedNoUnnecessaryZlibBrotliDecompressSyncSpread,
+  'no-unnecessary-zlib-deflate-spread': adaptedNoUnnecessaryZlibDeflateSpread,
+  'no-unnecessary-zlib-deflate-sync-spread': adaptedNoUnnecessaryZlibDeflateSyncSpread,
+  'no-unnecessary-zlib-gunzip-spread': adaptedNoUnnecessaryZlibGunzipSpread,
+  'no-unnecessary-zlib-gunzip-sync-spread': adaptedNoUnnecessaryZlibGunzipSyncSpread,
+  'no-unnecessary-zlib-gzip-spread': adaptedNoUnnecessaryZlibGzipSpread,
+  'no-unnecessary-zlib-gzip-sync-spread': adaptedNoUnnecessaryZlibGzipSyncSpread,
+  'no-unnecessary-zlib-inflate-spread': adaptedNoUnnecessaryZlibInflateSpread,
+  'no-unnecessary-zlib-inflate-sync-spread': adaptedNoUnnecessaryZlibInflateSyncSpread,
   'no-unnecessary-function-call-spread': adaptedNoUnnecessaryFunctionCallSpread,
   'no-unnecessary-function-apply-spread': adaptedNoUnnecessaryFunctionApplySpread,
   'no-unnecessary-function-bind-spread': adaptedNoUnnecessaryFunctionBindSpread,
   'no-unnecessary-function-to-string-spread': adaptedNoUnnecessaryFunctionToStringSpread,
-  'no-unnecessary-date-to-json-spread': adaptedNoUnnecessaryDateToJsonSpread,
   'no-unnecessary-date-to-gmt-string-spread': adaptedNoUnnecessaryDateToGmtStringSpread,
   'no-unnecessary-object-group-by-spread': adaptedNoUnnecessaryObjectGroupBySpread,
   'no-unnecessary-array-buffer-slice-spread': adaptedNoUnnecessaryArrayBufferSliceSpread,
   'no-unnecessary-promise-try-spread': adaptedNoUnnecessaryPromiseTrySpread,
-  'no-unnecessary-object-define-property-spread': adaptedNoUnnecessaryObjectDefinePropertySpread,
-  'no-unnecessary-object-define-properties-spread': adaptedNoUnnecessaryObjectDefinePropertiesSpread,
-  'no-unnecessary-object-prevent-extensions-spread': adaptedNoUnnecessaryObjectPreventExtensionsSpread,
-  'no-unnecessary-object-get-prototype-of-spread': adaptedNoUnnecessaryObjectGetPrototypeOfSpread,
-  'no-unnecessary-object-get-own-property-names-spread': adaptedNoUnnecessaryObjectGetOwnPropertyNamesSpread,
-  'no-unnecessary-object-get-own-property-symbols-spread': adaptedNoUnnecessaryObjectGetOwnPropertySymbolsSpread,
-  'no-unnecessary-object-get-own-property-descriptor-spread': adaptedNoUnnecessaryObjectGetOwnPropertyDescriptorSpread,
-  'no-unnecessary-object-is-frozen-spread': adaptedNoUnnecessaryObjectIsFrozenSpread,
-  'no-unnecessary-object-is-sealed-spread': adaptedNoUnnecessaryObjectIsSealedSpread,
-  'no-unnecessary-object-is-extensible-spread': adaptedNoUnnecessaryObjectIsExtensibleSpread,
   'no-unnecessary-object-from-entries-spread': adaptedNoUnnecessaryObjectFromEntriesSpread,
   'no-unnecessary-error-to-string-spread': adaptedNoUnnecessaryErrorToStringSpread,
   'no-unnecessary-regex-exec-spread': adaptedNoUnnecessaryRegexExecSpread,
   'no-unnecessary-regex-test-spread': adaptedNoUnnecessaryRegexTestSpread,
   'no-unnecessary-array-buffer-is-view-spread': adaptedNoUnnecessaryArrayBufferIsViewSpread,
-  'no-unnecessary-number-is-finite-spread': adaptedNoUnnecessaryNumberIsFiniteSpread,
-  'no-unnecessary-number-is-nan-spread': adaptedNoUnnecessaryNumberIsNanSpread,
-  'no-unnecessary-number-is-integer-spread': adaptedNoUnnecessaryNumberIsIntegerSpread,
-  'no-unnecessary-number-is-safe-integer-spread': adaptedNoUnnecessaryNumberIsSafeIntegerSpread,
-  'no-unnecessary-number-parse-float-spread': adaptedNoUnnecessaryNumberParseFloatSpread,
-  'no-unnecessary-number-parse-int-spread': adaptedNoUnnecessaryNumberParseIntSpread,
   'no-unnecessary-string-from-char-code-spread': adaptedNoUnnecessaryStringFromCharCodeSpread,
   'no-unnecessary-string-from-code-point-spread': adaptedNoUnnecessaryStringFromCodePointSpread,
   'no-unnecessary-string-raw-spread': adaptedNoUnnecessaryStringRawSpread,
-  'no-unnecessary-int8-array-from-spread': adaptedNoUnnecessaryInt8ArrayFromSpread,
-  'no-unnecessary-int8-array-of-spread': adaptedNoUnnecessaryInt8ArrayOfSpread,
-  'no-unnecessary-uint8-array-from-spread': adaptedNoUnnecessaryUint8ArrayFromSpread,
-  'no-unnecessary-uint8-array-of-spread': adaptedNoUnnecessaryUint8ArrayOfSpread,
-  'no-unnecessary-uint8-clamped-array-from-spread': adaptedNoUnnecessaryUint8ClampedArrayFromSpread,
-  'no-unnecessary-uint8-clamped-array-of-spread': adaptedNoUnnecessaryUint8ClampedArrayOfSpread,
-  'no-unnecessary-int16-array-from-spread': adaptedNoUnnecessaryInt16ArrayFromSpread,
+  'no-unnecessary-int8-array-from-spread': adaptedNoUnnecessaryInt8ArrayFromSpreadAlias,
+  'no-unnecessary-int8-array-of-spread': adaptedNoUnnecessaryInt8ArrayOfSpreadAlias,
+  'no-unnecessary-uint8-array-from-spread': adaptedNoUnnecessaryUint8ArrayFromSpreadAlias,
+  'no-unnecessary-uint8-array-of-spread': adaptedNoUnnecessaryUint8ArrayOfSpreadAlias,
+  'no-unnecessary-uint8-clamped-array-from-spread': adaptedNoUnnecessaryUint8ClampedArrayFromSpreadAlias,
+  'no-unnecessary-uint8-clamped-array-of-spread': adaptedNoUnnecessaryUint8ClampedArrayOfSpreadAlias,
+  'no-unnecessary-int16-array-from-spread': adaptedNoUnnecessaryInt16ArrayFromSpreadAlias,
   'no-unnecessary-date-set-full-year-spread': adaptedNoUnnecessaryDateSetFullYearSpread,
   'no-unnecessary-date-set-month-spread': adaptedNoUnnecessaryDateSetMonthSpread,
   'no-unnecessary-date-set-date-spread': adaptedNoUnnecessaryDateSetDateSpread,
@@ -4565,2289 +5204,12 @@ const adaptedNoUnnecessaryDateToGmtStringSpread = adaptPluginRule(noUnnecessaryD
    'yoda': adaptedYoda,
 }
 
-export type RuleCategory =
-  | 'complexity'
-  | 'correctness'
-  | 'dependencies'
-  | 'patterns'
-  | 'performance'
-  | 'security'
-  | 'testing'
 export function getRule(ruleId: string): RuleDefinition | undefined {
   return allRules[ruleId]
 }
 
 export function getRuleIds(): string[] {
   return Object.keys(allRules)
-}
-
-// Rule ID to category mapping
-const RULE_CATEGORIES: Record<string, RuleCategory> = {
-  'consistent-imports': 'dependencies',
-  'consistent-test-it': 'testing',
-  // Patterns
-  'consistent-type-exports': 'patterns',
-  'constructor-super': 'patterns',
-  curly: 'patterns',
-  'default-case': 'patterns',
-  'eq-eq-eq': 'patterns',
-  'expect-expect': 'testing',
-  'explicit-module-boundary-types': 'patterns',
-  // Orphan rules
-  'explicit-return-type': 'patterns',
-  'for-direction': 'patterns',
-  'getter-return': 'patterns',
-  // Complexity
-  'max-complexity': 'complexity',
-  'max-depth': 'complexity',
-  'max-expects': 'testing',
-  'max-file-size': 'patterns',
-  'max-lines': 'complexity',
-  'max-lines-per-function': 'complexity',
-  'max-nested-describe': 'testing',
-  'max-params': 'complexity',
-  'max-union-size': 'patterns',
-  'no-alert': 'patterns',
-  'no-alias-methods': 'testing',
-  'no-array-constructor': 'patterns',
-  'no-assertion-in-setup': 'testing',
-  'no-assertion-in-loop': 'testing',
-  'no-async-promise-executor': 'patterns',
-  'no-async-foreach': 'patterns',
-  'no-async-suite': 'testing',
-   // Performance
-    'no-await-in-loop': 'performance',
-   'no-array-reduce': 'performance',
-    'no-inefficient-string-concat': 'performance',
-    'no-constant-response': 'performance',
-    'no-unnecessary-async': 'performance',
-    'no-misused-promise-return': 'performance',
-    'no-inefficient-array-methods': 'performance',
-  'no-barrel-imports': 'dependencies',
-   'no-bitwise': 'patterns',
-   'no-buffer-constructor': 'patterns',
-   'no-caller': 'patterns',
-   'no-catch-shadow': 'patterns',
-   'no-case-declarations': 'patterns',
-  // Dependencies
-  'no-circular-deps': 'dependencies',
-  'no-class-assign': 'patterns',
-  'no-collection-size-mischeck': 'patterns',
-  'no-commented-out-tests': 'testing',
-  'no-compare-neg-zero': 'patterns',
-  'no-commutative-op-equal': 'patterns',
-  'no-computed-keys': 'patterns',
-  'no-cond-assign': 'patterns',
-    'no-conditional-expect': 'testing',
-     'no-conditional-in-test': 'testing',
-     'no-console-in-tests': 'testing',
-     'no-deprecated-functions': 'testing',
-    'no-confusing-double-equal': 'testing',
-    'no-assigning-expect-result': 'testing',
-    'no-assigning-hooks-return': 'testing',
-    'no-dynamic-describe': 'testing',
-    'no-empty-hook': 'testing',
-    'no-confusing-test-name': 'testing',
-    'no-eval-in-test': 'testing',
-    'no-misused-matchers': 'testing',
-   'no-confusing-conditional-access': 'testing',
-  'no-confusing-void-expression': 'patterns',
-  'no-console': 'patterns',
-  'no-console-log': 'patterns',
-  'no-const-assign': 'patterns',
-  'no-const-enum': 'patterns',
-  'no-constant-binary-expression': 'correctness',
-  'no-constant-condition': 'patterns',
-  'no-constructor-return': 'patterns',
-  'no-constructor-super': 'patterns',
-  'no-continue': 'patterns',
-  'no-control-regex': 'patterns',
-  'no-debugger': 'patterns',
-  'no-delete-var': 'patterns',
-  // Security
-  'no-deprecated-api': 'security',
-  'no-deprecated-imports': 'patterns',
-   'no-div-regex': 'patterns',
-   'no-double-negation': 'patterns',
-   'no-done-callback': 'testing',
-  'no-dupe-args': 'patterns',
-  'no-dupe-class-members': 'patterns',
-  'no-dupe-keys': 'patterns',
-  'no-duplicate-case': 'patterns',
-  'no-duplicate-code': 'patterns',
- 'no-excessive-complexity': 'patterns',
-   'no-duplicate-condition': 'patterns',
- 'no-empty-alternative': 'patterns',
-   'no-duplicate-else-if': 'patterns',
-  'no-duplicate-hooks': 'testing',
-  'no-empty-describe': 'testing',
-  'no-duplicate-imports': 'patterns',
-  'no-duplicate-strings-in-array': 'patterns',
-  'no-dynamic-delete': 'security',
-  'no-else-return': 'patterns',
-  'no-empty': 'patterns',
-  'no-empty-catch': 'correctness',
-  'no-empty-character-class': 'correctness',
-  'no-empty-function': 'correctness',
-  'no-empty-pattern': 'patterns',
-  'no-empty-static-block': 'patterns',
-  'no-eval': 'security',
-  'no-eq-null': 'patterns',
-  'no-ex-assign': 'patterns',
-  'no-export-default': 'patterns',
-  'no-explicit-any': 'patterns',
-  'no-extend-native': 'patterns',
-  'no-extra-boolean-cast': 'patterns',
-  'no-extra-parens': 'patterns',
-  'no-extra-semi': 'patterns',
-  'no-fallthrough': 'patterns',
-   'no-floating-promises': 'patterns',
-   'no-floating-promises-returned': 'patterns',
-   'no-floating-decimal': 'patterns',
-  'no-focused-tests': 'testing',
-  'no-func-assign': 'patterns',
-  'no-global-assign': 'patterns',
-  'no-hardcoded-credentials': 'security',
-  'no-identical-title': 'testing',
-  'no-interpolation-in-snapshots': 'testing',
-  'no-jest-globals': 'testing',
-  'no-large-jest-snapshots': 'testing',
-  'no-redundant-action': 'testing',
-   'no-implicit-coercion': 'patterns',
-   'no-invalid-use-before-def': 'correctness',
-    'no-implicit-globals': 'correctness',
-    'no-non-null-asserted-optional-chain': 'correctness',
-     'no-misleading-spread': 'correctness',
-      'no-async-constructor': 'correctness',
-      'no-approximate-constants': 'correctness',
-      'no-implicit-undefined': 'correctness',
-'no-misleading-assertion': 'correctness',
-   'no-require-imports': 'correctness',
-   'no-compare-negation': 'patterns',
-  'no-implicit-side-effects': 'patterns',
-  'no-implied-eval': 'patterns',
- 'no-implicit-map': 'patterns',
-  'no-import-assign': 'patterns',
-   'no-inferrable-types': 'patterns',
-   'no-inline-comments': 'patterns',
-   'no-inner-declarations': 'patterns',
-   'no-invalid-regexp': 'patterns',
-  'no-irregular-whitespace': 'patterns',
-  'no-iterator': 'patterns',
-  'no-label-var': 'patterns',
-  'no-lone-blocks': 'patterns',
-  'no-lonely-if': 'patterns',
-   'no-loop-func': 'patterns',
-   'no-labels': 'patterns',
-    'no-loss-of-precision': 'patterns',
- 'no-meaningless-void': 'patterns',
-    'no-misleading-array-method': 'patterns',
-    'no-misleading-character-class': 'patterns',
-   'no-misleading-instantiation': 'patterns',
-   'no-misleading-ternary': 'patterns',
-    'no-mixed-enums': 'patterns',
-    'no-mixed-operators': 'patterns',
-    'no-misused-new': 'patterns',
-   'no-misused-promises': 'patterns',
-   'no-multi-assign': 'patterns',
-   'no-multiple-empty-lines': 'patterns',
-    'no-multi-spaces': 'patterns',
-  'no-multi-str': 'patterns',
-    'no-namespace': 'patterns',
-    'no-negated-condition': 'patterns',
-    'no-negated-eq-null': 'patterns',
-    'no-nested-ternary': 'patterns',
-  'no-new-func': 'patterns',
-  'no-new-native-nonconstructor': 'patterns',
-  'no-new-wrappers': 'patterns',
-  'no-new-symbol': 'patterns',
-  'no-non-null-assertion': 'patterns',
-  'no-nonoctal-decimal-escape': 'patterns',
-  'no-obj-calls': 'patterns',
-  'no-object-constructor': 'patterns',
-   'no-octal': 'patterns',
-   'no-octal-escape': 'patterns',
-  'no-param-reassign': 'patterns',
-  'no-plusplus': 'patterns',
-  'no-promise-as-boolean': 'patterns',
-  'no-prototype-builtins': 'patterns',
- 'no-property-rename': 'patterns',
- 'no-property-signature-style': 'patterns',
- 'no-redeclare': 'patterns',
-  'no-redundant-boolean': 'patterns',
-  'no-redundant-optional-chain': 'patterns',
-  'no-redundant-use-strict': 'patterns',
-  'no-redundant-type-constituents': 'patterns',
-   'no-regex-spaces': 'patterns',
-   'no-restricted-exports': 'patterns',
-   'no-restricted-syntax': 'patterns',
-   'no-restricted-matchers': 'testing',
-  'no-restricted-jest-methods': 'testing',
-  'no-return-assign': 'patterns',
-  'no-return-await': 'patterns',
-  'no-return-or-await': 'patterns',
-   'no-self-assign': 'patterns',
-   'no-self-compare': 'patterns',
-   'no-sequences': 'patterns',
-  'no-setter-return': 'patterns',
-  'no-shadow': 'patterns',
-   'no-shadow-restricted-names': 'patterns',
-   'no-script-url': 'patterns',
-   'no-skipped-tests': 'testing',
-  'no-sparse-arrays': 'patterns',
-  'no-static-only-class': 'patterns',
-  'no-sql-injection': 'security',
-  'no-standalone-expect': 'testing',
-  'no-test-prefix': 'testing',
-  'no-string-concat': 'patterns',
- 'no-string-case-convert': 'patterns',
-  'no-suspicious-comment': 'patterns',
-   'no-tabs': 'patterns',
-   'no-sync-in-async': 'performance',
-  'no-template-curly-in-string': 'patterns',
-  'no-ternary': 'patterns',
-   'no-test-return-statement': 'testing',
-   'no-useless-async-test': 'testing',
-   'no-unsafe-matchers': 'testing',
-   'no-misplaced-hook': 'testing',
-   'require-hook-description': 'testing',
-     'no-async-snapshot': 'testing',
-     'no-async-setup': 'testing',
-    'no-thenable': 'patterns',
-  'no-this-before-super': 'patterns',
-  'no-this-alias': 'patterns',
-  'no-throw-literal': 'correctness',
-   'no-throw-sync': 'patterns',
-   'no-trailing-spaces': 'patterns',
-   'no-type-only-return': 'patterns',
-   'no-type-alias-single-union': 'patterns',
-   'no-unicode-bom': 'patterns',
-   'no-unassigned-vars': 'patterns',
-  'no-undef': 'patterns',
-  'no-unexpected-multiline': 'patterns',
-  'no-unfinished-todos': 'patterns',
-  'no-unnecessary-await': 'patterns',
-  'no-unnecessary-await-foreach': 'patterns',
-  'no-unnecessary-await-expression': 'patterns',
-  'no-unnecessary-assign': 'patterns',
-  'no-unnecessary-binding-pattern': 'patterns',
-  'no-unnecessary-assert': 'patterns',
-   'no-unnecessary-bignumber': 'patterns',
-  'no-unnecessary-bitwise-not': 'patterns',
-  'no-unnecessary-block': 'patterns',
-  'no-unnecessary-as-expression': 'patterns',
-  'no-unnecessary-at': 'patterns',
-   'no-unnecessary-atob': 'patterns',
-  'no-unnecessary-btoa': 'patterns',
-   'no-unnecessary-array-from': 'patterns',
-   'no-unnecessary-array-from-spread': 'patterns',
-   'no-unnecessary-array-from-set-spread': 'patterns',
-   'no-unnecessary-array-from-length': 'patterns',
-   'no-unnecessary-array-flat': 'patterns',
-   'no-unnecessary-array-flat-single-level': 'patterns',
-    'no-unnecessary-array-flat-map-identity': 'patterns',
-     'no-unnecessary-array-flat-map-spread': 'patterns',
-     'no-unnecessary-array-flat-spread': 'patterns',
-     'no-unnecessary-array-flat-infinity': 'patterns',
-    'no-unnecessary-array-keys-spread': 'patterns',
-     'no-unnecessary-array-values-spread': 'patterns',
-     'no-unnecessary-array-unshift-spread': 'patterns',
-    'no-unnecessary-array-every-boolean': 'patterns',
-   'no-unnecessary-array-every-true': 'patterns',
-    'no-unnecessary-array-every-spread': 'patterns',
-    'no-unnecessary-array-fill-spread': 'patterns',
-     'no-unnecessary-array-entries-spread': 'patterns',
-    'no-unnecessary-array-at-spread': 'patterns',
-      'no-unnecessary-array-filter-identity': 'patterns',
-     'no-unnecessary-array-filter-spread': 'patterns',
-     'no-unnecessary-array-for-each-return': 'patterns',
-    'no-unnecessary-array-for-each-spread': 'patterns',
-     'no-unnecessary-array-push-spread': 'patterns',
-     'no-unnecessary-array-pop-spread': 'patterns',
-     'no-unnecessary-array-find-boolean': 'patterns',
-    'no-unnecessary-array-find-last-boolean': 'patterns',
-    'no-unnecessary-array-find-last-spread': 'patterns',
-    'no-unnecessary-array-find-last-index-literal': 'patterns',
-     'no-unnecessary-array-find-last-index-spread': 'patterns',
-     'no-unnecessary-array-find-spread': 'patterns',
-     'no-unnecessary-array-find-index-literal': 'patterns',
-    'no-unnecessary-array-find-index-spread': 'patterns',
-    'no-unnecessary-array-index-of-spread': 'patterns',
-    'no-unnecessary-array-last-index-of-spread': 'patterns',
-    'no-unnecessary-array-fill-literal': 'patterns',
-    'no-unnecessary-array-fill-same': 'patterns',
-  'no-unnecessary-array-isarray-literal': 'patterns',
-  'no-unnecessary-array-of-single': 'patterns',
-  'no-unnecessary-array-of-spread': 'patterns',
-   'no-unnecessary-array-includes-single': 'patterns',
-   'no-unnecessary-array-includes-nan': 'patterns',
-   'no-unnecessary-array-includes-spread': 'patterns',
-   'no-unnecessary-array-index-of-literal': 'patterns',
-   'no-unnecessary-array-join-empty': 'patterns',
-   'no-unnecessary-array-join-spread': 'patterns',
-   'no-unnecessary-array-constructor': 'patterns',
-  'no-unnecessary-array-concat-single': 'patterns',
-   'no-unnecessary-array-concat-spread': 'patterns',
-   'no-unnecessary-array-copy-within-spread': 'patterns',
-   'no-unnecessary-async-function': 'patterns',
-  'no-unnecessary-async-arrow': 'patterns',
-   'no-unnecessary-boolean': 'patterns',
-   'no-unnecessary-boolean-comparison': 'patterns',
-    'no-unnecessary-boolean-literal-compare': 'patterns',
-     'no-unnecessary-boolean-constructor': 'patterns',
-    'no-unnecessary-boolean-wrapper': 'patterns',
-     'no-unnecessary-callback-wrapper': 'patterns',
-     'no-unnecessary-catch-binding': 'patterns',
-     'no-unnecessary-class': 'patterns',
-  'no-unnecessary-destructuring': 'patterns',
-     'no-unnecessary-concat': 'patterns',
-     'no-unnecessary-console-string-concat': 'patterns',
-     'no-unnecessary-computed-key': 'patterns',
-     'no-unnecessary-continue': 'patterns',
-    'no-unnecessary-entries': 'patterns',
-      'no-unnecessary-double-negation': 'patterns',
-     'no-unnecessary-double-equals': 'patterns',
-  'no-unnecessary-condition': 'patterns',
-  'no-unnecessary-escape-in-regexp': 'patterns',
-  'no-unnecessary-expression-statement': 'patterns',
-  'no-unnecessary-for-loop': 'patterns',
-  'no-unnecessary-for-each': 'patterns',
-  'no-unnecessary-find-index': 'patterns',
-  'no-unnecessary-find-last-index': 'patterns',
-  'no-unnecessary-find-last': 'patterns',
-  'no-unnecessary-find': 'patterns',
-  'no-unnecessary-filter': 'patterns',
-  'no-unnecessary-fill': 'patterns',
-  'no-unnecessary-flat': 'patterns',
-  'no-unnecessary-flat-map': 'patterns',
-  'no-unnecessary-fragment': 'patterns',
-  'no-unnecessary-index-of': 'patterns',
-  'no-unnecessary-array-indexof-zero': 'patterns',
-   'no-unnecessary-initialization': 'patterns',
-   'no-unnecessary-instanceof-array': 'patterns',
-   'no-unnecessary-json-parse': 'patterns',
-  'no-unnecessary-json-stringify-literal': 'patterns',
-   'no-unnecessary-new-array': 'patterns',
-  'no-unnecessary-new-boolean': 'patterns',
-  'no-unnecessary-new-map': 'patterns',
-  'no-unnecessary-new-object': 'patterns',
-  'no-unnecessary-new-set': 'patterns',
-  'no-unnecessary-new-string': 'patterns',
-  'no-unnecessary-new-number': 'patterns',
-  'no-unnecessary-parentheses': 'patterns',
-  'no-unnecessary-label': 'patterns',
-  'no-unnecessary-last-index-of': 'patterns',
-  'no-unnecessary-literal-key': 'patterns',
-  'no-unnecessary-literal-tostring': 'patterns',
-  'no-unnecessary-logical-and-true': 'patterns',
-  'no-unnecessary-logical-or-false': 'patterns',
-   'no-unnecessary-map': 'patterns',
-   'no-unnecessary-array-map-identity': 'patterns',
-   'no-unnecessary-array-map-spread': 'patterns',
-    'no-unnecessary-math-max-single': 'patterns',
-    'no-unnecessary-math-ceil-integer': 'patterns',
-    'no-unnecessary-math-round-integer': 'patterns',
-    'no-unnecessary-math-sign-zero': 'patterns',
-    'no-unnecessary-math-floor-integer': 'patterns',
-  'no-unnecessary-math-abs-positive': 'patterns',
-   'no-unnecessary-null-with-strict': 'patterns',
-   'no-unnecessary-object-assign': 'patterns',
-   'no-unnecessary-object-assign-same': 'patterns',
-    'no-unnecessary-object-freeze-literal': 'patterns',
-    'no-unnecessary-object-keys-length': 'patterns',
-    'no-unnecessary-object-seal-literal': 'patterns',
-   'no-unnecessary-numeric-literal': 'patterns',
-  'no-unnecessary-numeric-separator': 'patterns',
-   'no-unnecessary-pop': 'patterns',
-    'no-unnecessary-polyfills': 'patterns',
-   'no-unnecessary-plus-new': 'patterns',
-   'no-unnecessary-qualifier': 'patterns',
-  'no-unnecessary-shift': 'patterns',
-   'no-unnecessary-slice': 'patterns',
-   'no-unnecessary-array-slice-zero': 'patterns',
-   'no-unnecessary-array-slice-spread': 'patterns',
-  'no-unnecessary-some': 'patterns',
-   'no-unnecessary-readonly': 'patterns',
-  'no-unnecessary-splice': 'patterns',
-  'no-unnecessary-array-splice-no-use': 'patterns',
-  'no-unnecessary-array-splice-zero': 'patterns',
-   'no-unnecessary-array-to-reversed-no-use': 'patterns',
-   'no-unnecessary-array-to-reversed-spread': 'patterns',
-    'no-unnecessary-array-to-string-array': 'patterns',
-     'no-unnecessary-array-to-string-spread': 'patterns',
-     'no-unnecessary-array-to-locale-string-spread': 'patterns',
-     'no-unnecessary-array-to-json-spread': 'patterns',
-      'no-unnecessary-spread': 'patterns',
-   'no-unnecessary-spread-array': 'patterns',
-  'no-unnecessary-string-concat': 'patterns',
-  'no-unnecessary-string-concat-empty': 'patterns',
-  'no-unnecessary-string-concat-spread': 'patterns',
-   'no-unnecessary-string-constructor': 'patterns',
-   'no-unnecessary-string-constructor-non-empty': 'patterns',
-    'no-unnecessary-string-includes-empty': 'patterns',
-    'no-unnecessary-string-includes-spread': 'patterns',
-    'no-unnecessary-string-index-of-empty': 'patterns',
-    'no-unnecessary-string-index-of-spread': 'patterns',
-    'no-unnecessary-string-iterator-empty': 'patterns',
-    'no-unnecessary-string-last-index-of-zero': 'patterns',
-    'no-unnecessary-string-last-index-of-empty': 'patterns',
-    'no-unnecessary-string-last-index-of-spread': 'patterns',
-     'no-unnecessary-string-char-at-zero': 'patterns',
-     'no-unnecessary-string-char-at-empty': 'patterns',
-     'no-unnecessary-string-char-at-spread': 'patterns',
-     'no-unnecessary-string-char-code-at-spread': 'patterns',
-     'no-unnecessary-string-char-code-at-zero': 'patterns',
-     'no-unnecessary-string-at-empty': 'patterns',
-     'no-unnecessary-string-at-spread': 'patterns',
-   'no-unnecessary-string-at-zero': 'patterns',
-   'no-unnecessary-string-codepointat-zero': 'patterns',
-   'no-unnecessary-string-code-point-at-empty': 'patterns',
-   'no-unnecessary-string-code-point-at-spread': 'patterns',
-   'no-unnecessary-string-length-compare': 'patterns',
-   'no-unnecessary-string-locale-compare-same': 'patterns',
-   'no-unnecessary-string-locale-compare-spread': 'patterns',
-   'no-unnecessary-string-match-all-empty': 'patterns',
-   'no-unnecessary-string-match-all-spread': 'patterns',
-    'no-unnecessary-string-match-empty': 'patterns',
-    'no-unnecessary-string-match-spread': 'patterns',
-    'no-unnecessary-string-normalize-empty': 'patterns',
-    'no-unnecessary-string-normalize-spread': 'patterns',
-   'no-unnecessary-string-ends-with-empty': 'patterns',
-   'no-unnecessary-string-ends-with-spread': 'patterns',
-  'no-unnecessary-string-pad-start-zero': 'patterns',
-  'no-unnecessary-string-pad-start-empty': 'patterns',
-  'no-unnecessary-string-pad-start-spread': 'patterns',
-  'no-unnecessary-string-pad-end-zero': 'patterns',
-  'no-unnecessary-string-pad-end-empty': 'patterns',
-  'no-unnecessary-string-pad-end-spread': 'patterns',
-  'no-unnecessary-string-wrapper': 'patterns',
-  'no-unnecessary-string-split': 'patterns',
-   'no-unnecessary-string-split-empty-separator': 'patterns',
-   'no-unnecessary-string-split-spread': 'patterns',
-   'no-unnecessary-string-split-length': 'patterns',
-  'no-unnecessary-string-slice-zero-len': 'patterns',
-  'no-unnecessary-string-slice-zero': 'patterns',
-  'no-unnecessary-string-slice-spread': 'patterns',
-   'no-unnecessary-string-starts-empty': 'patterns',
-   'no-unnecessary-string-starts-with-non-empty': 'patterns',
-   'no-unnecessary-string-starts-with-empty': 'patterns',
-   'no-unnecessary-string-starts-with-spread': 'patterns',
-   'no-unnecessary-string-trim-empty': 'patterns',
-   'no-unnecessary-string-trim-spread': 'patterns',
-   'no-unnecessary-string-trim-start-empty': 'patterns',
-   'no-unnecessary-string-trim-start-spread': 'patterns',
-   'no-unnecessary-string-trim-end-empty': 'patterns',
-   'no-unnecessary-string-trim-end-spread': 'patterns',
-    'no-unnecessary-string-replace-all': 'patterns',
-    'no-unnecessary-string-replace-all-empty': 'patterns',
-    'no-unnecessary-string-replace-all-spread': 'patterns',
-    'no-unnecessary-string-replace-empty': 'patterns',
-    'no-unnecessary-string-replace-spread': 'patterns',
-    'no-unnecessary-string-search-empty': 'patterns',
-    'no-unnecessary-string-search-spread': 'patterns',
-   'no-unnecessary-string-repeat-zero': 'patterns',
-    'no-unnecessary-string-repeat-one': 'patterns',
-    'no-unnecessary-string-repeat-empty': 'patterns',
-    'no-unnecessary-string-repeat-spread': 'patterns',
-    'no-unnecessary-string-substring-zero': 'patterns',
-    'no-unnecessary-string-substring-spread': 'patterns',
-  'no-unnecessary-stringify': 'patterns',
-  'no-unnecessary-string-to-string-spread': 'patterns',
-  'no-unnecessary-string-value-of-spread': 'patterns',
-  'no-unnecessary-string-anchor-spread': 'patterns',
-  'no-unnecessary-string-fixed-spread': 'patterns',
-  'no-unnecessary-string-big-spread': 'patterns',
-  'no-unnecessary-string-link-spread': 'patterns',
-  'no-unnecessary-string-fontcolor-spread': 'patterns',
-  'no-unnecessary-string-fontsize-spread': 'patterns',
-  'no-unnecessary-string-blink-spread': 'patterns',
-  'no-unnecessary-string-bold-spread': 'patterns',
-  'no-unnecessary-string-char-at-spread': adaptedNoUnnecessaryStringCharAtSpread,
-  'no-unnecessary-string-char-code-at-spread': adaptedNoUnnecessaryStringCharCodeAtSpread,
-  'no-unnecessary-string-code-point-at-spread': adaptedNoUnnecessaryStringCodePointAtSpread,
-  'no-unnecessary-string-concat-spread': adaptedNoUnnecessaryStringConcatSpread,
-  'no-unnecessary-string-ends-with-spread': adaptedNoUnnecessaryStringEndsWithSpread,
-  'no-unnecessary-string-includes-spread': adaptedNoUnnecessaryStringIncludesSpread,
-  'no-unnecessary-string-index-of-spread': adaptedNoUnnecessaryStringIndexOfSpread,
-  'no-unnecessary-string-last-index-of-spread': adaptedNoUnnecessaryStringLastIndexOfSpread,
-  'no-unnecessary-string-locale-compare-spread': adaptedNoUnnecessaryStringLocaleCompareSpread,
-  'no-unnecessary-string-match-spread': adaptedNoUnnecessaryStringMatchSpread,
-  'no-unnecessary-string-match-all-spread': adaptedNoUnnecessaryStringMatchAllSpread,
-  'no-unnecessary-string-normalize-spread': adaptedNoUnnecessaryStringNormalizeSpread,
-  'no-unnecessary-string-pad-start-spread': adaptedNoUnnecessaryStringPadStartSpread,
-  'no-unnecessary-string-pad-end-spread': adaptedNoUnnecessaryStringPadEndSpread,
-  'no-unnecessary-string-repeat-spread': adaptedNoUnnecessaryStringRepeatSpread,
-  'no-unnecessary-string-replace-spread': adaptedNoUnnecessaryStringReplaceSpread,
-  'no-unnecessary-string-replace-all-spread': adaptedNoUnnecessaryStringReplaceAllSpread,
-  'no-unnecessary-string-search-spread': adaptedNoUnnecessaryStringSearchSpread,
-  'no-unnecessary-string-slice-spread': adaptedNoUnnecessaryStringSliceSpread,
-  'no-unnecessary-string-split-spread': adaptedNoUnnecessaryStringSplitSpread,
-  'no-unnecessary-string-starts-with-spread': adaptedNoUnnecessaryStringStartsWithSpread,
-  'no-unnecessary-string-substring-spread': adaptedNoUnnecessaryStringSubstringSpread,
-  'no-unnecessary-string-to-lower-case-spread': adaptedNoUnnecessaryStringToLowerCaseSpread,
-  'no-unnecessary-string-to-upper-case-spread': adaptedNoUnnecessaryStringToUpperCaseSpread,
-  'no-unnecessary-string-to-locale-lower-case-spread': adaptedNoUnnecessaryStringToLocaleLowerCaseSpread,
-  'no-unnecessary-string-to-locale-upper-case-spread': adaptedNoUnnecessaryStringToLocaleUpperCaseSpread,
-  'no-unnecessary-string-to-string-spread': adaptedNoUnnecessaryStringToStringSpread,
-  'no-unnecessary-string-trim-spread': adaptedNoUnnecessaryStringTrimSpread,
-  'no-unnecessary-string-trim-start-spread': adaptedNoUnnecessaryStringTrimStartSpread,
-  'no-unnecessary-string-trim-end-spread': adaptedNoUnnecessaryStringTrimEndSpread,
-  'no-unnecessary-string-value-of-spread': adaptedNoUnnecessaryStringValueOfSpread,
-  'no-unnecessary-string-at-spread': adaptedNoUnnecessaryStringAtSpread,
-  'no-unnecessary-string-fixed-spread': adaptedNoUnnecessaryStringFixedSpread,
-  'no-unnecessary-string-fontcolor-spread': adaptedNoUnnecessaryStringFontcolorSpread,
-  'no-unnecessary-string-fontsize-spread': adaptedNoUnnecessaryStringFontsizeSpread,
-  'no-unnecessary-string-italics-spread': adaptedNoUnnecessaryStringItalicsSpread,
-  'no-unnecessary-string-small-spread': adaptedNoUnnecessaryStringSmallSpread,
-  'no-unnecessary-string-strike-spread': adaptedNoUnnecessaryStringStrikeSpread,
-  'no-unnecessary-string-sub-spread': adaptedNoUnnecessaryStringSubSpread,
-  'no-unnecessary-string-sup-spread': adaptedNoUnnecessaryStringSupSpread,
-  'no-unnecessary-string-anchor-spread': adaptedNoUnnecessaryStringAnchorSpread,
-  'no-unnecessary-string-link-spread': adaptedNoUnnecessaryStringLinkSpread,
-  'no-unnecessary-string-big-spread': adaptedNoUnnecessaryStringBigSpread,
-  'no-unnecessary-string-blink-spread': adaptedNoUnnecessaryStringBlinkSpread,
-  'no-unnecessary-string-bold-spread': adaptedNoUnnecessaryStringBoldSpread,
-  'no-unnecessary-string-italics-spread': 'patterns',
-  'no-unnecessary-string-small-spread': 'patterns',
-  'no-unnecessary-string-strike-spread': 'patterns',
-  'no-unnecessary-string-sub-spread': 'patterns',
-  'no-unnecessary-string-sup-spread': 'patterns',
-  'no-unnecessary-string-to-well-formed-spread': 'patterns',
-  'no-unnecessary-number-to-exponential-spread': 'patterns',
-  'no-unnecessary-number-to-precision-spread': 'patterns',
-  'no-unnecessary-number-to-locale-string-spread': 'patterns',
-  'no-unnecessary-number-value-of-spread': 'patterns',
-  'no-unnecessary-number-to-string-spread': 'patterns',
-  'no-unnecessary-number-to-fixed-spread': 'patterns',
-  'no-unnecessary-is-nan-spread': 'patterns',
-  'no-unnecessary-is-finite-spread': 'patterns',
-  'no-unnecessary-parse-float-spread': 'patterns',
-  'no-unnecessary-parse-int-spread': 'patterns',
-  'no-unnecessary-number-is-integer-spread': 'patterns',
-  'no-unnecessary-number-is-nan-spread': 'patterns',
-  'no-unnecessary-number-is-finite-spread': 'patterns',
-  'no-unnecessary-number-is-safe-integer-spread': 'patterns',
-  'no-unnecessary-number-parse-float-spread': 'patterns',
-  'no-unnecessary-number-parse-int-spread': 'patterns',
-  'no-unnecessary-object-keys-spread': 'patterns',
-  'no-unnecessary-object-values-spread': 'patterns',
-  'no-unnecessary-object-entries-spread': 'patterns',
-  'no-unnecessary-object-get-prototype-of-spread': 'patterns',
-  'no-unnecessary-object-freeze-spread': 'patterns',
-  'no-unnecessary-object-seal-spread': 'patterns',
-  'no-unnecessary-object-is-spread': 'patterns',
-  'no-unnecessary-object-assign-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-names-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-symbols-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-descriptor-spread': 'patterns',
-  'no-unnecessary-object-is-frozen-spread': 'patterns',
-  'no-unnecessary-object-is-sealed-spread': 'patterns',
-  'no-unnecessary-object-is-extensible-spread': 'patterns',
-  'no-unnecessary-object-prevent-extensions-spread': 'patterns',
-  'no-unnecessary-object-create-spread': 'patterns',
-  'no-unnecessary-object-define-property-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-descriptors-spread': 'patterns',
-  'no-unnecessary-object-set-prototype-of-spread': 'patterns',
-  'no-unnecessary-object-define-properties-spread': 'patterns',
-  'no-unnecessary-promise-reject-spread': 'patterns',
-  'no-unnecessary-promise-all-spread': 'patterns',
-  'no-unnecessary-promise-race-spread': 'patterns',
-  'no-unnecessary-promise-all-settled-spread': 'patterns',
-  'no-unnecessary-promise-any-spread': 'patterns',
-  'no-unnecessary-math-abs-spread': 'patterns',
-  'no-unnecessary-math-ceil-spread': 'patterns',
-  'no-unnecessary-math-floor-spread': 'patterns',
-  'no-unnecessary-math-round-spread': 'patterns',
-  'no-unnecessary-math-sqrt-spread': 'patterns',
-  'no-unnecessary-math-max-spread': 'patterns',
-  'no-unnecessary-math-min-spread': 'patterns',
-  'no-unnecessary-math-sign-spread': 'patterns',
-  'no-unnecessary-math-trunc-spread': 'patterns',
-  ['no-unnecessary-math-expm1-spread']: 'patterns',
-  ['no-unnecessary-math-log1p-spread']: 'patterns',
-  ['no-unnecessary-math-sinh-spread']: 'patterns',
-  ['no-unnecessary-math-cosh-spread']: 'patterns',
-  ['no-unnecessary-math-tanh-spread']: 'patterns',
-  'no-unnecessary-math-pow-spread': 'patterns',
-  'no-unnecessary-math-log-spread': 'patterns',
-  'no-unnecessary-math-sin-spread': 'patterns',
-  'no-unnecessary-math-cos-spread': 'patterns',
-  'no-unnecessary-math-tan-spread': 'patterns',
-  'no-unnecessary-math-atan-spread': 'patterns',
-  'no-unnecessary-math-random-spread': 'patterns',
-  'no-unnecessary-math-exp-spread': 'patterns',
-  'no-unnecessary-math-atan2-spread': 'patterns',
-  'no-unnecessary-math-hypot-spread': 'patterns',
-  'no-unnecessary-math-log2-spread': 'patterns',
-  'no-unnecessary-math-log10-spread': 'patterns',
-  'no-unnecessary-math-cbrt-spread': 'patterns',
-  'no-unnecessary-math-acos-spread': 'patterns',
-  'no-unnecessary-math-asin-spread': 'patterns',
-  'no-unnecessary-math-asinh-spread': 'patterns',
-  'no-unnecessary-math-acosh-spread': 'patterns',
-  'no-unnecessary-math-atanh-spread': 'patterns',
-  'no-unnecessary-math-clz32-spread': 'patterns',
-  'no-unnecessary-math-imul-spread': 'patterns',
-  'no-unnecessary-math-fround-spread': 'patterns',
-  'no-unnecessary-reflect-apply-spread': 'patterns',
-  'no-unnecessary-reflect-construct-spread': 'patterns',
-  'no-unnecessary-reflect-get-spread': 'patterns',
-  'no-unnecessary-reflect-set-spread': 'patterns',
-  'no-unnecessary-reflect-delete-property-spread': 'patterns',
-  'no-unnecessary-reflect-has-spread': 'patterns',
-  'no-unnecessary-reflect-own-keys-spread': 'patterns',
-  'no-unnecessary-reflect-get-own-property-descriptor-spread': 'patterns',
-  'no-unnecessary-reflect-define-property-spread': 'patterns',
-  'no-unnecessary-reflect-get-prototype-of-spread': 'patterns',
-  'no-unnecessary-reflect-set-prototype-of-spread': 'patterns',
-  'no-unnecessary-reflect-is-extensible-spread': 'patterns',
-  'no-unnecessary-reflect-prevent-extensions-spread': 'patterns',
-  'no-unnecessary-json-parse-spread': 'patterns',
-  'no-unnecessary-json-stringify-spread': 'patterns',
-  'no-unnecessary-object-has-own-spread': 'patterns',
-  'no-unnecessary-console-log-spread': 'patterns',
-  'no-unnecessary-console-warn-spread': 'patterns',
-  'no-unnecessary-console-error-spread': 'patterns',
-  'no-unnecessary-console-info-spread': 'patterns',
-  'no-unnecessary-console-debug-spread': 'patterns',
-  'no-unnecessary-reflect-get-own-property-symbols-spread': 'patterns',
-  'no-unnecessary-reflect-define-properties-spread': 'patterns',
-  'no-unnecessary-reflect-is-frozen-spread': 'patterns',
-  'no-unnecessary-reflect-is-sealed-spread': 'patterns',
-  'no-unnecessary-encode-uri-spread': 'patterns',
-  'no-unnecessary-decode-uri-spread': 'patterns',
-  'no-unnecessary-encode-uri-component-spread': 'patterns',
-  'no-unnecessary-decode-uri-component-spread': 'patterns',
-  'no-unnecessary-console-table-spread': 'patterns',
-  'no-unnecessary-console-trace-spread': 'patterns',
-  'no-unnecessary-console-dir-spread': 'patterns',
-  'no-unnecessary-console-assert-spread': 'patterns',
-  'no-unnecessary-console-count-spread': 'patterns',
-  'no-unnecessary-console-clear-spread': 'patterns',
-  'no-unnecessary-console-group-spread': 'patterns',
-  'no-unnecessary-console-group-end-spread': 'patterns',
-  'no-unnecessary-console-time-spread': 'patterns',
-  'no-unnecessary-console-time-end-spread': 'patterns',
-  'no-unnecessary-console-time-log-spread': 'patterns',
-  'no-unnecessary-console-group-collapsed-spread': 'patterns',
-  'no-unnecessary-console-count-reset-spread': 'patterns',
-  'no-unnecessary-console-profile-spread': 'patterns',
-  'no-unnecessary-console-profile-end-spread': 'patterns',
-  'no-unnecessary-console-dirxml-spread': 'patterns',
-  'no-unnecessary-map-set-spread': 'patterns',
-  'no-unnecessary-map-for-each-spread': 'patterns',
-  'no-unnecessary-set-add-spread': 'patterns',
-  'no-unnecessary-set-for-each-spread': 'patterns',
-  'no-unnecessary-weakmap-set-spread': 'patterns',
-  'no-unnecessary-weakset-add-spread': 'patterns',
-  'no-unnecessary-date-now-spread': 'patterns',
-  'no-unnecessary-reg-exp-test-spread': 'patterns',
-  'no-unnecessary-date-parse-spread': 'patterns',
-  'no-unnecessary-date-get-full-year-spread': 'patterns',
-  'no-unnecessary-reg-exp-exec-spread': 'patterns',
-  'no-unnecessary-symbol-for-spread': 'patterns',
-  'no-unnecessary-date-get-month-spread': 'patterns',
-  'no-unnecessary-date-get-date-spread': 'patterns',
-  'no-unnecessary-symbol-key-for-spread': 'patterns',
-  'no-unnecessary-date-to-iso-string-spread': 'patterns',
-  'no-unnecessary-date-get-day-spread': 'patterns',
-  'no-unnecessary-date-get-hours-spread': 'patterns',
-  'no-unnecessary-date-get-minutes-spread': 'patterns',
-  'no-unnecessary-date-get-seconds-spread': 'patterns',
-  'no-unnecessary-date-get-time-spread': 'patterns',
-  'no-unnecessary-date-get-timezone-offset-spread': 'patterns',
-  'no-unnecessary-date-get-milliseconds-spread': 'patterns',
-  'no-unnecessary-date-to-string-spread': 'patterns',
-  'no-unnecessary-date-to-date-string-spread': 'patterns',
-  'no-unnecessary-date-to-time-string-spread': 'patterns',
-  'no-unnecessary-map-get-spread': 'patterns',
-  'no-unnecessary-map-has-spread': 'patterns',
-  'no-unnecessary-map-delete-spread': 'patterns',
-  'no-unnecessary-set-has-spread': 'patterns',
-  'no-unnecessary-set-delete-spread': 'patterns',
-  'no-unnecessary-date-value-of-spread': 'patterns',
-  'no-unnecessary-date-to-utc-string-spread': 'patterns',
-  'no-unnecessary-date-to-json-spread': 'patterns',
-  'no-unnecessary-date-get-utc-fullyear-spread': 'patterns',
-  'no-unnecessary-date-get-utc-month-spread': 'patterns',
-  'no-unnecessary-date-get-utc-date-spread': 'patterns',
-  'no-unnecessary-date-get-utc-day-spread': 'patterns',
-  'no-unnecessary-date-get-utc-hours-spread': 'patterns',
-  'no-unnecessary-date-get-utc-minutes-spread': 'patterns',
-  'no-unnecessary-date-get-utc-seconds-spread': 'patterns',
-  'no-unnecessary-date-get-utc-milliseconds-spread': 'patterns',
-  'no-unnecessary-date-to-locale-string-spread': 'patterns',
-  'no-unnecessary-date-to-locale-date-string-spread': 'patterns',
-  'no-unnecessary-date-to-locale-time-string-spread': 'patterns',
-  'no-unnecessary-date-utc-spread': 'patterns',
-  'no-unnecessary-weakmap-get-spread': 'patterns',
-  'no-unnecessary-weakmap-has-spread': 'patterns',
-  'no-unnecessary-weakmap-delete-spread': 'patterns',
-  'no-unnecessary-weakset-has-spread': 'patterns',
-  'no-unnecessary-weakset-delete-spread': 'patterns',
-  'no-unnecessary-map-clear-spread': 'patterns',
-    'no-unnecessary-string-to-lower-case-same': 'patterns',
-   'no-unnecessary-string-to-lower-case-spread': 'patterns',
-   'no-unnecessary-string-to-lower-case-empty': 'patterns',
-   'no-unnecessary-string-to-locale-lower-case-spread': 'patterns',
-   'no-unnecessary-string-to-upper-case-same': 'patterns',
-   'no-unnecessary-string-to-upper-case-empty': 'patterns',
-   'no-unnecessary-string-to-locale-upper-case-spread': 'patterns',
-   'no-unnecessary-string-to-upper-case-spread': 'patterns',
-  'no-unnecessary-string-to-number': 'patterns',
-  'no-unnecessary-parse-float': 'patterns',
-  'no-unnecessary-parse-int': 'patterns',
-  'no-unnecessary-parse-int-radix-ten': 'patterns',
-  'no-unnecessary-is-finite': 'patterns',
-  'no-unnecessary-is-nan': 'patterns',
-  'no-unnecessary-decode-uri': 'patterns',
-  'no-unnecessary-delete': 'patterns',
-  'no-unnecessary-encode-uri': 'patterns',
-  'no-unnecessary-regex-constructor': 'patterns',
-  'no-unnecessary-regex': 'patterns',
-  'no-unnecessary-return-await': 'patterns',
-  'no-unnecessary-reduce': 'patterns',
-   'no-unnecessary-reduce-right': 'patterns',
-  'no-unnecessary-regexp-constructor': 'patterns',
-    'no-unnecessary-return-value': 'patterns',
-   'no-unnecessary-reverse': 'patterns',
-   'no-unnecessary-array-reverse-no-use': 'patterns',
-   'no-unnecessary-array-reverse-spread': 'patterns',
-   'no-unnecessary-array-reduce-spread': 'patterns',
-   'no-unnecessary-array-reduce-right-spread': 'patterns',
-   'no-unnecessary-number-to-fixed': 'patterns',
-   'no-unnecessary-number-to-exponential-default': 'patterns',
-   'no-unnecessary-number-to-precision-default': 'patterns',
-  'no-unnecessary-number-tofixed-zero': 'patterns',
-  'no-unnecessary-number-wrapper': 'patterns',
-  'no-unnecessary-number-constructor': 'patterns',
-  'no-unnecessary-number-isnan-literal': 'patterns',
-  'no-unnecessary-join': 'patterns',
-  'no-unnecessary-sort': 'patterns',
-   'no-unnecessary-array-sort-no-use': 'patterns',
-    'no-unnecessary-array-sort-spread': 'patterns',
-    'no-unnecessary-array-splice-spread': 'patterns',
-    'no-unnecessary-array-some-false': 'patterns',
-    'no-unnecessary-array-some-spread': 'patterns',
-    'no-unnecessary-array-shift-spread': 'patterns',
-    'no-unnecessary-includes': 'patterns',
-  'no-unnecessary-template-expression': 'patterns',
-  'no-unnecessary-template-literal': 'patterns',
-  'no-unnecessary-template-literal-single': 'patterns',
-  'no-unnecessary-to-reversed': 'patterns',
-  'no-unnecessary-to-sorted': 'patterns',
-  'no-unnecessary-array-to-sorted-spread': 'patterns',
-   'no-unnecessary-to-spliced': 'patterns',
-   'no-unnecessary-array-to-spliced-spread': 'patterns',
-    'no-unnecessary-then': 'patterns',
-   'no-unnecessary-throw-new': 'patterns',
-   'no-unnecessary-to-string': 'patterns',
-   'no-unnecessary-to-locale-string': 'patterns',
-   'no-unnecessary-typeof': 'patterns',
-   'no-unnecessary-typeof-string': 'patterns',
-   'no-unnecessary-typeof-number': 'patterns',
-   'no-unnecessary-typeof-boolean': 'patterns',
-  'no-unnecessary-undefined-return': 'patterns',
-  'no-unnecessary-null-check': 'patterns',
-  'no-unnecessary-null-coalesce-fallback': 'patterns',
-  'no-unnecessary-optional-chain': 'patterns',
-  'no-unnecessary-optional-call': 'patterns',
-  'no-unnecessary-parameter-property': 'patterns',
-  'no-unnecessary-promise-wrap': 'patterns',
-  'no-unnecessary-promise-resolve': 'patterns',
-  'no-unnecessary-promise-all': 'patterns',
-  'no-unnecessary-promise-reject': 'patterns',
-  'no-unnecessary-escape': 'patterns',
-  'no-unnecessary-else': 'patterns',
-  'no-unnecessary-every': 'patterns',
- 'no-unnecessary-constructor': 'patterns',
-  'no-unnecessary-ternary': 'patterns',
-  'no-unnecessary-ternary-assign': 'patterns',
-  'no-unnecessary-ternary-boolean': 'patterns',
-  'no-unnecessary-type-assertion': 'patterns',
-  'no-unnecessary-type-constraint': 'patterns',
-  'no-unnecessary-type-parameters': 'patterns',
-  'no-unnecessary-unshift': 'patterns',
-   'no-unnecessary-void': 'patterns',
-   'no-unnecessary-void-operator': 'patterns',
-   'no-unnecessary-yield': 'patterns',
-   'no-unnecessary-values': 'patterns',
-    'no-unnecessary-with': 'patterns',
-    'no-unnecessary-array-with-spread': 'patterns',
-  'no-unnecessary-number-to-exponential-spread': adaptedNoUnnecessaryNumberToExponentialSpread,
-  'no-unnecessary-number-to-fixed-spread': adaptedNoUnnecessaryNumberToFixedSpread,
-  'no-unnecessary-number-to-precision-spread': adaptedNoUnnecessaryNumberToPrecisionSpread,
-  'no-unnecessary-number-to-string-spread': adaptedNoUnnecessaryNumberToStringSpread,
-  'no-unnecessary-number-to-locale-string-spread': adaptedNoUnnecessaryNumberToLocaleStringSpread,
-  'no-unnecessary-number-value-of-spread': adaptedNoUnnecessaryNumberValueOfSpread,
-  'no-unnecessary-array-at-spread': adaptedNoUnnecessaryArrayAtSpread,
-  'no-unnecessary-array-concat-spread': adaptedNoUnnecessaryArrayConcatSpread,
-  'no-unnecessary-array-copy-within-spread': adaptedNoUnnecessaryArrayCopyWithinSpread,
-  'no-unnecessary-array-entries-spread': adaptedNoUnnecessaryArrayEntriesSpread,
-  'no-unnecessary-array-every-spread': adaptedNoUnnecessaryArrayEverySpread,
-  'no-unnecessary-array-fill-spread': adaptedNoUnnecessaryArrayFillSpread,
-  'no-unnecessary-array-filter-spread': adaptedNoUnnecessaryArrayFilterSpread,
-  'no-unnecessary-array-find-spread': adaptedNoUnnecessaryArrayFindSpread,
-  'no-unnecessary-array-find-index-spread': adaptedNoUnnecessaryArrayFindIndexSpread,
-  'no-unnecessary-array-find-last-spread': adaptedNoUnnecessaryArrayFindLastSpread,
-  'no-unnecessary-array-find-last-index-spread': adaptedNoUnnecessaryArrayFindLastIndexSpread,
-  'no-unnecessary-array-flat-spread': adaptedNoUnnecessaryArrayFlatSpread,
-  'no-unnecessary-array-flat-map-spread': adaptedNoUnnecessaryArrayFlatMapSpread,
-  'no-unnecessary-array-for-each-spread': adaptedNoUnnecessaryArrayForEachSpread,
-  'no-unnecessary-array-includes-spread': adaptedNoUnnecessaryArrayIncludesSpread,
-  'no-unnecessary-array-index-of-spread': adaptedNoUnnecessaryArrayIndexOfSpread,
-  'no-unnecessary-array-join-spread': adaptedNoUnnecessaryArrayJoinSpread,
-  'no-unnecessary-array-keys-spread': adaptedNoUnnecessaryArrayKeysSpread,
-  'no-unnecessary-array-last-index-of-spread': adaptedNoUnnecessaryArrayLastIndexOfSpread,
-  'no-unnecessary-array-map-spread': adaptedNoUnnecessaryArrayMapSpread,
-  'no-unnecessary-array-pop-spread': adaptedNoUnnecessaryArrayPopSpread,
-  'no-unnecessary-array-push-spread': adaptedNoUnnecessaryArrayPushSpread,
-  'no-unnecessary-array-reduce-spread': adaptedNoUnnecessaryArrayReduceSpread,
-  'no-unnecessary-array-reduce-right-spread': adaptedNoUnnecessaryArrayReduceRightSpread,
-  'no-unnecessary-array-reverse-spread': adaptedNoUnnecessaryArrayReverseSpread,
-  'no-unnecessary-array-shift-spread': adaptedNoUnnecessaryArrayShiftSpread,
-  'no-unnecessary-array-slice-spread': adaptedNoUnnecessaryArraySliceSpread,
-  'no-unnecessary-array-some-spread': adaptedNoUnnecessaryArraySomeSpread,
-  'no-unnecessary-array-sort-spread': adaptedNoUnnecessaryArraySortSpread,
-  'no-unnecessary-array-splice-spread': adaptedNoUnnecessaryArraySpliceSpread,
-  'no-unnecessary-array-to-locale-string-spread': adaptedNoUnnecessaryArrayToLocaleStringSpread,
-  'no-unnecessary-array-to-reversed-spread': adaptedNoUnnecessaryArrayToReversedSpread,
-  'no-unnecessary-array-to-sorted-spread': adaptedNoUnnecessaryArrayToSortedSpread,
-  'no-unnecessary-array-to-spliced-spread': adaptedNoUnnecessaryArrayToSplicedSpread,
-  'no-unnecessary-array-to-string-spread': adaptedNoUnnecessaryArrayToStringSpread,
-  'no-unnecessary-array-unshift-spread': adaptedNoUnnecessaryArrayUnshiftSpread,
-  'no-unnecessary-array-values-spread': adaptedNoUnnecessaryArrayValuesSpread,
-  'no-unnecessary-array-with-spread': adaptedNoUnnecessaryArrayWithSpread,
-    'no-unnecessary-wait': 'patterns',
-  'no-unneeded-ternary': 'patterns',
-   'no-unreachable': 'patterns',
-  'no-undefined': 'patterns',
-  'no-underscore-dangle': 'patterns',
-   'no-unsafe-call': 'security',
-  'no-unsafe-declaration-merging': 'patterns',
-  'no-unsafe-enum-comparison': 'patterns',
-  'no-unsafe-finally': 'patterns',
-  'no-unsafe-html': 'security',
-  'no-unsafe-member-access': 'security',
-  'no-unsafe-negation': 'correctness',
-  'no-unsafe-optional-chaining': 'patterns',
-  'no-unsafe-regex': 'security',
-  'no-unsafe-return': 'security',
-  'no-unsafe-type-assertion': 'security',
-   'no-unused-exports': 'dependencies',
-   'no-cjs-imports': 'dependencies',
-   'no-dynamic-import': 'dependencies',
-    'no-implicit-dependencies': 'dependencies',
-    'no-git-dependencies': 'dependencies',
-    'no-unused-expressions': 'patterns',
-  'no-unused-labels': 'patterns',
-  'no-unused-private-members': 'patterns',
-  'no-unused-vars': 'patterns',
-   'no-use-before-define': 'patterns',
-   'no-use-extend-native': 'patterns',
-   'no-useless-assignment': 'patterns',
-  'no-useless-backreference': 'patterns',
-  'no-useless-comparison': 'patterns',
-  'no-useless-call': 'patterns',
-  'no-useless-computed-key': 'patterns',
-  'no-useless-concat': 'patterns',
-  'no-useless-constructor': 'patterns',
-  'no-useless-escape': 'patterns',
-  'no-useless-undefined': 'patterns',
-  'no-useless-return': 'patterns',
-  'no-useless-switch': 'patterns',
-  'no-useless-type-conversion': 'patterns',
-  'no-utility-truthiness': 'patterns',
-  'no-var': 'patterns',
-  'no-var-requires': 'patterns',
-  'no-void': 'patterns',
-   'no-weak-crypto': 'security',
-   'no-innerhtml': 'security',
-   'no-banned-properties': 'security',
-   'no-document-write': 'security',
-   'no-regex-concat': 'security',
-   'no-regex-constructor': 'security',
-    'no-unsafe-argument': 'security',
-    'no-restricted-globals': 'security',
-     'no-restricted-imports': 'security',
-     'no-restricted-properties': 'security',
-      'no-with': 'patterns',
-   'no-warning-comments': 'patterns',
-    'no-whitespace-before-property': 'patterns',
-   'object-shorthand': 'patterns',
-  'prefer-array-find': 'patterns',
-  'prefer-array-some': 'patterns',
-  'prefer-arrow-callback': 'patterns',
-  'prefer-async-await': 'patterns',
-  'prefer-const': 'patterns',
-  // Best practices
-  'prefer-const-assertions': 'patterns',
-  'prefer-date-now': 'patterns',
-   'prefer-default-export': 'patterns',
-   'prefer-destructuring': 'patterns',
-   'prefer-expect-resolves': 'testing',
-  'prefer-expect-assertions': 'testing',
-  'no-misused-async': 'testing',
-  'no-nested-describe': 'testing',
-  'no-implicit-return-in-test': 'testing',
-  'prefer-hooks-on-top': 'testing',
-  'prefer-inline-snapshot': 'testing',
-  'prefer-literal-matchers': 'testing',
-  'prefer-called-with': 'testing',
-  'prefer-equality-matcher': 'testing',
-  'prefer-each': 'testing',
-  'prefer-mock-promise-shorthand': 'testing',
-  'prefer-mock-return-value': 'testing',
-  'prefer-resolves-rejects': 'testing',
-  'no-redundant-expect': 'testing',
-  'prefer-named-snapshot': 'testing',
-  'prefer-snapshot-hint': 'testing',
-  'prefer-spy-on': 'testing',
-   'prefer-strict-equal': 'testing',
-   'prefer-string-char-at': 'patterns',
-   'prefer-template': 'patterns',
-  'prefer-to-be': 'testing',
-  'prefer-to-be-null': 'testing',
-  'prefer-to-be-undefined': 'testing',
-  'prefer-to-contain': 'testing',
-  'prefer-to-have-length': 'testing',
-  'prefer-todo': 'testing',
-  'preserve-caught-error': 'patterns',
-  'require-await': 'patterns',
-  'require-hook': 'testing',
-  'require-to-throw-message': 'testing',
-  'require-return-type': 'patterns',
-  'require-top-level-describe': 'testing',
-  'require-yield': 'patterns',
-  'restrict-template-expressions': 'patterns',
-   'sort-keys': 'patterns',
-   'sort-imports': 'patterns',
-   'spaced-comment': 'patterns',
-   'strict-bool-expressions': 'patterns',
-   'strict-boolean-expressions': 'patterns',
-  'use-isnan': 'patterns',
-  'valid-expect': 'testing',
-  'valid-title': 'testing',
-   'valid-typeof': 'patterns',
-   'yoda': 'patterns',
-  'no-unnecessary-date-set-full-year-spread': 'patterns',
-  'no-unnecessary-date-set-month-spread': 'patterns',
-  'no-unnecessary-date-set-date-spread': 'patterns',
-  'no-unnecessary-date-set-hours-spread': 'patterns',
-  'no-unnecessary-date-set-minutes-spread': 'patterns',
-  'no-unnecessary-date-set-seconds-spread': 'patterns',
-  'no-unnecessary-date-set-milliseconds-spread': 'patterns',
-  'no-unnecessary-date-set-utc-full-year-spread': 'patterns',
-  'no-unnecessary-date-set-utc-month-spread': 'patterns',
-  'no-unnecessary-date-set-utc-date-spread': 'patterns',
-  'no-unnecessary-date-set-utc-hours-spread': 'patterns',
-  'no-unnecessary-date-set-utc-minutes-spread': 'patterns',
-  'no-unnecessary-date-set-utc-seconds-spread': 'patterns',
-  'no-unnecessary-date-set-utc-milliseconds-spread': 'patterns',
-  'no-unnecessary-set-clear-spread': 'patterns',
-  'no-unnecessary-set-keys-spread': 'patterns',
-  'no-unnecessary-set-values-spread': 'patterns',
-  'no-unnecessary-set-entries-spread': 'patterns',
-  'no-unnecessary-map-keys-spread': 'patterns',
-  'no-unnecessary-map-values-spread': 'patterns',
-  'no-unnecessary-map-entries-spread': 'patterns',
-  'no-unnecessary-error-to-string-spread': 'patterns',
-  'no-unnecessary-regex-exec-spread': 'patterns',
-  'no-unnecessary-regex-test-spread': 'patterns',
-  'no-unnecessary-array-buffer-is-view-spread': 'patterns',
-  'no-unnecessary-number-is-finite-spread': 'patterns',
-  'no-unnecessary-number-is-nan-spread': 'patterns',
-  'no-unnecessary-number-is-integer-spread': 'patterns',
-  'no-unnecessary-number-is-safe-integer-spread': 'patterns',
-  'no-unnecessary-number-parse-float-spread': 'patterns',
-  'no-unnecessary-number-parse-int-spread': 'patterns',
-  'no-unnecessary-string-from-char-code-spread': 'patterns',
-  'no-unnecessary-string-from-code-point-spread': 'patterns',
-  'no-unnecessary-string-raw-spread': 'patterns',
-  'no-unnecessary-int8-array-from-spread': 'patterns',
-  'no-unnecessary-int8-array-of-spread': 'patterns',
-  'no-unnecessary-uint8-array-from-spread': 'patterns',
-  'no-unnecessary-uint8-array-of-spread': 'patterns',
-  'no-unnecessary-uint8-clamped-array-from-spread': 'patterns',
-  'no-unnecessary-uint8-clamped-array-of-spread': 'patterns',
-  'no-unnecessary-int16-array-from-spread': 'patterns',
-  'no-unnecessary-int16-array-of-spread': 'patterns',
-  'no-unnecessary-int32-array-from-spread': 'patterns',
-  'no-unnecessary-int32-array-of-spread': 'patterns',
-  'no-unnecessary-uint16-array-from-spread': 'patterns',
-  'no-unnecessary-uint16-array-of-spread': 'patterns',
-  'no-unnecessary-uint32-array-from-spread': 'patterns',
-  'no-unnecessary-uint32-array-of-spread': 'patterns',
-  'no-unnecessary-float32-array-from-spread': 'patterns',
-  'no-unnecessary-float32-array-of-spread': 'patterns',
-  'no-unnecessary-float64-array-from-spread': 'patterns',
-  'no-unnecessary-float64-array-of-spread': 'patterns',
-  'no-unnecessary-big-int64-array-from-spread': 'patterns',
-  'no-unnecessary-big-int64-array-of-spread': 'patterns',
-  'no-unnecessary-big-uint64-array-from-spread': 'patterns',
-  'no-unnecessary-big-uint64-array-of-spread': 'patterns',
-  'no-unnecessary-object-define-property-spread': 'patterns',
-  'no-unnecessary-object-define-properties-spread': 'patterns',
-  'no-unnecessary-object-prevent-extensions-spread': 'patterns',
-  'no-unnecessary-object-get-prototype-of-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-names-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-symbols-spread': 'patterns',
-  'no-unnecessary-object-get-own-property-descriptor-spread': 'patterns',
-  'no-unnecessary-object-is-frozen-spread': 'patterns',
-  'no-unnecessary-object-is-sealed-spread': 'patterns',
-  'no-unnecessary-object-is-extensible-spread': 'patterns',
-  'no-unnecessary-object-from-entries-spread': 'patterns',
-  'no-unnecessary-object-group-by-spread': 'patterns',
-  'no-unnecessary-array-buffer-slice-spread': 'patterns',
-  'no-unnecessary-promise-try-spread': 'patterns',
-  'no-unnecessary-string-char-at-spread': 'patterns',
-  'no-unnecessary-string-char-code-at-spread': 'patterns',
-  'no-unnecessary-string-code-point-at-spread': 'patterns',
-  'no-unnecessary-string-concat-spread': 'patterns',
-  'no-unnecessary-string-ends-with-spread': 'patterns',
-  'no-unnecessary-string-includes-spread': 'patterns',
-  'no-unnecessary-string-index-of-spread': 'patterns',
-  'no-unnecessary-string-last-index-of-spread': 'patterns',
-  'no-unnecessary-string-locale-compare-spread': 'patterns',
-  'no-unnecessary-string-match-spread': 'patterns',
-  'no-unnecessary-string-match-all-spread': 'patterns',
-  'no-unnecessary-string-normalize-spread': 'patterns',
-  'no-unnecessary-string-pad-start-spread': 'patterns',
-  'no-unnecessary-string-pad-end-spread': 'patterns',
-  'no-unnecessary-string-repeat-spread': 'patterns',
-  'no-unnecessary-string-replace-spread': 'patterns',
-  'no-unnecessary-string-replace-all-spread': 'patterns',
-  'no-unnecessary-string-search-spread': 'patterns',
-  'no-unnecessary-string-slice-spread': 'patterns',
-  'no-unnecessary-string-split-spread': 'patterns',
-  'no-unnecessary-string-starts-with-spread': 'patterns',
-  'no-unnecessary-string-substring-spread': 'patterns',
-  'no-unnecessary-string-to-lower-case-spread': 'patterns',
-  'no-unnecessary-string-to-upper-case-spread': 'patterns',
-  'no-unnecessary-string-to-locale-lower-case-spread': 'patterns',
-  'no-unnecessary-string-to-locale-upper-case-spread': 'patterns',
-  'no-unnecessary-string-to-string-spread': 'patterns',
-  'no-unnecessary-string-trim-spread': 'patterns',
-  'no-unnecessary-string-trim-start-spread': 'patterns',
-  'no-unnecessary-string-trim-end-spread': 'patterns',
-  'no-unnecessary-string-value-of-spread': 'patterns',
-  'no-unnecessary-string-at-spread': 'patterns',
-  'no-unnecessary-string-fixed-spread': 'patterns',
-  'no-unnecessary-string-fontcolor-spread': 'patterns',
-  'no-unnecessary-string-fontsize-spread': 'patterns',
-  'no-unnecessary-string-italics-spread': 'patterns',
-  'no-unnecessary-string-small-spread': 'patterns',
-  'no-unnecessary-string-strike-spread': 'patterns',
-  'no-unnecessary-string-sub-spread': 'patterns',
-  'no-unnecessary-string-sup-spread': 'patterns',
-  'no-unnecessary-string-anchor-spread': 'patterns',
-  'no-unnecessary-string-link-spread': 'patterns',
-  'no-unnecessary-string-big-spread': 'patterns',
-  'no-unnecessary-string-blink-spread': 'patterns',
-  'no-unnecessary-string-bold-spread': 'patterns',
-  'no-unnecessary-number-to-exponential-spread': 'patterns',
-  'no-unnecessary-number-to-fixed-spread': 'patterns',
-  'no-unnecessary-number-to-precision-spread': 'patterns',
-  'no-unnecessary-number-to-string-spread': 'patterns',
-  'no-unnecessary-number-to-locale-string-spread': 'patterns',
-  'no-unnecessary-number-value-of-spread': 'patterns',
-  'no-unnecessary-array-at-spread': 'patterns',
-  'no-unnecessary-array-concat-spread': 'patterns',
-  'no-unnecessary-array-copy-within-spread': 'patterns',
-  'no-unnecessary-array-entries-spread': 'patterns',
-  'no-unnecessary-array-every-spread': 'patterns',
-  'no-unnecessary-array-fill-spread': 'patterns',
-  'no-unnecessary-array-filter-spread': 'patterns',
-  'no-unnecessary-array-find-spread': 'patterns',
-  'no-unnecessary-array-find-index-spread': 'patterns',
-  'no-unnecessary-array-find-last-spread': 'patterns',
-  'no-unnecessary-array-find-last-index-spread': 'patterns',
-  'no-unnecessary-array-flat-spread': 'patterns',
-  'no-unnecessary-array-flat-map-spread': 'patterns',
-  'no-unnecessary-array-for-each-spread': 'patterns',
-  'no-unnecessary-array-includes-spread': 'patterns',
-  'no-unnecessary-array-index-of-spread': 'patterns',
-  'no-unnecessary-array-join-spread': 'patterns',
-  'no-unnecessary-array-keys-spread': 'patterns',
-  'no-unnecessary-array-last-index-of-spread': 'patterns',
-  'no-unnecessary-array-map-spread': 'patterns',
-  'no-unnecessary-array-pop-spread': 'patterns',
-  'no-unnecessary-array-push-spread': 'patterns',
-  'no-unnecessary-array-reduce-spread': 'patterns',
-  'no-unnecessary-array-reduce-right-spread': 'patterns',
-  'no-unnecessary-array-reverse-spread': 'patterns',
-  'no-unnecessary-array-shift-spread': 'patterns',
-  'no-unnecessary-array-slice-spread': 'patterns',
-  'no-unnecessary-array-some-spread': 'patterns',
-  'no-unnecessary-array-sort-spread': 'patterns',
-  'no-unnecessary-array-splice-spread': 'patterns',
-  'no-unnecessary-array-to-locale-string-spread': 'patterns',
-  'no-unnecessary-array-to-reversed-spread': 'patterns',
-  'no-unnecessary-array-to-sorted-spread': 'patterns',
-  'no-unnecessary-array-to-spliced-spread': 'patterns',
-  'no-unnecessary-array-to-string-spread': 'patterns',
-  'no-unnecessary-array-unshift-spread': 'patterns',
-  'no-unnecessary-array-values-spread': 'patterns',
-  'no-unnecessary-array-with-spread': 'patterns',
-  'no-unnecessary-function-call-spread': 'patterns',
-  'no-unnecessary-function-apply-spread': 'patterns',
-  'no-unnecessary-function-bind-spread': 'patterns',
-  'no-unnecessary-function-to-string-spread': 'patterns',
-  'no-unnecessary-date-to-json-spread': 'patterns',
-  'no-unnecessary-date-to-gmt-string-spread': 'patterns',
-  ['no-unnecessary-typed-array-at-spread']: 'patterns',
-  ['no-unnecessary-typed-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-typed-array-entries-spread']: 'patterns',
-  ['no-unnecessary-typed-array-every-spread']: 'patterns',
-  ['no-unnecessary-typed-array-fill-spread']: 'patterns',
-  ['no-unnecessary-typed-array-filter-spread']: 'patterns',
-  ['no-unnecessary-typed-array-find-spread']: 'patterns',
-  ['no-unnecessary-typed-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-typed-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-typed-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-typed-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-typed-array-includes-spread']: 'patterns',
-  ['no-unnecessary-typed-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-typed-array-join-spread']: 'patterns',
-  ['no-unnecessary-typed-array-keys-spread']: 'patterns',
-  ['no-unnecessary-typed-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-typed-array-map-spread']: 'patterns',
-  ['no-unnecessary-typed-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-typed-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-typed-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-typed-array-set-spread']: 'patterns',
-  ['no-unnecessary-typed-array-slice-spread']: 'patterns',
-  ['no-unnecessary-typed-array-some-spread']: 'patterns',
-  ['no-unnecessary-typed-array-sort-spread']: 'patterns',
-  ['no-unnecessary-typed-array-sub-array-spread']: 'patterns',
-  ['no-unnecessary-typed-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-typed-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-typed-array-values-spread']: 'patterns',
-  ['no-unnecessary-typed-array-with-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-big-int64-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-big-uint64-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-float32-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-float64-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-int16-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-int32-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-int8-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-uint16-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-uint32-spread']: 'patterns',
-  ['no-unnecessary-dataview-get-uint8-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-big-int64-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-big-uint64-spread']: 'patterns',
-  ['no-unnecessary-encode-uri-spread']: 'patterns',
-  ['no-unnecessary-decode-uri-spread']: 'patterns',
-  ['no-unnecessary-encode-uri-component-spread']: 'patterns',
-  ['no-unnecessary-decode-uri-component-spread']: 'patterns',
-  ['no-unnecessary-eval-spread']: 'patterns',
-  ['no-unnecessary-is-finite-spread']: 'patterns',
-  ['no-unnecessary-is-nan-spread']: 'patterns',
-  ['no-unnecessary-parse-float-spread']: 'patterns',
-  ['no-unnecessary-parse-int-spread']: 'patterns',
-  ['no-unnecessary-shared-array-buffer-slice-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-set-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-slice-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-set-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-slice-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-set-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-slice-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-set-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-slice-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-set-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-slice-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-set-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-slice-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-set-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-slice-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-set-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-slice-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-set-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-slice-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-set-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-slice-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-set-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-subarray-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-slice-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-fill-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-sort-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-fill-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-sort-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-fill-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-sort-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-fill-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-sort-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-fill-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-sort-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-fill-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-sort-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-fill-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-sort-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-fill-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-sort-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-fill-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-sort-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-fill-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-sort-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-fill-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-sort-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-reverse-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-copy-within-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-map-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-filter-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-find-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-every-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-some-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-map-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-filter-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-find-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-every-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-some-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-map-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-filter-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-find-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-every-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-some-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-map-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-filter-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-find-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-every-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-some-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-map-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-filter-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-find-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-every-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-some-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-map-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-filter-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-find-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-every-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-some-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-map-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-filter-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-find-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-every-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-some-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-map-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-filter-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-find-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-every-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-some-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-map-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-filter-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-find-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-every-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-some-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-map-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-filter-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-find-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-every-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-some-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-map-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-filter-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-find-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-every-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-some-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-for-each-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-includes-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-join-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-includes-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-join-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-includes-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-join-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-includes-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-join-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-includes-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-join-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-includes-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-join-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-includes-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-join-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-includes-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-join-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-includes-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-join-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-includes-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-join-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-reduce-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-reduce-right-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-find-index-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-find-last-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-find-last-index-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-includes-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-index-of-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-last-index-of-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-join-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-to-string-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-at-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-entries-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-keys-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-values-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-with-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-at-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-entries-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-keys-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-values-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-with-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-at-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-entries-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-keys-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-values-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-with-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-at-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-entries-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-keys-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-values-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-with-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-at-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-entries-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-keys-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-values-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-with-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-at-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-entries-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-keys-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-values-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-with-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-at-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-entries-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-keys-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-values-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-with-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-at-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-entries-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-keys-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-values-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-with-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-at-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-entries-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-keys-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-values-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-with-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-at-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-entries-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-keys-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-values-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-with-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-at-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-entries-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-keys-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-values-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-with-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-to-reversed-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-to-sorted-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-from-spread']: 'patterns',
-  ['no-unnecessary-int-8-array-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-from-spread']: 'patterns',
-  ['no-unnecessary-uint-8-array-of-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-from-spread']: 'patterns',
-  ['no-unnecessary-uint-8-clamped-array-of-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-from-spread']: 'patterns',
-  ['no-unnecessary-int-16-array-of-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-from-spread']: 'patterns',
-  ['no-unnecessary-uint-16-array-of-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-from-spread']: 'patterns',
-  ['no-unnecessary-int-32-array-of-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-from-spread']: 'patterns',
-  ['no-unnecessary-uint-32-array-of-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-from-spread']: 'patterns',
-  ['no-unnecessary-float-32-array-of-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-from-spread']: 'patterns',
-  ['no-unnecessary-float-64-array-of-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-from-spread']: 'patterns',
-  ['no-unnecessary-big-int-64-array-of-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-from-spread']: 'patterns',
-  ['no-unnecessary-big-uint-64-array-of-spread']: 'patterns',
-  ['no-unnecessary-set-timeout-spread']: 'patterns',
-  ['no-unnecessary-set-interval-spread']: 'patterns',
-  ['no-unnecessary-clear-timeout-spread']: 'patterns',
-  ['no-unnecessary-clear-interval-spread']: 'patterns',
-  ['no-unnecessary-request-animation-frame-spread']: 'patterns',
-  ['no-unnecessary-cancel-animation-frame-spread']: 'patterns',
-  ['no-unnecessary-request-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-cancel-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-queue-microtask-spread']: 'patterns',
-  ['no-unnecessary-structured-clone-spread']: 'patterns',
-  ['no-unnecessary-atob-spread']: 'patterns',
-  ['no-unnecessary-btoa-spread']: 'patterns',
-  ['no-unnecessary-fetch-spread']: 'patterns',
-  ['no-unnecessary-alert-spread']: 'patterns',
-  ['no-unnecessary-confirm-spread']: 'patterns',
-  ['no-unnecessary-prompt-spread']: 'patterns',
-  ['no-unnecessary-print-spread']: 'patterns',
-  ['no-unnecessary-report-error-spread']: 'patterns',
-  ['no-unnecessary-error-spread']: 'patterns',
-  ['no-unnecessary-eval-error-spread']: 'patterns',
-  ['no-unnecessary-range-error-spread']: 'patterns',
-  ['no-unnecessary-reference-error-spread']: 'patterns',
-  ['no-unnecessary-syntax-error-spread']: 'patterns',
-  ['no-unnecessary-type-error-spread']: 'patterns',
-  ['no-unnecessary-uri-error-spread']: 'patterns',
-  ['no-unnecessary-aggregate-error-spread']: 'patterns',
-  ['no-unnecessary-map-spread']: 'patterns',
-  ['no-unnecessary-set-spread']: 'patterns',
-  ['no-unnecessary-weak-map-spread']: 'patterns',
-  ['no-unnecessary-weak-set-spread']: 'patterns',
-  ['no-unnecessary-weak-ref-spread']: 'patterns',
-  ['no-unnecessary-finalization-registry-spread']: 'patterns',
-  ['no-unnecessary-promise-spread']: 'patterns',
-  ['no-unnecessary-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-shared-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-data-view-spread']: 'patterns',
-  ['no-unnecessary-date-spread']: 'patterns',
-  ['no-unnecessary-regexp-spread']: 'patterns',
-  ['no-unnecessary-image-spread']: 'patterns',
-  ['no-unnecessary-option-spread']: 'patterns',
-  ['no-unnecessary-audio-spread']: 'patterns',
-  ['no-unnecessary-headers-spread']: 'patterns',
-  ['no-unnecessary-request-spread']: 'patterns',
-  ['no-unnecessary-response-spread']: 'patterns',
-  ['no-unnecessary-form-data-spread']: 'patterns',
-  ['no-unnecessary-url-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-spread']: 'patterns',
-  ['no-unnecessary-text-decoder-spread']: 'patterns',
-  ['no-unnecessary-text-encoder-spread']: 'patterns',
-  ['no-unnecessary-blob-spread']: 'patterns',
-  ['no-unnecessary-file-spread']: 'patterns',
-  ['no-unnecessary-file-reader-spread']: 'patterns',
-  ['no-unnecessary-image-data-spread']: 'patterns',
-  ['no-unnecessary-dom-rect-spread']: 'patterns',
-  ['no-unnecessary-css-style-declaration-spread']: 'patterns',
-  ['no-unnecessary-mutation-observer-spread']: 'patterns',
-  ['no-unnecessary-resize-observer-spread']: 'patterns',
-  ['no-unnecessary-intersection-observer-spread']: 'patterns',
-  ['no-unnecessary-performance-observer-spread']: 'patterns',
-  ['no-unnecessary-abort-controller-spread']: 'patterns',
-  ['no-unnecessary-abort-signal-spread']: 'patterns',
-  ['no-unnecessary-broadcast-channel-spread']: 'patterns',
-  ['no-unnecessary-message-channel-spread']: 'patterns',
-  ['no-unnecessary-worker-spread']: 'patterns',
-  ['no-unnecessary-event-spread']: 'patterns',
-  ['no-unnecessary-custom-event-spread']: 'patterns',
-  ['no-unnecessary-dom-parser-spread']: 'patterns',
-  ['no-unnecessary-xml-http-request-spread']: 'patterns',
-  ['no-unnecessary-document-create-element-spread']: 'patterns',
-  ['no-unnecessary-document-create-text-node-spread']: 'patterns',
-  ['no-unnecessary-document-create-comment-spread']: 'patterns',
-  ['no-unnecessary-document-create-document-fragment-spread']: 'patterns',
-  ['no-unnecessary-document-create-attribute-spread']: 'patterns',
-  ['no-unnecessary-document-create-event-spread']: 'patterns',
-  ['no-unnecessary-document-create-tree-walker-spread']: 'patterns',
-  ['no-unnecessary-document-create-node-iterator-spread']: 'patterns',
-  ['no-unnecessary-document-create-range-spread']: 'patterns',
-  ['no-unnecessary-document-get-element-by-id-spread']: 'patterns',
-  ['no-unnecessary-document-query-selector-spread']: 'patterns',
-  ['no-unnecessary-document-query-selector-all-spread']: 'patterns',
-  ['no-unnecessary-document-get-elements-by-class-name-spread']: 'patterns',
-  ['no-unnecessary-document-get-elements-by-tag-name-spread']: 'patterns',
-  ['no-unnecessary-document-get-elements-by-name-spread']: 'patterns',
-  ['no-unnecessary-document-adopt-node-spread']: 'patterns',
-  ['no-unnecessary-document-import-node-spread']: 'patterns',
-  ['no-unnecessary-document-write-spread']: 'patterns',
-  ['no-unnecessary-document-write-ln-spread']: 'patterns',
-  ['no-unnecessary-document-open-spread']: 'patterns',
-  ['no-unnecessary-document-close-spread']: 'patterns',
-  ['no-unnecessary-document-exit-fullscreen-spread']: 'patterns',
-  ['no-unnecessary-document-exit-picture-in-picture-spread']: 'patterns',
-  ['no-unnecessary-document-exit-pointer-lock-spread']: 'patterns',
-  ['no-unnecessary-document-has-focus-spread']: 'patterns',
-  ['no-unnecessary-document-get-selection-spread']: 'patterns',
-  ['no-unnecessary-document-element-from-point-spread']: 'patterns',
-  ['no-unnecessary-document-elements-from-point-spread']: 'patterns',
-  ['no-unnecessary-element-query-selector-spread']: 'patterns',
-  ['no-unnecessary-element-query-selector-all-spread']: 'patterns',
-  ['no-unnecessary-element-get-attribute-spread']: 'patterns',
-  ['no-unnecessary-element-set-attribute-spread']: 'patterns',
-  ['no-unnecessary-element-remove-attribute-spread']: 'patterns',
-  ['no-unnecessary-element-has-attribute-spread']: 'patterns',
-  ['no-unnecessary-element-get-attribute-names-spread']: 'patterns',
-  ['no-unnecessary-element-toggle-attribute-spread']: 'patterns',
-  ['no-unnecessary-element-get-elements-by-class-name-spread']: 'patterns',
-  ['no-unnecessary-element-get-elements-by-tag-name-spread']: 'patterns',
-  ['no-unnecessary-element-closest-spread']: 'patterns',
-  ['no-unnecessary-element-matches-spread']: 'patterns',
-  ['no-unnecessary-element-contains-spread']: 'patterns',
-  ['no-unnecessary-element-append-child-spread']: 'patterns',
-  ['no-unnecessary-element-remove-child-spread']: 'patterns',
-  ['no-unnecessary-element-insert-before-spread']: 'patterns',
-  ['no-unnecessary-element-replace-child-spread']: 'patterns',
-  ['no-unnecessary-element-clone-node-spread']: 'patterns',
-  ['no-unnecessary-element-remove-spread']: 'patterns',
-  ['no-unnecessary-element-prepend-spread']: 'patterns',
-  ['no-unnecessary-element-append-spread']: 'patterns',
-  ['no-unnecessary-element-before-spread']: 'patterns',
-  ['no-unnecessary-element-after-spread']: 'patterns',
-  ['no-unnecessary-element-replace-with-spread']: 'patterns',
-  ['no-unnecessary-element-insert-adjacent-html-spread']: 'patterns',
-  ['no-unnecessary-element-insert-adjacent-element-spread']: 'patterns',
-  ['no-unnecessary-element-insert-adjacent-text-spread']: 'patterns',
-  ['no-unnecessary-element-get-bounding-client-rect-spread']: 'patterns',
-  ['no-unnecessary-element-get-client-rects-spread']: 'patterns',
-  ['no-unnecessary-element-scroll-into-view-spread']: 'patterns',
-  ['no-unnecessary-element-scroll-into-view-if-needed-spread']: 'patterns',
-  ['no-unnecessary-element-scroll-to-spread']: 'patterns',
-  ['no-unnecessary-element-scroll-by-spread']: 'patterns',
-  ['no-unnecessary-element-scroll-spread']: 'patterns',
-  ['no-unnecessary-element-focus-spread']: 'patterns',
-  ['no-unnecessary-element-blur-spread']: 'patterns',
-  ['no-unnecessary-element-click-spread']: 'patterns',
-  ['no-unnecessary-element-animate-spread']: 'patterns',
-  ['no-unnecessary-element-get-computed-style-spread']: 'patterns',
-  ['no-unnecessary-element-request-fullscreen-spread']: 'patterns',
-  ['no-unnecessary-element-request-pointer-lock-spread']: 'patterns',
-  ['no-unnecessary-element-attach-shadow-spread']: 'patterns',
-  ['no-unnecessary-local-storage-get-item-spread']: 'patterns',
-  ['no-unnecessary-local-storage-set-item-spread']: 'patterns',
-  ['no-unnecessary-local-storage-remove-item-spread']: 'patterns',
-  ['no-unnecessary-local-storage-clear-spread']: 'patterns',
-  ['no-unnecessary-local-storage-key-spread']: 'patterns',
-  ['no-unnecessary-session-storage-get-item-spread']: 'patterns',
-  ['no-unnecessary-session-storage-set-item-spread']: 'patterns',
-  ['no-unnecessary-session-storage-remove-item-spread']: 'patterns',
-  ['no-unnecessary-session-storage-clear-spread']: 'patterns',
-  ['no-unnecessary-session-storage-key-spread']: 'patterns',
-  ['no-unnecessary-navigator-send-beacon-spread']: 'patterns',
-  ['no-unnecessary-navigator-vibrate-spread']: 'patterns',
-  ['no-unnecessary-navigator-get-battery-spread']: 'patterns',
-  ['no-unnecessary-navigator-geolocation-get-current-position-spread']: 'patterns',
-  ['no-unnecessary-navigator-geolocation-watch-position-spread']: 'patterns',
-  ['no-unnecessary-navigator-geolocation-clear-watch-spread']: 'patterns',
-  ['no-unnecessary-navigator-clipboard-read-text-spread']: 'patterns',
-  ['no-unnecessary-navigator-clipboard-write-text-spread']: 'patterns',
-  ['no-unnecessary-navigator-media-devices-get-user-media-spread']: 'patterns',
-  ['no-unnecessary-navigator-register-protocol-handler-spread']: 'patterns',
-  ['no-unnecessary-navigator-request-media-key-system-access-spread']: 'patterns',
-  ['no-unnecessary-navigator-can-share-spread']: 'patterns',
-  ['no-unnecessary-navigator-share-spread']: 'patterns',
-  ['no-unnecessary-navigator-get-gamepads-spread']: 'patterns',
-  ['no-unnecessary-navigator-request-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-navigator-cancel-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-navigator-java-enabled-spread']: 'patterns',
-  ['no-unnecessary-navigator-cookie-enabled-spread']: 'patterns',
-  ['no-unnecessary-history-push-state-spread']: 'patterns',
-  ['no-unnecessary-history-replace-state-spread']: 'patterns',
-  ['no-unnecessary-history-go-spread']: 'patterns',
-  ['no-unnecessary-history-back-spread']: 'patterns',
-  ['no-unnecessary-history-forward-spread']: 'patterns',
-  ['no-unnecessary-location-assign-spread']: 'patterns',
-  ['no-unnecessary-location-reload-spread']: 'patterns',
-  ['no-unnecessary-location-replace-spread']: 'patterns',
-  ['no-unnecessary-location-to-string-spread']: 'patterns',
-  ['no-unnecessary-performance-now-spread']: 'patterns',
-  ['no-unnecessary-performance-mark-spread']: 'patterns',
-  ['no-unnecessary-performance-measure-spread']: 'patterns',
-  ['no-unnecessary-performance-clear-marks-spread']: 'patterns',
-  ['no-unnecessary-performance-clear-measures-spread']: 'patterns',
-  ['no-unnecessary-performance-get-entries-spread']: 'patterns',
-  ['no-unnecessary-performance-get-entries-by-name-spread']: 'patterns',
-  ['no-unnecessary-performance-get-entries-by-type-spread']: 'patterns',
-  ['no-unnecessary-performance-clear-resource-timings-spread']: 'patterns',
-  ['no-unnecessary-performance-set-resource-timing-buffer-size-spread']: 'patterns',
-  ['no-unnecessary-screen-orientation-lock-spread']: 'patterns',
-  ['no-unnecessary-screen-orientation-unlock-spread']: 'patterns',
-  ['no-unnecessary-crypto-get-random-values-spread']: 'patterns',
-  ['no-unnecessary-crypto-random-uuid-spread']: 'patterns',
-  ['no-unnecessary-indexed-db-open-spread']: 'patterns',
-  ['no-unnecessary-indexed-db-delete-database-spread']: 'patterns',
-  ['no-unnecessary-indexed-db-cmp-spread']: 'patterns',
-  ['no-unnecessary-caches-open-spread']: 'patterns',
-  ['no-unnecessary-caches-match-spread']: 'patterns',
-  ['no-unnecessary-caches-has-spread']: 'patterns',
-  ['no-unnecessary-caches-delete-spread']: 'patterns',
-  ['no-unnecessary-caches-keys-spread']: 'patterns',
-  ['no-unnecessary-window-open-spread']: 'patterns',
-  ['no-unnecessary-window-close-spread']: 'patterns',
-  ['no-unnecessary-window-stop-spread']: 'patterns',
-  ['no-unnecessary-window-focus-spread']: 'patterns',
-  ['no-unnecessary-window-blur-spread']: 'patterns',
-  ['no-unnecessary-window-scroll-to-spread']: 'patterns',
-  ['no-unnecessary-window-scroll-by-spread']: 'patterns',
-  ['no-unnecessary-window-scroll-spread']: 'patterns',
-  ['no-unnecessary-window-print-spread']: 'patterns',
-  ['no-unnecessary-window-alert-spread']: 'patterns',
-  ['no-unnecessary-window-confirm-spread']: 'patterns',
-  ['no-unnecessary-window-prompt-spread']: 'patterns',
-  ['no-unnecessary-window-get-computed-style-spread']: 'patterns',
-  ['no-unnecessary-window-get-selection-spread']: 'patterns',
-  ['no-unnecessary-window-match-media-spread']: 'patterns',
-  ['no-unnecessary-window-move-to-spread']: 'patterns',
-  ['no-unnecessary-window-move-by-spread']: 'patterns',
-  ['no-unnecessary-window-resize-to-spread']: 'patterns',
-  ['no-unnecessary-window-resize-by-spread']: 'patterns',
-  ['no-unnecessary-window-post-message-spread']: 'patterns',
-  ['no-unnecessary-window-atob-spread']: 'patterns',
-  ['no-unnecessary-window-btoa-spread']: 'patterns',
-  ['no-unnecessary-window-fetch-spread']: 'patterns',
-  ['no-unnecessary-window-create-image-bitmap-spread']: 'patterns',
-  ['no-unnecessary-window-queue-microtask-spread']: 'patterns',
-  ['no-unnecessary-window-report-error-spread']: 'patterns',
-  ['no-unnecessary-window-structured-clone-spread']: 'patterns',
-  ['no-unnecessary-window-request-animation-frame-spread']: 'patterns',
-  ['no-unnecessary-window-cancel-animation-frame-spread']: 'patterns',
-  ['no-unnecessary-window-request-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-window-cancel-idle-callback-spread']: 'patterns',
-  ['no-unnecessary-window-set-timeout-spread']: 'patterns',
-  ['no-unnecessary-window-clear-timeout-spread']: 'patterns',
-  ['no-unnecessary-window-set-interval-spread']: 'patterns',
-  ['no-unnecessary-window-clear-interval-spread']: 'patterns',
-  ['no-unnecessary-process-exit-spread']: 'patterns',
-  ['no-unnecessary-process-next-tick-spread']: 'patterns',
-  ['no-unnecessary-process-cwd-spread']: 'patterns',
-  ['no-unnecessary-process-chdir-spread']: 'patterns',
-  ['no-unnecessary-process-env-spread']: 'patterns',
-  ['no-unnecessary-process-uptime-spread']: 'patterns',
-  ['no-unnecessary-process-memory-usage-spread']: 'patterns',
-  ['no-unnecessary-process-cpu-usage-spread']: 'patterns',
-  ['no-unnecessary-process-kill-spread']: 'patterns',
-  ['no-unnecessary-process-abort-spread']: 'patterns',
-  ['no-unnecessary-process-umask-spread']: 'patterns',
-  ['no-unnecessary-process-getuid-spread']: 'patterns',
-  ['no-unnecessary-process-setuid-spread']: 'patterns',
-  ['no-unnecessary-process-getgid-spread']: 'patterns',
-  ['no-unnecessary-process-setgid-spread']: 'patterns',
-  ['no-unnecessary-process-hrtime-spread']: 'patterns',
-  ['no-unnecessary-process-argv-spread']: 'patterns',
-  ['no-unnecessary-buffer-alloc-spread']: 'patterns',
-  ['no-unnecessary-buffer-alloc-unsafe-spread']: 'patterns',
-  ['no-unnecessary-buffer-alloc-unsafe-slow-spread']: 'patterns',
-  ['no-unnecessary-buffer-from-spread']: 'patterns',
-  ['no-unnecessary-buffer-of-spread']: 'patterns',
-  ['no-unnecessary-buffer-is-buffer-spread']: 'patterns',
-  ['no-unnecessary-buffer-is-encoding-spread']: 'patterns',
-  ['no-unnecessary-buffer-byte-length-spread']: 'patterns',
-  ['no-unnecessary-buffer-compare-spread']: 'patterns',
-  ['no-unnecessary-buffer-concat-spread']: 'patterns',
-  ['no-unnecessary-path-join-spread']: 'patterns',
-  ['no-unnecessary-path-resolve-spread']: 'patterns',
-  ['no-unnecessary-path-normalize-spread']: 'patterns',
-  ['no-unnecessary-path-relative-spread']: 'patterns',
-  ['no-unnecessary-path-dirname-spread']: 'patterns',
-  ['no-unnecessary-path-basename-spread']: 'patterns',
-  ['no-unnecessary-path-extname-spread']: 'patterns',
-  ['no-unnecessary-path-parse-spread']: 'patterns',
-  ['no-unnecessary-path-format-spread']: 'patterns',
-  ['no-unnecessary-path-is-absolute-spread']: 'patterns',
-  ['no-unnecessary-path-to-namespaced-path-spread']: 'patterns',
-  ['no-unnecessary-fs-read-file-spread']: 'patterns',
-  ['no-unnecessary-fs-write-file-spread']: 'patterns',
-  ['no-unnecessary-fs-append-file-spread']: 'patterns',
-  ['no-unnecessary-fs-copy-file-spread']: 'patterns',
-  ['no-unnecessary-fs-rename-spread']: 'patterns',
-  ['no-unnecessary-fs-unlink-spread']: 'patterns',
-  ['no-unnecessary-fs-mkdir-spread']: 'patterns',
-  ['no-unnecessary-fs-rmdir-spread']: 'patterns',
-  ['no-unnecessary-fs-readdir-spread']: 'patterns',
-  ['no-unnecessary-fs-stat-spread']: 'patterns',
-  ['no-unnecessary-fs-lstat-spread']: 'patterns',
-  ['no-unnecessary-fs-fstat-spread']: 'patterns',
-  ['no-unnecessary-fs-exists-spread']: 'patterns',
-  ['no-unnecessary-fs-exists-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-access-spread']: 'patterns',
-  ['no-unnecessary-fs-chmod-spread']: 'patterns',
-  ['no-unnecessary-fs-chown-spread']: 'patterns',
-  ['no-unnecessary-fs-read-dir-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-read-file-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-write-file-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-mkdir-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-rm-sync-spread']: 'patterns',
-  ['no-unnecessary-fs-rm-spread']: 'patterns',
-  ['no-unnecessary-fs-watch-spread']: 'patterns',
-  ['no-unnecessary-fs-watch-file-spread']: 'patterns',
-  ['no-unnecessary-fs-unwatch-file-spread']: 'patterns',
-  ['no-unnecessary-fs-create-read-stream-spread']: 'patterns',
-  ['no-unnecessary-fs-create-write-stream-spread']: 'patterns',
-  ['no-unnecessary-util-promisify-spread']: 'patterns',
-  ['no-unnecessary-util-callbackify-spread']: 'patterns',
-  ['no-unnecessary-util-inspect-spread']: 'patterns',
-  ['no-unnecessary-util-format-spread']: 'patterns',
-  ['no-unnecessary-util-deprecate-spread']: 'patterns',
-  ['no-unnecessary-util-is-deep-strict-equal-spread']: 'patterns',
-  ['no-unnecessary-util-types-is-date-spread']: 'patterns',
-  ['no-unnecessary-util-text-decoder-decode-spread']: 'patterns',
-  ['no-unnecessary-os-homedir-spread']: 'patterns',
-  ['no-unnecessary-os-tmpdir-spread']: 'patterns',
-  ['no-unnecessary-os-hostname-spread']: 'patterns',
-  ['no-unnecessary-os-type-spread']: 'patterns',
-  ['no-unnecessary-os-platform-spread']: 'patterns',
-  ['no-unnecessary-os-arch-spread']: 'patterns',
-  ['no-unnecessary-os-release-spread']: 'patterns',
-  ['no-unnecessary-os-cpus-spread']: 'patterns',
-  ['no-unnecessary-os-totalmem-spread']: 'patterns',
-  ['no-unnecessary-os-freemem-spread']: 'patterns',
-  ['no-unnecessary-os-uptime-spread']: 'patterns',
-  ['no-unnecessary-os-loadavg-spread']: 'patterns',
-  ['no-unnecessary-os-network-interfaces-spread']: 'patterns',
-  ['no-unnecessary-os-constants-spread']: 'patterns',
-  ['no-unnecessary-os-user-info-spread']: 'patterns',
-  ['no-unnecessary-os-eol-spread']: 'patterns',
-  ['no-unnecessary-os-dev-null-spread']: 'patterns',
-  ['no-unnecessary-os-get-priority-spread']: 'patterns',
-  ['no-unnecessary-os-set-priority-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-hash-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-hmac-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-cipher-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-cipher-iv-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-decipher-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-decipher-iv-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-sign-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-verify-spread']: 'patterns',
-  ['no-unnecessary-crypto-random-bytes-spread']: 'patterns',
-  ['no-unnecessary-crypto-pbkdf2-spread']: 'patterns',
-  ['no-unnecessary-crypto-scrypt-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-secret-key-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-public-key-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-private-key-spread']: 'patterns',
-  ['no-unnecessary-crypto-get-ciphers-spread']: 'patterns',
-  ['no-unnecessary-crypto-get-hashes-spread']: 'patterns',
-  ['no-unnecessary-crypto-timing-safe-equal-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-on-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-off-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-once-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-emit-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-remove-listener-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-remove-all-listeners-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-listeners-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-listener-count-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-prepend-listener-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-prepend-once-listener-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-set-max-listeners-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-get-max-listeners-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-event-names-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-raw-listeners-spread']: 'patterns',
-  ['no-unnecessary-stream-pipeline-spread']: 'patterns',
-  ['no-unnecessary-stream-compose-spread']: 'patterns',
-  ['no-unnecessary-stream-readable-from-spread']: 'patterns',
-  ['no-unnecessary-child-process-exec-spread']: 'patterns',
-  ['no-unnecessary-child-process-exec-file-spread']: 'patterns',
-  ['no-unnecessary-child-process-spawn-spread']: 'patterns',
-  ['no-unnecessary-child-process-fork-spread']: 'patterns',
-  ['no-unnecessary-http-request-spread']: 'patterns',
-  ['no-unnecessary-http-get-spread']: 'patterns',
-  ['no-unnecessary-https-request-spread']: 'patterns',
-  ['no-unnecessary-https-get-spread']: 'patterns',
-  ['no-unnecessary-url-parse-node-spread']: 'patterns',
-  ['no-unnecessary-url-format-spread']: 'patterns',
-  ['no-unnecessary-url-resolve-spread']: 'patterns',
-  ['no-unnecessary-url-domain-to-unicode-spread']: 'patterns',
-  ['no-unnecessary-url-domain-to-ascii-spread']: 'patterns',
-  ['no-unnecessary-querystring-parse-spread']: 'patterns',
-  ['no-unnecessary-querystring-stringify-spread']: 'patterns',
-  ['no-unnecessary-querystring-escape-spread']: 'patterns',
-  ['no-unnecessary-querystring-unescape-spread']: 'patterns',
-  ['no-unnecessary-assert-ok-spread']: 'patterns',
-  ['no-unnecessary-assert-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-not-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-deep-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-not-deep-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-deep-strict-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-not-deep-strict-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-strict-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-not-strict-equal-spread']: 'patterns',
-  ['no-unnecessary-assert-throws-spread']: 'patterns',
-  ['no-unnecessary-assert-rejects-spread']: 'patterns',
-  ['no-unnecessary-assert-does-not-throw-spread']: 'patterns',
-  ['no-unnecessary-assert-does-not-reject-spread']: 'patterns',
-  ['no-unnecessary-assert-if-error-spread']: 'patterns',
-  ['no-unnecessary-assert-fail-spread']: 'patterns',
-  ['no-unnecessary-assert-match-spread']: 'patterns',
-  ['no-unnecessary-assert-does-not-match-spread']: 'patterns',
-  ['no-unnecessary-assert-call-tracker-calls-spread']: 'patterns',
-  ['no-unnecessary-promise-instance-then-spread']: 'patterns',
-  ['no-unnecessary-promise-instance-catch-spread']: 'patterns',
-  ['no-unnecessary-promise-instance-finally-spread']: 'patterns',
-  ['no-unnecessary-intl-collator-compare-spread']: 'patterns',
-  ['no-unnecessary-intl-number-format-format-spread']: 'patterns',
-  ['no-unnecessary-intl-date-time-format-format-spread']: 'patterns',
-  ['no-unnecessary-intl-list-format-format-spread']: 'patterns',
-  ['no-unnecessary-intl-relative-time-format-spread']: 'patterns',
-  ['no-unnecessary-intl-plural-rules-spread']: 'patterns',
-  ['no-unnecessary-intl-segmenter-spread']: 'patterns',
-  ['no-unnecessary-intl-display-names-spread']: 'patterns',
-  ['no-unnecessary-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-iterator-return-spread']: 'patterns',
-  ['no-unnecessary-iterator-throw-spread']: 'patterns',
-  ['no-unnecessary-iterator-for-each-spread']: 'patterns',
-  ['no-unnecessary-iterator-map-spread']: 'patterns',
-  ['no-unnecessary-iterator-filter-spread']: 'patterns',
-  ['no-unnecessary-iterator-take-spread']: 'patterns',
-  ['no-unnecessary-iterator-drop-spread']: 'patterns',
-  ['no-unnecessary-iterator-flat-map-spread']: 'patterns',
-  ['no-unnecessary-iterator-reduce-spread']: 'patterns',
-  ['no-unnecessary-iterator-to-array-spread']: 'patterns',
-  ['no-unnecessary-iterator-some-spread']: 'patterns',
-  ['no-unnecessary-iterator-every-spread']: 'patterns',
-  ['no-unnecessary-iterator-find-spread']: 'patterns',
-  ['no-unnecessary-array-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-map-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-set-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-string-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-generator-next-spread']: 'patterns',
-  ['no-unnecessary-generator-return-spread']: 'patterns',
-  ['no-unnecessary-generator-throw-spread']: 'patterns',
-  ['no-unnecessary-async-generator-next-spread']: 'patterns',
-  ['no-unnecessary-async-generator-return-spread']: 'patterns',
-  ['no-unnecessary-async-generator-throw-spread']: 'patterns',
-  ['no-unnecessary-async-iterator-next-spread']: 'patterns',
-  ['no-unnecessary-async-iterator-return-spread']: 'patterns',
-  ['no-unnecessary-async-iterator-throw-spread']: 'patterns',
-  ['no-unnecessary-response-instance-clone-spread']: 'patterns',
-  ['no-unnecessary-response-instance-json-spread']: 'patterns',
-  ['no-unnecessary-response-instance-text-spread']: 'patterns',
-  ['no-unnecessary-response-instance-blob-spread']: 'patterns',
-  ['no-unnecessary-response-instance-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-response-instance-form-data-spread']: 'patterns',
-  ['no-unnecessary-request-instance-clone-spread']: 'patterns',
-  ['no-unnecessary-request-instance-json-spread']: 'patterns',
-  ['no-unnecessary-request-instance-text-spread']: 'patterns',
-  ['no-unnecessary-request-instance-blob-spread']: 'patterns',
-  ['no-unnecessary-request-instance-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-request-instance-form-data-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-get-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-set-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-has-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-delete-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-append-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-entries-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-keys-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-values-spread']: 'patterns',
-  ['no-unnecessary-headers-instance-for-each-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-get-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-get-all-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-set-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-append-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-delete-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-has-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-entries-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-keys-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-values-spread']: 'patterns',
-  ['no-unnecessary-form-data-instance-for-each-spread']: 'patterns',
-  ['no-unnecessary-url-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-url-instance-to-json-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-get-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-get-all-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-set-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-append-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-delete-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-has-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-entries-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-keys-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-values-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-for-each-spread']: 'patterns',
-  ['no-unnecessary-url-search-params-instance-sort-spread']: 'patterns',
-  ['no-unnecessary-blob-instance-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-blob-instance-text-spread']: 'patterns',
-  ['no-unnecessary-blob-instance-slice-spread']: 'patterns',
-  ['no-unnecessary-blob-instance-stream-spread']: 'patterns',
-  ['no-unnecessary-file-instance-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-file-instance-text-spread']: 'patterns',
-  ['no-unnecessary-file-instance-slice-spread']: 'patterns',
-  ['no-unnecessary-file-instance-stream-spread']: 'patterns',
-  ['no-unnecessary-abort-signal-throw-if-aborted-spread']: 'patterns',
-  ['no-unnecessary-broadcast-channel-instance-post-message-spread']: 'patterns',
-  ['no-unnecessary-broadcast-channel-instance-close-spread']: 'patterns',
-  ['no-unnecessary-message-port-post-message-spread']: 'patterns',
-  ['no-unnecessary-message-port-close-spread']: 'patterns',
-  ['no-unnecessary-message-port-start-spread']: 'patterns',
-  ['no-unnecessary-worker-instance-post-message-spread']: 'patterns',
-  ['no-unnecessary-worker-instance-terminate-spread']: 'patterns',
-  ['no-unnecessary-file-reader-instance-read-as-array-buffer-spread']: 'patterns',
-  ['no-unnecessary-file-reader-instance-read-as-binary-string-spread']: 'patterns',
-  ['no-unnecessary-file-reader-instance-read-as-data-url-spread']: 'patterns',
-  ['no-unnecessary-file-reader-instance-read-as-text-spread']: 'patterns',
-  ['no-unnecessary-file-reader-instance-abort-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-read-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-pipe-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-unpipe-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-pause-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-resume-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-destroy-spread']: 'patterns',
-  ['no-unnecessary-readable-stream-push-spread']: 'patterns',
-  ['no-unnecessary-writable-stream-write-spread']: 'patterns',
-  ['no-unnecessary-writable-stream-end-spread']: 'patterns',
-  ['no-unnecessary-writable-stream-destroy-spread']: 'patterns',
-  ['no-unnecessary-transform-stream-transform-spread']: 'patterns',
-  ['no-unnecessary-transform-stream-flush-spread']: 'patterns',
-  ['no-unnecessary-event-emitter-add-listener-spread']: 'patterns',
-  ['no-unnecessary-child-process-instance-kill-spread']: 'patterns',
-  ['no-unnecessary-child-process-instance-send-spread']: 'patterns',
-  ['no-unnecessary-child-process-instance-disconnect-spread']: 'patterns',
-  ['no-unnecessary-child-process-instance-ref-spread']: 'patterns',
-  ['no-unnecessary-child-process-instance-unref-spread']: 'patterns',
-  ['no-unnecessary-observer-instance-observe-spread']: 'patterns',
-  ['no-unnecessary-observer-instance-unobserve-spread']: 'patterns',
-  ['no-unnecessary-observer-instance-disconnect-spread']: 'patterns',
-  ['no-unnecessary-observer-instance-take-records-spread']: 'patterns',
-  ['no-unnecessary-text-decoder-instance-decode-spread']: 'patterns',
-  ['no-unnecessary-text-encoder-instance-encode-spread']: 'patterns',
-  ['no-unnecessary-text-encoder-instance-encode-into-spread']: 'patterns',
-  ['no-unnecessary-server-listen-spread']: 'patterns',
-  ['no-unnecessary-server-close-spread']: 'patterns',
-  ['no-unnecessary-server-address-spread']: 'patterns',
-  ['no-unnecessary-server-get-connections-spread']: 'patterns',
-  ['no-unnecessary-server-ref-spread']: 'patterns',
-  ['no-unnecessary-server-unref-spread']: 'patterns',
-  ['no-unnecessary-socket-write-spread']: 'patterns',
-  ['no-unnecessary-socket-connect-spread']: 'patterns',
-  ['no-unnecessary-socket-end-spread']: 'patterns',
-  ['no-unnecessary-socket-destroy-spread']: 'patterns',
-  ['no-unnecessary-socket-pause-spread']: 'patterns',
-  ['no-unnecessary-socket-resume-spread']: 'patterns',
-  ['no-unnecessary-socket-set-timeout-spread']: 'patterns',
-  ['no-unnecessary-socket-set-encoding-spread']: 'patterns',
-  ['no-unnecessary-socket-set-keep-alive-spread']: 'patterns',
-  ['no-unnecessary-socket-set-no-delay-spread']: 'patterns',
-  ['no-unnecessary-socket-ref-spread']: 'patterns',
-  ['no-unnecessary-socket-unref-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-float32-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-float64-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-int16-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-int32-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-int8-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-uint16-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-uint32-spread']: 'patterns',
-  ['no-unnecessary-dataview-set-uint8-spread']: 'patterns',
-  ['no-unnecessary-array-buffer-instance-resize-spread']: 'patterns',
-  ['no-unnecessary-array-buffer-instance-slice-spread']: 'patterns',
-  ['no-unnecessary-array-buffer-instance-transfer-spread']: 'patterns',
-  ['no-unnecessary-array-from-async-spread']: 'patterns',
-  ['no-unnecessary-array-is-array-spread']: 'patterns',
-  ['no-unnecessary-big-int-instance-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-big-int-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-big-int-instance-value-of-spread']: 'patterns',
-  ['no-unnecessary-boolean-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-boolean-instance-value-of-spread']: 'patterns',
-  ['no-unnecessary-canvas-get-context-spread']: 'patterns',
-  ['no-unnecessary-crypto-cipher-instance-final-spread']: 'patterns',
-  ['no-unnecessary-crypto-cipher-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-hash-instance-digest-spread']: 'patterns',
-  ['no-unnecessary-crypto-create-hash-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-decipher-instance-final-spread']: 'patterns',
-  ['no-unnecessary-crypto-decipher-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-hmac-instance-digest-spread']: 'patterns',
-  ['no-unnecessary-crypto-hmac-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-sign-instance-sign-spread']: 'patterns',
-  ['no-unnecessary-crypto-sign-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-verify-instance-update-spread']: 'patterns',
-  ['no-unnecessary-crypto-verify-instance-verify-spread']: 'patterns',
-  ['no-unnecessary-ctx-arc-spread']: 'patterns',
-  ['no-unnecessary-ctx-arc-to-spread']: 'patterns',
-  ['no-unnecessary-ctx-begin-path-spread']: 'patterns',
-  ['no-unnecessary-ctx-bezier-curve-to-spread']: 'patterns',
-  ['no-unnecessary-ctx-clear-rect-spread']: 'patterns',
-  ['no-unnecessary-ctx-clip-spread']: 'patterns',
-  ['no-unnecessary-ctx-close-path-spread']: 'patterns',
-  ['no-unnecessary-ctx-create-linear-gradient-spread']: 'patterns',
-  ['no-unnecessary-ctx-create-pattern-spread']: 'patterns',
-  ['no-unnecessary-ctx-create-radial-gradient-spread']: 'patterns',
-  ['no-unnecessary-ctx-draw-image-spread']: 'patterns',
-  ['no-unnecessary-ctx-fill-rect-spread']: 'patterns',
-  ['no-unnecessary-ctx-fill-spread']: 'patterns',
-  ['no-unnecessary-ctx-fill-text-spread']: 'patterns',
-  ['no-unnecessary-ctx-get-image-data-spread']: 'patterns',
-  ['no-unnecessary-ctx-get-line-dash-spread']: 'patterns',
-  ['no-unnecessary-ctx-line-to-spread']: 'patterns',
-  ['no-unnecessary-ctx-measure-text-spread']: 'patterns',
-  ['no-unnecessary-ctx-move-to-spread']: 'patterns',
-  ['no-unnecessary-ctx-put-image-data-spread']: 'patterns',
-  ['no-unnecessary-ctx-quadratic-curve-to-spread']: 'patterns',
-  ['no-unnecessary-ctx-reset-transform-spread']: 'patterns',
-  ['no-unnecessary-ctx-restore-spread']: 'patterns',
-  ['no-unnecessary-ctx-rotate-spread']: 'patterns',
-  ['no-unnecessary-ctx-save-spread']: 'patterns',
-  ['no-unnecessary-ctx-scale-spread']: 'patterns',
-  ['no-unnecessary-ctx-set-line-dash-spread']: 'patterns',
-  ['no-unnecessary-ctx-set-transform-spread']: 'patterns',
-  ['no-unnecessary-ctx-stroke-rect-spread']: 'patterns',
-  ['no-unnecessary-ctx-stroke-spread']: 'patterns',
-  ['no-unnecessary-ctx-stroke-text-spread']: 'patterns',
-  ['no-unnecessary-ctx-transform-spread']: 'patterns',
-  ['no-unnecessary-ctx-translate-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-big-int64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-big-uint64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-float32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-float64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-int16-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-int32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-int8-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-uint16-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-uint32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-get-uint8-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-big-int64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-big-uint64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-float32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-float64-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-int16-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-int32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-int8-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-uint16-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-uint32-spread']: 'patterns',
-  ['no-unnecessary-dataview-instance-set-uint8-spread']: 'patterns',
-  ['no-unnecessary-date-instance-get-time-spread']: 'patterns',
-  ['no-unnecessary-date-instance-set-time-spread']: 'patterns',
-  ['no-unnecessary-date-instance-to-json-spread']: 'patterns',
-  ['no-unnecessary-date-instance-value-of-spread']: 'patterns',
-  ['no-unnecessary-dns-get-servers-spread']: 'patterns',
-  ['no-unnecessary-dns-lookup-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-4-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-6-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-any-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-cname-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-mx-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-ns-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-ptr-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-srv-spread']: 'patterns',
-  ['no-unnecessary-dns-resolve-txt-spread']: 'patterns',
-  ['no-unnecessary-dns-reverse-spread']: 'patterns',
-  ['no-unnecessary-dns-set-servers-spread']: 'patterns',
-  ['no-unnecessary-error-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-finalization-registry-instance-register-spread']: 'patterns',
-  ['no-unnecessary-finalization-registry-instance-unregister-spread']: 'patterns',
-  ['no-unnecessary-gl-attach-shader-spread']: 'patterns',
-  ['no-unnecessary-gl-bind-buffer-spread']: 'patterns',
-  ['no-unnecessary-gl-blend-func-spread']: 'patterns',
-  ['no-unnecessary-gl-buffer-data-spread']: 'patterns',
-  ['no-unnecessary-gl-clear-color-spread']: 'patterns',
-  ['no-unnecessary-gl-clear-spread']: 'patterns',
-  ['no-unnecessary-gl-compile-shader-spread']: 'patterns',
-  ['no-unnecessary-gl-create-buffer-spread']: 'patterns',
-  ['no-unnecessary-gl-create-program-spread']: 'patterns',
-  ['no-unnecessary-gl-create-shader-spread']: 'patterns',
-  ['no-unnecessary-gl-depth-func-spread']: 'patterns',
-  ['no-unnecessary-gl-disable-spread']: 'patterns',
-  ['no-unnecessary-gl-draw-arrays-spread']: 'patterns',
-  ['no-unnecessary-gl-draw-elements-spread']: 'patterns',
-  ['no-unnecessary-gl-enable-spread']: 'patterns',
-  ['no-unnecessary-gl-enable-vertex-attrib-array-spread']: 'patterns',
-  ['no-unnecessary-gl-get-attrib-location-spread']: 'patterns',
-  ['no-unnecessary-gl-get-uniform-location-spread']: 'patterns',
-  ['no-unnecessary-gl-link-program-spread']: 'patterns',
-  ['no-unnecessary-gl-shader-source-spread']: 'patterns',
-  ['no-unnecessary-gl-use-program-spread']: 'patterns',
-  ['no-unnecessary-gl-vertex-attrib-pointer-spread']: 'patterns',
-  ['no-unnecessary-gl-viewport-spread']: 'patterns',
-  ['no-unnecessary-math-clamp-spread']: 'patterns',
-  ['no-unnecessary-math-scale-spread']: 'patterns',
-  ['no-unnecessary-net-connect-spread']: 'patterns',
-  ['no-unnecessary-net-create-connection-spread']: 'patterns',
-  ['no-unnecessary-net-create-server-spread']: 'patterns',
-  ['no-unnecessary-number-instance-to-exponential-spread']: 'patterns',
-  ['no-unnecessary-number-instance-to-fixed-spread']: 'patterns',
-  ['no-unnecessary-number-instance-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-number-instance-to-precision-spread']: 'patterns',
-  ['no-unnecessary-number-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-number-instance-value-of-spread']: 'patterns',
-  ['no-unnecessary-object-has-own-property-spread']: 'patterns',
-  ['no-unnecessary-object-is-prototype-of-spread']: 'patterns',
-  ['no-unnecessary-object-property-is-enumerable-spread']: 'patterns',
-  ['no-unnecessary-object-to-locale-string-spread']: 'patterns',
-  ['no-unnecessary-object-to-string-spread']: 'patterns',
-  ['no-unnecessary-object-value-of-spread']: 'patterns',
-  ['no-unnecessary-promise-resolve-spread']: 'patterns',
-  ['no-unnecessary-promise-with-resolvers-spread']: 'patterns',
-  ['no-unnecessary-readline-close-spread']: 'patterns',
-  ['no-unnecessary-readline-create-interface-spread']: 'patterns',
-  ['no-unnecessary-readline-prompt-spread']: 'patterns',
-  ['no-unnecessary-readline-question-spread']: 'patterns',
-  ['no-unnecessary-readline-write-spread']: 'patterns',
-  ['no-unnecessary-regexp-instance-exec-spread']: 'patterns',
-  ['no-unnecessary-regexp-instance-test-spread']: 'patterns',
-  ['no-unnecessary-regexp-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-shared-array-buffer-instance-grow-spread']: 'patterns',
-  ['no-unnecessary-shared-array-buffer-instance-slice-spread']: 'patterns',
-  ['no-unnecessary-stderr-end-spread']: 'patterns',
-  ['no-unnecessary-stderr-write-spread']: 'patterns',
-  ['no-unnecessary-stdin-pipe-spread']: 'patterns',
-  ['no-unnecessary-stdin-push-spread']: 'patterns',
-  ['no-unnecessary-stdin-read-spread']: 'patterns',
-  ['no-unnecessary-stdout-end-spread']: 'patterns',
-  ['no-unnecessary-stdout-write-spread']: 'patterns',
-  ['no-unnecessary-symbol-instance-description-spread']: 'patterns',
-  ['no-unnecessary-symbol-instance-to-string-spread']: 'patterns',
-  ['no-unnecessary-symbol-instance-value-of-spread']: 'patterns',
-  ['no-unnecessary-weak-ref-instance-deref-spread']: 'patterns',
-  ['no-unnecessary-zlib-brotli-compress-spread']: 'patterns',
-  ['no-unnecessary-zlib-brotli-compress-sync-spread']: 'patterns',
-  ['no-unnecessary-zlib-brotli-decompress-spread']: 'patterns',
-  ['no-unnecessary-zlib-brotli-decompress-sync-spread']: 'patterns',
-  ['no-unnecessary-zlib-deflate-spread']: 'patterns',
-  ['no-unnecessary-zlib-deflate-sync-spread']: 'patterns',
-  ['no-unnecessary-zlib-gunzip-spread']: 'patterns',
-  ['no-unnecessary-zlib-gunzip-sync-spread']: 'patterns',
-  ['no-unnecessary-zlib-gzip-spread']: 'patterns',
-  ['no-unnecessary-zlib-gzip-sync-spread']: 'patterns',
-  ['no-unnecessary-zlib-inflate-spread']: 'patterns',
-  ['no-unnecessary-zlib-inflate-sync-spread']: 'patterns',
-  'no-unnecessary-int16-array-of-spread': adaptedNoUnnecessaryInt16ArrayOfSpread,
-  'no-unnecessary-int32-array-from-spread': adaptedNoUnnecessaryInt32ArrayFromSpread,
-  'no-unnecessary-int32-array-of-spread': adaptedNoUnnecessaryInt32ArrayOfSpread,
-  'no-unnecessary-uint16-array-from-spread': adaptedNoUnnecessaryUint16ArrayFromSpread,
-  'no-unnecessary-uint16-array-of-spread': adaptedNoUnnecessaryUint16ArrayOfSpread,
-  'no-unnecessary-uint32-array-from-spread': adaptedNoUnnecessaryUint32ArrayFromSpread,
-  'no-unnecessary-uint32-array-of-spread': adaptedNoUnnecessaryUint32ArrayOfSpread,
-  'no-unnecessary-float32-array-from-spread': adaptedNoUnnecessaryFloat32ArrayFromSpread,
-  'no-unnecessary-float32-array-of-spread': adaptedNoUnnecessaryFloat32ArrayOfSpread,
-  'no-unnecessary-float64-array-from-spread': adaptedNoUnnecessaryFloat64ArrayFromSpread,
-  'no-unnecessary-float64-array-of-spread': adaptedNoUnnecessaryFloat64ArrayOfSpread,
-  'no-unnecessary-big-int64-array-from-spread': adaptedNoUnnecessaryBigInt64ArrayFromSpread,
-  'no-unnecessary-big-int64-array-of-spread': adaptedNoUnnecessaryBigInt64ArrayOfSpread,
-  'no-unnecessary-big-uint64-array-from-spread': adaptedNoUnnecessaryBigUint64ArrayFromSpread,
-  'no-unnecessary-big-uint64-array-of-spread': adaptedNoUnnecessaryBigUint64ArrayOfSpread,
-}
-export function getRuleCategory(ruleId: string): RuleCategory {
-  return RULE_CATEGORIES[ruleId] ?? 'complexity'
 }
 
 // Re-exports
@@ -6943,1353 +5305,1187 @@ export {
   restrictTemplateExpressionsRule,
 } from './patterns/index.js'
 import {
-  noUnnecessaryDateSetFullYearSpreadRule,
-  noUnnecessaryDateSetMonthSpreadRule,
-  noUnnecessaryDateSetDateSpreadRule,
-  noUnnecessaryDateSetHoursSpreadRule,
-  noUnnecessaryDateSetMinutesSpreadRule,
-  noUnnecessaryDateSetSecondsSpreadRule,
-  noUnnecessaryDateSetMillisecondsSpreadRule,
-  noUnnecessaryDateSetUtcFullYearSpreadRule,
-  noUnnecessaryDateSetUtcMonthSpreadRule,
-  noUnecessaryDateSetUtcDateSpreadRule,
-  noUnnecessaryDateSetUtcHoursSpreadRule,
-  noUnecessaryDateSetUtcMinutesSpreadRule,
-  noUnnecessaryDateSetUtcSecondsSpreadRule,
-  noUnnecessaryDateSetUtcMillisecondsSpreadRule,
-  noUnnecessarySetClearSpreadRule,
-  noUnecessarySetKeysSpreadRule,
-  noUnnecessarySetValuesSpreadRule,
-  noUnnecessarySetEntriesSpreadRule,
-  noUnnecessaryMapKeysSpreadRule,
-  noUnecessaryMapValuesSpreadRule,
-  noUnnecessaryMapEntriesSpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryErrorToStringSpreadRule,
-  noUnnecessaryRegexExecSpreadRule,
-  noUnnecessaryRegexTestSpreadRule,
-  noUnnecessaryArrayBufferIsViewSpreadRule,
-  noUnnecessaryNumberIsFiniteSpreadRule,
-  noUnnecessaryNumberIsNanSpreadRule,
-  noUnnecessaryNumberIsIntegerSpreadRule,
-  noUnnecessaryNumberIsSafeIntegerSpreadRule,
-  noUnnecessaryNumberParseFloatSpreadRule,
-  noUnnecessaryNumberParseIntSpreadRule,
-  noUnnecessaryStringFromCharCodeSpreadRule,
-  noUnnecessaryStringFromCodePointSpreadRule,
-  noUnnecessaryStringRawSpreadRule,
-  noUnnecessaryInt8ArrayFromSpreadRule,
-  noUnnecessaryInt8ArrayOfSpreadRule,
-  noUnnecessaryUint8ArrayFromSpreadRule,
-  noUnnecessaryUint8ArrayOfSpreadRule,
-  noUnnecessaryUint8ClampedArrayFromSpreadRule,
-  noUnnecessaryUint8ClampedArrayOfSpreadRule,
-  noUnnecessaryInt16ArrayFromSpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryInt16ArrayOfSpreadRule,
-  noUnnecessaryInt32ArrayFromSpreadRule,
-  noUnnecessaryInt32ArrayOfSpreadRule,
-  noUnnecessaryUint16ArrayFromSpreadRule,
-  noUnnecessaryUint16ArrayOfSpreadRule,
-  noUnnecessaryUint32ArrayFromSpreadRule,
-  noUnnecessaryUint32ArrayOfSpreadRule,
-  noUnnecessaryFloat32ArrayFromSpreadRule,
-  noUnnecessaryFloat32ArrayOfSpreadRule,
-  noUnnecessaryFloat64ArrayFromSpreadRule,
-  noUnnecessaryFloat64ArrayOfSpreadRule,
+  noUnnecessaryAbortControllerSpreadRule,
+  noUnnecessaryAbortSignalSpreadRule,
+  noUnnecessaryAbortSignalThrowIfAbortedSpreadRule,
+  noUnnecessaryAggregateErrorSpreadRule,
+  noUnnecessaryAlertSpreadRule,
+  noUnnecessaryArrayBufferInstanceResizeSpreadRule,
+  noUnnecessaryArrayBufferInstanceSliceSpreadRule,
+  noUnnecessaryArrayBufferInstanceTransferSpreadRule,
+  noUnnecessaryArrayBufferSpreadRule,
+  noUnnecessaryArrayFromAsyncSpreadRule,
+  noUnnecessaryArrayIteratorNextSpreadRule,
+  noUnnecessaryAssertCallTrackerCallsSpreadRule,
+  noUnnecessaryAssertDeepEqualSpreadRule,
+  noUnnecessaryAssertDeepStrictEqualSpreadRule,
+  noUnnecessaryAssertDoesNotMatchSpreadRule,
+  noUnnecessaryAssertDoesNotRejectSpreadRule,
+  noUnnecessaryAssertDoesNotThrowSpreadRule,
+  noUnnecessaryAssertEqualSpreadRule,
+  noUnnecessaryAssertFailSpreadRule,
+  noUnnecessaryAssertIfErrorSpreadRule,
+  noUnnecessaryAssertMatchSpreadRule,
+  noUnnecessaryAssertNotDeepEqualSpreadRule,
+  noUnnecessaryAssertNotDeepStrictEqualSpreadRule,
+  noUnnecessaryAssertNotEqualSpreadRule,
+  noUnnecessaryAssertNotStrictEqualSpreadRule,
+  noUnnecessaryAssertOkSpreadRule,
+  noUnnecessaryAssertRejectsSpreadRule,
+  noUnnecessaryAssertStrictEqualSpreadRule,
+  noUnnecessaryAssertThrowsSpreadRule,
+  noUnnecessaryAsyncGeneratorNextSpreadRule,
+  noUnnecessaryAsyncGeneratorReturnSpreadRule,
+  noUnnecessaryAsyncGeneratorThrowSpreadRule,
+  noUnnecessaryAsyncIteratorNextSpreadRule,
+  noUnnecessaryAsyncIteratorReturnSpreadRule,
+  noUnnecessaryAsyncIteratorThrowSpreadRule,
+  noUnnecessaryAtobSpreadRule,
+  noUnnecessaryAudioSpreadRule,
+  noUnnecessaryBigInt64ArrayAtSpreadRule,
+  noUnnecessaryBigInt64ArrayCopyWithinSpreadRule,
+  noUnnecessaryBigInt64ArrayEntriesSpreadRule,
+  noUnnecessaryBigInt64ArrayEverySpreadRule,
+  noUnnecessaryBigInt64ArrayFillSpreadRule,
+  noUnnecessaryBigInt64ArrayFilterSpreadRule,
+  noUnnecessaryBigInt64ArrayFindIndexSpreadRule,
+  noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule,
+  noUnnecessaryBigInt64ArrayFindLastSpreadRule,
+  noUnnecessaryBigInt64ArrayFindSpreadRule,
+  noUnnecessaryBigInt64ArrayForEachSpreadRule,
   noUnnecessaryBigInt64ArrayFromSpreadRule,
+  noUnnecessaryBigInt64ArrayIncludesSpreadRule,
+  noUnnecessaryBigInt64ArrayIndexOfSpreadRule,
+  noUnnecessaryBigInt64ArrayJoinSpreadRule,
+  noUnnecessaryBigInt64ArrayKeysSpreadRule,
+  noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule,
+  noUnnecessaryBigInt64ArrayMapSpreadRule,
   noUnnecessaryBigInt64ArrayOfSpreadRule,
+  noUnnecessaryBigInt64ArrayReduceRightSpreadRule,
+  noUnnecessaryBigInt64ArrayReduceSpreadRule,
+  noUnnecessaryBigInt64ArrayReverseSpreadRule,
+  noUnnecessaryBigInt64ArraySetSpreadRule,
+  noUnnecessaryBigInt64ArraySliceSpreadRule,
+  noUnnecessaryBigInt64ArraySomeSpreadRule,
+  noUnnecessaryBigInt64ArraySortSpreadRule,
+  noUnnecessaryBigInt64ArraySubarraySpreadRule,
+  noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule,
+  noUnnecessaryBigInt64ArrayToReversedSpreadRule,
+  noUnnecessaryBigInt64ArrayToSortedSpreadRule,
+  noUnnecessaryBigInt64ArrayToStringSpreadRule,
+  noUnnecessaryBigInt64ArrayValuesSpreadRule,
+  noUnnecessaryBigInt64ArrayWithSpreadRule,
+  noUnnecessaryBigIntInstanceToLocaleStringSpreadRule,
+  noUnnecessaryBigIntInstanceToStringSpreadRule,
+  noUnnecessaryBigIntInstanceValueOfSpreadRule,
+  noUnnecessaryBigUint64ArrayAtSpreadRule,
+  noUnnecessaryBigUint64ArrayCopyWithinSpreadRule,
+  noUnnecessaryBigUint64ArrayEntriesSpreadRule,
+  noUnnecessaryBigUint64ArrayEverySpreadRule,
+  noUnnecessaryBigUint64ArrayFillSpreadRule,
+  noUnnecessaryBigUint64ArrayFilterSpreadRule,
+  noUnnecessaryBigUint64ArrayFindIndexSpreadRule,
+  noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule,
+  noUnnecessaryBigUint64ArrayFindLastSpreadRule,
+  noUnnecessaryBigUint64ArrayFindSpreadRule,
+  noUnnecessaryBigUint64ArrayForEachSpreadRule,
   noUnnecessaryBigUint64ArrayFromSpreadRule,
+  noUnnecessaryBigUint64ArrayIncludesSpreadRule,
+  noUnnecessaryBigUint64ArrayIndexOfSpreadRule,
+  noUnnecessaryBigUint64ArrayJoinSpreadRule,
+  noUnnecessaryBigUint64ArrayKeysSpreadRule,
+  noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule,
+  noUnnecessaryBigUint64ArrayMapSpreadRule,
   noUnnecessaryBigUint64ArrayOfSpreadRule,
+  noUnnecessaryBigUint64ArrayReduceRightSpreadRule,
+  noUnnecessaryBigUint64ArrayReduceSpreadRule,
+  noUnnecessaryBigUint64ArrayReverseSpreadRule,
+  noUnnecessaryBigUint64ArraySetSpreadRule,
+  noUnnecessaryBigUint64ArraySliceSpreadRule,
+  noUnnecessaryBigUint64ArraySomeSpreadRule,
+  noUnnecessaryBigUint64ArraySortSpreadRule,
+  noUnnecessaryBigUint64ArraySubarraySpreadRule,
+  noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule,
+  noUnnecessaryBigUint64ArrayToReversedSpreadRule,
+  noUnnecessaryBigUint64ArrayToSortedSpreadRule,
+  noUnnecessaryBigUint64ArrayToStringSpreadRule,
+  noUnnecessaryBigUint64ArrayValuesSpreadRule,
+  noUnnecessaryBigUint64ArrayWithSpreadRule,
+  noUnnecessaryBlobInstanceArrayBufferSpreadRule,
+  noUnnecessaryBlobInstanceSliceSpreadRule,
+  noUnnecessaryBlobInstanceStreamSpreadRule,
+  noUnnecessaryBlobInstanceTextSpreadRule,
+  noUnnecessaryBlobSpreadRule,
+  noUnnecessaryBooleanInstanceToStringSpreadRule,
+  noUnnecessaryBooleanInstanceValueOfSpreadRule,
+  noUnnecessaryBroadcastChannelInstanceCloseSpreadRule,
+  noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule,
+  noUnnecessaryBroadcastChannelSpreadRule,
+  noUnnecessaryBtoaSpreadRule,
+  noUnnecessaryBufferAllocSpreadRule,
+  noUnnecessaryBufferAllocUnsafeSlowSpreadRule,
+  noUnnecessaryBufferAllocUnsafeSpreadRule,
+  noUnnecessaryBufferByteLengthSpreadRule,
+  noUnnecessaryBufferCompareSpreadRule,
+  noUnnecessaryBufferConcatSpreadRule,
+  noUnnecessaryBufferFromSpreadRule,
+  noUnnecessaryBufferIsBufferSpreadRule,
+  noUnnecessaryBufferIsEncodingSpreadRule,
+  noUnnecessaryBufferOfSpreadRule,
+  noUnnecessaryCssStyleDeclarationSpreadRule,
+  noUnnecessaryCachesDeleteSpreadRule,
+  noUnnecessaryCachesHasSpreadRule,
+  noUnnecessaryCachesKeysSpreadRule,
+  noUnnecessaryCachesMatchSpreadRule,
+  noUnnecessaryCachesOpenSpreadRule,
+  noUnnecessaryCancelAnimationFrameSpreadRule,
+  noUnnecessaryCancelIdleCallbackSpreadRule,
+  noUnnecessaryCanvasGetContextSpreadRule,
+  noUnnecessaryChildProcessExecFileSpreadRule,
+  noUnnecessaryChildProcessExecSpreadRule,
+  noUnnecessaryChildProcessForkSpreadRule,
+  noUnnecessaryChildProcessInstanceDisconnectSpreadRule,
+  noUnnecessaryChildProcessInstanceKillSpreadRule,
+  noUnnecessaryChildProcessInstanceRefSpreadRule,
+  noUnnecessaryChildProcessInstanceSendSpreadRule,
+  noUnnecessaryChildProcessInstanceUnrefSpreadRule,
+  noUnnecessaryChildProcessSpawnSpreadRule,
+  noUnnecessaryClearIntervalSpreadRule,
+  noUnnecessaryClearTimeoutSpreadRule,
+  noUnnecessaryConfirmSpreadRule,
+  noUnnecessaryCryptoCipherInstanceFinalSpreadRule,
+  noUnnecessaryCryptoCipherInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoCreateCipherIvSpreadRule,
+  noUnnecessaryCryptoCreateCipherSpreadRule,
+  noUnnecessaryCryptoCreateDecipherIvSpreadRule,
+  noUnnecessaryCryptoCreateDecipherSpreadRule,
+  noUnnecessaryCryptoCreateHashInstanceDigestSpreadRule,
+  noUnnecessaryCryptoCreateHashInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoCreateHashSpreadRule,
+  noUnnecessaryCryptoCreateHmacSpreadRule,
+  noUnnecessaryCryptoCreatePrivateKeySpreadRule,
+  noUnnecessaryCryptoCreatePublicKeySpreadRule,
+  noUnnecessaryCryptoCreateSecretKeySpreadRule,
+  noUnnecessaryCryptoCreateSignSpreadRule,
+  noUnnecessaryCryptoCreateVerifySpreadRule,
+  noUnnecessaryCryptoDecipherInstanceFinalSpreadRule,
+  noUnnecessaryCryptoDecipherInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoGetCiphersSpreadRule,
+  noUnnecessaryCryptoGetHashesSpreadRule,
+  noUnnecessaryCryptoGetRandomValuesSpreadRule,
+  noUnnecessaryCryptoHmacInstanceDigestSpreadRule,
+  noUnnecessaryCryptoHmacInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoPbkdf2SpreadRule,
+  noUnnecessaryCryptoRandomBytesSpreadRule,
+  noUnnecessaryCryptoRandomUuidSpreadRule,
+  noUnnecessaryCryptoScryptSpreadRule,
+  noUnnecessaryCryptoSignInstanceSignSpreadRule,
+  noUnnecessaryCryptoSignInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoTimingSafeEqualSpreadRule,
+  noUnnecessaryCryptoVerifyInstanceUpdateSpreadRule,
+  noUnnecessaryCryptoVerifyInstanceVerifySpreadRule,
+  noUnnecessaryCtxArcSpreadRule,
+  noUnnecessaryCtxArcToSpreadRule,
+  noUnnecessaryCtxBeginPathSpreadRule,
+  noUnnecessaryCtxBezierCurveToSpreadRule,
+  noUnnecessaryCtxClearRectSpreadRule,
+  noUnnecessaryCtxClipSpreadRule,
+  noUnnecessaryCtxClosePathSpreadRule,
+  noUnnecessaryCtxCreateLinearGradientSpreadRule,
+  noUnnecessaryCtxCreatePatternSpreadRule,
+  noUnnecessaryCtxCreateRadialGradientSpreadRule,
+  noUnnecessaryCtxDrawImageSpreadRule,
+  noUnnecessaryCtxFillRectSpreadRule,
+  noUnnecessaryCtxFillSpreadRule,
+  noUnnecessaryCtxFillTextSpreadRule,
+  noUnnecessaryCtxGetImageDataSpreadRule,
+  noUnnecessaryCtxGetLineDashSpreadRule,
+  noUnnecessaryCtxLineToSpreadRule,
+  noUnnecessaryCtxMeasureTextSpreadRule,
+  noUnnecessaryCtxMoveToSpreadRule,
+  noUnnecessaryCtxPutImageDataSpreadRule,
+  noUnnecessaryCtxQuadraticCurveToSpreadRule,
+  noUnnecessaryCtxResetTransformSpreadRule,
+  noUnnecessaryCtxRestoreSpreadRule,
+  noUnnecessaryCtxRotateSpreadRule,
+  noUnnecessaryCtxSaveSpreadRule,
+  noUnnecessaryCtxScaleSpreadRule,
+  noUnnecessaryCtxSetLineDashSpreadRule,
+  noUnnecessaryCtxSetTransformSpreadRule,
+  noUnnecessaryCtxStrokeRectSpreadRule,
+  noUnnecessaryCtxStrokeSpreadRule,
+  noUnnecessaryCtxStrokeTextSpreadRule,
+  noUnnecessaryCtxTransformSpreadRule,
+  noUnnecessaryCtxTranslateSpreadRule,
+  noUnnecessaryCustomEventSpreadRule,
+  noUnnecessaryDomParserSpreadRule,
+  noUnnecessaryDomRectSpreadRule,
+  noUnnecessaryDataViewSpreadRule,
+  noUnnecessaryDataviewGetBigInt64SpreadRule,
+  noUnnecessaryDataviewGetBigUint64SpreadRule,
+  noUnnecessaryDataviewGetFloat32SpreadRule,
+  noUnnecessaryDataviewGetFloat64SpreadRule,
+  noUnnecessaryDataviewGetInt16SpreadRule,
+  noUnnecessaryDataviewGetInt32SpreadRule,
+  noUnnecessaryDataviewGetInt8SpreadRule,
+  noUnnecessaryDataviewGetUint16SpreadRule,
+  noUnnecessaryDataviewGetUint32SpreadRule,
+  noUnnecessaryDataviewGetUint8SpreadRule,
+  noUnnecessaryDataviewInstanceGetBigInt64SpreadRule,
+  noUnnecessaryDataviewInstanceGetBigUint64SpreadRule,
+  noUnnecessaryDataviewInstanceGetFloat32SpreadRule,
+  noUnnecessaryDataviewInstanceGetFloat64SpreadRule,
+  noUnnecessaryDataviewInstanceGetInt16SpreadRule,
+  noUnnecessaryDataviewInstanceGetInt32SpreadRule,
+  noUnnecessaryDataviewInstanceGetInt8SpreadRule,
+  noUnnecessaryDataviewInstanceGetUint16SpreadRule,
+  noUnnecessaryDataviewInstanceGetUint32SpreadRule,
+  noUnnecessaryDataviewInstanceGetUint8SpreadRule,
+  noUnnecessaryDataviewInstanceSetBigInt64SpreadRule,
+  noUnnecessaryDataviewInstanceSetBigUint64SpreadRule,
+  noUnnecessaryDataviewInstanceSetFloat32SpreadRule,
+  noUnnecessaryDataviewInstanceSetFloat64SpreadRule,
+  noUnnecessaryDataviewInstanceSetInt16SpreadRule,
+  noUnnecessaryDataviewInstanceSetInt32SpreadRule,
+  noUnnecessaryDataviewInstanceSetInt8SpreadRule,
+  noUnnecessaryDataviewInstanceSetUint16SpreadRule,
+  noUnnecessaryDataviewInstanceSetUint32SpreadRule,
+  noUnnecessaryDataviewInstanceSetUint8SpreadRule,
+  noUnnecessaryDataviewSetBigInt64SpreadRule,
+  noUnnecessaryDataviewSetBigUint64SpreadRule,
+  noUnnecessaryDataviewSetFloat32SpreadRule,
+  noUnnecessaryDataviewSetFloat64SpreadRule,
+  noUnnecessaryDataviewSetInt16SpreadRule,
+  noUnnecessaryDataviewSetInt32SpreadRule,
+  noUnnecessaryDataviewSetInt8SpreadRule,
+  noUnnecessaryDataviewSetUint16SpreadRule,
+  noUnnecessaryDataviewSetUint32SpreadRule,
+  noUnnecessaryDataviewSetUint8SpreadRule,
+  noUnnecessaryDateGetDateSpreadRule,
+  noUnnecessaryDateGetDaySpreadRule,
+  noUnnecessaryDateGetFullYearSpreadRule,
+  noUnnecessaryDateGetHoursSpreadRule,
+  noUnnecessaryDateGetMillisecondsSpreadRule,
+  noUnnecessaryDateGetMinutesSpreadRule,
+  noUnnecessaryDateGetMonthSpreadRule,
+  noUnnecessaryDateGetSecondsSpreadRule,
+  noUnnecessaryDateGetTimeSpreadRule,
+  noUnnecessaryDateGetTimezoneOffsetSpreadRule,
+  noUnnecessaryDateGetUTCDateSpreadRule,
+  noUnnecessaryDateGetUTCDaySpreadRule,
+  noUnnecessaryDateGetUTCFullyearSpreadRule,
+  noUnnecessaryDateGetUTCHoursSpreadRule,
+  noUnnecessaryDateGetUTCMillisecondsSpreadRule,
+  noUnnecessaryDateGetUTCMinutesSpreadRule,
+  noUnnecessaryDateGetUTCMonthSpreadRule,
+  noUnnecessaryDateGetUTCSecondsSpreadRule,
+  noUnnecessaryDateInstanceGetTimeSpreadRule,
+  noUnnecessaryDateInstanceSetTimeSpreadRule,
+  noUnnecessaryDateInstanceToJsonSpreadRule,
+  noUnnecessaryDateInstanceValueOfSpreadRule,
+  noUnnecessaryDateNowSpreadRule,
+  noUnnecessaryDateParseSpreadRule,
+  noUnnecessaryDateSpreadRule,
+  noUnnecessaryDateToDateStringSpreadRule,
+  noUnnecessaryDateToISOStringSpreadRule,
+  noUnnecessaryDateToJSONSpreadRule,
+  noUnnecessaryDateToLocaleDateStringSpreadRule,
+  noUnnecessaryDateToLocaleStringSpreadRule,
+  noUnnecessaryDateToLocaleTimeStringSpreadRule,
+  noUnnecessaryDateToStringSpreadRule,
+  noUnnecessaryDateToTimeStringSpreadRule,
+  noUnnecessaryDateToUTCStringSpreadRule,
+  noUnnecessaryDateUTCSpreadRule,
+  noUnnecessaryDateValueOfSpreadRule,
+  noUnnecessaryDnsGetServersSpreadRule,
+  noUnnecessaryDnsLookupSpreadRule,
+  noUnnecessaryDnsResolve4SpreadRule,
+  noUnnecessaryDnsResolve6SpreadRule,
+  noUnnecessaryDnsResolveAnySpreadRule,
+  noUnnecessaryDnsResolveCnameSpreadRule,
+  noUnnecessaryDnsResolveMxSpreadRule,
+  noUnnecessaryDnsResolveNsSpreadRule,
+  noUnnecessaryDnsResolvePtrSpreadRule,
+  noUnnecessaryDnsResolveSpreadRule,
+  noUnnecessaryDnsResolveSrvSpreadRule,
+  noUnnecessaryDnsResolveTxtSpreadRule,
+  noUnnecessaryDnsReverseSpreadRule,
+  noUnnecessaryDnsSetServersSpreadRule,
+  noUnnecessaryDocumentAdoptNodeSpreadRule,
+  noUnnecessaryDocumentCloseSpreadRule,
+  noUnnecessaryDocumentCreateAttributeSpreadRule,
+  noUnnecessaryDocumentCreateCommentSpreadRule,
+  noUnnecessaryDocumentCreateDocumentFragmentSpreadRule,
+  noUnnecessaryDocumentCreateElementSpreadRule,
+  noUnnecessaryDocumentCreateEventSpreadRule,
+  noUnnecessaryDocumentCreateNodeIteratorSpreadRule,
+  noUnnecessaryDocumentCreateRangeSpreadRule,
+  noUnnecessaryDocumentCreateTextNodeSpreadRule,
+  noUnnecessaryDocumentCreateTreeWalkerSpreadRule,
+  noUnnecessaryDocumentElementFromPointSpreadRule,
+  noUnnecessaryDocumentElementsFromPointSpreadRule,
+  noUnnecessaryDocumentExitFullscreenSpreadRule,
+  noUnnecessaryDocumentExitPictureInPictureSpreadRule,
+  noUnnecessaryDocumentExitPointerLockSpreadRule,
+  noUnnecessaryDocumentGetElementByIdSpreadRule,
+  noUnnecessaryDocumentGetElementsByClassNameSpreadRule,
+  noUnnecessaryDocumentGetElementsByNameSpreadRule,
+  noUnnecessaryDocumentGetElementsByTagNameSpreadRule,
+  noUnnecessaryDocumentGetSelectionSpreadRule,
+  noUnnecessaryDocumentHasFocusSpreadRule,
+  noUnnecessaryDocumentImportNodeSpreadRule,
+  noUnnecessaryDocumentOpenSpreadRule,
+  noUnnecessaryDocumentQuerySelectorAllSpreadRule,
+  noUnnecessaryDocumentQuerySelectorSpreadRule,
+  noUnnecessaryDocumentWriteLnSpreadRule,
+  noUnnecessaryDocumentWriteSpreadRule,
+  noUnnecessaryElementAfterSpreadRule,
+  noUnnecessaryElementAnimateSpreadRule,
+  noUnnecessaryElementAppendChildSpreadRule,
+  noUnnecessaryElementAppendSpreadRule,
+  noUnnecessaryElementAttachShadowSpreadRule,
+  noUnnecessaryElementBeforeSpreadRule,
+  noUnnecessaryElementBlurSpreadRule,
+  noUnnecessaryElementClickSpreadRule,
+  noUnnecessaryElementCloneNodeSpreadRule,
+  noUnnecessaryElementClosestSpreadRule,
+  noUnnecessaryElementContainsSpreadRule,
+  noUnnecessaryElementFocusSpreadRule,
+  noUnnecessaryElementGetAttributeNamesSpreadRule,
+  noUnnecessaryElementGetAttributeSpreadRule,
+  noUnnecessaryElementGetBoundingClientRectSpreadRule,
+  noUnnecessaryElementGetClientRectsSpreadRule,
+  noUnnecessaryElementGetComputedStyleSpreadRule,
+  noUnnecessaryElementGetElementsByClassNameSpreadRule,
+  noUnnecessaryElementGetElementsByTagNameSpreadRule,
+  noUnnecessaryElementHasAttributeSpreadRule,
+  noUnnecessaryElementInsertAdjacentElementSpreadRule,
+  noUnnecessaryElementInsertAdjacentHtmlSpreadRule,
+  noUnnecessaryElementInsertAdjacentTextSpreadRule,
+  noUnnecessaryElementInsertBeforeSpreadRule,
+  noUnnecessaryElementMatchesSpreadRule,
+  noUnnecessaryElementPrependSpreadRule,
+  noUnnecessaryElementQuerySelectorAllSpreadRule,
+  noUnnecessaryElementQuerySelectorSpreadRule,
+  noUnnecessaryElementRemoveAttributeSpreadRule,
+  noUnnecessaryElementRemoveChildSpreadRule,
+  noUnnecessaryElementRemoveSpreadRule,
+  noUnnecessaryElementReplaceChildSpreadRule,
+  noUnnecessaryElementReplaceWithSpreadRule,
+  noUnnecessaryElementRequestFullscreenSpreadRule,
+  noUnnecessaryElementRequestPointerLockSpreadRule,
+  noUnnecessaryElementScrollBySpreadRule,
+  noUnnecessaryElementScrollIntoViewIfNeededSpreadRule,
+  noUnnecessaryElementScrollIntoViewSpreadRule,
+  noUnnecessaryElementScrollSpreadRule,
+  noUnnecessaryElementScrollToSpreadRule,
+  noUnnecessaryElementSetAttributeSpreadRule,
+  noUnnecessaryElementToggleAttributeSpreadRule,
+  noUnnecessaryErrorInstanceToStringSpreadRule,
+  noUnnecessaryErrorSpreadRule,
+  noUnnecessaryEvalErrorSpreadRule,
+  noUnnecessaryEvalSpreadRule,
+  noUnnecessaryEventEmitterAddListenerSpreadRule,
+  noUnnecessaryEventEmitterEmitSpreadRule,
+  noUnnecessaryEventEmitterEventNamesSpreadRule,
+  noUnnecessaryEventEmitterGetMaxListenersSpreadRule,
+  noUnnecessaryEventEmitterListenerCountSpreadRule,
+  noUnnecessaryEventEmitterListenersSpreadRule,
+  noUnnecessaryEventEmitterOffSpreadRule,
+  noUnnecessaryEventEmitterOnSpreadRule,
+  noUnnecessaryEventEmitterOnceSpreadRule,
+  noUnnecessaryEventEmitterPrependListenerSpreadRule,
+  noUnnecessaryEventEmitterPrependOnceListenerSpreadRule,
+  noUnnecessaryEventEmitterRawListenersSpreadRule,
+  noUnnecessaryEventEmitterRemoveAllListenersSpreadRule,
+  noUnnecessaryEventEmitterRemoveListenerSpreadRule,
+  noUnnecessaryEventEmitterSetMaxListenersSpreadRule,
+  noUnnecessaryEventSpreadRule,
+  noUnnecessaryFetchSpreadRule,
+  noUnnecessaryFileInstanceArrayBufferSpreadRule,
+  noUnnecessaryFileInstanceSliceSpreadRule,
+  noUnnecessaryFileInstanceStreamSpreadRule,
+  noUnnecessaryFileInstanceTextSpreadRule,
+  noUnnecessaryFileReaderInstanceAbortSpreadRule,
+  noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule,
+  noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule,
+  noUnnecessaryFileReaderInstanceReadAsDataUrlSpreadRule,
+  noUnnecessaryFileReaderInstanceReadAsTextSpreadRule,
+  noUnnecessaryFileReaderSpreadRule,
+  noUnnecessaryFileSpreadRule,
+  noUnnecessaryFinalizationRegistryInstanceRegisterSpreadRule,
+  noUnnecessaryFinalizationRegistryInstanceUnregisterSpreadRule,
+  noUnnecessaryFinalizationRegistrySpreadRule,
+  noUnnecessaryFloat32ArrayAtSpreadRule,
+  noUnnecessaryFloat32ArrayCopyWithinSpreadRule,
+  noUnnecessaryFloat32ArrayEntriesSpreadRule,
+  noUnnecessaryFloat32ArrayEverySpreadRule,
+  noUnnecessaryFloat32ArrayFillSpreadRule,
+  noUnnecessaryFloat32ArrayFilterSpreadRule,
+  noUnnecessaryFloat32ArrayFindIndexSpreadRule,
+  noUnnecessaryFloat32ArrayFindLastIndexSpreadRule,
+  noUnnecessaryFloat32ArrayFindLastSpreadRule,
+  noUnnecessaryFloat32ArrayFindSpreadRule,
+  noUnnecessaryFloat32ArrayForEachSpreadRule,
+  noUnnecessaryFloat32ArrayFromSpreadRule,
+  noUnnecessaryFloat32ArrayIncludesSpreadRule,
+  noUnnecessaryFloat32ArrayIndexOfSpreadRule,
+  noUnnecessaryFloat32ArrayJoinSpreadRule,
+  noUnnecessaryFloat32ArrayKeysSpreadRule,
+  noUnnecessaryFloat32ArrayLastIndexOfSpreadRule,
+  noUnnecessaryFloat32ArrayMapSpreadRule,
+  noUnnecessaryFloat32ArrayOfSpreadRule,
+  noUnnecessaryFloat32ArrayReduceRightSpreadRule,
+  noUnnecessaryFloat32ArrayReduceSpreadRule,
+  noUnnecessaryFloat32ArrayReverseSpreadRule,
+  noUnnecessaryFloat32ArraySetSpreadRule,
+  noUnnecessaryFloat32ArraySliceSpreadRule,
+  noUnnecessaryFloat32ArraySomeSpreadRule,
+  noUnnecessaryFloat32ArraySortSpreadRule,
+  noUnnecessaryFloat32ArraySubarraySpreadRule,
+  noUnnecessaryFloat32ArrayToLocaleStringSpreadRule,
+  noUnnecessaryFloat32ArrayToReversedSpreadRule,
+  noUnnecessaryFloat32ArrayToSortedSpreadRule,
+  noUnnecessaryFloat32ArrayToStringSpreadRule,
+  noUnnecessaryFloat32ArrayValuesSpreadRule,
+  noUnnecessaryFloat32ArrayWithSpreadRule,
+  noUnnecessaryFloat64ArrayAtSpreadRule,
+  noUnnecessaryFloat64ArrayCopyWithinSpreadRule,
+  noUnnecessaryFloat64ArrayEntriesSpreadRule,
+  noUnnecessaryFloat64ArrayEverySpreadRule,
+  noUnnecessaryFloat64ArrayFillSpreadRule,
+  noUnnecessaryFloat64ArrayFilterSpreadRule,
+  noUnnecessaryFloat64ArrayFindIndexSpreadRule,
+  noUnnecessaryFloat64ArrayFindLastIndexSpreadRule,
+  noUnnecessaryFloat64ArrayFindLastSpreadRule,
+  noUnnecessaryFloat64ArrayFindSpreadRule,
+  noUnnecessaryFloat64ArrayForEachSpreadRule,
+  noUnnecessaryFloat64ArrayFromSpreadRule,
+  noUnnecessaryFloat64ArrayIncludesSpreadRule,
+  noUnnecessaryFloat64ArrayIndexOfSpreadRule,
+  noUnnecessaryFloat64ArrayJoinSpreadRule,
+  noUnnecessaryFloat64ArrayKeysSpreadRule,
+  noUnnecessaryFloat64ArrayLastIndexOfSpreadRule,
+  noUnnecessaryFloat64ArrayMapSpreadRule,
+  noUnnecessaryFloat64ArrayOfSpreadRule,
+  noUnnecessaryFloat64ArrayReduceRightSpreadRule,
+  noUnnecessaryFloat64ArrayReduceSpreadRule,
+  noUnnecessaryFloat64ArrayReverseSpreadRule,
+  noUnnecessaryFloat64ArraySetSpreadRule,
+  noUnnecessaryFloat64ArraySliceSpreadRule,
+  noUnnecessaryFloat64ArraySomeSpreadRule,
+  noUnnecessaryFloat64ArraySortSpreadRule,
+  noUnnecessaryFloat64ArraySubarraySpreadRule,
+  noUnnecessaryFloat64ArrayToLocaleStringSpreadRule,
+  noUnnecessaryFloat64ArrayToReversedSpreadRule,
+  noUnnecessaryFloat64ArrayToSortedSpreadRule,
+  noUnnecessaryFloat64ArrayToStringSpreadRule,
+  noUnnecessaryFloat64ArrayValuesSpreadRule,
+  noUnnecessaryFloat64ArrayWithSpreadRule,
+  noUnnecessaryFormDataInstanceAppendSpreadRule,
+  noUnnecessaryFormDataInstanceDeleteSpreadRule,
+  noUnnecessaryFormDataInstanceEntriesSpreadRule,
+  noUnnecessaryFormDataInstanceForEachSpreadRule,
+  noUnnecessaryFormDataInstanceGetAllSpreadRule,
+  noUnnecessaryFormDataInstanceGetSpreadRule,
+  noUnnecessaryFormDataInstanceHasSpreadRule,
+  noUnnecessaryFormDataInstanceKeysSpreadRule,
+  noUnnecessaryFormDataInstanceSetSpreadRule,
+  noUnnecessaryFormDataInstanceValuesSpreadRule,
+  noUnnecessaryFormDataSpreadRule,
+  noUnnecessaryFsAccessSpreadRule,
+  noUnnecessaryFsAppendFileSpreadRule,
+  noUnnecessaryFsChmodSpreadRule,
+  noUnnecessaryFsChownSpreadRule,
+  noUnnecessaryFsCopyFileSpreadRule,
+  noUnnecessaryFsCreateReadStreamSpreadRule,
+  noUnnecessaryFsCreateWriteStreamSpreadRule,
+  noUnnecessaryFsExistsSpreadRule,
+  noUnnecessaryFsExistsSyncSpreadRule,
+  noUnnecessaryFsFstatSpreadRule,
+  noUnnecessaryFsLstatSpreadRule,
+  noUnnecessaryFsMkdirSpreadRule,
+  noUnnecessaryFsMkdirSyncSpreadRule,
+  noUnnecessaryFsReadDirSyncSpreadRule,
+  noUnnecessaryFsReadFileSpreadRule,
+  noUnnecessaryFsReadFileSyncSpreadRule,
+  noUnnecessaryFsReaddirSpreadRule,
+  noUnnecessaryFsRenameSpreadRule,
+  noUnnecessaryFsRmSpreadRule,
+  noUnnecessaryFsRmSyncSpreadRule,
+  noUnnecessaryFsRmdirSpreadRule,
+  noUnnecessaryFsStatSpreadRule,
+  noUnnecessaryFsUnlinkSpreadRule,
+  noUnnecessaryFsUnwatchFileSpreadRule,
+  noUnnecessaryFsWatchFileSpreadRule,
+  noUnnecessaryFsWatchSpreadRule,
+  noUnnecessaryFsWriteFileSpreadRule,
+  noUnnecessaryFsWriteFileSyncSpreadRule,
+  noUnnecessaryGeneratorNextSpreadRule,
+  noUnnecessaryGeneratorReturnSpreadRule,
+  noUnnecessaryGeneratorThrowSpreadRule,
+  noUnnecessaryGlAttachShaderSpreadRule,
+  noUnnecessaryGlBindBufferSpreadRule,
+  noUnnecessaryGlBlendFuncSpreadRule,
+  noUnnecessaryGlBufferDataSpreadRule,
+  noUnnecessaryGlClearColorSpreadRule,
+  noUnnecessaryGlClearSpreadRule,
+  noUnnecessaryGlCompileShaderSpreadRule,
+  noUnnecessaryGlCreateBufferSpreadRule,
+  noUnnecessaryGlCreateProgramSpreadRule,
+  noUnnecessaryGlCreateShaderSpreadRule,
+  noUnnecessaryGlDepthFuncSpreadRule,
+  noUnnecessaryGlDisableSpreadRule,
+  noUnnecessaryGlDrawArraysSpreadRule,
+  noUnnecessaryGlDrawElementsSpreadRule,
+  noUnnecessaryGlEnableSpreadRule,
+  noUnnecessaryGlEnableVertexAttribArraySpreadRule,
+  noUnnecessaryGlGetAttribLocationSpreadRule,
+  noUnnecessaryGlGetUniformLocationSpreadRule,
+  noUnnecessaryGlLinkProgramSpreadRule,
+  noUnnecessaryGlShaderSourceSpreadRule,
+  noUnnecessaryGlUseProgramSpreadRule,
+  noUnnecessaryGlVertexAttribPointerSpreadRule,
+  noUnnecessaryGlViewportSpreadRule,
+  noUnnecessaryHeadersInstanceAppendSpreadRule,
+  noUnnecessaryHeadersInstanceDeleteSpreadRule,
+  noUnnecessaryHeadersInstanceEntriesSpreadRule,
+  noUnnecessaryHeadersInstanceForEachSpreadRule,
+  noUnnecessaryHeadersInstanceGetSpreadRule,
+  noUnnecessaryHeadersInstanceHasSpreadRule,
+  noUnnecessaryHeadersInstanceKeysSpreadRule,
+  noUnnecessaryHeadersInstanceSetSpreadRule,
+  noUnnecessaryHeadersInstanceValuesSpreadRule,
+  noUnnecessaryHeadersSpreadRule,
+  noUnnecessaryHistoryBackSpreadRule,
+  noUnnecessaryHistoryForwardSpreadRule,
+  noUnnecessaryHistoryGoSpreadRule,
+  noUnnecessaryHistoryPushStateSpreadRule,
+  noUnnecessaryHistoryReplaceStateSpreadRule,
+  noUnnecessaryHttpGetSpreadRule,
+  noUnnecessaryHttpRequestSpreadRule,
+  noUnnecessaryHttpsGetSpreadRule,
+  noUnnecessaryHttpsRequestSpreadRule,
+  noUnnecessaryImageDataSpreadRule,
+  noUnnecessaryImageSpreadRule,
+  noUnnecessaryIndexedDbCmpSpreadRule,
+  noUnnecessaryIndexedDbDeleteDatabaseSpreadRule,
+  noUnnecessaryIndexedDbOpenSpreadRule,
+  noUnnecessaryInt16ArrayAtSpreadRule,
+  noUnnecessaryInt16ArrayCopyWithinSpreadRule,
+  noUnnecessaryInt16ArrayEntriesSpreadRule,
+  noUnnecessaryInt16ArrayEverySpreadRule,
+  noUnnecessaryInt16ArrayFillSpreadRule,
+  noUnnecessaryInt16ArrayFilterSpreadRule,
+  noUnnecessaryInt16ArrayFindIndexSpreadRule,
+  noUnnecessaryInt16ArrayFindLastIndexSpreadRule,
+  noUnnecessaryInt16ArrayFindLastSpreadRule,
+  noUnnecessaryInt16ArrayFindSpreadRule,
+  noUnnecessaryInt16ArrayForEachSpreadRule,
+  noUnnecessaryInt16ArrayFromSpreadRule,
+  noUnnecessaryInt16ArrayIncludesSpreadRule,
+  noUnnecessaryInt16ArrayIndexOfSpreadRule,
+  noUnnecessaryInt16ArrayJoinSpreadRule,
+  noUnnecessaryInt16ArrayKeysSpreadRule,
+  noUnnecessaryInt16ArrayLastIndexOfSpreadRule,
+  noUnnecessaryInt16ArrayMapSpreadRule,
+  noUnnecessaryInt16ArrayOfSpreadRule,
+  noUnnecessaryInt16ArrayReduceRightSpreadRule,
+  noUnnecessaryInt16ArrayReduceSpreadRule,
+  noUnnecessaryInt16ArrayReverseSpreadRule,
+  noUnnecessaryInt16ArraySetSpreadRule,
+  noUnnecessaryInt16ArraySliceSpreadRule,
+  noUnnecessaryInt16ArraySomeSpreadRule,
+  noUnnecessaryInt16ArraySortSpreadRule,
+  noUnnecessaryInt16ArraySubarraySpreadRule,
+  noUnnecessaryInt16ArrayToLocaleStringSpreadRule,
+  noUnnecessaryInt16ArrayToReversedSpreadRule,
+  noUnnecessaryInt16ArrayToSortedSpreadRule,
+  noUnnecessaryInt16ArrayToStringSpreadRule,
+  noUnnecessaryInt16ArrayValuesSpreadRule,
+  noUnnecessaryInt16ArrayWithSpreadRule,
+  noUnnecessaryInt32ArrayAtSpreadRule,
+  noUnnecessaryInt32ArrayCopyWithinSpreadRule,
+  noUnnecessaryInt32ArrayEntriesSpreadRule,
+  noUnnecessaryInt32ArrayEverySpreadRule,
+  noUnnecessaryInt32ArrayFillSpreadRule,
+  noUnnecessaryInt32ArrayFilterSpreadRule,
+  noUnnecessaryInt32ArrayFindIndexSpreadRule,
+  noUnnecessaryInt32ArrayFindLastIndexSpreadRule,
+  noUnnecessaryInt32ArrayFindLastSpreadRule,
+  noUnnecessaryInt32ArrayFindSpreadRule,
+  noUnnecessaryInt32ArrayForEachSpreadRule,
+  noUnnecessaryInt32ArrayFromSpreadRule,
+  noUnnecessaryInt32ArrayIncludesSpreadRule,
+  noUnnecessaryInt32ArrayIndexOfSpreadRule,
+  noUnnecessaryInt32ArrayJoinSpreadRule,
+  noUnnecessaryInt32ArrayKeysSpreadRule,
+  noUnnecessaryInt32ArrayLastIndexOfSpreadRule,
+  noUnnecessaryInt32ArrayMapSpreadRule,
+  noUnnecessaryInt32ArrayOfSpreadRule,
+  noUnnecessaryInt32ArrayReduceRightSpreadRule,
+  noUnnecessaryInt32ArrayReduceSpreadRule,
+  noUnnecessaryInt32ArrayReverseSpreadRule,
+  noUnnecessaryInt32ArraySetSpreadRule,
+  noUnnecessaryInt32ArraySliceSpreadRule,
+  noUnnecessaryInt32ArraySomeSpreadRule,
+  noUnnecessaryInt32ArraySortSpreadRule,
+  noUnnecessaryInt32ArraySubarraySpreadRule,
+  noUnnecessaryInt32ArrayToLocaleStringSpreadRule,
+  noUnnecessaryInt32ArrayToReversedSpreadRule,
+  noUnnecessaryInt32ArrayToSortedSpreadRule,
+  noUnnecessaryInt32ArrayToStringSpreadRule,
+  noUnnecessaryInt32ArrayValuesSpreadRule,
+  noUnnecessaryInt32ArrayWithSpreadRule,
+  noUnnecessaryInt8ArrayAtSpreadRule,
+  noUnnecessaryInt8ArrayCopyWithinSpreadRule,
+  noUnnecessaryInt8ArrayEntriesSpreadRule,
+  noUnnecessaryInt8ArrayEverySpreadRule,
+  noUnnecessaryInt8ArrayFillSpreadRule,
+  noUnnecessaryInt8ArrayFilterSpreadRule,
+  noUnnecessaryInt8ArrayFindIndexSpreadRule,
+  noUnnecessaryInt8ArrayFindLastIndexSpreadRule,
+  noUnnecessaryInt8ArrayFindLastSpreadRule,
+  noUnnecessaryInt8ArrayFindSpreadRule,
+  noUnnecessaryInt8ArrayForEachSpreadRule,
+  noUnnecessaryInt8ArrayFromSpreadRule,
+  noUnnecessaryInt8ArrayIncludesSpreadRule,
+  noUnnecessaryInt8ArrayIndexOfSpreadRule,
+  noUnnecessaryInt8ArrayJoinSpreadRule,
+  noUnnecessaryInt8ArrayKeysSpreadRule,
+  noUnnecessaryInt8ArrayLastIndexOfSpreadRule,
+  noUnnecessaryInt8ArrayMapSpreadRule,
+  noUnnecessaryInt8ArrayOfSpreadRule,
+  noUnnecessaryInt8ArrayReduceRightSpreadRule,
+  noUnnecessaryInt8ArrayReduceSpreadRule,
+  noUnnecessaryInt8ArrayReverseSpreadRule,
+  noUnnecessaryInt8ArraySetSpreadRule,
+  noUnnecessaryInt8ArraySliceSpreadRule,
+  noUnnecessaryInt8ArraySomeSpreadRule,
+  noUnnecessaryInt8ArraySortSpreadRule,
+  noUnnecessaryInt8ArraySubarraySpreadRule,
+  noUnnecessaryInt8ArrayToLocaleStringSpreadRule,
+  noUnnecessaryInt8ArrayToReversedSpreadRule,
+  noUnnecessaryInt8ArrayToSortedSpreadRule,
+  noUnnecessaryInt8ArrayToStringSpreadRule,
+  noUnnecessaryInt8ArrayValuesSpreadRule,
+  noUnnecessaryInt8ArrayWithSpreadRule,
+  noUnnecessaryIntersectionObserverSpreadRule,
+  noUnnecessaryIntlCollatorCompareSpreadRule,
+  noUnnecessaryIntlDateTimeFormatFormatSpreadRule,
+  noUnnecessaryIntlDisplayNamesSpreadRule,
+  noUnnecessaryIntlListFormatFormatSpreadRule,
+  noUnnecessaryIntlNumberFormatFormatSpreadRule,
+  noUnnecessaryIntlPluralRulesSpreadRule,
+  noUnnecessaryIntlRelativeTimeFormatSpreadRule,
+  noUnnecessaryIntlSegmenterSpreadRule,
+  noUnnecessaryIteratorDropSpreadRule,
+  noUnnecessaryIteratorEverySpreadRule,
+  noUnnecessaryIteratorFilterSpreadRule,
+  noUnnecessaryIteratorFindSpreadRule,
+  noUnnecessaryIteratorFlatMapSpreadRule,
+  noUnnecessaryIteratorForEachSpreadRule,
+  noUnnecessaryIteratorMapSpreadRule,
+  noUnnecessaryIteratorNextSpreadRule,
+  noUnnecessaryIteratorReduceSpreadRule,
+  noUnnecessaryIteratorReturnSpreadRule,
+  noUnnecessaryIteratorSomeSpreadRule,
+  noUnnecessaryIteratorTakeSpreadRule,
+  noUnnecessaryIteratorThrowSpreadRule,
+  noUnnecessaryIteratorToArraySpreadRule,
+  noUnnecessaryLocalStorageClearSpreadRule,
+  noUnnecessaryLocalStorageGetItemSpreadRule,
+  noUnnecessaryLocalStorageKeySpreadRule,
+  noUnnecessaryLocalStorageRemoveItemSpreadRule,
+  noUnnecessaryLocalStorageSetItemSpreadRule,
+  noUnnecessaryLocationAssignSpreadRule,
+  noUnnecessaryLocationReloadSpreadRule,
+  noUnnecessaryLocationReplaceSpreadRule,
+  noUnnecessaryLocationToStringSpreadRule,
+  noUnnecessaryMapClearSpreadRule,
+  noUnnecessaryMapDeleteSpreadRule,
+  noUnnecessaryMapForEachSpreadRule,
+  noUnnecessaryMapGetSpreadRule,
+  noUnnecessaryMapHasSpreadRule,
+  noUnnecessaryMapIteratorNextSpreadRule,
+  noUnnecessaryMapSetSpreadRule,
+  noUnnecessaryMapSpreadRule,
+  noUnnecessaryMathClampSpreadRule,
+  noUnnecessaryMathCoshSpreadRule,
+  noUnnecessaryMathExpm1SpreadRule,
+  noUnnecessaryMathLog1pSpreadRule,
+  noUnnecessaryMathScaleSpreadRule,
+  noUnnecessaryMathSinhSpreadRule,
+  noUnnecessaryMathTanhSpreadRule,
+  noUnnecessaryMessageChannelSpreadRule,
+  noUnnecessaryMessagePortCloseSpreadRule,
+  noUnnecessaryMessagePortPostMessageSpreadRule,
+  noUnnecessaryMessagePortStartSpreadRule,
+  noUnnecessaryMutationObserverSpreadRule,
+  noUnnecessaryNavigatorCanShareSpreadRule,
+  noUnnecessaryNavigatorCancelIdleCallbackSpreadRule,
+  noUnnecessaryNavigatorClipboardReadTextSpreadRule,
+  noUnnecessaryNavigatorClipboardWriteTextSpreadRule,
+  noUnnecessaryNavigatorCookieEnabledSpreadRule,
+  noUnnecessaryNavigatorGeolocationClearWatchSpreadRule,
+  noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule,
+  noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule,
+  noUnnecessaryNavigatorGetBatterySpreadRule,
+  noUnnecessaryNavigatorGetGamepadsSpreadRule,
+  noUnnecessaryNavigatorJavaEnabledSpreadRule,
+  noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule,
+  noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule,
+  noUnnecessaryNavigatorRequestIdleCallbackSpreadRule,
+  noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule,
+  noUnnecessaryNavigatorSendBeaconSpreadRule,
+  noUnnecessaryNavigatorShareSpreadRule,
+  noUnnecessaryNavigatorVibrateSpreadRule,
+  noUnnecessaryNetConnectSpreadRule,
+  noUnnecessaryNetCreateConnectionSpreadRule,
+  noUnnecessaryNetCreateServerSpreadRule,
+  noUnnecessaryNumberInstanceToExponentialSpreadRule,
+  noUnnecessaryNumberInstanceToFixedSpreadRule,
+  noUnnecessaryNumberInstanceToLocaleStringSpreadRule,
+  noUnnecessaryNumberInstanceToPrecisionSpreadRule,
+  noUnnecessaryNumberInstanceToStringSpreadRule,
+  noUnnecessaryNumberInstanceValueOfSpreadRule,
+  noUnnecessaryObjectHasOwnPropertySpreadRule,
+  noUnnecessaryObjectIsPrototypeOfSpreadRule,
+  noUnnecessaryObjectPropertyIsEnumerableSpreadRule,
+  noUnnecessaryObjectToLocaleStringSpreadRule,
+  noUnnecessaryObjectToStringSpreadRule,
+  noUnnecessaryObjectValueOfSpreadRule,
+  noUnnecessaryObserverInstanceDisconnectSpreadRule,
+  noUnnecessaryObserverInstanceObserveSpreadRule,
+  noUnnecessaryObserverInstanceTakeRecordsSpreadRule,
+  noUnnecessaryObserverInstanceUnobserveSpreadRule,
+  noUnnecessaryOptionSpreadRule,
+  noUnnecessaryOsArchSpreadRule,
+  noUnnecessaryOsConstantsSpreadRule,
+  noUnnecessaryOsCpusSpreadRule,
+  noUnnecessaryOsDevNullSpreadRule,
+  noUnnecessaryOsEolSpreadRule,
+  noUnnecessaryOsFreememSpreadRule,
+  noUnnecessaryOsGetPrioritySpreadRule,
+  noUnnecessaryOsHomedirSpreadRule,
+  noUnnecessaryOsHostnameSpreadRule,
+  noUnnecessaryOsLoadavgSpreadRule,
+  noUnnecessaryOsNetworkInterfacesSpreadRule,
+  noUnnecessaryOsPlatformSpreadRule,
+  noUnnecessaryOsReleaseSpreadRule,
+  noUnnecessaryOsSetPrioritySpreadRule,
+  noUnnecessaryOsTmpdirSpreadRule,
+  noUnnecessaryOsTotalmemSpreadRule,
+  noUnnecessaryOsTypeSpreadRule,
+  noUnnecessaryOsUptimeSpreadRule,
+  noUnnecessaryOsUserInfoSpreadRule,
+  noUnnecessaryPathBasenameSpreadRule,
+  noUnnecessaryPathDirnameSpreadRule,
+  noUnnecessaryPathExtnameSpreadRule,
+  noUnnecessaryPathFormatSpreadRule,
+  noUnnecessaryPathIsAbsoluteSpreadRule,
+  noUnnecessaryPathJoinSpreadRule,
+  noUnnecessaryPathNormalizeSpreadRule,
+  noUnnecessaryPathParseSpreadRule,
+  noUnnecessaryPathRelativeSpreadRule,
+  noUnnecessaryPathResolveSpreadRule,
+  noUnnecessaryPathToNamespacedPathSpreadRule,
+  noUnnecessaryPerformanceClearMarksSpreadRule,
+  noUnnecessaryPerformanceClearMeasuresSpreadRule,
+  noUnnecessaryPerformanceClearResourceTimingsSpreadRule,
+  noUnnecessaryPerformanceGetEntriesByNameSpreadRule,
+  noUnnecessaryPerformanceGetEntriesByTypeSpreadRule,
+  noUnnecessaryPerformanceGetEntriesSpreadRule,
+  noUnnecessaryPerformanceMarkSpreadRule,
+  noUnnecessaryPerformanceMeasureSpreadRule,
+  noUnnecessaryPerformanceNowSpreadRule,
+  noUnnecessaryPerformanceObserverSpreadRule,
+  noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule,
+  noUnnecessaryPrintSpreadRule,
+  noUnnecessaryProcessAbortSpreadRule,
+  noUnnecessaryProcessArgvSpreadRule,
+  noUnnecessaryProcessChdirSpreadRule,
+  noUnnecessaryProcessCpuUsageSpreadRule,
+  noUnnecessaryProcessCwdSpreadRule,
+  noUnnecessaryProcessEnvSpreadRule,
+  noUnnecessaryProcessExitSpreadRule,
+  noUnnecessaryProcessGetgidSpreadRule,
+  noUnnecessaryProcessGetuidSpreadRule,
+  noUnnecessaryProcessHrtimeSpreadRule,
+  noUnnecessaryProcessKillSpreadRule,
+  noUnnecessaryProcessMemoryUsageSpreadRule,
+  noUnnecessaryProcessNextTickSpreadRule,
+  noUnnecessaryProcessSetgidSpreadRule,
+  noUnnecessaryProcessSetuidSpreadRule,
+  noUnnecessaryProcessUmaskSpreadRule,
+  noUnnecessaryProcessUptimeSpreadRule,
+  noUnnecessaryPromiseInstanceCatchSpreadRule,
+  noUnnecessaryPromiseInstanceFinallySpreadRule,
+  noUnnecessaryPromiseInstanceThenSpreadRule,
+  noUnnecessaryPromiseResolveSpreadRule,
+  noUnnecessaryPromiseSpreadRule,
+  noUnnecessaryPromiseWithResolversSpreadRule,
+  noUnnecessaryPromptSpreadRule,
+  noUnnecessaryQuerystringEscapeSpreadRule,
+  noUnnecessaryQuerystringParseSpreadRule,
+  noUnnecessaryQuerystringStringifySpreadRule,
+  noUnnecessaryQuerystringUnescapeSpreadRule,
+  noUnnecessaryQueueMicrotaskSpreadRule,
+  noUnnecessaryRangeErrorSpreadRule,
+  noUnnecessaryReadableStreamDestroySpreadRule,
+  noUnnecessaryReadableStreamPauseSpreadRule,
+  noUnnecessaryReadableStreamPipeSpreadRule,
+  noUnnecessaryReadableStreamPushSpreadRule,
+  noUnnecessaryReadableStreamReadSpreadRule,
+  noUnnecessaryReadableStreamResumeSpreadRule,
+  noUnnecessaryReadableStreamUnpipeSpreadRule,
+  noUnnecessaryReadlineCloseSpreadRule,
+  noUnnecessaryReadlineCreateInterfaceSpreadRule,
+  noUnnecessaryReadlinePromptSpreadRule,
+  noUnnecessaryReadlineQuestionSpreadRule,
+  noUnnecessaryReadlineWriteSpreadRule,
+  noUnnecessaryReferenceErrorSpreadRule,
+  noUnnecessaryRegExpExecSpreadRule,
+  noUnnecessaryRegexpSpreadRule,
+  noUnnecessaryRegExpTestSpreadRule,
+  noUnnecessaryRegexpInstanceExecSpreadRule,
+  noUnnecessaryRegexpInstanceTestSpreadRule,
+  noUnnecessaryRegexpInstanceToStringSpreadRule,
+  noUnnecessaryReportErrorSpreadRule,
+  noUnnecessaryRequestAnimationFrameSpreadRule,
+  noUnnecessaryRequestIdleCallbackSpreadRule,
+  noUnnecessaryRequestInstanceArrayBufferSpreadRule,
+  noUnnecessaryRequestInstanceBlobSpreadRule,
+  noUnnecessaryRequestInstanceCloneSpreadRule,
+  noUnnecessaryRequestInstanceFormDataSpreadRule,
+  noUnnecessaryRequestInstanceJsonSpreadRule,
+  noUnnecessaryRequestInstanceTextSpreadRule,
+  noUnnecessaryRequestSpreadRule,
+  noUnnecessaryResizeObserverSpreadRule,
+  noUnnecessaryResponseInstanceArrayBufferSpreadRule,
+  noUnnecessaryResponseInstanceBlobSpreadRule,
+  noUnnecessaryResponseInstanceCloneSpreadRule,
+  noUnnecessaryResponseInstanceFormDataSpreadRule,
+  noUnnecessaryResponseInstanceJsonSpreadRule,
+  noUnnecessaryResponseInstanceTextSpreadRule,
+  noUnnecessaryResponseSpreadRule,
+  noUnnecessaryScreenOrientationLockSpreadRule,
+  noUnnecessaryScreenOrientationUnlockSpreadRule,
+  noUnnecessaryServerAddressSpreadRule,
+  noUnnecessaryServerCloseSpreadRule,
+  noUnnecessaryServerGetConnectionsSpreadRule,
+  noUnnecessaryServerListenSpreadRule,
+  noUnnecessaryServerRefSpreadRule,
+  noUnnecessaryServerUnrefSpreadRule,
+  noUnnecessarySessionStorageClearSpreadRule,
+  noUnnecessarySessionStorageGetItemSpreadRule,
+  noUnnecessarySessionStorageKeySpreadRule,
+  noUnnecessarySessionStorageRemoveItemSpreadRule,
+  noUnnecessarySessionStorageSetItemSpreadRule,
+  noUnnecessarySetAddSpreadRule,
+  noUnnecessarySetDeleteSpreadRule,
+  noUnnecessarySetForEachSpreadRule,
+  noUnnecessarySetHasSpreadRule,
+  noUnnecessarySetIntervalSpreadRule,
+  noUnnecessarySetIteratorNextSpreadRule,
+  noUnnecessarySetSpreadRule,
+  noUnnecessarySetTimeoutSpreadRule,
+  noUnnecessarySharedArrayBufferInstanceGrowSpreadRule,
+  noUnnecessarySharedArrayBufferInstanceSliceSpreadRule,
+  noUnnecessarySharedArrayBufferSliceSpreadRule,
+  noUnnecessarySharedArrayBufferSpreadRule,
+  noUnnecessarySocketConnectSpreadRule,
+  noUnnecessarySocketDestroySpreadRule,
+  noUnnecessarySocketEndSpreadRule,
+  noUnnecessarySocketPauseSpreadRule,
+  noUnnecessarySocketRefSpreadRule,
+  noUnnecessarySocketResumeSpreadRule,
+  noUnnecessarySocketSetEncodingSpreadRule,
+  noUnnecessarySocketSetKeepAliveSpreadRule,
+  noUnnecessarySocketSetNoDelaySpreadRule,
+  noUnnecessarySocketSetTimeoutSpreadRule,
+  noUnnecessarySocketUnrefSpreadRule,
+  noUnnecessarySocketWriteSpreadRule,
+  noUnnecessaryStderrEndSpreadRule,
+  noUnnecessaryStderrWriteSpreadRule,
+  noUnnecessaryStdinPipeSpreadRule,
+  noUnnecessaryStdinPushSpreadRule,
+  noUnnecessaryStdinReadSpreadRule,
+  noUnnecessaryStdoutEndSpreadRule,
+  noUnnecessaryStdoutWriteSpreadRule,
+  noUnnecessaryStreamComposeSpreadRule,
+  noUnnecessaryStreamPipelineSpreadRule,
+  noUnnecessaryStreamReadableFromSpreadRule,
+  noUnnecessaryStringIteratorNextSpreadRule,
+  noUnnecessaryStructuredCloneSpreadRule,
+  noUnnecessarySymbolForSpreadRule,
+  noUnnecessarySymbolInstanceDescriptionSpreadRule,
+  noUnnecessarySymbolInstanceToStringSpreadRule,
+  noUnnecessarySymbolInstanceValueOfSpreadRule,
+  noUnnecessarySymbolKeyForSpreadRule,
+  noUnnecessarySyntaxErrorSpreadRule,
+  noUnnecessaryTextDecoderInstanceDecodeSpreadRule,
+  noUnnecessaryTextDecoderSpreadRule,
+  noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule,
+  noUnnecessaryTextEncoderInstanceEncodeSpreadRule,
+  noUnnecessaryTextEncoderSpreadRule,
+  noUnnecessaryTransformStreamFlushSpreadRule,
+  noUnnecessaryTransformStreamTransformSpreadRule,
+  noUnnecessaryTypeErrorSpreadRule,
+  noUnnecessaryTypedArrayAtSpreadRule,
+  noUnnecessaryTypedArrayCopyWithinSpreadRule,
+  noUnnecessaryTypedArrayEntriesSpreadRule,
+  noUnnecessaryTypedArrayEverySpreadRule,
+  noUnnecessaryTypedArrayFillSpreadRule,
+  noUnnecessaryTypedArrayFilterSpreadRule,
+  noUnnecessaryTypedArrayFindIndexSpreadRule,
+  noUnnecessaryTypedArrayFindLastIndexSpreadRule,
+  noUnnecessaryTypedArrayFindLastSpreadRule,
+  noUnnecessaryTypedArrayFindSpreadRule,
+  noUnnecessaryTypedArrayForEachSpreadRule,
+  noUnnecessaryTypedArrayIncludesSpreadRule,
+  noUnnecessaryTypedArrayIndexOfSpreadRule,
+  noUnnecessaryTypedArrayJoinSpreadRule,
+  noUnnecessaryTypedArrayKeysSpreadRule,
+  noUnnecessaryTypedArrayLastIndexOfSpreadRule,
+  noUnnecessaryTypedArrayMapSpreadRule,
+  noUnnecessaryTypedArrayReduceRightSpreadRule,
+  noUnnecessaryTypedArrayReduceSpreadRule,
+  noUnnecessaryTypedArrayReverseSpreadRule,
+  noUnnecessaryTypedArraySetSpreadRule,
+  noUnnecessaryTypedArraySliceSpreadRule,
+  noUnnecessaryTypedArraySomeSpreadRule,
+  noUnnecessaryTypedArraySortSpreadRule,
+  noUnnecessaryTypedArraySubArraySpreadRule,
+  noUnnecessaryTypedArrayToLocaleStringSpreadRule,
+  noUnnecessaryTypedArrayToStringSpreadRule,
+  noUnnecessaryTypedArrayValuesSpreadRule,
+  noUnnecessaryTypedArrayWithSpreadRule,
+  noUnnecessaryUriErrorSpreadRule,
+  noUnnecessaryUrlSearchParamsSpreadRule,
+  noUnnecessaryUrlSpreadRule,
+  noUnnecessaryUint16ArrayAtSpreadRule,
+  noUnnecessaryUint16ArrayCopyWithinSpreadRule,
+  noUnnecessaryUint16ArrayEntriesSpreadRule,
+  noUnnecessaryUint16ArrayEverySpreadRule,
+  noUnnecessaryUint16ArrayFillSpreadRule,
+  noUnnecessaryUint16ArrayFilterSpreadRule,
+  noUnnecessaryUint16ArrayFindIndexSpreadRule,
+  noUnnecessaryUint16ArrayFindLastIndexSpreadRule,
+  noUnnecessaryUint16ArrayFindLastSpreadRule,
+  noUnnecessaryUint16ArrayFindSpreadRule,
+  noUnnecessaryUint16ArrayForEachSpreadRule,
+  noUnnecessaryUint16ArrayFromSpreadRule,
+  noUnnecessaryUint16ArrayIncludesSpreadRule,
+  noUnnecessaryUint16ArrayIndexOfSpreadRule,
+  noUnnecessaryUint16ArrayJoinSpreadRule,
+  noUnnecessaryUint16ArrayKeysSpreadRule,
+  noUnnecessaryUint16ArrayLastIndexOfSpreadRule,
+  noUnnecessaryUint16ArrayMapSpreadRule,
+  noUnnecessaryUint16ArrayOfSpreadRule,
+  noUnnecessaryUint16ArrayReduceRightSpreadRule,
+  noUnnecessaryUint16ArrayReduceSpreadRule,
+  noUnnecessaryUint16ArrayReverseSpreadRule,
+  noUnnecessaryUint16ArraySetSpreadRule,
+  noUnnecessaryUint16ArraySliceSpreadRule,
+  noUnnecessaryUint16ArraySomeSpreadRule,
+  noUnnecessaryUint16ArraySortSpreadRule,
+  noUnnecessaryUint16ArraySubarraySpreadRule,
+  noUnnecessaryUint16ArrayToLocaleStringSpreadRule,
+  noUnnecessaryUint16ArrayToReversedSpreadRule,
+  noUnnecessaryUint16ArrayToSortedSpreadRule,
+  noUnnecessaryUint16ArrayToStringSpreadRule,
+  noUnnecessaryUint16ArrayValuesSpreadRule,
+  noUnnecessaryUint16ArrayWithSpreadRule,
+  noUnnecessaryUint32ArrayAtSpreadRule,
+  noUnnecessaryUint32ArrayCopyWithinSpreadRule,
+  noUnnecessaryUint32ArrayEntriesSpreadRule,
+  noUnnecessaryUint32ArrayEverySpreadRule,
+  noUnnecessaryUint32ArrayFillSpreadRule,
+  noUnnecessaryUint32ArrayFilterSpreadRule,
+  noUnnecessaryUint32ArrayFindIndexSpreadRule,
+  noUnnecessaryUint32ArrayFindLastIndexSpreadRule,
+  noUnnecessaryUint32ArrayFindLastSpreadRule,
+  noUnnecessaryUint32ArrayFindSpreadRule,
+  noUnnecessaryUint32ArrayForEachSpreadRule,
+  noUnnecessaryUint32ArrayFromSpreadRule,
+  noUnnecessaryUint32ArrayIncludesSpreadRule,
+  noUnnecessaryUint32ArrayIndexOfSpreadRule,
+  noUnnecessaryUint32ArrayJoinSpreadRule,
+  noUnnecessaryUint32ArrayKeysSpreadRule,
+  noUnnecessaryUint32ArrayLastIndexOfSpreadRule,
+  noUnnecessaryUint32ArrayMapSpreadRule,
+  noUnnecessaryUint32ArrayOfSpreadRule,
+  noUnnecessaryUint32ArrayReduceRightSpreadRule,
+  noUnnecessaryUint32ArrayReduceSpreadRule,
+  noUnnecessaryUint32ArrayReverseSpreadRule,
+  noUnnecessaryUint32ArraySetSpreadRule,
+  noUnnecessaryUint32ArraySliceSpreadRule,
+  noUnnecessaryUint32ArraySomeSpreadRule,
+  noUnnecessaryUint32ArraySortSpreadRule,
+  noUnnecessaryUint32ArraySubarraySpreadRule,
+  noUnnecessaryUint32ArrayToLocaleStringSpreadRule,
+  noUnnecessaryUint32ArrayToReversedSpreadRule,
+  noUnnecessaryUint32ArrayToSortedSpreadRule,
+  noUnnecessaryUint32ArrayToStringSpreadRule,
+  noUnnecessaryUint32ArrayValuesSpreadRule,
+  noUnnecessaryUint32ArrayWithSpreadRule,
+  noUnnecessaryUint8ArrayAtSpreadRule,
+  noUnnecessaryUint8ArrayCopyWithinSpreadRule,
+  noUnnecessaryUint8ArrayEntriesSpreadRule,
+  noUnnecessaryUint8ArrayEverySpreadRule,
+  noUnnecessaryUint8ArrayFillSpreadRule,
+  noUnnecessaryUint8ArrayFilterSpreadRule,
+  noUnnecessaryUint8ArrayFindIndexSpreadRule,
+  noUnnecessaryUint8ArrayFindLastIndexSpreadRule,
+  noUnnecessaryUint8ArrayFindLastSpreadRule,
+  noUnnecessaryUint8ArrayFindSpreadRule,
+  noUnnecessaryUint8ArrayForEachSpreadRule,
+  noUnnecessaryUint8ArrayFromSpreadRule,
+  noUnnecessaryUint8ArrayIncludesSpreadRule,
+  noUnnecessaryUint8ArrayIndexOfSpreadRule,
+  noUnnecessaryUint8ArrayJoinSpreadRule,
+  noUnnecessaryUint8ArrayKeysSpreadRule,
+  noUnnecessaryUint8ArrayLastIndexOfSpreadRule,
+  noUnnecessaryUint8ArrayMapSpreadRule,
+  noUnnecessaryUint8ArrayOfSpreadRule,
+  noUnnecessaryUint8ArrayReduceRightSpreadRule,
+  noUnnecessaryUint8ArrayReduceSpreadRule,
+  noUnnecessaryUint8ArrayReverseSpreadRule,
+  noUnnecessaryUint8ArraySetSpreadRule,
+  noUnnecessaryUint8ArraySliceSpreadRule,
+  noUnnecessaryUint8ArraySomeSpreadRule,
+  noUnnecessaryUint8ArraySortSpreadRule,
+  noUnnecessaryUint8ArraySubarraySpreadRule,
+  noUnnecessaryUint8ArrayToLocaleStringSpreadRule,
+  noUnnecessaryUint8ArrayToReversedSpreadRule,
+  noUnnecessaryUint8ArrayToSortedSpreadRule,
+  noUnnecessaryUint8ArrayToStringSpreadRule,
+  noUnnecessaryUint8ArrayValuesSpreadRule,
+  noUnnecessaryUint8ArrayWithSpreadRule,
+  noUnnecessaryUint8ClampedArrayAtSpreadRule,
+  noUnnecessaryUint8ClampedArrayCopyWithinSpreadRule,
+  noUnnecessaryUint8ClampedArrayEntriesSpreadRule,
+  noUnnecessaryUint8ClampedArrayEverySpreadRule,
+  noUnnecessaryUint8ClampedArrayFillSpreadRule,
+  noUnnecessaryUint8ClampedArrayFilterSpreadRule,
+  noUnnecessaryUint8ClampedArrayFindIndexSpreadRule,
+  noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule,
+  noUnnecessaryUint8ClampedArrayFindLastSpreadRule,
+  noUnnecessaryUint8ClampedArrayFindSpreadRule,
+  noUnnecessaryUint8ClampedArrayForEachSpreadRule,
+  noUnnecessaryUint8ClampedArrayFromSpreadRule,
+  noUnnecessaryUint8ClampedArrayIncludesSpreadRule,
+  noUnnecessaryUint8ClampedArrayIndexOfSpreadRule,
+  noUnnecessaryUint8ClampedArrayJoinSpreadRule,
+  noUnnecessaryUint8ClampedArrayKeysSpreadRule,
+  noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule,
+  noUnnecessaryUint8ClampedArrayMapSpreadRule,
+  noUnnecessaryUint8ClampedArrayOfSpreadRule,
+  noUnnecessaryUint8ClampedArrayReduceRightSpreadRule,
+  noUnnecessaryUint8ClampedArrayReduceSpreadRule,
+  noUnnecessaryUint8ClampedArrayReverseSpreadRule,
+  noUnnecessaryUint8ClampedArraySetSpreadRule,
+  noUnnecessaryUint8ClampedArraySliceSpreadRule,
+  noUnnecessaryUint8ClampedArraySomeSpreadRule,
+  noUnnecessaryUint8ClampedArraySortSpreadRule,
+  noUnnecessaryUint8ClampedArraySubarraySpreadRule,
+  noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule,
+  noUnnecessaryUint8ClampedArrayToReversedSpreadRule,
+  noUnnecessaryUint8ClampedArrayToSortedSpreadRule,
+  noUnnecessaryUint8ClampedArrayToStringSpreadRule,
+  noUnnecessaryUint8ClampedArrayValuesSpreadRule,
+  noUnnecessaryUint8ClampedArrayWithSpreadRule,
+  noUnnecessaryUrlDomainToAsciiSpreadRule,
+  noUnnecessaryUrlDomainToUnicodeSpreadRule,
+  noUnnecessaryUrlFormatSpreadRule,
+  noUnnecessaryUrlInstanceToJsonSpreadRule,
+  noUnnecessaryUrlInstanceToStringSpreadRule,
+  noUnnecessaryUrlParseNodeSpreadRule,
+  noUnnecessaryUrlResolveSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceGetSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceHasSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceSetSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceSortSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule,
+  noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule,
+  noUnnecessaryUtilCallbackifySpreadRule,
+  noUnnecessaryUtilDeprecateSpreadRule,
+  noUnnecessaryUtilFormatSpreadRule,
+  noUnnecessaryUtilInspectSpreadRule,
+  noUnnecessaryUtilIsDeepStrictEqualSpreadRule,
+  noUnnecessaryUtilPromisifySpreadRule,
+  noUnnecessaryUtilTextDecoderDecodeSpreadRule,
+  noUnnecessaryUtilTypesIsDateSpreadRule,
+  noUnnecessaryWeakMapDeleteSpreadRule,
+  noUnnecessaryWeakMapGetSpreadRule,
+  noUnnecessaryWeakMapHasSpreadRule,
+  noUnnecessaryWeakMapSetSpreadRule,
+  noUnnecessaryWeakMapSpreadRule,
+  noUnnecessaryWeakRefInstanceDerefSpreadRule,
+  noUnnecessaryWeakRefSpreadRule,
+  noUnnecessaryWeakSetAddSpreadRule,
+  noUnnecessaryWeakSetDeleteSpreadRule,
+  noUnnecessaryWeakSetHasSpreadRule,
+  noUnnecessaryWeakSetSpreadRule,
+  noUnnecessaryWindowAlertSpreadRule,
+  noUnnecessaryWindowAtobSpreadRule,
+  noUnnecessaryWindowBlurSpreadRule,
+  noUnnecessaryWindowBtoaSpreadRule,
+  noUnnecessaryWindowCancelAnimationFrameSpreadRule,
+  noUnnecessaryWindowCancelIdleCallbackSpreadRule,
+  noUnnecessaryWindowClearIntervalSpreadRule,
+  noUnnecessaryWindowClearTimeoutSpreadRule,
+  noUnnecessaryWindowCloseSpreadRule,
+  noUnnecessaryWindowConfirmSpreadRule,
+  noUnnecessaryWindowCreateImageBitmapSpreadRule,
+  noUnnecessaryWindowFetchSpreadRule,
+  noUnnecessaryWindowFocusSpreadRule,
+  noUnnecessaryWindowGetComputedStyleSpreadRule,
+  noUnnecessaryWindowGetSelectionSpreadRule,
+  noUnnecessaryWindowMatchMediaSpreadRule,
+  noUnnecessaryWindowMoveBySpreadRule,
+  noUnnecessaryWindowMoveToSpreadRule,
+  noUnnecessaryWindowOpenSpreadRule,
+  noUnnecessaryWindowPostMessageSpreadRule,
+  noUnnecessaryWindowPrintSpreadRule,
+  noUnnecessaryWindowPromptSpreadRule,
+  noUnnecessaryWindowQueueMicrotaskSpreadRule,
+  noUnnecessaryWindowReportErrorSpreadRule,
+  noUnnecessaryWindowRequestAnimationFrameSpreadRule,
+  noUnnecessaryWindowRequestIdleCallbackSpreadRule,
+  noUnnecessaryWindowResizeBySpreadRule,
+  noUnnecessaryWindowResizeToSpreadRule,
+  noUnnecessaryWindowScrollBySpreadRule,
+  noUnnecessaryWindowScrollSpreadRule,
+  noUnnecessaryWindowScrollToSpreadRule,
+  noUnnecessaryWindowSetIntervalSpreadRule,
+  noUnnecessaryWindowSetTimeoutSpreadRule,
+  noUnnecessaryWindowStopSpreadRule,
+  noUnnecessaryWindowStructuredCloneSpreadRule,
+  noUnnecessaryWorkerInstancePostMessageSpreadRule,
+  noUnnecessaryWorkerInstanceTerminateSpreadRule,
+  noUnnecessaryWorkerSpreadRule,
+  noUnnecessaryWritableStreamDestroySpreadRule,
+  noUnnecessaryWritableStreamEndSpreadRule,
+  noUnnecessaryWritableStreamWriteSpreadRule,
+  noUnnecessaryXmlHttpRequestSpreadRule,
+  noUnnecessaryZlibBrotliCompressSpreadRule,
+  noUnnecessaryZlibBrotliCompressSyncSpreadRule,
+  noUnnecessaryZlibBrotliDecompressSpreadRule,
+  noUnnecessaryZlibBrotliDecompressSyncSpreadRule,
+  noUnnecessaryZlibDeflateSpreadRule,
+  noUnnecessaryZlibDeflateSyncSpreadRule,
+  noUnnecessaryZlibGunzipSpreadRule,
+  noUnnecessaryZlibGunzipSyncSpreadRule,
+  noUnnecessaryZlibGzipSpreadRule,
+  noUnnecessaryZlibGzipSyncSpreadRule,
+  noUnnecessaryZlibInflateSpreadRule,
+  noUnnecessaryZlibInflateSyncSpreadRule,
 } from './patterns/index.js'
-import {
-  noUnnecessaryObjectDefinePropertySpreadRule,
-  noUnnecessaryObjectDefinePropertiesSpreadRule,
-  noUnnecessaryObjectPreventExtensionsSpreadRule,
-  noUnnecessaryObjectGetPrototypeOfSpreadRule,
-  noUnnecessaryObjectGetOwnPropertyNamesSpreadRule,
-  noUnnecessaryObjectGetOwnPropertySymbolsSpreadRule,
-  noUnnecessaryObjectGetOwnPropertyDescriptorSpreadRule,
-  noUnnecessaryObjectIsFrozenSpreadRule,
-  noUnnecessaryObjectIsSealedSpreadRule,
-  noUnnecessaryObjectIsExtensibleSpreadRule,
-  noUnnecessaryObjectFromEntriesSpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryObjectGroupBySpreadRule,
-  noUnnecessaryArrayBufferSliceSpreadRule,
-  noUnnecessaryPromiseTrySpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryStringCharAtSpreadRule,
-  noUnnecessaryStringCharCodeAtSpreadRule,
-  noUnnecessaryStringCodePointAtSpreadRule,
-  noUnnecessaryStringConcatSpreadRule,
-  noUnnecessaryStringEndsWithSpreadRule,
-  noUnnecessaryStringIncludesSpreadRule,
-  noUnnecessaryStringIndexOfSpreadRule,
-  noUnnecessaryStringLastIndexOfSpreadRule,
-  noUnnecessaryStringLocaleCompareSpreadRule,
-  noUnnecessaryStringMatchSpreadRule,
-  noUnnecessaryStringMatchAllSpreadRule,
-  noUnnecessaryStringNormalizeSpreadRule,
-  noUnnecessaryStringPadStartSpreadRule,
-  noUnnecessaryStringPadEndSpreadRule,
-  noUnnecessaryStringRepeatSpreadRule,
-  noUnnecessaryStringReplaceSpreadRule,
-  noUnnecessaryStringReplaceAllSpreadRule,
-  noUnnecessaryStringSearchSpreadRule,
-  noUnnecessaryStringSliceSpreadRule,
-  noUnnecessaryStringSplitSpreadRule,
-  noUnnecessaryStringStartsWithSpreadRule,
-  noUnnecessaryStringSubstringSpreadRule,
-  noUnnecessaryStringToLowerCaseSpreadRule,
-  noUnnecessaryStringToUpperCaseSpreadRule,
-  noUnnecessaryStringToLocaleLowerCaseSpreadRule,
-  noUnnecessaryStringToLocaleUpperCaseSpreadRule,
-  noUnnecessaryStringToStringSpreadRule,
-  noUnnecessaryStringTrimSpreadRule,
-  noUnnecessaryStringTrimStartSpreadRule,
-  noUnnecessaryStringTrimEndSpreadRule,
-  noUnnecessaryStringValueOfSpreadRule,
-  noUnnecessaryStringAtSpreadRule,
-  noUnnecessaryStringFixedSpreadRule,
-  noUnnecessaryStringFontcolorSpreadRule,
-  noUnnecessaryStringFontsizeSpreadRule,
-  noUnnecessaryStringItalicsSpreadRule,
-  noUnnecessaryStringSmallSpreadRule,
-  noUnnecessaryStringStrikeSpreadRule,
-  noUnnecessaryStringSubSpreadRule,
-  noUnnecessaryStringSupSpreadRule,
-  noUnnecessaryStringAnchorSpreadRule,
-  noUnnecessaryStringLinkSpreadRule,
-  noUnnecessaryStringBigSpreadRule,
-  noUnnecessaryStringBlinkSpreadRule,
-  noUnnecessaryStringBoldSpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryNumberToExponentialSpreadRule,
-  noUnnecessaryNumberToFixedSpreadRule,
-  noUnnecessaryNumberToPrecisionSpreadRule,
-  noUnnecessaryNumberToStringSpreadRule,
-  noUnnecessaryNumberToLocaleStringSpreadRule,
-  noUnnecessaryNumberValueOfSpreadRule,
-  noUnnecessaryArrayAtSpreadRule,
-  noUnnecessaryArrayConcatSpreadRule,
-  noUnnecessaryArrayCopyWithinSpreadRule,
-  noUnnecessaryArrayEntriesSpreadRule,
-  noUnnecessaryArrayEverySpreadRule,
-  noUnnecessaryArrayFillSpreadRule,
-  noUnnecessaryArrayFilterSpreadRule,
-  noUnnecessaryArrayFindSpreadRule,
-  noUnnecessaryArrayFindIndexSpreadRule,
-  noUnnecessaryArrayFindLastSpreadRule,
-  noUnnecessaryArrayFindLastIndexSpreadRule,
-  noUnnecessaryArrayFlatSpreadRule,
-  noUnnecessaryArrayFlatMapSpreadRule,
-  noUnnecessaryArrayForEachSpreadRule,
-  noUnnecessaryArrayIncludesSpreadRule,
-  noUnnecessaryArrayIndexOfSpreadRule,
-  noUnnecessaryArrayJoinSpreadRule,
-  noUnnecessaryArrayKeysSpreadRule,
-  noUnnecessaryArrayLastIndexOfSpreadRule,
-  noUnnecessaryArrayMapSpreadRule,
-  noUnnecessaryArrayPopSpreadRule,
-  noUnnecessaryArrayPushSpreadRule,
-  noUnnecessaryArrayReduceSpreadRule,
-  noUnnecessaryArrayReduceRightSpreadRule,
-  noUnnecessaryArrayReverseSpreadRule,
-  noUnnecessaryArrayShiftSpreadRule,
-  noUnnecessaryArraySliceSpreadRule,
-  noUnnecessaryArraySomeSpreadRule,
-  noUnnecessaryArraySortSpreadRule,
-  noUnnecessaryArraySpliceSpreadRule,
-  noUnnecessaryArrayToLocaleStringSpreadRule,
-  noUnnecessaryArrayToReversedSpreadRule,
-  noUnnecessaryArrayToSortedSpreadRule,
-  noUnnecessaryArrayToSplicedSpreadRule,
-  noUnnecessaryArrayToStringSpreadRule,
-  noUnnecessaryArrayUnshiftSpreadRule,
-  noUnnecessaryArrayValuesSpreadRule,
-  noUnnecessaryArrayWithSpreadRule,
-} from './patterns/index.js'
-import {
-  noUnnecessaryFunctionCallSpreadRule,
-  noUnnecessaryFunctionApplySpreadRule,
-  noUnnecessaryFunctionBindSpreadRule,
-  noUnnecessaryFunctionToStringSpreadRule,
-  noUnnecessaryDateToJsonSpreadRule,
-  noUnnecessaryDateToGmtStringSpreadRule,
-} from './patterns/index.js'
-import { noUnnecessaryTypedArrayAtSpreadRule } from './patterns/no-unnecessary-typed-array-at-spread.js'
-import { noUnnecessaryTypedArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-typed-array-copy-within-spread.js'
-import { noUnnecessaryTypedArrayEntriesSpreadRule } from './patterns/no-unnecessary-typed-array-entries-spread.js'
-import { noUnnecessaryTypedArrayEverySpreadRule } from './patterns/no-unnecessary-typed-array-every-spread.js'
-import { noUnnecessaryTypedArrayFillSpreadRule } from './patterns/no-unnecessary-typed-array-fill-spread.js'
-import { noUnnecessaryTypedArrayFilterSpreadRule } from './patterns/no-unnecessary-typed-array-filter-spread.js'
-import { noUnnecessaryTypedArrayFindIndexSpreadRule } from './patterns/no-unnecessary-typed-array-find-index-spread.js'
-import { noUnnecessaryTypedArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-typed-array-find-last-index-spread.js'
-import { noUnnecessaryTypedArrayFindLastSpreadRule } from './patterns/no-unnecessary-typed-array-find-last-spread.js'
-import { noUnnecessaryTypedArrayFindSpreadRule } from './patterns/no-unnecessary-typed-array-find-spread.js'
-import { noUnnecessaryTypedArrayForEachSpreadRule } from './patterns/no-unnecessary-typed-array-for-each-spread.js'
-import { noUnnecessaryTypedArrayIncludesSpreadRule } from './patterns/no-unnecessary-typed-array-includes-spread.js'
-import { noUnnecessaryTypedArrayIndexOfSpreadRule } from './patterns/no-unnecessary-typed-array-index-of-spread.js'
-import { noUnnecessaryTypedArrayJoinSpreadRule } from './patterns/no-unnecessary-typed-array-join-spread.js'
-import { noUnnecessaryTypedArrayKeysSpreadRule } from './patterns/no-unnecessary-typed-array-keys-spread.js'
-import { noUnnecessaryTypedArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-typed-array-last-index-of-spread.js'
-import { noUnnecessaryTypedArrayMapSpreadRule } from './patterns/no-unnecessary-typed-array-map-spread.js'
-import { noUnnecessaryTypedArrayReduceRightSpreadRule } from './patterns/no-unnecessary-typed-array-reduce-right-spread.js'
-import { noUnnecessaryTypedArrayReduceSpreadRule } from './patterns/no-unnecessary-typed-array-reduce-spread.js'
-import { noUnnecessaryTypedArrayReverseSpreadRule } from './patterns/no-unnecessary-typed-array-reverse-spread.js'
-import { noUnnecessaryTypedArraySetSpreadRule } from './patterns/no-unnecessary-typed-array-set-spread.js'
-import { noUnnecessaryTypedArraySliceSpreadRule } from './patterns/no-unnecessary-typed-array-slice-spread.js'
-import { noUnnecessaryTypedArraySomeSpreadRule } from './patterns/no-unnecessary-typed-array-some-spread.js'
-import { noUnnecessaryTypedArraySortSpreadRule } from './patterns/no-unnecessary-typed-array-sort-spread.js'
-import { noUnnecessaryTypedArraySubArraySpreadRule } from './patterns/no-unnecessary-typed-array-sub-array-spread.js'
-import { noUnnecessaryTypedArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-typed-array-to-locale-string-spread.js'
-import { noUnnecessaryTypedArrayToStringSpreadRule } from './patterns/no-unnecessary-typed-array-to-string-spread.js'
-import { noUnnecessaryTypedArrayValuesSpreadRule } from './patterns/no-unnecessary-typed-array-values-spread.js'
-import { noUnnecessaryTypedArrayWithSpreadRule } from './patterns/no-unnecessary-typed-array-with-spread.js'
-import { noUnnecessaryDataviewGetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-get-big-int64-spread.js'
-import { noUnnecessaryDataviewGetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-get-big-uint64-spread.js'
-import { noUnnecessaryDataviewGetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-get-float32-spread.js'
-import { noUnnecessaryDataviewGetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-get-float64-spread.js'
-import { noUnnecessaryDataviewGetInt16SpreadRule } from './patterns/no-unnecessary-dataview-get-int16-spread.js'
-import { noUnnecessaryDataviewGetInt32SpreadRule } from './patterns/no-unnecessary-dataview-get-int32-spread.js'
-import { noUnnecessaryDataviewGetInt8SpreadRule } from './patterns/no-unnecessary-dataview-get-int8-spread.js'
-import { noUnnecessaryDataviewGetUint16SpreadRule } from './patterns/no-unnecessary-dataview-get-uint16-spread.js'
-import { noUnnecessaryDataviewGetUint32SpreadRule } from './patterns/no-unnecessary-dataview-get-uint32-spread.js'
-import { noUnnecessaryDataviewGetUint8SpreadRule } from './patterns/no-unnecessary-dataview-get-uint8-spread.js'
-import { noUnnecessaryDataviewSetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-set-big-int64-spread.js'
-import { noUnnecessaryDataviewSetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-set-big-uint64-spread.js'
-import { noUnnecessaryEncodeUriSpreadRule } from './patterns/no-unnecessary-encode-uri-spread.js'
-import { noUnnecessaryDecodeUriSpreadRule } from './patterns/no-unnecessary-decode-uri-spread.js'
-import { noUnnecessaryEncodeUriComponentSpreadRule } from './patterns/no-unnecessary-encode-uri-component-spread.js'
-import { noUnnecessaryDecodeUriComponentSpreadRule } from './patterns/no-unnecessary-decode-uri-component-spread.js'
-import { noUnnecessaryEvalSpreadRule } from './patterns/no-unnecessary-eval-spread.js'
-import { noUnnecessaryIsFiniteSpreadRule } from './patterns/no-unnecessary-is-finite-spread.js'
-import { noUnnecessaryArrayIsArraySpreadRule } from './patterns/no-unnecessary-is-nan-spread.js'
-import { noUnnecessaryParseFloatSpreadRule } from './patterns/no-unnecessary-parse-float-spread.js'
-import { noUnnecessaryParseIntSpreadRule } from './patterns/no-unnecessary-parse-int-spread.js'
-import { noUnnecessarySharedArrayBufferSliceSpreadRule } from './patterns/no-unnecessary-shared-array-buffer-slice-spread.js'
-import { noUnnecessaryInt8ArraySetSpreadRule } from './patterns/no-unnecessary-int-8-array-set-spread.js'
-import { noUnnecessaryInt8ArraySubarraySpreadRule } from './patterns/no-unnecessary-int-8-array-subarray-spread.js'
-import { noUnnecessaryInt8ArraySliceSpreadRule } from './patterns/no-unnecessary-int-8-array-slice-spread.js'
-import { noUnnecessaryUint8ArraySetSpreadRule } from './patterns/no-unnecessary-uint-8-array-set-spread.js'
-import { noUnnecessaryUint8ArraySubarraySpreadRule } from './patterns/no-unnecessary-uint-8-array-subarray-spread.js'
-import { noUnnecessaryUint8ArraySliceSpreadRule } from './patterns/no-unnecessary-uint-8-array-slice-spread.js'
-import { noUnnecessaryUint8ClampedArraySetSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-set-spread.js'
-import { noUnnecessaryUint8ClampedArraySubarraySpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-subarray-spread.js'
-import { noUnnecessaryUint8ClampedArraySliceSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-slice-spread.js'
-import { noUnnecessaryInt16ArraySetSpreadRule } from './patterns/no-unnecessary-int-16-array-set-spread.js'
-import { noUnnecessaryInt16ArraySubarraySpreadRule } from './patterns/no-unnecessary-int-16-array-subarray-spread.js'
-import { noUnnecessaryInt16ArraySliceSpreadRule } from './patterns/no-unnecessary-int-16-array-slice-spread.js'
-import { noUnnecessaryUint16ArraySetSpreadRule } from './patterns/no-unnecessary-uint-16-array-set-spread.js'
-import { noUnnecessaryUint16ArraySubarraySpreadRule } from './patterns/no-unnecessary-uint-16-array-subarray-spread.js'
-import { noUnnecessaryUint16ArraySliceSpreadRule } from './patterns/no-unnecessary-uint-16-array-slice-spread.js'
-import { noUnnecessaryInt32ArraySetSpreadRule } from './patterns/no-unnecessary-int-32-array-set-spread.js'
-import { noUnnecessaryInt32ArraySubarraySpreadRule } from './patterns/no-unnecessary-int-32-array-subarray-spread.js'
-import { noUnnecessaryInt32ArraySliceSpreadRule } from './patterns/no-unnecessary-int-32-array-slice-spread.js'
-import { noUnnecessaryUint32ArraySetSpreadRule } from './patterns/no-unnecessary-uint-32-array-set-spread.js'
-import { noUnnecessaryUint32ArraySubarraySpreadRule } from './patterns/no-unnecessary-uint-32-array-subarray-spread.js'
-import { noUnnecessaryUint32ArraySliceSpreadRule } from './patterns/no-unnecessary-uint-32-array-slice-spread.js'
-import { noUnnecessaryFloat32ArraySetSpreadRule } from './patterns/no-unnecessary-float-32-array-set-spread.js'
-import { noUnnecessaryFloat32ArraySubarraySpreadRule } from './patterns/no-unnecessary-float-32-array-subarray-spread.js'
-import { noUnnecessaryFloat32ArraySliceSpreadRule } from './patterns/no-unnecessary-float-32-array-slice-spread.js'
-import { noUnnecessaryFloat64ArraySetSpreadRule } from './patterns/no-unnecessary-float-64-array-set-spread.js'
-import { noUnnecessaryFloat64ArraySubarraySpreadRule } from './patterns/no-unnecessary-float-64-array-subarray-spread.js'
-import { noUnnecessaryFloat64ArraySliceSpreadRule } from './patterns/no-unnecessary-float-64-array-slice-spread.js'
-import { noUnnecessaryBigInt64ArraySetSpreadRule } from './patterns/no-unnecessary-big-int-64-array-set-spread.js'
-import { noUnnecessaryBigInt64ArraySubarraySpreadRule } from './patterns/no-unnecessary-big-int-64-array-subarray-spread.js'
-import { noUnnecessaryBigInt64ArraySliceSpreadRule } from './patterns/no-unnecessary-big-int-64-array-slice-spread.js'
-import { noUnnecessaryBigUint64ArraySetSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-set-spread.js'
-import { noUnnecessaryBigUint64ArraySubarraySpreadRule } from './patterns/no-unnecessary-big-uint-64-array-subarray-spread.js'
-import { noUnnecessaryBigUint64ArraySliceSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-slice-spread.js'
-import { noUnnecessaryInt8ArrayFillSpreadRule } from './patterns/no-unnecessary-int-8-array-fill-spread.js'
-import { noUnnecessaryInt8ArraySortSpreadRule } from './patterns/no-unnecessary-int-8-array-sort-spread.js'
-import { noUnnecessaryInt8ArrayReverseSpreadRule } from './patterns/no-unnecessary-int-8-array-reverse-spread.js'
-import { noUnnecessaryInt8ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-int-8-array-copy-within-spread.js'
-import { noUnnecessaryUint8ArrayFillSpreadRule } from './patterns/no-unnecessary-uint-8-array-fill-spread.js'
-import { noUnnecessaryUint8ArraySortSpreadRule } from './patterns/no-unnecessary-uint-8-array-sort-spread.js'
-import { noUnnecessaryUint8ArrayReverseSpreadRule } from './patterns/no-unnecessary-uint-8-array-reverse-spread.js'
-import { noUnnecessaryUint8ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-uint-8-array-copy-within-spread.js'
-import { noUnnecessaryUint8ClampedArrayFillSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-fill-spread.js'
-import { noUnnecessaryUint8ClampedArraySortSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-sort-spread.js'
-import { noUnnecessaryUint8ClampedArrayReverseSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-reverse-spread.js'
-import { noUnnecessaryUint8ClampedArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-copy-within-spread.js'
-import { noUnnecessaryInt16ArrayFillSpreadRule } from './patterns/no-unnecessary-int-16-array-fill-spread.js'
-import { noUnnecessaryInt16ArraySortSpreadRule } from './patterns/no-unnecessary-int-16-array-sort-spread.js'
-import { noUnnecessaryInt16ArrayReverseSpreadRule } from './patterns/no-unnecessary-int-16-array-reverse-spread.js'
-import { noUnnecessaryInt16ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-int-16-array-copy-within-spread.js'
-import { noUnnecessaryUint16ArrayFillSpreadRule } from './patterns/no-unnecessary-uint-16-array-fill-spread.js'
-import { noUnnecessaryUint16ArraySortSpreadRule } from './patterns/no-unnecessary-uint-16-array-sort-spread.js'
-import { noUnnecessaryUint16ArrayReverseSpreadRule } from './patterns/no-unnecessary-uint-16-array-reverse-spread.js'
-import { noUnnecessaryUint16ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-uint-16-array-copy-within-spread.js'
-import { noUnnecessaryInt32ArrayFillSpreadRule } from './patterns/no-unnecessary-int-32-array-fill-spread.js'
-import { noUnnecessaryInt32ArraySortSpreadRule } from './patterns/no-unnecessary-int-32-array-sort-spread.js'
-import { noUnnecessaryInt32ArrayReverseSpreadRule } from './patterns/no-unnecessary-int-32-array-reverse-spread.js'
-import { noUnnecessaryInt32ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-int-32-array-copy-within-spread.js'
-import { noUnnecessaryUint32ArrayFillSpreadRule } from './patterns/no-unnecessary-uint-32-array-fill-spread.js'
-import { noUnnecessaryUint32ArraySortSpreadRule } from './patterns/no-unnecessary-uint-32-array-sort-spread.js'
-import { noUnnecessaryUint32ArrayReverseSpreadRule } from './patterns/no-unnecessary-uint-32-array-reverse-spread.js'
-import { noUnnecessaryUint32ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-uint-32-array-copy-within-spread.js'
-import { noUnnecessaryFloat32ArrayFillSpreadRule } from './patterns/no-unnecessary-float-32-array-fill-spread.js'
-import { noUnnecessaryFloat32ArraySortSpreadRule } from './patterns/no-unnecessary-float-32-array-sort-spread.js'
-import { noUnnecessaryFloat32ArrayReverseSpreadRule } from './patterns/no-unnecessary-float-32-array-reverse-spread.js'
-import { noUnnecessaryFloat32ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-float-32-array-copy-within-spread.js'
-import { noUnnecessaryFloat64ArrayFillSpreadRule } from './patterns/no-unnecessary-float-64-array-fill-spread.js'
-import { noUnnecessaryFloat64ArraySortSpreadRule } from './patterns/no-unnecessary-float-64-array-sort-spread.js'
-import { noUnnecessaryFloat64ArrayReverseSpreadRule } from './patterns/no-unnecessary-float-64-array-reverse-spread.js'
-import { noUnnecessaryFloat64ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-float-64-array-copy-within-spread.js'
-import { noUnnecessaryBigInt64ArrayFillSpreadRule } from './patterns/no-unnecessary-big-int-64-array-fill-spread.js'
-import { noUnnecessaryBigInt64ArraySortSpreadRule } from './patterns/no-unnecessary-big-int-64-array-sort-spread.js'
-import { noUnnecessaryBigInt64ArrayReverseSpreadRule } from './patterns/no-unnecessary-big-int-64-array-reverse-spread.js'
-import { noUnnecessaryBigInt64ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-big-int-64-array-copy-within-spread.js'
-import { noUnnecessaryBigUint64ArrayFillSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-fill-spread.js'
-import { noUnnecessaryBigUint64ArraySortSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-sort-spread.js'
-import { noUnnecessaryBigUint64ArrayReverseSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-reverse-spread.js'
-import { noUnnecessaryBigUint64ArrayCopyWithinSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-copy-within-spread.js'
-import { noUnnecessaryInt8ArrayMapSpreadRule } from './patterns/no-unnecessary-int-8-array-map-spread.js'
-import { noUnnecessaryInt8ArrayFilterSpreadRule } from './patterns/no-unnecessary-int-8-array-filter-spread.js'
-import { noUnnecessaryInt8ArrayFindSpreadRule } from './patterns/no-unnecessary-int-8-array-find-spread.js'
-import { noUnnecessaryInt8ArrayEverySpreadRule } from './patterns/no-unnecessary-int-8-array-every-spread.js'
-import { noUnnecessaryInt8ArraySomeSpreadRule } from './patterns/no-unnecessary-int-8-array-some-spread.js'
-import { noUnnecessaryInt8ArrayForEachSpreadRule } from './patterns/no-unnecessary-int-8-array-for-each-spread.js'
-import { noUnnecessaryUint8ArrayMapSpreadRule } from './patterns/no-unnecessary-uint-8-array-map-spread.js'
-import { noUnnecessaryUint8ArrayFilterSpreadRule } from './patterns/no-unnecessary-uint-8-array-filter-spread.js'
-import { noUnnecessaryUint8ArrayFindSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-spread.js'
-import { noUnnecessaryUint8ArrayEverySpreadRule } from './patterns/no-unnecessary-uint-8-array-every-spread.js'
-import { noUnnecessaryUint8ArraySomeSpreadRule } from './patterns/no-unnecessary-uint-8-array-some-spread.js'
-import { noUnnecessaryUint8ArrayForEachSpreadRule } from './patterns/no-unnecessary-uint-8-array-for-each-spread.js'
-import { noUnnecessaryUint8ClampedArrayMapSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-map-spread.js'
-import { noUnnecessaryUint8ClampedArrayFilterSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-filter-spread.js'
-import { noUnnecessaryUint8ClampedArrayFindSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-spread.js'
-import { noUnnecessaryUint8ClampedArrayEverySpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-every-spread.js'
-import { noUnnecessaryUint8ClampedArraySomeSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-some-spread.js'
-import { noUnnecessaryUint8ClampedArrayForEachSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-for-each-spread.js'
-import { noUnnecessaryInt16ArrayMapSpreadRule } from './patterns/no-unnecessary-int-16-array-map-spread.js'
-import { noUnnecessaryInt16ArrayFilterSpreadRule } from './patterns/no-unnecessary-int-16-array-filter-spread.js'
-import { noUnnecessaryInt16ArrayFindSpreadRule } from './patterns/no-unnecessary-int-16-array-find-spread.js'
-import { noUnnecessaryInt16ArrayEverySpreadRule } from './patterns/no-unnecessary-int-16-array-every-spread.js'
-import { noUnnecessaryInt16ArraySomeSpreadRule } from './patterns/no-unnecessary-int-16-array-some-spread.js'
-import { noUnnecessaryInt16ArrayForEachSpreadRule } from './patterns/no-unnecessary-int-16-array-for-each-spread.js'
-import { noUnnecessaryUint16ArrayMapSpreadRule } from './patterns/no-unnecessary-uint-16-array-map-spread.js'
-import { noUnnecessaryUint16ArrayFilterSpreadRule } from './patterns/no-unnecessary-uint-16-array-filter-spread.js'
-import { noUnnecessaryUint16ArrayFindSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-spread.js'
-import { noUnnecessaryUint16ArrayEverySpreadRule } from './patterns/no-unnecessary-uint-16-array-every-spread.js'
-import { noUnnecessaryUint16ArraySomeSpreadRule } from './patterns/no-unnecessary-uint-16-array-some-spread.js'
-import { noUnnecessaryUint16ArrayForEachSpreadRule } from './patterns/no-unnecessary-uint-16-array-for-each-spread.js'
-import { noUnnecessaryInt32ArrayMapSpreadRule } from './patterns/no-unnecessary-int-32-array-map-spread.js'
-import { noUnnecessaryInt32ArrayFilterSpreadRule } from './patterns/no-unnecessary-int-32-array-filter-spread.js'
-import { noUnnecessaryInt32ArrayFindSpreadRule } from './patterns/no-unnecessary-int-32-array-find-spread.js'
-import { noUnnecessaryInt32ArrayEverySpreadRule } from './patterns/no-unnecessary-int-32-array-every-spread.js'
-import { noUnnecessaryInt32ArraySomeSpreadRule } from './patterns/no-unnecessary-int-32-array-some-spread.js'
-import { noUnnecessaryInt32ArrayForEachSpreadRule } from './patterns/no-unnecessary-int-32-array-for-each-spread.js'
-import { noUnnecessaryUint32ArrayMapSpreadRule } from './patterns/no-unnecessary-uint-32-array-map-spread.js'
-import { noUnnecessaryUint32ArrayFilterSpreadRule } from './patterns/no-unnecessary-uint-32-array-filter-spread.js'
-import { noUnnecessaryUint32ArrayFindSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-spread.js'
-import { noUnnecessaryUint32ArrayEverySpreadRule } from './patterns/no-unnecessary-uint-32-array-every-spread.js'
-import { noUnnecessaryUint32ArraySomeSpreadRule } from './patterns/no-unnecessary-uint-32-array-some-spread.js'
-import { noUnnecessaryUint32ArrayForEachSpreadRule } from './patterns/no-unnecessary-uint-32-array-for-each-spread.js'
-import { noUnnecessaryFloat32ArrayMapSpreadRule } from './patterns/no-unnecessary-float-32-array-map-spread.js'
-import { noUnnecessaryFloat32ArrayFilterSpreadRule } from './patterns/no-unnecessary-float-32-array-filter-spread.js'
-import { noUnnecessaryFloat32ArrayFindSpreadRule } from './patterns/no-unnecessary-float-32-array-find-spread.js'
-import { noUnnecessaryFloat32ArrayEverySpreadRule } from './patterns/no-unnecessary-float-32-array-every-spread.js'
-import { noUnnecessaryFloat32ArraySomeSpreadRule } from './patterns/no-unnecessary-float-32-array-some-spread.js'
-import { noUnnecessaryFloat32ArrayForEachSpreadRule } from './patterns/no-unnecessary-float-32-array-for-each-spread.js'
-import { noUnnecessaryFloat64ArrayMapSpreadRule } from './patterns/no-unnecessary-float-64-array-map-spread.js'
-import { noUnnecessaryFloat64ArrayFilterSpreadRule } from './patterns/no-unnecessary-float-64-array-filter-spread.js'
-import { noUnnecessaryFloat64ArrayFindSpreadRule } from './patterns/no-unnecessary-float-64-array-find-spread.js'
-import { noUnnecessaryFloat64ArrayEverySpreadRule } from './patterns/no-unnecessary-float-64-array-every-spread.js'
-import { noUnnecessaryFloat64ArraySomeSpreadRule } from './patterns/no-unnecessary-float-64-array-some-spread.js'
-import { noUnnecessaryFloat64ArrayForEachSpreadRule } from './patterns/no-unnecessary-float-64-array-for-each-spread.js'
-import { noUnnecessaryBigInt64ArrayMapSpreadRule } from './patterns/no-unnecessary-big-int-64-array-map-spread.js'
-import { noUnnecessaryBigInt64ArrayFilterSpreadRule } from './patterns/no-unnecessary-big-int-64-array-filter-spread.js'
-import { noUnnecessaryBigInt64ArrayFindSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-spread.js'
-import { noUnnecessaryBigInt64ArrayEverySpreadRule } from './patterns/no-unnecessary-big-int-64-array-every-spread.js'
-import { noUnnecessaryBigInt64ArraySomeSpreadRule } from './patterns/no-unnecessary-big-int-64-array-some-spread.js'
-import { noUnnecessaryBigInt64ArrayForEachSpreadRule } from './patterns/no-unnecessary-big-int-64-array-for-each-spread.js'
-import { noUnnecessaryBigUint64ArrayMapSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-map-spread.js'
-import { noUnnecessaryBigUint64ArrayFilterSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-filter-spread.js'
-import { noUnnecessaryBigUint64ArrayFindSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-spread.js'
-import { noUnnecessaryBigUint64ArrayEverySpreadRule } from './patterns/no-unnecessary-big-uint-64-array-every-spread.js'
-import { noUnnecessaryBigUint64ArraySomeSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-some-spread.js'
-import { noUnnecessaryBigUint64ArrayForEachSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-for-each-spread.js'
-import { noUnnecessaryInt8ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-8-array-reduce-spread.js'
-import { noUnnecessaryInt8ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-8-array-reduce-right-spread.js'
-import { noUnnecessaryInt8ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-8-array-find-index-spread.js'
-import { noUnnecessaryInt8ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-8-array-find-last-spread.js'
-import { noUnnecessaryInt8ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-8-array-find-last-index-spread.js'
-import { noUnnecessaryInt8ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-8-array-includes-spread.js'
-import { noUnnecessaryInt8ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-8-array-index-of-spread.js'
-import { noUnnecessaryInt8ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-8-array-last-index-of-spread.js'
-import { noUnnecessaryInt8ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-8-array-join-spread.js'
-import { noUnnecessaryInt8ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-8-array-to-locale-string-spread.js'
-import { noUnnecessaryInt8ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-8-array-to-string-spread.js'
-import { noUnnecessaryUint8ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-8-array-reduce-spread.js'
-import { noUnnecessaryUint8ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-8-array-reduce-right-spread.js'
-import { noUnnecessaryUint8ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-index-spread.js'
-import { noUnnecessaryUint8ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-last-spread.js'
-import { noUnnecessaryUint8ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-8-array-find-last-index-spread.js'
-import { noUnnecessaryUint8ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-8-array-includes-spread.js'
-import { noUnnecessaryUint8ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-array-index-of-spread.js'
-import { noUnnecessaryUint8ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-array-last-index-of-spread.js'
-import { noUnnecessaryUint8ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-8-array-join-spread.js'
-import { noUnnecessaryUint8ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-locale-string-spread.js'
-import { noUnnecessaryUint8ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-string-spread.js'
-import { noUnnecessaryUint8ClampedArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-reduce-spread.js'
-import { noUnnecessaryUint8ClampedArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-reduce-right-spread.js'
-import { noUnnecessaryUint8ClampedArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-index-spread.js'
-import { noUnnecessaryUint8ClampedArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-last-spread.js'
-import { noUnnecessaryUint8ClampedArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-find-last-index-spread.js'
-import { noUnnecessaryUint8ClampedArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-includes-spread.js'
-import { noUnnecessaryUint8ClampedArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-index-of-spread.js'
-import { noUnnecessaryUint8ClampedArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-last-index-of-spread.js'
-import { noUnnecessaryUint8ClampedArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-join-spread.js'
-import { noUnnecessaryUint8ClampedArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-locale-string-spread.js'
-import { noUnnecessaryUint8ClampedArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-string-spread.js'
-import { noUnnecessaryInt16ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-16-array-reduce-spread.js'
-import { noUnnecessaryInt16ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-16-array-reduce-right-spread.js'
-import { noUnnecessaryInt16ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-16-array-find-index-spread.js'
-import { noUnnecessaryInt16ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-16-array-find-last-spread.js'
-import { noUnnecessaryInt16ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-16-array-find-last-index-spread.js'
-import { noUnnecessaryInt16ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-16-array-includes-spread.js'
-import { noUnnecessaryInt16ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-16-array-index-of-spread.js'
-import { noUnnecessaryInt16ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-16-array-last-index-of-spread.js'
-import { noUnnecessaryInt16ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-16-array-join-spread.js'
-import { noUnnecessaryInt16ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-16-array-to-locale-string-spread.js'
-import { noUnnecessaryInt16ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-16-array-to-string-spread.js'
-import { noUnnecessaryUint16ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-16-array-reduce-spread.js'
-import { noUnnecessaryUint16ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-16-array-reduce-right-spread.js'
-import { noUnnecessaryUint16ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-index-spread.js'
-import { noUnnecessaryUint16ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-last-spread.js'
-import { noUnnecessaryUint16ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-16-array-find-last-index-spread.js'
-import { noUnnecessaryUint16ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-16-array-includes-spread.js'
-import { noUnnecessaryUint16ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-16-array-index-of-spread.js'
-import { noUnnecessaryUint16ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-16-array-last-index-of-spread.js'
-import { noUnnecessaryUint16ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-16-array-join-spread.js'
-import { noUnnecessaryUint16ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-locale-string-spread.js'
-import { noUnnecessaryUint16ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-string-spread.js'
-import { noUnnecessaryInt32ArrayReduceSpreadRule } from './patterns/no-unnecessary-int-32-array-reduce-spread.js'
-import { noUnnecessaryInt32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-int-32-array-reduce-right-spread.js'
-import { noUnnecessaryInt32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-int-32-array-find-index-spread.js'
-import { noUnnecessaryInt32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-int-32-array-find-last-spread.js'
-import { noUnnecessaryInt32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-int-32-array-find-last-index-spread.js'
-import { noUnnecessaryInt32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-int-32-array-includes-spread.js'
-import { noUnnecessaryInt32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-int-32-array-index-of-spread.js'
-import { noUnnecessaryInt32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-int-32-array-last-index-of-spread.js'
-import { noUnnecessaryInt32ArrayJoinSpreadRule } from './patterns/no-unnecessary-int-32-array-join-spread.js'
-import { noUnnecessaryInt32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-int-32-array-to-locale-string-spread.js'
-import { noUnnecessaryInt32ArrayToStringSpreadRule } from './patterns/no-unnecessary-int-32-array-to-string-spread.js'
-import { noUnnecessaryUint32ArrayReduceSpreadRule } from './patterns/no-unnecessary-uint-32-array-reduce-spread.js'
-import { noUnnecessaryUint32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-uint-32-array-reduce-right-spread.js'
-import { noUnnecessaryUint32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-index-spread.js'
-import { noUnnecessaryUint32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-last-spread.js'
-import { noUnnecessaryUint32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-uint-32-array-find-last-index-spread.js'
-import { noUnnecessaryUint32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-uint-32-array-includes-spread.js'
-import { noUnnecessaryUint32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-uint-32-array-index-of-spread.js'
-import { noUnnecessaryUint32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-uint-32-array-last-index-of-spread.js'
-import { noUnnecessaryUint32ArrayJoinSpreadRule } from './patterns/no-unnecessary-uint-32-array-join-spread.js'
-import { noUnnecessaryUint32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-locale-string-spread.js'
-import { noUnnecessaryUint32ArrayToStringSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-string-spread.js'
-import { noUnnecessaryFloat32ArrayReduceSpreadRule } from './patterns/no-unnecessary-float-32-array-reduce-spread.js'
-import { noUnnecessaryFloat32ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-float-32-array-reduce-right-spread.js'
-import { noUnnecessaryFloat32ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-float-32-array-find-index-spread.js'
-import { noUnnecessaryFloat32ArrayFindLastSpreadRule } from './patterns/no-unnecessary-float-32-array-find-last-spread.js'
-import { noUnnecessaryFloat32ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-float-32-array-find-last-index-spread.js'
-import { noUnnecessaryFloat32ArrayIncludesSpreadRule } from './patterns/no-unnecessary-float-32-array-includes-spread.js'
-import { noUnnecessaryFloat32ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-float-32-array-index-of-spread.js'
-import { noUnnecessaryFloat32ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-float-32-array-last-index-of-spread.js'
-import { noUnnecessaryFloat32ArrayJoinSpreadRule } from './patterns/no-unnecessary-float-32-array-join-spread.js'
-import { noUnnecessaryFloat32ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-float-32-array-to-locale-string-spread.js'
-import { noUnnecessaryFloat32ArrayToStringSpreadRule } from './patterns/no-unnecessary-float-32-array-to-string-spread.js'
-import { noUnnecessaryFloat64ArrayReduceSpreadRule } from './patterns/no-unnecessary-float-64-array-reduce-spread.js'
-import { noUnnecessaryFloat64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-float-64-array-reduce-right-spread.js'
-import { noUnnecessaryFloat64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-float-64-array-find-index-spread.js'
-import { noUnnecessaryFloat64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-float-64-array-find-last-spread.js'
-import { noUnnecessaryFloat64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-float-64-array-find-last-index-spread.js'
-import { noUnnecessaryFloat64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-float-64-array-includes-spread.js'
-import { noUnnecessaryFloat64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-float-64-array-index-of-spread.js'
-import { noUnnecessaryFloat64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-float-64-array-last-index-of-spread.js'
-import { noUnnecessaryFloat64ArrayJoinSpreadRule } from './patterns/no-unnecessary-float-64-array-join-spread.js'
-import { noUnnecessaryFloat64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-float-64-array-to-locale-string-spread.js'
-import { noUnnecessaryFloat64ArrayToStringSpreadRule } from './patterns/no-unnecessary-float-64-array-to-string-spread.js'
-import { noUnnecessaryBigInt64ArrayReduceSpreadRule } from './patterns/no-unnecessary-big-int-64-array-reduce-spread.js'
-import { noUnnecessaryBigInt64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-big-int-64-array-reduce-right-spread.js'
-import { noUnnecessaryBigInt64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-index-spread.js'
-import { noUnnecessaryBigInt64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-last-spread.js'
-import { noUnnecessaryBigInt64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-big-int-64-array-find-last-index-spread.js'
-import { noUnnecessaryBigInt64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-big-int-64-array-includes-spread.js'
-import { noUnnecessaryBigInt64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-index-of-spread.js'
-import { noUnnecessaryBigInt64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-last-index-of-spread.js'
-import { noUnnecessaryBigInt64ArrayJoinSpreadRule } from './patterns/no-unnecessary-big-int-64-array-join-spread.js'
-import { noUnnecessaryBigInt64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-locale-string-spread.js'
-import { noUnnecessaryBigInt64ArrayToStringSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-string-spread.js'
-import { noUnnecessaryBigUint64ArrayReduceSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-reduce-spread.js'
-import { noUnnecessaryBigUint64ArrayReduceRightSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-reduce-right-spread.js'
-import { noUnnecessaryBigUint64ArrayFindIndexSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-index-spread.js'
-import { noUnnecessaryBigUint64ArrayFindLastSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-last-spread.js'
-import { noUnnecessaryBigUint64ArrayFindLastIndexSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-find-last-index-spread.js'
-import { noUnnecessaryBigUint64ArrayIncludesSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-includes-spread.js'
-import { noUnnecessaryBigUint64ArrayIndexOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-index-of-spread.js'
-import { noUnnecessaryBigUint64ArrayLastIndexOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-last-index-of-spread.js'
-import { noUnnecessaryBigUint64ArrayJoinSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-join-spread.js'
-import { noUnnecessaryBigUint64ArrayToLocaleStringSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-locale-string-spread.js'
-import { noUnnecessaryBigUint64ArrayToStringSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-string-spread.js'
-import { noUnnecessaryInt8ArrayAtSpreadRule } from './patterns/no-unnecessary-int-8-array-at-spread.js'
-import { noUnnecessaryInt8ArrayEntriesSpreadRule } from './patterns/no-unnecessary-int-8-array-entries-spread.js'
-import { noUnnecessaryInt8ArrayKeysSpreadRule } from './patterns/no-unnecessary-int-8-array-keys-spread.js'
-import { noUnnecessaryInt8ArrayValuesSpreadRule } from './patterns/no-unnecessary-int-8-array-values-spread.js'
-import { noUnnecessaryInt8ArrayWithSpreadRule } from './patterns/no-unnecessary-int-8-array-with-spread.js'
-import { noUnnecessaryInt8ArrayToReversedSpreadRule } from './patterns/no-unnecessary-int-8-array-to-reversed-spread.js'
-import { noUnnecessaryInt8ArrayToSortedSpreadRule } from './patterns/no-unnecessary-int-8-array-to-sorted-spread.js'
-import { noUnnecessaryUint8ArrayAtSpreadRule } from './patterns/no-unnecessary-uint-8-array-at-spread.js'
-import { noUnnecessaryUint8ArrayEntriesSpreadRule } from './patterns/no-unnecessary-uint-8-array-entries-spread.js'
-import { noUnnecessaryUint8ArrayKeysSpreadRule } from './patterns/no-unnecessary-uint-8-array-keys-spread.js'
-import { noUnnecessaryUint8ArrayValuesSpreadRule } from './patterns/no-unnecessary-uint-8-array-values-spread.js'
-import { noUnnecessaryUint8ArrayWithSpreadRule } from './patterns/no-unnecessary-uint-8-array-with-spread.js'
-import { noUnnecessaryUint8ArrayToReversedSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-reversed-spread.js'
-import { noUnnecessaryUint8ArrayToSortedSpreadRule } from './patterns/no-unnecessary-uint-8-array-to-sorted-spread.js'
-import { noUnnecessaryUint8ClampedArrayAtSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-at-spread.js'
-import { noUnnecessaryUint8ClampedArrayEntriesSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-entries-spread.js'
-import { noUnnecessaryUint8ClampedArrayKeysSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-keys-spread.js'
-import { noUnnecessaryUint8ClampedArrayValuesSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-values-spread.js'
-import { noUnnecessaryUint8ClampedArrayWithSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-with-spread.js'
-import { noUnnecessaryUint8ClampedArrayToReversedSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-reversed-spread.js'
-import { noUnnecessaryUint8ClampedArrayToSortedSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-to-sorted-spread.js'
-import { noUnnecessaryInt16ArrayAtSpreadRule } from './patterns/no-unnecessary-int-16-array-at-spread.js'
-import { noUnnecessaryInt16ArrayEntriesSpreadRule } from './patterns/no-unnecessary-int-16-array-entries-spread.js'
-import { noUnnecessaryInt16ArrayKeysSpreadRule } from './patterns/no-unnecessary-int-16-array-keys-spread.js'
-import { noUnnecessaryInt16ArrayValuesSpreadRule } from './patterns/no-unnecessary-int-16-array-values-spread.js'
-import { noUnnecessaryInt16ArrayWithSpreadRule } from './patterns/no-unnecessary-int-16-array-with-spread.js'
-import { noUnnecessaryInt16ArrayToReversedSpreadRule } from './patterns/no-unnecessary-int-16-array-to-reversed-spread.js'
-import { noUnnecessaryInt16ArrayToSortedSpreadRule } from './patterns/no-unnecessary-int-16-array-to-sorted-spread.js'
-import { noUnnecessaryUint16ArrayAtSpreadRule } from './patterns/no-unnecessary-uint-16-array-at-spread.js'
-import { noUnnecessaryUint16ArrayEntriesSpreadRule } from './patterns/no-unnecessary-uint-16-array-entries-spread.js'
-import { noUnnecessaryUint16ArrayKeysSpreadRule } from './patterns/no-unnecessary-uint-16-array-keys-spread.js'
-import { noUnnecessaryUint16ArrayValuesSpreadRule } from './patterns/no-unnecessary-uint-16-array-values-spread.js'
-import { noUnnecessaryUint16ArrayWithSpreadRule } from './patterns/no-unnecessary-uint-16-array-with-spread.js'
-import { noUnnecessaryUint16ArrayToReversedSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-reversed-spread.js'
-import { noUnnecessaryUint16ArrayToSortedSpreadRule } from './patterns/no-unnecessary-uint-16-array-to-sorted-spread.js'
-import { noUnnecessaryInt32ArrayAtSpreadRule } from './patterns/no-unnecessary-int-32-array-at-spread.js'
-import { noUnnecessaryInt32ArrayEntriesSpreadRule } from './patterns/no-unnecessary-int-32-array-entries-spread.js'
-import { noUnnecessaryInt32ArrayKeysSpreadRule } from './patterns/no-unnecessary-int-32-array-keys-spread.js'
-import { noUnnecessaryInt32ArrayValuesSpreadRule } from './patterns/no-unnecessary-int-32-array-values-spread.js'
-import { noUnnecessaryInt32ArrayWithSpreadRule } from './patterns/no-unnecessary-int-32-array-with-spread.js'
-import { noUnnecessaryInt32ArrayToReversedSpreadRule } from './patterns/no-unnecessary-int-32-array-to-reversed-spread.js'
-import { noUnnecessaryInt32ArrayToSortedSpreadRule } from './patterns/no-unnecessary-int-32-array-to-sorted-spread.js'
-import { noUnnecessaryUint32ArrayAtSpreadRule } from './patterns/no-unnecessary-uint-32-array-at-spread.js'
-import { noUnnecessaryUint32ArrayEntriesSpreadRule } from './patterns/no-unnecessary-uint-32-array-entries-spread.js'
-import { noUnnecessaryUint32ArrayKeysSpreadRule } from './patterns/no-unnecessary-uint-32-array-keys-spread.js'
-import { noUnnecessaryUint32ArrayValuesSpreadRule } from './patterns/no-unnecessary-uint-32-array-values-spread.js'
-import { noUnnecessaryUint32ArrayWithSpreadRule } from './patterns/no-unnecessary-uint-32-array-with-spread.js'
-import { noUnnecessaryUint32ArrayToReversedSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-reversed-spread.js'
-import { noUnnecessaryUint32ArrayToSortedSpreadRule } from './patterns/no-unnecessary-uint-32-array-to-sorted-spread.js'
-import { noUnnecessaryFloat32ArrayAtSpreadRule } from './patterns/no-unnecessary-float-32-array-at-spread.js'
-import { noUnnecessaryFloat32ArrayEntriesSpreadRule } from './patterns/no-unnecessary-float-32-array-entries-spread.js'
-import { noUnnecessaryFloat32ArrayKeysSpreadRule } from './patterns/no-unnecessary-float-32-array-keys-spread.js'
-import { noUnnecessaryFloat32ArrayValuesSpreadRule } from './patterns/no-unnecessary-float-32-array-values-spread.js'
-import { noUnnecessaryFloat32ArrayWithSpreadRule } from './patterns/no-unnecessary-float-32-array-with-spread.js'
-import { noUnnecessaryFloat32ArrayToReversedSpreadRule } from './patterns/no-unnecessary-float-32-array-to-reversed-spread.js'
-import { noUnnecessaryFloat32ArrayToSortedSpreadRule } from './patterns/no-unnecessary-float-32-array-to-sorted-spread.js'
-import { noUnnecessaryFloat64ArrayAtSpreadRule } from './patterns/no-unnecessary-float-64-array-at-spread.js'
-import { noUnnecessaryFloat64ArrayEntriesSpreadRule } from './patterns/no-unnecessary-float-64-array-entries-spread.js'
-import { noUnnecessaryFloat64ArrayKeysSpreadRule } from './patterns/no-unnecessary-float-64-array-keys-spread.js'
-import { noUnnecessaryFloat64ArrayValuesSpreadRule } from './patterns/no-unnecessary-float-64-array-values-spread.js'
-import { noUnnecessaryFloat64ArrayWithSpreadRule } from './patterns/no-unnecessary-float-64-array-with-spread.js'
-import { noUnnecessaryFloat64ArrayToReversedSpreadRule } from './patterns/no-unnecessary-float-64-array-to-reversed-spread.js'
-import { noUnnecessaryFloat64ArrayToSortedSpreadRule } from './patterns/no-unnecessary-float-64-array-to-sorted-spread.js'
-import { noUnnecessaryBigInt64ArrayAtSpreadRule } from './patterns/no-unnecessary-big-int-64-array-at-spread.js'
-import { noUnnecessaryBigInt64ArrayEntriesSpreadRule } from './patterns/no-unnecessary-big-int-64-array-entries-spread.js'
-import { noUnnecessaryBigInt64ArrayKeysSpreadRule } from './patterns/no-unnecessary-big-int-64-array-keys-spread.js'
-import { noUnnecessaryBigInt64ArrayValuesSpreadRule } from './patterns/no-unnecessary-big-int-64-array-values-spread.js'
-import { noUnnecessaryBigInt64ArrayWithSpreadRule } from './patterns/no-unnecessary-big-int-64-array-with-spread.js'
-import { noUnnecessaryBigInt64ArrayToReversedSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-reversed-spread.js'
-import { noUnnecessaryBigInt64ArrayToSortedSpreadRule } from './patterns/no-unnecessary-big-int-64-array-to-sorted-spread.js'
-import { noUnnecessaryBigUint64ArrayAtSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-at-spread.js'
-import { noUnnecessaryBigUint64ArrayEntriesSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-entries-spread.js'
-import { noUnnecessaryBigUint64ArrayKeysSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-keys-spread.js'
-import { noUnnecessaryBigUint64ArrayValuesSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-values-spread.js'
-import { noUnnecessaryBigUint64ArrayWithSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-with-spread.js'
-import { noUnnecessaryBigUint64ArrayToReversedSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-reversed-spread.js'
-import { noUnnecessaryBigUint64ArrayToSortedSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-to-sorted-spread.js'
-import { noUnnecessaryInt8ArrayFromSpreadRule } from './patterns/no-unnecessary-int-8-array-from-spread.js'
-import { noUnnecessaryInt8ArrayOfSpreadRule } from './patterns/no-unnecessary-int-8-array-of-spread.js'
-import { noUnnecessaryUint8ArrayFromSpreadRule } from './patterns/no-unnecessary-uint-8-array-from-spread.js'
-import { noUnnecessaryUint8ArrayOfSpreadRule } from './patterns/no-unnecessary-uint-8-array-of-spread.js'
-import { noUnnecessaryUint8ClampedArrayFromSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-from-spread.js'
-import { noUnnecessaryUint8ClampedArrayOfSpreadRule } from './patterns/no-unnecessary-uint-8-clamped-array-of-spread.js'
-import { noUnnecessaryInt16ArrayFromSpreadRule } from './patterns/no-unnecessary-int-16-array-from-spread.js'
-import { noUnnecessaryInt16ArrayOfSpreadRule } from './patterns/no-unnecessary-int-16-array-of-spread.js'
-import { noUnnecessaryUint16ArrayFromSpreadRule } from './patterns/no-unnecessary-uint-16-array-from-spread.js'
-import { noUnnecessaryUint16ArrayOfSpreadRule } from './patterns/no-unnecessary-uint-16-array-of-spread.js'
-import { noUnnecessaryInt32ArrayFromSpreadRule } from './patterns/no-unnecessary-int-32-array-from-spread.js'
-import { noUnnecessaryInt32ArrayOfSpreadRule } from './patterns/no-unnecessary-int-32-array-of-spread.js'
-import { noUnnecessaryUint32ArrayFromSpreadRule } from './patterns/no-unnecessary-uint-32-array-from-spread.js'
-import { noUnnecessaryUint32ArrayOfSpreadRule } from './patterns/no-unnecessary-uint-32-array-of-spread.js'
-import { noUnnecessaryFloat32ArrayFromSpreadRule } from './patterns/no-unnecessary-float-32-array-from-spread.js'
-import { noUnnecessaryFloat32ArrayOfSpreadRule } from './patterns/no-unnecessary-float-32-array-of-spread.js'
-import { noUnnecessaryFloat64ArrayFromSpreadRule } from './patterns/no-unnecessary-float-64-array-from-spread.js'
-import { noUnnecessaryFloat64ArrayOfSpreadRule } from './patterns/no-unnecessary-float-64-array-of-spread.js'
-import { noUnnecessaryBigInt64ArrayFromSpreadRule } from './patterns/no-unnecessary-big-int-64-array-from-spread.js'
-import { noUnnecessaryBigInt64ArrayOfSpreadRule } from './patterns/no-unnecessary-big-int-64-array-of-spread.js'
-import { noUnnecessaryBigUint64ArrayFromSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-from-spread.js'
-import { noUnnecessaryBigUint64ArrayOfSpreadRule } from './patterns/no-unnecessary-big-uint-64-array-of-spread.js'
-import { noUnnecessarySetTimeoutSpreadRule } from './patterns/no-unnecessary-set-timeout-spread.js'
-import { noUnnecessarySetIntervalSpreadRule } from './patterns/no-unnecessary-set-interval-spread.js'
-import { noUnnecessaryClearTimeoutSpreadRule } from './patterns/no-unnecessary-clear-timeout-spread.js'
-import { noUnnecessaryClearIntervalSpreadRule } from './patterns/no-unnecessary-clear-interval-spread.js'
-import { noUnnecessaryRequestAnimationFrameSpreadRule } from './patterns/no-unnecessary-request-animation-frame-spread.js'
-import { noUnnecessaryCancelAnimationFrameSpreadRule } from './patterns/no-unnecessary-cancel-animation-frame-spread.js'
-import { noUnnecessaryRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-request-idle-callback-spread.js'
-import { noUnnecessaryCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-cancel-idle-callback-spread.js'
-import { noUnnecessaryQueueMicrotaskSpreadRule } from './patterns/no-unnecessary-queue-microtask-spread.js'
-import { noUnnecessaryStructuredCloneSpreadRule } from './patterns/no-unnecessary-structured-clone-spread.js'
-import { noUnnecessaryAtobSpreadRule } from './patterns/no-unnecessary-atob-spread.js'
-import { noUnnecessaryBtoaSpreadRule } from './patterns/no-unnecessary-btoa-spread.js'
-import { noUnnecessaryFetchSpreadRule } from './patterns/no-unnecessary-fetch-spread.js'
-import { noUnnecessaryAlertSpreadRule } from './patterns/no-unnecessary-alert-spread.js'
-import { noUnnecessaryConfirmSpreadRule } from './patterns/no-unnecessary-confirm-spread.js'
-import { noUnnecessaryPromptSpreadRule } from './patterns/no-unnecessary-prompt-spread.js'
-import { noUnnecessaryPrintSpreadRule } from './patterns/no-unnecessary-print-spread.js'
-import { noUnnecessaryReportErrorSpreadRule } from './patterns/no-unnecessary-report-error-spread.js'
-import { noUnnecessaryErrorSpreadRule } from './patterns/no-unnecessary-error-spread.js'
-import { noUnnecessaryEvalErrorSpreadRule } from './patterns/no-unnecessary-eval-error-spread.js'
-import { noUnnecessaryRangeErrorSpreadRule } from './patterns/no-unnecessary-range-error-spread.js'
-import { noUnnecessaryReferenceErrorSpreadRule } from './patterns/no-unnecessary-reference-error-spread.js'
-import { noUnnecessarySyntaxErrorSpreadRule } from './patterns/no-unnecessary-syntax-error-spread.js'
-import { noUnnecessaryTypeErrorSpreadRule } from './patterns/no-unnecessary-type-error-spread.js'
-import { noUnnecessaryURIErrorSpreadRule } from './patterns/no-unnecessary-uri-error-spread.js'
-import { noUnnecessaryAggregateErrorSpreadRule } from './patterns/no-unnecessary-aggregate-error-spread.js'
-import { noUnnecessaryMapSpreadRule } from './patterns/no-unnecessary-map-spread.js'
-import { noUnnecessarySetSpreadRule } from './patterns/no-unnecessary-set-spread.js'
-import { noUnnecessaryWeakMapSpreadRule } from './patterns/no-unnecessary-weak-map-spread.js'
-import { noUnnecessaryWeakSetSpreadRule } from './patterns/no-unnecessary-weak-set-spread.js'
-import { noUnnecessaryWeakRefSpreadRule } from './patterns/no-unnecessary-weak-ref-spread.js'
-import { noUnnecessaryFinalizationRegistrySpreadRule } from './patterns/no-unnecessary-finalization-registry-spread.js'
-import { noUnnecessaryPromiseSpreadRule } from './patterns/no-unnecessary-promise-spread.js'
-import { noUnnecessaryArrayBufferSpreadRule } from './patterns/no-unnecessary-array-buffer-spread.js'
-import { noUnnecessarySharedArrayBufferSpreadRule } from './patterns/no-unnecessary-shared-array-buffer-spread.js'
-import { noUnnecessaryDataViewSpreadRule } from './patterns/no-unnecessary-data-view-spread.js'
-import { noUnnecessaryDateSpreadRule } from './patterns/no-unnecessary-date-spread.js'
-import { noUnnecessaryRegExpSpreadRule } from './patterns/no-unnecessary-regexp-spread.js'
-import { noUnnecessaryImageSpreadRule } from './patterns/no-unnecessary-image-spread.js'
-import { noUnnecessaryOptionSpreadRule } from './patterns/no-unnecessary-option-spread.js'
-import { noUnnecessaryAudioSpreadRule } from './patterns/no-unnecessary-audio-spread.js'
-import { noUnnecessaryHeadersSpreadRule } from './patterns/no-unnecessary-headers-spread.js'
-import { noUnnecessaryRequestSpreadRule } from './patterns/no-unnecessary-request-spread.js'
-import { noUnnecessaryResponseSpreadRule } from './patterns/no-unnecessary-response-spread.js'
-import { noUnnecessaryFormDataSpreadRule } from './patterns/no-unnecessary-form-data-spread.js'
-import { noUnnecessaryURLSpreadRule } from './patterns/no-unnecessary-url-spread.js'
-import { noUnnecessaryURLSearchParamsSpreadRule } from './patterns/no-unnecessary-url-search-params-spread.js'
-import { noUnnecessaryTextDecoderSpreadRule } from './patterns/no-unnecessary-text-decoder-spread.js'
-import { noUnnecessaryTextEncoderSpreadRule } from './patterns/no-unnecessary-text-encoder-spread.js'
-import { noUnnecessaryBlobSpreadRule } from './patterns/no-unnecessary-blob-spread.js'
-import { noUnnecessaryFileSpreadRule } from './patterns/no-unnecessary-file-spread.js'
-import { noUnnecessaryFileReaderSpreadRule } from './patterns/no-unnecessary-file-reader-spread.js'
-import { noUnnecessaryImageDataSpreadRule } from './patterns/no-unnecessary-image-data-spread.js'
-import { noUnnecessaryDOMRectSpreadRule } from './patterns/no-unnecessary-dom-rect-spread.js'
-import { noUnnecessaryCSSStyleDeclarationSpreadRule } from './patterns/no-unnecessary-css-style-declaration-spread.js'
-import { noUnnecessaryMutationObserverSpreadRule } from './patterns/no-unnecessary-mutation-observer-spread.js'
-import { noUnnecessaryResizeObserverSpreadRule } from './patterns/no-unnecessary-resize-observer-spread.js'
-import { noUnnecessaryIntersectionObserverSpreadRule } from './patterns/no-unnecessary-intersection-observer-spread.js'
-import { noUnnecessaryPerformanceObserverSpreadRule } from './patterns/no-unnecessary-performance-observer-spread.js'
-import { noUnnecessaryAbortControllerSpreadRule } from './patterns/no-unnecessary-abort-controller-spread.js'
-import { noUnnecessaryAbortSignalSpreadRule } from './patterns/no-unnecessary-abort-signal-spread.js'
-import { noUnnecessaryBroadcastChannelSpreadRule } from './patterns/no-unnecessary-broadcast-channel-spread.js'
-import { noUnnecessaryMessageChannelSpreadRule } from './patterns/no-unnecessary-message-channel-spread.js'
-import { noUnnecessaryWorkerSpreadRule } from './patterns/no-unnecessary-worker-spread.js'
-import { noUnnecessaryEventSpreadRule } from './patterns/no-unnecessary-event-spread.js'
-import { noUnnecessaryCustomEventSpreadRule } from './patterns/no-unnecessary-custom-event-spread.js'
-import { noUnnecessaryDOMParserSpreadRule } from './patterns/no-unnecessary-dom-parser-spread.js'
-import { noUnnecessaryXMLHttpRequestSpreadRule } from './patterns/no-unnecessary-xml-http-request-spread.js'
-import { noUnnecessaryDocumentCreateElementSpreadRule } from './patterns/no-unnecessary-document-create-element-spread.js'
-import { noUnnecessaryDocumentCreateTextNodeSpreadRule } from './patterns/no-unnecessary-document-create-text-node-spread.js'
-import { noUnnecessaryDocumentCreateCommentSpreadRule } from './patterns/no-unnecessary-document-create-comment-spread.js'
-import { noUnnecessaryDocumentCreateDocumentFragmentSpreadRule } from './patterns/no-unnecessary-document-create-document-fragment-spread.js'
-import { noUnnecessaryDocumentCreateAttributeSpreadRule } from './patterns/no-unnecessary-document-create-attribute-spread.js'
-import { noUnnecessaryDocumentCreateEventSpreadRule } from './patterns/no-unnecessary-document-create-event-spread.js'
-import { noUnnecessaryDocumentCreateTreeWalkerSpreadRule } from './patterns/no-unnecessary-document-create-tree-walker-spread.js'
-import { noUnnecessaryDocumentCreateNodeIteratorSpreadRule } from './patterns/no-unnecessary-document-create-node-iterator-spread.js'
-import { noUnnecessaryDocumentCreateRangeSpreadRule } from './patterns/no-unnecessary-document-create-range-spread.js'
-import { noUnnecessaryDocumentGetElementByIdSpreadRule } from './patterns/no-unnecessary-document-get-element-by-id-spread.js'
-import { noUnnecessaryDocumentQuerySelectorSpreadRule } from './patterns/no-unnecessary-document-query-selector-spread.js'
-import { noUnnecessaryDocumentQuerySelectorAllSpreadRule } from './patterns/no-unnecessary-document-query-selector-all-spread.js'
-import { noUnnecessaryDocumentGetElementsByClassNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-class-name-spread.js'
-import { noUnnecessaryDocumentGetElementsByTagNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-tag-name-spread.js'
-import { noUnnecessaryDocumentGetElementsByNameSpreadRule } from './patterns/no-unnecessary-document-get-elements-by-name-spread.js'
-import { noUnnecessaryDocumentAdoptNodeSpreadRule } from './patterns/no-unnecessary-document-adopt-node-spread.js'
-import { noUnnecessaryDocumentImportNodeSpreadRule } from './patterns/no-unnecessary-document-import-node-spread.js'
-import { noUnnecessaryDocumentWriteSpreadRule } from './patterns/no-unnecessary-document-write-spread.js'
-import { noUnnecessaryDocumentWriteLnSpreadRule } from './patterns/no-unnecessary-document-write-ln-spread.js'
-import { noUnnecessaryDocumentOpenSpreadRule } from './patterns/no-unnecessary-document-open-spread.js'
-import { noUnnecessaryDocumentCloseSpreadRule } from './patterns/no-unnecessary-document-close-spread.js'
-import { noUnnecessaryDocumentExitFullscreenSpreadRule } from './patterns/no-unnecessary-document-exit-fullscreen-spread.js'
-import { noUnnecessaryDocumentExitPictureInPictureSpreadRule } from './patterns/no-unnecessary-document-exit-picture-in-picture-spread.js'
-import { noUnnecessaryDocumentExitPointerLockSpreadRule } from './patterns/no-unnecessary-document-exit-pointer-lock-spread.js'
-import { noUnnecessaryDocumentHasFocusSpreadRule } from './patterns/no-unnecessary-document-has-focus-spread.js'
-import { noUnnecessaryDocumentGetSelectionSpreadRule } from './patterns/no-unnecessary-document-get-selection-spread.js'
-import { noUnnecessaryDocumentElementFromPointSpreadRule } from './patterns/no-unnecessary-document-element-from-point-spread.js'
-import { noUnnecessaryDocumentElementsFromPointSpreadRule } from './patterns/no-unnecessary-document-elements-from-point-spread.js'
-import { noUnnecessaryElementQuerySelectorSpreadRule } from './patterns/no-unnecessary-element-query-selector-spread.js'
-import { noUnnecessaryElementQuerySelectorAllSpreadRule } from './patterns/no-unnecessary-element-query-selector-all-spread.js'
-import { noUnnecessaryElementGetAttributeSpreadRule } from './patterns/no-unnecessary-element-get-attribute-spread.js'
-import { noUnnecessaryElementSetAttributeSpreadRule } from './patterns/no-unnecessary-element-set-attribute-spread.js'
-import { noUnnecessaryElementRemoveAttributeSpreadRule } from './patterns/no-unnecessary-element-remove-attribute-spread.js'
-import { noUnnecessaryElementHasAttributeSpreadRule } from './patterns/no-unnecessary-element-has-attribute-spread.js'
-import { noUnnecessaryElementGetAttributeNamesSpreadRule } from './patterns/no-unnecessary-element-get-attribute-names-spread.js'
-import { noUnnecessaryElementToggleAttributeSpreadRule } from './patterns/no-unnecessary-element-toggle-attribute-spread.js'
-import { noUnnecessaryElementGetElementsByClassNameSpreadRule } from './patterns/no-unnecessary-element-get-elements-by-class-name-spread.js'
-import { noUnnecessaryElementGetElementsByTagNameSpreadRule } from './patterns/no-unnecessary-element-get-elements-by-tag-name-spread.js'
-import { noUnnecessaryElementClosestSpreadRule } from './patterns/no-unnecessary-element-closest-spread.js'
-import { noUnnecessaryElementMatchesSpreadRule } from './patterns/no-unnecessary-element-matches-spread.js'
-import { noUnnecessaryElementContainsSpreadRule } from './patterns/no-unnecessary-element-contains-spread.js'
-import { noUnnecessaryElementAppendChildSpreadRule } from './patterns/no-unnecessary-element-append-child-spread.js'
-import { noUnnecessaryElementRemoveChildSpreadRule } from './patterns/no-unnecessary-element-remove-child-spread.js'
-import { noUnnecessaryElementInsertBeforeSpreadRule } from './patterns/no-unnecessary-element-insert-before-spread.js'
-import { noUnnecessaryElementReplaceChildSpreadRule } from './patterns/no-unnecessary-element-replace-child-spread.js'
-import { noUnnecessaryElementCloneNodeSpreadRule } from './patterns/no-unnecessary-element-clone-node-spread.js'
-import { noUnnecessaryElementRemoveSpreadRule } from './patterns/no-unnecessary-element-remove-spread.js'
-import { noUnnecessaryElementPrependSpreadRule } from './patterns/no-unnecessary-element-prepend-spread.js'
-import { noUnnecessaryElementAppendSpreadRule } from './patterns/no-unnecessary-element-append-spread.js'
-import { noUnnecessaryElementBeforeSpreadRule } from './patterns/no-unnecessary-element-before-spread.js'
-import { noUnnecessaryElementAfterSpreadRule } from './patterns/no-unnecessary-element-after-spread.js'
-import { noUnnecessaryElementReplaceWithSpreadRule } from './patterns/no-unnecessary-element-replace-with-spread.js'
-import { noUnnecessaryElementInsertAdjacentHtmlSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-html-spread.js'
-import { noUnnecessaryElementInsertAdjacentElementSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-element-spread.js'
-import { noUnnecessaryElementInsertAdjacentTextSpreadRule } from './patterns/no-unnecessary-element-insert-adjacent-text-spread.js'
-import { noUnnecessaryElementGetBoundingClientRectSpreadRule } from './patterns/no-unnecessary-element-get-bounding-client-rect-spread.js'
-import { noUnnecessaryElementGetClientRectsSpreadRule } from './patterns/no-unnecessary-element-get-client-rects-spread.js'
-import { noUnnecessaryElementScrollIntoViewSpreadRule } from './patterns/no-unnecessary-element-scroll-into-view-spread.js'
-import { noUnnecessaryElementScrollIntoViewIfNeededSpreadRule } from './patterns/no-unnecessary-element-scroll-into-view-if-needed-spread.js'
-import { noUnnecessaryElementScrollToSpreadRule } from './patterns/no-unnecessary-element-scroll-to-spread.js'
-import { noUnnecessaryElementScrollBySpreadRule } from './patterns/no-unnecessary-element-scroll-by-spread.js'
-import { noUnnecessaryElementScrollSpreadRule } from './patterns/no-unnecessary-element-scroll-spread.js'
-import { noUnnecessaryElementFocusSpreadRule } from './patterns/no-unnecessary-element-focus-spread.js'
-import { noUnnecessaryElementBlurSpreadRule } from './patterns/no-unnecessary-element-blur-spread.js'
-import { noUnnecessaryElementClickSpreadRule } from './patterns/no-unnecessary-element-click-spread.js'
-import { noUnnecessaryElementAnimateSpreadRule } from './patterns/no-unnecessary-element-animate-spread.js'
-import { noUnnecessaryElementGetComputedStyleSpreadRule } from './patterns/no-unnecessary-element-get-computed-style-spread.js'
-import { noUnnecessaryElementRequestFullscreenSpreadRule } from './patterns/no-unnecessary-element-request-fullscreen-spread.js'
-import { noUnnecessaryElementRequestPointerLockSpreadRule } from './patterns/no-unnecessary-element-request-pointer-lock-spread.js'
-import { noUnnecessaryElementAttachShadowSpreadRule } from './patterns/no-unnecessary-element-attach-shadow-spread.js'
-import { noUnnecessaryLocalStorageGetItemSpreadRule } from './patterns/no-unnecessary-local-storage-get-item-spread.js'
-import { noUnnecessaryLocalStorageSetItemSpreadRule } from './patterns/no-unnecessary-local-storage-set-item-spread.js'
-import { noUnnecessaryLocalStorageRemoveItemSpreadRule } from './patterns/no-unnecessary-local-storage-remove-item-spread.js'
-import { noUnnecessaryLocalStorageClearSpreadRule } from './patterns/no-unnecessary-local-storage-clear-spread.js'
-import { noUnnecessaryLocalStorageKeySpreadRule } from './patterns/no-unnecessary-local-storage-key-spread.js'
-import { noUnnecessarySessionStorageGetItemSpreadRule } from './patterns/no-unnecessary-session-storage-get-item-spread.js'
-import { noUnnecessarySessionStorageSetItemSpreadRule } from './patterns/no-unnecessary-session-storage-set-item-spread.js'
-import { noUnnecessarySessionStorageRemoveItemSpreadRule } from './patterns/no-unnecessary-session-storage-remove-item-spread.js'
-import { noUnnecessarySessionStorageClearSpreadRule } from './patterns/no-unnecessary-session-storage-clear-spread.js'
-import { noUnnecessarySessionStorageKeySpreadRule } from './patterns/no-unnecessary-session-storage-key-spread.js'
-import { noUnnecessaryNavigatorSendBeaconSpreadRule } from './patterns/no-unnecessary-navigator-send-beacon-spread.js'
-import { noUnnecessaryNavigatorVibrateSpreadRule } from './patterns/no-unnecessary-navigator-vibrate-spread.js'
-import { noUnnecessaryNavigatorGetBatterySpreadRule } from './patterns/no-unnecessary-navigator-get-battery-spread.js'
-import { noUnnecessaryNavigatorGeolocationGetCurrentPositionSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-get-current-position-spread.js'
-import { noUnnecessaryNavigatorGeolocationWatchPositionSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-watch-position-spread.js'
-import { noUnnecessaryNavigatorGeolocationClearWatchSpreadRule } from './patterns/no-unnecessary-navigator-geolocation-clear-watch-spread.js'
-import { noUnnecessaryNavigatorClipboardReadTextSpreadRule } from './patterns/no-unnecessary-navigator-clipboard-read-text-spread.js'
-import { noUnnecessaryNavigatorClipboardWriteTextSpreadRule } from './patterns/no-unnecessary-navigator-clipboard-write-text-spread.js'
-import { noUnnecessaryNavigatorMediaDevicesGetUserMediaSpreadRule } from './patterns/no-unnecessary-navigator-media-devices-get-user-media-spread.js'
-import { noUnnecessaryNavigatorRegisterProtocolHandlerSpreadRule } from './patterns/no-unnecessary-navigator-register-protocol-handler-spread.js'
-import { noUnnecessaryNavigatorRequestMediaKeySystemAccessSpreadRule } from './patterns/no-unnecessary-navigator-request-media-key-system-access-spread.js'
-import { noUnnecessaryNavigatorCanShareSpreadRule } from './patterns/no-unnecessary-navigator-can-share-spread.js'
-import { noUnnecessaryNavigatorShareSpreadRule } from './patterns/no-unnecessary-navigator-share-spread.js'
-import { noUnnecessaryNavigatorGetGamepadsSpreadRule } from './patterns/no-unnecessary-navigator-get-gamepads-spread.js'
-import { noUnnecessaryNavigatorRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-navigator-request-idle-callback-spread.js'
-import { noUnnecessaryNavigatorCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-navigator-cancel-idle-callback-spread.js'
-import { noUnnecessaryNavigatorJavaEnabledSpreadRule } from './patterns/no-unnecessary-navigator-java-enabled-spread.js'
-import { noUnnecessaryNavigatorCookieEnabledSpreadRule } from './patterns/no-unnecessary-navigator-cookie-enabled-spread.js'
-import { noUnnecessaryHistoryPushStateSpreadRule } from './patterns/no-unnecessary-history-push-state-spread.js'
-import { noUnnecessaryHistoryReplaceStateSpreadRule } from './patterns/no-unnecessary-history-replace-state-spread.js'
-import { noUnnecessaryHistoryGoSpreadRule } from './patterns/no-unnecessary-history-go-spread.js'
-import { noUnnecessaryHistoryBackSpreadRule } from './patterns/no-unnecessary-history-back-spread.js'
-import { noUnnecessaryHistoryForwardSpreadRule } from './patterns/no-unnecessary-history-forward-spread.js'
-import { noUnnecessaryLocationAssignSpreadRule } from './patterns/no-unnecessary-location-assign-spread.js'
-import { noUnnecessaryLocationReloadSpreadRule } from './patterns/no-unnecessary-location-reload-spread.js'
-import { noUnnecessaryLocationReplaceSpreadRule } from './patterns/no-unnecessary-location-replace-spread.js'
-import { noUnnecessaryLocationToStringSpreadRule } from './patterns/no-unnecessary-location-to-string-spread.js'
-import { noUnnecessaryPerformanceNowSpreadRule } from './patterns/no-unnecessary-performance-now-spread.js'
-import { noUnnecessaryPerformanceMarkSpreadRule } from './patterns/no-unnecessary-performance-mark-spread.js'
-import { noUnnecessaryPerformanceMeasureSpreadRule } from './patterns/no-unnecessary-performance-measure-spread.js'
-import { noUnnecessaryPerformanceClearMarksSpreadRule } from './patterns/no-unnecessary-performance-clear-marks-spread.js'
-import { noUnnecessaryPerformanceClearMeasuresSpreadRule } from './patterns/no-unnecessary-performance-clear-measures-spread.js'
-import { noUnnecessaryPerformanceGetEntriesSpreadRule } from './patterns/no-unnecessary-performance-get-entries-spread.js'
-import { noUnnecessaryPerformanceGetEntriesByNameSpreadRule } from './patterns/no-unnecessary-performance-get-entries-by-name-spread.js'
-import { noUnnecessaryPerformanceGetEntriesByTypeSpreadRule } from './patterns/no-unnecessary-performance-get-entries-by-type-spread.js'
-import { noUnnecessaryPerformanceClearResourceTimingsSpreadRule } from './patterns/no-unnecessary-performance-clear-resource-timings-spread.js'
-import { noUnnecessaryPerformanceSetResourceTimingBufferSizeSpreadRule } from './patterns/no-unnecessary-performance-set-resource-timing-buffer-size-spread.js'
-import { noUnnecessaryScreenOrientationLockSpreadRule } from './patterns/no-unnecessary-screen-orientation-lock-spread.js'
-import { noUnnecessaryScreenOrientationUnlockSpreadRule } from './patterns/no-unnecessary-screen-orientation-unlock-spread.js'
-import { noUnnecessaryCryptoGetRandomValuesSpreadRule } from './patterns/no-unnecessary-crypto-get-random-values-spread.js'
-import { noUnnecessaryCryptoRandomUUIDSpreadRule } from './patterns/no-unnecessary-crypto-random-uuid-spread.js'
-import { noUnnecessaryIndexedDbOpenSpreadRule } from './patterns/no-unnecessary-indexed-db-open-spread.js'
-import { noUnnecessaryIndexedDbDeleteDatabaseSpreadRule } from './patterns/no-unnecessary-indexed-db-delete-database-spread.js'
-import { noUnnecessaryIndexedDbCmpSpreadRule } from './patterns/no-unnecessary-indexed-db-cmp-spread.js'
-import { noUnnecessaryCachesOpenSpreadRule } from './patterns/no-unnecessary-caches-open-spread.js'
-import { noUnnecessaryCachesMatchSpreadRule } from './patterns/no-unnecessary-caches-match-spread.js'
-import { noUnnecessaryCachesHasSpreadRule } from './patterns/no-unnecessary-caches-has-spread.js'
-import { noUnnecessaryCachesDeleteSpreadRule } from './patterns/no-unnecessary-caches-delete-spread.js'
-import { noUnnecessaryCachesKeysSpreadRule } from './patterns/no-unnecessary-caches-keys-spread.js'
-import { noUnnecessaryWindowOpenSpreadRule } from './patterns/no-unnecessary-window-open-spread.js'
-import { noUnnecessaryWindowCloseSpreadRule } from './patterns/no-unnecessary-window-close-spread.js'
-import { noUnnecessaryWindowStopSpreadRule } from './patterns/no-unnecessary-window-stop-spread.js'
-import { noUnnecessaryWindowFocusSpreadRule } from './patterns/no-unnecessary-window-focus-spread.js'
-import { noUnnecessaryWindowBlurSpreadRule } from './patterns/no-unnecessary-window-blur-spread.js'
-import { noUnnecessaryWindowScrollToSpreadRule } from './patterns/no-unnecessary-window-scroll-to-spread.js'
-import { noUnnecessaryWindowScrollBySpreadRule } from './patterns/no-unnecessary-window-scroll-by-spread.js'
-import { noUnnecessaryWindowScrollSpreadRule } from './patterns/no-unnecessary-window-scroll-spread.js'
-import { noUnnecessaryWindowPrintSpreadRule } from './patterns/no-unnecessary-window-print-spread.js'
-import { noUnnecessaryWindowAlertSpreadRule } from './patterns/no-unnecessary-window-alert-spread.js'
-import { noUnnecessaryWindowConfirmSpreadRule } from './patterns/no-unnecessary-window-confirm-spread.js'
-import { noUnnecessaryWindowPromptSpreadRule } from './patterns/no-unnecessary-window-prompt-spread.js'
-import { noUnnecessaryWindowGetComputedStyleSpreadRule } from './patterns/no-unnecessary-window-get-computed-style-spread.js'
-import { noUnnecessaryWindowGetSelectionSpreadRule } from './patterns/no-unnecessary-window-get-selection-spread.js'
-import { noUnnecessaryWindowMatchMediaSpreadRule } from './patterns/no-unnecessary-window-match-media-spread.js'
-import { noUnnecessaryWindowMoveToSpreadRule } from './patterns/no-unnecessary-window-move-to-spread.js'
-import { noUnnecessaryWindowMoveBySpreadRule } from './patterns/no-unnecessary-window-move-by-spread.js'
-import { noUnnecessaryWindowResizeToSpreadRule } from './patterns/no-unnecessary-window-resize-to-spread.js'
-import { noUnnecessaryWindowResizeBySpreadRule } from './patterns/no-unnecessary-window-resize-by-spread.js'
-import { noUnnecessaryWindowPostMessageSpreadRule } from './patterns/no-unnecessary-window-post-message-spread.js'
-import { noUnnecessaryWindowAtobSpreadRule } from './patterns/no-unnecessary-window-atob-spread.js'
-import { noUnnecessaryWindowBtoaSpreadRule } from './patterns/no-unnecessary-window-btoa-spread.js'
-import { noUnnecessaryWindowFetchSpreadRule } from './patterns/no-unnecessary-window-fetch-spread.js'
-import { noUnnecessaryWindowCreateImageBitmapSpreadRule } from './patterns/no-unnecessary-window-create-image-bitmap-spread.js'
-import { noUnnecessaryWindowQueueMicrotaskSpreadRule } from './patterns/no-unnecessary-window-queue-microtask-spread.js'
-import { noUnnecessaryWindowReportErrorSpreadRule } from './patterns/no-unnecessary-window-report-error-spread.js'
-import { noUnnecessaryWindowStructuredCloneSpreadRule } from './patterns/no-unnecessary-window-structured-clone-spread.js'
-import { noUnnecessaryWindowRequestAnimationFrameSpreadRule } from './patterns/no-unnecessary-window-request-animation-frame-spread.js'
-import { noUnnecessaryWindowCancelAnimationFrameSpreadRule } from './patterns/no-unnecessary-window-cancel-animation-frame-spread.js'
-import { noUnnecessaryWindowRequestIdleCallbackSpreadRule } from './patterns/no-unnecessary-window-request-idle-callback-spread.js'
-import { noUnnecessaryWindowCancelIdleCallbackSpreadRule } from './patterns/no-unnecessary-window-cancel-idle-callback-spread.js'
-import { noUnnecessaryWindowSetTimeoutSpreadRule } from './patterns/no-unnecessary-window-set-timeout-spread.js'
-import { noUnnecessaryWindowClearTimeoutSpreadRule } from './patterns/no-unnecessary-window-clear-timeout-spread.js'
-import { noUnnecessaryWindowSetIntervalSpreadRule } from './patterns/no-unnecessary-window-set-interval-spread.js'
-import { noUnnecessaryWindowClearIntervalSpreadRule } from './patterns/no-unnecessary-window-clear-interval-spread.js'
-import { noUnnecessaryProcessExitSpreadRule } from './patterns/no-unnecessary-process-exit-spread.js'
-import { noUnnecessaryProcessNextTickSpreadRule } from './patterns/no-unnecessary-process-next-tick-spread.js'
-import { noUnnecessaryProcessCwdSpreadRule } from './patterns/no-unnecessary-process-cwd-spread.js'
-import { noUnnecessaryProcessChdirSpreadRule } from './patterns/no-unnecessary-process-chdir-spread.js'
-import { noUnnecessaryProcessEnvSpreadRule } from './patterns/no-unnecessary-process-env-spread.js'
-import { noUnnecessaryProcessUptimeSpreadRule } from './patterns/no-unnecessary-process-uptime-spread.js'
-import { noUnnecessaryProcessMemoryUsageSpreadRule } from './patterns/no-unnecessary-process-memory-usage-spread.js'
-import { noUnnecessaryProcessCpuUsageSpreadRule } from './patterns/no-unnecessary-process-cpu-usage-spread.js'
-import { noUnnecessaryProcessKillSpreadRule } from './patterns/no-unnecessary-process-kill-spread.js'
-import { noUnnecessaryProcessAbortSpreadRule } from './patterns/no-unnecessary-process-abort-spread.js'
-import { noUnnecessaryProcessUmaskSpreadRule } from './patterns/no-unnecessary-process-umask-spread.js'
-import { noUnnecessaryProcessGetuidSpreadRule } from './patterns/no-unnecessary-process-getuid-spread.js'
-import { noUnnecessaryProcessSetuidSpreadRule } from './patterns/no-unnecessary-process-setuid-spread.js'
-import { noUnnecessaryProcessGetgidSpreadRule } from './patterns/no-unnecessary-process-getgid-spread.js'
-import { noUnnecessaryProcessSetgidSpreadRule } from './patterns/no-unnecessary-process-setgid-spread.js'
-import { noUnnecessaryProcessHrtimeSpreadRule } from './patterns/no-unnecessary-process-hrtime-spread.js'
-import { noUnnecessaryProcessArgvSpreadRule } from './patterns/no-unnecessary-process-argv-spread.js'
-import { noUnnecessaryBufferAllocSpreadRule } from './patterns/no-unnecessary-buffer-alloc-spread.js'
-import { noUnnecessaryBufferAllocUnsafeSpreadRule } from './patterns/no-unnecessary-buffer-alloc-unsafe-spread.js'
-import { noUnnecessaryBufferAllocUnsafeSlowSpreadRule } from './patterns/no-unnecessary-buffer-alloc-unsafe-slow-spread.js'
-import { noUnnecessaryBufferFromSpreadRule } from './patterns/no-unnecessary-buffer-from-spread.js'
-import { noUnnecessaryBufferOfSpreadRule } from './patterns/no-unnecessary-buffer-of-spread.js'
-import { noUnnecessaryBufferIsBufferSpreadRule } from './patterns/no-unnecessary-buffer-is-buffer-spread.js'
-import { noUnnecessaryBufferIsEncodingSpreadRule } from './patterns/no-unnecessary-buffer-is-encoding-spread.js'
-import { noUnnecessaryBufferByteLengthSpreadRule } from './patterns/no-unnecessary-buffer-byte-length-spread.js'
-import { noUnnecessaryBufferCompareSpreadRule } from './patterns/no-unnecessary-buffer-compare-spread.js'
-import { noUnnecessaryBufferConcatSpreadRule } from './patterns/no-unnecessary-buffer-concat-spread.js'
-import { noUnnecessaryPathJoinSpreadRule } from './patterns/no-unnecessary-path-join-spread.js'
-import { noUnnecessaryPathResolveSpreadRule } from './patterns/no-unnecessary-path-resolve-spread.js'
-import { noUnnecessaryPathNormalizeSpreadRule } from './patterns/no-unnecessary-path-normalize-spread.js'
-import { noUnnecessaryPathRelativeSpreadRule } from './patterns/no-unnecessary-path-relative-spread.js'
-import { noUnnecessaryPathDirnameSpreadRule } from './patterns/no-unnecessary-path-dirname-spread.js'
-import { noUnnecessaryPathBasenameSpreadRule } from './patterns/no-unnecessary-path-basename-spread.js'
-import { noUnnecessaryPathExtnameSpreadRule } from './patterns/no-unnecessary-path-extname-spread.js'
-import { noUnnecessaryPathParseSpreadRule } from './patterns/no-unnecessary-path-parse-spread.js'
-import { noUnnecessaryPathFormatSpreadRule } from './patterns/no-unnecessary-path-format-spread.js'
-import { noUnnecessaryPathIsAbsoluteSpreadRule } from './patterns/no-unnecessary-path-is-absolute-spread.js'
-import { noUnnecessaryPathToNamespacedPathSpreadRule } from './patterns/no-unnecessary-path-to-namespaced-path-spread.js'
-import { noUnnecessaryFsReadFileSpreadRule } from './patterns/no-unnecessary-fs-read-file-spread.js'
-import { noUnnecessaryFsWriteFileSpreadRule } from './patterns/no-unnecessary-fs-write-file-spread.js'
-import { noUnnecessaryFsAppendFileSpreadRule } from './patterns/no-unnecessary-fs-append-file-spread.js'
-import { noUnnecessaryFsCopyFileSpreadRule } from './patterns/no-unnecessary-fs-copy-file-spread.js'
-import { noUnnecessaryFsRenameSpreadRule } from './patterns/no-unnecessary-fs-rename-spread.js'
-import { noUnnecessaryFsUnlinkSpreadRule } from './patterns/no-unnecessary-fs-unlink-spread.js'
-import { noUnnecessaryFsMkdirSpreadRule } from './patterns/no-unnecessary-fs-mkdir-spread.js'
-import { noUnnecessaryFsRmdirSpreadRule } from './patterns/no-unnecessary-fs-rmdir-spread.js'
-import { noUnnecessaryFsReaddirSpreadRule } from './patterns/no-unnecessary-fs-readdir-spread.js'
-import { noUnnecessaryFsStatSpreadRule } from './patterns/no-unnecessary-fs-stat-spread.js'
-import { noUnnecessaryFsLstatSpreadRule } from './patterns/no-unnecessary-fs-lstat-spread.js'
-import { noUnnecessaryFsFstatSpreadRule } from './patterns/no-unnecessary-fs-fstat-spread.js'
-import { noUnnecessaryFsExistsSpreadRule } from './patterns/no-unnecessary-fs-exists-spread.js'
-import { noUnnecessaryFsExistsSyncSpreadRule } from './patterns/no-unnecessary-fs-exists-sync-spread.js'
-import { noUnnecessaryFsAccessSpreadRule } from './patterns/no-unnecessary-fs-access-spread.js'
-import { noUnnecessaryFsChmodSpreadRule } from './patterns/no-unnecessary-fs-chmod-spread.js'
-import { noUnnecessaryFsChownSpreadRule } from './patterns/no-unnecessary-fs-chown-spread.js'
-import { noUnnecessaryFsReadDirSyncSpreadRule } from './patterns/no-unnecessary-fs-read-dir-sync-spread.js'
-import { noUnnecessaryFsReadFileSyncSpreadRule } from './patterns/no-unnecessary-fs-read-file-sync-spread.js'
-import { noUnnecessaryFsWriteFileSyncSpreadRule } from './patterns/no-unnecessary-fs-write-file-sync-spread.js'
-import { noUnnecessaryFsMkdirSyncSpreadRule } from './patterns/no-unnecessary-fs-mkdir-sync-spread.js'
-import { noUnnecessaryFsRmSyncSpreadRule } from './patterns/no-unnecessary-fs-rm-sync-spread.js'
-import { noUnnecessaryFsRmSpreadRule } from './patterns/no-unnecessary-fs-rm-spread.js'
-import { noUnnecessaryFsWatchSpreadRule } from './patterns/no-unnecessary-fs-watch-spread.js'
-import { noUnnecessaryFsWatchFileSpreadRule } from './patterns/no-unnecessary-fs-watch-file-spread.js'
-import { noUnnecessaryFsUnwatchFileSpreadRule } from './patterns/no-unnecessary-fs-unwatch-file-spread.js'
-import { noUnnecessaryFsCreateReadStreamSpreadRule } from './patterns/no-unnecessary-fs-create-read-stream-spread.js'
-import { noUnnecessaryFsCreateWriteStreamSpreadRule } from './patterns/no-unnecessary-fs-create-write-stream-spread.js'
-import { noUnnecessaryUtilPromisifySpreadRule } from './patterns/no-unnecessary-util-promisify-spread.js'
-import { noUnnecessaryUtilCallbackifySpreadRule } from './patterns/no-unnecessary-util-callbackify-spread.js'
-import { noUnnecessaryUtilInspectSpreadRule } from './patterns/no-unnecessary-util-inspect-spread.js'
-import { noUnnecessaryUtilFormatSpreadRule } from './patterns/no-unnecessary-util-format-spread.js'
-import { noUnnecessaryUtilDeprecateSpreadRule } from './patterns/no-unnecessary-util-deprecate-spread.js'
-import { noUnnecessaryUtilIsDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-util-is-deep-strict-equal-spread.js'
-import { noUnnecessaryUtilTypesIsDateSpreadRule } from './patterns/no-unnecessary-util-types-is-date-spread.js'
-import { noUnnecessaryUtilTextDecoderDecodeSpreadRule } from './patterns/no-unnecessary-util-text-decoder-decode-spread.js'
-import { noUnnecessaryOsHomedirSpreadRule } from './patterns/no-unnecessary-os-homedir-spread.js'
-import { noUnnecessaryOsTmpdirSpreadRule } from './patterns/no-unnecessary-os-tmpdir-spread.js'
-import { noUnnecessaryOsHostnameSpreadRule } from './patterns/no-unnecessary-os-hostname-spread.js'
-import { noUnnecessaryOsTypeSpreadRule } from './patterns/no-unnecessary-os-type-spread.js'
-import { noUnnecessaryOsPlatformSpreadRule } from './patterns/no-unnecessary-os-platform-spread.js'
-import { noUnnecessaryOsArchSpreadRule } from './patterns/no-unnecessary-os-arch-spread.js'
-import { noUnnecessaryOsReleaseSpreadRule } from './patterns/no-unnecessary-os-release-spread.js'
-import { noUnnecessaryOsCpusSpreadRule } from './patterns/no-unnecessary-os-cpus-spread.js'
-import { noUnnecessaryOsTotalmemSpreadRule } from './patterns/no-unnecessary-os-totalmem-spread.js'
-import { noUnnecessaryOsFreememSpreadRule } from './patterns/no-unnecessary-os-freemem-spread.js'
-import { noUnnecessaryOsUptimeSpreadRule } from './patterns/no-unnecessary-os-uptime-spread.js'
-import { noUnnecessaryOsLoadavgSpreadRule } from './patterns/no-unnecessary-os-loadavg-spread.js'
-import { noUnnecessaryOsNetworkInterfacesSpreadRule } from './patterns/no-unnecessary-os-network-interfaces-spread.js'
-import { noUnnecessaryOsConstantsSpreadRule } from './patterns/no-unnecessary-os-constants-spread.js'
-import { noUnnecessaryOsUserInfoSpreadRule } from './patterns/no-unnecessary-os-user-info-spread.js'
-import { noUnnecessaryOsEolSpreadRule } from './patterns/no-unnecessary-os-eol-spread.js'
-import { noUnnecessaryOsDevNullSpreadRule } from './patterns/no-unnecessary-os-dev-null-spread.js'
-import { noUnnecessaryOsGetPrioritySpreadRule } from './patterns/no-unnecessary-os-get-priority-spread.js'
-import { noUnnecessaryOsSetPrioritySpreadRule } from './patterns/no-unnecessary-os-set-priority-spread.js'
-import { noUnnecessaryCryptoCreateHashSpreadRule } from './patterns/no-unnecessary-crypto-create-hash-spread.js'
-import { noUnnecessaryCryptoCreateHmacSpreadRule } from './patterns/no-unnecessary-crypto-create-hmac-spread.js'
-import { noUnnecessaryCryptoCreateCipherSpreadRule } from './patterns/no-unnecessary-crypto-create-cipher-spread.js'
-import { noUnnecessaryCryptoCreateCipherIvSpreadRule } from './patterns/no-unnecessary-crypto-create-cipher-iv-spread.js'
-import { noUnnecessaryCryptoCreateDecipherSpreadRule } from './patterns/no-unnecessary-crypto-create-decipher-spread.js'
-import { noUnnecessaryCryptoCreateDecipherIvSpreadRule } from './patterns/no-unnecessary-crypto-create-decipher-iv-spread.js'
-import { noUnnecessaryCryptoCreateSignSpreadRule } from './patterns/no-unnecessary-crypto-create-sign-spread.js'
-import { noUnnecessaryCryptoCreateVerifySpreadRule } from './patterns/no-unnecessary-crypto-create-verify-spread.js'
-import { noUnnecessaryCryptoRandomBytesSpreadRule } from './patterns/no-unnecessary-crypto-random-bytes-spread.js'
-import { noUnnecessaryCryptoPbkdf2SpreadRule } from './patterns/no-unnecessary-crypto-pbkdf2-spread.js'
-import { noUnnecessaryCryptoScryptSpreadRule } from './patterns/no-unnecessary-crypto-scrypt-spread.js'
-import { noUnnecessaryCryptoCreateSecretKeySpreadRule } from './patterns/no-unnecessary-crypto-create-secret-key-spread.js'
-import { noUnnecessaryCryptoCreatePublicKeySpreadRule } from './patterns/no-unnecessary-crypto-create-public-key-spread.js'
-import { noUnnecessaryCryptoCreatePrivateKeySpreadRule } from './patterns/no-unnecessary-crypto-create-private-key-spread.js'
-import { noUnnecessaryCryptoGetCiphersSpreadRule } from './patterns/no-unnecessary-crypto-get-ciphers-spread.js'
-import { noUnnecessaryCryptoGetHashesSpreadRule } from './patterns/no-unnecessary-crypto-get-hashes-spread.js'
-import { noUnnecessaryCryptoTimingSafeEqualSpreadRule } from './patterns/no-unnecessary-crypto-timing-safe-equal-spread.js'
-import { noUnnecessaryEventEmitterOnSpreadRule } from './patterns/no-unnecessary-event-emitter-on-spread.js'
-import { noUnnecessaryEventEmitterOffSpreadRule } from './patterns/no-unnecessary-event-emitter-off-spread.js'
-import { noUnnecessaryEventEmitterOnceSpreadRule } from './patterns/no-unnecessary-event-emitter-once-spread.js'
-import { noUnnecessaryEventEmitterEmitSpreadRule } from './patterns/no-unnecessary-event-emitter-emit-spread.js'
-import { noUnnecessaryEventEmitterRemoveListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-remove-listener-spread.js'
-import { noUnnecessaryEventEmitterRemoveAllListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-remove-all-listeners-spread.js'
-import { noUnnecessaryEventEmitterListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-listeners-spread.js'
-import { noUnnecessaryEventEmitterListenerCountSpreadRule } from './patterns/no-unnecessary-event-emitter-listener-count-spread.js'
-import { noUnnecessaryEventEmitterPrependListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-prepend-listener-spread.js'
-import { noUnnecessaryEventEmitterPrependOnceListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-prepend-once-listener-spread.js'
-import { noUnnecessaryEventEmitterSetMaxListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-set-max-listeners-spread.js'
-import { noUnnecessaryEventEmitterGetMaxListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-get-max-listeners-spread.js'
-import { noUnnecessaryEventEmitterEventNamesSpreadRule } from './patterns/no-unnecessary-event-emitter-event-names-spread.js'
-import { noUnnecessaryEventEmitterRawListenersSpreadRule } from './patterns/no-unnecessary-event-emitter-raw-listeners-spread.js'
-import { noUnnecessaryStreamPipelineSpreadRule } from './patterns/no-unnecessary-stream-pipeline-spread.js'
-import { noUnnecessaryStreamComposeSpreadRule } from './patterns/no-unnecessary-stream-compose-spread.js'
-import { noUnnecessaryStreamReadableFromSpreadRule } from './patterns/no-unnecessary-stream-readable-from-spread.js'
-import { noUnnecessaryChildProcessExecSpreadRule } from './patterns/no-unnecessary-child-process-exec-spread.js'
-import { noUnnecessaryChildProcessExecFileSpreadRule } from './patterns/no-unnecessary-child-process-exec-file-spread.js'
-import { noUnnecessaryChildProcessSpawnSpreadRule } from './patterns/no-unnecessary-child-process-spawn-spread.js'
-import { noUnnecessaryChildProcessForkSpreadRule } from './patterns/no-unnecessary-child-process-fork-spread.js'
-import { noUnnecessaryHttpRequestSpreadRule } from './patterns/no-unnecessary-http-request-spread.js'
-import { noUnnecessaryHttpGetSpreadRule } from './patterns/no-unnecessary-http-get-spread.js'
-import { noUnnecessaryHttpsRequestSpreadRule } from './patterns/no-unnecessary-https-request-spread.js'
-import { noUnnecessaryHttpsGetSpreadRule } from './patterns/no-unnecessary-https-get-spread.js'
-import { noUnnecessaryUrlParseNodeSpreadRule } from './patterns/no-unnecessary-url-parse-node-spread.js'
-import { noUnnecessaryUrlFormatSpreadRule } from './patterns/no-unnecessary-url-format-spread.js'
-import { noUnnecessaryUrlResolveSpreadRule } from './patterns/no-unnecessary-url-resolve-spread.js'
-import { noUnnecessaryUrlDomainToUnicodeSpreadRule } from './patterns/no-unnecessary-url-domain-to-unicode-spread.js'
-import { noUnnecessaryUrlDomainToAsciiSpreadRule } from './patterns/no-unnecessary-url-domain-to-ascii-spread.js'
-import { noUnnecessaryQuerystringParseSpreadRule } from './patterns/no-unnecessary-querystring-parse-spread.js'
-import { noUnnecessaryQuerystringStringifySpreadRule } from './patterns/no-unnecessary-querystring-stringify-spread.js'
-import { noUnnecessaryQuerystringEscapeSpreadRule } from './patterns/no-unnecessary-querystring-escape-spread.js'
-import { noUnnecessaryQuerystringUnescapeSpreadRule } from './patterns/no-unnecessary-querystring-unescape-spread.js'
-import { noUnnecessaryAssertOkSpreadRule } from './patterns/no-unnecessary-assert-ok-spread.js'
-import { noUnnecessaryAssertEqualSpreadRule } from './patterns/no-unnecessary-assert-equal-spread.js'
-import { noUnnecessaryAssertNotEqualSpreadRule } from './patterns/no-unnecessary-assert-not-equal-spread.js'
-import { noUnnecessaryAssertDeepEqualSpreadRule } from './patterns/no-unnecessary-assert-deep-equal-spread.js'
-import { noUnnecessaryAssertNotDeepEqualSpreadRule } from './patterns/no-unnecessary-assert-not-deep-equal-spread.js'
-import { noUnnecessaryAssertDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-deep-strict-equal-spread.js'
-import { noUnnecessaryAssertNotDeepStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-not-deep-strict-equal-spread.js'
-import { noUnnecessaryAssertStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-strict-equal-spread.js'
-import { noUnnecessaryAssertNotStrictEqualSpreadRule } from './patterns/no-unnecessary-assert-not-strict-equal-spread.js'
-import { noUnnecessaryAssertThrowsSpreadRule } from './patterns/no-unnecessary-assert-throws-spread.js'
-import { noUnnecessaryAssertRejectsSpreadRule } from './patterns/no-unnecessary-assert-rejects-spread.js'
-import { noUnnecessaryAssertDoesNotThrowSpreadRule } from './patterns/no-unnecessary-assert-does-not-throw-spread.js'
-import { noUnnecessaryAssertDoesNotRejectSpreadRule } from './patterns/no-unnecessary-assert-does-not-reject-spread.js'
-import { noUnnecessaryAssertIfErrorSpreadRule } from './patterns/no-unnecessary-assert-if-error-spread.js'
-import { noUnnecessaryAssertFailSpreadRule } from './patterns/no-unnecessary-assert-fail-spread.js'
-import { noUnnecessaryAssertMatchSpreadRule } from './patterns/no-unnecessary-assert-match-spread.js'
-import { noUnnecessaryAssertDoesNotMatchSpreadRule } from './patterns/no-unnecessary-assert-does-not-match-spread.js'
-import { noUnnecessaryAssertCallTrackerCallsSpreadRule } from './patterns/no-unnecessary-assert-call-tracker-calls-spread.js'
-import { noUnnecessaryPromiseInstanceThenSpreadRule } from './patterns/no-unnecessary-promise-instance-then-spread.js'
-import { noUnnecessaryPromiseInstanceCatchSpreadRule } from './patterns/no-unnecessary-promise-instance-catch-spread.js'
-import { noUnnecessaryPromiseInstanceFinallySpreadRule } from './patterns/no-unnecessary-promise-instance-finally-spread.js'
-import { noUnnecessaryIntlCollatorCompareSpreadRule } from './patterns/no-unnecessary-intl-collator-compare-spread.js'
-import { noUnnecessaryIntlNumberFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-number-format-format-spread.js'
-import { noUnnecessaryIntlDateTimeFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-date-time-format-format-spread.js'
-import { noUnnecessaryIntlListFormatFormatSpreadRule } from './patterns/no-unnecessary-intl-list-format-format-spread.js'
-import { noUnnecessaryIntlRelativeTimeFormatSpreadRule } from './patterns/no-unnecessary-intl-relative-time-format-spread.js'
-import { noUnnecessaryIntlPluralRulesSpreadRule } from './patterns/no-unnecessary-intl-plural-rules-spread.js'
-import { noUnnecessaryIntlSegmenterSpreadRule } from './patterns/no-unnecessary-intl-segmenter-spread.js'
-import { noUnnecessaryIntlDisplayNamesSpreadRule } from './patterns/no-unnecessary-intl-display-names-spread.js'
-import { noUnnecessaryIteratorNextSpreadRule } from './patterns/no-unnecessary-iterator-next-spread.js'
-import { noUnnecessaryIteratorReturnSpreadRule } from './patterns/no-unnecessary-iterator-return-spread.js'
-import { noUnnecessaryIteratorThrowSpreadRule } from './patterns/no-unnecessary-iterator-throw-spread.js'
-import { noUnnecessaryIteratorForEachSpreadRule } from './patterns/no-unnecessary-iterator-for-each-spread.js'
-import { noUnnecessaryIteratorMapSpreadRule } from './patterns/no-unnecessary-iterator-map-spread.js'
-import { noUnnecessaryIteratorFilterSpreadRule } from './patterns/no-unnecessary-iterator-filter-spread.js'
-import { noUnnecessaryIteratorTakeSpreadRule } from './patterns/no-unnecessary-iterator-take-spread.js'
-import { noUnnecessaryIteratorDropSpreadRule } from './patterns/no-unnecessary-iterator-drop-spread.js'
-import { noUnnecessaryIteratorFlatMapSpreadRule } from './patterns/no-unnecessary-iterator-flat-map-spread.js'
-import { noUnnecessaryIteratorReduceSpreadRule } from './patterns/no-unnecessary-iterator-reduce-spread.js'
-import { noUnnecessaryIteratorToArraySpreadRule } from './patterns/no-unnecessary-iterator-to-array-spread.js'
-import { noUnnecessaryIteratorSomeSpreadRule } from './patterns/no-unnecessary-iterator-some-spread.js'
-import { noUnnecessaryIteratorEverySpreadRule } from './patterns/no-unnecessary-iterator-every-spread.js'
-import { noUnnecessaryIteratorFindSpreadRule } from './patterns/no-unnecessary-iterator-find-spread.js'
-import { noUnnecessaryArrayIteratorNextSpreadRule } from './patterns/no-unnecessary-array-iterator-next-spread.js'
-import { noUnnecessaryMapIteratorNextSpreadRule } from './patterns/no-unnecessary-map-iterator-next-spread.js'
-import { noUnnecessarySetIteratorNextSpreadRule } from './patterns/no-unnecessary-set-iterator-next-spread.js'
-import { noUnnecessaryStringIteratorNextSpreadRule } from './patterns/no-unnecessary-string-iterator-next-spread.js'
-import { noUnnecessaryGeneratorNextSpreadRule } from './patterns/no-unnecessary-generator-next-spread.js'
-import { noUnnecessaryGeneratorReturnSpreadRule } from './patterns/no-unnecessary-generator-return-spread.js'
-import { noUnnecessaryGeneratorThrowSpreadRule } from './patterns/no-unnecessary-generator-throw-spread.js'
-import { noUnnecessaryAsyncGeneratorNextSpreadRule } from './patterns/no-unnecessary-async-generator-next-spread.js'
-import { noUnnecessaryAsyncGeneratorReturnSpreadRule } from './patterns/no-unnecessary-async-generator-return-spread.js'
-import { noUnnecessaryAsyncGeneratorThrowSpreadRule } from './patterns/no-unnecessary-async-generator-throw-spread.js'
-import { noUnnecessaryAsyncIteratorNextSpreadRule } from './patterns/no-unnecessary-async-iterator-next-spread.js'
-import { noUnnecessaryAsyncIteratorReturnSpreadRule } from './patterns/no-unnecessary-async-iterator-return-spread.js'
-import { noUnnecessaryAsyncIteratorThrowSpreadRule } from './patterns/no-unnecessary-async-iterator-throw-spread.js'
-import { noUnnecessaryResponseInstanceCloneSpreadRule } from './patterns/no-unnecessary-response-instance-clone-spread.js'
-import { noUnnecessaryResponseInstanceJsonSpreadRule } from './patterns/no-unnecessary-response-instance-json-spread.js'
-import { noUnnecessaryResponseInstanceTextSpreadRule } from './patterns/no-unnecessary-response-instance-text-spread.js'
-import { noUnnecessaryResponseInstanceBlobSpreadRule } from './patterns/no-unnecessary-response-instance-blob-spread.js'
-import { noUnnecessaryResponseInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-response-instance-array-buffer-spread.js'
-import { noUnnecessaryResponseInstanceFormDataSpreadRule } from './patterns/no-unnecessary-response-instance-form-data-spread.js'
-import { noUnnecessaryRequestInstanceCloneSpreadRule } from './patterns/no-unnecessary-request-instance-clone-spread.js'
-import { noUnnecessaryRequestInstanceJsonSpreadRule } from './patterns/no-unnecessary-request-instance-json-spread.js'
-import { noUnnecessaryRequestInstanceTextSpreadRule } from './patterns/no-unnecessary-request-instance-text-spread.js'
-import { noUnnecessaryRequestInstanceBlobSpreadRule } from './patterns/no-unnecessary-request-instance-blob-spread.js'
-import { noUnnecessaryRequestInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-request-instance-array-buffer-spread.js'
-import { noUnnecessaryRequestInstanceFormDataSpreadRule } from './patterns/no-unnecessary-request-instance-form-data-spread.js'
-import { noUnnecessaryHeadersInstanceGetSpreadRule } from './patterns/no-unnecessary-headers-instance-get-spread.js'
-import { noUnnecessaryHeadersInstanceSetSpreadRule } from './patterns/no-unnecessary-headers-instance-set-spread.js'
-import { noUnnecessaryHeadersInstanceHasSpreadRule } from './patterns/no-unnecessary-headers-instance-has-spread.js'
-import { noUnnecessaryHeadersInstanceDeleteSpreadRule } from './patterns/no-unnecessary-headers-instance-delete-spread.js'
-import { noUnnecessaryHeadersInstanceAppendSpreadRule } from './patterns/no-unnecessary-headers-instance-append-spread.js'
-import { noUnnecessaryHeadersInstanceEntriesSpreadRule } from './patterns/no-unnecessary-headers-instance-entries-spread.js'
-import { noUnnecessaryHeadersInstanceKeysSpreadRule } from './patterns/no-unnecessary-headers-instance-keys-spread.js'
-import { noUnnecessaryHeadersInstanceValuesSpreadRule } from './patterns/no-unnecessary-headers-instance-values-spread.js'
-import { noUnnecessaryHeadersInstanceForEachSpreadRule } from './patterns/no-unnecessary-headers-instance-for-each-spread.js'
-import { noUnnecessaryFormDataInstanceGetSpreadRule } from './patterns/no-unnecessary-form-data-instance-get-spread.js'
-import { noUnnecessaryFormDataInstanceGetAllSpreadRule } from './patterns/no-unnecessary-form-data-instance-get-all-spread.js'
-import { noUnnecessaryFormDataInstanceSetSpreadRule } from './patterns/no-unnecessary-form-data-instance-set-spread.js'
-import { noUnnecessaryFormDataInstanceAppendSpreadRule } from './patterns/no-unnecessary-form-data-instance-append-spread.js'
-import { noUnnecessaryFormDataInstanceDeleteSpreadRule } from './patterns/no-unnecessary-form-data-instance-delete-spread.js'
-import { noUnnecessaryFormDataInstanceHasSpreadRule } from './patterns/no-unnecessary-form-data-instance-has-spread.js'
-import { noUnnecessaryFormDataInstanceEntriesSpreadRule } from './patterns/no-unnecessary-form-data-instance-entries-spread.js'
-import { noUnnecessaryFormDataInstanceKeysSpreadRule } from './patterns/no-unnecessary-form-data-instance-keys-spread.js'
-import { noUnnecessaryFormDataInstanceValuesSpreadRule } from './patterns/no-unnecessary-form-data-instance-values-spread.js'
-import { noUnnecessaryFormDataInstanceForEachSpreadRule } from './patterns/no-unnecessary-form-data-instance-for-each-spread.js'
-import { noUnnecessaryUrlInstanceToStringSpreadRule } from './patterns/no-unnecessary-url-instance-to-string-spread.js'
-import { noUnnecessaryUrlInstanceToJsonSpreadRule } from './patterns/no-unnecessary-url-instance-to-json-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceGetSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-get-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceGetAllSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-get-all-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceSetSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-set-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceAppendSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-append-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceDeleteSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-delete-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceHasSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-has-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceToStringSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-to-string-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceEntriesSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-entries-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceKeysSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-keys-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceValuesSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-values-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceForEachSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-for-each-spread.js'
-import { noUnnecessaryUrlSearchParamsInstanceSortSpreadRule } from './patterns/no-unnecessary-url-search-params-instance-sort-spread.js'
-import { noUnnecessaryBlobInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-blob-instance-array-buffer-spread.js'
-import { noUnnecessaryBlobInstanceTextSpreadRule } from './patterns/no-unnecessary-blob-instance-text-spread.js'
-import { noUnnecessaryBlobInstanceSliceSpreadRule } from './patterns/no-unnecessary-blob-instance-slice-spread.js'
-import { noUnnecessaryBlobInstanceStreamSpreadRule } from './patterns/no-unnecessary-blob-instance-stream-spread.js'
-import { noUnnecessaryFileInstanceArrayBufferSpreadRule } from './patterns/no-unnecessary-file-instance-array-buffer-spread.js'
-import { noUnnecessaryFileInstanceTextSpreadRule } from './patterns/no-unnecessary-file-instance-text-spread.js'
-import { noUnnecessaryFileInstanceSliceSpreadRule } from './patterns/no-unnecessary-file-instance-slice-spread.js'
-import { noUnnecessaryFileInstanceStreamSpreadRule } from './patterns/no-unnecessary-file-instance-stream-spread.js'
-import { noUnnecessaryAbortSignalThrowIfAbortedSpreadRule } from './patterns/no-unnecessary-abort-signal-throw-if-aborted-spread.js'
-import { noUnnecessaryBroadcastChannelInstancePostMessageSpreadRule } from './patterns/no-unnecessary-broadcast-channel-instance-post-message-spread.js'
-import { noUnnecessaryBroadcastChannelInstanceCloseSpreadRule } from './patterns/no-unnecessary-broadcast-channel-instance-close-spread.js'
-import { noUnnecessaryMessagePortPostMessageSpreadRule } from './patterns/no-unnecessary-message-port-post-message-spread.js'
-import { noUnnecessaryMessagePortCloseSpreadRule } from './patterns/no-unnecessary-message-port-close-spread.js'
-import { noUnnecessaryMessagePortStartSpreadRule } from './patterns/no-unnecessary-message-port-start-spread.js'
-import { noUnnecessaryWorkerInstancePostMessageSpreadRule } from './patterns/no-unnecessary-worker-instance-post-message-spread.js'
-import { noUnnecessaryWorkerInstanceTerminateSpreadRule } from './patterns/no-unnecessary-worker-instance-terminate-spread.js'
-import { noUnnecessaryFileReaderInstanceReadAsArrayBufferSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-array-buffer-spread.js'
-import { noUnnecessaryFileReaderInstanceReadAsBinaryStringSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-binary-string-spread.js'
-import { noUnnecessaryFileReaderInstanceReadAsDataURLSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-data-url-spread.js'
-import { noUnnecessaryFileReaderInstanceReadAsTextSpreadRule } from './patterns/no-unnecessary-file-reader-instance-read-as-text-spread.js'
-import { noUnnecessaryFileReaderInstanceAbortSpreadRule } from './patterns/no-unnecessary-file-reader-instance-abort-spread.js'
-import { noUnnecessaryReadableStreamReadSpreadRule } from './patterns/no-unnecessary-readable-stream-read-spread.js'
-import { noUnnecessaryReadableStreamPipeSpreadRule } from './patterns/no-unnecessary-readable-stream-pipe-spread.js'
-import { noUnnecessaryReadableStreamUnpipeSpreadRule } from './patterns/no-unnecessary-readable-stream-unpipe-spread.js'
-import { noUnnecessaryReadableStreamPauseSpreadRule } from './patterns/no-unnecessary-readable-stream-pause-spread.js'
-import { noUnnecessaryReadableStreamResumeSpreadRule } from './patterns/no-unnecessary-readable-stream-resume-spread.js'
-import { noUnnecessaryReadableStreamDestroySpreadRule } from './patterns/no-unnecessary-readable-stream-destroy-spread.js'
-import { noUnnecessaryReadableStreamPushSpreadRule } from './patterns/no-unnecessary-readable-stream-push-spread.js'
-import { noUnnecessaryWritableStreamWriteSpreadRule } from './patterns/no-unnecessary-writable-stream-write-spread.js'
-import { noUnnecessaryWritableStreamEndSpreadRule } from './patterns/no-unnecessary-writable-stream-end-spread.js'
-import { noUnnecessaryWritableStreamDestroySpreadRule } from './patterns/no-unnecessary-writable-stream-destroy-spread.js'
-import { noUnnecessaryTransformStreamTransformSpreadRule } from './patterns/no-unnecessary-transform-stream-transform-spread.js'
-import { noUnnecessaryTransformStreamFlushSpreadRule } from './patterns/no-unnecessary-transform-stream-flush-spread.js'
-import { noUnnecessaryEventEmitterAddListenerSpreadRule } from './patterns/no-unnecessary-event-emitter-add-listener-spread.js'
-import { noUnnecessaryChildProcessInstanceKillSpreadRule } from './patterns/no-unnecessary-child-process-instance-kill-spread.js'
-import { noUnnecessaryChildProcessInstanceSendSpreadRule } from './patterns/no-unnecessary-child-process-instance-send-spread.js'
-import { noUnnecessaryChildProcessInstanceDisconnectSpreadRule } from './patterns/no-unnecessary-child-process-instance-disconnect-spread.js'
-import { noUnnecessaryChildProcessInstanceRefSpreadRule } from './patterns/no-unnecessary-child-process-instance-ref-spread.js'
-import { noUnnecessaryChildProcessInstanceUnrefSpreadRule } from './patterns/no-unnecessary-child-process-instance-unref-spread.js'
-import { noUnnecessaryObserverInstanceObserveSpreadRule } from './patterns/no-unnecessary-observer-instance-observe-spread.js'
-import { noUnnecessaryObserverInstanceUnobserveSpreadRule } from './patterns/no-unnecessary-observer-instance-unobserve-spread.js'
-import { noUnnecessaryObserverInstanceDisconnectSpreadRule } from './patterns/no-unnecessary-observer-instance-disconnect-spread.js'
-import { noUnnecessaryObserverInstanceTakeRecordsSpreadRule } from './patterns/no-unnecessary-observer-instance-take-records-spread.js'
-import { noUnnecessaryTextDecoderInstanceDecodeSpreadRule } from './patterns/no-unnecessary-text-decoder-instance-decode-spread.js'
-import { noUnnecessaryTextEncoderInstanceEncodeSpreadRule } from './patterns/no-unnecessary-text-encoder-instance-encode-spread.js'
-import { noUnnecessaryTextEncoderInstanceEncodeIntoSpreadRule } from './patterns/no-unnecessary-text-encoder-instance-encode-into-spread.js'
-import { noUnnecessaryServerListenSpreadRule } from './patterns/no-unnecessary-server-listen-spread.js'
-import { noUnnecessaryServerCloseSpreadRule } from './patterns/no-unnecessary-server-close-spread.js'
-import { noUnnecessaryServerAddressSpreadRule } from './patterns/no-unnecessary-server-address-spread.js'
-import { noUnnecessaryServerGetConnectionsSpreadRule } from './patterns/no-unnecessary-server-get-connections-spread.js'
-import { noUnnecessaryServerRefSpreadRule } from './patterns/no-unnecessary-server-ref-spread.js'
-import { noUnnecessaryServerUnrefSpreadRule } from './patterns/no-unnecessary-server-unref-spread.js'
-import { noUnnecessarySocketWriteSpreadRule } from './patterns/no-unnecessary-socket-write-spread.js'
-import { noUnnecessarySocketConnectSpreadRule } from './patterns/no-unnecessary-socket-connect-spread.js'
-import { noUnnecessarySocketEndSpreadRule } from './patterns/no-unnecessary-socket-end-spread.js'
-import { noUnnecessarySocketDestroySpreadRule } from './patterns/no-unnecessary-socket-destroy-spread.js'
-import { noUnnecessarySocketPauseSpreadRule } from './patterns/no-unnecessary-socket-pause-spread.js'
-import { noUnnecessarySocketResumeSpreadRule } from './patterns/no-unnecessary-socket-resume-spread.js'
-import { noUnnecessarySocketSetTimeoutSpreadRule } from './patterns/no-unnecessary-socket-set-timeout-spread.js'
-import { noUnnecessarySocketSetEncodingSpreadRule } from './patterns/no-unnecessary-socket-set-encoding-spread.js'
-import { noUnnecessarySocketSetKeepAliveSpreadRule } from './patterns/no-unnecessary-socket-set-keep-alive-spread.js'
-import { noUnnecessarySocketSetNoDelaySpreadRule } from './patterns/no-unnecessary-socket-set-no-delay-spread.js'
-import { noUnnecessarySocketRefSpreadRule } from './patterns/no-unnecessary-socket-ref-spread.js'
-import { noUnnecessarySocketUnrefSpreadRule } from './patterns/no-unnecessary-socket-unref-spread.js'
-import { noUnnecessaryDataviewSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-set-float32-spread.js'
-import { noUnnecessaryDataviewSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-set-float64-spread.js'
-import { noUnnecessaryDataviewSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-set-int16-spread.js'
-import { noUnnecessaryDataviewSetInt32SpreadRule } from './patterns/no-unnecessary-dataview-set-int32-spread.js'
-import { noUnnecessaryDataviewSetInt8SpreadRule } from './patterns/no-unnecessary-dataview-set-int8-spread.js'
-import { noUnnecessaryDataviewSetUint16SpreadRule } from './patterns/no-unnecessary-dataview-set-uint16-spread.js'
-import { noUnnecessaryDataviewSetUint32SpreadRule } from './patterns/no-unnecessary-dataview-set-uint32-spread.js'
-import { noUnnecessaryDataviewSetUint8SpreadRule } from './patterns/no-unnecessary-dataview-set-uint8-spread.js'
-import { noUnnecessaryArrayBufferInstanceResizeSpreadRule } from './patterns/no-unnecessary-array-buffer-instance-resize-spread.js'
-import { noUnnecessaryArrayBufferInstanceSliceSpreadRule } from './patterns/no-unnecessary-array-buffer-instance-slice-spread.js'
-import { noUnnecessaryArrayBufferInstanceTransferSpreadRule } from './patterns/no-unnecessary-array-buffer-instance-transfer-spread.js'
-import { noUnnecessaryArrayFromAsyncSpreadRule } from './patterns/no-unnecessary-array-from-async-spread.js'
-import { noUnnecessaryArrayIsArraySpreadRule } from './patterns/no-unnecessary-array-is-array-spread.js'
-import { noUnnecessaryBigIntInstanceToLocaleStringSpreadRule } from './patterns/no-unnecessary-big-int-instance-to-locale-string-spread.js'
-import { noUnnecessaryBigIntInstanceToStringSpreadRule } from './patterns/no-unnecessary-big-int-instance-to-string-spread.js'
-import { noUnnecessaryBigIntInstanceValueOfSpreadRule } from './patterns/no-unnecessary-big-int-instance-value-of-spread.js'
-import { noUnnecessaryBooleanInstanceToStringSpreadRule } from './patterns/no-unnecessary-boolean-instance-to-string-spread.js'
-import { noUnnecessaryBooleanInstanceValueOfSpreadRule } from './patterns/no-unnecessary-boolean-instance-value-of-spread.js'
-import { noUnnecessaryCanvasGetContextSpreadRule } from './patterns/no-unnecessary-canvas-get-context-spread.js'
-import { noUnnecessaryCryptoCipherInstanceFinalSpreadRule } from './patterns/no-unnecessary-crypto-cipher-instance-final-spread.js'
-import { noUnnecessaryCryptoCipherInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-cipher-instance-update-spread.js'
-import { noUnnecessaryCryptoCreateHashInstanceDigestSpreadRule } from './patterns/no-unnecessary-crypto-create-hash-instance-digest-spread.js'
-import { noUnnecessaryCryptoCreateHashInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-create-hash-instance-update-spread.js'
-import { noUnnecessaryCryptoDecipherInstanceFinalSpreadRule } from './patterns/no-unnecessary-crypto-decipher-instance-final-spread.js'
-import { noUnnecessaryCryptoDecipherInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-decipher-instance-update-spread.js'
-import { noUnnecessaryCryptoHmacInstanceDigestSpreadRule } from './patterns/no-unnecessary-crypto-hmac-instance-digest-spread.js'
-import { noUnnecessaryCryptoHmacInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-hmac-instance-update-spread.js'
-import { noUnnecessaryCryptoSignInstanceSignSpreadRule } from './patterns/no-unnecessary-crypto-sign-instance-sign-spread.js'
-import { noUnnecessaryCryptoSignInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-sign-instance-update-spread.js'
-import { noUnnecessaryCryptoVerifyInstanceUpdateSpreadRule } from './patterns/no-unnecessary-crypto-verify-instance-update-spread.js'
-import { noUnnecessaryCryptoVerifyInstanceVerifySpreadRule } from './patterns/no-unnecessary-crypto-verify-instance-verify-spread.js'
-import { noUnnecessaryCtxArcSpreadRule } from './patterns/no-unnecessary-ctx-arc-spread.js'
-import { noUnnecessaryCtxArcToSpreadRule } from './patterns/no-unnecessary-ctx-arc-to-spread.js'
-import { noUnnecessaryCtxBeginPathSpreadRule } from './patterns/no-unnecessary-ctx-begin-path-spread.js'
-import { noUnnecessaryCtxBezierCurveToSpreadRule } from './patterns/no-unnecessary-ctx-bezier-curve-to-spread.js'
-import { noUnnecessaryCtxClearRectSpreadRule } from './patterns/no-unnecessary-ctx-clear-rect-spread.js'
-import { noUnnecessaryCtxClipSpreadRule } from './patterns/no-unnecessary-ctx-clip-spread.js'
-import { noUnnecessaryCtxClosePathSpreadRule } from './patterns/no-unnecessary-ctx-close-path-spread.js'
-import { noUnnecessaryCtxCreateLinearGradientSpreadRule } from './patterns/no-unnecessary-ctx-create-linear-gradient-spread.js'
-import { noUnnecessaryCtxCreatePatternSpreadRule } from './patterns/no-unnecessary-ctx-create-pattern-spread.js'
-import { noUnnecessaryCtxCreateRadialGradientSpreadRule } from './patterns/no-unnecessary-ctx-create-radial-gradient-spread.js'
-import { noUnnecessaryCtxDrawImageSpreadRule } from './patterns/no-unnecessary-ctx-draw-image-spread.js'
-import { noUnnecessaryCtxFillRectSpreadRule } from './patterns/no-unnecessary-ctx-fill-rect-spread.js'
-import { noUnnecessaryCtxFillSpreadRule } from './patterns/no-unnecessary-ctx-fill-spread.js'
-import { noUnnecessaryCtxFillTextSpreadRule } from './patterns/no-unnecessary-ctx-fill-text-spread.js'
-import { noUnnecessaryCtxGetImageDataSpreadRule } from './patterns/no-unnecessary-ctx-get-image-data-spread.js'
-import { noUnnecessaryCtxGetLineDashSpreadRule } from './patterns/no-unnecessary-ctx-get-line-dash-spread.js'
-import { noUnnecessaryCtxLineToSpreadRule } from './patterns/no-unnecessary-ctx-line-to-spread.js'
-import { noUnnecessaryCtxMeasureTextSpreadRule } from './patterns/no-unnecessary-ctx-measure-text-spread.js'
-import { noUnnecessaryCtxMoveToSpreadRule } from './patterns/no-unnecessary-ctx-move-to-spread.js'
-import { noUnnecessaryCtxPutImageDataSpreadRule } from './patterns/no-unnecessary-ctx-put-image-data-spread.js'
-import { noUnnecessaryCtxQuadraticCurveToSpreadRule } from './patterns/no-unnecessary-ctx-quadratic-curve-to-spread.js'
-import { noUnnecessaryCtxResetTransformSpreadRule } from './patterns/no-unnecessary-ctx-reset-transform-spread.js'
-import { noUnnecessaryCtxRestoreSpreadRule } from './patterns/no-unnecessary-ctx-restore-spread.js'
-import { noUnnecessaryCtxRotateSpreadRule } from './patterns/no-unnecessary-ctx-rotate-spread.js'
-import { noUnnecessaryCtxSaveSpreadRule } from './patterns/no-unnecessary-ctx-save-spread.js'
-import { noUnnecessaryCtxScaleSpreadRule } from './patterns/no-unnecessary-ctx-scale-spread.js'
-import { noUnnecessaryCtxSetLineDashSpreadRule } from './patterns/no-unnecessary-ctx-set-line-dash-spread.js'
-import { noUnnecessaryCtxSetTransformSpreadRule } from './patterns/no-unnecessary-ctx-set-transform-spread.js'
-import { noUnnecessaryCtxStrokeRectSpreadRule } from './patterns/no-unnecessary-ctx-stroke-rect-spread.js'
-import { noUnnecessaryCtxStrokeSpreadRule } from './patterns/no-unnecessary-ctx-stroke-spread.js'
-import { noUnnecessaryCtxStrokeTextSpreadRule } from './patterns/no-unnecessary-ctx-stroke-text-spread.js'
-import { noUnnecessaryCtxTransformSpreadRule } from './patterns/no-unnecessary-ctx-transform-spread.js'
-import { noUnnecessaryCtxTranslateSpreadRule } from './patterns/no-unnecessary-ctx-translate-spread.js'
-import { noUnnecessaryDataviewInstanceGetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-big-int64-spread.js'
-import { noUnnecessaryDataviewInstanceGetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-big-uint64-spread.js'
-import { noUnnecessaryDataviewInstanceGetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-float32-spread.js'
-import { noUnnecessaryDataviewInstanceGetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-float64-spread.js'
-import { noUnnecessaryDataviewInstanceGetInt16SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-int16-spread.js'
-import { noUnnecessaryDataviewInstanceGetInt32SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-int32-spread.js'
-import { noUnnecessaryDataviewInstanceGetInt8SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-int8-spread.js'
-import { noUnnecessaryDataviewInstanceGetUint16SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-uint16-spread.js'
-import { noUnnecessaryDataviewInstanceGetUint32SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-uint32-spread.js'
-import { noUnnecessaryDataviewInstanceGetUint8SpreadRule } from './patterns/no-unnecessary-dataview-instance-get-uint8-spread.js'
-import { noUnnecessaryDataviewInstanceSetBigInt64SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-big-int64-spread.js'
-import { noUnnecessaryDataviewInstanceSetBigUint64SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-big-uint64-spread.js'
-import { noUnnecessaryDataviewInstanceSetFloat32SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-float32-spread.js'
-import { noUnnecessaryDataviewInstanceSetFloat64SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-float64-spread.js'
-import { noUnnecessaryDataviewInstanceSetInt16SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-int16-spread.js'
-import { noUnnecessaryDataviewInstanceSetInt32SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-int32-spread.js'
-import { noUnnecessaryDataviewInstanceSetInt8SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-int8-spread.js'
-import { noUnnecessaryDataviewInstanceSetUint16SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-uint16-spread.js'
-import { noUnnecessaryDataviewInstanceSetUint32SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-uint32-spread.js'
-import { noUnnecessaryDataviewInstanceSetUint8SpreadRule } from './patterns/no-unnecessary-dataview-instance-set-uint8-spread.js'
-import { noUnnecessaryDateInstanceGetTimeSpreadRule } from './patterns/no-unnecessary-date-instance-get-time-spread.js'
-import { noUnnecessaryDateInstanceSetTimeSpreadRule } from './patterns/no-unnecessary-date-instance-set-time-spread.js'
-import { noUnnecessaryDateInstanceToJsonSpreadRule } from './patterns/no-unnecessary-date-instance-to-json-spread.js'
-import { noUnnecessaryDateInstanceValueOfSpreadRule } from './patterns/no-unnecessary-date-instance-value-of-spread.js'
-import { noUnnecessaryDnsGetServersSpreadRule } from './patterns/no-unnecessary-dns-get-servers-spread.js'
-import { noUnnecessaryDnsLookupSpreadRule } from './patterns/no-unnecessary-dns-lookup-spread.js'
-import { noUnnecessaryDnsResolve4SpreadRule } from './patterns/no-unnecessary-dns-resolve-4-spread.js'
-import { noUnnecessaryDnsResolve6SpreadRule } from './patterns/no-unnecessary-dns-resolve-6-spread.js'
-import { noUnnecessaryDnsResolveAnySpreadRule } from './patterns/no-unnecessary-dns-resolve-any-spread.js'
-import { noUnnecessaryDnsResolveCnameSpreadRule } from './patterns/no-unnecessary-dns-resolve-cname-spread.js'
-import { noUnnecessaryDnsResolveMxSpreadRule } from './patterns/no-unnecessary-dns-resolve-mx-spread.js'
-import { noUnnecessaryDnsResolveNsSpreadRule } from './patterns/no-unnecessary-dns-resolve-ns-spread.js'
-import { noUnnecessaryDnsResolvePtrSpreadRule } from './patterns/no-unnecessary-dns-resolve-ptr-spread.js'
-import { noUnnecessaryDnsResolveSpreadRule } from './patterns/no-unnecessary-dns-resolve-spread.js'
-import { noUnnecessaryDnsResolveSrvSpreadRule } from './patterns/no-unnecessary-dns-resolve-srv-spread.js'
-import { noUnnecessaryDnsResolveTxtSpreadRule } from './patterns/no-unnecessary-dns-resolve-txt-spread.js'
-import { noUnnecessaryDnsReverseSpreadRule } from './patterns/no-unnecessary-dns-reverse-spread.js'
-import { noUnnecessaryDnsSetServersSpreadRule } from './patterns/no-unnecessary-dns-set-servers-spread.js'
-import { noUnnecessaryErrorInstanceToStringSpreadRule } from './patterns/no-unnecessary-error-instance-to-string-spread.js'
-import { noUnnecessaryFinalizationRegistryInstanceRegisterSpreadRule } from './patterns/no-unnecessary-finalization-registry-instance-register-spread.js'
-import { noUnnecessaryFinalizationRegistryInstanceUnregisterSpreadRule } from './patterns/no-unnecessary-finalization-registry-instance-unregister-spread.js'
-import { noUnnecessaryGlAttachShaderSpreadRule } from './patterns/no-unnecessary-gl-attach-shader-spread.js'
-import { noUnnecessaryGlBindBufferSpreadRule } from './patterns/no-unnecessary-gl-bind-buffer-spread.js'
-import { noUnnecessaryGlBlendFuncSpreadRule } from './patterns/no-unnecessary-gl-blend-func-spread.js'
-import { noUnnecessaryGlBufferDataSpreadRule } from './patterns/no-unnecessary-gl-buffer-data-spread.js'
-import { noUnnecessaryGlClearColorSpreadRule } from './patterns/no-unnecessary-gl-clear-color-spread.js'
-import { noUnnecessaryGlClearSpreadRule } from './patterns/no-unnecessary-gl-clear-spread.js'
-import { noUnnecessaryGlCompileShaderSpreadRule } from './patterns/no-unnecessary-gl-compile-shader-spread.js'
-import { noUnnecessaryGlCreateBufferSpreadRule } from './patterns/no-unnecessary-gl-create-buffer-spread.js'
-import { noUnnecessaryGlCreateProgramSpreadRule } from './patterns/no-unnecessary-gl-create-program-spread.js'
-import { noUnnecessaryGlCreateShaderSpreadRule } from './patterns/no-unnecessary-gl-create-shader-spread.js'
-import { noUnnecessaryGlDepthFuncSpreadRule } from './patterns/no-unnecessary-gl-depth-func-spread.js'
-import { noUnnecessaryGlDisableSpreadRule } from './patterns/no-unnecessary-gl-disable-spread.js'
-import { noUnnecessaryGlDrawArraysSpreadRule } from './patterns/no-unnecessary-gl-draw-arrays-spread.js'
-import { noUnnecessaryGlDrawElementsSpreadRule } from './patterns/no-unnecessary-gl-draw-elements-spread.js'
-import { noUnnecessaryGlEnableSpreadRule } from './patterns/no-unnecessary-gl-enable-spread.js'
-import { noUnnecessaryGlEnableVertexAttribArraySpreadRule } from './patterns/no-unnecessary-gl-enable-vertex-attrib-array-spread.js'
-import { noUnnecessaryGlGetAttribLocationSpreadRule } from './patterns/no-unnecessary-gl-get-attrib-location-spread.js'
-import { noUnnecessaryGlGetUniformLocationSpreadRule } from './patterns/no-unnecessary-gl-get-uniform-location-spread.js'
-import { noUnnecessaryGlLinkProgramSpreadRule } from './patterns/no-unnecessary-gl-link-program-spread.js'
-import { noUnnecessaryGlShaderSourceSpreadRule } from './patterns/no-unnecessary-gl-shader-source-spread.js'
-import { noUnnecessaryGlUseProgramSpreadRule } from './patterns/no-unnecessary-gl-use-program-spread.js'
-import { noUnnecessaryGlVertexAttribPointerSpreadRule } from './patterns/no-unnecessary-gl-vertex-attrib-pointer-spread.js'
-import { noUnnecessaryGlViewportSpreadRule } from './patterns/no-unnecessary-gl-viewport-spread.js'
-import { noUnnecessaryMathClampSpreadRule } from './patterns/no-unnecessary-math-clamp-spread.js'
-import { noUnnecessaryMathScaleSpreadRule } from './patterns/no-unnecessary-math-scale-spread.js'
-import { noUnnecessaryNetConnectSpreadRule } from './patterns/no-unnecessary-net-connect-spread.js'
-import { noUnnecessaryNetCreateConnectionSpreadRule } from './patterns/no-unnecessary-net-create-connection-spread.js'
-import { noUnnecessaryNetCreateServerSpreadRule } from './patterns/no-unnecessary-net-create-server-spread.js'
-import { noUnnecessaryNumberInstanceToExponentialSpreadRule } from './patterns/no-unnecessary-number-instance-to-exponential-spread.js'
-import { noUnnecessaryNumberInstanceToFixedSpreadRule } from './patterns/no-unnecessary-number-instance-to-fixed-spread.js'
-import { noUnnecessaryNumberInstanceToLocaleStringSpreadRule } from './patterns/no-unnecessary-number-instance-to-locale-string-spread.js'
-import { noUnnecessaryNumberInstanceToPrecisionSpreadRule } from './patterns/no-unnecessary-number-instance-to-precision-spread.js'
-import { noUnnecessaryNumberInstanceToStringSpreadRule } from './patterns/no-unnecessary-number-instance-to-string-spread.js'
-import { noUnnecessaryNumberInstanceValueOfSpreadRule } from './patterns/no-unnecessary-number-instance-value-of-spread.js'
-import { noUnnecessaryObjectHasOwnPropertySpreadRule } from './patterns/no-unnecessary-object-has-own-property-spread.js'
-import { noUnnecessaryObjectIsPrototypeOfSpreadRule } from './patterns/no-unnecessary-object-is-prototype-of-spread.js'
-import { noUnnecessaryObjectPropertyIsEnumerableSpreadRule } from './patterns/no-unnecessary-object-property-is-enumerable-spread.js'
-import { noUnnecessaryObjectToLocaleStringSpreadRule } from './patterns/no-unnecessary-object-to-locale-string-spread.js'
-import { noUnnecessaryObjectToStringSpreadRule } from './patterns/no-unnecessary-object-to-string-spread.js'
-import { noUnnecessaryObjectValueOfSpreadRule } from './patterns/no-unnecessary-object-value-of-spread.js'
-import { noUnnecessaryPromiseResolveSpreadRule } from './patterns/no-unnecessary-promise-resolve-spread.js'
-import { noUnnecessaryPromiseWithResolversSpreadRule } from './patterns/no-unnecessary-promise-with-resolvers-spread.js'
-import { noUnnecessaryReadlineCloseSpreadRule } from './patterns/no-unnecessary-readline-close-spread.js'
-import { noUnnecessaryReadlineCreateInterfaceSpreadRule } from './patterns/no-unnecessary-readline-create-interface-spread.js'
-import { noUnnecessaryReadlinePromptSpreadRule } from './patterns/no-unnecessary-readline-prompt-spread.js'
-import { noUnnecessaryReadlineQuestionSpreadRule } from './patterns/no-unnecessary-readline-question-spread.js'
-import { noUnnecessaryReadlineWriteSpreadRule } from './patterns/no-unnecessary-readline-write-spread.js'
-import { noUnnecessaryRegexpInstanceExecSpreadRule } from './patterns/no-unnecessary-regexp-instance-exec-spread.js'
-import { noUnnecessaryRegexpInstanceTestSpreadRule } from './patterns/no-unnecessary-regexp-instance-test-spread.js'
-import { noUnnecessaryRegexpInstanceToStringSpreadRule } from './patterns/no-unnecessary-regexp-instance-to-string-spread.js'
-import { noUnnecessarySharedArrayBufferInstanceGrowSpreadRule } from './patterns/no-unnecessary-shared-array-buffer-instance-grow-spread.js'
-import { noUnnecessarySharedArrayBufferInstanceSliceSpreadRule } from './patterns/no-unnecessary-shared-array-buffer-instance-slice-spread.js'
-import { noUnnecessaryStderrEndSpreadRule } from './patterns/no-unnecessary-stderr-end-spread.js'
-import { noUnnecessaryStderrWriteSpreadRule } from './patterns/no-unnecessary-stderr-write-spread.js'
-import { noUnnecessaryStdinPipeSpreadRule } from './patterns/no-unnecessary-stdin-pipe-spread.js'
-import { noUnnecessaryStdinPushSpreadRule } from './patterns/no-unnecessary-stdin-push-spread.js'
-import { noUnnecessaryStdinReadSpreadRule } from './patterns/no-unnecessary-stdin-read-spread.js'
-import { noUnnecessaryStdoutEndSpreadRule } from './patterns/no-unnecessary-stdout-end-spread.js'
-import { noUnnecessaryStdoutWriteSpreadRule } from './patterns/no-unnecessary-stdout-write-spread.js'
-import { noUnnecessarySymbolInstanceDescriptionSpreadRule } from './patterns/no-unnecessary-symbol-instance-description-spread.js'
-import { noUnnecessarySymbolInstanceToStringSpreadRule } from './patterns/no-unnecessary-symbol-instance-to-string-spread.js'
-import { noUnnecessarySymbolInstanceValueOfSpreadRule } from './patterns/no-unnecessary-symbol-instance-value-of-spread.js'
-import { noUnnecessaryWeakRefInstanceDerefSpreadRule } from './patterns/no-unnecessary-weak-ref-instance-deref-spread.js'
-import { noUnnecessaryZlibBrotliCompressSpreadRule } from './patterns/no-unnecessary-zlib-brotli-compress-spread.js'
-import { noUnnecessaryZlibBrotliCompressSyncSpreadRule } from './patterns/no-unnecessary-zlib-brotli-compress-sync-spread.js'
-import { noUnnecessaryZlibBrotliDecompressSpreadRule } from './patterns/no-unnecessary-zlib-brotli-decompress-spread.js'
-import { noUnnecessaryZlibBrotliDecompressSyncSpreadRule } from './patterns/no-unnecessary-zlib-brotli-decompress-sync-spread.js'
-import { noUnnecessaryZlibDeflateSpreadRule } from './patterns/no-unnecessary-zlib-deflate-spread.js'
-import { noUnnecessaryZlibDeflateSyncSpreadRule } from './patterns/no-unnecessary-zlib-deflate-sync-spread.js'
-import { noUnnecessaryZlibGunzipSpreadRule } from './patterns/no-unnecessary-zlib-gunzip-spread.js'
-import { noUnnecessaryZlibGunzipSyncSpreadRule } from './patterns/no-unnecessary-zlib-gunzip-sync-spread.js'
-import { noUnnecessaryZlibGzipSpreadRule } from './patterns/no-unnecessary-zlib-gzip-spread.js'
-import { noUnnecessaryZlibGzipSyncSpreadRule } from './patterns/no-unnecessary-zlib-gzip-sync-spread.js'
-import { noUnnecessaryZlibInflateSpreadRule } from './patterns/no-unnecessary-zlib-inflate-spread.js'
-import { noUnnecessaryZlibInflateSyncSpreadRule } from './patterns/no-unnecessary-zlib-inflate-sync-spread.js'
----ADAPT---
-export { noAwaitInLoopRule, noInefficientArrayMethodsRule, noSyncInAsyncRule } from './performance/index.js'
-export { preferObjectSpreadRule, preferOptionalChainRule, noConstantResponseRule, noUnnecessaryAsyncRule, noMisusedPromiseReturnRule } from './performance/index.js'
-export {
-  noDeprecatedApiRule,
-  noDynamicDeleteRule,
-  noEvalRule,
-  noSqlInjectionRule,
-  noUnsafeReturnRule,
-   noUnsafeTypeAssertionRule,
-    noBannedPropertiesRule,
-      noDocumentWriteRule,
-       noRegexConcatRule,
-       noRegexConstructorRule,
-       noUnsafeArgumentRule,
-      noRestrictedGlobalsRule,
-       noRestrictedImportsRule,
-        noRestrictedPropertiesRule,
-      } from './security/index.js'
-export {
-  noConstantBinaryExpressionRule,
-  noEmptyCatchRule,
-  noEmptyCharacterClassRule,
-  noEmptyFunctionRule,
-  noThrowLiteralRule,
-  noUselessCatchRule,
-   noInvalidUseBeforeDefRule,
-    noImplicitGlobalsRule,
-     noNonNullAssertedOptionalChainRule,
-       noMisleadingSpreadRule,
-         noAsyncConstructorRule,
-        noApproximateConstantsRule,
-       noImplicitUndefinedRule,
-        noMisleadingAssertionRule,
-     } from './correctness/index.js'
