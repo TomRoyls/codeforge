@@ -9,7 +9,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [ ] Enhanced plugin system with hot-reload
 - [ ] Interactive rule configuration wizard
 - [ ] Real-time file watching with incremental analysis
-- [ ] Custom rule creation CLI (`codeforge create-rule`)
+- [x] Custom rule creation CLI (`codeforge create-rule`)
 - [ ] Integration with popular IDEs (VS Code extension)
 
 ### Performance
@@ -22,8 +22,8 @@ This document outlines the planned development trajectory for CodeForge.
 ### Developer Experience
 
 - [ ] Auto-fix suggestions with diff preview
-- [ ] Rule severity profiles (strict, moderate, lenient)
-- [ ] Suppressions with inline comments
+- [x] Rule severity profiles (strict, moderate, lenient)
+- [x] Suppressions with inline comments
 - [ ] Baseline comparisons for regression detection
 
 ## Version 0.3.0
