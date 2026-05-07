@@ -4,6 +4,7 @@ import * as fs from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 
 import {
+  type DangerfileOptions,
   displayDangerNextSteps,
   generateDangerfileContent as generateDangerfileContentHelper,
   resolveDangerOptions,
@@ -50,7 +51,7 @@ export default class Danger extends Command {
     }),
   }
 
-  generateDangerfileContent(options: { ciCommand: string; outputFile: string }): string {
+  generateDangerfileContent(options: DangerfileOptions): string {
     return generateDangerfileContentHelper(options)
   }
 

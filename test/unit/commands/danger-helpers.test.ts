@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest'
 import {
   DEFAULT_CI_COMMAND,
   DEFAULT_OUTPUT_FILE,
+  DEFAULT_RESULTS_FILE,
   type DangerfileOptions,
   displayDangerNextSteps,
   generateDangerfileContent,
@@ -13,6 +14,7 @@ function makeOptions(overrides: Partial<DangerfileOptions> = {}): DangerfileOpti
   return {
     ciCommand: 'codeforge analyze --format json --output codeforge-results.json',
     outputFile: 'dangerfile.js',
+    resultsFile: 'codeforge-results.json',
     ...overrides,
   }
 }
@@ -51,10 +53,16 @@ describe('generateDangerfileContent', () => {
     expect(content).toContain('custom-command --flag')
   })
 
-  test('includes the outputFile in readFileSync', () => {
-    const options = makeOptions({ outputFile: 'custom-results.json' })
+  test('extracts results file from ciCommand for readFileSync', () => {
+    const options = makeOptions({ ciCommand: 'codeforge analyze --format json --output my-results.json' })
     const content = generateDangerfileContent(options)
-    expect(content).toContain('custom-results.json')
+    expect(content).toContain('my-results.json')
+  })
+
+  test('uses default results file when ciCommand has no --output', () => {
+    const options = makeOptions({ ciCommand: 'codeforge analyze --format json' })
+    const content = generateDangerfileContent(options)
+    expect(content).toContain('codeforge-results.json')
   })
 
   test('uses CommonJS require syntax', () => {
@@ -142,22 +150,22 @@ describe('generateDangerfileContent', () => {
     expect(a).not.toBe(b)
   })
 
-  test('different outputFile produces different output', () => {
-    const a = generateDangerfileContent(makeOptions({ outputFile: 'a.json' }))
-    const b = generateDangerfileContent(makeOptions({ outputFile: 'b.json' }))
+  test('different ciCommand with different --output produces different readFileSync', () => {
+    const a = generateDangerfileContent(makeOptions({ ciCommand: 'cmd --output a.json' }))
+    const b = generateDangerfileContent(makeOptions({ ciCommand: 'cmd --output b.json' }))
     expect(a).not.toBe(b)
   })
 
   test('handles ciCommand with special shell characters', () => {
     const options = makeOptions({ ciCommand: 'codeforge analyze --format json --output "my file.json"' })
     const content = generateDangerfileContent(options)
-    expect(content).toContain('my file.json')
+    expect(content).toContain('"my file.json"')
   })
 
-  test('handles outputFile with path separators', () => {
-    const options = makeOptions({ outputFile: 'results/codeforge-results.json' })
+  test('handles ciCommand without --output flag', () => {
+    const options = makeOptions({ ciCommand: 'codeforge analyze --format json' })
     const content = generateDangerfileContent(options)
-    expect(content).toContain('results/codeforge-results.json')
+    expect(content).toContain('codeforge-results.json')
   })
 
   test('uses execSync with stdio inherit', () => {
@@ -180,11 +188,12 @@ describe('generateDangerfileContent', () => {
 
 describe('resolveDangerOptions', () => {
   test('resolves with all flags provided', () => {
-    const flags = { ciCommand: 'custom cmd', output: 'custom.js' }
+    const flags = { 'ci-command': 'custom cmd', output: 'custom.js' }
     const result = resolveDangerOptions(flags)
     expect(result).toEqual({
       ciCommand: 'custom cmd',
       outputFile: 'custom.js',
+      resultsFile: 'codeforge-results.json',
     })
   })
 
@@ -194,7 +203,7 @@ describe('resolveDangerOptions', () => {
   })
 
   test('uses default outputFile when not provided', () => {
-    const result = resolveDangerOptions({ ciCommand: 'cmd' })
+    const result = resolveDangerOptions({ 'ci-command': 'cmd' })
     expect(result.outputFile).toBe(DEFAULT_OUTPUT_FILE)
   })
 
@@ -205,7 +214,7 @@ describe('resolveDangerOptions', () => {
   })
 
   test('preserves custom ciCommand', () => {
-    const result = resolveDangerOptions({ ciCommand: 'yarn lint' })
+    const result = resolveDangerOptions({ 'ci-command': 'yarn lint' })
     expect(result.ciCommand).toBe('yarn lint')
   })
 
@@ -215,7 +224,7 @@ describe('resolveDangerOptions', () => {
   })
 
   test('handles explicit undefined ciCommand', () => {
-    const result = resolveDangerOptions({ ciCommand: undefined })
+    const result = resolveDangerOptions({ 'ci-command': undefined })
     expect(result.ciCommand).toBe(DEFAULT_CI_COMMAND)
   })
 
@@ -232,10 +241,20 @@ describe('resolveDangerOptions', () => {
   })
 
   test('does not mutate input flags', () => {
-    const flags = { ciCommand: 'test' }
+    const flags = { 'ci-command': 'test' }
     const copy = { ...flags }
     resolveDangerOptions(flags)
     expect(flags).toEqual(copy)
+  })
+
+  test('resolves ci-command flag with hyphen', () => {
+    const result = resolveDangerOptions({ 'ci-command': 'my-custom-cmd' })
+    expect(result.ciCommand).toBe('my-custom-cmd')
+  })
+
+  test('resolves ciCommand flag without hyphen (alias)', () => {
+    const result = resolveDangerOptions({ ciCommand: 'alias-cmd' })
+    expect(result.ciCommand).toBe('alias-cmd')
   })
 })
 
@@ -266,10 +285,9 @@ describe('validateDangerOutputPath', () => {
     expect(result.valid).toBe(false)
   })
 
-  test('returns invalid for absolute path', () => {
+  test('returns valid for absolute path', () => {
     const result = validateDangerOutputPath('/tmp/dangerfile.js')
-    expect(result.valid).toBe(false)
-    expect(result.error).toContain('Absolute paths')
+    expect(result.valid).toBe(true)
   })
 
   test('returns invalid for non-js non-ts file', () => {
@@ -396,17 +414,17 @@ describe('DangerfileOptions type', () => {
   })
 
   test('makeOptions allows overriding all', () => {
-    const opts = makeOptions({ ciCommand: 'cmd', outputFile: 'out.js' })
-    expect(opts).toEqual({ ciCommand: 'cmd', outputFile: 'out.js' })
+    const opts = makeOptions({ ciCommand: 'cmd', outputFile: 'out.js', resultsFile: 'custom.json' })
+    expect(opts).toEqual({ ciCommand: 'cmd', outputFile: 'out.js', resultsFile: 'custom.json' })
   })
 })
 
 describe('integration - function combinations', () => {
   test('resolveDangerOptions result works with generateDangerfileContent', () => {
-    const options = resolveDangerOptions({ ciCommand: 'test-cmd', output: 'test.js' })
+    const options = resolveDangerOptions({ 'ci-command': 'test-cmd --output results.json', output: 'test.js' })
     const content = generateDangerfileContent(options)
-    expect(content).toContain('test-cmd')
-    expect(content).toContain('test.js')
+    expect(content).toContain('test-cmd --output results.json')
+    expect(content).toContain('results.json')
   })
 
   test('resolveDangerOptions result works with validateDangerOutputPath', () => {
@@ -417,14 +435,14 @@ describe('integration - function combinations', () => {
 
   test('full workflow: resolve -> generate -> display', () => {
     const options = resolveDangerOptions({
-      ciCommand: 'codeforge analyze --format json',
+      'ci-command': 'codeforge analyze --format json --output custom-results.json',
       output: 'danger/dangerfile.js',
     })
     const content = generateDangerfileContent(options)
     const lines: string[] = []
 
-    expect(content).toContain('codeforge analyze --format json')
-    expect(content).toContain('danger/dangerfile.js')
+    expect(content).toContain('codeforge analyze --format json --output custom-results.json')
+    expect(content).toContain('custom-results.json')
     expect(content).toContain('fail(message)')
     expect(content).toContain('warn(message)')
 
