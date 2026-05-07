@@ -8,7 +8,8 @@ import { type CodeForgeConfig } from '../config/types.js'
 import { validateConfig } from '../config/validator.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
+import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { CLIError, SystemError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
 
@@ -200,16 +201,20 @@ export abstract class BaseCommand extends Command {
    * Set up a RuleRegistry with all rules registered.
    * Optionally filter to specific requested rules.
    */
-  protected setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
+  protected async setupRuleRegistry(requestedRules?: string[]): Promise<RuleRegistry> {
     const registry = new RuleRegistry()
 
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
+    const loadedRules = requestedRules?.length
+      ? await lazyRuleLoader.loadRules(requestedRules)
+      : await lazyRuleLoader.loadAllRules()
+
+    for (const [ruleId, ruleDef] of Object.entries(loadedRules)) {
       registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
     }
 
-    if (requestedRules && requestedRules.length > 0) {
-      const validRuleIds = new Set(Object.keys(allRules))
-      const unknownRules = requestedRules.filter((r) => !validRuleIds.has(r))
+    if (requestedRules?.length) {
+      const validRuleIds = lazyRuleLoader.getRuleIds()
+      const unknownRules = requestedRules.filter((r) => !validRuleIds.includes(r))
 
       if (unknownRules.length > 0) {
         logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
@@ -217,7 +222,7 @@ export abstract class BaseCommand extends Command {
 
       const requestedSet = new Set(requestedRules)
 
-      for (const [ruleId] of Object.entries(allRules)) {
+      for (const ruleId of Object.keys(loadedRules)) {
         if (!requestedSet.has(ruleId)) {
           registry.disable(ruleId)
         }

@@ -9,36 +9,9 @@ import { type DiscoveredFile } from '../core/file-discovery.js'
 import { type Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { type RuleWithFix } from '../fix/fixer.js'
-import { allRules, getRuleCategory } from '../rules/index.js'
+import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { logger } from '../utils/logger.js'
-
-export function setupRuleRegistry(requestedRules?: string[]): RuleRegistry {
-  const registry = new RuleRegistry()
-
-  for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-    registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-  }
-
-  if (requestedRules && requestedRules.length > 0) {
-    const validRuleIds = new Set(Object.keys(allRules))
-    const unknownRules = requestedRules.filter((r) => !validRuleIds.has(r))
-
-    if (unknownRules.length > 0) {
-      logger.warn(`Unknown rules will be ignored: ${unknownRules.join(', ')}`)
-    }
-
-    const requestedSet = new Set(requestedRules)
-
-    for (const [ruleId] of Object.entries(allRules)) {
-      if (!requestedSet.has(ruleId)) {
-        registry.disable(ruleId)
-      }
-    }
-  }
-
-  return registry
-}
 
 export async function loadCommandConfig(
   flags: {
