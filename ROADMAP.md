@@ -85,7 +85,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 - [ ] Framework-specific plugins (React, Vue, Angular, Svelte)
 - [ ] Language support plugins (Python, Go, Rust, Java)
-- [ ] Migration tools from ESLint, TSLint, Biome
+- [x] Migration tools from ESLint, TSLint, Biome
 - [ ] VS Code extension with rich features
 
 ## Long-term Vision
