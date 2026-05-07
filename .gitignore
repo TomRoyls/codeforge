@@ -47,5 +47,8 @@ temp/
 # Debug
 .nyc_output/
 
+# Generated reports
+codeforge-report.*
+
 # Sisyphus internal
 .sisyphus/
