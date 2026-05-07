@@ -247,7 +247,7 @@ export default class Analyze extends Command {
     format: Flags.string({
       default: 'console',
       description: 'Output format',
-      options: ['console', 'html', 'json', 'junit', 'markdown', 'sarif', 'gitlab', 'csv'],
+      options: ['console', 'csv', 'gitlab', 'html', 'json', 'junit', 'markdown', 'sarif', 'sonarqube'],
     }),
     ignore: Flags.string({
       char: 'i',

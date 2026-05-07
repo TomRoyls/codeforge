@@ -17,6 +17,7 @@ import { JSONReporter } from '../reporters/json-reporter.js'
 import { JUnitReporter } from '../reporters/junit-reporter.js'
 import { MarkdownReporter } from '../reporters/markdown-reporter.js'
 import { SARIFReporter } from '../reporters/sarif-reporter.js'
+import { SonarQubeReporter } from '../reporters/sonarqube-reporter.js'
 import {
   isCustomReporterFormat,
   loadReporterFromPath,
@@ -35,6 +36,7 @@ export type OutputFormat =
   | 'junit'
   | 'markdown'
   | 'sarif'
+  | 'sonarqube'
   | `custom:${string}`
 
 export async function createReporter(format: OutputFormat, options: ReporterOptions): Promise<Reporter> {
@@ -83,6 +85,10 @@ export async function createReporter(format: OutputFormat, options: ReporterOpti
 
     case 'sarif': {
       return new SARIFReporter(options)
+    }
+
+    case 'sonarqube': {
+      return new SonarQubeReporter(options)
     }
 
     default: {

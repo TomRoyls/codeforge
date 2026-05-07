@@ -4,9 +4,9 @@ import { dirname, resolve } from 'node:path'
 import type { RuleViolation } from '../ast/visitor.js'
 
 import { CLIError } from '../utils/errors.js'
-import { COLORS, formatGitlab, formatJunit, formatSarif } from './reporter-formatters.js'
+import { COLORS, formatCsv, formatGitlab, formatJunit, formatSarif, formatSonarqube } from './reporter-formatters.js'
 
-export type OutputFormat = 'console' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif'
+export type OutputFormat = 'console' | 'csv' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif' | 'sonarqube'
 
 export interface ReporterOptions {
   color?: boolean
@@ -48,6 +48,10 @@ export class Reporter {
         return this.formatConsole(report)
       }
 
+      case 'csv': {
+        return formatCsv(report)
+      }
+
       case 'gitlab': {
         return formatGitlab(report)
       }
@@ -72,10 +76,14 @@ export class Reporter {
         return formatSarif(report)
       }
 
+      case 'sonarqube': {
+        return formatSonarqube(report)
+      }
+
       default: {
         throw CLIError.invalidInput(
           `Unsupported output format: "${this.options.format}". ` +
-            `Valid formats are: console, json, html, junit, sarif, markdown, gitlab. ` +
+            `Valid formats are: console, json, html, junit, sarif, markdown, gitlab, csv, sonarqube. ` +
             `Please check your configuration and try again.`,
         )
       }

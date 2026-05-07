@@ -9,6 +9,7 @@ import { JSONReporter } from './json-reporter.js'
 import { JUnitReporter } from './junit-reporter.js'
 import { MarkdownReporter } from './markdown-reporter.js'
 import { SARIFReporter } from './sarif-reporter.js'
+import { SonarQubeReporter } from './sonarqube-reporter.js'
 
 export { ConsoleReporter } from './console-reporter.js'
 export { CSVReporter } from './csv-reporter.js'
@@ -18,6 +19,7 @@ export { JSONReporter } from './json-reporter.js'
 export { JUnitReporter } from './junit-reporter.js'
 export { MarkdownReporter } from './markdown-reporter.js'
 export { SARIFReporter } from './sarif-reporter.js'
+export { SonarQubeReporter } from './sonarqube-reporter.js'
 export * from './types.js'
 
 const reporterRegistry = new Map<string, ReporterRegistryEntry>()
@@ -69,6 +71,12 @@ function initializeDefaultReporters(): void {
     description: 'CSV format for spreadsheet import and data analysis',
     factory: (options: ReporterOptions) => new CSVReporter(options),
     name: 'csv',
+  })
+
+  registerReporter({
+    description: 'SonarQube generic issue format for SonarQube/SonarCloud integration',
+    factory: (options: ReporterOptions) => new SonarQubeReporter(options),
+    name: 'sonarqube',
   })
 }
 

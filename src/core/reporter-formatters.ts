@@ -215,6 +215,83 @@ export function formatJson(report: AnalysisReport): string {
   return JSON.stringify(report, null, 2)
 }
 
+export function formatCsv(report: AnalysisReport): string {
+  const headers = ['filePath', 'line', 'column', 'endLine', 'endColumn', 'severity', 'ruleId', 'message', 'suggestion']
+  const rows: string[] = [headers.join(',')]
+
+  for (const file of report.files) {
+    for (const v of file.violations) {
+      rows.push([
+        csvEscape(file.filePath),
+        String(v.range.start.line),
+        String(v.range.start.column),
+        String(v.range.end.line),
+        String(v.range.end.column),
+        v.severity,
+        csvEscape(v.ruleId),
+        csvEscape(v.message),
+        v.suggestion ? csvEscape(v.suggestion) : '',
+      ].join(','))
+    }
+  }
+
+  return rows.join('\n')
+}
+
+function csvEscape(value: string): string {
+  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+    return `"${value.replaceAll('"', '""')}"`
+  }
+  return value
+}
+
+export function formatSonarqube(report: AnalysisReport): string {
+  const issues: unknown[] = []
+
+  for (const file of report.files) {
+    for (const v of file.violations) {
+      issues.push({
+        engineId: 'CodeForge',
+        primaryLocation: {
+          filePath: file.filePath,
+          message: v.message,
+          textRange: {
+            endColumn: v.range.end.column > 0 ? v.range.end.column - 1 : undefined,
+            endLine: v.range.end.line,
+            startColumn: v.range.start.column - 1,
+            startLine: v.range.start.line,
+          },
+        },
+        ruleId: v.ruleId,
+        severity: mapSeverityToSonarQube(v.severity),
+        type: mapSeverityToSonarQubeType(v.severity),
+      })
+    }
+  }
+
+  return JSON.stringify({ issues }, null, 2)
+}
+
+function mapSeverityToSonarQube(severity: string): string {
+  switch (severity) {
+    case 'error': {
+      return 'CRITICAL'
+    }
+
+    case 'warning': {
+      return 'MAJOR'
+    }
+
+    default: {
+      return 'MINOR'
+    }
+  }
+}
+
+function mapSeverityToSonarQubeType(severity: string): string {
+  return severity === 'error' ? 'BUG' : 'CODE_SMELL'
+}
+
 export function formatHtml(report: AnalysisReport): string {
   const lines: string[] = []
   lines.push(

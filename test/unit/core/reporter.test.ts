@@ -1962,7 +1962,7 @@ describe('Reporter', () => {
       })
       const report = createReport()
       expect(() => reporter.formatReport(report)).toThrow(
-        'Unsupported output format: "unknown". Valid formats are: console, json, html, junit, sarif, markdown, gitlab. Please check your configuration and try again.',
+        'Unsupported output format: "unknown". Valid formats are: console, json, html, junit, sarif, markdown, gitlab, csv, sonarqube. Please check your configuration and try again.',
       )
     })
   })
