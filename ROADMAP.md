@@ -47,7 +47,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [x] HTML dashboard with interactive visualizations
 - [x] SARIF output for GitHub Advanced Security
 - [ ] SonarQube compatibility
-- [ ] Custom reporter plugins
+- [x] Custom reporter plugins
 
 ## Version 0.4.0
 
