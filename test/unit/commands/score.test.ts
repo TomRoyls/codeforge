@@ -201,70 +201,59 @@ describe('Score Command', () => {
   // =========================================================================
   describe('calculateCategoryScore', () => {
     test('should return 100 for 0 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(0, 0.3)
+      const result = calculateCategoryScore(0, 0.3)
       expect(result.score).toBe(100)
       expect(result.violations).toBe(0)
       expect(result.weight).toBe(0.3)
     })
 
     test('should return 75 for 5 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(5, 0.3)
+      const result = calculateCategoryScore(5, 0.3)
       expect(result.score).toBe(75)
     })
 
     test('should return 0 for 20 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(20, 0.3)
+      const result = calculateCategoryScore(20, 0.3)
       expect(result.score).toBe(0)
     })
 
     test('should return 0 for many violations (clamped)', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(25, 0.3)
+      const result = calculateCategoryScore(25, 0.3)
       expect(result.score).toBe(0)
     })
 
     test('should apply 5 point penalty per violation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(10, 0.25)
+      const result = calculateCategoryScore(10, 0.25)
       expect(result.score).toBe(50)
     })
 
     test('should return score of 95 for 1 violation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(1, 0.3)
+      const result = calculateCategoryScore(1, 0.3)
       expect(result.score).toBe(95)
     })
 
     test('should return score of 50 for 10 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(10, 0.3)
+      const result = calculateCategoryScore(10, 0.3)
       expect(result.score).toBe(50)
     })
 
     test('should preserve the weight value', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(0, 0.15)
+      const result = calculateCategoryScore(0, 0.15)
       expect(result.weight).toBe(0.15)
     })
 
     test('should preserve violations count in result', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(7, 0.3)
+      const result = calculateCategoryScore(7, 0.3)
       expect(result.violations).toBe(7)
     })
 
     test('should not return negative score for exactly 20 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(20, 0.3)
+      const result = calculateCategoryScore(20, 0.3)
       expect(result.score).toBe(0)
     })
 
     test('should not return negative score for 100 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCategoryScore(100, 0.3)
+      const result = calculateCategoryScore(100, 0.3)
       expect(result.score).toBe(0)
     })
   })
@@ -274,92 +263,77 @@ describe('Score Command', () => {
   // =========================================================================
   describe('calculateCorrectnessScore', () => {
     test('should return 100 for 0 violations with full documentation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 10, 10, 0.25)
+      const result = calculateCorrectnessScore(0, 10, 10, 0.25)
       expect(result.score).toBe(100)
     })
 
     test('should return 50 when no functions exist', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 0, 0, 0.25)
+      const result = calculateCorrectnessScore(0, 0, 0, 0.25)
       expect(result.score).toBe(50)
     })
 
     test('should penalize lack of documentation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 10, 5, 0.25)
+      const result = calculateCorrectnessScore(0, 10, 5, 0.25)
       expect(result.score).toBe(50)
     })
 
     test('should penalize violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(5, 10, 10, 0.25)
+      const result = calculateCorrectnessScore(5, 10, 10, 0.25)
       expect(result.score).toBe(75)
     })
 
     test('should combine documentation and violation penalties', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(5, 10, 5, 0.25)
+      const result = calculateCorrectnessScore(5, 10, 5, 0.25)
       expect(result.score).toBe(25)
     })
 
     test('should return minimum score of 0', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(30, 10, 0, 0.25)
+      const result = calculateCorrectnessScore(30, 10, 0, 0.25)
       expect(result.score).toBe(0)
     })
 
     test('should give 50% coverage baseline when totalFunctions is 0', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 0, 0, 0.25)
+      const result = calculateCorrectnessScore(0, 0, 0, 0.25)
       expect(result.score).toBe(50)
     })
 
     test('should give 100% coverage when all functions documented', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 20, 20, 0.25)
+      const result = calculateCorrectnessScore(0, 20, 20, 0.25)
       expect(result.score).toBe(100)
     })
 
     test('should give 75% coverage when 3/4 functions documented', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 4, 3, 0.25)
+      const result = calculateCorrectnessScore(0, 4, 3, 0.25)
       expect(result.score).toBe(75)
     })
 
     test('should give 0% coverage when no functions documented', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 10, 0, 0.25)
+      const result = calculateCorrectnessScore(0, 10, 0, 0.25)
       expect(result.score).toBe(0)
     })
 
     test('should apply 5 point penalty per violation on top of coverage', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(2, 10, 10, 0.25)
+      const result = calculateCorrectnessScore(2, 10, 10, 0.25)
       expect(result.score).toBe(90)
     })
 
     test('should preserve weight in result', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 10, 10, 0.25)
+      const result = calculateCorrectnessScore(0, 10, 10, 0.25)
       expect(result.weight).toBe(0.25)
     })
 
     test('should preserve violations count in result', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(7, 10, 10, 0.25)
+      const result = calculateCorrectnessScore(7, 10, 10, 0.25)
       expect(result.violations).toBe(7)
     })
 
     test('should handle single function fully documented', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 1, 1, 0.25)
+      const result = calculateCorrectnessScore(0, 1, 1, 0.25)
       expect(result.score).toBe(100)
     })
 
     test('should handle single function not documented', () => {
-      const command = createCommand()
-      const result = (command as any).calculateCorrectnessScore(0, 1, 0, 0.25)
+      const result = calculateCorrectnessScore(0, 1, 0, 0.25)
       expect(result.score).toBe(0)
     })
   })
@@ -369,62 +343,52 @@ describe('Score Command', () => {
   // =========================================================================
   describe('calculateFileScore', () => {
     test('should return 100 for 0 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(0)
+      const result = calculateFileScore(0)
       expect(result).toBe(100)
     })
 
     test('should return 97 for 1 violation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(1)
+      const result = calculateFileScore(1)
       expect(result).toBe(97)
     })
 
     test('should return 91 for 3 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(3)
+      const result = calculateFileScore(3)
       expect(result).toBe(91)
     })
 
     test('should return 0 for many violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(50)
+      const result = calculateFileScore(50)
       expect(result).toBe(0)
     })
 
     test('should apply 3 point penalty per violation', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(10)
+      const result = calculateFileScore(10)
       expect(result).toBe(70)
     })
 
     test('should return 0 for exactly 34 violations (2 remaining)', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(34)
+      const result = calculateFileScore(34)
       expect(result).toBe(Math.max(0, 100 - 34 * 3))
     })
 
     test('should not return negative values', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(100)
+      const result = calculateFileScore(100)
       expect(result).toBe(0)
     })
 
     test('should return 40 for 20 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(20)
+      const result = calculateFileScore(20)
       expect(result).toBe(40)
     })
 
     test('should return 85 for 5 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(5)
+      const result = calculateFileScore(5)
       expect(result).toBe(85)
     })
 
     test('should return 70 for 10 violations', () => {
-      const command = createCommand()
-      const result = (command as any).calculateFileScore(10)
+      const result = calculateFileScore(10)
       expect(result).toBe(70)
     })
   })
@@ -794,11 +758,14 @@ describe('Score Command', () => {
         flags: { json: false, verbose: true },
       })
       ;(command as any).analyzeScore = vi.fn().mockResolvedValue(mockReport)
-      ;(command as any).displayReport = vi.fn()
+      const logSpy = vi.fn()
+      ;(command as any).log = logSpy
 
       await command.run()
 
-      expect((command as any).displayReport).toHaveBeenCalledWith(mockReport, true)
+      expect(logSpy).toHaveBeenCalled()
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      expect(output).toContain('Code Quality Score')
     })
 
     test('should call displayReport with verbose=false when not verbose', async () => {
@@ -810,11 +777,14 @@ describe('Score Command', () => {
         flags: { json: false, verbose: false },
       })
       ;(command as any).analyzeScore = vi.fn().mockResolvedValue(mockReport)
-      ;(command as any).displayReport = vi.fn()
+      const logSpy = vi.fn()
+      ;(command as any).log = logSpy
 
       await command.run()
 
-      expect((command as any).displayReport).toHaveBeenCalledWith(mockReport, false)
+      expect(logSpy).toHaveBeenCalled()
+      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      expect(output).not.toContain('Top Problematic Files')
     })
 
     test('should resolve the target path', async () => {
@@ -975,12 +945,11 @@ describe('Score Command', () => {
   describe('displayReport', () => {
     test('should display overall score and category scores', () => {
       const report = createMockReport()
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Code Quality Score')
       expect(output).toContain('Complexity')
       expect(output).toContain('Correctness')
@@ -990,12 +959,11 @@ describe('Score Command', () => {
 
     test('should display summary information', () => {
       const report = createMockReport()
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Files analyzed: 5')
       expect(output).toContain('Total violations: 8')
     })
@@ -1006,12 +974,11 @@ describe('Score Command', () => {
           { filePath: 'test.ts', score: 75, violations: 5, categories: { complexity: 3 } },
         ],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, true)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, true, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Top Problematic Files')
       expect(output).toContain('test.ts')
       expect(output).toContain('Violations: 5')
@@ -1028,12 +995,11 @@ describe('Score Command', () => {
         overall: 70,
         suggestions: ['Reduce code complexity - 10 complexity issues found'],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Improvement Suggestions')
       expect(output).toContain('Reduce code complexity')
     })
@@ -1049,12 +1015,11 @@ describe('Score Command', () => {
           },
         ],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, true)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, true, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Categories:')
       expect(output).toContain('complexity: 2')
       expect(output).toContain('security: 3')
@@ -1064,34 +1029,31 @@ describe('Score Command', () => {
       const report = createMockReport({
         topFiles: [{ filePath: 'test.ts', score: 75, violations: 5, categories: {} }],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).not.toContain('Top Problematic Files')
     })
 
     test('should not display suggestions when empty', () => {
       const report = createMockReport()
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).not.toContain('Improvement Suggestions')
     })
 
     test('should display violations per file with 2 decimal places', () => {
       const report = createMockReport()
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('1.60')
     })
 
@@ -1103,12 +1065,11 @@ describe('Score Command', () => {
           { filePath: 'file3.ts', score: 70, violations: 5, categories: {} },
         ],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, true)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, true, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('file1.ts')
       expect(output).toContain('file2.ts')
       expect(output).toContain('file3.ts')
@@ -1116,12 +1077,11 @@ describe('Score Command', () => {
 
     test('should display score out of 100', () => {
       const report = createMockReport({ overall: 89 })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('/ 100')
     })
 
@@ -1129,12 +1089,11 @@ describe('Score Command', () => {
       const report = createMockReport({
         topFiles: [{ filePath: 'clean.ts', score: 95, violations: 2, categories: {} }],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, true)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, true, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).not.toContain('Categories:')
     })
 
@@ -1145,12 +1104,11 @@ describe('Score Command', () => {
           'Address security concerns - 5 issues found (critical)',
         ],
       })
-      const command = createCommand()
-      const logSpy = vi.fn()
-      ;(command as any).log = logSpy
-      ;(command as any).displayReport(report, false)
+      const logs: string[] = []
+      const logFn = (msg: string) => logs.push(msg)
+      formatDisplayOutput(report, false, logFn)
 
-      const output = logSpy.mock.calls.map((c: unknown[]) => c[0] as string).join('\n')
+      const output = logs.join('\n')
       expect(output).toContain('Reduce code complexity')
       expect(output).toContain('Address security concerns')
     })
@@ -1731,32 +1689,27 @@ describe('Score Command', () => {
   // =========================================================================
   describe('getScoreColor (command)', () => {
     test('should return green for 80+', () => {
-      const command = createCommand()
-      const result = (command as any).getScoreColor(80)
+      const result = getScoreColor(80)
       expect(typeof result).toBe('function')
     })
 
     test('should return green for 90+', () => {
-      const command = createCommand()
-      const result = (command as any).getScoreColor(90)
+      const result = getScoreColor(90)
       expect(typeof result).toBe('function')
     })
 
     test('should return yellow for 60-79', () => {
-      const command = createCommand()
-      const result = (command as any).getScoreColor(60)
+      const result = getScoreColor(60)
       expect(typeof result).toBe('function')
     })
 
     test('should return red for below 60', () => {
-      const command = createCommand()
-      const result = (command as any).getScoreColor(0)
+      const result = getScoreColor(0)
       expect(typeof result).toBe('function')
     })
 
     test('should return red for 59', () => {
-      const command = createCommand()
-      const result = (command as any).getScoreColor(59)
+      const result = getScoreColor(59)
       expect(typeof result).toBe('function')
     })
   })
@@ -1766,22 +1719,19 @@ describe('Score Command', () => {
   // =========================================================================
   describe('formatScore (command)', () => {
     test('should format score with weight percentage', () => {
-      const command = createCommand()
-      const result = (command as any).formatScore(85, 0.3)
+      const result = formatScore(85, 0.3)
       expect(result).toContain('85')
       expect(result).toContain('30%')
     })
 
     test('should handle low scores', () => {
-      const command = createCommand()
-      const result = (command as any).formatScore(45, 0.15)
+      const result = formatScore(45, 0.15)
       expect(result).toContain('45')
       expect(result).toContain('15%')
     })
 
     test('should handle 100 score', () => {
-      const command = createCommand()
-      const result = (command as any).formatScore(100, 0.3)
+      const result = formatScore(100, 0.3)
       expect(result).toContain('100')
     })
   })

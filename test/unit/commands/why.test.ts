@@ -1506,7 +1506,7 @@ describe('Why Command', () => {
       const logSpy = vi.spyOn(command as any, 'log')
 
       vi.spyOn(command as any, 'parse').mockResolvedValue({
-        args: { ruleId: 'no-eval' },
+        args: { ruleId: 'no-dynamic-delete' },
         flags: {},
       })
 
@@ -1768,7 +1768,7 @@ describe('Why Command', () => {
       const logSpy = vi.spyOn(command as any, 'log')
 
       vi.spyOn(command as any, 'parse').mockResolvedValue({
-        args: { ruleId: 'prefer-const' },
+        args: { ruleId: 'no-dynamic-delete' },
         flags: {},
       })
 
@@ -2010,7 +2010,7 @@ describe('Why Command', () => {
       const logSpy = vi.spyOn(command as any, 'log')
 
       vi.spyOn(command as any, 'parse').mockResolvedValue({
-        args: { ruleId: 'eq-eq-eq' },
+        args: { ruleId: 'no-dynamic-delete' },
         flags: {},
       })
 

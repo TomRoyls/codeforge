@@ -19,7 +19,6 @@
  * ```
  */
 import { Args, Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import ora, { type Ora } from 'ora'
@@ -30,44 +29,17 @@ import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import { type ChalkColorFunction } from '../types/chalk.js'
 import {
-  HEALTH_SCORE_MAX,
+  calculateCategoryScore,
+  calculateCorrectnessScore,
+  calculateFileScore,
+} from './score-calculations.js'
+import { type FileScore, type ScoreReport } from './score-helpers.js'
+import { formatDisplayOutput, generateSuggestions } from './score-formatting.js'
+import {
   MAX_FILES_TO_PROCESS,
   MAX_TOP_STATS_FILES,
-  SCORE_FIELD_WIDTH,
 } from '../utils/constants.js'
-
-interface CategoryScore {
-  score: number
-  violations: number
-  weight: number
-}
-
-interface FileScore {
-  categories: Record<string, number>
-  filePath: string
-  score: number
-  violations: number
-}
-
-interface ScoreReport {
-  categories: {
-    complexity: CategoryScore
-    correctness: CategoryScore
-    patterns: CategoryScore
-    security: CategoryScore
-  }
-  overall: number
-  path: string
-  suggestions: string[]
-  summary: {
-    filesAnalyzed: number
-    totalViolations: number
-    violationsPerFile: number
-  }
-  topFiles: FileScore[]
-}
 
 export default class Score extends Command {
   static override args = {
@@ -125,7 +97,7 @@ export default class Score extends Command {
     if (flags.json) {
       this.log(JSON.stringify(report, null, 2))
     } else {
-      this.displayReport(report, flags.verbose)
+      formatDisplayOutput(report, flags.verbose, (msg) => this.log(msg))
     }
   }
 
@@ -200,7 +172,7 @@ export default class Score extends Command {
         categoryCounts[category] = (categoryCounts[category] || 0) + 1
       }
 
-      const fileScore: number = this.calculateFileScore(violationsWithPath.length)
+      const fileScore: number = calculateFileScore(violationsWithPath.length)
 
       fileScores.push({
         categories: categoryCounts,
@@ -224,15 +196,15 @@ export default class Score extends Command {
     const patternsViolations = allViolations.filter((v) => getRuleCategory(v.ruleId) === 'patterns')
 
     const categories = {
-      complexity: this.calculateCategoryScore(complexityViolations.length, 0.3),
-      correctness: this.calculateCorrectnessScore(
+      complexity: calculateCategoryScore(complexityViolations.length, 0.3),
+      correctness: calculateCorrectnessScore(
         correctnessViolations.length,
         totalFunctions,
         documentedFunctions,
         0.25,
       ),
-      patterns: this.calculateCategoryScore(patternsViolations.length, 0.15),
-      security: this.calculateCategoryScore(securityViolations.length, 0.3),
+      patterns: calculateCategoryScore(patternsViolations.length, 0.15),
+      security: calculateCategoryScore(securityViolations.length, 0.3),
     }
 
     const overall = Math.round(
@@ -242,7 +214,7 @@ export default class Score extends Command {
         categories.patterns.score * categories.patterns.weight,
     )
 
-    const suggestions = this.generateSuggestions(categories, allViolations, fileScores)
+    const suggestions = generateSuggestions(categories, allViolations, fileScores)
 
     return {
       categories: {
@@ -278,145 +250,5 @@ export default class Score extends Command {
       },
       topFiles: fileScores.slice(0, MAX_TOP_STATS_FILES),
     }
-  }
-
-  private calculateCategoryScore(violations: number, weight: number): CategoryScore {
-    const score = Math.max(0, 100 - violations * 5)
-    return { score, violations, weight }
-  }
-
-  private calculateCorrectnessScore(
-    violations: number,
-    totalFunctions: number,
-    documentedFunctions: number,
-    weight: number,
-  ): CategoryScore {
-    const coverage = totalFunctions > 0 ? (documentedFunctions / totalFunctions) * 100 : 50
-    const penalty = violations * 5
-    const score = Math.max(0, coverage - penalty)
-    return { score, violations, weight }
-  }
-
-  private calculateFileScore(violations: number): number {
-    return Math.max(0, 100 - violations * 3)
-  }
-
-  private displayReport(report: ScoreReport, verbose: boolean): void {
-    const score = report.overall
-    const colorFn = this.getScoreColor(score)
-
-    this.log('')
-    this.log(chalk.bold('  Code Quality Score'))
-    this.log('')
-    this.log(
-      `  ${colorFn(`  ${score.toString().padStart(SCORE_FIELD_WIDTH)} / ${HEALTH_SCORE_MAX}`)}  ${this.getGrade(score)}`,
-    )
-    this.log('')
-
-    this.log(chalk.gray('  Category Scores:'))
-    this.log(
-      `    Complexity:  ${this.formatScore(report.categories.complexity.score, report.categories.complexity.weight)}`,
-    )
-    this.log(
-      `    Correctness: ${this.formatScore(report.categories.correctness.score, report.categories.correctness.weight)}`,
-    )
-    this.log(
-      `    Security:    ${this.formatScore(report.categories.security.score, report.categories.security.weight)}`,
-    )
-    this.log(
-      `    Patterns:    ${this.formatScore(report.categories.patterns.score, report.categories.patterns.weight)}`,
-    )
-    this.log('')
-
-    this.log(chalk.gray('  Summary:'))
-    this.log(`    Files analyzed: ${report.summary.filesAnalyzed}`)
-    this.log(`    Total violations: ${report.summary.totalViolations}`)
-    this.log(`    Violations per file: ${report.summary.violationsPerFile.toFixed(2)}`)
-    this.log('')
-
-    if (verbose && report.topFiles.length > 0) {
-      this.log(chalk.gray('  Top Problematic Files:'))
-      for (const file of report.topFiles) {
-        this.log(`    ${chalk.yellow(file.filePath)}`)
-        this.log(`      Violations: ${file.violations}, Score: ${file.score}/100`)
-        if (Object.keys(file.categories).length > 0) {
-          const categories = Object.entries(file.categories)
-            .map(([cat, count]) => `${cat}: ${count}`)
-            .join(', ')
-          this.log(`      Categories: ${categories}`)
-        }
-      }
-
-      this.log('')
-    }
-
-    if (report.suggestions.length > 0) {
-      this.log(chalk.gray('  Improvement Suggestions:'))
-      for (const suggestion of report.suggestions) {
-        this.log(`    ${chalk.yellow('•')} ${suggestion}`)
-      }
-
-      this.log('')
-    }
-  }
-
-  private formatScore(score: number, weight: number): string {
-    const colorFn = this.getScoreColor(score)
-    return colorFn(
-      `${score.toString().padStart(SCORE_FIELD_WIDTH)} / ${HEALTH_SCORE_MAX} (weight: ${(weight * 100).toFixed(0)}%)`,
-    )
-  }
-
-  private generateSuggestions(
-    categories: ScoreReport['categories'],
-    _allViolations: RuleViolation[],
-    fileScores: FileScore[],
-  ): string[] {
-    const suggestions: string[] = []
-
-    if (categories.complexity.score < 70) {
-      suggestions.push(
-        `Reduce code complexity - ${categories.complexity.violations} complexity issues found`,
-      )
-    }
-
-    if (categories.correctness.score < 70) {
-      suggestions.push(
-        `Improve code correctness - ${categories.correctness.violations} correctness issues found`,
-      )
-    }
-
-    if (categories.security.score < 80) {
-      suggestions.push(
-        `Address security concerns - ${categories.security.violations} security issues found (critical)`,
-      )
-    }
-
-    if (categories.patterns.score < 70) {
-      suggestions.push(
-        `Refactor code patterns - ${categories.patterns.violations} pattern violations found`,
-      )
-    }
-
-    const firstFile = fileScores[0]
-    if (firstFile && firstFile.violations > 10) {
-      suggestions.push(`Focus on ${firstFile.filePath} - it has ${firstFile.violations} violations`)
-    }
-
-    return suggestions
-  }
-
-  private getGrade(score: number): string {
-    if (score >= 90) return '(A)'
-    if (score >= 80) return '(B)'
-    if (score >= 70) return '(C)'
-    if (score >= 60) return '(D)'
-    return '(F)'
-  }
-
-  private getScoreColor(score: number): ChalkColorFunction {
-    if (score >= 80) return chalk.green
-    if (score >= 60) return chalk.yellow
-    return chalk.red
   }
 }
