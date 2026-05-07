@@ -24,7 +24,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [ ] Auto-fix suggestions with diff preview
 - [x] Rule severity profiles (strict, moderate, lenient)
 - [x] Suppressions with inline comments
-- [ ] Baseline comparisons for regression detection
+- [x] Baseline comparisons for regression detection
 
 ## Version 0.3.0
 
