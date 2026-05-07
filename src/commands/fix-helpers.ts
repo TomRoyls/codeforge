@@ -36,7 +36,7 @@ export interface FixFlags {
   verbose: boolean
 }
 
-export interface ProcessContext {
+interface ProcessContext {
   dryRun: boolean
   parser: Parser
   registry: RuleRegistry
@@ -50,7 +50,7 @@ export interface FixSummary {
   totalFixesSkipped: number
 }
 
-export interface SetupFixContextSuccess {
+interface SetupFixContextSuccess {
   context: ProcessContext
   discoveredFiles: Array<{ absolutePath: string; path: string }>
 }

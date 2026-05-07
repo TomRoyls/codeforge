@@ -32,6 +32,8 @@ export function filterByThreshold(
   return results.filter((r) => r.cyclomatic > threshold)
 }
 
+
+
 export type SortByField = 'complexity' | 'file' | 'name'
 
 export function sortByField(
@@ -49,10 +51,6 @@ export function sortByField(
   return [...results].sort((a, b) => a.functionName.localeCompare(b.functionName))
 }
 
-export function limitResults<T>(results: T[], limit: number): T[] {
-  return results.slice(0, limit)
-}
-
 export function getCategoryColor(category: ComplexityCategory): (text: string) => string {
   const colors: Record<ComplexityCategory, (text: string) => string> = {
     extreme: chalk.magenta,
@@ -61,6 +59,10 @@ export function getCategoryColor(category: ComplexityCategory): (text: string) =
     moderate: chalk.yellow,
   }
   return colors[category] ?? chalk.white
+}
+
+export function limitResults<T>(items: T[], limit: number): T[] {
+  return items.slice(0, limit)
 }
 
 export function buildJsonOutput(filtered: FunctionComplexity[]): string {

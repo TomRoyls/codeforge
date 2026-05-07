@@ -1,4 +1,4 @@
-import { Node, type SourceFile } from 'ts-morph'
+import { Node, type SourceFile, type FunctionDeclaration, type FunctionExpression, type ArrowFunction } from 'ts-morph'
 
 // ============================================================================
 // Types and Interfaces
@@ -29,6 +29,7 @@ export interface AnalysisResult {
   typeSummary: TypeSummary
   unusedExports: ExportInfo[]
 }
+
 
 export interface FormatOptions {
   format: 'console' | 'json' | 'markdown'
@@ -150,14 +151,20 @@ export function extractExports(sourceFile: SourceFile, filePath: string): Export
   return exports
 }
 
-export function getFunctionSignature(node: import('ts-morph').FunctionDeclaration): string {
+export function getFunctionSignature(
+  decl: FunctionDeclaration | FunctionExpression | ArrowFunction,
+  _sourceFile?: SourceFile,
+): string {
   try {
-    const params = node
+    const params = decl
       .getParameters()
       .map((p) => p.getText())
       .join(', ')
-    const returnType = node.getReturnType().getText()
-    const isAsync = node.isAsync()
+    const returnType = decl.getReturnType().getText()
+    const isAsync =
+      (Node.isFunctionDeclaration(decl) && decl.isAsync()) ||
+      (Node.isFunctionExpression(decl) && decl.isAsync()) ||
+      (Node.isArrowFunction(decl) && decl.isAsync())
 
     let signature = `(${params})`
     if (returnType && returnType !== 'void') {
@@ -179,7 +186,11 @@ export function truncateSignature(signature: string, maxLength = 80): string {
     return signature
   }
 
-  return signature.slice(0, Math.max(0, maxLength - 3)) + '...'
+  if (maxLength <= 3) {
+    return '...'
+  }
+
+  return signature.slice(0, maxLength - 3) + '...'
 }
 
 export {

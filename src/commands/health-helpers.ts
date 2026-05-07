@@ -43,7 +43,7 @@ export interface HealthReport {
   }
 }
 
-export interface ScoreBreakdown {
+interface ScoreBreakdown {
   complexity: number
   documentation: number
   errors: number
@@ -52,7 +52,7 @@ export interface ScoreBreakdown {
   testCoverage: number
 }
 
-export interface CalculatedScores {
+interface CalculatedScores {
   errorCount: number
   overall: number
   patternCount: number

@@ -1,5 +1,3 @@
-import chalk from 'chalk'
-
 import { BEST_PRACTICES } from './why-data-best-practices.js'
 import { FIXES } from './why-data-fixes.js'
 import { COMMON_VIOLATIONS } from './why-data-violations.js'
@@ -84,7 +82,6 @@ export interface RuleMeta {
   name?: string
 }
 
-// eslint-disable-next-line max-params
 export function displayWhyOutput(
   ruleId: string,
   ruleMeta: RuleMeta | undefined,
@@ -93,40 +90,34 @@ export function displayWhyOutput(
   logFn: (msg: string) => void,
 ): void {
   logFn('')
-  logFn(chalk.bold(`Rule: ${chalk.cyan(ruleId)}`))
-  logFn(chalk.gray(`Category: `))
-  logFn('')
+  logFn(`Rule: ${ruleId}`)
+  logFn(`Category:`)
 
   if (ruleMeta?.description) {
-    logFn(chalk.bold('Description:'))
+    logFn(`Description:`)
     logFn(`  ${ruleMeta.description}`)
-    logFn('')
   }
 
-  logFn(chalk.bold('Common violations:'))
+  logFn('')
+  logFn('Common violations:')
   formatCommonViolations(ruleId, logFn)
-  logFn('')
 
-  logFn(chalk.bold('How to fix:'))
-  formatFixes(ruleId, logFn)
   logFn('')
+  logFn('How to fix:')
+  formatFixes(ruleId, logFn)
 
   if (violation) {
-    logFn(chalk.bold('Your specific violation:'))
-    logFn(`  "${violation}"`)
     logFn('')
+    logFn('Your specific violation:')
+    logFn(`  "${violation}"`)
     formatViolationAnalysis(ruleId, violation, logFn)
   }
 
-  logFn(chalk.bold('Best practices:'))
-  formatBestPractices(ruleId, logFn)
   logFn('')
+  logFn('Best practices:')
+  formatBestPractices(ruleId, logFn)
 
-  logFn(
-    chalk.gray('Run ') +
-      chalk.cyan(`${binName} explain ${ruleId}`) +
-      chalk.gray(' for more details.'),
-  )
+  logFn(`${binName} explain ${ruleId} for more details`)
 }
 
 export { BEST_PRACTICES } from './why-data-best-practices.js'

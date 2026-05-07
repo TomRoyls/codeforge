@@ -43,7 +43,7 @@ export function toPascalCase(str: string): string {
     .join('')
 }
 
-export interface GenerateRuleContentOptions {
+interface GenerateRuleContentOptions {
   category: string
   description: string
   fixable: boolean

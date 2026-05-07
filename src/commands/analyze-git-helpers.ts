@@ -16,7 +16,7 @@ import {
 // Types and Interfaces
 // ============================================================================
 
-export interface DiscoverFilesOptions {
+interface DiscoverFilesOptions {
   changedMode: string | undefined
   cwd: string
   files: string[]

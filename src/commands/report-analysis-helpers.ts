@@ -11,7 +11,7 @@ import { setupRuleRegistryLazy } from '../utils/command-helpers.js'
 import { DEFAULT_FILE_PATTERNS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
 
-export interface RunAnalysisPipelineOptions {
+interface RunAnalysisPipelineOptions {
   log?: (msg: string) => void
   version?: string
 }

@@ -48,7 +48,7 @@ export interface StatsResult {
   }
 }
 
-export interface LineCounts {
+interface LineCounts {
   blank: number
   comments: number
   loc: number
@@ -65,7 +65,7 @@ export interface ProcessedFileResult {
   structures: CodeStructures
 }
 
-export interface AggregateResult {
+interface AggregateResult {
   fileStats: FileStats[]
   fileTypes: Record<string, number>
   totalBlank: number
@@ -75,7 +75,7 @@ export interface AggregateResult {
   totalStructures: CodeStructures
 }
 
-export interface FileParser {
+interface FileParser {
   parseFile(filePath: string): Promise<{ sourceFile: import('ts-morph').SourceFile }>
   releaseFile(filePath: string): void
 }

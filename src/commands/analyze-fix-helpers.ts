@@ -33,18 +33,6 @@ export interface ApplyFixesOptions {
   verbose: boolean
 }
 
-export interface HandleFixesOptions {
-  concurrency: number
-  discoveredFiles: DiscoveredFile[]
-  dryRun: boolean
-  filteredViolations: RuleViolation[]
-  parseCache: Map<string, ParseResult>
-  parser: Parser
-  quiet: boolean
-  registry: RuleRegistry
-  shouldFix: boolean
-  verbose: boolean
-}
 
 // ============================================================================
 // Fix Functions

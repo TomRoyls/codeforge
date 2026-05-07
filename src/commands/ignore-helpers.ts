@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-export type IgnoreAction = 'add' | 'list' | 'remove'
+type IgnoreAction = 'add' | 'list' | 'remove'
 
 export interface IgnoreOptions {
   action: IgnoreAction

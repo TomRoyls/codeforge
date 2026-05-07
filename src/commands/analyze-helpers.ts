@@ -33,7 +33,7 @@ export interface AnalysisSummary {
   warnings: number
 }
 
-export interface FailedFile {
+interface FailedFile {
   error: string
   filePath: string
 }
@@ -44,7 +44,7 @@ export interface AnalysisResult {
   fileReports: FileReport[]
 }
 
-export interface AnalyzeFilesOptions {
+interface AnalyzeFilesOptions {
   concurrency: number
   configHash: null | string
   discoveredFiles: DiscoveredFile[]
@@ -246,9 +246,7 @@ export {
 
 export { applyFixes, type ApplyFixesOptions, type FixResult } from './analyze-fix-helpers.js'
 export { getRulesWithFixes, processFixes } from './analyze-fix-helpers.js'
-export type { HandleFixesOptions } from './analyze-fix-helpers.js'
 
-export type { DiscoverFilesOptions } from './analyze-git-helpers.js'
 export {
   getGitChangedFiles,
   getStagedFilesList,

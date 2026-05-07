@@ -141,12 +141,17 @@ export function filterFilesByExtension(
   }
 
   if (extensions.length === 0) {
-    return files
+    return []
   }
 
   return files.filter((f) => {
-    const ext = f.path.split('.').pop()?.toLowerCase()
-    return extensions.includes(`.${ext ?? ''}`)
+    const lastDot = f.path.lastIndexOf('.')
+    const lastSep = Math.max(f.path.lastIndexOf('/'), f.path.lastIndexOf('\\'))
+    if (lastDot <= lastSep) return false
+    const basename = f.path.slice(lastSep + 1)
+    if (basename.startsWith('.') && !basename.slice(1).includes('.')) return false
+    const ext = f.path.slice(lastDot).toLowerCase()
+    return extensions.some((e) => e.toLowerCase() === ext)
   })
 }
 
