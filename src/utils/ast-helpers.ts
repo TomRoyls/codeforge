@@ -3,12 +3,12 @@ import { DESCRIBE_FUNCTIONS, HOOK_FUNCTIONS } from './constants.js'
 export interface ASTNode {
   accessibility?: string
   alternate?: unknown
-  argument?: unknown
-  arguments?: unknown[]
+  argument?: ASTNode
+  arguments?: ASTNode[]
   async?: boolean
   await?: boolean
-  body?: unknown
-  callee?: unknown
+  body?: ASTNode | ASTNode[]
+  callee?: ASTNode
   cases?: unknown[]
   column?: number
   computed?: boolean
@@ -22,8 +22,8 @@ export interface ASTNode {
   end?: unknown
   exported?: unknown
   exportKind?: string
-  expression?: unknown
-  expressions?: unknown[]
+  expression?: ASTNode
+  expressions?: ASTNode[]
   finalizer?: unknown
   generator?: boolean
   handler?: unknown
@@ -36,7 +36,7 @@ export interface ASTNode {
   key?: unknown
   kind?: string
   label?: unknown
-  left?: unknown
+  left?: ASTNode
   line?: number
   loc?: unknown
   local?: unknown
@@ -45,23 +45,23 @@ export interface ASTNode {
   modifiers?: unknown[]
   moduleReference?: unknown
   name?: string
-  object?: unknown
+  object?: ASTNode
   operator?: string
   optional?: boolean
   param?: unknown
-  params?: unknown[]
+  params?: ASTNode[]
   parent?: unknown
   prefix?: boolean
   program?: unknown
   properties?: unknown[]
-  property?: unknown
+  property?: ASTNode
   quasis?: unknown[]
   range?: [number, number]
   raw?: string
   readonly?: boolean
   regex?: { flags?: string; pattern?: string }
   returnType?: unknown
-  right?: unknown
+  right?: ASTNode
   shorthand?: boolean
   source?: unknown
   specifiers?: unknown[]
@@ -83,6 +83,16 @@ export interface ASTNode {
 export function toASTNode(node: unknown): ASTNode | null {
   if (!node || typeof node !== 'object') return null
   return node as ASTNode
+}
+
+/**
+ * Extract a single ASTNode from a field that may be ASTNode | ASTNode[] | undefined.
+ * Returns the node if it's a single ASTNode, null if it's an array, undefined, or null.
+ * This is useful for accessing `body`, `consequent`, etc. which can be either single or array.
+ */
+export function asSingleNode(node: ASTNode | ASTNode[] | undefined): ASTNode | null {
+  if (!node || Array.isArray(node)) return null
+  return node
 }
 
 export function getNodeSource(context: { getSource: () => string }, node: unknown): string {
