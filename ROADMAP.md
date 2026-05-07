@@ -33,19 +33,19 @@ This document outlines the planned development trajectory for CodeForge.
 - [ ] Cross-file analysis (imports, dependencies)
 - [ ] Type-aware linting with full TypeScript integration
 - [ ] Data flow analysis for security vulnerabilities
-- [ ] Complexity metrics (cognitive, cyclomatic)
+- [x] Complexity metrics (cognitive, cyclomatic)
 
 ### Integrations
 
-- [ ] GitHub Actions deep integration
-- [ ] GitLab CI/CD templates
+- [x] GitHub Actions deep integration
+- [x] GitLab CI/CD templates
 - [x] Pre-commit framework hooks
 - [ ] Danger.js integration
 
 ### Reporting
 
-- [ ] HTML dashboard with interactive visualizations
-- [ ] SARIF output for GitHub Advanced Security
+- [x] HTML dashboard with interactive visualizations
+- [x] SARIF output for GitHub Advanced Security
 - [ ] SonarQube compatibility
 - [ ] Custom reporter plugins
 
