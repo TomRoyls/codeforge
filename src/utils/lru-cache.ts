@@ -6,7 +6,6 @@ interface LRUNode<K, V> {
   key: K
   next: LRUNode<K, V> | null
   prev: LRUNode<K, V> | null
-  timestamp: number
   value: V
 }
 
@@ -83,7 +82,6 @@ export class LRUCache<K, V> {
     const existing = this.cache.get(key)
     if (existing) {
       existing.value = value
-      existing.timestamp = Date.now()
       this.moveToHead(existing)
       return
     }
@@ -96,7 +94,6 @@ export class LRUCache<K, V> {
       key,
       next: null,
       prev: null,
-      timestamp: Date.now(),
       value,
     }
 
