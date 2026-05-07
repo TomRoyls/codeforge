@@ -29,6 +29,7 @@ import { DEFAULT_CONFIG } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
+import { formatDiffForConsole, renderTextChangesAsDiff } from '../fix/diff-renderer.js'
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import { resolvePatterns, setupRuleRegistryLazy } from '../utils/command-helpers.js'
@@ -37,6 +38,7 @@ import { logger, LogLevel } from '../utils/logger.js'
 
 interface FileFixResult {
   conflicts: Array<{ conflictingRule: string; ruleId: string }>
+  diffPreview?: string
   error?: string
   file: string
   fixesApplied: number
@@ -300,8 +302,18 @@ export default class Fix extends Command {
         await fs.writeFile(filePath, newContent, 'utf8')
       }
 
+      let diffPreview: string | undefined
+      if (context.dryRun && fixReport.changes.length > 0) {
+        const diff = renderTextChangesAsDiff(fixReport.changes, file.path)
+        const formatted = formatDiffForConsole(diff)
+        if (formatted) {
+          diffPreview = formatted
+        }
+      }
+
       return {
         conflicts: fixReport.conflicts,
+        diffPreview,
         file: file.path,
         fixesApplied: fixReport.fixesApplied,
         fixesSkipped: fixReport.fixesSkipped,
@@ -370,8 +382,14 @@ export default class Fix extends Command {
           if (flags.verbose) {
             this.log(chalk.green(`  ✓ Fixed ${result.fixesApplied} violation(s) in ${result.file}`))
           }
-        } else if (flags['dry-run'] && result.fixesApplied > 0 && flags.verbose) {
+        } else if (flags['dry-run'] && result.fixesApplied > 0) {
+          filesModified.push(result.file)
+
           this.log(chalk.dim(`  ○ Would fix ${result.fixesApplied} violation(s) in ${result.file}`))
+
+          if (result.diffPreview) {
+            this.log(result.diffPreview)
+          }
         }
 
         if (result.conflicts.length > 0 && flags.verbose) {

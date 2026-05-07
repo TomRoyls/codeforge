@@ -29,7 +29,7 @@ import pLimit from 'p-limit'
 import { type RuleViolation } from '../ast/visitor.js'
 import { hashFile, ResultCache } from '../cache/index.js'
 import { ConfigCache } from '../config/cache.js'
-import { type DiscoveredFile, discoverFiles } from '../core/file-discovery.js'
+import { type DiscoveredFile } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { type OutputFormat, Reporter } from '../core/reporter.js'
 import { RuleRegistry } from '../core/rule-registry.js'
@@ -40,6 +40,7 @@ import {
   compareWithBaselineReport,
   saveBaselineReport,
 } from './analyze-baseline-helpers.js'
+import { resolveTargetFiles } from './analyze-git-helpers.js'
 import {
   applyFixesToFiles,
   filterFilesByExtension,
@@ -49,7 +50,6 @@ import {
   setupRuleRegistryLazy,
 } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
-import { getGitRoot, getStagedFiles, isGitRepository } from '../utils/git-helpers.js'
 import { logger, LogLevel } from '../utils/logger.js'
 
 interface FileReport {
@@ -106,6 +106,7 @@ interface ApplyFixesOptions {
 }
 
 interface DiscoverFilesOptions {
+  changedMode: string | undefined
   cwd: string
   files: string[]
   ignore: string[]
@@ -136,6 +137,10 @@ export default class Analyze extends Command {
     {
       command: '<%= config.bin %> <%= command.id %> --staged',
       description: 'Analyze only staged files',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --changed main',
+      description: 'Analyze files changed compared to main branch',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --files "**/*.ts"',
@@ -282,6 +287,9 @@ export default class Analyze extends Command {
       default: false,
       description: 'Analyze only staged files in git',
     }),
+    changed: Flags.string({
+      description: 'Analyze files changed compared to a git ref (e.g., main, HEAD~5)',
+    }),
     verbose: Flags.boolean({
       char: 'v',
       default: false,
@@ -317,6 +325,7 @@ export default class Analyze extends Command {
     const ignore = await this.resolveIgnorePatterns(config.ignore ?? [], flags['ignore-path'])
 
     const filteredFiles = await this.collectFiles({
+      changedMode: normalized.changedMode,
       cwd: targetPath,
       ext: flags.ext,
       files: config.files ?? [],
@@ -610,6 +619,7 @@ export default class Analyze extends Command {
   }
 
   private async collectFiles(options: {
+    changedMode: string | undefined
     cwd: string
     ext: string
     files: string[]
@@ -617,13 +627,13 @@ export default class Analyze extends Command {
     quiet: boolean
     stagedMode: boolean
   }): Promise<DiscoveredFile[]> {
-    const { cwd, ext, files, ignore, quiet, stagedMode } = options
+    const { changedMode, cwd, ext, files, ignore, quiet, stagedMode } = options
     const spinner = quiet ? null : ora('Discovering files...').start()
 
     const targetStat = statSync(cwd)
     const discoveredFiles: DiscoveredFile[] = targetStat.isFile()
       ? [{ absolutePath: cwd, path: path.relative(process.cwd(), cwd) }]
-      : await this.discoverFiles({ cwd, files, ignore, spinner, stagedMode })
+      : await this.discoverFiles({ changedMode, cwd, files, ignore, spinner, stagedMode })
 
     const filtered = filterFilesByExtension(discoveredFiles, ext)
 
@@ -665,42 +675,16 @@ export default class Analyze extends Command {
   }
 
   private async discoverFiles(options: DiscoverFilesOptions): Promise<DiscoveredFile[]> {
-    const { cwd, files, ignore, spinner, stagedMode } = options
+    const { changedMode, cwd, files, ignore, spinner, stagedMode } = options
 
-    if (stagedMode) {
-      if (!isGitRepository(cwd)) {
-        spinner?.fail()
-        this.error('Not a git repository. --staged requires a git repository.', { exit: 1 })
-      }
+    const result = await resolveTargetFiles({ changedMode, cwd, files, ignore, spinner, stagedMode })
 
-      const gitRoot = getGitRoot(cwd)
-      if (!gitRoot) {
-        spinner?.fail()
-        this.error('Could not determine git repository root.', { exit: 1 })
-      }
-
-      const stagedFilePaths = getStagedFiles(gitRoot)
-
-      if (stagedFilePaths.length === 0) {
-        return []
-      }
-
-      return stagedFilePaths
-        .filter((filePath) => {
-          const absolutePath = path.join(gitRoot, filePath)
-          return existsSync(absolutePath)
-        })
-        .map((filePath) => ({
-          absolutePath: path.join(gitRoot, filePath),
-          path: filePath,
-        }))
+    if (result.error) {
+      spinner?.fail()
+      this.error(result.error, { exit: 1 })
     }
 
-    return discoverFiles({
-      cwd,
-      ignore,
-      patterns: files,
-    })
+    return result.files
   }
 
   private filterBySeverity(

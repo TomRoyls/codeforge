@@ -93,7 +93,7 @@ function getRulesWithExamples(): string[] {
 
 // Rules known to NOT have examples in the command's internal map
 function getRulesWithoutExamples(): string[] {
-  return ['max-complexity', 'eq-eq-eq', 'no-alert', 'no-shadow', 'curly']
+  return ['max-depth', 'max-file-size', 'no-empty-catch', 'no-sync-in-async', 'prefer-spread']
 }
 
 // All categories
@@ -789,7 +789,7 @@ describe('Explain Command', () => {
     })
 
     test('rules without examples do not show Examples section', async () => {
-      const output = await runAndCapture('max-complexity')
+      const output = await runAndCapture('no-empty-catch')
       expect(output).not.toContain('Examples')
     })
   })
@@ -819,18 +819,18 @@ describe('Explain Command', () => {
     })
 
     test('rules without specific best practices get defaults', async () => {
-      const output = await runAndCapture('max-complexity')
+      const output = await runAndCapture('no-dynamic-delete')
       expect(output).toContain('Best Practices')
       expect(output).toContain('Follow the rule consistently')
     })
 
     test('default best practices mention auto-fix', async () => {
-      const output = await runAndCapture('max-complexity')
+      const output = await runAndCapture('no-dynamic-delete')
       expect(output).toContain('auto-fix')
     })
 
     test('default best practices mention reviewing violations', async () => {
-      const output = await runAndCapture('max-complexity')
+      const output = await runAndCapture('no-dynamic-delete')
       expect(output).toContain('Review violations')
     })
 
@@ -845,7 +845,7 @@ describe('Explain Command', () => {
     })
 
     test('rules without specific best practices get default practices', async () => {
-      const output = await runAndCapture('eq-eq-eq')
+      const output = await runAndCapture('no-unsafe-return')
       expect(output).toContain('Follow the rule consistently')
     })
   })
@@ -920,7 +920,8 @@ describe('Explain Command', () => {
       const command = createCommand('no-eval')
       const logSpy = vi.spyOn(command as any, 'log')
       await command.run()
-      expect(logSpy.mock.calls[0]).toEqual([''])
+      const firstCall = logSpy.mock.calls[0][0] as string
+      expect(firstCall.startsWith('\n')).toBe(true)
     })
 
     test('header contains rule ID prominently', async () => {
@@ -1294,22 +1295,22 @@ describe('Explain Command', () => {
 
     test('no-var shows default best practices', async () => {
       const output = await runAndCapture('no-var')
-      expect(output).toContain('Follow the rule consistently')
+      expect(output).toContain('Replace var with const')
     })
 
     test('sort-keys shows default best practices', async () => {
       const output = await runAndCapture('sort-keys')
-      expect(output).toContain('Enable auto-fix')
+      expect(output).toContain('Use auto-fix tools')
     })
 
     test('use-isnan shows default best practices', async () => {
       const output = await runAndCapture('use-isnan')
-      expect(output).toContain('Consider the rule')
+      expect(output).toContain('Number.isNaN')
     })
 
     test('object-shorthand shows default best practices', async () => {
       const output = await runAndCapture('object-shorthand')
-      expect(output).toContain('Review violations')
+      expect(output).toContain('shorthand property syntax')
     })
 
     test('prefer-arrow-callback shows default best practices', async () => {

@@ -150,6 +150,14 @@ vi.mock('../../../src/fix/fixer.js', () => ({
   }),
 }))
 
+vi.mock('../../../src/fix/diff-renderer.js', () => ({
+  renderTextChangesAsDiff: vi.fn().mockReturnValue({
+    filePath: '/test/file.ts',
+    hunks: [],
+  }),
+  formatDiffForConsole: vi.fn().mockReturnValue(''),
+}))
+
 vi.mock('node:fs/promises', () => ({
   default: {
     writeFile: vi.fn().mockResolvedValue(undefined),
@@ -228,6 +236,7 @@ vi.mock('../../../src/config/types.js', () => ({
 import Fix from '../../../src/commands/fix.js'
 import { discoverFiles } from '../../../src/core/file-discovery.js'
 import { applyFixesToFile } from '../../../src/fix/fixer.js'
+import { renderTextChangesAsDiff, formatDiffForConsole } from '../../../src/fix/diff-renderer.js'
 import { Parser } from '../../../src/core/parser.js'
 import { RuleRegistry } from '../../../src/core/rule-registry.js'
 import * as fs from 'node:fs/promises'
@@ -3055,6 +3064,136 @@ describe('Fix Command', () => {
 
       expect(pLimit).toHaveBeenCalledWith(2)
       expect(logs.some((l) => l.includes('Fixed 1 violation(s)'))).toBe(true)
+    })
+  })
+
+  // ==== Diff Preview in Dry-Run Mode ====
+
+  describe('diff preview in dry-run mode', () => {
+    it('calls renderTextChangesAsDiff when dry-run has changes', async () => {
+      const changes = [{ start: 0, end: 5, oldText: 'let x', newText: 'const x' }]
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('diff1.ts')])
+      vi.mocked(applyFixesToFile).mockReturnValueOnce({
+        fixesApplied: 1,
+        fixesSkipped: 0,
+        conflicts: [],
+        changes,
+        filePath: 'diff1.ts',
+      })
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true })
+      cmd.log = vi.fn()
+      await cmd.run()
+
+      expect(renderTextChangesAsDiff).toHaveBeenCalledWith(
+        changes,
+        expect.stringContaining('diff1.ts'),
+      )
+    })
+
+    it('calls formatDiffForConsole with rendered diff in dry-run', async () => {
+      const mockDiff = { filePath: 'diff2.ts', hunks: [{ header: '@@ -1,+1 @@', changes: [] }] }
+      vi.mocked(renderTextChangesAsDiff).mockReturnValueOnce(mockDiff)
+      vi.mocked(formatDiffForConsole).mockReturnValueOnce('--- diff2.ts\n+++ diff2.ts (fix preview)')
+
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('diff2.ts')])
+      vi.mocked(applyFixesToFile).mockReturnValueOnce({
+        fixesApplied: 1,
+        fixesSkipped: 0,
+        conflicts: [],
+        changes: [{ start: 0, end: 3, oldText: 'let', newText: 'const' }],
+        filePath: 'diff2.ts',
+      })
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true })
+      const logs: string[] = []
+      cmd.log = vi.fn((msg: string) => logs.push(msg))
+      await cmd.run()
+
+      expect(formatDiffForConsole).toHaveBeenCalledWith(mockDiff)
+      expect(logs.some((l) => l.includes('--- diff2.ts'))).toBe(true)
+    })
+
+    it('does not call diff renderer in non-dry-run mode', async () => {
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('nodiff.ts')])
+      vi.mocked(applyFixesToFile).mockReturnValueOnce(
+        createMockFixReport({ fixesApplied: 1 }),
+      )
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': false })
+      cmd.log = vi.fn()
+      await cmd.run()
+
+      expect(renderTextChangesAsDiff).not.toHaveBeenCalled()
+      expect(formatDiffForConsole).not.toHaveBeenCalled()
+    })
+
+    it('does not call diff renderer when no changes in dry-run', async () => {
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('nochg.ts')])
+      vi.mocked(applyFixesToFile).mockReturnValueOnce(
+        createMockFixReport({ fixesApplied: 0 }),
+      )
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true })
+      cmd.log = vi.fn()
+      await cmd.run()
+
+      expect(renderTextChangesAsDiff).not.toHaveBeenCalled()
+    })
+
+    it('skips diff output when formatDiffForConsole returns empty', async () => {
+      vi.mocked(renderTextChangesAsDiff).mockReturnValueOnce({ filePath: 'empty.ts', hunks: [] })
+      vi.mocked(formatDiffForConsole).mockReturnValueOnce('')
+
+      vi.mocked(discoverFiles).mockResolvedValueOnce([createMockFile('empty.ts')])
+      vi.mocked(applyFixesToFile).mockReturnValueOnce({
+        fixesApplied: 1,
+        fixesSkipped: 0,
+        conflicts: [],
+        changes: [{ start: 0, end: 1, oldText: 'a', newText: 'b' }],
+        filePath: 'empty.ts',
+      })
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true })
+      const logs: string[] = []
+      cmd.log = vi.fn((msg: string) => logs.push(msg))
+      await cmd.run()
+
+      expect(logs.some((l) => l.includes('---') && l.includes('+++'))).toBe(false)
+    })
+
+    it('outputs diff preview for multiple files with changes', async () => {
+      vi.mocked(formatDiffForConsole)
+        .mockReturnValueOnce('--- a.ts\n+++ a.ts (fix preview)\n+ const x')
+        .mockReturnValueOnce('--- b.ts\n+++ b.ts (fix preview)\n+ const y')
+
+      vi.mocked(discoverFiles).mockResolvedValueOnce([
+        createMockFile('a.ts'),
+        createMockFile('b.ts'),
+      ])
+      vi.mocked(applyFixesToFile)
+        .mockReturnValueOnce({
+          fixesApplied: 1,
+          fixesSkipped: 0,
+          conflicts: [],
+          changes: [{ start: 0, end: 3, oldText: 'let', newText: 'const' }],
+          filePath: 'a.ts',
+        })
+        .mockReturnValueOnce({
+          fixesApplied: 2,
+          fixesSkipped: 0,
+          conflicts: [],
+          changes: [{ start: 0, end: 3, oldText: 'let', newText: 'const' }],
+          filePath: 'b.ts',
+        })
+
+      const cmd = createCommandWithMockedParse(FixCommand, { 'dry-run': true })
+      const logs: string[] = []
+      cmd.log = vi.fn((msg: string) => logs.push(msg))
+      await cmd.run()
+
+      expect(logs.some((l) => l.includes('--- a.ts'))).toBe(true)
+      expect(logs.some((l) => l.includes('--- b.ts'))).toBe(true)
     })
   })
 })

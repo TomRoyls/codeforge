@@ -66,6 +66,7 @@ const {
     mockLoadCommandConfig: vi.fn().mockResolvedValue({}),
     mockNormalizeFlags: vi.fn().mockReturnValue({
       cacheResults: true,
+      changedMode: undefined,
       ciMode: false,
       concurrency: 4,
       dryRun: false,
@@ -184,6 +185,40 @@ vi.mock('../../../src/utils/git-helpers.js', () => ({
   isGitRepository: mockIsGitRepository,
   getGitRoot: mockGetGitRoot,
   getStagedFiles: mockGetStagedFiles,
+  getChangedFiles: vi.fn().mockReturnValue([]),
+  getDefaultBranch: vi.fn().mockReturnValue('main'),
+}))
+
+vi.mock('../../../src/commands/analyze-git-helpers.js', () => ({
+  resolveTargetFiles: vi.fn().mockImplementation(async (options: { changedMode: string | undefined; cwd: string; files: string[]; ignore: string[]; stagedMode: boolean }) => {
+    if (options.stagedMode) {
+      if (!mockIsGitRepository(options.cwd)) {
+        return { error: 'Not a git repository. --staged requires a git repository.', files: [] }
+      }
+      const gitRoot = mockGetGitRoot(options.cwd)
+      if (!gitRoot) {
+        return { error: 'Could not determine git repository root.', files: [] }
+      }
+      const stagedFilePaths = mockGetStagedFiles(gitRoot)
+      if (stagedFilePaths.length === 0) {
+        return { files: [] }
+      }
+      const { existsSync } = await import('node:fs')
+      const path = await import('path')
+      return {
+        files: stagedFilePaths
+          .filter((filePath: string) => existsSync(path.join(gitRoot, filePath)))
+          .map((filePath: string) => ({
+            absolutePath: path.join(gitRoot, filePath),
+            path: filePath,
+          })),
+      }
+    }
+    if (options.changedMode !== undefined) {
+      return { files: [] }
+    }
+    return { files: await mockDiscoverFiles({ cwd: options.cwd, ignore: options.ignore, patterns: options.files }) }
+  }),
 }))
 
 vi.mock('../../../src/rules/index.js', () => ({
@@ -287,6 +322,7 @@ describe('Analyze Command', () => {
     mockGetEnabledRules.mockReturnValue([])
     mockNormalizeFlags.mockReturnValue({
       cacheResults: true,
+      changedMode: undefined,
       ciMode: false,
       concurrency: 4,
       dryRun: false,
@@ -420,6 +456,7 @@ describe('Analyze Command', () => {
       expect(flagNames).toContain('ignore')
       expect(flagNames).toContain('ignore-path')
       expect(flagNames).toContain('staged')
+      expect(flagNames).toContain('changed')
       expect(flagNames).toContain('ext')
     })
 
@@ -449,8 +486,8 @@ describe('Analyze Command', () => {
       expect(flagNames).toContain('config')
     })
 
-    it('has exactly 22 flags', () => {
-      expect(Object.keys(Analyze.flags).length).toBe(22)
+    it('has exactly 23 flags', () => {
+      expect(Object.keys(Analyze.flags).length).toBe(23)
     })
   })
 
@@ -472,6 +509,10 @@ describe('Analyze Command', () => {
 
     it('staged defaults to false', () => {
       expect(Analyze.flags.staged.default).toBe(false)
+    })
+
+    it('changed has no default', () => {
+      expect(Analyze.flags.changed.default).toBeUndefined()
     })
 
     it('format defaults to console', () => {
@@ -700,6 +741,11 @@ describe('Analyze Command', () => {
     it('has example for --staged flag', () => {
       const cmds = Analyze.examples.map((e: { command: string }) => e.command)
       expect(cmds.some((c: string) => c.includes('--staged'))).toBe(true)
+    })
+
+    it('has example for --changed flag', () => {
+      const cmds = Analyze.examples.map((e: { command: string }) => e.command)
+      expect(cmds.some((c: string) => c.includes('--changed'))).toBe(true)
     })
 
     it('has example for --files flag', () => {
@@ -1661,6 +1707,7 @@ describe('Analyze Command', () => {
     it('passes json format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1682,6 +1729,7 @@ describe('Analyze Command', () => {
     it('passes html format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1703,6 +1751,7 @@ describe('Analyze Command', () => {
     it('passes junit format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1724,6 +1773,7 @@ describe('Analyze Command', () => {
     it('passes sarif format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1745,6 +1795,7 @@ describe('Analyze Command', () => {
     it('passes markdown format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1766,6 +1817,7 @@ describe('Analyze Command', () => {
     it('passes gitlab format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1787,6 +1839,7 @@ describe('Analyze Command', () => {
     it('passes csv format to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1808,6 +1861,7 @@ describe('Analyze Command', () => {
     it('passes output path to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -1836,6 +1890,7 @@ describe('Analyze Command', () => {
     it('passes format json to Reporter in CI mode', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: true,
         concurrency: 4,
         dryRun: false,
@@ -1857,6 +1912,7 @@ describe('Analyze Command', () => {
     it('disables colors in CI mode', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: true,
         concurrency: 4,
         dryRun: false,
@@ -1878,6 +1934,7 @@ describe('Analyze Command', () => {
     it('forces quiet in CI mode', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: true,
         concurrency: 4,
         dryRun: false,
@@ -1899,6 +1956,7 @@ describe('Analyze Command', () => {
     it('disables verbose in CI mode', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: true,
         concurrency: 4,
         dryRun: false,
@@ -1920,6 +1978,7 @@ describe('Analyze Command', () => {
     it('keeps non-console format in CI mode', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: true,
         concurrency: 4,
         dryRun: false,
@@ -2055,6 +2114,7 @@ describe('Analyze Command', () => {
       mockRunRules.mockReturnValue([createMockViolation({ severity: 'error' })])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2081,6 +2141,7 @@ describe('Analyze Command', () => {
       mockRunRules.mockReturnValue([createMockViolation({ severity: 'warning' })])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2111,6 +2172,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2155,6 +2217,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2190,6 +2253,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2225,6 +2289,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2253,6 +2318,7 @@ describe('Analyze Command', () => {
       const { logger, LogLevel } = await import('../../../src/utils/logger.js')
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2276,6 +2342,7 @@ describe('Analyze Command', () => {
       const { logger, LogLevel } = await import('../../../src/utils/logger.js')
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2303,6 +2370,7 @@ describe('Analyze Command', () => {
     it('creates ResultCache when cacheResults is true', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: true,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2325,6 +2393,7 @@ describe('Analyze Command', () => {
       mockResultCacheCtor.mockClear()
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2370,6 +2439,7 @@ describe('Analyze Command', () => {
     it('passes color flag to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2391,6 +2461,7 @@ describe('Analyze Command', () => {
     it('passes --no-color to Reporter', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2458,6 +2529,7 @@ describe('Analyze Command', () => {
     it('does not apply fixes when shouldFix is false', async () => {
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2480,6 +2552,7 @@ describe('Analyze Command', () => {
       mockRunRules.mockReturnValue([createMockViolation({ severity: 'warning' })])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -2502,6 +2575,7 @@ describe('Analyze Command', () => {
       mockRunRules.mockReturnValue([])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -3391,6 +3465,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -3428,6 +3503,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,
@@ -3462,6 +3538,7 @@ describe('Analyze Command', () => {
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
+        changedMode: undefined,
         ciMode: false,
         concurrency: 4,
         dryRun: false,

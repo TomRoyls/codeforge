@@ -21,7 +21,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 ### Developer Experience
 
-- [ ] Auto-fix suggestions with diff preview
+- [x] Auto-fix suggestions with diff preview
 - [x] Rule severity profiles (strict, moderate, lenient)
 - [x] Suppressions with inline comments
 - [x] Baseline comparisons for regression detection

@@ -24,6 +24,12 @@ import chalk from 'chalk'
 import { ConfigCache } from '../config/cache.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
+import {
+  buildWatcherConfig,
+  formatFileResult,
+  formatStartupMessage,
+  resolveRequestedRules,
+} from './watch-helpers.js'
 import { loadCommandConfig, resolvePatterns, setupRuleRegistryLazy } from '../utils/command-helpers.js'
 import { DEFAULT_DEBOUNCE_MS } from '../utils/constants.js'
 import { CLIError } from '../utils/errors.js'
@@ -100,28 +106,27 @@ export default class Watch extends Command {
       const config = await loadCommandConfig(flags, this.configCache)
       const patterns = resolvePatterns(args.files, config.files)
       const ignore = config.ignore ?? []
-      const requestedRules = flags.rules?.split(',').map((r) => r.trim())
+      const requestedRules = resolveRequestedRules(flags.rules)
 
       const cwd = process.cwd()
 
-      this.log(chalk.blue('\n👁️  Starting file watcher...\n'))
-      this.log(chalk.dim(`  Watching: ${patterns.join(', ') || 'current directory'}`))
-      this.log(chalk.dim(`  Debounce: ${flags.debounce}ms`))
-      this.log(chalk.dim('  Press Ctrl+C to stop\n'))
+      formatStartupMessage(patterns, flags.debounce, (msg) => this.log(msg))
 
-      // Setup signal handlers for graceful shutdown
       process.on('SIGINT', () => this.handleShutdown())
       process.on('SIGTERM', () => this.handleShutdown())
 
-      // Initialize parser once for the watch session
       this.parser = new Parser()
       await this.parser.initialize()
 
-      // Create and configure watcher
-      this.watcher = new FileWatcher({
+      const watcherConfig = buildWatcherConfig({
         debounceMs: flags.debounce,
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'],
         ignorePatterns: ignore,
+      })
+
+      this.watcher = new FileWatcher({
+        debounceMs: watcherConfig.debounceMs,
+        extensions: watcherConfig.extensions,
+        ignorePatterns: watcherConfig.ignorePatterns,
       })
 
       // Handle file changes
@@ -185,43 +190,14 @@ export default class Watch extends Command {
 
       const violations = registry.runRules(parseResult.sourceFile)
 
-      const relativePath = filePath.replace(process.cwd(), '.').replace(/^\.\//, '')
-
-      if (violations.length === 0) {
-        this.log(chalk.green(`  ✓ ${relativePath}`))
-      } else {
-        let errors = 0
-        let warnings = 0
-        for (const v of violations) {
-          if (v.severity === 'error') errors++
-          else if (v.severity === 'warning') warnings++
-        }
-
-        this.log(chalk.yellow(`  ⚠ ${relativePath} - ${errors} error(s), ${warnings} warning(s)`))
-
-        // Show first few violations
-        for (const violation of violations.slice(0, 3)) {
-          const severity =
-            violation.severity === 'error' ? chalk.red('error') : chalk.yellow('warn')
-          this.log(
-            chalk.dim(`      ${violation.range.start.line}:${violation.range.start.column} `) +
-              `${severity} ${violation.ruleId} - ${violation.message}`,
-          )
-        }
-
-        if (violations.length > 3) {
-          this.log(chalk.dim(`      ... and ${violations.length - 3} more`))
-        }
-      }
+      formatFileResult(filePath, violations, process.cwd(), (msg) => this.log(msg))
     } catch {
       // Ignore parse errors during watch - file might be mid-edit
     } finally {
       this.isRunning = false
 
-      // Process pending analysis if one came in while we were running
       if (this.pendingAnalysis) {
         this.pendingAnalysis = false
-        // Schedule next analysis on next tick to avoid stack overflow
         setImmediate(() => {
           this.analyzeFile(filePath, requestedRules, _verbose).catch((error) => {
             logger.debug('Failed to schedule analysis:', error)
