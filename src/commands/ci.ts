@@ -1,36 +1,15 @@
-/**
- * Ci command - generates CI/CD configuration files.
- *
- * Creates CI/CD configuration files for GitHub Actions and GitLab CI that
- * integrate CodeForge analysis into continuous integration pipelines.
- *
- * Features:
- * - GitHub Actions workflow generation
- * - GitLab CI configuration generation
- * - SARIF output for GitHub Code Scanning
- * - GitLab Code Quality report generation
- * - Multi-platform support (all, github, gitlab)
- *
- * @example
- * ```bash
- * codeforge ci
- * codeforge ci --platform github
- * codeforge ci --output ./ci
- * ```
- */
 import { Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
-import { existsSync, statSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
 
-type Platform = 'all' | 'github' | 'gitlab'
-
-interface CiOptions {
-  force: boolean
-  output: string
-  platform: Platform
-}
+import {
+  displayNextSteps,
+  generateGitHubActionsContent,
+  generateGitLabCiContent,
+  resolveCiOptions,
+  validateOutputDir,
+} from './ci-helpers.js'
 
 export default class Ci extends Command {
   static override description =
@@ -81,20 +60,12 @@ export default class Ci extends Command {
   async run(): Promise<void> {
     const { flags } = await this.parse(Ci)
 
-    const options: CiOptions = {
-      force: flags.force,
-      output: flags.output,
-      platform: flags.platform as Platform,
-    }
-
+    const options = resolveCiOptions(flags)
     const outputDir = resolve(options.output)
 
-    if (!existsSync(outputDir)) {
-      this.error(`Output directory does not exist: ${outputDir}`)
-    }
-
-    if (!statSync(outputDir).isDirectory()) {
-      this.error(`Output path is not a directory: ${outputDir}`)
+    const validation = validateOutputDir(outputDir)
+    if (!validation.valid) {
+      this.error(validation.error!)
     }
 
     if (options.platform === 'all' || options.platform === 'github') {
@@ -105,11 +76,15 @@ export default class Ci extends Command {
       await this.generateGitLabCi(outputDir, options.force)
     }
 
-    this.log('')
-    this.log(chalk.bold('Next steps:'))
-    this.log(chalk.gray('  1. Review and customize the generated CI configuration'))
-    this.log(chalk.gray('  2. Ensure codeforge is installed in your CI environment'))
-    this.log(chalk.gray('  3. Commit the changes to your repository'))
+    displayNextSteps((msg) => this.log(msg))
+  }
+
+  generateGitHubActionsContent(): string {
+    return generateGitHubActionsContent()
+  }
+
+  generateGitLabCiContent(): string {
+    return generateGitLabCiContent()
   }
 
   private async generateGitHubActions(outputDir: string, force: boolean): Promise<void> {
@@ -118,9 +93,7 @@ export default class Ci extends Command {
 
     if (!force && existsSync(workflowPath)) {
       this.log(
-        chalk.yellow(
-          `Skipping .github/workflows/codeforge.yml (already exists). Use --force to overwrite.`,
-        ),
+        `Skipping .github/workflows/codeforge.yml (already exists). Use --force to overwrite.`,
       )
       return
     }
@@ -136,56 +109,14 @@ export default class Ci extends Command {
       )
     }
 
-    this.log(chalk.green(`✓ Created .github/workflows/codeforge.yml`))
-  }
-
-  private generateGitHubActionsContent(): string {
-    return `name: CodeForge Analysis
-
-on:
-  push:
-    branches: [main, master, develop]
-  pull_request:
-    branches: [main, master, develop]
-
-permissions:
-  contents: read
-  security-events: write
-
-jobs:
-  analyze:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run CodeForge analysis
-        run: npx codeforge analyze --format sarif --output results.sarif
-
-      - name: Upload SARIF to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: results.sarif
-          category: codeforge
-`
+    this.log(`✓ Created .github/workflows/codeforge.yml`)
   }
 
   private async generateGitLabCi(outputDir: string, force: boolean): Promise<void> {
     const gitlabCiPath = join(outputDir, '.gitlab-ci.yml')
 
     if (!force && existsSync(gitlabCiPath)) {
-      this.log(chalk.yellow(`Skipping .gitlab-ci.yml (already exists). Use --force to overwrite.`))
+      this.log(`Skipping .gitlab-ci.yml (already exists). Use --force to overwrite.`)
       return
     }
 
@@ -200,32 +131,6 @@ jobs:
       )
     }
 
-    this.log(chalk.green(`✓ Created .gitlab-ci.yml`))
-  }
-
-  private generateGitLabCiContent(): string {
-    return `stages:
-  - analyze
-
-codeforge:
-  stage: analyze
-  image: node:20
-  cache:
-    paths:
-      - node_modules/
-  script:
-    - npm ci
-    - npx codeforge analyze --format gitlab --output gl-code-quality-report.json
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-    expire_in: 1 week
-  only:
-    - main
-    - master
-    - develop
-  except:
-    - tags
-`
+    this.log(`✓ Created .gitlab-ci.yml`)
   }
 }

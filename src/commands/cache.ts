@@ -1,34 +1,13 @@
-/**
- * Cache command - manages CodeForge cache.
- *
- * Provides cache management functionality including status display and cache clearing,
- * with support for custom cache paths.
- *
- * Features:
- * - Cache status display with size information
- * - Cache clearing functionality
- * - Custom cache path support
- * - Size formatting (B, KB, MB, GB)
- *
- * @example
- * ```bash
- * codeforge cache
- * codeforge cache status
- * codeforge cache clear
- * codeforge cache --path ./custom-cache
- * ```
- */
 import { Args, Command, Flags } from '@oclif/core'
-import chalk from 'chalk'
 import * as fs from 'node:fs/promises'
 import { join } from 'node:path'
 
-type CacheAction = 'clear' | 'status'
-
-interface CacheOptions {
-  action: CacheAction
-  path: string
-}
+import {
+  displayCacheStatus,
+  displayClearResult,
+  formatSize,
+  resolveCacheOptions,
+} from './cache-helpers.js'
 
 export default class Cache extends Command {
   static override args = {
@@ -90,17 +69,7 @@ export default class Cache extends Command {
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Cache)
 
-    let action: CacheAction = args.action as CacheAction
-    if (flags.clear) {
-      action = 'clear'
-    } else if (flags.status) {
-      action = 'status'
-    }
-
-    const options: CacheOptions = {
-      action,
-      path: flags.path ?? this.getDefaultCachePath(),
-    }
+    const options = resolveCacheOptions(args, flags, this.getDefaultCachePath())
 
     await (options.action === 'clear'
       ? this.clearCache(options.path)
@@ -111,14 +80,14 @@ export default class Cache extends Command {
     const stats = await this.getCacheStats(cachePath)
 
     if (stats.entries === 0) {
-      this.log(chalk.yellow('Cache is already empty'))
+      this.log('')
+      this.log('Cache is already empty')
       return
     }
 
     await this.doClear(cachePath)
 
-    this.log(chalk.green('✓ Cache cleared'))
-    this.log(chalk.gray(`  Removed ${stats.entries} entries (${this.formatSize(stats.size)})`))
+    displayClearResult(stats, (...args) => this.log(...args))
   }
 
   private async doClear(cachePath: string): Promise<void> {
@@ -130,20 +99,7 @@ export default class Cache extends Command {
     }
   }
 
-  private formatSize(bytes: number): string {
-    const units = ['B', 'KB', 'MB', 'GB']
-    let size = bytes
-    let unitIndex = 0
-
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024
-      unitIndex++
-    }
-
-    return `${size.toFixed(1)} ${units[unitIndex]}`
-  }
-
-  private async getCacheStats(cachePath: string): Promise<{ entries: number; size: number }> {
+  async getCacheStats(cachePath: string): Promise<{ entries: number; size: number }> {
     try {
       const files = await fs.readdir(cachePath)
       const stats = await Promise.all(files.map((file) => fs.stat(join(cachePath, file))))
@@ -159,20 +115,12 @@ export default class Cache extends Command {
     return join(process.cwd(), '.codeforge', 'cache')
   }
 
+  formatSize(bytes: number): string {
+    return formatSize(bytes)
+  }
+
   private async showStatus(cachePath: string): Promise<void> {
     const stats = await this.getCacheStats(cachePath)
-
-    this.log(chalk.bold('Cache Status'))
-    this.log('')
-    this.log(chalk.gray('  Path:'), cachePath)
-    this.log(chalk.gray('  Entries:'), stats.entries.toString())
-    this.log(chalk.gray('  Size:'), this.formatSize(stats.size))
-    this.log('')
-
-    if (stats.entries === 0) {
-      this.log(chalk.yellow('Cache is empty'))
-    } else {
-      this.log(chalk.green('Cache is active'))
-    }
+    displayCacheStatus(stats, cachePath, (...args) => this.log(...args))
   }
 }
