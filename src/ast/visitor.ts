@@ -264,38 +264,54 @@ export function traverseASTMultiple(
 
   const filePath = sourceFile.getFilePath()
 
-  const createChildContext = (parent: Node, currentDepth: number): VisitorContext => ({
+  // Pre-filter visitors by callback type to skip iteration over visitors
+  // that don't implement a given callback
+  const visitNodeVisitors = visitors.filter((v) => v.visitNode !== undefined)
+  const visitSourceFileVisitors = visitors.filter((v) => v.visitSourceFile !== undefined)
+  const visitFunctionVisitors = visitors.filter((v) => v.visitFunction !== undefined)
+  const visitIfStatementVisitors = visitors.filter((v) => v.visitIfStatement !== undefined)
+  const visitLoopVisitors = visitors.filter((v) => v.visitLoop !== undefined)
+  const visitSwitchVisitors = visitors.filter((v) => v.visitSwitch !== undefined)
+  const visitCaseVisitors = visitors.filter((v) => v.visitCase !== undefined)
+  const visitCatchVisitors = visitors.filter((v) => v.visitCatch !== undefined)
+  const visitConditionalVisitors = visitors.filter((v) => v.visitConditional !== undefined)
+  const visitBinaryExpressionVisitors = visitors.filter((v) => v.visitBinaryExpression !== undefined)
+  const exitNodeVisitors = visitors.filter((v) => v.exitNode !== undefined)
+
+  // Single reusable context — mutated per node instead of allocating a new object each time
+  const ctx: VisitorContext = {
     addViolation(violation: RuleViolation) {
       violations.push(violation)
     },
-    depth: currentDepth,
+    depth: 0,
     getFilePath: () => filePath,
-    parent,
+    parent: undefined as Node | undefined,
     sourceFile,
-  })
+  }
 
   const MAX_TRAVERSAL_DEPTH = 200
 
   function visit(node: Node, depth: number): void {
     if (depth > MAX_TRAVERSAL_DEPTH) return
 
-    const nodeContext = createChildContext(node, depth)
+    ctx.parent = node
+    ctx.depth = depth
 
-    for (const visitor of visitors) {
-      visitor.visitNode?.(node, nodeContext)
+    for (let i = 0; i < visitNodeVisitors.length; i++) {
+      visitNodeVisitors[i]!.visitNode!(node, ctx)
     }
 
     if (Node.isSourceFile(node)) {
-      for (const visitor of visitors) {
-        visitor.visitSourceFile?.(node, nodeContext)
+      for (let i = 0; i < visitSourceFileVisitors.length; i++) {
+        visitSourceFileVisitors[i]!.visitSourceFile!(node, ctx)
       }
     } else if (isFunctionLike(node)) {
-      for (const visitor of visitors) {
-        visitor.visitFunction?.(node, nodeContext)
+      for (let i = 0; i < visitFunctionVisitors.length; i++) {
+        visitFunctionVisitors[i]!.visitFunction!(node, ctx)
       }
     } else if (Node.isIfStatement(node)) {
-      for (const visitor of visitors) {
-        visitor.visitIfStatement?.(node, nodeContext)
+      for (let i = 0; i < visitIfStatementVisitors.length; i++) {
+        visitIfStatementVisitors[i]!.visitIfStatement!(node, ctx)
       }
     } else if (
       Node.isForStatement(node) ||
@@ -304,28 +320,28 @@ export function traverseASTMultiple(
       Node.isWhileStatement(node) ||
       Node.isDoStatement(node)
     ) {
-      for (const visitor of visitors) {
-        visitor.visitLoop?.(node, nodeContext)
+      for (let i = 0; i < visitLoopVisitors.length; i++) {
+        visitLoopVisitors[i]!.visitLoop!(node, ctx)
       }
     } else if (Node.isSwitchStatement(node)) {
-      for (const visitor of visitors) {
-        visitor.visitSwitch?.(node, nodeContext)
+      for (let i = 0; i < visitSwitchVisitors.length; i++) {
+        visitSwitchVisitors[i]!.visitSwitch!(node, ctx)
       }
     } else if (Node.isCaseClause(node) || Node.isDefaultClause(node)) {
-      for (const visitor of visitors) {
-        visitor.visitCase?.(node, nodeContext)
+      for (let i = 0; i < visitCaseVisitors.length; i++) {
+        visitCaseVisitors[i]!.visitCase!(node, ctx)
       }
     } else if (Node.isCatchClause(node)) {
-      for (const visitor of visitors) {
-        visitor.visitCatch?.(node, nodeContext)
+      for (let i = 0; i < visitCatchVisitors.length; i++) {
+        visitCatchVisitors[i]!.visitCatch!(node, ctx)
       }
     } else if (Node.isConditionalExpression(node)) {
-      for (const visitor of visitors) {
-        visitor.visitConditional?.(node, nodeContext)
+      for (let i = 0; i < visitConditionalVisitors.length; i++) {
+        visitConditionalVisitors[i]!.visitConditional!(node, ctx)
       }
     } else if (Node.isBinaryExpression(node)) {
-      for (const visitor of visitors) {
-        visitor.visitBinaryExpression?.(node, nodeContext)
+      for (let i = 0; i < visitBinaryExpressionVisitors.length; i++) {
+        visitBinaryExpressionVisitors[i]!.visitBinaryExpression!(node, ctx)
       }
     }
 
@@ -333,8 +349,8 @@ export function traverseASTMultiple(
       visit(child, depth + 1)
     })
 
-    for (const visitor of visitors) {
-      visitor.exitNode?.(node, nodeContext)
+    for (let i = 0; i < exitNodeVisitors.length; i++) {
+      exitNodeVisitors[i]!.exitNode!(node, ctx)
     }
   }
 
