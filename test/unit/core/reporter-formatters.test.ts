@@ -4,12 +4,14 @@ import type { RuleViolation } from '../../../src/ast/visitor.js'
 import {
   COLORS,
   formatConsole,
+  formatCsv,
   formatJson,
   formatMarkdown,
   formatHtml,
   formatJunit,
   formatSarif,
   formatGitlab,
+  formatSonarqube,
 } from '../../../src/core/reporter-formatters.js'
 
 function createViolation(overrides: Partial<RuleViolation> = {}): RuleViolation {
@@ -4232,5 +4234,195 @@ describe('additional edge cases', () => {
     expect(output).toContain('Suggestion: Consider this')
     const sugCount = (output.match(/Suggestion:/g) || []).length
     expect(sugCount).toBe(2)
+  })
+
+  describe('formatCsv', () => {
+    test('produces CSV with headers', () => {
+      const report = createMockReport({
+        files: [
+          {
+            filePath: 'src/a.ts',
+            violations: [createViolation({ message: 'bad code' })],
+          },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const output = formatCsv(report)
+      const lines = output.split('\n')
+      expect(lines[0]).toBe('filePath,line,column,endLine,endColumn,severity,ruleId,message,suggestion')
+      expect(lines[1]).toContain('src/a.ts')
+      expect(lines[1]).toContain('error')
+      expect(lines[1]).toContain('test-rule')
+    })
+
+    test('escapes commas in messages', () => {
+      const report = createMockReport({
+        files: [
+          {
+            filePath: 'src/a.ts',
+            violations: [createViolation({ message: 'has, comma' })],
+          },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const output = formatCsv(report)
+      expect(output).toContain('"has, comma"')
+    })
+
+    test('escapes quotes in messages', () => {
+      const report = createMockReport({
+        files: [
+          {
+            filePath: 'src/a.ts',
+            violations: [createViolation({ message: 'has "quotes"' })],
+          },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const output = formatCsv(report)
+      expect(output).toContain('"has ""quotes"""')
+    })
+
+    test('returns only headers for empty report', () => {
+      const report = createMockReport()
+      const output = formatCsv(report)
+      const lines = output.split('\n')
+      expect(lines).toHaveLength(1)
+      expect(lines[0]).toContain('filePath')
+    })
+
+    test('handles multiple files', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation()] },
+          { filePath: 'b.ts', violations: [createViolation()] },
+        ],
+        summary: { totalFiles: 2, totalViolations: 2, errors: 2, warnings: 0, info: 0, duration: 5 },
+      })
+      const output = formatCsv(report)
+      const lines = output.split('\n')
+      expect(lines).toHaveLength(3)
+    })
+  })
+
+  describe('formatSonarqube', () => {
+    test('produces valid SonarQube generic issue JSON', () => {
+      const report = createMockReport({
+        files: [
+          {
+            filePath: 'src/a.ts',
+            violations: [createViolation()],
+          },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const output = formatSonarqube(report)
+      const parsed = JSON.parse(output)
+      expect(parsed).toHaveProperty('issues')
+      expect(parsed.issues).toHaveLength(1)
+    })
+
+    test('maps error severity to CRITICAL', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation({ severity: 'error' })] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].severity).toBe('CRITICAL')
+    })
+
+    test('maps warning severity to MAJOR', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 0, warnings: 1, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].severity).toBe('MAJOR')
+    })
+
+    test('maps info severity to MINOR', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation({ severity: 'info' })] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 0, warnings: 0, info: 1, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].severity).toBe('MINOR')
+    })
+
+    test('maps error type to BUG', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation({ severity: 'error' })] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].type).toBe('BUG')
+    })
+
+    test('maps warning type to CODE_SMELL', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation({ severity: 'warning' })] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 0, warnings: 1, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].type).toBe('CODE_SMELL')
+    })
+
+    test('uses engineId CodeForge', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'a.ts', violations: [createViolation()] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].engineId).toBe('CodeForge')
+    })
+
+    test('converts 1-based columns to 0-based', () => {
+      const report = createMockReport({
+        files: [
+          {
+            filePath: 'a.ts',
+            violations: [createViolation({
+              range: {
+                start: { line: 10, column: 5 },
+                end: { line: 10, column: 15 },
+              },
+            })],
+          },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].primaryLocation.textRange.startColumn).toBe(4)
+      expect(parsed.issues[0].primaryLocation.textRange.endColumn).toBe(14)
+    })
+
+    test('returns empty issues for no violations', () => {
+      const report = createMockReport()
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues).toEqual([])
+    })
+
+    test('preserves file path', () => {
+      const report = createMockReport({
+        files: [
+          { filePath: 'src/deep/file.ts', violations: [createViolation()] },
+        ],
+        summary: { totalFiles: 1, totalViolations: 1, errors: 1, warnings: 0, info: 0, duration: 5 },
+      })
+      const parsed = JSON.parse(formatSonarqube(report))
+      expect(parsed.issues[0].primaryLocation.filePath).toBe('src/deep/file.ts')
+    })
   })
 })
