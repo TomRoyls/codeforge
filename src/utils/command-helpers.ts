@@ -119,16 +119,22 @@ export function normalizeFlags(flags: {
 
 export function filterFilesByExtension(
   files: DiscoveredFile[],
-  extensionString?: string,
+  extensionInput?: null | string | string[],
 ): DiscoveredFile[] {
-  if (!extensionString) {
+  let extensions: string[]
+
+  if (!extensionInput) {
     return files
   }
 
-  const extensions = extensionString
-    .split(',')
-    .map((e) => e.trim())
-    .filter(Boolean)
+  if (Array.isArray(extensionInput)) {
+    extensions = extensionInput
+  } else {
+    extensions = extensionInput
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean)
+  }
 
   if (extensions.length === 0) {
     return files
@@ -140,13 +146,13 @@ export function filterFilesByExtension(
   })
 }
 
-export interface ApplyFixesResult {
+interface ApplyFixesResult {
   fileFixReports?: import('../fix/types.js').FileFixReport[]
   fixesApplied: number
   fixesSkipped: number
 }
 
-export interface ApplyFixesOptions {
+interface ApplyFixesOptions {
   allViolations: import('../ast/visitor.js').RuleViolation[]
   concurrency: number
   discoveredFiles: DiscoveredFile[]

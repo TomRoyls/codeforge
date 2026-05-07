@@ -38,6 +38,7 @@ import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
   applyFixesToFiles,
   filterFilesByExtension,
+  getProfileSeverityOverrides,
   loadCommandConfig,
   normalizeFlags,
   setupRuleRegistryLazy,
@@ -167,6 +168,10 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --ignore-path .codeforgeignore',
       description: 'Use custom ignore file',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --profile strict',
+      description: 'Run with strict severity profile (all rules as errors)',
+    },
   ]
 
   static override flags = {
@@ -249,6 +254,12 @@ export default class Analyze extends Command {
       description: 'Minimum severity level to report (error, warning, info)',
       options: ['error', 'info', 'warning'],
     }),
+    profile: Flags.string({
+      char: 'p',
+      description:
+        'Use a severity profile to override rule severities (strict, moderate, lenient)',
+      options: ['strict', 'moderate', 'lenient'],
+    }),
     staged: Flags.boolean({
       default: false,
       description: 'Analyze only staged files in git',
@@ -326,9 +337,17 @@ export default class Analyze extends Command {
 
     analysisSpinner?.succeed('Analysis complete')
 
+    const profileName = flags.profile as 'lenient' | 'moderate' | 'strict' | undefined
+    const violationsToFilter = profileName
+      ? this.applyProfileOverrides(allViolations, profileName)
+      : allViolations
+
     const severityLevel = flags['severity-level'] as 'error' | 'info' | 'warning'
-    const filteredViolations = this.filterBySeverity(allViolations, severityLevel)
-    const filteredFileReports = this.filterFileReports(fileReports, severityLevel)
+    const filteredViolations = this.filterBySeverity(violationsToFilter, severityLevel)
+    const profiledFileReports = profileName
+      ? this.applyProfileOverridesToFileReports(fileReports, profileName)
+      : fileReports
+    const filteredFileReports = this.filterFileReports(profiledFileReports, severityLevel)
 
     if (normalized.shouldFix) {
       await this.runFixes({
@@ -673,6 +692,33 @@ export default class Analyze extends Command {
         }),
       }))
       .filter((report) => report.violations.length > 0)
+  }
+
+  private applyProfileOverrides(
+    violations: RuleViolation[],
+    profile: 'lenient' | 'moderate' | 'strict',
+  ): RuleViolation[] {
+    const overrides = getProfileSeverityOverrides(profile)
+    if (Object.keys(overrides).length === 0) return violations
+    return violations.map((v) => {
+      const override = overrides[v.ruleId]
+      return override ? { ...v, severity: override } : v
+    })
+  }
+
+  private applyProfileOverridesToFileReports(
+    reports: FileReport[],
+    profile: 'lenient' | 'moderate' | 'strict',
+  ): FileReport[] {
+    const overrides = getProfileSeverityOverrides(profile)
+    if (Object.keys(overrides).length === 0) return reports
+    return reports.map((report) => ({
+      ...report,
+      violations: report.violations.map((v) => {
+        const override = overrides[v.ruleId]
+        return override ? { ...v, severity: override } : v
+      }),
+    }))
   }
 
   private generateSummary(

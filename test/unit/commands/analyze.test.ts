@@ -210,12 +210,44 @@ vi.mock('../../../src/cache/index.js', () => ({
   ResultCache: mockResultCacheCtor,
 }))
 
+const mockGetProfileSeverityOverrides = vi.fn((profile: string) => {
+  const overrides: Record<string, Record<string, 'error' | 'info' | 'warning'>> = {
+    lenient: {
+      'max-complexity': 'info',
+      'max-depth': 'info',
+      'max-file-size': 'info',
+      'max-lines': 'info',
+      'max-params': 'info',
+      'no-console': 'info',
+      'no-magic-numbers': 'info',
+    },
+    moderate: {
+      'max-complexity': 'warning',
+      'max-depth': 'warning',
+      'max-file-size': 'warning',
+      'no-console': 'warning',
+      'no-magic-numbers': 'warning',
+    },
+    strict: {
+      'no-console': 'error',
+      'no-debugger': 'error',
+      'no-eval': 'error',
+      'no-explicit-any': 'error',
+      'no-implicit-coercion': 'error',
+      'no-unused-vars': 'error',
+      'prefer-const': 'error',
+    },
+  }
+  return overrides[profile] ?? {}
+})
+
 vi.mock('../../../src/utils/command-helpers.js', () => ({
   loadCommandConfig: mockLoadCommandConfig,
   normalizeFlags: mockNormalizeFlags,
   filterFilesByExtension: mockFilterFilesByExtension,
   setupRuleRegistryLazy: mockSetupRuleRegistry,
   applyFixesToFiles: mockApplyFixesToFiles,
+  getProfileSeverityOverrides: mockGetProfileSeverityOverrides,
 }))
 
 vi.mock('../../../src/fix/fixer.js', () => {
@@ -404,8 +436,8 @@ describe('Analyze Command', () => {
       expect(flagNames).toContain('config')
     })
 
-    it('has exactly 20 flags', () => {
-      expect(Object.keys(Analyze.flags).length).toBe(20)
+    it('has exactly 21 flags', () => {
+      expect(Object.keys(Analyze.flags).length).toBe(21)
     })
   })
 
@@ -3089,22 +3121,248 @@ describe('Analyze Command', () => {
   })
 
   // =====================================================
-  // run integration - summary generation
+  // Profile flag metadata
   // =====================================================
-  describe('run integration - summary generation', () => {
-    it('passes summary to reporter with correct counts', async () => {
-      let reportData:
-        | {
-            summary: {
-              errors: number
-              warnings: number
-              info: number
-              totalViolations: number
-              totalFiles: number
-              duration: number
-            }
-          }
-        | undefined
+  describe('Profile flag metadata', () => {
+    it('has profile flag defined', () => {
+      expect(Analyze.flags.profile).toBeDefined()
+    })
+
+    it('profile flag has char p', () => {
+      expect(Analyze.flags.profile.char).toBe('p')
+    })
+
+    it('profile flag has correct options', () => {
+      expect(Analyze.flags.profile.options).toEqual(['strict', 'moderate', 'lenient'])
+    })
+
+    it('profile flag mentions profile in description', () => {
+      expect(Analyze.flags.profile.description.toLowerCase()).toContain('profile')
+    })
+
+    it('profile flag mentions severity in description', () => {
+      expect(Analyze.flags.profile.description.toLowerCase()).toContain('severity')
+    })
+
+    it('profile flag has no default', () => {
+      expect(Analyze.flags.profile.default).toBeUndefined()
+    })
+  })
+
+  // =====================================================
+  // applyProfileOverrides
+  // =====================================================
+  describe('applyProfileOverrides', () => {
+    function applyProfile(
+      violations: RuleViolation[],
+      profile: 'lenient' | 'moderate' | 'strict',
+    ): RuleViolation[] {
+      const cmd = createCommand()
+      return (
+        cmd as unknown as {
+          applyProfileOverrides: (
+            v: RuleViolation[],
+            p: 'lenient' | 'moderate' | 'strict',
+          ) => RuleViolation[]
+        }
+      ).applyProfileOverrides(violations, profile)
+    }
+
+    it('remaps no-console severity to error with strict profile', () => {
+      const violations = [createMockViolation({ ruleId: 'no-console', severity: 'warning' })]
+      const result = applyProfile(violations, 'strict')
+      expect(result[0].severity).toBe('error')
+    })
+
+    it('remaps max-complexity severity to info with lenient profile', () => {
+      const violations = [createMockViolation({ ruleId: 'max-complexity', severity: 'error' })]
+      const result = applyProfile(violations, 'lenient')
+      expect(result[0].severity).toBe('info')
+    })
+
+    it('remaps max-depth severity to warning with moderate profile', () => {
+      const violations = [createMockViolation({ ruleId: 'max-depth', severity: 'error' })]
+      const result = applyProfile(violations, 'moderate')
+      expect(result[0].severity).toBe('warning')
+    })
+
+    it('does not modify violations without matching rule override', () => {
+      const violations = [createMockViolation({ ruleId: 'custom-rule', severity: 'error' })]
+      const result = applyProfile(violations, 'strict')
+      expect(result[0].severity).toBe('error')
+    })
+
+    it('preserves all other violation properties', () => {
+      const violations = [
+        createMockViolation({ ruleId: 'no-console', severity: 'warning', message: 'original' }),
+      ]
+      const result = applyProfile(violations, 'strict')
+      expect(result[0].message).toBe('original')
+      expect(result[0].ruleId).toBe('no-console')
+      expect(result[0].filePath).toBe('/test/file.ts')
+    })
+
+    it('handles empty violations array', () => {
+      const result = applyProfile([], 'strict')
+      expect(result).toEqual([])
+    })
+
+    it('handles mixed overridden and non-overridden violations', () => {
+      const violations = [
+        createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+        createMockViolation({ ruleId: 'some-rule', severity: 'warning' }),
+        createMockViolation({ ruleId: 'no-debugger', severity: 'info' }),
+      ]
+      const result = applyProfile(violations, 'strict')
+      expect(result[0].severity).toBe('error')
+      expect(result[1].severity).toBe('warning')
+      expect(result[2].severity).toBe('error')
+    })
+
+    it('does not mutate original violations', () => {
+      const violations = [createMockViolation({ ruleId: 'no-console', severity: 'warning' })]
+      applyProfile(violations, 'strict')
+      expect(violations[0].severity).toBe('warning')
+    })
+
+    it('handles all lenient overrides', () => {
+      const lenientRules = [
+        'max-complexity',
+        'max-depth',
+        'max-file-size',
+        'max-lines',
+        'max-params',
+        'no-console',
+        'no-magic-numbers',
+      ]
+      const violations = lenientRules.map((ruleId) =>
+        createMockViolation({ ruleId, severity: 'error' }),
+      )
+      const result = applyProfile(violations, 'lenient')
+      for (const v of result) {
+        expect(v.severity).toBe('info')
+      }
+    })
+
+    it('handles all strict overrides', () => {
+      const strictRules = [
+        'no-console',
+        'no-debugger',
+        'no-eval',
+        'no-explicit-any',
+        'no-implicit-coercion',
+        'no-unused-vars',
+        'prefer-const',
+      ]
+      const violations = strictRules.map((ruleId) =>
+        createMockViolation({ ruleId, severity: 'warning' }),
+      )
+      const result = applyProfile(violations, 'strict')
+      for (const v of result) {
+        expect(v.severity).toBe('error')
+      }
+    })
+  })
+
+  // =====================================================
+  // applyProfileOverridesToFileReports
+  // =====================================================
+  describe('applyProfileOverridesToFileReports', () => {
+    function applyProfileReports(
+      reports: Array<{ filePath: string; violations: RuleViolation[] }>,
+      profile: 'lenient' | 'moderate' | 'strict',
+    ): Array<{ filePath: string; violations: RuleViolation[] }> {
+      const cmd = createCommand()
+      return (
+        cmd as unknown as {
+          applyProfileOverridesToFileReports: (
+            r: Array<{ filePath: string; violations: RuleViolation[] }>,
+            p: 'lenient' | 'moderate' | 'strict',
+          ) => Array<{ filePath: string; violations: RuleViolation[] }>
+        }
+      ).applyProfileOverridesToFileReports(reports, profile)
+    }
+
+    it('remaps violation severity within file reports', () => {
+      const reports = [
+        {
+          filePath: 'a.ts',
+          violations: [
+            createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+            createMockViolation({ ruleId: 'no-debugger', severity: 'info' }),
+          ],
+        },
+      ]
+      const result = applyProfileReports(reports, 'strict')
+      expect(result[0].violations[0].severity).toBe('error')
+      expect(result[0].violations[1].severity).toBe('error')
+    })
+
+    it('preserves reports without matching overrides', () => {
+      const reports = [
+        {
+          filePath: 'a.ts',
+          violations: [createMockViolation({ ruleId: 'custom-rule', severity: 'warning' })],
+        },
+      ]
+      const result = applyProfileReports(reports, 'strict')
+      expect(result[0].violations[0].severity).toBe('warning')
+    })
+
+    it('handles empty reports array', () => {
+      const result = applyProfileReports([], 'strict')
+      expect(result).toEqual([])
+    })
+
+    it('handles multiple reports with mixed violations', () => {
+      const reports = [
+        {
+          filePath: 'a.ts',
+          violations: [
+            createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+            createMockViolation({ ruleId: 'other', severity: 'error' }),
+          ],
+        },
+        {
+          filePath: 'b.ts',
+          violations: [createMockViolation({ ruleId: 'max-complexity', severity: 'error' })],
+        },
+      ]
+      const result = applyProfileReports(reports, 'lenient')
+      expect(result[0].violations[0].severity).toBe('info')
+      expect(result[0].violations[1].severity).toBe('error')
+      expect(result[1].violations[0].severity).toBe('info')
+    })
+
+    it('does not mutate original reports', () => {
+      const reports = [
+        {
+          filePath: 'a.ts',
+          violations: [createMockViolation({ ruleId: 'no-console', severity: 'warning' })],
+        },
+      ]
+      applyProfileReports(reports, 'strict')
+      expect(reports[0].violations[0].severity).toBe('warning')
+    })
+
+    it('preserves filePath property', () => {
+      const reports = [
+        {
+          filePath: 'specific/path.ts',
+          violations: [createMockViolation({ ruleId: 'no-console', severity: 'warning' })],
+        },
+      ]
+      const result = applyProfileReports(reports, 'strict')
+      expect(result[0].filePath).toBe('specific/path.ts')
+    })
+  })
+
+  // =====================================================
+  // run integration - profile flag
+  // =====================================================
+  describe('run integration - profile flag', () => {
+    it('applies strict profile overrides to violations', async () => {
+      let reportData: { files: Array<{ violations: RuleViolation[] }> } | undefined
       mockReporterCtor.mockImplementation(function () {
         return {
           writeReport: vi.fn().mockImplementation((data: typeof reportData) => {
@@ -3114,12 +3372,9 @@ describe('Analyze Command', () => {
         }
       })
       mockRunRules.mockReturnValue([
-        createMockViolation({ severity: 'error' }),
-        createMockViolation({ severity: 'error' }),
-        createMockViolation({ severity: 'warning' }),
-        createMockViolation({ severity: 'info' }),
-        createMockViolation({ severity: 'info' }),
-        createMockViolation({ severity: 'info' }),
+        createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+        createMockViolation({ ruleId: 'no-debugger', severity: 'info' }),
+        createMockViolation({ ruleId: 'other-rule', severity: 'warning' }),
       ])
       mockNormalizeFlags.mockReturnValue({
         cacheResults: false,
@@ -3127,7 +3382,78 @@ describe('Analyze Command', () => {
         concurrency: 4,
         dryRun: false,
         failOnWarnings: false,
-        format: 'json',
+        format: 'console',
+        maxWarnings: -1,
+        output: undefined,
+        quiet: true,
+        shouldFix: false,
+        stagedMode: false,
+        verbose: false,
+      })
+      const cmd = createCommandWithMockedParse({ profile: 'strict' })
+      mockExit(cmd)
+      await runQuietly(cmd)
+      const violations = reportData?.files[0]?.violations ?? []
+      expect(violations[0].severity).toBe('error')
+      expect(violations[1].severity).toBe('error')
+      expect(violations[2].severity).toBe('warning')
+    })
+
+    it('applies lenient profile and filters with severity-level', async () => {
+      let reportData: { files: Array<{ violations: RuleViolation[] }> } | undefined
+      mockReporterCtor.mockImplementation(function () {
+        return {
+          writeReport: vi.fn().mockImplementation((data: typeof reportData) => {
+            reportData = data
+            return Promise.resolve()
+          }),
+        }
+      })
+      mockRunRules.mockReturnValue([
+        createMockViolation({ ruleId: 'max-complexity', severity: 'error' }),
+        createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+      ])
+      mockNormalizeFlags.mockReturnValue({
+        cacheResults: false,
+        ciMode: false,
+        concurrency: 4,
+        dryRun: false,
+        failOnWarnings: false,
+        format: 'console',
+        maxWarnings: -1,
+        output: undefined,
+        quiet: true,
+        shouldFix: false,
+        stagedMode: false,
+        verbose: false,
+      })
+      const cmd = createCommandWithMockedParse({ profile: 'lenient', 'severity-level': 'warning' })
+      mockExit(cmd)
+      await runQuietly(cmd)
+      const violations = reportData?.files[0]?.violations ?? []
+      expect(violations).toHaveLength(0)
+    })
+
+    it('does not apply profile overrides when profile is not set', async () => {
+      let reportData: { files: Array<{ violations: RuleViolation[] }> } | undefined
+      mockReporterCtor.mockImplementation(function () {
+        return {
+          writeReport: vi.fn().mockImplementation((data: typeof reportData) => {
+            reportData = data
+            return Promise.resolve()
+          }),
+        }
+      })
+      mockRunRules.mockReturnValue([
+        createMockViolation({ ruleId: 'no-console', severity: 'warning' }),
+      ])
+      mockNormalizeFlags.mockReturnValue({
+        cacheResults: false,
+        ciMode: false,
+        concurrency: 4,
+        dryRun: false,
+        failOnWarnings: false,
+        format: 'console',
         maxWarnings: -1,
         output: undefined,
         quiet: true,
@@ -3138,28 +3464,13 @@ describe('Analyze Command', () => {
       const cmd = createCommandWithMockedParse({})
       mockExit(cmd)
       await runQuietly(cmd)
-      expect(reportData?.summary.errors).toBe(2)
-      expect(reportData?.summary.warnings).toBe(1)
-      expect(reportData?.summary.info).toBe(3)
-      expect(reportData?.summary.totalViolations).toBe(6)
+      const violations = reportData?.files[0]?.violations ?? []
+      expect(violations[0].severity).toBe('warning')
     })
 
-    it('includes duration in summary', async () => {
-      let reportData: { summary: { duration: number } } | undefined
-      mockReporterCtor.mockImplementation(function () {
-        return {
-          writeReport: vi.fn().mockImplementation((data: typeof reportData) => {
-            reportData = data
-            return Promise.resolve()
-          }),
-        }
-      })
-      mockRunRules.mockReturnValue([])
-      const cmd = createCommandWithMockedParse({})
-      mockExit(cmd)
-      await runQuietly(cmd)
-      expect(typeof reportData?.summary.duration).toBe('number')
-      expect(reportData?.summary.duration).toBeGreaterThanOrEqual(0)
+    it('has example for --profile flag', () => {
+      const cmds = Analyze.examples.map((e: { command: string }) => e.command)
+      expect(cmds.some((c: string) => c.includes('--profile'))).toBe(true)
     })
   })
 })

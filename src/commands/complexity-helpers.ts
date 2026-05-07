@@ -1,5 +1,4 @@
 import chalk from 'chalk'
-import { extname } from 'node:path'
 
 import {
   calculateComplexitySummary,
@@ -7,10 +6,7 @@ import {
   type FunctionComplexity,
 } from '../core/complexity.js'
 
-export interface DiscoveredFile {
-  absolutePath: string
-  path: string
-}
+export { filterFilesByExtension } from '../utils/command-helpers.js'
 
 export function buildIgnorePatterns(
   defaultIgnore: string[],
@@ -26,17 +22,6 @@ export function parseExtensions(extFlag: string): null | string[] {
     .split(',')
     .map((e) => e.trim())
     .filter(Boolean)
-}
-
-export function filterFilesByExtension(
-  files: DiscoveredFile[],
-  extensions: null | string[],
-): DiscoveredFile[] {
-  if (!extensions) return files
-  return files.filter((f) => {
-    const ext = extname(f.path).toLowerCase()
-    return extensions.includes(ext)
-  })
 }
 
 export function filterByThreshold(
