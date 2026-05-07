@@ -37,6 +37,10 @@ import { filterSuppressedViolations, parseSuppressionsFromSourceFile } from '../
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
 import {
+  compareWithBaselineReport,
+  saveBaselineReport,
+} from './analyze-baseline-helpers.js'
+import {
   applyFixesToFiles,
   filterFilesByExtension,
   getProfileSeverityOverrides,
@@ -173,6 +177,14 @@ export default class Analyze extends Command {
       command: '<%= config.bin %> <%= command.id %> --profile strict',
       description: 'Run with strict severity profile (all rules as errors)',
     },
+    {
+      command: '<%= config.bin %> <%= command.id %> --baseline save',
+      description: 'Save current violations as a baseline for regression detection',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --baseline compare',
+      description: 'Compare current violations against saved baseline',
+    },
   ]
 
   static override flags = {
@@ -260,6 +272,11 @@ export default class Analyze extends Command {
       description:
         'Use a severity profile to override rule severities (strict, moderate, lenient)',
       options: ['strict', 'moderate', 'lenient'],
+    }),
+    baseline: Flags.string({
+      char: 'B',
+      description: 'Save or compare against a violation baseline for regression detection',
+      options: ['compare', 'save'],
     }),
     staged: Flags.boolean({
       default: false,
@@ -377,6 +394,25 @@ export default class Analyze extends Command {
     })
 
     await reporter.writeReport({ files: filteredFileReports, summary })
+
+    const baselineMode = flags.baseline as 'compare' | 'save' | undefined
+    if (baselineMode === 'save') {
+      const result = await saveBaselineReport(filteredViolations, normalized.output)
+      for (const msg of result.messages) {
+        this.log(msg)
+      }
+    } else if (baselineMode === 'compare') {
+      const result = await compareWithBaselineReport(
+        filteredViolations,
+        normalized.output,
+      )
+      for (const msg of result.messages) {
+        this.log(msg)
+      }
+      if (result.noBaseline || result.exitCode > 0) {
+        this.exit(result.exitCode)
+      }
+    }
 
     const exitCode = this.determineExitCode(
       summary,

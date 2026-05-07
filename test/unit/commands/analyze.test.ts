@@ -449,8 +449,8 @@ describe('Analyze Command', () => {
       expect(flagNames).toContain('config')
     })
 
-    it('has exactly 21 flags', () => {
-      expect(Object.keys(Analyze.flags).length).toBe(21)
+    it('has exactly 22 flags', () => {
+      expect(Object.keys(Analyze.flags).length).toBe(22)
     })
   })
 
@@ -3698,6 +3698,41 @@ describe('Analyze Command', () => {
         verbose: false,
       })
       expect(result.allViolations).toHaveLength(2)
+     })
+   })
+
+  // =====================================================
+  // Baseline flag metadata
+  // =====================================================
+  describe('Baseline flag metadata', () => {
+    it('has baseline flag defined', () => {
+      expect(Analyze.flags.baseline).toBeDefined()
+    })
+
+    it('baseline flag has char B', () => {
+      expect(Analyze.flags.baseline.char).toBe('B')
+    })
+
+    it('baseline flag has correct options', () => {
+      expect(Analyze.flags.baseline.options).toEqual(['compare', 'save'])
+    })
+
+    it('baseline flag mentions baseline in description', () => {
+      expect(Analyze.flags.baseline.description.toLowerCase()).toContain('baseline')
+    })
+
+    it('baseline flag has no default', () => {
+      expect(Analyze.flags.baseline.default).toBeUndefined()
+    })
+
+    it('has example for --baseline save', () => {
+      const cmds = Analyze.examples.map((e: { command: string }) => e.command)
+      expect(cmds.some((c: string) => c.includes('--baseline save'))).toBe(true)
+    })
+
+    it('has example for --baseline compare', () => {
+      const cmds = Analyze.examples.map((e: { command: string }) => e.command)
+      expect(cmds.some((c: string) => c.includes('--baseline compare'))).toBe(true)
     })
   })
 })
