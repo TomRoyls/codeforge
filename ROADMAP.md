@@ -56,12 +56,12 @@ This document outlines the planned development trajectory for CodeForge.
 - [x] Centralized rule configuration server
 - [x] Team-based rule profiles
 - [x] Audit logging and compliance reports
-- [ ] SSO integration (SAML, OAuth)
+- [x] SSO integration (SAML, OAuth)
 
 ### Advanced Performance
 
-- [ ] Distributed analysis for monorepos
-- [ ] Cloud-based caching layer
+- [x] Distributed analysis for monorepos
+- [x] Cloud-based caching layer
 - [x] Incremental analysis with content-addressable storage
 - [ ] GPU-accelerated parsing (experimental)
 
