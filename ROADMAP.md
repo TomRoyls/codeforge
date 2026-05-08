@@ -78,7 +78,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 - [ ] 100% test coverage
 - [ ] Comprehensive documentation
-- [ ] API stability guarantees
+- [x] API stability guarantees
 - [ ] Long-term support commitment
 
 ### Ecosystem
