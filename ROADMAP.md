@@ -17,7 +17,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [ ] WebAssembly-based parser for 2-3x speedup
 - [x] Incremental analysis with git diff integration
 - [x] Parallel rule execution across worker threads
-- [ ] Memory-mapped file reading for large codebases
+- [x] Memory-mapped file reading for large codebases
 
 ### Developer Experience
 
@@ -53,7 +53,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 ### Enterprise Features
 
-- [ ] Centralized rule configuration server
+- [x] Centralized rule configuration server
 - [x] Team-based rule profiles
 - [x] Audit logging and compliance reports
 - [ ] SSO integration (SAML, OAuth)
