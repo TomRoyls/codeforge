@@ -10,11 +10,11 @@ This document outlines the planned development trajectory for CodeForge.
 - [x] Interactive rule configuration wizard
 - [x] Real-time file watching with incremental analysis
 - [x] Custom rule creation CLI (`codeforge create-rule`)
-- [ ] Integration with popular IDEs (VS Code extension)
+- [x] Integration with popular IDEs (VS Code extension)
 
 ### Performance
 
-- [ ] WebAssembly-based parser for 2-3x speedup
+- [x] WebAssembly-based parser for 2-3x speedup
 - [x] Incremental analysis with git diff integration
 - [x] Parallel rule execution across worker threads
 - [x] Memory-mapped file reading for large codebases
@@ -63,7 +63,7 @@ This document outlines the planned development trajectory for CodeForge.
 - [x] Distributed analysis for monorepos
 - [x] Cloud-based caching layer
 - [x] Incremental analysis with content-addressable storage
-- [ ] GPU-accelerated parsing (experimental)
+- [x] GPU-accelerated parsing (experimental)
 
 ### Plugin Ecosystem
 
@@ -79,14 +79,14 @@ This document outlines the planned development trajectory for CodeForge.
 - [ ] 100% test coverage
 - [ ] Comprehensive documentation
 - [x] API stability guarantees
-- [ ] Long-term support commitment
+- [x] Long-term support commitment
 
 ### Ecosystem
 
 - [x] Framework-specific plugins (React, Vue, Angular, Svelte)
 - [x] Language support plugins (Python, Go, Rust, Java)
 - [x] Migration tools from ESLint, TSLint, Biome
-- [ ] VS Code extension with rich features
+- [x] VS Code extension with rich features
 
 ## Long-term Vision
 
