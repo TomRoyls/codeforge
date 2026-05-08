@@ -54,7 +54,7 @@ This document outlines the planned development trajectory for CodeForge.
 ### Enterprise Features
 
 - [ ] Centralized rule configuration server
-- [ ] Team-based rule profiles
+- [x] Team-based rule profiles
 - [x] Audit logging and compliance reports
 - [ ] SSO integration (SAML, OAuth)
 
