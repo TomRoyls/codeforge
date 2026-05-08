@@ -16,7 +16,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 - [ ] WebAssembly-based parser for 2-3x speedup
 - [x] Incremental analysis with git diff integration
-- [ ] Parallel rule execution across worker threads
+- [x] Parallel rule execution across worker threads
 - [ ] Memory-mapped file reading for large codebases
 
 ### Developer Experience
