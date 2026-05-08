@@ -1,16 +1,25 @@
 import type { BenchmarkSuite } from './benchmark-types.js'
 
+/**
+ * @internal
+ */
 function fmt(n: number, decimals = 3): string {
   if (n < 0) return 'N/A'
   return n.toFixed(decimals)
 }
 
+/**
+ * @internal
+ */
 function pad(str: string, len: number, align: 'left' | 'right' = 'right'): string {
   if (str.length >= len) return str
   const gap = len - str.length
   return align === 'right' ? ' '.repeat(gap) + str : str + ' '.repeat(gap)
 }
 
+/**
+ * @internal
+ */
 export function formatBenchmarkTable(suite: BenchmarkSuite): string {
   const sorted = [...suite.results].sort((a, b) => b.averageMs - a.averageMs)
 
@@ -65,10 +74,16 @@ export function formatBenchmarkTable(suite: BenchmarkSuite): string {
   return lines.join('\n')
 }
 
+/**
+ * @internal
+ */
 export function formatBenchmarkJSON(suite: BenchmarkSuite): string {
   return JSON.stringify(suite, null, 2)
 }
 
+/**
+ * @internal
+ */
 export function formatBenchmarkMarkdown(suite: BenchmarkSuite): string {
   const sorted = [...suite.results].sort((a, b) => b.averageMs - a.averageMs)
 

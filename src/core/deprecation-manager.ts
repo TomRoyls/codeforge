@@ -1,6 +1,9 @@
 import type { APISignature, DeprecationNotice, StabilityLevel, APIVersion, BreakingChange } from './api-types.js'
 import { parseAPIVersion } from './api-types.js'
 
+/**
+ * @stable
+ */
 export class DeprecationManager {
   private deprecations: Map<string, APISignature>
   private warnings: DeprecationNotice[]

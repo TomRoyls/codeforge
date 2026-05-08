@@ -17,6 +17,9 @@ function median(sorted: number[]): number {
   return sorted[mid]!
 }
 
+/**
+ * @stable
+ */
 export class BenchmarkRunner {
   private readonly config: BenchmarkConfig
 

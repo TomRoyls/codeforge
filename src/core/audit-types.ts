@@ -1,3 +1,6 @@
+/**
+ * @stable
+ */
 export interface AuditEntry {
   id: string
   timestamp: string
@@ -15,11 +18,17 @@ export interface AuditEntry {
   user: string | null
 }
 
+/**
+ * @stable
+ */
 export interface AuditLog {
   version: 1
   entries: AuditEntry[]
 }
 
+/**
+ * @stable
+ */
 export interface ComplianceReport {
   generatedAt: string
   period: { from: string; to: string }
@@ -32,12 +41,18 @@ export interface ComplianceReport {
   passRate: number
 }
 
+/**
+ * @stable
+ */
 export interface AuditConfig {
   enabled: boolean
   logDir: string
   maxEntries: number
 }
 
+/**
+ * @stable
+ */
 export const DEFAULT_AUDIT_CONFIG: AuditConfig = {
   enabled: true,
   logDir: '.codeforge/audit',

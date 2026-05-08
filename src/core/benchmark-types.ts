@@ -1,3 +1,6 @@
+/**
+ * @stable
+ */
 export interface BenchmarkConfig {
   filePath: string
   iterations: number
@@ -6,6 +9,9 @@ export interface BenchmarkConfig {
   warmupIterations: number
 }
 
+/**
+ * @stable
+ */
 export interface RuleBenchmarkResult {
   averageMs: number
   iterations: number
@@ -20,6 +26,9 @@ export interface RuleBenchmarkResult {
   violationsPerRun: number
 }
 
+/**
+ * @stable
+ */
 export interface BenchmarkSuite {
   config: BenchmarkConfig
   nodeVersion: string
@@ -29,6 +38,9 @@ export interface BenchmarkSuite {
   totalDurationMs: number
 }
 
+/**
+ * @stable
+ */
 export const DEFAULT_BENCHMARK_CONFIG: BenchmarkConfig = {
   filePath: 'benchmark-sample.ts',
   iterations: 10,

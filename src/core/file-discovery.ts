@@ -1,6 +1,9 @@
 import fg from 'fast-glob'
 import { relative, resolve } from 'node:path'
 
+/**
+ * @stable
+ */
 export interface FileDiscoveryOptions {
   cwd: string
   ignore: string[]
@@ -8,6 +11,9 @@ export interface FileDiscoveryOptions {
   patterns: string[]
 }
 
+/**
+ * @stable
+ */
 export interface DiscoveredFile {
   absolutePath: string
   path: string
@@ -23,6 +29,9 @@ const DEFAULT_IGNORE = [
   '**/*.d.ts',
 ]
 
+/**
+ * @stable
+ */
 export async function discoverFiles(options: FileDiscoveryOptions): Promise<DiscoveredFile[]> {
   const { cwd, ignore, onProgress, patterns } = options
   const actualPatterns = patterns.length > 0 ? patterns : DEFAULT_PATTERNS
@@ -55,4 +64,7 @@ export async function discoverFiles(options: FileDiscoveryOptions): Promise<Disc
   return files
 }
 
+/**
+ * @stable
+ */
 export { DEFAULT_IGNORE, DEFAULT_PATTERNS }

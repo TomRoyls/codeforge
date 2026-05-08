@@ -2,8 +2,14 @@ import type { RuleProfile } from './profile-types.js'
 
 import { ProfileManager } from './profile-manager.js'
 
+/**
+ * @experimental
+ */
 export const PROFILE_RESOLUTION_DEPTH_LIMIT = 10
 
+/**
+ * @experimental
+ */
 export function mergeRules(
   base: Record<string, unknown>,
   override: Record<string, unknown>,

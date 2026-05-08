@@ -9,6 +9,9 @@ const VALID_SEVERITIES = new Set(['error', 'warning', 'info', 'off'])
 const SEMVER_PATTERN = /^\d+\.\d+\.\d+$/
 const NAME_PATTERN = /^[a-zA-Z0-9-]{1,50}$/
 
+/**
+ * @stable
+ */
 export function validateProfile(profile: unknown): ProfileValidationResult {
   const errors: string[] = []
 
@@ -92,6 +95,9 @@ export function validateProfile(profile: unknown): ProfileValidationResult {
   return { valid: errors.length === 0, errors }
 }
 
+/**
+ * @stable
+ */
 export class ProfileManager {
   private profilesDir: string
 

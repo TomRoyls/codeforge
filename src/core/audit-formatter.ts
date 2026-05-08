@@ -1,5 +1,8 @@
 import type { AuditEntry, ComplianceReport } from './audit-types.js'
 
+/**
+ * @internal
+ */
 export function formatComplianceReportMarkdown(report: ComplianceReport): string {
   const lines: string[] = []
   lines.push(`# CodeForge Compliance Report`)
@@ -65,10 +68,16 @@ export function formatComplianceReportMarkdown(report: ComplianceReport): string
   return lines.join('\n')
 }
 
+/**
+ * @internal
+ */
 export function formatComplianceReportJSON(report: ComplianceReport): string {
   return JSON.stringify(report, null, 2)
 }
 
+/**
+ * @internal
+ */
 export function formatAuditEntryShort(entry: AuditEntry): string {
   return `[${entry.timestamp}] ${entry.command}: ${entry.filesAnalyzed} files, ${entry.totalViolations} violations (${entry.errorCount} errors, ${entry.warningCount} warnings) - exit ${entry.exitCode}`
 }

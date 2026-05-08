@@ -3,11 +3,17 @@ import type { SourceFile } from 'ts-morph'
 import type { ASTVisitor, RuleViolation } from '../ast/visitor.js'
 import type { FixResult } from '../fix/types.js'
 
+/**
+ * @stable
+ */
 export interface RuleOptions {
   [key: string]: unknown
   max?: number
 }
 
+/**
+ * @stable
+ */
 export interface RuleDocs {
   category?: string
   description?: string
@@ -17,6 +23,9 @@ export interface RuleDocs {
   url?: string
 }
 
+/**
+ * @stable
+ */
 export interface RuleMeta {
   category:
     | 'complexity'
@@ -37,6 +46,9 @@ export interface RuleMeta {
   severity?: RuleSeverity
 }
 
+/**
+ * @stable
+ */
 export interface RuleDefinition<TOptions extends RuleOptions = RuleOptions> {
   create: (options: TOptions) => {
     onComplete?: () => RuleViolation[]
@@ -47,6 +59,9 @@ export interface RuleDefinition<TOptions extends RuleOptions = RuleOptions> {
   meta: RuleMeta
 }
 
+/**
+ * @stable
+ */
 export interface RuleContext {
   filePath: string
   options: RuleOptions
@@ -54,8 +69,14 @@ export interface RuleContext {
   sourceFile: SourceFile
 }
 
+/**
+ * @stable
+ */
 export type RuleSeverity = 'error' | 'info' | 'warning'
 
+/**
+ * @stable
+ */
 export interface RuleConfig {
   options?: RuleOptions
   severity: RuleSeverity
@@ -66,6 +87,9 @@ interface Position {
   line: number
 }
 
+/**
+ * @stable
+ */
 export function createViolation(
   filePath: string,
   message: string,

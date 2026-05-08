@@ -1,6 +1,9 @@
 import type { RuleViolation } from '../ast/visitor.js'
 import type { AnalysisReport } from './reporter.js'
 
+/**
+ * @internal
+ */
 export const COLORS = {
   blue: '\u001B[34m',
   bold: '\u001B[1m',
@@ -10,6 +13,9 @@ export const COLORS = {
   yellow: '\u001B[33m',
 }
 
+/**
+ * @internal
+ */
 export function formatJunit(report: AnalysisReport): string {
   const lines: string[] = []
   lines.push(
@@ -59,6 +65,9 @@ function escapeXml(text: string): string {
   return text.replaceAll(/[&<>"']/g, (char) => escapeMap[char] ?? char)
 }
 
+/**
+ * @internal
+ */
 export function formatSarif(report: AnalysisReport): string {
   const sarifLog = {
     $schema:
@@ -149,6 +158,9 @@ function mapSeverityToSarifLevel(severity: string): string {
   }
 }
 
+/**
+ * @internal
+ */
 export function formatMarkdown(report: AnalysisReport): string {
   const lines: string[] = []
   lines.push(
@@ -188,6 +200,9 @@ export function formatMarkdown(report: AnalysisReport): string {
   return lines.join('\n')
 }
 
+/**
+ * @internal
+ */
 export function formatGitlab(report: AnalysisReport): string {
   const results: unknown[] = []
   for (const file of report.files) {
@@ -211,10 +226,16 @@ export function formatGitlab(report: AnalysisReport): string {
   return JSON.stringify(results, null, 2)
 }
 
+/**
+ * @internal
+ */
 export function formatJson(report: AnalysisReport): string {
   return JSON.stringify(report, null, 2)
 }
 
+/**
+ * @internal
+ */
 export function formatCsv(report: AnalysisReport): string {
   const headers = ['filePath', 'line', 'column', 'endLine', 'endColumn', 'severity', 'ruleId', 'message', 'suggestion']
   const rows: string[] = [headers.join(',')]
@@ -245,6 +266,9 @@ function csvEscape(value: string): string {
   return value
 }
 
+/**
+ * @internal
+ */
 export function formatSonarqube(report: AnalysisReport): string {
   const issues: unknown[] = []
 
@@ -292,6 +316,9 @@ function mapSeverityToSonarQubeType(severity: string): string {
   return severity === 'error' ? 'BUG' : 'CODE_SMELL'
 }
 
+/**
+ * @internal
+ */
 export function formatHtml(report: AnalysisReport): string {
   const lines: string[] = []
   lines.push(
@@ -362,6 +389,9 @@ function escapeHtml(text: string): string {
   return text.replaceAll(/[&<>"']/g, (char) => escapeMap[char] ?? char)
 }
 
+/**
+ * @internal
+ */
 export function formatConsole(
   report: AnalysisReport,
   colors: typeof COLORS,

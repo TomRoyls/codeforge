@@ -10,6 +10,9 @@ function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2)
 }
 
+/**
+ * @stable
+ */
 export class RunContext {
   readonly startTime: number
   private _durationMs = 0
@@ -75,6 +78,9 @@ export class RunContext {
   }
 }
 
+/**
+ * @stable
+ */
 export class AuditLogger {
   private config: AuditConfig
 

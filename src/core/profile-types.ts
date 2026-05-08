@@ -1,5 +1,11 @@
+/**
+ * @stable
+ */
 export type RuleConfig = string | [string, Record<string, unknown>?]
 
+/**
+ * @stable
+ */
 export interface RuleProfile {
   name: string
   description: string
@@ -11,6 +17,9 @@ export interface RuleProfile {
   updatedAt: string
 }
 
+/**
+ * @stable
+ */
 export interface ProfileValidationResult {
   valid: boolean
   errors: string[]
@@ -34,6 +43,9 @@ function makeBuiltIn(
   }
 }
 
+/**
+ * @stable
+ */
 export const BUILTIN_PROFILES: RuleProfile[] = [
   makeBuiltIn('strict', 'Strict profile: all rules enabled, security and complexity as errors', {
     'no-eval': 'error',

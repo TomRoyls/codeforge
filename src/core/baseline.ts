@@ -3,6 +3,9 @@ import { resolve } from 'node:path'
 
 import type { RuleViolation } from '../ast/visitor.js'
 
+/**
+ * @stable
+ */
 export interface BaselineViolation {
   filePath: string
   message: string
@@ -20,6 +23,9 @@ export interface BaselineViolation {
   severity: 'error' | 'info' | 'warning'
 }
 
+/**
+ * @stable
+ */
 export interface BaselineSummary {
   errors: number
   info: number
@@ -27,12 +33,18 @@ export interface BaselineSummary {
   warnings: number
 }
 
+/**
+ * @stable
+ */
 export interface BaselineFile {
   summary: BaselineSummary
   timestamp: string
   violations: BaselineViolation[]
 }
 
+/**
+ * @stable
+ */
 export interface BaselineResult {
   improvements: RuleViolation[]
   regressions: RuleViolation[]
@@ -55,6 +67,9 @@ function violationToBaseline(violation: RuleViolation): BaselineViolation {
   }
 }
 
+/**
+ * @stable
+ */
 export async function saveBaseline(
   violations: RuleViolation[],
   outputPath?: string,
@@ -85,6 +100,9 @@ export async function saveBaseline(
   return baselinePath
 }
 
+/**
+ * @stable
+ */
 export async function loadBaseline(outputPath?: string): Promise<BaselineFile | null> {
   const baselinePath = outputPath ? resolve(outputPath) : resolve(BASELINE_FILE_NAME)
 
@@ -97,6 +115,9 @@ export async function loadBaseline(outputPath?: string): Promise<BaselineFile | 
   }
 }
 
+/**
+ * @stable
+ */
 export function compareWithBaseline(
   currentViolations: RuleViolation[],
   baselineViolations: BaselineViolation[],

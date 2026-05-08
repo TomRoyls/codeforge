@@ -4,19 +4,31 @@ import type { RuleViolation } from '../ast/visitor.js'
 
 import { logger } from '../utils/logger.js'
 
+/**
+ * @stable
+ */
 export type SuppressionType = 'block-end' | 'block-start' | 'next-line'
 
+/**
+ * @stable
+ */
 export interface Suppression {
   line: number
   ruleIds: string[]
   type: SuppressionType
 }
 
+/**
+ * @stable
+ */
 export interface SuppressionParseResult {
   count: number
   suppressions: Suppression[]
 }
 
+/**
+ * @stable
+ */
 export interface SuppressionParserOptions {
   verbose?: boolean
 }
@@ -29,6 +41,9 @@ const NEXT_LINE_SUFFIX = '-next-line'
 const SUPPRESSION_PATTERN =
   /(?:\/\/|\/\*|\*\/?\s*)\s*(codeforge-(?:disable(?:-next-line)?|enable))(?:\s+(.+?))?(?:\s*(?:\*\/|$))/gi
 
+/**
+ * @stable
+ */
 export function parseSuppressions(text: string): SuppressionParseResult {
   const suppressions: Suppression[] = []
   const lines = text.split('\n')
@@ -108,6 +123,9 @@ function parseRuleIds(rulesPart: string | undefined): string[] {
     .filter((rule) => rule.length > 0)
 }
 
+/**
+ * @stable
+ */
 export function isViolationSuppressed(
   violation: RuleViolation,
   suppressions: Suppression[],
@@ -206,12 +224,18 @@ function logSuppression(
   }
 }
 
+/**
+ * @stable
+ */
 export function parseSuppressionsFromSourceFile(sourceFile: SourceFile): SuppressionParseResult {
   const text =
     typeof sourceFile.getFullText === 'function' ? sourceFile.getFullText() : sourceFile.getText()
   return parseSuppressions(text)
 }
 
+/**
+ * @stable
+ */
 export function filterSuppressedViolations(
   violations: RuleViolation[],
   suppressions: Suppression[],

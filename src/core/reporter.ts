@@ -6,8 +6,14 @@ import type { RuleViolation } from '../ast/visitor.js'
 import { CLIError } from '../utils/errors.js'
 import { COLORS, formatCsv, formatGitlab, formatJunit, formatSarif, formatSonarqube } from './reporter-formatters.js'
 
+/**
+ * @stable
+ */
 export type OutputFormat = 'console' | 'csv' | 'gitlab' | 'html' | 'json' | 'junit' | 'markdown' | 'sarif' | 'sonarqube'
 
+/**
+ * @stable
+ */
 export interface ReporterOptions {
   color?: boolean
   format: OutputFormat
@@ -16,11 +22,17 @@ export interface ReporterOptions {
   verbose: boolean
 }
 
+/**
+ * @stable
+ */
 export interface FileReport {
   filePath: string
   violations: RuleViolation[]
 }
 
+/**
+ * @stable
+ */
 export interface AnalysisReport {
   files: FileReport[]
   summary: {
@@ -33,6 +45,9 @@ export interface AnalysisReport {
   }
 }
 
+/**
+ * @stable
+ */
 export class Reporter {
   private colors: typeof COLORS
   private options: ReporterOptions

@@ -7,11 +7,17 @@ import { hashContent } from '../cache/index.js'
 import { globalParseCache } from '../cache/parse-cache.js'
 import { logger } from '../utils/logger.js'
 
+/**
+ * @stable
+ */
 export interface ParseError {
   error: Error
   filePath: string
 }
 
+/**
+ * @stable
+ */
 export interface ParseResult {
   cached: boolean
   diskCached?: boolean
@@ -20,11 +26,17 @@ export interface ParseResult {
   sourceFile: SourceFile
 }
 
+/**
+ * @stable
+ */
 export interface ParseFilesResult {
   errors: ParseError[]
   results: ParseResult[]
 }
 
+/**
+ * @stable
+ */
 export interface ParserOptions {
   concurrency?: number
   skipFileDependencyResolution?: boolean
@@ -35,6 +47,9 @@ export interface ParserOptions {
   version?: string
 }
 
+/**
+ * @stable
+ */
 export class Parser {
   private astCache: ASTCache | null = null
   private concurrency: number

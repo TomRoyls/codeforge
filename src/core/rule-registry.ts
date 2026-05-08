@@ -4,6 +4,9 @@ import type { RuleDefinition, RuleOptions } from '../rules/types.js'
 
 import { type ASTVisitor, type RuleViolation, traverseASTMultiple } from '../ast/visitor.js'
 
+/**
+ * @stable
+ */
 export type RuleCategory =
   | 'complexity'
   | 'correctness'
@@ -13,6 +16,9 @@ export type RuleCategory =
   | 'security'
   | 'testing'
 
+/**
+ * @stable
+ */
 export interface LoadedRule {
   category: RuleCategory
   definition: RuleDefinition
@@ -22,6 +28,7 @@ export interface LoadedRule {
 
 /**
  * Registry for managing and running code analysis rules
+ * @stable
  */
 export class RuleRegistry {
   private enabledRulesCache: LoadedRule[] | null = null
@@ -188,6 +195,7 @@ export class RuleRegistry {
 
 /**
  * Creates a new RuleRegistry instance with default configuration
+ * @stable
  * @returns A new empty RuleRegistry
  * @example
  * const registry = createDefaultRegistry();

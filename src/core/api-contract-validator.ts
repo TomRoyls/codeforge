@@ -1,12 +1,18 @@
 import type { APISignature, APISnapshot, APIContractResult, BreakingChange, StabilityPolicy } from './api-types.js'
 import { DEFAULT_STABILITY_POLICY, stabilityOrder } from './api-types.js'
 
+/**
+ * @stable
+ */
 export interface APIPolicyViolation {
   signature: APISignature
   policy: StabilityPolicy
   reason: string
 }
 
+/**
+ * @stable
+ */
 export class APIContractValidator {
   compare(oldSnapshot: APISnapshot, newSnapshot: APISnapshot): APIContractResult {
     const breakingChanges: BreakingChange[] = []

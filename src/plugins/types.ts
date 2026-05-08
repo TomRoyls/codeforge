@@ -1,9 +1,21 @@
+/**
+ * @stable
+ */
 export type Severity = 'error' | 'off' | 'warn'
 
+/**
+ * @stable
+ */
 export type RuleType = 'layout' | 'problem' | 'suggestion'
 
+/**
+ * @stable
+ */
 export type RuleSchema = ReadonlyArray<unknown> | Record<string, unknown>
 
+/**
+ * @stable
+ */
 export interface RuleMeta {
   readonly deprecated?: boolean
   readonly docs?: {
@@ -20,18 +32,30 @@ export interface RuleMeta {
   readonly type: RuleType
 }
 
+/**
+ * @stable
+ */
 export interface Position {
   readonly column: number
   readonly line: number
 }
 
+/**
+ * @stable
+ */
 export type Range = readonly [number, number]
 
+/**
+ * @stable
+ */
 export interface SourceLocation {
   readonly end: Position
   readonly start: Position
 }
 
+/**
+ * @stable
+ */
 export interface ReportDescriptor {
   readonly data?: Record<string, unknown>
   readonly fix?: FixDescriptor
@@ -41,35 +65,56 @@ export interface ReportDescriptor {
   readonly suggest?: readonly SuggestionDescriptor[]
 }
 
+/**
+ * @stable
+ */
 export interface FixDescriptor {
   readonly range: Range
   readonly text: string
 }
 
+/**
+ * @stable
+ */
 export interface SuggestionDescriptor {
   readonly desc: string
   readonly fix: FixDescriptor
   readonly message: string
 }
 
+/**
+ * @stable
+ */
 export type RuleVisitor = Record<string, (node: unknown) => Promise<void> | void>
 
+/**
+ * @stable
+ */
 export interface RuleDefinition {
   readonly create: (context: RuleContext) => RuleVisitor
   readonly meta: RuleMeta
 }
 
+/**
+ * @experimental
+ */
 export interface TransformContext extends PluginContext {
   readonly getFilePath: () => string
   readonly getSource: () => string
   readonly reportError: (error: Error) => void
 }
 
+/**
+ * @experimental
+ */
 export type TransformFunction = (
   source: string,
   context: TransformContext,
 ) => Promise<string> | string
 
+/**
+ * @experimental
+ */
 export interface TransformDefinition {
   readonly description?: string
   readonly filePatterns?: readonly string[]
@@ -77,12 +122,18 @@ export interface TransformDefinition {
   readonly transform: TransformFunction
 }
 
+/**
+ * @experimental
+ */
 export interface HookContext {
   readonly data?: unknown
   readonly logger: Logger
   readonly timestamp: Date
 }
 
+/**
+ * @experimental
+ */
 export interface PluginHooks {
   readonly afterCheck?: (context: HookContext) => Promise<void> | void
   readonly afterTransform?: (context: HookContext) => Promise<void> | void
@@ -93,6 +144,9 @@ export interface PluginHooks {
   readonly onUnload?: (context: HookContext) => Promise<void> | void
 }
 
+/**
+ * @stable
+ */
 export interface Logger {
   readonly debug: (message: string, ...args: readonly unknown[]) => void
   readonly error: (message: string, ...args: readonly unknown[]) => void
@@ -100,12 +154,18 @@ export interface Logger {
   readonly warn: (message: string, ...args: readonly unknown[]) => void
 }
 
+/**
+ * @stable
+ */
 export interface PluginConfig {
   readonly options?: Record<string, unknown>
   readonly rules?: Record<string, readonly [Severity, ...unknown[]] | Severity>
   readonly transforms?: readonly string[]
 }
 
+/**
+ * @stable
+ */
 export interface Plugin {
   readonly dependencies?: readonly string[]
   readonly description?: string
@@ -119,6 +179,9 @@ export interface Plugin {
   readonly version: string
 }
 
+/**
+ * @stable
+ */
 export interface PluginManifest {
   readonly description?: string
   readonly main: string
@@ -127,12 +190,18 @@ export interface PluginManifest {
   readonly version: string
 }
 
+/**
+ * @stable
+ */
 export interface PluginContext {
   readonly config: PluginConfig
   readonly logger: Logger
   readonly workspaceRoot: string
 }
 
+/**
+ * @stable
+ */
 export interface RuleContext extends PluginContext {
   readonly getAST: () => unknown
   readonly getComments: () => readonly unknown[]
@@ -147,6 +216,9 @@ export interface RuleContext extends PluginContext {
   readonly report: (descriptor: ReportDescriptor) => void
 }
 
+/**
+ * @stable
+ */
 export class PluginError extends Error {
   public readonly cause?: Error
   public readonly code: string
@@ -161,6 +233,9 @@ export class PluginError extends Error {
   }
 }
 
+/**
+ * @stable
+ */
 export class PluginLoadError extends PluginError {
   constructor(pluginName: string, message: string, cause?: Error) {
     super(pluginName, message, 'PLUGIN_LOAD_ERROR', cause)
@@ -168,6 +243,9 @@ export class PluginLoadError extends PluginError {
   }
 }
 
+/**
+ * @stable
+ */
 export class RuleExecutionError extends PluginError {
   public readonly ruleName: string
 
@@ -178,6 +256,9 @@ export class RuleExecutionError extends PluginError {
   }
 }
 
+/**
+ * @stable
+ */
 export class TransformExecutionError extends PluginError {
   public readonly transformName: string
 
@@ -193,6 +274,9 @@ export class TransformExecutionError extends PluginError {
   }
 }
 
+/**
+ * @stable
+ */
 export class HookExecutionError extends PluginError {
   public readonly hookName: string
 

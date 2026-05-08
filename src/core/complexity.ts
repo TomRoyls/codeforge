@@ -2,8 +2,14 @@ import { type BinaryExpression, Node, type SourceFile, SyntaxKind } from 'ts-mor
 
 import { type FunctionLikeNode, getFunctionName, isFunctionLike } from '../ast/visitor.js'
 
+/**
+ * @stable
+ */
 export type ComplexityCategory = 'extreme' | 'high' | 'low' | 'moderate'
 
+/**
+ * @stable
+ */
 export interface FunctionComplexity {
   category: ComplexityCategory
   cognitive: number
@@ -13,6 +19,9 @@ export interface FunctionComplexity {
   startLine: number
 }
 
+/**
+ * @stable
+ */
 export interface ComplexityResult {
   functions: FunctionComplexity[]
   summary: {
@@ -27,6 +36,9 @@ export interface ComplexityResult {
 
 const LOGICAL_OPERATORS = new Set([SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken])
 
+/**
+ * @stable
+ */
 export function getComplexityCategory(complexity: number): ComplexityCategory {
   if (complexity <= 5) return 'low'
   if (complexity <= 10) return 'moderate'
@@ -41,6 +53,9 @@ function isLogicalBinaryExpression(node: Node): boolean {
   return LOGICAL_OPERATORS.has(operator)
 }
 
+/**
+ * @stable
+ */
 export function calculateCyclomaticComplexity(functionNode: FunctionLikeNode): number {
   let complexity = 1
 
@@ -74,6 +89,9 @@ export function calculateCyclomaticComplexity(functionNode: FunctionLikeNode): n
   return complexity
 }
 
+/**
+ * @stable
+ */
 export function calculateCognitiveComplexity(functionNode: FunctionLikeNode): number {
   let complexity = 0
 
@@ -168,6 +186,9 @@ export function calculateCognitiveComplexity(functionNode: FunctionLikeNode): nu
   return Math.max(complexity, 1)
 }
 
+/**
+ * @stable
+ */
 export function analyzeFileComplexity(sourceFile: SourceFile): FunctionComplexity[] {
   const results: FunctionComplexity[] = []
   const filePath = sourceFile.getFilePath()
@@ -197,6 +218,9 @@ export function analyzeFileComplexity(sourceFile: SourceFile): FunctionComplexit
   return results
 }
 
+/**
+ * @stable
+ */
 export function calculateComplexitySummary(
   functions: FunctionComplexity[],
 ): ComplexityResult['summary'] {
