@@ -1021,3 +1021,65 @@ describe('TestRunner - Test Properties', () => {
     expect(failed[0]!.name).toBe('fail-test')
   })
 })
+
+describe('TestRunner - Constructor Defaults', () => {
+  it('should accept empty config object', () => {
+    const runner = new TestRunner({})
+    runner.addSuite(makeSuite({ tests: [makeTest({ fn: () => {} })] }))
+    const result = runner.run()
+    expect(result.totalPassed).toBe(1)
+  })
+
+  it('should accept partial config', () => {
+    const runner = new TestRunner({ verbose: true })
+    runner.addSuite(makeSuite({ tests: [makeTest({ fn: () => {} })] }))
+    const result = runner.run()
+    expect(result.totalPassed).toBe(1)
+  })
+
+  it('should accept stopOnFailure true', () => {
+    const runner = new TestRunner({ stopOnFailure: true })
+    runner.addSuite(makeSuite({ tests: [makeTest({ fn: () => {} })] }))
+    const result = runner.run()
+    expect(result.totalPassed).toBe(1)
+  })
+})
+
+describe('TestRunner - Mixed Scenarios', () => {
+  it('should handle mixed pass/fail/skip across 3 suites', () => {
+    const runner = new TestRunner()
+    runner.addSuite(makeSuite({
+      name: 'all-pass',
+      tests: [makeTest({ name: 'p1', fn: () => {} }), makeTest({ name: 'p2', fn: () => {} })],
+    }))
+    runner.addSuite(makeSuite({
+      name: 'mixed',
+      tests: [
+        makeTest({ name: 'p3', fn: () => {} }),
+        makeTest({ name: 'f1', fn: () => { throw new Error('x') } }),
+        makeTest({ name: 'sk1', skip: true }),
+      ],
+    }))
+    runner.addSuite(makeSuite({
+      name: 'all-skip',
+      tests: [makeTest({ name: 'sk2', skip: true }), makeTest({ name: 'sk3', skip: true })],
+    }))
+    const result = runner.run()
+    expect(result.totalPassed).toBe(3)
+    expect(result.totalFailed).toBe(1)
+    expect(result.totalSkipped).toBe(3)
+    expect(result.suites).toHaveLength(3)
+  })
+
+  it('should handle large number of tests', () => {
+    const runner = new TestRunner()
+    const tests: TestCase[] = []
+    for (let i = 0; i < 50; i++) {
+      tests.push(makeTest({ name: `t${i}`, fn: () => {} }))
+    }
+    runner.addSuite(makeSuite({ name: 'large', tests }))
+    const result = runner.run()
+    expect(result.totalPassed).toBe(50)
+    expect(result.totalFailed).toBe(0)
+  })
+})
