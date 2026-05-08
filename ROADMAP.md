@@ -69,7 +69,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 - [x] Plugin marketplace/registry
 - [x] Plugin versioning and dependency management
-- [ ] Community plugin showcase
+- [x] Community plugin showcase
 - [x] Plugin performance benchmarks
 
 ## Version 1.0.0
