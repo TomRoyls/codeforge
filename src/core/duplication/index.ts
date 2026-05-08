@@ -1,0 +1,6 @@
+export { HashGenerator } from './hash-generator.js'
+export { CloneDetector } from './clone-detector.js'
+export { DuplicationReporter } from './duplication-reporter.js'
+export { DuplicationType, DEFAULT_DUPLICATION_CONFIG } from './types.js'
+export type { DuplicationType as DuplicationTypeType } from './types.js'
+export type { CloneInstance, CloneGroup, DuplicationConfig, DuplicationSummary, DuplicationReport } from './types.js'
