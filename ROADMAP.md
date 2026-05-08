@@ -67,7 +67,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 ### Plugin Ecosystem
 
-- [ ] Plugin marketplace/registry
+- [x] Plugin marketplace/registry
 - [x] Plugin versioning and dependency management
 - [ ] Community plugin showcase
 - [x] Plugin performance benchmarks
