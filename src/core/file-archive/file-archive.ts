@@ -67,7 +67,6 @@ export class FileArchive {
   }
 
   restore(path: string, options?: Partial<RestoreOptions>): RestoreResult {
-    const overwrite = options?.overwrite ?? false
     const dryRun = options?.dryRun ?? false
     const targetVersion = options?.version
     const file = this.store.get(path, targetVersion)
