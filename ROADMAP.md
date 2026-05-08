@@ -30,7 +30,7 @@ This document outlines the planned development trajectory for CodeForge.
 
 ### Advanced Analysis
 
-- [ ] Cross-file analysis (imports, dependencies)
+- [x] Cross-file analysis (imports, dependencies)
 - [ ] Type-aware linting with full TypeScript integration
 - [ ] Data flow analysis for security vulnerabilities
 - [x] Complexity metrics (cognitive, cyclomatic)
