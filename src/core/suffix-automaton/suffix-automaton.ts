@@ -5,30 +5,19 @@ export class SuffixAutomaton {
   private _size: number
   private _last: number
   private _text: string
-  private _alphabet: Set<string>
-  private _occurrencesComputed: boolean = false
+  private _occurrencesComputed: boolean
 
-  constructor(text?: string) {
+  constructor(str?: string) {
     this._states = []
     this._size = 0
     this._last = 0
     this._text = ''
-    this._alphabet = new Set()
-    this._initState()
-
-    if (text !== undefined && text.length > 0) {
-      this.build(text)
-    }
-  }
-
-  private _initState(): void {
-    this._states = []
-    this._size = 0
-    this._last = 0
-    this._text = ''
-    this._alphabet = new Set()
     this._occurrencesComputed = false
     this._newState(0, -1)
+
+    if (str !== undefined && str.length > 0) {
+      this.addString(str)
+    }
   }
 
   private _newState(length: number, link: number): number {
@@ -43,21 +32,21 @@ export class SuffixAutomaton {
     return this._size++
   }
 
-  extend(char: string): void {
+  addChar(c: string): void {
     const curr = this._newState(this._states[this._last]!.length + 1, -1)
     this._states[curr]!.occurrences = 1
     this._states[curr]!.firstPos = this._states[curr]!.length - 1
 
     let p = this._last
-    while (p !== -1 && !this._states[p]!.transitions.has(char)) {
-      this._states[p]!.transitions.set(char, curr)
+    while (p !== -1 && !this._states[p]!.transitions.has(c)) {
+      this._states[p]!.transitions.set(c, curr)
       p = this._states[p]!.link
     }
 
     if (p === -1) {
       this._states[curr]!.link = 0
     } else {
-      const q = this._states[p]!.transitions.get(char)!
+      const q = this._states[p]!.transitions.get(c)!
       if (this._states[p]!.length + 1 === this._states[q]!.length) {
         this._states[curr]!.link = q
       } else {
@@ -67,8 +56,8 @@ export class SuffixAutomaton {
         this._states[clone]!.isCloned = true
         this._states[clone]!.occurrences = 0
 
-        while (p !== -1 && this._states[p]!.transitions.get(char) === q) {
-          this._states[p]!.transitions.set(char, clone)
+        while (p !== -1 && this._states[p]!.transitions.get(c) === q) {
+          this._states[p]!.transitions.set(c, clone)
           p = this._states[p]!.link
         }
 
@@ -78,14 +67,13 @@ export class SuffixAutomaton {
     }
 
     this._last = curr
-    this._text += char
-    this._alphabet.add(char)
+    this._text += c
+    this._occurrencesComputed = false
   }
 
-  build(text: string): void {
-    this._initState()
-    for (let i = 0; i < text.length; i++) {
-      this.extend(text[i]!)
+  addString(s: string): void {
+    for (let i = 0; i < s.length; i++) {
+      this.addChar(s[i]!)
     }
   }
 
@@ -102,48 +90,6 @@ export class SuffixAutomaton {
       state = next
     }
     return true
-  }
-
-  longestCommonSubstring(other: string): string {
-    if (this._text.length === 0 || other.length === 0) return ''
-
-    let state = 0
-    let length = 0
-    let bestLen = 0
-    let bestEnd = -1
-
-    for (let i = 0; i < other.length; i++) {
-      const ch = other[i]!
-      while (state !== 0 && !this._states[state]!.transitions.has(ch)) {
-        state = this._states[state]!.link
-        length = this._states[state]!.length
-      }
-
-      if (this._states[state]!.transitions.has(ch)) {
-        state = this._states[state]!.transitions.get(ch)!
-        length++
-      } else {
-        length = 0
-      }
-
-      if (length > bestLen) {
-        bestLen = length
-        bestEnd = i
-      }
-    }
-
-    if (bestLen === 0) return ''
-    return other.slice(bestEnd - bestLen + 1, bestEnd + 1)
-  }
-
-  countDistinctSubstrings(): number {
-    if (this._text.length === 0) return 0
-
-    let count = 0
-    for (let i = 1; i < this._size; i++) {
-      count += this._states[i]!.length - this._states[this._states[i]!.link]!.length
-    }
-    return count
   }
 
   private _computeOccurrences(): void {
@@ -180,42 +126,81 @@ export class SuffixAutomaton {
     return this._states[state]!.occurrences
   }
 
-  longestSubstringEndingAt(position: number): string {
-    if (position < 0 || position >= this._text.length) return ''
-    if (this._text.length === 0) return ''
+  longestCommonSubstring(other: string): string {
+    if (this._text.length === 0 || other.length === 0) return ''
 
     let state = 0
-    for (let i = 0; i <= position; i++) {
-      state = this._states[state]!.transitions.get(this._text[i]!)!
+    let length = 0
+    let bestLen = 0
+    let bestEnd = -1
+
+    for (let i = 0; i < other.length; i++) {
+      const ch = other[i]!
+      while (state !== 0 && !this._states[state]!.transitions.has(ch)) {
+        state = this._states[state]!.link
+        length = this._states[state]!.length
+      }
+
+      if (this._states[state]!.transitions.has(ch)) {
+        state = this._states[state]!.transitions.get(ch)!
+        length++
+      } else {
+        length = 0
+      }
+
+      if (length > bestLen) {
+        bestLen = length
+        bestEnd = i
+      }
     }
+
+    if (bestLen === 0) return ''
+    return other.slice(bestEnd - bestLen + 1, bestEnd + 1)
+  }
+
+  distinctSubstrings(): number {
+    if (this._text.length === 0) return 0
+
+    let count = 0
+    for (let i = 1; i < this._size; i++) {
+      count += this._states[i]!.length - this._states[this._states[i]!.link]!.length
+    }
+    return count
+  }
+
+  totalSubstrings(): number {
+    return (this._text.length * (this._text.length + 1)) / 2
+  }
+
+  longestSubstring(): string {
+    if (this._text.length <= 1) return ''
 
     this._computeOccurrences()
 
-    let current = state
-    while (current !== 0 && this._states[current]!.occurrences <= 1) {
-      current = this._states[current]!.link
+    let bestLen = 0
+    let bestFirstPos = -1
+
+    for (let i = 1; i < this._size; i++) {
+      if (this._states[i]!.occurrences >= 2 && this._states[i]!.length > bestLen) {
+        bestLen = this._states[i]!.length
+        bestFirstPos = this._states[i]!.firstPos - bestLen + 1
+      }
     }
 
-    if (current === 0) return ''
-
-    const len = Math.min(this._states[current]!.length, position + 1)
-    return this._text.slice(position - len + 1, position + 1)
+    if (bestLen === 0) return ''
+    return this._text.slice(bestFirstPos, bestFirstPos + bestLen)
   }
 
-  getLength(): number {
+  length(): number {
     return this._text.length
-  }
-
-  getAlphabetSize(): number {
-    return this._alphabet.size
   }
 
   clone(): SuffixAutomaton {
     const copy = new SuffixAutomaton()
     copy._text = this._text
-    copy._alphabet = new Set(this._alphabet)
     copy._size = this._size
     copy._last = this._last
+    copy._occurrencesComputed = this._occurrencesComputed
     copy._states = this._states.map(s => ({
       length: s.length,
       link: s.link,
@@ -226,6 +211,34 @@ export class SuffixAutomaton {
     }))
     return copy
   }
+
+  reset(): void {
+    this._states = []
+    this._size = 0
+    this._last = 0
+    this._text = ''
+    this._occurrencesComputed = false
+    this._newState(0, -1)
+  }
+
+  extend(c: string): void {
+    this.addChar(c)
+  }
+
+  build(str: string): void {
+    this.reset()
+    if (str.length > 0) {
+      this.addString(str)
+    }
+  }
+
+  getAlphabetSize(): number {
+    const chars = new Set<string>()
+    for (const ch of this._text) {
+      chars.add(ch)
+    }
+    return chars.size
+  }
 }
 
-export type { SAMState, SAMMatchResult } from './types.js'
+export type { SAMState } from './types.js'

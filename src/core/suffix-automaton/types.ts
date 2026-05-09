@@ -6,8 +6,3 @@ export interface SAMState {
   firstPos: number
   isCloned: boolean
 }
-
-export interface SAMMatchResult {
-  substring: string
-  position: number
-}
