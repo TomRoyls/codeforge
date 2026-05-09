@@ -762,4 +762,324 @@ describe('HyperLogLog', () => {
       }
     })
   })
+
+  describe('clone', () => {
+    it('should produce an independent copy', () => {
+      hll.add('a')
+      hll.add('b')
+      hll.add('c')
+      const cloned = hll.clone()
+      expect(cloned.count()).toBe(hll.count())
+      cloned.add('d')
+      expect(cloned.count()).not.toBe(hll.count())
+    })
+
+    it('should have same registers after clone', () => {
+      for (let i = 0; i < 50; i++) {
+        hll.add(`item-${i}`)
+      }
+      const cloned = hll.clone()
+      expect(cloned.registers()).toEqual(hll.registers())
+    })
+
+    it('should have same precision after clone', () => {
+      const h = new HyperLogLog({ precision: 8 })
+      const cloned = h.clone()
+      expect(cloned.precision()).toBe(8)
+    })
+
+    it('should produce empty clone from empty original', () => {
+      const cloned = hll.clone()
+      expect(cloned.isEmpty()).toBe(true)
+    })
+
+    it('should not affect original when modifying clone', () => {
+      hll.add('original')
+      const cloned = hll.clone()
+      cloned.add('clone-only')
+      expect(hll.count()).toBe(1)
+    })
+
+    it('should not affect clone when modifying original', () => {
+      hll.add('first')
+      const cloned = hll.clone()
+      hll.add('second')
+      expect(cloned.count()).toBe(1)
+    })
+
+    it('should clone with precision 4 correctly', () => {
+      const h = new HyperLogLog({ precision: 4 })
+      h.add('test')
+      const cloned = h.clone()
+      expect(cloned.precision()).toBe(4)
+      expect(cloned.count()).toBe(h.count())
+    })
+
+    it('should clone with precision 16 correctly', () => {
+      const h = new HyperLogLog({ precision: 16 })
+      h.add('test')
+      const cloned = h.clone()
+      expect(cloned.precision()).toBe(16)
+      expect(cloned.count()).toBe(h.count())
+    })
+  })
+
+  describe('clear', () => {
+    it('should clear all data', () => {
+      hll.add('test')
+      hll.clear()
+      expect(hll.isEmpty()).toBe(true)
+    })
+
+    it('should reset count to 0', () => {
+      hll.add('test')
+      hll.clear()
+      expect(hll.count()).toBe(0)
+    })
+
+    it('should allow adding after clear', () => {
+      hll.add('before')
+      hll.clear()
+      hll.add('after')
+      expect(hll.count()).toBe(1)
+    })
+
+    it('should behave same as reset', () => {
+      for (let i = 0; i < 100; i++) {
+        hll.add(`item-${i}`)
+      }
+      const h2 = new HyperLogLog()
+      for (let i = 0; i < 100; i++) {
+        h2.add(`item-${i}`)
+      }
+      hll.clear()
+      h2.reset()
+      expect(hll.registers()).toEqual(h2.registers())
+    })
+  })
+
+  describe('relativeError', () => {
+    it('should return same value as estimateError', () => {
+      expect(hll.relativeError()).toBe(hll.estimateError())
+    })
+
+    it('should return 1.04/sqrt(m)', () => {
+      const m = 1 << 14
+      expect(hll.relativeError()).toBeCloseTo(1.04 / Math.sqrt(m), 6)
+    })
+
+    it('should decrease with higher precision', () => {
+      const h4 = new HyperLogLog({ precision: 4 })
+      const h10 = new HyperLogLog({ precision: 10 })
+      const h16 = new HyperLogLog({ precision: 16 })
+      expect(h10.relativeError()).toBeLessThan(h4.relativeError())
+      expect(h16.relativeError()).toBeLessThan(h10.relativeError())
+    })
+  })
+
+  describe('registerCount', () => {
+    it('should return 16384 for default precision 14', () => {
+      expect(hll.registerCount).toBe(16384)
+    })
+
+    it('should return 16 for precision 4', () => {
+      const h = new HyperLogLog({ precision: 4 })
+      expect(h.registerCount).toBe(16)
+    })
+
+    it('should return 256 for precision 8', () => {
+      const h = new HyperLogLog({ precision: 8 })
+      expect(h.registerCount).toBe(256)
+    })
+
+    it('should return 65536 for precision 16', () => {
+      const h = new HyperLogLog({ precision: 16 })
+      expect(h.registerCount).toBe(65536)
+    })
+
+    it('should equal 2^precision', () => {
+      for (let p = 4; p <= 16; p++) {
+        const h = new HyperLogLog({ precision: p })
+        expect(h.registerCount).toBe(1 << p)
+      }
+    })
+  })
+
+  describe('toJSON', () => {
+    it('should return an object with precision and registers', () => {
+      const json = hll.toJSON()
+      expect(json).toHaveProperty('precision')
+      expect(json).toHaveProperty('registers')
+      expect(typeof json.precision).toBe('number')
+      expect(Array.isArray(json.registers)).toBe(true)
+    })
+
+    it('should return correct precision', () => {
+      const h = new HyperLogLog({ precision: 8 })
+      const json = h.toJSON()
+      expect(json.precision).toBe(8)
+    })
+
+    it('should return all zeros for empty structure', () => {
+      const json = hll.toJSON()
+      expect(json.registers.every(v => v === 0)).toBe(true)
+    })
+
+    it('should return correct register length', () => {
+      const h = new HyperLogLog({ precision: 8 })
+      const json = h.toJSON()
+      expect(json.registers.length).toBe(256)
+    })
+
+    it('should capture non-zero values after adding items', () => {
+      for (let i = 0; i < 100; i++) {
+        hll.add(`item-${i}`)
+      }
+      const json = hll.toJSON()
+      const hasNonZero = json.registers.some(v => v !== 0)
+      expect(hasNonZero).toBe(true)
+    })
+
+    it('should be JSON serializable', () => {
+      hll.add('test')
+      const json = hll.toJSON()
+      const str = JSON.stringify(json)
+      expect(() => JSON.parse(str)).not.toThrow()
+    })
+  })
+
+  describe('fromJSON', () => {
+    it('should restore from JSON', () => {
+      for (let i = 0; i < 100; i++) {
+        hll.add(`item-${i}`)
+      }
+      const json = hll.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      expect(restored.count()).toBe(hll.count())
+    })
+
+    it('should restore registers exactly', () => {
+      hll.add('a')
+      hll.add('b')
+      const json = hll.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      expect(restored.registers()).toEqual(hll.registers())
+    })
+
+    it('should restore precision', () => {
+      const h = new HyperLogLog({ precision: 8 })
+      h.add('test')
+      const json = h.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      expect(restored.precision()).toBe(8)
+    })
+
+    it('should restore empty structure', () => {
+      const json = hll.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      expect(restored.isEmpty()).toBe(true)
+    })
+
+    it('should produce independent instance', () => {
+      hll.add('test')
+      const json = hll.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      restored.add('new-item')
+      expect(hll.count()).not.toBe(restored.count())
+    })
+
+    it('should roundtrip through JSON string', () => {
+      for (let i = 0; i < 50; i++) {
+        hll.add(`item-${i}`)
+      }
+      const str = JSON.stringify(hll.toJSON())
+      const parsed = JSON.parse(str)
+      const restored = HyperLogLog.fromJSON(parsed)
+      expect(restored.registers()).toEqual(hll.registers())
+      expect(restored.count()).toBe(hll.count())
+    })
+
+    it('should support generic type parameter', () => {
+      const h: HyperLogLog<number> = new HyperLogLog({ precision: 10 })
+      h.add(42)
+      h.add(100)
+      const json = h.toJSON()
+      const restored = HyperLogLog.fromJSON<number>(json)
+      expect(restored.count()).toBe(h.count())
+    })
+  })
+
+  describe('generic type support', () => {
+    it('should work with number items', () => {
+      const h: HyperLogLog<number> = new HyperLogLog({ precision: 10 })
+      h.add(1)
+      h.add(2)
+      h.add(3)
+      expect(h.count()).toBe(3)
+    })
+
+    it('should work with object items', () => {
+      const h: HyperLogLog<{ id: number }> = new HyperLogLog({ precision: 10 })
+      h.add({ id: 1 })
+      h.add({ id: 2 })
+      h.add({ id: 3 })
+      expect(h.count()).toBe(3)
+    })
+
+    it('should handle duplicate objects by value', () => {
+      const h: HyperLogLog<{ v: number }> = new HyperLogLog({ precision: 10 })
+      h.add({ v: 1 })
+      h.add({ v: 1 })
+      expect(h.count()).toBe(1)
+    })
+
+    it('should distinguish different objects', () => {
+      const h: HyperLogLog<{ x: number }> = new HyperLogLog({ precision: 10 })
+      h.add({ x: 1 })
+      h.add({ x: 2 })
+      expect(h.count()).toBe(2)
+    })
+
+    it('should work with boolean items', () => {
+      const h: HyperLogLog<boolean> = new HyperLogLog({ precision: 10 })
+      h.add(true)
+      h.add(false)
+      expect(h.count()).toBe(2)
+    })
+
+    it('should handle null items via JSON', () => {
+      const h: HyperLogLog<null> = new HyperLogLog({ precision: 10 })
+      h.add(null)
+      expect(h.isEmpty()).toBe(false)
+    })
+  })
+
+  describe('merge with clone interaction', () => {
+    it('should clone then merge without affecting original', () => {
+      const h1 = new HyperLogLog({ precision: 10 })
+      h1.add('a')
+      const cloned = h1.clone()
+      const h2 = new HyperLogLog({ precision: 10 })
+      h2.add('b')
+      cloned.merge(h2)
+      expect(cloned.count()).toBe(2)
+      expect(h1.count()).toBe(1)
+    })
+  })
+
+  describe('serialization with merge', () => {
+    it('should serialize merged result correctly', () => {
+      const h1 = new HyperLogLog({ precision: 10 })
+      const h2 = new HyperLogLog({ precision: 10 })
+      for (let i = 0; i < 50; i++) {
+        h1.add(`a-${i}`)
+        h2.add(`b-${i}`)
+      }
+      h1.merge(h2)
+      const json = h1.toJSON()
+      const restored = HyperLogLog.fromJSON(json)
+      expect(restored.count()).toBe(h1.count())
+      expect(restored.registers()).toEqual(h1.registers())
+    })
+  })
 })

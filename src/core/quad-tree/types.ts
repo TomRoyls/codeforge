@@ -9,13 +9,3 @@ export interface Rectangle {
   width: number
   height: number
 }
-
-export interface QuadTreeOptions {
-  maxPoints: number
-  maxDepth: number
-}
-
-export const DEFAULT_QUAD_TREE_OPTIONS: QuadTreeOptions = {
-  maxPoints: 4,
-  maxDepth: 8,
-}

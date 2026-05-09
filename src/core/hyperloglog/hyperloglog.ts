@@ -13,19 +13,19 @@ function getAlpha(m: number): number {
   return ALPHA_M
 }
 
-function murmurHash3(str: string, seed: number): number {
+function murmurHash3(data: string, seed: number): number {
   let h1 = seed >>> 0
-  const len = str.length
+  const len = data.length
   const nblocks = len >> 2
   const c1 = 0xcc9e2d51
   const c2 = 0x1b873593
 
   for (let i = 0; i < nblocks; i++) {
     let k1 =
-      (str.charCodeAt(i * 4) & 0xff) |
-      ((str.charCodeAt(i * 4 + 1) & 0xff) << 8) |
-      ((str.charCodeAt(i * 4 + 2) & 0xff) << 16) |
-      ((str.charCodeAt(i * 4 + 3) & 0xff) << 24)
+      (data.charCodeAt(i * 4) & 0xff) |
+      ((data.charCodeAt(i * 4 + 1) & 0xff) << 8) |
+      ((data.charCodeAt(i * 4 + 2) & 0xff) << 16) |
+      ((data.charCodeAt(i * 4 + 3) & 0xff) << 24)
 
     k1 = Math.imul(k1, c1)
     k1 = (k1 << 15) | (k1 >>> 17)
@@ -40,10 +40,10 @@ function murmurHash3(str: string, seed: number): number {
   const tailStart = nblocks * 4
   const tailLen = len & 3
 
-  if (tailLen >= 3) k1 ^= (str.charCodeAt(tailStart + 2) & 0xff) << 16
-  if (tailLen >= 2) k1 ^= (str.charCodeAt(tailStart + 1) & 0xff) << 8
+  if (tailLen >= 3) k1 ^= (data.charCodeAt(tailStart + 2) & 0xff) << 16
+  if (tailLen >= 2) k1 ^= (data.charCodeAt(tailStart + 1) & 0xff) << 8
   if (tailLen >= 1) {
-    k1 ^= str.charCodeAt(tailStart) & 0xff
+    k1 ^= data.charCodeAt(tailStart) & 0xff
     k1 = Math.imul(k1, c1)
     k1 = (k1 << 15) | (k1 >>> 17)
     k1 = Math.imul(k1, c2)
@@ -72,26 +72,32 @@ function countLeadingZeros32(x: number): number {
   return n
 }
 
-export class HyperLogLog {
+export interface HyperLogLogJSON {
+  precision: number
+  registers: number[]
+}
+
+export class HyperLogLog<T = string> {
   private regs: Uint8Array
-  private p: number
-  private m: number
+  private _precision: number
+  private _registerCount: number
 
   constructor(options?: Partial<HyperLogLogOptions>) {
     const opts: HyperLogLogOptions = { ...DEFAULT_HYPERLOGLOG_OPTIONS, ...options }
-    const precision = opts.precision
-    if (precision < 4 || precision > 16) {
-      throw new RangeError(`precision must be between 4 and 16, got ${precision}`)
+    const p = opts.precision
+    if (p < 4 || p > 16) {
+      throw new RangeError(`precision must be between 4 and 16, got ${p}`)
     }
-    this.p = precision
-    this.m = 1 << precision
-    this.regs = new Uint8Array(this.m)
+    this._precision = p
+    this._registerCount = 1 << p
+    this.regs = new Uint8Array(this._registerCount)
   }
 
-  add(item: string): void {
-    const hash = murmurHash3(item, 0x12345678)
-    const idx = hash >>> (32 - this.p)
-    const remaining = ((hash << this.p) | 1) >>> 0
+  add(item: T): void {
+    const str = this.serialize(item)
+    const hash = murmurHash3(str, 0x12345678)
+    const idx = hash >>> (32 - this._precision)
+    const remaining = ((hash << this._precision) | 1) >>> 0
     const rho = countLeadingZeros32(remaining) + 1
     if (rho > this.regs[idx]!) {
       this.regs[idx] = rho
@@ -99,7 +105,7 @@ export class HyperLogLog {
   }
 
   count(): number {
-    const m = this.m
+    const m = this._registerCount
     let sum = 0
     let zeros = 0
     for (let i = 0; i < m; i++) {
@@ -124,11 +130,11 @@ export class HyperLogLog {
     return Math.round(est)
   }
 
-  merge(other: HyperLogLog): void {
-    if (this.p !== other.p) {
+  merge(other: HyperLogLog<T>): void {
+    if (this._precision !== other._precision) {
       throw new Error('Cannot merge HyperLogLog structures with different precisions')
     }
-    for (let i = 0; i < this.m; i++) {
+    for (let i = 0; i < this._registerCount; i++) {
       if (other.regs[i]! > this.regs[i]!) {
         this.regs[i] = other.regs[i]!
       }
@@ -136,26 +142,64 @@ export class HyperLogLog {
   }
 
   reset(): void {
-    this.regs = new Uint8Array(this.m)
+    this.regs = new Uint8Array(this._registerCount)
+  }
+
+  clear(): void {
+    this.regs = new Uint8Array(this._registerCount)
   }
 
   isEmpty(): boolean {
-    for (let i = 0; i < this.m; i++) {
+    for (let i = 0; i < this._registerCount; i++) {
       if (this.regs[i] !== 0) return false
     }
     return true
   }
 
+  clone(): HyperLogLog<T> {
+    const cloned = new HyperLogLog<T>({ precision: this._precision })
+    cloned.regs = new Uint8Array(this.regs)
+    return cloned
+  }
+
   precision(): number {
-    return this.p
+    return this._precision
+  }
+
+  get registerCount(): number {
+    return this._registerCount
   }
 
   registers(): Uint8Array {
     return new Uint8Array(this.regs)
   }
 
+  relativeError(): number {
+    return 1.04 / Math.sqrt(this._registerCount)
+  }
+
   estimateError(): number {
-    return 1.04 / Math.sqrt(this.m)
+    return this.relativeError()
+  }
+
+  toJSON(): HyperLogLogJSON {
+    return {
+      precision: this._precision,
+      registers: Array.from(this.regs),
+    }
+  }
+
+  static fromJSON<T = string>(json: HyperLogLogJSON): HyperLogLog<T> {
+    const hll = new HyperLogLog<T>({ precision: json.precision })
+    for (let i = 0; i < json.registers.length; i++) {
+      hll.regs[i] = json.registers[i]!
+    }
+    return hll
+  }
+
+  private serialize(item: T): string {
+    if (typeof item === 'string') return item
+    return JSON.stringify(item)
   }
 }
 
