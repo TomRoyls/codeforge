@@ -281,14 +281,8 @@ export class TwoThreeTree<T> {
 
     if (this.isLeaf(node)) return
 
-    const childIdx = idx
-    const child = node.children[childIdx]!
-    if (child.keys.length === 1) {
-      this.ensureChildMinKeys(node, childIdx)
-    }
-    const newChildIdx = this.findKeyIndex(node.keys, key)
-    const recurseIdx = Math.min(newChildIdx, node.children.length - 1)
-    this.deleteRec(node.children[recurseIdx]!, key)
+    this.deleteRec(node.children[idx]!, key)
+    this.fixChildUnderflow(node)
   }
 
   private deleteFromInternal(node: TwoThreeNode<T>, idx: number): void {
@@ -296,49 +290,54 @@ export class TwoThreeTree<T> {
     const rightChild = node.children[idx + 1]!
 
     if (leftChild.keys.length >= 2) {
-      const [predKey] = this.getPredecessor(leftChild)
+      const predKey = this.extractPredecessor(leftChild)
       node.keys[idx] = predKey
-      this.deleteRec(leftChild, predKey)
     } else if (rightChild.keys.length >= 2) {
-      const [succKey] = this.getSuccessor(rightChild)
+      const succKey = this.extractSuccessor(rightChild)
       node.keys[idx] = succKey
-      this.deleteRec(rightChild, succKey)
     } else {
       const keyToDelete = node.keys[idx]!
       this.mergeChildren(node, idx)
       this.deleteRec(node.children[idx]!, keyToDelete)
+      this.fixChildUnderflow(node)
     }
   }
 
-  private getPredecessor(node: TwoThreeNode<T>): [T, TwoThreeNode<T>] {
+  private extractPredecessor(node: TwoThreeNode<T>): T {
     if (this.isLeaf(node)) {
-      return [node.keys[node.keys.length - 1]!, node]
+      return node.keys.pop()!
     }
-    return this.getPredecessor(node.children[node.children.length - 1]!)
+    const result = this.extractPredecessor(node.children[node.children.length - 1]!)
+    this.fixChildUnderflow(node)
+    return result
   }
 
-  private getSuccessor(node: TwoThreeNode<T>): [T, TwoThreeNode<T>] {
+  private extractSuccessor(node: TwoThreeNode<T>): T {
     if (this.isLeaf(node)) {
-      return [node.keys[0]!, node]
+      return node.keys.shift()!
     }
-    return this.getSuccessor(node.children[0]!)
+    const result = this.extractSuccessor(node.children[0]!)
+    this.fixChildUnderflow(node)
+    return result
   }
 
-  private ensureChildMinKeys(node: TwoThreeNode<T>, childIdx: number): void {
-    const child = node.children[childIdx]!
-    if (child.keys.length >= 2) return
-
-    const leftSibling = childIdx > 0 ? node.children[childIdx - 1] : null
-    const rightSibling = childIdx < node.children.length - 1 ? node.children[childIdx + 1] : null
-
-    if (leftSibling !== null && leftSibling!.keys.length >= 2) {
-      this.borrowFromLeft(node, childIdx)
-    } else if (rightSibling !== null && rightSibling!.keys.length >= 2) {
-      this.borrowFromRight(node, childIdx)
-    } else if (leftSibling !== null) {
-      this.mergeChildren(node, childIdx - 1)
-    } else if (rightSibling !== null) {
-      this.mergeChildren(node, childIdx)
+  private fixChildUnderflow(node: TwoThreeNode<T>): void {
+    let i = 0
+    while (i < node.children.length) {
+      if (node.children[i]!.keys.length === 0) {
+        if (i > 0 && node.children[i - 1]!.keys.length >= 2) {
+          this.borrowFromLeft(node, i)
+        } else if (i < node.children.length - 1 && node.children[i + 1]!.keys.length >= 2) {
+          this.borrowFromRight(node, i)
+        } else if (i > 0) {
+          this.mergeChildren(node, i - 1)
+          continue
+        } else if (i < node.children.length - 1) {
+          this.mergeChildren(node, i)
+          continue
+        }
+      }
+      i++
     }
   }
 
@@ -349,7 +348,7 @@ export class TwoThreeTree<T> {
     child.keys.unshift(node.keys[childIdx - 1]!)
     node.keys[childIdx - 1] = leftSibling.keys.pop()!
 
-    if (!this.isLeaf(leftSibling)) {
+    if (leftSibling.children.length > 0) {
       child.children.unshift(leftSibling.children.pop()!)
     }
   }
@@ -361,7 +360,7 @@ export class TwoThreeTree<T> {
     child.keys.push(node.keys[childIdx]!)
     node.keys[childIdx] = rightSibling.keys.shift()!
 
-    if (!this.isLeaf(rightSibling)) {
+    if (rightSibling.children.length > 0) {
       child.children.push(rightSibling.children.shift()!)
     }
   }

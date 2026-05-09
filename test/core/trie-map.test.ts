@@ -816,4 +816,163 @@ describe('TrieMap', () => {
       expect(keys).toEqual(['a', 'ab', 'ac'])
     })
   })
+
+  describe('autocomplete', () => {
+    it('should return all keys with given prefix', () => {
+      trie.set('apple', 1)
+      trie.set('application', 2)
+      trie.set('apply', 3)
+      trie.set('banana', 4)
+      const result = trie.autocomplete('app')
+      expect(result).toContain('apple')
+      expect(result).toContain('application')
+      expect(result).toContain('apply')
+      expect(result).not.toContain('banana')
+    })
+
+    it('should respect limit parameter', () => {
+      trie.set('apple', 1)
+      trie.set('application', 2)
+      trie.set('apply', 3)
+      const result = trie.autocomplete('app', 2)
+      expect(result.length).toBe(2)
+    })
+
+    it('should return empty array for non-matching prefix', () => {
+      trie.set('apple', 1)
+      expect(trie.autocomplete('ban')).toEqual([])
+    })
+
+    it('should return empty array for empty trie', () => {
+      expect(trie.autocomplete('a')).toEqual([])
+    })
+
+    it('should handle empty string prefix returning all keys', () => {
+      trie.set('a', 1)
+      trie.set('b', 2)
+      expect(trie.autocomplete('')).toEqual(['a', 'b'])
+    })
+
+    it('should handle limit larger than results', () => {
+      trie.set('a', 1)
+      trie.set('ab', 2)
+      const result = trie.autocomplete('a', 100)
+      expect(result.length).toBe(2)
+    })
+
+    it('should handle limit of 0', () => {
+      trie.set('apple', 1)
+      trie.set('application', 2)
+      expect(trie.autocomplete('app', 0)).toEqual([])
+    })
+
+    it('should handle limit of 1', () => {
+      trie.set('apple', 1)
+      trie.set('application', 2)
+      trie.set('apply', 3)
+      const result = trie.autocomplete('app', 1)
+      expect(result.length).toBe(1)
+    })
+
+    it('should work with Unicode prefixes', () => {
+      trie.set('café', 1)
+      trie.set('cafétière', 2)
+      const result = trie.autocomplete('café')
+      expect(result).toContain('café')
+      expect(result).toContain('cafétière')
+    })
+  })
+
+  describe('clone', () => {
+    it('should create an independent copy', () => {
+      trie.set('a', 1)
+      trie.set('b', 2)
+      const cloned = trie.clone()
+      expect(cloned.size()).toBe(2)
+      expect(cloned.get('a')).toBe(1)
+      expect(cloned.get('b')).toBe(2)
+    })
+
+    it('should not affect original when modified', () => {
+      trie.set('hello', 1)
+      const cloned = trie.clone()
+      cloned.set('world', 2)
+      expect(cloned.has('world')).toBe(true)
+      expect(trie.has('world')).toBe(false)
+    })
+
+    it('should not affect clone when original is modified', () => {
+      trie.set('hello', 1)
+      const cloned = trie.clone()
+      trie.set('world', 2)
+      expect(cloned.has('world')).toBe(false)
+      expect(trie.has('world')).toBe(true)
+    })
+
+    it('should clone an empty trie', () => {
+      const cloned = trie.clone()
+      expect(cloned.size()).toBe(0)
+      expect(cloned.isEmpty()).toBe(true)
+    })
+
+    it('should handle deletion independence', () => {
+      trie.set('a', 1)
+      trie.set('b', 2)
+      const cloned = trie.clone()
+      cloned.delete('a')
+      expect(cloned.has('a')).toBe(false)
+      expect(trie.has('a')).toBe(true)
+    })
+
+    it('should handle clear independence', () => {
+      trie.set('a', 1)
+      const cloned = trie.clone()
+      cloned.clear()
+      expect(cloned.isEmpty()).toBe(true)
+      expect(trie.isEmpty()).toBe(false)
+    })
+  })
+
+  describe('Symbol.iterator', () => {
+    it('should iterate over all entries', () => {
+      trie.set('a', 1)
+      trie.set('b', 2)
+      trie.set('c', 3)
+      const result: Array<[string, number]> = []
+      for (const entry of trie) {
+        result.push(entry)
+      }
+      expect(result.length).toBe(3)
+    })
+
+    it('should yield correct key-value pairs', () => {
+      trie.set('hello', 42)
+      for (const [key, value] of trie) {
+        expect(key).toBe('hello')
+        expect(value).toBe(42)
+      }
+    })
+
+    it('should not iterate for empty trie', () => {
+      const result: Array<[string, number]> = []
+      for (const entry of trie) {
+        result.push(entry)
+      }
+      expect(result).toEqual([])
+    })
+
+    it('should work with spread operator', () => {
+      trie.set('a', 1)
+      trie.set('b', 2)
+      const entries = [...trie]
+      expect(entries.length).toBe(2)
+    })
+
+    it('should work with Array.from', () => {
+      trie.set('x', 10)
+      trie.set('y', 20)
+      const entries = Array.from(trie)
+      expect(entries.length).toBe(2)
+    })
+  })
 })

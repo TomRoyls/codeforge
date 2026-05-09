@@ -1,739 +1,1114 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { QuadTree } from '../../src/core/quad-tree/quad-tree.js'
-import { DEFAULT_QUAD_TREE_OPTIONS } from '../../src/core/quad-tree/types.js'
-import type { QuadTreeOptions, Point, Rectangle } from '../../src/core/quad-tree/types.js'
-
-const FULL_BOUNDS: Rectangle = { x: 0, y: 0, width: 100, height: 100 }
+import type { Point, Rectangle } from '../../src/core/quad-tree/types.js'
 
 describe('QuadTree', () => {
+  const defaultBounds: Rectangle = { x: 0, y: 0, width: 100, height: 100 }
+
   describe('constructor', () => {
-    it('should create a quad tree with default options', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.count()).toBe(0)
-      expect(qt.getBounds()).toEqual(FULL_BOUNDS)
+    it('should create tree with boundary', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.size).toBe(0)
     })
 
-    it('should accept custom options', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1, maxDepth: 3 })
-      qt.insert({ x: 1, y: 1 }, 'a')
-      qt.insert({ x: 2, y: 2 }, 'b')
-      expect(qt.count()).toBe(2)
+    it('should create tree with custom capacity', () => {
+      const qt = new QuadTree(defaultBounds, 8)
+      expect(qt.size).toBe(0)
     })
 
-    it('should accept partial options', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      expect(qt.count()).toBe(0)
+    it('should create tree with custom maxDepth', () => {
+      const qt = new QuadTree(defaultBounds, 4, 6)
+      expect(qt.size).toBe(0)
     })
 
-    it('should use DEFAULT_QUAD_TREE_OPTIONS defaults', () => {
-      expect(DEFAULT_QUAD_TREE_OPTIONS.maxPoints).toBe(4)
-      expect(DEFAULT_QUAD_TREE_OPTIONS.maxDepth).toBe(8)
+    it('should create tree with all parameters', () => {
+      const qt = new QuadTree(defaultBounds, 2, 10)
+      expect(qt.size).toBe(0)
     })
 
-    it('should return depth 0 for new tree', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.getDepth()).toBe(0)
+    it('should have depth 0 for empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.depth).toBe(0)
     })
 
-    it('should accept bounds with non-zero origin', () => {
-      const bounds: Rectangle = { x: 50, y: 50, width: 100, height: 100 }
-      const qt = new QuadTree<string>(bounds)
-      expect(qt.getBounds()).toEqual(bounds)
+    it('should expose bounds', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.bounds).toEqual(defaultBounds)
+    })
+
+    it('should return copy of bounds', () => {
+      const qt = new QuadTree(defaultBounds)
+      const b = qt.bounds
+      b.x = 999
+      expect(qt.bounds.x).toBe(0)
+    })
+
+    it('should handle non-zero origin bounds', () => {
+      const bounds: Rectangle = { x: -50, y: -50, width: 100, height: 100 }
+      const qt = new QuadTree(bounds)
+      expect(qt.bounds).toEqual(bounds)
+    })
+
+    it('should handle large bounds', () => {
+      const bounds: Rectangle = { x: 0, y: 0, width: 10000, height: 10000 }
+      const qt = new QuadTree(bounds)
+      expect(qt.size).toBe(0)
+    })
+
+    it('should handle fractional bounds', () => {
+      const bounds: Rectangle = { x: 0.5, y: 0.5, width: 99.5, height: 99.5 }
+      const qt = new QuadTree(bounds)
+      expect(qt.size).toBe(0)
+    })
+
+    it('should use capacity of 4 by default', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 60, y: 10 })
+      qt.insert({ x: 10, y: 60 })
+      qt.insert({ x: 60, y: 60 })
+      expect(qt.depth).toBe(0)
+      qt.insert({ x: 25, y: 25 })
+      expect(qt.depth).toBe(1)
     })
   })
 
   describe('insert', () => {
-    let qt: QuadTree<string>
+    let qt: QuadTree
 
     beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
+      qt = new QuadTree(defaultBounds)
     })
 
-    it('should insert a point within bounds', () => {
-      expect(qt.insert({ x: 10, y: 10 }, 'a')).toBe(true)
-      expect(qt.count()).toBe(1)
+    it('should insert a single point', () => {
+      expect(qt.insert({ x: 50, y: 50 })).toBe(true)
+      expect(qt.size).toBe(1)
     })
 
     it('should insert multiple points', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.insert({ x: 30, y: 30 }, 'c')
-      expect(qt.count()).toBe(3)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      expect(qt.size).toBe(3)
     })
 
     it('should reject point outside bounds (right)', () => {
-      expect(qt.insert({ x: 100, y: 50 }, 'out')).toBe(false)
-      expect(qt.count()).toBe(0)
+      expect(qt.insert({ x: 100, y: 50 })).toBe(false)
     })
 
     it('should reject point outside bounds (bottom)', () => {
-      expect(qt.insert({ x: 50, y: 100 }, 'out')).toBe(false)
-      expect(qt.count()).toBe(0)
+      expect(qt.insert({ x: 50, y: 100 })).toBe(false)
     })
 
     it('should reject point outside bounds (left)', () => {
-      expect(qt.insert({ x: -1, y: 50 }, 'out')).toBe(false)
+      expect(qt.insert({ x: -1, y: 50 })).toBe(false)
     })
 
     it('should reject point outside bounds (top)', () => {
-      expect(qt.insert({ x: 50, y: -1 }, 'out')).toBe(false)
+      expect(qt.insert({ x: 50, y: -1 })).toBe(false)
     })
 
-    it('should accept point at origin', () => {
-      expect(qt.insert({ x: 0, y: 0 }, 'origin')).toBe(true)
+    it('should accept point on left edge', () => {
+      expect(qt.insert({ x: 0, y: 50 })).toBe(true)
     })
 
-    it('should allow duplicate points at same coordinates', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 10, y: 10 }, 'b')
-      expect(qt.count()).toBe(2)
+    it('should accept point on top edge', () => {
+      expect(qt.insert({ x: 50, y: 0 })).toBe(true)
+    })
+
+    it('should accept point on corner (0,0)', () => {
+      expect(qt.insert({ x: 0, y: 0 })).toBe(true)
+    })
+
+    it('should allow duplicate points', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.size).toBe(2)
+    })
+
+    it('should accept fractional coordinates', () => {
+      expect(qt.insert({ x: 50.5, y: 50.5 })).toBe(true)
+      expect(qt.size).toBe(1)
+    })
+
+    it('should accept negative coordinates within bounds', () => {
+      const bounds: Rectangle = { x: -100, y: -100, width: 200, height: 200 }
+      const q = new QuadTree(bounds)
+      expect(q.insert({ x: -50, y: -50 })).toBe(true)
+      expect(q.size).toBe(1)
+    })
+
+    it('should handle inserting many points triggering subdivision', () => {
+      for (let i = 0; i < 100; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      expect(qt.size).toBe(100)
+      expect(qt.depth).toBeGreaterThan(0)
+    })
+
+    it('should insert at exact center', () => {
+      expect(qt.insert({ x: 50, y: 50 })).toBe(true)
     })
 
     it('should return boolean', () => {
-      expect(typeof qt.insert({ x: 10, y: 10 }, 'a')).toBe('boolean')
-    })
-
-    it('should handle floating point coordinates', () => {
-      expect(qt.insert({ x: 0.5, y: 0.5 }, 'fp')).toBe(true)
-      expect(qt.count()).toBe(1)
-    })
-
-    it('should insert at edge coordinates (0-based)', () => {
-      expect(qt.insert({ x: 0, y: 0 }, 'tl')).toBe(true)
-      expect(qt.insert({ x: 99.9, y: 99.9 }, 'near-br')).toBe(true)
-    })
-
-    it('should insert many points triggering subdivision', () => {
-      for (let i = 0; i < 20; i++) {
-        qt.insert({ x: i * 4, y: i * 4 }, `p${i}`)
-      }
-      expect(qt.count()).toBe(20)
+      const result = qt.insert({ x: 50, y: 50 })
+      expect(typeof result).toBe('boolean')
     })
   })
 
   describe('remove', () => {
-    let qt: QuadTree<string>
+    let qt: QuadTree
 
     beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.insert({ x: 30, y: 30 }, 'c')
+      qt = new QuadTree(defaultBounds)
     })
 
     it('should remove an existing point', () => {
-      expect(qt.remove({ x: 10, y: 10 })).toBe(true)
-      expect(qt.count()).toBe(2)
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.remove({ x: 50, y: 50 })).toBe(true)
+      expect(qt.size).toBe(0)
     })
 
     it('should return false for non-existent point', () => {
-      expect(qt.remove({ x: 99, y: 99 })).toBe(false)
-      expect(qt.count()).toBe(3)
+      expect(qt.remove({ x: 50, y: 50 })).toBe(false)
     })
 
-    it('should remove all points one by one', () => {
-      qt.remove({ x: 10, y: 10 })
+    it('should remove correct point among many', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
       qt.remove({ x: 20, y: 20 })
-      qt.remove({ x: 30, y: 30 })
-      expect(qt.count()).toBe(0)
+      expect(qt.size).toBe(2)
+      expect(qt.contains({ x: 10, y: 10 })).toBe(true)
+      expect(qt.contains({ x: 20, y: 20 })).toBe(false)
+      expect(qt.contains({ x: 30, y: 30 })).toBe(true)
     })
 
-    it('should handle removing from empty tree', () => {
-      qt.clear()
-      expect(qt.remove({ x: 10, y: 10 })).toBe(false)
-    })
-
-    it('should remove first match when duplicates exist', () => {
-      qt.insert({ x: 10, y: 10 }, 'dup')
-      expect(qt.remove({ x: 10, y: 10 })).toBe(true)
-      expect(qt.count()).toBe(3)
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('dup')
-    })
-
-    it('should return false for point outside bounds', () => {
-      expect(qt.remove({ x: -1, y: -1 })).toBe(false)
-    })
-
-    it('should allow re-insertion after removal', () => {
-      qt.remove({ x: 10, y: 10 })
-      qt.insert({ x: 10, y: 10 }, 'new')
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('new')
-    })
-
-    it('should not affect other points when removing', () => {
-      qt.remove({ x: 20, y: 20 })
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('a')
-      expect(qt.queryPoint({ x: 30, y: 30 })).toBe('c')
+    it('should only remove one duplicate', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 50, y: 50 })
+      qt.remove({ x: 50, y: 50 })
+      expect(qt.size).toBe(1)
+      expect(qt.contains({ x: 50, y: 50 })).toBe(true)
     })
 
     it('should remove from subdivided tree', () => {
-      const sub = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      for (let i = 0; i < 10; i++) {
-        sub.insert({ x: i * 9, y: i * 9 }, `p${i}`)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
       }
-      expect(sub.remove({ x: 0, y: 0 })).toBe(true)
-      expect(sub.count()).toBe(9)
+      expect(qt.remove({ x: 0, y: 0 })).toBe(true)
+      expect(qt.size).toBe(19)
     })
 
-    it('should return boolean', () => {
-      expect(typeof qt.remove({ x: 10, y: 10 })).toBe('boolean')
-    })
-  })
-
-  describe('queryRange', () => {
-    let qt: QuadTree<string>
-
-    beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.insert({ x: 30, y: 30 }, 'c')
-      qt.insert({ x: 40, y: 40 }, 'd')
-      qt.insert({ x: 50, y: 50 }, 'e')
+    it('should return false for point outside bounds', () => {
+      expect(qt.remove({ x: 200, y: 200 })).toBe(false)
     })
 
-    it('should return points within range', () => {
-      const results = qt.queryRange({ x: 5, y: 5, width: 20, height: 20 })
-      expect(results).toHaveLength(2)
-      const values = results.map((r) => r.value).sort()
-      expect(values).toEqual(['a', 'b'])
+    it('should handle remove from empty tree', () => {
+      expect(qt.remove({ x: 50, y: 50 })).toBe(false)
     })
 
-    it('should return empty array for range with no points', () => {
-      const results = qt.queryRange({ x: 80, y: 80, width: 10, height: 10 })
-      expect(results).toHaveLength(0)
-    })
-
-    it('should return all points for full range', () => {
-      const results = qt.queryRange(FULL_BOUNDS)
-      expect(results).toHaveLength(5)
-    })
-
-    it('should return single point for narrow range', () => {
-      const results = qt.queryRange({ x: 10, y: 10, width: 1, height: 1 })
-      expect(results).toHaveLength(1)
-      expect(results[0]!.value).toBe('a')
-    })
-
-    it('should return empty for range outside bounds', () => {
-      const results = qt.queryRange({ x: 200, y: 200, width: 10, height: 10 })
-      expect(results).toHaveLength(0)
-    })
-
-    it('should handle range overlapping partial bounds', () => {
-      const results = qt.queryRange({ x: -10, y: -10, width: 30, height: 30 })
-      expect(results.length).toBeGreaterThanOrEqual(1)
-    })
-
-    it('should return point and value pairs', () => {
-      const results = qt.queryRange({ x: 0, y: 0, width: 15, height: 15 })
-      expect(results[0]).toEqual({ point: { x: 10, y: 10 }, value: 'a' })
-    })
-
-    it('should work on subdivided tree', () => {
-      const sub = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      for (let i = 0; i < 10; i++) {
-        sub.insert({ x: i * 9, y: i * 9 }, `p${i}`)
-      }
-      const results = sub.queryRange({ x: 0, y: 0, width: 20, height: 20 })
-      expect(results.length).toBeGreaterThanOrEqual(2)
-    })
-
-    it('should return empty array for empty tree', () => {
-      const empty = new QuadTree<string>(FULL_BOUNDS)
-      expect(empty.queryRange(FULL_BOUNDS)).toEqual([])
-    })
-
-    it('should handle zero-size range', () => {
-      const results = qt.queryRange({ x: 10, y: 10, width: 0, height: 0 })
-      expect(results).toHaveLength(0)
-    })
-  })
-
-  describe('queryPoint', () => {
-    let qt: QuadTree<string>
-
-    beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-    })
-
-    it('should return value for existing point', () => {
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('a')
-    })
-
-    it('should return undefined for non-existent point', () => {
-      expect(qt.queryPoint({ x: 99, y: 99 })).toBeUndefined()
-    })
-
-    it('should return undefined for point outside bounds', () => {
-      expect(qt.queryPoint({ x: -1, y: -1 })).toBeUndefined()
-    })
-
-    it('should return first value for duplicate points', () => {
-      qt.insert({ x: 10, y: 10 }, 'dup')
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('a')
-    })
-
-    it('should return undefined for empty tree', () => {
-      const empty = new QuadTree<string>(FULL_BOUNDS)
-      expect(empty.queryPoint({ x: 10, y: 10 })).toBeUndefined()
-    })
-
-    it('should work after removal', () => {
+    it('should decrement size correctly on multiple removes', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
       qt.remove({ x: 10, y: 10 })
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBeUndefined()
+      expect(qt.size).toBe(2)
+      qt.remove({ x: 30, y: 30 })
+      expect(qt.size).toBe(1)
+      qt.remove({ x: 20, y: 20 })
+      expect(qt.size).toBe(0)
     })
 
-    it('should work on subdivided tree', () => {
-      const sub = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1 })
-      sub.insert({ x: 10, y: 10 }, 'a')
-      sub.insert({ x: 20, y: 20 }, 'b')
-      expect(sub.queryPoint({ x: 20, y: 20 })).toBe('b')
+    it('should not affect other points after removal', () => {
+      const points: Point[] = [
+        { x: 10, y: 10 },
+        { x: 20, y: 20 },
+        { x: 80, y: 80 },
+      ]
+      for (const p of points) qt.insert(p)
+      qt.remove({ x: 20, y: 20 })
+      const all = qt.toArray()
+      expect(all).toContainEqual({ x: 10, y: 10 })
+      expect(all).toContainEqual({ x: 80, y: 80 })
+      expect(all).toHaveLength(2)
     })
 
-    it('should handle floating point coordinates', () => {
-      qt.insert({ x: 0.5, y: 0.5 }, 'fp')
-      expect(qt.queryPoint({ x: 0.5, y: 0.5 })).toBe('fp')
+    it('should remove with exact coordinate match', () => {
+      qt.insert({ x: 50.5, y: 50.5 })
+      expect(qt.remove({ x: 50.5, y: 50.5 })).toBe(true)
+      expect(qt.remove({ x: 50, y: 50 })).toBe(false)
     })
   })
 
   describe('contains', () => {
-    let qt: QuadTree<string>
+    let qt: QuadTree
 
     beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
+      qt = new QuadTree(defaultBounds)
     })
 
-    it('should return true for point inside bounds', () => {
+    it('should find inserted point', () => {
+      qt.insert({ x: 50, y: 50 })
       expect(qt.contains({ x: 50, y: 50 })).toBe(true)
     })
 
-    it('should return true for point at origin', () => {
+    it('should not find non-inserted point', () => {
+      expect(qt.contains({ x: 50, y: 50 })).toBe(false)
+    })
+
+    it('should not find point in empty tree', () => {
+      expect(qt.contains({ x: 50, y: 50 })).toBe(false)
+    })
+
+    it('should find points in subdivided tree', () => {
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
       expect(qt.contains({ x: 0, y: 0 })).toBe(true)
+      expect(qt.contains({ x: 95, y: 95 })).toBe(true)
     })
 
-    it('should return false for point outside bounds', () => {
-      expect(qt.contains({ x: -1, y: -1 })).toBe(false)
+    it('should not confuse similar points', () => {
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.contains({ x: 50.001, y: 50 })).toBe(false)
     })
 
-    it('should return false for point on right edge (exclusive)', () => {
-      expect(qt.contains({ x: 100, y: 50 })).toBe(false)
+    it('should handle point outside bounds', () => {
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.contains({ x: 200, y: 200 })).toBe(false)
     })
 
-    it('should return false for point on bottom edge (exclusive)', () => {
-      expect(qt.contains({ x: 50, y: 100 })).toBe(false)
+    it('should find point after removal of another', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.remove({ x: 10, y: 10 })
+      expect(qt.contains({ x: 20, y: 20 })).toBe(true)
+    })
+
+    it('should not find removed point', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.remove({ x: 50, y: 50 })
+      expect(qt.contains({ x: 50, y: 50 })).toBe(false)
     })
   })
 
-  describe('count', () => {
-    let qt: QuadTree<string>
+  describe('queryRange', () => {
+    let qt: QuadTree
 
     beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
+      qt = new QuadTree(defaultBounds, 4)
     })
 
-    it('should return 0 for empty tree', () => {
-      expect(qt.count()).toBe(0)
+    it('should return empty array for empty tree', () => {
+      expect(qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })).toEqual([])
     })
 
-    it('should return correct count after inserts', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      expect(qt.count()).toBe(2)
+    it('should find point in range', () => {
+      qt.insert({ x: 25, y: 25 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
+      expect(result).toContainEqual({ x: 25, y: 25 })
     })
 
-    it('should return correct count after removals', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.remove({ x: 10, y: 10 })
-      expect(qt.count()).toBe(1)
+    it('should exclude point outside range', () => {
+      qt.insert({ x: 75, y: 75 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
+      expect(result).toHaveLength(0)
     })
 
-    it('should return 0 after clear', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.clear()
-      expect(qt.count()).toBe(0)
+    it('should find multiple points in range', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 80, y: 80 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
+      expect(result).toHaveLength(2)
     })
 
-    it('should not count failed inserts', () => {
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 200, y: 200 }, 'out')
-      expect(qt.count()).toBe(1)
+    it('should handle range covering entire bounds', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 90, y: 90 })
+      const result = qt.queryRange(defaultBounds)
+      expect(result).toHaveLength(2)
+    })
+
+    it('should handle range outside all points', () => {
+      qt.insert({ x: 10, y: 10 })
+      const result = qt.queryRange({ x: 50, y: 50, width: 50, height: 50 })
+      expect(result).toHaveLength(0)
+    })
+
+    it('should handle non-overlapping range', () => {
+      qt.insert({ x: 10, y: 10 })
+      const result = qt.queryRange({ x: 200, y: 200, width: 50, height: 50 })
+      expect(result).toHaveLength(0)
+    })
+
+    it('should find point on range boundary (left)', () => {
+      qt.insert({ x: 25, y: 25 })
+      const result = qt.queryRange({ x: 25, y: 0, width: 50, height: 100 })
+      expect(result).toHaveLength(1)
+    })
+
+    it('should find point on range boundary (top)', () => {
+      qt.insert({ x: 25, y: 25 })
+      const result = qt.queryRange({ x: 0, y: 25, width: 100, height: 50 })
+      expect(result).toHaveLength(1)
+    })
+
+    it('should not find point on exclusive boundary (right)', () => {
+      qt.insert({ x: 75, y: 25 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 75, height: 100 })
+      expect(result).toHaveLength(0)
+    })
+
+    it('should not find point on exclusive boundary (bottom)', () => {
+      qt.insert({ x: 25, y: 75 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 75 })
+      expect(result).toHaveLength(0)
+    })
+
+    it('should handle many points in subdivided tree', () => {
+      for (let i = 0; i < 50; i++) {
+        qt.insert({ x: i * 2, y: i * 2 })
+      }
+      const result = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
+      expect(result.length).toBeGreaterThan(0)
+      for (const p of result) {
+        expect(p.x).toBeGreaterThanOrEqual(0)
+        expect(p.x).toBeLessThan(50)
+        expect(p.y).toBeGreaterThanOrEqual(0)
+        expect(p.y).toBeLessThan(50)
+      }
+    })
+
+    it('should return all points for full coverage range', () => {
+      for (let i = 0; i < 30; i++) {
+        qt.insert({ x: i * 3, y: i * 3 })
+      }
+      const result = qt.queryRange(defaultBounds)
+      expect(result).toHaveLength(30)
+    })
+  })
+
+  describe('queryRadius', () => {
+    let qt: QuadTree
+
+    beforeEach(() => {
+      qt = new QuadTree(defaultBounds)
+    })
+
+    it('should return empty for empty tree', () => {
+      expect(qt.queryRadius({ x: 50, y: 50 }, 10)).toEqual([])
+    })
+
+    it('should find point within radius', () => {
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 10)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should exclude point outside radius', () => {
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 0, y: 0 }, 10)
+      expect(result).toHaveLength(0)
+    })
+
+    it('should find points at exact radius boundary', () => {
+      qt.insert({ x: 60, y: 50 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 10)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should find multiple points within radius', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 55, y: 50 })
+      qt.insert({ x: 50, y: 55 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 10)
+      expect(result).toHaveLength(3)
+    })
+
+    it('should handle zero radius', () => {
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 0)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should handle large radius', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 90, y: 90 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 100)
+      expect(result).toHaveLength(2)
+    })
+
+    it('should work with many points in subdivided tree', () => {
+      for (let i = 0; i < 50; i++) {
+        qt.insert({ x: i * 2, y: i * 2 })
+      }
+      const result = qt.queryRadius({ x: 50, y: 50 }, 20)
+      for (const p of result) {
+        const dx = p.x - 50
+        const dy = p.y - 50
+        expect(Math.sqrt(dx * dx + dy * dy)).toBeLessThanOrEqual(20)
+      }
+    })
+
+    it('should handle radius outside bounds', () => {
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 200, y: 200 }, 10)
+      expect(result).toHaveLength(0)
+    })
+
+    it('should find points diagonally', () => {
+      qt.insert({ x: 55, y: 55 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 8)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should exclude points just outside radius', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 50, y: 61 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 10)
+      expect(result).toHaveLength(1)
+    })
+  })
+
+  describe('nearestNeighbor', () => {
+    let qt: QuadTree
+
+    beforeEach(() => {
+      qt = new QuadTree(defaultBounds)
+    })
+
+    it('should return undefined for empty tree', () => {
+      expect(qt.nearestNeighbor({ x: 50, y: 50 })).toBeUndefined()
+    })
+
+    it('should return the only point', () => {
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.nearestNeighbor({ x: 50, y: 50 })).toEqual({ x: 50, y: 50 })
+    })
+
+    it('should find closest of two points', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 90, y: 90 })
+      expect(qt.nearestNeighbor({ x: 5, y: 5 })).toEqual({ x: 10, y: 10 })
+    })
+
+    it('should find closest of many points', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 80, y: 80 })
+      qt.insert({ x: 90, y: 90 })
+      expect(qt.nearestNeighbor({ x: 15, y: 15 })).toEqual({ x: 10, y: 10 })
+    })
+
+    it('should return exact match', () => {
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 30, y: 30 })
+      expect(qt.nearestNeighbor({ x: 50, y: 50 })).toEqual({ x: 50, y: 50 })
+    })
+
+    it('should work in subdivided tree', () => {
+      for (let i = 0; i < 30; i++) {
+        qt.insert({ x: i * 3, y: i * 3 })
+      }
+      const nn = qt.nearestNeighbor({ x: 50, y: 50 })
+      expect(nn).toBeDefined()
+      if (nn) {
+        const all = qt.toArray()
+        let minDist = Infinity
+        for (const p of all) {
+          const dx = p.x - 50
+          const dy = p.y - 50
+          const d = Math.sqrt(dx * dx + dy * dy)
+          if (d < minDist) minDist = d
+        }
+        const dx = nn.x - 50
+        const dy = nn.y - 50
+        expect(Math.sqrt(dx * dx + dy * dy)).toBeCloseTo(minDist)
+      }
+    })
+
+    it('should handle query outside point cluster', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 11, y: 11 })
+      qt.insert({ x: 12, y: 12 })
+      const nn = qt.nearestNeighbor({ x: 90, y: 90 })
+      expect(nn).toEqual({ x: 12, y: 12 })
+    })
+
+    it('should handle single point tree', () => {
+      qt.insert({ x: 75, y: 75 })
+      expect(qt.nearestNeighbor({ x: 0, y: 0 })).toEqual({ x: 75, y: 75 })
+    })
+
+    it('should work after removal', () => {
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.remove({ x: 20, y: 20 })
+      expect(qt.nearestNeighbor({ x: 15, y: 15 })).toEqual({ x: 10, y: 10 })
     })
   })
 
   describe('clear', () => {
-    let qt: QuadTree<string>
-
-    beforeEach(() => {
-      qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
+    it('should clear all points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 10, y: 10 })
+      qt.clear()
+      expect(qt.size).toBe(0)
     })
 
-    it('should remove all points', () => {
+    it('should clear subdivided tree', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
       qt.clear()
-      expect(qt.count()).toBe(0)
+      expect(qt.size).toBe(0)
+      expect(qt.depth).toBe(0)
     })
 
-    it('should allow insert after clear', () => {
+    it('should allow re-insertion after clear', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
       qt.clear()
-      qt.insert({ x: 30, y: 30 }, 'c')
-      expect(qt.count()).toBe(1)
+      qt.insert({ x: 25, y: 25 })
+      expect(qt.size).toBe(1)
+      expect(qt.contains({ x: 25, y: 25 })).toBe(true)
     })
 
-    it('should preserve bounds after clear', () => {
+    it('should handle clear on empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
       qt.clear()
-      expect(qt.getBounds()).toEqual(FULL_BOUNDS)
+      expect(qt.size).toBe(0)
     })
 
     it('should reset depth after clear', () => {
-      qt.clear()
-      expect(qt.getDepth()).toBe(0)
-    })
-
-    it('should return void', () => {
-      expect(qt.clear()).toBeUndefined()
-    })
-  })
-
-  describe('getBounds', () => {
-    it('should return the bounds', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.getBounds()).toEqual(FULL_BOUNDS)
-    })
-
-    it('should return a copy of bounds', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      const bounds = qt.getBounds()
-      bounds.x = 999
-      expect(qt.getBounds().x).toBe(0)
-    })
-
-    it('should return custom bounds', () => {
-      const bounds: Rectangle = { x: 10, y: 20, width: 50, height: 60 }
-      const qt = new QuadTree<string>(bounds)
-      expect(qt.getBounds()).toEqual(bounds)
-    })
-  })
-
-  describe('getDepth', () => {
-    it('should return 0 for empty tree', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.getDepth()).toBe(0)
-    })
-
-    it('should return 0 when no subdivision needed', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      expect(qt.getDepth()).toBe(0)
-    })
-
-    it('should return 1 after first subdivision', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 60, y: 10 }, 'b')
-      qt.insert({ x: 10, y: 60 }, 'c')
-      expect(qt.getDepth()).toBe(1)
-    })
-
-    it('should increase depth with more subdivisions', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1, maxDepth: 8 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 11, y: 11 }, 'b')
-      qt.insert({ x: 12, y: 12 }, 'c')
-      qt.insert({ x: 13, y: 13 }, 'd')
-      expect(qt.getDepth()).toBeGreaterThanOrEqual(1)
-    })
-
-    it('should respect maxDepth limit', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1, maxDepth: 2 })
-      for (let i = 0; i < 10; i++) {
-        qt.insert({ x: 10 + i, y: 10 + i }, `p${i}`)
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
       }
-      expect(qt.getDepth()).toBeLessThanOrEqual(2)
+      expect(qt.depth).toBeGreaterThan(0)
+      qt.clear()
+      expect(qt.depth).toBe(0)
     })
   })
 
-  describe('getAllPoints', () => {
-    it('should return empty array for empty tree', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.getAllPoints()).toEqual([])
+  describe('size', () => {
+    it('should return 0 for empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.size).toBe(0)
     })
 
-    it('should return all inserted points', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      const points = qt.getAllPoints()
-      expect(points).toHaveLength(2)
-      expect(points).toContainEqual({ x: 10, y: 10 })
-      expect(points).toContainEqual({ x: 20, y: 20 })
-    })
-
-    it('should return empty after clear', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.clear()
-      expect(qt.getAllPoints()).toEqual([])
+    it('should reflect insertions', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      expect(qt.size).toBe(3)
     })
 
     it('should reflect removals', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
       qt.remove({ x: 10, y: 10 })
-      expect(qt.getAllPoints()).toHaveLength(1)
+      expect(qt.size).toBe(1)
+    })
+
+    it('should be readonly-like property', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(typeof qt.size).toBe('number')
+    })
+  })
+
+  describe('depth', () => {
+    it('should be 0 for empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.depth).toBe(0)
+    })
+
+    it('should be 0 before subdivision', () => {
+      const qt = new QuadTree(defaultBounds, 4)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      expect(qt.depth).toBe(0)
+    })
+
+    it('should increase after subdivision', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      expect(qt.depth).toBeGreaterThan(0)
+    })
+
+    it('should respect maxDepth', () => {
+      const qt = new QuadTree(defaultBounds, 1, 3)
+      for (let i = 0; i < 50; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      expect(qt.depth).toBeLessThanOrEqual(3)
+    })
+
+    it('should be 0 after clear', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
+      qt.clear()
+      expect(qt.depth).toBe(0)
+    })
+  })
+
+  describe('bounds', () => {
+    it('should return the boundary', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.bounds).toEqual(defaultBounds)
+    })
+
+    it('should return copy', () => {
+      const qt = new QuadTree(defaultBounds)
+      const b = qt.bounds
+      b.x = 999
+      expect(qt.bounds.x).toBe(0)
+    })
+
+    it('should persist after operations', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      qt.remove({ x: 50, y: 50 })
+      qt.clear()
+      expect(qt.bounds).toEqual(defaultBounds)
     })
   })
 
   describe('forEach', () => {
-    it('should iterate over all points', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      const results: Array<{ point: Point; value: string }> = []
-      qt.forEach((point, value) => results.push({ point, value }))
-      expect(results).toHaveLength(2)
+    it('should iterate over empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      const points: Point[] = []
+      qt.forEach((p) => points.push(p))
+      expect(points).toEqual([])
     })
 
-    it('should not iterate on empty tree', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      let count = 0
-      qt.forEach(() => count++)
-      expect(count).toBe(0)
+    it('should iterate over single point', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const points: Point[] = []
+      qt.forEach((p) => points.push(p))
+      expect(points).toEqual([{ x: 50, y: 50 }])
     })
 
-    it('should provide correct point and value', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 5, y: 5 }, 'test')
-      qt.forEach((point, value) => {
-        expect(point).toEqual({ x: 5, y: 5 })
-        expect(value).toBe('test')
-      })
+    it('should iterate over multiple points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      const points: Point[] = []
+      qt.forEach((p) => points.push(p))
+      expect(points).toHaveLength(3)
     })
 
-    it('should work on subdivided tree', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.insert({ x: 30, y: 30 }, 'c')
-      let count = 0
-      qt.forEach(() => count++)
-      expect(count).toBe(3)
+    it('should iterate over subdivided tree', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
+      const points: Point[] = []
+      qt.forEach((p) => points.push(p))
+      expect(points).toHaveLength(20)
     })
 
-    it('should return void', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      expect(qt.forEach(() => {})).toBeUndefined()
+    it('should provide point argument', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 42, y: 42 })
+      let found: Point | undefined
+      qt.forEach((p) => { found = p })
+      expect(found).toEqual({ x: 42, y: 42 })
+    })
+  })
+
+  describe('toArray', () => {
+    it('should return empty array for empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.toArray()).toEqual([])
+    })
+
+    it('should return all points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      const arr = qt.toArray()
+      expect(arr).toHaveLength(2)
+    })
+
+    it('should return points from subdivided tree', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
+      expect(qt.toArray()).toHaveLength(20)
+    })
+
+    it('should return new array each call', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const a1 = qt.toArray()
+      const a2 = qt.toArray()
+      expect(a1).not.toBe(a2)
+      expect(a1).toEqual(a2)
+    })
+  })
+
+  describe('clone', () => {
+    it('should clone empty tree', () => {
+      const qt = new QuadTree(defaultBounds)
+      const cloned = qt.clone()
+      expect(cloned.size).toBe(0)
+    })
+
+    it('should clone with all points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      const cloned = qt.clone()
+      expect(cloned.size).toBe(3)
+    })
+
+    it('should be independent', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const cloned = qt.clone()
+      cloned.insert({ x: 25, y: 25 })
+      expect(qt.size).toBe(1)
+      expect(cloned.size).toBe(2)
+    })
+
+    it('should preserve bounds', () => {
+      const qt = new QuadTree(defaultBounds)
+      const cloned = qt.clone()
+      expect(cloned.bounds).toEqual(defaultBounds)
+    })
+
+    it('should clone subdivided tree', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i * 5, y: i * 5 })
+      }
+      const cloned = qt.clone()
+      expect(cloned.size).toBe(20)
+      expect(cloned.toArray()).toHaveLength(20)
+    })
+
+    it('should not share points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const cloned = qt.clone()
+      cloned.remove({ x: 50, y: 50 })
+      expect(qt.contains({ x: 50, y: 50 })).toBe(true)
+      expect(cloned.contains({ x: 50, y: 50 })).toBe(false)
+    })
+
+    it('should preserve capacity and maxDepth', () => {
+      const qt = new QuadTree(defaultBounds, 2, 5)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 20, y: 20 })
+      qt.insert({ x: 30, y: 30 })
+      const cloned = qt.clone()
+      cloned.insert({ x: 40, y: 40 })
+      cloned.insert({ x: 50, y: 50 })
+      expect(cloned.size).toBe(5)
     })
   })
 
   describe('subdivision', () => {
-    it('should subdivide when maxPoints exceeded', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 60, y: 60 }, 'b')
-      expect(qt.getDepth()).toBe(0)
-      qt.insert({ x: 10, y: 60 }, 'c')
-      expect(qt.getDepth()).toBe(1)
+    it('should subdivide into NW/NE/SW/SE', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 60, y: 10 })
+      qt.insert({ x: 10, y: 60 })
+      expect(qt.depth).toBeGreaterThan(0)
+      expect(qt.size).toBe(3)
     })
 
-    it('should distribute points to correct quadrants', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      qt.insert({ x: 10, y: 10 }, 'nw')
-      qt.insert({ x: 60, y: 10 }, 'ne')
-      qt.insert({ x: 10, y: 60 }, 'sw')
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('nw')
-      expect(qt.queryPoint({ x: 60, y: 10 })).toBe('ne')
-      expect(qt.queryPoint({ x: 10, y: 60 })).toBe('sw')
+    it('should distribute points to children', () => {
+      const qt = new QuadTree(defaultBounds, 1)
+      qt.insert({ x: 10, y: 10 })
+      qt.insert({ x: 60, y: 10 })
+      qt.insert({ x: 10, y: 60 })
+      qt.insert({ x: 60, y: 60 })
+      expect(qt.size).toBe(4)
+      const all = qt.toArray()
+      expect(all).toHaveLength(4)
     })
 
-    it('should respect maxDepth and stop subdividing', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1, maxDepth: 1 })
-      qt.insert({ x: 1, y: 1 }, 'a')
-      qt.insert({ x: 2, y: 2 }, 'b')
-      qt.insert({ x: 3, y: 3 }, 'c')
-      qt.insert({ x: 4, y: 4 }, 'd')
-      qt.insert({ x: 5, y: 5 }, 'e')
-      expect(qt.getDepth()).toBe(1)
-      expect(qt.count()).toBe(5)
+    it('should handle points at subdivision boundary', () => {
+      const qt = new QuadTree(defaultBounds, 1)
+      qt.insert({ x: 0, y: 0 })
+      qt.insert({ x: 50, y: 0 })
+      qt.insert({ x: 0, y: 50 })
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.size).toBe(4)
     })
 
-    it('should query correctly after subdivision', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 80, y: 80 }, 'b')
-      const results = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
-      expect(results).toHaveLength(1)
-      expect(results[0]!.value).toBe('a')
+    it('should handle deep subdivision', () => {
+      const qt = new QuadTree(defaultBounds, 1, 10)
+      qt.insert({ x: 0, y: 0 })
+      qt.insert({ x: 0, y: 0 })
+      qt.insert({ x: 0, y: 0 })
+      qt.insert({ x: 0, y: 0 })
+      qt.insert({ x: 0, y: 0 })
+      expect(qt.depth).toBeGreaterThan(0)
+      expect(qt.size).toBe(5)
     })
 
-    it('should handle remove after subdivision', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 1 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 80, y: 80 }, 'b')
-      expect(qt.remove({ x: 10, y: 10 })).toBe(true)
-      expect(qt.count()).toBe(1)
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBeUndefined()
+    it('should respect maxDepth limit', () => {
+      const qt = new QuadTree(defaultBounds, 1, 2)
+      for (let i = 0; i < 20; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      expect(qt.depth).toBeLessThanOrEqual(2)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('should handle point at (0, 0)', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.insert({ x: 0, y: 0 })).toBe(true)
+      expect(qt.contains({ x: 0, y: 0 })).toBe(true)
+    })
+
+    it('should handle point at near boundary (99.99, 99.99)', () => {
+      const qt = new QuadTree(defaultBounds)
+      expect(qt.insert({ x: 99.99, y: 99.99 })).toBe(true)
+    })
+
+    it('should handle many duplicate inserts', () => {
+      const qt = new QuadTree(defaultBounds)
+      for (let i = 0; i < 50; i++) {
+        qt.insert({ x: 50, y: 50 })
+      }
+      expect(qt.size).toBe(50)
+    })
+
+    it('should handle insert after remove', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      qt.remove({ x: 50, y: 50 })
+      qt.insert({ x: 50, y: 50 })
+      expect(qt.size).toBe(1)
+      expect(qt.contains({ x: 50, y: 50 })).toBe(true)
+    })
+
+    it('should handle multiple clears', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      qt.clear()
+      qt.clear()
+      qt.clear()
+      expect(qt.size).toBe(0)
+    })
+
+    it('should handle queryRange with zero-size rectangle', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRange({ x: 50, y: 50, width: 0, height: 0 })
+      expect(result).toHaveLength(0)
+    })
+
+    it('should handle queryRadius with very small radius', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, 0.001)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should handle alternating insert and remove', () => {
+      const qt = new QuadTree(defaultBounds)
+      for (let i = 0; i < 10; i++) {
+        qt.insert({ x: i * 10, y: i * 10 })
+        qt.remove({ x: i * 10, y: i * 10 })
+      }
+      expect(qt.size).toBe(0)
+    })
+  })
+
+  describe('large dataset', () => {
+    it('should handle 1000 points', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 1000, height: 1000 })
+      for (let i = 0; i < 1000; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      expect(qt.size).toBe(1000)
+      expect(qt.toArray()).toHaveLength(1000)
+    })
+
+    it('should handle 1000 points with small capacity', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 1000, height: 1000 }, 1)
+      for (let i = 0; i < 1000; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      expect(qt.size).toBe(1000)
+    })
+
+    it('should query 1000 points efficiently', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 1000, height: 1000 })
+      for (let i = 0; i < 1000; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 100 })
+      expect(result.length).toBeGreaterThan(0)
+      for (const p of result) {
+        expect(p.x).toBeGreaterThanOrEqual(0)
+        expect(p.x).toBeLessThan(100)
+        expect(p.y).toBeGreaterThanOrEqual(0)
+        expect(p.y).toBeLessThan(100)
+      }
+    })
+
+    it('should find nearest in 1000 points', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 1000, height: 1000 })
+      for (let i = 0; i < 1000; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      const nn = qt.nearestNeighbor({ x: 500, y: 500 })
+      expect(nn).toBeDefined()
+      expect(nn!.x).toBe(500)
+      expect(nn!.y).toBe(500)
+    })
+
+    it('should handle clustered points', () => {
+      const qt = new QuadTree(defaultBounds, 2)
+      for (let i = 0; i < 50; i++) {
+        qt.insert({ x: 49 + Math.random() * 2, y: 49 + Math.random() * 2 })
+      }
+      expect(qt.size).toBe(50)
+      const result = qt.queryRadius({ x: 50, y: 50 }, 5)
+      expect(result.length).toBe(50)
+    })
+
+    it('should handle removal from large dataset', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 })
+      for (let i = 0; i < 100; i++) {
+        qt.insert({ x: i, y: i })
+      }
+      for (let i = 0; i < 50; i++) {
+        qt.remove({ x: i * 2, y: i * 2 })
+      }
+      expect(qt.size).toBe(50)
     })
   })
 
   describe('type exports', () => {
-    it('should export DEFAULT_QUAD_TREE_OPTIONS', () => {
-      expect(DEFAULT_QUAD_TREE_OPTIONS.maxPoints).toBe(4)
-      expect(DEFAULT_QUAD_TREE_OPTIONS.maxDepth).toBe(8)
-    })
-
-    it('should support QuadTreeOptions interface', () => {
-      const opts: QuadTreeOptions = { maxPoints: 10, maxDepth: 5 }
-      expect(opts.maxPoints).toBe(10)
-    })
-
-    it('should support Point interface', () => {
+    it('should export Point type', () => {
       const p: Point = { x: 1, y: 2 }
       expect(p.x).toBe(1)
       expect(p.y).toBe(2)
     })
 
-    it('should support Rectangle interface', () => {
+    it('should export Rectangle type', () => {
       const r: Rectangle = { x: 0, y: 0, width: 100, height: 100 }
       expect(r.width).toBe(100)
     })
   })
 
-  describe('edge cases', () => {
-    it('should handle bounds with non-zero origin', () => {
-      const bounds: Rectangle = { x: 50, y: 50, width: 100, height: 100 }
-      const qt = new QuadTree<string>(bounds)
-      expect(qt.insert({ x: 75, y: 75 }, 'in')).toBe(true)
-      expect(qt.insert({ x: 49, y: 75 }, 'out')).toBe(false)
+  describe('queryRange overlapping', () => {
+    it('should find points on overlapping boundaries', () => {
+      const qt = new QuadTree(defaultBounds, 1)
+      qt.insert({ x: 49, y: 49 })
+      qt.insert({ x: 51, y: 49 })
+      qt.insert({ x: 49, y: 51 })
+      qt.insert({ x: 51, y: 51 })
+      const nw = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
+      expect(nw).toContainEqual({ x: 49, y: 49 })
+      expect(nw.filter((p) => p.x === 51)).toHaveLength(0)
     })
 
-    it('should handle very small bounds', () => {
-      const bounds: Rectangle = { x: 0, y: 0, width: 1, height: 1 }
-      const qt = new QuadTree<string>(bounds)
-      expect(qt.insert({ x: 0.5, y: 0.5 }, 'in')).toBe(true)
+    it('should find points across quadrant boundary', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 49, y: 49 })
+      qt.insert({ x: 51, y: 51 })
+      const result = qt.queryRange({ x: 40, y: 40, width: 20, height: 20 })
+      expect(result).toHaveLength(2)
     })
 
-    it('should handle many points at same location', () => {
-      const qt = new QuadTree<number>(FULL_BOUNDS)
+    it('should find duplicate points in range', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRange({ x: 0, y: 0, width: 100, height: 100 })
+      expect(result).toHaveLength(2)
+    })
+  })
+
+  describe('nearestNeighbor edge cases', () => {
+    it('should handle equidistant points', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 40, y: 50 })
+      qt.insert({ x: 60, y: 50 })
+      const nn = qt.nearestNeighbor({ x: 50, y: 50 })
+      expect(nn).toBeDefined()
+      expect(nn!.y).toBe(50)
+    })
+
+    it('should work with query point outside bounds', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 99, y: 99 })
+      const nn = qt.nearestNeighbor({ x: 150, y: 150 })
+      expect(nn).toEqual({ x: 99, y: 99 })
+    })
+
+    it('should handle all same points', () => {
+      const qt = new QuadTree(defaultBounds)
+      for (let i = 0; i < 5; i++) {
+        qt.insert({ x: 50, y: 50 })
+      }
+      const nn = qt.nearestNeighbor({ x: 50, y: 50 })
+      expect(nn).toEqual({ x: 50, y: 50 })
+    })
+  })
+
+  describe('queryRadius edge cases', () => {
+    it('should find points at center of subdivided tree', () => {
+      const qt = new QuadTree(defaultBounds, 1)
       for (let i = 0; i < 10; i++) {
-        qt.insert({ x: 50, y: 50 }, i)
+        qt.insert({ x: i * 10, y: i * 10 })
       }
-      expect(qt.count()).toBe(10)
+      const result = qt.queryRadius({ x: 50, y: 50 }, 20)
+      expect(result.length).toBeGreaterThan(0)
     })
 
-    it('should handle negative coordinates', () => {
-      const bounds: Rectangle = { x: -100, y: -100, width: 200, height: 200 }
-      const qt = new QuadTree<string>(bounds)
-      expect(qt.insert({ x: -50, y: -50 }, 'neg')).toBe(true)
-      expect(qt.queryPoint({ x: -50, y: -50 })).toBe('neg')
-    })
-
-    it('should handle generic value types', () => {
-      const qt = new QuadTree<{ name: string }>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, { name: 'test' })
-      const result = qt.queryPoint({ x: 10, y: 10 })
-      expect(result?.name).toBe('test')
+    it('should handle negative radius gracefully', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRadius({ x: 50, y: 50 }, -5)
+      expect(result).toHaveLength(0)
     })
   })
 
-  describe('large datasets', () => {
-    it('should handle 100 points', () => {
-      const qt = new QuadTree<number>(FULL_BOUNDS, { maxPoints: 4 })
-      for (let i = 0; i < 100; i++) {
-        qt.insert({ x: i, y: i }, i)
-      }
-      expect(qt.count()).toBe(100)
-      expect(qt.getAllPoints()).toHaveLength(100)
+  describe('queryRange edge cases', () => {
+    it('should handle range extending beyond bounds', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRange({ x: -50, y: -50, width: 200, height: 200 })
+      expect(result).toHaveLength(1)
     })
 
-    it('should handle range queries on large dataset', () => {
-      const qt = new QuadTree<number>(FULL_BOUNDS, { maxPoints: 4 })
-      for (let i = 0; i < 100; i++) {
-        qt.insert({ x: i, y: i }, i)
-      }
-      const results = qt.queryRange({ x: 0, y: 0, width: 50, height: 50 })
-      expect(results.length).toBe(50)
+    it('should handle very small range', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRange({ x: 49.999, y: 49.999, width: 0.002, height: 0.002 })
+      expect(result).toHaveLength(1)
     })
 
-    it('should handle many removals', () => {
-      const qt = new QuadTree<number>(FULL_BOUNDS)
-      for (let i = 0; i < 50; i++) {
-        qt.insert({ x: i * 2, y: i * 2 }, i)
-      }
-      for (let i = 0; i < 25; i++) {
-        qt.remove({ x: i * 2, y: i * 2 })
-      }
-      expect(qt.count()).toBe(25)
-    })
-
-    it('should handle forEach on large dataset', () => {
-      const qt = new QuadTree<number>(FULL_BOUNDS, { maxPoints: 4 })
-      for (let i = 0; i < 50; i++) {
-        qt.insert({ x: i * 2, y: i * 2 }, i)
-      }
-      let count = 0
-      qt.forEach(() => count++)
-      expect(count).toBe(50)
-    })
-  })
-
-  describe('combined operations', () => {
-    it('should maintain consistency across mixed operations', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS, { maxPoints: 2 })
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.insert({ x: 20, y: 20 }, 'b')
-      qt.insert({ x: 30, y: 30 }, 'c')
-      qt.remove({ x: 20, y: 20 })
-      qt.insert({ x: 40, y: 40 }, 'd')
-      expect(qt.count()).toBe(3)
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBe('a')
-      expect(qt.queryPoint({ x: 20, y: 20 })).toBeUndefined()
-      expect(qt.queryPoint({ x: 30, y: 30 })).toBe('c')
-      expect(qt.queryPoint({ x: 40, y: 40 })).toBe('d')
-    })
-
-    it('should handle clear and rebuild', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 10, y: 10 }, 'a')
-      qt.clear()
-      qt.insert({ x: 20, y: 20 }, 'b')
-      expect(qt.count()).toBe(1)
-      expect(qt.queryPoint({ x: 10, y: 10 })).toBeUndefined()
-      expect(qt.queryPoint({ x: 20, y: 20 })).toBe('b')
-    })
-
-    it('should handle insert-remove-insert cycle', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 50, y: 50 }, 'first')
-      qt.remove({ x: 50, y: 50 })
-      qt.insert({ x: 50, y: 50 }, 'second')
-      expect(qt.queryPoint({ x: 50, y: 50 })).toBe('second')
-      expect(qt.count()).toBe(1)
-    })
-
-    it('should handle query after multiple subdivisions', () => {
-      const qt = new QuadTree<string>({ x: 0, y: 0, width: 1000, height: 1000 }, { maxPoints: 1 })
-      qt.insert({ x: 100, y: 100 }, 'a')
-      qt.insert({ x: 200, y: 200 }, 'b')
-      qt.insert({ x: 300, y: 300 }, 'c')
-      qt.insert({ x: 400, y: 400 }, 'd')
-      qt.insert({ x: 500, y: 500 }, 'e')
-      const results = qt.queryRange({ x: 150, y: 150, width: 300, height: 300 })
-      expect(results.length).toBe(3)
-    })
-
-    it('should handle getAllPoints with duplicates at same location', () => {
-      const qt = new QuadTree<string>(FULL_BOUNDS)
-      qt.insert({ x: 50, y: 50 }, 'a')
-      qt.insert({ x: 50, y: 50 }, 'b')
-      const points = qt.getAllPoints()
-      expect(points).toHaveLength(2)
-      expect(points.every((p) => p.x === 50 && p.y === 50)).toBe(true)
+    it('should handle range covering single point', () => {
+      const qt = new QuadTree(defaultBounds)
+      qt.insert({ x: 50, y: 50 })
+      const result = qt.queryRange({ x: 50, y: 50, width: 1, height: 1 })
+      expect(result).toHaveLength(1)
     })
   })
 })

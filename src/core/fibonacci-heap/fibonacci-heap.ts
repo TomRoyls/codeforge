@@ -260,7 +260,7 @@ export class FibonacciHeap<T = number> {
       let x = w
       let d = x.degree
       while (d < degreeTable.length && degreeTable[d] !== null) {
-        const y = degreeTable[d]!
+        let y = degreeTable[d]!
         if (this.compare(x.value, y.value) > 0) {
           const temp = x
           x = y

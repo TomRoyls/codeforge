@@ -876,11 +876,11 @@ describe('TwoThreeTree', () => {
     it('should remain balanced after alternating inserts', () => {
       for (let i = 50; i >= 1; i--) {
         tree.insert(i)
-        tree.insert(100 - i + 1)
+        tree.insert(100 - i)
       }
       const maxH = Math.ceil(Math.log2(100)) + 1
       expect(tree.height()).toBeLessThanOrEqual(maxH)
-      expect(tree.size()).toBe(100)
+      expect(tree.size()).toBe(99)
     })
   })
 

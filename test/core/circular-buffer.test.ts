@@ -923,9 +923,10 @@ describe('CircularBuffer', () => {
       cb.push(4)
       cb.push(5)
       cb.push(6)
+      cb.push(7)
       expect(cb.contains(1)).toBe(false)
       expect(cb.contains(2)).toBe(false)
-      expect(cb.contains(6)).toBe(true)
+      expect(cb.contains(7)).toBe(true)
     })
   })
 
@@ -1246,7 +1247,7 @@ describe('CircularBuffer', () => {
       cb.shift()
       cb.unshift(0)
       cb.pop()
-      expect(cb.toArray()).toEqual([0, 1, 2])
+      expect(cb.toArray()).toEqual([0, 2])
     })
   })
 

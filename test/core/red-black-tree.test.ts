@@ -928,5 +928,56 @@ describe('RedBlackTreeMap', () => {
       const sorted = [...keys].sort((a, b) => a - b)
       expect(keys).toEqual(sorted)
     })
+
+    it('should handle shuffled insertions and maintain ordering', () => {
+      const keys = Array.from({ length: 500 }, (_, i) => i)
+      for (let i = keys.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[keys[i], keys[j]] = [keys[j]!, keys[i]!]
+      }
+      for (const k of keys) tree.set(k, String(k))
+      const result = tree.keys()
+      for (let i = 0; i < 500; i++) {
+        expect(result[i]).toBe(i)
+      }
+    })
+
+    it('should handle range queries after heavy operations', () => {
+      for (let i = 0; i < 500; i++) tree.set(i, String(i))
+      for (let i = 100; i < 400; i++) tree.delete(i)
+      const result = tree.range(0, 499)
+      const resultKeys = result.map(([k]) => k)
+      const expected = Array.from({ length: 500 }, (_, i) => i).filter(
+        (i) => i < 100 || i >= 400,
+      )
+      expect(resultKeys).toEqual(expected)
+    })
+
+    it('should handle lowerBound/upperBound after deletions', () => {
+      for (let i = 0; i < 200; i += 2) tree.set(i, String(i))
+      expect(tree.lowerBound(51)).toEqual([52, '52'])
+      expect(tree.upperBound(50)).toEqual([52, '52'])
+    })
+
+    it('should handle cloning large tree', () => {
+      for (let i = 0; i < 500; i++) tree.set(i, String(i))
+      const cloned = tree.clone()
+      expect(cloned.size).toBe(500)
+      expect(cloned.keys()).toEqual(tree.keys())
+      cloned.delete(0)
+      expect(tree.has(0)).toBe(true)
+      expect(cloned.has(0)).toBe(false)
+    })
+
+    it('should handle fromEntries with many entries', () => {
+      const entries: [number, string][] = []
+      for (let i = 500; i >= 0; i--) entries.push([i, String(i)])
+      const t = RedBlackTreeMap.fromEntries(entries)
+      expect(t.size).toBe(501)
+      const keys = t.keys()
+      for (let i = 0; i <= 500; i++) {
+        expect(keys[i]).toBe(i)
+      }
+    })
   })
 })

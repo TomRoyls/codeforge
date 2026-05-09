@@ -1,793 +1,1143 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { LRUCache } from '../../src/core/lru-cache/lru-cache.js'
-import { DEFAULT_LRU_CACHE_OPTIONS } from '../../src/core/lru-cache/types.js'
-import type { LRUNode, LRUCacheOptions, LRUCacheStats } from '../../src/core/lru-cache/types.js'
 
 describe('LRUCache', () => {
-  let cache: LRUCache<string>
-
-  beforeEach(() => {
-    cache = new LRUCache<string>()
-  })
-
   describe('constructor', () => {
-    it('should create a cache with default options', () => {
-      const c = new LRUCache<number>()
-      expect(c.size()).toBe(0)
+    it('creates cache with given capacity', () => {
+      const cache = new LRUCache<string, number>(10)
+      expect(cache.capacity).toBe(10)
+      expect(cache.size).toBe(0)
     })
 
-    it('should accept custom maxSize option', () => {
-      const c = new LRUCache<string>({ maxSize: 5 })
-      expect(c.getStats().maxSize).toBe(5)
+    it('creates cache with capacity 1', () => {
+      const cache = new LRUCache<string, number>(1)
+      expect(cache.capacity).toBe(1)
+      expect(cache.size).toBe(0)
     })
 
-    it('should accept custom ttlMs option', () => {
-      const c = new LRUCache<string>({ ttlMs: 1000 })
-      expect(c.getStats().size).toBe(0)
+    it('creates cache with large capacity', () => {
+      const cache = new LRUCache<string, number>(1000000)
+      expect(cache.capacity).toBe(1000000)
     })
 
-    it('should accept partial options', () => {
-      const c = new LRUCache<string>({ maxSize: 50 })
-      expect(c.getStats().maxSize).toBe(50)
+    it('creates empty cache', () => {
+      const cache = new LRUCache<string, number>(5)
+      expect(cache.isEmpty()).toBe(true)
     })
 
-    it('should accept all options combined', () => {
-      const c = new LRUCache<string>({ maxSize: 10, ttlMs: 5000 })
-      expect(c.getStats().maxSize).toBe(10)
+    it('creates cache with capacity 0', () => {
+      const cache = new LRUCache<string, number>(0)
+      expect(cache.capacity).toBe(0)
+      expect(cache.size).toBe(0)
     })
   })
 
-  describe('get and set', () => {
-    it('should return undefined for missing key', () => {
+  describe('get', () => {
+    let cache: LRUCache<string, number>
+
+    beforeEach(() => {
+      cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+    })
+
+    it('returns value for existing key', () => {
+      expect(cache.get('a')).toBe(1)
+      expect(cache.get('b')).toBe(2)
+      expect(cache.get('c')).toBe(3)
+    })
+
+    it('returns undefined for missing key', () => {
       expect(cache.get('missing')).toBeUndefined()
     })
 
-    it('should return value for existing key', () => {
-      cache.set('a', 'value-a')
-      expect(cache.get('a')).toBe('value-a')
-    })
-
-    it('should overwrite existing key', () => {
-      cache.set('a', 'old')
-      cache.set('a', 'new')
-      expect(cache.get('a')).toBe('new')
-    })
-
-    it('should not increase size when overwriting', () => {
-      cache.set('a', 'old')
-      cache.set('a', 'new')
-      expect(cache.size()).toBe(1)
-    })
-
-    it('should handle multiple keys', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
-      expect(cache.get('a')).toBe('1')
-      expect(cache.get('b')).toBe('2')
-      expect(cache.get('c')).toBe('3')
-    })
-
-    it('should move accessed key to front', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
+    it('moves accessed key to front', () => {
       cache.get('a')
       expect(cache.keys()).toEqual(['a', 'c', 'b'])
     })
-  })
 
-  describe('LRU eviction', () => {
-    it('should evict oldest item when capacity exceeded', () => {
-      const c = new LRUCache<string>({ maxSize: 2 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      expect(c.has('a')).toBe(false)
-      expect(c.has('b')).toBe(true)
-      expect(c.has('c')).toBe(true)
+    it('updates order on multiple gets', () => {
+      cache.get('b')
+      cache.get('a')
+      expect(cache.keys()).toEqual(['a', 'b', 'c'])
     })
 
-    it('should evict least recently used item', () => {
-      const c = new LRUCache<string>({ maxSize: 3 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      c.get('a')
-      c.set('d', '4')
-      expect(c.has('a')).toBe(true)
-      expect(c.has('b')).toBe(false)
-      expect(c.has('c')).toBe(true)
-      expect(c.has('d')).toBe(true)
+    it('getting most recent does not change order', () => {
+      cache.get('c')
+      expect(cache.keys()).toEqual(['c', 'b', 'a'])
     })
 
-    it('should track evictions in stats', () => {
-      const c = new LRUCache<string>({ maxSize: 2 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      expect(c.getStats().evictions).toBe(1)
+    it('returns undefined after delete', () => {
+      cache.delete('a')
+      expect(cache.get('a')).toBeUndefined()
     })
 
-    it('should track multiple evictions', () => {
-      const c = new LRUCache<string>({ maxSize: 1 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      expect(c.getStats().evictions).toBe(2)
+    it('returns undefined after clear', () => {
+      cache.clear()
+      expect(cache.get('a')).toBeUndefined()
+      expect(cache.get('b')).toBeUndefined()
     })
 
-    it('should evict correctly with capacity 1', () => {
-      const c = new LRUCache<string>({ maxSize: 1 })
-      c.set('a', '1')
-      expect(c.get('a')).toBe('1')
-      c.set('b', '2')
-      expect(c.has('a')).toBe(false)
-      expect(c.get('b')).toBe('2')
+    it('works with number keys', () => {
+      const numCache = new LRUCache<number, string>(3)
+      numCache.set(1, 'one')
+      numCache.set(2, 'two')
+      expect(numCache.get(1)).toBe('one')
+    })
+
+    it('works with object values', () => {
+      const objCache = new LRUCache<string, { x: number }>(3)
+      objCache.set('a', { x: 1 })
+      expect(objCache.get('a')).toEqual({ x: 1 })
+    })
+
+    it('returns undefined on empty cache', () => {
+      const empty = new LRUCache<string, number>(3)
+      expect(empty.get('a')).toBeUndefined()
     })
   })
 
-  describe('TTL expiration', () => {
-    it('should not expire items when ttlMs is 0', () => {
-      const c = new LRUCache<string>({ ttlMs: 0 })
-      c.set('a', 'value')
-      expect(c.get('a')).toBe('value')
+  describe('set', () => {
+    it('stores a value', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      expect(cache.get('a')).toBe(1)
     })
 
-    it('should expire items after ttlMs', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      expect(c.get('a')).toBeUndefined()
-      vi.useRealTimers()
+    it('returns undefined when not evicting', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.set('a', 1)).toBeUndefined()
     })
 
-    it('should return fresh items before ttlMs', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 1000 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(500)
-      expect(c.get('a')).toBe('value')
-      vi.useRealTimers()
+    it('returns evicted value when full', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const evicted = cache.set('c', 3)
+      expect(evicted).toBe(1)
     })
 
-    it('should count expired get as miss', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      c.get('a')
-      expect(c.getStats().misses).toBe(1)
-      vi.useRealTimers()
+    it('returns undefined when updating existing key', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      expect(cache.set('a', 10)).toBeUndefined()
     })
 
-    it('should remove expired item from cache on get', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      c.get('a')
-      expect(c.size()).toBe(0)
-      vi.useRealTimers()
+    it('updates value for existing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('a', 10)
+      expect(cache.get('a')).toBe(10)
     })
 
-    it('should detect expired items in has', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      expect(c.has('a')).toBe(false)
-      vi.useRealTimers()
+    it('moves updated key to front', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.set('a', 10)
+      expect(cache.keys()).toEqual(['a', 'c', 'b'])
     })
 
-    it('should detect expired items in peek', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      expect(c.peek('a')).toBeUndefined()
-      vi.useRealTimers()
+    it('evicts least recently used when full', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.has('a')).toBe(false)
+      expect(cache.has('b')).toBe(true)
+      expect(cache.has('c')).toBe(true)
     })
 
-    it('should skip expired items in keys', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      c.set('b', 'value-b')
-      vi.advanceTimersByTime(101)
-      expect(c.keys()).toEqual([])
-      vi.useRealTimers()
+    it('evicts after get promotes a key', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.get('a')
+      cache.set('c', 3)
+      expect(cache.has('a')).toBe(true)
+      expect(cache.has('b')).toBe(false)
+      expect(cache.has('c')).toBe(true)
     })
 
-    it('should skip expired items in values', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      expect(c.values()).toEqual([])
-      vi.useRealTimers()
+    it('maintains correct size after evictions', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.size).toBe(2)
     })
 
-    it('should skip expired items in entries', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      expect(c.entries()).toEqual([])
-      vi.useRealTimers()
+    it('returns undefined for capacity 0', () => {
+      const cache = new LRUCache<string, number>(0)
+      expect(cache.set('a', 1)).toBeUndefined()
+      expect(cache.size).toBe(0)
     })
 
-    it('should handle TTL expiration on set overwrite', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100, maxSize: 2 })
-      c.set('a', 'value')
-      vi.advanceTimersByTime(101)
-      c.set('a', 'new-value')
-      expect(c.get('a')).toBe('new-value')
-      vi.useRealTimers()
+    it('fills to capacity exactly', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.size).toBe(3)
+      expect(cache.isFull()).toBe(true)
+    })
+
+    it('returns correct evicted value on multiple evictions', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      expect(cache.set('b', 2)).toBe(1)
+      expect(cache.set('c', 3)).toBe(2)
     })
   })
 
   describe('has', () => {
-    it('should return false for missing key', () => {
-      expect(cache.has('missing')).toBe(false)
-    })
-
-    it('should return true for existing key', () => {
-      cache.set('a', 'value')
+    it('returns true for existing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
       expect(cache.has('a')).toBe(true)
     })
 
-    it('should return false after delete', () => {
-      cache.set('a', 'value')
+    it('returns false for missing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.has('a')).toBe(false)
+    })
+
+    it('returns false after delete', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
       cache.delete('a')
       expect(cache.has('a')).toBe(false)
     })
 
-    it('should not move item to front', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('returns false after eviction', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      expect(cache.has('a')).toBe(false)
+    })
+
+    it('returns true after update', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('a', 2)
+      expect(cache.has('a')).toBe(true)
+    })
+
+    it('does not affect order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.has('a')
-      expect(cache.keys()).toEqual(['b', 'a'])
+      expect(cache.keys()).toEqual(['c', 'b', 'a'])
     })
   })
 
   describe('delete', () => {
-    it('should return false for missing key', () => {
-      expect(cache.delete('missing')).toBe(false)
-    })
-
-    it('should return true for existing key', () => {
-      cache.set('a', 'value')
+    it('returns true when deleting existing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
       expect(cache.delete('a')).toBe(true)
     })
 
-    it('should remove item from cache', () => {
-      cache.set('a', 'value')
+    it('returns false when deleting missing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.delete('a')).toBe(false)
+    })
+
+    it('removes the key from cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
       cache.delete('a')
-      expect(cache.size()).toBe(0)
+      expect(cache.get('a')).toBeUndefined()
+      expect(cache.has('a')).toBe(false)
     })
 
-    it('should remove item from linked list', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
-      cache.delete('b')
-      expect(cache.keys()).toEqual(['c', 'a'])
+    it('decrements size', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      expect(cache.size).toBe(1)
     })
 
-    it('should handle deleting head', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('deletes head node', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
       cache.delete('b')
       expect(cache.keys()).toEqual(['a'])
     })
 
-    it('should handle deleting tail', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('deletes tail node', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
       cache.delete('a')
       expect(cache.keys()).toEqual(['b'])
     })
 
-    it('should handle deleting only item', () => {
-      cache.set('a', '1')
+    it('deletes middle node', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.delete('b')
+      expect(cache.keys()).toEqual(['c', 'a'])
+    })
+
+    it('deletes the only node', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
       cache.delete('a')
-      expect(cache.size()).toBe(0)
-      expect(cache.keys()).toEqual([])
-    })
-  })
-
-  describe('peek', () => {
-    it('should return undefined for missing key', () => {
-      expect(cache.peek('missing')).toBeUndefined()
+      expect(cache.size).toBe(0)
+      expect(cache.isEmpty()).toBe(true)
     })
 
-    it('should return value without moving to front', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      expect(cache.peek('a')).toBe('1')
-      expect(cache.keys()).toEqual(['b', 'a'])
+    it('allows re-adding after delete', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      cache.set('c', 3)
+      expect(cache.keys()).toEqual(['c', 'b'])
     })
 
-    it('should return value for existing key', () => {
-      cache.set('a', 'value')
-      expect(cache.peek('a')).toBe('value')
-    })
-
-    it('should not count as hit or miss', () => {
-      cache.set('a', 'value')
-      cache.peek('a')
-      cache.peek('missing')
-      expect(cache.getStats().hits).toBe(0)
-      expect(cache.getStats().misses).toBe(0)
+    it('double delete returns false', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.delete('a')
+      expect(cache.delete('a')).toBe(false)
     })
   })
 
   describe('size', () => {
-    it('should return 0 for empty cache', () => {
-      expect(cache.size()).toBe(0)
+    it('returns 0 for empty cache', () => {
+      const cache = new LRUCache<string, number>(5)
+      expect(cache.size).toBe(0)
     })
 
-    it('should return correct size after sets', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      expect(cache.size()).toBe(2)
+    it('increases on set', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      expect(cache.size).toBe(1)
+      cache.set('b', 2)
+      expect(cache.size).toBe(2)
     })
 
-    it('should return correct size after deletes', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('stays same on update', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('a', 2)
+      expect(cache.size).toBe(1)
+    })
+
+    it('decreases on delete', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
       cache.delete('a')
-      expect(cache.size()).toBe(1)
+      expect(cache.size).toBe(1)
     })
 
-    it('should return 0 after clear', () => {
-      cache.set('a', '1')
+    it('stays same on eviction', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.size).toBe(2)
+    })
+  })
+
+  describe('capacity', () => {
+    it('returns constructor capacity', () => {
+      const cache = new LRUCache<string, number>(42)
+      expect(cache.capacity).toBe(42)
+    })
+
+    it('stays constant after operations', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      expect(cache.capacity).toBe(5)
+    })
+  })
+
+  describe('isEmpty', () => {
+    it('returns true for new cache', () => {
+      const cache = new LRUCache<string, number>(5)
+      expect(cache.isEmpty()).toBe(true)
+    })
+
+    it('returns false after set', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      expect(cache.isEmpty()).toBe(false)
+    })
+
+    it('returns true after clear', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
       cache.clear()
-      expect(cache.size()).toBe(0)
+      expect(cache.isEmpty()).toBe(true)
+    })
+
+    it('returns true after deleting all', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.delete('a')
+      expect(cache.isEmpty()).toBe(true)
+    })
+  })
+
+  describe('isFull', () => {
+    it('returns false for empty cache', () => {
+      const cache = new LRUCache<string, number>(5)
+      expect(cache.isFull()).toBe(false)
+    })
+
+    it('returns true when at capacity', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      expect(cache.isFull()).toBe(true)
+    })
+
+    it('returns false after delete from full', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      expect(cache.isFull()).toBe(false)
+    })
+
+    it('returns true after eviction keeps it full', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.isFull()).toBe(true)
     })
   })
 
   describe('clear', () => {
-    it('should remove all items', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('removes all entries', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.clear()
-      expect(cache.size()).toBe(0)
+      expect(cache.size).toBe(0)
+      expect(cache.isEmpty()).toBe(true)
     })
 
-    it('should allow set after clear', () => {
-      cache.set('a', '1')
+    it('allows adding after clear', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
       cache.clear()
-      cache.set('b', '2')
-      expect(cache.get('b')).toBe('2')
+      cache.set('c', 3)
+      expect(cache.size).toBe(1)
+      expect(cache.get('c')).toBe(3)
     })
 
-    it('should handle clearing empty cache', () => {
+    it('does not affect capacity', () => {
+      const cache = new LRUCache<string, number>(5)
       cache.clear()
-      expect(cache.size()).toBe(0)
+      expect(cache.capacity).toBe(5)
     })
 
-    it('should not reset stats counters', () => {
-      cache.set('a', '1')
-      cache.get('a')
+    it('clears empty cache without error', () => {
+      const cache = new LRUCache<string, number>(5)
       cache.clear()
-      const stats = cache.getStats()
-      expect(stats.hits).toBe(1)
+      expect(cache.size).toBe(0)
+    })
+
+    it('clears head and tail pointers', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.clear()
+      expect(cache.peekMostRecent()).toBeUndefined()
+      expect(cache.peekLeastRecent()).toBeUndefined()
     })
   })
 
-  describe('keys', () => {
-    it('should return empty array for empty cache', () => {
-      expect(cache.keys()).toEqual([])
-    })
-
-    it('should return keys in LRU order', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
+  describe('peek', () => {
+    it('returns value without updating order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.peek('a')
       expect(cache.keys()).toEqual(['c', 'b', 'a'])
     })
 
-    it('should update order after get', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.get('a')
-      expect(cache.keys()).toEqual(['a', 'b'])
+    it('returns undefined for missing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.peek('missing')).toBeUndefined()
+    })
+
+    it('returns value for existing key', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 42)
+      expect(cache.peek('a')).toBe(42)
+    })
+
+    it('does not affect eviction order', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.peek('a')
+      cache.set('c', 3)
+      expect(cache.has('a')).toBe(false)
+      expect(cache.has('b')).toBe(true)
+    })
+
+    it('returns updated value after set', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('a', 10)
+      expect(cache.peek('a')).toBe(10)
     })
   })
 
-  describe('values', () => {
-    it('should return empty array for empty cache', () => {
-      expect(cache.values()).toEqual([])
+  describe('peekLeastRecent', () => {
+    it('returns LRU entry', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.peekLeastRecent()).toEqual(['a', 1])
     })
 
-    it('should return values in LRU order', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
-      expect(cache.values()).toEqual(['3', '2', '1'])
+    it('returns undefined for empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.peekLeastRecent()).toBeUndefined()
     })
 
-    it('should update order after get', () => {
-      cache.set('a', 'val-a')
-      cache.set('b', 'val-b')
+    it('updates after get', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.get('a')
-      expect(cache.values()).toEqual(['val-a', 'val-b'])
+      expect(cache.peekLeastRecent()).toEqual(['b', 2])
+    })
+
+    it('returns single entry when only one', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      expect(cache.peekLeastRecent()).toEqual(['a', 1])
+    })
+
+    it('returns same as peekMostRecent for single entry', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      expect(cache.peekLeastRecent()).toEqual(cache.peekMostRecent())
     })
   })
 
-  describe('entries', () => {
-    it('should return empty array for empty cache', () => {
-      expect(cache.entries()).toEqual([])
+  describe('peekMostRecent', () => {
+    it('returns MRU entry', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.peekMostRecent()).toEqual(['c', 3])
     })
 
-    it('should return entries in LRU order', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      expect(cache.entries()).toEqual([['b', '2'], ['a', '1']])
+    it('returns undefined for empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.peekMostRecent()).toBeUndefined()
     })
 
-    it('should update order after get', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('updates after get', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.get('a')
-      expect(cache.entries()).toEqual([['a', '1'], ['b', '2']])
-    })
-  })
-
-  describe('getStats', () => {
-    it('should return correct stats for empty cache', () => {
-      const stats = cache.getStats()
-      expect(stats.size).toBe(0)
-      expect(stats.maxSize).toBe(100)
-      expect(stats.hits).toBe(0)
-      expect(stats.misses).toBe(0)
-      expect(stats.hitRate).toBe(0)
-      expect(stats.evictions).toBe(0)
+      expect(cache.peekMostRecent()).toEqual(['a', 1])
     })
 
-    it('should track hits', () => {
-      cache.set('a', '1')
-      cache.get('a')
-      cache.get('a')
-      expect(cache.getStats().hits).toBe(2)
-    })
-
-    it('should track misses', () => {
-      cache.get('missing')
-      cache.get('also-missing')
-      expect(cache.getStats().misses).toBe(2)
-    })
-
-    it('should calculate hit rate', () => {
-      cache.set('a', '1')
-      cache.get('a')
-      cache.get('a')
-      cache.get('missing')
-      expect(cache.getStats().hitRate).toBeCloseTo(2 / 3)
-    })
-
-    it('should return 0 hit rate with no operations', () => {
-      expect(cache.getStats().hitRate).toBe(0)
-    })
-
-    it('should track evictions', () => {
-      const c = new LRUCache<string>({ maxSize: 2 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      expect(c.getStats().evictions).toBe(1)
-    })
-
-    it('should reflect current size', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      expect(cache.getStats().size).toBe(2)
-    })
-
-    it('should reflect custom maxSize', () => {
-      const c = new LRUCache<string>({ maxSize: 10 })
-      expect(c.getStats().maxSize).toBe(10)
-    })
-  })
-
-  describe('resize', () => {
-    it('should change maxSize', () => {
-      cache.resize(50)
-      expect(cache.getStats().maxSize).toBe(50)
-    })
-
-    it('should evict items when shrinking below current size', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
-      cache.resize(1)
-      expect(cache.size()).toBe(1)
-      expect(cache.has('c')).toBe(true)
-    })
-
-    it('should allow more items when growing', () => {
-      const c = new LRUCache<string>({ maxSize: 2 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.resize(5)
-      c.set('c', '3')
-      c.set('d', '4')
-      expect(c.size()).toBe(4)
-    })
-
-    it('should track evictions when shrinking', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
-      cache.resize(1)
-      expect(cache.getStats().evictions).toBe(2)
+    it('returns single entry when only one', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      expect(cache.peekMostRecent()).toEqual(['a', 1])
     })
   })
 
   describe('forEach', () => {
-    it('should iterate over empty cache', () => {
-      const items: string[] = []
-      cache.forEach((value) => items.push(value))
-      expect(items).toEqual([])
+    it('iterates MRU to LRU order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const result: [string, number][] = []
+      cache.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([['c', 3], ['b', 2], ['a', 1]])
     })
 
-    it('should iterate over all items', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      const items: [string, string][] = []
-      cache.forEach((value, key) => items.push([key, value]))
-      expect(items).toEqual([['b', '2'], ['a', '1']])
+    it('iterates empty cache without calling callback', () => {
+      const cache = new LRUCache<string, number>(3)
+      const result: [string, number][] = []
+      cache.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([])
     })
 
-    it('should iterate in LRU order', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('iterates single entry', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      const result: [string, number][] = []
+      cache.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([['a', 1]])
+    })
+
+    it('passes value and key to callback in correct order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('x', 42)
+      let receivedKey: string | undefined
+      let receivedValue: number | undefined
+      cache.forEach((v, k) => {
+        receivedKey = k
+        receivedValue = v
+      })
+      expect(receivedKey).toBe('x')
+      expect(receivedValue).toBe(42)
+    })
+
+    it('reflects current order after gets', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.get('a')
-      const items: string[] = []
-      cache.forEach((value) => items.push(value))
-      expect(items).toEqual(['1', '2'])
-    })
-
-    it('should skip expired items', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 100 })
-      c.set('a', '1')
-      c.set('b', '2')
-      vi.advanceTimersByTime(101)
-      const items: string[] = []
-      c.forEach((value) => items.push(value))
-      expect(items).toEqual([])
-      vi.useRealTimers()
+      const result: [string, number][] = []
+      cache.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([['a', 1], ['c', 3], ['b', 2]])
     })
   })
 
-  describe('edge cases', () => {
-    it('should handle empty cache operations', () => {
-      expect(cache.get('a')).toBeUndefined()
-      expect(cache.delete('a')).toBe(false)
-      expect(cache.peek('a')).toBeUndefined()
+  describe('keys', () => {
+    it('returns keys in MRU to LRU order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.keys()).toEqual(['c', 'b', 'a'])
+    })
+
+    it('returns empty array for empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.keys()).toEqual([])
+    })
+
+    it('updates after get', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.get('a')
+      expect(cache.keys()).toEqual(['a', 'c', 'b'])
+    })
+
+    it('updates after delete', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      expect(cache.keys()).toEqual(['b'])
+    })
+  })
+
+  describe('values', () => {
+    it('returns values in MRU to LRU order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.values()).toEqual([3, 2, 1])
+    })
+
+    it('returns empty array for empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.values()).toEqual([])
+    })
+
+    it('updates after set update', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.set('a', 10)
+      expect(cache.values()).toEqual([10, 3, 2])
+    })
+  })
+
+  describe('entries', () => {
+    it('returns entries in MRU to LRU order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.entries()).toEqual([['c', 3], ['b', 2], ['a', 1]])
+    })
+
+    it('returns empty array for empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      expect(cache.entries()).toEqual([])
+    })
+
+    it('returns correct entries after operations', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.delete('b')
+      expect(cache.entries()).toEqual([['c', 3], ['a', 1]])
+    })
+  })
+
+  describe('clone', () => {
+    it('creates independent copy', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const cloned = cache.clone()
+      expect(cloned.entries()).toEqual(cache.entries())
+    })
+
+    it('has same capacity', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      expect(cache.clone().capacity).toBe(5)
+    })
+
+    it('has same size', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      expect(cache.clone().size).toBe(2)
+    })
+
+    it('is independent from original', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const cloned = cache.clone()
+      cache.set('c', 3)
+      expect(cache.size).toBe(3)
+      expect(cloned.size).toBe(2)
+    })
+
+    it('modifying clone does not affect original', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const cloned = cache.clone()
+      cloned.delete('a')
+      expect(cache.has('a')).toBe(true)
+      expect(cloned.has('a')).toBe(false)
+    })
+
+    it('preserves order', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.get('a')
+      const cloned = cache.clone()
+      expect(cloned.keys()).toEqual(['a', 'c', 'b'])
+    })
+
+    it('clones empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      const cloned = cache.clone()
+      expect(cloned.size).toBe(0)
+      expect(cloned.isEmpty()).toBe(true)
+    })
+
+    it('clone of clone works', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      const cloned = cache.clone().clone()
+      expect(cloned.get('a')).toBe(1)
+    })
+  })
+
+  describe('Symbol.iterator', () => {
+    it('iterates MRU to LRU', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const result = [...cache]
+      expect(result).toEqual([['c', 3], ['b', 2], ['a', 1]])
+    })
+
+    it('works with empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      const result = [...cache]
+      expect(result).toEqual([])
+    })
+
+    it('works with for...of', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const result: [string, number][] = []
+      for (const entry of cache) {
+        result.push(entry)
+      }
+      expect(result).toEqual([['b', 2], ['a', 1]])
+    })
+
+    it('works with destructuring', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const [first, second] = cache
+      expect(first).toEqual(['b', 2])
+      expect(second).toEqual(['a', 1])
+    })
+
+    it('yields correct count', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect([...cache].length).toBe(3)
+    })
+  })
+
+  describe('resize', () => {
+    it('shrinks and returns evicted entries', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const evicted = cache.resize(1)
+      expect(evicted).toEqual([['a', 1], ['b', 2]])
+      expect(cache.size).toBe(1)
+    })
+
+    it('expands without evicting', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const evicted = cache.resize(5)
+      expect(evicted).toEqual([])
+      expect(cache.size).toBe(2)
+    })
+
+    it('updates capacity', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.resize(10)
+      expect(cache.capacity).toBe(10)
+    })
+
+    it('resize to 0 evicts all', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const evicted = cache.resize(0)
+      expect(evicted).toEqual([['a', 1], ['b', 2], ['c', 3]])
+      expect(cache.size).toBe(0)
+    })
+
+    it('evicts LRU entries first', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.get('a')
+      const evicted = cache.resize(2)
+      expect(evicted).toEqual([['b', 2]])
+      expect(cache.keys()).toEqual(['a', 'c'])
+    })
+
+    it('same size returns empty', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      const evicted = cache.resize(3)
+      expect(evicted).toEqual([])
+      expect(cache.size).toBe(2)
+    })
+
+    it('allows adding after expand', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      cache.resize(3)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.size).toBe(3)
+    })
+
+    it('evicts in LRU to MRU order', () => {
+      const cache = new LRUCache<string, number>(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.set('d', 4)
+      cache.set('e', 5)
+      const evicted = cache.resize(2)
+      expect(evicted).toEqual([['a', 1], ['b', 2], ['c', 3]])
+      expect(cache.keys()).toEqual(['e', 'd'])
+    })
+
+    it('resize empty cache', () => {
+      const cache = new LRUCache<string, number>(3)
+      const evicted = cache.resize(1)
+      expect(evicted).toEqual([])
+      expect(cache.capacity).toBe(1)
+    })
+  })
+
+  describe('fromEntries', () => {
+    it('creates cache from entries', () => {
+      const cache = LRUCache.fromEntries([['a', 1], ['b', 2], ['c', 3]], 5)
+      expect(cache.size).toBe(3)
+      expect(cache.get('a')).toBe(1)
+    })
+
+    it('sets capacity', () => {
+      const cache = LRUCache.fromEntries([['a', 1]], 10)
+      expect(cache.capacity).toBe(10)
+    })
+
+    it('evicts when entries exceed capacity', () => {
+      const cache = LRUCache.fromEntries([['a', 1], ['b', 2], ['c', 3]], 2)
+      expect(cache.size).toBe(2)
       expect(cache.has('a')).toBe(false)
     })
 
-    it('should handle single item', () => {
-      cache.set('only', 'value')
-      expect(cache.get('only')).toBe('value')
-      expect(cache.has('only')).toBe(true)
-      expect(cache.size()).toBe(1)
-      expect(cache.keys()).toEqual(['only'])
+    it('creates empty cache from empty entries', () => {
+      const cache = LRUCache.fromEntries<string, number>([], 5)
+      expect(cache.size).toBe(0)
     })
 
-    it('should handle capacity of 1', () => {
-      const c = new LRUCache<string>({ maxSize: 1 })
-      c.set('a', '1')
-      c.set('b', '2')
-      expect(c.has('a')).toBe(false)
-      expect(c.get('b')).toBe('2')
-      expect(c.size()).toBe(1)
+    it('last entry is most recent', () => {
+      const cache = LRUCache.fromEntries([['a', 1], ['b', 2], ['c', 3]], 5)
+      expect(cache.peekMostRecent()).toEqual(['c', 3])
+      expect(cache.peekLeastRecent()).toEqual(['a', 1])
     })
 
-    it('should handle TTL of 0', () => {
-      const c = new LRUCache<string>({ ttlMs: 0 })
-      c.set('a', 'value')
-      expect(c.get('a')).toBe('value')
-    })
-
-    it('should handle overwriting existing key with fresh TTL', () => {
-      vi.useFakeTimers()
-      const c = new LRUCache<string>({ ttlMs: 200 })
-      c.set('a', 'old')
-      vi.advanceTimersByTime(150)
-      c.set('a', 'new')
-      vi.advanceTimersByTime(150)
-      expect(c.get('a')).toBe('new')
-      vi.useRealTimers()
-    })
-
-    it('should handle numeric values', () => {
-      const c = new LRUCache<number>()
-      c.set('a', 42)
-      expect(c.get('a')).toBe(42)
-    })
-
-    it('should handle object values', () => {
-      const c = new LRUCache<{ id: number }>()
-      const obj = { id: 1 }
-      c.set('a', obj)
-      expect(c.get('a')?.id).toBe(1)
-    })
-
-    it('should handle null values', () => {
-      const c = new LRUCache<string | null>()
-      c.set('a', null)
-      expect(c.get('a')).toBeNull()
-    })
-
-    it('should handle many items', () => {
-      const c = new LRUCache<string>({ maxSize: 100 })
-      for (let i = 0; i < 100; i++) {
-        c.set(`key-${i}`, `val-${i}`)
-      }
-      expect(c.size()).toBe(100)
-      expect(c.get('key-0')).toBe('val-0')
-    })
-
-    it('should handle multiple get operations on same key', () => {
-      cache.set('a', 'value')
-      cache.get('a')
-      cache.get('a')
-      cache.get('a')
-      expect(cache.getStats().hits).toBe(3)
-    })
-
-    it('should handle get after delete', () => {
-      cache.set('a', 'value')
-      cache.delete('a')
-      expect(cache.get('a')).toBeUndefined()
-    })
-
-    it('should handle set-delete-set cycle', () => {
-      cache.set('a', '1')
-      cache.delete('a')
-      cache.set('a', '2')
-      expect(cache.get('a')).toBe('2')
+    it('works with number keys', () => {
+      const cache = LRUCache.fromEntries([[1, 'a'], [2, 'b']], 5)
+      expect(cache.get(1)).toBe('a')
     })
   })
 
-  describe('type exports', () => {
-    it('should export DEFAULT_LRU_CACHE_OPTIONS', () => {
-      expect(DEFAULT_LRU_CACHE_OPTIONS.maxSize).toBe(100)
-      expect(DEFAULT_LRU_CACHE_OPTIONS.ttlMs).toBe(0)
+  describe('capacity 1 edge cases', () => {
+    it('holds exactly one item', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      expect(cache.size).toBe(1)
+      expect(cache.get('a')).toBe(1)
     })
 
-    it('should re-export types from lru-cache module', () => {
-      const node: LRUNode<string> = {
-        key: 'test',
-        value: 'value',
-        createdAt: Date.now(),
-      }
-      expect(node.key).toBe('test')
-
-      const opts: LRUCacheOptions = {
-        maxSize: 50,
-        ttlMs: 1000,
-      }
-      expect(opts.maxSize).toBe(50)
-
-      const stats: LRUCacheStats = {
-        size: 0,
-        maxSize: 50,
-        hits: 0,
-        misses: 0,
-        hitRate: 0,
-        evictions: 0,
-      }
-      expect(stats.size).toBe(0)
+    it('evicts on second set', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      const evicted = cache.set('b', 2)
+      expect(evicted).toBe(1)
+      expect(cache.has('a')).toBe(false)
+      expect(cache.get('b')).toBe(2)
     })
 
-    it('should allow creating LRUNode with different types', () => {
-      const numNode: LRUNode<number> = {
-        key: 'num',
-        value: 42,
-        createdAt: Date.now(),
-      }
-      expect(numNode.value).toBe(42)
-    })
-
-    it('should support LRUCacheOptions type values', () => {
-      const opts: LRUCacheOptions = {
-        maxSize: 200,
-        ttlMs: 5000,
-      }
-      expect(opts.maxSize).toBe(200)
-      expect(opts.ttlMs).toBe(5000)
-    })
-  })
-
-  describe('statistics tracking', () => {
-    it('should track hits and misses correctly', () => {
-      cache.set('a', '1')
+    it('get on single item works', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
       cache.get('a')
-      cache.get('a')
-      cache.get('missing')
-      const stats = cache.getStats()
-      expect(stats.hits).toBe(2)
-      expect(stats.misses).toBe(1)
-      expect(stats.hitRate).toBeCloseTo(2 / 3)
+      expect(cache.get('a')).toBe(1)
     })
 
-    it('should track evictions across multiple operations', () => {
-      const c = new LRUCache<string>({ maxSize: 2 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      c.set('d', '4')
-      expect(c.getStats().evictions).toBe(2)
+    it('update does not evict', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      cache.set('a', 10)
+      expect(cache.size).toBe(1)
+      expect(cache.get('a')).toBe(10)
     })
 
-    it('should maintain stats across clear', () => {
-      cache.set('a', '1')
-      cache.get('a')
+    it('delete on capacity 1', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      cache.delete('a')
+      expect(cache.isEmpty()).toBe(true)
+      cache.set('b', 2)
+      expect(cache.get('b')).toBe(2)
+    })
+
+    it('resize from 1 to larger', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      cache.resize(3)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.size).toBe(3)
+    })
+
+    it('resize to 1', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      const evicted = cache.resize(1)
+      expect(evicted).toEqual([['a', 1], ['b', 2]])
+      expect(cache.size).toBe(1)
+    })
+
+    it('clear and reuse', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
       cache.clear()
-      const stats = cache.getStats()
-      expect(stats.hits).toBe(1)
-      expect(stats.size).toBe(0)
+      cache.set('b', 2)
+      expect(cache.get('b')).toBe(2)
+      expect(cache.size).toBe(1)
     })
 
-    it('should track 100% hit rate', () => {
-      cache.set('a', '1')
-      cache.get('a')
-      expect(cache.getStats().hitRate).toBe(1)
+    it('peek on single item', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 42)
+      expect(cache.peek('a')).toBe(42)
+      expect(cache.peekMostRecent()).toEqual(['a', 42])
+      expect(cache.peekLeastRecent()).toEqual(['a', 42])
     })
 
-    it('should track 0% hit rate after only misses', () => {
-      cache.get('missing')
-      expect(cache.getStats().hitRate).toBe(0)
+    it('clone capacity 1 cache', () => {
+      const cache = new LRUCache<string, number>(1)
+      cache.set('a', 1)
+      const cloned = cache.clone()
+      expect(cloned.size).toBe(1)
+      expect(cloned.capacity).toBe(1)
+      expect(cloned.get('a')).toBe(1)
+    })
+  })
+
+  describe('generic types', () => {
+    it('works with number keys', () => {
+      const cache = new LRUCache<number, string>(3)
+      cache.set(1, 'one')
+      cache.set(2, 'two')
+      expect(cache.get(1)).toBe('one')
+      expect(cache.keys()).toEqual([1, 2])
+    })
+
+    it('works with object values', () => {
+      const cache = new LRUCache<string, { id: number }>(3)
+      cache.set('a', { id: 1 })
+      cache.set('b', { id: 2 })
+      expect(cache.get('a')).toEqual({ id: 1 })
+    })
+
+    it('works with boolean values', () => {
+      const cache = new LRUCache<string, boolean>(3)
+      cache.set('a', true)
+      cache.set('b', false)
+      expect(cache.get('a')).toBe(true)
+      expect(cache.get('b')).toBe(false)
+    })
+
+    it('works with null values', () => {
+      const cache = new LRUCache<string, number | null>(3)
+      cache.set('a', null)
+      cache.set('b', 1)
+      expect(cache.get('a')).toBeNull()
     })
   })
 
   describe('linked list integrity', () => {
-    it('should maintain correct order after multiple operations', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
-      cache.set('c', '3')
+    it('maintains correct order after complex operations', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
       cache.get('a')
       cache.delete('b')
       expect(cache.keys()).toEqual(['a', 'c'])
     })
 
-    it('should handle delete and reinsert', () => {
-      cache.set('a', '1')
-      cache.set('b', '2')
+    it('handles delete and reinsert', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
       cache.delete('a')
-      cache.set('a', '3')
+      cache.set('a', 3)
       expect(cache.keys()).toEqual(['a', 'b'])
     })
 
-    it('should handle eviction after get reorder', () => {
-      const c = new LRUCache<string>({ maxSize: 3 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      c.get('a')
-      c.set('d', '4')
-      expect(c.has('b')).toBe(false)
-      expect(c.keys()).toEqual(['d', 'a', 'c'])
+    it('handles eviction after get reorder', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.get('a')
+      cache.set('d', 4)
+      expect(cache.has('b')).toBe(false)
+      expect(cache.keys()).toEqual(['d', 'a', 'c'])
     })
 
-    it('should maintain correct entries after complex operations', () => {
-      const c = new LRUCache<string>({ maxSize: 3 })
-      c.set('a', '1')
-      c.set('b', '2')
-      c.set('c', '3')
-      c.get('a')
-      c.set('d', '4')
-      c.delete('a')
-      c.set('e', '5')
-      expect(c.entries()).toEqual([['e', '5'], ['d', '4'], ['c', '3']])
+    it('maintains correct entries after complex operations', () => {
+      const cache = new LRUCache<string, number>(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      cache.get('a')
+      cache.set('d', 4)
+      cache.delete('a')
+      cache.set('e', 5)
+      expect(cache.entries()).toEqual([['e', 5], ['d', 4], ['c', 3]])
+    })
+
+    it('handles rapid set/get cycles', () => {
+      const cache = new LRUCache<string, number>(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.get('a')
+      cache.set('c', 3)
+      expect(cache.has('a')).toBe(true)
+      expect(cache.has('b')).toBe(false)
+      cache.get('a')
+      cache.set('d', 4)
+      expect(cache.has('c')).toBe(false)
+      expect(cache.keys()).toEqual(['d', 'a'])
+    })
+  })
+
+  describe('O(1) operations stress test', () => {
+    it('handles many operations', () => {
+      const cache = new LRUCache<number, number>(100)
+      for (let i = 0; i < 1000; i++) {
+        cache.set(i, i * 10)
+      }
+      expect(cache.size).toBe(100)
+      expect(cache.has(999)).toBe(true)
+      expect(cache.has(900)).toBe(true)
+      expect(cache.has(899)).toBe(false)
+    })
+
+    it('handles many gets and sets', () => {
+      const cache = new LRUCache<number, number>(10)
+      for (let i = 0; i < 100; i++) {
+        cache.set(i, i)
+      }
+      for (let i = 90; i < 100; i++) {
+        cache.get(i)
+      }
+      cache.set(100, 100)
+      expect(cache.has(100)).toBe(true)
+      expect(cache.has(99)).toBe(true)
+      expect(cache.has(91)).toBe(true)
+      expect(cache.has(90)).toBe(false)
     })
   })
 })

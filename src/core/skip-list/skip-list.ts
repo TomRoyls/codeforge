@@ -1,5 +1,4 @@
-import type { SkipNode, SkipListOptions, SkipListStats } from './types.js'
-import { DEFAULT_SKIP_LIST_OPTIONS } from './types.js'
+import type { SkipNode } from './types.js'
 
 export class SkipList<T> {
   private header: SkipNode<T>
@@ -8,10 +7,9 @@ export class SkipList<T> {
   private level: number = 0
   private _size: number = 0
 
-  constructor(options?: Partial<SkipListOptions>) {
-    const opts: SkipListOptions = { ...DEFAULT_SKIP_LIST_OPTIONS, ...options }
-    this.maxLevel = opts.maxLevel
-    this.probability = opts.probability
+  constructor(maxLevel: number = 16, probability: number = 0.5) {
+    this.maxLevel = maxLevel
+    this.probability = probability
     this.header = this.createNode(0, null as T, this.maxLevel)
   }
 
@@ -53,7 +51,7 @@ export class SkipList<T> {
     this._size++
   }
 
-  search(key: number): T | undefined {
+  get(key: number): T | undefined {
     let current: SkipNode<T> = this.header
 
     for (let i = this.level - 1; i >= 0; i--) {
@@ -67,6 +65,17 @@ export class SkipList<T> {
       return found.value
     }
     return undefined
+  }
+
+  has(key: number): boolean {
+    let current: SkipNode<T> = this.header
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.forward[i] !== null && current.forward[i]!.key < key) {
+        current = current.forward[i]!
+      }
+    }
+    const found = current.forward[0] ?? null
+    return found !== null && found.key === key
   }
 
   delete(key: number): boolean {
@@ -101,64 +110,7 @@ export class SkipList<T> {
     return true
   }
 
-  has(key: number): boolean {
-    let current: SkipNode<T> | null = this.header
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i]!.key < key) {
-        current = current.forward[i]!
-      }
-    }
-    const found = current.forward[0] ?? null
-    return found !== null && found.key === key
-  }
-
-  getMin(): T | undefined {
-    const first = this.header.forward[0] ?? null
-    return first !== null ? first.value : undefined
-  }
-
-  getMax(): T | undefined {
-    if (this._size === 0) {
-      return undefined
-    }
-
-    let current: SkipNode<T> = this.header
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] != null) {
-        current = current.forward[i]!
-      }
-    }
-    return current.value
-  }
-
-  range(min: number, max: number): T[] {
-    const result: T[] = []
-    let current: SkipNode<T> = this.header
-
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] != null && current.forward[i]!.key < min) {
-        current = current.forward[i]!
-      }
-    }
-
-    let node = current.forward[0] ?? null
-    while (node !== null && node.key <= max) {
-      result.push(node.value)
-      node = node.forward[0] ?? null
-    }
-
-    return result
-  }
-
-  forEach(callback: (value: T, key: number) => void): void {
-    let current = this.header.forward[0] ?? null
-    while (current !== null) {
-      callback(current.value, current.key)
-      current = current.forward[0] ?? null
-    }
-  }
-
-  size(): number {
+  get size(): number {
     return this._size
   }
 
@@ -172,7 +124,51 @@ export class SkipList<T> {
     this._size = 0
   }
 
-  toArray(): [number, T][] {
+  min(): [number, T] | undefined {
+    const first = this.header.forward[0] ?? null
+    return first !== null ? [first.key, first.value] : undefined
+  }
+
+  max(): [number, T] | undefined {
+    if (this._size === 0) return undefined
+    let current: SkipNode<T> = this.header
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.forward[i] != null) {
+        current = current.forward[i]!
+      }
+    }
+    return [current.key, current.value]
+  }
+
+  forEach(callback: (value: T, key: number) => void): void {
+    let current = this.header.forward[0] ?? null
+    while (current !== null) {
+      callback(current.value, current.key)
+      current = current.forward[0] ?? null
+    }
+  }
+
+  keys(): number[] {
+    const result: number[] = []
+    let current = this.header.forward[0] ?? null
+    while (current !== null) {
+      result.push(current.key)
+      current = current.forward[0] ?? null
+    }
+    return result
+  }
+
+  values(): T[] {
+    const result: T[] = []
+    let current = this.header.forward[0] ?? null
+    while (current !== null) {
+      result.push(current.value)
+      current = current.forward[0] ?? null
+    }
+    return result
+  }
+
+  entries(): [number, T][] {
     const result: [number, T][] = []
     let current = this.header.forward[0] ?? null
     while (current !== null) {
@@ -182,13 +178,85 @@ export class SkipList<T> {
     return result
   }
 
-  getStats(): SkipListStats {
-    return {
-      size: this._size,
-      maxLevel: this.maxLevel,
-      currentLevel: this.level,
-      nodeCount: this._size,
+  clone(): SkipList<T> {
+    const result = new SkipList<T>(this.maxLevel, this.probability)
+    let current = this.header.forward[0] ?? null
+    while (current !== null) {
+      result.insert(current.key, current.value)
+      current = current.forward[0] ?? null
     }
+    return result
+  }
+
+  *[Symbol.iterator](): Iterator<[number, T]> {
+    let current = this.header.forward[0] ?? null
+    while (current !== null) {
+      yield [current.key, current.value]
+      current = current.forward[0] ?? null
+    }
+  }
+
+  lowerBound(key: number): [number, T] | undefined {
+    let current: SkipNode<T> = this.header
+
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.forward[i] != null && current.forward[i]!.key < key) {
+        current = current.forward[i]!
+      }
+    }
+
+    const found = current.forward[0] ?? null
+    if (found !== null) {
+      return [found.key, found.value]
+    }
+    return undefined
+  }
+
+  upperBound(key: number): [number, T] | undefined {
+    let current: SkipNode<T> = this.header
+
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.forward[i] != null && current.forward[i]!.key <= key) {
+        current = current.forward[i]!
+      }
+    }
+
+    const found = current.forward[0] ?? null
+    if (found !== null) {
+      return [found.key, found.value]
+    }
+    return undefined
+  }
+
+  range(start: number, end: number): [number, T][] {
+    const result: [number, T][] = []
+    let current: SkipNode<T> = this.header
+
+    for (let i = this.level - 1; i >= 0; i--) {
+      while (current.forward[i] != null && current.forward[i]!.key < start) {
+        current = current.forward[i]!
+      }
+    }
+
+    let node = current.forward[0] ?? null
+    while (node !== null && node.key <= end) {
+      result.push([node.key, node.value])
+      node = node.forward[0] ?? null
+    }
+
+    return result
+  }
+
+  getLevel(): number {
+    return this.level
+  }
+
+  static fromEntries<V>(entries: [number, V][], maxLevel?: number, probability?: number): SkipList<V> {
+    const list = new SkipList<V>(maxLevel, probability)
+    for (const [key, value] of entries) {
+      list.insert(key, value)
+    }
+    return list
   }
 
   private createNode(key: number, value: T, level: number): SkipNode<T> {
@@ -208,5 +276,4 @@ export class SkipList<T> {
   }
 }
 
-export { DEFAULT_SKIP_LIST_OPTIONS } from './types.js'
-export type { SkipNode, SkipListOptions, SkipListStats } from './types.js'
+export type { SkipNode } from './types.js'

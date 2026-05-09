@@ -666,5 +666,259 @@ describe('RateLimitTokenBucket', () => {
       vi.spyOn(Date, 'now').mockReturnValue(now + 1000)
       expect(bucket.getAvailableTokens()).toBe(5)
     })
+
+    it('should handle tryAcquire then acquire sequence', () => {
+      const result = bucket.tryAcquire(2)
+      expect(result.allowed).toBe(true)
+      expect(bucket.acquire(2)).toBe(true)
+      expect(bucket.acquire()).toBe(true)
+      expect(bucket.getAvailableTokens()).toBe(0)
+    })
+
+    it('should support wait-calculation after partial consumption', () => {
+      bucket.acquire(4)
+      const w = bucket.wait(2)
+      expect(w).toBeGreaterThan(0)
+      expect(w).toBeLessThanOrEqual(1000)
+    })
+
+    it('should support clone with different configuration', () => {
+      const b = new RateLimitTokenBucket({ capacity: 100, refillRate: 5, refillInterval: 200 })
+      const cloned = b.clone()
+      expect(cloned.getCapacity()).toBe(100)
+      expect(cloned.getRefillRate()).toBe(5)
+      expect(cloned.getRefillInterval()).toBe(200)
+    })
+  })
+
+  describe('acquire with refillRate > 1', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should refill multiple tokens per interval', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 5, refillInterval: 1000 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 1000)
+      expect(b.getAvailableTokens()).toBe(5)
+    })
+
+    it('should refill partially across intervals', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 3, refillInterval: 1000 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 2000)
+      expect(b.getAvailableTokens()).toBe(6)
+    })
+
+    it('should not exceed capacity with high refillRate', () => {
+      const b = new RateLimitTokenBucket({ capacity: 5, refillRate: 10, refillInterval: 1000 })
+      b.acquire(3)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 1000)
+      expect(b.getAvailableTokens()).toBe(5)
+    })
+
+    it('should calculate wait correctly with higher refillRate', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 5, refillInterval: 1000 })
+      b.acquire(10)
+      const w = b.wait(5)
+      expect(w).toBeGreaterThan(0)
+      expect(w).toBeLessThanOrEqual(1000)
+    })
+
+    it('should handle acquire after multi-token refill', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 5, refillInterval: 1000 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 1000)
+      expect(b.acquire(3)).toBe(true)
+      expect(b.getAvailableTokens()).toBe(2)
+    })
+  })
+
+  describe('concurrent-like operations', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should handle interleave of acquire and tryAcquire', () => {
+      expect(bucket.acquire(2)).toBe(true)
+      const r1 = bucket.tryAcquire(2)
+      expect(r1.allowed).toBe(true)
+      const r2 = bucket.tryAcquire(2)
+      expect(r2.allowed).toBe(false)
+      expect(bucket.getAvailableTokens()).toBe(1)
+    })
+
+    it('should handle reset between operations', () => {
+      bucket.acquire(5)
+      bucket.reset()
+      expect(bucket.tryAcquire(5).allowed).toBe(true)
+    })
+
+    it('should handle setCapacity between operations', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      bucket.acquire(3)
+      bucket.setCapacity(1)
+      expect(bucket.getAvailableTokens()).toBe(1)
+      expect(bucket.acquire()).toBe(true)
+      expect(bucket.acquire()).toBe(false)
+    })
+
+    it('should handle clone preserving exact state', () => {
+      bucket.acquire(3)
+      const stats = bucket.getStats()
+      const cloned = bucket.clone()
+      const clonedStats = cloned.getStats()
+      expect(clonedStats.availableTokens).toBe(stats.availableTokens)
+      expect(clonedStats.capacity).toBe(stats.capacity)
+      expect(clonedStats.refillRate).toBe(stats.refillRate)
+    })
+
+    it('should handle multiple clones independently', () => {
+      const c1 = bucket.clone()
+      const c2 = bucket.clone()
+      c1.acquire(5)
+      c2.acquire(1)
+      expect(bucket.getAvailableTokens()).toBe(5)
+      expect(c1.getAvailableTokens()).toBe(0)
+      expect(c2.getAvailableTokens()).toBe(4)
+    })
+
+    it('should handle consume and acquire interchangeably', () => {
+      expect(bucket.consume(2)).toBe(true)
+      expect(bucket.acquire(2)).toBe(true)
+      expect(bucket.consume()).toBe(true)
+      expect(bucket.getAvailableTokens()).toBe(0)
+    })
+
+    it('should report correct wait time after consuming all tokens', () => {
+      bucket.consume(5)
+      const w = bucket.wait(1)
+      expect(w).toBeGreaterThan(0)
+      expect(w).toBeLessThanOrEqual(1000)
+    })
+
+    it('should handle getStats after various operations', () => {
+      bucket.acquire(2)
+      bucket.setRefillRate(3)
+      const stats = bucket.getStats()
+      expect(stats.availableTokens).toBe(3)
+      expect(stats.refillRate).toBe(3)
+      expect(stats.capacity).toBe(5)
+    })
+  })
+
+  describe('wait calculation edge cases', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should return 0 wait for cost 0 when empty', () => {
+      bucket.acquire(5)
+      expect(bucket.wait(0)).toBe(0)
+    })
+
+    it('should return larger wait for larger deficit', () => {
+      bucket.acquire(5)
+      const w1 = bucket.wait(1)
+      const w2 = bucket.wait(5)
+      expect(w2).toBeGreaterThanOrEqual(w1)
+    })
+
+    it('should decrease wait time as time passes', () => {
+      bucket.acquire(5)
+      const w1 = bucket.wait(2)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 500)
+      const w2 = bucket.wait(2)
+      expect(w2).toBeLessThan(w1)
+    })
+  })
+
+  describe('refill with non-standard intervals', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('should handle very short refill interval', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 1, refillInterval: 10 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 25)
+      expect(b.getAvailableTokens()).toBe(2)
+    })
+
+    it('should handle very long refill interval', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 1, refillInterval: 60000 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 30000)
+      expect(b.getAvailableTokens()).toBe(0)
+    })
+
+    it('should handle partial interval elapse with multi-token refill', () => {
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 3, refillInterval: 1000 })
+      b.acquire(10)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now + 1500)
+      expect(b.getAvailableTokens()).toBe(3)
+    })
+
+    it('should track lastRefillTime correctly across multiple refills', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const b = new RateLimitTokenBucket({ capacity: 10, refillRate: 1, refillInterval: 100 })
+      b.acquire(10)
+      vi.spyOn(Date, 'now').mockReturnValue(now + 250)
+      b.refill()
+      expect(b.getAvailableTokens()).toBe(2)
+      vi.spyOn(Date, 'now').mockReturnValue(now + 350)
+      b.refill()
+      expect(b.getAvailableTokens()).toBe(3)
+    })
+
+    it('should handle acquire triggering refill mid-operation', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const b = new RateLimitTokenBucket({ capacity: 5, refillRate: 2, refillInterval: 100 })
+      b.acquire(5)
+      vi.spyOn(Date, 'now').mockReturnValue(now + 100)
+      expect(b.acquire()).toBe(true)
+      expect(b.getAvailableTokens()).toBe(1)
+    })
+
+    it('should handle tryAcquire triggering refill', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const b = new RateLimitTokenBucket({ capacity: 5, refillRate: 2, refillInterval: 100 })
+      b.acquire(5)
+      vi.spyOn(Date, 'now').mockReturnValue(now + 200)
+      const result = b.tryAcquire(3)
+      expect(result.allowed).toBe(true)
+      expect(result.remainingTokens).toBe(1)
+    })
+
+    it('should handle wait after refill has occurred', () => {
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+      const b = new RateLimitTokenBucket({ capacity: 5, refillRate: 1, refillInterval: 1000 })
+      b.acquire(5)
+      vi.spyOn(Date, 'now').mockReturnValue(now + 500)
+      const w = b.wait(3)
+      expect(w).toBeGreaterThan(0)
+      expect(w).toBeLessThanOrEqual(3000)
+    })
+
+    it('should handle reset then immediate operations', () => {
+      bucket.acquire(5)
+      bucket.reset()
+      expect(bucket.acquire()).toBe(true)
+      expect(bucket.tryAcquire(4).allowed).toBe(true)
+      expect(bucket.getAvailableTokens()).toBe(0)
+    })
   })
 })

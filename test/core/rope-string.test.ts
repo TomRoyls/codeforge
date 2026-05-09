@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { RopeString } from '../../src/core/rope-string/rope-string.js'
 import { DEFAULT_ROPE_OPTIONS } from '../../src/core/rope-string/types.js'
-import type { RopeOptions, RopeNode } from '../../src/core/rope-string/types.js'
+import type { RopeOptions, RopeNode, RopeStats } from '../../src/core/rope-string/types.js'
 
 describe('RopeString', () => {
   describe('constructor', () => {
@@ -576,11 +576,25 @@ describe('RopeString', () => {
       expect(cloned.toString()).toBe('hello world')
     })
 
-    it('should be independent from original', () => {
+    it('should be independent from original after append', () => {
       const rope = new RopeString('hello')
       const cloned = rope.clone()
       rope.append(' world')
       expect(cloned.toString()).toBe('hello')
+    })
+
+    it('should be independent from original after delete', () => {
+      const rope = new RopeString('hello world')
+      const cloned = rope.clone()
+      rope.delete(0, 6)
+      expect(cloned.toString()).toBe('hello world')
+    })
+
+    it('should be independent from original after insert', () => {
+      const rope = new RopeString('hello world')
+      const cloned = rope.clone()
+      rope.insert(5, ' beautiful')
+      expect(cloned.toString()).toBe('hello world')
     })
 
     it('should clone empty rope', () => {
@@ -601,6 +615,14 @@ describe('RopeString', () => {
       const rope = new RopeString('hello')
       const cloned = rope.clone()
       expect(cloned.length()).toBe(5)
+    })
+
+    it('should deep clone internal structure', () => {
+      const rope = new RopeString('hello world this is a test', { leafMaxSize: 4 })
+      const cloned = rope.clone()
+      cloned.delete(0, 5)
+      expect(rope.toString()).toBe('hello world this is a test')
+      expect(cloned.toString()).toBe(' world this is a test')
     })
   })
 
@@ -632,6 +654,301 @@ describe('RopeString', () => {
     })
   })
 
+  describe('concat', () => {
+    it('should concatenate two ropes', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      const result = a.concat(b)
+      expect(result.toString()).toBe('hello world')
+    })
+
+    it('should not modify original ropes', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      a.concat(b)
+      expect(a.toString()).toBe('hello')
+      expect(b.toString()).toBe(' world')
+    })
+
+    it('should handle concat with empty rope', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString()
+      const result = a.concat(b)
+      expect(result.toString()).toBe('hello')
+    })
+
+    it('should handle concat empty with non-empty', () => {
+      const a = new RopeString()
+      const b = new RopeString('world')
+      const result = a.concat(b)
+      expect(result.toString()).toBe('world')
+    })
+
+    it('should handle two empty ropes', () => {
+      const a = new RopeString()
+      const b = new RopeString()
+      const result = a.concat(b)
+      expect(result.toString()).toBe('')
+      expect(result.length()).toBe(0)
+    })
+
+    it('should return independent result', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      const result = a.concat(b)
+      a.append('!')
+      b.append('!')
+      expect(result.toString()).toBe('hello world')
+    })
+
+    it('should produce correct length', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      const result = a.concat(b)
+      expect(result.length()).toBe(11)
+    })
+
+    it('should handle multiple concat calls', () => {
+      const a = new RopeString('a')
+      const b = new RopeString('b')
+      const c = new RopeString('c')
+      const result = a.concat(b).concat(c)
+      expect(result.toString()).toBe('abc')
+    })
+
+    it('should handle concat with long strings', () => {
+      const a = new RopeString('a'.repeat(50))
+      const b = new RopeString('b'.repeat(50))
+      const result = a.concat(b)
+      expect(result.toString()).toBe('a'.repeat(50) + 'b'.repeat(50))
+      expect(result.length()).toBe(100)
+    })
+
+    it('should handle concat then modify result', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      const result = a.concat(b)
+      result.insert(5, ' beautiful')
+      expect(a.toString()).toBe('hello')
+      expect(b.toString()).toBe(' world')
+      expect(result.toString()).toBe('hello beautiful world')
+    })
+  })
+
+  describe('isBalanced', () => {
+    it('should be balanced for empty rope', () => {
+      const rope = new RopeString()
+      expect(rope.isBalanced()).toBe(true)
+    })
+
+    it('should be balanced for single leaf', () => {
+      const rope = new RopeString('hello')
+      expect(rope.isBalanced()).toBe(true)
+    })
+
+    it('should be balanced for constructed rope', () => {
+      const rope = new RopeString('hello world this is a test')
+      expect(rope.isBalanced()).toBe(true)
+    })
+
+    it('should be balanced after rebalance', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 50; i++) {
+        rope.append(String(i))
+      }
+      rope.rebalance()
+      expect(rope.isBalanced()).toBe(true)
+    })
+
+    it('should be balanced for small leaf size', () => {
+      const rope = new RopeString('abcdefghijklmnopqrstuvwxyz', { leafMaxSize: 4 })
+      expect(rope.isBalanced()).toBe(true)
+    })
+  })
+
+  describe('rebalance', () => {
+    it('should preserve content after rebalance', () => {
+      const rope = new RopeString('hello world')
+      rope.rebalance()
+      expect(rope.toString()).toBe('hello world')
+    })
+
+    it('should preserve empty rope', () => {
+      const rope = new RopeString()
+      rope.rebalance()
+      expect(rope.toString()).toBe('')
+      expect(rope.length()).toBe(0)
+    })
+
+    it('should produce balanced tree from degenerate rope', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 30; i++) {
+        rope.append('x')
+      }
+      rope.rebalance()
+      expect(rope.isBalanced()).toBe(true)
+      expect(rope.toString()).toBe('x'.repeat(30))
+    })
+
+    it('should preserve length after rebalance', () => {
+      const rope = new RopeString('abcdefghijklmnopqrstuvwxyz')
+      const len = rope.length()
+      rope.rebalance()
+      expect(rope.length()).toBe(len)
+    })
+
+    it('should allow operations after rebalance', () => {
+      const rope = new RopeString('hello world')
+      rope.rebalance()
+      rope.insert(5, ' beautiful')
+      expect(rope.toString()).toBe('hello beautiful world')
+    })
+
+    it('should handle rebalance on single char', () => {
+      const rope = new RopeString('x')
+      rope.rebalance()
+      expect(rope.toString()).toBe('x')
+    })
+
+    it('should handle rebalance after many appends', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 100; i++) {
+        rope.append(`${i}`)
+      }
+      rope.rebalance()
+      let expected = ''
+      for (let i = 0; i < 100; i++) {
+        expected += `${i}`
+      }
+      expect(rope.toString()).toBe(expected)
+    })
+
+    it('should handle rebalance after many prepends', () => {
+      const rope = new RopeString()
+      for (let i = 9; i >= 0; i--) {
+        rope.prepend(`${i}`)
+      }
+      rope.rebalance()
+      expect(rope.toString()).toBe('0123456789')
+    })
+
+    it('should return void', () => {
+      const rope = new RopeString('hello')
+      expect(rope.rebalance()).toBeUndefined()
+    })
+  })
+
+  describe('getStats', () => {
+    it('should return stats for empty rope', () => {
+      const rope = new RopeString()
+      const stats = rope.getStats()
+      expect(stats.nodeCount).toBe(0)
+      expect(stats.height).toBe(0)
+      expect(stats.isBalanced).toBe(true)
+      expect(stats.leafCount).toBe(0)
+    })
+
+    it('should return stats for single leaf', () => {
+      const rope = new RopeString('hello')
+      const stats = rope.getStats()
+      expect(stats.nodeCount).toBe(0)
+      expect(stats.height).toBe(0)
+      expect(stats.isBalanced).toBe(true)
+      expect(stats.leafCount).toBe(1)
+    })
+
+    it('should return stats for multi-node rope', () => {
+      const rope = new RopeString('abcdefghijklmnopqrstuvwxyz', { leafMaxSize: 4 })
+      const stats = rope.getStats()
+      expect(stats.nodeCount).toBeGreaterThan(0)
+      expect(stats.leafCount).toBeGreaterThan(1)
+      expect(stats.height).toBeGreaterThan(0)
+    })
+
+    it('should return RopeStats type', () => {
+      const rope = new RopeString('hello')
+      const stats: RopeStats = rope.getStats()
+      expect(typeof stats.nodeCount).toBe('number')
+      expect(typeof stats.height).toBe('number')
+      expect(typeof stats.isBalanced).toBe('boolean')
+      expect(typeof stats.leafCount).toBe('number')
+    })
+
+    it('should show balanced after rebalance', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 30; i++) {
+        rope.append('x')
+      }
+      rope.rebalance()
+      const stats = rope.getStats()
+      expect(stats.isBalanced).toBe(true)
+    })
+  })
+
+  describe('Symbol.iterator', () => {
+    it('should iterate over characters', () => {
+      const rope = new RopeString('hello')
+      const chars = [...rope]
+      expect(chars).toEqual(['h', 'e', 'l', 'l', 'o'])
+    })
+
+    it('should iterate over empty rope', () => {
+      const rope = new RopeString()
+      const chars = [...rope]
+      expect(chars).toEqual([])
+    })
+
+    it('should iterate over single character', () => {
+      const rope = new RopeString('x')
+      const chars = [...rope]
+      expect(chars).toEqual(['x'])
+    })
+
+    it('should iterate over long string', () => {
+      const text = 'abcdefghijklmnopqrstuvwxyz'
+      const rope = new RopeString(text, { leafMaxSize: 4 })
+      const chars = [...rope]
+      expect(chars.join('')).toBe(text)
+    })
+
+    it('should work with for...of loop', () => {
+      const rope = new RopeString('abc')
+      const result: string[] = []
+      for (const ch of rope) {
+        result.push(ch)
+      }
+      expect(result).toEqual(['a', 'b', 'c'])
+    })
+
+    it('should work after modifications', () => {
+      const rope = new RopeString('hllo')
+      rope.insert(1, 'e')
+      const chars = [...rope]
+      expect(chars).toEqual(['h', 'e', 'l', 'l', 'o'])
+    })
+
+    it('should work with spread operator', () => {
+      const rope = new RopeString('test')
+      expect([...rope].length).toBe(4)
+    })
+
+    it('should work after rebalance', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 5; i++) {
+        rope.append('x')
+      }
+      rope.rebalance()
+      expect([...rope].length).toBe(5)
+    })
+
+    it('should work with split results', () => {
+      const rope = new RopeString('hello world')
+      const [left, right] = rope.split(5)
+      expect([...left]).toEqual(['h', 'e', 'l', 'l', 'o'])
+      expect([...right]).toEqual([' ', 'w', 'o', 'r', 'l', 'd'])
+    })
+  })
+
   describe('type exports', () => {
     it('should have correct DEFAULT_ROPE_OPTIONS', () => {
       expect(DEFAULT_ROPE_OPTIONS.leafMaxSize).toBe(8)
@@ -659,6 +976,17 @@ describe('RopeString', () => {
         length: 5,
       }
       expect(typeof nested).toBe('object')
+    })
+
+    it('should support RopeStats interface', () => {
+      const stats: RopeStats = {
+        nodeCount: 5,
+        height: 3,
+        isBalanced: true,
+        leafCount: 4,
+      }
+      expect(stats.nodeCount).toBe(5)
+      expect(stats.isBalanced).toBe(true)
     })
   })
 
@@ -757,6 +1085,52 @@ describe('RopeString', () => {
       rope.delete(5, 6)
       rope.append('!')
       expect(rope.toString()).toBe('hello!')
+    })
+
+    it('should handle concat split roundtrip', () => {
+      const a = new RopeString('hello')
+      const b = new RopeString(' world')
+      const combined = a.concat(b)
+      const [left, right] = combined.split(5)
+      expect(left.toString()).toBe('hello')
+      expect(right.toString()).toBe(' world')
+    })
+
+    it('should handle rebalance between operations', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 20; i++) {
+        rope.append('a')
+      }
+      rope.rebalance()
+      rope.insert(10, 'b')
+      expect(rope.toString()).toBe('a'.repeat(10) + 'b' + 'a'.repeat(10))
+    })
+
+    it('should handle split concat roundtrip', () => {
+      const original = new RopeString('hello world')
+      const [left, right] = original.split(5)
+      const rejoined = left.concat(right)
+      expect(rejoined.toString()).toBe('hello world')
+    })
+
+    it('should handle iterator after concat', () => {
+      const a = new RopeString('abc')
+      const b = new RopeString('def')
+      const combined = a.concat(b)
+      expect([...combined].join('')).toBe('abcdef')
+    })
+
+    it('should handle performance with repeated operations', () => {
+      const rope = new RopeString()
+      for (let i = 0; i < 50; i++) {
+        rope.append('x')
+      }
+      expect(rope.length()).toBe(50)
+      rope.rebalance()
+      for (let i = 0; i < 50; i++) {
+        rope.delete(0, 1)
+      }
+      expect(rope.isEmpty()).toBe(true)
     })
   })
 })

@@ -143,32 +143,26 @@ export class QuadTree {
 
   nearestNeighbor(point: Point): Point | undefined {
     if (this._size === 0) return undefined
-    let best: Point | undefined
-    let bestDist = Infinity
-    this._nearestInternal(point, { best, bestDist }, (result) => {
-      best = result.best
-      bestDist = result.bestDist
-    })
-    return best
+    const result: { best: Point | undefined; bestDist: number } = { best: undefined, bestDist: Infinity }
+    this._nearestInternal(point, result)
+    return result.best
   }
 
   private _nearestInternal(
     point: Point,
     result: { best: Point | undefined; bestDist: number },
-    update: (r: { best: Point | undefined; bestDist: number }) => void,
   ): void {
     if (this._children !== null) {
       const candidates: { child: QuadTree; dist: number }[] = []
       for (const child of this._children) {
-        if (child._size === 0) continue
+        if (child.points.length === 0 && child._children === null) continue
         const dist = child._minDist(point)
         candidates.push({ child, dist })
       }
       candidates.sort((a, b) => a.dist - b.dist)
       for (const { child, dist } of candidates) {
         if (dist >= result.bestDist) break
-        child._nearestInternal(point, result, update)
-        update(result)
+        child._nearestInternal(point, result)
       }
     } else {
       for (const p of this.points) {

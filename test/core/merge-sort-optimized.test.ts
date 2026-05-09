@@ -113,6 +113,32 @@ describe('mergeSortOptimized', () => {
   it('should sort floating point numbers', () => {
     expect(mergeSortOptimized([3.14, 1.41, 2.72, 0.58])).toEqual([0.58, 1.41, 2.72, 3.14])
   })
+
+  it('should handle array with one element out of order at start', () => {
+    expect(mergeSortOptimized([5, 1, 2, 3, 4])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should handle array with one element out of order at end', () => {
+    expect(mergeSortOptimized([2, 3, 4, 5, 1])).toEqual([1, 2, 3, 4, 5])
+  })
+
+  it('should handle two elements already sorted', () => {
+    expect(mergeSortOptimized([1, 2])).toEqual([1, 2])
+  })
+
+  it('should handle NaN-like comparison gracefully', () => {
+    const arr = [3, 1, 2]
+    expect(mergeSortOptimized(arr)).toEqual([1, 2, 3])
+  })
+
+  it('should handle array of zeros', () => {
+    expect(mergeSortOptimized([0, 0, 0, 0])).toEqual([0, 0, 0, 0])
+  })
+
+  it('should handle large positive and negative mix', () => {
+    const arr = [1000000, -1000000, 0, 500, -500]
+    expect(mergeSortOptimized(arr)).toEqual([-1000000, -500, 0, 500, 1000000])
+  })
 })
 
 describe('mergeSortInPlace', () => {
@@ -181,6 +207,18 @@ describe('mergeSortInPlace', () => {
     mergeSortInPlace(arr)
     expect(arr).toEqual(['apple', 'banana', 'cherry'])
   })
+
+  it('should handle power-of-two sized array', () => {
+    const arr = [8, 7, 6, 5, 4, 3, 2, 1]
+    mergeSortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+  })
+
+  it('should handle array of size 3', () => {
+    const arr = [3, 1, 2]
+    mergeSortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3])
+  })
 })
 
 describe('mergeSortBy', () => {
@@ -240,6 +278,19 @@ describe('mergeSortBy', () => {
     const result = mergeSortBy(items, x => x.v)
     expect(result[0]!.v).toBe(0)
     expect(result[999]!.v).toBe(999)
+  })
+
+  it('should handle boolean key function', () => {
+    const items = [1, 2, 3, 4, 5, 6]
+    const result = mergeSortBy(items, x => x % 2 === 0)
+    expect(result.filter(x => x % 2 !== 0)).toEqual([1, 3, 5])
+    expect(result.filter(x => x % 2 === 0)).toEqual([2, 4, 6])
+  })
+
+  it('should sort by object property', () => {
+    const items = [{ a: 3, b: 1 }, { a: 1, b: 2 }, { a: 2, b: 3 }]
+    const result = mergeSortBy(items, x => x.b)
+    expect(result.map(x => x.b)).toEqual([1, 2, 3])
   })
 })
 
@@ -323,6 +374,21 @@ describe('mergeSortStable', () => {
     expect(result[0]!.val).toBe(1)
     expect(result[1]!.val).toBe(2)
   })
+
+  it('should handle 3 groups with equal values', () => {
+    const items = [
+      { v: 2, id: 1 },
+      { v: 1, id: 2 },
+      { v: 3, id: 3 },
+      { v: 1, id: 4 },
+      { v: 2, id: 5 },
+      { v: 3, id: 6 },
+    ]
+    const result = mergeSortStable(items, (a, b) => a.v - b.v)
+    expect(result.map(x => x.v)).toEqual([1, 1, 2, 2, 3, 3])
+    expect(result.filter(x => x.v === 1).map(x => x.id)).toEqual([2, 4])
+    expect(result.filter(x => x.v === 2).map(x => x.id)).toEqual([1, 5])
+  })
 })
 
 describe('isSorted', () => {
@@ -373,6 +439,19 @@ describe('isSorted', () => {
   it('should handle strings', () => {
     expect(isSorted(['a', 'b', 'c'])).toBe(true)
     expect(isSorted(['c', 'a', 'b'])).toBe(false)
+  })
+
+  it('should return true for equal adjacent elements', () => {
+    expect(isSorted([1, 1, 2, 2, 3])).toBe(true)
+  })
+
+  it('should return false for single inversion', () => {
+    expect(isSorted([1, 3, 2, 4])).toBe(false)
+  })
+
+  it('should work with descending comparator', () => {
+    expect(isSorted([5, 3, 1], (a, b) => b - a)).toBe(true)
+    expect(isSorted([1, 3, 5], (a, b) => b - a)).toBe(false)
   })
 })
 
@@ -433,6 +512,17 @@ describe('countInversions', () => {
   it('should handle negative numbers', () => {
     expect(countInversions([1, -1, 2, -2])).toBe(4)
   })
+
+  it('should count inversions for [2, 1, 1]', () => {
+    expect(countInversions([2, 1, 1])).toBe(2)
+  })
+
+  it('should count inversions for large partially sorted', () => {
+    const arr = Array.from({ length: 100 }, (_, i) => i)
+    arr[0] = 99
+    arr[99] = 0
+    expect(countInversions(arr)).toBeGreaterThan(0)
+  })
 })
 
 describe('countRuns', () => {
@@ -485,6 +575,18 @@ describe('countRuns', () => {
 
   it('should handle single run ascending then single run descending', () => {
     expect(countRuns([1, 2, 3, 3, 2, 1])).toBe(2)
+  })
+
+  it('should count 1 run for constant array', () => {
+    expect(countRuns([7, 7, 7, 7, 7])).toBe(1)
+  })
+
+  it('should count runs for two-element ascending', () => {
+    expect(countRuns([1, 2])).toBe(1)
+  })
+
+  it('should count runs for two-element descending', () => {
+    expect(countRuns([2, 1])).toBe(1)
   })
 })
 
@@ -572,6 +674,18 @@ describe('edge cases and integration', () => {
     const arr = [true, false, true, false]
     const result = mergeSortOptimized(arr)
     expect(result).toEqual([false, false, true, true])
+  })
+
+  it('should handle undefined values in comparison', () => {
+    const arr = [3, 1, undefined, 2]
+    const result = mergeSortOptimized(arr, (a, b) => {
+      if (a === undefined && b === undefined) return 0
+      if (a === undefined) return 1
+      if (b === undefined) return -1
+      return a - b
+    })
+    expect(result.slice(0, 3)).toEqual([1, 2, 3])
+    expect(result[3]).toBeUndefined()
   })
 })
 

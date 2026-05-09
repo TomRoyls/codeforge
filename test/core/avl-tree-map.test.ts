@@ -1,986 +1,1154 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { AVLTreeMap } from '../../src/core/avl-tree-map/avl-tree-map.js'
-import { defaultComparator } from '../../src/core/avl-tree-map/types.js'
-import type { AVLTreeEntry, AVLTreeMapOptions } from '../../src/core/avl-tree-map/types.js'
+
+function assertBalanced<K, V>(m: AVLTreeMap<K, V>): void {
+  const height = m.getHeight()
+  const sz = m.size
+  if (sz === 0) {
+    expect(height).toBe(0)
+    return
+  }
+  expect(height).toBeGreaterThan(0)
+  expect(height).toBeLessThanOrEqual(Math.ceil(1.44 * Math.log2(sz + 2)))
+}
 
 describe('AVLTreeMap', () => {
-  let tree: AVLTreeMap<number, string>
-
-  beforeEach(() => {
-    tree = new AVLTreeMap<number, string>()
-  })
-
   describe('constructor', () => {
-    it('should create an empty tree', () => {
-      const t = new AVLTreeMap<number, string>()
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
+    it('should create empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.size).toBe(0)
+      expect(m.isEmpty()).toBe(true)
     })
 
-    it('should create tree with initial entries', () => {
-      const t = new AVLTreeMap<number, string>({
-        entries: [
-          [5, 'five'],
-          [3, 'three'],
-          [7, 'seven'],
-        ],
-      })
-      expect(t.size()).toBe(3)
-      expect(t.get(5)).toBe('five')
-      expect(t.get(3)).toBe('three')
-      expect(t.get(7)).toBe('seven')
+    it('should accept custom comparator', () => {
+      const m = new AVLTreeMap<number, string>((a, b) => b - a)
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      expect(m.keys()).toEqual([3, 2, 1])
     })
 
-    it('should create tree with custom comparator', () => {
-      const t = new AVLTreeMap<string, number>({
-        comparator: (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
-      })
-      t.set('Hello', 1)
-      t.set('hello', 2)
-      expect(t.size()).toBe(1)
-      expect(t.get('Hello')).toBe(2)
-      expect(t.get('hello')).toBe(2)
-    })
-
-    it('should handle empty options object', () => {
-      const t = new AVLTreeMap<number, string>({})
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
-    })
-
-    it('should handle initial entries with duplicates (last wins)', () => {
-      const t = new AVLTreeMap<number, string>({
-        entries: [
-          [1, 'a'],
-          [1, 'b'],
-        ],
-      })
-      expect(t.size()).toBe(1)
-      expect(t.get(1)).toBe('b')
+    it('should accept string comparator', () => {
+      const m = new AVLTreeMap<string, number>((a, b) => a.localeCompare(b))
+      m.set('banana', 2)
+      m.set('apple', 1)
+      m.set('cherry', 3)
+      expect(m.keys()).toEqual(['apple', 'banana', 'cherry'])
     })
   })
 
-  describe('set/get', () => {
-    it('should set and get a single entry', () => {
-      tree.set(1, 'one')
-      expect(tree.get(1)).toBe('one')
+  describe('set and get', () => {
+    it('should set and get values', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.set(2, 'two')
+      m.set(3, 'three')
+      expect(m.get(1)).toBe('one')
+      expect(m.get(2)).toBe('two')
+      expect(m.get(3)).toBe('three')
     })
 
-    it('should set and get multiple entries', () => {
-      tree.set(1, 'one')
-      tree.set(2, 'two')
-      tree.set(3, 'three')
-      expect(tree.get(1)).toBe('one')
-      expect(tree.get(2)).toBe('two')
-      expect(tree.get(3)).toBe('three')
+    it('should return undefined for missing key', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.get(1)).toBeUndefined()
     })
 
-    it('should overwrite existing key', () => {
-      tree.set(1, 'one')
-      tree.set(1, 'updated')
-      expect(tree.get(1)).toBe('updated')
-      expect(tree.size()).toBe(1)
+    it('should update existing key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'old')
+      m.set(1, 'new')
+      expect(m.get(1)).toBe('new')
+      expect(m.size).toBe(1)
     })
 
-    it('should return undefined for non-existent key', () => {
-      expect(tree.get(99)).toBeUndefined()
+    it('should handle string keys with default comparator', () => {
+      const m = new AVLTreeMap<string, number>()
+      m.set('a', 1)
+      m.set('b', 2)
+      m.set('c', 3)
+      expect(m.get('a')).toBe(1)
+      expect(m.get('c')).toBe(3)
+      expect(m.has('b')).toBe(true)
     })
 
-    it('should handle various value types', () => {
-      const numTree = new AVLTreeMap<string, number>()
-      numTree.set('a', 1)
-      numTree.set('b', 2)
-      expect(numTree.get('a')).toBe(1)
+    it('should handle many insertions', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) {
+        m.set(i, i * 10)
+      }
+      expect(m.size).toBe(100)
+      for (let i = 0; i < 100; i++) {
+        expect(m.get(i)).toBe(i * 10)
+      }
     })
 
-    it('should handle object values', () => {
-      const objTree = new AVLTreeMap<number, { name: string }>()
-      objTree.set(1, { name: 'test' })
-      expect(objTree.get(1)?.name).toBe('test')
+    it('should handle reverse order insertion', () => {
+      const m = new AVLTreeMap<number, string>()
+      for (let i = 100; i >= 0; i--) {
+        m.set(i, `v${i}`)
+      }
+      expect(m.size).toBe(101)
+      expect(m.get(0)).toBe('v0')
+      expect(m.get(100)).toBe('v100')
     })
 
-    it('should handle null values', () => {
-      const nullTree = new AVLTreeMap<number, string | null>()
-      nullTree.set(1, null)
-      expect(nullTree.get(1)).toBeNull()
+    it('should handle negative keys', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(-3, 'neg3')
+      m.set(0, 'zero')
+      m.set(5, 'pos5')
+      expect(m.get(-3)).toBe('neg3')
+      expect(m.get(0)).toBe('zero')
+      expect(m.get(5)).toBe('pos5')
     })
 
-    it('should preserve size after overwrite', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      tree.set(1, 'c')
-      expect(tree.size()).toBe(2)
+    it('should handle inserting the same key multiple times', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(1, 'b')
+      m.set(1, 'c')
+      expect(m.size).toBe(1)
+      expect(m.get(1)).toBe('c')
+    })
+
+    it('should handle single element', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(42, 'answer')
+      expect(m.size).toBe(1)
+      expect(m.get(42)).toBe('answer')
     })
   })
 
   describe('has', () => {
     it('should return true for existing key', () => {
-      tree.set(1, 'one')
-      expect(tree.has(1)).toBe(true)
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      expect(m.has(1)).toBe(true)
     })
 
-    it('should return false for non-existing key', () => {
-      expect(tree.has(1)).toBe(false)
+    it('should return false for missing key', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.has(1)).toBe(false)
     })
 
-    it('should return false after deletion', () => {
-      tree.set(1, 'one')
-      tree.delete(1)
-      expect(tree.has(1)).toBe(false)
+    it('should return false after delete', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.delete(1)
+      expect(m.has(1)).toBe(false)
     })
 
-    it('should return true for multiple keys', () => {
-      tree.set(1, 'one')
-      tree.set(2, 'two')
-      tree.set(3, 'three')
-      expect(tree.has(1)).toBe(true)
-      expect(tree.has(2)).toBe(true)
-      expect(tree.has(3)).toBe(true)
-      expect(tree.has(4)).toBe(false)
+    it('should return false on empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.has(999)).toBe(false)
+    })
+
+    it('should find keys in large tree', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 50; i++) m.set(i, i)
+      expect(m.has(0)).toBe(true)
+      expect(m.has(49)).toBe(true)
+      expect(m.has(25)).toBe(true)
+      expect(m.has(50)).toBe(false)
     })
   })
 
   describe('delete', () => {
-    it('should delete an existing key', () => {
-      tree.set(1, 'one')
-      expect(tree.delete(1)).toBe(true)
-      expect(tree.has(1)).toBe(false)
-      expect(tree.size()).toBe(0)
+    it('should delete existing key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.set(2, 'two')
+      expect(m.delete(1)).toBe(true)
+      expect(m.size).toBe(1)
+      expect(m.has(1)).toBe(false)
     })
 
-    it('should return false for non-existing key', () => {
-      expect(tree.delete(99)).toBe(false)
+    it('should return false for missing key', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.delete(1)).toBe(false)
     })
 
-    it('should delete from larger tree', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      tree.set(1, 'one')
-      tree.set(9, 'nine')
-      expect(tree.delete(3)).toBe(true)
-      expect(tree.size()).toBe(4)
-      expect(tree.has(3)).toBe(false)
-      expect(tree.isValid()).toBe(true)
+    it('should handle deleting all entries', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      m.delete(2)
+      m.delete(1)
+      m.delete(3)
+      expect(m.isEmpty()).toBe(true)
     })
 
-    it('should delete all elements sequentially', () => {
-      const keys = [5, 3, 7, 1, 9, 4, 6, 8]
-      for (const k of keys) tree.set(k, String(k))
-      for (const k of keys) {
-        expect(tree.delete(k)).toBe(true)
+    it('should maintain order after deletions', () => {
+      const m = new AVLTreeMap<number, string>()
+      for (let i = 0; i < 20; i++) m.set(i, `v${i}`)
+      m.delete(5)
+      m.delete(10)
+      m.delete(15)
+      expect(m.size).toBe(17)
+      const k = m.keys()
+      for (let i = 1; i < k.length; i++) {
+        expect(k[i]! > k[i - 1]!).toBe(true)
       }
-      expect(tree.size()).toBe(0)
-      expect(tree.isEmpty()).toBe(true)
-    })
-
-    it('should maintain balance after deletion', () => {
-      for (let i = 1; i <= 20; i++) tree.set(i, String(i))
-      for (let i = 1; i <= 10; i++) tree.delete(i)
-      expect(tree.isValid()).toBe(true)
     })
 
     it('should handle deleting root', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      expect(tree.delete(5)).toBe(true)
-      expect(tree.has(5)).toBe(false)
-      expect(tree.size()).toBe(2)
-      expect(tree.isValid()).toBe(true)
+      const m = new AVLTreeMap<number, string>()
+      m.set(2, 'root')
+      m.set(1, 'left')
+      m.set(3, 'right')
+      m.delete(2)
+      expect(m.size).toBe(2)
+      expect(m.has(1)).toBe(true)
+      expect(m.has(3)).toBe(true)
+      expect(m.has(2)).toBe(false)
     })
 
     it('should handle deleting leaf', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      expect(tree.delete(3)).toBe(true)
-      expect(tree.has(3)).toBe(false)
+      const m = new AVLTreeMap<number, string>()
+      m.set(2, 'root')
+      m.set(1, 'leaf')
+      m.delete(1)
+      expect(m.size).toBe(1)
+      expect(m.get(2)).toBe('root')
+    })
+
+    it('should handle deleting only element', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'only')
+      m.delete(1)
+      expect(m.isEmpty()).toBe(true)
+      expect(m.size).toBe(0)
+    })
+
+    it('should maintain balance after many deletions', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) m.set(i, i)
+      for (let i = 0; i < 50; i++) m.delete(i)
+      assertBalanced(m)
+      expect(m.size).toBe(50)
+    })
+
+    it('should handle delete from empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.delete(1)).toBe(false)
+      expect(m.size).toBe(0)
+    })
+
+    it('should handle delete with successor replacement', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'five')
+      m.set(3, 'three')
+      m.set(7, 'seven')
+      m.set(6, 'six')
+      m.set(8, 'eight')
+      m.delete(5)
+      expect(m.size).toBe(4)
+      expect(m.has(3)).toBe(true)
+      expect(m.has(6)).toBe(true)
+      expect(m.has(7)).toBe(true)
+      expect(m.has(8)).toBe(true)
     })
   })
 
-  describe('size/isEmpty/clear', () => {
-    it('should report correct size', () => {
-      expect(tree.size()).toBe(0)
-      tree.set(1, 'a')
-      expect(tree.size()).toBe(1)
-      tree.set(2, 'b')
-      expect(tree.size()).toBe(2)
+  describe('min and max', () => {
+    it('should return min entry', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'five')
+      m.set(3, 'three')
+      m.set(7, 'seven')
+      expect(m.min()).toEqual([3, 'three'])
     })
 
-    it('should report isEmpty correctly', () => {
-      expect(tree.isEmpty()).toBe(true)
-      tree.set(1, 'a')
-      expect(tree.isEmpty()).toBe(false)
+    it('should return max entry', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'five')
+      m.set(3, 'three')
+      m.set(7, 'seven')
+      expect(m.max()).toEqual([7, 'seven'])
     })
 
-    it('should clear the tree', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      tree.set(3, 'c')
-      tree.clear()
-      expect(tree.size()).toBe(0)
-      expect(tree.isEmpty()).toBe(true)
-      expect(tree.get(1)).toBeUndefined()
+    it('should return undefined for empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.min()).toBeUndefined()
+      expect(m.max()).toBeUndefined()
     })
 
-    it('should allow operations after clear', () => {
-      tree.set(1, 'a')
-      tree.clear()
-      tree.set(2, 'b')
-      expect(tree.size()).toBe(1)
-      expect(tree.get(2)).toBe('b')
-    })
-  })
-
-  describe('getMin/getMax', () => {
-    it('should return undefined for empty tree', () => {
-      expect(tree.getMin()).toBeUndefined()
-      expect(tree.getMax()).toBeUndefined()
+    it('should update min after deletion', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      m.delete(1)
+      expect(m.min()).toEqual([2, 'b'])
     })
 
-    it('should return min/max for single element', () => {
-      tree.set(5, 'five')
-      expect(tree.getMin()).toEqual({ key: 5, value: 'five' })
-      expect(tree.getMax()).toEqual({ key: 5, value: 'five' })
+    it('should update max after deletion', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      m.delete(3)
+      expect(m.max()).toEqual([2, 'b'])
     })
 
-    it('should return correct min/max after operations', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      tree.set(1, 'one')
-      tree.set(9, 'nine')
-      expect(tree.getMin()).toEqual({ key: 1, value: 'one' })
-      expect(tree.getMax()).toEqual({ key: 9, value: 'nine' })
-    })
-
-    it('should update min/max after deletion', () => {
-      tree.set(1, 'one')
-      tree.set(5, 'five')
-      tree.set(10, 'ten')
-      tree.delete(1)
-      expect(tree.getMin()).toEqual({ key: 5, value: 'five' })
-      tree.delete(10)
-      expect(tree.getMax()).toEqual({ key: 5, value: 'five' })
+    it('should return single element as both min and max', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(42, 'answer')
+      expect(m.min()).toEqual([42, 'answer'])
+      expect(m.max()).toEqual([42, 'answer'])
     })
   })
 
-  describe('extractMin/extractMax', () => {
-    it('should return undefined for empty tree', () => {
-      expect(tree.extractMin()).toBeUndefined()
-      expect(tree.extractMax()).toBeUndefined()
+  describe('clear', () => {
+    it('should clear all entries', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.clear()
+      expect(m.isEmpty()).toBe(true)
+      expect(m.size).toBe(0)
     })
 
-    it('should extract min and remove it', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      const min = tree.extractMin()
-      expect(min).toEqual({ key: 3, value: 'three' })
-      expect(tree.has(3)).toBe(false)
-      expect(tree.size()).toBe(2)
+    it('should allow reuse after clear', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.clear()
+      m.set(2, 'b')
+      expect(m.size).toBe(1)
+      expect(m.get(2)).toBe('b')
     })
 
-    it('should extract max and remove it', () => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      const max = tree.extractMax()
-      expect(max).toEqual({ key: 7, value: 'seven' })
-      expect(tree.has(7)).toBe(false)
-      expect(tree.size()).toBe(2)
-    })
-
-    it('should extract all elements from min', () => {
-      const keys = [5, 3, 7, 1, 9]
-      for (const k of keys) tree.set(k, String(k))
-      const extracted: number[] = []
-      while (!tree.isEmpty()) {
-        const e = tree.extractMin()!
-        extracted.push(e.key)
-      }
-      expect(extracted).toEqual([1, 3, 5, 7, 9])
-    })
-
-    it('should extract all elements from max', () => {
-      const keys = [5, 3, 7, 1, 9]
-      for (const k of keys) tree.set(k, String(k))
-      const extracted: number[] = []
-      while (!tree.isEmpty()) {
-        const e = tree.extractMax()!
-        extracted.push(e.key)
-      }
-      expect(extracted).toEqual([9, 7, 5, 3, 1])
-    })
-
-    it('should maintain validity after extractMin', () => {
-      for (let i = 0; i < 50; i++) tree.set(i, String(i))
-      for (let i = 0; i < 25; i++) tree.extractMin()
-      expect(tree.isValid()).toBe(true)
-      expect(tree.size()).toBe(25)
-    })
-
-    it('should maintain validity after extractMax', () => {
-      for (let i = 0; i < 50; i++) tree.set(i, String(i))
-      for (let i = 0; i < 25; i++) tree.extractMax()
-      expect(tree.isValid()).toBe(true)
-      expect(tree.size()).toBe(25)
+    it('should clear empty map without error', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.clear()
+      expect(m.isEmpty()).toBe(true)
     })
   })
 
-  describe('predecessor/successor', () => {
-    beforeEach(() => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      tree.set(1, 'one')
-      tree.set(9, 'nine')
+  describe('forEach', () => {
+    it('should iterate all entries in order', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const result: [number, string][] = []
+      m.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it('should find predecessor of middle key', () => {
-      expect(tree.predecessor(5)).toEqual({ key: 3, value: 'three' })
+    it('should not iterate empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      let count = 0
+      m.forEach(() => count++)
+      expect(count).toBe(0)
     })
 
-    it('should find successor of middle key', () => {
-      expect(tree.successor(5)).toEqual({ key: 7, value: 'seven' })
-    })
-
-    it('should return undefined for predecessor of min', () => {
-      expect(tree.predecessor(1)).toBeUndefined()
-    })
-
-    it('should return undefined for successor of max', () => {
-      expect(tree.successor(9)).toBeUndefined()
-    })
-
-    it('should find predecessor of non-existent key', () => {
-      expect(tree.predecessor(6)).toEqual({ key: 5, value: 'five' })
-    })
-
-    it('should find successor of non-existent key', () => {
-      expect(tree.successor(6)).toEqual({ key: 7, value: 'seven' })
-    })
-
-    it('should return undefined for predecessor of key below min', () => {
-      expect(tree.predecessor(0)).toBeUndefined()
-    })
-
-    it('should return undefined for successor of key above max', () => {
-      expect(tree.successor(10)).toBeUndefined()
-    })
-
-    it('should find predecessor of exact max', () => {
-      expect(tree.predecessor(9)).toEqual({ key: 7, value: 'seven' })
-    })
-
-    it('should find successor of exact min', () => {
-      expect(tree.successor(1)).toEqual({ key: 3, value: 'three' })
-    })
-
-    it('should return undefined predecessor on empty tree', () => {
-      const empty = new AVLTreeMap<number, string>()
-      expect(empty.predecessor(1)).toBeUndefined()
-    })
-
-    it('should return undefined successor on empty tree', () => {
-      const empty = new AVLTreeMap<number, string>()
-      expect(empty.successor(1)).toBeUndefined()
+    it('should iterate single element', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      const result: [number, string][] = []
+      m.forEach((v, k) => result.push([k, v]))
+      expect(result).toEqual([[1, 'a']])
     })
   })
 
-  describe('range', () => {
-    beforeEach(() => {
-      for (let i = 1; i <= 10; i++) tree.set(i, String(i))
-    })
-
-    it('should return entries in inclusive range', () => {
-      const result = tree.range(3, 7)
-      expect(result.map((e) => e.key)).toEqual([3, 4, 5, 6, 7])
-    })
-
-    it('should return single element range', () => {
-      const result = tree.range(5, 5)
-      expect(result).toEqual([{ key: 5, value: '5' }])
-    })
-
-    it('should return empty range when start > end', () => {
-      const result = tree.range(7, 3)
-      expect(result).toEqual([])
-    })
-
-    it('should return full range', () => {
-      const result = tree.range(1, 10)
-      expect(result.length).toBe(10)
-    })
-
-    it('should handle range with non-existent bounds', () => {
-      const result = tree.range(2, 8)
-      expect(result.map((e) => e.key)).toEqual([2, 3, 4, 5, 6, 7, 8])
-    })
-
-    it('should handle range outside tree bounds', () => {
-      const result = tree.range(0, 20)
-      expect(result.length).toBe(10)
-    })
-
-    it('should handle range with no matches', () => {
-      const result = tree.range(20, 30)
-      expect(result).toEqual([])
-    })
-
-    it('should return correct values', () => {
-      const result = tree.range(3, 5)
-      expect(result.map((e) => e.value)).toEqual(['3', '4', '5'])
-    })
-  })
-
-  describe('keys/values/entries', () => {
-    beforeEach(() => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      tree.set(1, 'one')
-      tree.set(9, 'nine')
-    })
-
-    it('should return keys in sorted order', () => {
-      expect(tree.keys()).toEqual([1, 3, 5, 7, 9])
+  describe('keys, values, entries', () => {
+    it('should return sorted keys', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.keys()).toEqual([1, 2, 3])
     })
 
     it('should return values in key order', () => {
-      expect(tree.values()).toEqual(['one', 'three', 'five', 'seven', 'nine'])
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.values()).toEqual(['a', 'b', 'c'])
     })
 
     it('should return entries in key order', () => {
-      const entries = tree.entries()
-      expect(entries.map((e) => e.key)).toEqual([1, 3, 5, 7, 9])
-      expect(entries.map((e) => e.value)).toEqual(['one', 'three', 'five', 'seven', 'nine'])
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.entries()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it('should return empty arrays for empty tree', () => {
-      const empty = new AVLTreeMap<number, string>()
-      expect(empty.keys()).toEqual([])
-      expect(empty.values()).toEqual([])
-      expect(empty.entries()).toEqual([])
+    it('should return empty arrays for empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.keys()).toEqual([])
+      expect(m.values()).toEqual([])
+      expect(m.entries()).toEqual([])
     })
   })
 
-  describe('atIndex/indexOf', () => {
-    beforeEach(() => {
-      tree.set(5, 'five')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      tree.set(1, 'one')
-      tree.set(9, 'nine')
+  describe('iterator', () => {
+    it('should iterate in order', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const result = [...m]
+      expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it('should return entry at index 0', () => {
-      expect(tree.atIndex(0)).toEqual({ key: 1, value: 'one' })
+    it('should iterate empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      const result = [...m]
+      expect(result).toEqual([])
     })
 
-    it('should return entry at last index', () => {
-      expect(tree.atIndex(4)).toEqual({ key: 9, value: 'nine' })
-    })
-
-    it('should return entry at middle index', () => {
-      expect(tree.atIndex(2)).toEqual({ key: 5, value: 'five' })
-    })
-
-    it('should return undefined for out of bounds (negative)', () => {
-      expect(tree.atIndex(-1)).toBeUndefined()
-    })
-
-    it('should return undefined for out of bounds (too large)', () => {
-      expect(tree.atIndex(5)).toBeUndefined()
-    })
-
-    it('should return index of existing key', () => {
-      expect(tree.indexOf(1)).toBe(0)
-      expect(tree.indexOf(5)).toBe(2)
-      expect(tree.indexOf(9)).toBe(4)
-    })
-
-    it('should return -1 for non-existent key', () => {
-      expect(tree.indexOf(99)).toBe(-1)
-    })
-
-    it('should return undefined for empty tree atIndex', () => {
-      const empty = new AVLTreeMap<number, string>()
-      expect(empty.atIndex(0)).toBeUndefined()
-    })
-
-    it('should return -1 for empty tree indexOf', () => {
-      const empty = new AVLTreeMap<number, string>()
-      expect(empty.indexOf(1)).toBe(-1)
-    })
-
-    it('should maintain correct indices after deletion', () => {
-      tree.delete(3)
-      expect(tree.indexOf(5)).toBe(1)
-      expect(tree.indexOf(7)).toBe(2)
-      expect(tree.atIndex(0)).toEqual({ key: 1, value: 'one' })
+    it('should work with for of', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const keys: number[] = []
+      for (const [k] of m) {
+        keys.push(k)
+      }
+      expect(keys).toEqual([1, 2])
     })
   })
 
   describe('clone', () => {
     it('should create independent copy', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      const cloned = tree.clone()
-      expect(cloned.size()).toBe(2)
-      expect(cloned.get(1)).toBe('a')
-      expect(cloned.get(2)).toBe('b')
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const c = m.clone()
+      expect(c.size).toBe(2)
+      expect(c.get(1)).toBe('a')
+      c.set(3, 'c')
+      expect(m.size).toBe(2)
+      expect(c.size).toBe(3)
     })
 
-    it('should be independent from original', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      const cloned = tree.clone()
-      cloned.set(1, 'modified')
-      cloned.delete(2)
-      expect(tree.get(1)).toBe('a')
-      expect(tree.has(2)).toBe(true)
-      expect(cloned.get(1)).toBe('modified')
-      expect(cloned.has(2)).toBe(false)
-    })
-
-    it('should clone empty tree', () => {
-      const cloned = tree.clone()
-      expect(cloned.size()).toBe(0)
-      expect(cloned.isEmpty()).toBe(true)
+    it('should clone empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      const c = m.clone()
+      expect(c.isEmpty()).toBe(true)
     })
 
     it('should preserve comparator', () => {
-      const t = new AVLTreeMap<string, number>({
-        comparator: (a, b) => b.localeCompare(a),
-      })
-      t.set('a', 1)
-      t.set('b', 2)
-      const cloned = t.clone()
-      expect(cloned.keys()).toEqual(['b', 'a'])
+      const m = new AVLTreeMap<number, string>((a, b) => b - a)
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const c = m.clone()
+      c.set(3, 'c')
+      expect(c.keys()).toEqual([3, 2, 1])
     })
   })
 
-  describe('merge', () => {
-    it('should merge two non-overlapping maps', () => {
-      tree.set(1, 'a')
-      tree.set(3, 'c')
-      const other = new AVLTreeMap<number, string>()
-      other.set(2, 'b')
-      other.set(4, 'd')
-      const merged = tree.merge(other)
-      expect(merged.size()).toBe(4)
-      expect(merged.keys()).toEqual([1, 2, 3, 4])
+  describe('lowerBound', () => {
+    it('should find exact key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(3, 'c')
+      m.set(5, 'e')
+      expect(m.lowerBound(3)).toEqual([3, 'c'])
     })
 
-    it('should merge with overlapping keys (other wins)', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b-original')
-      const other = new AVLTreeMap<number, string>()
-      other.set(2, 'b-updated')
-      other.set(3, 'c')
-      const merged = tree.merge(other)
-      expect(merged.size()).toBe(3)
-      expect(merged.get(2)).toBe('b-updated')
+    it('should find next greater key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(3, 'c')
+      m.set(5, 'e')
+      expect(m.lowerBound(2)).toEqual([3, 'c'])
     })
 
-    it('should merge with empty map', () => {
-      tree.set(1, 'a')
-      const empty = new AVLTreeMap<number, string>()
-      const merged = tree.merge(empty)
-      expect(merged.size()).toBe(1)
-      expect(merged.get(1)).toBe('a')
+    it('should return undefined if all keys are smaller', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(3, 'c')
+      expect(m.lowerBound(5)).toBeUndefined()
     })
 
-    it('should merge into empty map', () => {
-      const other = new AVLTreeMap<number, string>()
-      other.set(1, 'a')
-      const merged = tree.merge(other)
-      expect(merged.size()).toBe(1)
+    it('should return undefined for empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.lowerBound(1)).toBeUndefined()
     })
 
-    it('should not modify original maps', () => {
-      tree.set(1, 'a')
-      const other = new AVLTreeMap<number, string>()
-      other.set(2, 'b')
-      tree.merge(other)
-      expect(tree.size()).toBe(1)
-      expect(other.size()).toBe(1)
+    it('should return smallest key when searching below min', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.lowerBound(1)).toEqual([5, 'e'])
+    })
+
+    it('should find exact min key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.lowerBound(5)).toEqual([5, 'e'])
     })
   })
 
-  describe('forEach', () => {
-    it('should iterate in order', () => {
-      tree.set(3, 'c')
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      const collected: string[] = []
-      tree.forEach((entry) => collected.push(entry.value))
-      expect(collected).toEqual(['a', 'b', 'c'])
+  describe('upperBound', () => {
+    it('should find next greater key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(3, 'c')
+      m.set(5, 'e')
+      expect(m.upperBound(3)).toEqual([5, 'e'])
     })
 
-    it('should provide correct indices', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      tree.set(3, 'c')
-      const indices: number[] = []
-      tree.forEach((_entry, idx) => indices.push(idx))
-      expect(indices).toEqual([0, 1, 2])
+    it('should find next key even if exact match exists', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      expect(m.upperBound(1)).toEqual([5, 'e'])
     })
 
-    it('should not call callback for empty tree', () => {
-      let called = false
-      tree.forEach(() => {
-        called = true
-      })
-      expect(called).toBe(false)
-    })
-  })
-
-  describe('iterator', () => {
-    it('should iterate in order with for-of', () => {
-      tree.set(3, 'c')
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      const collected: string[] = []
-      for (const entry of tree) {
-        collected.push(entry.value)
-      }
-      expect(collected).toEqual(['a', 'b', 'c'])
+    it('should return undefined if no greater key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(3, 'c')
+      expect(m.upperBound(5)).toBeUndefined()
     })
 
-    it('should work with spread operator', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      const entries = [...tree]
-      expect(entries.length).toBe(2)
-      expect(entries[0]!.key).toBe(1)
-      expect(entries[1]!.key).toBe(2)
+    it('should return undefined for empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.upperBound(1)).toBeUndefined()
     })
 
-    it('should handle empty tree iteration', () => {
-      const entries = [...tree]
-      expect(entries).toEqual([])
+    it('should find strictly greater than max', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      expect(m.upperBound(5)).toBeUndefined()
     })
   })
 
-  describe('isValid', () => {
-    it('should return true for empty tree', () => {
-      expect(tree.isValid()).toBe(true)
+  describe('range', () => {
+    it('should return entries in range', () => {
+      const m = new AVLTreeMap<number, string>()
+      for (let i = 0; i < 10; i++) m.set(i, `v${i}`)
+      const r = m.range(3, 7)
+      expect(r).toEqual([[3, 'v3'], [4, 'v4'], [5, 'v5'], [6, 'v6'], [7, 'v7']])
     })
 
-    it('should return true for single element', () => {
-      tree.set(1, 'a')
-      expect(tree.isValid()).toBe(true)
+    it('should return empty for no matches', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(10, 'b')
+      expect(m.range(3, 5)).toEqual([])
     })
 
-    it('should return true after insertions', () => {
-      for (let i = 0; i < 100; i++) tree.set(i, String(i))
-      expect(tree.isValid()).toBe(true)
+    it('should handle full range', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      expect(m.range(1, 3)).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
     })
 
-    it('should return true after deletions', () => {
-      for (let i = 0; i < 100; i++) tree.set(i, String(i))
-      for (let i = 0; i < 50; i += 2) tree.delete(i)
-      expect(tree.isValid()).toBe(true)
+    it('should return empty for inverted range', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.range(5, 1)).toEqual([])
     })
 
-    it('should return true after mixed operations', () => {
-      for (let i = 0; i < 50; i++) tree.set(i, String(i))
-      for (let i = 0; i < 25; i++) tree.delete(i)
-      for (let i = 50; i < 75; i++) tree.set(i, String(i))
-      expect(tree.isValid()).toBe(true)
+    it('should handle single element range', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      expect(m.range(2, 2)).toEqual([[2, 'b']])
+    })
+
+    it('should handle range on empty map', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.range(1, 5)).toEqual([])
     })
   })
 
   describe('getHeight', () => {
     it('should return 0 for empty tree', () => {
-      expect(tree.getHeight()).toBe(0)
+      const m = new AVLTreeMap<number, string>()
+      expect(m.getHeight()).toBe(0)
     })
 
-    it('should return 1 for single element', () => {
-      tree.set(1, 'a')
-      expect(tree.getHeight()).toBe(1)
+    it('should return 1 for single node', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      expect(m.getHeight()).toBe(1)
     })
 
-    it('should return balanced height for sequential insertions', () => {
-      for (let i = 0; i < 100; i++) tree.set(i, String(i))
-      const height = tree.getHeight()
-      expect(height).toBeLessThanOrEqual(Math.ceil(1.44 * Math.log2(100 + 2)))
+    it('should increase height with insertions', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.getHeight()).toBe(2)
+      m.set(3, 'c')
+      expect(m.getHeight()).toBe(2)
     })
 
     it('should maintain O(log n) height', () => {
-      for (let i = 0; i < 1000; i++) tree.set(i, String(i))
-      const height = tree.getHeight()
-      expect(height).toBeLessThanOrEqual(20)
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 1000; i++) m.set(i, i)
+      const h = m.getHeight()
+      expect(h).toBeLessThanOrEqual(Math.ceil(1.44 * Math.log2(1001)))
+    })
+
+    it('should update height after deletions', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      m.delete(3)
+      expect(m.getHeight()).toBe(2)
+      m.delete(2)
+      expect(m.getHeight()).toBe(1)
     })
   })
 
-  describe('toArray', () => {
-    it('should return empty array for empty tree', () => {
-      expect(tree.toArray()).toEqual([])
+  describe('fromEntries', () => {
+    it('should create map from entries', () => {
+      const m = AVLTreeMap.fromEntries([[3, 'c'], [1, 'a'], [2, 'b']])
+      expect(m.size).toBe(3)
+      expect(m.get(1)).toBe('a')
+      expect(m.keys()).toEqual([1, 2, 3])
     })
 
-    it('should return entries in order', () => {
-      tree.set(3, 'c')
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      expect(tree.toArray()).toEqual([
-        { key: 1, value: 'a' },
-        { key: 2, value: 'b' },
-        { key: 3, value: 'c' },
-      ])
+    it('should handle empty entries', () => {
+      const m = AVLTreeMap.fromEntries<number, string>([])
+      expect(m.isEmpty()).toBe(true)
+    })
+
+    it('should accept custom comparator', () => {
+      const m = AVLTreeMap.fromEntries([[1, 'a'], [2, 'b']], (a, b) => b - a)
+      expect(m.keys()).toEqual([2, 1])
+    })
+
+    it('should handle duplicate keys in entries', () => {
+      const m = AVLTreeMap.fromEntries([[1, 'a'], [1, 'b'], [1, 'c']])
+      expect(m.size).toBe(1)
+      expect(m.get(1)).toBe('c')
+    })
+  })
+
+  describe('rotations', () => {
+    it('should handle LL rotation (right rotation)', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'three')
+      m.set(2, 'two')
+      m.set(1, 'one')
+      expect(m.getHeight()).toBe(2)
+      expect(m.keys()).toEqual([1, 2, 3])
+      assertBalanced(m)
+    })
+
+    it('should handle RR rotation (left rotation)', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.set(2, 'two')
+      m.set(3, 'three')
+      expect(m.getHeight()).toBe(2)
+      expect(m.keys()).toEqual([1, 2, 3])
+      assertBalanced(m)
+    })
+
+    it('should handle LR rotation (left-right rotation)', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'three')
+      m.set(1, 'one')
+      m.set(2, 'two')
+      expect(m.getHeight()).toBe(2)
+      expect(m.keys()).toEqual([1, 2, 3])
+      assertBalanced(m)
+    })
+
+    it('should handle RL rotation (right-left rotation)', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.set(3, 'three')
+      m.set(2, 'two')
+      expect(m.getHeight()).toBe(2)
+      expect(m.keys()).toEqual([1, 2, 3])
+      assertBalanced(m)
+    })
+
+    it('should balance complex LL scenario', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 10; i >= 1; i--) m.set(i, i)
+      assertBalanced(m)
+      expect(m.size).toBe(10)
+    })
+
+    it('should balance complex RR scenario', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 1; i <= 10; i++) m.set(i, i)
+      assertBalanced(m)
+      expect(m.size).toBe(10)
+    })
+
+    it('should rebalance after deletion causing LL', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(2, 'b')
+      m.set(4, 'd')
+      m.set(1, 'a')
+      m.delete(4)
+      assertBalanced(m)
+      expect(m.keys()).toEqual([1, 2, 3])
+    })
+
+    it('should rebalance after deletion causing RR', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(2, 'b')
+      m.set(1, 'a')
+      m.set(3, 'c')
+      m.set(4, 'd')
+      m.delete(1)
+      assertBalanced(m)
+      expect(m.keys()).toEqual([2, 3, 4])
+    })
+
+    it('should rebalance after deletion causing LR', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'e')
+      m.set(3, 'c')
+      m.set(6, 'f')
+      m.set(4, 'd')
+      m.set(2, 'b')
+      m.delete(6)
+      assertBalanced(m)
+    })
+
+    it('should rebalance after deletion causing RL', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(2, 'b')
+      m.set(1, 'a')
+      m.set(5, 'e')
+      m.set(3, 'c')
+      m.set(6, 'f')
+      m.delete(1)
+      assertBalanced(m)
     })
   })
 
   describe('stress tests', () => {
-    it('should handle 1000 sequential keys (worst case for BST)', () => {
-      for (let i = 0; i < 1000; i++) tree.set(i, String(i))
-      expect(tree.size()).toBe(1000)
-      expect(tree.isValid()).toBe(true)
-      const height = tree.getHeight()
-      expect(height).toBeLessThanOrEqual(Math.ceil(1.44 * Math.log2(1002)))
-      const keys = tree.keys()
-      for (let i = 0; i < 1000; i++) {
-        expect(keys[i]).toBe(i)
+    it('should handle sequential insertions and deletions', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 200; i++) m.set(i, i)
+      for (let i = 0; i < 200; i += 2) m.delete(i)
+      expect(m.size).toBe(100)
+      for (let i = 1; i < 200; i += 2) {
+        expect(m.get(i)).toBe(i)
       }
+      assertBalanced(m)
     })
 
-    it('should handle 1000 random keys, delete 500, verify sorted', () => {
-      const randomKeys = Array.from({ length: 1000 }, () => Math.floor(Math.random() * 10000))
-      const uniqueKeys = [...new Set(randomKeys)]
-      for (const k of uniqueKeys) tree.set(k, String(k))
-      const half = uniqueKeys.slice(0, Math.floor(uniqueKeys.length / 2))
-      for (const k of half) tree.delete(k)
-      expect(tree.isValid()).toBe(true)
-      const remaining = tree.keys()
-      const sorted = [...remaining].sort((a, b) => a - b)
-      expect(remaining).toEqual(sorted)
+    it('should handle random operations', () => {
+      const m = new AVLTreeMap<number, number>()
+      const reference = new Map<number, number>()
+      for (let i = 0; i < 300; i++) {
+        const key = Math.floor(Math.random() * 100)
+        const op = Math.random()
+        if (op < 0.6) {
+          m.set(key, key * 2)
+          reference.set(key, key * 2)
+        } else {
+          m.delete(key)
+          reference.delete(key)
+        }
+      }
+      expect(m.size).toBe(reference.size)
+      for (const [k, v] of reference) {
+        expect(m.get(k)).toBe(v)
+      }
+      assertBalanced(m)
     })
 
-    it('should handle alternating insert/delete', () => {
+    it('should handle 500+ insertions maintaining balance', () => {
+      const m = new AVLTreeMap<number, number>()
       for (let i = 0; i < 500; i++) {
-        tree.set(i, String(i))
-        if (i > 0 && i % 3 === 0) tree.delete(i - 1)
+        m.set(i, i * 3)
       }
-      expect(tree.isValid()).toBe(true)
+      expect(m.size).toBe(500)
+      assertBalanced(m)
+      const h = m.getHeight()
+      expect(h).toBeLessThanOrEqual(Math.ceil(1.44 * Math.log2(501)))
+      for (let i = 0; i < 500; i++) {
+        expect(m.get(i)).toBe(i * 3)
+      }
+    })
+
+    it('should handle alternating insertions and deletions', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) {
+        m.set(i, i)
+        if (i % 3 === 0 && i > 0) {
+          m.delete(i - 1)
+        }
+      }
+      assertBalanced(m)
+    })
+
+    it('should handle large scale insert then delete all', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 300; i++) m.set(i, i)
+      for (let i = 0; i < 300; i++) m.delete(i)
+      expect(m.isEmpty()).toBe(true)
+      expect(m.getHeight()).toBe(0)
+    })
+
+    it('should handle reverse deletion', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 200; i++) m.set(i, i)
+      for (let i = 199; i >= 0; i--) m.delete(i)
+      expect(m.isEmpty()).toBe(true)
+    })
+
+    it('should handle interleaved operations with verification', () => {
+      const m = new AVLTreeMap<number, string>()
+      for (let i = 0; i < 50; i++) m.set(i, `v${i}`)
+      for (let i = 0; i < 50; i += 2) m.delete(i)
+      expect(m.size).toBe(25)
+      assertBalanced(m)
+      for (let i = 0; i < 50; i++) {
+        if (i % 2 === 0) {
+          expect(m.has(i)).toBe(false)
+        } else {
+          expect(m.has(i)).toBe(true)
+          expect(m.get(i)).toBe(`v${i}`)
+        }
+      }
+      m.set(0, 'new0')
+      m.set(2, 'new2')
+      expect(m.size).toBe(27)
+      assertBalanced(m)
     })
   })
 
-  describe('custom comparator', () => {
-    it('should work with reverse order comparator', () => {
-      const t = new AVLTreeMap<number, string>({
-        comparator: (a, b) => b - a,
-      })
-      t.set(1, 'one')
-      t.set(5, 'five')
-      t.set(3, 'three')
-      expect(t.keys()).toEqual([5, 3, 1])
-    })
-
-    it('should work with case-insensitive string comparator', () => {
-      const t = new AVLTreeMap<string, number>({
-        comparator: (a, b) => a.toLowerCase().localeCompare(b.toLowerCase()),
-      })
-      t.set('Banana', 1)
-      t.set('apple', 2)
-      t.set('Cherry', 3)
-      expect(t.keys()).toEqual(['apple', 'Banana', 'Cherry'])
-    })
-
-    it('should use default comparator for numbers', () => {
-      const t = new AVLTreeMap<number, string>()
-      t.set(3, 'c')
-      t.set(1, 'a')
-      t.set(2, 'b')
-      expect(t.keys()).toEqual([1, 2, 3])
-    })
-
-    it('should use default comparator for strings', () => {
-      const t = new AVLTreeMap<string, number>()
-      t.set('c', 3)
-      t.set('a', 1)
-      t.set('b', 2)
-      expect(t.keys()).toEqual(['a', 'b', 'c'])
+  describe('size property', () => {
+    it('should track size correctly through operations', () => {
+      const m = new AVLTreeMap<number, string>()
+      expect(m.size).toBe(0)
+      m.set(1, 'a')
+      expect(m.size).toBe(1)
+      m.set(2, 'b')
+      expect(m.size).toBe(2)
+      m.set(1, 'updated')
+      expect(m.size).toBe(2)
+      m.delete(1)
+      expect(m.size).toBe(1)
+      m.delete(999)
+      expect(m.size).toBe(1)
+      m.clear()
+      expect(m.size).toBe(0)
     })
   })
 
   describe('edge cases', () => {
-    it('should handle single element operations', () => {
-      tree.set(1, 'one')
-      expect(tree.size()).toBe(1)
-      expect(tree.getMin()).toEqual({ key: 1, value: 'one' })
-      expect(tree.getMax()).toEqual({ key: 1, value: 'one' })
-      expect(tree.extractMin()).toEqual({ key: 1, value: 'one' })
-      expect(tree.isEmpty()).toBe(true)
+    it('should handle undefined values', () => {
+      const m = new AVLTreeMap<number, string | undefined>()
+      m.set(1, undefined)
+      expect(m.get(1)).toBeUndefined()
+      expect(m.has(1)).toBe(true)
     })
 
-    it('should handle duplicate key overwrite preserving balance', () => {
-      tree.set(5, 'a')
-      tree.set(3, 'b')
-      tree.set(7, 'c')
-      tree.set(5, 'updated')
-      expect(tree.size()).toBe(3)
-      expect(tree.isValid()).toBe(true)
-      expect(tree.get(5)).toBe('updated')
-    })
-
-    it('should handle two elements', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      expect(tree.size()).toBe(2)
-      expect(tree.keys()).toEqual([1, 2])
-      expect(tree.isValid()).toBe(true)
-    })
-
-    it('should handle deleting down to empty', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      tree.delete(1)
-      tree.delete(2)
-      expect(tree.isEmpty()).toBe(true)
-      expect(tree.isValid()).toBe(true)
-    })
-
-    it('should handle operations on empty tree gracefully', () => {
-      expect(tree.delete(1)).toBe(false)
-      expect(tree.get(1)).toBeUndefined()
-      expect(tree.has(1)).toBe(false)
-      expect(tree.getMin()).toBeUndefined()
-      expect(tree.getMax()).toBeUndefined()
-      expect(tree.extractMin()).toBeUndefined()
-      expect(tree.extractMax()).toBeUndefined()
-      expect(tree.predecessor(1)).toBeUndefined()
-      expect(tree.successor(1)).toBeUndefined()
-      expect(tree.range(1, 10)).toEqual([])
-      expect(tree.atIndex(0)).toBeUndefined()
-      expect(tree.indexOf(1)).toBe(-1)
-      expect(tree.getHeight()).toBe(0)
-      expect(tree.isValid()).toBe(true)
-    })
-
-    it('should handle negative keys', () => {
-      tree.set(-5, 'neg5')
-      tree.set(0, 'zero')
-      tree.set(5, 'pos5')
-      expect(tree.keys()).toEqual([-5, 0, 5])
+    it('should handle null values', () => {
+      const m = new AVLTreeMap<number, string | null>()
+      m.set(1, null)
+      expect(m.get(1)).toBeNull()
+      expect(m.has(1)).toBe(true)
     })
 
     it('should handle zero as key', () => {
-      tree.set(0, 'zero')
-      expect(tree.get(0)).toBe('zero')
-      expect(tree.has(0)).toBe(true)
+      const m = new AVLTreeMap<number, string>()
+      m.set(0, 'zero')
+      expect(m.get(0)).toBe('zero')
+      expect(m.has(0)).toBe(true)
+    })
+
+    it('should handle empty string as key', () => {
+      const m = new AVLTreeMap<string, number>()
+      m.set('', 0)
+      expect(m.get('')).toBe(0)
+      expect(m.has('')).toBe(true)
+    })
+
+    it('should handle boolean-like keys', () => {
+      const m = new AVLTreeMap<number, boolean>()
+      m.set(0, false)
+      m.set(1, true)
+      expect(m.get(0)).toBe(false)
+      expect(m.get(1)).toBe(true)
+    })
+
+    it('should handle object values', () => {
+      const m = new AVLTreeMap<number, { name: string }>()
+      m.set(1, { name: 'test' })
+      expect(m.get(1)?.name).toBe('test')
+    })
+
+    it('should handle array values', () => {
+      const m = new AVLTreeMap<number, number[]>()
+      m.set(1, [1, 2, 3])
+      expect(m.get(1)).toEqual([1, 2, 3])
+    })
+
+    it('should handle many duplicate updates', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) m.set(1, i)
+      expect(m.size).toBe(1)
+      expect(m.get(1)).toBe(99)
     })
   })
 
-  describe('defaultComparator', () => {
-    it('should compare numbers correctly', () => {
-      expect(defaultComparator(1, 2)).toBe(-1)
-      expect(defaultComparator(2, 1)).toBe(1)
-      expect(defaultComparator(1, 1)).toBe(0)
+  describe('ordering verification', () => {
+    it('should maintain in-order traversal after mixed ops', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 30; i++) m.set(i, i)
+      for (let i = 10; i < 20; i++) m.delete(i)
+      for (let i = 10; i < 20; i++) m.set(i, i * 10)
+      const keys = m.keys()
+      for (let i = 1; i < keys.length; i++) {
+        expect(keys[i]! > keys[i - 1]!).toBe(true)
+      }
     })
 
-    it('should compare strings correctly', () => {
-      expect(defaultComparator('a', 'b')).toBe(-1)
-      expect(defaultComparator('b', 'a')).toBe(1)
-      expect(defaultComparator('a', 'a')).toBe(0)
-    })
-  })
-
-  describe('index-based after modifications', () => {
-    it('should maintain correct indices after insertions', () => {
-      tree.set(10, 'ten')
-      tree.set(5, 'five')
-      tree.set(15, 'fifteen')
-      tree.set(3, 'three')
-      tree.set(7, 'seven')
-      expect(tree.atIndex(0)?.key).toBe(3)
-      expect(tree.atIndex(1)?.key).toBe(5)
-      expect(tree.atIndex(2)?.key).toBe(7)
-      expect(tree.atIndex(3)?.key).toBe(10)
-      expect(tree.atIndex(4)?.key).toBe(15)
-    })
-
-    it('should handle large number of elements with atIndex', () => {
-      for (let i = 0; i < 100; i++) tree.set(i, String(i))
-      expect(tree.atIndex(0)?.key).toBe(0)
-      expect(tree.atIndex(50)?.key).toBe(50)
-      expect(tree.atIndex(99)?.key).toBe(99)
-    })
-
-    it('should handle large number of elements with indexOf', () => {
-      for (let i = 0; i < 100; i++) tree.set(i, String(i))
-      expect(tree.indexOf(0)).toBe(0)
-      expect(tree.indexOf(50)).toBe(50)
-      expect(tree.indexOf(99)).toBe(99)
+    it('should maintain BST property after all operations', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) {
+        m.set(Math.floor(Math.random() * 200), i)
+      }
+      const keys = m.keys()
+      for (let i = 1; i < keys.length; i++) {
+        expect(keys[i]! >= keys[i - 1]!).toBe(true)
+      }
     })
   })
 
-  describe('merge preserves comparator', () => {
-    it('should produce sorted result matching comparator', () => {
-      const t = new AVLTreeMap<number, string>({
-        comparator: (a, b) => b - a,
-      })
-      t.set(1, 'a')
-      t.set(3, 'c')
-      const other = new AVLTreeMap<number, string>({
-        comparator: (a, b) => b - a,
-      })
-      other.set(2, 'b')
-      const merged = t.merge(other)
-      expect(merged.keys()).toEqual([3, 2, 1])
+  describe('default comparator', () => {
+    it('should work with number keys by default', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(3, 'c')
+      m.set(1, 'a')
+      m.set(2, 'b')
+      expect(m.keys()).toEqual([1, 2, 3])
+    })
+
+    it('should work with string keys by default', () => {
+      const m = new AVLTreeMap<string, number>()
+      m.set('cherry', 3)
+      m.set('apple', 1)
+      m.set('banana', 2)
+      expect(m.keys()).toEqual(['apple', 'banana', 'cherry'])
+    })
+  })
+
+  describe('lowerBound and upperBound together', () => {
+    it('should correctly bound around a gap', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.lowerBound(3)).toEqual([5, 'e'])
+      expect(m.upperBound(3)).toEqual([5, 'e'])
+    })
+
+    it('should handle boundary correctly', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.lowerBound(5)).toEqual([5, 'e'])
+      expect(m.upperBound(5)).toEqual([10, 'j'])
     })
   })
 
   describe('range edge cases', () => {
-    it('should return all elements when range covers entire tree', () => {
-      tree.set(1, 'a')
-      tree.set(2, 'b')
-      tree.set(3, 'c')
-      const result = tree.range(-100, 100)
-      expect(result.length).toBe(3)
+    it('should handle range at boundaries', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.range(0, 11)).toEqual([[1, 'a'], [5, 'e'], [10, 'j']])
     })
 
-    it('should handle range on empty tree', () => {
-      expect(tree.range(1, 10)).toEqual([])
+    it('should handle range with no matching keys', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(10, 'j')
+      expect(m.range(3, 5)).toEqual([])
     })
 
-    it('should handle range on single element tree', () => {
-      tree.set(5, 'five')
-      expect(tree.range(1, 10)).toEqual([{ key: 5, value: 'five' }])
-      expect(tree.range(5, 5)).toEqual([{ key: 5, value: 'five' }])
-      expect(tree.range(6, 10)).toEqual([])
-    })
-  })
-
-  describe('forEach and iterator completeness', () => {
-    it('forEach should visit all elements', () => {
-      for (let i = 0; i < 20; i++) tree.set(i, String(i))
-      let count = 0
-      tree.forEach(() => count++)
-      expect(count).toBe(20)
-    })
-
-    it('iterator should yield all elements', () => {
-      for (let i = 0; i < 20; i++) tree.set(i, String(i))
-      const arr = [...tree]
-      expect(arr.length).toBe(20)
-    })
-
-    it('iterator should yield in correct order', () => {
-      const keys = [50, 30, 70, 20, 40, 60, 80]
-      for (const k of keys) tree.set(k, String(k))
-      const iterated = [...tree].map((e) => e.key)
-      expect(iterated).toEqual([...keys].sort((a, b) => a - b))
+    it('should handle range that partially overlaps', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(5, 'e')
+      m.set(10, 'j')
+      expect(m.range(3, 7)).toEqual([[5, 'e']])
     })
   })
 
-  describe('AVLTreeEntry type', () => {
-    it('should return entries with key and value properties', () => {
-      tree.set(1, 'one')
-      const entry = tree.getMin()!
-      expect(entry).toHaveProperty('key', 1)
-      expect(entry).toHaveProperty('value', 'one')
+  describe('mixed operations', () => {
+    it('should handle set-delete-set cycle', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.delete(1)
+      m.set(1, 'b')
+      expect(m.get(1)).toBe('b')
+      expect(m.size).toBe(1)
+    })
+
+    it('should handle large number of operations', () => {
+      const m = new AVLTreeMap<number, number>()
+      const ref = new Map<number, number>()
+      for (let round = 0; round < 5; round++) {
+        for (let i = 0; i < 100; i++) {
+          const key = (round * 100 + i) % 50
+          m.set(key, round * 100 + i)
+          ref.set(key, round * 100 + i)
+        }
+      }
+      expect(m.size).toBe(ref.size)
+      for (const [k, v] of ref) {
+        expect(m.get(k)).toBe(v)
+      }
+      assertBalanced(m)
+    })
+  })
+
+  describe('range beyond tree bounds', () => {
+    it('should handle range outside tree keys', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'e')
+      m.set(10, 'j')
+      m.set(15, 'o')
+      expect(m.range(0, 4)).toEqual([])
+      expect(m.range(16, 20)).toEqual([])
+    })
+
+    it('should handle range covering all keys', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(5, 'e')
+      m.set(10, 'j')
+      m.set(15, 'o')
+      expect(m.range(0, 20)).toEqual([[5, 'e'], [10, 'j'], [15, 'o']])
+    })
+  })
+
+  describe('rotation stress patterns', () => {
+    it('should handle zig-zag insertion pattern', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 50; i++) {
+        m.set(i, i)
+        m.set(99 - i, 99 - i)
+      }
+      assertBalanced(m)
+      expect(m.size).toBe(100)
+    })
+
+    it('should handle alternating min max deletion', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) m.set(i, i)
+      for (let i = 0; i < 50; i++) {
+        m.delete(i)
+        m.delete(99 - i)
+      }
+      expect(m.isEmpty()).toBe(true)
+    })
+
+    it('should handle mid-point deletion pattern', () => {
+      const m = new AVLTreeMap<number, number>()
+      for (let i = 0; i < 100; i++) m.set(i, i)
+      for (let i = 25; i < 75; i++) m.delete(i)
+      assertBalanced(m)
+      expect(m.size).toBe(50)
+    })
+  })
+
+  describe('fromEntries with various inputs', () => {
+    it('should handle large number of entries', () => {
+      const entries: [number, string][] = []
+      for (let i = 0; i < 200; i++) entries.push([i, `v${i}`])
+      const m = AVLTreeMap.fromEntries(entries)
+      expect(m.size).toBe(200)
+      assertBalanced(m)
+    })
+
+    it('should handle reverse sorted entries', () => {
+      const entries: [number, string][] = []
+      for (let i = 200; i >= 0; i--) entries.push([i, `v${i}`])
+      const m = AVLTreeMap.fromEntries(entries)
+      expect(m.size).toBe(201)
+      assertBalanced(m)
+      expect(m.keys()[0]).toBe(0)
+      expect(m.keys()[200]).toBe(200)
+    })
+  })
+
+  describe('clone independence', () => {
+    it('should not affect original when modifying clone', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      const c = m.clone()
+      c.delete(2)
+      c.set(4, 'd')
+      expect(m.size).toBe(3)
+      expect(m.has(2)).toBe(true)
+      expect(m.has(4)).toBe(false)
+      expect(c.size).toBe(3)
+      expect(c.has(2)).toBe(false)
+      expect(c.has(4)).toBe(true)
+    })
+
+    it('should not affect clone when modifying original', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const c = m.clone()
+      m.delete(1)
+      expect(c.has(1)).toBe(true)
+      expect(c.size).toBe(2)
+    })
+  })
+
+  describe('forEach callback signature', () => {
+    it('should pass value first then key', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'one')
+      m.set(2, 'two')
+      const results: string[] = []
+      m.forEach((value, key) => {
+        results.push(`${key}:${value}`)
+      })
+      expect(results).toEqual(['1:one', '2:two'])
+    })
+  })
+
+  describe('entries format', () => {
+    it('should return [K, V] tuples', () => {
+      const m = new AVLTreeMap<number, string>()
+      m.set(1, 'a')
+      m.set(2, 'b')
+      const e = m.entries()
+      expect(e[0]).toEqual([1, 'a'])
+      expect(e[1]).toEqual([2, 'b'])
+    })
+
+    it('should work with destructuring in iterator', () => {
+      const m = new AVLTreeMap<string, number>()
+      m.set('x', 1)
+      m.set('y', 2)
+      const keys: string[] = []
+      const vals: number[] = []
+      for (const [k, v] of m) {
+        keys.push(k)
+        vals.push(v)
+      }
+      expect(keys).toEqual(['x', 'y'])
+      expect(vals).toEqual([1, 2])
     })
   })
 })

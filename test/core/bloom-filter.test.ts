@@ -1,109 +1,142 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { CountingBloomFilter } from '../../src/core/bloom-filter-2/bloom-filter-2.js'
-import { DEFAULT_COUNTING_BLOOM_OPTIONS } from '../../src/core/bloom-filter-2/types.js'
-import type { CountingBloomFilterOptions } from '../../src/core/bloom-filter-2/types.js'
+import { BloomFilter } from '../../src/core/bloom-filter/bloom-filter.js'
+import { DEFAULT_BLOOM_FILTER_OPTIONS } from '../../src/core/bloom-filter/types.js'
+import type { BloomFilterOptions, BloomFilterJSON } from '../../src/core/bloom-filter/types.js'
 
-describe('CountingBloomFilter', () => {
-  let filter: CountingBloomFilter
+describe('BloomFilter', () => {
+  let filter: BloomFilter<string>
 
   beforeEach(() => {
-    filter = new CountingBloomFilter()
+    filter = new BloomFilter<string>()
   })
 
   describe('constructor', () => {
     it('should create a filter with default options', () => {
-      const f = new CountingBloomFilter()
+      const f = new BloomFilter<string>()
       expect(f.isEmpty()).toBe(true)
-      expect(f.capacity()).toBeGreaterThan(0)
+      expect(f.size).toBe(0)
     })
 
-    it('should accept custom expectedItems', () => {
-      const f = new CountingBloomFilter({ expectedItems: 5000 })
-      expect(f.capacity()).toBeGreaterThan(filter.capacity())
+    it('should accept positional arguments: expectedItems, falsePositiveRate', () => {
+      const f = new BloomFilter<string>(5000, 0.001)
+      expect(f.bitCount).toBeGreaterThan(0)
+      expect(f.hashCount).toBeGreaterThan(0)
     })
 
-    it('should accept custom falsePositiveRate', () => {
-      const f = new CountingBloomFilter({ falsePositiveRate: 0.001 })
-      expect(f.capacity()).toBeGreaterThan(0)
+    it('should accept options object', () => {
+      const f = new BloomFilter<string>({ expectedItems: 5000, falsePositiveRate: 0.001 })
+      expect(f.bitCount).toBeGreaterThan(0)
     })
 
-    it('should accept partial options with defaults', () => {
-      const f = new CountingBloomFilter({ expectedItems: 200 })
-      expect(f.capacity()).toBeGreaterThan(0)
-      expect(f.isEmpty()).toBe(true)
+    it('should accept partial options object with defaults', () => {
+      const f = new BloomFilter<string>({ expectedItems: 200 })
+      expect(f.bitCount).toBeGreaterThan(0)
     })
 
-    it('should create counter array of appropriate size', () => {
-      const f = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
-      expect(f.capacity()).toBeGreaterThan(0)
+    it('should accept only falsePositiveRate in options', () => {
+      const f = new BloomFilter<string>({ falsePositiveRate: 0.05 })
+      expect(f.bitCount).toBeGreaterThan(0)
     })
 
-    it('should initialize all counters to zero', () => {
-      expect(filter.isEmpty()).toBe(true)
-      expect(filter.fillRatio()).toBe(0)
+    it('should compute positive bit count', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
+      expect(f.bitCount).toBeGreaterThan(0)
     })
 
-    it('should compute a positive hash count', () => {
-      expect(filter.hashCount()).toBeGreaterThan(0)
+    it('should compute positive hash count', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
+      expect(f.hashCount).toBeGreaterThan(0)
     })
 
-    it('should start with zero estimated size', () => {
-      expect(filter.estimatedSize()).toBe(0)
+    it('should use at least 1 hash function', () => {
+      const f = new BloomFilter<string>(10, 0.5)
+      expect(f.hashCount).toBeGreaterThanOrEqual(1)
+    })
+
+    it('should produce larger bit arrays for lower error rates', () => {
+      const f1 = new BloomFilter<string>(100, 0.1)
+      const f2 = new BloomFilter<string>(100, 0.001)
+      expect(f2.bitCount).toBeGreaterThan(f1.bitCount)
+    })
+
+    it('should produce larger bit arrays for larger capacities', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(10000, 0.01)
+      expect(f2.bitCount).toBeGreaterThan(f1.bitCount)
+    })
+
+    it('should use optimal k = (m/n) * ln(2)', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
+      const expectedK = Math.max(1, Math.round((f.bitCount / 1000) * Math.log(2)))
+      expect(f.hashCount).toBe(expectedK)
+    })
+
+    it('should default to 1000 expected items', () => {
+      const f = new BloomFilter<string>()
+      const fExplicit = new BloomFilter<string>(1000, 0.01)
+      expect(f.bitCount).toBe(fExplicit.bitCount)
     })
   })
 
   describe('add', () => {
-    it('should add a single item', () => {
+    it('should add an item and increase size', () => {
       filter.add('hello')
-      expect(filter.isEmpty()).toBe(false)
+      expect(filter.size).toBe(1)
     })
 
     it('should add multiple different items', () => {
       filter.add('a')
       filter.add('b')
       filter.add('c')
-      expect(filter.has('a')).toBe(true)
-      expect(filter.has('b')).toBe(true)
-      expect(filter.has('c')).toBe(true)
+      expect(filter.size).toBe(3)
     })
 
-    it('should handle adding same item multiple times', () => {
+    it('should count duplicate adds as additional items', () => {
       filter.add('test')
       filter.add('test')
-      filter.add('test')
-      expect(filter.has('test')).toBe(true)
-      expect(filter.count('test')).toBe(3)
+      expect(filter.size).toBe(2)
     })
 
     it('should handle empty string', () => {
       filter.add('')
-      expect(filter.has('')).toBe(true)
+      expect(filter.size).toBe(1)
     })
 
     it('should handle unicode strings', () => {
       filter.add('日本語')
       filter.add('🎉🚀')
-      expect(filter.has('日本語')).toBe(true)
-      expect(filter.has('🎉🚀')).toBe(true)
+      expect(filter.size).toBe(2)
     })
 
     it('should handle very long strings', () => {
       const longStr = 'a'.repeat(10000)
       filter.add(longStr)
-      expect(filter.has(longStr)).toBe(true)
+      expect(filter.size).toBe(1)
     })
 
     it('should handle strings with special characters', () => {
       filter.add('hello\nworld\t!')
       filter.add('path/to/file.ts')
-      expect(filter.has('hello\nworld\t!')).toBe(true)
-      expect(filter.has('path/to/file.ts')).toBe(true)
+      expect(filter.size).toBe(2)
     })
 
-    it('should increment fill ratio after adds', () => {
-      const frBefore = filter.fillRatio()
-      filter.add('test')
-      expect(filter.fillRatio()).toBeGreaterThan(frBefore)
+    it('should handle numeric strings', () => {
+      filter.add('123')
+      filter.add('456')
+      expect(filter.size).toBe(2)
+    })
+
+    it('should handle whitespace-only strings', () => {
+      filter.add('   ')
+      filter.add('\t')
+      filter.add('\n')
+      expect(filter.size).toBe(3)
+    })
+
+    it('should handle strings with null characters', () => {
+      filter.add('before\0after')
+      expect(filter.size).toBe(1)
+      expect(filter.has('before\0after')).toBe(true)
     })
   })
 
@@ -113,7 +146,7 @@ describe('CountingBloomFilter', () => {
       expect(filter.has('hello')).toBe(true)
     })
 
-    it('should return false for a non-added item', () => {
+    it('should return false for an item not added', () => {
       filter.add('hello')
       expect(filter.has('world')).toBe(false)
     })
@@ -157,286 +190,134 @@ describe('CountingBloomFilter', () => {
       expect(filter.has('test')).toBe(true)
     })
 
-    it('should return true for item added multiple times', () => {
-      filter.add('multi')
-      filter.add('multi')
-      filter.add('multi')
-      expect(filter.has('multi')).toBe(true)
-    })
-  })
-
-  describe('remove', () => {
-    it('should remove an added item', () => {
-      filter.add('hello')
-      const result = filter.remove('hello')
-      expect(result).toBe(true)
-    })
-
-    it('should return true when removing existing item', () => {
-      filter.add('test')
-      expect(filter.remove('test')).toBe(true)
-    })
-
-    it('should return false when removing non-existent item', () => {
-      expect(filter.remove('nothere')).toBe(false)
-    })
-
-    it('should make item not found after single add and remove', () => {
-      filter.add('hello')
-      filter.remove('hello')
+    it('should handle case sensitivity', () => {
+      filter.add('Hello')
+      expect(filter.has('Hello')).toBe(true)
       expect(filter.has('hello')).toBe(false)
     })
 
-    it('should handle removing item added multiple times', () => {
-      filter.add('x')
-      filter.add('x')
-      filter.add('x')
-      expect(filter.remove('x')).toBe(true)
-      expect(filter.count('x')).toBe(2)
-      expect(filter.has('x')).toBe(true)
+    it('should handle mixed unicode content', () => {
+      filter.add('hello世界🎉')
+      expect(filter.has('hello世界🎉')).toBe(true)
+      expect(filter.has('hello世界')).toBe(false)
     })
 
-    it('should return false when removing from empty filter', () => {
-      expect(filter.remove('anything')).toBe(false)
-    })
-
-    it('should handle removing same item twice', () => {
-      filter.add('once')
-      expect(filter.remove('once')).toBe(true)
-      expect(filter.remove('once')).toBe(false)
-    })
-
-    it('should decrement counters after remove', () => {
-      filter.add('test')
-      filter.add('test')
-      expect(filter.count('test')).toBe(2)
-      filter.remove('test')
-      expect(filter.count('test')).toBe(1)
-    })
-
-    it('should allow adding back after remove', () => {
-      filter.add('hello')
-      filter.remove('hello')
-      expect(filter.has('hello')).toBe(false)
-      filter.add('hello')
-      expect(filter.has('hello')).toBe(true)
-    })
-
-    it('should not affect other items when removing one', () => {
-      filter.add('a')
-      filter.add('b')
-      filter.add('c')
-      filter.remove('b')
-      expect(filter.has('a')).toBe(true)
-      expect(filter.has('b')).toBe(false)
-      expect(filter.has('c')).toBe(true)
-    })
-
-    it('should return false for item never added', () => {
-      filter.add('present')
-      expect(filter.remove('absent')).toBe(false)
-      expect(filter.has('present')).toBe(true)
-    })
-
-    it('should fully remove item after equal adds and removes', () => {
-      filter.add('gone')
-      filter.add('gone')
-      filter.remove('gone')
-      filter.remove('gone')
-      expect(filter.has('gone')).toBe(false)
-      expect(filter.count('gone')).toBe(0)
-    })
-
-    it('should handle removing item with high count', () => {
-      for (let i = 0; i < 10; i++) {
-        filter.add('many')
+    it('should never produce false negatives', () => {
+      const f = new BloomFilter<string>(100, 0.01)
+      for (let i = 0; i < 100; i++) {
+        f.add(`item-${i}`)
       }
-      for (let i = 0; i < 10; i++) {
-        expect(filter.remove('many')).toBe(true)
+      for (let i = 0; i < 100; i++) {
+        expect(f.has(`item-${i}`)).toBe(true)
       }
-      expect(filter.has('many')).toBe(false)
     })
   })
 
-  describe('count', () => {
-    it('should return 0 for non-existent item', () => {
-      expect(filter.count('nothere')).toBe(0)
+  describe('size', () => {
+    it('should return 0 for new filter', () => {
+      expect(filter.size).toBe(0)
     })
 
-    it('should return 1 for item added once', () => {
-      filter.add('once')
-      expect(filter.count('once')).toBe(1)
-    })
-
-    it('should return N for item added N times', () => {
-      filter.add('multi')
-      filter.add('multi')
-      filter.add('multi')
-      expect(filter.count('multi')).toBe(3)
-    })
-
-    it('should return 0 for empty filter', () => {
-      expect(filter.count('anything')).toBe(0)
-    })
-
-    it('should decrease after removal', () => {
-      filter.add('test')
-      filter.add('test')
-      filter.remove('test')
-      expect(filter.count('test')).toBe(1)
-    })
-
-    it('should return 0 after full removal', () => {
-      filter.add('test')
-      filter.remove('test')
-      expect(filter.count('test')).toBe(0)
-    })
-
-    it('should handle items with different counts', () => {
-      filter.add('a')
-      filter.add('b')
-      filter.add('b')
-      filter.add('c')
-      filter.add('c')
-      filter.add('c')
-      expect(filter.count('a')).toBe(1)
-      expect(filter.count('b')).toBe(2)
-      expect(filter.count('c')).toBe(3)
-    })
-
-    it('should handle count on empty string', () => {
-      filter.add('')
-      expect(filter.count('')).toBe(1)
-    })
-
-    it('should handle count on unicode string', () => {
-      filter.add('日本語')
-      filter.add('日本語')
-      expect(filter.count('日本語')).toBe(2)
-    })
-
-    it('should use minimum counter value as estimate', () => {
+    it('should return 1 after one add', () => {
       filter.add('item')
-      expect(filter.count('item')).toBeGreaterThanOrEqual(1)
-    })
-  })
-
-  describe('merge', () => {
-    it('should merge two filters of same configuration', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
-      const f2 = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
-      f1.add('a')
-      f2.add('b')
-      f1.merge(f2)
-      expect(f1.has('a')).toBe(true)
-      expect(f1.has('b')).toBe(true)
+      expect(filter.size).toBe(1)
     })
 
-    it('should contain items from both filters after merge', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f1.add('x')
-      f1.add('y')
-      f2.add('z')
-      f1.merge(f2)
-      expect(f1.has('x')).toBe(true)
-      expect(f1.has('y')).toBe(true)
-      expect(f1.has('z')).toBe(true)
-    })
-
-    it('should throw on different capacities', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 100 })
-      const f2 = new CountingBloomFilter({ expectedItems: 500 })
-      expect(() => f1.merge(f2)).toThrow()
-    })
-
-    it('should throw on different hash counts with same capacity', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
-      const f2 = new CountingBloomFilter({ expectedItems: 500, falsePositiveRate: 0.0001 })
-      if (f1.capacity() === f2.capacity() && f1.hashCount() !== f2.hashCount()) {
-        expect(() => f1.merge(f2)).toThrow()
-      }
-    })
-
-    it('should handle merging empty filters', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f1.merge(f2)
-      expect(f1.isEmpty()).toBe(true)
-    })
-
-    it('should handle merging non-empty into empty', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f2.add('item')
-      f1.merge(f2)
-      expect(f1.has('item')).toBe(true)
-    })
-
-    it('should handle merging empty into non-empty', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f1.add('item')
-      f1.merge(f2)
-      expect(f1.has('item')).toBe(true)
-    })
-
-    it('should sum counters correctly after merge', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f1.add('shared')
-      f2.add('shared')
-      f1.merge(f2)
-      expect(f1.count('shared')).toBeGreaterThanOrEqual(2)
-    })
-
-    it('should handle merging filters with overlapping items', () => {
-      const f1 = new CountingBloomFilter()
-      const f2 = new CountingBloomFilter()
-      f1.add('overlap')
-      f1.add('only1')
-      f2.add('overlap')
-      f2.add('only2')
-      f1.merge(f2)
-      expect(f1.has('overlap')).toBe(true)
-      expect(f1.has('only1')).toBe(true)
-      expect(f1.has('only2')).toBe(true)
-    })
-  })
-
-  describe('reset', () => {
-    it('should clear all counters to zero', () => {
-      filter.add('test')
-      filter.reset()
-      expect(filter.isEmpty()).toBe(true)
-    })
-
-    it('should make filter empty after reset', () => {
+    it('should track multiple adds', () => {
       filter.add('a')
       filter.add('b')
       filter.add('c')
-      filter.reset()
-      expect(filter.isEmpty()).toBe(true)
+      expect(filter.size).toBe(3)
     })
 
-    it('should allow adding after reset', () => {
-      filter.add('first')
-      filter.reset()
-      filter.add('second')
-      expect(filter.has('second')).toBe(true)
-      expect(filter.has('first')).toBe(false)
-    })
-
-    it('should set fill ratio to 0 after reset', () => {
+    it('should count duplicate adds', () => {
       filter.add('test')
-      filter.reset()
-      expect(filter.fillRatio()).toBe(0)
+      filter.add('test')
+      expect(filter.size).toBe(2)
     })
 
-    it('should handle resetting empty filter', () => {
-      filter.reset()
-      expect(filter.isEmpty()).toBe(true)
-      expect(filter.fillRatio()).toBe(0)
+    it('should handle many items', () => {
+      for (let i = 0; i < 100; i++) {
+        filter.add(`item-${i}`)
+      }
+      expect(filter.size).toBe(100)
+    })
+
+    it('should reset after clear', () => {
+      filter.add('test')
+      filter.clear()
+      expect(filter.size).toBe(0)
+    })
+  })
+
+  describe('bitCount', () => {
+    it('should return a positive number', () => {
+      expect(filter.bitCount).toBeGreaterThan(0)
+    })
+
+    it('should return different values for different error rates', () => {
+      const f1 = new BloomFilter<string>(100, 0.1)
+      const f2 = new BloomFilter<string>(100, 0.001)
+      expect(f2.bitCount).toBeGreaterThan(f1.bitCount)
+    })
+
+    it('should remain constant after operations', () => {
+      const initial = filter.bitCount
+      filter.add('test')
+      expect(filter.bitCount).toBe(initial)
+    })
+  })
+
+  describe('hashCount', () => {
+    it('should return a positive number', () => {
+      expect(filter.hashCount).toBeGreaterThan(0)
+    })
+
+    it('should remain constant after operations', () => {
+      const initial = filter.hashCount
+      filter.add('test')
+      expect(filter.hashCount).toBe(initial)
+    })
+  })
+
+  describe('falsePositiveRate', () => {
+    it('should return 0 for empty filter', () => {
+      expect(filter.falsePositiveRate()).toBe(0)
+    })
+
+    it('should return a positive value after adding items', () => {
+      filter.add('test')
+      expect(filter.falsePositiveRate()).toBeGreaterThan(0)
+    })
+
+    it('should increase as more items are added', () => {
+      const f = new BloomFilter<string>(100, 0.01)
+      const fp1 = f.falsePositiveRate()
+      for (let i = 0; i < 50; i++) {
+        f.add(`item-${i}`)
+      }
+      const fp50 = f.falsePositiveRate()
+      for (let i = 50; i < 100; i++) {
+        f.add(`item-${i}`)
+      }
+      const fp100 = f.falsePositiveRate()
+      expect(fp50).toBeGreaterThan(fp1)
+      expect(fp100).toBeGreaterThan(fp50)
+    })
+
+    it('should be close to target when at expected capacity', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
+      for (let i = 0; i < 1000; i++) {
+        f.add(`item-${i}`)
+      }
+      const fp = f.falsePositiveRate()
+      expect(fp).toBeLessThan(0.05)
+    })
+
+    it('should reset to 0 after clear', () => {
+      filter.add('test')
+      filter.clear()
+      expect(filter.falsePositiveRate()).toBe(0)
     })
   })
 
@@ -450,130 +331,17 @@ describe('CountingBloomFilter', () => {
       expect(filter.isEmpty()).toBe(false)
     })
 
-    it('should return true after reset', () => {
+    it('should return true after clear', () => {
       filter.add('test')
-      filter.reset()
+      filter.clear()
       expect(filter.isEmpty()).toBe(true)
     })
 
-    it('should return true after removing all items', () => {
-      filter.add('only')
-      filter.remove('only')
-      expect(filter.isEmpty()).toBe(true)
-    })
-
-    it('should return false with remaining items', () => {
-      filter.add('a')
-      filter.add('b')
-      filter.remove('a')
+    it('should return false with many items', () => {
+      for (let i = 0; i < 10; i++) {
+        filter.add(`item-${i}`)
+      }
       expect(filter.isEmpty()).toBe(false)
-    })
-  })
-
-  describe('estimatedSize', () => {
-    it('should return 0 for empty filter', () => {
-      expect(filter.estimatedSize()).toBe(0)
-    })
-
-    it('should return positive number after adds', () => {
-      filter.add('test')
-      expect(filter.estimatedSize()).toBeGreaterThan(0)
-    })
-
-    it('should increase with more unique items', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100 })
-      const sizes: number[] = []
-      for (let i = 0; i < 20; i++) {
-        f.add(`item-${i}`)
-        sizes.push(f.estimatedSize())
-      }
-      for (let i = 1; i < sizes.length; i++) {
-        expect(sizes[i]).toBeGreaterThanOrEqual(sizes[i - 1])
-      }
-    })
-
-    it('should return 0 after reset', () => {
-      filter.add('test')
-      filter.reset()
-      expect(filter.estimatedSize()).toBe(0)
-    })
-
-    it('should decrease after removal', () => {
-      filter.add('test')
-      const sizeAfterAdd = filter.estimatedSize()
-      filter.remove('test')
-      expect(filter.estimatedSize()).toBeLessThanOrEqual(sizeAfterAdd)
-    })
-
-    it('should provide reasonable estimate for known count', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
-      for (let i = 0; i < 50; i++) {
-        f.add(`item-${i}`)
-      }
-      const estimate = f.estimatedSize()
-      expect(estimate).toBeGreaterThan(0)
-      expect(estimate).toBeLessThan(200)
-    })
-
-    it('should handle repeated adds of same item', () => {
-      for (let i = 0; i < 5; i++) {
-        filter.add('same')
-      }
-      expect(filter.estimatedSize()).toBeGreaterThan(0)
-    })
-  })
-
-  describe('capacity', () => {
-    it('should return counter array length', () => {
-      expect(filter.capacity()).toBeGreaterThan(0)
-    })
-
-    it('should increase with higher expectedItems', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 100 })
-      const f2 = new CountingBloomFilter({ expectedItems: 10000 })
-      expect(f2.capacity()).toBeGreaterThan(f1.capacity())
-    })
-
-    it('should increase with lower falsePositiveRate', () => {
-      const f1 = new CountingBloomFilter({ falsePositiveRate: 0.1 })
-      const f2 = new CountingBloomFilter({ falsePositiveRate: 0.001 })
-      expect(f2.capacity()).toBeGreaterThan(f1.capacity())
-    })
-
-    it('should remain constant after operations', () => {
-      const cap = filter.capacity()
-      filter.add('test')
-      filter.remove('test')
-      filter.reset()
-      expect(filter.capacity()).toBe(cap)
-    })
-  })
-
-  describe('hashCount', () => {
-    it('should return a positive number', () => {
-      expect(filter.hashCount()).toBeGreaterThan(0)
-    })
-
-    it('should vary with expectedItems', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 100 })
-      const f2 = new CountingBloomFilter({ expectedItems: 10000 })
-      expect(typeof f1.hashCount()).toBe('number')
-      expect(typeof f2.hashCount()).toBe('number')
-    })
-
-    it('should vary with falsePositiveRate', () => {
-      const f1 = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.1 })
-      const f2 = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.001 })
-      expect(typeof f1.hashCount()).toBe('number')
-      expect(typeof f2.hashCount()).toBe('number')
-    })
-
-    it('should return same value consistently', () => {
-      const hc = filter.hashCount()
-      filter.add('test')
-      filter.remove('test')
-      filter.reset()
-      expect(filter.hashCount()).toBe(hc)
     })
   })
 
@@ -582,47 +350,385 @@ describe('CountingBloomFilter', () => {
       expect(filter.fillRatio()).toBe(0)
     })
 
-    it('should increase with adds', () => {
+    it('should return a positive value after adding items', () => {
       filter.add('test')
       expect(filter.fillRatio()).toBeGreaterThan(0)
     })
 
-    it('should be between 0 and 1', () => {
-      filter.add('test')
+    it('should return value between 0 and 1', () => {
+      for (let i = 0; i < 100; i++) {
+        filter.add(`item-${i}`)
+      }
       const ratio = filter.fillRatio()
-      expect(ratio).toBeGreaterThan(0)
+      expect(ratio).toBeGreaterThanOrEqual(0)
       expect(ratio).toBeLessThanOrEqual(1)
     })
 
-    it('should return 0 after reset', () => {
+    it('should increase as more items are added', () => {
+      const f = new BloomFilter<string>(100, 0.01)
+      const r0 = f.fillRatio()
+      for (let i = 0; i < 50; i++) {
+        f.add(`item-${i}`)
+      }
+      const r50 = f.fillRatio()
+      expect(r50).toBeGreaterThan(r0)
+    })
+
+    it('should reset to 0 after clear', () => {
       filter.add('test')
-      filter.reset()
+      filter.clear()
       expect(filter.fillRatio()).toBe(0)
     })
 
-    it('should decrease after removals', () => {
-      filter.add('test')
-      const frAfterAdd = filter.fillRatio()
-      filter.remove('test')
-      expect(filter.fillRatio()).toBeLessThanOrEqual(frAfterAdd)
-    })
-
-    it('should be monotonically non-decreasing with adds', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100 })
-      const ratios: number[] = []
-      for (let i = 0; i < 50; i++) {
+    it('should approach 1 as filter fills up', () => {
+      const f = new BloomFilter<string>(10, 0.01)
+      for (let i = 0; i < 1000; i++) {
         f.add(`item-${i}`)
-        ratios.push(f.fillRatio())
       }
-      for (let i = 1; i < ratios.length; i++) {
-        expect(ratios[i]).toBeGreaterThanOrEqual(ratios[i - 1])
-      }
+      expect(f.fillRatio()).toBeGreaterThan(0.5)
     })
   })
 
-  describe('false positive handling', () => {
-    it('should have a low false positive rate within expected capacity', () => {
-      const f = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
+  describe('clear', () => {
+    it('should remove all items', () => {
+      filter.add('a')
+      filter.add('b')
+      filter.add('c')
+      filter.clear()
+      expect(filter.size).toBe(0)
+    })
+
+    it('should make the filter empty', () => {
+      filter.add('test')
+      filter.clear()
+      expect(filter.isEmpty()).toBe(true)
+    })
+
+    it('should reset has to false for all items', () => {
+      filter.add('test')
+      filter.clear()
+      expect(filter.has('test')).toBe(false)
+    })
+
+    it('should allow adding after clear', () => {
+      filter.add('first')
+      filter.clear()
+      filter.add('second')
+      expect(filter.size).toBe(1)
+      expect(filter.has('second')).toBe(true)
+    })
+
+    it('should handle clearing an empty filter', () => {
+      filter.clear()
+      expect(filter.isEmpty()).toBe(true)
+      expect(filter.size).toBe(0)
+    })
+
+    it('should preserve bitCount after clear', () => {
+      const bits = filter.bitCount
+      filter.add('test')
+      filter.clear()
+      expect(filter.bitCount).toBe(bits)
+    })
+
+    it('should preserve hashCount after clear', () => {
+      const hashes = filter.hashCount
+      filter.add('test')
+      filter.clear()
+      expect(filter.hashCount).toBe(hashes)
+    })
+  })
+
+  describe('clone', () => {
+    it('should create an independent copy', () => {
+      filter.add('test')
+      const cloned = filter.clone()
+      expect(cloned.size).toBe(filter.size)
+      expect(cloned.has('test')).toBe(true)
+    })
+
+    it('should not affect original when modified', () => {
+      filter.add('shared')
+      const cloned = filter.clone()
+      cloned.add('new')
+      expect(filter.has('new')).toBe(false)
+      expect(cloned.has('new')).toBe(true)
+    })
+
+    it('should not affect clone when original is modified', () => {
+      filter.add('shared')
+      const cloned = filter.clone()
+      filter.add('original-only')
+      expect(cloned.has('original-only')).toBe(false)
+    })
+
+    it('should preserve bitCount', () => {
+      const f = new BloomFilter<string>(500, 0.01)
+      f.add('test')
+      const cloned = f.clone()
+      expect(cloned.bitCount).toBe(f.bitCount)
+    })
+
+    it('should preserve hashCount', () => {
+      filter.add('test')
+      const cloned = filter.clone()
+      expect(cloned.hashCount).toBe(filter.hashCount)
+    })
+
+    it('should clone an empty filter', () => {
+      const cloned = filter.clone()
+      expect(cloned.isEmpty()).toBe(true)
+      expect(cloned.size).toBe(0)
+    })
+
+    it('should preserve all items', () => {
+      for (let i = 0; i < 50; i++) {
+        filter.add(`item-${i}`)
+      }
+      const cloned = filter.clone()
+      for (let i = 0; i < 50; i++) {
+        expect(cloned.has(`item-${i}`)).toBe(true)
+      }
+    })
+
+    it('should produce identical fill ratio', () => {
+      for (let i = 0; i < 20; i++) {
+        filter.add(`item-${i}`)
+      }
+      const cloned = filter.clone()
+      expect(cloned.fillRatio()).toBe(filter.fillRatio())
+    })
+  })
+
+  describe('merge', () => {
+    it('should merge two filters with same parameters', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f1.add('a')
+      f2.add('b')
+      f1.merge(f2)
+      expect(f1.has('a')).toBe(true)
+      expect(f1.has('b')).toBe(true)
+    })
+
+    it('should throw on different bit counts', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(200, 0.01)
+      expect(() => f1.merge(f2)).toThrow('Cannot merge bloom filters with different bit counts')
+    })
+
+    it('should throw on different hash counts', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.5)
+      if (f1.bitCount === f2.bitCount && f1.hashCount !== f2.hashCount) {
+        expect(() => f1.merge(f2)).toThrow('Cannot merge bloom filters with different hash counts')
+      } else if (f1.bitCount !== f2.bitCount || f1.hashCount !== f2.hashCount) {
+        expect(() => f1.merge(f2)).toThrow()
+      }
+    })
+
+    it('should combine sizes', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f1.add('a')
+      f2.add('b')
+      f1.merge(f2)
+      expect(f1.size).toBe(2)
+    })
+
+    it('should produce union of bit arrays', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f1.add('only-in-f1')
+      f2.add('only-in-f2')
+      f1.merge(f2)
+      expect(f1.has('only-in-f1')).toBe(true)
+      expect(f1.has('only-in-f2')).toBe(true)
+    })
+
+    it('should handle merging empty filters', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f1.merge(f2)
+      expect(f1.size).toBe(0)
+      expect(f1.isEmpty()).toBe(true)
+    })
+
+    it('should handle merging with empty filter', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f1.add('item')
+      f1.merge(f2)
+      expect(f1.has('item')).toBe(true)
+      expect(f1.size).toBe(1)
+    })
+
+    it('should handle merging into empty filter', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      f2.add('item')
+      f1.merge(f2)
+      expect(f1.has('item')).toBe(true)
+      expect(f1.size).toBe(1)
+    })
+
+    it('should produce higher fill ratio after merge', () => {
+      const f1 = new BloomFilter<string>(100, 0.01)
+      const f2 = new BloomFilter<string>(100, 0.01)
+      for (let i = 0; i < 50; i++) {
+        f1.add(`f1-${i}`)
+        f2.add(`f2-${i}`)
+      }
+      const ratioBefore = f1.fillRatio()
+      f1.merge(f2)
+      expect(f1.fillRatio()).toBeGreaterThanOrEqual(ratioBefore)
+    })
+  })
+
+  describe('toJSON / fromJSON', () => {
+    it('should serialize to JSON', () => {
+      filter.add('test')
+      const json = filter.toJSON()
+      expect(json.bitArray).toBeInstanceOf(Array)
+      expect(json.bitCount).toBe(filter.bitCount)
+      expect(json.hashCount).toBe(filter.hashCount)
+      expect(json.itemCount).toBe(1)
+    })
+
+    it('should round-trip through JSON', () => {
+      filter.add('hello')
+      filter.add('world')
+      const json = filter.toJSON()
+      const restored = BloomFilter.fromJSON<string>(json)
+      expect(restored.has('hello')).toBe(true)
+      expect(restored.has('world')).toBe(true)
+      expect(restored.size).toBe(2)
+    })
+
+    it('should preserve bitCount through serialization', () => {
+      const f = new BloomFilter<string>(500, 0.001)
+      f.add('test')
+      const json = f.toJSON()
+      expect(json.bitCount).toBe(f.bitCount)
+      const restored = BloomFilter.fromJSON<string>(json)
+      expect(restored.bitCount).toBe(f.bitCount)
+    })
+
+    it('should preserve hashCount through serialization', () => {
+      filter.add('test')
+      const json = filter.toJSON()
+      const restored = BloomFilter.fromJSON<string>(json)
+      expect(restored.hashCount).toBe(filter.hashCount)
+    })
+
+    it('should preserve expectedItems through serialization', () => {
+      const f = new BloomFilter<string>(500, 0.01)
+      f.add('test')
+      const json = f.toJSON()
+      expect(json.expectedItems).toBe(500)
+    })
+
+    it('should preserve targetFalsePositiveRate through serialization', () => {
+      const f = new BloomFilter<string>(100, 0.001)
+      f.add('test')
+      const json = f.toJSON()
+      expect(json.targetFalsePositiveRate).toBe(0.001)
+    })
+
+    it('should handle empty filter serialization', () => {
+      const json = filter.toJSON()
+      const restored = BloomFilter.fromJSON<string>(json)
+      expect(restored.isEmpty()).toBe(true)
+      expect(restored.size).toBe(0)
+    })
+
+    it('should handle filter with many items', () => {
+      for (let i = 0; i < 100; i++) {
+        filter.add(`item-${i}`)
+      }
+      const json = filter.toJSON()
+      const restored = BloomFilter.fromJSON<string>(json)
+      for (let i = 0; i < 100; i++) {
+        expect(restored.has(`item-${i}`)).toBe(true)
+      }
+      expect(restored.size).toBe(100)
+    })
+
+    it('should produce valid BloomFilterJSON type', () => {
+      filter.add('test')
+      const json: BloomFilterJSON = filter.toJSON()
+      expect(typeof json.bitArray).toBe('object')
+      expect(typeof json.bitCount).toBe('number')
+      expect(typeof json.hashCount).toBe('number')
+      expect(typeof json.expectedItems).toBe('number')
+      expect(typeof json.targetFalsePositiveRate).toBe('number')
+      expect(typeof json.itemCount).toBe('number')
+    })
+  })
+
+  describe('static create', () => {
+    it('should create a filter with optimal parameters', () => {
+      const f = BloomFilter.create<string>(1000, 0.01)
+      expect(f.bitCount).toBeGreaterThan(0)
+      expect(f.hashCount).toBeGreaterThan(0)
+    })
+
+    it('should create filter identical to constructor', () => {
+      const f1 = new BloomFilter<string>(1000, 0.01)
+      const f2 = BloomFilter.create<string>(1000, 0.01)
+      expect(f1.bitCount).toBe(f2.bitCount)
+      expect(f1.hashCount).toBe(f2.hashCount)
+    })
+
+    it('should create filter that accepts items', () => {
+      const f = BloomFilter.create<string>(100, 0.01)
+      f.add('item')
+      expect(f.has('item')).toBe(true)
+    })
+  })
+
+  describe('generic type support', () => {
+    it('should work with number items', () => {
+      const f = new BloomFilter<number>()
+      f.add(42)
+      f.add(100)
+      expect(f.has(42)).toBe(true)
+      expect(f.has(100)).toBe(true)
+      expect(f.has(999)).toBe(false)
+    })
+
+    it('should work with object items', () => {
+      const f = new BloomFilter<{ id: number }>()
+      const obj = { id: 1 }
+      f.add(obj)
+      expect(f.has(obj)).toBe(true)
+    })
+
+    it('should work with array items', () => {
+      const f = new BloomFilter<number[]>()
+      const arr = [1, 2, 3]
+      f.add(arr)
+      expect(f.has(arr)).toBe(true)
+    })
+
+    it('should work with boolean items', () => {
+      const f = new BloomFilter<boolean>()
+      f.add(true)
+      f.add(false)
+      expect(f.has(true)).toBe(true)
+      expect(f.has(false)).toBe(true)
+    })
+
+    it('should work with null items', () => {
+      const f = new BloomFilter<null>()
+      f.add(null)
+      expect(f.has(null)).toBe(true)
+    })
+  })
+
+  describe('false positive rate estimation', () => {
+    it('should have a low observed false positive rate within capacity', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
       for (let i = 0; i < 1000; i++) {
         f.add(`item-${i}`)
       }
@@ -637,129 +743,183 @@ describe('CountingBloomFilter', () => {
       expect(observedRate).toBeLessThan(0.05)
     })
 
-    it('should report no false negatives', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
-      const items: string[] = []
+    it('should have zero false negatives', () => {
+      const f = new BloomFilter<string>(100, 0.01)
       for (let i = 0; i < 100; i++) {
-        const item = `item-${i}`
-        f.add(item)
-        items.push(item)
+        f.add(`item-${i}`)
       }
-      for (const item of items) {
-        expect(f.has(item)).toBe(true)
+      for (let i = 0; i < 100; i++) {
+        expect(f.has(`item-${i}`)).toBe(true)
+      }
+    })
+
+    it('should have higher FP rate when over capacity', () => {
+      const f = new BloomFilter<string>(10, 0.01)
+      for (let i = 0; i < 1000; i++) {
+        f.add(`item-${i}`)
+      }
+      const fp = f.falsePositiveRate()
+      expect(fp).toBeGreaterThan(0.01)
+    })
+
+    it('should have 0 false positives for empty filter', () => {
+      let falsePositives = 0
+      for (let i = 0; i < 1000; i++) {
+        if (filter.has(`test-${i}`)) {
+          falsePositives++
+        }
+      }
+      expect(falsePositives).toBe(0)
+    })
+
+    it('should report estimated FP matching formula', () => {
+      const f = new BloomFilter<string>(100, 0.01)
+      for (let i = 0; i < 50; i++) {
+        f.add(`item-${i}`)
+      }
+      const expected = Math.pow(
+        1 - Math.exp((-f.hashCount * 50) / f.bitCount),
+        f.hashCount,
+      )
+      expect(f.falsePositiveRate()).toBeCloseTo(expected, 10)
+    })
+  })
+
+  describe('double hashing technique', () => {
+    it('should use double hashing with two base hashes', () => {
+      const f = new BloomFilter<string>(100, 0.01)
+      f.add('test')
+      expect(f.has('test')).toBe(true)
+    })
+
+    it('should produce consistent results for same input', () => {
+      filter.add('consistent')
+      const r1 = filter.has('consistent')
+      const r2 = filter.has('consistent')
+      expect(r1).toBe(r2)
+      expect(r1).toBe(true)
+    })
+
+    it('should produce different internal state for different strings', () => {
+      filter.add('aaa')
+      filter.add('bbb')
+      expect(filter.has('aaa')).toBe(true)
+      expect(filter.has('bbb')).toBe(true)
+    })
+  })
+
+  describe('large item sets', () => {
+    it('should handle 10000 items', () => {
+      const f = new BloomFilter<string>(10000, 0.01)
+      for (let i = 0; i < 10000; i++) {
+        f.add(`item-${i}`)
+      }
+      expect(f.size).toBe(10000)
+      expect(f.has('item-0')).toBe(true)
+      expect(f.has('item-9999')).toBe(true)
+    })
+
+    it('should handle 10000 items with no false negatives', () => {
+      const f = new BloomFilter<string>(10000, 0.01)
+      for (let i = 0; i < 10000; i++) {
+        f.add(`item-${i}`)
+      }
+      for (let i = 0; i < 10000; i++) {
+        expect(f.has(`item-${i}`)).toBe(true)
+      }
+    })
+
+    it('should handle rapid add and check cycles', () => {
+      const f = new BloomFilter<string>(1000, 0.01)
+      for (let i = 0; i < 1000; i++) {
+        f.add(`item-${i}`)
+        expect(f.has(`item-${i}`)).toBe(true)
       }
     })
   })
 
   describe('edge cases', () => {
-    it('should handle numeric strings', () => {
-      filter.add('123')
-      filter.add('456')
-      expect(filter.has('123')).toBe(true)
-      expect(filter.has('456')).toBe(true)
-      expect(filter.has('789')).toBe(false)
-    })
-
-    it('should handle whitespace-only strings', () => {
-      filter.add('   ')
-      filter.add('\t')
-      filter.add('\n')
-      expect(filter.has('   ')).toBe(true)
-      expect(filter.has('\t')).toBe(true)
-    })
-
-    it('should handle case sensitivity', () => {
-      filter.add('Hello')
-      expect(filter.has('Hello')).toBe(true)
-      expect(filter.has('hello')).toBe(false)
-    })
-
-    it('should handle strings with null characters', () => {
-      filter.add('before\0after')
-      expect(filter.has('before\0after')).toBe(true)
-    })
-
-    it('should handle mixed unicode content', () => {
-      filter.add('hello世界🎉')
-      expect(filter.has('hello世界🎉')).toBe(true)
-      expect(filter.has('hello世界')).toBe(false)
-    })
-
-    it('should handle very small false positive rate', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.0001 })
+    it('should handle very small error rate', () => {
+      const f = new BloomFilter<string>(100, 0.0001)
       f.add('test')
       expect(f.has('test')).toBe(true)
+    })
+
+    it('should handle high error rate', () => {
+      const f = new BloomFilter<string>(100, 0.5)
+      f.add('test')
+      expect(f.has('test')).toBe(true)
+    })
+
+    it('should handle single expected item', () => {
+      const f = new BloomFilter<string>(1, 0.01)
+      f.add('only')
+      expect(f.has('only')).toBe(true)
+    })
+
+    it('should handle very long string key', () => {
+      const longKey = 'x'.repeat(100000)
+      filter.add(longKey)
+      expect(filter.has(longKey)).toBe(true)
+    })
+
+    it('should handle clear followed by immediate operations', () => {
+      filter.add('before')
+      filter.clear()
+      filter.add('after')
+      expect(filter.has('after')).toBe(true)
+      expect(filter.has('before')).toBe(false)
+    })
+
+    it('should handle clone of filter with many operations', () => {
+      for (let i = 0; i < 50; i++) {
+        filter.add(`item-${i}`)
+      }
+      const cloned = filter.clone()
+      for (let i = 0; i < 50; i++) {
+        expect(cloned.has(`item-${i}`)).toBe(true)
+      }
+    })
+
+    it('should handle adding same item many times', () => {
+      for (let i = 0; i < 100; i++) {
+        filter.add('same')
+      }
+      expect(filter.size).toBe(100)
+      expect(filter.has('same')).toBe(true)
+    })
+
+    it('should handle has on item never added', () => {
+      expect(filter.has('never-added')).toBe(false)
     })
   })
 
   describe('type exports', () => {
-    it('should export DEFAULT_COUNTING_BLOOM_OPTIONS', () => {
-      expect(DEFAULT_COUNTING_BLOOM_OPTIONS.expectedItems).toBe(1000)
-      expect(DEFAULT_COUNTING_BLOOM_OPTIONS.falsePositiveRate).toBe(0.01)
+    it('should export DEFAULT_BLOOM_FILTER_OPTIONS', () => {
+      expect(DEFAULT_BLOOM_FILTER_OPTIONS.expectedItems).toBe(1000)
+      expect(DEFAULT_BLOOM_FILTER_OPTIONS.falsePositiveRate).toBe(0.01)
     })
 
-    it('should support CountingBloomFilterOptions interface', () => {
-      const opts: CountingBloomFilterOptions = {
+    it('should support BloomFilterOptions interface', () => {
+      const opts: BloomFilterOptions = {
         expectedItems: 500,
         falsePositiveRate: 0.05,
       }
       expect(opts.expectedItems).toBe(500)
       expect(opts.falsePositiveRate).toBe(0.05)
     })
-  })
 
-  describe('large item sets', () => {
-    it('should handle 10000 items', () => {
-      const f = new CountingBloomFilter({ expectedItems: 10000, falsePositiveRate: 0.01 })
-      for (let i = 0; i < 10000; i++) {
-        f.add(`item-${i}`)
+    it('should support BloomFilterJSON interface', () => {
+      const json: BloomFilterJSON = {
+        bitArray: [0, 1, 2],
+        bitCount: 24,
+        hashCount: 7,
+        expectedItems: 1000,
+        targetFalsePositiveRate: 0.01,
+        itemCount: 5,
       }
-      expect(f.has('item-0')).toBe(true)
-      expect(f.has('item-9999')).toBe(true)
-      expect(f.has('item-5000')).toBe(true)
-    })
-
-    it('should handle 10000 items with no false negatives', () => {
-      const f = new CountingBloomFilter({ expectedItems: 10000, falsePositiveRate: 0.01 })
-      for (let i = 0; i < 10000; i++) {
-        f.add(`item-${i}`)
-      }
-      for (let i = 0; i < 10000; i++) {
-        expect(f.has(`item-${i}`)).toBe(true)
-      }
-    })
-
-    it('should handle add and remove cycles at scale', () => {
-      const f = new CountingBloomFilter({ expectedItems: 1000, falsePositiveRate: 0.01 })
-      for (let i = 0; i < 500; i++) {
-        f.add(`item-${i}`)
-      }
-      for (let i = 0; i < 250; i++) {
-        f.remove(`item-${i}`)
-      }
-      for (let i = 250; i < 500; i++) {
-        expect(f.has(`item-${i}`)).toBe(true)
-      }
-    })
-
-    it('should handle repeated add-remove of same items', () => {
-      const f = new CountingBloomFilter({ expectedItems: 100, falsePositiveRate: 0.01 })
-      for (let cycle = 0; cycle < 5; cycle++) {
-        for (let i = 0; i < 10; i++) {
-          f.add(`item-${i}`)
-        }
-      }
-      for (let i = 0; i < 10; i++) {
-        expect(f.count(`item-${i}`)).toBe(5)
-      }
-      for (let cycle = 0; cycle < 5; cycle++) {
-        for (let i = 0; i < 10; i++) {
-          f.remove(`item-${i}`)
-        }
-      }
-      for (let i = 0; i < 10; i++) {
-        expect(f.has(`item-${i}`)).toBe(false)
-      }
+      expect(json.bitCount).toBe(24)
+      expect(json.hashCount).toBe(7)
     })
   })
 })

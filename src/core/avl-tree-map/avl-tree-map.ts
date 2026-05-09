@@ -1,68 +1,57 @@
-import type { AVLTreeMapNode, AVLTreeMapOptions, AVLTreeEntry } from './types.js'
-import { defaultComparator } from './types.js'
+import type { AVLNode, CompareFunction } from './types.js'
 
 export class AVLTreeMap<K, V> {
-  private root: AVLTreeMapNode<K, V> | null = null
+  private root: AVLNode<K, V> | null = null
   private _size: number = 0
-  private compare: (a: K, b: K) => number
+  private compare: CompareFunction<K>
 
-  constructor(options?: AVLTreeMapOptions<K, V>) {
-    this.compare = options?.comparator ?? (defaultComparator as (a: K, b: K) => number)
-    if (options?.entries) {
-      for (const [key, value] of options.entries) {
-        this.set(key, value)
-      }
-    }
+  constructor(compare?: CompareFunction<K>) {
+    this.compare = compare ?? ((a: K, b: K) => (a < b ? -1 : a > b ? 1 : 0))
   }
 
-  private nodeHeight(node: AVLTreeMapNode<K, V> | null): number {
+  private nodeHeight(node: AVLNode<K, V> | null): number {
     return node === null ? 0 : node.height
   }
 
-  private nodeCount(node: AVLTreeMapNode<K, V> | null): number {
-    return node === null ? 0 : node.count
-  }
-
-  private updateNode(node: AVLTreeMapNode<K, V>): void {
+  private updateHeight(node: AVLNode<K, V>): void {
     node.height = 1 + Math.max(this.nodeHeight(node.left), this.nodeHeight(node.right))
-    node.count = 1 + this.nodeCount(node.left) + this.nodeCount(node.right)
   }
 
-  private balanceFactor(node: AVLTreeMapNode<K, V>): number {
+  private getBalanceFactor(node: AVLNode<K, V>): number {
     return this.nodeHeight(node.left) - this.nodeHeight(node.right)
   }
 
-  private rotateRight(y: AVLTreeMapNode<K, V>): AVLTreeMapNode<K, V> {
+  private rotateRight(y: AVLNode<K, V>): AVLNode<K, V> {
     const x = y.left!
     const t2 = x.right
     x.right = y
     y.left = t2
-    this.updateNode(y)
-    this.updateNode(x)
+    this.updateHeight(y)
+    this.updateHeight(x)
     return x
   }
 
-  private rotateLeft(x: AVLTreeMapNode<K, V>): AVLTreeMapNode<K, V> {
+  private rotateLeft(x: AVLNode<K, V>): AVLNode<K, V> {
     const y = x.right!
     const t2 = y.left
     y.left = x
     x.right = t2
-    this.updateNode(x)
-    this.updateNode(y)
+    this.updateHeight(x)
+    this.updateHeight(y)
     return y
   }
 
-  private balance(node: AVLTreeMapNode<K, V>): AVLTreeMapNode<K, V> {
-    this.updateNode(node)
-    const bf = this.balanceFactor(node)
+  private balance(node: AVLNode<K, V>): AVLNode<K, V> {
+    this.updateHeight(node)
+    const bf = this.getBalanceFactor(node)
     if (bf > 1) {
-      if (this.balanceFactor(node.left!) < 0) {
+      if (this.getBalanceFactor(node.left!) < 0) {
         node.left = this.rotateLeft(node.left!)
       }
       return this.rotateRight(node)
     }
     if (bf < -1) {
-      if (this.balanceFactor(node.right!) > 0) {
+      if (this.getBalanceFactor(node.right!) > 0) {
         node.right = this.rotateRight(node.right!)
       }
       return this.rotateLeft(node)
@@ -70,10 +59,25 @@ export class AVLTreeMap<K, V> {
     return node
   }
 
-  private insertNode(node: AVLTreeMapNode<K, V> | null, key: K, value: V): AVLTreeMapNode<K, V> {
+  get(key: K): V | undefined {
+    let current = this.root
+    while (current !== null) {
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
+        current = current.left
+      } else if (cmp > 0) {
+        current = current.right
+      } else {
+        return current.value
+      }
+    }
+    return undefined
+  }
+
+  private insertNode(node: AVLNode<K, V> | null, key: K, value: V): AVLNode<K, V> {
     if (node === null) {
       this._size++
-      return { key, value, left: null, right: null, height: 1, count: 1 }
+      return { key, value, left: null, right: null, height: 1 }
     }
     const cmp = this.compare(key, node.key)
     if (cmp < 0) {
@@ -88,30 +92,25 @@ export class AVLTreeMap<K, V> {
   }
 
   set(key: K, value: V): void {
-    const prevSize = this._size
     this.root = this.insertNode(this.root, key, value)
-    void prevSize
-  }
-
-  private findNode(key: K): AVLTreeMapNode<K, V> | null {
-    let current = this.root
-    while (current !== null) {
-      const cmp = this.compare(key, current.key)
-      if (cmp === 0) return current
-      current = cmp < 0 ? current.left : current.right
-    }
-    return null
-  }
-
-  get(key: K): V | undefined {
-    return this.findNode(key)?.value
   }
 
   has(key: K): boolean {
-    return this.findNode(key) !== null
+    let current = this.root
+    while (current !== null) {
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
+        current = current.left
+      } else if (cmp > 0) {
+        current = current.right
+      } else {
+        return true
+      }
+    }
+    return false
   }
 
-  private findMinNode(node: AVLTreeMapNode<K, V>): AVLTreeMapNode<K, V> {
+  private findMinNode(node: AVLNode<K, V>): AVLNode<K, V> {
     let current = node
     while (current.left !== null) {
       current = current.left
@@ -119,15 +118,7 @@ export class AVLTreeMap<K, V> {
     return current
   }
 
-  private findMaxNode(node: AVLTreeMapNode<K, V>): AVLTreeMapNode<K, V> {
-    let current = node
-    while (current.right !== null) {
-      current = current.right
-    }
-    return current
-  }
-
-  private deleteNode(node: AVLTreeMapNode<K, V> | null, key: K): AVLTreeMapNode<K, V> | null {
+  private deleteNode(node: AVLNode<K, V> | null, key: K): AVLNode<K, V> | null {
     if (node === null) return null
     const cmp = this.compare(key, node.key)
     if (cmp < 0) {
@@ -153,7 +144,7 @@ export class AVLTreeMap<K, V> {
     return true
   }
 
-  size(): number {
+  get size(): number {
     return this._size
   }
 
@@ -166,70 +157,108 @@ export class AVLTreeMap<K, V> {
     this._size = 0
   }
 
-  getMin(): AVLTreeEntry<K, V> | undefined {
+  min(): [K, V] | undefined {
     if (this.root === null) return undefined
     const node = this.findMinNode(this.root)
-    return { key: node.key, value: node.value }
+    return [node.key, node.value]
   }
 
-  getMax(): AVLTreeEntry<K, V> | undefined {
+  max(): [K, V] | undefined {
     if (this.root === null) return undefined
-    const node = this.findMaxNode(this.root)
-    return { key: node.key, value: node.value }
-  }
-
-  extractMin(): AVLTreeEntry<K, V> | undefined {
-    if (this.root === null) return undefined
-    const node = this.findMinNode(this.root)
-    const entry: AVLTreeEntry<K, V> = { key: node.key, value: node.value }
-    this.root = this.deleteNode(this.root, node.key)
-    return entry
-  }
-
-  extractMax(): AVLTreeEntry<K, V> | undefined {
-    if (this.root === null) return undefined
-    const node = this.findMaxNode(this.root)
-    const entry: AVLTreeEntry<K, V> = { key: node.key, value: node.value }
-    this.root = this.deleteNode(this.root, node.key)
-    return entry
-  }
-
-  predecessor(key: K): AVLTreeEntry<K, V> | undefined {
-    let result: AVLTreeMapNode<K, V> | null = null
     let current = this.root
-    while (current !== null) {
-      const cmp = this.compare(key, current.key)
+    while (current.right !== null) {
+      current = current.right
+    }
+    return [current.key, current.value]
+  }
+
+  private inOrderTraversal(node: AVLNode<K, V> | null, result: [K, V][]): void {
+    if (node === null) return
+    this.inOrderTraversal(node.left, result)
+    result.push([node.key, node.value])
+    this.inOrderTraversal(node.right, result)
+  }
+
+  forEach(callback: (value: V, key: K) => void): void {
+    const entries = this.entries()
+    for (const [key, value] of entries) {
+      callback(value, key)
+    }
+  }
+
+  keys(): K[] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result.map(([k]) => k)
+  }
+
+  values(): V[] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result.map(([, v]) => v)
+  }
+
+  entries(): [K, V][] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result
+  }
+
+  clone(): AVLTreeMap<K, V> {
+    const result = new AVLTreeMap<K, V>(this.compare)
+    const allEntries = this.entries()
+    for (const [key, value] of allEntries) {
+      result.set(key, value)
+    }
+    return result
+  }
+
+  [Symbol.iterator](): Iterator<[K, V]> {
+    const allEntries = this.entries()
+    let index = 0
+    return {
+      next: () => {
+        if (index < allEntries.length) {
+          const value = allEntries[index]!
+          index++
+          return { value, done: false }
+        }
+        return { value: undefined, done: true } as IteratorResult<[K, V]>
+      },
+    }
+  }
+
+  lowerBound(key: K): [K, V] | undefined {
+    let result: [K, V] | undefined
+    let node = this.root
+    while (node !== null) {
+      const cmp = this.compare(node.key, key)
+      if (cmp >= 0) {
+        result = [node.key, node.value]
+        node = node.left
+      } else {
+        node = node.right
+      }
+    }
+    return result
+  }
+
+  upperBound(key: K): [K, V] | undefined {
+    let result: [K, V] | undefined
+    let node = this.root
+    while (node !== null) {
+      const cmp = this.compare(node.key, key)
       if (cmp > 0) {
-        result = current
-        current = current.right
+        result = [node.key, node.value]
+        node = node.left
       } else {
-        current = current.left
+        node = node.right
       }
     }
-    return result !== null ? { key: result.key, value: result.value } : undefined
+    return result
   }
 
-  successor(key: K): AVLTreeEntry<K, V> | undefined {
-    let result: AVLTreeMapNode<K, V> | null = null
-    let current = this.root
-    while (current !== null) {
-      const cmp = this.compare(key, current.key)
-      if (cmp < 0) {
-        result = current
-        current = current.left
-      } else {
-        current = current.right
-      }
-    }
-    return result !== null ? { key: result.key, value: result.value } : undefined
-  }
-
-  private rangeTraversal(
-    node: AVLTreeMapNode<K, V> | null,
-    start: K,
-    end: K,
-    result: AVLTreeEntry<K, V>[],
-  ): void {
+  private rangeTraversal(node: AVLNode<K, V> | null, start: K, end: K, result: [K, V][]): void {
     if (node === null) return
     const cmpStart = this.compare(node.key, start)
     const cmpEnd = this.compare(node.key, end)
@@ -237,176 +266,31 @@ export class AVLTreeMap<K, V> {
       this.rangeTraversal(node.left, start, end, result)
     }
     if (cmpStart >= 0 && cmpEnd <= 0) {
-      result.push({ key: node.key, value: node.value })
+      result.push([node.key, node.value])
     }
     if (cmpEnd < 0) {
       this.rangeTraversal(node.right, start, end, result)
     }
   }
 
-  range(start: K, end: K): AVLTreeEntry<K, V>[] {
-    const result: AVLTreeEntry<K, V>[] = []
+  range(start: K, end: K): [K, V][] {
+    if (this.compare(start, end) > 0) return []
+    const result: [K, V][] = []
     this.rangeTraversal(this.root, start, end, result)
     return result
-  }
-
-  private collectKeys(node: AVLTreeMapNode<K, V> | null, result: K[]): void {
-    if (node === null) return
-    this.collectKeys(node.left, result)
-    result.push(node.key)
-    this.collectKeys(node.right, result)
-  }
-
-  keys(): K[] {
-    const result: K[] = []
-    this.collectKeys(this.root, result)
-    return result
-  }
-
-  private collectValues(node: AVLTreeMapNode<K, V> | null, result: V[]): void {
-    if (node === null) return
-    this.collectValues(node.left, result)
-    result.push(node.value)
-    this.collectValues(node.right, result)
-  }
-
-  values(): V[] {
-    const result: V[] = []
-    this.collectValues(this.root, result)
-    return result
-  }
-
-  private collectEntries(node: AVLTreeMapNode<K, V> | null, result: AVLTreeEntry<K, V>[]): void {
-    if (node === null) return
-    this.collectEntries(node.left, result)
-    result.push({ key: node.key, value: node.value })
-    this.collectEntries(node.right, result)
-  }
-
-  entries(): AVLTreeEntry<K, V>[] {
-    const result: AVLTreeEntry<K, V>[] = []
-    this.collectEntries(this.root, result)
-    return result
-  }
-
-  private nodeAtIndex(node: AVLTreeMapNode<K, V> | null, index: number): AVLTreeEntry<K, V> | undefined {
-    if (node === null || index < 0 || index >= node.count) return undefined
-    const leftCount = this.nodeCount(node.left)
-    if (index < leftCount) {
-      return this.nodeAtIndex(node.left, index)
-    }
-    if (index === leftCount) {
-      return { key: node.key, value: node.value }
-    }
-    return this.nodeAtIndex(node.right, index - leftCount - 1)
-  }
-
-  atIndex(index: number): AVLTreeEntry<K, V> | undefined {
-    if (index < 0 || index >= this._size) return undefined
-    return this.nodeAtIndex(this.root, index)
-  }
-
-  private indexOfNode(node: AVLTreeMapNode<K, V> | null, key: K): number {
-    if (node === null) return -1
-    const cmp = this.compare(key, node.key)
-    if (cmp === 0) return this.nodeCount(node.left)
-    if (cmp < 0) return this.indexOfNode(node.left, key)
-    const rightIdx = this.indexOfNode(node.right, key)
-    if (rightIdx === -1) return -1
-    return this.nodeCount(node.left) + 1 + rightIdx
-  }
-
-  indexOf(key: K): number {
-    return this.indexOfNode(this.root, key)
-  }
-
-  forEach(callback: (entry: AVLTreeEntry<K, V>, index: number) => void): void {
-    let idx = 0
-    const traverse = (node: AVLTreeMapNode<K, V> | null): void => {
-      if (node === null) return
-      traverse(node.left)
-      callback({ key: node.key, value: node.value }, idx++)
-      traverse(node.right)
-    }
-    traverse(this.root)
-  }
-
-  *[Symbol.iterator](): Iterator<AVLTreeEntry<K, V>> {
-    const stack: AVLTreeMapNode<K, V>[] = []
-    let current = this.root
-    while (current !== null || stack.length > 0) {
-      while (current !== null) {
-        stack.push(current)
-        current = current.left
-      }
-      current = stack.pop()!
-      yield { key: current.key, value: current.value }
-      current = current.right
-    }
-  }
-
-  toArray(): AVLTreeEntry<K, V>[] {
-    return this.entries()
-  }
-
-  clone(): AVLTreeMap<K, V> {
-    const result = new AVLTreeMap<K, V>({ comparator: this.compare })
-    for (const entry of this) {
-      result.set(entry.key, entry.value)
-    }
-    return result
-  }
-
-  merge(other: AVLTreeMap<K, V>): AVLTreeMap<K, V> {
-    const result = this.clone()
-    for (const entry of other) {
-      result.set(entry.key, entry.value)
-    }
-    return result
-  }
-
-  private checkBalance(node: AVLTreeMapNode<K, V> | null): boolean {
-    if (node === null) return true
-    const bf = this.balanceFactor(node)
-    if (bf < -1 || bf > 1) return false
-    return this.checkBalance(node.left) && this.checkBalance(node.right)
-  }
-
-  private checkCounts(node: AVLTreeMapNode<K, V> | null): boolean {
-    if (node === null) return true
-    const expected = 1 + this.nodeCount(node.left) + this.nodeCount(node.right)
-    if (node.count !== expected) return false
-    return this.checkCounts(node.left) && this.checkCounts(node.right)
-  }
-
-  private checkBST(node: AVLTreeMapNode<K, V> | null, min: K | null, max: K | null): boolean {
-    if (node === null) return true
-    if (min !== null && this.compare(node.key, min) <= 0) return false
-    if (max !== null && this.compare(node.key, max) >= 0) return false
-    return this.checkBST(node.left, min, node.key) && this.checkBST(node.right, node.key, max)
-  }
-
-  private checkHeights(node: AVLTreeMapNode<K, V> | null): boolean {
-    if (node === null) return true
-    const expected = 1 + Math.max(this.nodeHeight(node.left), this.nodeHeight(node.right))
-    if (node.height !== expected) return false
-    return this.checkHeights(node.left) && this.checkHeights(node.right)
-  }
-
-  isValid(): boolean {
-    if (this.root === null) return true
-    return (
-      this.checkBalance(this.root) &&
-      this.checkCounts(this.root) &&
-      this.checkBST(this.root, null, null) &&
-      this.checkHeights(this.root)
-    )
   }
 
   getHeight(): number {
     return this.nodeHeight(this.root)
   }
+
+  static fromEntries<K, V>(entries: [K, V][], compare?: CompareFunction<K>): AVLTreeMap<K, V> {
+    const map = new AVLTreeMap<K, V>(compare)
+    for (const [key, value] of entries) {
+      map.set(key, value)
+    }
+    return map
+  }
 }
 
-export { defaultComparator } from './types.js'
-export type { AVLTreeMapNode, AVLTreeMapOptions, AVLTreeEntry } from './types.js'
+export type { AVLNode, CompareFunction } from './types.js'
