@@ -1,21 +1,15 @@
-import type { Color, RBNode, RBTreeOptions, RBTreeStats } from './types.js'
-import { DEFAULT_RB_TREE_OPTIONS } from './types.js'
+import type { RBColor, RBNode, CompareFunction } from './types.js'
 
-export class RedBlackTree<T> {
-  private root: RBNode<T> | null = null
+export class RedBlackTreeMap<K, V> {
+  private root: RBNode<K, V> | null = null
   private _size: number = 0
-  private allowDuplicates: boolean
+  private compare: CompareFunction<K>
 
-  constructor(options?: Partial<RBTreeOptions>) {
-    const opts: RBTreeOptions = { ...DEFAULT_RB_TREE_OPTIONS, ...options }
-    this.allowDuplicates = opts.allowDuplicates
+  constructor(compare?: CompareFunction<K>) {
+    this.compare = compare ?? ((a: K, b: K) => (a < b ? -1 : a > b ? 1 : 0))
   }
 
-  private createNode(key: number, value: T): RBNode<T> {
-    return { key, value, color: 'red', left: null, right: null, parent: null }
-  }
-
-  private leftRotate(x: RBNode<T>): void {
+  private leftRotate(x: RBNode<K, V>): void {
     const y = x.right!
     x.right = y.left
     if (y.left !== null) {
@@ -33,7 +27,7 @@ export class RedBlackTree<T> {
     x.parent = y
   }
 
-  private rightRotate(y: RBNode<T>): void {
+  private rightRotate(y: RBNode<K, V>): void {
     const x = y.left!
     y.left = x.right
     if (x.right !== null) {
@@ -51,7 +45,7 @@ export class RedBlackTree<T> {
     y.parent = x
   }
 
-  private insertFixup(z: RBNode<T>): void {
+  private insertFixup(z: RBNode<K, V>): void {
     while (z.parent !== null && z.parent.color === 'red') {
       if (z.parent === z.parent.parent!.left) {
         const y = z.parent.parent!.right
@@ -90,65 +84,86 @@ export class RedBlackTree<T> {
     this.root!.color = 'black'
   }
 
-  insert(key: number, value: T): void {
-    if (!this.allowDuplicates && this.has(key)) {
-      const node = this.findNode(key)
-      if (node !== null) {
-        node.value = value
-      }
-      return
-    }
-
-    const z = this.createNode(key, value)
-    let y: RBNode<T> | null = null
-    let x = this.root
-
-    while (x !== null) {
-      y = x
-      if (z.key < x.key) {
-        x = x.left
-      } else {
-        x = x.right
-      }
-    }
-
-    z.parent = y
-    if (y === null) {
-      this.root = z
-    } else if (z.key < y.key) {
-      y.left = z
-    } else {
-      y.right = z
-    }
-
-    this._size++
-    this.insertFixup(z)
-  }
-
-  private findNode(key: number): RBNode<T> | null {
+  get(key: K): V | undefined {
     let current = this.root
     while (current !== null) {
-      if (key === current.key) {
-        return current
-      } else if (key < current.key) {
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
         current = current.left
-      } else {
+      } else if (cmp > 0) {
         current = current.right
+      } else {
+        return current.value
+      }
+    }
+    return undefined
+  }
+
+  set(key: K, value: V): void {
+    let parent: RBNode<K, V> | null = null
+    let current = this.root
+    while (current !== null) {
+      parent = current
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
+        current = current.left
+      } else if (cmp > 0) {
+        current = current.right
+      } else {
+        current.value = value
+        return
+      }
+    }
+    const newNode: RBNode<K, V> = {
+      key,
+      value,
+      color: 'red',
+      left: null,
+      right: null,
+      parent,
+    }
+    if (parent === null) {
+      this.root = newNode
+    } else if (this.compare(key, parent.key) < 0) {
+      parent.left = newNode
+    } else {
+      parent.right = newNode
+    }
+    this._size++
+    this.insertFixup(newNode)
+  }
+
+  has(key: K): boolean {
+    let current = this.root
+    while (current !== null) {
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
+        current = current.left
+      } else if (cmp > 0) {
+        current = current.right
+      } else {
+        return true
+      }
+    }
+    return false
+  }
+
+  private findNode(key: K): RBNode<K, V> | null {
+    let current = this.root
+    while (current !== null) {
+      const cmp = this.compare(key, current.key)
+      if (cmp < 0) {
+        current = current.left
+      } else if (cmp > 0) {
+        current = current.right
+      } else {
+        return current
       }
     }
     return null
   }
 
-  search(key: number): T | undefined {
-    const node = this.findNode(key)
-    return node !== null ? node.value : undefined
-  }
-
-  has(key: number): boolean {
-    return this.findNode(key) !== null
-  }
-
-  private transplant(u: RBNode<T>, v: RBNode<T> | null): void {
+  private transplant(u: RBNode<K, V>, v: RBNode<K, V> | null): void {
     if (u.parent === null) {
       this.root = v
     } else if (u === u.parent.left) {
@@ -161,27 +176,26 @@ export class RedBlackTree<T> {
     }
   }
 
-  private minimum(node: RBNode<T>): RBNode<T> {
+  private minimum(node: RBNode<K, V>): RBNode<K, V> {
     while (node.left !== null) {
       node = node.left
     }
     return node
   }
 
-  private maximum(node: RBNode<T>): RBNode<T> {
+  private maximum(node: RBNode<K, V>): RBNode<K, V> {
     while (node.right !== null) {
       node = node.right
     }
     return node
   }
 
-  private deleteFixup(x: RBNode<T> | null, parent: RBNode<T> | null): void {
+  private deleteFixup(x: RBNode<K, V> | null, parent: RBNode<K, V> | null): void {
     while (x !== this.root && (x === null || x.color === 'black')) {
       if (x !== null) {
         parent = x.parent
       }
       if (parent === null) break
-
       if (x === parent.left) {
         let w = parent.right
         if (w !== null && w.color === 'red') {
@@ -243,14 +257,14 @@ export class RedBlackTree<T> {
     }
   }
 
-  delete(key: number): boolean {
+  delete(key: K): boolean {
     const z = this.findNode(key)
     if (z === null) return false
 
-    let y: RBNode<T> = z
-    let yOriginalColor: Color = y.color
-    let x: RBNode<T> | null = null
-    let xParent: RBNode<T> | null = null
+    let y: RBNode<K, V> = z
+    let yOriginalColor: RBColor = y.color
+    let x: RBNode<K, V> | null = null
+    let xParent: RBNode<K, V> | null = null
 
     if (z.left === null) {
       x = z.right
@@ -265,11 +279,7 @@ export class RedBlackTree<T> {
       yOriginalColor = y.color
       x = y.right
       if (y.parent === z) {
-        if (x !== null) {
-          xParent = y
-        } else {
-          xParent = y
-        }
+        xParent = y
       } else {
         xParent = y.parent
         this.transplant(y, y.right)
@@ -291,83 +301,12 @@ export class RedBlackTree<T> {
     return true
   }
 
-  getMin(): T | undefined {
-    if (this.root === null) return undefined
-    return this.minimum(this.root).value
-  }
-
-  getMax(): T | undefined {
-    if (this.root === null) return undefined
-    return this.maximum(this.root).value
-  }
-
-  private inOrderWalk(node: RBNode<T> | null, result: [number, T][]): void {
-    if (node !== null) {
-      this.inOrderWalk(node.left, result)
-      result.push([node.key, node.value])
-      this.inOrderWalk(node.right, result)
-    }
-  }
-
-  inOrder(): [number, T][] {
-    const result: [number, T][] = []
-    this.inOrderWalk(this.root, result)
-    return result
-  }
-
-  private preOrderWalk(node: RBNode<T> | null, result: [number, T][]): void {
-    if (node !== null) {
-      result.push([node.key, node.value])
-      this.preOrderWalk(node.left, result)
-      this.preOrderWalk(node.right, result)
-    }
-  }
-
-  preOrder(): [number, T][] {
-    const result: [number, T][] = []
-    this.preOrderWalk(this.root, result)
-    return result
-  }
-
-  private postOrderWalk(node: RBNode<T> | null, result: [number, T][]): void {
-    if (node !== null) {
-      this.postOrderWalk(node.left, result)
-      this.postOrderWalk(node.right, result)
-      result.push([node.key, node.value])
-    }
-  }
-
-  postOrder(): [number, T][] {
-    const result: [number, T][] = []
-    this.postOrderWalk(this.root, result)
-    return result
-  }
-
-  range(min: number, max: number): [number, T][] {
-    const result: [number, T][] = []
-    this.rangeWalk(this.root, min, max, result)
-    return result
-  }
-
-  private rangeWalk(node: RBNode<T> | null, min: number, max: number, result: [number, T][]): void {
-    if (node === null) return
-    if (min <= node.key) {
-      this.rangeWalk(node.left, min, max, result)
-    }
-    if (node.key >= min && node.key <= max) {
-      result.push([node.key, node.value])
-    }
-    if (max >= node.key) {
-      this.rangeWalk(node.right, min, max, result)
-    }
-  }
-
-  size(): number {
+  get size(): number {
     return this._size
   }
 
   isEmpty(): boolean {
-    return this.root === null
+    return this._size === 0
   }
 
   clear(): void {
@@ -375,44 +314,133 @@ export class RedBlackTree<T> {
     this._size = 0
   }
 
-  private computeBlackHeight(node: RBNode<T> | null): number {
-    if (node === null) return 1
-    const leftHeight = this.computeBlackHeight(node.left)
-    const rightHeight = this.computeBlackHeight(node.right)
-    if (leftHeight === -1 || rightHeight === -1 || leftHeight !== rightHeight) return -1
-    return leftHeight + (node.color === 'black' ? 1 : 0)
+  min(): [K, V] | undefined {
+    if (this.root === null) return undefined
+    const node = this.minimum(this.root)
+    return [node.key, node.value]
   }
 
-  private verifyRBProperties(node: RBNode<T> | null): boolean {
-    if (node === null) return true
-    if (node.color === 'red') {
-      if (node.left !== null && node.left.color === 'red') return false
-      if (node.right !== null && node.right.color === 'red') return false
-    }
-    return this.verifyRBProperties(node.left) && this.verifyRBProperties(node.right)
+  max(): [K, V] | undefined {
+    if (this.root === null) return undefined
+    const node = this.maximum(this.root)
+    return [node.key, node.value]
   }
 
-  getStats(): RBTreeStats {
-    const nodeCount = this._size
-    const blackHeight = this.root === null ? 0 : this.computeBlackHeight(this.root)
-    const isBalanced = blackHeight !== -1 && this.verifyRBProperties(this.root)
+  private inOrderTraversal(node: RBNode<K, V> | null, result: [K, V][]): void {
+    if (node === null) return
+    this.inOrderTraversal(node.left, result)
+    result.push([node.key, node.value])
+    this.inOrderTraversal(node.right, result)
+  }
 
-    let minKey: number | null = null
-    let maxKey: number | null = null
-    if (this.root !== null) {
-      minKey = this.minimum(this.root).key
-      maxKey = this.maximum(this.root).key
+  forEach(callback: (value: V, key: K) => void): void {
+    const allEntries = this.entries()
+    for (const [key, value] of allEntries) {
+      callback(value, key)
     }
+  }
 
+  keys(): K[] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result.map(([k]) => k)
+  }
+
+  values(): V[] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result.map(([, v]) => v)
+  }
+
+  entries(): [K, V][] {
+    const result: [K, V][] = []
+    this.inOrderTraversal(this.root, result)
+    return result
+  }
+
+  clone(): RedBlackTreeMap<K, V> {
+    const result = new RedBlackTreeMap<K, V>(this.compare)
+    const allEntries = this.entries()
+    for (const [key, value] of allEntries) {
+      result.set(key, value)
+    }
+    return result
+  }
+
+  [Symbol.iterator](): Iterator<[K, V]> {
+    const allEntries = this.entries()
+    let index = 0
     return {
-      nodeCount,
-      blackHeight: blackHeight === -1 ? 0 : blackHeight,
-      isBalanced,
-      minKey,
-      maxKey,
+      next: () => {
+        if (index < allEntries.length) {
+          const value = allEntries[index]!
+          index++
+          return { value, done: false }
+        }
+        return { value: undefined, done: true } as IteratorResult<[K, V]>
+      },
     }
+  }
+
+  lowerBound(key: K): [K, V] | undefined {
+    let result: [K, V] | undefined
+    let node = this.root
+    while (node !== null) {
+      const cmp = this.compare(node.key, key)
+      if (cmp >= 0) {
+        result = [node.key, node.value]
+        node = node.left
+      } else {
+        node = node.right
+      }
+    }
+    return result
+  }
+
+  upperBound(key: K): [K, V] | undefined {
+    let result: [K, V] | undefined
+    let node = this.root
+    while (node !== null) {
+      const cmp = this.compare(node.key, key)
+      if (cmp > 0) {
+        result = [node.key, node.value]
+        node = node.left
+      } else {
+        node = node.right
+      }
+    }
+    return result
+  }
+
+  private rangeTraversal(node: RBNode<K, V> | null, start: K, end: K, result: [K, V][]): void {
+    if (node === null) return
+    const cmpStart = this.compare(node.key, start)
+    const cmpEnd = this.compare(node.key, end)
+    if (cmpStart > 0) {
+      this.rangeTraversal(node.left, start, end, result)
+    }
+    if (cmpStart >= 0 && cmpEnd <= 0) {
+      result.push([node.key, node.value])
+    }
+    if (cmpEnd < 0) {
+      this.rangeTraversal(node.right, start, end, result)
+    }
+  }
+
+  range(start: K, end: K): [K, V][] {
+    if (this.compare(start, end) > 0) return []
+    const result: [K, V][] = []
+    this.rangeTraversal(this.root, start, end, result)
+    return result
+  }
+
+  static fromEntries<K, V>(entries: [K, V][], compare?: CompareFunction<K>): RedBlackTreeMap<K, V> {
+    const map = new RedBlackTreeMap<K, V>(compare)
+    for (const [key, value] of entries) {
+      map.set(key, value)
+    }
+    return map
   }
 }
 
-export { DEFAULT_RB_TREE_OPTIONS } from './types.js'
-export type { Color, RBNode, RBTreeOptions, RBTreeStats } from './types.js'
+export type { RBNode, RBColor, CompareFunction } from './types.js'

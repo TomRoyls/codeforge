@@ -1,26 +1,12 @@
-export type Color = 'red' | 'black'
+export type RBColor = 'red' | 'black'
 
-export interface RBNode<T> {
-  key: number
-  value: T
-  color: Color
-  left: RBNode<T> | null
-  right: RBNode<T> | null
-  parent: RBNode<T> | null
+export interface RBNode<K, V> {
+  key: K
+  value: V
+  color: RBColor
+  left: RBNode<K, V> | null
+  right: RBNode<K, V> | null
+  parent: RBNode<K, V> | null
 }
 
-export interface RBTreeOptions {
-  allowDuplicates: boolean
-}
-
-export interface RBTreeStats {
-  nodeCount: number
-  blackHeight: number
-  isBalanced: boolean
-  minKey: number | null
-  maxKey: number | null
-}
-
-export const DEFAULT_RB_TREE_OPTIONS: RBTreeOptions = {
-  allowDuplicates: false,
-}
+export type CompareFunction<K> = (a: K, b: K) => number
