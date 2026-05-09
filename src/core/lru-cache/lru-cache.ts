@@ -1,221 +1,210 @@
-import type { LRUNode, LRUCacheOptions, LRUCacheStats } from './types.js'
-import { DEFAULT_LRU_CACHE_OPTIONS } from './types.js'
+import type { LRUNode } from './types.js'
 
-export class LRUCache<T = unknown> {
-  private map: Map<string, LRUNode<T>> = new Map()
-  private options: LRUCacheOptions
-  private head?: LRUNode<T>
-  private tail?: LRUNode<T>
-  private _hits: number = 0
-  private _misses: number = 0
-  private _evictions: number = 0
+export class LRUCache<K, V> {
+  private map: Map<K, LRUNode<K, V>> = new Map()
+  private head: LRUNode<K, V> | null = null
+  private tail: LRUNode<K, V> | null = null
+  private _capacity: number
 
-  constructor(options?: Partial<LRUCacheOptions>) {
-    this.options = { ...DEFAULT_LRU_CACHE_OPTIONS, ...options }
+  constructor(capacity: number) {
+    this._capacity = capacity
   }
 
-  get(key: string): T | undefined {
+  get(key: K): V | undefined {
     const node = this.map.get(key)
-    if (node === undefined) {
-      this._misses++
-      return undefined
-    }
-    if (this.isExpired(node)) {
-      this.removeNode(node)
-      this.map.delete(key)
-      this._misses++
-      return undefined
-    }
-    this._hits++
+    if (node === undefined) return undefined
     this.moveToFront(node)
     return node.value
   }
 
-  set(key: string, value: T): void {
+  set(key: K, value: V): V | undefined {
     const existing = this.map.get(key)
     if (existing !== undefined) {
       existing.value = value
-      existing.createdAt = Date.now()
-      if (this.isExpired(existing)) {
-        this.removeNode(existing)
-        this.map.delete(key)
-        this._evictions++
-      } else {
-        this.moveToFront(existing)
-        return
-      }
+      this.moveToFront(existing)
+      return undefined
     }
-    if (this.map.size >= this.options.maxSize) {
-      this.evictLRU()
+
+    if (this._capacity <= 0) return undefined
+
+    let evictedValue: V | undefined
+    if (this.map.size >= this._capacity) {
+      evictedValue = this.evictLRU()
     }
-    const node: LRUNode<T> = { key, value, createdAt: Date.now() }
+
+    const node: LRUNode<K, V> = { key, value, prev: null, next: null }
     this.map.set(key, node)
     this.addToFront(node)
+    return evictedValue
   }
 
-  has(key: string): boolean {
-    const node = this.map.get(key)
-    if (node === undefined) {
-      return false
-    }
-    if (this.isExpired(node)) {
-      this.removeNode(node)
-      this.map.delete(key)
-      return false
-    }
-    return true
+  has(key: K): boolean {
+    return this.map.has(key)
   }
 
-  delete(key: string): boolean {
+  delete(key: K): boolean {
     const node = this.map.get(key)
-    if (node === undefined) {
-      return false
-    }
+    if (node === undefined) return false
     this.removeNode(node)
     this.map.delete(key)
     return true
   }
 
-  peek(key: string): T | undefined {
-    const node = this.map.get(key)
-    if (node === undefined) {
-      return undefined
-    }
-    if (this.isExpired(node)) {
-      this.removeNode(node)
-      this.map.delete(key)
-      return undefined
-    }
-    return node.value
+  get size(): number {
+    return this.map.size
   }
 
-  size(): number {
-    return this.map.size
+  get capacity(): number {
+    return this._capacity
+  }
+
+  isEmpty(): boolean {
+    return this.map.size === 0
+  }
+
+  isFull(): boolean {
+    return this.map.size >= this._capacity
   }
 
   clear(): void {
     this.map.clear()
-    this.head = undefined
-    this.tail = undefined
+    this.head = null
+    this.tail = null
   }
 
-  keys(): string[] {
-    const result: string[] = []
+  peek(key: K): V | undefined {
+    const node = this.map.get(key)
+    if (node === undefined) return undefined
+    return node.value
+  }
+
+  peekLeastRecent(): [K, V] | undefined {
+    if (this.tail === null) return undefined
+    return [this.tail.key, this.tail.value]
+  }
+
+  peekMostRecent(): [K, V] | undefined {
+    if (this.head === null) return undefined
+    return [this.head.key, this.head.value]
+  }
+
+  forEach(callback: (value: V, key: K) => void): void {
     let current = this.head
-    while (current !== undefined) {
-      if (!this.isExpired(current)) {
-        result.push(current.key)
-      }
+    while (current !== null) {
+      callback(current.value, current.key)
+      current = current.next
+    }
+  }
+
+  keys(): K[] {
+    const result: K[] = []
+    let current = this.head
+    while (current !== null) {
+      result.push(current.key)
       current = current.next
     }
     return result
   }
 
-  values(): T[] {
-    const result: T[] = []
+  values(): V[] {
+    const result: V[] = []
     let current = this.head
-    while (current !== undefined) {
-      if (!this.isExpired(current)) {
-        result.push(current.value)
-      }
+    while (current !== null) {
+      result.push(current.value)
       current = current.next
     }
     return result
   }
 
-  entries(): [string, T][] {
-    const result: [string, T][] = []
+  entries(): [K, V][] {
+    const result: [K, V][] = []
     let current = this.head
-    while (current !== undefined) {
-      if (!this.isExpired(current)) {
-        result.push([current.key, current.value])
-      }
+    while (current !== null) {
+      result.push([current.key, current.value])
       current = current.next
     }
     return result
   }
 
-  getStats(): LRUCacheStats {
-    const total = this._hits + this._misses
-    return {
-      size: this.map.size,
-      maxSize: this.options.maxSize,
-      hits: this._hits,
-      misses: this._misses,
-      hitRate: total === 0 ? 0 : this._hits / total,
-      evictions: this._evictions,
+  clone(): LRUCache<K, V> {
+    const cloned = new LRUCache<K, V>(this._capacity)
+    let current = this.tail
+    while (current !== null) {
+      cloned.set(current.key, current.value)
+      current = current.prev
     }
+    return cloned
   }
 
-  resize(newMaxSize: number): void {
-    this.options.maxSize = newMaxSize
-    while (this.map.size > newMaxSize) {
-      this.evictLRU()
-    }
-  }
-
-  forEach(callback: (value: T, key: string) => void): void {
+  *[Symbol.iterator](): Iterator<[K, V]> {
     let current = this.head
-    while (current !== undefined) {
-      if (!this.isExpired(current)) {
-        callback(current.value, current.key)
-      }
+    while (current !== null) {
+      yield [current.key, current.value]
       current = current.next
     }
   }
 
-  private isExpired(node: LRUNode<T>): boolean {
-    if (this.options.ttlMs <= 0) {
-      return false
+  resize(newCapacity: number): [K, V][] {
+    this._capacity = newCapacity
+    const evicted: [K, V][] = []
+    while (this.map.size > newCapacity && this.tail !== null) {
+      const node = this.tail
+      evicted.push([node.key, node.value])
+      this.removeNode(node)
+      this.map.delete(node.key)
     }
-    return Date.now() - node.createdAt > this.options.ttlMs
+    return evicted
   }
 
-  private addToFront(node: LRUNode<T>): void {
-    node.prev = undefined
+  static fromEntries<K, V>(entries: [K, V][], capacity: number): LRUCache<K, V> {
+    const cache = new LRUCache<K, V>(capacity)
+    for (const [key, value] of entries) {
+      cache.set(key, value)
+    }
+    return cache
+  }
+
+  private addToFront(node: LRUNode<K, V>): void {
+    node.prev = null
     node.next = this.head
-    if (this.head !== undefined) {
+    if (this.head !== null) {
       this.head.prev = node
     }
     this.head = node
-    if (this.tail === undefined) {
+    if (this.tail === null) {
       this.tail = node
     }
   }
 
-  private removeNode(node: LRUNode<T>): void {
-    if (node.prev !== undefined) {
+  private removeNode(node: LRUNode<K, V>): void {
+    if (node.prev !== null) {
       node.prev.next = node.next
     } else {
       this.head = node.next
     }
-    if (node.next !== undefined) {
+    if (node.next !== null) {
       node.next.prev = node.prev
     } else {
       this.tail = node.prev
     }
-    node.prev = undefined
-    node.next = undefined
+    node.prev = null
+    node.next = null
   }
 
-  private moveToFront(node: LRUNode<T>): void {
-    if (node === this.head) {
-      return
-    }
+  private moveToFront(node: LRUNode<K, V>): void {
+    if (node === this.head) return
     this.removeNode(node)
     this.addToFront(node)
   }
 
-  private evictLRU(): void {
-    if (this.tail === undefined) {
-      return
-    }
-    const lru = this.tail
-    this.removeNode(lru)
-    this.map.delete(lru.key)
-    this._evictions++
+  private evictLRU(): V | undefined {
+    if (this.tail === null) return undefined
+    const node = this.tail
+    const value = node.value
+    this.removeNode(node)
+    this.map.delete(node.key)
+    return value
   }
 }
 
-export { DEFAULT_LRU_CACHE_OPTIONS } from './types.js'
-export type { LRUNode, LRUCacheOptions, LRUCacheStats } from './types.js'
+export type { LRUNode } from './types.js'
