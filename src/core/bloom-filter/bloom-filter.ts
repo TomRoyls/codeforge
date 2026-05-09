@@ -1,34 +1,48 @@
-import type { BloomFilterOptions, BloomFilterStats } from './types.js'
+import type { BloomFilterOptions, BloomFilterJSON } from './types.js'
 import { DEFAULT_BLOOM_FILTER_OPTIONS } from './types.js'
 
-export class BloomFilter {
+export class BloomFilter<T = string> {
   private bitArray: Uint8Array
-  private hashFunctionCount: number
-  private expectedItems: number
-  private falsePositiveRate: number
-  private itemCount: number = 0
+  private _bitCount: number
+  private _hashCount: number
+  private _expectedItems: number
+  private _targetFPRate: number
+  private _size: number = 0
 
-  constructor(options?: Partial<BloomFilterOptions>) {
-    const opts: BloomFilterOptions = { ...DEFAULT_BLOOM_FILTER_OPTIONS, ...options }
-    this.expectedItems = opts.expectedItems
-    this.falsePositiveRate = opts.falsePositiveRate
-    this.hashFunctionCount = opts.hashFunctions
-    const bitSize = this.calculateBitArraySize(opts.expectedItems, opts.falsePositiveRate)
-    this.bitArray = new Uint8Array(Math.ceil(bitSize / 8))
+  constructor(expectedItems?: number, falsePositiveRate?: number)
+  constructor(options?: Partial<BloomFilterOptions>)
+  constructor(expectedItemsOrOptions?: number | Partial<BloomFilterOptions>, falsePositiveRate?: number) {
+    let opts: BloomFilterOptions
+    if (typeof expectedItemsOrOptions === 'object' && expectedItemsOrOptions !== null) {
+      opts = { ...DEFAULT_BLOOM_FILTER_OPTIONS, ...expectedItemsOrOptions }
+    } else {
+      opts = {
+        ...DEFAULT_BLOOM_FILTER_OPTIONS,
+        ...(expectedItemsOrOptions !== undefined ? { expectedItems: expectedItemsOrOptions } : {}),
+        ...(falsePositiveRate !== undefined ? { falsePositiveRate } : {}),
+      }
+    }
+    this._expectedItems = opts.expectedItems
+    this._targetFPRate = opts.falsePositiveRate
+    this._bitCount = this.calculateBitCount(opts.expectedItems, opts.falsePositiveRate)
+    this._hashCount = this.calculateHashCount(this._bitCount, opts.expectedItems)
+    this.bitArray = new Uint8Array(Math.ceil(this._bitCount / 8))
   }
 
-  add(item: string): void {
-    const positions = this.getHashPositions(item)
+  add(item: T): void {
+    const key = this.serialize(item)
+    const positions = this.getHashPositions(key)
     for (const pos of positions) {
       const byteIndex = Math.floor(pos / 8)
       const bitIndex = pos % 8
       this.bitArray[byteIndex] = this.bitArray[byteIndex]! | (1 << bitIndex)
     }
-    this.itemCount++
+    this._size++
   }
 
-  has(item: string): boolean {
-    const positions = this.getHashPositions(item)
+  has(item: T): boolean {
+    const key = this.serialize(item)
+    const positions = this.getHashPositions(key)
     for (const pos of positions) {
       const byteIndex = Math.floor(pos / 8)
       const bitIndex = pos % 8
@@ -39,107 +53,104 @@ export class BloomFilter {
     return true
   }
 
-  addAll(items: string[]): void {
-    for (const item of items) {
-      this.add(item)
-    }
+  get size(): number {
+    return this._size
   }
 
-  hasAny(items: string[]): boolean {
-    for (const item of items) {
-      if (this.has(item)) {
-        return true
-      }
-    }
-    return false
+  get bitCount(): number {
+    return this._bitCount
   }
 
-  hasAll(items: string[]): boolean {
-    for (const item of items) {
-      if (!this.has(item)) {
-        return false
-      }
-    }
-    return true
+  get hashCount(): number {
+    return this._hashCount
   }
 
-  clear(): void {
-    this.bitArray = new Uint8Array(this.bitArray.length)
-    this.itemCount = 0
+  falsePositiveRate(): number {
+    if (this._size === 0) return 0
+    return Math.pow(
+      1 - Math.exp((-this._hashCount * this._size) / this._bitCount),
+      this._hashCount,
+    )
   }
 
-  getStats(): BloomFilterStats {
-    const totalBits = this.bitArray.length * 8
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  fillRatio(): number {
     let setBits = 0
-    for (let i = 0; i < totalBits; i++) {
+    for (let i = 0; i < this._bitCount; i++) {
       const byteIndex = Math.floor(i / 8)
       const bitIndex = i % 8
       if ((this.bitArray[byteIndex]! & (1 << bitIndex)) !== 0) {
         setBits++
       }
     }
-    const fillRatio = totalBits > 0 ? setBits / totalBits : 0
-    const estimatedFP = Math.pow(1 - Math.exp(-this.hashFunctionCount * this.itemCount / totalBits), this.hashFunctionCount)
-    return {
-      bitArraySize: totalBits,
-      hashFunctionCount: this.hashFunctionCount,
-      expectedItems: this.expectedItems,
-      falsePositiveRate: this.falsePositiveRate,
-      itemCount: this.itemCount,
-      fillRatio,
-      estimatedFalsePositiveRate: estimatedFP,
+    return this._bitCount > 0 ? setBits / this._bitCount : 0
+  }
+
+  clear(): void {
+    this.bitArray = new Uint8Array(this.bitArray.length)
+    this._size = 0
+  }
+
+  clone(): BloomFilter<T> {
+    const cloned = new BloomFilter<T>(this._expectedItems, this._targetFPRate)
+    cloned.bitArray = new Uint8Array(this.bitArray)
+    cloned._size = this._size
+    return cloned
+  }
+
+  merge(other: BloomFilter<T>): void {
+    if (this._bitCount !== other._bitCount) {
+      throw new Error('Cannot merge bloom filters with different bit counts')
     }
+    if (this._hashCount !== other._hashCount) {
+      throw new Error('Cannot merge bloom filters with different hash counts')
+    }
+    for (let i = 0; i < this.bitArray.length; i++) {
+      this.bitArray[i] = this.bitArray[i]! | other.bitArray[i]!
+    }
+    this._size = this._size + other._size
   }
 
-  getFillRatio(): number {
-    return this.getStats().fillRatio
-  }
-
-  getItemCount(): number {
-    return this.itemCount
-  }
-
-  isEmpty(): boolean {
-    return this.itemCount === 0
-  }
-
-  getBitArray(): Uint8Array {
-    return new Uint8Array(this.bitArray)
-  }
-
-  toJSON(): Record<string, unknown> {
+  toJSON(): BloomFilterJSON {
     return {
       bitArray: Array.from(this.bitArray),
-      hashFunctionCount: this.hashFunctionCount,
-      expectedItems: this.expectedItems,
-      falsePositiveRate: this.falsePositiveRate,
-      itemCount: this.itemCount,
+      bitCount: this._bitCount,
+      hashCount: this._hashCount,
+      expectedItems: this._expectedItems,
+      targetFalsePositiveRate: this._targetFPRate,
+      itemCount: this._size,
     }
   }
 
-  static fromJSON(data: Record<string, unknown>): BloomFilter {
-    const filter = new BloomFilter({
-      expectedItems: data.expectedItems as number,
-      falsePositiveRate: data.falsePositiveRate as number,
-      hashFunctions: data.hashFunctionCount as number,
-    })
-    filter.bitArray = new Uint8Array(data.bitArray as number[])
-    filter.itemCount = data.itemCount as number
+  static fromJSON<T = string>(data: BloomFilterJSON): BloomFilter<T> {
+    const filter = new BloomFilter<T>(data.expectedItems, data.targetFalsePositiveRate)
+    filter.bitArray = new Uint8Array(data.bitArray)
+    filter._size = data.itemCount
     return filter
   }
 
-  private calculateBitArraySize(expectedItems: number, falsePositiveRate: number): number {
+  static create<T = string>(optimalFor: number, fpRate: number): BloomFilter<T> {
+    return new BloomFilter<T>(optimalFor, fpRate)
+  }
+
+  private calculateBitCount(expectedItems: number, falsePositiveRate: number): number {
     return Math.ceil(-((expectedItems * Math.log(falsePositiveRate)) / Math.pow(Math.log(2), 2)))
   }
 
-  private getHashPositions(item: string): number[] {
-    const totalBits = this.bitArray.length * 8
+  private calculateHashCount(bitCount: number, expectedItems: number): number {
+    return Math.max(1, Math.round((bitCount / expectedItems) * Math.log(2)))
+  }
+
+  private getHashPositions(key: string): number[] {
     const positions: number[] = []
-    const hash1 = this.hash(item, 0)
-    const hash2 = this.hash(item, hash1)
-    for (let i = 0; i < this.hashFunctionCount; i++) {
+    const hash1 = this.hash(key, 0)
+    const hash2 = this.hash(key, hash1)
+    for (let i = 0; i < this._hashCount; i++) {
       const combined = (hash1 + i * hash2) >>> 0
-      positions.push(combined % totalBits)
+      positions.push(combined % this._bitCount)
     }
     return positions
   }
@@ -158,7 +169,11 @@ export class BloomFilter {
     h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
     return (4294967296 * (2097151 & h2) + (h1 >>> 0)) >>> 0
   }
+
+  private serialize(item: T): string {
+    return JSON.stringify(item)
+  }
 }
 
 export { DEFAULT_BLOOM_FILTER_OPTIONS } from './types.js'
-export type { BloomFilterOptions, BloomFilterStats } from './types.js'
+export type { BloomFilterOptions, BloomFilterJSON } from './types.js'

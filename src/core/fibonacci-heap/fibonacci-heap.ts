@@ -1,25 +1,40 @@
-import type { FibonacciHeapOptions, FibNode } from './types.js'
+import type { CompareFunction, FibonacciNode } from './types.js'
+import { DEFAULT_COMPARE } from './types.js'
 
-export class FibonacciHeap<T = unknown> {
-  private min: FibNode<T> | null = null
-  private count = 0
+export class FibonacciHeap<T = number> {
+  private min: FibonacciNode<T> | null = null
+  private _size = 0
+  private compare: CompareFunction<T>
 
-  constructor(_options?: Partial<FibonacciHeapOptions>) {}
+  constructor(compare?: CompareFunction<T>) {
+    this.compare = (compare ?? DEFAULT_COMPARE) as CompareFunction<T>
+  }
 
-  insert(key: number, value: T): void {
-    const node = this.createNode(key, value)
+  insert(value: T): FibonacciNode<T> {
+    const node: FibonacciNode<T> = {
+      value,
+      degree: 0,
+      marked: false,
+      parent: null,
+      child: null,
+      left: null!,
+      right: null!,
+    }
+    node.left = node
+    node.right = node
     if (this.min === null) {
       this.min = node
     } else {
       this.insertIntoRootList(node)
-      if (node.key < this.min.key) {
+      if (this.compare(node.value, this.min.value) < 0) {
         this.min = node
       }
     }
-    this.count++
+    this._size++
+    return node
   }
 
-  extractMin(): { key: number; value: T } | undefined {
+  extractMin(): T | undefined {
     if (this.min === null) {
       return undefined
     }
@@ -40,63 +55,40 @@ export class FibonacciHeap<T = unknown> {
       this.min = z.right
       this.consolidate()
     }
-    this.count--
-    return { key: z.key, value: z.value }
+    this._size--
+    return z.value
   }
 
-  getMin(): { key: number; value: T } | undefined {
+  peek(): T | undefined {
     if (this.min === null) {
       return undefined
     }
-    return { key: this.min.key, value: this.min.value }
+    return this.min.value
   }
 
-  size(): number {
-    return this.count
-  }
-
-  isEmpty(): boolean {
-    return this.count === 0
-  }
-
-  clear(): void {
-    this.min = null
-    this.count = 0
-  }
-
-  decreaseKey(node: { key: number; value: T }, newKey: number): boolean {
-    if (newKey > node.key) {
-      return false
+  decreaseKey(node: FibonacciNode<T>, newValue: T): void {
+    if (this.compare(newValue, node.value) > 0) {
+      throw new Error('New value is greater than current value')
     }
-    const found = this.findNode(node.key, node.value)
-    if (found === null) {
-      return false
-    }
-    found.key = newKey
-    const parent = found.parent
-    if (parent !== null && found.key < parent.key) {
-      this.cut(found, parent)
+    node.value = newValue
+    const parent = node.parent
+    if (parent !== null && this.compare(node.value, parent.value) < 0) {
+      this.cut(node, parent)
       this.cascadingCut(parent)
     }
-    if (this.min !== null && found.key < this.min.key) {
-      this.min = found
+    if (this.min !== null && this.compare(node.value, this.min.value) < 0) {
+      this.min = node
     }
-    return true
   }
 
-  delete(key: number): boolean {
-    const found = this.findNodeByKey(key)
-    if (found === null) {
-      return false
-    }
-    const parent = found.parent
+  delete(node: FibonacciNode<T>): void {
+    const parent = node.parent
     if (parent !== null) {
-      this.cut(found, parent)
+      this.cut(node, parent)
       this.cascadingCut(parent)
     }
-    this.min = found
+    this.min = node
     this.extractMin()
-    return true
   }
 
   merge(other: FibonacciHeap<T>): void {
@@ -107,52 +99,131 @@ export class FibonacciHeap<T = unknown> {
       this.min = other.min
     } else {
       this.concatenate(other.min)
-      if (other.min.key < this.min.key) {
+      if (this.compare(other.min.value, this.min.value) < 0) {
         this.min = other.min
       }
     }
-    this.count += other.count
-    other.clear()
+    this._size += other._size
+    other.min = null
+    other._size = 0
   }
 
-  toArray(): Array<{ key: number; value: T }> {
-    const result: Array<{ key: number; value: T }> = []
-    this.forEach((key, value) => {
-      result.push({ key, value })
-    })
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    this.min = null
+    this._size = 0
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    if (this.min === null) {
+      return result
+    }
+    const temp = this.clone()
+    while (!temp.isEmpty()) {
+      const val = temp.extractMin()!
+      result.push(val)
+    }
     return result
   }
 
-  forEach(callback: (key: number, value: T) => void): void {
+  clone(): FibonacciHeap<T> {
+    const cloned = new FibonacciHeap<T>(this.compare)
     if (this.min === null) {
-      return
+      return cloned
     }
+    const nodeMap = new Map<FibonacciNode<T>, FibonacciNode<T>>()
     let current = this.min
     do {
-      this.traverseTree(current, callback)
+      const clonedNode = this.cloneSubtree(current, nodeMap)
+      if (cloned.min === null) {
+        cloned.min = clonedNode
+        clonedNode.left = clonedNode
+        clonedNode.right = clonedNode
+      } else {
+        cloned.insertIntoRootList(clonedNode)
+      }
       current = current.right
     } while (current !== this.min)
+    cloned._size = this._size
+    return cloned
   }
 
-  private createNode(key: number, value: T): FibNode<T> {
-    const node: FibNode<T> = {
-      key,
-      value,
-      degree: 0,
-      marked: false,
+  [Symbol.iterator](): Iterator<T> {
+    const items = this.toArray()
+    let index = 0
+    return {
+      next: () => {
+        if (index >= items.length) {
+          return { value: undefined, done: true } as IteratorResult<T>
+        }
+        return { value: items[index++]!, done: false }
+      },
+    }
+  }
+
+  static fromArray<T>(items: T[], compare?: CompareFunction<T>): FibonacciHeap<T> {
+    const heap = new FibonacciHeap<T>(compare)
+    for (let i = 0; i < items.length; i++) {
+      heap.insert(items[i]!)
+    }
+    return heap
+  }
+
+  private cloneSubtree(
+    node: FibonacciNode<T>,
+    nodeMap: Map<FibonacciNode<T>, FibonacciNode<T>>
+  ): FibonacciNode<T> {
+    const clonedNode: FibonacciNode<T> = {
+      value: node.value,
+      degree: node.degree,
+      marked: node.marked,
       parent: null,
       child: null,
       left: null!,
       right: null!,
     }
-    node.left = node
-    node.right = node
-    return node
+    clonedNode.left = clonedNode
+    clonedNode.right = clonedNode
+    nodeMap.set(node, clonedNode)
+
+    if (node.child !== null) {
+      let child = node.child
+      let firstChild: FibonacciNode<T> | null = null
+      let prevChild: FibonacciNode<T> | null = null
+      do {
+        const clonedChild = this.cloneSubtree(child, nodeMap)
+        clonedChild.parent = clonedNode
+        if (firstChild === null) {
+          firstChild = clonedChild
+          clonedNode.child = clonedChild
+          clonedChild.left = clonedChild
+          clonedChild.right = clonedChild
+        } else {
+          clonedChild.left = prevChild!
+          clonedChild.right = firstChild
+          firstChild.left = clonedChild
+          prevChild!.right = clonedChild
+        }
+        prevChild = clonedChild
+        child = child.right
+      } while (child !== node.child)
+    }
+    return clonedNode
   }
 
-  private insertIntoRootList(node: FibNode<T>): void {
+  private insertIntoRootList(node: FibonacciNode<T>): void {
     if (this.min === null) {
       this.min = node
+      node.left = node
+      node.right = node
       return
     }
     node.right = this.min.right
@@ -161,12 +232,12 @@ export class FibonacciHeap<T = unknown> {
     this.min.right = node
   }
 
-  private removeFromList(node: FibNode<T>): void {
+  private removeFromList(node: FibonacciNode<T>): void {
     node.left.right = node.right
     node.right.left = node.left
   }
 
-  private concatenate(other: FibNode<T>): void {
+  private concatenate(other: FibonacciNode<T>): void {
     const aRight = this.min!.right
     const bRight = other.right
     this.min!.right = bRight
@@ -176,9 +247,9 @@ export class FibonacciHeap<T = unknown> {
   }
 
   private consolidate(): void {
-    const maxDegree = Math.floor(Math.log2(this.count)) + 1
-    const degreeTable: (FibNode<T> | null)[] = new Array(maxDegree + 1).fill(null)
-    const roots: FibNode<T>[] = []
+    const maxDegree = Math.floor(Math.log2(this._size)) + 1
+    const degreeTable: (FibonacciNode<T> | null)[] = new Array(maxDegree + 2).fill(null)
+    const roots: FibonacciNode<T>[] = []
     let current = this.min!
     do {
       roots.push(current)
@@ -189,8 +260,8 @@ export class FibonacciHeap<T = unknown> {
       let x = w
       let d = x.degree
       while (d < degreeTable.length && degreeTable[d] !== null) {
-        let y = degreeTable[d]!
-        if (x.key > y.key) {
+        const y = degreeTable[d]!
+        if (this.compare(x.value, y.value) > 0) {
           const temp = x
           x = y
           y = temp
@@ -214,7 +285,7 @@ export class FibonacciHeap<T = unknown> {
           this.min = entry
         } else {
           this.insertIntoRootList(entry)
-          if (entry.key < this.min.key) {
+          if (this.compare(entry.value, this.min.value) < 0) {
             this.min = entry
           }
         }
@@ -222,7 +293,7 @@ export class FibonacciHeap<T = unknown> {
     }
   }
 
-  private heapLink(y: FibNode<T>, x: FibNode<T>): void {
+  private heapLink(y: FibonacciNode<T>, x: FibonacciNode<T>): void {
     this.removeFromList(y)
     y.parent = x
     if (x.child === null) {
@@ -240,7 +311,7 @@ export class FibonacciHeap<T = unknown> {
     y.marked = false
   }
 
-  private cut(node: FibNode<T>, parent: FibNode<T>): void {
+  private cut(node: FibonacciNode<T>, parent: FibonacciNode<T>): void {
     if (node.right === node) {
       parent.child = null
     } else {
@@ -255,7 +326,7 @@ export class FibonacciHeap<T = unknown> {
     node.marked = false
   }
 
-  private cascadingCut(node: FibNode<T>): void {
+  private cascadingCut(node: FibonacciNode<T>): void {
     const parent = node.parent
     if (parent !== null) {
       if (!node.marked) {
@@ -266,66 +337,7 @@ export class FibonacciHeap<T = unknown> {
       }
     }
   }
-
-  private findNode(key: number, value: T): FibNode<T> | null {
-    if (this.min === null) return null
-    let current = this.min
-    do {
-      const found = this.findInTree(current, key, value)
-      if (found !== null) return found
-      current = current.right
-    } while (current !== this.min)
-    return null
-  }
-
-  private findInTree(node: FibNode<T>, key: number, value: T): FibNode<T> | null {
-    if (node.key === key && node.value === value) return node
-    if (node.child !== null) {
-      let child = node.child
-      do {
-        const found = this.findInTree(child, key, value)
-        if (found !== null) return found
-        child = child.right
-      } while (child !== node.child)
-    }
-    return null
-  }
-
-  private findNodeByKey(key: number): FibNode<T> | null {
-    if (this.min === null) return null
-    let current = this.min
-    do {
-      const found = this.findInTreeByKey(current, key)
-      if (found !== null) return found
-      current = current.right
-    } while (current !== this.min)
-    return null
-  }
-
-  private findInTreeByKey(node: FibNode<T>, key: number): FibNode<T> | null {
-    if (node.key === key) return node
-    if (node.child !== null) {
-      let child = node.child
-      do {
-        const found = this.findInTreeByKey(child, key)
-        if (found !== null) return found
-        child = child.right
-      } while (child !== node.child)
-    }
-    return null
-  }
-
-  private traverseTree(node: FibNode<T>, callback: (key: number, value: T) => void): void {
-    callback(node.key, node.value)
-    if (node.child !== null) {
-      let child = node.child
-      do {
-        this.traverseTree(child, callback)
-        child = child.right
-      } while (child !== node.child)
-    }
-  }
 }
 
-export { DEFAULT_FIBONACCIHEAP_OPTIONS } from './types.js'
-export type { FibonacciHeapOptions, FibNode } from './types.js'
+export { DEFAULT_COMPARE } from './types.js'
+export type { CompareFunction, FibonacciNode } from './types.js'

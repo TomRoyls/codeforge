@@ -146,6 +146,38 @@ export class TrieMap<T = unknown> {
     return longest
   }
 
+  autocomplete(prefix: string, limit?: number): string[] {
+    const all = this.startsWith(prefix)
+    if (limit !== undefined) {
+      return all.slice(0, limit)
+    }
+    return all
+  }
+
+  clone(): TrieMap<T> {
+    const cloned = new TrieMap<T>()
+    const allEntries = this.entries()
+    for (const [key, value] of allEntries) {
+      cloned.set(key, value)
+    }
+    return cloned
+  }
+
+  [Symbol.iterator](): Iterator<[string, T]> {
+    const all = this.entries()
+    let index = 0
+    return {
+      next(): IteratorResult<[string, T]> {
+        if (index < all.length) {
+          const entry = all[index]!
+          index++
+          return { value: entry, done: false }
+        }
+        return { value: undefined, done: true }
+      },
+    }
+  }
+
   private findNode(key: string): TrieMapNode<T> | undefined {
     let node = this.root
     for (const char of key) {
