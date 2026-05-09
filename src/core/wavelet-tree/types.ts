@@ -1,7 +1,15 @@
-export interface WaveletTreeOptions {
-  alphabetSize: number
+export interface WaveletNode {
+  bitvector: number[]
+  rankPrefix: number[]
+  left: WaveletNode | null
+  right: WaveletNode | null
+  lo: number
+  hi: number
 }
 
-export const DEFAULT_WAVELETTREE_OPTIONS: WaveletTreeOptions = {
-  alphabetSize: 256,
+export interface WaveletTreeData {
+  root: WaveletNode | null
+  dataSize: number
+  alphabet: number[]
+  symbolToIndex: Map<number, number>
 }

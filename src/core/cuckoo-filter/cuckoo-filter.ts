@@ -1,31 +1,35 @@
-import type { CuckooFilterOptions } from './types.js'
-import { DEFAULT_CUCKOOFILTER_OPTIONS } from './types.js'
+import { DEFAULT_CUCKOO_FILTER_OPTIONS } from './types.js'
 
-export class CuckooFilter {
+export class CuckooFilter<T = string> {
   private buckets: (number | null)[][]
-  private bucketCount: number
-  private bucketSize: number
-  private maxKicks: number
-  private fingerprintSize: number
+  private _bucketCount: number
+  private _bucketSize: number
+  private _maxKicks: number
+  private _fingerprintSize: number
   private _capacity: number
   private _size: number = 0
 
-  constructor(options?: Partial<CuckooFilterOptions>) {
-    const opts: CuckooFilterOptions = { ...DEFAULT_CUCKOOFILTER_OPTIONS, ...options }
-    this._capacity = opts.capacity
-    this.bucketSize = opts.bucketSize
-    this.maxKicks = opts.maxKicks
-    this.fingerprintSize = opts.fingerprintSize
-    this.bucketCount = Math.ceil(opts.capacity / opts.bucketSize)
+  constructor(
+    capacity: number = DEFAULT_CUCKOO_FILTER_OPTIONS.capacity,
+    bucketSize: number = DEFAULT_CUCKOO_FILTER_OPTIONS.bucketSize,
+    fingerprintSize: number = DEFAULT_CUCKOO_FILTER_OPTIONS.fingerprintSize,
+    maxKicks: number = DEFAULT_CUCKOO_FILTER_OPTIONS.maxKicks,
+  ) {
+    this._capacity = capacity
+    this._bucketSize = bucketSize
+    this._maxKicks = maxKicks
+    this._fingerprintSize = fingerprintSize
+    this._bucketCount = Math.ceil(capacity / bucketSize)
     this.buckets = []
-    for (let i = 0; i < this.bucketCount; i++) {
-      this.buckets.push(new Array<number | null>(this.bucketSize).fill(null))
+    for (let i = 0; i < this._bucketCount; i++) {
+      this.buckets.push(new Array<number | null>(this._bucketSize).fill(null))
     }
   }
 
-  add(item: string): boolean {
-    const fp = this.fingerprint(item)
-    const i1 = this.hashIndex(item)
+  add(item: T): boolean {
+    const key = this.serialize(item)
+    const fp = this.fingerprint(key)
+    const i1 = this.hashIndex(key)
     const i2 = this.altIndex(i1, fp)
 
     if (this.insertIntoBucket(i1, fp)) {
@@ -37,17 +41,22 @@ export class CuckooFilter {
       return true
     }
 
-    let currentIndex = Math.random() < 0.5 ? i1 : i2
-    let currentFp = fp
+    let currentIndex = i1
 
-    for (let n = 0; n < this.maxKicks; n++) {
-      const slotIndex = Math.floor(Math.random() * this.bucketSize)
-      const evictedFp = this.buckets[currentIndex]![slotIndex]!
-      this.buckets[currentIndex]![slotIndex] = currentFp
-      currentFp = evictedFp
-      currentIndex = this.altIndex(currentIndex, currentFp)
+    for (let n = 0; n < this._maxKicks; n++) {
+      const slotIndex = n % this._bucketSize
+      const bucket = this.buckets[currentIndex]!
+      const evictedFp = bucket[slotIndex]!
+      bucket[slotIndex] = fp
 
-      if (this.insertIntoBucket(currentIndex, currentFp)) {
+      if (evictedFp === null) {
+        this._size++
+        return true
+      }
+
+      currentIndex = this.altIndex(currentIndex, evictedFp)
+
+      if (this.insertIntoBucket(currentIndex, evictedFp)) {
         this._size++
         return true
       }
@@ -56,16 +65,18 @@ export class CuckooFilter {
     return false
   }
 
-  contains(item: string): boolean {
-    const fp = this.fingerprint(item)
-    const i1 = this.hashIndex(item)
+  contains(item: T): boolean {
+    const key = this.serialize(item)
+    const fp = this.fingerprint(key)
+    const i1 = this.hashIndex(key)
     const i2 = this.altIndex(i1, fp)
     return this.bucketContains(i1, fp) || this.bucketContains(i2, fp)
   }
 
-  remove(item: string): boolean {
-    const fp = this.fingerprint(item)
-    const i1 = this.hashIndex(item)
+  remove(item: T): boolean {
+    const key = this.serialize(item)
+    const fp = this.fingerprint(key)
+    const i1 = this.hashIndex(key)
     const i2 = this.altIndex(i1, fp)
 
     if (this.removeFromBucket(i1, fp)) {
@@ -80,62 +91,68 @@ export class CuckooFilter {
     return false
   }
 
-  size(): number {
-    return this._size
-  }
-
-  capacity(): number {
+  get capacity(): number {
     return this._capacity
   }
 
-  isEmpty(): boolean {
-    return this._size === 0
+  get size(): number {
+    return this._size
   }
 
-  fillRatio(): number {
-    const totalSlots = this.bucketCount * this.bucketSize
+  get loadFactor(): number {
+    const totalSlots = this._bucketCount * this._bucketSize
     return totalSlots > 0 ? this._size / totalSlots : 0
   }
 
-  reset(): void {
-    for (let i = 0; i < this.bucketCount; i++) {
-      this.buckets[i] = new Array<number | null>(this.bucketSize).fill(null)
+  get falsePositiveRate(): number {
+    if (this._size === 0) return 0
+    const f = this._fingerprintSize
+    const b = this._bucketSize
+    return 1 - Math.pow(1 - Math.pow(2, -f), b)
+  }
+
+  clone(): CuckooFilter<T> {
+    const cloned = new CuckooFilter<T>(
+      this._capacity,
+      this._bucketSize,
+      this._fingerprintSize,
+      this._maxKicks,
+    )
+    cloned._size = this._size
+    cloned.buckets = this.buckets.map((bucket) => [...bucket])
+    return cloned
+  }
+
+  clear(): void {
+    for (let i = 0; i < this._bucketCount; i++) {
+      this.buckets[i] = new Array<number | null>(this._bucketSize).fill(null)
     }
     this._size = 0
   }
 
-  merge(other: CuckooFilter): void {
-    const otherBuckets = other.getBuckets()
-    for (let i = 0; i < this.bucketCount && i < otherBuckets.length; i++) {
-      for (let j = 0; j < this.bucketSize && j < otherBuckets[i]!.length; j++) {
-        const otherFp: number | null | undefined = otherBuckets[i]![j]
-        if (otherFp != null && this.buckets[i]![j] === null) {
-          this.buckets[i]![j] = otherFp
-          this._size++
-        }
-      }
-    }
+  toString(): string {
+    return `CuckooFilter { capacity: ${this._capacity}, size: ${this._size}, loadFactor: ${this.loadFactor.toFixed(4)}, falsePositiveRate: ${this.falsePositiveRate.toFixed(6)} }`
   }
 
-  private getBuckets(): (number | null)[][] {
-    return this.buckets
+  private serialize(item: T): string {
+    return JSON.stringify(item)
   }
 
-  private fingerprint(item: string): number {
-    const hash = this.hash(item, 0)
-    const mask = (1 << this.fingerprintSize) - 1
+  private fingerprint(key: string): number {
+    const hash = this.hash(key, 0)
+    const mask = (1 << this._fingerprintSize) - 1
     const fp = (hash & mask) | 1
     return fp
   }
 
-  private hashIndex(item: string): number {
-    const hash = this.hash(item, 0x9e3779b9)
-    return hash % this.bucketCount
+  private hashIndex(key: string): number {
+    const hash = this.hash(key, 0x9e3779b9)
+    return hash % this._bucketCount
   }
 
   private altIndex(index: number, fp: number): number {
     const fpHash = this.hashFP(fp)
-    return (index ^ fpHash) % this.bucketCount
+    return ((index ^ fpHash) >>> 0) % this._bucketCount
   }
 
   private insertIntoBucket(bucketIndex: number, fp: number): boolean {
@@ -190,9 +207,9 @@ export class CuckooFilter {
     h = ((h >> 16) ^ h) * 0x45d9f3b
     h = ((h >> 16) ^ h) * 0x45d9f3b
     h = (h >> 16) ^ h
-    return (h >>> 0) % this.bucketCount
+    return (h >>> 0)
   }
 }
 
-export { DEFAULT_CUCKOOFILTER_OPTIONS } from './types.js'
+export { DEFAULT_CUCKOO_FILTER_OPTIONS } from './types.js'
 export type { CuckooFilterOptions } from './types.js'
