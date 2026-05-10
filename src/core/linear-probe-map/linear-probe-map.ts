@@ -106,7 +106,6 @@ export class LinearProbeMap<K, V> {
         const entry = this.buckets[i]!
         if (entry.state === 'occupied') {
           const baseHash = this.hash(entry.key)
-          const probed = (baseHash % this._capacity) !== i
           let probeLen = 0
           for (let j = 0; j < this._capacity; j++) {
             probeLen++
