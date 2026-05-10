@@ -253,9 +253,9 @@ export class QuadTreeMap<V> {
 
     if (node.nw !== null) {
       this.queryRangeNode(node.nw, rx, ry, rw, rh, result);
-      this.queryRangeNode(node.ne, rx, ry, rw, rh, result);
-      this.queryRangeNode(node.sw, rx, ry, rw, rh, result);
-      this.queryRangeNode(node.se, rx, ry, rw, rh, result);
+      this.queryRangeNode(node.ne!, rx, ry, rw, rh, result);
+      this.queryRangeNode(node.sw!, rx, ry, rw, rh, result);
+      this.queryRangeNode(node.se!, rx, ry, rw, rh, result);
       return;
     }
 
@@ -291,9 +291,9 @@ export class QuadTreeMap<V> {
 
     if (node.nw !== null) {
       this.queryRadiusNode(node.nw, cx, cy, radius, result);
-      this.queryRadiusNode(node.ne, cx, cy, radius, result);
-      this.queryRadiusNode(node.sw, cx, cy, radius, result);
-      this.queryRadiusNode(node.se, cx, cy, radius, result);
+      this.queryRadiusNode(node.ne!, cx, cy, radius, result);
+      this.queryRadiusNode(node.sw!, cx, cy, radius, result);
+      this.queryRadiusNode(node.se!, cx, cy, radius, result);
       return;
     }
 
@@ -336,9 +336,9 @@ export class QuadTreeMap<V> {
   ): void {
     if (node.nw !== null) {
       this.collectAll(node.nw, cx, cy, result);
-      this.collectAll(node.ne, cx, cy, result);
-      this.collectAll(node.sw, cx, cy, result);
-      this.collectAll(node.se, cx, cy, result);
+      this.collectAll(node.ne!, cx, cy, result);
+      this.collectAll(node.sw!, cx, cy, result);
+      this.collectAll(node.se!, cx, cy, result);
       return;
     }
 
@@ -387,9 +387,9 @@ export class QuadTreeMap<V> {
   ): void {
     if (node.nw !== null) {
       this.collectEntries(node.nw, result);
-      this.collectEntries(node.ne, result);
-      this.collectEntries(node.sw, result);
-      this.collectEntries(node.se, result);
+      this.collectEntries(node.ne!, result);
+      this.collectEntries(node.sw!, result);
+      this.collectEntries(node.se!, result);
       return;
     }
     for (const entry of node.entries) {

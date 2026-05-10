@@ -1,9 +1,5 @@
-import {
-  type PhantomReferenceOptions,
-  type PhantomReferenceStatistics,
-  type PhantomRef,
-  DEFAULT_PHANTOM_REFERENCE_OPTIONS,
-} from './types.js'
+import type { PhantomReferenceOptions, PhantomReferenceStatistics, PhantomRef } from './types.js'
+import { DEFAULT_PHANTOM_REFERENCE_OPTIONS } from './types.js'
 
 interface InternalRef<T> {
   id: number
@@ -17,7 +13,7 @@ export class PhantomReferenceQueue<T> {
   private refs: Map<number, InternalRef<T>> = new Map()
   private queue: number[] = []
   private nextId = 1
-  private _options: Required<PhantomReferenceOptions>
+  private _checkInterval: number
   private stats: PhantomReferenceStatistics = {
     registered: 0,
     enqueued: 0,
@@ -26,10 +22,12 @@ export class PhantomReferenceQueue<T> {
   }
 
   constructor(options?: PhantomReferenceOptions) {
-    this._options = {
-      ...DEFAULT_PHANTOM_REFERENCE_OPTIONS,
-      ...options,
-    }
+    const resolved = { ...DEFAULT_PHANTOM_REFERENCE_OPTIONS, ...options }
+    this._checkInterval = resolved.checkInterval
+  }
+
+  get checkInterval(): number {
+    return this._checkInterval
   }
 
   register(value: T, onFinalize?: (ref: PhantomRef<T>) => void): number {

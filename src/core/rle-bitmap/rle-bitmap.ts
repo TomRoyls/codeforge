@@ -174,7 +174,7 @@ export class RLEBitmap {
     if (this._size !== other._size) return false
     if (this._runs.length !== other._runs.length) return false
     for (let i = 0; i < this._runs.length; i++) {
-      if (this._runs[i].value !== other._runs[i].value || this._runs[i].count !== other._runs[i].count) {
+      if (this._runs[i]!.value !== other._runs[i]!.value || this._runs[i]!.count !== other._runs[i]!.count) {
         return false
       }
     }
@@ -209,7 +209,7 @@ export class RLEBitmap {
   private _setAt(index: number, value: 0 | 1): void {
     let offset = 0
     for (let ri = 0; ri < this._runs.length; ri++) {
-      const run = this._runs[ri]
+      const run = this._runs[ri]!
       if (index < offset + run.count) {
         if (run.value === value) return
         const posInRun = index - offset
@@ -236,8 +236,8 @@ export class RLEBitmap {
   private _mergeAdjacent(): void {
     let i = 0
     while (i < this._runs.length - 1) {
-      if (this._runs[i].value === this._runs[i + 1].value) {
-        this._runs[i].count += this._runs[i + 1].count
+      if (this._runs[i]!.value === this._runs[i + 1]!.value) {
+        this._runs[i]!.count += this._runs[i + 1]!.count
         this._runs.splice(i + 1, 1)
       } else {
         i++

@@ -81,7 +81,6 @@ export class TokenBucket {
 
     const deficit = tokens - this._tokens
     const intervalsNeeded = Math.ceil(deficit / this._refillRate)
-    const waitMs = intervalsNeeded * this._refillInterval
     const elapsed = this._now() - this._lastRefillTime
     const remaining = this._refillInterval - (elapsed % this._refillInterval)
     const totalWait = remaining + (intervalsNeeded - 1) * this._refillInterval
