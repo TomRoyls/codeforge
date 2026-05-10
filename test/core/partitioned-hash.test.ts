@@ -758,5 +758,15 @@ describe("PartitionedHashMap", () => {
       map.set(undefined, "val");
       expect(map.get(undefined)).toBe("val");
     });
+
+    it("getMaxLoadFactor returns configured value", () => {
+      const map = new PartitionedHashMap<string, number>({ loadFactor: 0.5 });
+      expect(map.getMaxLoadFactor()).toBe(0.5);
+    });
+
+    it("getMaxLoadFactor returns default", () => {
+      const map = new PartitionedHashMap<string, number>();
+      expect(map.getMaxLoadFactor()).toBe(DEFAULT_PARTITIONED_HASH_OPTIONS.loadFactor);
+    });
   });
 });

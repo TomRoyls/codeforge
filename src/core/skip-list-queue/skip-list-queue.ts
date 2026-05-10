@@ -52,9 +52,9 @@ export class SkipListQueue<T> {
     const newNode = this.createNode(value, priority, newLevel)
 
     for (let i = 0; i < newLevel; i++) {
-      const updateNode = update[i]
+      const updateNode = update[i]!
       if (updateNode === null) break
-      newNode.forward[i] = updateNode.forward[i]
+      newNode.forward[i] = updateNode.forward[i]!
       updateNode.forward[i] = newNode
     }
 
@@ -71,15 +71,15 @@ export class SkipListQueue<T> {
 
   dequeue(): T | undefined {
     const first = this.header.forward[0]
-    if (first === null) {
+    if (first === null || first === undefined) {
       return undefined
     }
     const value = first.value
 
     for (let i = 0; i < this.level; i++) {
-      const headerFwd = this.header.forward[i]
+      const headerFwd = this.header.forward[i]!
       if (headerFwd !== first) break
-      this.header.forward[i] = first.forward[i]
+      this.header.forward[i] = first.forward[i]!
     }
 
     while (this.level > 0 && this.header.forward[this.level - 1] === null) {
@@ -94,7 +94,8 @@ export class SkipListQueue<T> {
 
   peek(): T | undefined {
     const first = this.header.forward[0]
-    return first !== null ? first.value : undefined
+    if (first === null || first === undefined) return undefined
+    return first.value
   }
 
   get size(): number {
@@ -114,8 +115,8 @@ export class SkipListQueue<T> {
 
   toArray(): T[] {
     const result: T[] = []
-    let current = this.header.forward[0]
-    while (current !== null) {
+    let current: SkipListNode<T> | null | undefined = this.header.forward[0]
+    while (current !== null && current !== undefined) {
       result.push(current.value)
       current = current.forward[0]
     }
@@ -123,9 +124,9 @@ export class SkipListQueue<T> {
   }
 
   forEach(callback: (value: T, priority: number, index: number) => void): void {
-    let current = this.header.forward[0]
+    let current: SkipListNode<T> | null | undefined = this.header.forward[0]
     let index = 0
-    while (current !== null) {
+    while (current !== null && current !== undefined) {
       callback(current.value, current.priority, index)
       current = current.forward[0]
       index++
@@ -133,8 +134,8 @@ export class SkipListQueue<T> {
   }
 
   *[Symbol.iterator](): Iterator<T> {
-    let current = this.header.forward[0]
-    while (current !== null) {
+    let current: SkipListNode<T> | null | undefined = this.header.forward[0]
+    while (current !== null && current !== undefined) {
       yield current.value
       current = current.forward[0]
     }
@@ -154,7 +155,7 @@ export class SkipListQueue<T> {
     let current: SkipListNode<T> = this.header
 
     for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i] !== node) {
+      while (current.forward[i] !== null && current.forward[i] !== undefined && current.forward[i] !== node) {
         const nextNode = current.forward[i]!
         const cmp = this.comparator(nextNode.priority, node.priority)
         if (cmp < 0) {
@@ -169,10 +170,10 @@ export class SkipListQueue<T> {
     }
 
     for (let i = 0; i < this.level; i++) {
-      const updateNode = update[i]
+      const updateNode = update[i]!
       if (updateNode === null) break
       if (updateNode.forward[i] !== node) continue
-      updateNode.forward[i] = node.forward[i]
+      updateNode.forward[i] = node.forward[i]!
     }
 
     while (this.level > 0 && this.header.forward[this.level - 1] === null) {
@@ -211,13 +212,13 @@ export class SkipListQueue<T> {
     let current: SkipListNode<T> = this.header
 
     for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] !== null && this.comparator(current.forward[i]!.priority, priority) < 0) {
+      while (current.forward[i] !== null && current.forward[i] !== undefined && this.comparator(current.forward[i]!.priority, priority) < 0) {
         current = current.forward[i]!
       }
     }
 
-    let node = current.forward[0]
-    while (node !== null && this.comparator(node.priority, priority) === 0) {
+    let node: SkipListNode<T> | null | undefined = current.forward[0]
+    while (node !== null && node !== undefined && this.comparator(node.priority, priority) === 0) {
       result.push(node.value)
       node = node.forward[0]
     }
@@ -231,13 +232,13 @@ export class SkipListQueue<T> {
     let current: SkipListNode<T> = this.header
 
     for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] !== null && this.comparator(current.forward[i]!.priority, startBound) < 0) {
+      while (current.forward[i] !== null && current.forward[i] !== undefined && this.comparator(current.forward[i]!.priority, startBound) < 0) {
         current = current.forward[i]!
       }
     }
 
-    let node = current.forward[0]
-    while (node !== null && node.priority >= min && node.priority <= max) {
+    let node: SkipListNode<T> | null | undefined = current.forward[0]
+    while (node !== null && node !== undefined && node.priority >= min && node.priority <= max) {
       result.push(node.value)
       node = node.forward[0]
     }

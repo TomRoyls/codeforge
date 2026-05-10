@@ -202,4 +202,8 @@ export class PartitionedHashMap<K, V> {
     if (this.partitionCount === 0) return 0;
     return this.size / this.partitionCount;
   }
+
+  getMaxLoadFactor(): number {
+    return this._maxLoadFactor;
+  }
 }

@@ -707,4 +707,316 @@ describe('DoubleEndedPriorityQueue', () => {
       }
     })
   })
+
+  describe('additional ordering verification', () => {
+    it('ascending insertion produces correct min/max', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let i = 1; i <= 10; i++) q.enqueue(i)
+      expect(q.peekMin()).toBe(1)
+      expect(q.peekMax()).toBe(10)
+    })
+
+    it('descending insertion produces correct min/max', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let i = 10; i >= 1; i--) q.enqueue(i)
+      expect(q.peekMin()).toBe(1)
+      expect(q.peekMax()).toBe(10)
+    })
+
+    it('handles identical elements', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let i = 0; i < 10; i++) q.enqueue(42)
+      for (let i = 0; i < 10; i++) expect(q.dequeueMin()).toBe(42)
+    })
+
+    it('handles two elements min extraction', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(100)
+      q.enqueue(1)
+      expect(q.dequeueMin()).toBe(1)
+      expect(q.dequeueMin()).toBe(100)
+    })
+
+    it('handles two elements max extraction', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(100)
+      q.enqueue(1)
+      expect(q.dequeueMax()).toBe(100)
+      expect(q.dequeueMax()).toBe(1)
+    })
+
+    it('dequeueMin after dequeueMax maintains order', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(5)
+      q.enqueue(3)
+      q.enqueue(8)
+      q.enqueue(1)
+      q.enqueue(9)
+      q.dequeueMax()
+      expect(q.peekMin()).toBe(1)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMin()!)
+      expect(result).toEqual([1, 3, 5, 8])
+    })
+
+    it('dequeueMax after dequeueMin maintains order', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(5)
+      q.enqueue(3)
+      q.enqueue(8)
+      q.enqueue(1)
+      q.enqueue(9)
+      q.dequeueMin()
+      expect(q.peekMax()).toBe(9)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMax()!)
+      expect(result).toEqual([9, 8, 5, 3])
+    })
+  })
+
+  describe('remove edge cases', () => {
+    it('remove only element', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(42)
+      expect(q.remove(42)).toBe(true)
+      expect(q.isEmpty()).toBe(true)
+    })
+
+    it('remove from two-element queue', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(1)
+      q.enqueue(2)
+      expect(q.remove(1)).toBe(true)
+      expect(q.size()).toBe(1)
+      expect(q.peekMin()).toBe(2)
+    })
+
+    it('remove does not affect other elements', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let i = 1; i <= 5; i++) q.enqueue(i)
+      q.remove(3)
+      expect(q.contains(1)).toBe(true)
+      expect(q.contains(2)).toBe(true)
+      expect(q.contains(3)).toBe(false)
+      expect(q.contains(4)).toBe(true)
+      expect(q.contains(5)).toBe(true)
+    })
+  })
+
+  describe('merge edge cases', () => {
+    it('merge two empty queues', () => {
+      const q1 = new DoubleEndedPriorityQueue<number>()
+      const q2 = new DoubleEndedPriorityQueue<number>()
+      q1.merge(q2)
+      expect(q1.isEmpty()).toBe(true)
+    })
+
+    it('merge does not modify source queue', () => {
+      const q1 = new DoubleEndedPriorityQueue<number>()
+      q1.enqueue(1)
+      const q2 = new DoubleEndedPriorityQueue<number>()
+      q2.enqueue(2)
+      q2.enqueue(3)
+      q1.merge(q2)
+      expect(q2.size()).toBe(2)
+    })
+  })
+
+  describe('decreaseKey / increaseKey edge cases', () => {
+    it('decreaseKey to same value', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(5)
+      q.enqueue(10)
+      expect(q.decreaseKey(10, 10)).toBe(true)
+      expect(q.peekMax()).toBe(10)
+    })
+
+    it('increaseKey to same value', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(5)
+      q.enqueue(1)
+      expect(q.increaseKey(1, 1)).toBe(true)
+      expect(q.peekMin()).toBe(1)
+    })
+
+    it('decreaseKey on root', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(10)
+      q.enqueue(20)
+      q.enqueue(30)
+      q.decreaseKey(10, 1)
+      expect(q.peekMin()).toBe(1)
+    })
+
+    it('increaseKey on max element', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(10)
+      q.enqueue(20)
+      q.enqueue(30)
+      q.increaseKey(30, 100)
+      expect(q.peekMax()).toBe(100)
+    })
+
+    it('decreaseKey then increaseKey round trip', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(10)
+      q.enqueue(20)
+      q.enqueue(30)
+      q.decreaseKey(20, 5)
+      expect(q.peekMin()).toBe(5)
+      q.increaseKey(5, 50)
+      expect(q.peekMax()).toBe(50)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMin()!)
+      expect(result.sort()).toEqual([10, 30, 50])
+    })
+  })
+
+  describe('object values with complex comparator', () => {
+    it('works with date-like objects', () => {
+      interface Event {
+        timestamp: number
+        label: string
+      }
+      const q = new DoubleEndedPriorityQueue<Event>({
+        comparator: (a, b) => a.timestamp - b.timestamp,
+      })
+      q.enqueue({ timestamp: 300, label: 'c' })
+      q.enqueue({ timestamp: 100, label: 'a' })
+      q.enqueue({ timestamp: 200, label: 'b' })
+      expect(q.peekMin()!.label).toBe('a')
+      expect(q.peekMax()!.label).toBe('c')
+    })
+
+    it('works with reverse priority objects', () => {
+      interface Item {
+        priority: number
+        id: string
+      }
+      const q = new DoubleEndedPriorityQueue<Item>({
+        comparator: (a, b) => b.priority - a.priority,
+      })
+      q.enqueue({ priority: 1, id: 'low' })
+      q.enqueue({ priority: 5, id: 'high' })
+      q.enqueue({ priority: 3, id: 'mid' })
+      expect(q.peekMin()!.id).toBe('high')
+      expect(q.peekMax()!.id).toBe('low')
+    })
+  })
+
+  describe('clear and reuse', () => {
+    it('clear then refill', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let i = 0; i < 10; i++) q.enqueue(i)
+      q.clear()
+      expect(q.size()).toBe(0)
+      q.enqueue(100)
+      q.enqueue(50)
+      expect(q.peekMin()).toBe(50)
+      expect(q.peekMax()).toBe(100)
+    })
+
+    it('multiple clear cycles', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      for (let cycle = 0; cycle < 3; cycle++) {
+        q.enqueue(cycle * 10 + 5)
+        q.enqueue(cycle * 10 + 1)
+        q.enqueue(cycle * 10 + 9)
+        expect(q.size()).toBe(3)
+        q.clear()
+        expect(q.size()).toBe(0)
+      }
+    })
+  })
+
+  describe('toArray and iterator', () => {
+    it('toArray does not modify queue', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(3)
+      q.enqueue(1)
+      q.enqueue(2)
+      q.toArray()
+      expect(q.size()).toBe(3)
+      expect(q.peekMin()).toBe(1)
+    })
+
+    it('iterator snapshot at call time', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(1)
+      q.enqueue(2)
+      const iter = q[Symbol.iterator]()
+      q.enqueue(3)
+      const result: number[] = []
+      let r = iter.next()
+      while (!r.done) {
+        result.push(r.value)
+        r = iter.next()
+      }
+      expect(result.length).toBe(3)
+    })
+
+    it('forEach on single element', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(42)
+      const result: number[] = []
+      q.forEach((v) => result.push(v))
+      expect(result).toEqual([42])
+    })
+  })
+
+  describe('large random operations', () => {
+    it('drain all via dequeueMax after random insert', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      const vals = [17, 3, 25, 8, 14, 29, 6, 12, 21, 1]
+      for (const v of vals) q.enqueue(v)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMax()!)
+      expect(result).toEqual([29, 25, 21, 17, 14, 12, 8, 6, 3, 1])
+    })
+
+    it('interleaved add and remove maintains correctness', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(10)
+      q.enqueue(20)
+      q.enqueue(30)
+      q.remove(20)
+      q.enqueue(5)
+      q.enqueue(25)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMin()!)
+      expect(result).toEqual([5, 10, 25, 30])
+    })
+
+    it('merge then full drain', () => {
+      const q1 = new DoubleEndedPriorityQueue<number>()
+      const q2 = new DoubleEndedPriorityQueue<number>()
+      for (let i = 0; i < 10; i++) q1.enqueue(i * 10)
+      for (let i = 0; i < 10; i++) q2.enqueue(i * 10 + 5)
+      q1.merge(q2)
+      const result: number[] = []
+      while (!q1.isEmpty()) result.push(q1.dequeueMin()!)
+      expect(result).toEqual([
+        0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
+        85, 90, 95,
+      ])
+    })
+
+    it('mixed operations stress test', () => {
+      const q = new DoubleEndedPriorityQueue<number>()
+      q.enqueue(50)
+      q.enqueue(30)
+      q.enqueue(70)
+      expect(q.dequeueMin()).toBe(30)
+      q.enqueue(10)
+      q.enqueue(90)
+      q.enqueue(20)
+      expect(q.dequeueMax()).toBe(90)
+      q.remove(50)
+      q.enqueue(40)
+      expect(q.decreaseKey(70, 5)).toBe(true)
+      const result: number[] = []
+      while (!q.isEmpty()) result.push(q.dequeueMin()!)
+      expect(result.sort((a, b) => a - b)).toEqual([5, 10, 20, 40])
+    })
+  })
 })

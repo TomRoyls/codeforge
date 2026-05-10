@@ -1,4 +1,4 @@
-import type { HAMTNode, HAMTStats } from './types.js'
+import type { HAMTNode, HAMTStats, HAMTOperations } from './types.js'
 import { DEFAULT_HAMT_OPTIONS } from './types.js'
 
 const BITS_PER_LEVEL = DEFAULT_HAMT_OPTIONS.bitsPerLevel
@@ -257,37 +257,56 @@ function computeStats(node: HAMTNode<unknown, unknown>): { nodeCount: number; le
   return { nodeCount, leafCount, collisionCount, maxDepth }
 }
 
+interface OpCounters {
+  inserts: number
+  deletes: number
+  lookups: number
+}
+
 export class HashArrayMappedTrie<K, V> {
   private _root: HAMTNode<K, V>
   private _size: number
+  private _ops: OpCounters
 
   constructor(entries?: Iterable<[K, V]>) {
     this._root = makeInternal(0, [])
     this._size = 0
+    this._ops = { inserts: 0, deletes: 0, lookups: 0 }
     if (entries) {
       for (const [key, value] of entries) {
         const result = insert(this._root, key, value, hashKey(key), 0)
         if (result.added) this._size++
         this._root = result.node
+        this._ops.inserts++
       }
     }
   }
 
-  private static _build<K, V>(root: HAMTNode<K, V>, size: number): HashArrayMappedTrie<K, V> {
+  private static _build<K, V>(
+    root: HAMTNode<K, V>,
+    size: number,
+    ops: OpCounters,
+  ): HashArrayMappedTrie<K, V> {
     const t = new HashArrayMappedTrie<K, V>()
     t._root = root
     t._size = size
+    t._ops = { ...ops }
     return t
   }
 
   get(key: K): V | undefined {
+    this._ops.lookups++
     return lookup(this._root, key, hashKey(key), 0)
   }
 
   set(key: K, value: V): HashArrayMappedTrie<K, V> {
     const hash = hashKey(key)
     const result = insert(this._root, key, value, hash, 0)
-    return HashArrayMappedTrie._build(result.node, result.added ? this._size + 1 : this._size)
+    return HashArrayMappedTrie._build(
+      result.node,
+      result.added ? this._size + 1 : this._size,
+      { inserts: this._ops.inserts + 1, deletes: this._ops.deletes, lookups: this._ops.lookups },
+    )
   }
 
   delete(key: K): HashArrayMappedTrie<K, V> {
@@ -295,12 +314,21 @@ export class HashArrayMappedTrie<K, V> {
     const result = deleteKey(this._root, key, hash, 0)
     if (!result.removed) return this
     if (result.node === null) {
-      return new HashArrayMappedTrie<K, V>()
+      return HashArrayMappedTrie._build(
+        makeInternal(0, []),
+        0,
+        { inserts: this._ops.inserts, deletes: this._ops.deletes + 1, lookups: this._ops.lookups },
+      )
     }
-    return HashArrayMappedTrie._build(result.node, this._size - 1)
+    return HashArrayMappedTrie._build(
+      result.node,
+      this._size - 1,
+      { inserts: this._ops.inserts, deletes: this._ops.deletes + 1, lookups: this._ops.lookups },
+    )
   }
 
   has(key: K): boolean {
+    this._ops.lookups++
     return hasKey(this._root, key, hashKey(key), 0)
   }
 
@@ -312,8 +340,18 @@ export class HashArrayMappedTrie<K, V> {
     return this._size === 0
   }
 
+  clear(): HashArrayMappedTrie<K, V> {
+    return new HashArrayMappedTrie<K, V>()
+  }
+
   forEach(callback: (key: K, value: V) => void): void {
     iterateNode(this._root, callback)
+  }
+
+  async forEachAsync(callback: (key: K, value: V) => Promise<void> | void): Promise<void> {
+    for (const [key, value] of iterEntries(this._root)) {
+      await callback(key, value)
+    }
   }
 
   keys(): K[] {
@@ -338,12 +376,18 @@ export class HashArrayMappedTrie<K, V> {
     yield* iterEntries(this._root)
   }
 
+  toArray(): Array<[K, V]> {
+    const result: Array<[K, V]> = []
+    iterateNode(this._root, (key, value) => result.push([key, value]))
+    return result
+  }
+
   static from<K, V>(entries: Iterable<[K, V]>): HashArrayMappedTrie<K, V> {
     return new HashArrayMappedTrie<K, V>(entries)
   }
 
   clone(): HashArrayMappedTrie<K, V> {
-    return HashArrayMappedTrie._build(cloneNode(this._root), this._size)
+    return HashArrayMappedTrie._build(cloneNode(this._root), this._size, { ...this._ops })
   }
 
   stats(): HAMTStats {
@@ -356,7 +400,19 @@ export class HashArrayMappedTrie<K, V> {
       collisionCount: s.collisionCount,
     }
   }
+
+  getStatistics(): HAMTOperations {
+    const s = computeStats(this._root)
+    return {
+      inserts: this._ops.inserts,
+      deletes: this._ops.deletes,
+      lookups: this._ops.lookups,
+      depth: s.maxDepth,
+      bitmapNodes: s.nodeCount - s.leafCount,
+      collisionNodes: s.collisionCount,
+    }
+  }
 }
 
 export { DEFAULT_HAMT_OPTIONS } from './types.js'
-export type { HAMTNode, HAMTOptions, HAMTStats } from './types.js'
+export type { HAMTNode, HAMTOptions, HAMTStats, HAMTOperations } from './types.js'

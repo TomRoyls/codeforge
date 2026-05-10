@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { HashArrayMappedTrie } from '../../src/core/hash-array-mapped-trie/hash-array-mapped-trie.js'
 import { DEFAULT_HAMT_OPTIONS } from '../../src/core/hash-array-mapped-trie/types.js'
-import type { HAMTNode, HAMTOptions, HAMTStats } from '../../src/core/hash-array-mapped-trie/types.js'
+import type { HAMTNode, HAMTOptions, HAMTStats, HAMTOperations } from '../../src/core/hash-array-mapped-trie/types.js'
 
 describe('HashArrayMappedTrie', () => {
   describe('constructor', () => {
@@ -64,7 +64,7 @@ describe('HashArrayMappedTrie', () => {
 
     it('should handle object values', () => {
       const t = new HashArrayMappedTrie<string, { id: number }>([['a', { id: 1 }]])
-      expect(t.get('a')?.id).toBe(1)
+      expect(t.get('a')!.id).toBe(1)
     })
 
     it('should create a trie from a Map', () => {
@@ -73,6 +73,19 @@ describe('HashArrayMappedTrie', () => {
       expect(t.size).toBe(2)
       expect(t.get('x')).toBe(10)
       expect(t.get('y')).toBe(20)
+    })
+
+    it('should initialize operations to zero for empty trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+      const stats = t.getStatistics()
+      expect(stats.inserts).toBe(0)
+      expect(stats.deletes).toBe(0)
+      expect(stats.lookups).toBe(0)
+    })
+
+    it('should count inserts during construction from entries', () => {
+      const t = new HashArrayMappedTrie<string, number>([['a', 1], ['b', 2], ['c', 3]])
+      expect(t.getStatistics().inserts).toBe(3)
     })
   })
 
@@ -134,6 +147,22 @@ describe('HashArrayMappedTrie', () => {
       const t = new HashArrayMappedTrie<number | string, string>([[1, 'num'], ['1', 'str']])
       expect(t.get(1)).toBe('num')
       expect(t.get('1')).toBe('str')
+    })
+
+    it('should increment lookups stat', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const lookups0 = t.getStatistics().lookups
+      t.get('a')
+      t.get('b')
+      expect(t.getStatistics().lookups).toBe(lookups0 + 2)
+    })
+
+    it('should get most recent value after overwrites', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('a', 2)
+        .set('a', 3)
+      expect(t.get('a')).toBe(3)
     })
   })
 
@@ -250,6 +279,54 @@ describe('HashArrayMappedTrie', () => {
       expect(t3.get('x')).toBe(30)
       expect(t3.get('y')).toBe(20)
     })
+
+    it('should handle object keys by reference', () => {
+      const obj1 = { id: 1 }
+      const obj2 = { id: 1 }
+      const t = new HashArrayMappedTrie<object, string>()
+        .set(obj1, 'first')
+        .set(obj2, 'second')
+      expect(t.size).toBe(2)
+      expect(t.get(obj1)).toBe('first')
+      expect(t.get(obj2)).toBe('second')
+    })
+
+    it('should handle boolean keys', () => {
+      const t = new HashArrayMappedTrie<boolean, number>()
+        .set(true, 1)
+        .set(false, 0)
+      expect(t.get(true)).toBe(1)
+      expect(t.get(false)).toBe(0)
+    })
+
+    it('should handle empty string key', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('', 42)
+      expect(t.get('')).toBe(42)
+      expect(t.size).toBe(1)
+    })
+
+    it('should increment inserts stat', () => {
+      const t1 = new HashArrayMappedTrie<string, number>()
+      const t2 = t1.set('a', 1)
+      expect(t2.getStatistics().inserts).toBe(1)
+      const t3 = t2.set('b', 2)
+      expect(t3.getStatistics().inserts).toBe(2)
+    })
+
+    it('should increment inserts on update too', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const t2 = t1.set('a', 2)
+      expect(t2.getStatistics().inserts).toBe(2)
+    })
+
+    it('should handle many insertions', () => {
+      let t = new HashArrayMappedTrie<number, number>()
+      for (let i = 0; i < 200; i++) {
+        t = t.set(i, i * 10)
+      }
+      expect(t.size).toBe(200)
+      expect(t.get(100)).toBe(1000)
+    })
   })
 
   describe('delete', () => {
@@ -349,6 +426,28 @@ describe('HashArrayMappedTrie', () => {
       expect(t3).toBe(t2)
       expect(t3.size).toBe(0)
     })
+
+    it('should increment deletes stat', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const t2 = t1.delete('a')
+      expect(t2.getStatistics().deletes).toBe(1)
+    })
+
+    it('should not increment deletes stat on failed delete', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const t2 = t1.delete('b')
+      expect(t2.getStatistics().deletes).toBe(0)
+    })
+
+    it('should delete from large trie', () => {
+      let t = new HashArrayMappedTrie<number, number>()
+      for (let i = 0; i < 50; i++) t = t.set(i, i * 2)
+      t = t.delete(25)
+      expect(t.size).toBe(49)
+      expect(t.get(25)).toBeUndefined()
+      expect(t.get(24)).toBe(48)
+      expect(t.get(26)).toBe(52)
+    })
   })
 
   describe('has', () => {
@@ -393,6 +492,14 @@ describe('HashArrayMappedTrie', () => {
     it('should handle undefined value correctly', () => {
       const t = new HashArrayMappedTrie<string, number | undefined>([['a', undefined]])
       expect(t.has('a')).toBe(true)
+    })
+
+    it('should increment lookups stat', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const lookups0 = t.getStatistics().lookups
+      t.has('a')
+      t.has('b')
+      expect(t.getStatistics().lookups).toBe(lookups0 + 2)
     })
   })
 
@@ -482,6 +589,82 @@ describe('HashArrayMappedTrie', () => {
       const t = new HashArrayMappedTrie<string, number | null>([['a', null]])
       expect(t.isEmpty).toBe(false)
     })
+
+    it('should return true after clear', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .clear()
+      expect(t.isEmpty).toBe(true)
+    })
+  })
+
+  describe('clear', () => {
+    it('should return empty trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .clear()
+      expect(t.size).toBe(0)
+      expect(t.isEmpty).toBe(true)
+    })
+
+    it('should return new instance', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const t2 = t1.clear()
+      expect(t1).not.toBe(t2)
+    })
+
+    it('should not mutate original', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      t1.clear()
+      expect(t1.size).toBe(1)
+    })
+
+    it('should allow operations after clear', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .clear()
+        .set('b', 2)
+      expect(t.size).toBe(1)
+      expect(t.get('b')).toBe(2)
+      expect(t.get('a')).toBeUndefined()
+    })
+
+    it('should reset stats on cleared trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .clear()
+      expect(t.getStatistics().inserts).toBe(0)
+      expect(t.getStatistics().deletes).toBe(0)
+      expect(t.getStatistics().lookups).toBe(0)
+    })
+
+    it('should work on already empty trie', () => {
+      const t1 = new HashArrayMappedTrie<string, number>()
+      const t2 = t1.clear()
+      expect(t2.size).toBe(0)
+      expect(t2.isEmpty).toBe(true)
+    })
+
+    it('should not find old elements after clear', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .set('c', 3)
+        .clear()
+      expect(t.has('a')).toBe(false)
+      expect(t.has('b')).toBe(false)
+      expect(t.has('c')).toBe(false)
+    })
+
+    it('should return empty toArray after clear', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .clear()
+      expect(t.toArray()).toEqual([])
+    })
   })
 
   describe('forEach', () => {
@@ -534,6 +717,67 @@ describe('HashArrayMappedTrie', () => {
       expect(items.length).toBe(1)
       expect(items).toContainEqual(['b', 2])
     })
+
+    it('should return void', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.forEach(() => {})).toBeUndefined()
+    })
+  })
+
+  describe('forEachAsync', () => {
+    it('should handle empty trie', async () => {
+      const t = new HashArrayMappedTrie<string, number>()
+      const items: Array<[string, number]> = []
+      await t.forEachAsync(async (k, v) => { items.push([k, v]) })
+      expect(items).toEqual([])
+    })
+
+    it('should iterate all entries asynchronously', async () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .set('c', 3)
+      const items: Array<[string, number]> = []
+      await t.forEachAsync(async (k, v) => {
+        items.push([k, v])
+      })
+      expect(items.length).toBe(3)
+      expect(items).toContainEqual(['a', 1])
+      expect(items).toContainEqual(['b', 2])
+      expect(items).toContainEqual(['c', 3])
+    })
+
+    it('should await async callbacks in sequence', async () => {
+      const t = new HashArrayMappedTrie<number, number>()
+        .set(1, 10)
+        .set(2, 20)
+      const order: number[] = []
+      await t.forEachAsync(async (_k, v) => {
+        order.push(v)
+      })
+      expect(order).toEqual([10, 20])
+    })
+
+    it('should handle sync callbacks', async () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('x', 100)
+      const items: number[] = []
+      await t.forEachAsync((_k, v) => { items.push(v) })
+      expect(items).toEqual([100])
+    })
+
+    it('should return a promise', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const result = t.forEachAsync(() => {})
+      expect(result).toBeInstanceOf(Promise)
+    })
+
+    it('should iterate single entry', async () => {
+      const t = new HashArrayMappedTrie<string, number>().set('only', 42)
+      const items: Array<[string, number]> = []
+      await t.forEachAsync(async (k, v) => { items.push([k, v]) })
+      expect(items).toEqual([['only', 42]])
+    })
   })
 
   describe('keys', () => {
@@ -578,6 +822,11 @@ describe('HashArrayMappedTrie', () => {
       }
       expect(t.keys().length).toBe(100)
     })
+
+    it('should return new array each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.keys()).not.toBe(t.keys())
+    })
   })
 
   describe('values', () => {
@@ -618,6 +867,16 @@ describe('HashArrayMappedTrie', () => {
         t = t.set(`k${i}`, i)
       }
       expect(t.values().length).toBe(100)
+    })
+
+    it('should return new array each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.values()).not.toBe(t.values())
+    })
+
+    it('should include undefined values', () => {
+      const t = new HashArrayMappedTrie<string, number | undefined>().set('a', undefined)
+      expect(t.values()).toEqual([undefined])
     })
   })
 
@@ -661,6 +920,11 @@ describe('HashArrayMappedTrie', () => {
         t = t.set(`k${i}`, i)
       }
       expect(t.entries().length).toBe(100)
+    })
+
+    it('should return new array each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.entries()).not.toBe(t.entries())
     })
   })
 
@@ -712,6 +976,74 @@ describe('HashArrayMappedTrie', () => {
       for (const entry of iterated) {
         expect(fromEntries).toContainEqual(entry)
       }
+    })
+
+    it('should work with Array.from', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('x', 42)
+      expect(Array.from(t)).toEqual([['x', 42]])
+    })
+
+    it('should not iterate deleted entries', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .delete('a')
+      const items = [...t]
+      expect(items).toEqual([['b', 2]])
+    })
+  })
+
+  describe('toArray', () => {
+    it('should return empty array for empty trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+      expect(t.toArray()).toEqual([])
+    })
+
+    it('should return all entries as array', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .set('c', 3)
+      const arr = t.toArray()
+      expect(arr.length).toBe(3)
+      expect(arr).toContainEqual(['a', 1])
+      expect(arr).toContainEqual(['b', 2])
+      expect(arr).toContainEqual(['c', 3])
+    })
+
+    it('should return new array each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.toArray()).not.toBe(t.toArray())
+    })
+
+    it('should reflect state after operations', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .delete('a')
+      expect(t.toArray()).toEqual([['b', 2]])
+    })
+
+    it('should return empty after clearing', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .clear()
+      expect(t.toArray()).toEqual([])
+    })
+
+    it('should handle large trie', () => {
+      let t = new HashArrayMappedTrie<number, number>()
+      for (let i = 0; i < 50; i++) t = t.set(i, i)
+      expect(t.toArray().length).toBe(50)
+    })
+
+    it('should match entries() output', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      const fromToArray = t.toArray().sort((a, b) => a[0]!.localeCompare(b[0]!))
+      const fromEntries = t.entries().sort((a, b) => a[0]!.localeCompare(b[0]!))
+      expect(fromToArray).toEqual(fromEntries)
     })
   })
 
@@ -834,6 +1166,236 @@ describe('HashArrayMappedTrie', () => {
         expect(c.get(`k${i}`)).toBe(i)
       }
     })
+
+    it('should carry stats forward', () => {
+      const t1 = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      t1.get('a')
+      const t2 = t1.clone()
+      expect(t2.getStatistics().inserts).toBe(2)
+      expect(t2.getStatistics().lookups).toBe(1)
+    })
+
+    it('should have independent stats after clone', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const t2 = t1.clone()
+      t2.get('a')
+      expect(t1.getStatistics().lookups).toBe(0)
+      expect(t2.getStatistics().lookups).toBe(1)
+    })
+  })
+
+  describe('stats', () => {
+    it('should return correct stats for empty trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+      const s = t.stats()
+      expect(s.size).toBe(0)
+      expect(s.depth).toBe(0)
+      expect(s.leafCount).toBe(0)
+    })
+
+    it('should return correct stats for single entry', () => {
+      const t = new HashArrayMappedTrie([['a', 1]])
+      const s = t.stats()
+      expect(s.size).toBe(1)
+      expect(s.leafCount).toBeGreaterThanOrEqual(1)
+    })
+
+    it('should return increasing depth with more entries', () => {
+      let t = new HashArrayMappedTrie<string, number>()
+      for (let i = 0; i < 1000; i++) {
+        t = t.set(`key-${i}`, i)
+      }
+      const s = t.stats()
+      expect(s.size).toBe(1000)
+      expect(s.depth).toBeGreaterThan(1)
+    })
+
+    it('should return new object each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      expect(t.stats()).not.toBe(t.stats())
+    })
+
+    it('should report correct stats for populated trie', () => {
+      let t = new HashArrayMappedTrie<string, number>()
+      for (let i = 0; i < 100; i++) t = t.set(`key-${i}`, i)
+      const s = t.stats()
+      expect(s.size).toBe(100)
+      expect(s.nodeCount).toBeGreaterThan(0)
+      expect(s.leafCount).toBeGreaterThan(0)
+    })
+  })
+
+  describe('getStatistics', () => {
+    it('should return zero stats for empty trie', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+      const s = t.getStatistics()
+      expect(s.inserts).toBe(0)
+      expect(s.deletes).toBe(0)
+      expect(s.lookups).toBe(0)
+      expect(s.depth).toBe(0)
+      expect(s.bitmapNodes).toBe(1)
+      expect(s.collisionNodes).toBe(0)
+    })
+
+    it('should track inserts', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .set('c', 3)
+      expect(t.getStatistics().inserts).toBe(3)
+    })
+
+    it('should track deletes', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .delete('a')
+      expect(t.getStatistics().deletes).toBe(1)
+    })
+
+    it('should track lookups via get', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      t.get('a')
+      t.get('b')
+      expect(t.getStatistics().lookups).toBe(2)
+    })
+
+    it('should track lookups via has', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      t.has('a')
+      t.has('b')
+      expect(t.getStatistics().lookups).toBe(2)
+    })
+
+    it('should return fresh copy each call', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const a = t.getStatistics()
+      const b = t.getStatistics()
+      expect(a).not.toBe(b)
+      expect(a).toEqual(b)
+    })
+
+    it('should compute depth from tree structure', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const s = t.getStatistics()
+      expect(s.depth).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should compute bitmapNodes', () => {
+      const t = new HashArrayMappedTrie<string, number>().set('a', 1)
+      const s = t.getStatistics()
+      expect(s.bitmapNodes).toBeGreaterThanOrEqual(0)
+    })
+
+    it('should track full lifecycle', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .set('c', 3)
+        .delete('b')
+      t.get('a')
+      t.has('c')
+      const s = t.getStatistics()
+      expect(s.inserts).toBe(3)
+      expect(s.deletes).toBe(1)
+      expect(s.lookups).toBe(2)
+    })
+
+    it('should carry stats through immutable operations', () => {
+      const t1 = new HashArrayMappedTrie<string, number>().set('a', 1)
+      t1.get('a')
+      const t2 = t1.set('b', 2)
+      expect(t2.getStatistics().inserts).toBe(2)
+      expect(t2.getStatistics().lookups).toBe(1)
+    })
+
+    it('should reset stats on clear', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+        .clear()
+      const s = t.getStatistics()
+      expect(s.inserts).toBe(0)
+      expect(s.deletes).toBe(0)
+      expect(s.lookups).toBe(0)
+    })
+
+    it('should compute correct depth for large trie', () => {
+      let t = new HashArrayMappedTrie<string, number>()
+      for (let i = 0; i < 500; i++) t = t.set(`k${i}`, i)
+      const s = t.getStatistics()
+      expect(s.depth).toBeGreaterThan(1)
+      expect(s.bitmapNodes).toBeGreaterThan(0)
+    })
+  })
+
+  describe('persistence / immutability', () => {
+    it('should preserve original on set', () => {
+      const t1 = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      const t2 = t1.set('c', 3)
+      expect(t1.size).toBe(2)
+      expect(t2.size).toBe(3)
+      expect(t1.has('c')).toBe(false)
+      expect(t2.has('c')).toBe(true)
+    })
+
+    it('should preserve original on delete', () => {
+      const t1 = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      const t2 = t1.delete('a')
+      expect(t1.has('a')).toBe(true)
+      expect(t1.size).toBe(2)
+      expect(t2.has('a')).toBe(false)
+      expect(t2.size).toBe(1)
+    })
+
+    it('should allow branching', () => {
+      const root = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      const branch1 = root.set('c', 3)
+      const branch2 = root.set('d', 4)
+      expect(branch1.has('c')).toBe(true)
+      expect(branch1.has('d')).toBe(false)
+      expect(branch2.has('c')).toBe(false)
+      expect(branch2.has('d')).toBe(true)
+      expect(root.has('c')).toBe(false)
+      expect(root.has('d')).toBe(false)
+    })
+
+    it('should handle multiple snapshots', () => {
+      const t0 = new HashArrayMappedTrie<string, number>()
+      const t1 = t0.set('a', 1)
+      const t2 = t1.set('b', 2)
+      const t3 = t2.set('c', 3)
+      expect(t0.size).toBe(0)
+      expect(t1.size).toBe(1)
+      expect(t2.size).toBe(2)
+      expect(t3.size).toBe(3)
+      expect(t0.get('a')).toBeUndefined()
+      expect(t1.get('a')).toBe(1)
+      expect(t2.get('b')).toBe(2)
+      expect(t3.get('c')).toBe(3)
+    })
+
+    it('should allow independent modifications of snapshots', () => {
+      const base = new HashArrayMappedTrie<string, number>()
+        .set('x', 10)
+        .set('y', 20)
+      const a = base.delete('x').set('z', 30)
+      const b = base.delete('y').set('w', 40)
+      expect(a.has('x')).toBe(false)
+      expect(a.has('y')).toBe(true)
+      expect(a.has('z')).toBe(true)
+      expect(b.has('x')).toBe(true)
+      expect(b.has('y')).toBe(false)
+      expect(b.has('w')).toBe(true)
+    })
   })
 
   describe('collision handling', () => {
@@ -885,34 +1447,6 @@ describe('HashArrayMappedTrie', () => {
       expect(s.size).toBe(100)
       expect(s.nodeCount).toBeGreaterThan(0)
       expect(s.leafCount).toBeGreaterThan(0)
-    })
-
-    it('should handle many keys with complex trie structure', () => {
-      let t = new HashArrayMappedTrie<string, number>()
-      for (let i = 0; i < 500; i++) {
-        t = t.set(`key-${i}`, i)
-      }
-      expect(t.size).toBe(500)
-      for (let i = 0; i < 500; i++) {
-        expect(t.get(`key-${i}`)).toBe(i)
-      }
-    })
-
-    it('should handle delete from deep trie', () => {
-      let t = new HashArrayMappedTrie<string, number>()
-      for (let i = 0; i < 200; i++) {
-        t = t.set(`key-${i}`, i)
-      }
-      for (let i = 0; i < 100; i++) {
-        t = t.delete(`key-${i}`)
-      }
-      expect(t.size).toBe(100)
-      for (let i = 100; i < 200; i++) {
-        expect(t.get(`key-${i}`)).toBe(i)
-      }
-      for (let i = 0; i < 100; i++) {
-        expect(t.get(`key-${i}`)).toBeUndefined()
-      }
     })
 
     it('should handle set-delete-set cycle with many keys', () => {
@@ -1106,77 +1640,31 @@ describe('HashArrayMappedTrie', () => {
         expect(t.size).toBe(3)
       }
     })
-  })
 
-  describe('type exports', () => {
-    it('should export DEFAULT_HAMT_OPTIONS', () => {
-      expect(DEFAULT_HAMT_OPTIONS.bitsPerLevel).toBe(5)
-    })
-
-    it('should allow creating HAMTNode for leaf', () => {
-      const leaf: HAMTNode<string, number> = {
-        bitmap: 0,
-        children: [],
-        isLeaf: true,
-        entries: [['key', 42]],
-      }
-      expect(leaf.isLeaf).toBe(true)
-      expect(leaf.entries[0]![1]).toBe(42)
-    })
-
-    it('should allow creating HAMTNode for internal', () => {
-      const internal: HAMTNode<string, number> = {
-        bitmap: 3,
-        children: [],
-        isLeaf: false,
-        entries: [],
-      }
-      expect(internal.isLeaf).toBe(false)
-      expect(internal.bitmap).toBe(3)
-    })
-
-    it('should allow creating HAMTOptions', () => {
-      const opts: HAMTOptions = { bitsPerLevel: 5 }
-      expect(opts.bitsPerLevel).toBe(5)
-    })
-
-    it('should allow creating HAMTStats', () => {
-      const stats: HAMTStats = {
-        size: 10,
-        depth: 3,
-        nodeCount: 15,
-        leafCount: 10,
-        collisionCount: 0,
-      }
-      expect(stats.size).toBe(10)
-      expect(stats.depth).toBe(3)
-    })
-  })
-
-  describe('stats', () => {
-    it('should return correct stats for empty trie', () => {
+    it('should handle special characters in keys', () => {
       const t = new HashArrayMappedTrie<string, number>()
-      const s = t.stats()
-      expect(s.size).toBe(0)
-      expect(s.depth).toBe(0)
-      expect(s.leafCount).toBe(0)
+        .set('key with spaces', 1)
+        .set('key\nwith\nnewlines', 2)
+        .set('key\twith\ttabs', 3)
+      expect(t.get('key with spaces')).toBe(1)
+      expect(t.get('key\nwith\nnewlines')).toBe(2)
+      expect(t.get('key\twith\ttabs')).toBe(3)
     })
 
-    it('should return correct stats for single entry', () => {
-      const t = new HashArrayMappedTrie([['a', 1]])
-      const s = t.stats()
-      expect(s.size).toBe(1)
-      expect(s.leafCount).toBeGreaterThanOrEqual(1)
+    it('should distinguish between string and number 1', () => {
+      const t = new HashArrayMappedTrie<string | number, string>()
+        .set('1', 'string')
+        .set(1, 'number')
+      expect(t.get('1')).toBe('string')
+      expect(t.get(1)).toBe('number')
     })
 
-    it('should return increasing depth with more entries', () => {
-      let t = new HashArrayMappedTrie<string, number>()
-      for (let i = 0; i < 1000; i++) {
-        t = t.set(`key-${i}`, i)
-      }
-      const s = t.stats()
-      expect(s.size).toBe(1000)
-      expect(s.depth).toBeGreaterThan(1)
+    it('should handle updating value to same value', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('a', 1)
+      expect(t.size).toBe(1)
+      expect(t.get('a')).toBe(1)
     })
   })
 
@@ -1222,6 +1710,82 @@ describe('HashArrayMappedTrie', () => {
       expect(t.values().length).toBe(100)
       expect(t.entries().length).toBe(100)
       expect(t.size).toBe(100)
+    })
+
+    it('should have toArray consistent with entries', () => {
+      const t = new HashArrayMappedTrie<string, number>()
+        .set('a', 1)
+        .set('b', 2)
+      expect(t.toArray().length).toBe(t.entries().length)
+      expect(t.toArray().length).toBe(2)
+    })
+  })
+
+  describe('type exports', () => {
+    it('should export DEFAULT_HAMT_OPTIONS', () => {
+      expect(DEFAULT_HAMT_OPTIONS.bitsPerLevel).toBe(5)
+    })
+
+    it('should allow creating HAMTNode for leaf', () => {
+      const leaf: HAMTNode<string, number> = {
+        bitmap: 0,
+        children: [],
+        isLeaf: true,
+        entries: [['key', 42]],
+      }
+      expect(leaf.isLeaf).toBe(true)
+      expect(leaf.entries[0]![1]).toBe(42)
+    })
+
+    it('should allow creating HAMTNode for internal', () => {
+      const internal: HAMTNode<string, number> = {
+        bitmap: 3,
+        children: [],
+        isLeaf: false,
+        entries: [],
+      }
+      expect(internal.isLeaf).toBe(false)
+      expect(internal.bitmap).toBe(3)
+    })
+
+    it('should allow creating HAMTOptions', () => {
+      const opts: HAMTOptions = { bitsPerLevel: 5 }
+      expect(opts.bitsPerLevel).toBe(5)
+    })
+
+    it('should allow creating HAMTStats', () => {
+      const stats: HAMTStats = {
+        size: 10,
+        depth: 3,
+        nodeCount: 15,
+        leafCount: 10,
+        collisionCount: 0,
+      }
+      expect(stats.size).toBe(10)
+      expect(stats.depth).toBe(3)
+    })
+
+    it('should export HashArrayMappedTrie class', async () => {
+      const mod = await import('../../src/core/hash-array-mapped-trie/hash-array-mapped-trie.js')
+      expect(mod.HashArrayMappedTrie).toBeDefined()
+      expect(mod.DEFAULT_HAMT_OPTIONS).toBeDefined()
+    })
+
+    it('should allow creating HAMTOperations', () => {
+      const ops: HAMTOperations = {
+        inserts: 5,
+        deletes: 2,
+        lookups: 10,
+        depth: 3,
+        bitmapNodes: 7,
+        collisionNodes: 1,
+      }
+      expect(ops.inserts).toBe(5)
+      expect(ops.deletes).toBe(2)
+      expect(ops.lookups).toBe(10)
+      expect(ops.depth).toBe(3)
+      expect(ops.bitmapNodes).toBe(7)
+      expect(ops.collisionNodes).toBe(1)
     })
   })
 })

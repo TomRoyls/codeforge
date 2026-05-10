@@ -65,7 +65,7 @@ export class MergeSkipList {
     const newNode = this.createNode(key, value, newLevel + 1)
     for (let i = 0; i <= newLevel; i++) {
       const updateNode = update[i]!
-      newNode.forward[i] = updateNode.forward[i]
+      newNode.forward[i] = updateNode.forward[i] ?? null
       updateNode.forward[i] = newNode
     }
 
@@ -94,7 +94,7 @@ export class MergeSkipList {
     for (let i = 0; i <= this.level; i++) {
       const updateNode = update[i]!
       if (updateNode.forward[i] !== target) break
-      updateNode.forward[i] = target.forward[i]
+      updateNode.forward[i] = target.forward[i] ?? null
     }
 
     while (this.level > 0 && !this.header.forward[this.level]) {

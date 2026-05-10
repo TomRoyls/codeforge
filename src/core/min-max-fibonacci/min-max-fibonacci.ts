@@ -247,18 +247,15 @@ export class MinMaxFibonacciHeap<T> {
     const value = minNode.value;
     this.stats.deleteMins++;
     if (minNode.child) {
-      const children: FibNode<T>[] = [];
       let child = minNode.child;
+      const start = child;
       do {
-        children.push(child);
+        child.parent = null;
         child = child.right;
-      } while (child !== minNode.child);
-      for (const c of children) {
-        c.parent = null;
-      }
+      } while (child !== start);
       this.concatLists(this.minRoot, minNode.child);
     }
-    if (minNode === minNode.right) {
+    if (minNode.left === minNode && minNode.right === minNode) {
       this.minRoot = null;
       this.maxRoot = null;
     } else {
@@ -283,18 +280,15 @@ export class MinMaxFibonacciHeap<T> {
       this.cut(maxNode);
     }
     if (maxNode.child) {
-      const children: FibNode<T>[] = [];
       let child = maxNode.child;
+      const start = child;
       do {
-        children.push(child);
+        child.parent = null;
         child = child.right;
-      } while (child !== maxNode.child);
-      for (const c of children) {
-        c.parent = null;
-      }
+      } while (child !== start);
       this.concatLists(this.minRoot, maxNode.child);
     }
-    if (maxNode === maxNode.right) {
+    if (maxNode.left === maxNode && maxNode.right === maxNode) {
       this.minRoot = null;
       this.maxRoot = null;
     } else {

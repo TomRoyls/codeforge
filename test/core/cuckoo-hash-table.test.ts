@@ -768,4 +768,132 @@ describe('CuckooHashTable', () => {
       expect(stats.deletions).toBe(2)
     })
   })
+
+  describe('stress tests', () => {
+    it('should handle 1000 insertions', () => {
+      const t = new CuckooHashTable<string, number>()
+      for (let i = 0; i < 1000; i++) {
+        t.set(`key${i}`, i)
+      }
+      expect(t.size()).toBe(1000)
+      for (let i = 0; i < 1000; i++) {
+        expect(t.get(`key${i}`)).toBe(i)
+      }
+    })
+
+    it('should handle insert-delete-reinsert cycles', () => {
+      for (let cycle = 0; cycle < 5; cycle++) {
+        for (let i = 0; i < 10; i++) {
+          table.set(`c${cycle}_k${i}`, i * cycle)
+        }
+        for (let i = 0; i < 10; i++) {
+          expect(table.get(`c${cycle}_k${i}`)).toBe(i * cycle)
+        }
+        for (let i = 0; i < 10; i++) {
+          table.delete(`c${cycle}_k${i}`)
+        }
+      }
+      expect(table.size()).toBe(0)
+    })
+
+    it('should handle overwrite during heavy load', () => {
+      const t = new CuckooHashTable<string, number>({ capacity: 8 })
+      for (let i = 0; i < 20; i++) {
+        t.set('constant', i)
+      }
+      expect(t.get('constant')).toBe(19)
+      expect(t.size()).toBe(1)
+    })
+
+    it('should handle batch delete after large insert', () => {
+      const t = new CuckooHashTable<string, number>()
+      for (let i = 0; i < 200; i++) {
+        t.set(`k${i}`, i)
+      }
+      for (let i = 0; i < 200; i += 2) {
+        t.delete(`k${i}`)
+      }
+      expect(t.size()).toBe(100)
+      for (let i = 0; i < 200; i++) {
+        if (i % 2 === 0) {
+          expect(t.get(`k${i}`)).toBeUndefined()
+        } else {
+          expect(t.get(`k${i}`)).toBe(i)
+        }
+      }
+    })
+
+    it('should handle mixed types in same table', () => {
+      const t = new CuckooHashTable<string, number>()
+      t.set('a', 1)
+      t.set('b', 2)
+      t.set('c', 3)
+      t.delete('b')
+      t.set('d', 4)
+      t.set('a', 10)
+      expect(t.get('a')).toBe(10)
+      expect(t.get('b')).toBeUndefined()
+      expect(t.get('c')).toBe(3)
+      expect(t.get('d')).toBe(4)
+      expect(t.size()).toBe(3)
+    })
+
+    it('should handle keys with special characters', () => {
+      table.set('key with spaces', 1)
+      table.set('key\twith\ttabs', 2)
+      table.set('key\nwith\nnewlines', 3)
+      table.set('key-with-dashes', 4)
+      table.set('key.with.dots', 5)
+      expect(table.get('key with spaces')).toBe(1)
+      expect(table.get('key\twith\ttabs')).toBe(2)
+      expect(table.get('key\nwith\nnewlines')).toBe(3)
+      expect(table.get('key-with-dashes')).toBe(4)
+      expect(table.get('key.with.dots')).toBe(5)
+    })
+
+    it('should handle unicode keys', () => {
+      table.set('日本語', 1)
+      table.set('中文', 2)
+      table.set('العربية', 3)
+      table.set('🎉🎊', 4)
+      expect(table.get('日本語')).toBe(1)
+      expect(table.get('中文')).toBe(2)
+      expect(table.get('العربية')).toBe(3)
+      expect(table.get('🎉🎊')).toBe(4)
+    })
+
+    it('should handle very long keys', () => {
+      const longKey = 'a'.repeat(10000)
+      table.set(longKey, 42)
+      expect(table.get(longKey)).toBe(42)
+      expect(table.has(longKey)).toBe(true)
+      table.delete(longKey)
+      expect(table.get(longKey)).toBeUndefined()
+    })
+
+    it('should handle null value', () => {
+      const t = new CuckooHashTable<string, number | null>()
+      t.set('a', null)
+      expect(t.get('a')).toBe(null)
+      expect(t.has('a')).toBe(true)
+    })
+
+    it('should handle undefined value', () => {
+      const t = new CuckooHashTable<string, number | undefined>()
+      t.set('a', undefined)
+      expect(t.get('a')).toBe(undefined)
+      expect(t.has('a')).toBe(true)
+    })
+
+    it('should handle very small capacity', () => {
+      const t = new CuckooHashTable<string, number>({ capacity: 2 })
+      t.set('a', 1)
+      t.set('b', 2)
+      t.set('c', 3)
+      t.set('d', 4)
+      expect(t.size()).toBe(4)
+      expect(t.get('a')).toBe(1)
+      expect(t.get('d')).toBe(4)
+    })
+  })
 })

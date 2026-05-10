@@ -789,4 +789,84 @@ describe('FusionTree', () => {
       }
     })
   })
+
+  describe('additional coverage', () => {
+    it('handles degree 2 with 30 inserts', () => {
+      const tree = new FusionTree({ degree: 2 })
+      for (let i = 1; i <= 30; i++) tree.insert(i)
+      expect(tree.size).toBe(30)
+      expect(tree.findMin()).toBe(1)
+      expect(tree.findMax()).toBe(30)
+    })
+
+    it('handles deleting all but one key', () => {
+      const tree = new FusionTree()
+      for (let i = 1; i <= 10; i++) tree.insert(i)
+      for (let i = 1; i <= 9; i++) tree.delete(i)
+      expect(tree.size).toBe(1)
+      expect(tree.search(10)).toBe(true)
+      expect(tree.findMin()).toBe(10)
+      expect(tree.findMax()).toBe(10)
+    })
+
+    it('handles inserting after clearing', () => {
+      const tree = new FusionTree()
+      for (let i = 1; i <= 10; i++) tree.insert(i)
+      tree.clear()
+      tree.insert(99)
+      expect(tree.size).toBe(1)
+      expect(tree.search(99)).toBe(true)
+    })
+
+    it('handles rangeQuery on single element', () => {
+      const tree = new FusionTree()
+      tree.insert(5)
+      expect(tree.rangeQuery(1, 10)).toEqual([5])
+      expect(tree.rangeQuery(5, 5)).toEqual([5])
+      expect(tree.rangeQuery(6, 10)).toEqual([])
+    })
+
+    it('tracks has() as alias for search()', () => {
+      const tree = new FusionTree({ degree: 3 })
+      for (let i = 10; i <= 100; i += 10) tree.insert(i)
+      expect(tree.has(10)).toBe(true)
+      expect(tree.has(50)).toBe(true)
+      expect(tree.has(100)).toBe(true)
+      expect(tree.has(15)).toBe(false)
+    })
+
+    it('iterator returns done for empty tree', () => {
+      const tree = new FusionTree()
+      const iter = tree[Symbol.iterator]()
+      expect(iter.next()).toEqual({ value: undefined, done: true })
+    })
+
+    it('handles degree 10 with 50 inserts', () => {
+      const tree = new FusionTree({ degree: 10 })
+      for (let i = 50; i >= 1; i--) tree.insert(i)
+      expect(tree.size).toBe(50)
+      expect(tree.getHeight()).toBeGreaterThanOrEqual(1)
+      const arr = tree.toArray()
+      for (let i = 0; i < 50; i++) {
+        expect(arr[i]).toBe(i + 1)
+      }
+    })
+
+    it('handles delete of non-existent key from non-empty tree', () => {
+      const tree = new FusionTree()
+      tree.insert(1)
+      tree.insert(2)
+      tree.insert(3)
+      expect(tree.delete(999)).toBe(false)
+      expect(tree.size).toBe(3)
+    })
+
+    it('statistics search count includes has() calls', () => {
+      const tree = new FusionTree()
+      tree.insert(1)
+      tree.has(1)
+      tree.has(2)
+      expect(tree.getStatistics().searches).toBe(2)
+    })
+  })
 })

@@ -17,6 +17,15 @@ export interface HAMTStats {
   collisionCount: number
 }
 
+export interface HAMTOperations {
+  inserts: number
+  deletes: number
+  lookups: number
+  depth: number
+  bitmapNodes: number
+  collisionNodes: number
+}
+
 export const DEFAULT_HAMT_OPTIONS: HAMTOptions = {
   bitsPerLevel: 5,
 }

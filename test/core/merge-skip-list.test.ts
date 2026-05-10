@@ -652,7 +652,9 @@ describe('MergeSkipList', () => {
   describe('forEach', () => {
     it('should not call callback for empty list', () => {
       let count = 0
-      list.forEach(() => { count++ })
+      list.forEach(() => {
+        count++
+      })
       expect(count).toBe(0)
     })
 
@@ -661,14 +663,18 @@ describe('MergeSkipList', () => {
       list.insert(2, 20)
       list.insert(3, 30)
       const keys: number[] = []
-      list.forEach((key) => { keys.push(key) })
+      list.forEach((key) => {
+        keys.push(key)
+      })
       expect(keys).toEqual([1, 2, 3])
     })
 
     it('should provide key and value to callback', () => {
       list.insert(1, 10)
       const entries: [number, number | undefined][] = []
-      list.forEach((key, value) => { entries.push([key, value]) })
+      list.forEach((key, value) => {
+        entries.push([key, value])
+      })
       expect(entries).toEqual([[1, 10]])
     })
 
@@ -677,7 +683,9 @@ describe('MergeSkipList', () => {
       list.insert(1, 10)
       list.insert(2, 20)
       const keys: number[] = []
-      list.forEach((key) => { keys.push(key) })
+      list.forEach((key) => {
+        keys.push(key)
+      })
       expect(keys).toEqual([1, 2, 3])
     })
 
@@ -685,7 +693,9 @@ describe('MergeSkipList', () => {
       list.insert(1)
       list.insert(2)
       const values: (number | undefined)[] = []
-      list.forEach((_key, value) => { values.push(value) })
+      list.forEach((_key, value) => {
+        values.push(value)
+      })
       expect(values).toEqual([undefined, undefined])
     })
   })
