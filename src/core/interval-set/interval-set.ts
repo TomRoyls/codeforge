@@ -1,4 +1,4 @@
-import type { Interval } from './types.js'
+import type { Interval, IntervalSetStats } from './types.js'
 
 export class IntervalSet {
   private intervals: Interval[] = []
@@ -7,8 +7,7 @@ export class IntervalSet {
     if (start > end) {
       throw new Error(`Invalid interval: start (${start}) > end (${end})`)
     }
-    const merged = this.mergeInterval(start, end)
-    this.intervals = merged
+    this.intervals = this.mergeInterval(start, end)
   }
 
   private mergeInterval(start: number, end: number): Interval[] {
@@ -18,9 +17,9 @@ export class IntervalSet {
     let newEnd = end
 
     for (const iv of this.intervals) {
-      if (iv.end < newStart - 0) {
+      if (iv.end < newStart) {
         result.push(iv)
-      } else if (iv.start > newEnd + 0) {
+      } else if (iv.start > newEnd) {
         if (!inserted) {
           result.push({ start: newStart, end: newEnd })
           inserted = true
@@ -43,9 +42,10 @@ export class IntervalSet {
     if (start > end) {
       throw new Error(`Invalid interval: start (${start}) > end (${end})`)
     }
+    if (start === end) return
     const result: Interval[] = []
     for (const iv of this.intervals) {
-      if (iv.end < start || iv.start > end) {
+      if (iv.end <= start || iv.start >= end) {
         result.push(iv)
       } else {
         if (iv.start < start) {
@@ -59,16 +59,16 @@ export class IntervalSet {
     this.intervals = result
   }
 
-  contains(point: number): boolean {
+  has(point: number): boolean {
     for (const iv of this.intervals) {
-      if (point >= iv.start && point <= iv.end) {
+      if (point >= iv.start && point < iv.end) {
         return true
       }
     }
     return false
   }
 
-  containsInterval(start: number, end: number): boolean {
+  hasInterval(start: number, end: number): boolean {
     if (start > end) {
       throw new Error(`Invalid interval: start (${start}) > end (${end})`)
     }
@@ -85,38 +85,59 @@ export class IntervalSet {
       throw new Error(`Invalid interval: start (${start}) > end (${end})`)
     }
     for (const iv of this.intervals) {
-      if (start <= iv.end && end >= iv.start) {
+      if (start < iv.end && end > iv.start) {
         return true
       }
     }
     return false
   }
 
-  getIntervals(): [number, number][] {
-    return this.intervals.map((iv) => [iv.start, iv.end] as [number, number])
+  get isEmpty(): boolean {
+    return this.intervals.length === 0
   }
 
-  getSize(): number {
-    let total = 0
-    for (const iv of this.intervals) {
-      total += iv.end - iv.start
-    }
-    return total
-  }
-
-  getCount(): number {
+  get size(): number {
     return this.intervals.length
   }
 
-  isEmpty(): boolean {
-    return this.intervals.length === 0
+  toArray(): Array<[number, number]> {
+    return this.intervals.map((iv): [number, number] => [iv.start, iv.end])
+  }
+
+  forEach(callback: (start: number, end: number) => void): void {
+    for (const iv of this.intervals) {
+      callback(iv.start, iv.end)
+    }
   }
 
   clear(): void {
     this.intervals = []
   }
 
-  intersect(other: IntervalSet): IntervalSet {
+  clone(): IntervalSet {
+    const result = new IntervalSet()
+    result.intervals = this.intervals.slice()
+    return result
+  }
+
+  static from(intervals: Array<[number, number]>): IntervalSet {
+    const set = new IntervalSet()
+    for (const [start, end] of intervals) {
+      set.add(start, end)
+    }
+    return set
+  }
+
+  union(other: IntervalSet): IntervalSet {
+    const result = new IntervalSet()
+    result.intervals = this.intervals.slice()
+    for (const iv of other.intervals) {
+      result.intervals = result.mergeInterval(iv.start, iv.end)
+    }
+    return result
+  }
+
+  intersection(other: IntervalSet): IntervalSet {
     const result = new IntervalSet()
     let i = 0
     let j = 0
@@ -130,8 +151,6 @@ export class IntervalSet {
       const end = Math.min(ai.end, bj.end)
       if (start < end) {
         result.intervals.push({ start, end })
-      } else if (start === end) {
-        // zero-length intersection, skip
       }
       if (ai.end < bj.end) {
         i++
@@ -140,15 +159,6 @@ export class IntervalSet {
       }
     }
 
-    return result
-  }
-
-  union(other: IntervalSet): IntervalSet {
-    const result = new IntervalSet()
-    result.intervals = this.intervals.slice()
-    for (const iv of other.intervals) {
-      result.intervals = result.mergeInterval(iv.start, iv.end)
-    }
     return result
   }
 
@@ -161,59 +171,74 @@ export class IntervalSet {
     return result
   }
 
-  complement(min: number, max: number): IntervalSet {
-    const result = new IntervalSet()
-    let current = min
+  symmetricDifference(other: IntervalSet): IntervalSet {
+    return this.difference(other).union(other.difference(this))
+  }
 
+  get min(): number | undefined {
+    if (this.intervals.length === 0) return undefined
+    return this.intervals[0]!.start
+  }
+
+  get max(): number | undefined {
+    if (this.intervals.length === 0) return undefined
+    return this.intervals[this.intervals.length - 1]!.end
+  }
+
+  get totalCovered(): number {
+    let total = 0
     for (const iv of this.intervals) {
-      if (iv.start > current) {
-        result.intervals.push({ start: current, end: Math.min(iv.start, max) })
-      }
-      if (iv.end > current) {
-        current = iv.end
-      }
+      total += iv.end - iv.start
     }
-
-    if (current < max) {
-      result.intervals.push({ start: current, end: max })
-    }
-
-    return result
+    return total
   }
 
-  clone(): IntervalSet {
-    const result = new IntervalSet()
-    result.intervals = this.intervals.slice()
-    return result
-  }
-
-  equals(other: IntervalSet): boolean {
-    if (this.intervals.length !== other.intervals.length) {
-      return false
-    }
-    for (let i = 0; i < this.intervals.length; i++) {
-      const a = this.intervals[i]!!
-      const b = other.intervals[i]!!
-      if (a.start !== b.start || a.end !== b.end) {
-        return false
+  get stats(): IntervalSetStats {
+    const count = this.intervals.length
+    if (count === 0) {
+      return {
+        intervalCount: 0,
+        totalCovered: 0,
+        min: undefined,
+        max: undefined,
+        largestInterval: undefined,
+        smallestInterval: undefined,
+        averageIntervalSize: 0,
       }
     }
-    return true
-  }
 
-  forEach(callback: (start: number, end: number) => void): void {
-    for (const iv of this.intervals) {
-      callback(iv.start, iv.end)
-    }
-  }
+    let largestSize = -1
+    let smallestSize = Infinity
+    let largestIdx = 0
+    let smallestIdx = 0
 
-  static fromIntervals(intervals: [number, number][]): IntervalSet {
-    const set = new IntervalSet()
-    for (const [start, end] of intervals) {
-      set.add(start, end)
+    for (let i = 0; i < count; i++) {
+      const iv = this.intervals[i]!
+      const sz = iv.end - iv.start
+      if (sz > largestSize) {
+        largestSize = sz
+        largestIdx = i
+      }
+      if (sz < smallestSize) {
+        smallestSize = sz
+        smallestIdx = i
+      }
     }
-    return set
+
+    const largest = this.intervals[largestIdx]!
+    const smallest = this.intervals[smallestIdx]!
+    const total = this.totalCovered
+
+    return {
+      intervalCount: count,
+      totalCovered: total,
+      min: this.intervals[0]!.start,
+      max: this.intervals[count - 1]!.end,
+      largestInterval: [largest.start, largest.end],
+      smallestInterval: [smallest.start, smallest.end],
+      averageIntervalSize: count > 0 ? total / count : 0,
+    }
   }
 }
 
-export type { Interval } from './types.js'
+export type { Interval, IntervalSetStats } from './types.js'

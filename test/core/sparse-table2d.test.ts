@@ -899,4 +899,158 @@ describe('SparseTable2D', () => {
       expect(_opts).toBeDefined()
     })
   })
+
+  describe('additional coverage', () => {
+    it('queryMin on 2x3 matrix all positions', () => {
+      const matrix = [[5, 3, 8], [1, 4, 2]]
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 2; r1++) {
+        for (let c1 = 0; c1 < 3; c1++) {
+          for (let r2 = r1; r2 < 2; r2++) {
+            for (let c2 = c1; c2 < 3; c2++) {
+              expect(st.queryMin(r1, c1, r2, c2)).toBe(bruteForceMin(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('queryMax on 3x2 matrix all positions', () => {
+      const matrix = [[5, 3], [8, 1], [4, 2]]
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 3; r1++) {
+        for (let c1 = 0; c1 < 2; c1++) {
+          for (let r2 = r1; r2 < 3; r2++) {
+            for (let c2 = c1; c2 < 2; c2++) {
+              expect(st.queryMax(r1, c1, r2, c2)).toBe(bruteForceMax(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('querySum on 2x4 matrix all positions', () => {
+      const matrix = [[1, 2, 3, 4], [5, 6, 7, 8]]
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 2; r1++) {
+        for (let c1 = 0; c1 < 4; c1++) {
+          for (let r2 = r1; r2 < 2; r2++) {
+            for (let c2 = c1; c2 < 4; c2++) {
+              expect(st.querySum(r1, c1, r2, c2)).toBe(bruteForceSum(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('queryGcd on 2x3 matrix all positions', () => {
+      const matrix = [[6, 9, 12], [15, 18, 21]]
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 2; r1++) {
+        for (let c1 = 0; c1 < 3; c1++) {
+          for (let r2 = r1; r2 < 2; r2++) {
+            for (let c2 = c1; c2 < 3; c2++) {
+              expect(st.queryGcd(r1, c1, r2, c2)).toBe(bruteForceGcd(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('get every cell of 3x3 matrix', () => {
+      const st = new SparseTable2D([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          expect(st.get(i, j)).toBe(i * 3 + j + 1)
+        }
+      }
+    })
+
+    it('clone of empty table', () => {
+      const st = new SparseTable2D([])
+      const cloned = st.clone()
+      expect(cloned.rows).toBe(0)
+      expect(cloned.cols).toBe(0)
+      expect(cloned.toArray()).toEqual([])
+    })
+
+    it('from factory with non-square matrix', () => {
+      const st = SparseTable2D.from([[1, 2, 3, 4], [5, 6, 7, 8]])
+      expect(st.rows).toBe(2)
+      expect(st.cols).toBe(4)
+      expect(st.querySum(0, 0, 1, 3)).toBe(36)
+    })
+
+    it('single cell queries match get', () => {
+      const matrix = [[3, 7, 1], [9, 4, 6], [2, 8, 5]]
+      const st = new SparseTable2D(matrix)
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          expect(st.queryMin(i, j, i, j)).toBe(st.get(i, j))
+          expect(st.queryMax(i, j, i, j)).toBe(st.get(i, j))
+          expect(st.querySum(i, j, i, j)).toBe(st.get(i, j))
+          expect(st.queryGcd(i, j, i, j)).toBe(st.get(i, j))
+        }
+      }
+    })
+
+    it('handles 5x5 matrix with min exhaustive', () => {
+      const matrix = Array.from({ length: 5 }, () =>
+        Array.from({ length: 5 }, () => Math.floor(Math.random() * 100))
+      )
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 5; r1++) {
+        for (let c1 = 0; c1 < 5; c1++) {
+          for (let r2 = r1; r2 < 5; r2++) {
+            for (let c2 = c1; c2 < 5; c2++) {
+              expect(st.queryMin(r1, c1, r2, c2)).toBe(bruteForceMin(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('handles 5x5 matrix with gcd exhaustive', () => {
+      const matrix = Array.from({ length: 5 }, () =>
+        Array.from({ length: 5 }, () => Math.floor(Math.random() * 50) + 1)
+      )
+      const st = new SparseTable2D(matrix)
+      for (let r1 = 0; r1 < 5; r1++) {
+        for (let c1 = 0; c1 < 5; c1++) {
+          for (let r2 = r1; r2 < 5; r2++) {
+            for (let c2 = c1; c2 < 5; c2++) {
+              expect(st.queryGcd(r1, c1, r2, c2)).toBe(bruteForceGcd(matrix, r1, c1, r2, c2))
+            }
+          }
+        }
+      }
+    })
+
+    it('toArray returns deep copy for 3x3', () => {
+      const original = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+      const st = new SparseTable2D(original)
+      const arr = st.toArray()
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          expect(arr[i]![j]).toBe(original[i]![j])
+        }
+      }
+    })
+
+    it('stats for 1x5 matrix', () => {
+      const st = new SparseTable2D([[10, 20, 30, 40, 50]])
+      const s = st.stats()
+      expect(s.rows).toBe(1)
+      expect(s.cols).toBe(5)
+      expect(s.totalElements).toBe(5)
+    })
+
+    it('stats for 5x1 matrix', () => {
+      const st = new SparseTable2D([[10], [20], [30], [40], [50]])
+      const s = st.stats()
+      expect(s.rows).toBe(5)
+      expect(s.cols).toBe(1)
+      expect(s.totalElements).toBe(5)
+    })
+  })
 })

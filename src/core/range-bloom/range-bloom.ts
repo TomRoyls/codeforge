@@ -158,44 +158,40 @@ export class RangeBloomFilter {
   }
 
   has(value: number): boolean {
-    const key = `0:${value}`
+    const key = `0:${Math.floor(value)}`
     return this.layers[0]!.has(key)
   }
 
   hasRange(lo: number, hi: number): boolean {
     if (lo > hi) return false
     if (lo === hi) return this.has(lo)
+    return this.checkRange(lo, hi, this._layerCount - 1)
+  }
 
-    const range = hi - lo
-
-    for (let layer = this._layerCount - 1; layer >= 0; layer--) {
-      const bucketSize = Math.pow(this._granularity, layer)
-      const loBucket = Math.floor(lo / bucketSize)
-      const hiBucket = Math.floor(hi / bucketSize)
-      const bucketsNeeded = hiBucket - loBucket + 1
-
-      const maxScan = Math.max(10, range)
-      if (bucketsNeeded <= maxScan) {
-        for (let b = loBucket; b <= hiBucket; b++) {
-          const key = `${layer}:${b}`
-          if (this.layers[layer]!.has(key)) {
-            return true
-          }
-        }
-        if (layer > 0) continue
-        return false
-      }
-    }
-
-    const maxExactCheck = 100
-    if (range <= maxExactCheck) {
+  private checkRange(lo: number, hi: number, layer: number): boolean {
+    if (layer < 0) {
       for (let v = lo; v <= hi; v++) {
-        if (this.has(v)) {
-          return true
-        }
+        if (this.has(v)) return true
       }
+      return false
     }
 
+    const divisor = Math.pow(this._granularity, layer)
+    const loBucket = Math.floor(lo / divisor)
+    const hiBucket = Math.floor(hi / divisor)
+
+    if (loBucket === hiBucket) {
+      if (!this.layers[layer]!.has(`${layer}:${loBucket}`)) return false
+      return this.checkRange(lo, hi, layer - 1)
+    }
+
+    for (let b = loBucket; b <= hiBucket; b++) {
+      if (this.layers[layer]!.has(`${layer}:${b}`)) {
+        const subLo = Math.max(lo, b * divisor)
+        const subHi = Math.min(hi, (b + 1) * divisor - 1)
+        if (this.checkRange(subLo, subHi, layer - 1)) return true
+      }
+    }
     return false
   }
 

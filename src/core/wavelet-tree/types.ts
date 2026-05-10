@@ -1,15 +1,26 @@
-export interface WaveletNode {
+export interface WaveletTreeNode {
   bitvector: number[]
   rankPrefix: number[]
-  left: WaveletNode | null
-  right: WaveletNode | null
+  left: WaveletTreeNode | null
+  right: WaveletTreeNode | null
   lo: number
   hi: number
 }
 
-export interface WaveletTreeData {
-  root: WaveletNode | null
-  dataSize: number
-  alphabet: number[]
-  symbolToIndex: Map<number, number>
+export interface WaveletTreeOptions {
+  alphabet?: number[]
+}
+
+export interface RankAllResult {
+  rankLess: number
+  rankEqual: number
+  rankGreater: number
+}
+
+export interface WaveletTreeStats {
+  length: number
+  alphabetSize: number
+  height: number
+  nodeCount: number
+  totalBits: number
 }

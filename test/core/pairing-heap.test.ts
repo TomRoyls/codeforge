@@ -1201,4 +1201,220 @@ describe('PairingHeap', () => {
       expect(opts).toBeDefined()
     })
   })
+
+  describe('findMin', () => {
+    it('should return undefined on empty heap', () => {
+      expect(heap.findMin()).toBeUndefined()
+    })
+
+    it('should return min element without removing', () => {
+      heap.insert(5)
+      heap.insert(3)
+      heap.insert(7)
+      expect(heap.findMin()).toBe(3)
+      expect(heap.size()).toBe(3)
+    })
+
+    it('should update after insert', () => {
+      heap.insert(10)
+      expect(heap.findMin()).toBe(10)
+      heap.insert(5)
+      expect(heap.findMin()).toBe(5)
+    })
+
+    it('should update after extractMin', () => {
+      heap.insert(1)
+      heap.insert(2)
+      heap.insert(3)
+      heap.extractMin()
+      expect(heap.findMin()).toBe(2)
+    })
+
+    it('should handle single element', () => {
+      heap.insert(42)
+      expect(heap.findMin()).toBe(42)
+    })
+
+    it('should return same element on repeated calls', () => {
+      heap.insert(5)
+      expect(heap.findMin()).toBe(heap.findMin())
+    })
+  })
+
+  describe('static from', () => {
+    it('should create heap from array', () => {
+      const h = PairingHeap.from([5, 3, 1, 4, 2])
+      expect(h.size()).toBe(5)
+      expect(h.peek()).toBe(1)
+    })
+
+    it('should create heap from empty array', () => {
+      const h = PairingHeap.from<number>([])
+      expect(h.size()).toBe(0)
+      expect(h.isEmpty()).toBe(true)
+    })
+
+    it('should create heap from single element', () => {
+      const h = PairingHeap.from([42])
+      expect(h.size()).toBe(1)
+      expect(h.peek()).toBe(42)
+    })
+
+    it('should accept custom comparator', () => {
+      const h = PairingHeap.from([1, 5, 3], { comparator: (a, b) => b - a })
+      expect(h.peek()).toBe(5)
+    })
+
+    it('should extract in sorted order', () => {
+      const h = PairingHeap.from([5, 3, 7, 1, 4, 6, 2, 8])
+      const result: number[] = []
+      while (!h.isEmpty()) {
+        result.push(h.extractMin()!)
+      }
+      expect(result).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+    })
+
+    it('should create heap from iterable', () => {
+      function* gen() {
+        yield 3
+        yield 1
+        yield 2
+      }
+      const h = PairingHeap.from(gen())
+      expect(h.size()).toBe(3)
+      expect(h.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('should handle duplicates', () => {
+      const h = PairingHeap.from([1, 1, 2, 2, 3])
+      expect(h.size()).toBe(5)
+      expect(h.toArray()).toEqual([1, 1, 2, 2, 3])
+    })
+
+    it('should handle string values', () => {
+      const h = PairingHeap.from(['cherry', 'apple', 'banana'], {
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      expect(h.peek()).toBe('apple')
+    })
+
+    it('should handle large arrays', () => {
+      const items = Array.from({ length: 1000 }, (_, i) => 1000 - i)
+      const h = PairingHeap.from(items)
+      expect(h.size()).toBe(1000)
+      expect(h.peek()).toBe(1)
+    })
+  })
+
+  describe('toSortedArray', () => {
+    it('should return empty array for empty heap', () => {
+      expect(heap.toSortedArray()).toEqual([])
+    })
+
+    it('should return single element', () => {
+      heap.insert(5)
+      expect(heap.toSortedArray()).toEqual([5])
+    })
+
+    it('should return sorted elements', () => {
+      heap.insert(5)
+      heap.insert(3)
+      heap.insert(7)
+      heap.insert(1)
+      expect(heap.toSortedArray()).toEqual([1, 3, 5, 7])
+    })
+
+    it('should not modify original heap', () => {
+      heap.insert(3)
+      heap.insert(1)
+      heap.toSortedArray()
+      expect(heap.size()).toBe(2)
+      expect(heap.peek()).toBe(1)
+    })
+
+    it('should return sorted after many inserts', () => {
+      for (let i = 10; i >= 1; i--) {
+        heap.insert(i)
+      }
+      expect(heap.toSortedArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    })
+
+    it('should work with custom comparator', () => {
+      const maxHeap = new PairingHeap<number>({
+        comparator: (a, b) => b - a,
+      })
+      maxHeap.insert(1)
+      maxHeap.insert(5)
+      maxHeap.insert(3)
+      expect(maxHeap.toSortedArray()).toEqual([5, 3, 1])
+    })
+  })
+
+  describe('stats', () => {
+    it('should return stats for empty heap', () => {
+      const s = heap.stats()
+      expect(s.size).toBe(0)
+      expect(s.height).toBe(0)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should return stats for single element', () => {
+      heap.insert(1)
+      const s = heap.stats()
+      expect(s.size).toBe(1)
+      expect(s.height).toBe(1)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should return stats for multi-element heap', () => {
+      heap.insert(5)
+      heap.insert(3)
+      heap.insert(7)
+      heap.insert(1)
+      const s = heap.stats()
+      expect(s.size).toBe(4)
+      expect(s.height).toBeGreaterThan(0)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should update stats after extractMin', () => {
+      heap.insert(1)
+      heap.insert(2)
+      heap.insert(3)
+      heap.extractMin()
+      const s = heap.stats()
+      expect(s.size).toBe(2)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should update stats after clear', () => {
+      heap.insert(1)
+      heap.insert(2)
+      heap.clear()
+      const s = heap.stats()
+      expect(s.size).toBe(0)
+      expect(s.height).toBe(0)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should update stats after merge', () => {
+      heap.insert(5)
+      const other = new PairingHeap<number>()
+      other.insert(3)
+      other.insert(7)
+      heap.merge(other)
+      const s = heap.stats()
+      expect(s.size).toBe(3)
+      expect(s.isValid).toBe(true)
+    })
+
+    it('should reflect valid state after decreaseKey', () => {
+      heap.insert(1)
+      const node = heap.insert(10)
+      heap.decreaseKey(node, 0)
+      const s = heap.stats()
+      expect(s.size).toBe(2)
+      expect(s.isValid).toBe(true)
+    })
+  })
 })

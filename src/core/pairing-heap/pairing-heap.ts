@@ -124,6 +124,30 @@ export class PairingHeap<T = number> {
     return this.validateSubtree(this.root)
   }
 
+  findMin(): T | undefined {
+    return this.root?.value
+  }
+
+  toSortedArray(): T[] {
+    return this.toArray()
+  }
+
+  static from<T>(items: Iterable<T>, options?: PairingHeapOptions<T>): PairingHeap<T> {
+    const heap = new PairingHeap<T>(options)
+    for (const item of items) {
+      heap.insert(item)
+    }
+    return heap
+  }
+
+  stats(): { size: number; height: number; isValid: boolean } {
+    return {
+      size: this._size,
+      height: this.computeHeight(this.root),
+      isValid: this.isValid(),
+    }
+  }
+
   private mergeNodes(
     a: PairingHeapNode<T> | null,
     b: PairingHeapNode<T> | null,
@@ -197,6 +221,16 @@ export class PairingHeap<T = number> {
       copy.children.push(this.cloneNode(child, copy))
     }
     return copy
+  }
+
+  private computeHeight(node: PairingHeapNode<T> | null): number {
+    if (node === null) return 0
+    let maxChildHeight = 0
+    for (const child of node.children) {
+      const h = this.computeHeight(child)
+      if (h > maxChildHeight) maxChildHeight = h
+    }
+    return 1 + maxChildHeight
   }
 
   private validateSubtree(node: PairingHeapNode<T>): boolean {

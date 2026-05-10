@@ -1,4 +1,4 @@
-import type { SpacePartitionTreeOptions, SpatialItem, SpaceNode } from './types.js'
+import type { SpatialItem, SpaceNode } from './types.js'
 import { DEFAULT_MAX_DEPTH, DEFAULT_MAX_ITEMS } from './types.js'
 
 export class SpacePartitionTree<T = unknown> {
