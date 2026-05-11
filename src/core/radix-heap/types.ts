@@ -1,14 +1,12 @@
-export interface RadixHeapEntry {
+export interface RadixHeapOptions<T> {
+  keyExtractor?: (value: T) => number
+  radix?: number
+}
+
+export interface RadixHeapNode<T> {
   key: number
-  value: number
+  value: T
+  bucket: number
+  prev: RadixHeapNode<T> | null
+  next: RadixHeapNode<T> | null
 }
-
-export interface RadixBucket {
-  entries: RadixHeapEntry[]
-}
-
-export const DEFAULT_RADIX_HEAP_OPTIONS = {
-  maxKey: Math.pow(2, 32) - 1,
-} as const
-
-export type RadixHeapOptions = typeof DEFAULT_RADIX_HEAP_OPTIONS
