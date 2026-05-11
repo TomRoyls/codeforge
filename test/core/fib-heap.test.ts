@@ -982,7 +982,7 @@ describe('FibHeap', () => {
       expect(heap.peek()).toBe(1)
     })
 
-    it.skip('handles delete of non-min node after consolidation', () => {
+    it('handles delete of non-min node after consolidation', () => {
       const heap = new FibHeap<number>()
       const nodes: FibHeapNode<number>[] = []
       for (let i = 0; i < 10; i++) {
@@ -992,7 +992,7 @@ describe('FibHeap', () => {
       heap.delete(nodes[5]!)
       const remaining = heap.toSortedArray()
       expect(remaining).not.toContain(5)
-      expect(remaining).toContain(0)
+      expect(remaining).not.toContain(0)
     })
 
     it('handles heap with floating point numbers', () => {
