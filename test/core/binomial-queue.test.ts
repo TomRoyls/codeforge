@@ -211,7 +211,7 @@ describe('BinomialQueue', () => {
     })
   })
 
-  describe.skip('merge', () => {
+  describe('merge', () => {
     it('should merge two non-empty queues', () => {
       const q1 = new BinomialQueue<number>()
       q1.push(1)
@@ -407,7 +407,7 @@ describe('BinomialQueue', () => {
     })
   })
 
-  describe.skip('remove', () => {
+  describe('remove', () => {
     it('should remove existing item', () => {
       const q = new BinomialQueue<number>()
       q.push(1)
@@ -860,7 +860,7 @@ describe('BinomialQueue', () => {
   })
 
   describe('interleaved operations', () => {
-    it.skip('should handle push, pop, merge, remove sequence', () => {
+    it('should handle push, pop, merge, remove sequence', () => {
       const q1 = new BinomialQueue<number>()
       const q2 = new BinomialQueue<number>()
       q1.push(5)
