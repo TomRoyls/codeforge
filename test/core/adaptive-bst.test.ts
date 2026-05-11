@@ -1330,7 +1330,7 @@ describe('AdaptiveBST', () => {
       expect(tree.isValid()).toBe(true)
     })
 
-    it.skip('mixed operations maintain validity', () => {
+    it('mixed operations maintain validity', () => {
       const tree = new AdaptiveBST<number>()
       for (let i = 0; i < 50; i++) tree.insert(i)
       for (let i = 0; i < 25; i++) tree.delete(i)
