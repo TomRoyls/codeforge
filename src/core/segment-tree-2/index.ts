@@ -1,0 +1,314 @@
+import type { SegmentTree2Options, ForEachCallback } from './types.js'
+
+const defaultMerge = (a: number, b: number): number => a + b
+const defaultIdentity = 0
+
+export class SegmentTree2<T = number> {
+  private tree: T[]
+  private lazy: T[]
+  private _data: T[]
+  private _n: number
+  private merge: (a: T, b: T) => T
+  private identity: T
+
+  constructor(arr: T[], options?: SegmentTree2Options<T>) {
+    this._data = arr.slice()
+    this._n = arr.length
+    this.merge = options?.merge ?? (defaultMerge as unknown as (a: T, b: T) => T)
+    this.identity = options?.identity ?? (defaultIdentity as unknown as T)
+    const size = this._n === 0 ? 1 : 4 * this._n
+    this.tree = new Array<T>(size)
+    this.lazy = new Array<T>(size)
+    for (let i = 0; i < size; i++) {
+      this.tree[i] = this.identity
+      this.lazy[i] = this.identity
+    }
+    if (this._n > 0) {
+      this.buildTree(1, 0, this._n - 1)
+    }
+  }
+
+  private buildTree(node: number, start: number, end: number): void {
+    if (start === end) {
+      this.tree[node] = this._data[start]!
+      return
+    }
+    const mid = Math.floor((start + end) / 2)
+    this.buildTree(node * 2, start, mid)
+    this.buildTree(node * 2 + 1, mid + 1, end)
+    this.tree[node] = this.merge(this.tree[node * 2]!, this.tree[node * 2 + 1]!)
+  }
+
+  private pushDown(node: number, start: number, end: number): void {
+    if (this.lazy[node] === this.identity) return
+    const mid = Math.floor((start + end) / 2)
+    const left = node * 2
+    const right = node * 2 + 1
+    const lazyVal = this.lazy[node]!
+    const leftLen = mid - start + 1
+    const rightLen = end - mid
+    this.lazy[left] = this.merge(this.lazy[left]!, lazyVal)
+    this.lazy[right] = this.merge(this.lazy[right]!, lazyVal)
+    let leftAccum: T = this.identity
+    for (let i = 0; i < leftLen; i++) {
+      leftAccum = this.merge(leftAccum, lazyVal)
+    }
+    this.tree[left] = this.merge(this.tree[left]!, leftAccum)
+    let rightAccum: T = this.identity
+    for (let i = 0; i < rightLen; i++) {
+      rightAccum = this.merge(rightAccum, lazyVal)
+    }
+    this.tree[right] = this.merge(this.tree[right]!, rightAccum)
+    this.lazy[node] = this.identity
+  }
+
+  private queryRange(node: number, start: number, end: number, l: number, r: number): T {
+    if (r < start || l > end) {
+      return this.identity
+    }
+    if (l <= start && end <= r) {
+      return this.tree[node]!
+    }
+    this.pushDown(node, start, end)
+    const mid = Math.floor((start + end) / 2)
+    const leftResult = this.queryRange(node * 2, start, mid, l, r)
+    const rightResult = this.queryRange(node * 2 + 1, mid + 1, end, l, r)
+    return this.merge(leftResult, rightResult)
+  }
+
+  private updatePoint(node: number, start: number, end: number, index: number, value: T): void {
+    if (start === end) {
+      this.tree[node] = value
+      this._data[index] = value
+      return
+    }
+    this.pushDown(node, start, end)
+    const mid = Math.floor((start + end) / 2)
+    if (index <= mid) {
+      this.updatePoint(node * 2, start, mid, index, value)
+    } else {
+      this.updatePoint(node * 2 + 1, mid + 1, end, index, value)
+    }
+    this.tree[node] = this.merge(this.tree[node * 2]!, this.tree[node * 2 + 1]!)
+  }
+
+  private updateRange(node: number, start: number, end: number, l: number, r: number, value: T): void {
+    if (r < start || l > end) return
+    if (l <= start && end <= r) {
+      const len = end - start + 1
+      let accum: T = this.identity
+      for (let i = 0; i < len; i++) {
+        accum = this.merge(accum, value)
+      }
+      this.tree[node] = this.merge(this.tree[node]!, accum)
+      this.lazy[node] = this.merge(this.lazy[node]!, value)
+      return
+    }
+    this.pushDown(node, start, end)
+    const mid = Math.floor((start + end) / 2)
+    this.updateRange(node * 2, start, mid, l, r, value)
+    this.updateRange(node * 2 + 1, mid + 1, end, l, r, value)
+    this.tree[node] = this.merge(this.tree[node * 2]!, this.tree[node * 2 + 1]!)
+  }
+
+  private getPoint(node: number, start: number, end: number, index: number): T {
+    if (start === end) {
+      return this.tree[node]!
+    }
+    this.pushDown(node, start, end)
+    const mid = Math.floor((start + end) / 2)
+    if (index <= mid) {
+      return this.getPoint(node * 2, start, mid, index)
+    }
+    return this.getPoint(node * 2 + 1, mid + 1, end, index)
+  }
+
+  private flushAll(node: number, start: number, end: number): void {
+    if (start === end) {
+      this._data[start] = this.tree[node]!
+      return
+    }
+    this.pushDown(node, start, end)
+    const mid = Math.floor((start + end) / 2)
+    this.flushAll(node * 2, start, mid)
+    this.flushAll(node * 2 + 1, mid + 1, end)
+  }
+
+  query(l: number, r: number): T {
+    if (this._n === 0) {
+      throw new RangeError('Cannot query empty tree')
+    }
+    if (l < 0 || r > this._n || l >= r) {
+      throw new RangeError(`Invalid range [${l}, ${r}) for size ${this._n}`)
+    }
+    if (l === r) return this.identity
+    return this.queryRange(1, 0, this._n - 1, l, r - 1)
+  }
+
+  update(index: number, value: T): void {
+    if (index < 0 || index >= this._n) {
+      throw new RangeError(`Index ${index} out of bounds [0, ${this._n})`)
+    }
+    this.updatePoint(1, 0, this._n - 1, index, value)
+  }
+
+  rangeUpdate(l: number, r: number, value: T): void {
+    if (this._n === 0) return
+    if (l === r) return
+    if (l < 0 || r > this._n || l > r) {
+      throw new RangeError(`Invalid range [${l}, ${r}) for size ${this._n}`)
+    }
+    this.updateRange(1, 0, this._n - 1, l, r - 1, value)
+  }
+
+  get(index: number): T {
+    if (index < 0 || index >= this._n) {
+      throw new RangeError(`Index ${index} out of bounds [0, ${this._n})`)
+    }
+    return this.getPoint(1, 0, this._n - 1, index)
+  }
+
+  set(index: number, value: T): void {
+    this.update(index, value)
+  }
+
+  get size(): number {
+    return this._n
+  }
+
+  get isEmpty(): boolean {
+    return this._n === 0
+  }
+
+  toArray(): T[] {
+    if (this._n === 0) return []
+    this.flushAll(1, 0, this._n - 1)
+    return this._data.slice()
+  }
+
+  clone(): SegmentTree2<T> {
+    const copy = new SegmentTree2<T>([], {
+      merge: this.merge,
+      identity: this.identity,
+    })
+    copy._data = this._data.slice()
+    copy._n = this._n
+    copy.tree = this.tree.slice()
+    copy.lazy = this.lazy.slice()
+    return copy
+  }
+
+  clear(): void {
+    this._data = []
+    this._n = 0
+    this.tree = [this.identity]
+    this.lazy = [this.identity]
+  }
+
+  static fromArray<U>(arr: U[], options?: SegmentTree2Options<U>): SegmentTree2<U> {
+    return new SegmentTree2<U>(arr, options)
+  }
+
+  forEach(callback: ForEachCallback<T>): void {
+    for (let i = 0; i < this._n; i++) {
+      callback(this.getPoint(1, 0, this._n - 1, i), i)
+    }
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    for (let i = 0; i < this._n; i++) {
+      yield this.getPoint(1, 0, this._n - 1, i)
+    }
+  }
+
+  first(): T {
+    if (this._n === 0) {
+      throw new RangeError('Cannot get first element of empty tree')
+    }
+    return this.getPoint(1, 0, this._n - 1, 0)
+  }
+
+  last(): T {
+    if (this._n === 0) {
+      throw new RangeError('Cannot get last element of empty tree')
+    }
+    return this.getPoint(1, 0, this._n - 1, this._n - 1)
+  }
+
+  indexOf(value: T): number {
+    for (let i = 0; i < this._n; i++) {
+      if (this.getPoint(1, 0, this._n - 1, i) === value) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  indexOfRange(l: number, r: number, value: T): number {
+    if (l < 0 || r > this._n || l >= r) {
+      throw new RangeError(`Invalid range [${l}, ${r}) for size ${this._n}`)
+    }
+    for (let i = l; i < r; i++) {
+      if (this.getPoint(1, 0, this._n - 1, i) === value) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  min(): T {
+    if (this._n === 0) {
+      throw new RangeError('Cannot get min of empty tree')
+    }
+    let result = this.getPoint(1, 0, this._n - 1, 0)
+    for (let i = 1; i < this._n; i++) {
+      const val = this.getPoint(1, 0, this._n - 1, i)
+      if (val < result) {
+        result = val
+      }
+    }
+    return result
+  }
+
+  max(): T {
+    if (this._n === 0) {
+      throw new RangeError('Cannot get max of empty tree')
+    }
+    let result = this.getPoint(1, 0, this._n - 1, 0)
+    for (let i = 1; i < this._n; i++) {
+      const val = this.getPoint(1, 0, this._n - 1, i)
+      if (val > result) {
+        result = val
+      }
+    }
+    return result
+  }
+
+  sum(): T {
+    if (this._n === 0) return this.identity
+    return this.queryRange(1, 0, this._n - 1, 0, this._n - 1)
+  }
+
+  prefixSum(n: number): T {
+    if (n < 0 || n > this._n) {
+      throw new RangeError(`Invalid prefix length ${n} for size ${this._n}`)
+    }
+    if (n === 0) return this.identity
+    return this.queryRange(1, 0, this._n - 1, 0, n - 1)
+  }
+
+  build(arr: T[]): void {
+    this._data = arr.slice()
+    this._n = arr.length
+    const size = this._n === 0 ? 1 : 4 * this._n
+    this.tree = new Array<T>(size)
+    this.lazy = new Array<T>(size)
+    for (let i = 0; i < size; i++) {
+      this.tree[i] = this.identity
+      this.lazy[i] = this.identity
+    }
+    if (this._n > 0) {
+      this.buildTree(1, 0, this._n - 1)
+    }
+  }
+}
