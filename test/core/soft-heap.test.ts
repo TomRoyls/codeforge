@@ -121,7 +121,7 @@ describe('SoftHeap', () => {
       expect(heap.size()).toBe(2)
     })
 
-    it.skip('should handle object items with comparator', () => {
+    it('should handle object items with comparator', () => {
       const heap = new SoftHeap<{ id: number }>({
         comparator: (a, b) => a.id - b.id,
       })
@@ -578,7 +578,7 @@ describe('SoftHeap', () => {
       expect(cloned.errorRate).toBe(0.5)
     })
 
-    it.skip('should clone heap with custom comparator', () => {
+    it('should clone heap with custom comparator', () => {
       const heap = new SoftHeap<{ val: number }>({
         comparator: (a, b) => a.val - b.val,
       })
@@ -901,7 +901,7 @@ describe('SoftHeap', () => {
       expect(extracted.length).toBe(1000)
     })
 
-    it.skip('should handle large dataset with custom comparator', () => {
+    it('should handle large dataset with custom comparator', () => {
       const heap = new SoftHeap<{ id: number }>({
         comparator: (a, b) => a.id - b.id,
       })
@@ -934,7 +934,7 @@ describe('SoftHeap', () => {
   })
 
   describe('custom comparator', () => {
-    it.skip('should sort objects by property', () => {
+    it('should sort objects by property', () => {
       const heap = new SoftHeap<{ val: number }>({
         comparator: (a, b) => a.val - b.val,
       })
@@ -958,7 +958,7 @@ describe('SoftHeap', () => {
       expect(results.length).toBe(3)
     })
 
-    it.skip('should handle string comparator', () => {
+    it('should handle string comparator', () => {
       const heap = new SoftHeap<string>({
         comparator: (a, b) => a.length - b.length,
       })
@@ -970,7 +970,7 @@ describe('SoftHeap', () => {
       expect(results.map((s) => s.length).sort((a, b) => a - b)).toEqual([1, 2, 3])
     })
 
-    it.skip('should handle complex objects', () => {
+    it('should handle complex objects', () => {
       interface Item {
         priority: number
         name: string
