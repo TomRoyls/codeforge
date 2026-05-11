@@ -1,0 +1,166 @@
+import type { RMQComparator, RMQResult } from "./types.js"
+
+const defaultComparator: RMQComparator<number> = (a, b) => a - b
+
+export class RangeMinimumQuery<T = number> {
+  private readonly _data: T[]
+  private readonly _comparator: RMQComparator<T>
+  private readonly _table: number[][]
+  private _log: number[]
+
+  constructor(data: T[], comparator?: RMQComparator<T>) {
+    this._data = [...data]
+    this._comparator = (comparator ?? defaultComparator) as RMQComparator<T>
+    this._table = []
+    this._log = []
+
+    const n = this._data.length
+    if (n === 0) {
+      return
+    }
+
+    this._log = new Array<number>(n + 1)
+    this._log[0] = 0
+    if (n >= 1) {
+      this._log[1] = 0
+    }
+    for (let i = 2; i <= n; i++) {
+      this._log[i] = (this._log[Math.floor(i / 2)] ?? 0) + 1
+    }
+
+    const maxLog = this._log[n] ?? 0
+    this._table = new Array<number[]>(maxLog + 1)
+
+    this._table[0] = Array.from({ length: n }, (_, i) => i)
+
+    for (let k = 1; k <= maxLog; k++) {
+      const prev = this._table[k - 1]!
+      const len = n - (1 << k) + 1
+      const row = new Array<number>(len)
+      const step = 1 << (k - 1)
+      for (let i = 0; i < len; i++) {
+        const idxA = prev[i]!
+        const idxB = prev[i + step]!
+        const valA = this._data[idxA]!
+        const valB = this._data[idxB]!
+        row[i] = this._comparator(valA, valB) <= 0 ? idxA : idxB
+      }
+      this._table[k] = row
+    }
+  }
+
+  query(left: number, right: number): RMQResult<T> {
+    const n = this._data.length
+    if (n === 0) {
+      throw new RangeError("Cannot query empty RangeMinimumQuery")
+    }
+    if (left < 0 || right >= n || left > right) {
+      throw new RangeError(
+        `Invalid range [${left}, ${right}] for array of length ${n}`,
+      )
+    }
+
+    const len = right - left + 1
+    const k = this._log[len] ?? 0
+    const row = this._table[k]!
+
+    const idxA = row[left]!
+    const idxB = row[right - (1 << k) + 1]!
+    const valA = this._data[idxA]!
+    const valB = this._data[idxB]!
+    const bestIdx = this._comparator(valA, valB) <= 0 ? idxA : idxB
+
+    return { value: this._data[bestIdx]!, index: bestIdx }
+  }
+
+  update(index: number, value: T): void {
+    const n = this._data.length
+    if (index < 0 || index >= n) {
+      throw new RangeError(
+        `Index ${index} out of bounds for array of length ${n}`,
+      )
+    }
+
+    this._data[index] = value
+    this._rebuild()
+  }
+
+  private _rebuild(): void {
+    const n = this._data.length
+    if (n === 0) {
+      this._table.length = 0
+      this._log.length = 0
+      return
+    }
+
+    this._log = new Array<number>(n + 1)
+    this._log[0] = 0
+    if (n >= 1) {
+      this._log[1] = 0
+    }
+    for (let i = 2; i <= n; i++) {
+      this._log[i] = (this._log[Math.floor(i / 2)] ?? 0) + 1
+    }
+
+    const maxLog = this._log[n] ?? 0
+    this._table.length = 0
+    this._table[0] = Array.from({ length: n }, (_, i) => i)
+
+    for (let k = 1; k <= maxLog; k++) {
+      const prev = this._table[k - 1]!
+      const len = n - (1 << k) + 1
+      const row = new Array<number>(len)
+      const step = 1 << (k - 1)
+      for (let i = 0; i < len; i++) {
+        const idxA = prev[i]!
+        const idxB = prev[i + step]!
+        const valA = this._data[idxA]!
+        const valB = this._data[idxB]!
+        row[i] = this._comparator(valA, valB) <= 0 ? idxA : idxB
+      }
+      this._table[k] = row
+    }
+  }
+
+  size(): number {
+    return this._data.length
+  }
+
+  isEmpty(): boolean {
+    return this._data.length === 0
+  }
+
+  toArray(): T[] {
+    return [...this._data]
+  }
+
+  clone(): RangeMinimumQuery<T> {
+    return new RangeMinimumQuery<T>(this._data, this._comparator)
+  }
+
+  getComparator(): RMQComparator<T> {
+    return this._comparator
+  }
+
+  getValue(index: number): T {
+    if (index < 0 || index >= this._data.length) {
+      throw new RangeError(
+        `Index ${index} out of bounds for array of length ${this._data.length}`,
+      )
+    }
+    return this._data[index]!
+  }
+
+  forEach(callback: (value: T, index: number) => void): void {
+    for (let i = 0; i < this._data.length; i++) {
+      const val = this._data[i]!
+      callback(val, i)
+    }
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    for (let i = 0; i < this._data.length; i++) {
+      yield this._data[i]!
+    }
+  }
+}
