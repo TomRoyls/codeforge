@@ -1,0 +1,347 @@
+import type { MedianHeapOptions } from './types.js'
+
+export class MedianHeap<T = number> {
+  private lowerHalf: T[] = []
+  private upperHalf: T[] = []
+  private compare: (a: T, b: T) => number
+  private _size = 0
+
+  constructor(options?: MedianHeapOptions<T>) {
+    this.compare =
+      options?.comparator ??
+      ((a: T, b: T) => {
+        if (a < b) return -1
+        if (a > b) return 1
+        return 0
+      })
+  }
+
+  insert(value: T): void {
+    if (this._size === 0) {
+      this.lowerHalfPush(value)
+    } else if (
+      this.compare(value, this.lowerHalfPeek()!) <= 0
+    ) {
+      this.lowerHalfPush(value)
+    } else {
+      this.upperHalfPush(value)
+    }
+    this.rebalance()
+    this._size++
+  }
+
+  median(): T {
+    if (this._size === 0) {
+      throw new Error('Heap is empty')
+    }
+    if (this._size % 2 === 1) {
+      return this.lowerHalfPeek()!
+    }
+    const lower = this.lowerHalfPeek()!
+    const upper = this.upperHalfPeek()!
+    return this.avg(lower, upper)
+  }
+
+  remove(value: T): boolean {
+    if (this._size === 0) return false
+
+    let found = false
+
+    for (let i = 0; i < this.lowerHalf.length; i++) {
+      if (this.compare(this.lowerHalf[i]!, value) === 0) {
+        this.lowerHalfRemoveAt(i)
+        found = true
+        break
+      }
+    }
+
+    if (!found) {
+      for (let i = 0; i < this.upperHalf.length; i++) {
+        if (this.compare(this.upperHalf[i]!, value) === 0) {
+          this.upperHalfRemoveAt(i)
+          found = true
+          break
+        }
+      }
+    }
+
+    if (found) {
+      this._size--
+      this.rebalance()
+    }
+    return found
+  }
+
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    this.lowerHalf = []
+    this.upperHalf = []
+    this._size = 0
+  }
+
+  toArray(): T[] {
+    const lower = [...this.lowerHalf].sort((a, b) => this.compare(a, b))
+    const upper = [...this.upperHalf].sort((a, b) => this.compare(a, b))
+    return [...lower, ...upper]
+  }
+
+  clone(): MedianHeap<T> {
+    const cloned = new MedianHeap<T>({ comparator: this.compare })
+    cloned.lowerHalf = [...this.lowerHalf]
+    cloned.upperHalf = [...this.upperHalf]
+    cloned._size = this._size
+    return cloned
+  }
+
+  static fromArray<U>(items: U[], options?: MedianHeapOptions<U>): MedianHeap<U> {
+    const heap = new MedianHeap<U>(options)
+    for (let i = 0; i < items.length; i++) {
+      heap.insert(items[i]!)
+    }
+    return heap
+  }
+
+  forEach(callback: (item: T, index: number) => void): void {
+    const arr = this.toArray()
+    for (let i = 0; i < arr.length; i++) {
+      callback(arr[i]!, i)
+    }
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    const arr = this.toArray()
+    for (let i = 0; i < arr.length; i++) {
+      yield arr[i]!
+    }
+  }
+
+  contains(value: T): boolean {
+    for (let i = 0; i < this.lowerHalf.length; i++) {
+      if (this.compare(this.lowerHalf[i]!, value) === 0) return true
+    }
+    for (let i = 0; i < this.upperHalf.length; i++) {
+      if (this.compare(this.upperHalf[i]!, value) === 0) return true
+    }
+    return false
+  }
+
+  min(): T {
+    if (this._size === 0) {
+      throw new Error('Heap is empty')
+    }
+    const sortedLower = [...this.lowerHalf].sort((a, b) => this.compare(a, b))
+    const sortedUpper = [...this.upperHalf].sort((a, b) => this.compare(a, b))
+    if (sortedLower.length === 0) return sortedUpper[0]!
+    if (sortedUpper.length === 0) return sortedLower[0]!
+    return this.compare(sortedLower[0]!, sortedUpper[0]!) <= 0
+      ? sortedLower[0]!
+      : sortedUpper[0]!
+  }
+
+  max(): T {
+    if (this._size === 0) {
+      throw new Error('Heap is empty')
+    }
+    const sortedLower = [...this.lowerHalf].sort((a, b) => this.compare(a, b))
+    const sortedUpper = [...this.upperHalf].sort((a, b) => this.compare(a, b))
+    if (sortedLower.length === 0) return sortedUpper[sortedUpper.length - 1]!
+    if (sortedUpper.length === 0) return sortedLower[sortedLower.length - 1]!
+    return this.compare(
+      sortedLower[sortedLower.length - 1]!,
+      sortedUpper[sortedUpper.length - 1]!,
+    ) >= 0
+      ? sortedLower[sortedLower.length - 1]!
+      : sortedUpper[sortedUpper.length - 1]!
+  }
+
+  lowerMedian(): T {
+    if (this._size === 0) {
+      throw new Error('Heap is empty')
+    }
+    return this.lowerHalfPeek()!
+  }
+
+  upperMedian(): T {
+    if (this._size === 0) {
+      throw new Error('Heap is empty')
+    }
+    if (this._size % 2 === 1) {
+      return this.lowerHalfPeek()!
+    }
+    return this.upperHalfPeek()!
+  }
+
+  private avg(a: T, b: T): T {
+    if (typeof a === 'number' && typeof b === 'number') {
+      return ((a + b) / 2) as T
+    }
+    return a
+  }
+
+  private rebalance(): void {
+    const lowerLen = this.lowerHalf.length
+    const upperLen = this.upperHalf.length
+    if (lowerLen > upperLen + 1) {
+      const val = this.lowerHalfPop()!
+      this.upperHalfPush(val)
+    } else if (upperLen > lowerLen) {
+      const val = this.upperHalfPop()!
+      this.lowerHalfPush(val)
+    }
+  }
+
+  private lowerHalfPush(value: T): void {
+    this.lowerHalf.push(value)
+    this.lowerHalfSiftUp(this.lowerHalf.length - 1)
+  }
+
+  private lowerHalfPop(): T | undefined {
+    if (this.lowerHalf.length === 0) return undefined
+    const top = this.lowerHalf[0]!
+    const last = this.lowerHalf.pop()!
+    if (this.lowerHalf.length > 0) {
+      this.lowerHalf[0] = last
+      this.lowerHalfSiftDown(0)
+    }
+    return top
+  }
+
+  private lowerHalfPeek(): T | undefined {
+    return this.lowerHalf[0]
+  }
+
+  private lowerHalfSiftUp(index: number): void {
+    const arr = this.lowerHalf
+    while (index > 0) {
+      const parent = (index - 1) >> 1
+      if (this.compare(arr[index]!, arr[parent]!) > 0) {
+        const tmp = arr[index]!
+        arr[index] = arr[parent]!
+        arr[parent] = tmp
+        index = parent
+      } else {
+        break
+      }
+    }
+  }
+
+  private lowerHalfSiftDown(index: number): void {
+    const arr = this.lowerHalf
+    const len = arr.length
+    while (true) {
+      let largest = index
+      const left = 2 * index + 1
+      const right = 2 * index + 2
+      if (left < len && this.compare(arr[left]!, arr[largest]!) > 0) {
+        largest = left
+      }
+      if (right < len && this.compare(arr[right]!, arr[largest]!) > 0) {
+        largest = right
+      }
+      if (largest !== index) {
+        const tmp = arr[index]!
+        arr[index] = arr[largest]!
+        arr[largest] = tmp
+        index = largest
+      } else {
+        break
+      }
+    }
+  }
+
+  private upperHalfPush(value: T): void {
+    this.upperHalf.push(value)
+    this.upperHalfSiftUp(this.upperHalf.length - 1)
+  }
+
+  private upperHalfPop(): T | undefined {
+    if (this.upperHalf.length === 0) return undefined
+    const top = this.upperHalf[0]!
+    const last = this.upperHalf.pop()!
+    if (this.upperHalf.length > 0) {
+      this.upperHalf[0] = last
+      this.upperHalfSiftDown(0)
+    }
+    return top
+  }
+
+  private upperHalfPeek(): T | undefined {
+    return this.upperHalf[0]
+  }
+
+  private upperHalfSiftUp(index: number): void {
+    const arr = this.upperHalf
+    while (index > 0) {
+      const parent = (index - 1) >> 1
+      if (this.compare(arr[index]!, arr[parent]!) < 0) {
+        const tmp = arr[index]!
+        arr[index] = arr[parent]!
+        arr[parent] = tmp
+        index = parent
+      } else {
+        break
+      }
+    }
+  }
+
+  private upperHalfSiftDown(index: number): void {
+    const arr = this.upperHalf
+    const len = arr.length
+    while (true) {
+      let smallest = index
+      const left = 2 * index + 1
+      const right = 2 * index + 2
+      if (left < len && this.compare(arr[left]!, arr[smallest]!) < 0) {
+        smallest = left
+      }
+      if (right < len && this.compare(arr[right]!, arr[smallest]!) < 0) {
+        smallest = right
+      }
+      if (smallest !== index) {
+        const tmp = arr[index]!
+        arr[index] = arr[smallest]!
+        arr[smallest] = tmp
+        index = smallest
+      } else {
+        break
+      }
+    }
+  }
+
+  private lowerHalfRemoveAt(index: number): void {
+    const last = this.lowerHalf.pop()!
+    if (index >= this.lowerHalf.length) return
+    if (this.lowerHalf.length > 0) {
+      this.lowerHalf[index] = last
+      const parent = (index - 1) >> 1
+      if (index > 0 && this.compare(this.lowerHalf[index]!, this.lowerHalf[parent]!) > 0) {
+        this.lowerHalfSiftUp(index)
+      } else {
+        this.lowerHalfSiftDown(index)
+      }
+    }
+  }
+
+  private upperHalfRemoveAt(index: number): void {
+    const last = this.upperHalf.pop()!
+    if (index >= this.upperHalf.length) return
+    if (this.upperHalf.length > 0) {
+      this.upperHalf[index] = last
+      const parent = (index - 1) >> 1
+      if (index > 0 && this.compare(this.upperHalf[index]!, this.upperHalf[parent]!) < 0) {
+        this.upperHalfSiftUp(index)
+      } else {
+        this.upperHalfSiftDown(index)
+      }
+    }
+  }
+}
+
+export type { MedianHeapOptions } from './types.js'
