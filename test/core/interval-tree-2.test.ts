@@ -174,7 +174,7 @@ describe("IntervalTree", () => {
       expect(tree.query(0)).toHaveLength(1);
     });
 
-    it.skip("returns correct results for large dataset", () => {
+    it("returns correct results for large dataset", () => {
       const tree = new IntervalTree();
       for (let i = 0; i < 500; i++) {
         tree.insert(i * 2, i * 2 + 1);
@@ -713,6 +713,158 @@ describe("IntervalTree", () => {
       expect(tree.size).toBe(50);
       expect(tree.query(75)).toHaveLength(2);
       expect(tree.query(25)).toHaveLength(0);
+    });
+  });
+
+  describe("stress and correctness", () => {
+    it("handles random insert and query", () => {
+      const tree = new IntervalTree<number>();
+      const intervals: Array<[number, number, number]> = [];
+      for (let i = 0; i < 200; i++) {
+        const lo = Math.floor(Math.random() * 1000);
+        const hi = lo + Math.floor(Math.random() * 50);
+        tree.insert(lo, hi, i);
+        intervals.push([lo, hi, i]);
+      }
+      for (let p = 0; p < 100; p += 7) {
+        const expected = intervals.filter(([lo, hi]) => p >= lo && p <= hi);
+        const actual = tree.query(p);
+        expect(actual.length).toBe(expected.length);
+      }
+    });
+
+    it("handles alternating insert remove pattern", () => {
+      const tree = new IntervalTree();
+      for (let i = 0; i < 50; i++) {
+        tree.insert(i, i + 5);
+        if (i % 3 === 0) {
+          tree.remove(i, i + 5);
+        }
+      }
+      expect(tree.size).toBeGreaterThanOrEqual(30);
+    });
+
+    it("toArray length matches size", () => {
+      const tree = new IntervalTree();
+      for (let i = 0; i < 100; i++) {
+        tree.insert(i, i + 10);
+      }
+      expect(tree.toArray()).toHaveLength(tree.size);
+      tree.remove(50, 60);
+      expect(tree.toArray()).toHaveLength(tree.size);
+    });
+
+    it("forEach count matches size after modifications", () => {
+      const tree = new IntervalTree();
+      tree.insert(0, 10);
+      tree.insert(20, 30);
+      tree.insert(40, 50);
+      tree.remove(20, 30);
+      let count = 0;
+      tree.forEach(() => { count++; });
+      expect(count).toBe(tree.size);
+    });
+
+    it("overlaps is consistent with queryRange", () => {
+      const tree = new IntervalTree();
+      tree.insert(5, 15);
+      tree.insert(25, 35);
+      expect(tree.overlaps(10, 20)).toBe(tree.queryRange(10, 20).length > 0);
+      expect(tree.overlaps(0, 3)).toBe(tree.queryRange(0, 3).length > 0);
+      expect(tree.overlaps(30, 40)).toBe(tree.queryRange(30, 40).length > 0);
+    });
+
+    it("query and queryRange consistency for single point", () => {
+      const tree = new IntervalTree();
+      tree.insert(0, 10);
+      tree.insert(5, 15);
+      tree.insert(20, 30);
+      for (let p = 0; p <= 30; p += 5) {
+        expect(tree.query(p)).toHaveLength(tree.queryRange(p, p).length);
+      }
+    });
+
+    it("handles many removals preserving structure", () => {
+      const tree = new IntervalTree();
+      for (let i = 0; i < 100; i++) {
+        tree.insert(i * 3, i * 3 + 2);
+      }
+      for (let i = 0; i < 50; i++) {
+        tree.remove(i * 3, i * 3 + 2);
+      }
+      expect(tree.size).toBe(50);
+      expect(tree.query(150 * 3)).toHaveLength(0);
+      expect(tree.query(75 * 3)).toHaveLength(1);
+    });
+
+    it("clear and rebuild preserves correctness", () => {
+      const tree = new IntervalTree<string>();
+      tree.insert(0, 10, "old");
+      tree.clear();
+      expect(tree.toArray()).toEqual([]);
+      tree.insert(5, 15, "new1");
+      tree.insert(20, 30, "new2");
+      const arr = tree.toArray();
+      expect(arr).toHaveLength(2);
+      expect(arr[0]!.value).toBe("new1");
+      expect(arr[1]!.value).toBe("new2");
+    });
+
+    it("handles intervals with same lo different hi", () => {
+      const tree = new IntervalTree();
+      tree.insert(0, 5);
+      tree.insert(0, 10);
+      tree.insert(0, 15);
+      expect(tree.query(3)).toHaveLength(3);
+      expect(tree.query(12)).toHaveLength(1);
+      tree.remove(0, 10);
+      expect(tree.query(3)).toHaveLength(2);
+      expect(tree.query(8)).toHaveLength(1);
+    });
+
+    it("handles negative to positive spanning intervals", () => {
+      const tree = new IntervalTree();
+      tree.insert(-100, 100);
+      tree.insert(-50, -10);
+      tree.insert(10, 50);
+      expect(tree.query(0)).toHaveLength(1);
+      expect(tree.query(-30)).toHaveLength(2);
+      expect(tree.query(30)).toHaveLength(2);
+      expect(tree.query(80)).toHaveLength(1);
+    });
+
+    it("forEach provides correct intervals after complex operations", () => {
+      const tree = new IntervalTree<string>();
+      tree.insert(10, 20, "b");
+      tree.insert(0, 5, "a");
+      tree.insert(30, 40, "d");
+      tree.insert(25, 35, "c");
+      tree.remove(10, 20);
+      const values: string[] = [];
+      tree.forEach((interval) => { values.push(interval.value); });
+      expect(values).toEqual(["a", "c", "d"]);
+    });
+
+    it("handles rapid insert clear insert cycles", () => {
+      const tree = new IntervalTree();
+      for (let cycle = 0; cycle < 10; cycle++) {
+        for (let i = 0; i < 20; i++) {
+          tree.insert(i, i + 5);
+        }
+        expect(tree.size).toBe(20);
+        tree.clear();
+        expect(tree.size).toBe(0);
+      }
+    });
+
+    it("queryRange returns correct overlapping boundary intervals", () => {
+      const tree = new IntervalTree();
+      tree.insert(0, 5);
+      tree.insert(5, 10);
+      tree.insert(10, 15);
+      expect(tree.queryRange(5, 10)).toHaveLength(3);
+      expect(tree.queryRange(0, 3)).toHaveLength(1);
+      expect(tree.queryRange(12, 20)).toHaveLength(1);
     });
   });
 });

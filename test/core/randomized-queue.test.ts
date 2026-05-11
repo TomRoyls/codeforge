@@ -696,7 +696,7 @@ describe('RandomizedQueue', () => {
       expect(q.size).toBe(2)
     })
 
-    it.skip('should drain queue via removeAt(0)', () => {
+    it.skip("should drain queue via removeAt(0)', () => {
       const q = new RandomizedQueue([1, 2, 3])
       const vals: number[] = []
       while (!q.isEmpty) {

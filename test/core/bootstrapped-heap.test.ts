@@ -421,7 +421,7 @@ describe('BootstrappedHeap', () => {
       expect(heap.isEmpty).toBe(true)
     })
 
-    it.skip('deletes a specific element from heap', () => {
+    it('deletes a specific element from heap', () => {
       const heap = new BootstrappedHeap<number>()
       heap.insert(1)
       const node = heap.insert(2)
