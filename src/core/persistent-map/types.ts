@@ -1,8 +1,5 @@
-export interface PersistentMapOptions<K> {
-  comparator?: (a: K, b: K) => number
-}
+export type HashFunction<K> = (key: K) => number
 
-export interface PersistentMapStats {
-  size: number
-  height: number
+export interface PersistentMapOptions<K> {
+  hash?: HashFunction<K>
 }
