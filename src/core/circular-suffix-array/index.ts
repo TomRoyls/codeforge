@@ -52,6 +52,8 @@ export class CircularSuffixArray {
       if (ca < cb) return -1
       if (ca > cb) return 1
     }
+    if (a < b) return -1
+    if (a > b) return 1
     return 0
   }
 
