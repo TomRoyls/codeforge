@@ -1288,7 +1288,7 @@ describe('CuckooFilter', () => {
       expect(filter.size).toBe(0)
     })
 
-    it.skip('handles clone after many operations (probabilistic)', () => {
+    it('handles clone after many operations (probabilistic)', () => {
       const f = new CuckooFilter(4096, { fingerprintSize: 16 })
       for (let i = 0; i < 50; i++) {
         f.insert(`item-${i}`)
