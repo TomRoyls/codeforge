@@ -1,15 +1,19 @@
-import type { TrieSearchNode, TrieSearchOptions } from './types.js'
+import type { TrieNode, TrieSearchOptions, TrieSearchResult } from './types.js'
 import { DEFAULT_TRIE_SEARCH_OPTIONS } from './types.js'
 
 export class TrieSearch<T = unknown> {
-  private root: TrieSearchNode<T>
+  private root: TrieNode<T>
   private _count: number
   private options: TrieSearchOptions
 
   constructor(options?: Partial<TrieSearchOptions>) {
     this.options = { ...DEFAULT_TRIE_SEARCH_OPTIONS, ...options }
-    this.root = { label: '', children: new Map(), isEnd: false }
+    this.root = this.createNode('')
     this._count = 0
+  }
+
+  private createNode(char: string): TrieNode<T> {
+    return { char, children: new Map(), isEnd: false, count: 0 }
   }
 
   private normalize(word: string): string {
@@ -20,78 +24,103 @@ export class TrieSearch<T = unknown> {
     const w = this.normalize(word)
 
     if (w === '') {
-      if (!this.root.isEnd) this._count++
+      if (!this.root.isEnd) {
+        this._count++
+        this.root.count++
+      }
       this.root.isEnd = true
       if (value !== undefined) this.root.value = value
       return
     }
 
     let current = this.root
-    let i = 0
-
-    while (i < w.length) {
+    for (let i = 0; i < w.length; i++) {
       const ch = w[i]!
-      const child = current.children.get(ch)
-
+      let child = current.children.get(ch)
       if (child === undefined) {
-        current.children.set(ch, {
-          label: w.slice(i),
-          children: new Map(),
-          isEnd: true,
-          value,
-        })
-        this._count++
-        return
+        child = this.createNode(ch)
+        current.children.set(ch, child)
       }
+      current = child
+    }
 
-      const cl = this.commonPrefixLen(w, i, child.label)
-
-      if (cl === child.label.length) {
-        current = child
-        i += cl
-      } else if (cl === w.length - i) {
-        const splitNode: TrieSearchNode<T> = {
-          label: child.label.slice(0, cl),
-          children: new Map(),
-          isEnd: true,
-          value,
-        }
-        child.label = child.label.slice(cl)
-        splitNode.children.set(child.label[0]!, child)
-        current.children.set(ch, splitNode)
-        this._count++
-        return
-      } else {
-        const splitNode: TrieSearchNode<T> = {
-          label: child.label.slice(0, cl),
-          children: new Map(),
-          isEnd: false,
-        }
-        child.label = child.label.slice(cl)
-        splitNode.children.set(child.label[0]!, child)
-
-        const remaining = w.slice(i + cl)
-        splitNode.children.set(remaining[0]!, {
-          label: remaining,
-          children: new Map(),
-          isEnd: true,
-          value,
-        })
-
-        current.children.set(ch, splitNode)
-        this._count++
-        return
+    if (!current.isEnd) {
+      this._count++
+      let node: TrieNode<T> | undefined = this.root
+      const path = w
+      for (let i = 0; i <= path.length; i++) {
+        if (node) node.count++
+        if (i < path.length) node = node!.children.get(path[i]!)
       }
     }
 
-    if (!current.isEnd) this._count++
     current.isEnd = true
     if (value !== undefined) current.value = value
   }
 
-  search(word: string): boolean {
-    const node = this.findExactNode(this.normalize(word))
+  search(query: string): TrieSearchResult<T>[] {
+    const q = this.normalize(query)
+    const results: TrieSearchResult<T>[] = []
+
+    if (q === '') {
+      this.collectResults(this.root, '', 0, results)
+      return results
+    }
+
+    let current: TrieNode<T> | undefined = this.root
+    for (let i = 0; i < q.length; i++) {
+      current = current.children.get(q[i]!)
+      if (current === undefined) return results
+    }
+
+    this.collectResults(current, q, q.length, results)
+    return results
+  }
+
+  private collectResults(
+    node: TrieNode<T>,
+    prefix: string,
+    queryLen: number,
+    results: TrieSearchResult<T>[],
+  ): void {
+    if (node.isEnd) {
+      const score = queryLen === 0 ? 1 : queryLen / prefix.length
+      results.push({
+        key: prefix,
+        score,
+        value: node.value,
+        depth: prefix.length,
+      })
+    }
+    for (const child of node.children.values()) {
+      this.collectResults(child, prefix + child.char, queryLen, results)
+    }
+  }
+
+  has(word: string): boolean {
+    const w = this.normalize(word)
+    const node = this.findNode(w)
     return node !== undefined && node.isEnd
+  }
+
+  getCount(word?: string): number {
+    if (word === undefined) return this._count
+    return this.has(word) ? 1 : 0
+  }
+
+  getNode(word: string): TrieNode<T> | undefined {
+    const w = this.normalize(word)
+    if (w === '') return this.root
+    return this.findNode(w)
+  }
+
+  private findNode(word: string): TrieNode<T> | undefined {
+    let current: TrieNode<T> | undefined = this.root
+    for (let i = 0; i < word.length; i++) {
+      current = current.children.get(word[i]!)
+      if (current === undefined) return undefined
+    }
+    return current
   }
 
   delete(word: string): boolean {
@@ -101,22 +130,19 @@ export class TrieSearch<T = unknown> {
       if (!this.root.isEnd) return false
       this.root.isEnd = false
       this.root.value = undefined
+      this.root.count--
       this._count--
       return true
     }
 
-    const path: Array<{ parent: TrieSearchNode<T>; key: string; node: TrieSearchNode<T> }> = []
-    let current = this.root
-    let i = 0
+    const path: Array<{ parent: TrieNode<T>; char: string; node: TrieNode<T> }> = []
+    let current: TrieNode<T> = this.root
 
-    while (i < w.length) {
+    for (let i = 0; i < w.length; i++) {
       const ch = w[i]!
       const child = current.children.get(ch)
       if (child === undefined) return false
-      if (!this.matchLabel(w, i, child.label)) return false
-
-      path.push({ parent: current, key: ch, node: child })
-      i += child.label.length
+      path.push({ parent: current, char: ch, node: child })
       current = child
     }
 
@@ -126,48 +152,68 @@ export class TrieSearch<T = unknown> {
     current.value = undefined
     this._count--
 
-    for (let j = path.length - 1; j >= 0; j--) {
-      const entry = path[j]!
-      const node = entry.node
+    for (let i = 0; i <= w.length; i++) {
+      const node = i === 0 ? this.root : path[i - 1]!.node
+      node.count--
+    }
 
-      if (node.children.size === 0 && !node.isEnd) {
-        entry.parent.children.delete(entry.key)
-      } else if (node.children.size === 1 && !node.isEnd) {
-        const grandchild = node.children.values().next().value!
-        node.label += grandchild.label
-        node.isEnd = grandchild.isEnd
-        node.value = grandchild.value
-        node.children = grandchild.children
+    for (let i = path.length - 1; i >= 0; i--) {
+      const entry = path[i]!
+      if (entry.node.children.size === 0 && !entry.node.isEnd) {
+        entry.parent.children.delete(entry.char)
       }
     }
 
     return true
   }
 
-  startsWith(prefix: string): boolean {
+  startsWith(prefix: string): string[] {
     const p = this.normalize(prefix)
-    if (p === '') return this._count > 0
+    const results: string[] = []
 
-    let current = this.root
-    let i = 0
-
-    while (i < p.length) {
-      const ch = p[i]!
-      const child = current.children.get(ch)
-      if (child === undefined) return false
-
-      const label = child.label
-      let j = 0
-      while (j < label.length && i + j < p.length && label[j] === p[i + j]) j++
-
-      if (i + j === p.length) return true
-      if (j < label.length) return false
-
-      i += label.length
-      current = child
+    if (p === '') {
+      this.collectWords(this.root, '', results)
+      return results
     }
 
-    return true
+    const node = this.findNode(p)
+    if (node === undefined) return results
+
+    this.collectWords(node, p, results)
+    return results
+  }
+
+  private collectWords(node: TrieNode<T>, prefix: string, results: string[]): void {
+    if (node.isEnd) results.push(prefix)
+    for (const child of node.children.values()) {
+      this.collectWords(child, prefix + child.char, results)
+    }
+  }
+
+  autocomplete(prefix: string, maxResults?: number): string[] {
+    const limit = maxResults ?? this.options.maxSuggestions
+    const p = this.normalize(prefix)
+    const results: string[] = []
+
+    if (p === '') {
+      this.collectWordsLimited(this.root, '', results, limit)
+      return results
+    }
+
+    const node = this.findNode(p)
+    if (node === undefined) return results
+
+    this.collectWordsLimited(node, p, results, limit)
+    return results
+  }
+
+  private collectWordsLimited(node: TrieNode<T>, prefix: string, results: string[], limit: number): void {
+    if (results.length >= limit) return
+    if (node.isEnd) results.push(prefix)
+    for (const child of node.children.values()) {
+      if (results.length >= limit) return
+      this.collectWordsLimited(child, prefix + child.char, results, limit)
+    }
   }
 
   wordsWithPrefix(prefix: string, limit?: number): string[] {
@@ -175,171 +221,94 @@ export class TrieSearch<T = unknown> {
     const results: string[] = []
 
     if (p === '') {
-      this.collectWords(this.root, '', results, limit)
+      this.collectWordsLimited(this.root, '', results, limit ?? Infinity)
       return results
     }
 
-    let current = this.root
-    let i = 0
-    let accumulated = ''
+    const node = this.findNode(p)
+    if (node === undefined) return results
 
-    while (i < p.length) {
-      const ch = p[i]!
-      const child = current.children.get(ch)
-      if (child === undefined) return []
+    this.collectWordsLimited(node, p, results, limit ?? Infinity)
+    return results
+  }
 
-      const label = child.label
-      let j = 0
-      while (j < label.length && i + j < p.length && label[j] === p[i + j]) j++
+  fuzzySearch(word: string, maxDistance: number = 1): TrieSearchResult<T>[] {
+    const w = this.normalize(word)
+    const results: TrieSearchResult<T>[] = []
 
-      if (i + j === p.length) {
-        this.collectWords(child, accumulated + label, results, limit)
-        return results
+    if (w === '') {
+      this.collectFuzzy(this.root, '', w, maxDistance, results)
+      return results
+    }
+
+    this.collectFuzzy(this.root, '', w, maxDistance, results)
+    results.sort((a, b) => b.score - a.score)
+    return results
+  }
+
+  private collectFuzzy(
+    node: TrieNode<T>,
+    prefix: string,
+    query: string,
+    maxDistance: number,
+    results: TrieSearchResult<T>[],
+  ): void {
+    if (node.isEnd) {
+      const dist = this.levenshtein(prefix, query)
+      if (dist <= maxDistance) {
+        const maxLen = Math.max(prefix.length, query.length)
+        const score = maxLen === 0 ? 1 : 1 - dist / maxLen
+        results.push({ key: prefix, score, value: node.value, depth: prefix.length })
       }
-
-      if (j < label.length) return []
-
-      accumulated += label
-      i += label.length
-      current = child
     }
-
-    this.collectWords(current, p, results, limit)
-    return results
-  }
-
-  longestPrefixOf(query: string): string {
-    const q = this.normalize(query)
-    let longest = ''
-    let current = this.root
-    let i = 0
-
-    while (i < q.length) {
-      const ch = q[i]!
-      const child = current.children.get(ch)
-      if (child === undefined) break
-
-      const label = child.label
-      if (i + label.length > q.length) break
-      if (!this.matchLabel(q, i, label)) break
-
-      i += label.length
-      current = child
-
-      if (current.isEnd) longest = q.slice(0, i)
+    for (const child of node.children.values()) {
+      this.collectFuzzy(child, prefix + child.char, query, maxDistance, results)
     }
-
-    return longest
   }
 
-  countWords(): number {
-    return this._count
-  }
-
-  isEmpty(): boolean {
-    return this._count === 0
-  }
-
-  autocomplete(prefix: string, limit?: number): string[] {
-    return this.wordsWithPrefix(prefix, limit)
-  }
-
-  containsSubstring(str: string): boolean {
-    const s = this.normalize(str)
-    if (s === '') return this._count > 0
-    for (const word of this) {
-      if (word.includes(s)) return true
+  private levenshtein(a: string, b: string): number {
+    const m = a.length
+    const n = b.length
+    if (m === 0) return n
+    if (n === 0) return m
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0) as number[])
+    for (let i = 0; i <= m; i++) dp[i]![0] = i
+    for (let j = 0; j <= n; j++) dp[0]![j] = j
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        dp[i]![j] = Math.min(
+          dp[i - 1]![j]! + 1,
+          dp[i]![j - 1]! + 1,
+          dp[i - 1]![j - 1]! + (a[i - 1] !== b[j - 1] ? 1 : 0),
+        )
+      }
     }
-    return false
-  }
-
-  getAllWords(): string[] {
-    const results: string[] = []
-    this.collectWords(this.root, '', results)
-    return results
+    return dp[m]![n]!
   }
 
   clear(): void {
-    this.root = { label: '', children: new Map(), isEnd: false }
+    this.root = this.createNode('')
     this._count = 0
   }
 
-  clone(): TrieSearch<T> {
-    const copy = new TrieSearch<T>(this.options)
-    copy._count = this._count
-    copy.root = this.cloneNode(this.root)
-    return copy
+  toJSON(): object {
+    return this.serializeNode(this.root)
   }
 
-  getValue(word: string): T | undefined {
-    const node = this.findExactNode(this.normalize(word))
-    if (!node || !node.isEnd) return undefined
-    return node.value
-  }
-
-  *[Symbol.iterator](): IterableIterator<string> {
-    yield* this.getAllWords()
-  }
-
-  private findExactNode(word: string): TrieSearchNode<T> | undefined {
-    let current = this.root
-    let i = 0
-
-    while (i < word.length) {
-      const ch = word[i]!
-      const child = current.children.get(ch)
-      if (child === undefined) return undefined
-
-      if (!this.matchLabel(word, i, child.label)) return undefined
-
-      i += child.label.length
-      current = child
-    }
-
-    return current
-  }
-
-  private commonPrefixLen(a: string, startA: number, b: string): number {
-    let i = 0
-    while (startA + i < a.length && i < b.length && a[startA + i] === b[i]) i++
-    return i
-  }
-
-  private matchLabel(str: string, start: number, label: string): boolean {
-    if (str.length - start < label.length) return false
-    for (let i = 0; i < label.length; i++) {
-      if (str[start + i] !== label[i]) return false
-    }
-    return true
-  }
-
-  private collectWords(
-    node: TrieSearchNode<T>,
-    prefix: string,
-    results: string[],
-    limit?: number,
-  ): void {
-    if (limit !== undefined && results.length >= limit) return
-    if (node.isEnd) results.push(prefix)
-    for (const child of node.children.values()) {
-      this.collectWords(child, prefix + child.label, results, limit)
-      if (limit !== undefined && results.length >= limit) return
-    }
-  }
-
-  private cloneNode(node: TrieSearchNode<T>): TrieSearchNode<T> {
-    const copy: TrieSearchNode<T> = {
-      label: node.label,
-      children: new Map(),
-      isEnd: node.isEnd,
-      value: node.value,
-    }
+  private serializeNode(node: TrieNode<T>): Record<string, unknown> {
+    const children: Record<string, unknown> = {}
     for (const [key, child] of node.children) {
-      copy.children.set(key, this.cloneNode(child))
+      children[key] = this.serializeNode(child)
     }
-    return copy
+    return {
+      char: node.char,
+      children,
+      isEnd: node.isEnd,
+      count: node.count,
+      ...(node.value !== undefined ? { value: node.value } : {}),
+    }
   }
 }
 
 export { DEFAULT_TRIE_SEARCH_OPTIONS } from './types.js'
-export type { TrieSearchNode, TrieSearchOptions } from './types.js'
+export type { TrieNode, TrieSearchOptions, TrieSearchResult } from './types.js'
