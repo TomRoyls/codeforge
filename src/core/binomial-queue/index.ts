@@ -1,0 +1,397 @@
+import type { BinomialQueueOptions, BinomialTreeNode } from './types.js'
+
+export class BinomialQueue<T = number> {
+  private head: BinomialTreeNode<T> | null = null
+  private _size = 0
+  private compare: (a: T, b: T) => number
+
+  constructor(options?: BinomialQueueOptions<T>) {
+    this.compare =
+      options?.comparator ??
+      ((a: T, b: T) => {
+        if (a < b) return -1
+        if (a > b) return 1
+        return 0
+      })
+  }
+
+  push(item: T): void {
+    const node: BinomialTreeNode<T> = {
+      key: item,
+      degree: 0,
+      parent: null,
+      child: null,
+      sibling: null,
+    }
+    const single = new BinomialQueue<T>({ comparator: this.compare })
+    single.head = node
+    single._size = 1
+    this.union(single)
+  }
+
+  pop(): T {
+    if (this.head === null) {
+      throw new Error('Queue is empty')
+    }
+    const { prev, min } = this.findMinRoot()
+    const minNode = min!
+    if (prev !== null) {
+      prev.sibling = minNode.sibling
+    } else {
+      this.head = minNode.sibling
+    }
+    const removedKey = minNode.key
+    const childList = this.reverseChildren(minNode)
+    this._size -= 1
+    if (childList !== null) {
+      this.head = this.mergeRoots(this.head, childList)
+    }
+    return removedKey
+  }
+
+  peek(): T {
+    if (this.head === null) {
+      throw new Error('Queue is empty')
+    }
+    return this.findMinRoot().min!.key
+  }
+
+  merge(other: BinomialQueue<T>): void {
+    if (other === this) return
+    this._size += other._size
+    this.head = this.mergeRoots(this.head, other.head)
+    other.head = null
+    other._size = 0
+  }
+
+  size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    this.head = null
+    this._size = 0
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    this.collectKeys(this.head, result)
+    return result
+  }
+
+  toSortedArray(): T[] {
+    const cloned = this.clone()
+    const result: T[] = []
+    while (!cloned.isEmpty()) {
+      result.push(cloned.pop())
+    }
+    return result
+  }
+
+  contains(item: T): boolean {
+    return this.findNode(this.head, item) !== null
+  }
+
+  remove(item: T): boolean {
+    const node = this.findNode(this.head, item)
+    if (node === null) return false
+    const root = this.bubbleToRoot(node)
+    this.extractRootNode(root)
+    return true
+  }
+
+  decreaseKey(oldItem: T, newItem: T): boolean {
+    if (this.compare(newItem, oldItem) > 0) return false
+    const node = this.findNode(this.head, oldItem)
+    if (node === null) return false
+    node.key = newItem
+    this.bubbleUp(node)
+    return true
+  }
+
+  clone(): BinomialQueue<T> {
+    const cloned = new BinomialQueue<T>({ comparator: this.compare })
+    if (this.head === null) return cloned
+    cloned.head = this.cloneTree(this.head)
+    cloned._size = this._size
+    return cloned
+  }
+
+  static fromArray<U>(
+    items: U[],
+    options?: BinomialQueueOptions<U>
+  ): BinomialQueue<U> {
+    const queue = new BinomialQueue<U>(options)
+    for (let i = 0; i < items.length; i++) {
+      queue.push(items[i]!)
+    }
+    return queue
+  }
+
+  forEach(callback: (item: T) => void): void {
+    this.forEachNode(this.head, callback)
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    const items = this.toArray()
+    for (let i = 0; i < items.length; i++) {
+      yield items[i]!
+    }
+  }
+
+  private union(other: BinomialQueue<T>): void {
+    this._size += other._size
+    this.head = this.mergeRoots(this.head, other.head)
+    other.head = null
+    other._size = 0
+  }
+
+  private mergeRoots(
+    h1: BinomialTreeNode<T> | null,
+    h2: BinomialTreeNode<T> | null
+  ): BinomialTreeNode<T> | null {
+    if (h1 === null) return h2
+    if (h2 === null) return h1
+    const merged = this.interleaveByDegree(h1, h2)
+    return this.linkPairs(merged)
+  }
+
+  private interleaveByDegree(
+    h1: BinomialTreeNode<T>,
+    h2: BinomialTreeNode<T>
+  ): BinomialTreeNode<T> {
+    let head: BinomialTreeNode<T>
+    let a: BinomialTreeNode<T> | null = h1
+    let b: BinomialTreeNode<T> | null = h2
+    if (a.degree <= b.degree) {
+      head = a
+      a = a.sibling
+    } else {
+      head = b
+      b = b.sibling
+    }
+    let tail = head
+    while (a !== null && b !== null) {
+      if (a.degree <= b.degree) {
+        tail.sibling = a
+        a = a.sibling
+      } else {
+        tail.sibling = b
+        b = b.sibling
+      }
+      tail = tail.sibling
+    }
+    tail.sibling = a !== null ? a : b
+    return head
+  }
+
+  private linkPairs(
+    head: BinomialTreeNode<T>
+  ): BinomialTreeNode<T> {
+    let prev: BinomialTreeNode<T> | null = null
+    let curr: BinomialTreeNode<T> | null = head
+    let next: BinomialTreeNode<T> | null = curr.sibling
+    while (next !== null) {
+      const mergeCurrAndNext =
+        curr.degree === next.degree &&
+        (next.sibling === null || next.sibling.degree !== curr.degree)
+      if (!mergeCurrAndNext) {
+        prev = curr
+        curr = next
+        next = next.sibling
+      } else if (this.compare(curr.key, next.key) <= 0) {
+        curr.sibling = next.sibling
+        this.linkTwoTrees(curr, next)
+        next = curr.sibling
+      } else {
+        curr.sibling = next.sibling
+        this.linkTwoTrees(next, curr)
+        if (prev !== null) {
+          prev.sibling = next
+        } else {
+          head = next
+        }
+        curr = next
+        next = curr.sibling
+      }
+    }
+    return head
+  }
+
+  private linkTwoTrees(
+    smaller: BinomialTreeNode<T>,
+    larger: BinomialTreeNode<T>
+  ): void {
+    larger.sibling = smaller.child
+    larger.parent = smaller
+    smaller.child = larger
+    smaller.degree += 1
+  }
+
+  private findMinRoot(): {
+    prev: BinomialTreeNode<T> | null
+    min: BinomialTreeNode<T> | null
+  } {
+    if (this.head === null) return { prev: null, min: null }
+    let minPrev: BinomialTreeNode<T> | null = null
+    let minNode = this.head
+    let prev: BinomialTreeNode<T> | null = null
+    let current: BinomialTreeNode<T> | null = this.head.sibling
+    while (current !== null) {
+      if (this.compare(current.key, minNode.key) < 0) {
+        minNode = current
+        minPrev = prev
+      }
+      prev = current
+      current = current.sibling
+    }
+    if (minPrev === null && minNode !== this.head) {
+      minPrev = this.head
+    }
+    return { prev: minPrev, min: minNode }
+  }
+
+  private reverseChildren(node: BinomialTreeNode<T>): BinomialTreeNode<T> | null {
+    let child = node.child
+    let prev: BinomialTreeNode<T> | null = null
+    while (child !== null) {
+      const next = child.sibling
+      child.sibling = prev
+      child.parent = null
+      prev = child
+      child = next
+    }
+    return prev
+  }
+
+  private bubbleUp(node: BinomialTreeNode<T>): BinomialTreeNode<T> {
+    let current = node
+    while (
+      current.parent !== null &&
+      this.compare(current.key, current.parent.key) < 0
+    ) {
+      const temp = current.key
+      current.key = current.parent.key
+      current.parent.key = temp
+      current = current.parent
+    }
+    return current
+  }
+
+  private bubbleToRoot(node: BinomialTreeNode<T>): BinomialTreeNode<T> {
+    let current = node
+    while (current.parent !== null) {
+      const temp = current.key
+      current.key = current.parent.key
+      current.parent.key = temp
+      current = current.parent
+    }
+    return current
+  }
+
+  private extractRootNode(target: BinomialTreeNode<T>): void {
+    const { prev } = this.findNodePrev(this.head, target)
+    if (prev !== null) {
+      prev.sibling = target.sibling
+    } else {
+      this.head = target.sibling
+    }
+    const childList = this.reverseChildren(target)
+    this._size -= 1
+    if (childList !== null) {
+      this.head = this.mergeRoots(this.head, childList)
+    }
+  }
+
+  private findNodePrev(
+    root: BinomialTreeNode<T> | null,
+    target: BinomialTreeNode<T>
+  ): { prev: BinomialTreeNode<T> | null; found: boolean } {
+    let prev: BinomialTreeNode<T> | null = null
+    let current = root
+    while (current !== null) {
+      if (current === target) return { prev, found: true }
+      prev = current
+      current = current.sibling
+    }
+    return { prev: null, found: false }
+  }
+
+  private findNode(
+    root: BinomialTreeNode<T> | null,
+    item: T
+  ): BinomialTreeNode<T> | null {
+    if (root === null) return null
+    const stack: BinomialTreeNode<T>[] = [root]
+    while (stack.length > 0) {
+      const node = stack.pop()!
+      if (this.compare(node.key, item) === 0) return node
+      if (node.sibling !== null) stack.push(node.sibling)
+      if (node.child !== null) stack.push(node.child)
+    }
+    return null
+  }
+
+  private collectKeys(
+    node: BinomialTreeNode<T> | null,
+    result: T[]
+  ): void {
+    if (node === null) return
+    const stack: BinomialTreeNode<T>[] = [node]
+    while (stack.length > 0) {
+      const current = stack.pop()!
+      result.push(current.key)
+      if (current.sibling !== null) stack.push(current.sibling)
+      if (current.child !== null) stack.push(current.child)
+    }
+  }
+
+  private forEachNode(
+    node: BinomialTreeNode<T> | null,
+    callback: (item: T) => void
+  ): void {
+    if (node === null) return
+    const stack: BinomialTreeNode<T>[] = [node]
+    while (stack.length > 0) {
+      const current = stack.pop()!
+      callback(current.key)
+      if (current.sibling !== null) stack.push(current.sibling)
+      if (current.child !== null) stack.push(current.child)
+    }
+  }
+
+  private cloneTree(node: BinomialTreeNode<T>): BinomialTreeNode<T> {
+    const cloned: BinomialTreeNode<T> = {
+      key: node.key,
+      degree: node.degree,
+      parent: null,
+      child: null,
+      sibling: null,
+    }
+    if (node.child !== null) {
+      cloned.child = this.cloneTree(node.child)
+      this.setParentRefs(cloned.child, cloned)
+    }
+    if (node.sibling !== null) {
+      cloned.sibling = this.cloneTree(node.sibling)
+    }
+    return cloned
+  }
+
+  private setParentRefs(
+    child: BinomialTreeNode<T>,
+    parent: BinomialTreeNode<T>
+  ): void {
+    let current: BinomialTreeNode<T> | null = child
+    while (current !== null) {
+      current.parent = parent
+      current = current.sibling
+    }
+  }
+}
+
+export type { BinomialQueueOptions } from './types.js'
