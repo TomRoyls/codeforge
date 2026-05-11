@@ -1,0 +1,457 @@
+import type { SplayTreeSetOptions } from './types.js'
+import { DEFAULT_SPLAY_TREE_SET_OPTIONS } from './types.js'
+
+interface Node<T> {
+  value: T
+  left: Node<T> | null
+  right: Node<T> | null
+  parent: Node<T> | null
+  size: number
+}
+
+export class SplayTreeSet<T = number> {
+  private root: Node<T> | null = null
+  private _size: number = 0
+  private _comparator: (a: T, b: T) => number
+
+  constructor(options?: SplayTreeSetOptions<T>) {
+    const opts = { ...DEFAULT_SPLAY_TREE_SET_OPTIONS, ...options }
+    this._comparator = opts.comparator
+  }
+
+  private makeNode(value: T): Node<T> {
+    return { value, left: null, right: null, parent: null, size: 1 }
+  }
+
+  private nodeSize(node: Node<T> | null): number {
+    return node === null ? 0 : node.size
+  }
+
+  private updateSize(node: Node<T>): void {
+    node.size = 1 + this.nodeSize(node.left) + this.nodeSize(node.right)
+  }
+
+  private rotateLeft(x: Node<T>): void {
+    const y = x.right!
+    x.right = y.left
+    if (y.left !== null) y.left.parent = x
+    y.parent = x.parent
+    if (x.parent === null) {
+      this.root = y
+    } else if (x === x.parent.left) {
+      x.parent.left = y
+    } else {
+      x.parent.right = y
+    }
+    y.left = x
+    x.parent = y
+    this.updateSize(x)
+    this.updateSize(y)
+  }
+
+  private rotateRight(x: Node<T>): void {
+    const y = x.left!
+    x.left = y.right
+    if (y.right !== null) y.right.parent = x
+    y.parent = x.parent
+    if (x.parent === null) {
+      this.root = y
+    } else if (x === x.parent.left) {
+      x.parent.left = y
+    } else {
+      x.parent.right = y
+    }
+    y.right = x
+    x.parent = y
+    this.updateSize(x)
+    this.updateSize(y)
+  }
+
+  private splay(node: Node<T>): void {
+    while (node.parent !== null) {
+      const p = node.parent
+      const g = p.parent
+      if (g === null) {
+        if (node === p.left) {
+          this.rotateRight(p)
+        } else {
+          this.rotateLeft(p)
+        }
+      } else if (node === p.left && p === g.left) {
+        this.rotateRight(g)
+        this.rotateRight(p)
+      } else if (node === p.right && p === g.right) {
+        this.rotateLeft(g)
+        this.rotateLeft(p)
+      } else if (node === p.right && p === g.left) {
+        this.rotateLeft(p)
+        this.rotateRight(g)
+      } else {
+        this.rotateRight(p)
+        this.rotateLeft(g)
+      }
+    }
+  }
+
+  private findNode(value: T): Node<T> | null {
+    let current = this.root
+    while (current !== null) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp === 0) {
+        this.splay(current)
+        return current
+      }
+      if (cmp < 0) {
+        if (current.left === null) {
+          this.splay(current)
+          return null
+        }
+        current = current.left
+      } else {
+        if (current.right === null) {
+          this.splay(current)
+          return null
+        }
+        current = current.right
+      }
+    }
+    return null
+  }
+
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  add(value: T): boolean {
+    if (this.root === null) {
+      this.root = this.makeNode(value)
+      this._size = 1
+      return true
+    }
+
+    let current = this.root
+    while (true) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp === 0) {
+        this.splay(current)
+        return false
+      }
+      if (cmp < 0) {
+        if (current.left === null) {
+          const node = this.makeNode(value)
+          node.parent = current
+          current.left = node
+          current = node
+          break
+        }
+        current = current.left
+      } else {
+        if (current.right === null) {
+          const node = this.makeNode(value)
+          node.parent = current
+          current.right = node
+          current = node
+          break
+        }
+        current = current.right
+      }
+    }
+
+    this.splay(current)
+    this._size++
+    let p = current.parent
+    while (p !== null) {
+      this.updateSize(p)
+      p = p.parent
+    }
+    return true
+  }
+
+  delete(value: T): boolean {
+    const node = this.findNode(value)
+    if (node === null) return false
+
+    this.splay(node)
+
+    if (node.left === null) {
+      this.root = node.right
+      if (this.root !== null) this.root.parent = null
+    } else if (node.right === null) {
+      this.root = node.left
+      if (this.root !== null) this.root.parent = null
+    } else {
+      const leftTree = node.left
+      leftTree.parent = null
+
+      let maxLeft = leftTree
+      while (maxLeft.right !== null) maxLeft = maxLeft.right
+      this.root = leftTree
+      this.splay(maxLeft)
+
+      this.root.right = node.right
+      if (node.right !== null) node.right.parent = this.root
+      this.updateSize(this.root)
+    }
+
+    this._size--
+    return true
+  }
+
+  has(value: T): boolean {
+    return this.findNode(value) !== null
+  }
+
+  clear(): void {
+    this.root = null
+    this._size = 0
+  }
+
+  min(): T | undefined {
+    if (this.root === null) return undefined
+    let current = this.root
+    while (current.left !== null) current = current.left
+    this.splay(current)
+    return current.value
+  }
+
+  max(): T | undefined {
+    if (this.root === null) return undefined
+    let current = this.root
+    while (current.right !== null) current = current.right
+    this.splay(current)
+    return current.value
+  }
+
+  floor(value: T): T | undefined {
+    let result: T | undefined
+    let current = this.root
+    while (current !== null) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp === 0) {
+        this.splay(current)
+        return current.value
+      }
+      if (cmp > 0) {
+        result = current.value
+        current = current.right
+      } else {
+        current = current.left
+      }
+    }
+    if (result !== undefined && this.root !== null) {
+      let target = this.root
+      while (target.left !== null || target.right !== null) {
+        const cmp = this._comparator(result, target.value)
+        if (cmp === 0) break
+        target = cmp < 0 ? (target.left ?? target) : (target.right ?? target)
+      }
+      this.splay(target)
+    }
+    return result
+  }
+
+  ceiling(value: T): T | undefined {
+    let result: T | undefined
+    let current = this.root
+    while (current !== null) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp === 0) {
+        this.splay(current)
+        return current.value
+      }
+      if (cmp < 0) {
+        result = current.value
+        current = current.left
+      } else {
+        current = current.right
+      }
+    }
+    if (result !== undefined && this.root !== null) {
+      let target = this.root
+      while (target.left !== null || target.right !== null) {
+        const cmp = this._comparator(result, target.value)
+        if (cmp === 0) break
+        target = cmp < 0 ? (target.left ?? target) : (target.right ?? target)
+      }
+      this.splay(target)
+    }
+    return result
+  }
+
+  lower(value: T): T | undefined {
+    let result: T | undefined
+    let current = this.root
+    while (current !== null) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp > 0) {
+        result = current.value
+        current = current.right
+      } else {
+        current = current.left
+      }
+    }
+    if (result !== undefined && this.root !== null) {
+      let target = this.root
+      while (target.left !== null || target.right !== null) {
+        const cmp = this._comparator(result, target.value)
+        if (cmp === 0) break
+        target = cmp < 0 ? (target.left ?? target) : (target.right ?? target)
+      }
+      this.splay(target)
+    }
+    return result
+  }
+
+  higher(value: T): T | undefined {
+    let result: T | undefined
+    let current = this.root
+    while (current !== null) {
+      const cmp = this._comparator(value, current.value)
+      if (cmp < 0) {
+        result = current.value
+        current = current.left
+      } else {
+        current = current.right
+      }
+    }
+    if (result !== undefined && this.root !== null) {
+      let target = this.root
+      while (target.left !== null || target.right !== null) {
+        const cmp = this._comparator(result, target.value)
+        if (cmp === 0) break
+        target = cmp < 0 ? (target.left ?? target) : (target.right ?? target)
+      }
+      this.splay(target)
+    }
+    return result
+  }
+
+  *range(lo: T, hi: T): Generator<T, void, unknown> {
+    const arr = this.toArray()
+    for (const v of arr) {
+      const cmpLo = this._comparator(v, lo)
+      const cmpHi = this._comparator(v, hi)
+      if (cmpLo >= 0 && cmpHi <= 0) yield v
+    }
+  }
+
+  indexOf(value: T): number {
+    if (this.root === null) return -1
+    let index = 0
+    let current: Node<T> | null = this.root
+    while (current !== null) {
+      const leftSize = this.nodeSize(current.left)
+      const cmp = this._comparator(value, current.value)
+      if (cmp === 0) {
+        this.splay(current)
+        return index + leftSize
+      }
+      if (cmp < 0) {
+        current = current.left!
+      } else {
+        index += leftSize + 1
+        current = current.right!
+      }
+    }
+    return -1
+  }
+
+  at(index: number): T | undefined {
+    if (index < 0 || index >= this._size || this.root === null) return undefined
+    let current: Node<T> | null = this.root
+    let remaining = index
+    while (current !== null) {
+      const leftSize = this.nodeSize(current.left)
+      if (remaining < leftSize) {
+        current = current.left
+      } else if (remaining === leftSize) {
+        this.splay(current)
+        return current.value
+      } else {
+        remaining -= leftSize + 1
+        current = current.right
+      }
+    }
+    return undefined
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    this.inorder(this.root, result)
+    return result
+  }
+
+  private inorder(node: Node<T> | null, result: T[]): void {
+    if (node === null) return
+    this.inorder(node.left, result)
+    result.push(node.value)
+    this.inorder(node.right, result)
+  }
+
+  forEach(callback: (value: T, index: number) => void): void {
+    let idx = 0
+    const stack: Node<T>[] = []
+    let current: Node<T> | null = this.root
+    while (stack.length > 0 || current !== null) {
+      while (current !== null) {
+        stack.push(current)
+        current = current.left
+      }
+      current = stack.pop()!
+      callback(current.value, idx++)
+      current = current.right
+    }
+  }
+
+  *[Symbol.iterator](): Generator<T, void, unknown> {
+    const stack: Node<T>[] = []
+    let current: Node<T> | null = this.root
+    while (stack.length > 0 || current !== null) {
+      while (current !== null) {
+        stack.push(current)
+        current = current.left
+      }
+      current = stack.pop()!
+      yield current.value
+      current = current.right
+    }
+  }
+
+  union(other: SplayTreeSet<T>): SplayTreeSet<T> {
+    const result = new SplayTreeSet<T>({ comparator: this._comparator })
+    for (const v of this) result.add(v)
+    for (const v of other) result.add(v)
+    return result
+  }
+
+  intersection(other: SplayTreeSet<T>): SplayTreeSet<T> {
+    const result = new SplayTreeSet<T>({ comparator: this._comparator })
+    for (const v of this) {
+      if (other.has(v)) result.add(v)
+    }
+    return result
+  }
+
+  difference(other: SplayTreeSet<T>): SplayTreeSet<T> {
+    const result = new SplayTreeSet<T>({ comparator: this._comparator })
+    for (const v of this) {
+      if (!other.has(v)) result.add(v)
+    }
+    return result
+  }
+
+  count(lo: T, hi: T): number {
+    let _c = 0
+    const iter = this.range(lo, hi)
+    let result = iter.next()
+    while (!result.done) {
+      _c++
+      result = iter.next()
+    }
+    return _c
+  }
+}
