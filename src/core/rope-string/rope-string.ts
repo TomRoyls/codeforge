@@ -1,4 +1,4 @@
-import type { RopeNode, RopeOptions } from './types.js'
+import type { RopeNode, RopeOptions, RopeStats } from './types.js'
 import { DEFAULT_ROPE_OPTIONS } from './types.js'
 
 export class RopeString {
@@ -109,6 +109,35 @@ export class RopeString {
     return cloned
   }
 
+  concat(other: RopeString): RopeString {
+    const result = new RopeString('', { leafMaxSize: this.leafMaxSize })
+    result.root = this.joinNodes(this.cloneNode(this.root), this.cloneNode(other.root))
+    result._length = this._length + other._length
+    return result
+  }
+
+  isBalanced(): boolean {
+    return this.checkBalanced(this.root)
+  }
+
+  rebalance(): void {
+    const text = this.toString()
+    this.root = this.buildNode(text)
+    this._length = text.length
+  }
+
+  getStats(): RopeStats {
+    const stats = this.computeStats(this.root)
+    return stats
+  }
+
+  *[Symbol.iterator](): Iterator<string> {
+    const text = this.toString()
+    for (let i = 0; i < text.length; i++) {
+      yield text[i]!
+    }
+  }
+
   clear(): void {
     this.root = ''
     this._length = 0
@@ -134,7 +163,7 @@ export class RopeString {
 
   private charAtNode(node: RopeNode, index: number): string {
     if (typeof node === 'string') {
-      return node[index] ?? ''
+      return index >= 0 && index < node.length ? node.charAt(index) : ''
     }
     const leftLen = this.nodeLength(node.left)
     if (index < leftLen) {
@@ -162,6 +191,47 @@ export class RopeString {
     if (leftLen === 0) return right
     if (rightLen === 0) return left
     return { left, right, length: leftLen + rightLen }
+  }
+
+  private cloneNode(node: RopeNode): RopeNode {
+    if (typeof node === 'string') return node
+    return {
+      left: this.cloneNode(node.left),
+      right: this.cloneNode(node.right),
+      length: node.length,
+    }
+  }
+
+  private checkBalanced(node: RopeNode): boolean {
+    if (typeof node === 'string') return true
+    const leftH = this.nodeHeight(node.left)
+    const rightH = this.nodeHeight(node.right)
+    if (Math.abs(leftH - rightH) > 1) return false
+    return this.checkBalanced(node.left) && this.checkBalanced(node.right)
+  }
+
+  private nodeHeight(node: RopeNode): number {
+    if (typeof node === 'string') return 0
+    return 1 + Math.max(this.nodeHeight(node.left), this.nodeHeight(node.right))
+  }
+
+  private computeStats(node: RopeNode): RopeStats {
+    if (typeof node === 'string') {
+      if (node.length === 0) {
+        return { nodeCount: 0, height: 0, isBalanced: true, leafCount: 0 }
+      }
+      return { nodeCount: 0, height: 0, isBalanced: true, leafCount: 1 }
+    }
+    const leftStats = this.computeStats(node.left)
+    const rightStats = this.computeStats(node.right)
+    const height = 1 + Math.max(leftStats.height, rightStats.height)
+    const balanced = Math.abs(leftStats.height - rightStats.height) <= 1 && leftStats.isBalanced && rightStats.isBalanced
+    return {
+      nodeCount: 1 + leftStats.nodeCount + rightStats.nodeCount,
+      height,
+      isBalanced: balanced,
+      leafCount: leftStats.leafCount + rightStats.leafCount,
+    }
   }
 }
 
