@@ -1051,7 +1051,7 @@ describe('RandomizedQueue', () => {
       expect(q.size).toBe(10000)
     })
 
-    it.skip('should shuffle large queue', () => {
+    it('should shuffle large queue', () => {
       const q = new RandomizedQueue<number>()
       for (let i = 0; i < 1000; i++) q.enqueue(i)
       q.shuffle()
