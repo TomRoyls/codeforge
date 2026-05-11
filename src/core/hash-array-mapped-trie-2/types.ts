@@ -1,0 +1,5 @@
+const BITS_PER_LEVEL = 5
+const MASK = (1 << BITS_PER_LEVEL) - 1
+const MAX_SHIFT = 32
+
+export { BITS_PER_LEVEL, MASK, MAX_SHIFT }
