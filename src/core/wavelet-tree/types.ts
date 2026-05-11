@@ -1,3 +1,5 @@
+export type { WaveletTree } from './index.js'
+
 export interface WaveletTreeNode {
   bitvector: number[]
   rankPrefix: number[]

@@ -1,4 +1,10 @@
+export type Comparator<T> = (a: T, b: T) => number
+
 export interface IntervalHeapOptions<T> {
-  initialValues?: T[]
-  comparator?: (a: T, b: T) => number
+  comparator?: Comparator<T>
+}
+
+export interface IntervalNode<T> {
+  min: T
+  max: T | null
 }
