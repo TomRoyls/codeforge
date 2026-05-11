@@ -1,7 +1,6 @@
 import type { HAMTNode, HAMTStats, HAMTOperations } from './types.js'
-import { DEFAULT_HAMT_OPTIONS } from './types.js'
 
-const BITS_PER_LEVEL = DEFAULT_HAMT_OPTIONS.bitsPerLevel
+const BITS_PER_LEVEL = 5
 const MASK = (1 << BITS_PER_LEVEL) - 1
 
 function hashKey(key: unknown): number {

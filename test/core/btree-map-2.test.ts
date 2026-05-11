@@ -825,4 +825,74 @@ describe("BTreeMap", () => {
       expect(map.get("a")).toEqual([1, 2, 3]);
     });
   });
+
+  describe("duplicate key handling", () => {
+    it("updates value on duplicate key without size change", () => {
+      const map = new BTreeMap<number, string>();
+      map.set(1, "first");
+      map.set(1, "second");
+      map.set(1, "third");
+      expect(map.size).toBe(1);
+      expect(map.get(1)).toBe("third");
+    });
+
+    it("preserves other entries on overwrite", () => {
+      const map = new BTreeMap<number, string>();
+      map.set(1, "a");
+      map.set(2, "b");
+      map.set(1, "c");
+      expect(map.size).toBe(2);
+      expect(map.get(1)).toBe("c");
+      expect(map.get(2)).toBe("b");
+    });
+  });
+
+  describe("large range queries", () => {
+    it("range returns correct subset across nodes", () => {
+      const map = new BTreeMap<number, number>(3);
+      for (let i = 1; i <= 30; i++) {
+        map.set(i, i * 100);
+      }
+      const result = map.range(10, 20);
+      expect(result.length).toBe(11);
+      expect(result[0]).toEqual({ key: 10, value: 1000 });
+      expect(result[10]).toEqual({ key: 20, value: 2000 });
+    });
+
+    it("indexOf and at are consistent", () => {
+      const map = new BTreeMap<number, string>(4);
+      for (let i = 0; i < 30; i++) {
+        map.set(i, `v${i}`);
+      }
+      for (let i = 0; i < 30; i++) {
+        const idx = map.indexOf(i);
+        expect(idx).toBe(i);
+        const entry = map.at(idx);
+        expect(entry).toEqual({ key: i, value: `v${i}` });
+      }
+    });
+  });
+
+  describe("order variants", () => {
+    it("works with order 5", () => {
+      const map = new BTreeMap<number, string>(5);
+      for (let i = 0; i < 50; i++) {
+        map.set(i, `v${i}`);
+      }
+      expect(map.size).toBe(50);
+      expect(map.min()?.key).toBe(0);
+      expect(map.max()?.key).toBe(49);
+    });
+
+    it("works with order 64", () => {
+      const map = new BTreeMap<number, string>(64);
+      for (let i = 0; i < 100; i++) {
+        map.set(i, `v${i}`);
+      }
+      expect(map.size).toBe(100);
+      for (let i = 0; i < 100; i++) {
+        expect(map.has(i)).toBe(true);
+      }
+    });
+  });
 });

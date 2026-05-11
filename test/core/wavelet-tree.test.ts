@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { WaveletTree } from '../../src/core/wavelet-tree/wavelet-tree.js'
+import { WaveletTree } from '../../src/core/wavelet-tree/index.js'
 import type { WaveletTreeNode, WaveletTreeOptions, RankAllResult, WaveletTreeStats } from '../../src/core/wavelet-tree/types.js'
 
 describe('WaveletTree', () => {
@@ -1031,6 +1031,129 @@ describe('WaveletTree', () => {
       }
       expect(s.length).toBe(10)
       expect(s.alphabetSize).toBe(5)
+    })
+  })
+
+  describe('quantile', () => {
+    it('should return minimum for k=1', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5, 9, 2, 6])
+      expect(wt.quantile(0, 8, 1)).toBe(1)
+    })
+
+    it('should return maximum for k=n', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5, 9, 2, 6])
+      expect(wt.quantile(0, 8, 8)).toBe(9)
+    })
+
+    it('should return median-like value', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5, 9, 2, 6])
+      expect(wt.quantile(0, 8, 4)).toBe(3)
+    })
+
+    it('should return k-th smallest in sorted order', () => {
+      const wt = new WaveletTree([5, 2, 8, 1, 9])
+      expect(wt.quantile(0, 5, 1)).toBe(1)
+      expect(wt.quantile(0, 5, 2)).toBe(2)
+      expect(wt.quantile(0, 5, 3)).toBe(5)
+      expect(wt.quantile(0, 5, 4)).toBe(8)
+      expect(wt.quantile(0, 5, 5)).toBe(9)
+    })
+
+    it('should work on subrange', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5, 9, 2, 6])
+      expect(wt.quantile(2, 5, 1)).toBe(1)
+      expect(wt.quantile(2, 5, 3)).toBe(5)
+    })
+
+    it('should work on single-element range', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5])
+      expect(wt.quantile(2, 3, 1)).toBe(4)
+    })
+
+    it('should throw for k < 1', () => {
+      const wt = new WaveletTree([1, 2, 3])
+      expect(() => wt.quantile(0, 3, 0)).toThrow()
+    })
+
+    it('should throw for k > range size', () => {
+      const wt = new WaveletTree([1, 2, 3])
+      expect(() => wt.quantile(0, 3, 4)).toThrow()
+    })
+
+    it('should throw for left < 0', () => {
+      const wt = new WaveletTree([1, 2, 3])
+      expect(() => wt.quantile(-1, 3, 1)).toThrow()
+    })
+
+    it('should throw for left >= right', () => {
+      const wt = new WaveletTree([1, 2, 3])
+      expect(() => wt.quantile(2, 2, 1)).toThrow()
+    })
+
+    it('should throw on empty tree', () => {
+      const wt = new WaveletTree([])
+      expect(() => wt.quantile(0, 0, 1)).toThrow()
+    })
+
+    it('should handle binary data', () => {
+      const wt = new WaveletTree([0, 1, 0, 1, 0])
+      expect(wt.quantile(0, 5, 1)).toBe(0)
+      expect(wt.quantile(0, 5, 3)).toBe(0)
+      expect(wt.quantile(0, 5, 4)).toBe(1)
+      expect(wt.quantile(0, 5, 5)).toBe(1)
+    })
+
+    it('should handle all same elements', () => {
+      const wt = new WaveletTree([5, 5, 5])
+      expect(wt.quantile(0, 3, 1)).toBe(5)
+      expect(wt.quantile(0, 3, 2)).toBe(5)
+      expect(wt.quantile(0, 3, 3)).toBe(5)
+    })
+
+    it('should match sorted order for full range', () => {
+      const data = [7, 3, 9, 1, 5, 3, 7, 1, 9, 5]
+      const wt = new WaveletTree(data)
+      const sorted = [...data].sort((a, b) => a - b)
+      for (let k = 1; k <= data.length; k++) {
+        expect(wt.quantile(0, data.length, k)).toBe(sorted[k - 1])
+      }
+    })
+
+    it('should handle each position individually', () => {
+      const data = [5, 3, 1, 4, 2]
+      const wt = new WaveletTree(data)
+      for (let i = 0; i < data.length; i++) {
+        expect(wt.quantile(i, i + 1, 1)).toBe(data[i])
+      }
+    })
+
+    it('should handle negative values', () => {
+      const wt = new WaveletTree([-3, -1, 0, 1, 3])
+      expect(wt.quantile(0, 5, 1)).toBe(-3)
+      expect(wt.quantile(0, 5, 3)).toBe(0)
+      expect(wt.quantile(0, 5, 5)).toBe(3)
+    })
+  })
+
+  describe('size', () => {
+    it('should return same as length', () => {
+      const wt = new WaveletTree([3, 1, 4, 1, 5])
+      expect(wt.size).toBe(wt.length)
+    })
+
+    it('should return 0 for empty tree', () => {
+      const wt = new WaveletTree([])
+      expect(wt.size).toBe(0)
+    })
+
+    it('should return correct count', () => {
+      const wt = new WaveletTree([1, 2, 3, 4, 5, 6, 7, 8])
+      expect(wt.size).toBe(8)
+    })
+
+    it('should be a getter', () => {
+      const wt = new WaveletTree([1, 2, 3])
+      expect(typeof Object.getOwnPropertyDescriptor(Object.getPrototypeOf(wt), 'size')?.get).toBe('function')
     })
   })
 
