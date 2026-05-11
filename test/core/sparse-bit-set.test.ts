@@ -76,7 +76,7 @@ describe('SparseBitSet', () => {
       expect(bs.get(130)).toBe(true)
     })
 
-    it.skip('throws on negative index', () => {
+    it('throws on negative index', () => {
       const bs = new SparseBitSet()
       expect(() => bs.set(-1)).toThrow(RangeError)
     })
@@ -128,7 +128,7 @@ describe('SparseBitSet', () => {
       expect(bs.isEmptyBlock(0)).toBe(true)
     })
 
-    it.skip('throws on negative index', () => {
+    it('throws on negative index', () => {
       const bs = new SparseBitSet()
       expect(() => bs.clear(-1)).toThrow(RangeError)
     })
@@ -450,7 +450,7 @@ describe('SparseBitSet', () => {
       expect(bs.prevSetBit(129)).toBe(5)
     })
 
-    it.skip('returns -1 for -1 index', () => {
+    it('returns -1 for -1 index', () => {
       const bs = new SparseBitSet()
       expect(bs.prevSetBit(-1)).toBe(-1)
     })
