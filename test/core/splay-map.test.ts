@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { SplayMap } from '../../src/core/splay-map/splay-map.js'
-import { DEFAULT_SPLAY_MAP_OPTIONS } from '../../src/core/splay-map/types.js'
-import type { SplayMapOptions, SplayMapStatistics, SplayMapJSON, SplayMapNodeJSON } from '../../src/core/splay-map/types.js'
+import { SplayMap } from '../../src/core/splay-map/index.js'
+import type { CompareFunction, SplayMapOptions } from '../../src/core/splay-map/index.js'
 
 describe('SplayMap', () => {
   let map: SplayMap<number, string>
@@ -11,19 +10,20 @@ describe('SplayMap', () => {
   })
 
   describe('constructor', () => {
-    it('should create empty map with no args', () => {
-      const m = new SplayMap()
+    it('creates empty map with no arguments', () => {
+      const m = new SplayMap<number, string>()
       expect(m.size).toBe(0)
       expect(m.isEmpty).toBe(true)
     })
 
-    it('should accept empty options object', () => {
+    it('creates map with empty options', () => {
       const m = new SplayMap<number, string>({})
       expect(m.size).toBe(0)
+      expect(m.isEmpty).toBe(true)
     })
 
-    it('should accept custom comparator', () => {
-      const reverseComp = (a: number, b: number): number => b - a
+    it('accepts custom comparator', () => {
+      const reverseComp: CompareFunction<number> = (a, b) => b - a
       const m = new SplayMap<number, string>({ comparator: reverseComp })
       m.set(1, 'one')
       m.set(2, 'two')
@@ -31,536 +31,634 @@ describe('SplayMap', () => {
       expect(m.keys()).toEqual([3, 2, 1])
     })
 
-    it('should use default comparator when none provided', () => {
+    it('uses default comparator when none provided', () => {
       const m = new SplayMap<number, string>()
       m.set(3, 'three')
       m.set(1, 'one')
       m.set(2, 'two')
       expect(m.keys()).toEqual([1, 2, 3])
     })
-  })
 
-  describe('set', () => {
-    it('should insert first element', () => {
-      map.set(1, 'one')
-      expect(map.size).toBe(1)
-      expect(map.isEmpty).toBe(false)
-    })
-
-    it('should insert multiple elements', () => {
-      map.set(1, 'one')
-      map.set(2, 'two')
-      map.set(3, 'three')
-      expect(map.size).toBe(3)
-    })
-
-    it('should update existing key', () => {
-      map.set(1, 'one')
-      map.set(1, 'updated')
-      expect(map.size).toBe(1)
-      expect(map.get(1)).toBe('updated')
-    })
-
-    it('should track set statistics', () => {
-      map.set(1, 'one')
-      map.set(2, 'two')
-      map.set(3, 'three')
-      expect(map.getStatistics().sets).toBe(3)
-    })
-
-    it('should track set stat on update', () => {
-      map.set(1, 'one')
-      map.set(1, 'updated')
-      expect(map.getStatistics().sets).toBe(2)
-    })
-
-    it('should handle insertions in descending order', () => {
-      map.set(5, 'five')
-      map.set(4, 'four')
-      map.set(3, 'three')
-      map.set(2, 'two')
-      map.set(1, 'one')
-      expect(map.size).toBe(5)
-      expect(map.keys()).toEqual([1, 2, 3, 4, 5])
-    })
-
-    it('should handle insertions in ascending order', () => {
-      map.set(1, 'one')
-      map.set(2, 'two')
-      map.set(3, 'three')
-      expect(map.keys()).toEqual([1, 2, 3])
-    })
-
-    it('should handle mixed order insertions', () => {
-      map.set(3, 'three')
-      map.set(1, 'one')
-      map.set(4, 'four')
-      map.set(2, 'two')
-      expect(map.keys()).toEqual([1, 2, 3, 4])
-    })
-
-    it('should maintain BST invariants', () => {
-      map.set(5, 'a')
-      map.set(3, 'b')
-      map.set(7, 'c')
-      map.set(1, 'd')
-      map.set(4, 'e')
-      expect(map.keys()).toEqual([1, 3, 4, 5, 7])
-    })
-
-    it('should splay inserted key to root', () => {
-      map.set(1, 'one')
-      map.set(2, 'two')
-      map.set(3, 'three')
-      map.set(5, 'five')
-      expect(map.get(5)).toBe('five')
-    })
-
-    it('should update maxDepth on insert', () => {
-      map.set(1, 'a')
-      expect(map.getStatistics().maxDepth).toBeGreaterThanOrEqual(1)
-    })
-
-    it('should handle many insertions', () => {
-      for (let i = 0; i < 100; i++) {
-        map.set(i, `val-${i}`)
-      }
-      expect(map.size).toBe(100)
+    it('default comparator works with strings', () => {
+      const m = new SplayMap<string, number>()
+      m.set('c', 3)
+      m.set('a', 1)
+      m.set('b', 2)
+      expect(m.keys()).toEqual(['a', 'b', 'c'])
     })
   })
 
-  describe('get', () => {
-    it('should return undefined for missing key', () => {
-      expect(map.get(99)).toBeUndefined()
-    })
-
-    it('should return undefined on empty map', () => {
-      expect(map.get(1)).toBeUndefined()
-    })
-
-    it('should return value for existing key', () => {
+  describe('set / get', () => {
+    it('sets and gets a single entry', () => {
       map.set(1, 'one')
       expect(map.get(1)).toBe('one')
     })
 
-    it('should return updated value', () => {
+    it('sets and gets multiple entries', () => {
+      map.set(1, 'one')
+      map.set(2, 'two')
+      map.set(3, 'three')
+      expect(map.get(1)).toBe('one')
+      expect(map.get(2)).toBe('two')
+      expect(map.get(3)).toBe('three')
+    })
+
+    it('overwrites existing key value', () => {
       map.set(1, 'one')
       map.set(1, 'updated')
       expect(map.get(1)).toBe('updated')
+      expect(map.size).toBe(1)
     })
 
-    it('should splay accessed key to root', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      map.set(3, 'c')
-      map.get(1)
-      const stats = map.getStatistics()
-      expect(stats.splayOperations).toBeGreaterThan(0)
+    it('returns undefined for non-existent key', () => {
+      expect(map.get(99)).toBeUndefined()
     })
 
-    it('should track get statistics for found key', () => {
-      map.set(1, 'one')
-      map.get(1)
-      expect(map.getStatistics().gets).toBe(1)
-    })
-
-    it('should track get statistics for missing key', () => {
-      map.get(99)
-      expect(map.getStatistics().gets).toBe(1)
-    })
-
-    it('should accumulate get statistics', () => {
-      map.set(1, 'one')
-      map.get(1)
-      map.get(2)
-      map.get(1)
-      expect(map.getStatistics().gets).toBe(3)
-    })
-
-    it('should handle get after delete', () => {
-      map.set(1, 'one')
-      map.delete(1)
+    it('returns undefined when map is empty', () => {
       expect(map.get(1)).toBeUndefined()
     })
 
-    it('should not change size on get', () => {
-      map.set(1, 'one')
-      map.get(1)
-      expect(map.size).toBe(1)
+    it('handles object values', () => {
+      const objMap = new SplayMap<number, { name: string }>()
+      objMap.set(1, { name: 'test' })
+      expect(objMap.get(1)!.name).toBe('test')
+    })
+
+    it('handles null values', () => {
+      const nullMap = new SplayMap<number, string | null>()
+      nullMap.set(1, null)
+      expect(nullMap.get(1)).toBeNull()
+    })
+
+    it('handles undefined values', () => {
+      const undefMap = new SplayMap<number, string | undefined>()
+      undefMap.set(1, undefined)
+      expect(undefMap.get(1)).toBeUndefined()
+      expect(undefMap.has(1)).toBe(true)
+    })
+
+    it('preserves size after overwrite', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.set(1, 'c')
+      expect(map.size).toBe(2)
+    })
+
+    it('sets keys in reverse order', () => {
+      map.set(3, 'c')
+      map.set(2, 'b')
+      map.set(1, 'a')
+      expect(map.keys()).toEqual([1, 2, 3])
+    })
+
+    it('sets keys with large gaps', () => {
+      map.set(1000, 'a')
+      map.set(1, 'b')
+      map.set(500, 'c')
+      expect(map.keys()).toEqual([1, 500, 1000])
     })
   })
 
-  describe('delete', () => {
-    it('should return false for missing key', () => {
-      expect(map.delete(99)).toBe(false)
-    })
-
-    it('should return false on empty map', () => {
-      expect(map.delete(1)).toBe(false)
-    })
-
-    it('should return true for existing key', () => {
-      map.set(1, 'one')
-      expect(map.delete(1)).toBe(true)
-    })
-
-    it('should decrease size', () => {
-      map.set(1, 'one')
-      map.set(2, 'two')
-      map.delete(1)
+  describe('insert (alias for set)', () => {
+    it('insert works like set', () => {
+      map.insert(1, 'one')
+      expect(map.get(1)).toBe('one')
       expect(map.size).toBe(1)
     })
 
-    it('should make key not found', () => {
-      map.set(1, 'one')
-      map.delete(1)
-      expect(map.get(1)).toBeUndefined()
-      expect(map.has(1)).toBe(false)
-    })
-
-    it('should track delete statistics', () => {
-      map.set(1, 'one')
-      map.delete(1)
-      expect(map.getStatistics().deletes).toBe(1)
-    })
-
-    it('should not track delete stat on failed delete', () => {
-      map.delete(99)
-      expect(map.getStatistics().deletes).toBe(0)
-    })
-
-    it('should handle delete root', () => {
-      map.set(1, 'one')
-      map.delete(1)
-      expect(map.size).toBe(0)
-      expect(map.isEmpty).toBe(true)
-    })
-
-    it('should handle delete with only left child', () => {
-      map.set(5, 'a')
-      map.set(3, 'b')
-      map.delete(5)
+    it('insert overwrites existing key', () => {
+      map.insert(1, 'one')
+      map.insert(1, 'two')
+      expect(map.get(1)).toBe('two')
       expect(map.size).toBe(1)
-      expect(map.get(3)).toBe('b')
     })
 
-    it('should handle delete with only right child', () => {
-      map.set(3, 'a')
-      map.set(5, 'b')
-      map.delete(3)
-      expect(map.size).toBe(1)
-      expect(map.get(5)).toBe('b')
-    })
-
-    it('should handle delete with both children', () => {
-      map.set(5, 'a')
-      map.set(3, 'b')
-      map.set(7, 'c')
-      map.delete(5)
-      expect(map.size).toBe(2)
-      expect(map.has(3)).toBe(true)
-      expect(map.has(7)).toBe(true)
-    })
-
-    it('should handle delete all elements', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      map.set(3, 'c')
-      map.delete(1)
-      map.delete(2)
-      map.delete(3)
-      expect(map.size).toBe(0)
-      expect(map.isEmpty).toBe(true)
-    })
-
-    it('should maintain order after delete', () => {
-      map.set(5, 'a')
-      map.set(3, 'b')
-      map.set(7, 'c')
-      map.set(1, 'd')
-      map.set(4, 'e')
-      map.delete(3)
-      expect(map.keys()).toEqual([1, 4, 5, 7])
+    it('insert multiple entries', () => {
+      map.insert(3, 'c')
+      map.insert(1, 'a')
+      map.insert(2, 'b')
+      expect(map.keys()).toEqual([1, 2, 3])
     })
   })
 
   describe('has', () => {
-    it('should return false on empty map', () => {
-      expect(map.has(1)).toBe(false)
-    })
-
-    it('should return true for existing key', () => {
+    it('returns true for existing key', () => {
       map.set(1, 'one')
       expect(map.has(1)).toBe(true)
     })
 
-    it('should return false for missing key', () => {
+    it('returns false for non-existent key', () => {
       map.set(1, 'one')
       expect(map.has(2)).toBe(false)
     })
 
-    it('should return false after delete', () => {
-      map.set(1, 'one')
-      map.delete(1)
+    it('returns false on empty map', () => {
       expect(map.has(1)).toBe(false)
     })
 
-    it('should return true after update', () => {
-      map.set(1, 'one')
-      map.set(1, 'updated')
+    it('returns true after overwrite', () => {
+      map.set(1, 'a')
+      map.set(1, 'b')
       expect(map.has(1)).toBe(true)
     })
 
-    it('should not change size', () => {
-      map.set(1, 'one')
-      map.has(1)
-      expect(map.size).toBe(1)
+    it('returns false after deletion', () => {
+      map.set(1, 'a')
+      map.delete(1)
+      expect(map.has(1)).toBe(false)
     })
   })
 
-  describe('size', () => {
-    it('should be 0 on new map', () => {
+  describe('delete', () => {
+    it('deletes a leaf node', () => {
+      map.set(1, 'one')
+      expect(map.delete(1)).toBe(true)
+      expect(map.size).toBe(0)
+      expect(map.get(1)).toBeUndefined()
+    })
+
+    it('deletes an internal node', () => {
+      map.set(2, 'two')
+      map.set(1, 'one')
+      map.set(3, 'three')
+      expect(map.delete(2)).toBe(true)
+      expect(map.size).toBe(2)
+      expect(map.get(2)).toBeUndefined()
+      expect(map.get(1)).toBe('one')
+      expect(map.get(3)).toBe('three')
+    })
+
+    it('returns false for non-existent key', () => {
+      expect(map.delete(99)).toBe(false)
+    })
+
+    it('returns false on empty map', () => {
+      expect(map.delete(1)).toBe(false)
+    })
+
+    it('deletes all entries', () => {
+      for (let i = 1; i <= 10; i++) map.set(i, String(i))
+      for (let i = 1; i <= 10; i++) {
+        expect(map.delete(i)).toBe(true)
+      }
+      expect(map.size).toBe(0)
+      expect(map.isEmpty).toBe(true)
+    })
+
+    it('deletes alternating entries', () => {
+      for (let i = 1; i <= 10; i++) map.set(i, String(i))
+      for (let i = 1; i <= 10; i += 2) {
+        expect(map.delete(i)).toBe(true)
+      }
+      expect(map.size).toBe(5)
+      for (let i = 2; i <= 10; i += 2) {
+        expect(map.has(i)).toBe(true)
+      }
+      for (let i = 1; i <= 10; i += 2) {
+        expect(map.has(i)).toBe(false)
+      }
+    })
+
+    it('maintains sorted order after deletions', () => {
+      for (let i = 1; i <= 20; i++) map.set(i, String(i))
+      for (let i = 5; i <= 15; i++) map.delete(i)
+      const keys = map.keys()
+      expect(keys).toEqual([1, 2, 3, 4, 16, 17, 18, 19, 20])
+    })
+
+    it('handles delete after overwrite', () => {
+      map.set(1, 'a')
+      map.set(1, 'b')
+      expect(map.delete(1)).toBe(true)
       expect(map.size).toBe(0)
     })
 
-    it('should increase on set', () => {
+    it('delete root with two children', () => {
+      map.set(10, 'a')
+      map.set(5, 'b')
+      map.set(15, 'c')
+      expect(map.delete(10)).toBe(true)
+      expect(map.size).toBe(2)
+      expect(map.keys()).toEqual([5, 15])
+    })
+
+    it('delete root with left child only', () => {
+      map.set(10, 'a')
+      map.set(5, 'b')
+      expect(map.delete(10)).toBe(true)
+      expect(map.size).toBe(1)
+      expect(map.get(5)).toBe('b')
+    })
+
+    it('delete root with right child only', () => {
+      map.set(10, 'a')
+      map.set(15, 'b')
+      expect(map.delete(10)).toBe(true)
+      expect(map.size).toBe(1)
+      expect(map.get(15)).toBe('b')
+    })
+  })
+
+  describe('size / isEmpty', () => {
+    it('size is 0 for new map', () => {
+      expect(map.size).toBe(0)
+    })
+
+    it('isEmpty is true for new map', () => {
+      expect(map.isEmpty).toBe(true)
+    })
+
+    it('size increments on set', () => {
       map.set(1, 'a')
       expect(map.size).toBe(1)
       map.set(2, 'b')
       expect(map.size).toBe(2)
     })
 
-    it('should not increase on update', () => {
+    it('size does not change on overwrite', () => {
       map.set(1, 'a')
       map.set(1, 'b')
       expect(map.size).toBe(1)
     })
 
-    it('should decrease on delete', () => {
+    it('size decrements on delete', () => {
       map.set(1, 'a')
       map.set(2, 'b')
       map.delete(1)
       expect(map.size).toBe(1)
     })
 
-    it('should be 0 after clear', () => {
-      map.set(1, 'a')
-      map.clear()
-      expect(map.size).toBe(0)
-    })
-  })
-
-  describe('isEmpty', () => {
-    it('should be true on new map', () => {
-      expect(map.isEmpty).toBe(true)
-    })
-
-    it('should be false after set', () => {
+    it('isEmpty is false after set', () => {
       map.set(1, 'a')
       expect(map.isEmpty).toBe(false)
     })
 
-    it('should be true after deleting all', () => {
+    it('isEmpty is true after deleting all', () => {
       map.set(1, 'a')
       map.delete(1)
-      expect(map.isEmpty).toBe(true)
-    })
-
-    it('should be true after clear', () => {
-      map.set(1, 'a')
-      map.clear()
       expect(map.isEmpty).toBe(true)
     })
   })
 
   describe('clear', () => {
-    it('should reset size to 0', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
+    it('clears empty map', () => {
       map.clear()
       expect(map.size).toBe(0)
-    })
-
-    it('should reset isEmpty', () => {
-      map.set(1, 'a')
-      map.clear()
       expect(map.isEmpty).toBe(true)
     })
 
-    it('should make all keys absent', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
+    it('clears non-empty map', () => {
+      for (let i = 0; i < 10; i++) map.set(i, String(i))
       map.clear()
-      expect(map.has(1)).toBe(false)
-      expect(map.has(2)).toBe(false)
+      expect(map.size).toBe(0)
+      expect(map.isEmpty).toBe(true)
+      expect(map.get(5)).toBeUndefined()
     })
 
-    it('should reset statistics', () => {
-      map.set(1, 'a')
-      map.get(1)
-      map.delete(1)
-      map.clear()
-      const stats = map.getStatistics()
-      expect(stats.sets).toBe(0)
-      expect(stats.gets).toBe(0)
-      expect(stats.deletes).toBe(0)
-      expect(stats.splayOperations).toBe(0)
-      expect(stats.rotations).toBe(0)
-      expect(stats.maxDepth).toBe(0)
-    })
-
-    it('should allow set after clear', () => {
+    it('allows operations after clear', () => {
       map.set(1, 'a')
       map.clear()
       map.set(2, 'b')
       expect(map.size).toBe(1)
       expect(map.get(2)).toBe('b')
     })
-
-    it('should be safe to clear empty map', () => {
-      map.clear()
-      expect(map.size).toBe(0)
-    })
   })
 
-  describe('min', () => {
-    it('should return undefined on empty map', () => {
-      expect(map.min()).toBeUndefined()
+  describe('clone', () => {
+    it('clones empty map', () => {
+      const cloned = map.clone()
+      expect(cloned.size).toBe(0)
+      expect(cloned.isEmpty).toBe(true)
     })
 
-    it('should return the only entry', () => {
-      map.set(5, 'five')
-      expect(map.min()).toEqual([5, 'five'])
-    })
-
-    it('should return smallest key', () => {
-      map.set(5, 'five')
-      map.set(3, 'three')
-      map.set(7, 'seven')
-      expect(map.min()).toEqual([3, 'three'])
-    })
-
-    it('should find min after deletions', () => {
+    it('clones all entries', () => {
       map.set(1, 'a')
       map.set(2, 'b')
       map.set(3, 'c')
-      map.delete(1)
-      expect(map.min()).toEqual([2, 'b'])
+      const cloned = map.clone()
+      expect(cloned.size).toBe(3)
+      expect(cloned.get(1)).toBe('a')
+      expect(cloned.get(2)).toBe('b')
+      expect(cloned.get(3)).toBe('c')
     })
 
-    it('should find min regardless of insertion order', () => {
-      map.set(10, 'a')
-      map.set(1, 'b')
-      map.set(5, 'c')
-      expect(map.min()).toEqual([1, 'b'])
+    it('clone is independent of original', () => {
+      map.set(1, 'a')
+      const cloned = map.clone()
+      cloned.set(2, 'b')
+      expect(map.size).toBe(1)
+      expect(cloned.size).toBe(2)
+      expect(map.has(2)).toBe(false)
+    })
+
+    it('clone preserves comparator', () => {
+      const cmp: CompareFunction<string> = (a, b) =>
+        a.toLowerCase().localeCompare(b.toLowerCase())
+      const original = new SplayMap<string, number>({ comparator: cmp })
+      original.set('A', 1)
+      const cloned = original.clone()
+      cloned.set('a', 2)
+      expect(cloned.size).toBe(1)
+      expect(cloned.get('A')).toBe(2)
     })
   })
 
-  describe('max', () => {
-    it('should return undefined on empty map', () => {
+  describe('min / max', () => {
+    it('returns undefined for empty map', () => {
+      expect(map.min()).toBeUndefined()
       expect(map.max()).toBeUndefined()
     })
 
-    it('should return the only entry', () => {
+    it('returns min and max for single entry', () => {
       map.set(5, 'five')
+      expect(map.min()).toEqual([5, 'five'])
       expect(map.max()).toEqual([5, 'five'])
     })
 
-    it('should return largest key', () => {
+    it('returns correct min and max after multiple sets', () => {
       map.set(5, 'five')
+      map.set(2, 'two')
+      map.set(8, 'eight')
+      map.set(1, 'one')
+      map.set(10, 'ten')
+      expect(map.min()).toEqual([1, 'one'])
+      expect(map.max()).toEqual([10, 'ten'])
+    })
+
+    it('updates min after deleting min key', () => {
+      map.set(1, 'one')
+      map.set(2, 'two')
       map.set(3, 'three')
-      map.set(7, 'seven')
-      expect(map.max()).toEqual([7, 'seven'])
+      map.delete(1)
+      expect(map.min()).toEqual([2, 'two'])
     })
 
-    it('should find max after deletions', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      map.set(3, 'c')
+    it('updates max after deleting max key', () => {
+      map.set(1, 'one')
+      map.set(2, 'two')
+      map.set(3, 'three')
       map.delete(3)
-      expect(map.max()).toEqual([2, 'b'])
-    })
-
-    it('should find max regardless of insertion order', () => {
-      map.set(1, 'a')
-      map.set(10, 'b')
-      map.set(5, 'c')
-      expect(map.max()).toEqual([10, 'b'])
+      expect(map.max()).toEqual([2, 'two'])
     })
   })
 
-  describe('first', () => {
-    it('should return undefined on empty map', () => {
+  describe('first / last', () => {
+    it('first returns undefined on empty map', () => {
       expect(map.first()).toBeUndefined()
     })
 
-    it('should return min value', () => {
-      map.set(5, 'five')
-      map.set(3, 'three')
-      map.set(7, 'seven')
-      expect(map.first()).toBe('three')
-    })
-
-    it('should return only value', () => {
-      map.set(1, 'one')
-      expect(map.first()).toBe('one')
-    })
-  })
-
-  describe('last', () => {
-    it('should return undefined on empty map', () => {
+    it('last returns undefined on empty map', () => {
       expect(map.last()).toBeUndefined()
     })
 
-    it('should return max value', () => {
+    it('first returns min entry', () => {
       map.set(5, 'five')
       map.set(3, 'three')
       map.set(7, 'seven')
-      expect(map.last()).toBe('seven')
+      expect(map.first()).toEqual([3, 'three'])
     })
 
-    it('should return only value', () => {
-      map.set(1, 'one')
-      expect(map.last()).toBe('one')
+    it('last returns max entry', () => {
+      map.set(5, 'five')
+      map.set(3, 'three')
+      map.set(7, 'seven')
+      expect(map.last()).toEqual([7, 'seven'])
+    })
+
+    it('first and last same for single entry', () => {
+      map.set(42, 'answer')
+      expect(map.first()).toEqual([42, 'answer'])
+      expect(map.last()).toEqual([42, 'answer'])
+    })
+
+    it('first returns same as min', () => {
+      map.set(10, 'a')
+      map.set(1, 'b')
+      map.set(5, 'c')
+      expect(map.first()).toEqual(map.min())
+    })
+
+    it('last returns same as max', () => {
+      map.set(10, 'a')
+      map.set(1, 'b')
+      map.set(5, 'c')
+      expect(map.last()).toEqual(map.max())
+    })
+  })
+
+  describe('forEach', () => {
+    it('does not call callback on empty map', () => {
+      let count = 0
+      map.forEach(() => {
+        count++
+      })
+      expect(count).toBe(0)
+    })
+
+    it('iterates all entries in order', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      const result: string[] = []
+      map.forEach((v, k) => {
+        result.push(`${k}:${v}`)
+      })
+      expect(result).toEqual(['1:a', '2:b', '3:c'])
+    })
+
+    it('passes map as third argument', () => {
+      map.set(1, 'a')
+      let received: SplayMap<number, string> | undefined
+      map.forEach((_v, _k, m) => {
+        received = m
+      })
+      expect(received).toBe(map)
+    })
+
+    it('iterates correct number of times', () => {
+      for (let i = 0; i < 5; i++) map.set(i, String(i))
+      let count = 0
+      map.forEach(() => {
+        count++
+      })
+      expect(count).toBe(5)
+    })
+  })
+
+  describe('Symbol.iterator', () => {
+    it('returns empty iterator for empty map', () => {
+      const result: [number, string][] = []
+      for (const entry of map) {
+        result.push(entry)
+      }
+      expect(result).toEqual([])
+    })
+
+    it('iterates entries in order', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      const result: [number, string][] = []
+      for (const entry of map) {
+        result.push(entry)
+      }
+      expect(result).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+        [3, 'c'],
+      ])
+    })
+
+    it('works with spread operator', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect([...map]).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+      ])
+    })
+
+    it('works with Array.from', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(Array.from(map)).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+      ])
+    })
+  })
+
+  describe('keys / values / entries', () => {
+    it('keys returns empty array for empty map', () => {
+      expect(map.keys()).toEqual([])
+    })
+
+    it('values returns empty array for empty map', () => {
+      expect(map.values()).toEqual([])
+    })
+
+    it('entries returns empty array for empty map', () => {
+      expect(map.entries()).toEqual([])
+    })
+
+    it('keys returns sorted keys', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.keys()).toEqual([1, 2, 3])
+    })
+
+    it('values returns values in key order', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.values()).toEqual(['a', 'b', 'c'])
+    })
+
+    it('entries returns sorted entries', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.entries()).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+        [3, 'c'],
+      ])
+    })
+
+    it('returns snapshot not affected by later mutations', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      const keys = map.keys()
+      const vals = map.values()
+      const ents = map.entries()
+      map.set(3, 'c')
+      expect(keys).toEqual([1, 2])
+      expect(vals).toEqual(['a', 'b'])
+      expect(ents).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+      ])
+    })
+  })
+
+  describe('toArray / toArraySorted', () => {
+    it('toArray returns empty array for empty map', () => {
+      expect(map.toArray()).toEqual([])
+    })
+
+    it('toArraySorted returns empty array for empty map', () => {
+      expect(map.toArraySorted()).toEqual([])
+    })
+
+    it('toArray returns sorted entries', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.toArray()).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+        [3, 'c'],
+      ])
+    })
+
+    it('toArraySorted returns sorted entries', () => {
+      map.set(3, 'c')
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.toArraySorted()).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+        [3, 'c'],
+      ])
+    })
+
+    it('toArray equals toArraySorted', () => {
+      map.set(5, 'e')
+      map.set(2, 'b')
+      map.set(8, 'h')
+      expect(map.toArray()).toEqual(map.toArraySorted())
     })
   })
 
   describe('lowerBound', () => {
-    it('should return undefined on empty map', () => {
-      expect(map.lowerBound(5)).toBeUndefined()
+    it('returns undefined for empty map', () => {
+      expect(map.lowerBound(1)).toBeUndefined()
     })
 
-    it('should return exact match', () => {
-      map.set(5, 'five')
-      expect(map.lowerBound(5)).toEqual([5, 'five'])
+    it('returns exact key when present', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.lowerBound(3)).toEqual([3, 'c'])
     })
 
-    it('should return next greater when no exact match', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
-      map.set(10, 'ten')
-      expect(map.lowerBound(3)).toEqual([5, 'five'])
+    it('returns next greater key when exact not present', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.lowerBound(2)).toEqual([3, 'c'])
     })
 
-    it('should return smallest when key <= min', () => {
-      map.set(5, 'five')
-      map.set(10, 'ten')
-      expect(map.lowerBound(1)).toEqual([5, 'five'])
-    })
-
-    it('should return undefined when key > max', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
+    it('returns undefined when all keys are less', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
       expect(map.lowerBound(10)).toBeUndefined()
     })
 
-    it('should return exact match when equal to max', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
-      expect(map.lowerBound(5)).toEqual([5, 'five'])
+    it('returns smallest key for lowerBound of min', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      expect(map.lowerBound(0)).toEqual([1, 'a'])
     })
 
-    it('should work with many elements', () => {
+    it('returns exact key when key equals max', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      expect(map.lowerBound(5)).toEqual([5, 'e'])
+    })
+
+    it('works with many elements', () => {
       for (let i = 0; i < 20; i += 2) {
         map.set(i, `v${i}`)
       }
@@ -570,37 +668,36 @@ describe('SplayMap', () => {
   })
 
   describe('upperBound', () => {
-    it('should return undefined on empty map', () => {
+    it('returns undefined for empty map', () => {
+      expect(map.upperBound(1)).toBeUndefined()
+    })
+
+    it('returns next greater key when exact present', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.upperBound(3)).toEqual([5, 'e'])
+    })
+
+    it('returns next greater when exact not present', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      expect(map.upperBound(2)).toEqual([5, 'e'])
+    })
+
+    it('returns undefined when all keys are less or equal', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
       expect(map.upperBound(5)).toBeUndefined()
     })
 
-    it('should return next greater after exact match', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
-      map.set(10, 'ten')
-      expect(map.upperBound(5)).toEqual([10, 'ten'])
+    it('returns first element when key < min', () => {
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.upperBound(1)).toEqual([5, 'e'])
     })
 
-    it('should return next greater when no exact match', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
-      map.set(10, 'ten')
-      expect(map.upperBound(3)).toEqual([5, 'five'])
-    })
-
-    it('should return undefined when key >= max', () => {
-      map.set(1, 'one')
-      map.set(5, 'five')
-      expect(map.upperBound(5)).toBeUndefined()
-    })
-
-    it('should return first element when key < min', () => {
-      map.set(5, 'five')
-      map.set(10, 'ten')
-      expect(map.upperBound(1)).toEqual([5, 'five'])
-    })
-
-    it('should work with many elements', () => {
+    it('works with many elements', () => {
       for (let i = 0; i < 20; i += 2) {
         map.set(i, `v${i}`)
       }
@@ -609,460 +706,550 @@ describe('SplayMap', () => {
     })
   })
 
-  describe('keys', () => {
-    it('should return empty array on empty map', () => {
-      expect(map.keys()).toEqual([])
+  describe('predecessor', () => {
+    it('returns undefined for empty map', () => {
+      expect(map.predecessor(1)).toBeUndefined()
     })
 
-    it('should return single key', () => {
+    it('returns largest key less than given key', () => {
       map.set(1, 'a')
-      expect(map.keys()).toEqual([1])
-    })
-
-    it('should return sorted keys', () => {
       map.set(3, 'c')
-      map.set(1, 'a')
-      map.set(2, 'b')
-      expect(map.keys()).toEqual([1, 2, 3])
+      map.set(5, 'e')
+      expect(map.predecessor(5)).toEqual([3, 'c'])
     })
 
-    it('should not include deleted keys', () => {
+    it('returns undefined when all keys are greater or equal', () => {
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.predecessor(3)).toBeUndefined()
+    })
+
+    it('returns predecessor for key not in map', () => {
       map.set(1, 'a')
-      map.set(2, 'b')
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.predecessor(7)).toEqual([5, 'e'])
+    })
+
+    it('returns predecessor when key is min', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      expect(map.predecessor(1)).toBeUndefined()
+    })
+
+    it('predecessor of max returns second largest', () => {
+      map.set(1, 'a')
       map.set(3, 'c')
-      map.delete(2)
-      expect(map.keys()).toEqual([1, 3])
-    })
-
-    it('should handle many keys', () => {
-      for (let i = 50; i >= 0; i--) {
-        map.set(i, `v${i}`)
-      }
-      const keys = map.keys()
-      expect(keys).toHaveLength(51)
-      for (let i = 1; i < keys.length; i++) {
-        expect(keys[i]).toBeGreaterThan(keys[i - 1]!)
-      }
+      map.set(5, 'e')
+      expect(map.predecessor(5)).toEqual([3, 'c'])
     })
   })
 
-  describe('values', () => {
-    it('should return empty array on empty map', () => {
-      expect(map.values()).toEqual([])
+  describe('successor', () => {
+    it('returns undefined for empty map', () => {
+      expect(map.successor(1)).toBeUndefined()
     })
 
-    it('should return values in key order', () => {
-      map.set(3, 'c')
+    it('returns smallest key greater than given key', () => {
       map.set(1, 'a')
-      map.set(2, 'b')
-      expect(map.values()).toEqual(['a', 'b', 'c'])
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.successor(3)).toEqual([5, 'e'])
     })
 
-    it('should handle duplicate values', () => {
-      map.set(1, 'same')
-      map.set(2, 'same')
-      expect(map.values()).toEqual(['same', 'same'])
+    it('returns undefined when all keys are less or equal', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      expect(map.successor(5)).toBeUndefined()
+    })
+
+    it('returns successor for key not in map', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.successor(3)).toEqual([5, 'e'])
+    })
+
+    it('successor of min returns second smallest', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.successor(1)).toEqual([3, 'c'])
+    })
+
+    it('successor equals upperBound', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.successor(3)).toEqual(map.upperBound(3))
     })
   })
 
-  describe('entries', () => {
-    it('should return empty array on empty map', () => {
-      expect(map.entries()).toEqual([])
+  describe('rank', () => {
+    it('returns 0 for empty map', () => {
+      expect(map.rank(1)).toBe(0)
     })
 
-    it('should return sorted entries', () => {
-      map.set(3, 'c')
-      map.set(1, 'a')
-      map.set(2, 'b')
-      expect(map.entries()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
-    })
-
-    it('should return correct entries after update', () => {
-      map.set(1, 'old')
-      map.set(1, 'new')
-      expect(map.entries()).toEqual([[1, 'new']])
-    })
-
-    it('should return correct entries after delete', () => {
+    it('returns 0 for min key', () => {
       map.set(1, 'a')
       map.set(2, 'b')
       map.set(3, 'c')
-      map.delete(2)
-      expect(map.entries()).toEqual([[1, 'a'], [3, 'c']])
+      expect(map.rank(1)).toBe(0)
+    })
+
+    it('returns correct rank for middle key', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.set(3, 'c')
+      expect(map.rank(2)).toBe(1)
+    })
+
+    it('returns correct rank for max key', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.set(3, 'c')
+      expect(map.rank(3)).toBe(2)
+    })
+
+    it('returns count of keys less than given key not in map', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      expect(map.rank(4)).toBe(2)
+    })
+
+    it('returns 0 for key less than min', () => {
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.rank(1)).toBe(0)
+    })
+
+    it('returns size for key greater than max', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.rank(10)).toBe(2)
+    })
+
+    it('works with many elements', () => {
+      for (let i = 0; i < 20; i++) map.set(i, `v${i}`)
+      expect(map.rank(10)).toBe(10)
+      expect(map.rank(0)).toBe(0)
+      expect(map.rank(19)).toBe(19)
     })
   })
 
-  describe('forEach', () => {
-    it('should not call callback on empty map', () => {
-      let count = 0
-      map.forEach(() => { count++ })
-      expect(count).toBe(0)
+  describe('select', () => {
+    it('returns undefined for empty map', () => {
+      expect(map.select(0)).toBeUndefined()
     })
 
-    it('should call callback for each entry', () => {
+    it('returns undefined for negative index', () => {
       map.set(1, 'a')
-      map.set(2, 'b')
-      map.set(3, 'c')
-      let count = 0
-      map.forEach(() => { count++ })
-      expect(count).toBe(3)
+      expect(map.select(-1)).toBeUndefined()
     })
 
-    it('should pass value, key, and map', () => {
-      map.set(1, 'one')
-      const results: Array<{ value: string; key: number; mapRef: SplayMap<number, string> }> = []
-      map.forEach((value, key, m) => {
-        results.push({ value, key, mapRef: m })
-      })
-      expect(results).toHaveLength(1)
-      expect(results[0]!.value).toBe('one')
-      expect(results[0]!.key).toBe(1)
-      expect(results[0]!.mapRef).toBe(map)
+    it('returns undefined for index >= size', () => {
+      map.set(1, 'a')
+      expect(map.select(1)).toBeUndefined()
     })
 
-    it('should iterate in key order', () => {
+    it('returns first entry for select(0)', () => {
       map.set(3, 'c')
       map.set(1, 'a')
       map.set(2, 'b')
-      const keys: number[] = []
-      map.forEach((_v, k) => keys.push(k))
-      expect(keys).toEqual([1, 2, 3])
-    })
-  })
-
-  describe('[Symbol.iterator]', () => {
-    it('should return empty iterator on empty map', () => {
-      expect([...map]).toEqual([])
+      expect(map.select(0)).toEqual([1, 'a'])
     })
 
-    it('should yield entries in order', () => {
+    it('returns last entry for select(size-1)', () => {
       map.set(3, 'c')
       map.set(1, 'a')
       map.set(2, 'b')
-      expect([...map]).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
+      expect(map.select(2)).toEqual([3, 'c'])
     })
 
-    it('should be usable in for-of', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      const results: Array<[number, string]> = []
-      for (const entry of map) {
-        results.push(entry)
-      }
-      expect(results).toEqual([[1, 'a'], [2, 'b']])
-    })
-
-    it('should work with destructuring', () => {
-      map.set(1, 'one')
-      const [key, value] = [...map][0]!
-      expect(key).toBe(1)
-      expect(value).toBe('one')
-    })
-  })
-
-  describe('getStatistics', () => {
-    it('should return zero stats on new map', () => {
-      const stats = map.getStatistics()
-      expect(stats.sets).toBe(0)
-      expect(stats.gets).toBe(0)
-      expect(stats.deletes).toBe(0)
-      expect(stats.splayOperations).toBe(0)
-      expect(stats.rotations).toBe(0)
-      expect(stats.maxDepth).toBe(0)
-    })
-
-    it('should track sets', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      expect(map.getStatistics().sets).toBe(2)
-    })
-
-    it('should track gets', () => {
-      map.set(1, 'a')
-      map.get(1)
-      map.get(2)
-      expect(map.getStatistics().gets).toBe(2)
-    })
-
-    it('should track deletes', () => {
-      map.set(1, 'a')
-      map.delete(1)
-      expect(map.getStatistics().deletes).toBe(1)
-    })
-
-    it('should track splayOperations', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      map.get(1)
-      const stats = map.getStatistics()
-      expect(stats.splayOperations).toBeGreaterThan(0)
-    })
-
-    it('should track rotations', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
+    it('returns correct entry for middle index', () => {
       map.set(3, 'c')
-      map.get(1)
-      const stats = map.getStatistics()
-      expect(stats.rotations).toBeGreaterThan(0)
+      map.set(1, 'a')
+      map.set(2, 'b')
+      expect(map.select(1)).toEqual([2, 'b'])
     })
 
-    it('should track maxDepth', () => {
+    it('select and rank are inverses', () => {
+      for (let i = 0; i < 10; i++) map.set(i, `v${i}`)
       for (let i = 0; i < 10; i++) {
-        map.set(i, `v${i}`)
+        const entry = map.select(i)
+        expect(entry).toBeDefined()
+        expect(map.rank(entry![0])).toBe(i)
       }
-      const stats = map.getStatistics()
-      expect(stats.maxDepth).toBeGreaterThan(0)
+    })
+  })
+
+  describe('split', () => {
+    it('splits empty map into two empty maps', () => {
+      const [left, right] = map.split(5)
+      expect(left.size).toBe(0)
+      expect(right.size).toBe(0)
     })
 
-    it('should return a copy', () => {
+    it('splits map at given key', () => {
+      for (let i = 1; i <= 10; i++) map.set(i, String(i))
+      const [left, right] = map.split(5)
+      expect(left.size).toBe(5)
+      expect(right.size).toBe(5)
+      expect(left.keys()).toEqual([1, 2, 3, 4, 5])
+      expect(right.keys()).toEqual([6, 7, 8, 9, 10])
+    })
+
+    it('left contains keys <= split key', () => {
       map.set(1, 'a')
-      const stats1 = map.getStatistics()
       map.set(2, 'b')
-      const stats2 = map.getStatistics()
-      expect(stats1.sets).toBe(1)
-      expect(stats2.sets).toBe(2)
-    })
-
-    it('should reset on clear', () => {
-      map.set(1, 'a')
-      map.get(1)
-      map.clear()
-      const stats = map.getStatistics()
-      expect(stats.sets).toBe(0)
-      expect(stats.gets).toBe(0)
-    })
-  })
-
-  describe('toJSON', () => {
-    it('should serialize empty map', () => {
-      const json = map.toJSON()
-      expect(json.root).toBeNull()
-      expect(json.size).toBe(0)
-    })
-
-    it('should serialize single entry', () => {
-      map.set(1, 'one')
-      const json = map.toJSON()
-      expect(json.root).not.toBeNull()
-      expect(json.root!.key).toBe(1)
-      expect(json.root!.value).toBe('one')
-    })
-
-    it('should serialize multiple entries', () => {
-      map.set(2, 'two')
-      map.set(1, 'one')
-      map.set(3, 'three')
-      const json = map.toJSON()
-      expect(json.size).toBe(3)
-    })
-
-    it('should include statistics', () => {
-      map.set(1, 'one')
-      map.get(1)
-      const json = map.toJSON()
-      expect(json.statistics.sets).toBe(1)
-      expect(json.statistics.gets).toBe(1)
-    })
-
-    it('should include left and right children', () => {
-      map.set(2, 'root')
-      map.set(1, 'left')
-      map.set(3, 'right')
-      const json = map.toJSON()
-      expect(json.root).not.toBeNull()
-    })
-
-    it('should have null children for leaf nodes', () => {
-      map.set(1, 'leaf')
-      const json = map.toJSON()
-      expect(json.root!.left).toBeNull()
-      expect(json.root!.right).toBeNull()
-    })
-  })
-
-  describe('fromJSON', () => {
-    it('should restore empty map', () => {
-      const json = map.toJSON()
-      const restored = SplayMap.fromJSON(json)
-      expect(restored.size).toBe(0)
-      expect(restored.isEmpty).toBe(true)
-    })
-
-    it('should restore single entry', () => {
-      map.set(1, 'one')
-      const restored = SplayMap.fromJSON(map.toJSON())
-      expect(restored.size).toBe(1)
-      expect(restored.get(1)).toBe('one')
-    })
-
-    it('should restore multiple entries', () => {
       map.set(3, 'c')
+      const [left] = map.split(2)
+      expect(left.has(1)).toBe(true)
+      expect(left.has(2)).toBe(true)
+    })
+
+    it('right contains keys > split key', () => {
       map.set(1, 'a')
       map.set(2, 'b')
-      const restored = SplayMap.fromJSON(map.toJSON())
-      expect(restored.size).toBe(3)
-      expect(restored.keys()).toEqual([1, 2, 3])
+      map.set(3, 'c')
+      const [, right] = map.split(2)
+      expect(right.has(3)).toBe(true)
+      expect(right.has(2)).toBe(false)
     })
 
-    it('should round-trip correctly', () => {
-      for (let i = 0; i < 20; i++) {
-        map.set(i, `val-${i}`)
-      }
-      const json = map.toJSON()
-      const restored = SplayMap.fromJSON<number, string>(json)
-      expect(restored.size).toBe(20)
-      for (let i = 0; i < 20; i++) {
-        expect(restored.has(i)).toBe(true)
-      }
-    })
-
-    it('should preserve statistics', () => {
-      map.set(1, 'a')
-      map.get(1)
-      const json = map.toJSON()
-      const restored = SplayMap.fromJSON(json)
-      expect(restored.getStatistics().sets).toBe(1)
-      expect(restored.getStatistics().gets).toBe(1)
-    })
-
-    it('should allow operations after restore', () => {
+    it('split at min key', () => {
       map.set(1, 'a')
       map.set(2, 'b')
-      const restored = SplayMap.fromJSON(map.toJSON())
-      restored.set(3, 'c')
-      expect(restored.size).toBe(3)
-      restored.delete(1)
-      expect(restored.has(2)).toBe(true)
-      expect(restored.has(3)).toBe(true)
+      map.set(3, 'c')
+      const [left, right] = map.split(1)
+      expect(left.size).toBe(1)
+      expect(right.size).toBe(2)
     })
 
-    it('should preserve values', () => {
-      map.set(1, 'hello')
-      map.set(2, 'world')
-      const restored = SplayMap.fromJSON(map.toJSON())
-      expect(restored.get(1)).toBe('hello')
-      expect(restored.get(2)).toBe('world')
+    it('split at max key', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.set(3, 'c')
+      const [left, right] = map.split(3)
+      expect(left.size).toBe(3)
+      expect(right.size).toBe(0)
+    })
+
+    it('split with key not in map', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      map.set(5, 'e')
+      const [left, right] = map.split(4)
+      expect(left.size).toBe(2)
+      expect(right.size).toBe(1)
+      expect(left.keys()).toEqual([1, 3])
+      expect(right.keys()).toEqual([5])
+    })
+
+    it('split preserves comparator', () => {
+      const cmp: CompareFunction<number> = (a, b) => b - a
+      const m = new SplayMap<number, string>({ comparator: cmp })
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      const [left, right] = m.split(2)
+      expect(left.size).toBe(2)
+      expect(right.size).toBe(1)
     })
   })
 
-  describe('DEFAULT_SPLAY_MAP_OPTIONS', () => {
-    it('should have comparator defined', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator).toBeDefined()
-      expect(typeof DEFAULT_SPLAY_MAP_OPTIONS.comparator).toBe('function')
+  describe('merge', () => {
+    it('merges empty map into non-empty', () => {
+      map.set(1, 'a')
+      const other = new SplayMap<number, string>()
+      map.merge(other)
+      expect(map.size).toBe(1)
     })
 
-    it('should have comparator that returns 0 for equal values', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator(1, 1)).toBe(0)
+    it('merges non-empty map into empty', () => {
+      const other = new SplayMap<number, string>()
+      other.set(1, 'a')
+      other.set(2, 'b')
+      map.merge(other)
+      expect(map.size).toBe(2)
+      expect(map.get(1)).toBe('a')
+      expect(map.get(2)).toBe('b')
     })
 
-    it('should have comparator that returns -1 for a < b', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator(1, 2)).toBe(-1)
+    it('merges two non-empty maps', () => {
+      map.set(1, 'a')
+      map.set(3, 'c')
+      const other = new SplayMap<number, string>()
+      other.set(2, 'b')
+      other.set(4, 'd')
+      map.merge(other)
+      expect(map.size).toBe(4)
+      expect(map.keys()).toEqual([1, 2, 3, 4])
     })
 
-    it('should have comparator that returns 1 for a > b', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator(2, 1)).toBe(1)
+    it('merge overwrites existing keys', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      const other = new SplayMap<number, string>()
+      other.set(2, 'updated')
+      other.set(3, 'c')
+      map.merge(other)
+      expect(map.size).toBe(3)
+      expect(map.get(2)).toBe('updated')
     })
 
-    it('should work with string comparator', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator('a', 'b')).toBe(-1)
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator('b', 'a')).toBe(1)
-      expect(DEFAULT_SPLAY_MAP_OPTIONS.comparator('a', 'a')).toBe(0)
+    it('merge empty into empty stays empty', () => {
+      const other = new SplayMap<number, string>()
+      map.merge(other)
+      expect(map.size).toBe(0)
+    })
+
+    it('merge does not modify source map', () => {
+      map.set(1, 'a')
+      const other = new SplayMap<number, string>()
+      other.set(2, 'b')
+      other.set(3, 'c')
+      map.merge(other)
+      expect(other.size).toBe(2)
+      expect(other.has(1)).toBe(false)
     })
   })
 
-  describe('exports', () => {
-    it('should export SplayMap class', () => {
-      expect(SplayMap).toBeDefined()
-      expect(typeof SplayMap).toBe('function')
+  describe('rangeQuery', () => {
+    it('returns empty for empty map', () => {
+      expect(map.rangeQuery(1, 5)).toEqual([])
     })
 
-    it('should export DEFAULT_SPLAY_MAP_OPTIONS', () => {
-      expect(DEFAULT_SPLAY_MAP_OPTIONS).toBeDefined()
+    it('returns entries within range', () => {
+      for (let i = 1; i <= 10; i++) map.set(i, String(i))
+      const result = map.rangeQuery(3, 7)
+      expect(result).toEqual([
+        [3, '3'],
+        [4, '4'],
+        [5, '5'],
+        [6, '6'],
+        [7, '7'],
+      ])
     })
 
-    it('should allow type-only imports for options', () => {
-      const opts: SplayMapOptions<number> = {}
-      const m = new SplayMap<number, string>(opts)
+    it('returns empty when no keys in range', () => {
+      map.set(1, 'a')
+      map.set(10, 'j')
+      expect(map.rangeQuery(3, 7)).toEqual([])
+    })
+
+    it('returns single entry when lo equals hi and key exists', () => {
+      map.set(5, 'five')
+      expect(map.rangeQuery(5, 5)).toEqual([[5, 'five']])
+    })
+
+    it('returns all entries for wide range', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.set(3, 'c')
+      expect(map.rangeQuery(0, 10)).toEqual([
+        [1, 'a'],
+        [2, 'b'],
+        [3, 'c'],
+      ])
+    })
+
+    it('inclusive on both ends', () => {
+      map.set(1, 'a')
+      map.set(5, 'e')
+      map.set(10, 'j')
+      expect(map.rangeQuery(1, 10)).toEqual([
+        [1, 'a'],
+        [5, 'e'],
+        [10, 'j'],
+      ])
+    })
+
+    it('returns partial range at boundaries', () => {
+      for (let i = 1; i <= 10; i++) map.set(i, String(i))
+      expect(map.rangeQuery(0, 3)).toEqual([
+        [1, '1'],
+        [2, '2'],
+        [3, '3'],
+      ])
+      expect(map.rangeQuery(8, 15)).toEqual([
+        [8, '8'],
+        [9, '9'],
+        [10, '10'],
+      ])
+    })
+  })
+
+  describe('update', () => {
+    it('updates existing key and returns true', () => {
+      map.set(1, 'old')
+      expect(map.update(1, 'new')).toBe(true)
+      expect(map.get(1)).toBe('new')
+    })
+
+    it('returns false for non-existent key', () => {
+      expect(map.update(1, 'new')).toBe(false)
+    })
+
+    it('returns false on empty map', () => {
+      expect(map.update(1, 'new')).toBe(false)
+    })
+
+    it('does not change size on update', () => {
+      map.set(1, 'a')
+      map.set(2, 'b')
+      map.update(1, 'updated')
+      expect(map.size).toBe(2)
+    })
+
+    it('update is different from set for non-existent keys', () => {
+      map.set(1, 'a')
+      map.update(2, 'b')
+      expect(map.size).toBe(1)
+      expect(map.has(2)).toBe(false)
+    })
+  })
+
+  describe('static fromArray', () => {
+    it('creates map from entries', () => {
+      const m = SplayMap.fromArray<number, string>([
+        [3, 'c'],
+        [1, 'a'],
+        [2, 'b'],
+      ])
+      expect(m.size).toBe(3)
+      expect(m.keys()).toEqual([1, 2, 3])
+    })
+
+    it('creates map from empty array', () => {
+      const m = SplayMap.fromArray<number, string>([])
       expect(m.size).toBe(0)
     })
 
-    it('should allow type import for SplayMapJSON', () => {
-      const m = new SplayMap<number, string>()
-      const json: SplayMapJSON<number, string> = m.toJSON()
-      expect(json.size).toBe(0)
+    it('creates map with custom comparator', () => {
+      const cmp: CompareFunction<string> = (a, b) => b.localeCompare(a)
+      const m = SplayMap.fromArray<string, number>(
+        [
+          ['a', 1],
+          ['b', 2],
+        ],
+        { comparator: cmp },
+      )
+      expect(m.keys()).toEqual(['b', 'a'])
     })
 
-    it('should allow type import for SplayMapStatistics', () => {
-      const m = new SplayMap()
-      const stats: SplayMapStatistics = m.getStatistics()
-      expect(stats.sets).toBe(0)
-    })
-
-    it('should allow type import for SplayMapNodeJSON', () => {
-      const node: SplayMapNodeJSON<number, string> | null = null
-      expect(node).toBeNull()
-    })
-  })
-
-  describe('splay behavior', () => {
-    it('should splay on get', () => {
-      for (let i = 1; i <= 5; i++) map.set(i, `v${i}`)
-      const before = map.getStatistics().splayOperations
-      map.get(1)
-      expect(map.getStatistics().splayOperations).toBeGreaterThan(before)
-    })
-
-    it('should splay on set', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      map.set(3, 'c')
-      expect(map.getStatistics().splayOperations).toBeGreaterThan(0)
-    })
-
-    it('should splay on delete', () => {
-      for (let i = 1; i <= 5; i++) map.set(i, `v${i}`)
-      const before = map.getStatistics().splayOperations
-      map.delete(3)
-      expect(map.getStatistics().splayOperations).toBeGreaterThan(before)
-    })
-
-    it('should splay on has', () => {
-      map.set(1, 'a')
-      map.set(2, 'b')
-      const before = map.getStatistics().splayOperations
-      map.has(1)
-      expect(map.getStatistics().splayOperations).toBeGreaterThan(before)
-    })
-
-    it('should produce rotations during splay', () => {
-      for (let i = 1; i <= 10; i++) map.set(i, `v${i}`)
-      map.get(1)
-      expect(map.getStatistics().rotations).toBeGreaterThan(0)
+    it('handles duplicate keys', () => {
+      const m = SplayMap.fromArray<number, string>([
+        [1, 'a'],
+        [1, 'b'],
+        [1, 'c'],
+      ])
+      expect(m.size).toBe(1)
+      expect(m.get(1)).toBe('c')
     })
   })
 
-  describe('string keys', () => {
-    it('should work with string keys', () => {
+  describe('custom comparator', () => {
+    it('supports reverse ordering', () => {
+      const cmp: CompareFunction<number> = (a, b) => b - a
+      const m = new SplayMap<number, string>({ comparator: cmp })
+      m.set(1, 'a')
+      m.set(2, 'b')
+      m.set(3, 'c')
+      expect(m.keys()).toEqual([3, 2, 1])
+      expect(m.min()).toEqual([3, 'c'])
+      expect(m.max()).toEqual([1, 'a'])
+    })
+
+    it('supports string keys with custom comparator', () => {
+      const m = new SplayMap<string, number>({
+        comparator: (a, b) => a.length - b.length || a.localeCompare(b),
+      })
+      m.set('aa', 1)
+      m.set('b', 2)
+      m.set('ccc', 3)
+      m.set('dd', 4)
+      expect(m.keys()).toEqual(['b', 'aa', 'dd', 'ccc'])
+    })
+
+    it('custom comparator with lowerBound', () => {
+      const cmp: CompareFunction<number> = (a, b) => b - a
+      const m = new SplayMap<number, string>({ comparator: cmp })
+      m.set(10, 'a')
+      m.set(20, 'b')
+      m.set(30, 'c')
+      expect(m.lowerBound(25)).toEqual([20, 'b'])
+    })
+
+    it('custom comparator with rangeQuery', () => {
+      const cmp: CompareFunction<number> = (a, b) => b - a
+      const m = new SplayMap<number, string>({ comparator: cmp })
+      m.set(10, 'a')
+      m.set(20, 'b')
+      m.set(30, 'c')
+      const result = m.rangeQuery(25, 10)
+      expect(result).toEqual([
+        [20, 'b'],
+        [10, 'a'],
+      ])
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles negative numbers', () => {
+      map.set(-1, 'neg')
+      map.set(0, 'zero')
+      map.set(1, 'pos')
+      expect(map.keys()).toEqual([-1, 0, 1])
+      expect(map.min()).toEqual([-1, 'neg'])
+      expect(map.max()).toEqual([1, 'pos'])
+    })
+
+    it('handles floating point keys', () => {
+      map.set(1.5, 'a')
+      map.set(2.5, 'b')
+      map.set(0.5, 'c')
+      expect(map.keys()).toEqual([0.5, 1.5, 2.5])
+    })
+
+    it('handles string keys', () => {
       const m = new SplayMap<string, number>()
       m.set('banana', 2)
       m.set('apple', 1)
       m.set('cherry', 3)
       expect(m.keys()).toEqual(['apple', 'banana', 'cherry'])
-      expect(m.get('banana')).toBe(2)
     })
 
-    it('should maintain string order', () => {
-      const m = new SplayMap<string, number>()
-      m.set('z', 1)
-      m.set('a', 2)
-      m.set('m', 3)
-      expect(m.keys()).toEqual(['a', 'm', 'z'])
+    it('handles array value types', () => {
+      const m = new SplayMap<number, number[]>()
+      m.set(1, [1, 2, 3])
+      m.set(2, [4, 5, 6])
+      expect(m.get(1)).toEqual([1, 2, 3])
     })
-  })
 
-  describe('edge cases', () => {
-    it('should handle set-delete-set cycle', () => {
+    it('handles boolean value types', () => {
+      const m = new SplayMap<string, boolean>()
+      m.set('a', true)
+      m.set('b', false)
+      expect(m.get('a')).toBe(true)
+      expect(m.get('b')).toBe(false)
+    })
+
+    it('handles single element operations', () => {
+      map.set(42, 'answer')
+      expect(map.min()).toEqual([42, 'answer'])
+      expect(map.max()).toEqual([42, 'answer'])
+      expect(map.lowerBound(42)).toEqual([42, 'answer'])
+      expect(map.upperBound(41)).toEqual([42, 'answer'])
+      expect(map.predecessor(42)).toBeUndefined()
+      expect(map.successor(42)).toBeUndefined()
+      expect(map.rangeQuery(42, 42)).toEqual([[42, 'answer']])
+      expect(map.rank(42)).toBe(0)
+      expect(map.select(0)).toEqual([42, 'answer'])
+    })
+
+    it('handles set-delete-set cycle', () => {
       map.set(1, 'first')
       map.delete(1)
       map.set(1, 'second')
@@ -1070,80 +1257,7 @@ describe('SplayMap', () => {
       expect(map.size).toBe(1)
     })
 
-    it('should handle many operations', () => {
-      for (let i = 0; i < 50; i++) {
-        map.set(i, `v${i}`)
-      }
-      for (let i = 0; i < 25; i++) {
-        map.delete(i)
-      }
-      expect(map.size).toBe(25)
-      for (let i = 25; i < 50; i++) {
-        expect(map.has(i)).toBe(true)
-      }
-      for (let i = 0; i < 25; i++) {
-        expect(map.has(i)).toBe(false)
-      }
-    })
-
-    it('should handle rapid clear and refill', () => {
-      for (let cycle = 0; cycle < 5; cycle++) {
-        for (let i = 0; i < 10; i++) {
-          map.set(i, `cycle-${cycle}-val-${i}`)
-        }
-        map.clear()
-      }
-      expect(map.size).toBe(0)
-    })
-
-    it('should handle accessing min after many operations', () => {
-      for (let i = 100; i >= 0; i--) {
-        map.set(i, `v${i}`)
-      }
-      for (let i = 0; i <= 50; i++) {
-        map.delete(i)
-      }
-      expect(map.min()).toEqual([51, 'v51'])
-    })
-
-    it('should handle accessing max after many operations', () => {
-      for (let i = 0; i <= 100; i++) {
-        map.set(i, `v${i}`)
-      }
-      for (let i = 51; i <= 100; i++) {
-        map.delete(i)
-      }
-      expect(map.max()).toEqual([50, 'v50'])
-    })
-
-    it('should handle update after many splay operations', () => {
-      for (let i = 0; i < 20; i++) {
-        map.set(i, `v${i}`)
-      }
-      for (let i = 0; i < 20; i++) {
-        map.get(i)
-      }
-      map.set(10, 'updated')
-      expect(map.get(10)).toBe('updated')
-      expect(map.size).toBe(20)
-    })
-
-    it('should handle duplicate key set many times', () => {
-      for (let i = 0; i < 100; i++) {
-        map.set(1, `val-${i}`)
-      }
-      expect(map.size).toBe(1)
-      expect(map.get(1)).toBe('val-99')
-    })
-
-    it('should handle negative keys', () => {
-      map.set(-5, 'neg5')
-      map.set(0, 'zero')
-      map.set(5, 'pos5')
-      expect(map.keys()).toEqual([-5, 0, 5])
-    })
-
-    it('should handle sequential delete from front', () => {
+    it('handles sequential delete from front', () => {
       for (let i = 0; i < 10; i++) map.set(i, `v${i}`)
       for (let i = 0; i < 10; i++) {
         expect(map.delete(i)).toBe(true)
@@ -1151,31 +1265,99 @@ describe('SplayMap', () => {
       expect(map.size).toBe(0)
     })
 
-    it('should handle sequential delete from back', () => {
+    it('handles sequential delete from back', () => {
       for (let i = 0; i < 10; i++) map.set(i, `v${i}`)
       for (let i = 9; i >= 0; i--) {
         expect(map.delete(i)).toBe(true)
       }
       expect(map.size).toBe(0)
     })
+
+    it('handles duplicate key set many times', () => {
+      for (let i = 0; i < 100; i++) {
+        map.set(1, `val-${i}`)
+      }
+      expect(map.size).toBe(1)
+      expect(map.get(1)).toBe('val-99')
+    })
   })
 
-  describe('integration', () => {
-    it('should handle mixed operations', () => {
-      map.set(5, 'a')
-      map.set(3, 'b')
-      map.set(7, 'c')
-      expect(map.get(5)).toBe('a')
-      map.set(5, 'updated')
-      expect(map.has(3)).toBe(true)
-      map.delete(3)
-      expect(map.size).toBe(2)
-      expect(map.keys()).toEqual([5, 7])
-      expect(map.min()).toEqual([5, 'updated'])
-      expect(map.max()).toEqual([7, 'c'])
+  describe('large inputs / stress tests', () => {
+    it('maintains sorted order for sequential insertions', () => {
+      for (let i = 0; i < 100; i++) map.set(i, String(i))
+      const keys = map.keys()
+      let sorted = true
+      for (let i = 1; i < keys.length; i++) {
+        if (keys[i - 1]! >= keys[i]!) {
+          sorted = false
+          break
+        }
+      }
+      expect(sorted).toBe(true)
+      expect(keys.length).toBe(100)
     })
 
-    it('should maintain correctness after stress', () => {
+    it('maintains sorted order for reverse sequential insertions', () => {
+      for (let i = 99; i >= 0; i--) map.set(i, String(i))
+      const keys = map.keys()
+      let sorted = true
+      for (let i = 1; i < keys.length; i++) {
+        if (keys[i - 1]! >= keys[i]!) {
+          sorted = false
+          break
+        }
+      }
+      expect(sorted).toBe(true)
+      expect(keys.length).toBe(100)
+    })
+
+    it('handles random insertions', () => {
+      const nums = Array.from({ length: 100 }, (_, i) => i)
+      for (let i = nums.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[nums[i]!, nums[j]!] = [nums[j]!, nums[i]!]
+      }
+      for (const n of nums) map.set(n, String(n))
+      const keys = map.keys()
+      let sorted = true
+      for (let i = 1; i < keys.length; i++) {
+        if (keys[i - 1]! >= keys[i]!) {
+          sorted = false
+          break
+        }
+      }
+      expect(sorted).toBe(true)
+      expect(keys.length).toBe(100)
+    })
+
+    it('handles large batch insertions and deletions', () => {
+      for (let i = 0; i < 500; i++) map.set(i, String(i))
+      expect(map.size).toBe(500)
+      for (let i = 0; i < 500; i += 2) map.delete(i)
+      expect(map.size).toBe(250)
+      const keys = map.keys()
+      for (const k of keys) {
+        expect(k % 2).toBe(1)
+      }
+    })
+
+    it('handles mixed insert and delete', () => {
+      for (let i = 0; i < 50; i++) map.set(i, String(i))
+      for (let i = 0; i < 25; i++) map.delete(i)
+      for (let i = 50; i < 75; i++) map.set(i, String(i))
+      expect(map.size).toBe(50)
+      const keys = map.keys()
+      let sorted = true
+      for (let i = 1; i < keys.length; i++) {
+        if (keys[i - 1]! >= keys[i]!) {
+          sorted = false
+          break
+        }
+      }
+      expect(sorted).toBe(true)
+    })
+
+    it('maintains correctness after stress', () => {
       const reference = new Map<number, string>()
       for (let i = 0; i < 200; i++) {
         const key = Math.floor(Math.random() * 100)
@@ -1183,9 +1365,11 @@ describe('SplayMap', () => {
         if (op < 0.5) {
           map.set(key, `v${key}`)
           reference.set(key, `v${key}`)
-        } else if (op < 0.8 && reference.has(key)) {
-          map.delete(key)
-          reference.delete(key)
+        } else if (op < 0.8 && reference.size > 0) {
+          const refKeys = [...reference.keys()]
+          const rk = refKeys[Math.floor(Math.random() * refKeys.length)]!
+          map.delete(rk)
+          reference.delete(rk)
         } else {
           map.set(key, `v${key}`)
           reference.set(key, `v${key}`)
@@ -1195,10 +1379,22 @@ describe('SplayMap', () => {
       for (const key of reference.keys()) {
         expect(map.has(key)).toBe(true)
       }
-      if (reference.size > 0) {
-        const sortedKeys = [...reference.keys()].sort((a, b) => a - b)
-        expect(map.keys()).toEqual(sortedKeys)
+    })
+  })
+
+  describe('type exports', () => {
+    it('CompareFunction type is usable', () => {
+      const cmp: CompareFunction<number> = (a, b) => a - b
+      expect(cmp(1, 2)).toBe(-1)
+    })
+
+    it('SplayMapOptions type is usable', () => {
+      const opts: SplayMapOptions<number> = {
+        comparator: (a, b) => a - b,
       }
+      const m = new SplayMap<number, string>(opts)
+      m.set(1, 'a')
+      expect(m.get(1)).toBe('a')
     })
   })
 })

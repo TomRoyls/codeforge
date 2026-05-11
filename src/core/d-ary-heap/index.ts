@@ -6,7 +6,7 @@ export class DAryHeap<T = number> {
   private compare: (a: T, b: T) => number
 
   constructor(options?: DAryHeapOptions<T>) {
-    this.arity = options?.arity ?? 4
+    this.arity = options?.d ?? options?.arity ?? 4
     this.compare =
       options?.comparator ??
       ((a: T, b: T) => {

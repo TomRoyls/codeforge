@@ -186,7 +186,7 @@ export class WeightedUnion {
     }
   }
 
-  private membersOf(root: number): number[] {
+  membersOf(root: number): number[] {
     const members: number[] = []
     for (let i = 0; i < this.parent.length; i++) {
       if (this.find(i) === root) members.push(i)

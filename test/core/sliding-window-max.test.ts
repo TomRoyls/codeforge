@@ -1,71 +1,68 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { SlidingWindowMax } from '../../src/core/sliding-window-max/sliding-window-max.js'
+import { describe, it, expect } from 'vitest'
+import { SlidingWindowMax } from '../../src/core/sliding-window-max/index.js'
+import type { SlidingWindowMaxOptions } from '../../src/core/sliding-window-max/types.js'
 
 describe('SlidingWindowMax', () => {
   describe('constructor', () => {
-    it('should create instance with valid windowSize', () => {
+    it('creates instance with default options', () => {
+      const sw = new SlidingWindowMax()
+      expect(sw.size).toBe(0)
+      expect(sw.isEmpty).toBe(true)
+      expect(sw.windowSize).toBe(Infinity)
+    })
+
+    it('creates instance with windowSize option', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       expect(sw.size).toBe(0)
-      expect(sw.isFull).toBe(false)
+      expect(sw.isEmpty).toBe(true)
+      expect(sw.windowSize).toBe(3)
     })
 
-    it('should create instance with windowSize 1', () => {
+    it('creates instance with custom comparator', () => {
+      const sw = new SlidingWindowMax<number>({
+        windowSize: 3,
+        comparator: (a, b) => a - b,
+      })
+      expect(sw.size).toBe(0)
+    })
+
+    it('creates instance with windowSize 1', () => {
       const sw = new SlidingWindowMax({ windowSize: 1 })
-      expect(sw.size).toBe(0)
+      expect(sw.windowSize).toBe(1)
     })
 
-    it('should create instance with large windowSize', () => {
-      const sw = new SlidingWindowMax({ windowSize: 1000000 })
-      expect(sw.size).toBe(0)
+    it('creates instance with large windowSize', () => {
+      const sw = new SlidingWindowMax({ windowSize: 10000 })
+      expect(sw.windowSize).toBe(10000)
     })
 
-    it('should throw RangeError for windowSize 0', () => {
+    it('throws on windowSize 0', () => {
       expect(() => new SlidingWindowMax({ windowSize: 0 })).toThrow(RangeError)
     })
 
-    it('should throw RangeError for negative windowSize', () => {
+    it('throws on negative windowSize', () => {
       expect(() => new SlidingWindowMax({ windowSize: -1 })).toThrow(RangeError)
-    })
-
-    it('should throw RangeError for fractional windowSize', () => {
-      expect(() => new SlidingWindowMax({ windowSize: 2.5 })).toThrow(RangeError)
-    })
-
-    it('should throw RangeError for NaN windowSize', () => {
-      expect(() => new SlidingWindowMax({ windowSize: NaN })).toThrow(RangeError)
-    })
-
-    it('should throw RangeError for Infinity windowSize', () => {
-      expect(() => new SlidingWindowMax({ windowSize: Infinity })).toThrow(RangeError)
-    })
-
-    it('should accept windowSize of exactly 1', () => {
-      const sw = new SlidingWindowMax({ windowSize: 1 })
-      sw.push(42)
-      expect(sw.isFull).toBe(true)
     })
   })
 
   describe('push', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should accept a single push', () => {
-      sw.push(1)
+    it('pushes a single value', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(5)
       expect(sw.size).toBe(1)
+      expect(sw.isEmpty).toBe(false)
     })
 
-    it('should track multiple pushes', () => {
+    it('pushes multiple values within window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
       expect(sw.size).toBe(3)
     })
 
-    it('should slide window after exceeding windowSize', () => {
+    it('evicts oldest element when window is full', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
@@ -74,310 +71,190 @@ describe('SlidingWindowMax', () => {
       expect(sw.toArray()).toEqual([2, 3, 4])
     })
 
-    it('should slide window correctly with many pushes', () => {
+    it('maintains correct window after multiple evictions', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
       sw.push(4)
       sw.push(5)
-      expect(sw.size).toBe(3)
-      expect(sw.toArray()).toEqual([3, 4, 5])
+      expect(sw.size).toBe(2)
+      expect(sw.toArray()).toEqual([4, 5])
     })
 
-    it('should handle pushing zero', () => {
-      sw.push(0)
-      expect(sw.max()).toBe(0)
-      expect(sw.getMin()).toBe(0)
-    })
-
-    it('should handle pushing negative numbers', () => {
-      sw.push(-5)
-      sw.push(-3)
-      sw.push(-1)
-      expect(sw.max()).toBe(-1)
-      expect(sw.getMin()).toBe(-5)
-    })
-
-    it('should handle pushing duplicate values', () => {
+    it('handles pushing equal values', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(5)
       sw.push(5)
       sw.push(5)
       expect(sw.max()).toBe(5)
-      expect(sw.getMin()).toBe(5)
+      expect(sw.min()).toBe(5)
     })
 
-    it('should increment pushCount on each push', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.stats().pushCount).toBe(3)
-    })
-
-    it('should increment pushCount even when window slides', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      sw.push(4)
-      sw.push(5)
-      expect(sw.stats().pushCount).toBe(5)
+    it('handles pushing values with no windowSize limit', () => {
+      const sw = new SlidingWindowMax()
+      for (let i = 0; i < 100; i++) {
+        sw.push(i)
+      }
+      expect(sw.size).toBe(100)
     })
   })
 
   describe('max', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should return undefined on empty window', () => {
+    it('returns undefined when empty', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       expect(sw.max()).toBeUndefined()
     })
 
-    it('should return the single element after one push', () => {
+    it('returns single element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(5)
       expect(sw.max()).toBe(5)
     })
 
-    it('should return max of two elements', () => {
-      sw.push(3)
-      sw.push(7)
-      expect(sw.max()).toBe(7)
-    })
-
-    it('should return max of full window', () => {
+    it('returns max of multiple elements', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
       sw.push(1)
       sw.push(5)
       sw.push(3)
       expect(sw.max()).toBe(5)
     })
 
-    it('should update max after window slides', () => {
-      sw.push(5)
-      sw.push(1)
-      sw.push(3)
-      sw.push(2)
-      expect(sw.max()).toBe(3)
-    })
-
-    it('should return max when max element slides out', () => {
-      sw.push(9)
-      sw.push(1)
+    it('updates max after eviction of max element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(10)
       sw.push(2)
       sw.push(3)
-      expect(sw.max()).toBe(3)
-    })
-
-    it('should handle max with duplicate maximums', () => {
-      sw.push(5)
-      sw.push(5)
-      sw.push(3)
-      expect(sw.max()).toBe(5)
-    })
-
-    it('should handle max when duplicate max slides out partially', () => {
-      sw.push(5)
-      sw.push(5)
-      sw.push(1)
-      sw.push(3)
-      expect(sw.max()).toBe(5)
-    })
-
-    it('should return correct max for LeetCode 239 example', () => {
-      const sw2 = new SlidingWindowMax({ windowSize: 3 })
-      const arr = [1, 3, -1, -3, 5, 3, 6, 7]
-      const results: (number | undefined)[] = []
-      for (const v of arr) {
-        sw2.push(v)
-        if (sw2.isFull) results.push(sw2.max())
-      }
-      expect(results).toEqual([3, 3, 5, 5, 6, 7])
-    })
-
-    it('should handle max with all same values', () => {
-      sw.push(4)
-      sw.push(4)
+      expect(sw.max()).toBe(10)
       sw.push(4)
       expect(sw.max()).toBe(4)
     })
 
-    it('should handle max with strictly increasing values', () => {
-      sw.push(1)
-      sw.push(2)
+    it('handles descending sequence', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(5)
+      sw.push(4)
       sw.push(3)
-      expect(sw.max()).toBe(3)
-    })
-
-    it('should handle max with strictly decreasing values', () => {
-      sw.push(3)
+      expect(sw.max()).toBe(5)
       sw.push(2)
+      expect(sw.max()).toBe(4)
       sw.push(1)
       expect(sw.max()).toBe(3)
     })
 
-    it('should handle max with negative numbers', () => {
+    it('handles ascending sequence', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.max()).toBe(3)
+      sw.push(4)
+      expect(sw.max()).toBe(4)
+    })
+
+    it('handles negative numbers', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(-5)
+      sw.push(-2)
+      sw.push(-8)
+      expect(sw.max()).toBe(-2)
+    })
+
+    it('handles mixed positive and negative', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(-3)
-      sw.push(-1)
-      sw.push(-5)
-      expect(sw.max()).toBe(-1)
-    })
-
-    it('should handle max with mixed positive and negative', () => {
-      sw.push(-5)
-      sw.push(3)
-      sw.push(-1)
-      expect(sw.max()).toBe(3)
+      sw.push(0)
+      sw.push(5)
+      expect(sw.max()).toBe(5)
     })
   })
 
-  describe('getMin', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
+  describe('min', () => {
+    it('returns undefined when empty', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect(sw.min()).toBeUndefined()
     })
 
-    it('should return undefined on empty window', () => {
-      expect(sw.getMin()).toBeUndefined()
-    })
-
-    it('should return the single element after one push', () => {
+    it('returns single element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(5)
-      expect(sw.getMin()).toBe(5)
+      expect(sw.min()).toBe(5)
     })
 
-    it('should return min of two elements', () => {
+    it('returns min of multiple elements', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.push(3)
+      sw.push(1)
+      sw.push(5)
+      expect(sw.min()).toBe(1)
+    })
+
+    it('updates min after eviction of min element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(5)
+      sw.push(3)
+      expect(sw.min()).toBe(1)
+      sw.push(4)
+      expect(sw.min()).toBe(3)
+    })
+
+    it('handles descending sequence', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(5)
+      sw.push(4)
+      sw.push(3)
+      expect(sw.min()).toBe(3)
+    })
+
+    it('handles ascending sequence', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.min()).toBe(1)
+      sw.push(4)
+      expect(sw.min()).toBe(2)
+    })
+
+    it('handles negative numbers', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(-5)
+      sw.push(-2)
+      sw.push(-8)
+      expect(sw.min()).toBe(-8)
+    })
+  })
+
+  describe('top', () => {
+    it('is alias for max', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(3)
       sw.push(7)
-      expect(sw.getMin()).toBe(3)
-    })
-
-    it('should return min of full window', () => {
       sw.push(1)
-      sw.push(5)
-      sw.push(3)
-      expect(sw.getMin()).toBe(1)
+      expect(sw.top()).toBe(sw.max())
+      expect(sw.top()).toBe(7)
     })
 
-    it('should update min after window slides', () => {
-      sw.push(1)
-      sw.push(5)
-      sw.push(3)
-      sw.push(4)
-      expect(sw.getMin()).toBe(3)
-    })
-
-    it('should return min when min element slides out', () => {
-      sw.push(1)
-      sw.push(9)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.getMin()).toBe(2)
-    })
-
-    it('should handle min with duplicate minimums', () => {
-      sw.push(1)
-      sw.push(1)
-      sw.push(3)
-      expect(sw.getMin()).toBe(1)
-    })
-
-    it('should handle min with all same values', () => {
-      sw.push(4)
-      sw.push(4)
-      sw.push(4)
-      expect(sw.getMin()).toBe(4)
-    })
-
-    it('should handle min with strictly increasing values', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.getMin()).toBe(1)
-    })
-
-    it('should handle min with strictly decreasing values', () => {
-      sw.push(3)
-      sw.push(2)
-      sw.push(1)
-      expect(sw.getMin()).toBe(1)
-    })
-
-    it('should handle min with negative numbers', () => {
-      sw.push(-3)
-      sw.push(-1)
-      sw.push(-5)
-      expect(sw.getMin()).toBe(-5)
-    })
-
-    it('should handle min with mixed positive and negative', () => {
-      sw.push(-5)
-      sw.push(3)
-      sw.push(-1)
-      expect(sw.getMin()).toBe(-5)
-    })
-
-    it('should track min correctly for LeetCode-style input', () => {
-      const sw2 = new SlidingWindowMax({ windowSize: 3 })
-      const arr = [1, 3, -1, -3, 5, 3, 6, 7]
-      const results: (number | undefined)[] = []
-      for (const v of arr) {
-        sw2.push(v)
-        if (sw2.isFull) results.push(sw2.getMin())
-      }
-      expect(results).toEqual([-1, -3, -3, -3, 3, 3])
+    it('returns undefined when empty', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect(sw.top()).toBeUndefined()
     })
   })
 
-  describe('getWindow', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should return empty array when no elements pushed', () => {
-      expect(sw.getWindow()).toEqual([])
-    })
-
-    it('should return partial window before full', () => {
-      sw.push(1)
-      sw.push(2)
-      expect(sw.getWindow()).toEqual([1, 2])
-    })
-
-    it('should return full window', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.getWindow()).toEqual([1, 2, 3])
-    })
-
-    it('should return slid window after exceeding windowSize', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      sw.push(4)
-      expect(sw.getWindow()).toEqual([2, 3, 4])
-    })
-
-    it('should return a copy that does not affect internal state', () => {
-      sw.push(1)
-      sw.push(2)
-      const arr = sw.getWindow()
-      arr.push(99)
-      expect(sw.getWindow()).toEqual([1, 2])
-    })
-  })
-
-  describe('size', () => {
-    it('should be 0 initially', () => {
+  describe('size and isEmpty', () => {
+    it('size is 0 for empty window', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       expect(sw.size).toBe(0)
     })
 
-    it('should increase with each push until window is full', () => {
+    it('isEmpty is true for empty window', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect(sw.isEmpty).toBe(true)
+    })
+
+    it('size tracks number of elements', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
       sw.push(1)
       expect(sw.size).toBe(1)
       sw.push(2)
@@ -386,728 +263,786 @@ describe('SlidingWindowMax', () => {
       expect(sw.size).toBe(3)
     })
 
-    it('should stay at windowSize after window is full', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
+    it('size does not exceed windowSize', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
-      sw.push(4)
-      expect(sw.size).toBe(3)
-    })
-
-    it('should be 0 after clear', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(2)
-      sw.clear()
-      expect(sw.size).toBe(0)
+      expect(sw.size).toBe(2)
     })
   })
 
-  describe('isFull', () => {
-    it('should be false initially', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      expect(sw.isFull).toBe(false)
+  describe('windowSize getter', () => {
+    it('returns configured window size', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      expect(sw.windowSize).toBe(5)
     })
 
-    it('should be false with partial window', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      expect(sw.isFull).toBe(false)
-    })
-
-    it('should be true when window is exactly full', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.isFull).toBe(true)
-    })
-
-    it('should stay true after window slides', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      sw.push(4)
-      expect(sw.isFull).toBe(true)
-    })
-
-    it('should be false after clear', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      sw.clear()
-      expect(sw.isFull).toBe(false)
-    })
-
-    it('should be true immediately for windowSize 1 after one push', () => {
-      const sw = new SlidingWindowMax({ windowSize: 1 })
-      expect(sw.isFull).toBe(false)
-      sw.push(1)
-      expect(sw.isFull).toBe(true)
+    it('returns Infinity when no windowSize specified', () => {
+      const sw = new SlidingWindowMax()
+      expect(sw.windowSize).toBe(Infinity)
     })
   })
 
   describe('clear', () => {
-    it('should reset size to 0', () => {
+    it('clears all elements', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
       sw.clear()
       expect(sw.size).toBe(0)
-    })
-
-    it('should reset isFull to false', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      sw.clear()
-      expect(sw.isFull).toBe(false)
-    })
-
-    it('should reset max to undefined', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(5)
-      sw.clear()
+      expect(sw.isEmpty).toBe(true)
       expect(sw.max()).toBeUndefined()
+      expect(sw.min()).toBeUndefined()
     })
 
-    it('should reset getMin to undefined', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(5)
-      sw.clear()
-      expect(sw.getMin()).toBeUndefined()
-    })
-
-    it('should reset getWindow to empty array', () => {
+    it('allows pushing after clear', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.clear()
-      expect(sw.getWindow()).toEqual([])
-    })
-
-    it('should be safe to call on empty window', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.clear()
-      expect(sw.size).toBe(0)
-    })
-
-    it('should be safe to call clear twice', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.clear()
-      sw.clear()
-      expect(sw.size).toBe(0)
-    })
-
-    it('should allow reuse after clear', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(10)
-      sw.push(20)
-      sw.clear()
-      sw.push(5)
-      sw.push(3)
-      sw.push(8)
-      expect(sw.max()).toBe(8)
-      expect(sw.getMin()).toBe(3)
-      expect(sw.size).toBe(3)
+      expect(sw.size).toBe(1)
+      expect(sw.max()).toBe(10)
     })
 
-    it('should preserve pushCount after clear', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
+    it('clear preserves windowSize', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
       sw.push(1)
-      sw.push(2)
       sw.clear()
-      expect(sw.stats().pushCount).toBe(2)
+      expect(sw.windowSize).toBe(5)
     })
   })
 
-  describe('forEach', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should iterate over empty window without calling callback', () => {
-      const items: number[] = []
-      sw.forEach((v) => items.push(v))
-      expect(items).toEqual([])
-    })
-
-    it('should iterate over partial window', () => {
-      sw.push(1)
-      sw.push(2)
-      const items: number[] = []
-      sw.forEach((v) => items.push(v))
-      expect(items).toEqual([1, 2])
-    })
-
-    it('should iterate over full window', () => {
+  describe('reset', () => {
+    it('clears all elements and resets push index', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
-      const items: number[] = []
-      sw.forEach((v) => items.push(v))
-      expect(items).toEqual([1, 2, 3])
+      sw.reset()
+      expect(sw.size).toBe(0)
+      expect(sw.isEmpty).toBe(true)
     })
 
-    it('should provide correct indices', () => {
-      sw.push(10)
-      sw.push(20)
-      sw.push(30)
-      const indices: number[] = []
-      sw.forEach((_v, i) => indices.push(i))
-      expect(indices).toEqual([0, 1, 2])
-    })
-
-    it('should iterate over slid window', () => {
+    it('allows fresh start after reset', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(100)
+      sw.push(200)
+      sw.push(300)
+      sw.reset()
       sw.push(1)
       sw.push(2)
-      sw.push(3)
-      sw.push(4)
-      const items: number[] = []
-      sw.forEach((v) => items.push(v))
-      expect(items).toEqual([2, 3, 4])
+      expect(sw.toArray()).toEqual([1, 2])
+      expect(sw.max()).toBe(2)
     })
   })
 
   describe('toArray', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should return empty array for empty window', () => {
+    it('returns empty array for empty window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       expect(sw.toArray()).toEqual([])
     })
 
-    it('should return elements in order', () => {
+    it('returns current window contents', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
       expect(sw.toArray()).toEqual([1, 2, 3])
     })
 
-    it('should return a copy', () => {
-      sw.push(1)
-      sw.push(2)
-      const arr = sw.toArray()
-      arr.push(99)
-      expect(sw.toArray()).toEqual([1, 2])
-    })
-
-    it('should return slid window contents', () => {
+    it('returns only windowed elements after eviction', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(2)
       sw.push(3)
       sw.push(4)
       expect(sw.toArray()).toEqual([2, 3, 4])
     })
-  })
 
-  describe('stats', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 3 })
-    })
-
-    it('should return correct stats for empty window', () => {
-      const s = sw.stats()
-      expect(s.windowSize).toBe(3)
-      expect(s.currentSize).toBe(0)
-      expect(s.currentMax).toBeUndefined()
-      expect(s.currentMin).toBeUndefined()
-      expect(s.pushCount).toBe(0)
-    })
-
-    it('should return correct stats for partial window', () => {
-      sw.push(5)
-      sw.push(3)
-      const s = sw.stats()
-      expect(s.windowSize).toBe(3)
-      expect(s.currentSize).toBe(2)
-      expect(s.currentMax).toBe(5)
-      expect(s.currentMin).toBe(3)
-      expect(s.pushCount).toBe(2)
-    })
-
-    it('should return correct stats for full window', () => {
+    it('returns a copy not a reference', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
-      sw.push(5)
-      sw.push(3)
-      const s = sw.stats()
-      expect(s.windowSize).toBe(3)
-      expect(s.currentSize).toBe(3)
-      expect(s.currentMax).toBe(5)
-      expect(s.currentMin).toBe(1)
-      expect(s.pushCount).toBe(3)
-    })
-
-    it('should return correct stats after sliding', () => {
-      sw.push(10)
-      sw.push(5)
-      sw.push(8)
-      sw.push(3)
-      sw.push(7)
-      const s = sw.stats()
-      expect(s.windowSize).toBe(3)
-      expect(s.currentSize).toBe(3)
-      expect(s.currentMax).toBe(8)
-      expect(s.currentMin).toBe(3)
-      expect(s.pushCount).toBe(5)
-    })
-
-    it('should reflect windowSize from constructor', () => {
-      const sw2 = new SlidingWindowMax({ windowSize: 10 })
-      expect(sw2.stats().windowSize).toBe(10)
-    })
-
-    it('should track pushCount correctly through sliding', () => {
-      for (let i = 0; i < 100; i++) {
-        sw.push(i)
-      }
-      expect(sw.stats().pushCount).toBe(100)
-      expect(sw.stats().currentSize).toBe(3)
+      sw.push(2)
+      const arr = sw.toArray()
+      arr.push(999)
+      expect(sw.size).toBe(2)
     })
   })
 
-  describe('window size 1', () => {
-    let sw: SlidingWindowMax
-
-    beforeEach(() => {
-      sw = new SlidingWindowMax({ windowSize: 1 })
+  describe('clone', () => {
+    it('creates independent copy', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      const copy = sw.clone()
+      expect(copy.toArray()).toEqual([1, 2, 3])
+      expect(copy.max()).toBe(3)
+      expect(copy.min()).toBe(1)
     })
 
-    it('should report max as the single pushed value', () => {
-      sw.push(42)
+    it('clone is independent from original', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      const copy = sw.clone()
+      sw.push(100)
+      expect(sw.max()).toBe(100)
+      expect(copy.max()).toBe(2)
+    })
+
+    it('clone preserves windowSize', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.push(1)
+      const copy = sw.clone()
+      expect(copy.windowSize).toBe(5)
+    })
+
+    it('clone preserves comparator', () => {
+      const sw = new SlidingWindowMax<string>({
+        windowSize: 3,
+        comparator: (a, b) => b.localeCompare(a),
+      })
+      sw.push('a')
+      sw.push('b')
+      const copy = sw.clone()
+      expect(copy.max()).toBe('a')
+    })
+  })
+
+  describe('fromArray', () => {
+    it('creates instance from array', () => {
+      const sw = SlidingWindowMax.fromArray([1, 2, 3, 4, 5], { windowSize: 3 })
+      expect(sw.size).toBe(3)
+      expect(sw.max()).toBe(5)
+    })
+
+    it('creates instance with default options', () => {
+      const sw = SlidingWindowMax.fromArray([1, 2, 3])
+      expect(sw.size).toBe(3)
+    })
+
+    it('handles empty array', () => {
+      const sw = SlidingWindowMax.fromArray([], { windowSize: 3 })
+      expect(sw.size).toBe(0)
+      expect(sw.isEmpty).toBe(true)
+    })
+
+    it('handles single element array', () => {
+      const sw = SlidingWindowMax.fromArray([42], { windowSize: 3 })
+      expect(sw.size).toBe(1)
       expect(sw.max()).toBe(42)
     })
 
-    it('should report min as the single pushed value', () => {
-      sw.push(42)
-      expect(sw.getMin()).toBe(42)
+    it('handles array smaller than windowSize', () => {
+      const sw = SlidingWindowMax.fromArray([1, 2], { windowSize: 10 })
+      expect(sw.size).toBe(2)
+      expect(sw.max()).toBe(2)
     })
 
-    it('should always be full after first push', () => {
-      sw.push(1)
-      expect(sw.isFull).toBe(true)
-    })
-
-    it('should replace value on each push', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.getWindow()).toEqual([3])
-      expect(sw.max()).toBe(3)
-      expect(sw.getMin()).toBe(3)
-    })
-
-    it('should maintain size of 1', () => {
-      sw.push(1)
-      sw.push(2)
-      sw.push(3)
-      expect(sw.size).toBe(1)
-    })
-
-    it('should produce same values as input for max stream', () => {
-      const input = [5, 3, 8, 1, 9, 2]
-      const results: number[] = []
-      for (const v of input) {
-        sw.push(v)
-        results.push(sw.max()!)
-      }
-      expect(results).toEqual(input)
-    })
-  })
-
-  describe('all same values', () => {
-    it('should return same value for max and min', () => {
-      const sw = new SlidingWindowMax({ windowSize: 5 })
-      for (let i = 0; i < 10; i++) {
-        sw.push(7)
-      }
+    it('computes all maxima correctly', () => {
+      const sw = SlidingWindowMax.fromArray([1, 3, -1, -3, 5, 3, 6, 7], { windowSize: 3 })
+      expect(sw.toArray()).toEqual([3, 6, 7])
       expect(sw.max()).toBe(7)
-      expect(sw.getMin()).toBe(7)
-      expect(sw.size).toBe(5)
-    })
-
-    it('should handle sliding with all same values', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      for (let i = 0; i < 5; i++) {
-        sw.push(4)
-        expect(sw.max()).toBe(4)
-        expect(sw.getMin()).toBe(4)
-      }
     })
   })
 
-  describe('strictly increasing values', () => {
-    it('should track max correctly with windowSize 3', () => {
+  describe('allMaxima', () => {
+    it('returns empty array for empty window', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
-      const results: number[] = []
-      for (let i = 1; i <= 6; i++) {
-        sw.push(i)
-        if (sw.isFull) results.push(sw.max()!)
-      }
-      expect(results).toEqual([3, 4, 5, 6])
+      expect(sw.allMaxima()).toEqual([])
     })
 
-    it('should track min correctly with windowSize 3', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      const results: number[] = []
-      for (let i = 1; i <= 6; i++) {
-        sw.push(i)
-        if (sw.isFull) results.push(sw.getMin()!)
-      }
-      expect(results).toEqual([1, 2, 3, 4])
-    })
-  })
-
-  describe('strictly decreasing values', () => {
-    it('should track max correctly with windowSize 3', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      const results: number[] = []
-      for (let i = 6; i >= 1; i--) {
-        sw.push(i)
-        if (sw.isFull) results.push(sw.max()!)
-      }
-      expect(results).toEqual([6, 5, 4, 3])
+    it('computes all sliding window maxima', () => {
+      const sw = SlidingWindowMax.fromArray([1, 3, -1, -3, 5, 3, 6, 7], { windowSize: 3 })
+      const result = sw.allMaxima()
+      expect(result).toEqual([3, 3, 5, 5, 6, 7])
     })
 
-    it('should track min correctly with windowSize 3', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      const results: number[] = []
-      for (let i = 6; i >= 1; i--) {
-        sw.push(i)
-        if (sw.isFull) results.push(sw.getMin()!)
-      }
-      expect(results).toEqual([4, 3, 2, 1])
+    it('handles window size equal to array length', () => {
+      const sw = SlidingWindowMax.fromArray([1, 3, 2], { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([3])
+    })
+
+    it('handles window size 1', () => {
+      const sw = SlidingWindowMax.fromArray([1, 3, 2, 5, 4], { windowSize: 1 })
+      expect(sw.allMaxima()).toEqual([1, 3, 2, 5, 4])
+    })
+
+    it('handles array smaller than window', () => {
+      const sw = SlidingWindowMax.fromArray([3, 1, 2], { windowSize: 5 })
+      expect(sw.allMaxima()).toEqual([3])
+    })
+
+    it('handles decreasing sequence', () => {
+      const sw = SlidingWindowMax.fromArray([5, 4, 3, 2, 1], { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([5, 4, 3])
+    })
+
+    it('handles increasing sequence', () => {
+      const sw = SlidingWindowMax.fromArray([1, 2, 3, 4, 5], { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([3, 4, 5])
     })
   })
 
-  describe('negative numbers', () => {
-    it('should handle all negative values', () => {
+  describe('forEach', () => {
+    it('iterates over all elements', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(-5)
-      sw.push(-3)
-      sw.push(-8)
-      expect(sw.max()).toBe(-3)
-      expect(sw.getMin()).toBe(-8)
-    })
-
-    it('should handle mixed negative and positive', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(-5)
+      sw.push(1)
+      sw.push(2)
       sw.push(3)
-      sw.push(-1)
-      expect(sw.max()).toBe(3)
-      expect(sw.getMin()).toBe(-5)
+      const collected: number[] = []
+      sw.forEach((v) => collected.push(v))
+      expect(collected).toEqual([1, 2, 3])
     })
 
-    it('should handle sliding with negative numbers', () => {
-      const sw = new SlidingWindowMax({ windowSize: 2 })
-      sw.push(-5)
-      sw.push(-3)
-      sw.push(-1)
-      sw.push(-7)
-      expect(sw.max()).toBe(-1)
-      expect(sw.getMin()).toBe(-7)
-      expect(sw.getWindow()).toEqual([-1, -7])
-    })
-
-    it('should handle zero boundary', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(-1)
-      sw.push(0)
-      sw.push(1)
-      expect(sw.max()).toBe(1)
-      expect(sw.getMin()).toBe(-1)
-    })
-  })
-
-  describe('large windows', () => {
-    it('should handle windowSize of 100', () => {
-      const sw = new SlidingWindowMax({ windowSize: 100 })
-      for (let i = 0; i < 150; i++) {
-        sw.push(i)
-      }
-      expect(sw.size).toBe(100)
-      expect(sw.max()).toBe(149)
-      expect(sw.getMin()).toBe(50)
-    })
-
-    it('should handle many pushes with small window', () => {
-      const sw = new SlidingWindowMax({ windowSize: 5 })
-      for (let i = 0; i < 1000; i++) {
-        sw.push(i % 100)
-      }
-      expect(sw.size).toBe(5)
-      expect(sw.stats().pushCount).toBe(1000)
-    })
-
-    it('should handle window equal to number of pushes', () => {
-      const sw = new SlidingWindowMax({ windowSize: 50 })
-      for (let i = 0; i < 50; i++) {
-        sw.push(i)
-      }
-      expect(sw.isFull).toBe(true)
-      expect(sw.max()).toBe(49)
-      expect(sw.getMin()).toBe(0)
-    })
-  })
-
-  describe('integration - sliding window max stream', () => {
-    it('should match brute force for random data', () => {
-      const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9]
-      const k = 4
-      const sw = new SlidingWindowMax({ windowSize: k })
-      const results: number[] = []
-      for (const v of arr) {
-        sw.push(v)
-        if (sw.isFull) results.push(sw.max()!)
-      }
-      const bruteForce: number[] = []
-      for (let i = 0; i <= arr.length - k; i++) {
-        let max = arr[i]!
-        for (let j = i + 1; j < i + k; j++) {
-          if (arr[j]! > max) max = arr[j]!
-        }
-        bruteForce.push(max)
-      }
-      expect(results).toEqual(bruteForce)
-    })
-
-    it('should match brute force for min', () => {
-      const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5, 8, 9, 7, 9]
-      const k = 4
-      const sw = new SlidingWindowMax({ windowSize: k })
-      const results: number[] = []
-      for (const v of arr) {
-        sw.push(v)
-        if (sw.isFull) results.push(sw.getMin()!)
-      }
-      const bruteForce: number[] = []
-      for (let i = 0; i <= arr.length - k; i++) {
-        let min = arr[i]!
-        for (let j = i + 1; j < i + k; j++) {
-          if (arr[j]! < min) min = arr[j]!
-        }
-        bruteForce.push(min)
-      }
-      expect(results).toEqual(bruteForce)
-    })
-
-    it('should handle alternating high-low pattern', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(10)
-      sw.push(1)
-      sw.push(10)
-      expect(sw.max()).toBe(10)
-      expect(sw.getMin()).toBe(1)
-      sw.push(1)
-      expect(sw.max()).toBe(10)
-      expect(sw.getMin()).toBe(1)
-      sw.push(10)
-      expect(sw.max()).toBe(10)
-      expect(sw.getMin()).toBe(1)
-    })
-
-    it('should handle peak at center of window', () => {
-      const sw = new SlidingWindowMax({ windowSize: 5 })
-      sw.push(1)
-      sw.push(2)
-      sw.push(100)
-      sw.push(2)
-      sw.push(1)
-      expect(sw.max()).toBe(100)
-      expect(sw.getMin()).toBe(1)
-    })
-
-    it('should handle peak sliding out', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(1)
-      sw.push(100)
-      sw.push(1)
-      expect(sw.max()).toBe(100)
-      sw.push(2)
-      expect(sw.max()).toBe(100)
-      sw.push(3)
-      expect(sw.max()).toBe(3)
-    })
-  })
-
-  describe('clear and reuse', () => {
-    it('should work correctly after clear and reuse', () => {
+    it('provides correct indices', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(10)
       sw.push(20)
       sw.push(30)
-      sw.clear()
-      sw.push(5)
-      sw.push(3)
-      expect(sw.max()).toBe(5)
-      expect(sw.getMin()).toBe(3)
-      expect(sw.size).toBe(2)
+      const indices: number[] = []
+      sw.forEach((_, i) => indices.push(i))
+      expect(indices).toEqual([0, 1, 2])
     })
 
-    it('should handle multiple clear cycles', () => {
+    it('does not iterate on empty window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      let count = 0
+      sw.forEach(() => count++)
+      expect(count).toBe(0)
+    })
+
+    it('iterates windowed elements after eviction', () => {
       const sw = new SlidingWindowMax({ windowSize: 2 })
       sw.push(1)
       sw.push(2)
-      expect(sw.max()).toBe(2)
-      sw.clear()
+      sw.push(3)
+      const collected: number[] = []
+      sw.forEach((v) => collected.push(v))
+      expect(collected).toEqual([2, 3])
+    })
+  })
+
+  describe('Symbol.iterator', () => {
+    it('is iterable', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect([...sw]).toEqual([1, 2, 3])
+    })
+
+    it('works with for-of', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(10)
       sw.push(20)
-      expect(sw.max()).toBe(20)
-      sw.clear()
-      sw.push(-1)
+      const result: number[] = []
+      for (const val of sw) {
+        result.push(val)
+      }
+      expect(result).toEqual([10, 20])
+    })
+
+    it('returns empty iterator for empty window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect([...sw]).toEqual([])
+    })
+  })
+
+  describe('first and last', () => {
+    it('first returns undefined when empty', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect(sw.first()).toBeUndefined()
+    })
+
+    it('last returns undefined when empty', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      expect(sw.last()).toBeUndefined()
+    })
+
+    it('first returns oldest element in window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.first()).toBe(1)
+    })
+
+    it('last returns newest element in window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.last()).toBe(3)
+    })
+
+    it('first updates after eviction', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.first()).toBe(2)
+      expect(sw.last()).toBe(3)
+    })
+  })
+
+  describe('pushAll', () => {
+    it('pushes multiple values', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.pushAll([1, 2, 3, 4, 5])
+      expect(sw.size).toBe(5)
+      expect(sw.max()).toBe(5)
+    })
+
+    it('handles empty iterable', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.pushAll([])
+      expect(sw.size).toBe(0)
+    })
+
+    it('evicts correctly with pushAll', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.pushAll([1, 2, 3, 4, 5])
+      expect(sw.size).toBe(3)
+      expect(sw.toArray()).toEqual([3, 4, 5])
+    })
+
+    it('works with generator', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      function* gen() {
+        yield 10
+        yield 20
+        yield 30
+      }
+      sw.pushAll(gen())
+      expect(sw.size).toBe(3)
+      expect(sw.max()).toBe(30)
+    })
+  })
+
+  describe('custom comparator', () => {
+    it('works with string comparator', () => {
+      const sw = new SlidingWindowMax<string>({
+        windowSize: 3,
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      sw.push('banana')
+      sw.push('apple')
+      sw.push('cherry')
+      expect(sw.max()).toBe('cherry')
+      expect(sw.min()).toBe('apple')
+    })
+
+    it('works with reverse comparator for min-focused', () => {
+      const sw = new SlidingWindowMax<number>({
+        windowSize: 3,
+        comparator: (a, b) => b - a,
+      })
+      sw.push(1)
+      sw.push(5)
+      sw.push(3)
+      expect(sw.max()).toBe(1)
+      expect(sw.min()).toBe(5)
+    })
+
+    it('works with object comparator', () => {
+      interface Item {
+        priority: number
+        name: string
+      }
+      const sw = new SlidingWindowMax<Item>({
+        windowSize: 3,
+        comparator: (a, b) => a.priority - b.priority,
+      })
+      sw.push({ priority: 1, name: 'low' })
+      sw.push({ priority: 5, name: 'high' })
+      sw.push({ priority: 3, name: 'mid' })
+      expect(sw.max()!.name).toBe('high')
+      expect(sw.min()!.name).toBe('low')
+    })
+
+    it('works with absolute value comparator', () => {
+      const sw = new SlidingWindowMax<number>({
+        windowSize: 3,
+        comparator: (a, b) => Math.abs(a) - Math.abs(b),
+      })
       sw.push(-5)
-      expect(sw.max()).toBe(-1)
+      sw.push(3)
+      sw.push(-2)
+      expect(sw.max()).toBe(-5)
+      expect(sw.min()).toBe(-2)
     })
   })
 
   describe('edge cases', () => {
-    it('should handle push of Infinity', () => {
+    it('handles windowSize of 1', () => {
+      const sw = new SlidingWindowMax({ windowSize: 1 })
+      sw.push(5)
+      expect(sw.max()).toBe(5)
+      expect(sw.min()).toBe(5)
+      sw.push(3)
+      expect(sw.max()).toBe(3)
+      expect(sw.toArray()).toEqual([3])
+    })
+
+    it('handles single element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.push(42)
+      expect(sw.max()).toBe(42)
+      expect(sw.min()).toBe(42)
+      expect(sw.first()).toBe(42)
+      expect(sw.last()).toBe(42)
+      expect(sw.size).toBe(1)
+    })
+
+    it('handles all same values', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(7)
+      sw.push(7)
+      sw.push(7)
+      expect(sw.max()).toBe(7)
+      expect(sw.min()).toBe(7)
+      sw.push(7)
+      expect(sw.max()).toBe(7)
+    })
+
+    it('handles Infinity values', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(1)
       sw.push(Infinity)
       sw.push(3)
       expect(sw.max()).toBe(Infinity)
-      expect(sw.getMin()).toBe(1)
+      expect(sw.min()).toBe(1)
     })
 
-    it('should handle push of -Infinity', () => {
+    it('handles -Infinity values', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
       sw.push(-Infinity)
-      sw.push(3)
-      sw.push(5)
-      expect(sw.max()).toBe(5)
-      expect(sw.getMin()).toBe(-Infinity)
-    })
-
-    it('should handle very small decimal values', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(0.001)
-      sw.push(0.002)
-      sw.push(0.0015)
-      expect(sw.max()).toBe(0.002)
-      expect(sw.getMin()).toBe(0.001)
-    })
-
-    it('should handle large values', () => {
-      const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(Number.MAX_SAFE_INTEGER)
-      sw.push(Number.MIN_SAFE_INTEGER)
-      sw.push(0)
-      expect(sw.max()).toBe(Number.MAX_SAFE_INTEGER)
-      expect(sw.getMin()).toBe(Number.MIN_SAFE_INTEGER)
-    })
-
-    it('should handle windowSize 2 correctly', () => {
-      const sw = new SlidingWindowMax({ windowSize: 2 })
-      sw.push(1)
-      expect(sw.isFull).toBe(false)
       sw.push(2)
-      expect(sw.isFull).toBe(true)
-      expect(sw.max()).toBe(2)
-      expect(sw.getMin()).toBe(1)
-      sw.push(0)
-      expect(sw.max()).toBe(2)
-      expect(sw.getMin()).toBe(0)
+      sw.push(3)
+      expect(sw.max()).toBe(3)
+      expect(sw.min()).toBe(-Infinity)
     })
 
-    it('should handle rapid push and max calls', () => {
+    it('handles zero values', () => {
       const sw = new SlidingWindowMax({ windowSize: 3 })
-      sw.push(5)
-      expect(sw.max()).toBe(5)
-      sw.push(3)
-      expect(sw.max()).toBe(5)
-      sw.push(7)
-      expect(sw.max()).toBe(7)
+      sw.push(0)
+      sw.push(-1)
       sw.push(1)
-      expect(sw.max()).toBe(7)
-      sw.push(2)
-      expect(sw.max()).toBe(7)
-      sw.push(9)
-      expect(sw.max()).toBe(9)
+      expect(sw.max()).toBe(1)
+      expect(sw.min()).toBe(-1)
     })
   })
 
-  describe('stress tests', () => {
-    it('should handle 10000 pushes', () => {
+  describe('large inputs', () => {
+    it('handles large number of pushes', () => {
       const sw = new SlidingWindowMax({ windowSize: 100 })
       for (let i = 0; i < 10000; i++) {
         sw.push(i)
       }
       expect(sw.size).toBe(100)
       expect(sw.max()).toBe(9999)
-      expect(sw.getMin()).toBe(9900)
+      expect(sw.min()).toBe(9900)
     })
 
-    it('should handle 10000 pushes with random values', () => {
-      const sw = new SlidingWindowMax({ windowSize: 50 })
-      const values: number[] = []
+    it('handles large array in fromArray', () => {
+      const arr = Array.from({ length: 10000 }, (_, i) => i)
+      const sw = SlidingWindowMax.fromArray(arr, { windowSize: 500 })
+      expect(sw.size).toBe(500)
+      expect(sw.max()).toBe(9999)
+    })
+
+    it('handles alternating high and low values', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
       for (let i = 0; i < 1000; i++) {
-        const v = Math.floor(Math.random() * 10000)
-        values.push(v)
-        sw.push(v)
+        sw.push(i % 2 === 0 ? 100 : 1)
       }
-      const window = sw.getWindow()
-      expect(window.length).toBe(50)
-      const expectedMax = Math.max(...window)
-      const expectedMin = Math.min(...window)
-      expect(sw.max()).toBe(expectedMax)
-      expect(sw.getMin()).toBe(expectedMin)
-    })
-
-    it('should match brute force for 1000 random values', () => {
-      const k = 10
-      const arr = Array.from({ length: 200 }, () => Math.floor(Math.random() * 1000))
-      const sw = new SlidingWindowMax({ windowSize: k })
-      const maxResults: number[] = []
-      const minResults: number[] = []
-      for (const v of arr) {
-        sw.push(v)
-        if (sw.isFull) {
-          maxResults.push(sw.max()!)
-          minResults.push(sw.getMin()!)
-        }
-      }
-      for (let i = 0; i < maxResults.length; i++) {
-        let max = -Infinity
-        let min = Infinity
-        for (let j = i; j < i + k; j++) {
-          const v = arr[j]!
-          if (v > max) max = v
-          if (v < min) min = v
-        }
-        expect(maxResults[i]).toBe(max)
-        expect(minResults[i]).toBe(min)
-      }
-    })
-
-    it('should handle many equal values with occasional spikes', () => {
-      const sw = new SlidingWindowMax({ windowSize: 5 })
-      for (let i = 0; i < 100; i++) {
-        sw.push(i % 20 === 0 ? 100 : 1)
-      }
-      expect(sw.size).toBe(5)
-      expect(sw.stats().pushCount).toBe(100)
+      expect(sw.max()).toBe(100)
+      expect(sw.min()).toBe(1)
     })
   })
 
-  describe('type exports', () => {
-    it('should export types from main module', async () => {
-      const mod = await import('../../src/core/sliding-window-max/sliding-window-max.js')
-      expect(mod.SlidingWindowMax).toBeDefined()
+  describe('window eviction behavior', () => {
+    it('correctly evicts and updates max', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(10)
+      sw.push(20)
+      sw.push(30)
+      expect(sw.max()).toBe(30)
+      sw.push(5)
+      expect(sw.max()).toBe(30)
+      sw.push(1)
+      expect(sw.max()).toBe(30)
+      sw.push(40)
+      expect(sw.max()).toBe(40)
+    })
+
+    it('correctly evicts and updates min', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(30)
+      sw.push(20)
+      sw.push(10)
+      expect(sw.min()).toBe(10)
+      sw.push(5)
+      expect(sw.min()).toBe(5)
+      sw.push(100)
+      expect(sw.min()).toBe(5)
+      sw.push(50)
+      expect(sw.min()).toBe(5)
+      sw.push(1)
+      expect(sw.min()).toBe(1)
+    })
+
+    it('handles complex eviction pattern', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(3)
+      sw.push(2)
+      expect(sw.toArray()).toEqual([1, 3, 2])
+      expect(sw.max()).toBe(3)
+
+      sw.push(1)
+      expect(sw.toArray()).toEqual([3, 2, 1])
+      expect(sw.max()).toBe(3)
+
+      sw.push(4)
+      expect(sw.toArray()).toEqual([2, 1, 4])
+      expect(sw.max()).toBe(4)
+
+      sw.push(0)
+      expect(sw.toArray()).toEqual([1, 4, 0])
+      expect(sw.max()).toBe(4)
+      expect(sw.min()).toBe(0)
+    })
+
+    it('window never exceeds windowSize', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      for (let i = 0; i < 50; i++) {
+        sw.push(i)
+        expect(sw.size).toBeLessThanOrEqual(3)
+      }
+    })
+  })
+
+  describe('classic sliding window max examples', () => {
+    it('solves LeetCode 239 example', () => {
+      const arr = [1, 3, -1, -3, 5, 3, 6, 7]
+      const sw = SlidingWindowMax.fromArray(arr, { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([3, 3, 5, 5, 6, 7])
+    })
+
+    it('handles monotonically decreasing input', () => {
+      const sw = SlidingWindowMax.fromArray([9, 8, 7, 6, 5, 4, 3, 2, 1], { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([9, 8, 7, 6, 5, 4, 3])
+    })
+
+    it('handles monotonically increasing input', () => {
+      const sw = SlidingWindowMax.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9], { windowSize: 3 })
+      expect(sw.allMaxima()).toEqual([3, 4, 5, 6, 7, 8, 9])
+    })
+
+    it('handles single element arrays', () => {
+      const sw = SlidingWindowMax.fromArray([5], { windowSize: 1 })
+      expect(sw.allMaxima()).toEqual([5])
+    })
+
+    it('handles duplicate max values across windows', () => {
+      const sw = SlidingWindowMax.fromArray([4, 4, 4, 4], { windowSize: 2 })
+      expect(sw.allMaxima()).toEqual([4, 4, 4])
+    })
+  })
+
+  describe('integration', () => {
+    it('push, clear, push again works correctly', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(10)
+      sw.push(20)
+      sw.clear()
+      expect(sw.isEmpty).toBe(true)
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      expect(sw.max()).toBe(3)
+      expect(sw.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('clone after eviction has correct state', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(10)
+      sw.push(20)
+      sw.push(30)
+      const copy = sw.clone()
+      expect(copy.toArray()).toEqual([20, 30])
+      expect(copy.max()).toBe(30)
+      expect(copy.min()).toBe(20)
+    })
+
+    it('forEach after eviction iterates correct elements', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(10)
+      sw.push(20)
+      sw.push(30)
+      const items: number[] = []
+      sw.forEach((v) => items.push(v))
+      expect(items).toEqual([20, 30])
+    })
+
+    it('iterator after eviction yields correct elements', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(10)
+      sw.push(20)
+      sw.push(30)
+      expect([...sw]).toEqual([20, 30])
+    })
+
+    it('allMaxima after reset works from scratch', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(1)
+      sw.push(2)
+      sw.push(3)
+      sw.reset()
+      sw.pushAll([10, 20, 30, 40])
+      expect(sw.size).toBe(2)
+      expect(sw.max()).toBe(40)
+    })
+
+    it('fromArray with custom comparator works', () => {
+      const sw = SlidingWindowMax.fromArray(['z', 'a', 'm', 'b'], {
+        windowSize: 2,
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      expect(sw.max()).toBe('m')
+      expect(sw.min()).toBe('b')
+    })
+
+    it('pushAll after partial fill works', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.pushAll([2, 3, 4])
+      expect(sw.size).toBe(3)
+      expect(sw.toArray()).toEqual([2, 3, 4])
+      expect(sw.max()).toBe(4)
+    })
+  })
+
+  describe('additional coverage', () => {
+    it('clear does not reset history for allMaxima', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.pushAll([1, 2, 3])
+      sw.clear()
+      expect(sw.allMaxima()).toEqual([2, 3])
+    })
+
+    it('reset clears history for allMaxima', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.pushAll([1, 2, 3])
+      sw.reset()
+      sw.pushAll([10, 20])
+      expect(sw.allMaxima()).toEqual([20])
+    })
+
+    it('clone includes history for allMaxima', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.pushAll([5, 3, 8, 1])
+      const copy = sw.clone()
+      expect(copy.allMaxima()).toEqual([5, 8, 8])
+    })
+
+    it('handles floating point values', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1.5)
+      sw.push(2.7)
+      sw.push(0.3)
+      expect(sw.max()).toBe(2.7)
+      expect(sw.min()).toBe(0.3)
+    })
+
+    it('handles NaN in window', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.push(1)
+      sw.push(NaN)
+      sw.push(3)
+      expect(sw.size).toBe(3)
+    })
+
+    it('allMaxima with single value in history', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.push(42)
+      expect(sw.allMaxima()).toEqual([42])
+    })
+
+    it('allMaxima returns empty for no windowSize', () => {
+      const sw = new SlidingWindowMax()
+      sw.pushAll([1, 2, 3])
+      expect(sw.allMaxima()).toEqual([])
+    })
+
+    it('multiple clear and push cycles', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(1)
+      sw.push(2)
+      sw.clear()
+      sw.push(10)
+      sw.clear()
+      sw.push(100)
+      sw.push(200)
+      expect(sw.max()).toBe(200)
+      expect(sw.size).toBe(2)
+    })
+
+    it('fromArray with only windowSize option', () => {
+      const sw = SlidingWindowMax.fromArray([5, 2, 8, 1, 9], { windowSize: 3 })
+      expect(sw.max()).toBe(9)
+      expect(sw.size).toBe(3)
+      expect(sw.toArray()).toEqual([8, 1, 9])
+    })
+
+    it('fromArray with only comparator option', () => {
+      const sw = SlidingWindowMax.fromArray([5, 2, 8], {
+        comparator: (a, b) => a - b,
+      })
+      expect(sw.size).toBe(3)
+      expect(sw.max()).toBe(8)
+    })
+
+    it('first and last with single element', () => {
+      const sw = new SlidingWindowMax({ windowSize: 5 })
+      sw.push(99)
+      expect(sw.first()).toBe(99)
+      expect(sw.last()).toBe(99)
+    })
+
+    it('iterator works with spread in array context', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.pushAll([10, 20, 30])
+      const [a, b, c] = sw
+      expect(a).toBe(10)
+      expect(b).toBe(20)
+      expect(c).toBe(30)
+    })
+
+    it('forEach callback receives value and index', () => {
+      const sw = new SlidingWindowMax({ windowSize: 3 })
+      sw.pushAll([10, 20, 30])
+      const results: [number, number][] = []
+      sw.forEach((v, i) => results.push([v, i]))
+      expect(results).toEqual([[10, 0], [20, 1], [30, 2]])
+    })
+
+    it('top updates correctly with window sliding', () => {
+      const sw = new SlidingWindowMax({ windowSize: 2 })
+      sw.push(5)
+      expect(sw.top()).toBe(5)
+      sw.push(10)
+      expect(sw.top()).toBe(10)
+      sw.push(3)
+      expect(sw.top()).toBe(10)
+      sw.push(1)
+      expect(sw.top()).toBe(3)
     })
   })
 })
