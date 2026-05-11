@@ -1,7 +1,6 @@
 import type { WBTNode, CompareFunction, WeightBalancedTreeOptions } from './types.js'
 
 const DELTA = 3
-const GAMMA = 2
 
 export class WeightBalancedTree<K, V = unknown> {
   private root: WBTNode<K, V> | null = null
