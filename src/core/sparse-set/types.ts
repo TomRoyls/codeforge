@@ -1,7 +1,7 @@
 export interface SparseSetOptions {
-  readonly universeSize: number
+  readonly capacity: number
 }
 
 export const DEFAULT_SPARSE_SET_OPTIONS: SparseSetOptions = {
-  universeSize: 256,
+  capacity: 256,
 }

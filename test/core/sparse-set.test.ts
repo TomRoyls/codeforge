@@ -1,37 +1,42 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { SparseSet } from '../../src/core/sparse-set/sparse-set.js'
+import { SparseSet } from '../../src/core/sparse-set/index.js'
 
 describe('SparseSet', () => {
   describe('constructor', () => {
-    it('should create a set with given universe size', () => {
+    it('should create a set with given capacity', () => {
       const s = new SparseSet(10)
       expect(s.size).toBe(0)
       expect(s.isEmpty()).toBe(true)
     })
 
-    it('should accept universe size 0', () => {
+    it('should accept capacity 0', () => {
       const s = new SparseSet(0)
       expect(s.size).toBe(0)
       expect(s.isEmpty()).toBe(true)
     })
 
-    it('should accept large universe size', () => {
+    it('should accept large capacity', () => {
       const s = new SparseSet(100000)
       expect(s.size).toBe(0)
     })
 
-    it('should throw for negative universe size', () => {
+    it('should throw for negative capacity', () => {
       expect(() => new SparseSet(-1)).toThrow('non-negative')
     })
 
-    it('should throw for non-integer universe size', () => {
+    it('should throw for non-integer capacity', () => {
       expect(() => new SparseSet(3.5)).toThrow('integer')
     })
 
     it('should accept options object', () => {
-      const s = new SparseSet({ universeSize: 50 })
+      const s = new SparseSet({ capacity: 50 })
       expect(s.size).toBe(0)
-      expect(s.getUniverseSize()).toBe(50)
+      expect(s.getCapacity()).toBe(50)
+    })
+
+    it('should accept options object with default capacity', () => {
+      const s = new SparseSet({ capacity: 256 })
+      expect(s.getCapacity()).toBe(256)
     })
   })
 
@@ -61,7 +66,7 @@ describe('SparseSet', () => {
       expect(s.add(-1)).toBe(false)
     })
 
-    it('should return false for value >= universeSize', () => {
+    it('should return false for value >= capacity', () => {
       expect(s.add(10)).toBe(false)
       expect(s.add(100)).toBe(false)
     })
@@ -75,7 +80,7 @@ describe('SparseSet', () => {
       expect(s.has(0)).toBe(true)
     })
 
-    it('should add value at boundary universeSize-1', () => {
+    it('should add value at boundary capacity-1', () => {
       expect(s.add(9)).toBe(true)
       expect(s.has(9)).toBe(true)
     })
@@ -87,9 +92,9 @@ describe('SparseSet', () => {
       expect(s.size).toBe(10)
     })
 
-    it('should handle re-adding after remove', () => {
+    it('should handle re-adding after delete', () => {
       s.add(5)
-      s.remove(5)
+      s.delete(5)
       expect(s.add(5)).toBe(true)
       expect(s.size).toBe(1)
     })
@@ -118,7 +123,7 @@ describe('SparseSet', () => {
       expect(s.has(-1)).toBe(false)
     })
 
-    it('should return false for value >= universeSize', () => {
+    it('should return false for value >= capacity', () => {
       expect(s.has(10)).toBe(false)
       expect(s.has(100)).toBe(false)
     })
@@ -127,90 +132,90 @@ describe('SparseSet', () => {
       expect(s.has(3.5)).toBe(false)
     })
 
-    it('should return false after removing value', () => {
+    it('should return false after deleting value', () => {
       s.add(5)
-      s.remove(5)
+      s.delete(5)
       expect(s.has(5)).toBe(false)
     })
 
-    it('should still find other values after removal', () => {
+    it('should still find other values after deletion', () => {
       s.add(1)
       s.add(2)
       s.add(3)
-      s.remove(2)
+      s.delete(2)
       expect(s.has(1)).toBe(true)
       expect(s.has(3)).toBe(true)
     })
   })
 
-  describe('remove', () => {
+  describe('delete', () => {
     let s: SparseSet
     beforeEach(() => { s = new SparseSet(10) })
 
-    it('should remove a value and return true', () => {
+    it('should delete a value and return true', () => {
       s.add(5)
-      expect(s.remove(5)).toBe(true)
+      expect(s.delete(5)).toBe(true)
       expect(s.size).toBe(0)
     })
 
     it('should return false for value not in set', () => {
       s.add(1)
-      expect(s.remove(2)).toBe(false)
+      expect(s.delete(2)).toBe(false)
       expect(s.size).toBe(1)
     })
 
     it('should return false for out of range value', () => {
-      expect(s.remove(-1)).toBe(false)
-      expect(s.remove(10)).toBe(false)
+      expect(s.delete(-1)).toBe(false)
+      expect(s.delete(10)).toBe(false)
     })
 
     it('should return false for empty set', () => {
-      expect(s.remove(0)).toBe(false)
+      expect(s.delete(0)).toBe(false)
     })
 
-    it('should remove first element', () => {
+    it('should delete first element', () => {
       s.add(0)
       s.add(1)
       s.add(2)
-      s.remove(0)
+      s.delete(0)
       expect(s.has(0)).toBe(false)
       expect(s.has(1)).toBe(true)
       expect(s.has(2)).toBe(true)
       expect(s.size).toBe(2)
     })
 
-    it('should remove last element', () => {
+    it('should delete last element', () => {
       s.add(0)
       s.add(1)
       s.add(2)
-      s.remove(2)
+      s.delete(2)
       expect(s.has(0)).toBe(true)
       expect(s.has(1)).toBe(true)
       expect(s.has(2)).toBe(false)
       expect(s.size).toBe(2)
     })
 
-    it('should remove middle element', () => {
+    it('should delete middle element', () => {
       s.add(0)
       s.add(1)
       s.add(2)
-      s.remove(1)
+      s.delete(1)
       expect(s.has(0)).toBe(true)
       expect(s.has(1)).toBe(false)
       expect(s.has(2)).toBe(true)
       expect(s.size).toBe(2)
     })
 
-    it('should handle removing all elements one by one', () => {
+    it('should handle deleting all elements one by one', () => {
       for (let i = 0; i < 5; i++) s.add(i)
-      for (let i = 0; i < 5; i++) s.remove(i)
+      for (let i = 0; i < 5; i++) s.delete(i)
       expect(s.size).toBe(0)
       expect(s.isEmpty()).toBe(true)
     })
 
-    it('should allow re-adding after removal', () => {
+    it('should allow re-adding after deletion', () => {
       s.add(5)
-      s.remove(5)
+      s.delete(5)
       s.add(5)
       expect(s.has(5)).toBe(true)
       expect(s.size).toBe(1)
@@ -285,11 +290,11 @@ describe('SparseSet', () => {
       expect(s.size).toBe(2)
     })
 
-    it('should reflect removals', () => {
+    it('should reflect deletions', () => {
       const s = new SparseSet(10)
       s.add(1)
       s.add(2)
-      s.remove(1)
+      s.delete(1)
       expect(s.size).toBe(1)
     })
 
@@ -319,10 +324,10 @@ describe('SparseSet', () => {
       expect(s.isEmpty()).toBe(false)
     })
 
-    it('should return true after removing all', () => {
+    it('should return true after deleting all', () => {
       const s = new SparseSet(10)
       s.add(0)
-      s.remove(0)
+      s.delete(0)
       expect(s.isEmpty()).toBe(true)
     })
 
@@ -375,12 +380,12 @@ describe('SparseSet', () => {
       expect(items.sort()).toEqual([0, 1, 2, 3, 4])
     })
 
-    it('should not iterate removed elements', () => {
+    it('should not iterate deleted elements', () => {
       const s = new SparseSet(10)
       s.add(1)
       s.add(2)
       s.add(3)
-      s.remove(2)
+      s.delete(2)
       const items: number[] = []
       s.forEach((v) => items.push(v))
       expect(items.sort()).toEqual([1, 3])
@@ -420,6 +425,53 @@ describe('SparseSet', () => {
     })
   })
 
+  describe('toArray', () => {
+    it('should return empty array for empty set', () => {
+      expect(new SparseSet(10).toArray()).toEqual([])
+    })
+
+    it('should return all values as array', () => {
+      const s = new SparseSet(10)
+      s.add(1)
+      s.add(3)
+      s.add(5)
+      expect(s.toArray().sort()).toEqual([1, 3, 5])
+    })
+
+    it('should return new array each call', () => {
+      const s = new SparseSet(10)
+      s.add(1)
+      const a = s.toArray()
+      const b = s.toArray()
+      expect(a).not.toBe(b)
+      expect(a).toEqual(b)
+    })
+
+    it('should match values output', () => {
+      const s = new SparseSet(10)
+      s.add(1)
+      s.add(2)
+      s.add(3)
+      expect(s.toArray()).toEqual(s.values())
+    })
+
+    it('should reflect state after deletion', () => {
+      const s = new SparseSet(10)
+      s.add(1)
+      s.add(2)
+      s.add(3)
+      s.delete(2)
+      expect(s.toArray().sort()).toEqual([1, 3])
+    })
+
+    it('should return empty after clear', () => {
+      const s = new SparseSet(10)
+      s.add(1)
+      s.clear()
+      expect(s.toArray()).toEqual([])
+    })
+  })
+
   describe('clone', () => {
     it('should clone empty set', () => {
       const s = new SparseSet(10)
@@ -446,7 +498,7 @@ describe('SparseSet', () => {
       s.add(2)
       const c = s.clone()
       c.add(3)
-      c.remove(1)
+      c.delete(1)
       expect(s.size).toBe(2)
       expect(s.has(1)).toBe(true)
       expect(s.has(3)).toBe(false)
@@ -454,10 +506,10 @@ describe('SparseSet', () => {
       expect(c.has(3)).toBe(true)
     })
 
-    it('should preserve universe size', () => {
+    it('should preserve capacity', () => {
       const s = new SparseSet(50)
       const c = s.clone()
-      expect(c.getUniverseSize()).toBe(50)
+      expect(c.getCapacity()).toBe(50)
     })
   })
 
@@ -497,7 +549,7 @@ describe('SparseSet', () => {
       expect(a.equals(b)).toBe(false)
     })
 
-    it('should return true for empty sets with different universe sizes', () => {
+    it('should return true for empty sets with different capacities', () => {
       const a = new SparseSet(5)
       const b = new SparseSet(10)
       expect(a.equals(b)).toBe(true)
@@ -582,7 +634,7 @@ describe('SparseSet', () => {
       expect(a.union(b).equals(a)).toBe(true)
     })
 
-    it('should handle different universe sizes', () => {
+    it('should handle different capacities', () => {
       const a = new SparseSet(5)
       const b = new SparseSet(10)
       a.add(1)
@@ -590,7 +642,7 @@ describe('SparseSet', () => {
       const u = a.union(b)
       expect(u.has(1)).toBe(true)
       expect(u.has(7)).toBe(true)
-      expect(u.getUniverseSize()).toBe(10)
+      expect(u.getCapacity()).toBe(10)
     })
   })
 
@@ -783,52 +835,183 @@ describe('SparseSet', () => {
     })
   })
 
-  describe('isDisjointFrom', () => {
-    it('should return true for two empty sets', () => {
+  describe('isSupersetOf', () => {
+    it('should return true for empty superset of empty', () => {
       const a = new SparseSet(10)
       const b = new SparseSet(10)
-      expect(a.isDisjointFrom(b)).toBe(true)
+      expect(a.isSupersetOf(b)).toBe(true)
     })
 
-    it('should return true for empty and non-empty', () => {
+    it('should return true for non-empty superset of empty', () => {
       const a = new SparseSet(10)
       const b = new SparseSet(10)
+      a.add(1)
+      expect(a.isSupersetOf(b)).toBe(true)
+    })
+
+    it('should return true for proper superset', () => {
+      const a = new SparseSet(10)
+      const b = new SparseSet(10)
+      a.add(1)
+      a.add(2)
+      a.add(3)
       b.add(1)
-      expect(a.isDisjointFrom(b)).toBe(true)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(true)
     })
 
-    it('should return true for disjoint sets', () => {
+    it('should return true for equal sets', () => {
       const a = new SparseSet(10)
       const b = new SparseSet(10)
       a.add(1)
       a.add(2)
-      b.add(3)
-      b.add(4)
-      expect(a.isDisjointFrom(b)).toBe(true)
+      b.add(1)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(true)
     })
 
-    it('should return false for overlapping sets', () => {
+    it('should return false when element missing', () => {
+      const a = new SparseSet(10)
+      const b = new SparseSet(10)
+      a.add(1)
+      b.add(1)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(false)
+    })
+
+    it('should return false when smaller than other', () => {
+      const a = new SparseSet(10)
+      const b = new SparseSet(10)
+      a.add(1)
+      b.add(1)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(false)
+    })
+
+    it('should be inverse of isSubsetOf', () => {
       const a = new SparseSet(10)
       const b = new SparseSet(10)
       a.add(1)
       a.add(2)
-      b.add(2)
-      b.add(3)
-      expect(a.isDisjointFrom(b)).toBe(false)
+      b.add(1)
+      expect(a.isSupersetOf(b)).toBe(!b.isSupersetOf(a))
+    })
+  })
+
+  describe('getCapacity', () => {
+    it('should return the capacity', () => {
+      expect(new SparseSet(42).getCapacity()).toBe(42)
     })
 
-    it('should return false for identical sets', () => {
-      const a = new SparseSet(10)
-      a.add(1)
-      expect(a.isDisjointFrom(a)).toBe(false)
+    it('should return 0 for zero capacity', () => {
+      expect(new SparseSet(0).getCapacity()).toBe(0)
     })
 
-    it('should be symmetric', () => {
-      const a = new SparseSet(10)
-      const b = new SparseSet(10)
-      a.add(1)
-      b.add(2)
-      expect(a.isDisjointFrom(b)).toBe(b.isDisjointFrom(a))
+    it('should return capacity from options', () => {
+      expect(new SparseSet({ capacity: 100 }).getCapacity()).toBe(100)
+    })
+  })
+
+  describe('density', () => {
+    it('should return 0 for empty set', () => {
+      expect(new SparseSet(10).density()).toBe(0)
+    })
+
+    it('should return 0 for zero capacity', () => {
+      expect(new SparseSet(0).density()).toBe(0)
+    })
+
+    it('should return 0.1 for 1 element in 10 capacity', () => {
+      const s = new SparseSet(10)
+      s.add(5)
+      expect(s.density()).toBe(0.1)
+    })
+
+    it('should return 1 for full set', () => {
+      const s = new SparseSet(5)
+      for (let i = 0; i < 5; i++) s.add(i)
+      expect(s.density()).toBe(1)
+    })
+
+    it('should return 0.5 for half full', () => {
+      const s = new SparseSet(10)
+      for (let i = 0; i < 5; i++) s.add(i)
+      expect(s.density()).toBe(0.5)
+    })
+
+    it('should update after add', () => {
+      const s = new SparseSet(10)
+      s.add(0)
+      expect(s.density()).toBe(0.1)
+      s.add(1)
+      expect(s.density()).toBe(0.2)
+    })
+
+    it('should update after delete', () => {
+      const s = new SparseSet(10)
+      s.add(0)
+      s.add(1)
+      s.delete(0)
+      expect(s.density()).toBe(0.1)
+    })
+
+    it('should update after clear', () => {
+      const s = new SparseSet(10)
+      s.add(0)
+      s.add(1)
+      s.clear()
+      expect(s.density()).toBe(0)
+    })
+  })
+
+  describe('compact', () => {
+    it('should return empty set for empty input', () => {
+      const s = new SparseSet(10)
+      const c = s.compact()
+      expect(c.size).toBe(0)
+      expect(c.getCapacity()).toBe(0)
+    })
+
+    it('should create compact set from sparse values', () => {
+      const s = new SparseSet(100)
+      s.add(5)
+      s.add(10)
+      s.add(99)
+      const c = s.compact()
+      expect(c.size).toBe(3)
+      expect(c.getCapacity()).toBe(3)
+      expect(c.has(0)).toBe(true)
+      expect(c.has(1)).toBe(true)
+      expect(c.has(2)).toBe(true)
+    })
+
+    it('should not modify original', () => {
+      const s = new SparseSet(100)
+      s.add(5)
+      s.add(10)
+      const c = s.compact()
+      expect(s.size).toBe(2)
+      expect(s.getCapacity()).toBe(100)
+      expect(s.has(5)).toBe(true)
+      expect(s.has(10)).toBe(true)
+    })
+
+    it('should handle full set', () => {
+      const s = new SparseSet(5)
+      for (let i = 0; i < 5; i++) s.add(i)
+      const c = s.compact()
+      expect(c.size).toBe(5)
+      expect(c.getCapacity()).toBe(5)
+    })
+
+    it('should produce set where all slots are filled', () => {
+      const s = new SparseSet(100)
+      s.add(3)
+      s.add(7)
+      const c = s.compact()
+      for (let i = 0; i < c.size; i++) {
+        expect(c.has(i)).toBe(true)
+      }
     })
   })
 
@@ -871,59 +1054,28 @@ describe('SparseSet', () => {
       expect(first).toBe(3)
     })
 
-    it('should not iterate removed elements', () => {
+    it('should not iterate deleted elements', () => {
       const s = new SparseSet(10)
       s.add(1)
       s.add(2)
       s.add(3)
-      s.remove(2)
+      s.delete(2)
       const items = [...s].sort()
       expect(items).toEqual([1, 3])
     })
   })
 
-  describe('toString', () => {
-    it('should return empty set representation', () => {
-      const s = new SparseSet(10)
-      expect(s.toString()).toBe('SparseSet{}')
-    })
-
-    it('should return sorted elements', () => {
-      const s = new SparseSet(10)
-      s.add(3)
-      s.add(1)
-      s.add(2)
-      expect(s.toString()).toBe('SparseSet{1, 2, 3}')
-    })
-
-    it('should return single element', () => {
-      const s = new SparseSet(10)
-      s.add(5)
-      expect(s.toString()).toBe('SparseSet{5}')
-    })
-  })
-
-  describe('getUniverseSize', () => {
-    it('should return the universe size', () => {
-      expect(new SparseSet(42).getUniverseSize()).toBe(42)
-    })
-
-    it('should return 0 for zero-sized universe', () => {
-      expect(new SparseSet(0).getUniverseSize()).toBe(0)
-    })
-  })
-
   describe('edge cases', () => {
-    it('should handle universe size 1', () => {
+    it('should handle capacity 1', () => {
       const s = new SparseSet(1)
       expect(s.add(0)).toBe(true)
       expect(s.has(0)).toBe(true)
       expect(s.size).toBe(1)
-      expect(s.remove(0)).toBe(true)
+      expect(s.delete(0)).toBe(true)
       expect(s.size).toBe(0)
     })
 
-    it('should handle universe size 0 — no adds possible', () => {
+    it('should handle capacity 0 — no adds possible', () => {
       const s = new SparseSet(0)
       expect(s.add(0)).toBe(false)
       expect(s.size).toBe(0)
@@ -933,7 +1085,7 @@ describe('SparseSet', () => {
       const s = new SparseSet(10)
       expect(s.add(NaN)).toBe(false)
       expect(s.has(NaN)).toBe(false)
-      expect(s.remove(NaN)).toBe(false)
+      expect(s.delete(NaN)).toBe(false)
     })
 
     it('should handle Infinity value', () => {
@@ -947,12 +1099,12 @@ describe('SparseSet', () => {
       expect(s.add(-Infinity)).toBe(false)
     })
 
-    it('should handle add/remove/add cycle many times', () => {
+    it('should handle add/delete/add cycle many times', () => {
       const s = new SparseSet(5)
       for (let round = 0; round < 10; round++) {
         for (let i = 0; i < 5; i++) s.add(i)
         expect(s.size).toBe(5)
-        for (let i = 0; i < 5; i++) s.remove(i)
+        for (let i = 0; i < 5; i++) s.delete(i)
         expect(s.size).toBe(0)
       }
     })
@@ -983,12 +1135,12 @@ describe('SparseSet', () => {
   })
 
   describe('stress operations', () => {
-    it('should handle full universe add and remove', () => {
+    it('should handle full universe add and delete', () => {
       const n = 100
       const s = new SparseSet(n)
       for (let i = 0; i < n; i++) s.add(i)
       expect(s.size).toBe(n)
-      for (let i = 0; i < n; i++) s.remove(i)
+      for (let i = 0; i < n; i++) s.delete(i)
       expect(s.size).toBe(0)
     })
 
@@ -1003,14 +1155,14 @@ describe('SparseSet', () => {
       }
     })
 
-    it('should handle interleaved add/remove', () => {
+    it('should handle interleaved add/delete', () => {
       const s = new SparseSet(20)
       s.add(1)
       s.add(2)
-      s.remove(1)
+      s.delete(1)
       s.add(3)
       s.add(1)
-      s.remove(2)
+      s.delete(2)
       expect(s.size).toBe(2)
       expect(s.has(1)).toBe(true)
       expect(s.has(3)).toBe(true)
@@ -1024,8 +1176,8 @@ describe('SparseSet', () => {
       for (let i = 25; i < 75; i++) b.add(i)
       const u = a.union(b)
       expect(u.size).toBe(75)
-      const i = a.intersection(b)
-      expect(i.size).toBe(25)
+      const inter = a.intersection(b)
+      expect(inter.size).toBe(25)
       const d = a.difference(b)
       expect(d.size).toBe(25)
     })
@@ -1089,7 +1241,7 @@ describe('SparseSet', () => {
       expect(symDiff.has(3)).toBe(true)
     })
 
-    it('De Morgan: a union b complement equals a intersect b complement', () => {
+    it('union minus intersection equals symmetric difference', () => {
       const a = new SparseSet(10)
       const b = new SparseSet(10)
       a.add(1)
@@ -1103,8 +1255,8 @@ describe('SparseSet', () => {
   })
 
   describe('type exports', () => {
-    it('should export SparseSetOptions type', async () => {
-      const mod = await import('../../src/core/sparse-set/sparse-set.js')
+    it('should export SparseSet class and defaults', async () => {
+      const mod = await import('../../src/core/sparse-set/index.js')
       expect(mod.SparseSet).toBeDefined()
       expect(mod.DEFAULT_SPARSE_SET_OPTIONS).toBeDefined()
     })
