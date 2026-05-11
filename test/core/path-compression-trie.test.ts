@@ -219,7 +219,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.search('anything')).toBeUndefined()
     })
 
-    it.skip('should handle search for key sharing prefix', () => {
+    it('should handle search for key sharing prefix', () => {
       const trie = new PathCompressionTrie<number>()
       trie.insert('ab', 1)
       trie.insert('abc', 2)
@@ -244,7 +244,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.has('key')).toBe(true)
     })
 
-    it.skip('should return false for partial match', () => {
+    it('should return false for partial match', () => {
       const trie = new PathCompressionTrie()
       trie.insert('abcdef')
       expect(trie.has('abc')).toBe(false)
@@ -313,7 +313,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.search('key')).toBe(2)
     })
 
-    it.skip('should handle deleting prefix key', () => {
+    it('should handle deleting prefix key', () => {
       const trie = new PathCompressionTrie()
       trie.insert('ab')
       trie.insert('abc')
@@ -372,7 +372,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.size).toBe(1)
     })
 
-    it.skip('should handle deleting middle key in chain', () => {
+    it('should handle deleting middle key in chain', () => {
       const trie = new PathCompressionTrie()
       trie.insert('a')
       trie.insert('ab')
@@ -438,7 +438,7 @@ describe('PathCompressionTrie', () => {
   })
 
   describe('keysWithPrefix', () => {
-    it.skip('should return all keys with given prefix', () => {
+    it('should return all keys with given prefix', () => {
       const trie = new PathCompressionTrie()
       trie.insert('abc')
       trie.insert('abd')
@@ -468,14 +468,14 @@ describe('PathCompressionTrie', () => {
       expect(trie.keysWithPrefix('')).toEqual([])
     })
 
-    it.skip('should return single key for unique prefix', () => {
+    it('should return single key for unique prefix', () => {
       const trie = new PathCompressionTrie()
       trie.insert('abc')
       trie.insert('xyz')
       expect(trie.keysWithPrefix('abc')).toEqual(['abc'])
     })
 
-    it.skip('should include exact match in results', () => {
+    it('should include exact match in results', () => {
       const trie = new PathCompressionTrie()
       trie.insert('ab')
       trie.insert('abc')
@@ -483,7 +483,7 @@ describe('PathCompressionTrie', () => {
       expect(keys.sort()).toEqual(['ab', 'abc'])
     })
 
-    it.skip('should handle prefix matching compressed path', () => {
+    it('should handle prefix matching compressed path', () => {
       const trie = new PathCompressionTrie()
       trie.insert('abcdefgh')
       trie.insert('abcdefij')
@@ -491,7 +491,7 @@ describe('PathCompressionTrie', () => {
       expect(keys.sort()).toEqual(['abcdefgh', 'abcdefij'])
     })
 
-    it.skip('should return empty string key for empty prefix', () => {
+    it('should return empty string key for empty prefix', () => {
       const trie = new PathCompressionTrie()
       trie.insert('')
       trie.insert('a')
@@ -499,7 +499,7 @@ describe('PathCompressionTrie', () => {
       expect(keys.sort()).toEqual(['', 'a'])
     })
 
-    it.skip('should handle single character prefix', () => {
+    it('should handle single character prefix', () => {
       const trie = new PathCompressionTrie()
       trie.insert('abc')
       trie.insert('ade')
@@ -930,7 +930,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.size).toBe(99)
     })
 
-    it.skip('should handle keysWithPrefix on large set', () => {
+    it('should handle keysWithPrefix on large set', () => {
       const trie = new PathCompressionTrie()
       for (let i = 0; i < 50; i++) {
         trie.insert(`abc${i}`)
@@ -999,7 +999,7 @@ describe('PathCompressionTrie', () => {
       }
     })
 
-    it.skip('should handle dictionary-like usage', () => {
+    it('should handle dictionary-like usage', () => {
       const trie = new PathCompressionTrie<string>()
       trie.insert('apple', 'fruit')
       trie.insert('application', 'software')
@@ -1026,7 +1026,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.has('c')).toBe(true)
     })
 
-    it.skip('should handle keys with same character repeated', () => {
+    it('should handle keys with same character repeated', () => {
       const trie = new PathCompressionTrie<number>()
       trie.insert('aa', 1)
       trie.insert('aaa', 2)
@@ -1077,7 +1077,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.size).toBe(2)
     })
 
-    it.skip('should handle mixed operations', () => {
+    it('should handle mixed operations', () => {
       const trie = new PathCompressionTrie<number>()
       trie.insert('a', 1)
       trie.insert('ab', 2)
@@ -1133,7 +1133,7 @@ describe('PathCompressionTrie', () => {
       expect(trie.search('key')).toBe('new')
     })
 
-    it.skip('should handle many keys with same prefix', () => {
+    it('should handle many keys with same prefix', () => {
       const trie = new PathCompressionTrie<number>()
       const prefix = 'abcdefghij'
       for (let i = 0; i < 100; i++) {
@@ -1162,6 +1162,195 @@ describe('PathCompressionTrie', () => {
       trie.delete('only')
       expect(trie.has('only')).toBe(false)
       expect(trie.isEmpty).toBe(true)
+    })
+  })
+
+  describe('additional coverage', () => {
+    it('should handle insert after delete of different key', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('abc', 1)
+      trie.insert('xyz', 2)
+      trie.delete('abc')
+      trie.insert('abdef', 3)
+      expect(trie.has('xyz')).toBe(true)
+      expect(trie.has('abdef')).toBe(true)
+      expect(trie.has('abc')).toBe(false)
+    })
+
+    it('should handle overlapping key deletes in reverse order', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('a', 1)
+      trie.insert('ab', 2)
+      trie.insert('abc', 3)
+      trie.delete('abc')
+      expect(trie.has('ab')).toBe(true)
+      trie.delete('ab')
+      expect(trie.has('a')).toBe(true)
+      trie.delete('a')
+      expect(trie.isEmpty).toBe(true)
+    })
+
+    it('should handle delete of key that splits a compressed node', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('test1', 1)
+      trie.insert('test2', 2)
+      trie.delete('test1')
+      expect(trie.has('test2')).toBe(true)
+      expect(trie.has('test1')).toBe(false)
+      expect(trie.size).toBe(1)
+    })
+
+    it('should handle multiple keys with completely different starts', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('alpha', 1)
+      trie.insert('beta', 2)
+      trie.insert('gamma', 3)
+      trie.insert('delta', 4)
+      expect(trie.size).toBe(4)
+      expect(trie.search('alpha')).toBe(1)
+      expect(trie.search('beta')).toBe(2)
+      expect(trie.search('gamma')).toBe(3)
+      expect(trie.search('delta')).toBe(4)
+    })
+
+    it('should handle keysWithPrefix returning no results', () => {
+      const trie = new PathCompressionTrie()
+      trie.insert('abc')
+      expect(trie.keysWithPrefix('xyz')).toEqual([])
+    })
+
+    it('should handle startsWith on exact key match', () => {
+      const trie = new PathCompressionTrie()
+      trie.insert('hello')
+      expect(trie.startsWith('hello')).toBe(true)
+      expect(trie.startsWith('helloo')).toBe(false)
+    })
+
+    it('should handle keys after complex insert pattern', () => {
+      const trie = new PathCompressionTrie()
+      trie.insert('car')
+      trie.insert('carpet')
+      trie.insert('carpets')
+      trie.insert('cart')
+      trie.insert('carbon')
+      const keys = [...trie.keys()].sort()
+      expect(keys).toEqual(['car', 'carbon', 'carpet', 'carpets', 'cart'])
+    })
+
+    it('should handle values iteration order', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('b', 2)
+      trie.insert('a', 1)
+      trie.insert('c', 3)
+      const values = [...trie.values()]
+      expect(values.sort()).toEqual([1, 2, 3])
+    })
+
+    it('should handle entries iteration', () => {
+      const trie = new PathCompressionTrie<string>()
+      trie.insert('x', 'X')
+      trie.insert('y', 'Y')
+      const entries = [...trie.entries()]
+      expect(entries).toHaveLength(2)
+      const map = new Map(entries.map(e => [e.key, e.value]))
+      expect(map.get('x')).toBe('X')
+      expect(map.get('y')).toBe('Y')
+    })
+
+    it('should handle forEach with all entries', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('a', 10)
+      trie.insert('b', 20)
+      trie.insert('c', 30)
+      const sum = { total: 0 }
+      trie.forEach((v) => { sum.total += v })
+      expect(sum.total).toBe(60)
+    })
+
+    it('should handle insert-delete-insert of same key', () => {
+      const trie = new PathCompressionTrie<string>()
+      trie.insert('test', 'first')
+      trie.delete('test')
+      trie.insert('test', 'second')
+      expect(trie.search('test')).toBe('second')
+      expect(trie.size).toBe(1)
+    })
+
+    it('should handle size after clear and reinsert', () => {
+      const trie = new PathCompressionTrie<number>()
+      for (let i = 0; i < 20; i++) {
+        trie.insert(`k${i}`, i)
+      }
+      expect(trie.size).toBe(20)
+      trie.clear()
+      expect(trie.size).toBe(0)
+      trie.insert('new', 99)
+      expect(trie.size).toBe(1)
+    })
+
+    it('should handle keysWithPrefix with partial label match', () => {
+      const trie = new PathCompressionTrie()
+      trie.insert('abcdef')
+      const keys = trie.keysWithPrefix('abc')
+      expect(keys).toEqual(['abcdef'])
+    })
+
+    it('should handle empty trie iterator', () => {
+      const trie = new PathCompressionTrie()
+      expect([...trie]).toEqual([])
+      expect([...trie.keys()]).toEqual([])
+      expect([...trie.values()]).toEqual([])
+    })
+
+    it('should handle insert with empty string then other keys', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('', 0)
+      trie.insert('a', 1)
+      trie.insert('ab', 2)
+      expect(trie.search('')).toBe(0)
+      expect(trie.search('a')).toBe(1)
+      expect(trie.search('ab')).toBe(2)
+      expect(trie.size).toBe(3)
+    })
+
+    it('should handle delete of empty string with other keys present', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('', 0)
+      trie.insert('a', 1)
+      trie.delete('')
+      expect(trie.has('')).toBe(false)
+      expect(trie.search('a')).toBe(1)
+      expect(trie.size).toBe(1)
+    })
+
+    it('should handle keysWithPrefix on empty string with multiple keys', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('', 0)
+      trie.insert('a', 1)
+      trie.insert('ab', 2)
+      const keys = trie.keysWithPrefix('')
+      expect(keys.sort()).toEqual(['', 'a', 'ab'])
+    })
+
+    it('should handle delete then startsWith check', () => {
+      const trie = new PathCompressionTrie()
+      trie.insert('abc')
+      trie.insert('abd')
+      trie.delete('abc')
+      expect(trie.startsWith('a')).toBe(true)
+      expect(trie.startsWith('ab')).toBe(true)
+      expect(trie.startsWith('abd')).toBe(true)
+    })
+
+    it('should handle multiple splits at same level', () => {
+      const trie = new PathCompressionTrie<number>()
+      trie.insert('abc', 1)
+      trie.insert('ade', 2)
+      trie.insert('afg', 3)
+      expect(trie.search('abc')).toBe(1)
+      expect(trie.search('ade')).toBe(2)
+      expect(trie.search('afg')).toBe(3)
+      expect(trie.search('a')).toBeUndefined()
     })
   })
 })
