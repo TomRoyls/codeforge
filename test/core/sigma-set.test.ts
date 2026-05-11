@@ -842,5 +842,71 @@ describe('SigmaSet', () => {
       expect(s.next(31)).toBe(33)
       expect(s.prev(32)).toBe(30)
     })
+
+    it('universeSize 0 operations', () => {
+      const s = new SigmaSet({ universeSize: 0 })
+      expect(s.toArray()).toEqual([])
+      expect(s.toString()).toBe('')
+      expect(s.clone().size).toBe(0)
+      expect(s.density()).toBe(0)
+      expect([...s]).toEqual([])
+    })
+
+    it('fromArray ignores duplicates gracefully', () => {
+      const s = SigmaSet.fromArray([1, 1, 1, 2, 2], { universeSize: 10 })
+      expect(s.size).toBe(2)
+      expect(s.toArray()).toEqual([1, 2])
+    })
+
+    it('isSupersetOf with empty set', () => {
+      const a = SigmaSet.fromArray([1, 2], { universeSize: 10 })
+      const b = new SigmaSet({ universeSize: 10 })
+      expect(a.isSupersetOf(b)).toBe(true)
+    })
+
+    it('countRange on full set', () => {
+      const s = new SigmaSet({ universeSize: 10 })
+      s.fill()
+      expect(s.countRange(0, 9)).toBe(10)
+      expect(s.countRange(3, 7)).toBe(5)
+    })
+
+    it('range on full set', () => {
+      const s = new SigmaSet({ universeSize: 10 })
+      s.fill()
+      expect(s.range(2, 5)).toEqual([2, 3, 4, 5])
+    })
+
+    it('clone preserves universeSize', () => {
+      const s = new SigmaSet({ universeSize: 42 })
+      s.add(10)
+      const c = s.clone()
+      expect(c.universeSize).toBe(42)
+      expect(() => c.add(42)).toThrow(RangeError)
+    })
+
+    it('union with self returns self', () => {
+      const s = SigmaSet.fromArray([1, 3, 5], { universeSize: 10 })
+      const u = s.union(s)
+      expect(u.toArray()).toEqual([1, 3, 5])
+    })
+
+    it('complement density', () => {
+      const s = SigmaSet.fromArray([0], { universeSize: 4 })
+      const c = s.complement()
+      expect(c.size).toBe(3)
+      expect(c.density()).toBe(0.75)
+    })
+
+    it('min/max after delete', () => {
+      const s = new SigmaSet({ universeSize: 10 })
+      s.add(1)
+      s.add(5)
+      s.add(9)
+      s.delete(1)
+      expect(s.min()).toBe(5)
+      s.delete(9)
+      expect(s.max()).toBe(5)
+    })
   })
 })

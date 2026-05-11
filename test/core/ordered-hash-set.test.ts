@@ -828,5 +828,14 @@ describe('OrderedHashSet', () => {
       set.add(true)
       expect(set.size).toBe(2)
     })
+
+    it('handles null values', () => {
+      const set = new OrderedHashSet<number | null>()
+      set.add(null)
+      set.add(1)
+      set.add(null)
+      expect(set.size).toBe(2)
+      expect(set.has(null)).toBe(true)
+    })
   })
 })

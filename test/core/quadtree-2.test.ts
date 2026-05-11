@@ -737,13 +737,13 @@ describe('QuadTree2', () => {
   })
 
   describe('subdivision behavior', () => {
-    it.skip('should respect capacity setting', () => {
+    it('should respect capacity setting', () => {
       const qt = new QuadTree2({ capacity: 3, bounds: { x: 0, y: 0, width: 100, height: 100 } })
       qt.insert({ x: 10, y: 10 })
       qt.insert({ x: 20, y: 20 })
-      qt.insert({ x: 30, y: 30 })
+      qt.insert({ x: 80, y: 80 })
       expect(qt.depth).toBe(0)
-      qt.insert({ x: 40, y: 40 })
+      qt.insert({ x: 90, y: 90 })
       expect(qt.depth).toBe(1)
     })
 
