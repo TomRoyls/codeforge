@@ -319,16 +319,6 @@ export class OrderedStatisticsTree<T> {
     }
     visit(this.root)
   }
-
-  private forEachNode(node: OSTNode<T> | null, callback: (key: T, index: number) => void, idx: { value: () => number }): void {
-    if (node === null) {
-      return
-    }
-    this.forEachNode(node.left, callback, idx)
-    callback(node.key, idx.value())
-    this.forEachNode(node.right, callback, idx)
-  }
-
   *[Symbol.iterator](): Iterator<T> {
     const stack: OSTNode<T>[] = []
     let node = this.root

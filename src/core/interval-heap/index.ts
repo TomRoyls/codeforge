@@ -1,9 +1,8 @@
 import type { Comparator, IntervalHeapOptions, IntervalNode } from './types.js'
 
 const defaultComparator: Comparator<unknown> = (a, b): number => {
-  if (a < b) return -1
-  if (a > b) return 1
-  return 0
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  return String(a).localeCompare(String(b))
 }
 
 export class IntervalHeap<T> {
