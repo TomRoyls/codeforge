@@ -1,925 +1,1088 @@
 import { describe, it, expect } from 'vitest'
-import { LazySegmentTree } from '../../src/core/lazy-segment-tree/lazy-segment-tree.js'
+import { LazySegmentTree } from '../../src/core/lazy-segment-tree/index.js'
+import type { SegmentTreeOptions } from '../../src/core/lazy-segment-tree/types.js'
 
 describe('LazySegmentTree', () => {
   describe('constructor', () => {
-    it('should create empty tree with no arguments', () => {
-      const t = new LazySegmentTree()
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
+    it('creates a sum tree from array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.size).toBe(5)
+      expect(tree.isEmpty).toBe(false)
     })
 
-    it('should create tree with size', () => {
-      const t = new LazySegmentTree(5)
-      expect(t.size()).toBe(5)
-      expect(t.isEmpty()).toBe(false)
+    it('creates an empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.size).toBe(0)
+      expect(tree.isEmpty).toBe(true)
     })
 
-    it('should create tree with size and identity', () => {
-      const t = new LazySegmentTree(5, 0)
-      expect(t.size()).toBe(5)
+    it('creates a single element tree', () => {
+      const tree = LazySegmentTree.sumTree([42])
+      expect(tree.size).toBe(1)
+      expect(tree.get(0)).toBe(42)
     })
 
-    it('should create tree with options object', () => {
-      const t = new LazySegmentTree({ size: 10 })
-      expect(t.size()).toBe(10)
+    it('creates a min tree', () => {
+      const tree = LazySegmentTree.minTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 4)).toBe(1)
     })
 
-    it('should create tree with options object and identity', () => {
-      const t = new LazySegmentTree({ size: 10, identity: 0 })
-      expect(t.size()).toBe(10)
+    it('creates a max tree', () => {
+      const tree = LazySegmentTree.maxTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 4)).toBe(5)
     })
 
-    it('should default identity to 0', () => {
-      const t = new LazySegmentTree(3)
-      expect(t.queryRange(0, 2)).toBe(0)
+    it('creates a tree with custom options', () => {
+      const opts: SegmentTreeOptions<number, number> = {
+        identity: 0,
+        lazyIdentity: 0,
+        combine: (a, b) => a + b,
+        lazyApply: (value, lazy, len) => value + lazy * len,
+        lazyCombine: (existing, incoming) => existing + incoming,
+      }
+      const tree = new LazySegmentTree([1, 2, 3], opts)
+      expect(tree.sum()).toBe(6)
     })
 
-    it('should handle size 1', () => {
-      const t = new LazySegmentTree(1)
-      expect(t.size()).toBe(1)
+    it('handles two-element array', () => {
+      const tree = LazySegmentTree.sumTree([10, 20])
+      expect(tree.size).toBe(2)
+      expect(tree.sum()).toBe(30)
     })
 
-    it('should handle size 0', () => {
-      const t = new LazySegmentTree(0)
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
-    })
-  })
-
-  describe('build', () => {
-    it('should build from array', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      expect(t.size()).toBe(5)
-      expect(t.queryRange(0, 4)).toBe(15)
+    it('handles power-of-two sized array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4])
+      expect(tree.sum()).toBe(10)
     })
 
-    it('should build from empty array', () => {
-      const t = new LazySegmentTree()
-      t.build([])
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
-    })
-
-    it('should build single element', () => {
-      const t = new LazySegmentTree()
-      t.build([42])
-      expect(t.size()).toBe(1)
-      expect(t.queryRange(0, 0)).toBe(42)
-    })
-
-    it('should build from size constructor then build', () => {
-      const t = new LazySegmentTree(10)
-      t.build([1, 2, 3])
-      expect(t.size()).toBe(3)
-      expect(t.queryRange(0, 2)).toBe(6)
-    })
-
-    it('should correctly compute sum after build', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30, 40, 50])
-      expect(t.queryRange(0, 4)).toBe(150)
-    })
-
-    it('should correctly compute partial sums after build', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30, 40, 50])
-      expect(t.queryRange(1, 3)).toBe(90)
-    })
-
-    it('should handle rebuild', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.queryRange(0, 2)).toBe(6)
-      t.build([10, 20, 30, 40])
-      expect(t.queryRange(0, 3)).toBe(100)
-    })
-
-    it('should handle power-of-2 sizes', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4])
-      expect(t.queryRange(0, 3)).toBe(10)
-    })
-
-    it('should handle non-power-of-2 sizes', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5, 6, 7])
-      expect(t.queryRange(0, 6)).toBe(28)
+    it('handles non-power-of-two sized array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5, 6, 7])
+      expect(tree.sum()).toBe(28)
     })
   })
 
-  describe('updateRange (add)', () => {
-    it('should add value to entire range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.updateRange(0, 4, 10)
-      expect(t.toArray()).toEqual([11, 12, 13, 14, 15])
+  describe('queryRange', () => {
+    it('queries full range sum', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.queryRange(0, 4)).toBe(15)
     })
 
-    it('should add value to partial range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.updateRange(1, 3, 5)
-      expect(t.toArray()).toEqual([1, 7, 8, 9, 5])
+    it('queries partial range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.queryRange(1, 3)).toBe(9)
     })
 
-    it('should add value to single element', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(1, 1, 100)
-      expect(t.getPoint(1)).toBe(102)
+    it('queries single element', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      expect(tree.queryRange(1, 1)).toBe(20)
     })
 
-    it('should add zero (no-op)', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(0, 2, 0)
-      expect(t.toArray()).toEqual([1, 2, 3])
+    it('queries first element', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      expect(tree.queryRange(0, 0)).toBe(10)
     })
 
-    it('should add negative values', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30])
-      t.updateRange(0, 2, -5)
-      expect(t.toArray()).toEqual([5, 15, 25])
+    it('queries last element', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      expect(tree.queryRange(2, 2)).toBe(30)
     })
 
-    it('should handle multiple overlapping updates', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0, 0])
-      t.updateRange(0, 4, 1)
-      t.updateRange(1, 3, 2)
-      t.updateRange(2, 2, 3)
-      expect(t.toArray()).toEqual([1, 3, 6, 3, 1])
+    it('returns identity for out-of-bounds range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.queryRange(5, 10)).toBe(0)
     })
 
-    it('should handle adjacent updates', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(0, 1, 5)
-      t.updateRange(2, 3, 10)
-      expect(t.toArray()).toEqual([5, 5, 10, 10])
+    it('returns identity for inverted range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.queryRange(3, 1)).toBe(0)
     })
 
-    it('should handle update on full range then partial query', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.updateRange(0, 4, 1)
-      expect(t.queryRange(1, 3)).toBe(12)
+    it('clamps range to valid bounds', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.queryRange(-1, 10)).toBe(6)
     })
 
-    it('should do nothing on empty tree', () => {
-      const t = new LazySegmentTree()
-      t.updateRange(0, 5, 10)
-      expect(t.size()).toBe(0)
+    it('returns identity for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.queryRange(0, 0)).toBe(0)
     })
 
-    it('should handle out-of-bounds range gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(-1, 10, 5)
-      expect(t.toArray()).toEqual([6, 7, 8])
+    it('queries range on min tree', () => {
+      const tree = LazySegmentTree.minTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 2)).toBe(1)
+      expect(tree.queryRange(3, 4)).toBe(2)
     })
 
-    it('should handle invalid range (l > r)', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(2, 0, 5)
-      expect(t.toArray()).toEqual([1, 2, 3])
+    it('queries range on max tree', () => {
+      const tree = LazySegmentTree.maxTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 2)).toBe(5)
+      expect(tree.queryRange(2, 4)).toBe(4)
     })
   })
 
-  describe('queryRange (sum)', () => {
-    it('should return sum of full range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      expect(t.queryRange(0, 4)).toBe(15)
+  describe('updateRange', () => {
+    it('adds to full range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 4, 10)
+      expect(tree.toArray()).toEqual([11, 12, 13, 14, 15])
     })
 
-    it('should return sum of partial range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      expect(t.queryRange(2, 4)).toBe(12)
+    it('adds to partial range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(1, 3, 5)
+      expect(tree.toArray()).toEqual([1, 7, 8, 9, 5])
     })
 
-    it('should return single element', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.queryRange(1, 1)).toBe(2)
+    it('adds to single element', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(2, 2, 100)
+      expect(tree.toArray()).toEqual([1, 2, 103, 4, 5])
     })
 
-    it('should return identity for empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.queryRange(0, 0)).toBe(0)
+    it('adds to first element', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 0, 10)
+      expect(tree.get(0)).toBe(11)
     })
 
-    it('should return correct sum after updates', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.updateRange(0, 2, 10)
-      expect(t.queryRange(0, 4)).toBe(45)
+    it('adds to last element', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(2, 2, 10)
+      expect(tree.get(2)).toBe(13)
     })
 
-    it('should handle query on out-of-bounds range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.queryRange(-1, 10)).toBe(6)
+    it('handles negative values', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      tree.updateRange(0, 2, -5)
+      expect(tree.toArray()).toEqual([5, 15, 25])
     })
 
-    it('should handle invalid range (l > r)', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.queryRange(3, 0)).toBe(0)
+    it('handles multiple range updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 2, 10)
+      tree.updateRange(2, 4, 20)
+      expect(tree.toArray()).toEqual([11, 12, 33, 24, 25])
+    })
+
+    it('handles overlapping range updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 4, 1)
+      tree.updateRange(2, 4, 2)
+      expect(tree.toArray()).toEqual([2, 3, 6, 7, 8])
+    })
+
+    it('no-ops on empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      tree.updateRange(0, 0, 10)
+      expect(tree.size).toBe(0)
+    })
+
+    it('no-ops on out-of-bounds range', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(5, 10, 10)
+      expect(tree.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('clamps range to valid bounds', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(-1, 10, 1)
+      expect(tree.toArray()).toEqual([2, 3, 4])
+    })
+
+    it('updates range on min tree correctly', () => {
+      const tree = LazySegmentTree.minTree([5, 3, 1, 4, 2])
+      tree.updateRange(0, 4, 10)
+      expect(tree.queryRange(0, 4)).toBe(11)
+    })
+
+    it('updates range on max tree correctly', () => {
+      const tree = LazySegmentTree.maxTree([5, 3, 1, 4, 2])
+      tree.updateRange(0, 4, 10)
+      expect(tree.queryRange(0, 4)).toBe(15)
+    })
+
+    it('large range update', () => {
+      const arr = Array.from({ length: 100 }, (_, i) => i + 1)
+      const tree = LazySegmentTree.sumTree(arr)
+      tree.updateRange(0, 99, 1)
+      expect(tree.get(0)).toBe(2)
+      expect(tree.get(99)).toBe(101)
+      expect(tree.sum()).toBe(5050 + 100)
     })
   })
 
-  describe('setPoint', () => {
-    it('should set a value at index', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.setPoint(1, 100)
-      expect(t.getPoint(1)).toBe(100)
+  describe('updatePoint', () => {
+    it('updates a single point', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updatePoint(2, 100)
+      expect(tree.get(2)).toBe(100)
     })
 
-    it('should update sum correctly', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.setPoint(2, 0)
-      expect(t.queryRange(0, 4)).toBe(12)
+    it('updates first element', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(0, 999)
+      expect(tree.get(0)).toBe(999)
     })
 
-    it('should handle negative index gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.setPoint(-1, 100)
-      expect(t.toArray()).toEqual([1, 2, 3])
+    it('updates last element', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(2, 999)
+      expect(tree.get(2)).toBe(999)
     })
 
-    it('should handle out-of-bounds index gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.setPoint(3, 100)
-      expect(t.toArray()).toEqual([1, 2, 3])
+    it('updates negative value', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, -10)
+      expect(tree.get(1)).toBe(-10)
     })
 
-    it('should work after range update', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(0, 2, 10)
-      t.setPoint(1, 0)
-      expect(t.getPoint(0)).toBe(11)
-      expect(t.getPoint(1)).toBe(0)
-      expect(t.getPoint(2)).toBe(13)
+    it('updates zero value', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, 0)
+      expect(tree.get(1)).toBe(0)
+    })
+
+    it('ignores out-of-bounds index', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(-1, 100)
+      tree.updatePoint(5, 100)
+      expect(tree.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('updates sum after point update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updatePoint(2, 10)
+      expect(tree.sum()).toBe(22)
+    })
+
+    it('updates range query after point update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updatePoint(2, 10)
+      expect(tree.queryRange(0, 4)).toBe(22)
     })
   })
 
-  describe('getPoint', () => {
-    it('should get value at index', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30])
-      expect(t.getPoint(0)).toBe(10)
-      expect(t.getPoint(1)).toBe(20)
-      expect(t.getPoint(2)).toBe(30)
+  describe('get', () => {
+    it('gets element at index', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      expect(tree.get(0)).toBe(10)
+      expect(tree.get(1)).toBe(20)
+      expect(tree.get(2)).toBe(30)
     })
 
-    it('should return identity for negative index', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.getPoint(-1)).toBe(0)
+    it('returns undefined for out-of-bounds', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.get(-1)).toBeUndefined()
+      expect(tree.get(3)).toBeUndefined()
     })
 
-    it('should return identity for out-of-bounds index', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.getPoint(3)).toBe(0)
+    it('returns undefined for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.get(0)).toBeUndefined()
     })
 
-    it('should reflect updates', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(0, 2, 5)
-      expect(t.getPoint(0)).toBe(6)
-      expect(t.getPoint(1)).toBe(7)
-      expect(t.getPoint(2)).toBe(8)
+    it('reflects range updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(1, 3, 10)
+      expect(tree.get(0)).toBe(1)
+      expect(tree.get(1)).toBe(12)
+      expect(tree.get(2)).toBe(13)
+      expect(tree.get(3)).toBe(14)
+      expect(tree.get(4)).toBe(5)
+    })
+
+    it('reflects point updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, 100)
+      expect(tree.get(1)).toBe(100)
+    })
+
+    it('reflects combined updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 4, 1)
+      tree.updatePoint(2, 100)
+      expect(tree.get(0)).toBe(2)
+      expect(tree.get(1)).toBe(3)
+      expect(tree.get(2)).toBe(100)
+      expect(tree.get(3)).toBe(5)
+      expect(tree.get(4)).toBe(6)
     })
   })
 
   describe('size and isEmpty', () => {
-    it('should return correct size', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.size()).toBe(3)
+    it('returns correct size', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.size).toBe(3)
     })
 
-    it('should return true for isEmpty on empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.isEmpty()).toBe(true)
+    it('returns 0 for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.size).toBe(0)
     })
 
-    it('should return false for isEmpty on non-empty tree', () => {
-      const t = new LazySegmentTree()
-      t.build([1])
-      expect(t.isEmpty()).toBe(false)
+    it('isEmpty is true for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.isEmpty).toBe(true)
+    })
+
+    it('isEmpty is false for non-empty tree', () => {
+      const tree = LazySegmentTree.sumTree([1])
+      expect(tree.isEmpty).toBe(false)
     })
   })
 
   describe('toArray', () => {
-    it('should return empty array for empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.toArray()).toEqual([])
+    it('returns original array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.toArray()).toEqual([1, 2, 3, 4, 5])
     })
 
-    it('should return elements after build', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.toArray()).toEqual([1, 2, 3])
+    it('returns empty array for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.toArray()).toEqual([])
     })
 
-    it('should reflect range updates', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(1, 2, 5)
-      expect(t.toArray()).toEqual([0, 5, 5, 0])
+    it('reflects range updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 10)
+      expect(tree.toArray()).toEqual([11, 12, 13])
     })
 
-    it('should reflect point sets', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.setPoint(1, 99)
-      expect(t.toArray()).toEqual([1, 99, 3])
-    })
-  })
-
-  describe('toString', () => {
-    it('should return empty string for empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.toString()).toBe('')
+    it('reflects point updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, 50)
+      expect(tree.toArray()).toEqual([1, 50, 3])
     })
 
-    it('should return comma-separated values', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      expect(t.toString()).toBe('1,2,3')
-    })
-
-    it('should reflect updates', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0])
-      t.updateRange(0, 2, 1)
-      expect(t.toString()).toBe('1,1,1')
+    it('reflects mixed updates', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0])
+      tree.updateRange(0, 4, 1)
+      tree.updatePoint(2, 10)
+      expect(tree.toArray()).toEqual([1, 1, 10, 1, 1])
     })
   })
 
-  describe('clone', () => {
-    it('should create independent copy', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      const c = t.clone()
-      expect(c.toArray()).toEqual([1, 2, 3])
-      expect(c.size()).toBe(3)
+  describe('forEach', () => {
+    it('iterates all elements', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      const result: number[] = []
+      tree.forEach((v, i) => {
+        result.push(v)
+      })
+      expect(result).toEqual([10, 20, 30])
     })
 
-    it('should be independent after update on original', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      const c = t.clone()
-      t.updateRange(0, 2, 10)
-      expect(t.toArray()).toEqual([11, 12, 13])
-      expect(c.toArray()).toEqual([1, 2, 3])
+    it('provides correct indices', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30])
+      const indices: number[] = []
+      tree.forEach((_v, i) => {
+        indices.push(i)
+      })
+      expect(indices).toEqual([0, 1, 2])
     })
 
-    it('should be independent after update on clone', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      const c = t.clone()
-      c.updateRange(0, 2, 10)
-      expect(t.toArray()).toEqual([1, 2, 3])
-      expect(c.toArray()).toEqual([11, 12, 13])
+    it('does nothing for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      let count = 0
+      tree.forEach(() => { count++ })
+      expect(count).toBe(0)
     })
 
-    it('should clone empty tree', () => {
-      const t = new LazySegmentTree()
-      const c = t.clone()
-      expect(c.isEmpty()).toBe(true)
-      expect(c.size()).toBe(0)
-    })
-  })
-
-  describe('equals', () => {
-    it('should return true for identical trees', () => {
-      const t1 = new LazySegmentTree()
-      t1.build([1, 2, 3])
-      const t2 = new LazySegmentTree()
-      t2.build([1, 2, 3])
-      expect(t1.equals(t2)).toBe(true)
-    })
-
-    it('should return false for different values', () => {
-      const t1 = new LazySegmentTree()
-      t1.build([1, 2, 3])
-      const t2 = new LazySegmentTree()
-      t2.build([1, 2, 4])
-      expect(t1.equals(t2)).toBe(false)
-    })
-
-    it('should return false for different sizes', () => {
-      const t1 = new LazySegmentTree()
-      t1.build([1, 2])
-      const t2 = new LazySegmentTree()
-      t2.build([1, 2, 3])
-      expect(t1.equals(t2)).toBe(false)
-    })
-
-    it('should return true for two empty trees', () => {
-      const t1 = new LazySegmentTree()
-      const t2 = new LazySegmentTree()
-      expect(t1.equals(t2)).toBe(true)
-    })
-
-    it('should work with clone', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 10, 15])
-      expect(t.equals(t.clone())).toBe(true)
+    it('reflects updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 5)
+      const result: number[] = []
+      tree.forEach((v) => { result.push(v) })
+      expect(result).toEqual([6, 7, 8])
     })
   })
 
-  describe('reset', () => {
-    it('should reset to empty state', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.reset()
-      expect(t.size()).toBe(0)
-      expect(t.isEmpty()).toBe(true)
-      expect(t.toArray()).toEqual([])
+  describe('min', () => {
+    it('finds minimum value', () => {
+      const tree = LazySegmentTree.sumTree([5, 3, 1, 4, 2])
+      expect(tree.min()).toBe(1)
     })
 
-    it('should allow rebuild after reset', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.reset()
-      t.build([10, 20])
-      expect(t.size()).toBe(2)
-      expect(t.queryRange(0, 1)).toBe(30)
+    it('returns undefined for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.min()).toBeUndefined()
     })
 
-    it('should handle reset on empty tree', () => {
-      const t = new LazySegmentTree()
-      t.reset()
-      expect(t.isEmpty()).toBe(true)
-    })
-  })
-
-  describe('rangeMin', () => {
-    it('should return min of range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8, 1, 9])
-      expect(t.rangeMin(0, 4)).toBe(1)
+    it('returns the element for single element tree', () => {
+      const tree = LazySegmentTree.sumTree([42])
+      expect(tree.min()).toBe(42)
     })
 
-    it('should return min of partial range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8, 1, 9])
-      expect(t.rangeMin(0, 2)).toBe(3)
+    it('handles negative values', () => {
+      const tree = LazySegmentTree.sumTree([-5, -1, -3, -2])
+      expect(tree.min()).toBe(-5)
     })
 
-    it('should return element for single-element range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      expect(t.rangeMin(1, 1)).toBe(3)
-    })
-
-    it('should reflect updates', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      t.updateRange(0, 2, -10)
-      expect(t.rangeMin(0, 2)).toBe(-7)
-    })
-
-    it('should return identity for empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.rangeMin(0, 0)).toBe(0)
-    })
-
-    it('should handle out-of-bounds gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      expect(t.rangeMin(-1, 10)).toBe(3)
+    it('reflects updates', () => {
+      const tree = LazySegmentTree.sumTree([5, 3, 1, 4, 2])
+      tree.updateRange(0, 4, -10)
+      expect(tree.min()).toBe(-9)
     })
   })
 
-  describe('rangeMax', () => {
-    it('should return max of range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8, 1, 9])
-      expect(t.rangeMax(0, 4)).toBe(9)
+  describe('max', () => {
+    it('finds maximum value', () => {
+      const tree = LazySegmentTree.sumTree([5, 3, 1, 4, 2])
+      expect(tree.max()).toBe(5)
     })
 
-    it('should return max of partial range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8, 1, 9])
-      expect(t.rangeMax(0, 2)).toBe(8)
+    it('returns undefined for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.max()).toBeUndefined()
     })
 
-    it('should return element for single-element range', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      expect(t.rangeMax(1, 1)).toBe(3)
+    it('returns the element for single element tree', () => {
+      const tree = LazySegmentTree.sumTree([42])
+      expect(tree.max()).toBe(42)
     })
 
-    it('should reflect updates', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      t.updateRange(0, 2, 10)
-      expect(t.rangeMax(0, 2)).toBe(18)
+    it('handles negative values', () => {
+      const tree = LazySegmentTree.sumTree([-5, -1, -3, -2])
+      expect(tree.max()).toBe(-1)
     })
 
-    it('should return identity for empty tree', () => {
-      const t = new LazySegmentTree()
-      expect(t.rangeMax(0, 0)).toBe(0)
-    })
-
-    it('should handle out-of-bounds gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 3, 8])
-      expect(t.rangeMax(-1, 10)).toBe(8)
+    it('reflects updates', () => {
+      const tree = LazySegmentTree.sumTree([5, 3, 1, 4, 2])
+      tree.updateRange(0, 4, 100)
+      expect(tree.max()).toBe(105)
     })
   })
 
-  describe('multiplyRange', () => {
-    it('should multiply elements in range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5])
-      t.multiplyRange(1, 3, 2)
-      expect(t.getPoint(0)).toBe(1)
-      expect(t.getPoint(1)).toBe(4)
-      expect(t.getPoint(2)).toBe(6)
-      expect(t.getPoint(3)).toBe(8)
-      expect(t.getPoint(4)).toBe(5)
+  describe('sum', () => {
+    it('returns total sum', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.sum()).toBe(15)
     })
 
-    it('should multiply single element', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.multiplyRange(1, 1, 10)
-      expect(t.getPoint(1)).toBe(20)
+    it('returns identity for empty tree', () => {
+      const tree = LazySegmentTree.sumTree([])
+      expect(tree.sum()).toBe(0)
     })
 
-    it('should multiply entire range', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.multiplyRange(0, 2, 3)
-      expect(t.toArray()).toEqual([3, 6, 9])
+    it('returns single element sum', () => {
+      const tree = LazySegmentTree.sumTree([42])
+      expect(tree.sum()).toBe(42)
     })
 
-    it('should multiply by zero', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.multiplyRange(0, 2, 0)
-      expect(t.toArray()).toEqual([0, 0, 0])
+    it('reflects range updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 5)
+      expect(tree.sum()).toBe(6 + 15)
     })
 
-    it('should multiply by negative', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.multiplyRange(0, 2, -1)
-      expect(t.toArray()).toEqual([-1, -2, -3])
-    })
-
-    it('should handle out-of-bounds gracefully', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.multiplyRange(-1, 10, 2)
-      expect(t.toArray()).toEqual([2, 4, 6])
-    })
-
-    it('should do nothing on empty tree', () => {
-      const t = new LazySegmentTree()
-      t.multiplyRange(0, 5, 3)
-      expect(t.size()).toBe(0)
-    })
-
-    it('should update sum correctly after multiply', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4])
-      t.multiplyRange(0, 3, 2)
-      expect(t.queryRange(0, 3)).toBe(20)
-    })
-
-    it('should update min/max after multiply', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 5, 3])
-      t.multiplyRange(0, 2, 2)
-      expect(t.rangeMin(0, 2)).toBe(2)
-      expect(t.rangeMax(0, 2)).toBe(10)
-    })
-
-    it('should work with add then multiply', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3])
-      t.updateRange(0, 2, 1)
-      t.multiplyRange(0, 2, 2)
-      expect(t.toArray()).toEqual([4, 6, 8])
+    it('reflects point updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, 10)
+      expect(tree.sum()).toBe(14)
     })
   })
 
-  describe('combined operations', () => {
-    it('should handle add + query sequence', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(0, 3, 1)
-      expect(t.queryRange(0, 3)).toBe(4)
-      t.updateRange(0, 1, 1)
-      expect(t.queryRange(0, 3)).toBe(6)
-      expect(t.queryRange(2, 3)).toBe(2)
+  describe('build', () => {
+    it('rebuilds from new array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.build([10, 20, 30, 40])
+      expect(tree.size).toBe(4)
+      expect(tree.toArray()).toEqual([10, 20, 30, 40])
     })
 
-    it('should handle set + update + query', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30, 40])
-      t.setPoint(1, 0)
-      t.updateRange(0, 2, 5)
-      expect(t.queryRange(0, 3)).toBe(95)
+    it('builds empty array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.build([])
+      expect(tree.size).toBe(0)
+      expect(tree.isEmpty).toBe(true)
     })
 
-    it('should handle many overlapping updates', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0, 0, 0, 0, 0])
-      t.updateRange(0, 7, 1)
-      t.updateRange(0, 3, 1)
-      t.updateRange(4, 7, 1)
-      t.updateRange(2, 5, 1)
-      expect(t.toArray()).toEqual([2, 2, 3, 3, 3, 3, 2, 2])
+    it('builds single element', () => {
+      const tree = LazySegmentTree.sumTree([])
+      tree.build([99])
+      expect(tree.size).toBe(1)
+      expect(tree.get(0)).toBe(99)
     })
 
-    it('should handle alternating add and multiply', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 1, 1, 1])
-      t.updateRange(0, 3, 1)
-      t.multiplyRange(0, 3, 2)
-      t.updateRange(0, 3, 1)
-      expect(t.toArray()).toEqual([5, 5, 5, 5])
+    it('resets lazy state on rebuild', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 100)
+      tree.build([10, 20, 30])
+      expect(tree.toArray()).toEqual([10, 20, 30])
     })
 
-    it('should handle large number of point sets', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0, 0])
-      for (let i = 0; i < 5; i++) {
-        t.setPoint(i, i * 10)
-      }
-      expect(t.toArray()).toEqual([0, 10, 20, 30, 40])
-      expect(t.queryRange(0, 4)).toBe(100)
-    })
-  })
-
-  describe('edge cases', () => {
-    it('should handle single element operations', () => {
-      const t = new LazySegmentTree()
-      t.build([5])
-      expect(t.queryRange(0, 0)).toBe(5)
-      t.updateRange(0, 0, 3)
-      expect(t.getPoint(0)).toBe(8)
-      t.setPoint(0, 100)
-      expect(t.getPoint(0)).toBe(100)
-      expect(t.rangeMin(0, 0)).toBe(100)
-      expect(t.rangeMax(0, 0)).toBe(100)
-    })
-
-    it('should handle two elements', () => {
-      const t = new LazySegmentTree()
-      t.build([3, 7])
-      expect(t.queryRange(0, 1)).toBe(10)
-      t.updateRange(0, 0, 5)
-      expect(t.queryRange(0, 1)).toBe(15)
-      expect(t.rangeMin(0, 1)).toBe(7)
-      expect(t.rangeMax(0, 1)).toBe(8)
-    })
-
-    it('should handle power-of-2 sizes correctly', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5, 6, 7, 8])
-      t.updateRange(2, 5, 10)
-      expect(t.queryRange(0, 7)).toBe(76)
-    })
-
-    it('should handle size 3 (non-power-of-2)', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30])
-      t.updateRange(0, 2, 5)
-      expect(t.queryRange(0, 2)).toBe(75)
-      expect(t.rangeMin(0, 2)).toBe(15)
-      expect(t.rangeMax(0, 2)).toBe(35)
-    })
-
-    it('should handle size 6', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5, 6])
-      expect(t.queryRange(0, 5)).toBe(21)
-      t.updateRange(1, 4, 10)
-      expect(t.queryRange(0, 5)).toBe(61)
-    })
-
-    it('should handle size 7', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 2, 3, 4, 5, 6, 7])
-      expect(t.queryRange(0, 6)).toBe(28)
-      t.updateRange(3, 5, 1)
-      expect(t.toArray()).toEqual([1, 2, 3, 5, 6, 7, 7])
-    })
-
-    it('should handle all zeros', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      expect(t.queryRange(0, 3)).toBe(0)
-      t.updateRange(0, 3, 0)
-      expect(t.queryRange(0, 3)).toBe(0)
-    })
-
-    it('should handle all same values', () => {
-      const t = new LazySegmentTree()
-      t.build([5, 5, 5, 5, 5])
-      expect(t.queryRange(0, 4)).toBe(25)
-      expect(t.rangeMin(0, 4)).toBe(5)
-      expect(t.rangeMax(0, 4)).toBe(5)
-    })
-
-    it('should handle negative values throughout', () => {
-      const t = new LazySegmentTree()
-      t.build([-1, -2, -3, -4])
-      expect(t.queryRange(0, 3)).toBe(-10)
-      expect(t.rangeMin(0, 3)).toBe(-4)
-      expect(t.rangeMax(0, 3)).toBe(-1)
-      t.updateRange(0, 3, 10)
-      expect(t.queryRange(0, 3)).toBe(30)
-    })
-
-    it('should handle large values', () => {
-      const t = new LazySegmentTree()
-      t.build([1e9, 1e9, 1e9])
-      expect(t.queryRange(0, 2)).toBe(3e9)
-      t.updateRange(0, 2, 1e9)
-      expect(t.queryRange(0, 2)).toBe(6e9)
-    })
-
-    it('should handle fractional values', () => {
-      const t = new LazySegmentTree()
-      t.build([0.5, 1.5, 2.5])
-      expect(t.queryRange(0, 2)).toBeCloseTo(4.5)
-      t.updateRange(0, 2, 0.5)
-      expect(t.queryRange(0, 2)).toBeCloseTo(6.0)
-    })
-  })
-
-  describe('stress tests', () => {
-    it('should handle 10000 elements with range updates and queries', () => {
-      const n = 10000
-      const t = new LazySegmentTree()
-      const arr = new Array(n).fill(0)
-      for (let i = 0; i < n; i++) {
-        arr[i] = i
-      }
-      t.build(arr)
-      expect(t.queryRange(0, n - 1)).toBe((n - 1) * n / 2)
-
-      t.updateRange(0, n - 1, 1)
-      expect(t.queryRange(0, n - 1)).toBe((n - 1) * n / 2 + n)
-
-      t.updateRange(0, Math.floor(n / 2) - 1, 5)
-      const half = Math.floor(n / 2)
-      const expected = (n - 1) * n / 2 + n + half * 5
-      expect(t.queryRange(0, n - 1)).toBe(expected)
-    })
-
-    it('should handle 10000 random updates and queries', () => {
-      const n = 100
-      const t = new LazySegmentTree()
-      const arr = new Array(n).fill(0)
-      t.build(arr)
-
-      const seed = 42
-      let rng = seed
-      const nextRand = () => {
-        rng = (rng * 1103515245 + 12345) & 0x7fffffff
-        return rng
-      }
-
-      for (let op = 0; op < 500; op++) {
-        const l = nextRand() % n
-        const r = l + (nextRand() % (n - l))
-        const val = (nextRand() % 201) - 100
-        t.updateRange(l, r, val)
-        for (let i = l; i <= r; i++) {
-          arr[i] += val
-        }
-      }
-
-      for (let q = 0; q < 100; q++) {
-        const l = nextRand() % n
-        const r = l + (nextRand() % (n - l))
-        let expected = 0
-        for (let i = l; i <= r; i++) {
-          expected += arr[i]
-        }
-        expect(t.queryRange(l, r)).toBe(expected)
-      }
-    })
-
-    it('should handle 10000 elements with many overlapping range updates', () => {
-      const n = 10000
-      const t = new LazySegmentTree()
-      t.build(new Array(n).fill(0))
-
-      for (let i = 0; i < 100; i++) {
-        const l = i * 50
-        const r = Math.min(l + 200, n - 1)
-        t.updateRange(l, r, i)
-      }
-
-      expect(t.queryRange(0, n - 1)).toBeGreaterThan(0)
-      expect(t.rangeMin(0, n - 1)).toBe(0)
-      expect(t.rangeMax(0, n - 1)).toBeGreaterThan(0)
-    })
-
-    it('should handle alternating point sets and range queries on 1000 elements', () => {
-      const n = 1000
-      const t = new LazySegmentTree()
-      t.build(new Array(n).fill(0))
-
-      let expectedSum = 0
-      for (let i = 0; i < n; i++) {
-        t.setPoint(i, i + 1)
-        expectedSum += i + 1
-      }
-      expect(t.queryRange(0, n - 1)).toBe(expectedSum)
+    it('builds larger array', () => {
+      const tree = LazySegmentTree.sumTree([1])
+      const arr = Array.from({ length: 50 }, (_, i) => i)
+      tree.build(arr)
+      expect(tree.size).toBe(50)
+      expect(tree.sum()).toBe(1225)
     })
   })
 
   describe('lazy propagation correctness', () => {
-    it('should correctly propagate to children after parent update', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(0, 3, 5)
-      t.updateRange(0, 1, 3)
-      expect(t.getPoint(0)).toBe(8)
-      expect(t.getPoint(1)).toBe(8)
-      expect(t.getPoint(2)).toBe(5)
-      expect(t.getPoint(3)).toBe(5)
+    it('lazy propagates on query after update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5, 6, 7, 8])
+      tree.updateRange(0, 7, 1)
+      expect(tree.queryRange(0, 3)).toBe(14)
+      expect(tree.queryRange(4, 7)).toBe(30)
     })
 
-    it('should handle deep lazy propagation', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0, 0, 0, 0, 0])
-      t.updateRange(0, 7, 1)
-      t.updateRange(0, 3, 1)
-      t.updateRange(0, 1, 1)
-      t.updateRange(0, 0, 1)
-      expect(t.getPoint(0)).toBe(4)
-      expect(t.getPoint(1)).toBe(3)
-      expect(t.getPoint(2)).toBe(2)
-      expect(t.getPoint(3)).toBe(2)
-      expect(t.getPoint(4)).toBe(1)
-      expect(t.getPoint(5)).toBe(1)
-      expect(t.getPoint(6)).toBe(1)
-      expect(t.getPoint(7)).toBe(1)
+    it('lazy propagates on point get after update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5, 6, 7, 8])
+      tree.updateRange(0, 7, 10)
+      expect(tree.get(0)).toBe(11)
+      expect(tree.get(7)).toBe(18)
     })
 
-    it('should handle updates from right then query left', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(2, 3, 10)
-      expect(t.queryRange(0, 1)).toBe(0)
-      expect(t.queryRange(2, 3)).toBe(20)
+    it('multiple lazy updates combine correctly', () => {
+      const tree = LazySegmentTree.sumTree([1, 1, 1, 1])
+      tree.updateRange(0, 3, 1)
+      tree.updateRange(0, 3, 2)
+      tree.updateRange(0, 3, 3)
+      expect(tree.toArray()).toEqual([7, 7, 7, 7])
     })
 
-    it('should handle updates from left then query right', () => {
-      const t = new LazySegmentTree()
-      t.build([0, 0, 0, 0])
-      t.updateRange(0, 1, 10)
-      expect(t.queryRange(2, 3)).toBe(0)
-      expect(t.queryRange(0, 1)).toBe(20)
+    it('lazy updates on sub-ranges', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0, 0, 0])
+      tree.updateRange(0, 3, 5)
+      tree.updateRange(4, 7, 10)
+      expect(tree.queryRange(0, 3)).toBe(20)
+      expect(tree.queryRange(4, 7)).toBe(40)
+      expect(tree.queryRange(0, 7)).toBe(60)
     })
 
-    it('should handle alternating range then point operations', () => {
-      const t = new LazySegmentTree()
-      t.build([1, 1, 1, 1, 1])
-      t.updateRange(0, 4, 1)
-      t.setPoint(2, 0)
-      expect(t.queryRange(0, 4)).toBe(8)
-      t.updateRange(1, 3, 5)
-      expect(t.getPoint(0)).toBe(2)
-      expect(t.getPoint(1)).toBe(7)
-      expect(t.getPoint(2)).toBe(5)
-      expect(t.getPoint(3)).toBe(7)
-      expect(t.getPoint(4)).toBe(2)
+    it('point update after range update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 4, 10)
+      tree.updatePoint(2, 0)
+      expect(tree.toArray()).toEqual([11, 12, 0, 14, 15])
     })
 
-    it('should handle min/max after multiple range updates', () => {
-      const t = new LazySegmentTree()
-      t.build([10, 20, 30, 40, 50])
-      t.updateRange(0, 2, -15)
-      t.updateRange(2, 4, 100)
-      expect(t.rangeMin(0, 4)).toBe(-5)
-      expect(t.rangeMax(0, 4)).toBe(150)
+    it('range update after point update', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updatePoint(2, 100)
+      tree.updateRange(0, 4, 1)
+      expect(tree.toArray()).toEqual([2, 3, 101, 5, 6])
+    })
+
+    it('nested range updates', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0, 0, 0])
+      tree.updateRange(0, 7, 1)
+      tree.updateRange(2, 5, 1)
+      tree.updateRange(3, 4, 1)
+      expect(tree.toArray()).toEqual([1, 1, 2, 3, 3, 2, 1, 1])
+    })
+
+    it('lazy propagation with non-power-of-two', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(1, 3, 10)
+      expect(tree.get(0)).toBe(1)
+      expect(tree.get(1)).toBe(12)
+      expect(tree.get(2)).toBe(13)
+      expect(tree.get(3)).toBe(14)
+      expect(tree.get(4)).toBe(5)
+    })
+  })
+
+  describe('static factory methods', () => {
+    it('sumTree works correctly', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.sum()).toBe(6)
+      tree.updateRange(0, 2, 1)
+      expect(tree.sum()).toBe(9)
+    })
+
+    it('minTree works correctly', () => {
+      const tree = LazySegmentTree.minTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 4)).toBe(1)
+      tree.updateRange(0, 4, 10)
+      expect(tree.queryRange(0, 4)).toBe(11)
+    })
+
+    it('maxTree works correctly', () => {
+      const tree = LazySegmentTree.maxTree([5, 3, 1, 4, 2])
+      expect(tree.queryRange(0, 4)).toBe(5)
+      tree.updateRange(0, 4, 10)
+      expect(tree.queryRange(0, 4)).toBe(15)
+    })
+
+    it('gcdTree works correctly', () => {
+      const tree = LazySegmentTree.gcdTree([12, 18, 24, 9])
+      expect(tree.queryRange(0, 3)).toBe(3)
+      expect(tree.queryRange(0, 1)).toBe(6)
+    })
+  })
+
+  describe('min tree with lazy updates', () => {
+    it('tracks min after range update', () => {
+      const tree = LazySegmentTree.minTree([10, 20, 30, 40, 50])
+      tree.updateRange(0, 4, -5)
+      expect(tree.queryRange(0, 4)).toBe(5)
+    })
+
+    it('tracks min with partial update', () => {
+      const tree = LazySegmentTree.minTree([10, 20, 30, 40, 50])
+      tree.updateRange(2, 4, -25)
+      expect(tree.queryRange(0, 1)).toBe(10)
+      expect(tree.queryRange(2, 4)).toBe(5)
+      expect(tree.queryRange(0, 4)).toBe(5)
+    })
+
+    it('min with multiple updates', () => {
+      const tree = LazySegmentTree.minTree([10, 20, 30])
+      tree.updateRange(0, 2, -5)
+      tree.updateRange(1, 2, -10)
+      expect(tree.toArray()).toEqual([5, 5, 15])
+      expect(tree.queryRange(0, 2)).toBe(5)
+    })
+  })
+
+  describe('max tree with lazy updates', () => {
+    it('tracks max after range update', () => {
+      const tree = LazySegmentTree.maxTree([10, 20, 30, 40, 50])
+      tree.updateRange(0, 2, 100)
+      expect(tree.queryRange(0, 2)).toBe(130)
+      expect(tree.queryRange(0, 4)).toBe(130)
+    })
+
+    it('tracks max with partial update', () => {
+      const tree = LazySegmentTree.maxTree([10, 20, 30, 40, 50])
+      tree.updateRange(0, 1, 100)
+      expect(tree.queryRange(0, 4)).toBe(120)
+    })
+  })
+
+  describe('edge cases', () => {
+    it('handles large numbers', () => {
+      const tree = LazySegmentTree.sumTree([1e15, 2e15, 3e15])
+      expect(tree.sum()).toBe(6e15)
+    })
+
+    it('handles negative numbers', () => {
+      const tree = LazySegmentTree.sumTree([-1, -2, -3])
+      expect(tree.sum()).toBe(-6)
+    })
+
+    it('handles mix of positive and negative', () => {
+      const tree = LazySegmentTree.sumTree([-5, 10, -3, 8])
+      expect(tree.sum()).toBe(10)
+    })
+
+    it('handles zero array', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0])
+      expect(tree.sum()).toBe(0)
+      tree.updateRange(0, 3, 5)
+      expect(tree.toArray()).toEqual([5, 5, 5, 5])
+    })
+
+    it('handles update with zero value', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 0)
+      expect(tree.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('handles point update with same value', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updatePoint(1, 2)
+      expect(tree.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('handles very large array', () => {
+      const arr = Array.from({ length: 1000 }, (_, i) => i + 1)
+      const tree = LazySegmentTree.sumTree(arr)
+      expect(tree.sum()).toBe(500500)
+      tree.updateRange(0, 999, 1)
+      expect(tree.get(0)).toBe(2)
+      expect(tree.get(999)).toBe(1001)
+    })
+
+    it('handles alternating updates and queries', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0])
+      tree.updateRange(0, 4, 1)
+      expect(tree.queryRange(0, 4)).toBe(5)
+      tree.updateRange(0, 2, 1)
+      expect(tree.queryRange(0, 4)).toBe(8)
+      tree.updatePoint(4, 100)
+      expect(tree.queryRange(0, 4)).toBe(107)
+    })
+
+    it('handles size 1 array with updates', () => {
+      const tree = LazySegmentTree.sumTree([10])
+      tree.updateRange(0, 0, 5)
+      expect(tree.get(0)).toBe(15)
+      tree.updatePoint(0, 100)
+      expect(tree.get(0)).toBe(100)
+    })
+
+    it('handles size 2 array with updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2])
+      tree.updateRange(0, 1, 10)
+      expect(tree.toArray()).toEqual([11, 12])
+      tree.updatePoint(0, 0)
+      expect(tree.toArray()).toEqual([0, 12])
+    })
+
+    it('handles many sequential range updates', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0, 0, 0])
+      for (let i = 0; i < 8; i++) {
+        tree.updateRange(i, i, 1)
+      }
+      expect(tree.toArray()).toEqual([1, 1, 1, 1, 1, 1, 1, 1])
+    })
+  })
+
+  describe('custom operations', () => {
+    it('supports multiplication combine', () => {
+      const tree = new LazySegmentTree([2, 3, 4], {
+        identity: 1,
+        lazyIdentity: 1,
+        combine: (a, b) => a * b,
+        lazyApply: (value, lazy, _len) => value * lazy,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      expect(tree.queryRange(0, 2)).toBe(24)
+    })
+
+    it('supports bitwise AND combine', () => {
+      const tree = new LazySegmentTree([0b1111, 0b1100, 0b1010], {
+        identity: 0b1111,
+        lazyIdentity: 0b1111,
+        combine: (a, b) => a & b,
+        lazyApply: (value, lazy, _len) => value & lazy,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      expect(tree.queryRange(0, 2)).toBe(0b1000)
+    })
+
+    it('supports bitwise OR combine', () => {
+      const tree = new LazySegmentTree([0b1000, 0b0100, 0b0010], {
+        identity: 0,
+        lazyIdentity: 0,
+        combine: (a, b) => a | b,
+        lazyApply: (value, lazy, _len) => value | lazy,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      expect(tree.queryRange(0, 2)).toBe(0b1110)
+    })
+
+    it('supports XOR combine', () => {
+      const tree = new LazySegmentTree([1, 1, 0], {
+        identity: 0,
+        lazyIdentity: 0,
+        combine: (a, b) => a ^ b,
+        lazyApply: (value, lazy, _len) => value ^ lazy,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      expect(tree.queryRange(0, 2)).toBe(0)
+      expect(tree.queryRange(0, 1)).toBe(0)
+      expect(tree.queryRange(1, 2)).toBe(1)
+    })
+
+    it('supports string concatenation', () => {
+      const tree = new LazySegmentTree(['a', 'b', 'c'], {
+        identity: '',
+        lazyIdentity: '',
+        combine: (a, b) => a + b,
+        lazyApply: (value, lazy, _len) => value + lazy,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      expect(tree.queryRange(0, 2)).toBe('abc')
+    })
+
+    it('supports max with set operation', () => {
+      const tree = new LazySegmentTree([1, 2, 3, 4, 5], {
+        identity: -Infinity,
+        lazyIdentity: -Infinity,
+        combine: (a, b) => Math.max(a, b),
+        lazyApply: (value, lazy, _len) => Math.max(value, lazy),
+        lazyCombine: (a, b) => Math.max(a, b),
+      })
+      expect(tree.queryRange(0, 4)).toBe(5)
+      tree.updateRange(0, 4, 3)
+      expect(tree.queryRange(0, 4)).toBe(5)
+      tree.updateRange(0, 4, 10)
+      expect(tree.queryRange(0, 4)).toBe(10)
+    })
+
+    it('supports count of odd numbers', () => {
+      const tree = new LazySegmentTree([1, 2, 3, 4, 5], {
+        identity: 0,
+        lazyIdentity: 0,
+        combine: (a, b) => a + b,
+        lazyApply: (value, _lazy, _len) => value,
+        lazyCombine: (_existing, incoming) => incoming,
+      })
+      const arr = tree.toArray()
+      let oddCount = 0
+      for (const v of arr) {
+        if (v % 2 !== 0) oddCount++
+      }
+      expect(oddCount).toBe(3)
+    })
+  })
+
+  describe('query after multiple operations', () => {
+    it('correct sum after many updates', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+      tree.updateRange(0, 9, 1)
+      tree.updateRange(3, 7, 2)
+      tree.updatePoint(5, 100)
+      expect(tree.toArray()).toEqual([1, 1, 1, 3, 3, 100, 3, 3, 1, 1])
+      expect(tree.sum()).toBe(117)
+    })
+
+    it('range query on sub-range after updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5, 6, 7, 8])
+      tree.updateRange(0, 7, 1)
+      tree.updateRange(2, 5, 2)
+      expect(tree.queryRange(0, 1)).toBe(5)
+      expect(tree.queryRange(2, 5)).toBe(30)
+      expect(tree.queryRange(6, 7)).toBe(17)
+    })
+
+    it('point query between range updates', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0])
+      tree.updateRange(0, 2, 1)
+      tree.updateRange(3, 5, 2)
+      expect(tree.get(2)).toBe(1)
+      expect(tree.get(3)).toBe(2)
+    })
+  })
+
+  describe('property methods', () => {
+    it('min returns correct after build', () => {
+      const tree = LazySegmentTree.sumTree([3, 1, 4, 1, 5])
+      expect(tree.min()).toBe(1)
+    })
+
+    it('max returns correct after build', () => {
+      const tree = LazySegmentTree.sumTree([3, 1, 4, 1, 5])
+      expect(tree.max()).toBe(5)
+    })
+
+    it('min/max with all same values', () => {
+      const tree = LazySegmentTree.sumTree([7, 7, 7, 7])
+      expect(tree.min()).toBe(7)
+      expect(tree.max()).toBe(7)
+    })
+
+    it('min/max after updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 2, -100)
+      expect(tree.min()).toBe(-99)
+      expect(tree.max()).toBe(5)
+    })
+
+    it('forEach collects correctly', () => {
+      const tree = LazySegmentTree.sumTree([10, 20, 30, 40])
+      const values: Array<{ v: number; i: number }> = []
+      tree.forEach((v, i) => values.push({ v, i }))
+      expect(values).toEqual([
+        { v: 10, i: 0 },
+        { v: 20, i: 1 },
+        { v: 30, i: 2 },
+        { v: 40, i: 3 },
+      ])
+    })
+  })
+
+  describe('build resets state', () => {
+    it('build clears previous updates', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.updateRange(0, 2, 100)
+      tree.build([4, 5, 6])
+      expect(tree.toArray()).toEqual([4, 5, 6])
+      expect(tree.sum()).toBe(15)
+    })
+
+    it('build changes size', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.size).toBe(3)
+      tree.build([1, 2, 3, 4, 5, 6, 7, 8])
+      expect(tree.size).toBe(8)
+    })
+
+    it('build to empty', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      tree.build([])
+      expect(tree.size).toBe(0)
+      expect(tree.isEmpty).toBe(true)
+    })
+  })
+
+  describe('stress tests', () => {
+    it.skip('many range updates then query', () => {
+      const n = 100
+      const arr = new Array(n).fill(0)
+      const tree = LazySegmentTree.sumTree(arr)
+      for (let i = 0; i < n; i++) {
+        tree.updateRange(i, n - 1, 1)
+      }
+      expect(tree.get(0)).toBe(1)
+      expect(tree.get(1)).toBe(2)
+      expect(tree.get(99)).toBe(100)
+      expect(tree.sum()).toBe(n * (n + 1) / 2)
+    })
+
+    it('alternating updates and queries', () => {
+      const tree = LazySegmentTree.sumTree([0, 0, 0, 0, 0, 0, 0, 0])
+      for (let i = 0; i < 8; i++) {
+        tree.updateRange(i, i, i + 1)
+        expect(tree.get(i)).toBe(i + 1)
+      }
+      expect(tree.sum()).toBe(36)
+    })
+
+    it('large range update and verify each element', () => {
+      const n = 50
+      const arr = Array.from({ length: n }, (_, i) => i)
+      const tree = LazySegmentTree.sumTree(arr)
+      tree.updateRange(10, 39, 100)
+      for (let i = 0; i < n; i++) {
+        const expected = i >= 10 && i <= 39 ? i + 100 : i
+        expect(tree.get(i)).toBe(expected)
+      }
+    })
+
+    it('random operations consistency', () => {
+      const n = 20
+      const naive = Array.from({ length: n }, (_, i) => i + 1)
+      const tree = LazySegmentTree.sumTree([...naive])
+
+      const seed = 42
+      let s = seed
+      function rand(): number {
+        s = (s * 1103515245 + 12345) & 0x7fffffff
+        return s
+      }
+
+      for (let op = 0; op < 50; op++) {
+        const lo = rand() % n
+        const hi = lo + (rand() % (n - lo))
+        const val = (rand() % 100) - 50
+
+        for (let i = lo; i <= hi; i++) {
+          naive[i]! += val
+        }
+        tree.updateRange(lo, hi, val)
+
+        const qLo = rand() % n
+        const qHi = qLo + (rand() % (n - qLo))
+        let expected = 0
+        for (let i = qLo; i <= qHi; i++) {
+          expected += naive[i]!
+        }
+        expect(tree.queryRange(qLo, qHi)).toBe(expected)
+      }
+    })
+  })
+
+  describe('min tree specific', () => {
+    it('queries sub-ranges', () => {
+      const tree = LazySegmentTree.minTree([8, 3, 5, 1, 9, 2, 7, 4])
+      expect(tree.queryRange(0, 3)).toBe(1)
+      expect(tree.queryRange(4, 7)).toBe(2)
+      expect(tree.queryRange(0, 7)).toBe(1)
+    })
+
+    it('after range update, queries correctly', () => {
+      const tree = LazySegmentTree.minTree([8, 3, 5, 1, 9, 2, 7, 4])
+      tree.updateRange(4, 7, -5)
+      expect(tree.queryRange(4, 7)).toBe(-3)
+      expect(tree.queryRange(0, 7)).toBe(-3)
+    })
+  })
+
+  describe('max tree specific', () => {
+    it('queries sub-ranges', () => {
+      const tree = LazySegmentTree.maxTree([8, 3, 5, 1, 9, 2, 7, 4])
+      expect(tree.queryRange(0, 3)).toBe(8)
+      expect(tree.queryRange(4, 7)).toBe(9)
+      expect(tree.queryRange(0, 7)).toBe(9)
+    })
+
+    it('after range update, queries correctly', () => {
+      const tree = LazySegmentTree.maxTree([8, 3, 5, 1, 9, 2, 7, 4])
+      tree.updateRange(0, 3, 10)
+      expect(tree.queryRange(0, 3)).toBe(18)
+      expect(tree.queryRange(0, 7)).toBe(18)
+    })
+  })
+
+  describe('gcd tree specific', () => {
+    it('computes gcd of full range', () => {
+      const tree = LazySegmentTree.gcdTree([24, 36, 48, 60])
+      expect(tree.queryRange(0, 3)).toBe(12)
+    })
+
+    it('computes gcd of sub-range', () => {
+      const tree = LazySegmentTree.gcdTree([24, 36, 48, 60])
+      expect(tree.queryRange(0, 1)).toBe(12)
+      expect(tree.queryRange(2, 3)).toBe(12)
+    })
+
+    it('gcd with zero', () => {
+      const tree = LazySegmentTree.gcdTree([0, 5, 10])
+      expect(tree.queryRange(0, 2)).toBe(5)
+    })
+
+    it('gcd with same numbers', () => {
+      const tree = LazySegmentTree.gcdTree([6, 6, 6, 6])
+      expect(tree.queryRange(0, 3)).toBe(6)
+    })
+  })
+
+  describe('boundary queries', () => {
+    it('query left boundary only', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.queryRange(0, 0)).toBe(1)
+    })
+
+    it('query right boundary only', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      expect(tree.queryRange(4, 4)).toBe(5)
+    })
+
+    it('query with left beyond array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.queryRange(-5, 1)).toBe(3)
+    })
+
+    it('query with right beyond array', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3])
+      expect(tree.queryRange(1, 100)).toBe(5)
+    })
+
+    it('update left boundary only', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(0, 0, 10)
+      expect(tree.get(0)).toBe(11)
+      expect(tree.get(1)).toBe(2)
+    })
+
+    it('update right boundary only', () => {
+      const tree = LazySegmentTree.sumTree([1, 2, 3, 4, 5])
+      tree.updateRange(4, 4, 10)
+      expect(tree.get(3)).toBe(4)
+      expect(tree.get(4)).toBe(15)
+    })
+  })
+
+  describe('immutability of source array', () => {
+    it('does not modify source array on build', () => {
+      const arr = [1, 2, 3, 4, 5]
+      const copy = [...arr]
+      LazySegmentTree.sumTree(arr)
+      expect(arr).toEqual(copy)
+    })
+
+    it('does not modify source array on update', () => {
+      const arr = [1, 2, 3]
+      const copy = [...arr]
+      const tree = LazySegmentTree.sumTree(arr)
+      tree.updateRange(0, 2, 100)
+      expect(arr).toEqual(copy)
     })
   })
 })
