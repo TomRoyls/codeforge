@@ -1,5 +1,8 @@
-import type { RadixBucket, RadixHeapEntry, RadixHeapOptions } from './types.js'
+import type { RadixBucket, RadixHeapEntry as RadixHeapEntryGeneric, RadixHeapOptions as RadixHeapOptionsGeneric } from './types.js'
 import { DEFAULT_RADIX_HEAP_OPTIONS } from './types.js'
+
+type RadixHeapEntry = RadixHeapEntryGeneric<number>
+type RadixHeapOptions = RadixHeapOptionsGeneric<number> & { maxKey?: number }
 
 export class RadixHeap {
   private buckets: RadixBucket[]
@@ -259,12 +262,12 @@ export class RadixHeap {
       if (i === 0) {
         high = lastKey
       } else if (i === this.buckets.length - 1) {
-        high = this.options.maxKey
+        high = this.options.maxKey ?? Number.MAX_SAFE_INTEGER
       } else {
         const range = Math.pow(2, i - 1)
         high = lastKey + range - 1
         if (high < low) {
-          high = this.options.maxKey
+          high = this.options.maxKey ?? Number.MAX_SAFE_INTEGER
         }
       }
       this.bucketRanges.push({ min: low, max: high })

@@ -16,6 +16,12 @@ export interface RadixHeapNode<T> {
   next: RadixHeapNode<T> | null
 }
 
+export interface RadixBucket {
+  min?: number
+  max?: number
+  entries: RadixHeapEntry<number>[]
+}
+
 export const DEFAULT_RADIX_HEAP_OPTIONS: Required<RadixHeapOptions<unknown>> & { maxKey: number } = {
   keyExtractor: (v) => v as number,
   radix: 2,
