@@ -170,10 +170,18 @@ export class Geohash {
       return false;
     }
 
-    const lowerHash = hash.toLowerCase();
-    for (let i = 0; i < lowerHash.length; i++) {
-      const chr = lowerHash[i];
-      if (BASE32.indexOf(chr!) === -1) {
+    for (let i = 0; i < hash.length; i++) {
+      const chr = hash[i];
+      const upperChr = chr!.toUpperCase();
+      const lowerChr = chr!.toLowerCase();
+      const isLowerValid = BASE32.indexOf(lowerChr!) !== -1;
+      const isUpperValid = BASE32.indexOf(upperChr!) !== -1;
+
+      if (isUpperValid) {
+        if (!isLowerValid) {
+          return false;
+        }
+      } else if (!isLowerValid) {
         return false;
       }
     }

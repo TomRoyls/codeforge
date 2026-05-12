@@ -1,0 +1,194 @@
+import type { CountedQueueOptions } from './types.js'
+
+export class CountedQueue<T> {
+  private queue: T[]
+  private frequencies: Map<T, number>
+  private head: number
+  private tail: number
+
+  constructor(options?: CountedQueueOptions) {
+    const capacity = options?.initialCapacity ?? 16
+    if (capacity < 1) {
+      throw new RangeError('capacity must be at least 1')
+    }
+    this.queue = new Array(capacity)
+    this.frequencies = new Map()
+    this.head = 0
+    this.tail = 0
+  }
+
+  private get capacity(): number {
+    return this.queue.length
+  }
+
+  get size(): number {
+    if (this.tail >= this.head) {
+      return this.tail - this.head
+    }
+    return this.capacity - this.head + this.tail
+  }
+
+  isEmpty(): boolean {
+    return this.head === this.tail
+  }
+
+  enqueue(element: T): void {
+    if (this.size === this.capacity - 1) {
+      this.resize()
+    }
+    this.queue[this.tail] = element
+    this.tail = (this.tail + 1) % this.capacity
+
+    const currentFreq = this.frequencies.get(element) ?? 0
+    this.frequencies.set(element, currentFreq + 1)
+  }
+
+  dequeue(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined
+    }
+
+    const element = this.queue[this.head]
+    this.queue[this.head] = undefined as T
+    this.head = (this.head + 1) % this.capacity
+
+    if (element !== undefined) {
+      const freq = this.frequencies.get(element)!
+      if (freq === 1) {
+        this.frequencies.delete(element)
+      } else {
+        this.frequencies.set(element, freq - 1)
+      }
+    }
+
+    return element
+  }
+
+  peek(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined
+    }
+    return this.queue[this.head]
+  }
+
+  peekBack(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined
+    }
+    const index = (this.tail - 1 + this.capacity) % this.capacity
+    return this.queue[index]
+  }
+
+  clear(): void {
+    this.head = 0
+    this.tail = 0
+    this.queue.fill(undefined as T)
+    this.frequencies.clear()
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    for (let i = 0; i < this.size; i++) {
+      const index = (this.head + i) % this.capacity
+      const element = this.queue[index]
+      if (element !== undefined) {
+        result.push(element)
+      }
+    }
+    return result
+  }
+
+  contains(element: T): boolean {
+    return this.frequencies.has(element)
+  }
+
+  frequency(element: T): number {
+    return this.frequencies.get(element) ?? 0
+  }
+
+  get uniqueCount(): number {
+    return this.frequencies.size
+  }
+
+  mostFrequent(): T[] {
+    if (this.isEmpty()) {
+      return []
+    }
+
+    let maxFreq = 0
+    for (const freq of this.frequencies.values()) {
+      if (freq > maxFreq) {
+        maxFreq = freq
+      }
+    }
+
+    const result: T[] = []
+    for (const [element, freq] of this.frequencies.entries()) {
+      if (freq === maxFreq) {
+        result.push(element)
+      }
+    }
+
+    return result.sort((a, b) => {
+      const indexA = this.indexOf(a)
+      const indexB = this.indexOf(b)
+      return (indexA ?? 0) - (indexB ?? 0)
+    })
+  }
+
+  leastFrequent(): T[] {
+    if (this.isEmpty()) {
+      return []
+    }
+
+    let minFreq = Infinity
+    for (const freq of this.frequencies.values()) {
+      if (freq < minFreq) {
+        minFreq = freq
+      }
+    }
+
+    const result: T[] = []
+    for (const [element, freq] of this.frequencies.entries()) {
+      if (freq === minFreq) {
+        result.push(element)
+      }
+    }
+
+    return result.sort((a, b) => {
+      const indexA = this.indexOf(a)
+      const indexB = this.indexOf(b)
+      return (indexA ?? 0) - (indexB ?? 0)
+    })
+  }
+
+  private indexOf(element: T): number | undefined {
+    for (let i = 0; i < this.size; i++) {
+      const index = (this.head + i) % this.capacity
+      if (this.queue[index] === element) {
+        return i
+      }
+    }
+    return undefined
+  }
+
+  private resize(): void {
+    const newCapacity = this.capacity * 2
+    const newQueue: T[] = new Array(newCapacity)
+    for (let i = 0; i < this.size; i++) {
+      const index = (this.head + i) % this.capacity
+      newQueue[i] = this.queue[index]!
+    }
+    this.queue = newQueue
+    this.head = 0
+    this.tail = this.size
+  }
+
+  static from<T>(arr: T[], options?: CountedQueueOptions): CountedQueue<T> {
+    const q = new CountedQueue<T>(options)
+    for (const item of arr) {
+      q.enqueue(item)
+    }
+    return q
+  }
+}
