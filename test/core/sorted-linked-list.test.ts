@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { SortedLinkedList } from '../../src/core/sorted-linked-list/sorted-linked-list.js'
+import { SortedLinkedList } from '../../src/core/sorted-linked-list/index.js'
 import { DEFAULT_SORTED_LIST_OPTIONS } from '../../src/core/sorted-linked-list/types.js'
 import type { SortedListOptions, SortedListJSON, SortedListStatistics } from '../../src/core/sorted-linked-list/types.js'
 
