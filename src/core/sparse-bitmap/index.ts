@@ -5,7 +5,7 @@ const CHUNK_BITS = 32;
 export class SparseBitmap {
   private chunks: Map<number, number>;
 
-  constructor(options: SparseBitmapOptions = {}) {
+  constructor(_options: SparseBitmapOptions = {}) {
     this.chunks = new Map();
   }
 
@@ -18,13 +18,18 @@ export class SparseBitmap {
     this.chunks.set(chunkIndex, newChunk);
   }
 
-  clear(bit: number): void {
+  clear(bit?: number): void {
+    if (bit === undefined) {
+      this.chunks.clear();
+      return;
+    }
     if (bit < 0) return;
     const chunkIndex = Math.floor(bit / 32);
     const bitIndex = bit % 32;
     const chunk = this.chunks.get(chunkIndex);
     if (chunk !== undefined) {
-      const mask = ~(1 << bitIndex);
+      const bitValue = 1 << bitIndex;
+      const mask = ~bitValue;
       const newChunk = chunk & mask;
       if (newChunk === 0) {
         this.chunks.delete(chunkIndex);
@@ -94,10 +99,6 @@ export class SparseBitmap {
 
   get isEmpty(): boolean {
     return this.chunks.size === 0;
-  }
-
-  clear(): void {
-    this.chunks.clear();
   }
 
   toArray(): number[] {
