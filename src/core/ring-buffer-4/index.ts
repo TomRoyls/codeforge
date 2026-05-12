@@ -1,0 +1,183 @@
+export class RingBuffer4<T> {
+  private buffer: (T | undefined)[];
+  private head: number = 0;
+  private tail: number = 0;
+  private count: number = 0;
+
+  constructor(public readonly capacity: number) {
+    if (capacity <= 0 || !Number.isInteger(capacity)) {
+      throw new Error('Capacity must be a positive integer');
+    }
+    this.buffer = new Array<T | undefined>(capacity);
+  }
+
+  push(value: T): boolean {
+    if (this.isFull) {
+      return false;
+    }
+    this.buffer[this.tail] = value;
+    this.tail = (this.tail + 1) % this.capacity;
+    this.count++;
+    return true;
+  }
+
+  pop(): T | undefined {
+    if (this.isEmpty) {
+      return undefined;
+    }
+    this.tail = (this.tail - 1 + this.capacity) % this.capacity;
+    const value = this.buffer[this.tail];
+    this.buffer[this.tail] = undefined;
+    this.count--;
+    return value;
+  }
+
+  shift(): T | undefined {
+    if (this.isEmpty) {
+      return undefined;
+    }
+    const value = this.buffer[this.head];
+    this.buffer[this.head] = undefined;
+    this.head = (this.head + 1) % this.capacity;
+    this.count--;
+    return value;
+  }
+
+  unshift(value: T): boolean {
+    if (this.isFull) {
+      return false;
+    }
+    this.head = (this.head - 1 + this.capacity) % this.capacity;
+    this.buffer[this.head] = value;
+    this.count++;
+    return true;
+  }
+
+  peekFront(): T | undefined {
+    if (this.isEmpty) {
+      return undefined;
+    }
+    return this.buffer[this.head];
+  }
+
+  peekBack(): T | undefined {
+    if (this.isEmpty) {
+      return undefined;
+    }
+    return this.buffer[(this.tail - 1 + this.capacity) % this.capacity];
+  }
+
+  get isEmpty(): boolean {
+    return this.count === 0;
+  }
+
+  get isFull(): boolean {
+    return this.count === this.capacity;
+  }
+
+  get size(): number {
+    return this.count;
+  }
+
+  clear(): void {
+    this.head = 0;
+    this.tail = 0;
+    this.count = 0;
+    for (let i = 0; i < this.capacity; i++) {
+      this.buffer[i] = undefined;
+    }
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    for (let i = 0; i < this.count; i++) {
+      const index = (this.head + i) % this.capacity;
+      result.push(this.buffer[index] as T);
+    }
+    return result;
+  }
+
+  forEach(callback: (value: T, index: number) => void): void {
+    for (let i = 0; i < this.count; i++) {
+      const index = (this.head + i) % this.capacity;
+      callback(this.buffer[index] as T, i);
+    }
+  }
+
+  get(index: number): T | undefined {
+    if (index < 0 || index >= this.count) {
+      return undefined;
+    }
+    const actualIndex = (this.head + index) % this.capacity;
+    return this.buffer[actualIndex];
+  }
+
+  set(index: number, value: T): boolean {
+    if (index < 0 || index >= this.count) {
+      return false;
+    }
+    const actualIndex = (this.head + index) % this.capacity;
+    this.buffer[actualIndex] = value;
+    return true;
+  }
+
+  [Symbol.iterator](): Iterator<T> {
+    let i = 0;
+    return {
+      next: (): IteratorResult<T> => {
+        if (i >= this.count) {
+          return { done: true, value: undefined as any };
+        }
+        const index = (this.head + i) % this.capacity;
+        const value = this.buffer[index]!;
+        i++;
+        return { done: false, value };
+      },
+    };
+  }
+
+  entries(): IterableIterator<[number, T]> {
+    let i = 0;
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next: () => {
+        if (i >= this.count) {
+          return { done: true, value: undefined };
+        }
+        const index = (this.head + i) % this.capacity;
+        const value = this.buffer[index] as T;
+        const result: IteratorResult<[number, T]> = { done: false, value: [i, value] };
+        i++;
+        return result;
+      },
+    };
+  }
+
+  slice(start?: number, end?: number): T[] {
+    const result: T[] = [];
+    const startIndex = start === undefined ? 0 : Math.max(0, start);
+    const endIndex = end === undefined ? this.count : Math.min(end, this.count);
+
+    for (let i = startIndex; i < endIndex; i++) {
+      const index = (this.head + i) % this.capacity;
+      result.push(this.buffer[index] as T);
+    }
+    return result;
+  }
+
+  indexOf(value: T): number {
+    for (let i = 0; i < this.count; i++) {
+      const index = (this.head + i) % this.capacity;
+      if (this.buffer[index] === value) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  contains(value: T): boolean {
+    return this.indexOf(value) !== -1;
+  }
+}
