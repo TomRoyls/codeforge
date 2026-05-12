@@ -1,9 +1,9 @@
 import type { HalvingHeapOptions } from './types.js';
 
 class HalvingHeapNode<T> {
-  value: T;
-  rank: number;
   children: HalvingHeapNode<T>[];
+  rank: number;
+  value: T;
 
   constructor(value: T) {
     this.value = value;
@@ -13,10 +13,10 @@ class HalvingHeapNode<T> {
 }
 
 export class HalvingHeap<T> {
-  private roots: HalvingHeapNode<T>[];
-  private itemCount: number;
-  private comparator: (a: T, b: T) => number;
   private capacity: number | undefined;
+  private comparator: (a: T, b: T) => number;
+  private itemCount: number;
+  private roots: HalvingHeapNode<T>[];
 
   constructor(options?: HalvingHeapOptions & { comparator?: (a: T, b: T) => number }) {
     this.roots = [];
@@ -25,10 +25,13 @@ export class HalvingHeap<T> {
     this.capacity = options?.capacity;
   }
 
-  insert(value: T): void {
-    const node = new HalvingHeapNode(value);
-    this.roots.push(node);
-    this.itemCount++;
+  get size(): number {
+    return this.itemCount;
+  }
+
+  clear(): void {
+    this.roots = [];
+    this.itemCount = 0;
   }
 
   extractMin(): T | undefined {
@@ -55,6 +58,35 @@ export class HalvingHeap<T> {
     return minNode.value;
   }
 
+  forEach(callback: (value: T) => void): void {
+    const values = this.toArray();
+    for (const value of values) {
+      callback(value);
+    }
+  }
+
+  insert(value: T): void {
+    const node = new HalvingHeapNode(value);
+    this.roots.push(node);
+    this.itemCount++;
+  }
+
+  isEmpty(): boolean {
+    return this.itemCount === 0;
+  }
+
+  meld(other: HalvingHeap<T>): void {
+    for (const root of other.roots) {
+      this.roots.push(root);
+    }
+
+    this.itemCount += other.itemCount;
+    other.roots = [];
+    other.itemCount = 0;
+
+    this.halve();
+  }
+
   peek(): T | undefined {
     if (this.roots.length === 0) {
       return undefined;
@@ -68,30 +100,6 @@ export class HalvingHeap<T> {
     }
 
     return minValue;
-  }
-
-  meld(other: HalvingHeap<T>): void {
-    for (const root of other.roots) {
-      this.roots.push(root);
-    }
-    this.itemCount += other.itemCount;
-    other.roots = [];
-    other.itemCount = 0;
-
-    this.halve();
-  }
-
-  get size(): number {
-    return this.itemCount;
-  }
-
-  isEmpty(): boolean {
-    return this.itemCount === 0;
-  }
-
-  clear(): void {
-    this.roots = [];
-    this.itemCount = 0;
   }
 
   toArray(): T[] {
@@ -112,13 +120,6 @@ export class HalvingHeap<T> {
     }
 
     return result.sort((a, b) => this.comparator(a, b));
-  }
-
-  forEach(callback: (value: T) => void): void {
-    const values = this.toArray();
-    for (const value of values) {
-      callback(value);
-    }
   }
 
   private halve(): void {
@@ -151,9 +152,11 @@ export class HalvingHeap<T> {
     this.roots = newRoots;
 
     const targetCount = Math.ceil(this.roots.length / 2);
+
     while (this.roots.length > targetCount) {
       const a = this.roots.pop()!;
       const b = this.roots.pop()!;
+
       if (b) {
         const linked = this.link(a, b);
         this.roots.push(linked);
@@ -173,11 +176,11 @@ export class HalvingHeap<T> {
       a.children.push(b);
       a.rank = Math.max(a.rank, b.rank + 1);
       return a;
-    } else {
-      b.children.push(a);
-      b.rank = Math.max(b.rank, a.rank + 1);
-      return b;
     }
+
+    b.children.push(a);
+    b.rank = Math.max(b.rank, a.rank + 1);
+    return b;
   }
 }
 

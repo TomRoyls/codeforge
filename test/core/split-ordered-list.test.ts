@@ -1,13 +1,724 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { SplitOrderedList } from "../../src/core/split-ordered-list/split-ordered-list.js";
-import {
-  DEFAULT_SPLIT_ORDERED_LIST_OPTIONS,
-} from "../../src/core/split-ordered-list/types.js";
+import { describe, it, expect } from "vitest";
+import { SplitOrderedList } from "../../src/core/split-ordered-list/index.js";
 
-describe("DEFAULT_SPLIT_ORDERED_LIST_OPTIONS", () => {
-  it("has initialBuckets of 16", () => {
-    expect(DEFAULT_SPLIT_ORDERED_LIST_OPTIONS.initialBuckets).toBe(16);
+describe("SplitOrderedList", () => {
+  describe("insert", () => {
+    it("inserts single element", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(1, "one")).toBe(true);
+      expect(list.size).toBe(1);
+    });
+
+    it("inserts multiple elements", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(1, "one")).toBe(true);
+      expect(list.insert(2, "two")).toBe(true);
+      expect(list.insert(3, "three")).toBe(true);
+      expect(list.size).toBe(3);
+    });
+
+    it("returns false when inserting duplicate key", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(1, "one")).toBe(true);
+      expect(list.insert(1, "one-dup")).toBe(false);
+      expect(list.size).toBe(1);
+    });
+
+    it("updates value on duplicate key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(1, "updated");
+      expect(list.get(1)).toBe("updated");
+    });
+
+    it("inserts elements in order", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(3, 3);
+      list.insert(1, 1);
+      list.insert(2, 2);
+      expect(list.size).toBe(3);
+    });
+
+    it("handles negative keys", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(-1, "negative")).toBe(true);
+      expect(list.has(-1)).toBe(true);
+    });
+
+    it("handles zero key", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(0, "zero")).toBe(true);
+      expect(list.has(0)).toBe(true);
+    });
+
+    it("handles large keys", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(999999, "large")).toBe(true);
+      expect(list.has(999999)).toBe(true);
+    });
+
+    it("inserts string values", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.insert(1, "hello")).toBe(true);
+      expect(list.get(1)).toBe("hello");
+    });
+
+    it("inserts number values", () => {
+      const list = new SplitOrderedList<number>();
+      expect(list.insert(1, 42)).toBe(true);
+      expect(list.get(1)).toBe(42);
+    });
+
+    it("inserts object values", () => {
+      const list = new SplitOrderedList<{ name: string }>();
+      const obj = { name: "test" };
+      expect(list.insert(1, obj)).toBe(true);
+      expect(list.get(1)).toEqual(obj);
+    });
+
+    it("inserts null values", () => {
+      const list = new SplitOrderedList<null>();
+      expect(list.insert(1, null)).toBe(true);
+      expect(list.get(1)).toBe(null);
+    });
+
+    it("inserts undefined values", () => {
+      const list = new SplitOrderedList<undefined>();
+      expect(list.insert(1, undefined)).toBe(true);
+      expect(list.get(1)).toBe(undefined);
+    });
+
+    it("inserts many elements", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 100; i++) {
+        expect(list.insert(i, i)).toBe(true);
+      }
+      expect(list.size).toBe(100);
+    });
   });
+
+  describe("delete", () => {
+    it("deletes existing element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.delete(1)).toBe(true);
+      expect(list.size).toBe(0);
+      expect(list.has(1)).toBe(false);
+    });
+
+    it("returns false when deleting non-existent element", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.delete(1)).toBe(false);
+    });
+
+    it("deletes from beginning", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.delete(1)).toBe(true);
+      expect(list.size).toBe(2);
+      expect(list.has(1)).toBe(false);
+    });
+
+    it("deletes from middle", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.delete(2)).toBe(true);
+      expect(list.size).toBe(2);
+      expect(list.has(2)).toBe(false);
+    });
+
+    it("deletes from end", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.delete(3)).toBe(true);
+      expect(list.size).toBe(2);
+      expect(list.has(3)).toBe(false);
+    });
+
+    it("deletes all elements", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.delete(1)).toBe(true);
+      expect(list.delete(2)).toBe(true);
+      expect(list.delete(3)).toBe(true);
+      expect(list.size).toBe(0);
+    });
+
+    it("deletes negative key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(-1, "negative");
+      expect(list.delete(-1)).toBe(true);
+      expect(list.has(-1)).toBe(false);
+    });
+
+    it("deletes zero key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(0, "zero");
+      expect(list.delete(0)).toBe(true);
+      expect(list.has(0)).toBe(false);
+    });
+
+    it("deletes from empty list", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.delete(1)).toBe(false);
+      expect(list.size).toBe(0);
+    });
+
+    it("deletes same element twice", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.delete(1)).toBe(true);
+      expect(list.delete(1)).toBe(false);
+    });
+  });
+
+  describe("has", () => {
+    it("returns true for existing element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.has(1)).toBe(true);
+    });
+
+    it("returns false for non-existent element", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.has(1)).toBe(false);
+    });
+
+    it("finds first element", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.has(1)).toBe(true);
+    });
+
+    it("finds last element", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.has(3)).toBe(true);
+    });
+
+    it("finds middle element", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.has(2)).toBe(true);
+    });
+
+    it("handles negative keys", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(-1, "negative");
+      expect(list.has(-1)).toBe(true);
+    });
+
+    it("handles zero key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(0, "zero");
+      expect(list.has(0)).toBe(true);
+    });
+
+    it("returns false after deletion", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.delete(1);
+      expect(list.has(1)).toBe(false);
+    });
+  });
+
+  describe("get", () => {
+    it("returns value for existing element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.get(1)).toBe("one");
+    });
+
+    it("returns null for non-existent element", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.get(1)).toBe(null);
+    });
+
+    it("returns updated value", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(1, "updated");
+      expect(list.get(1)).toBe("updated");
+    });
+
+    it("returns first element value", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.get(1)).toBe(1);
+    });
+
+    it("returns last element value", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.get(3)).toBe(3);
+    });
+
+    it("returns middle element value", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      expect(list.get(2)).toBe(2);
+    });
+
+    it("handles negative keys", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(-1, "negative");
+      expect(list.get(-1)).toBe("negative");
+    });
+
+    it("handles zero key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(0, "zero");
+      expect(list.get(0)).toBe("zero");
+    });
+
+    it("returns null after deletion", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.delete(1);
+      expect(list.get(1)).toBe(null);
+    });
+
+    it("returns complex object value", () => {
+      const list = new SplitOrderedList<{ a: number; b: string }>();
+      const obj = { a: 1, b: "test" };
+      list.insert(1, obj);
+      expect(list.get(1)).toEqual(obj);
+    });
+  });
+
+  describe("size", () => {
+    it("returns zero for empty list", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.size).toBe(0);
+    });
+
+    it("returns correct size after insert", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.size).toBe(1);
+      list.insert(2, "two");
+      expect(list.size).toBe(2);
+    });
+
+    it("returns correct size after delete", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.delete(1);
+      expect(list.size).toBe(1);
+    });
+
+    it("does not increase on duplicate insert", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(1, "dup");
+      expect(list.size).toBe(1);
+    });
+
+    it("handles many elements", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 50; i++) {
+        list.insert(i, i);
+      }
+      expect(list.size).toBe(50);
+    });
+  });
+
+  describe("isEmpty", () => {
+    it("returns true for empty list", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.isEmpty()).toBe(true);
+    });
+
+    it("returns false after insert", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.isEmpty()).toBe(false);
+    });
+
+    it("returns true after clearing", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.clear();
+      expect(list.isEmpty()).toBe(true);
+    });
+
+    it("returns true after deleting all elements", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.delete(1);
+      list.delete(2);
+      expect(list.isEmpty()).toBe(true);
+    });
+  });
+
+  describe("clear", () => {
+    it("clears empty list", () => {
+      const list = new SplitOrderedList<string>();
+      list.clear();
+      expect(list.size).toBe(0);
+      expect(list.isEmpty()).toBe(true);
+    });
+
+    it("clears single element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.clear();
+      expect(list.size).toBe(0);
+      expect(list.has(1)).toBe(false);
+    });
+
+    it("clears multiple elements", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.insert(3, "three");
+      list.clear();
+      expect(list.size).toBe(0);
+      expect(list.has(1)).toBe(false);
+      expect(list.has(2)).toBe(false);
+      expect(list.has(3)).toBe(false);
+    });
+
+    it("clears many elements", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 100; i++) {
+        list.insert(i, i);
+      }
+      list.clear();
+      expect(list.size).toBe(0);
+    });
+  });
+
+  describe("toArray", () => {
+    it("returns empty array for empty list", () => {
+      const list = new SplitOrderedList<string>();
+      expect(list.toArray()).toEqual([]);
+    });
+
+    it("returns array with single element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      expect(list.toArray()).toEqual([[1, "one"]]);
+    });
+
+    it("returns array with multiple elements", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      const arr = list.toArray();
+      expect(arr.length).toBe(3);
+    });
+
+    it("returns key-value pairs", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      const arr = list.toArray();
+      expect(arr.some(([k, v]) => k === 1 && v === "one")).toBe(true);
+      expect(arr.some(([k, v]) => k === 2 && v === "two")).toBe(true);
+    });
+
+    it("handles many elements", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 50; i++) {
+        list.insert(i, i);
+      }
+      const arr = list.toArray();
+      expect(arr.length).toBe(50);
+    });
+  });
+
+  describe("forEach", () => {
+    it("does not call callback on empty list", () => {
+      const list = new SplitOrderedList<string>();
+      let called = false;
+      list.forEach(() => {
+        called = true;
+      });
+      expect(called).toBe(false);
+    });
+
+    it("calls callback once for single element", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      let count = 0;
+      list.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(1);
+    });
+
+    it("calls callback for each element", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      let count = 0;
+      list.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(3);
+    });
+
+    it("passes correct value and key to callback", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      const results: Array<{ value: string; key: number }> = [];
+      list.forEach((value, key) => {
+        results.push({ value, key });
+      });
+      expect(results[0]).toEqual({ value: "one", key: 1 });
+    });
+
+    it("handles many elements", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 50; i++) {
+        list.insert(i, i);
+      }
+      let count = 0;
+      list.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(50);
+    });
+  });
+
+  describe("edge cases", () => {
+    it("handles maximum safe integer key", () => {
+      const list = new SplitOrderedList<string>();
+      const maxKey = Number.MAX_SAFE_INTEGER;
+      expect(list.insert(maxKey, "max")).toBe(true);
+      expect(list.has(maxKey)).toBe(true);
+    });
+
+    it("handles minimum safe integer key", () => {
+      const list = new SplitOrderedList<string>();
+      const minKey = Number.MIN_SAFE_INTEGER;
+      expect(list.insert(minKey, "min")).toBe(true);
+      expect(list.has(minKey)).toBe(true);
+    });
+
+    it("inserts and deletes same key repeatedly", () => {
+      const list = new SplitOrderedList<string>();
+      for (let i = 0; i < 10; i++) {
+        expect(list.insert(1, `value-${i}`)).toBe(true);
+        expect(list.delete(1)).toBe(true);
+      }
+      expect(list.size).toBe(0);
+    });
+
+    it("handles alternating insert and delete", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.delete(1);
+      list.insert(3, 3);
+      list.delete(2);
+      list.insert(4, 4);
+      expect(list.size).toBe(2);
+      expect(list.has(3)).toBe(true);
+      expect(list.has(4)).toBe(true);
+    });
+
+    it("clears and reinserts elements", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.clear();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      expect(list.size).toBe(2);
+    });
+  });
+
+  describe("large datasets", () => {
+    it("handles 1000 inserts", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 1000; i++) {
+        expect(list.insert(i, i)).toBe(true);
+      }
+      expect(list.size).toBe(1000);
+    });
+
+    it("finds elements in large dataset", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 500; i++) {
+        list.insert(i, i);
+      }
+      for (let i = 0; i < 500; i++) {
+        expect(list.has(i)).toBe(true);
+      }
+    });
+
+    it("deletes elements from large dataset", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 500; i++) {
+        list.insert(i, i);
+      }
+      for (let i = 0; i < 250; i++) {
+        expect(list.delete(i)).toBe(true);
+      }
+      expect(list.size).toBe(250);
+    });
+
+    it("forEach on large dataset", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 500; i++) {
+        list.insert(i, i);
+      }
+      let count = 0;
+      list.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(500);
+    });
+
+    it("toArray on large dataset", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 300; i++) {
+        list.insert(i, i);
+      }
+      const arr = list.toArray();
+      expect(arr.length).toBe(300);
+    });
+  });
+
+  describe("hash collisions", () => {
+    it("handles keys with same hash pattern", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.insert(4, "four");
+      expect(list.size).toBe(3);
+      expect(list.has(1)).toBe(true);
+      expect(list.has(2)).toBe(true);
+      expect(list.has(4)).toBe(true);
+    });
+
+    it("updates correct key on collision", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.insert(1, "one-updated");
+      expect(list.get(1)).toBe("one-updated");
+      expect(list.get(2)).toBe("two");
+    });
+
+    it("deletes correct key on collision", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.insert(4, "four");
+      expect(list.delete(2)).toBe(true);
+      expect(list.has(1)).toBe(true);
+      expect(list.has(2)).toBe(false);
+      expect(list.has(4)).toBe(true);
+    });
+
+    it("finds correct key on collision", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.insert(4, "four");
+      expect(list.get(1)).toBe("one");
+      expect(list.get(2)).toBe("two");
+      expect(list.get(4)).toBe("four");
+    });
+  });
+
+  describe("complex operations", () => {
+    it("inserts after delete", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(2, "two");
+      list.delete(1);
+      list.insert(1, "one-new");
+      expect(list.size).toBe(2);
+      expect(list.get(1)).toBe("one-new");
+    });
+
+    it("inserts in ascending order", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 0; i < 10; i++) {
+        list.insert(i, i);
+      }
+      expect(list.size).toBe(10);
+    });
+
+    it("inserts in descending order", () => {
+      const list = new SplitOrderedList<number>();
+      for (let i = 9; i >= 0; i--) {
+        list.insert(i, i);
+      }
+      expect(list.size).toBe(10);
+    });
+
+    it("inserts in random order", () => {
+      const list = new SplitOrderedList<number>();
+      const keys = [5, 2, 8, 1, 9, 3, 7, 4, 6, 0];
+      for (const key of keys) {
+        list.insert(key, key);
+      }
+      expect(list.size).toBe(10);
+    });
+
+    it("updates and deletes same key", () => {
+      const list = new SplitOrderedList<string>();
+      list.insert(1, "one");
+      list.insert(1, "two");
+      list.insert(1, "three");
+      expect(list.delete(1)).toBe(true);
+      expect(list.has(1)).toBe(false);
+    });
+
+    it("forEach after mutations", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      list.delete(2);
+      let count = 0;
+      list.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(2);
+    });
+
+    it("toArray after mutations", () => {
+      const list = new SplitOrderedList<number>();
+      list.insert(1, 1);
+      list.insert(2, 2);
+      list.insert(3, 3);
+      list.delete(2);
+      list.insert(4, 4);
+      const arr = list.toArray();
+      expect(arr.length).toBe(3);
+    });
+  });
+});
 
   it("has loadFactor of 0.75", () => {
     expect(DEFAULT_SPLIT_ORDERED_LIST_OPTIONS.loadFactor).toBe(0.75);

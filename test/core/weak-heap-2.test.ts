@@ -607,15 +607,410 @@ describe('WeakHeap2', () => {
 
     it('should handle alternating insert and extract', () => {
       heap.insert(5);
-      expect(heap.extractMin()).toBe(5);
-
       heap.insert(3);
       heap.insert(7);
-      expect(heap.extractMin()).toBe(3);
-
       heap.insert(1);
-      expect(heap.extractMin()).toBe(1);
+      heap.insert(9);
+
+      const first = heap.extractMin();
+      expect(first).toBe(1);
+
+      heap.insert(10);
+      expect(heap.extractMin()).toBe(3);
+      expect(heap.extractMin()).toBe(5);
       expect(heap.extractMin()).toBe(7);
+      expect(heap.extractMin()).toBe(9);
+      expect(heap.extractMin()).toBe(10);
     });
-  });
+
+    it('should handle very large number', () => {
+      heap.insert(Number.MAX_VALUE);
+      heap.insert(Number.MIN_VALUE);
+      expect(heap.peek()).toBe(Number.MIN_VALUE);
+    });
+
+    it('should handle very small number', () => {
+      heap.insert(Number.MIN_VALUE);
+      heap.insert(Number.MAX_VALUE);
+      expect(heap.peek()).toBe(Number.MIN_VALUE);
+    });
+
+    it('should handle infinity', () => {
+      heap.insert(Infinity);
+      heap.insert(1);
+      heap.insert(-Infinity);
+      expect(heap.peek()).toBe(-Infinity);
+    });
+
+    it('should handle negative infinity', () => {
+      heap.insert(-Infinity);
+      heap.insert(0);
+      heap.insert(Infinity);
+      expect(heap.peek()).toBe(-Infinity);
+    });
+
+    it('should handle mixed positive and negative', () => {
+      heap.insert(-10);
+      heap.insert(10);
+      heap.insert(-5);
+      heap.insert(5);
+      expect(heap.peek()).toBe(-10);
+    });
+
+    it('should extract all elements correctly', () => {
+      const values = [5, 3, 7, 1, 9, 2, 8, 4, 6];
+      values.forEach((v) => heap.insert(v));
+
+      const extracted: number[] = [];
+      while (!heap.isEmpty()) {
+        extracted.push(heap.extractMin()!);
+      }
+      expect(extracted).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    });
+
+    it('should maintain heap property after multiple inserts', () => {
+      for (let i = 0; i < 100; i++) {
+        heap.insert(Math.random() * 1000);
+      }
+
+      let prev = -Infinity;
+      while (!heap.isEmpty()) {
+        const current = heap.extractMin()!;
+        expect(current).toBeGreaterThanOrEqual(prev);
+        prev = current;
+      }
+    });
+
+    it('should handle single element after operations', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.extractMin();
+      heap.extractMin();
+      expect(heap.size).toBe(1);
+      expect(heap.peek()).toBe(3);
+    });
+
+    it('should handle clear and reinsert', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.clear();
+
+      heap.insert(5);
+      heap.insert(4);
+      expect(heap.size).toBe(2);
+      expect(heap.peek()).toBe(4);
+    });
+
+    it('should handle merge with different comparators', () => {
+      const heap1 = new WeakHeap2<number>((a, b) => a - b);
+      heap1.insert(5);
+      heap1.insert(1);
+
+      const heap2 = new WeakHeap2<number>((a, b) => a - b);
+      heap2.insert(3);
+      heap2.insert(2);
+
+      heap1.merge(heap2);
+      expect(heap1.size).toBe(4);
+    });
+
+    it('should handle decreaseKey with same value', () => {
+      const node = heap.insert(5);
+      heap.insert(3);
+
+      heap.decreaseKey(node, 5);
+      expect(heap.peek()).toBe(3);
+    });
+
+    it('should handle multiple decreaseKey on different nodes', () => {
+      const node1 = heap.insert(10);
+      const node2 = heap.insert(20);
+      heap.insert(5);
+
+      heap.decreaseKey(node1, 1);
+      heap.decreaseKey(node2, 2);
+
+      expect(heap.peek()).toBe(1);
+      expect(heap.size).toBe(3);
+    });
+
+    it('should handle decreaseKey to very small value', () => {
+      const node = heap.insert(100);
+      heap.insert(50);
+      heap.insert(75);
+
+      heap.decreaseKey(node, -100);
+      expect(heap.peek()).toBe(-100);
+    });
+
+    it('should handle merge with empty then non-empty', () => {
+      heap.insert(1);
+      heap.insert(2);
+
+      const other = new WeakHeap2<number>();
+      heap.merge(other);
+      expect(heap.size).toBe(2);
+
+      other.insert(3);
+      heap.merge(other);
+      expect(heap.size).toBe(3);
+    });
+
+    it('should handle toArray on large heap', () => {
+      for (let i = 0; i < 100; i++) {
+        heap.insert(i);
+      }
+
+      const arr = heap.toArray();
+      expect(arr.length).toBe(100);
+    });
+
+    it('should handle forEach with side effects', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+
+      let count = 0;
+      heap.forEach(() => {
+        count++;
+      });
+      expect(count).toBe(3);
+    });
+
+    it('should handle rapid insert extract cycles', () => {
+      for (let i = 0; i < 50; i++) {
+        heap.insert(i);
+        expect(heap.extractMin()).toBe(i);
+      }
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should handle decreasing key multiple times', () => {
+      const node = heap.insert(50);
+      heap.insert(30);
+      heap.insert(40);
+
+      heap.decreaseKey(node, 20);
+      expect(heap.peek()).toBe(20);
+
+      heap.decreaseKey(node, 10);
+      expect(heap.peek()).toBe(10);
+
+      heap.decreaseKey(node, 5);
+      expect(heap.peek()).toBe(5);
+    });
+
+    it('should handle merge into non-empty heap multiple times', () => {
+      heap.insert(1);
+
+      for (let i = 0; i < 10; i++) {
+        const other = new WeakHeap2<number>();
+        other.insert(i);
+        heap.merge(other);
+      }
+
+      expect(heap.size).toBe(11);
+    });
+
+    it('should handle string case sensitivity', () => {
+      const stringHeap = new WeakHeap2<string>();
+      stringHeap.insert('Zebra');
+      stringHeap.insert('Apple');
+      stringHeap.insert('apple');
+      stringHeap.insert('Banana');
+
+      expect(stringHeap.peek()).toBe('Apple');
+    });
+
+    it('should handle object with deep equality', () => {
+      interface DeepObj { a: number; b: number; }
+      const objHeap = new WeakHeap2<DeepObj>((x, y) => x.a - y.a);
+
+      objHeap.insert({ a: 5, b: 10 });
+      objHeap.insert({ a: 3, b: 6 });
+      objHeap.insert({ a: 7, b: 14 });
+
+      expect(objHeap.peek()!.a).toBe(3);
+    });
+
+    it('should handle merge with many elements', () => {
+      for (let i = 0; i < 50; i++) {
+        heap.insert(i);
+      }
+
+      const other = new WeakHeap2<number>();
+      for (let i = 50; i < 100; i++) {
+        other.insert(i);
+      }
+
+      heap.merge(other);
+      expect(heap.size).toBe(100);
+
+      let prev = -1;
+      while (!heap.isEmpty()) {
+        const current = heap.extractMin()!;
+        expect(current).toBeGreaterThan(prev);
+        prev = current;
+      }
+    });
+
+    it('should handle extractMin on heap with one element', () => {
+      heap.insert(42);
+      expect(heap.extractMin()).toBe(42);
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should handle clear on heap with one element', () => {
+      heap.insert(42);
+      heap.clear();
+      expect(heap.isEmpty()).toBe(true);
+      expect(heap.peek()).toBe(undefined);
+    });
+
+    it('should handle clear on empty heap', () => {
+      heap.clear();
+      expect(heap.isEmpty()).toBe(true);
+      expect(heap.size).toBe(0);
+    });
+
+    it('should handle forEach on empty heap', () => {
+      let called = false;
+      heap.forEach(() => {
+        called = true;
+      });
+      expect(called).toBe(false);
+    });
+
+    it('should handle toArray on empty heap', () => {
+      expect(heap.toArray()).toEqual([]);
+    });
+
+    it('should handle peek on empty heap multiple times', () => {
+      expect(heap.peek()).toBe(undefined);
+      expect(heap.peek()).toBe(undefined);
+      expect(heap.peek()).toBe(undefined);
+    });
+
+    it('should handle insert after clear', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.clear();
+      heap.insert(3);
+      heap.insert(4);
+
+      expect(heap.size).toBe(2);
+      expect(heap.peek()).toBe(3);
+    });
+
+    it('should handle decreaseKey on min element', () => {
+      const node1 = heap.insert(5);
+      const node2 = heap.insert(10);
+
+      heap.decreaseKey(node1, 1);
+      expect(heap.peek()).toBe(1);
+    });
+
+    it('should handle merge where other has smaller elements', () => {
+      heap.insert(10);
+      heap.insert(20);
+      heap.insert(30);
+
+      const other = new WeakHeap2<number>();
+      other.insert(5);
+      other.insert(15);
+
+      heap.merge(other);
+      expect(heap.peek()).toBe(5);
+      expect(heap.size).toBe(5);
+    });
+
+    it('should handle merge where this has smaller elements', () => {
+      heap.insert(1);
+      heap.insert(3);
+      heap.insert(5);
+
+      const other = new WeakHeap2<number>();
+      other.insert(10);
+      other.insert(20);
+
+      heap.merge(other);
+      expect(heap.peek()).toBe(1);
+      expect(heap.size).toBe(5);
+    });
+
+    it('should handle merge with equal elements', () => {
+      heap.insert(5);
+      heap.insert(5);
+      heap.insert(5);
+
+      const other = new WeakHeap2<number>();
+      other.insert(5);
+      other.insert(5);
+
+      heap.merge(other);
+      expect(heap.size).toBe(5);
+
+      const result: number[] = [];
+      while (!heap.isEmpty()) {
+        result.push(heap.extractMin()!);
+      }
+      expect(result).toEqual([5, 5, 5, 5, 5]);
+    });
+
+    it('should handle decreasing insert sequence', () => {
+      for (let i = 100; i > 0; i--) {
+        heap.insert(i);
+      }
+      expect(heap.size).toBe(100);
+    });
+
+    it('should handle increasing insert sequence', () => {
+      for (let i = 1; i <= 100; i++) {
+        heap.insert(i);
+      }
+      expect(heap.size).toBe(100);
+    });
+
+    it('should handle alternating sequence', () => {
+      for (let i = 1; i <= 50; i++) {
+        heap.insert(i);
+        heap.insert(-i);
+      }
+      expect(heap.size).toBe(100);
+    });
+
+    it('should handle repeated value insert', () => {
+      for (let i = 0; i < 10; i++) {
+        heap.insert(5);
+      }
+      expect(heap.size).toBe(10);
+    });
+
+    it('should handle size getter on empty heap', () => {
+      expect(heap.size).toBe(0);
+    });
+
+    it('should handle size after single insert', () => {
+      heap.insert(42);
+      expect(heap.size).toBe(1);
+    });
+
+    it('should handle size after clear', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.clear();
+      expect(heap.size).toBe(0);
+    });
+
+    it('should handle size after extract', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.extractMin();
+      expect(heap.size).toBe(2);
+    });
+});
 });

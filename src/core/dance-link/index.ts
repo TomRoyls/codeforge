@@ -1,23 +1,23 @@
 import type { DanceLinkOptions } from "./types.js";
-export type { DanceLinkOptions };
+export type { DanceLinkOptions } from "./types.js";
 
 interface Node {
+  col: Node;
+  down: Node;
   left: Node;
   right: Node;
-  up: Node;
-  down: Node;
-  col: Node;
   row: number;
   size: number;
+  up: Node;
 }
 
 export class DanceLink {
-  private root: Node;
-  private solution: number[] = [];
-  private solutions: number[][] = [];
-  private solutionCount = 0;
   private maxSolutions: number;
   private rowCount = 0;
+  private root: Node;
+  private solution: number[] = [];
+  private solutionCount = 0;
+  private solutions: number[][] = [];
 
   constructor(matrix: boolean[][], options: DanceLinkOptions = {}) {
     this.maxSolutions = options.maxSolutions ?? Infinity;
@@ -29,15 +29,16 @@ export class DanceLink {
   }
 
   private createNode(): Node {
-    return {
-      left: null as any,
-      right: null as any,
-      up: null as any,
-      down: null as any,
-      col: null as any,
+    const node: Partial<Node> = {
+      left: null!,
+      right: null!,
+      up: null!,
+      down: null!,
+      col: null!,
       row: -1,
       size: 0
     };
+    return node as Node;
   }
 
   private buildMatrix(matrix: boolean[][]): Node {

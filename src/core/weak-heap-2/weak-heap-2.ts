@@ -154,15 +154,16 @@ export class WeakHeap2<T> {
   }
 
   private _updateNodeIndex(index: number): void {
-    for (const [, node] of this.nodeMap) {
+    for (const [, node] of Array.from(this.nodeMap)) {
       if (node.index === index) {
-        return;
+        node.index = index;
+        break;
       }
     }
   }
 
   private _findNodeId(index: number): number | undefined {
-    for (const [id, node] of this.nodeMap) {
+    for (const [id, node] of Array.from(this.nodeMap)) {
       if (node.index === index) {
         return id;
       }

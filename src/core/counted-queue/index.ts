@@ -110,57 +110,65 @@ export class CountedQueue<T> {
     return this.frequencies.size
   }
 
-  mostFrequent(): T[] {
-    if (this.isEmpty()) {
-      return []
-    }
-
-    let maxFreq = 0
-    for (const freq of this.frequencies.values()) {
-      if (freq > maxFreq) {
-        maxFreq = freq
+    mostFrequent(): T[] {
+      if (this.isEmpty()) {
+        return []
       }
-    }
 
-    const result: T[] = []
-    for (const [element, freq] of this.frequencies.entries()) {
-      if (freq === maxFreq) {
-        result.push(element)
+      let maxFreq = 0
+      for (const [, freq] of this.frequencies) {
+        if (freq > maxFreq) {
+          maxFreq = freq
+        }
       }
-    }
 
-    return result.sort((a, b) => {
-      const indexA = this.indexOf(a)
-      const indexB = this.indexOf(b)
-      return (indexA ?? 0) - (indexB ?? 0)
-    })
-  }
-
-  leastFrequent(): T[] {
-    if (this.isEmpty()) {
-      return []
-    }
-
-    let minFreq = Infinity
-    for (const freq of this.frequencies.values()) {
-      if (freq < minFreq) {
-        minFreq = freq
+      const result: T[] = []
+      const entries = Array.from(this.frequencies)
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i]!
+        const element = entry[0]!
+        const freq = entry[1]!
+        if (freq === maxFreq) {
+          result.push(element)
+        }
       }
+
+      return result.sort((a, b) => {
+        const indexA = this.indexOf(a)
+        const indexB = this.indexOf(b)
+        return (indexA ?? 0) - (indexB ?? 0)
+      })
     }
 
-    const result: T[] = []
-    for (const [element, freq] of this.frequencies.entries()) {
-      if (freq === minFreq) {
-        result.push(element)
+    leastFrequent(): T[] {
+      if (this.isEmpty()) {
+        return []
       }
-    }
 
-    return result.sort((a, b) => {
-      const indexA = this.indexOf(a)
-      const indexB = this.indexOf(b)
-      return (indexA ?? 0) - (indexB ?? 0)
-    })
-  }
+      let minFreq = Infinity
+      for (const [, freq] of this.frequencies) {
+        if (freq < minFreq) {
+          minFreq = freq
+        }
+      }
+
+      const result: T[] = []
+      const entries = Array.from(this.frequencies)
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i]!
+        const element = entry[0]!
+        const freq = entry[1]!
+        if (freq === minFreq) {
+          result.push(element)
+        }
+      }
+
+      return result.sort((a, b) => {
+        const indexA = this.indexOf(a)
+        const indexB = this.indexOf(b)
+        return (indexA ?? 0) - (indexB ?? 0)
+      })
+    }
 
   private indexOf(element: T): number | undefined {
     for (let i = 0; i < this.size; i++) {

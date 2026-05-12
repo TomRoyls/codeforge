@@ -683,4 +683,477 @@ describe('HalvingHeap', () => {
       }
     });
   });
+
+  describe('special values', () => {
+    it('handles Infinity', () => {
+      heap.insert(Infinity);
+      heap.insert(5);
+      heap.insert(10);
+      heap.insert(-Infinity);
+      expect(heap.extractMin()).toBe(-Infinity);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(10);
+      expect(heap.extractMin()).toBe(Infinity);
+    });
+
+    it('handles multiple Infinity values', () => {
+      heap.insert(Infinity);
+      heap.insert(Infinity);
+      heap.insert(5);
+      heap.insert(-Infinity);
+      heap.insert(-Infinity);
+      expect(heap.toArray()).toEqual([-Infinity, -Infinity, 5, Infinity, Infinity]);
+    });
+
+    it('handles zero and negative zero', () => {
+      heap.insert(0);
+      heap.insert(-0);
+      expect(heap.size).toBe(2);
+    });
+
+    it('handles floating point values', () => {
+      heap.insert(3.14);
+      heap.insert(2.71);
+      heap.insert(1.41);
+      heap.insert(0.577);
+      expect(heap.extractMin()).toBeCloseTo(0.577);
+      expect(heap.extractMin()).toBeCloseTo(1.41);
+      expect(heap.extractMin()).toBeCloseTo(2.71);
+      expect(heap.extractMin()).toBeCloseTo(3.14);
+    });
+
+    it('handles very small floating point', () => {
+      heap.insert(1e-10);
+      heap.insert(1e-20);
+      heap.insert(1e-15);
+      expect(heap.extractMin()).toBe(1e-20);
+      expect(heap.extractMin()).toBe(1e-15);
+      expect(heap.extractMin()).toBe(1e-10);
+    });
+
+    it('handles large floating point', () => {
+      heap.insert(1e10);
+      heap.insert(1e20);
+      heap.insert(1e15);
+      expect(heap.extractMin()).toBe(1e10);
+      expect(heap.extractMin()).toBe(1e15);
+      expect(heap.extractMin()).toBe(1e20);
+    });
+  });
+
+  describe('comparator edge cases', () => {
+    it('handles comparator returning zero', () => {
+      const eqHeap = new HalvingHeap({
+        comparator: () => 0
+      });
+      eqHeap.insert(1);
+      eqHeap.insert(2);
+      eqHeap.insert(3);
+      expect(eqHeap.size).toBe(3);
+    });
+
+    it('handles always-negative comparator', () => {
+      const alwaysFirstHeap = new HalvingHeap({
+        comparator: () => -1
+      });
+      alwaysFirstHeap.insert(3);
+      alwaysFirstHeap.insert(1);
+      alwaysFirstHeap.insert(2);
+      expect(alwaysFirstHeap.size).toBe(3);
+    });
+
+    it('handles always-positive comparator', () => {
+      const alwaysLastHeap = new HalvingHeap({
+        comparator: () => 1
+      });
+      alwaysLastHeap.insert(1);
+      alwaysLastHeap.insert(2);
+      alwaysLastHeap.insert(3);
+      expect(alwaysLastHeap.size).toBe(3);
+    });
+
+    it('handles complex comparator logic', () => {
+      const absHeap = new HalvingHeap<number>({
+        comparator: (a, b) => Math.abs(a) - Math.abs(b)
+      });
+      absHeap.insert(-5);
+      absHeap.insert(3);
+      absHeap.insert(-2);
+      absHeap.insert(1);
+      expect(absHeap.extractMin()).toBe(1);
+      expect(absHeap.extractMin()).toBe(-2);
+      expect(absHeap.extractMin()).toBe(3);
+      expect(absHeap.extractMin()).toBe(-5);
+    });
+  });
+
+  describe('boundary conditions', () => {
+    it('handles single insert and extract cycle', () => {
+      for (let i = 0; i < 100; i++) {
+        heap.insert(i);
+        expect(heap.extractMin()).toBe(i);
+      }
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('handles insert all then extract all', () => {
+      const values = Array.from({ length: 100 }, (_, i) => i);
+      for (const v of values) {
+        heap.insert(v);
+      }
+      for (let i = 0; i < values.length; i++) {
+        expect(heap.extractMin()).toBe(i);
+      }
+    });
+
+    it('handles alternating min and max inserts', () => {
+      for (let i = 0; i < 50; i++) {
+        heap.insert(i);
+        heap.insert(100 - i);
+      }
+      expect(heap.size).toBe(100);
+      const result = heap.toArray();
+      expect(result[0]).toBe(0);
+      expect(result[99]).toBe(100);
+    });
+
+    it('handles same value repeated', () => {
+      const count = 50;
+      const value = 42;
+      for (let i = 0; i < count; i++) {
+        heap.insert(value);
+      }
+      for (let i = 0; i < count; i++) {
+        expect(heap.extractMin()).toBe(value);
+      }
+    });
+
+    it('handles sequential then reverse', () => {
+      for (let i = 1; i <= 50; i++) {
+        heap.insert(i);
+      }
+      for (let i = 100; i > 50; i--) {
+        heap.insert(i);
+      }
+      expect(heap.size).toBe(100);
+      expect(heap.peek()).toBe(1);
+    });
+  });
+
+  describe('meld edge cases', () => {
+
+    it('melds many small heaps', () => {
+      const smallHeaps: HalvingHeap<number>[] = [];
+      for (let i = 0; i < 20; i++) {
+        const h = new HalvingHeap();
+        h.insert(i);
+        smallHeaps.push(h);
+      }
+
+      for (const h of smallHeaps) {
+        heap.meld(h);
+      }
+
+      expect(heap.size).toBe(20);
+      const result = heap.toArray();
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i]).toBeGreaterThan(result[i - 1]!);
+      }
+    });
+
+    it('melds after clear', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.clear();
+      const other = new HalvingHeap();
+      other.insert(3);
+      other.insert(4);
+      heap.meld(other);
+      expect(heap.size).toBe(2);
+      expect(heap.peek()).toBe(3);
+    });
+
+    it('melds into empty heap', () => {
+      heap.clear();
+      const other = new HalvingHeap();
+      other.insert(1);
+      other.insert(2);
+      heap.meld(other);
+      expect(heap.size).toBe(2);
+      expect(heap.peek()).toBe(1);
+    });
+
+    it('melds empty into empty', () => {
+      heap.clear();
+      const other = new HalvingHeap();
+      heap.meld(other);
+      expect(heap.isEmpty()).toBe(true);
+      expect(other.isEmpty()).toBe(true);
+    });
+
+    it('melds heaps with same values', () => {
+      for (let i = 0; i < 10; i++) {
+        heap.insert(i);
+      }
+      const other = new HalvingHeap();
+      for (let i = 0; i < 10; i++) {
+        other.insert(i);
+      }
+      heap.meld(other);
+      expect(heap.size).toBe(20);
+      expect(heap.toArray()[0]).toBe(0);
+    });
+
+    it('melds multiple times sequentially', () => {
+      const other1 = new HalvingHeap();
+      const other2 = new HalvingHeap();
+      const other3 = new HalvingHeap();
+
+      heap.insert(1);
+      other1.insert(2);
+      other2.insert(3);
+      other3.insert(4);
+
+      heap.meld(other1);
+      heap.meld(other2);
+      heap.meld(other3);
+
+      expect(heap.size).toBe(4);
+      expect(heap.extractMin()).toBe(1);
+      expect(heap.extractMin()).toBe(2);
+      expect(heap.extractMin()).toBe(3);
+      expect(heap.extractMin()).toBe(4);
+    });
+  });
+
+  describe('forEach edge cases', () => {
+    it('forEach with callback that modifies heap', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      const values: number[] = [];
+      heap.forEach((v) => {
+        values.push(v);
+        heap.insert(v + 10);
+      });
+      expect(values.length).toBe(3);
+      expect(heap.size).toBeGreaterThan(3);
+    });
+
+    it('forEach on heap with many duplicates', () => {
+      for (let i = 0; i < 50; i++) {
+        heap.insert(42);
+      }
+      let count = 0;
+      heap.forEach(() => count++);
+      expect(count).toBe(50);
+    });
+
+    it('forEach returns values in sorted order even after interleaved operations', () => {
+      heap.insert(5);
+      heap.insert(3);
+      heap.insert(7);
+      heap.extractMin();
+      heap.insert(1);
+      heap.insert(9);
+      const values: number[] = [];
+      heap.forEach((v) => values.push(v));
+      expect(values).toEqual([1, 5, 7, 9]);
+    });
+  });
+
+  describe('toArray edge cases', () => {
+    it('toArray after many extractions', () => {
+      for (let i = 0; i < 100; i++) {
+        heap.insert(i);
+      }
+      for (let i = 0; i < 50; i++) {
+        heap.extractMin();
+      }
+      const result = heap.toArray();
+      expect(result.length).toBe(50);
+      expect(result[0]).toBe(50);
+      expect(result[49]).toBe(99);
+    });
+
+    it('toArray after multiple melds', () => {
+      const heaps: HalvingHeap<number>[] = [];
+      for (let i = 0; i < 5; i++) {
+        const h = new HalvingHeap();
+        for (let j = 0; j < 20; j++) {
+          h.insert(i * 20 + j);
+        }
+        heaps.push(h);
+      }
+
+      for (const h of heaps) {
+        heap.meld(h);
+      }
+
+      const result = heap.toArray();
+      expect(result.length).toBe(100);
+      for (let i = 1; i < result.length; i++) {
+        expect(result[i]).toBeGreaterThan(result[i - 1]!);
+      }
+    });
+
+    it('toArray does not affect subsequent operations', () => {
+      heap.insert(5);
+      heap.insert(3);
+      heap.insert(7);
+      const arr1 = heap.toArray();
+      expect(heap.extractMin()).toBe(3);
+      const arr2 = heap.toArray();
+      expect(arr1.length).toBe(3);
+      expect(arr2.length).toBe(2);
+    });
+  });
+
+  describe('peek edge cases', () => {
+    it('peek returns undefined after extracting all', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.extractMin();
+      heap.extractMin();
+      expect(heap.peek()).toBe(undefined);
+    });
+
+    it('peek after insert extract insert pattern', () => {
+      heap.insert(5);
+      heap.insert(3);
+      heap.extractMin();
+      heap.insert(1);
+      expect(heap.peek()).toBe(1);
+      heap.extractMin();
+      expect(heap.peek()).toBe(5);
+    });
+
+    it('peek on heap with single element multiple times', () => {
+      heap.insert(42);
+      for (let i = 0; i < 10; i++) {
+        expect(heap.peek()).toBe(42);
+      }
+      expect(heap.size).toBe(1);
+    });
+  });
+
+  describe('extractMin edge cases', () => {
+    it('extractMin on heap with single element repeatedly', () => {
+      heap.insert(1);
+      expect(heap.extractMin()).toBe(1);
+      expect(heap.extractMin()).toBe(undefined);
+      expect(heap.extractMin()).toBe(undefined);
+    });
+
+    it('extractMin maintains min after interleaved inserts', () => {
+      heap.insert(5);
+      heap.insert(10);
+      expect(heap.extractMin()).toBe(5);
+      heap.insert(3);
+      expect(heap.extractMin()).toBe(3);
+      heap.insert(1);
+      expect(heap.extractMin()).toBe(1);
+      expect(heap.extractMin()).toBe(10);
+    });
+
+    it('extractMin after clear and refill', () => {
+      heap.insert(1);
+      heap.insert(2);
+      heap.extractMin();
+      heap.extractMin();
+      expect(heap.isEmpty()).toBe(true);
+
+      heap.insert(10);
+      heap.insert(5);
+      heap.insert(15);
+
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(10);
+      expect(heap.extractMin()).toBe(15);
+    });
+  });
+
+  describe('complex scenarios', () => {
+    it('handles Fibonacci-like insert pattern', () => {
+      const fib = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
+      for (const f of fib) {
+        heap.insert(f);
+      }
+      expect(heap.size).toBe(10);
+      expect(heap.toArray()).toEqual(fib);
+    });
+
+    it('handles power of two sequence', () => {
+      for (let i = 0; i < 10; i++) {
+        heap.insert(Math.pow(2, i));
+      }
+      expect(heap.toArray()[0]).toBe(1);
+      expect(heap.toArray()[9]).toBe(512);
+    });
+
+    it('handles prime number sequence', () => {
+      const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+      for (const p of primes) {
+        heap.insert(p);
+      }
+      expect(heap.toArray()).toEqual(primes);
+    });
+
+    it('handles negative and positive interleaved', () => {
+      for (let i = -10; i <= 10; i++) {
+        heap.insert(i);
+      }
+      const result = heap.toArray();
+      expect(result[0]).toBe(-10);
+      expect(result[20]).toBe(10);
+    });
+
+    it('handles multiple heaps with different comparators', () => {
+      const minHeap = new HalvingHeap<number>();
+      const maxHeap = new HalvingHeap<number>({
+        comparator: (a, b) => (a > b ? -1 : a < b ? 1 : 0)
+      });
+
+      for (let i = 0; i < 10; i++) {
+        minHeap.insert(i);
+        maxHeap.insert(i);
+      }
+
+      expect(minHeap.extractMin()).toBe(0);
+      expect(maxHeap.extractMin()).toBe(9);
+    });
+  });
+
+  describe('performance characteristics', () => {
+    it('maintains O(log n) extraction behavior', () => {
+      const n = 1000;
+      for (let i = 0; i < n; i++) {
+        heap.insert(Math.floor(Math.random() * n));
+      }
+
+      let prev = heap.extractMin()!;
+      while (!heap.isEmpty()) {
+        const current = heap.extractMin()!;
+        expect(current).toBeGreaterThanOrEqual(prev);
+        prev = current;
+      }
+    });
+
+    it('handles efficient meld operations', () => {
+      const heap1 = new HalvingHeap<number>();
+      const heap2 = new HalvingHeap<number>();
+
+      for (let i = 0; i < 100; i++) {
+        heap1.insert(i);
+        heap2.insert(i + 100);
+      }
+
+      const start = Date.now();
+      heap1.meld(heap2);
+      const duration = Date.now() - start;
+
+      expect(heap1.size).toBe(200);
+      expect(duration).toBeLessThan(100);
+    });
+  });
 });

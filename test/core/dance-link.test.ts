@@ -771,4 +771,308 @@ describe('DanceLink', () => {
       expect(solutions.length).toBeGreaterThan(0);
     });
   });
+
+  describe('Additional solve scenarios', () => {
+    it('should solve independent columns', () => {
+      const matrix = [
+        [true, false, false, false],
+        [false, true, false, false],
+        [false, false, true, false],
+        [false, false, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should solve overlapping columns', () => {
+      const matrix = [
+        [true, true, false],
+        [false, true, true],
+        [true, false, true],
+        [true, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle all combinations', () => {
+      const matrix = [
+        [true, true],
+        [true, false],
+        [false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(2);
+    });
+  });
+
+  describe('Method combinations', () => {
+    it('should handle solve then solveOne', () => {
+      const matrix = [[true, true, true]];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      const solution = dl.solveOne();
+      expect(solutions.length).toBe(1);
+      expect(solution).not.toBeNull();
+    });
+
+    it('should handle solveOne then solve', () => {
+      const matrix = [[true, true, true]];
+      const dl = new DanceLink(matrix);
+      const solution = dl.solveOne();
+      const solutions = dl.solve();
+      expect(solution).not.toBeNull();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle count then solve', () => {
+      const matrix = [[true, true, true]];
+      const dl = new DanceLink(matrix);
+      const count = dl.countSolutions();
+      const solutions = dl.solve();
+      expect(count).toBe(1);
+      expect(solutions.length).toBe(1);
+    });
+  });
+
+  describe('State management', () => {
+    it('should maintain state across multiple solves', () => {
+      const matrix = [
+        [true, false],
+        [false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions1 = dl.solve();
+      const solutions2 = dl.solve();
+      expect(solutions1).toEqual(solutions2);
+    });
+
+    it('should reset after clear', () => {
+      const matrix = [[true, true, true]];
+      const dl = new DanceLink(matrix);
+      dl.solve();
+      dl.clear();
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle clear between solves', () => {
+      const matrix = [[true, true, true]];
+      const dl = new DanceLink(matrix);
+      const solutions1 = dl.solve();
+      dl.clear();
+      const solutions2 = dl.solve();
+      expect(solutions1).toEqual(solutions2);
+    });
+  });
+
+  describe('Matrix variations', () => {
+    it('should handle uniform matrix', () => {
+      const matrix = [
+        [true, true],
+        [true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle sparse uniform matrix', () => {
+      const matrix = [
+        [true, false],
+        [false, true],
+        [true, false],
+        [false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(4);
+    });
+
+    it('should handle diagonal matrix', () => {
+      const matrix = [
+        [true, false, false],
+        [false, true, false],
+        [false, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+  });
+
+  describe('Algorithm correctness', () => {
+    it('should find minimal solutions', () => {
+      const matrix = [
+        [true, true, false],
+        [true, false, true],
+        [false, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      for (const solution of solutions) {
+        expect(solution.length).toBeGreaterThan(0);
+      }
+    });
+
+    it('should handle backtrack correctly', () => {
+      const matrix = [
+        [true, false],
+        [false, true],
+        [true, false]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should explore all possibilities', () => {
+      const matrix = [
+        [true, false, false],
+        [false, true, false],
+        [false, false, true],
+        [true, true, false],
+        [true, false, true],
+        [false, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const count = dl.countSolutions();
+      const solutions = dl.solve();
+      expect(count).toBe(solutions.length);
+    });
+  });
+
+  describe('Error scenarios', () => {
+    it('should handle zero columns', () => {
+      const matrix: boolean[][] = [[], []];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle zero rows', () => {
+      const matrix: boolean[][] = [];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions).toEqual([[]]);
+    });
+
+    it('should handle mismatched rows', () => {
+      const matrix = [
+        [true, true],
+        [true, true],
+        [true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(Array.isArray(solutions)).toBe(true);
+    });
+  });
+
+  describe('Performance with options', () => {
+    it('should respect maxSolutions in solve', () => {
+      const matrix = [
+        [true, false],
+        [false, true],
+        [true, false],
+        [false, true]
+      ];
+      const options: DanceLinkOptions = { maxSolutions: 2 };
+      const dl = new DanceLink(matrix, options);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeLessThanOrEqual(2);
+    });
+
+    it('should stop early with maxSolutions', () => {
+      const matrix = [
+        [true, false],
+        [false, true],
+        [true, false],
+        [false, true]
+      ];
+      const options: DanceLinkOptions = { maxSolutions: 1 };
+      const dl = new DanceLink(matrix, options);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle Infinity maxSolutions', () => {
+      const matrix = [
+        [true, false],
+        [false, true]
+      ];
+      const options: DanceLinkOptions = { maxSolutions: Infinity };
+      const dl = new DanceLink(matrix, options);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Advanced scenarios', () => {
+    it('should solve triangular matrix', () => {
+      const matrix = [
+        [true, false, false],
+        [true, true, false],
+        [true, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should solve complementary constraints', () => {
+      const matrix = [
+        [true, true, false, false],
+        [true, false, true, false],
+        [true, false, false, true],
+        [false, true, true, false],
+        [false, true, false, true],
+        [false, false, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle cyclic dependencies', () => {
+      const matrix = [
+        [true, true, false],
+        [false, true, true],
+        [true, false, true],
+        [true, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Boundary conditions', () => {
+    it('should handle single element matrix', () => {
+      const matrix = [[true]];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle two element matrix', () => {
+      const matrix = [
+        [true, false],
+        [false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(1);
+    });
+
+    it('should handle single column multiple rows', () => {
+      const matrix = [[true], [true], [true]];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBe(3);
+    });
+  });
 });
