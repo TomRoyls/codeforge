@@ -1,15 +1,15 @@
-export interface IndexedPriorityQueueOptions {
-  capacity?: number
-  comparator?: (a: number, b: number) => number
+export type Comparator<T> = (a: T, b: T) => number
+
+export interface IndexedPriorityQueueOptions<T> {
+  comparator?: Comparator<T>
 }
 
-export interface QueueEntry {
+export interface IndexedPriorityQueueEntry<T> {
   index: number
-  priority: number
+  priority: T
 }
 
-export const DEFAULT_COMPARATOR = (a: number, b: number): number => {
-  if (a < b) return -1
-  if (a > b) return 1
-  return 0
+export interface IndexedPriorityQueueStats {
+  size: number
+  height: number
 }
