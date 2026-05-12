@@ -1,0 +1,121 @@
+type Comparator<T> = (a: T, b: T) => number
+
+type LeftistTreeNode<T> = {
+  value: T
+  left: LeftistTreeNode<T> | null
+  right: LeftistTreeNode<T> | null
+  npl: number
+}
+
+type LeftistTreeOptions<T> = {
+  comparator?: Comparator<T>
+}
+
+export class LeftistTree2<T> {
+  private _root: LeftistTreeNode<T> | null
+  private _size: number
+  private readonly _comparator: Comparator<T>
+
+  constructor(options?: LeftistTreeOptions<T>) {
+    this._comparator = options?.comparator ?? ((a: T, b: T): number => {
+      if (a < b) return -1
+      if (a > b) return 1
+      return 0
+    })
+    this._root = null
+    this._size = 0
+  }
+
+  private _npl(node: LeftistTreeNode<T> | null): number {
+    return node === null ? 0 : node.npl
+  }
+
+  private _merge(a: LeftistTreeNode<T> | null, b: LeftistTreeNode<T> | null): LeftistTreeNode<T> | null {
+    if (a === null) return b
+    if (b === null) return a
+
+    if (this._comparator(a.value, b.value) > 0) {
+      const tmp = a
+      a = b
+      b = tmp
+    }
+
+    a.right = this._merge(a.right, b)
+
+    if (this._npl(a.left) < this._npl(a.right)) {
+      const tmp = a.left
+      a.left = a.right
+      a.right = tmp
+    }
+
+    a.npl = this._npl(a.right) + 1
+    return a
+  }
+
+  insert(value: T): void {
+    const node: LeftistTreeNode<T> = { value, left: null, right: null, npl: 1 }
+    this._root = this._merge(this._root, node)
+    this._size++
+  }
+
+  extractMin(): T {
+    if (this._root === null) {
+      throw new Error('extractMin called on empty tree')
+    }
+    const min = this._root.value
+    this._root = this._merge(this._root.left, this._root.right)
+    this._size--
+    return min
+  }
+
+  peek(): T {
+    if (this._root === null) {
+      throw new Error('peek called on empty tree')
+    }
+    return this._root.value
+  }
+
+  merge(other: LeftistTree2<T>): LeftistTree2<T> {
+    const result = new LeftistTree2<T>({ comparator: this._comparator })
+    result._root = this._clone(this._root)
+    result._size = this._size
+    const otherClone = this._clone(other._root)
+    result._root = this._merge(result._root, otherClone)
+    result._size = this._size + other._size
+    return result
+  }
+
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    this._root = null
+    this._size = 0
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+    const temp = new LeftistTree2<T>({ comparator: this._comparator })
+    temp._root = this._clone(this._root)
+    temp._size = this._size
+    while (!temp.isEmpty()) {
+      result.push(temp.extractMin())
+    }
+    return result
+  }
+
+  private _clone(node: LeftistTreeNode<T> | null): LeftistTreeNode<T> | null {
+    if (node === null) return null
+    return {
+      value: node.value,
+      left: this._clone(node.left),
+      right: this._clone(node.right),
+      npl: node.npl,
+    }
+  }
+}
