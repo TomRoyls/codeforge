@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { WaveletMatrix } from '../../src/core/wavelet-matrix/wavelet-matrix.js'
+import { WaveletMatrix } from '../../src/core/wavelet-matrix/index.js'
 
 describe('WaveletMatrix', () => {
   describe('construction', () => {
