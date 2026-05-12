@@ -1,0 +1,107 @@
+class SkewMergeNode<T> {
+  value: T;
+  left: SkewMergeNode<T> | null;
+  right: SkewMergeNode<T> | null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+export class SkewMerge<T> {
+  private root: SkewMergeNode<T> | null;
+  private comparator: (a: T, b: T) => number;
+  private _size: number;
+
+  constructor(comparator?: (a: T, b: T) => number) {
+    this.root = null;
+    this.comparator = comparator || ((a: T, b: T) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+    this._size = 0;
+  }
+
+  insert(value: T): void {
+    const node = new SkewMergeNode(value);
+    this.root = this._merge(this.root, node);
+    this._size++;
+  }
+
+  extractMin(): T | undefined {
+    if (!this.root) return undefined;
+    const minValue = this.root.value;
+    this.root = this._merge(this.root.left, this.root.right);
+    this._size--;
+    return minValue;
+  }
+
+  peek(): T | undefined {
+    return this.root?.value;
+  }
+
+  merge(other: SkewMerge<T>): void {
+    this.root = this._merge(this.root, other.root);
+    this._size += other._size;
+    other.clear();
+  }
+
+  get size(): number {
+    return this._size;
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0;
+  }
+
+  clear(): void {
+    this.root = null;
+    this._size = 0;
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    const temp = new SkewMerge<T>(this.comparator);
+    temp.root = this._cloneNode(this.root);
+    (temp as any)._size = this._size;
+
+    while (!temp.isEmpty()) {
+      const value = temp.extractMin();
+      if (value !== undefined) {
+        result.push(value);
+      }
+    }
+
+    return result;
+  }
+
+  private _merge(a: SkewMergeNode<T> | null, b: SkewMergeNode<T> | null): SkewMergeNode<T> | null {
+    if (!a) return b;
+    if (!b) return a;
+
+    if (this.comparator(a.value, b.value) > 0) {
+      return this._merge(b, a);
+    }
+
+    a.right = this._merge(a.right, b);
+
+    const temp = a.left;
+    a.left = a.right;
+    a.right = temp;
+
+    return a;
+  }
+
+  private _cloneNode(node: SkewMergeNode<T> | null): SkewMergeNode<T> | null {
+    if (!node) return null;
+
+    const newNode = new SkewMergeNode(node.value);
+    newNode.left = this._cloneNode(node.left);
+    newNode.right = this._cloneNode(node.right);
+
+    return newNode;
+  }
+}
