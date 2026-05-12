@@ -929,4 +929,173 @@ describe('ExtendibleHashTable', () => {
       expect(t.getStats().directorySize).toBeGreaterThanOrEqual(1)
     })
   })
+
+  describe('additional coverage', () => {
+    it('handles very long string keys', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      const longKey = 'a'.repeat(10000)
+      t.put(longKey, 42)
+      expect(t.get(longKey)).toBe(42)
+    })
+
+    it('handles special character keys', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('\n\t\r', 1)
+      t.put('🎉', 2)
+      t.put('key with spaces', 3)
+      expect(t.get('\n\t\r')).toBe(1)
+      expect(t.get('🎉')).toBe(2)
+      expect(t.get('key with spaces')).toBe(3)
+    })
+
+    it('handles same string key with different case', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('Key', 1)
+      t.put('key', 2)
+      t.put('KEY', 3)
+      expect(t.size).toBe(3)
+      expect(t.get('Key')).toBe(1)
+      expect(t.get('key')).toBe(2)
+      expect(t.get('KEY')).toBe(3)
+    })
+
+    it('handles numeric string vs number key types', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('1', 10)
+      t.put('2', 20)
+      expect(t.get('1')).toBe(10)
+      expect(t.get('2')).toBe(20)
+      expect(t.size).toBe(2)
+    })
+
+    it('overwrites maintain correct size after growth', () => {
+      const t = new ExtendibleHashTable<number, string>({ bucketSize: 2 })
+      for (let i = 0; i < 10; i++) {
+        t.put(i, `v${i}`)
+      }
+      for (let i = 0; i < 10; i++) {
+        t.put(i, `new${i}`)
+      }
+      expect(t.size).toBe(10)
+      for (let i = 0; i < 10; i++) {
+        expect(t.get(i)).toBe(`new${i}`)
+      }
+    })
+
+    it('delete and reinsert after directory growth', () => {
+      const t = new ExtendibleHashTable<number, string>({ bucketSize: 2 })
+      for (let i = 0; i < 20; i++) {
+        t.put(i, `v${i}`)
+      }
+      for (let i = 0; i < 10; i++) {
+        t.delete(i)
+      }
+      for (let i = 0; i < 5; i++) {
+        t.put(i, `re${i}`)
+      }
+      expect(t.size).toBe(15)
+      for (let i = 0; i < 5; i++) {
+        expect(t.get(i)).toBe(`re${i}`)
+      }
+      for (let i = 10; i < 20; i++) {
+        expect(t.get(i)).toBe(`v${i}`)
+      }
+    })
+
+    it('entries iterator yields unique keys only', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('a', 1)
+      t.put('b', 2)
+      t.put('c', 3)
+      const keySet = new Set<string>()
+      for (const [k] of t.entries()) {
+        expect(keySet.has(k)).toBe(false)
+        keySet.add(k)
+      }
+      expect(keySet.size).toBe(3)
+    })
+
+    it('forEach receives correct value-key pairs', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('x', 100)
+      t.put('y', 200)
+      const pairs: Record<string, number> = {}
+      t.forEach((v, k) => { pairs[k] = v })
+      expect(pairs['x']).toBe(100)
+      expect(pairs['y']).toBe(200)
+    })
+
+    it('multiple clear cycles', () => {
+      const t = new ExtendibleHashTable<number, string>({ bucketSize: 2 })
+      for (let cycle = 0; cycle < 5; cycle++) {
+        for (let i = 0; i < 10; i++) {
+          t.put(i, `c${cycle}_${i}`)
+        }
+        expect(t.size).toBe(10)
+        t.clear()
+        expect(t.size).toBe(0)
+      }
+    })
+
+    it('bucket size of 1 triggers maximum splits', () => {
+      const t = new ExtendibleHashTable<number, string>({ bucketSize: 1 })
+      for (let i = 0; i < 8; i++) {
+        t.put(i, `v${i}`)
+      }
+      expect(t.size).toBe(8)
+      const stats = t.getStats()
+      expect(stats.globalDepth).toBeGreaterThanOrEqual(3)
+    })
+
+    it('delete nonexistent key does not affect table', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('a', 1)
+      t.put('b', 2)
+      expect(t.delete('c')).toBe(false)
+      expect(t.size).toBe(2)
+      expect(t.get('a')).toBe(1)
+      expect(t.get('b')).toBe(2)
+    })
+
+    it('getStats returns new object each time', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('a', 1)
+      const s1 = t.getStats()
+      const s2 = t.getStats()
+      expect(s1).not.toBe(s2)
+      expect(s1).toEqual(s2)
+    })
+
+    it('handles mixed put and delete operations', () => {
+      const t = new ExtendibleHashTable<number, number>({ bucketSize: 3 })
+      for (let round = 0; round < 3; round++) {
+        for (let i = 0; i < 15; i++) {
+          t.put(i + round * 100, i * round)
+        }
+      }
+      for (let round = 0; round < 2; round++) {
+        for (let i = 0; i < 15; i++) {
+          t.delete(i + round * 100)
+        }
+      }
+      expect(t.size).toBe(15)
+      for (let i = 0; i < 15; i++) {
+        expect(t.get(i + 200)).toBe(i * 2)
+      }
+    })
+
+    it('keys and values iterators are consistent', () => {
+      const t = new ExtendibleHashTable<string, number>()
+      t.put('a', 1)
+      t.put('b', 2)
+      t.put('c', 3)
+      const keys = [...t.keys()]
+      const values = [...t.values()]
+      expect(keys.length).toBe(values.length)
+      const keyToVal = new Map(t.entries())
+      for (let i = 0; i < keys.length; i++) {
+        expect(keyToVal.get(keys[i]!)).toBe(values[i])
+      }
+    })
+  })
 })

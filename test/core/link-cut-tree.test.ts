@@ -1188,4 +1188,262 @@ describe('LinkCutTree', () => {
       expect(lct.getDepth(2)).toBe(2)
     })
   })
+
+  describe('isConnected', () => {
+    it('returns true for same node', () => {
+      const lct = new LinkCutTree(3)
+      expect(lct.isConnected(0, 0)).toBe(true)
+    })
+
+    it('returns false for disconnected nodes', () => {
+      const lct = new LinkCutTree(3)
+      expect(lct.isConnected(0, 1)).toBe(false)
+    })
+
+    it('returns true after link', () => {
+      const lct = new LinkCutTree(3)
+      lct.link(1, 0)
+      expect(lct.isConnected(0, 1)).toBe(true)
+      expect(lct.isConnected(1, 0)).toBe(true)
+    })
+
+    it('returns false after cut', () => {
+      const lct = buildRootedChain(4)
+      lct.cut(2)
+      expect(lct.isConnected(0, 3)).toBe(false)
+      expect(lct.isConnected(0, 1)).toBe(true)
+    })
+
+    it('returns false for out of range', () => {
+      const lct = new LinkCutTree(3)
+      expect(lct.isConnected(-1, 0)).toBe(false)
+      expect(lct.isConnected(0, 5)).toBe(false)
+    })
+
+    it('matches connected alias', () => {
+      const lct = buildRootedChain(4)
+      expect(lct.isConnected(0, 3)).toBe(lct.connected(0, 3))
+      expect(lct.isConnected(1, 2)).toBe(lct.connected(1, 2))
+    })
+  })
+
+  describe('setValue / getValue', () => {
+    it('sets and gets value', () => {
+      const lct = new LinkCutTree(3)
+      lct.setValue(0, 42)
+      expect(lct.getValue(0)).toBe(42)
+    })
+
+    it('updates value', () => {
+      const lct = new LinkCutTree(3)
+      lct.setValue(0, 10)
+      lct.setValue(0, 20)
+      expect(lct.getValue(0)).toBe(20)
+    })
+
+    it('aliases setWeight/getWeight', () => {
+      const lct = new LinkCutTree(3)
+      lct.setValue(0, 99)
+      expect(lct.getWeight(0)).toBe(99)
+      lct.setWeight(1, 77)
+      expect(lct.getValue(1)).toBe(77)
+    })
+
+    it('handles negative values', () => {
+      const lct = new LinkCutTree(3)
+      lct.setValue(0, -100)
+      expect(lct.getValue(0)).toBe(-100)
+    })
+
+    it('ignores out of range', () => {
+      const lct = new LinkCutTree(3)
+      lct.setValue(-1, 10)
+      lct.setValue(5, 10)
+      expect(lct.getValue(-1)).toBe(0)
+      expect(lct.getValue(5)).toBe(0)
+    })
+  })
+
+  describe('size getter', () => {
+    it('returns correct size', () => {
+      const lct = new LinkCutTree(10)
+      expect(lct.size).toBe(10)
+    })
+
+    it('matches getSize', () => {
+      const lct = new LinkCutTree(7)
+      expect(lct.size).toBe(lct.getSize())
+    })
+
+    it('returns 0 for empty', () => {
+      const lct = new LinkCutTree(0)
+      expect(lct.size).toBe(0)
+    })
+  })
+
+  describe('pathMin / pathMax / pathSum', () => {
+    it('pathMin on chain', () => {
+      const lct = buildRootedChain(4)
+      lct.setWeight(0, 10)
+      lct.setWeight(1, 3)
+      lct.setWeight(2, 7)
+      lct.setWeight(3, 1)
+      expect(lct.pathMin(0, 3)).toBe(1)
+      expect(lct.pathMin(0, 1)).toBe(3)
+    })
+
+    it('pathMax on chain', () => {
+      const lct = buildRootedChain(4)
+      lct.setWeight(0, 10)
+      lct.setWeight(1, 3)
+      lct.setWeight(2, 7)
+      lct.setWeight(3, 1)
+      expect(lct.pathMax(0, 3)).toBe(10)
+      expect(lct.pathMax(1, 3)).toBe(7)
+    })
+
+    it('pathSum on chain', () => {
+      const lct = buildRootedChain(4)
+      lct.setWeight(0, 1)
+      lct.setWeight(1, 2)
+      lct.setWeight(2, 3)
+      lct.setWeight(3, 4)
+      expect(lct.pathSum(0, 3)).toBe(10)
+      expect(lct.pathSum(1, 2)).toBe(5)
+    })
+
+    it('pathMin with negative weights', () => {
+      const lct = buildRootedChain(3)
+      lct.setWeight(0, -5)
+      lct.setWeight(1, 10)
+      lct.setWeight(2, -3)
+      expect(lct.pathMin(0, 2)).toBe(-5)
+    })
+
+    it('pathMax with negative weights', () => {
+      const lct = buildRootedChain(3)
+      lct.setWeight(0, -5)
+      lct.setWeight(1, 10)
+      lct.setWeight(2, -3)
+      expect(lct.pathMax(0, 2)).toBe(10)
+    })
+
+    it('returns 0 for disconnected nodes', () => {
+      const lct = new LinkCutTree(3)
+      lct.setWeight(0, 5)
+      lct.setWeight(1, 10)
+      expect(lct.pathMin(0, 1)).toBe(0)
+      expect(lct.pathMax(0, 1)).toBe(0)
+      expect(lct.pathSum(0, 1)).toBe(0)
+    })
+  })
+
+  describe('pathAggregate root to node', () => {
+    it('aggregate from root to leaf in chain', () => {
+      const lct = buildRootedChain(5)
+      lct.setWeight(0, 1)
+      lct.setWeight(1, 2)
+      lct.setWeight(2, 3)
+      lct.setWeight(3, 4)
+      lct.setWeight(4, 5)
+      const result = lct.pathAggregate(0, 4)
+      expect(result.sum).toBe(15)
+      expect(result.min).toBe(1)
+      expect(result.max).toBe(5)
+      expect(result.size).toBe(5)
+    })
+
+    it('aggregate single node', () => {
+      const lct = new LinkCutTree(1)
+      lct.setWeight(0, 42)
+      const result = lct.pathAggregate(0, 0)
+      expect(result.sum).toBe(42)
+      expect(result.min).toBe(42)
+      expect(result.max).toBe(42)
+      expect(result.size).toBe(1)
+    })
+
+    it('aggregate updates after weight change', () => {
+      const lct = buildRootedChain(3)
+      lct.setWeight(0, 1)
+      lct.setWeight(1, 2)
+      lct.setWeight(2, 3)
+      expect(lct.pathAggregate(0, 2).sum).toBe(6)
+      lct.setWeight(1, 10)
+      expect(lct.pathAggregate(0, 2).sum).toBe(14)
+    })
+  })
+
+  describe('link(child, parent) semantics', () => {
+    it('link with explicit child and parent', () => {
+      const lct = new LinkCutTree(4)
+      lct.link(1, 0)
+      lct.link(2, 1)
+      lct.link(3, 2)
+      expect(lct.findRoot(3)).toBe(0)
+      expect(lct.getParent(3)).toBe(2)
+      expect(lct.getParent(2)).toBe(1)
+      expect(lct.getParent(1)).toBe(0)
+    })
+
+    it('link does not create cycle', () => {
+      const lct = new LinkCutTree(3)
+      lct.link(1, 0)
+      lct.link(2, 1)
+      lct.link(0, 2)
+      expect(lct.connected(0, 2)).toBe(true)
+    })
+  })
+
+  describe('interleaved operations', () => {
+    it('alternating link and cut', () => {
+      const lct = new LinkCutTree(3)
+      for (let i = 0; i < 5; i++) {
+        lct.link(1, 0)
+        expect(lct.connected(0, 1)).toBe(true)
+        lct.cut(1)
+        expect(lct.connected(0, 1)).toBe(false)
+      }
+    })
+
+    it('link cut relink different parent', () => {
+      const lct = new LinkCutTree(4)
+      lct.link(1, 0)
+      lct.link(2, 0)
+      lct.link(3, 0)
+      expect(lct.lca(1, 2)).toBe(0)
+      lct.cut(2)
+      lct.link(2, 1)
+      expect(lct.getParent(2)).toBe(1)
+      expect(lct.lca(2, 3)).toBe(0)
+    })
+
+    it('weight changes preserve structure', () => {
+      const lct = buildRootedChain(4)
+      lct.setWeight(0, 1)
+      lct.setWeight(1, 2)
+      lct.setWeight(2, 3)
+      lct.setWeight(3, 4)
+      expect(lct.connected(0, 3)).toBe(true)
+      expect(lct.pathSum(0, 3)).toBe(10)
+      lct.setWeight(2, 10)
+      expect(lct.pathSum(0, 3)).toBe(17)
+      expect(lct.findRoot(3)).toBe(0)
+    })
+
+    it('multiple cuts create forest', () => {
+      const lct = buildRootedChain(6)
+      lct.cut(2)
+      lct.cut(4)
+      expect(lct.connected(0, 1)).toBe(true)
+      expect(lct.connected(2, 3)).toBe(true)
+      expect(lct.connected(4, 5)).toBe(true)
+      expect(lct.connected(0, 2)).toBe(false)
+      expect(lct.connected(2, 4)).toBe(false)
+      expect(lct.connected(0, 4)).toBe(false)
+      expect(lct.findRoot(0)).toBe(0)
+      expect(lct.findRoot(2)).toBe(2)
+      expect(lct.findRoot(4)).toBe(4)
+    })
+  })
 })
