@@ -39,7 +39,8 @@ class SparseTable {
 
 export function buildLCPArray(s: string, sa: number[]): number[] {
   const n = s.length;
-  const lcp = new Array(n - 1).fill(0);
+  if (n === 0) return [];
+  const lcp = new Array(n).fill(0);
   const rank = new Array(n).fill(0);
 
   for (let i = 0; i < n; i++) {
@@ -65,7 +66,7 @@ export function buildLCPArray(s: string, sa: number[]): number[] {
     }
   }
 
-  return lcp;
+  return lcp.slice(1);
 }
 
 export class LCPArray {
@@ -87,15 +88,16 @@ export class LCPArray {
     this.s = s;
     this.sa = sa;
     this.lcp = buildLCPArray(s, sa);
-    this._length = this.lcp.length;
+    this._length = s.length;
     this.sparseTable = options.enableRMQ ? new SparseTable(this.lcp) : null;
   }
 
   getLCP(i: number): number {
-    if (i < 0 || i >= this.lcp.length) {
+    if (i === 0) return 0;
+    if (i < 1 || i > this.lcp.length) {
       return 0;
     }
-    return this.lcp[i]!;
+    return this.lcp[i - 1]!;
   }
 
   getLCPBetween(i: number, j: number): number {
