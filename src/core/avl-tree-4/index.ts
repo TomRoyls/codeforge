@@ -1,0 +1,312 @@
+export class AVLTree4<T> {
+  private root: Node<T> | null = null;
+  private compare: (a: T, b: T) => number;
+  private _size: number = 0;
+
+  constructor(compare?: (a: T, b: T) => number) {
+    this.compare = compare || ((a: T, b: T) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+  }
+
+  insert(value: T): void {
+    this.root = this._insert(this.root, value);
+  }
+
+  private _insert(node: Node<T> | null, value: T): Node<T> {
+    if (node === null) {
+      this._size++;
+      return { value, left: null, right: null, height: 1 };
+    }
+
+    const cmp = this.compare(value, node.value);
+    if (cmp < 0) {
+      node.left = this._insert(node.left, value);
+    } else if (cmp > 0) {
+      node.right = this._insert(node.right, value);
+    } else {
+      return node;
+    }
+
+    this.updateHeight(node);
+    return this.balance(node);
+  }
+
+  remove(value: T): boolean {
+    const result = this._remove(this.root, value);
+    if (result.removed) {
+      this.root = result.node;
+      this._size--;
+      return true;
+    }
+    return false;
+  }
+
+  private _remove(node: Node<T> | null, value: T): { removed: boolean; node: Node<T> | null } {
+    if (node === null) return { removed: false, node: null };
+
+    const cmp = this.compare(value, node.value);
+    if (cmp < 0) {
+      const result = this._remove(node.left, value);
+      node.left = result.node;
+      if (result.removed) {
+        this.updateHeight(node);
+        return { removed: true, node: this.balance(node) };
+      }
+      return { removed: false, node };
+    } else if (cmp > 0) {
+      const result = this._remove(node.right, value);
+      node.right = result.node;
+      if (result.removed) {
+        this.updateHeight(node);
+        return { removed: true, node: this.balance(node) };
+      }
+      return { removed: false, node };
+    } else {
+      if (node.left === null) return { removed: true, node: node.right };
+      if (node.right === null) return { removed: true, node: node.left };
+
+      const successor = this._minNode(node.right);
+      node.value = successor.value;
+      const result = this._remove(node.right, successor.value);
+      node.right = result.node;
+      this.updateHeight(node);
+      return { removed: true, node: this.balance(node) };
+    }
+  }
+
+  private _minNode(node: Node<T>): Node<T> {
+    while (node.left !== null) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  private _maxNode(node: Node<T>): Node<T> {
+    while (node.right !== null) {
+      node = node.right;
+    }
+    return node;
+  }
+
+  search(value: T): boolean {
+    return this._search(this.root, value);
+  }
+
+  private _search(node: Node<T> | null, value: T): boolean {
+    if (node === null) return false;
+    const cmp = this.compare(value, node.value);
+    if (cmp < 0) return this._search(node.left, value);
+    if (cmp > 0) return this._search(node.right, value);
+    return true;
+  }
+
+  contains(value: T): boolean {
+    return this.search(value);
+  }
+
+  min(): T | undefined {
+    if (this.root === null) return undefined;
+    return this._minNode(this.root).value;
+  }
+
+  max(): T | undefined {
+    if (this.root === null) return undefined;
+    return this._maxNode(this.root).value;
+  }
+
+  get size(): number {
+    return this._size;
+  }
+
+  get isEmpty(): boolean {
+    return this._size === 0;
+  }
+
+  clear(): void {
+    this.root = null;
+    this._size = 0;
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    this._inorder(this.root, result);
+    return result;
+  }
+
+  private _inorder(node: Node<T> | null, result: T[]): void {
+    if (node === null) return;
+    this._inorder(node.left, result);
+    result.push(node.value);
+    this._inorder(node.right, result);
+  }
+
+  forEach(callback: (value: T) => void): void {
+    const stack: Node<T>[] = [];
+    let current: Node<T> | null = this.root;
+
+    while (stack.length > 0 || current !== null) {
+      while (current !== null) {
+        stack.push(current);
+        current = current.left;
+      }
+      current = stack.pop()!;
+      callback(current.value);
+      current = current.right;
+    }
+  }
+
+  predecessor(value: T): T | undefined {
+    if (this.root === null) return undefined;
+    let pred: T | undefined = undefined;
+    let node: Node<T> | null = this.root;
+
+    while (node !== null) {
+      const cmp = this.compare(value, node.value);
+      if (cmp > 0) {
+        pred = node.value;
+        node = node.right;
+      } else {
+        node = node.left;
+      }
+    }
+    return pred;
+  }
+
+  successor(value: T): T | undefined {
+    if (this.root === null) return undefined;
+    let succ: T | undefined = undefined;
+    let node: Node<T> | null = this.root;
+
+    while (node !== null) {
+      const cmp = this.compare(value, node.value);
+      if (cmp < 0) {
+        succ = node.value;
+        node = node.left;
+      } else {
+        node = node.right;
+      }
+    }
+    return succ;
+  }
+
+  rangeSearch(low: T, high: T): T[] {
+    const result: T[] = [];
+    this._rangeSearch(this.root, low, high, result);
+    return result;
+  }
+
+  private _rangeSearch(node: Node<T> | null, low: T, high: T, result: T[]): void {
+    if (node === null) return;
+
+    const cmpLow = this.compare(node.value, low);
+    const cmpHigh = this.compare(node.value, high);
+
+    if (cmpLow > 0) {
+      this._rangeSearch(node.left, low, high, result);
+    }
+
+    if (cmpLow >= 0 && cmpHigh <= 0) {
+      result.push(node.value);
+    }
+
+    if (cmpHigh < 0) {
+      this._rangeSearch(node.right, low, high, result);
+    }
+  }
+
+  height(): number {
+    return this.getHeight();
+  }
+
+  getHeight(): number {
+    return this.root ? this.root.height : 0;
+  }
+
+  private updateHeight(node: Node<T>): void {
+    const leftHeight = node.left ? node.left.height : 0;
+    const rightHeight = node.right ? node.right.height : 0;
+    node.height = Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  private getBalance(node: Node<T>): number {
+    const leftHeight = node.left ? node.left.height : 0;
+    const rightHeight = node.right ? node.right.height : 0;
+    return leftHeight - rightHeight;
+  }
+
+  private balance(node: Node<T>): Node<T> {
+    const balance = this.getBalance(node);
+
+    if (balance > 1) {
+      if (this.getBalance(node.left!) >= 0) {
+        return this.rotateRight(node);
+      } else {
+        node.left = this.rotateLeft(node.left!);
+        return this.rotateRight(node);
+      }
+    }
+
+    if (balance < -1) {
+      if (this.getBalance(node.right!) <= 0) {
+        return this.rotateLeft(node);
+      } else {
+        node.right = this.rotateRight(node.right!);
+        return this.rotateLeft(node);
+      }
+    }
+
+    return node;
+  }
+
+  private rotateLeft(y: Node<T>): Node<T> {
+    const x = y.right!;
+    const T2 = x.left;
+
+    x.left = y;
+    y.right = T2;
+
+    this.updateHeight(y);
+    this.updateHeight(x);
+
+    return x;
+  }
+
+  private rotateRight(x: Node<T>): Node<T> {
+    const y = x.left!;
+    const T2 = y.right;
+
+    y.right = x;
+    x.left = T2;
+
+    this.updateHeight(x);
+    this.updateHeight(y);
+
+    return y;
+  }
+
+  _isBalanced(): boolean {
+    return this._checkBalance(this.root) !== false;
+  }
+
+  private _checkBalance(node: Node<T> | null): number | false {
+    if (node === null) return 0;
+
+    const left = this._checkBalance(node.left);
+    const right = this._checkBalance(node.right);
+
+    if (left === false || right === false) return false;
+    if (Math.abs(left - right) > 1) return false;
+
+    return Math.max(left, right) + 1;
+  }
+}
+
+interface Node<T> {
+  value: T;
+  left: Node<T> | null;
+  right: Node<T> | null;
+  height: number;
+}
