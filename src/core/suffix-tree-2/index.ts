@@ -82,8 +82,9 @@ export class SuffixTree {
           if (
             this.text[child.start + activeLength]! === this.text[i]!
           ) {
-            if (lastNewNode !== null && activeNode !== this.root) {
+            if (lastNewNode !== null) {
               lastNewNode.suffixLink = activeNode;
+              lastNewNode = null;
             }
             activeLength++;
             break;

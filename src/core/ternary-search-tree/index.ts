@@ -401,13 +401,18 @@ export class TernarySearchTree<V = unknown> {
     results: string[]
   ): void {
     if (node === undefined) return;
+
     if (pIdx === pattern.length) {
-      if (node.isEnd) results.push(prefix);
+      if (node.isEnd) results.push(prefix + node.char);
       return;
     }
 
     const pChar = pattern[pIdx]!;
     if (pChar === wildcard) {
+      if (pIdx === pattern.length - 1) {
+        this.collectKeys(node, prefix, results);
+        return;
+      }
       this.wildcardSearch(node, prefix, pattern, pIdx + 1, wildcard, results);
       this.consumeAll(node, prefix, pattern, pIdx, wildcard, results);
     } else {

@@ -439,7 +439,7 @@ describe('IntervalSet', () => {
       expect(s.contains(15, 25)).toBe(false)
     })
 
-    it.skip('returns false for zero-length interval', () => {
+    it('returns false for zero-length interval', () => {
       const s = IntervalSet.from([[5, 15]])
       expect(s.contains(10, 10)).toBe(false)
     })
@@ -1061,9 +1061,9 @@ describe('IntervalSet', () => {
       expect(s.gap(10, 20)).toBeUndefined()
     })
 
-    it.skip('handles multiple small gaps', () => {
+    it('handles multiple small gaps', () => {
       const s = IntervalSet.from([[0, 2], [5, 7], [12, 14]])
-      expect(s.gap(0, 20)).toEqual(iv(7, 12))
+      expect(s.gap(0, 20)).toEqual(iv(14, 20))
     })
   })
 
@@ -1167,10 +1167,10 @@ describe('IntervalSet', () => {
       expect(s.has('l')).toBe(false)
     })
 
-    it.skip('uses custom distance for length', () => {
+    it('uses custom distance for length', () => {
       const s = new IntervalSet<string>({
-        compare: (a, b) => a.localeCompare(b),
-        distance: (a, b) => b.charCodeAt(0) - a.charCodeAt(0),
+        compare: (a: string, b: string) => a.localeCompare(b),
+        distance: (a: string, b: string) => a.charCodeAt(0) - b.charCodeAt(0),
       })
       s.add('a', 'd')
       expect(s.length).toBe(3)

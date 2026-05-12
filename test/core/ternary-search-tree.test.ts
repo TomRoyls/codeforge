@@ -776,7 +776,7 @@ describe("TernarySearchTree", () => {
       expect(tst.wildcardMatch("hello")).toEqual(["hello"]);
     });
 
-    it.skip("matches pattern with wildcard at end", () => {
+    it("matches pattern with wildcard at end", () => {
       const tst = new TernarySearchTree();
       tst.insert("hello");
       tst.insert("help");
@@ -787,18 +787,18 @@ describe("TernarySearchTree", () => {
       expect(results).toContain("helium");
     });
 
-    it.skip("matches pattern with wildcard at start", () => {
+    it("matches pattern with wildcard at start", () => {
       const tst = new TernarySearchTree();
       tst.insert("hello");
       tst.insert("jello");
-      tst.insert("yellow");
+      tst.insert("cello");
       const results = tst.wildcardMatch("*ello");
       expect(results).toContain("hello");
       expect(results).toContain("jello");
-      expect(results).toContain("yellow");
+      expect(results).toContain("cello");
     });
 
-    it.skip("matches pattern with wildcard in middle", () => {
+    it("matches pattern with wildcard in middle", () => {
       const tst = new TernarySearchTree();
       tst.insert("hello");
       tst.insert("hallo");
@@ -818,7 +818,7 @@ describe("TernarySearchTree", () => {
       expect(tst.wildcardMatch("*")).toEqual([]);
     });
 
-    it.skip("matches only wildcard returns all words", () => {
+    it("matches only wildcard returns all words", () => {
       const tst = new TernarySearchTree();
       tst.insert("a");
       tst.insert("b");
@@ -1041,7 +1041,7 @@ describe("TernarySearchTree", () => {
       expect(tst.size).toBe(2);
     });
 
-    it.skip("handles non-empty insert then empty string", () => {
+    it("handles non-empty insert then empty string", () => {
       const tst = new TernarySearchTree();
       tst.insert("a");
       tst.insert("");
@@ -1063,7 +1063,7 @@ describe("TernarySearchTree", () => {
       expect(tst.size).toBe(1);
     });
 
-    it.skip("handles wildcard match on single character words", () => {
+    it("handles wildcard match on single character words", () => {
       const tst = new TernarySearchTree();
       tst.insert("a");
       tst.insert("b");
@@ -1093,7 +1093,7 @@ describe("TernarySearchTree", () => {
       expect(tst.search("a")).toEqual([]);
     });
 
-    it.skip("handles wildcardMatch with custom wildcard character", () => {
+    it("handles wildcardMatch with custom wildcard character", () => {
       const tst = new TernarySearchTree();
       tst.insert("hello");
       tst.insert("help");

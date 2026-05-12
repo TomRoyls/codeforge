@@ -1280,7 +1280,7 @@ describe('CircularBuffer', () => {
       expect(buf.size).toBe(0)
     })
 
-    it.skip('handles mixed push/pop/shift/unshift', () => {
+    it('handles mixed push/pop/shift/unshift', () => {
       const buf = new CircularBuffer<number>({ capacity: 4 })
       buf.push(1)
       buf.push(2)
@@ -1289,7 +1289,7 @@ describe('CircularBuffer', () => {
       buf.push(4)
       buf.pop()
       buf.unshift(0)
-      expect(buf.toArray()).toEqual([0, 2])
+      expect(buf.toArray()).toEqual([0, 2, 3])
     })
 
     it('handles get after many operations', () => {

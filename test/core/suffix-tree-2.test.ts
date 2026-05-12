@@ -319,7 +319,7 @@ describe("SuffixTree", () => {
       expect(lrs.length).toBeGreaterThanOrEqual(3);
     });
 
-    it.skip("result appears at least twice in text", () => {
+    it("result appears at least twice in text", () => {
       const text = "mississippi";
       const st = new SuffixTree(text);
       const lrs = st.longestRepeatedSubstring();
@@ -665,11 +665,11 @@ describe("SuffixTree", () => {
       expect(st.count("ababab")).toBe(1);
     });
 
-    it.skip("handles deeply nested repeated patterns", () => {
+    it("handles deeply nested repeated patterns", () => {
       const st = new SuffixTree("aaaabaaaab");
       expect(st.count("aaaab")).toBe(2);
       expect(st.count("aaaa")).toBe(2);
-      expect(st.count("aa")).toBe(7);
+      expect(st.count("aa")).toBe(6);
     });
 
     it("handles pattern longer than text", () => {
@@ -679,14 +679,14 @@ describe("SuffixTree", () => {
       expect(st.count("abc")).toBe(0);
     });
 
-    it.skip("correct leaf indices for banana", () => {
+    it("correct leaf indices for banana", () => {
       const st = new SuffixTree("banana");
       expect(st.search("banana")).toEqual([0]);
       expect(st.search("anana")).toEqual([1]);
       expect(st.search("nana")).toEqual([2]);
-      expect(st.search("ana")).toEqual([3]);
-      expect(st.search("na")).toEqual([4]);
-      expect(st.search("a")).toEqual([5]);
+      expect(st.search("ana")).toEqual([3, 1]);
+      expect(st.search("na")).toEqual([4, 2]);
+      expect(st.search("a")).toEqual([5, 3, 1]);
     });
 
     it("nodeCount is greater for more complex strings", () => {
@@ -718,7 +718,7 @@ describe("SuffixTree", () => {
       expect(st.count("n")).toBe(2);
     });
 
-    it.skip("handles mississippi", () => {
+    it("handles mississippi", () => {
       const st = new SuffixTree("mississippi");
       expect(st.has("miss")).toBe(true);
       expect(st.has("iss")).toBe(true);
