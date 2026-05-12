@@ -94,7 +94,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.get(5)).toBe(false);
     });
 
-    it.skip("should clear one of multiple bits", () => {
+    it("should clear one of multiple bits", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(5);
       bitmap.set(10);
@@ -106,7 +106,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.cardinality).toBe(2);
     });
 
-    it.skip("should not clear negative bits", () => {
+    it("should not clear negative bits", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(5);
       bitmap.clear(-1);
@@ -120,7 +120,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.get(0)).toBe(false);
     });
 
-    it.skip("should clear bits across chunk boundaries", () => {
+    it("should clear bits across chunk boundaries", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(31);
       bitmap.set(32);
@@ -326,7 +326,7 @@ describe("SparseBitmap", () => {
   });
 
   describe("clearRange", () => {
-    it.skip("should clear range of bits", () => {
+    it("should clear range of bits", () => {
       const bitmap = new SparseBitmap();
       bitmap.setRange(0, 20);
       bitmap.clearRange(5, 10);
@@ -362,7 +362,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.cardinality).toBe(11);
     });
 
-    it.skip("should clear range across chunk boundaries", () => {
+    it("should clear range across chunk boundaries", () => {
       const bitmap = new SparseBitmap();
       bitmap.setRange(20, 45);
       bitmap.clearRange(30, 35);
@@ -404,7 +404,7 @@ describe("SparseBitmap", () => {
       expect(bitmap.cardinality).toBe(3);
     });
 
-    it.skip("should update after set and clear", () => {
+    it("should update after set and clear", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(5);
       expect(bitmap.cardinality).toBe(1);
@@ -547,7 +547,7 @@ describe("SparseBitmap", () => {
       expect(array).toContain(1000);
     });
 
-    it.skip("should reflect changes", () => {
+    it("should reflect changes", () => {
       const bitmap = new SparseBitmap();
       bitmap.set(5);
       bitmap.set(10);
