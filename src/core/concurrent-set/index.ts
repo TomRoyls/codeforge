@@ -1,0 +1,278 @@
+import type { ConcurrentSetOptions, HashFunction, Comparator, LockState } from './types.js'
+
+type PendingOp = () => void
+
+export class ConcurrentSet<T> {
+  private data: Map<string, T> = new Map()
+  private _size = 0
+  private hash: HashFunction<T>
+  private compare: Comparator<T>
+  private lockState: LockState = 'unlocked'
+  private pendingOps: PendingOp[] = []
+  private operationQueue: PendingOp[] = []
+  private queueProcessing = false
+
+  constructor(options?: ConcurrentSetOptions<T>, initialValues?: Iterable<T>) {
+    this.hash = options?.hash ?? ((v: T) => String(v))
+    this.compare =
+      options?.compare ?? ((a: T, b: T) => (a < b ? -1 : a > b ? 1 : 0))
+    if (initialValues) {
+      for (const v of initialValues) {
+        this.addInternal(v)
+      }
+    }
+  }
+
+  private addInternal(value: T): boolean {
+    const key = this.hash(value)
+    if (this.data.has(key)) {
+      return false
+    }
+    this.data.set(key, value)
+    this._size++
+    return true
+  }
+
+  private deleteInternal(value: T): boolean {
+    const key = this.hash(value)
+    if (!this.data.has(key)) {
+      return false
+    }
+    this.data.delete(key)
+    this._size--
+    return true
+  }
+
+  private enqueue(op: PendingOp): void {
+    this.operationQueue.push(op)
+    if (!this.queueProcessing) {
+      this.drainQueue()
+    }
+  }
+
+  private drainQueue(): void {
+    this.queueProcessing = true
+    while (this.operationQueue.length > 0) {
+      const op = this.operationQueue.shift()!
+      op()
+    }
+    this.queueProcessing = false
+  }
+
+  private checkIsLocked(): boolean {
+    return this.lockState === 'locked'
+  }
+
+  add(value: T): boolean {
+    if (this.checkIsLocked()) {
+      let result = false
+      this.enqueue(() => {
+        result = this.addInternal(value)
+      })
+      return result
+    }
+    return this.addInternal(value)
+  }
+
+  delete(value: T): boolean {
+    if (this.checkIsLocked()) {
+      let result = false
+      this.enqueue(() => {
+        result = this.deleteInternal(value)
+      })
+      return result
+    }
+    return this.deleteInternal(value)
+  }
+
+  has(value: T): boolean {
+    const key = this.hash(value)
+    return this.data.has(key)
+  }
+
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    if (this.checkIsLocked()) {
+      this.enqueue(() => {
+        this.data.clear()
+        this._size = 0
+      })
+      return
+    }
+    this.data.clear()
+    this._size = 0
+  }
+
+  values(): T[] {
+    return Array.from(this.data.values())
+  }
+
+  toArray(): T[] {
+    return this.values()
+  }
+
+  forEach(callback: (value: T, index: number) => void): void {
+    let idx = 0
+    for (const value of this.data.values()) {
+      callback(value, idx)
+      idx++
+    }
+  }
+
+  [Symbol.iterator](): Iterator<T> {
+    const arr = this.values()
+    let idx = 0
+    return {
+      next: () => {
+        if (idx < arr.length) {
+          const value = arr[idx]!
+          idx++
+          return { value, done: false }
+        }
+        return { value: undefined, done: true } as IteratorResult<T>
+      },
+    }
+  }
+
+  union(other: ConcurrentSet<T>): ConcurrentSet<T> {
+    const result = new ConcurrentSet<T>(
+      { hash: this.hash, compare: this.compare },
+      this.values(),
+    )
+    for (const v of other) {
+      result.add(v)
+    }
+    return result
+  }
+
+  intersection(other: ConcurrentSet<T>): ConcurrentSet<T> {
+    const result = new ConcurrentSet<T>({
+      hash: this.hash,
+      compare: this.compare,
+    })
+    for (const v of this) {
+      if (other.has(v)) {
+        result.add(v)
+      }
+    }
+    return result
+  }
+
+  difference(other: ConcurrentSet<T>): ConcurrentSet<T> {
+    const result = new ConcurrentSet<T>({
+      hash: this.hash,
+      compare: this.compare,
+    })
+    for (const v of this) {
+      if (!other.has(v)) {
+        result.add(v)
+      }
+    }
+    return result
+  }
+
+  symmetricDifference(other: ConcurrentSet<T>): ConcurrentSet<T> {
+    const result = new ConcurrentSet<T>({
+      hash: this.hash,
+      compare: this.compare,
+    })
+    for (const v of this) {
+      if (!other.has(v)) {
+        result.add(v)
+      }
+    }
+    for (const v of other) {
+      if (!this.has(v)) {
+        result.add(v)
+      }
+    }
+    return result
+  }
+
+  isSubsetOf(other: ConcurrentSet<T>): boolean {
+    if (this._size > other.size) return false
+    for (const v of this) {
+      if (!other.has(v)) return false
+    }
+    return true
+  }
+
+  isSupersetOf(other: ConcurrentSet<T>): boolean {
+    return other.isSubsetOf(this)
+  }
+
+  equals(other: ConcurrentSet<T>): boolean {
+    if (this._size !== other.size) return false
+    for (const v of this) {
+      if (!other.has(v)) return false
+    }
+    return true
+  }
+
+  clone(): ConcurrentSet<T> {
+    return new ConcurrentSet<T>(
+      { hash: this.hash, compare: this.compare },
+      this.values(),
+    )
+  }
+
+  static fromArray<T>(
+    items: T[],
+    options?: ConcurrentSetOptions<T>,
+  ): ConcurrentSet<T> {
+    return new ConcurrentSet<T>(options, items)
+  }
+
+  snapshot(): T[] {
+    return Array.from(this.data.values())
+  }
+
+  lock(): void {
+    this.lockState = 'locked'
+  }
+
+  unlock(): void {
+    this.lockState = 'unlocked'
+    this.pendingOps.forEach((op) => op())
+    this.pendingOps = []
+  }
+
+  tryLock(): boolean {
+    if (this.lockState === 'locked') return false
+    this.lockState = 'locked'
+    return true
+  }
+
+  withLock<R>(callback: () => R): R {
+    this.lock()
+    try {
+      return callback()
+    } finally {
+      this.unlock()
+    }
+  }
+
+  transaction<R>(callback: (set: ConcurrentSet<T>) => R): R {
+    const backup = new Map(this.data)
+    const backupSize = this._size
+    try {
+      this.lock()
+      const result = callback(this)
+      this.unlock()
+      return result
+    } catch (e) {
+      this.data = backup
+      this._size = backupSize
+      this.lockState = 'unlocked'
+      this.pendingOps = []
+      throw e
+    }
+  }
+}
