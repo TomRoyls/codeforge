@@ -1,3 +1,3 @@
-export interface ZipTreeOptions<T> {
-  comparator?: (a: T, b: T) => number
+export interface ZipTreeOptions<K, _V = unknown> {
+  comparator?: (a: K, b: K) => number;
 }

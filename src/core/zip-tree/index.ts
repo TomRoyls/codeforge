@@ -1,209 +1,285 @@
-import type { ZipTreeOptions } from './types.js'
+import type { ZipTreeOptions } from './types.js';
 
-export type { ZipTreeOptions } from './types.js'
+export type { ZipTreeOptions } from './types.js';
 
-class ZipNode<T> {
-  value: T
-  rank: number
-  left: ZipNode<T> | null = null
-  right: ZipNode<T> | null = null
+type ZipNode<K, V> = {
+  key: K;
+  value: V;
+  rank: number;
+  left: ZipNode<K, V> | null;
+  right: ZipNode<K, V> | null;
+};
 
-  constructor(value: T, rank: number) {
-    this.value = value
-    this.rank = rank
-  }
-}
+export class ZipTree<K, V> {
+  private root: ZipNode<K, V> | null = null;
+  private _size: number = 0;
+  private compare: (a: K, b: K) => number;
 
-export class ZipTree<T> {
-  private root: ZipNode<T> | null = null
-  private _size: number = 0
-  private compare: (a: T, b: T) => number
-
-  constructor(options?: ZipTreeOptions<T>) {
+  constructor(options?: ZipTreeOptions<K, V>) {
     this.compare =
       options?.comparator ??
-      ((a: T, b: T) => {
-        if (a < b) return -1
-        if (a > b) return 1
-        return 0
-      })
+      ((a: K, b: K) => {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+      });
   }
 
   private generateRank(): number {
-    return Math.floor(Math.random() * 2147483647)
+    return Math.floor(Math.random() * 2147483647);
   }
 
-  private split(
-    node: ZipNode<T> | null,
-    key: T,
-  ): [ZipNode<T> | null, ZipNode<T> | null] {
-    if (node === null) return [null, null]
-    if (this.compare(node.value, key) < 0) {
-      const [left, right] = this.split(node.right, key)
-      node.right = left
-      return [node, right]
+  private zip(
+    left: ZipNode<K, V> | null,
+    right: ZipNode<K, V> | null
+  ): ZipNode<K, V> | null {
+    if (left === null) return right;
+    if (right === null) return left;
+    if (left.rank >= right.rank) {
+      const newRight = this.zip(left.right, right);
+      return { ...left, right: newRight };
     }
-    const [left, right] = this.split(node.left, key)
-    node.left = right
-    return [left, node]
+    const newLeft = this.zip(left, right.left);
+    return { ...right, left: newLeft };
   }
 
-  private merge(a: ZipNode<T> | null, b: ZipNode<T> | null): ZipNode<T> | null {
-    if (a === null) return b
-    if (b === null) return a
-    if (a.rank >= b.rank) {
-      a.right = this.merge(a.right, b)
-      return a
+  private unzip(
+    node: ZipNode<K, V> | null,
+    key: K
+  ): [ZipNode<K, V> | null, ZipNode<K, V> | null] {
+    if (node === null) return [null, null];
+    const cmp = this.compare(key, node.key);
+    if (cmp < 0) {
+      const [left, right] = this.unzip(node.left, key);
+      return [left, this.zip(right, node)];
     }
-    b.left = this.merge(a, b.left)
-    return b
+    const [left, right] = this.unzip(node.right, key);
+    return [this.zip(node, left), right];
   }
 
-  private findMinNode(node: ZipNode<T>): ZipNode<T> {
-    let current = node
-    while (current.left !== null) {
-      current = current.left
+  insert(key: K, value: V): void {
+    const [left, right] = this.unzip(this.root, key);
+    let newRight = right;
+    let existingKey = false;
+
+    if (right !== null) {
+      const minNode = this.findMin(right);
+      if (this.compare(key, minNode!.key) === 0) {
+        existingKey = true;
+        const newMin = { ...minNode!, value };
+        const [, newRightWithoutMin] = this.unzip(right, key);
+        newRight = this.zip(newMin, newRightWithoutMin);
+      }
     }
-    return current
-  }
 
-  private deleteMin(node: ZipNode<T>): ZipNode<T> | null {
-    if (node.left === null) return node.right
-    node.left = this.deleteMin(node.left)
-    return node
-  }
-
-  insert(item: T): void {
-    const [left, right] = this.split(this.root, item)
-    if (right !== null && this.compare(item, this.findMinNode(right).value) === 0) {
-      this.root = this.merge(left, right)
-      return
+    if (!existingKey) {
+      const newNode: ZipNode<K, V> = {
+        key,
+        value,
+        rank: this.generateRank(),
+        left: null,
+        right: null,
+      };
+      newRight = this.zip(newNode, right);
+      this._size++;
     }
-    const newNode = new ZipNode(item, this.generateRank())
-    newNode.left = left
-    newNode.right = right
-    this.root = newNode
-    this._size++
+
+    this.root = this.zip(left, newRight);
   }
 
-  delete(item: T): boolean {
-    const [left, right] = this.split(this.root, item)
-    if (right === null || this.compare(item, this.findMinNode(right).value) !== 0) {
-      this.root = this.merge(left, right)
-      return false
+  delete(key: K): boolean {
+    const [left, right] = this.unzip(this.root, key);
+    if (right === null) {
+      this.root = left;
+      return false;
     }
-    const newRight = this.deleteMin(right)
-    this.root = this.merge(left, newRight)
-    this._size--
-    return true
+
+    const minNode = this.findMin(right);
+    if (this.compare(key, minNode!.key) !== 0) {
+      this.root = this.zip(left, right);
+      return false;
+    }
+
+    const [, newRight] = this.unzip(right, key);
+    this.root = this.zip(left, newRight);
+    this._size--;
+    return true;
   }
 
-  has(item: T): boolean {
-    return this.findNode(this.root, item) !== null
+  get(key: K): V | undefined {
+    const node = this.findNode(this.root, key);
+    return node?.value;
   }
 
-  private findNode(node: ZipNode<T> | null, item: T): ZipNode<T> | null {
-    let current = node
+  has(key: K): boolean {
+    return this.findNode(this.root, key) !== null;
+  }
+
+  private findNode(node: ZipNode<K, V> | null, key: K): ZipNode<K, V> | null {
+    let current = node;
     while (current !== null) {
-      const cmp = this.compare(item, current.value)
-      if (cmp === 0) return current
-      current = cmp < 0 ? current.left : current.right
+      const cmp = this.compare(key, current.key);
+      if (cmp === 0) return current;
+      current = cmp < 0 ? current.left : current.right;
     }
-    return null
-  }
-
-  search(item: T): T | undefined {
-    const node = this.findNode(this.root, item)
-    return node?.value
-  }
-
-  min(): T | undefined {
-    if (this.root === null) return undefined
-    let current = this.root
-    while (current.left !== null) {
-      current = current.left
-    }
-    return current.value
-  }
-
-  max(): T | undefined {
-    if (this.root === null) return undefined
-    let current = this.root
-    while (current.right !== null) {
-      current = current.right
-    }
-    return current.value
+    return null;
   }
 
   size(): number {
-    return this._size
+    return this._size;
   }
 
   isEmpty(): boolean {
-    return this._size === 0
+    return this._size === 0;
   }
 
   clear(): void {
-    this.root = null
-    this._size = 0
+    this.root = null;
+    this._size = 0;
   }
 
-  toArray(): T[] {
-    const result: T[] = []
-    this.inOrder(this.root, result)
-    return result
+  toArray(): [K, V][] {
+    const result: [K, V][] = [];
+    this.inOrder(this.root, result);
+    return result;
   }
 
-  private inOrder(node: ZipNode<T> | null, result: T[]): void {
-    if (node === null) return
-    this.inOrder(node.left, result)
-    result.push(node.value)
-    this.inOrder(node.right, result)
+  private inOrder(
+    node: ZipNode<K, V> | null,
+    result: [K, V][]
+  ): void {
+    if (node === null) return;
+    this.inOrder(node.left, result);
+    result.push([node.key, node.value]);
+    this.inOrder(node.right, result);
   }
 
-  forEach(callback: (item: T) => void): void {
-    this.inOrderForEach(this.root, callback)
+  forEach(callback: (value: V, key: K) => void): void {
+    this.inOrderForEach(this.root, callback);
   }
 
-  private inOrderForEach(node: ZipNode<T> | null, callback: (item: T) => void): void {
-    if (node === null) return
-    this.inOrderForEach(node.left, callback)
-    callback(node.value)
-    this.inOrderForEach(node.right, callback)
+  private inOrderForEach(
+    node: ZipNode<K, V> | null,
+    callback: (value: V, key: K) => void
+  ): void {
+    if (node === null) return;
+    this.inOrderForEach(node.left, callback);
+    callback(node.value, node.key);
+    this.inOrderForEach(node.right, callback);
   }
 
-  *[Symbol.iterator](): Iterator<T> {
-    yield* this.inOrderGenerator(this.root)
+  min(): K | undefined {
+    if (this.root === null) return undefined;
+    return this.findMin(this.root)!.key;
   }
 
-  private *inOrderGenerator(node: ZipNode<T> | null): Generator<T> {
-    if (node === null) return
-    yield* this.inOrderGenerator(node.left)
-    yield node.value
-    yield* this.inOrderGenerator(node.right)
+  private findMin(node: ZipNode<K, V>): ZipNode<K, V> {
+    let current = node;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current;
   }
 
-  height(): number {
-    return this.computeHeight(this.root)
+  max(): K | undefined {
+    if (this.root === null) return undefined;
+    let current = this.root;
+    while (current.right !== null) {
+      current = current.right;
+    }
+    return current.key;
   }
 
-  private computeHeight(node: ZipNode<T> | null): number {
-    if (node === null) return 0
-    return 1 + Math.max(this.computeHeight(node.left), this.computeHeight(node.right))
+  floor(key: K): K | undefined {
+    let result: K | undefined = undefined;
+    let current = this.root;
+    while (current !== null) {
+      const cmp = this.compare(key, current.key);
+      if (cmp === 0) return current.key;
+      if (cmp > 0) {
+        result = current.key;
+        current = current.right;
+      } else {
+        current = current.left;
+      }
+    }
+    return result;
   }
 
-  clone(): ZipTree<T> {
-    const cloned = new ZipTree<T>({ comparator: this.compare })
-    cloned.root = this.cloneNode(this.root)
-    cloned._size = this._size
-    return cloned
+  ceiling(key: K): K | undefined {
+    let result: K | undefined = undefined;
+    let current = this.root;
+    while (current !== null) {
+      const cmp = this.compare(key, current.key);
+      if (cmp === 0) return current.key;
+      if (cmp < 0) {
+        result = current.key;
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+    return result;
   }
 
-  private cloneNode(node: ZipNode<T> | null): ZipNode<T> | null {
-    if (node === null) return null
-    const copy = new ZipNode(node.value, node.rank)
-    copy.left = this.cloneNode(node.left)
-    copy.right = this.cloneNode(node.right)
-    return copy
+  *[Symbol.iterator](): Generator<[K, V]> {
+    yield* this.inOrderGenerator(this.root);
+  }
+
+  private *inOrderGenerator(
+    node: ZipNode<K, V> | null
+  ): Generator<[K, V]> {
+    if (node === null) return;
+    yield* this.inOrderGenerator(node.left);
+    yield [node.key, node.value];
+    yield* this.inOrderGenerator(node.right);
+  }
+
+  *keys(): Generator<K> {
+    for (const [key] of this) {
+      yield key;
+    }
+  }
+
+  *values(): Generator<V> {
+    for (const [, value] of this) {
+      yield value;
+    }
+  }
+
+  *entries(): Generator<[K, V]> {
+    yield* this[Symbol.iterator]();
+  }
+
+  *range(min?: K, max?: K): Generator<[K, V]> {
+    if (this.root === null) return;
+    yield* this.rangeInOrder(this.root, min, max);
+  }
+
+  private *rangeInOrder(
+    node: ZipNode<K, V> | null,
+    min: K | undefined,
+    max: K | undefined
+  ): Generator<[K, V]> {
+    if (node === null) return;
+
+    if (min === undefined || this.compare(node.key, min) >= 0) {
+      yield* this.rangeInOrder(node.left, min, max);
+    }
+
+    if (
+      (min === undefined || this.compare(node.key, min) >= 0) &&
+      (max === undefined || this.compare(node.key, max) <= 0)
+    ) {
+      yield [node.key, node.value];
+    }
+
+    if (max === undefined || this.compare(node.key, max) <= 0) {
+      yield* this.rangeInOrder(node.right, min, max);
+    }
+  }
+
+  iterator(): Generator<[K, V]> {
+    return this.entries();
   }
 }
