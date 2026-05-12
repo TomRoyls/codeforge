@@ -38,6 +38,11 @@ export class SplitOrderedList<T> {
       return true;
     }
 
+    if (this.head.key === key) {
+      this.head.value = value;
+      return false;
+    }
+
     if (this.head.reversedHash > newNode.reversedHash) {
       newNode.next = this.head;
       this.head = newNode;

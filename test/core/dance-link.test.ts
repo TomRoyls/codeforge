@@ -1074,5 +1074,86 @@ describe('DanceLink', () => {
       const solutions = dl.solve();
       expect(solutions.length).toBe(3);
     });
+
+    it('should handle all true small matrix', () => {
+      const matrix = [
+        [true, true],
+        [true, true],
+        [true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle checkerboard pattern', () => {
+      const matrix = [
+        [true, false, true],
+        [false, true, false],
+        [true, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle alternating pattern', () => {
+      const matrix = [
+        [true, false, true, false],
+        [false, true, false, true],
+        [true, false, true, false],
+        [false, true, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle block matrix', () => {
+      const matrix = [
+        [true, true, false, false],
+        [true, true, false, false],
+        [false, false, true, true],
+        [false, false, true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle cross pattern', () => {
+      const matrix = [
+        [true, false, false, true],
+        [false, true, true, false],
+        [false, true, true, false],
+        [true, false, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle nested dependencies', () => {
+      const matrix = [
+        [true, true, false, false],
+        [false, true, true, false],
+        [false, false, true, true],
+        [true, false, false, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
+
+    it('should handle multiple choice points', () => {
+      const matrix = [
+        [true, false],
+        [false, true],
+        [true, true]
+      ];
+      const dl = new DanceLink(matrix);
+      const solutions = dl.solve();
+      expect(solutions.length).toBeGreaterThan(0);
+    });
   });
 });
