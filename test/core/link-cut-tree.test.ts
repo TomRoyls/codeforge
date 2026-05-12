@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { LinkCutTree } from '../../src/core/link-cut-tree/link-cut-tree'
+import { LinkCutTree } from '../../src/core/link-cut-tree/index.js'
 
 function buildRootedChain(n: number): LinkCutTree {
   const lct = new LinkCutTree(n)

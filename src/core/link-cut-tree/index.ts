@@ -260,6 +260,18 @@ export class LinkCutTree {
     }
   }
 
+  pathMin(u: number, v: number): number {
+    return this.pathAggregate(u, v).min
+  }
+
+  pathMax(u: number, v: number): number {
+    return this.pathAggregate(u, v).max
+  }
+
+  pathSum(u: number, v: number): number {
+    return this.pathAggregate(u, v).sum
+  }
+
   setWeight(node: number, weight: number): void {
     if (node < 0 || node >= this.n) return
     this.access(node)
@@ -272,12 +284,28 @@ export class LinkCutTree {
     return this.nodes[node]!.weight
   }
 
+  getValue(node: number): number {
+    return this.getWeight(node)
+  }
+
+  setValue(node: number, value: number): void {
+    this.setWeight(node, value)
+  }
+
+  get size(): number {
+    return this.n
+  }
+
   getSize(): number {
     return this.n
   }
 
   connected(u: number, v: number): boolean {
     return this.isSameTree(u, v)
+  }
+
+  isConnected(a: number, b: number): boolean {
+    return this.isSameTree(a, b)
   }
 
   clone(): LinkCutTree {
