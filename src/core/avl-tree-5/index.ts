@@ -1,0 +1,267 @@
+type AVLNode<T> = {
+  value: T;
+  left: AVLNode<T> | null;
+  right: AVLNode<T> | null;
+  height: number;
+};
+
+export class AVLTree<T> {
+  private root: AVLNode<T> | null;
+  private comparator: (a: T, b: T) => number;
+  private _size: number;
+
+  constructor(comparator?: (a: T, b: T) => number) {
+    this.root = null;
+    this.comparator = comparator || ((a: T, b: T) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+    this._size = 0;
+  }
+
+  insert(value: T): void {
+    this.root = this.insertNode(this.root, value);
+  }
+
+  private insertNode(node: AVLNode<T> | null, value: T): AVLNode<T> {
+    if (node === null) {
+      this._size++;
+      return { value, left: null, right: null, height: 1 };
+    }
+
+    const cmp = this.comparator(value, node.value);
+    if (cmp < 0) {
+      node.left = this.insertNode(node.left, value);
+    } else if (cmp > 0) {
+      node.right = this.insertNode(node.right, value);
+    } else {
+      return node;
+    }
+
+    node.height = 1 + Math.max(this.nodeHeight(node.left), this.nodeHeight(node.right));
+    return this.balance(node);
+  }
+
+  delete(value: T): boolean {
+    const initialSize = this._size;
+    this.root = this.deleteNode(this.root, value);
+    return this._size < initialSize;
+  }
+
+  private deleteNode(node: AVLNode<T> | null, value: T): AVLNode<T> | null {
+    if (node === null) {
+      return null;
+    }
+
+    const cmp = this.comparator(value, node.value);
+    if (cmp < 0) {
+      node.left = this.deleteNode(node.left, value);
+    } else if (cmp > 0) {
+      node.right = this.deleteNode(node.right, value);
+    } else {
+      this._size--;
+      if (node.left === null) {
+        return node.right;
+      }
+      if (node.right === null) {
+        return node.left;
+      }
+
+      const minNode = this.findMin(node.right)!;
+      node.value = minNode.value;
+      node.right = this.deleteNode(node.right, minNode.value);
+      this._size++;
+    }
+
+    if (node === null) {
+      return null;
+    }
+
+    node.height = 1 + Math.max(this.nodeHeight(node.left), this.nodeHeight(node.right));
+    return this.balance(node);
+  }
+
+  private findMin(node: AVLNode<T>): AVLNode<T> | null {
+    let current = node;
+    while (current!.left !== null) {
+      current = current!.left;
+    }
+    return current;
+  }
+
+  search(value: T): boolean {
+    return this.searchNode(this.root, value);
+  }
+
+  private searchNode(node: AVLNode<T> | null, value: T): boolean {
+    if (node === null) {
+      return false;
+    }
+
+    const cmp = this.comparator(value, node.value);
+    if (cmp < 0) {
+      return this.searchNode(node.left, value);
+    } else if (cmp > 0) {
+      return this.searchNode(node.right, value);
+    }
+    return true;
+  }
+
+  contains(value: T): boolean {
+    return this.search(value);
+  }
+
+  min(): T | undefined {
+    if (this.root === null) {
+      return undefined;
+    }
+    let current = this.root;
+    while (current!.left !== null) {
+      current = current!.left;
+    }
+    return current!.value;
+  }
+
+  max(): T | undefined {
+    if (this.root === null) {
+      return undefined;
+    }
+    let current = this.root;
+    while (current!.right !== null) {
+      current = current!.right;
+    }
+    return current!.value;
+  }
+
+  inOrderTraversal(): T[] {
+    const result: T[] = [];
+    this.inOrder(this.root, result);
+    return result;
+  }
+
+  private inOrder(node: AVLNode<T> | null, result: T[]): void {
+    if (node === null) {
+      return;
+    }
+    this.inOrder(node.left, result);
+    result.push(node.value);
+    this.inOrder(node.right, result);
+  }
+
+  preOrderTraversal(): T[] {
+    const result: T[] = [];
+    this.preOrder(this.root, result);
+    return result;
+  }
+
+  private preOrder(node: AVLNode<T> | null, result: T[]): void {
+    if (node === null) {
+      return;
+    }
+    result.push(node.value);
+    this.preOrder(node.left, result);
+    this.preOrder(node.right, result);
+  }
+
+  postOrderTraversal(): T[] {
+    const result: T[] = [];
+    this.postOrder(this.root, result);
+    return result;
+  }
+
+  private postOrder(node: AVLNode<T> | null, result: T[]): void {
+    if (node === null) {
+      return;
+    }
+    this.postOrder(node.left, result);
+    this.postOrder(node.right, result);
+    result.push(node.value);
+  }
+
+  getHeight(): number {
+    return this.nodeHeight(this.root);
+  }
+
+  private nodeHeight(node: AVLNode<T> | null): number {
+    if (node === null) {
+      return 0;
+    }
+    return node.height;
+  }
+
+  getSize(): number {
+    return this._size;
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0;
+  }
+
+  clear(): void {
+    this.root = null;
+    this._size = 0;
+  }
+
+  toArray(): T[] {
+    return this.inOrderTraversal();
+  }
+
+  getTimeComplexity(): string {
+    return "O(log n) for insert, delete, search, min, max; O(n) for traversals";
+  }
+
+  private balanceFactor(node: AVLNode<T>): number {
+    return this.nodeHeight(node.left) - this.nodeHeight(node.right);
+  }
+
+  private balance(node: AVLNode<T>): AVLNode<T> {
+    const bf = this.balanceFactor(node);
+
+    if (bf > 1) {
+      if (this.balanceFactor(node.left!) >= 0) {
+        return this.rotateRight(node);
+      } else {
+        node.left = this.rotateLeft(node.left!);
+        return this.rotateRight(node);
+      }
+    }
+
+    if (bf < -1) {
+      if (this.balanceFactor(node.right!) <= 0) {
+        return this.rotateLeft(node);
+      } else {
+        node.right = this.rotateRight(node.right!);
+        return this.rotateLeft(node);
+      }
+    }
+
+    return node;
+  }
+
+  private rotateRight(y: AVLNode<T>): AVLNode<T> {
+    const x = y.left!;
+    const T2 = x.right;
+
+    x.right = y;
+    y.left = T2;
+
+    y.height = 1 + Math.max(this.nodeHeight(y.left), this.nodeHeight(y.right));
+    x.height = 1 + Math.max(this.nodeHeight(x.left), this.nodeHeight(x.right));
+
+    return x;
+  }
+
+  private rotateLeft(x: AVLNode<T>): AVLNode<T> {
+    const y = x.right!;
+    const T2 = y.left;
+
+    y.left = x;
+    x.right = T2;
+
+    x.height = 1 + Math.max(this.nodeHeight(x.left), this.nodeHeight(x.right));
+    y.height = 1 + Math.max(this.nodeHeight(y.left), this.nodeHeight(y.right));
+
+    return y;
+  }
+}
