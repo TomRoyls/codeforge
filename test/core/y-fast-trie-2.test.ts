@@ -290,7 +290,7 @@ describe("YFastTrie", () => {
       expect(trie.predecessor(15)).toBe(10);
     });
 
-    it.skip("should work with sequential values", () => {
+    it("should work with sequential values", () => {
       for (let i = 0; i < 100; i++) {
         trie.insert(i);
       }
@@ -377,7 +377,7 @@ describe("YFastTrie", () => {
       expect(trie.successor(5)).toBe(10);
     });
 
-    it.skip("should work with sequential values", () => {
+    it("should work with sequential values", () => {
       for (let i = 0; i < 100; i++) {
         trie.insert(i);
       }
@@ -437,7 +437,7 @@ describe("YFastTrie", () => {
       expect(trie.min()).toBe(0);
     });
 
-    it.skip("should work with sequential values", () => {
+    it("should work with sequential values", () => {
       for (let i = 0; i < 100; i++) {
         trie.insert(i);
       }
@@ -494,7 +494,7 @@ describe("YFastTrie", () => {
       expect(trie.max()).toBe(0);
     });
 
-    it.skip("should work with sequential values", () => {
+    it("should work with sequential values", () => {
       for (let i = 0; i < 100; i++) {
         trie.insert(i);
       }

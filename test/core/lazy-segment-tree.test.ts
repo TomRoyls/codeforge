@@ -912,7 +912,7 @@ describe('LazySegmentTree', () => {
   })
 
   describe('stress tests', () => {
-    it.skip('many range updates then query', () => {
+    it('many range updates then query', () => {
       const n = 100
       const arr = new Array(n).fill(0)
       const tree = LazySegmentTree.sumTree(arr)
