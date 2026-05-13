@@ -1,0 +1,121 @@
+import { describe, it, expect } from 'vitest'
+import { PersistentArray2 } from '../src/core/persistent-array-2/index.js'
+
+describe('PersistentArray2', () => {
+  it('creates empty array', () => {
+    const arr = new PersistentArray2<number>()
+    expect(arr.length).toBe(0)
+    expect(arr.toArray()).toEqual([])
+  })
+
+  it('creates array with initial items', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    expect(arr.length).toBe(3)
+    expect(arr.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('get returns correct value', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    expect(arr.get(0)).toBe(1)
+    expect(arr.get(1)).toBe(2)
+    expect(arr.get(2)).toBe(3)
+    expect(arr.get(10)).toBeUndefined()
+  })
+
+  it('set creates new version, old unchanged', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.set(1, 99)
+    expect(arr1.toArray()).toEqual([1, 2, 3])
+    expect(arr2.toArray()).toEqual([1, 99, 3])
+  })
+
+  it('push creates new version, old unchanged', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.push(4)
+    expect(arr1.toArray()).toEqual([1, 2, 3])
+    expect(arr2.toArray()).toEqual([1, 2, 3, 4])
+  })
+
+  it('pop creates new version, old unchanged', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const [val, arr2] = arr1.pop()
+    expect(val).toBe(3)
+    expect(arr1.toArray()).toEqual([1, 2, 3])
+    expect(arr2.toArray()).toEqual([1, 2])
+  })
+
+  it('pop on empty array', () => {
+    const arr = new PersistentArray2<number>()
+    const [val, arr2] = arr.pop()
+    expect(val).toBeUndefined()
+    expect(arr2).toBe(arr)
+  })
+
+  it('length returns correct size', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    expect(arr.length).toBe(3)
+    const arr2 = arr.push(4)
+    expect(arr2.length).toBe(4)
+    expect(arr.length).toBe(3)
+  })
+
+  it('toArray returns copy', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    const copy = arr.toArray()
+    copy[0] = 99
+    expect(arr.get(0)).toBe(1)
+  })
+
+  it('map creates new version with transformed values', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.map((x) => x * 2)
+    expect(arr1.toArray()).toEqual([1, 2, 3])
+    expect(arr2.toArray()).toEqual([2, 4, 6])
+  })
+
+  it('filter creates new version with filtered values', () => {
+    const arr1 = new PersistentArray2([1, 2, 3, 4, 5])
+    const arr2 = arr1.filter((x) => x % 2 === 0)
+    expect(arr1.toArray()).toEqual([1, 2, 3, 4, 5])
+    expect(arr2.toArray()).toEqual([2, 4])
+  })
+
+  it('multiple versions coexist independently', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.set(0, 10)
+    const arr3 = arr1.push(4)
+    const arr4 = arr2.set(1, 20)
+
+    expect(arr1.toArray()).toEqual([1, 2, 3])
+    expect(arr2.toArray()).toEqual([10, 2, 3])
+    expect(arr3.toArray()).toEqual([1, 2, 3, 4])
+    expect(arr4.toArray()).toEqual([10, 20, 3])
+  })
+
+  it('get/set persistence with old version unchanged', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.set(0, 99)
+    const arr3 = arr2.set(1, 88)
+
+    expect(arr1.get(0)).toBe(1)
+    expect(arr1.get(1)).toBe(2)
+    expect(arr2.get(0)).toBe(99)
+    expect(arr2.get(1)).toBe(2)
+    expect(arr3.get(0)).toBe(99)
+    expect(arr3.get(1)).toBe(88)
+  })
+
+  it('chained operations create new versions', () => {
+    const arr1 = new PersistentArray2([1])
+    const arr2 = arr1.push(2)
+    const arr3 = arr2.push(3)
+    const arr4 = arr3.set(1, 99)
+    const arr5 = arr4.filter((x) => x !== 99)
+
+    expect(arr1.toArray()).toEqual([1])
+    expect(arr2.toArray()).toEqual([1, 2])
+    expect(arr3.toArray()).toEqual([1, 2, 3])
+    expect(arr4.toArray()).toEqual([1, 99, 3])
+    expect(arr5.toArray()).toEqual([1, 3])
+  })
+})
