@@ -78,10 +78,10 @@ export class BiconnectedComponents {
 
   private popComponent(
     stack: number[],
-    lowLink: number[],
+    _lowLink: number[],
     discoveryTime: number[],
     u: number,
-    v: number,
+    _v: number,
     components: number[][]
   ): void {
     const component: number[] = [];
@@ -100,8 +100,8 @@ export class BiconnectedComponents {
 
   private popRemaining(
     stack: number[],
-    lowLink: number[],
-    discoveryTime: number[],
+    _lowLink: number[],
+    _discoveryTime: number[],
     u: number,
     components: number[][]
   ): void {
@@ -110,38 +110,6 @@ export class BiconnectedComponents {
       const edge: number[] = [u, w];
       if (!this.componentExists(edge, components)) {
         components.push(edge);
-      }
-    }
-  }
-      } else if (v !== parent[u]) {
-        const discV = discoveryTime[v]!;
-        lowLink[u] = Math.min(lowLink[u]!, discV);
-      }
-    }
-
-    if (parent[u] === null) {
-      this.popComponent(stack, lowLink, discoveryTime, u, u, components);
-    }
-  }
-
-  private popComponent(
-    stack: number[],
-    lowLink: number[],
-    discoveryTime: number[],
-    u: number,
-    v: number,
-    components: number[][]
-  ): void {
-    const component: number[] = [];
-    let w: number | null = null;
-    do {
-      w = stack.pop()!;
-      component.unshift(w);
-    } while (w !== u && discoveryTime[w]! >= discoveryTime[u]!);
-    component.unshift(u);
-    if (component.length >= 2 && !this.componentExists(component, components)) {
-      for (let i = 0; i < component.length - 1; i++) {
-        components.push([component[i]!, component[i + 1]!]);
       }
     }
   }
