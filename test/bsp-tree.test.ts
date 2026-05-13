@@ -125,7 +125,7 @@ describe('BSPTree', () => {
       expect(results.length).toBe(0);
     });
 
-    it.skip('should remove single segment', () => {
+    it('should remove single segment', () => {
       const tree = new BSPTree();
       const segment: LineSegment = { x1: 0, y1: 0, x2: 10, y2: 10 };
       tree.insert(segment);
@@ -183,7 +183,7 @@ describe('BSPTree', () => {
       expect(results.length).toBe(1);
     });
 
-    it.skip('should remove one of multiple segments', () => {
+    it('should remove one of multiple segments', () => {
       const tree = new BSPTree();
       const s1: LineSegment = { x1: 0, y1: 0, x2: 10, y2: 10 };
       const s2: LineSegment = { x1: 10, y1: 0, x2: 20, y2: 10 };
@@ -195,7 +195,7 @@ describe('BSPTree', () => {
       expect(tree.size).toBe(2);
     });
 
-    it.skip('should maintain tree structure after removals', () => {
+    it('should maintain tree structure after removals', () => {
       const tree = new BSPTree();
       const s1: LineSegment = { x1: 0, y1: 0, x2: 10, y2: 10 };
       const s2: LineSegment = { x1: 10, y1: 0, x2: 20, y2: 10 };
@@ -280,7 +280,7 @@ describe('BSPTree', () => {
       expect(tree.size).toBe(3);
     });
 
-    it.skip('should report correct size after removes', () => {
+    it('should report correct size after removes', () => {
       const tree = new BSPTree();
       const segments: LineSegment[] = [
         { x1: 0, y1: 0, x2: 10, y2: 10 },
@@ -447,7 +447,7 @@ describe('BSPTree', () => {
       expect(results.length).toBe(3);
     });
 
-    it.skip('should return updated array after removal', () => {
+    it('should return updated array after removal', () => {
       const tree = new BSPTree();
       const s1: LineSegment = { x1: 0, y1: 0, x2: 10, y2: 10 };
       const s2: LineSegment = { x1: 10, y1: 0, x2: 20, y2: 10 };
@@ -471,7 +471,7 @@ describe('BSPTree', () => {
       expect(results.length).toBe(31);
     });
 
-    it.skip('should query correctly in large tree', () => {
+    it('should query correctly in large tree', () => {
       const tree = new BSPTree();
       for (let i = 0; i < 50; i++) {
         tree.insert({ x1: i * 10, y1: i * 10, x2: i * 10 + 10, y2: i * 10 + 10 });
@@ -480,7 +480,7 @@ describe('BSPTree', () => {
       expect(results.length).toBe(1);
     });
 
-    it.skip('should remove from large tree', () => {
+    it('should remove from large tree', () => {
       const tree = new BSPTree();
       const segments: LineSegment[] = [];
       for (let i = 0; i < 50; i++) {
