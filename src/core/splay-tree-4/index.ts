@@ -1,0 +1,504 @@
+class Node<T> {
+  value: T;
+  left: Node<T> | null;
+  right: Node<T> | null;
+  parent: Node<T> | null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+    this.parent = null;
+  }
+}
+
+export class SplayTree4<T> {
+  private root: Node<T> | null;
+  private _size: number;
+  private comparator: (a: T, b: T) => number;
+
+  constructor(comparator?: (a: T, b: T) => number) {
+    this.root = null;
+    this._size = 0;
+    this.comparator = comparator || ((a: T, b: T) => {
+      if (a < b) return -1;
+      if (a > b) return 1;
+      return 0;
+    });
+  }
+
+  insert(value: T): void {
+    if (this.root === null) {
+      this.root = new Node(value);
+      this._size++;
+      return;
+    }
+
+    let current = this.root;
+
+    while (current !== null) {
+      const cmp = this.comparator(value, current.value);
+      if (cmp < 0) {
+        if (current.left === null) {
+          current.left = new Node(value);
+          current.left.parent = current;
+          this._size++;
+          this.splay(current.left);
+          return;
+        }
+        current = current.left;
+      } else if (cmp > 0) {
+        if (current.right === null) {
+          current.right = new Node(value);
+          current.right.parent = current;
+          this._size++;
+          this.splay(current.right);
+          return;
+        }
+        current = current.right;
+      } else {
+        this.splay(current);
+        return;
+      }
+    }
+  }
+
+  search(value: T): boolean {
+    const node = this.findNode(value);
+    if (node !== null) {
+      this.splay(node);
+      return true;
+    }
+    return false;
+  }
+
+  contains(value: T): boolean {
+    return this.search(value);
+  }
+
+  remove(value: T): boolean {
+    const node = this.findNode(value);
+    if (node === null) {
+      return false;
+    }
+
+    this.splay(node);
+
+    if (node.left === null) {
+      this.transplant(node, node.right);
+    } else if (node.right === null) {
+      this.transplant(node, node.left);
+    } else {
+      const successor = this.minimum(node.right);
+      if (successor.parent !== node) {
+        this.transplant(successor, successor.right);
+        successor.right = node.right;
+        if (successor.right !== null) {
+          successor.right.parent = successor;
+        }
+      }
+      this.transplant(node, successor);
+      successor.left = node.left;
+      if (successor.left !== null) {
+        successor.left.parent = successor;
+      }
+    }
+
+    this._size--;
+    return true;
+  }
+
+  min(): T | undefined {
+    if (this.root === null) {
+      return undefined;
+    }
+    const minNode = this.minimum(this.root);
+    this.splay(minNode);
+    return minNode.value;
+  }
+
+  max(): T | undefined {
+    if (this.root === null) {
+      return undefined;
+    }
+    const maxNode = this.maximum(this.root);
+    this.splay(maxNode);
+    return maxNode.value;
+  }
+
+  get size(): number {
+    return this._size;
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0;
+  }
+
+  clear(): void {
+    this.root = null;
+    this._size = 0;
+  }
+
+  toArray(): T[] {
+    const result: T[] = [];
+    this.inorderTraversal(this.root, (value) => result.push(value));
+    return result;
+  }
+
+  forEach(callback: (value: T) => void): void {
+    this.inorderTraversal(this.root, callback);
+  }
+
+  height(): number {
+    return this.calculateHeight(this.root);
+  }
+
+  getTimeComplexity(): string {
+    return "O(log n) amortized for insert, search, delete";
+  }
+
+  split(key: T): [SplayTree4<T>, SplayTree4<T>] {
+    const tree1 = new SplayTree4<T>(this.comparator);
+    const tree2 = new SplayTree4<T>(this.comparator);
+
+    if (this.root === null) {
+      return [tree1, tree2];
+    }
+
+    const node = this.findNode(key);
+    if (node !== null) {
+      this.splay(node);
+    } else {
+      this.insert(key);
+      this.splay(this.root!);
+      this._size--;
+    }
+
+    const splitNode = this.root!;
+    tree1.root = splitNode.left;
+    if (tree1.root !== null) {
+      tree1.root.parent = null;
+    }
+    tree2.root = splitNode.right;
+    if (tree2.root !== null) {
+      tree2.root.parent = null;
+    }
+
+    tree1._size = this.countNodes(tree1.root);
+    tree2._size = this.countNodes(tree2.root);
+    this.root = null;
+    this._size = 0;
+
+    return [tree1, tree2];
+  }
+
+  merge(otherTree: SplayTree4<T>): void {
+    if (this.isEmpty()) {
+      this.root = otherTree.root;
+      this._size = otherTree._size;
+      otherTree.root = null;
+      otherTree._size = 0;
+      return;
+    }
+
+    if (otherTree.isEmpty()) {
+      return;
+    }
+
+    if (otherTree.root === null) {
+      return;
+    }
+
+    let maxNode = this.root!;
+    while (maxNode.right !== null) {
+      maxNode = maxNode.right;
+    }
+
+    let minOther = otherTree.root!;
+    while (minOther.left !== null) {
+      minOther = minOther.left;
+    }
+
+    if (this.comparator(maxNode.value, minOther.value) >= 0) {
+      throw new Error("Cannot merge: all elements in this tree must be less than all elements in other tree");
+    }
+
+    if (otherTree.root !== null) {
+      maxNode.right = otherTree.root;
+      otherTree.root.parent = maxNode;
+    }
+    this._size += otherTree._size;
+
+    otherTree.root = null;
+    otherTree._size = 0;
+  }
+
+  rangeSearch(low: T, high: T): T[] {
+    const result: T[] = [];
+    this.rangeTraversal(this.root, low, high, (value) => result.push(value));
+    return result;
+  }
+
+  rank(value: T): number {
+    let count = 0;
+    let current = this.root;
+    while (current !== null) {
+      const cmp = this.comparator(value, current.value);
+      if (cmp < 0) {
+        current = current.left;
+      } else if (cmp > 0) {
+        count += 1 + this.countNodes(current.left);
+        current = current.right;
+      } else {
+        count += this.countNodes(current.left);
+        this.splay(current);
+        return count;
+      }
+    }
+    return -1;
+  }
+
+  select(k: number): T | undefined {
+    if (k < 0 || k >= this._size) {
+      return undefined;
+    }
+
+    let current = this.root;
+    let index = k;
+    while (current !== null) {
+      const leftSize = this.countNodes(current.left);
+      if (index < leftSize) {
+        current = current.left;
+      } else if (index > leftSize) {
+        index = index - leftSize - 1;
+        current = current.right;
+      } else {
+        this.splay(current);
+        return current.value;
+      }
+    }
+
+    return undefined;
+  }
+
+  predecessor(value: T): T | undefined {
+    const node = this.findNode(value);
+    if (node === null) {
+      return undefined;
+    }
+
+    this.splay(node);
+
+    if (node.left !== null) {
+      const maxNode = this.maximum(node.left);
+      this.splay(maxNode);
+      return maxNode.value;
+    }
+
+    let current = node;
+    let parent = current.parent;
+    while (parent !== null && current === parent.left) {
+      current = parent;
+      parent = parent.parent;
+    }
+
+    if (parent === null) {
+      return undefined;
+    }
+
+    this.splay(parent);
+    return parent.value;
+  }
+
+  successor(value: T): T | undefined {
+    const node = this.findNode(value);
+    if (node === null) {
+      return undefined;
+    }
+
+    this.splay(node);
+
+    if (node.right !== null) {
+      const minNode = this.minimum(node.right);
+      this.splay(minNode);
+      return minNode.value;
+    }
+
+    let current = node;
+    let parent = current.parent;
+    while (parent !== null && current === parent.right) {
+      current = parent;
+      parent = parent.parent;
+    }
+
+    if (parent === null) {
+      return undefined;
+    }
+
+    this.splay(parent);
+    return parent.value;
+  }
+
+  private findNode(value: T): Node<T> | null {
+    let current = this.root;
+    while (current !== null) {
+      const cmp = this.comparator(value, current.value);
+      if (cmp < 0) {
+        current = current.left;
+      } else if (cmp > 0) {
+        current = current.right;
+      } else {
+        return current;
+      }
+    }
+    return null;
+  }
+
+  private minimum(node: Node<T>): Node<T> {
+    while (node.left !== null) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  private maximum(node: Node<T>): Node<T> {
+    while (node.right !== null) {
+      node = node.right;
+    }
+    return node;
+  }
+
+  private transplant(u: Node<T>, v: Node<T> | null): void {
+    if (u.parent === null) {
+      this.root = v;
+    } else if (u === u.parent.left) {
+      u.parent.left = v;
+    } else {
+      u.parent.right = v;
+    }
+
+    if (v !== null) {
+      v.parent = u.parent;
+    }
+  }
+
+  private splay(x: Node<T>): void {
+    while (x.parent !== null) {
+      if (x.parent.parent === null) {
+        if (x === x.parent.left) {
+          this.rotateRight(x.parent);
+        } else {
+          this.rotateLeft(x.parent);
+        }
+      } else if (x === x.parent.left && x.parent === x.parent.parent.left) {
+        this.rotateRight(x.parent.parent);
+        this.rotateRight(x.parent);
+      } else if (x === x.parent.right && x.parent === x.parent.parent.right) {
+        this.rotateLeft(x.parent.parent);
+        this.rotateLeft(x.parent);
+      } else if (x === x.parent.right && x.parent === x.parent.parent.left) {
+        this.rotateLeft(x.parent);
+        this.rotateRight(x.parent);
+      } else {
+        this.rotateRight(x.parent);
+        this.rotateLeft(x.parent);
+      }
+    }
+    this.root = x;
+  }
+
+  private rotateLeft(x: Node<T>): void {
+    const y = x.right;
+    if (y === null) return;
+
+    x.right = y.left;
+    if (y.left !== null) {
+      y.left.parent = x;
+    }
+
+    y.parent = x.parent;
+    if (x.parent === null) {
+      this.root = y;
+    } else if (x === x.parent.left) {
+      x.parent.left = y;
+    } else {
+      x.parent.right = y;
+    }
+
+    y.left = x;
+    x.parent = y;
+  }
+
+  private rotateRight(x: Node<T>): void {
+    const y = x.left;
+    if (y === null) return;
+
+    x.left = y.right;
+    if (y.right !== null) {
+      y.right.parent = x;
+    }
+
+    y.parent = x.parent;
+    if (x.parent === null) {
+      this.root = y;
+    } else if (x === x.parent.right) {
+      x.parent.right = y;
+    } else {
+      x.parent.left = y;
+    }
+
+    y.right = x;
+    x.parent = y;
+  }
+
+  private inorderTraversal(node: Node<T> | null, callback: (value: T) => void): void {
+    if (node === null) {
+      return;
+    }
+    this.inorderTraversal(node.left, callback);
+    callback(node.value);
+    this.inorderTraversal(node.right, callback);
+  }
+
+  private rangeTraversal(node: Node<T> | null, low: T, high: T, callback: (value: T) => void): void {
+    if (node === null) {
+      return;
+    }
+
+    const cmpLow = this.comparator(low, node.value);
+    const cmpHigh = this.comparator(high, node.value);
+
+    if (cmpLow < 0) {
+      this.rangeTraversal(node.left, low, high, callback);
+    }
+
+    if (cmpLow <= 0 && cmpHigh >= 0) {
+      callback(node.value);
+    }
+
+    if (cmpHigh > 0) {
+      this.rangeTraversal(node.right, low, high, callback);
+    }
+  }
+
+  private countNodes(node: Node<T> | null): number {
+    if (node === null) {
+      return 0;
+    }
+    return 1 + this.countNodes(node.left) + this.countNodes(node.right);
+  }
+
+  private countLessThan(node: Node<T> | null): number {
+    if (node === null) {
+      return 0;
+    }
+    return this.countNodes(node.left);
+  }
+
+  private calculateHeight(node: Node<T> | null): number {
+    if (node === null) {
+      return 0;
+    }
+    return 1 + Math.max(this.calculateHeight(node.left), this.calculateHeight(node.right));
+  }
+}
