@@ -339,7 +339,7 @@ describe('SkewHeap2 - decreaseKey', () => {
     expect(heap.size()).toBe(3)
   })
 
-  it.skip('should handle duplicate values', () => {
+  it('should handle duplicate values', () => {
     const heap = new SkewHeap2<number>()
     heap.insert(5)
     heap.insert(5)
@@ -370,7 +370,7 @@ describe('SkewHeap2 - delete', () => {
     expect(heap.size()).toBe(2)
   })
 
-  it.skip('should delete min element', () => {
+  it('should delete min element', () => {
     const heap = new SkewHeap2<number>()
     heap.insert(5)
     heap.insert(3)
@@ -401,7 +401,7 @@ describe('SkewHeap2 - delete', () => {
     expect(heap.isEmpty()).toBe(true)
   })
 
-  it.skip('should maintain heap property after delete', () => {
+  it('should maintain heap property after delete', () => {
     const heap = new SkewHeap2<number>()
     heap.insert(10)
     heap.insert(20)
@@ -415,7 +415,7 @@ describe('SkewHeap2 - delete', () => {
     expect(result).toEqual([5, 15, 20])
   })
 
-  it.skip('should handle duplicate values', () => {
+  it('should handle duplicate values', () => {
     const heap = new SkewHeap2<number>()
     heap.insert(5)
     heap.insert(5)
