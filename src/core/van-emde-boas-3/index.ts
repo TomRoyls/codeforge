@@ -1,317 +1,210 @@
-import type { VEBTree3Options } from './types.js'
-import { DEFAULT_UNIVERSE_SIZE } from './types.js'
-
-const NIL = -1
-
-class VEBNode {
-  min: number
-  max: number
-  readonly universeSize: number
-  summary: VEBNode | null
-  readonly clusters: (VEBNode | null)[]
-  private readonly upperSqrt: number
-  private readonly lowerSqrt: number
-
-  constructor(universeSize: number) {
-    this.min = NIL
-    this.max = NIL
-    this.universeSize = universeSize
-    this.summary = null
-    const halfBits = Math.floor(Math.log2(universeSize) / 2)
-    this.lowerSqrt = 1 << halfBits
-    this.upperSqrt = 1 << Math.ceil(Math.log2(universeSize) / 2)
-    this.clusters = new Array(this.upperSqrt).fill(null)
-  }
-
-  high(x: number): number {
-    return x >>> Math.log2(this.lowerSqrt)
-  }
-
-  low(x: number): number {
-    return x & (this.lowerSqrt - 1)
-  }
-
-  index(h: number, l: number): number {
-    return (h << Math.log2(this.lowerSqrt)) | l
-  }
-
-  cluster(i: number): VEBNode {
-    const existing = this.clusters[i]
-    if (existing != null) return existing
-    const node = new VEBNode(this.lowerSqrt)
-    this.clusters[i] = node
-    return node
-  }
-
-  insert(x: number): void {
-    if (this.min === NIL) {
-      this.min = x
-      this.max = x
-      return
-    }
-    if (x === this.min) return
-    if (x < this.min) {
-      const tmp = x
-      x = this.min
-      this.min = tmp
-    }
-    if (this.universeSize > 2) {
-      const h = this.high(x)
-      const c = this.cluster(h)
-      if (c.min === NIL) {
-        if (this.summary === null) {
-          this.summary = new VEBNode(this.upperSqrt)
-        }
-        this.summary.insert(h)
-      }
-      c.insert(this.low(x))
-    }
-    if (x > this.max) {
-      this.max = x
-    }
-  }
-
-  has(x: number): boolean {
-    if (this.min === x) return true
-    if (this.universeSize <= 2) return this.max === x
-    const c = this.clusters[this.high(x)]
-    if (c == null) return false
-    return c.has(this.low(x))
-  }
-
-  delete(x: number): boolean {
-    if (this.min === NIL) return false
-    if (this.min === this.max) {
-      if (x !== this.min) return false
-      this.min = NIL
-      this.max = NIL
-      return true
-    }
-    if (this.universeSize <= 2) {
-      this.min = x === 0 ? 1 : 0
-      this.max = this.min
-      return true
-    }
-    if (x === this.min) {
-      if (this.summary === null) {
-        this.min = NIL
-        this.max = NIL
-        return false
-      }
-      const firstCluster = this.summary.min
-      if (firstCluster === NIL) {
-        this.min = NIL
-        this.max = NIL
-        return false
-      }
-      const c = this.clusters[firstCluster]
-      if (c == null) {
-        this.min = NIL
-        this.max = NIL
-        return false
-      }
-      x = this.index(firstCluster, c.min)
-      this.min = x
-    }
-    const h = this.high(x)
-    const c = this.clusters[h]
-    if (c == null) return false
-    if (!c.delete(this.low(x))) return false
-    if (c.min === NIL) {
-      this.clusters[h] = null
-      if (this.summary !== null) {
-        this.summary.delete(h)
-        if (this.summary.min === NIL) {
-          this.max = this.min
-          return true
-        }
-      }
-    }
-    if (this.max === x) {
-      if (this.summary !== null && this.summary.max !== NIL) {
-        const sm = this.summary.max
-        const sc = this.clusters[sm]
-        this.max = sc != null ? this.index(sm, sc.max) : this.min
-      } else {
-        this.max = this.min
-      }
-    }
-    return true
-  }
-
-  successor(x: number): number | undefined {
-    if (this.universeSize <= 2) {
-      if (x === 0 && this.max === 1) return 1
-      return undefined
-    }
-    if (this.min !== NIL && x < this.min) return this.min
-    const h = this.high(x)
-    const c = this.clusters[h]
-    if (c != null && c.max !== NIL && this.low(x) < c.max) {
-      const s = c.successor(this.low(x))
-      if (s !== undefined) return this.index(h, s)
-    }
-    if (this.summary === null) return undefined
-    const sc = this.summary.successor(h)
-    if (sc === undefined) return undefined
-    const cc = this.clusters[sc]!
-    if (cc == null || cc.min === NIL) return undefined
-    return this.index(sc, cc.min)
-  }
-
-  predecessor(x: number): number | undefined {
-    if (this.universeSize <= 2) {
-      if (x === 1 && this.min === 0) return 0
-      return undefined
-    }
-    if (this.max !== NIL && x > this.max) return this.max
-    const h = this.high(x)
-    const c = this.clusters[h]
-    if (c != null && c.min !== NIL && this.low(x) > c.min) {
-      const p = c.predecessor(this.low(x))
-      if (p !== undefined) return this.index(h, p)
-    }
-    if (this.summary !== null) {
-      const pc = this.summary.predecessor(h)
-      if (pc !== undefined) {
-        const cc = this.clusters[pc]
-        if (cc != null && cc.max !== NIL) {
-          return this.index(pc, cc.max)
-        }
-      }
-    }
-    if (this.min !== NIL && x > this.min) return this.min
-    return undefined
-  }
+function nextPowerOf2(n: number): number {
+  if (n <= 1) return 2
+  let p = 1
+  while (p < n) p *= 2
+  return p
 }
 
-export class VEBTree3 {
-  private root: VEBNode
-  private count: number
-  private readonly universeSize: number
+function high(x: number, u: number): number {
+  return Math.floor(x / Math.sqrt(u))
+}
 
-  constructor(options?: Partial<VEBTree3Options>) {
-    const size = options?.universeSize ?? DEFAULT_UNIVERSE_SIZE
-    if (size < 2) {
-      throw new RangeError('Universe size must be at least 2')
+function low(x: number, u: number): number {
+  return x % Math.floor(Math.sqrt(u))
+}
+
+function index(i: number, j: number, u: number): number {
+  return i * Math.floor(Math.sqrt(u)) + j
+}
+
+class VanEmdeBoas3 {
+  private universeSize: number
+  private _min: number | undefined
+  private _max: number | undefined
+  private summary: VanEmdeBoas3 | undefined
+  private cluster: VanEmdeBoas3[] | undefined
+  private _size: number
+
+  constructor(universeSize: number) {
+    this.universeSize = nextPowerOf2(universeSize)
+    this._min = undefined
+    this._max = undefined
+    this._size = 0
+
+    if (this.universeSize > 2) {
+      const upperSqrt = Math.floor(Math.sqrt(this.universeSize))
+      this.summary = new VanEmdeBoas3(upperSqrt)
+      this.cluster = []
+      for (let i = 0; i < upperSqrt; i++) {
+        this.cluster.push(new VanEmdeBoas3(upperSqrt))
+      }
     }
-    if (!VEBTree3.isPowerOfTwo(size)) {
-      throw new RangeError('Universe size must be a power of 2')
-    }
-    this.universeSize = size
-    this.root = new VEBNode(size)
-    this.count = 0
   }
 
-  static isPowerOfTwo(n: number): boolean {
-    return n > 0 && (n & (n - 1)) === 0
+  isEmpty(): boolean {
+    return this._min === undefined
   }
 
-  insert(value: number): void {
-    if (value < 0 || value >= this.universeSize) {
-      throw new RangeError(
-        `Value ${value} out of range [0, ${this.universeSize})`,
-      )
-    }
-    if (!this.root.has(value)) {
-      this.root.insert(value)
-      this.count++
-    }
+  get size(): number {
+    return this._size
   }
 
-  delete(value: number): boolean {
-    if (value < 0 || value >= this.universeSize) return false
-    if (this.root.has(value)) {
-      const ok = this.root.delete(value)
-      if (ok) this.count--
-      return ok
-    }
-    return false
+  min(): number | undefined {
+    return this._min
+  }
+
+  max(): number | undefined {
+    return this._max
   }
 
   has(value: number): boolean {
     if (value < 0 || value >= this.universeSize) return false
-    return this.root.has(value)
+    if (value === this._min || value === this._max) return true
+    if (this.universeSize === 2) return false
+    if (this.isEmpty()) return false
+    const h = high(value, this.universeSize)
+    const l = low(value, this.universeSize)
+    return this.cluster![h]!.has(l)
+  }
+
+  insert(value: number): void {
+    if (value < 0 || value >= this.universeSize) return
+    if (this.has(value)) return
+    if (this.isEmpty()) {
+      this._min = value
+      this._max = value
+      this._size = 1
+      return
+    }
+    if (value < this._min!) {
+      const temp = value
+      value = this._min!
+      this._min = temp
+    }
+    if (this.universeSize > 2) {
+      const h = high(value, this.universeSize)
+      const l = low(value, this.universeSize)
+      if (this.cluster![h]!.isEmpty()) {
+        this.summary!.insert(h)
+      }
+      this.cluster![h]!.insert(l)
+    }
+    if (value > this._max!) {
+      this._max = value
+    }
+    this._size++
+  }
+
+  delete(value: number): void {
+    if (!this.has(value)) return
+
+    if (this._min === this._max) {
+      this._min = undefined
+      this._max = undefined
+      this._size = 0
+      return
+    }
+
+    if (this.universeSize === 2) {
+      if (value === 0) {
+        this._min = 1
+      } else {
+        this._min = 0
+      }
+      this._max = this._min
+      this._size = 1
+      return
+    }
+
+    if (value === this._min!) {
+      const firstCluster = this.summary!.min()
+      value = index(firstCluster!, this.cluster![firstCluster!]!.min()!, this.universeSize)
+      this._min = value
+    }
+
+    const h = high(value, this.universeSize)
+    const l = low(value, this.universeSize)
+    this.cluster![h]!.delete(l)
+
+    if (this.cluster![h]!.isEmpty()) {
+      this.summary!.delete(h)
+      if (value === this._max!) {
+        const summaryMax = this.summary!.max()
+        if (summaryMax === undefined) {
+          this._max = this._min
+        } else {
+          this._max = index(summaryMax, this.cluster![summaryMax]!.max()!, this.universeSize)
+        }
+      }
+    } else if (value === this._max!) {
+      this._max = index(h, this.cluster![h]!.max()!, this.universeSize)
+    }
+
+    this._size--
   }
 
   successor(value: number): number | undefined {
     if (value < 0 || value >= this.universeSize) return undefined
-    return this.root.successor(value)
+    if (this.isEmpty()) return undefined
+
+    if (this.universeSize === 2) {
+      if (value === 0 && this._max === 1) return 1
+      return undefined
+    }
+
+    if (this._min !== undefined && value < this._min) {
+      return this._min
+    }
+
+    const h = high(value, this.universeSize)
+    const l = low(value, this.universeSize)
+    const maxLow = this.cluster![h]!.max()
+
+    if (maxLow !== undefined && l < maxLow) {
+      const offset = this.cluster![h]!.successor(l)
+      return index(h, offset!, this.universeSize)
+    }
+
+    const succCluster = this.summary!.successor(h)
+    if (succCluster === undefined) return undefined
+
+    const offset = this.cluster![succCluster]!.min()
+    return index(succCluster, offset!, this.universeSize)
   }
 
   predecessor(value: number): number | undefined {
     if (value < 0 || value >= this.universeSize) return undefined
-    return this.root.predecessor(value)
-  }
+    if (this.isEmpty()) return undefined
 
-  min(): number | undefined {
-    const m = this.root.min
-    return m === NIL ? undefined : m
-  }
-
-  max(): number | undefined {
-    const m = this.root.max
-    return m === NIL ? undefined : m
-  }
-
-  get size(): number {
-    return this.count
-  }
-
-  get isEmpty(): boolean {
-    return this.count === 0
-  }
-
-  clear(): void {
-    this.root = new VEBNode(this.universeSize)
-    this.count = 0
-  }
-
-  getTimeComplexity(): string {
-    return 'O(log log U)'
-  }
-
-  toArray(): number[] {
-    const result: number[] = []
-    let cur = this.min()
-    while (cur !== undefined) {
-      result.push(cur)
-      cur = this.successor(cur)
+    if (this.universeSize === 2) {
+      if (value === 1 && this._min === 0) return 0
+      return undefined
     }
-    return result
-  }
 
-  forEach(callback: (value: number, index: number) => void): void {
-    let idx = 0
-    let cur = this.min()
-    while (cur !== undefined) {
-      callback(cur, idx)
-      idx++
-      cur = this.successor(cur)
+    if (this._max !== undefined && value > this._max) {
+      return this._max
     }
-  }
 
-  extractMin(): number | undefined {
-    const m = this.min()
-    if (m === undefined) return undefined
-    this.delete(m)
-    return m
-  }
+    const h = high(value, this.universeSize)
+    const l = low(value, this.universeSize)
+    const minLow = this.cluster![h]!.min()
 
-  extractMax(): number | undefined {
-    const m = this.max()
-    if (m === undefined) return undefined
-    this.delete(m)
-    return m
-  }
-
-  bulkInsert(values: number[]): void {
-    const sorted = [...values].sort((a, b) => a - b)
-    for (const v of sorted) {
-      this.insert(v)
+    if (minLow !== undefined && l > minLow) {
+      const offset = this.cluster![h]!.predecessor(l)
+      return index(h, offset!, this.universeSize)
     }
+
+    const predCluster = this.summary!.predecessor(h)
+    if (predCluster === undefined) {
+      if (this._min !== undefined && value > this._min) {
+        return this._min
+      }
+      return undefined
+    }
+
+    const offset = this.cluster![predCluster]!.max()
+    return index(predCluster, offset!, this.universeSize)
   }
 }
 
-export { DEFAULT_UNIVERSE_SIZE } from './types.js'
-export type { VEBTree3Options } from './types.js'
+export { VanEmdeBoas3 }

@@ -1,252 +1,440 @@
 import { describe, it, expect } from 'vitest'
-import { VEBTree3, DEFAULT_UNIVERSE_SIZE } from '../src/core/van-emde-boas-3/index.js'
+import { VanEmdeBoas3 } from '../src/core/van-emde-boas-3/index.js'
 
-describe('VEBTree3', () => {
-  describe('constructor', () => {
-    it('should create tree with default universe size', () => {
-      const tree = new VEBTree3()
-      expect(tree.size).toBe(0)
-      expect(tree.isEmpty).toBe(true)
+describe('VanEmdeBoas3', () => {
+  describe('constructor and universe size', () => {
+    it('should create tree with power of 2 universe size', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.size).toBe(0)
+      expect(veb.isEmpty()).toBe(true)
     })
 
-    it('should create tree with custom universe size', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(tree.size).toBe(0)
+    it('should round up universe size to next power of 2', async () => {
+      const veb = new VanEmdeBoas3(10)
+      expect(veb.size).toBe(0)
+      veb.insert(0)
+      veb.insert(15)
+      expect(veb.has(0)).toBe(true)
+      expect(veb.has(15)).toBe(true)
     })
 
-    it('should throw for universe size < 2', () => {
-      expect(() => new VEBTree3({ universeSize: 1 })).toThrow()
-    })
-
-    it('should throw for non-power-of-2 universe size', () => {
-      expect(() => new VEBTree3({ universeSize: 3 })).toThrow()
+    it('should handle minimum universe size of 2', async () => {
+      const veb = new VanEmdeBoas3(2)
+      expect(veb.size).toBe(0)
+      veb.insert(0)
+      veb.insert(1)
+      expect(veb.size).toBe(2)
     })
   })
 
-  describe('insert and has', () => {
-    it('should insert and find a value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      expect(tree.has(5)).toBe(true)
-      expect(tree.has(0)).toBe(false)
+  describe('insert', () => {
+    it('should insert single value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      expect(veb.size).toBe(1)
+      expect(veb.has(5)).toBe(true)
     })
 
-    it('should insert multiple values', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      tree.insert(15)
-      expect(tree.has(3)).toBe(true)
-      expect(tree.has(7)).toBe(true)
-      expect(tree.has(1)).toBe(true)
-      expect(tree.has(15)).toBe(true)
-      expect(tree.has(0)).toBe(false)
-      expect(tree.size).toBe(4)
+    it('should insert multiple values', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(7)
+      veb.insert(12)
+      expect(veb.size).toBe(3)
+      expect(veb.has(3)).toBe(true)
+      expect(veb.has(7)).toBe(true)
+      expect(veb.has(12)).toBe(true)
     })
 
-    it('should not insert duplicate values', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      tree.insert(5)
-      expect(tree.size).toBe(1)
+    it('should handle duplicate inserts', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(5)
+      veb.insert(5)
+      expect(veb.size).toBe(1)
     })
 
-    it('should throw for out of range value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(() => tree.insert(-1)).toThrow()
-      expect(() => tree.insert(16)).toThrow()
+    it('should ignore values outside universe', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(-1)
+      veb.insert(16)
+      veb.insert(100)
+      expect(veb.size).toBe(0)
+    })
+
+    it('should update min and max correctly', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      expect(veb.min()).toBe(5)
+      expect(veb.max()).toBe(5)
+      veb.insert(10)
+      expect(veb.min()).toBe(5)
+      expect(veb.max()).toBe(10)
+      veb.insert(2)
+      expect(veb.min()).toBe(2)
+      expect(veb.max()).toBe(10)
+    })
+  })
+
+  describe('has', () => {
+    it('should return true for existing values', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      veb.insert(15)
+      expect(veb.has(5)).toBe(true)
+      expect(veb.has(10)).toBe(true)
+      expect(veb.has(15)).toBe(true)
+    })
+
+    it('should return false for non-existing values', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      expect(veb.has(3)).toBe(false)
+      expect(veb.has(7)).toBe(false)
+      expect(veb.has(10)).toBe(false)
+    })
+
+    it('should return false for values outside universe', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      expect(veb.has(-1)).toBe(false)
+      expect(veb.has(16)).toBe(false)
+    })
+
+    it('should return false for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.has(0)).toBe(false)
+      expect(veb.has(8)).toBe(false)
+    })
+  })
+
+  describe('min', () => {
+    it('should return minimum value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(3)
+      veb.insert(8)
+      expect(veb.min()).toBe(3)
+    })
+
+    it('should return undefined for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.min()).toBeUndefined()
+    })
+
+    it('should update min after deletion', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(5)
+      veb.insert(8)
+      veb.delete(3)
+      expect(veb.min()).toBe(5)
+    })
+  })
+
+  describe('max', () => {
+    it('should return maximum value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(12)
+      veb.insert(8)
+      expect(veb.max()).toBe(12)
+    })
+
+    it('should return undefined for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.max()).toBeUndefined()
+    })
+
+    it('should update max after deletion', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(12)
+      veb.insert(8)
+      veb.delete(12)
+      expect(veb.max()).toBe(8)
     })
   })
 
   describe('delete', () => {
-    it('should delete a value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      expect(tree.delete(5)).toBe(true)
-      expect(tree.has(5)).toBe(false)
-      expect(tree.size).toBe(0)
+    it('should delete existing value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.delete(5)
+      expect(veb.has(5)).toBe(false)
+      expect(veb.size).toBe(0)
     })
 
-    it('should return false for non-existent value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(tree.delete(5)).toBe(false)
+    it('should handle deleting non-existing value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.delete(7)
+      expect(veb.has(5)).toBe(true)
+      expect(veb.size).toBe(1)
     })
 
-    it('should handle deleting all values', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      tree.delete(3)
-      tree.delete(7)
-      tree.delete(1)
-      expect(tree.isEmpty).toBe(true)
-    })
-  })
-
-  describe('min and max', () => {
-    it('should return min and max', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      tree.insert(15)
-      expect(tree.min()).toBe(1)
-      expect(tree.max()).toBe(15)
+    it('should delete from empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.delete(5)
+      expect(veb.size).toBe(0)
     })
 
-    it('should return undefined for empty tree', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(tree.min()).toBe(undefined)
-      expect(tree.max()).toBe(undefined)
+    it('should update size correctly', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      veb.insert(15)
+      veb.delete(10)
+      expect(veb.size).toBe(2)
+      veb.delete(5)
+      expect(veb.size).toBe(1)
+      veb.delete(15)
+      expect(veb.size).toBe(0)
     })
   })
 
   describe('successor', () => {
-    it('should return successor', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      expect(tree.successor(1)).toBe(3)
-      expect(tree.successor(3)).toBe(7)
+    it('should return next larger value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(7)
+      veb.insert(12)
+      expect(veb.successor(3)).toBe(7)
+      expect(veb.successor(7)).toBe(12)
     })
 
-    it('should return undefined for max value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      expect(tree.successor(7)).toBe(undefined)
+    it('should return undefined for max value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(7)
+      veb.insert(12)
+      expect(veb.successor(12)).toBeUndefined()
+    })
+
+    it('should return undefined for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.successor(5)).toBeUndefined()
+    })
+
+    it('should return successor for value not in tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      expect(veb.successor(6)).toBe(10)
+    })
+
+    it('should return min for value less than min', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      expect(veb.successor(2)).toBe(5)
     })
   })
 
   describe('predecessor', () => {
-    it('should return predecessor', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      expect(tree.predecessor(7)).toBe(3)
-      expect(tree.predecessor(3)).toBe(1)
+    it('should return next smaller value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(7)
+      veb.insert(12)
+      expect(veb.predecessor(12)).toBe(7)
+      expect(veb.predecessor(7)).toBe(3)
     })
 
-    it('should return undefined for min value', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      expect(tree.predecessor(1)).toBe(undefined)
-    })
-  })
-
-  describe('extractMin and extractMax', () => {
-    it('should extract min', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      expect(tree.extractMin()).toBe(1)
-      expect(tree.size).toBe(2)
-      expect(tree.min()).toBe(3)
+    it('should return undefined for min value', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(7)
+      veb.insert(12)
+      expect(veb.predecessor(3)).toBeUndefined()
     })
 
-    it('should extract max', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      expect(tree.extractMax()).toBe(7)
-      expect(tree.size).toBe(2)
-      expect(tree.max()).toBe(3)
+    it('should return undefined for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.predecessor(5)).toBeUndefined()
     })
 
-    it('should return undefined for empty tree', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(tree.extractMin()).toBe(undefined)
-      expect(tree.extractMax()).toBe(undefined)
+    it('should return predecessor for value not in tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      expect(veb.predecessor(8)).toBe(5)
+    })
+
+    it('should return max for value greater than max', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      expect(veb.predecessor(15)).toBe(10)
     })
   })
 
-  describe('bulkInsert', () => {
-    it('should insert multiple values at once', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.bulkInsert([5, 3, 7, 1, 15])
-      expect(tree.size).toBe(5)
-      expect(tree.min()).toBe(1)
-      expect(tree.max()).toBe(15)
+  describe('isEmpty', () => {
+    it('should return true for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.isEmpty()).toBe(true)
+    })
+
+    it('should return false for non-empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      expect(veb.isEmpty()).toBe(false)
+    })
+
+    it('should return true after deleting all values', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      veb.delete(5)
+      veb.delete(10)
+      expect(veb.isEmpty()).toBe(true)
     })
   })
 
-  describe('toArray', () => {
-    it('should return sorted array', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      tree.insert(3)
-      tree.insert(7)
-      tree.insert(1)
-      expect(tree.toArray()).toEqual([1, 3, 5, 7])
+  describe('size', () => {
+    it('should return 0 for empty tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.size).toBe(0)
     })
 
-    it('should return empty array for empty tree', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      expect(tree.toArray()).toEqual([])
-    })
-  })
-
-  describe('forEach', () => {
-    it('should iterate over all values', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      tree.insert(3)
-      tree.insert(7)
-      const result: number[] = []
-      tree.forEach((v) => result.push(v))
-      expect(result).toEqual([3, 5, 7])
-    })
-  })
-
-  describe('clear', () => {
-    it('should clear the tree', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      tree.insert(3)
-      tree.clear()
-      expect(tree.isEmpty).toBe(true)
-      expect(tree.size).toBe(0)
+    it('should return correct count after insertions', async () => {
+      const veb = new VanEmdeBoas3(16)
+      expect(veb.size).toBe(0)
+      veb.insert(5)
+      expect(veb.size).toBe(1)
+      veb.insert(10)
+      expect(veb.size).toBe(2)
+      veb.insert(15)
+      expect(veb.size).toBe(3)
     })
 
-    it('should allow reuse after clear', () => {
-      const tree = new VEBTree3({ universeSize: 16 })
-      tree.insert(5)
-      tree.clear()
-      tree.insert(10)
-      expect(tree.has(10)).toBe(true)
-      expect(tree.has(5)).toBe(false)
+    it('should return correct count after deletions', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      veb.insert(15)
+      expect(veb.size).toBe(3)
+      veb.delete(10)
+      expect(veb.size).toBe(2)
     })
   })
 
-  describe('getTimeComplexity', () => {
-    it('should return complexity string', () => {
-      const tree = new VEBTree3()
-      expect(tree.getTimeComplexity()).toContain('log log U')
+  describe('edge cases', () => {
+    it('should handle inserting 0', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(0)
+      expect(veb.has(0)).toBe(true)
+      expect(veb.min()).toBe(0)
+    })
+
+    it('should handle inserting universe size - 1', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(15)
+      expect(veb.has(15)).toBe(true)
+      expect(veb.max()).toBe(15)
+    })
+
+    it('should handle single element tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(8)
+      expect(veb.min()).toBe(8)
+      expect(veb.max()).toBe(8)
+      expect(veb.successor(5)).toBe(8)
+      expect(veb.predecessor(10)).toBe(8)
+      veb.delete(8)
+      expect(veb.isEmpty()).toBe(true)
+    })
+
+    it('should handle two element tree', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(3)
+      veb.insert(10)
+      expect(veb.min()).toBe(3)
+      expect(veb.max()).toBe(10)
+      expect(veb.successor(3)).toBe(10)
+      expect(veb.predecessor(10)).toBe(3)
     })
   })
 
-  describe('large dataset', () => {
-    it('should handle 256 values', () => {
-      const tree = new VEBTree3()
-      for (let i = 0; i < 256; i++) {
-        tree.insert(i)
+  describe('sequential insert and delete', () => {
+    it('should handle sequential insertions', async () => {
+      const veb = new VanEmdeBoas3(16)
+      for (let i = 0; i < 10; i++) {
+        veb.insert(i)
       }
-      expect(tree.size).toBe(256)
-      expect(tree.min()).toBe(0)
-      expect(tree.max()).toBe(255)
+      expect(veb.size).toBe(10)
+      for (let i = 0; i < 10; i++) {
+        expect(veb.has(i)).toBe(true)
+      }
+    })
+
+    it('should handle sequential deletions', async () => {
+      const veb = new VanEmdeBoas3(16)
+      for (let i = 0; i < 10; i++) {
+        veb.insert(i)
+      }
+      for (let i = 0; i < 10; i++) {
+        veb.delete(i)
+      }
+      expect(veb.size).toBe(0)
+      expect(veb.isEmpty()).toBe(true)
+    })
+
+    it('should handle reverse sequential deletions', async () => {
+      const veb = new VanEmdeBoas3(16)
+      for (let i = 0; i < 10; i++) {
+        veb.insert(i)
+      }
+      for (let i = 9; i >= 0; i--) {
+        veb.delete(i)
+      }
+      expect(veb.size).toBe(0)
+    })
+
+    it('should maintain correctness with mixed operations', async () => {
+      const veb = new VanEmdeBoas3(16)
+      veb.insert(5)
+      veb.insert(10)
+      veb.delete(5)
+      veb.insert(3)
+      veb.insert(8)
+      veb.delete(10)
+      expect(veb.has(3)).toBe(true)
+      expect(veb.has(8)).toBe(true)
+      expect(veb.has(5)).toBe(false)
+      expect(veb.has(10)).toBe(false)
+      expect(veb.size).toBe(2)
     })
   })
 
-  describe('DEFAULT_UNIVERSE_SIZE', () => {
-    it('should be exported', () => {
-      expect(DEFAULT_UNIVERSE_SIZE).toBe(256)
+  describe('universe size handling', () => {
+    it('should work with small universe size', async () => {
+      const veb = new VanEmdeBoas3(4)
+      veb.insert(0)
+      veb.insert(1)
+      veb.insert(2)
+      veb.insert(3)
+      expect(veb.size).toBe(4)
+      expect(veb.has(0)).toBe(true)
+      expect(veb.has(3)).toBe(true)
+    })
+
+    it('should work with large universe size', async () => {
+      const veb = new VanEmdeBoas3(256)
+      veb.insert(100)
+      veb.insert(200)
+      veb.insert(50)
+      expect(veb.has(100)).toBe(true)
+      expect(veb.has(200)).toBe(true)
+      expect(veb.has(50)).toBe(true)
+    })
+
+    it('should correctly round up universe size', async () => {
+      const veb = new VanEmdeBoas3(17)
+      veb.insert(31)
+      expect(veb.has(31)).toBe(true)
+      expect(veb.has(32)).toBe(false)
     })
   })
 })
