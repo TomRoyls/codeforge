@@ -1,0 +1,197 @@
+import { describe, it, expect } from 'vitest';
+import { TrieMap2 } from '../src/core/trie-map-2/index.js';
+
+describe('TrieMap2', () => {
+  describe('set, get, has', () => {
+    it('should set and get values', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('world', 2);
+      expect(trie.get('hello')).toBe(1);
+      expect(trie.get('world')).toBe(2);
+    });
+
+    it('should return undefined for non-existent keys', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.get('world')).toBeUndefined();
+    });
+
+    it('should check if key exists', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.has('hello')).toBe(true);
+      expect(trie.has('world')).toBe(false);
+    });
+
+    it('should handle empty string key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('', 42);
+      expect(trie.get('')).toBe(42);
+      expect(trie.has('')).toBe(true);
+      expect(trie.size).toBe(1);
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete existing key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.delete('hello')).toBe(true);
+      expect(trie.has('hello')).toBe(false);
+      expect(trie.get('hello')).toBeUndefined();
+      expect(trie.size).toBe(0);
+    });
+
+    it('should return false for non-existent key', () => {
+      const trie = new TrieMap2<number>();
+      expect(trie.delete('hello')).toBe(false);
+    });
+
+    it('should not delete prefix of existing key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('hello world', 2);
+      trie.delete('hello');
+      expect(trie.has('hello')).toBe(false);
+      expect(trie.has('hello world')).toBe(true);
+      expect(trie.size).toBe(1);
+    });
+
+    it('should delete empty string key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('', 42);
+      trie.set('hello', 1);
+      expect(trie.delete('')).toBe(true);
+      expect(trie.has('')).toBe(false);
+      expect(trie.size).toBe(1);
+    });
+  });
+
+  describe('hasPrefix', () => {
+    it('should check if prefix exists', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('help', 2);
+      expect(trie.hasPrefix('he')).toBe(true);
+      expect(trie.hasPrefix('hel')).toBe(true);
+      expect(trie.hasPrefix('hell')).toBe(true);
+      expect(trie.hasPrefix('hello')).toBe(true);
+      expect(trie.hasPrefix('helloo')).toBe(false);
+      expect(trie.hasPrefix('world')).toBe(false);
+    });
+
+    it('should return true for empty prefix', () => {
+      const trie = new TrieMap2<number>();
+      expect(trie.hasPrefix('')).toBe(true);
+    });
+  });
+
+  describe('keysWithPrefix', () => {
+    it('should return keys with prefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('help', 2);
+      trie.set('hell', 3);
+      trie.set('world', 4);
+      expect(trie.keysWithPrefix('he').sort()).toEqual(['hell', 'hello', 'help'].sort());
+    });
+
+    it('should return empty array for non-existent prefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.keysWithPrefix('wor')).toEqual([]);
+    });
+
+    it('should return all keys for empty prefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('help', 2);
+      trie.set('world', 3);
+      expect(trie.keysWithPrefix('').sort()).toEqual(['hello', 'help', 'world'].sort());
+    });
+
+    it('should include the prefix key if it exists', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('he', 1);
+      trie.set('hello', 2);
+      expect(trie.keysWithPrefix('he').sort()).toEqual(['he', 'hello'].sort());
+    });
+  });
+
+  describe('startsWith', () => {
+    it('should alias keysWithPrefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('help', 2);
+      trie.set('world', 3);
+      expect(trie.startsWith('he').sort()).toEqual(['hello', 'help'].sort());
+    });
+  });
+
+  describe('size', () => {
+    it('should return correct size', () => {
+      const trie = new TrieMap2<number>();
+      expect(trie.size).toBe(0);
+      trie.set('hello', 1);
+      expect(trie.size).toBe(1);
+      trie.set('world', 2);
+      expect(trie.size).toBe(2);
+      trie.set('hello', 3);
+      expect(trie.size).toBe(2);
+    });
+
+    it('should update size on delete', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('world', 2);
+      trie.delete('hello');
+      expect(trie.size).toBe(1);
+    });
+  });
+
+  describe('isEmpty', () => {
+    it('should return true for empty trie', () => {
+      const trie = new TrieMap2<number>();
+      expect(trie.isEmpty()).toBe(true);
+    });
+
+    it('should return false after adding items', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.isEmpty()).toBe(false);
+    });
+
+    it('should return true after clearing', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('world', 2);
+      trie.clear();
+      expect(trie.isEmpty()).toBe(true);
+    });
+  });
+
+  describe('clear', () => {
+    it('should clear all entries', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('world', 2);
+      trie.set('test', 3);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      expect(trie.isEmpty()).toBe(true);
+      expect(trie.get('hello')).toBeUndefined();
+      expect(trie.get('world')).toBeUndefined();
+      expect(trie.get('test')).toBeUndefined();
+    });
+
+    it('should allow reuse after clear', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.clear();
+      trie.set('world', 2);
+      expect(trie.size).toBe(1);
+      expect(trie.get('world')).toBe(2);
+    });
+  });
+});
