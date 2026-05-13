@@ -182,7 +182,7 @@ describe('WingedEdgeMesh', () => {
     expect(mesh.isManifold()).toBe(true);
   });
 
-  it.skip('should check non-manifold for open mesh', () => {
+  it('should check non-manifold for open mesh', () => {
     const mesh = new WingedEdgeMesh();
 
     const v0 = mesh.addVertex(0, 0, 0);
