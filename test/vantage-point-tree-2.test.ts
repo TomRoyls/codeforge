@@ -199,7 +199,7 @@ describe('VantagePointTree2 - K-Nearest', () => {
     expect(nearest.includes(points[2]!)).toBe(true)
   })
 
-  it.skip('should find 5 nearest neighbors', () => {
+  it('should find 5 nearest neighbors', () => {
     const points = Array.from({ length: 10 }, (_, i) => ({ x: i, y: i }))
     const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
     const query = { x: 2, y: 2 }
@@ -207,7 +207,7 @@ describe('VantagePointTree2 - K-Nearest', () => {
     expect(nearest).toHaveLength(5)
   })
 
-  it.skip('should handle k larger than dataset', () => {
+  it('should handle k larger than dataset', () => {
     const points = [
       { x: 0, y: 0 },
       { x: 1, y: 1 },
@@ -224,7 +224,7 @@ describe('VantagePointTree2 - K-Nearest', () => {
     expect(tree.kNearest(5, 3)).toEqual([])
   })
 
-  it.skip('should maintain distance order in k-nearest', () => {
+  it('should maintain distance order in k-nearest', () => {
     const points = [
       { x: 0, y: 0 },
       { x: 1, y: 1 },
@@ -361,7 +361,7 @@ describe('VantagePointTree2 - Edge Cases', () => {
     expect(nearest).toEqual(points[2])
   })
 
-  it.skip('should handle identical distances', () => {
+  it('should handle identical distances', () => {
     const points = [
       { x: 0, y: 0 },
       { x: 3, y: 4 },
@@ -475,7 +475,7 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     expect(tree.contains(nearest!)).toBe(true)
   })
 
-  it.skip('should combine k-nearest and toArray', () => {
+  it('should combine k-nearest and toArray', () => {
     const points = Array.from({ length: 20 }, (_, i) => ({ x: i, y: i }))
     const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
     const query = { x: 5, y: 5 }
