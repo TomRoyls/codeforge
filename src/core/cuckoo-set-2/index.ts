@@ -1,0 +1,223 @@
+const EMPTY = Symbol('EMPTY')
+
+type Slot<T> = T | typeof EMPTY
+
+const DEFAULT_CAPACITY = 16
+const MIN_CAPACITY = 8
+const MAX_EVICTION_STEPS = 2000
+
+function hash1<T>(value: T, capacity: number): number {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const x = Math.abs(value)
+    return ((x * 2654435761) & 0x7fffffff) % capacity
+  }
+  const str = String(value)
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h + str.charCodeAt(i)) | 0
+  }
+  return Math.abs(h) % capacity
+}
+
+function hash2<T>(value: T, capacity: number): number {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const x = Math.abs(value)
+    return ((x * 907633485) & 0x7fffffff) % capacity
+  }
+  const str = String(value)
+  let h = 0
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) + h + str.charCodeAt(i) * 31) | 0
+  }
+  return Math.abs(h) % capacity
+}
+
+export class CuckooSet2<T> {
+  private table1: Slot<T>[]
+  private table2: Slot<T>[]
+  private _capacity: number
+  private _size: number
+
+  constructor(capacity?: number) {
+    this._capacity = Math.max(MIN_CAPACITY, capacity ?? DEFAULT_CAPACITY)
+    this.table1 = new Array<Slot<T>>(this._capacity).fill(EMPTY)
+    this.table2 = new Array<Slot<T>>(this._capacity).fill(EMPTY)
+    this._size = 0
+  }
+
+  private findPosition(value: T): number {
+    const pos1 = hash1(value, this._capacity)
+    const pos2 = hash2(value, this._capacity)
+
+    if (this.table1[pos1] !== EMPTY && this.table1[pos1] === value) {
+      return pos1
+    }
+    if (this.table2[pos2] !== EMPTY && this.table2[pos2] === value) {
+      return pos2 + this._capacity
+    }
+    return -1
+  }
+
+  private insertWithEviction(value: T, steps: number): boolean {
+    if (steps > MAX_EVICTION_STEPS) {
+      return false
+    }
+
+    const pos1 = hash1(value, this._capacity)
+    const slot1 = this.table1[pos1]
+    if (slot1 === EMPTY) {
+      this.table1[pos1] = value
+      return true
+    }
+
+    const pos2 = hash2(value, this._capacity)
+    const slot2 = this.table2[pos2]
+    if (slot2 === EMPTY) {
+      this.table2[pos2] = value
+      return true
+    }
+
+    const evicted = slot1 as T
+    this.table1[pos1] = value
+
+    const evictedPos2 = hash2(evicted, this._capacity)
+    const evictedSlot2 = this.table2[evictedPos2]
+    if (evictedSlot2 === EMPTY) {
+      this.table2[evictedPos2] = evicted
+      return true
+    }
+
+    const evictedFromTable2 = evictedSlot2 as T
+    this.table2[evictedPos2] = evicted
+
+    return this.insertWithEviction(evictedFromTable2, steps + 1)
+  }
+
+  add(value: T): boolean {
+    if (this.findPosition(value) >= 0) {
+      return false
+    }
+
+    const loadFactor = this._size / (2 * this._capacity)
+    if (loadFactor >= 0.6) {
+      this.resize()
+    }
+
+    if (this.insertWithEviction(value, 0)) {
+      this._size++
+      return true
+    }
+
+    this.resize()
+    if (this.insertWithEviction(value, 0)) {
+      this._size++
+      return true
+    }
+    return false
+  }
+
+  has(value: T): boolean {
+    return this.findPosition(value) >= 0
+  }
+
+  delete(value: T): boolean {
+    const pos = this.findPosition(value)
+    if (pos < 0) {
+      return false
+    }
+
+    if (pos < this._capacity) {
+      this.table1[pos] = EMPTY
+    } else {
+      this.table2[pos - this._capacity] = EMPTY
+    }
+
+    this._size--
+
+    if (this._size < this._capacity / 2 && this._capacity > MIN_CAPACITY) {
+      this.resizeInternal(Math.max(MIN_CAPACITY, this._capacity / 2))
+    }
+
+    return true
+  }
+
+  get size(): number {
+    return this._size
+  }
+
+  isEmpty(): boolean {
+    return this._size === 0
+  }
+
+  clear(): void {
+    this.table1.fill(EMPTY)
+    this.table2.fill(EMPTY)
+    this._size = 0
+  }
+
+  toArray(): T[] {
+    const result: T[] = []
+
+    for (let i = 0; i < this._capacity; i++) {
+      const slot1 = this.table1[i]!
+      if (slot1 !== EMPTY) {
+        result.push(slot1 as T)
+      }
+    }
+
+    for (let i = 0; i < this._capacity; i++) {
+      const slot2 = this.table2[i]!
+      if (slot2 !== EMPTY) {
+        result.push(slot2 as T)
+      }
+    }
+
+    return result
+  }
+
+  forEach(callback: (value: T) => void): void {
+    for (let i = 0; i < this._capacity; i++) {
+      const slot1 = this.table1[i]!
+      if (slot1 !== EMPTY) {
+        callback(slot1 as T)
+      }
+    }
+
+    for (let i = 0; i < this._capacity; i++) {
+      const slot2 = this.table2[i]!
+      if (slot2 !== EMPTY) {
+        callback(slot2 as T)
+      }
+    }
+  }
+
+  resize(newCapacity?: number): void {
+    const cap = newCapacity ?? this._capacity * 2
+    this.resizeInternal(cap)
+  }
+
+  private resizeInternal(newCapacity: number): void {
+    const oldTable1 = this.table1
+    const oldTable2 = this.table2
+    const oldCapacity = this._capacity
+
+    this._capacity = Math.max(MIN_CAPACITY, newCapacity)
+    this.table1 = new Array<Slot<T>>(this._capacity).fill(EMPTY)
+    this.table2 = new Array<Slot<T>>(this._capacity).fill(EMPTY)
+    this._size = 0
+
+    for (let i = 0; i < oldCapacity; i++) {
+      const slot1 = oldTable1[i]!
+      if (slot1 !== EMPTY) {
+        this.add(slot1 as T)
+      }
+    }
+
+    for (let i = 0; i < oldCapacity; i++) {
+      const slot2 = oldTable2[i]!
+      if (slot2 !== EMPTY) {
+        this.add(slot2 as T)
+      }
+    }
+  }
+}
