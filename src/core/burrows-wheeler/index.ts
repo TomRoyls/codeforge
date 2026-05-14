@@ -3,13 +3,15 @@ export function bwtEncode(input: string): { transformed: string; originalIndex: 
     return { transformed: "", originalIndex: 0 };
   }
 
-  const n = input.length;
+  const sentinel = "$";
+  const s = input + sentinel;
+  const n = s.length;
   const rotations: string[] = [];
 
   for (let i = 0; i < n; i++) {
     let rotation = "";
     for (let j = 0; j < n; j++) {
-      rotation += input[(i + j) % n];
+      rotation += s[(i + j) % n];
     }
     rotations.push(rotation);
   }
@@ -38,7 +40,12 @@ export function bwtDecode(transformed: string, originalIndex: number): string {
     table.sort();
   }
 
-  return table[originalIndex]!.slice(0, -1);
+  const result = table[originalIndex]!;
+  const sentinelIdx = result.indexOf("$");
+  if (sentinelIdx === 0) {
+    return result.slice(1);
+  }
+  return result.slice(0, sentinelIdx);
 }
 
 export class BurrowsWheeler {
@@ -56,11 +63,12 @@ export class BurrowsWheeler {
 }
 
 function getTransforms(input: string): string[] {
-  const length = input.length;
+  const s = input + "$";
+  const length = s.length;
   const transforms: string[] = [];
 
   for (let i = 0; i < length; i++) {
-    transforms.push(input.slice(i) + input.slice(0, i));
+    transforms.push(s.slice(i) + s.slice(0, i));
   }
 
   return transforms;
