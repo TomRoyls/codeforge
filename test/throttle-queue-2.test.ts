@@ -85,4 +85,65 @@ describe('ThrottleQueue2', () => {
     expect(result2).toBe(2);
     expect(end - start).toBeGreaterThanOrEqual(100);
   });
+
+  it('should handle enqueue after clear', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.clear();
+    expect(queue.size).toBe(0);
+    queue.enqueue(3);
+    expect(queue.size).toBe(1);
+    expect(queue.dequeue()).toBe(3);
+  });
+
+  it('should handle dequeue from empty queue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    expect(queue.dequeue()).toBeUndefined();
+    expect(queue.dequeue()).toBeUndefined();
+  });
+
+  it('should handle mixed enqueue and dequeue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(1);
+    expect(queue.dequeue()).toBe(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(queue.dequeue()).toBe(2);
+    expect(queue.size).toBe(1);
+    expect(queue.dequeue()).toBe(3);
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle many items', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    for (let i = 0; i < 100; i++) {
+      queue.enqueue(i);
+    }
+    expect(queue.size).toBe(100);
+    for (let i = 0; i < 100; i++) {
+      expect(queue.dequeue()).toBe(i);
+    }
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle string items', () => {
+    const queue = new ThrottleQueue2<string>({ maxConcurrent: 1 });
+    queue.enqueue('a');
+    queue.enqueue('b');
+    queue.enqueue('c');
+    expect(queue.dequeue()).toBe('a');
+    expect(queue.dequeue()).toBe('b');
+    expect(queue.dequeue()).toBe('c');
+  });
+
+  it('should handle object items', () => {
+    const queue = new ThrottleQueue2<{ id: number }>({ maxConcurrent: 1 });
+    const obj1 = { id: 1 };
+    const obj2 = { id: 2 };
+    queue.enqueue(obj1);
+    queue.enqueue(obj2);
+    expect(queue.dequeue()).toBe(obj1);
+    expect(queue.dequeue()).toBe(obj2);
+  });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { LibrarySort3 } from './src/core/library-sort-3/index.js';
+import { LibrarySort3 } from '../src/core/library-sort-3/index.js';
 
 describe('LibrarySort3', () => {
   describe('sort', () => {

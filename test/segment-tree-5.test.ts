@@ -73,4 +73,89 @@ describe('SegmentTree5', () => {
     st.update(500, 1000);
     expect(st.query(499, 501)).toBe(500 + 1000 + 502);
   });
+
+  it('handles two elements', () => {
+    const data = [3, 7];
+    const st = new SegmentTree5(data);
+    expect(st.size()).toBe(2);
+    expect(st.query(0, 1)).toBe(10);
+    expect(st.query(0, 0)).toBe(3);
+    expect(st.query(1, 1)).toBe(7);
+    st.update(0, 10);
+    expect(st.query(0, 1)).toBe(17);
+  });
+
+  it('handles all same values', () => {
+    const data = [5, 5, 5, 5, 5];
+    const st = new SegmentTree5(data);
+    expect(st.query(0, 4)).toBe(25);
+    expect(st.query(2, 3)).toBe(10);
+    st.update(2, 10);
+    expect(st.query(0, 4)).toBe(30);
+  });
+
+  it('handles negative numbers', () => {
+    const data = [-1, -2, -3, -4, -5];
+    const st = new SegmentTree5(data);
+    expect(st.query(0, 4)).toBe(-15);
+    expect(st.get(2)).toBe(-3);
+    st.update(2, 10);
+    expect(st.query(0, 4)).toBe(-2);
+  });
+
+  it('handles mixed positive and negative', () => {
+    const data = [-5, 10, -3, 8, -1];
+    const st = new SegmentTree5(data);
+    expect(st.query(0, 4)).toBe(9);
+    expect(st.query(0, 1)).toBe(5);
+    expect(st.query(3, 4)).toBe(7);
+  });
+
+  it('supports multiple updates', () => {
+    const data = [1, 2, 3, 4, 5];
+    const st = new SegmentTree5(data);
+    st.update(0, 10);
+    st.update(4, 20);
+    st.update(2, 30);
+    expect(st.query(0, 4)).toBe(10 + 2 + 30 + 4 + 20);
+    expect(st.get(0)).toBe(10);
+    expect(st.get(2)).toBe(30);
+    expect(st.get(4)).toBe(20);
+  });
+
+  it('query with custom max operation and updates', () => {
+    const data = [3, 1, 4, 1, 5];
+    const st = new SegmentTree5(data, (a, b) => Math.max(a, b));
+    expect(st.query(0, 4)).toBe(5);
+    st.update(1, 10);
+    expect(st.query(0, 4)).toBe(10);
+    expect(st.query(0, 1)).toBe(10);
+  });
+
+  it('query with custom min operation and updates', () => {
+    const data = [10, 20, 30, 40, 50];
+    const st = new SegmentTree5(data, (a, b) => Math.min(a, b));
+    expect(st.query(0, 4)).toBe(10);
+    st.update(0, 100);
+    expect(st.query(0, 4)).toBe(20);
+    st.update(4, 5);
+    expect(st.query(0, 4)).toBe(5);
+  });
+
+  it('handles power-of-two sized data', () => {
+    const data = [1, 2, 3, 4, 5, 6, 7, 8];
+    const st = new SegmentTree5(data);
+    expect(st.size()).toBe(8);
+    expect(st.query(0, 7)).toBe(36);
+    expect(st.query(0, 3)).toBe(10);
+    expect(st.query(4, 7)).toBe(26);
+  });
+
+  it('handles non-power-of-two sized data', () => {
+    const data = [1, 2, 3, 4, 5, 6, 7];
+    const st = new SegmentTree5(data);
+    expect(st.size()).toBe(7);
+    expect(st.query(0, 6)).toBe(28);
+    expect(st.query(3, 5)).toBe(15);
+  });
 });
