@@ -19,7 +19,7 @@ export class BloomFilter {
       const bitIndex = hashes[i]!;
       const byteIndex = Math.floor(bitIndex / 8);
       const bitOffset = bitIndex % 8;
-      this.bits[byteIndex] |= 1 << bitOffset;
+      this.bits[byteIndex]! |= 1 << bitOffset;
     }
     this.itemCount++;
   }
@@ -30,7 +30,7 @@ export class BloomFilter {
       const bitIndex = hashes[i]!;
       const byteIndex = Math.floor(bitIndex / 8);
       const bitOffset = bitIndex % 8;
-      if ((this.bits[byteIndex] & (1 << bitOffset)) === 0) {
+      if ((this.bits[byteIndex]! & (1 << bitOffset)) === 0) {
         return false;
       }
     }
