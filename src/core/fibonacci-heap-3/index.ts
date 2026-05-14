@@ -125,6 +125,30 @@ export class FibonacciHeap3<T = number> {
     this.extractMin()
   }
 
+  deleteNode(node: FibonacciHeap3Node<T>): void {
+    this.delete(node)
+  }
+
+  bulkInsert(values: T[]): FibonacciHeap3Node<T>[] {
+    const nodes: FibonacciHeap3Node<T>[] = []
+    for (const value of values) {
+      nodes.push(this.insert(value))
+    }
+    return nodes
+  }
+
+  getTimeComplexity(): { insert: string; extractMin: string; peek: string; merge: string; decreaseKey: string; deleteNode: string; bulkInsert: string } {
+    return {
+      insert: 'O(1) amortized',
+      extractMin: 'O(log n) amortized',
+      peek: 'O(1)',
+      merge: 'O(1)',
+      decreaseKey: 'O(1) amortized',
+      deleteNode: 'O(log n) amortized',
+      bulkInsert: 'O(k)',
+    }
+  }
+
   get size(): number {
     return this._size
   }

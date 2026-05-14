@@ -292,7 +292,7 @@ describe('FibonacciHeap3', () => {
   });
 
   describe('deleteNode', () => {
-    it.skip('should delete a node from heap', () => {
+    it('should delete a node from heap', () => {
       const heap = new FibonacciHeap3<number>();
       const node1 = heap.insert(5);
       const node2 = heap.insert(10);
@@ -303,7 +303,7 @@ describe('FibonacciHeap3', () => {
       expect(heap.extractMin()).toBe(15);
     });
 
-    it.skip('should delete min node', () => {
+    it('should delete min node', () => {
       const heap = new FibonacciHeap3<number>();
       const node1 = heap.insert(5);
       heap.insert(10);
@@ -312,7 +312,7 @@ describe('FibonacciHeap3', () => {
       expect(heap.peek()).toBe(10);
     });
 
-    it.skip('should delete last node', () => {
+    it('should delete last node', () => {
       const heap = new FibonacciHeap3<number>();
       heap.insert(5);
       heap.insert(10);
@@ -323,14 +323,14 @@ describe('FibonacciHeap3', () => {
       expect(() => heap.extractMin()).toThrow('Heap is empty');
     });
 
-    it.skip('should handle delete on single node', () => {
+    it('should handle delete on single node', () => {
       const heap = new FibonacciHeap3<number>();
       const node = heap.insert(5);
       heap.deleteNode(node);
       expect(heap.isEmpty).toBe(true);
     });
 
-    it.skip('should delete multiple nodes', () => {
+    it('should delete multiple nodes', () => {
       const heap = new FibonacciHeap3<number>();
       const node1 = heap.insert(10);
       const node2 = heap.insert(20);
@@ -414,7 +414,7 @@ describe('FibonacciHeap3', () => {
   });
 
   describe('bulkInsert', () => {
-    it.skip('should insert multiple values at once', () => {
+    it('should insert multiple values at once', () => {
       const heap = new FibonacciHeap3<number>();
       const nodes = heap.bulkInsert([3, 1, 4, 2]);
       expect(nodes.length).toBe(4);
@@ -425,14 +425,14 @@ describe('FibonacciHeap3', () => {
       expect(heap.extractMin()).toBe(4);
     });
 
-    it.skip('should insert empty array', () => {
+    it('should insert empty array', () => {
       const heap = new FibonacciHeap3<number>();
       const nodes = heap.bulkInsert([]);
       expect(nodes.length).toBe(0);
       expect(heap.size).toBe(0);
     });
 
-    it.skip('should insert single value', () => {
+    it('should insert single value', () => {
       const heap = new FibonacciHeap3<number>();
       const nodes = heap.bulkInsert([42]);
       expect(nodes.length).toBe(1);
@@ -440,7 +440,7 @@ describe('FibonacciHeap3', () => {
       expect(heap.extractMin()).toBe(42);
     });
 
-    it.skip('should handle duplicates in bulk insert', () => {
+    it('should handle duplicates in bulk insert', () => {
       const heap = new FibonacciHeap3<number>();
       heap.bulkInsert([5, 5, 3, 3]);
       expect(heap.extractMin()).toBe(3);
@@ -516,7 +516,7 @@ describe('FibonacciHeap3', () => {
   });
 
   describe('getTimeComplexity', () => {
-    it.skip('should return time complexity information', () => {
+    it('should return time complexity information', () => {
       const heap = new FibonacciHeap3<number>();
       const complexity = heap.getTimeComplexity();
       expect(complexity.insert).toBe('O(1) amortized');
