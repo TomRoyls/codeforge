@@ -139,19 +139,19 @@ export class TwoThreeTree<T> {
   private split3Node(keys: [T, T, T], children: (Node<T> | null)[]) {
     const leftNode: Node<T> = {
       type: '2',
-      keys: [keys[0]],
-      children: [children[0], children[1]]
+      keys: [keys[0]!],
+      children: [children[0]!, children[1]!]
     };
 
     const rightNode: Node<T> = {
       type: '2',
-      keys: [keys[2]],
-      children: [children[1], children[2]]
+      keys: [keys[2]!],
+      children: [children[1]!, children[2]!]
     };
 
     return {
       node: null,
-      promoted: keys[1],
+      promoted: keys[1]!,
       leftChild: leftNode,
       rightChild: rightNode,
       inserted: true
@@ -171,12 +171,12 @@ export class TwoThreeTree<T> {
     if (fromLeft) {
       node.keys = newKeys as [T, T];
       node.type = '3';
-      node.children = [leftSplit, rightSplit, node.children[1]];
+      node.children = [leftSplit, rightSplit, node.children[1] ?? null];
       return { node, promoted: null, leftChild: null, rightChild: null, inserted: true };
     } else {
       node.keys = newKeys as [T, T];
       node.type = '3';
-      node.children = [node.children[0], leftSplit, rightSplit];
+      node.children = [node.children[0] ?? null, leftSplit, rightSplit];
       return { node, promoted: null, leftChild: null, rightChild: null, inserted: true };
     }
   }
@@ -193,7 +193,7 @@ export class TwoThreeTree<T> {
     const k3 = promoted;
     
     const allKeys = [k1, k2, k3].sort((a: T, b: T) => this.comparator(a, b));
-    const midKey = allKeys[1];
+    const midKey = allKeys[1]!;
     
     let leftNode: Node<T>;
     let rightNode: Node<T>;
@@ -201,34 +201,34 @@ export class TwoThreeTree<T> {
     if (position === 0) {
       leftNode = {
         type: '2',
-        keys: [allKeys[0]],
+        keys: [allKeys[0]!],
         children: [leftSplit, rightSplit]
       };
       rightNode = {
         type: '2',
-        keys: [allKeys[2]],
-        children: [node.children[1], node.children[2]]
+        keys: [allKeys[2]!],
+        children: [node.children[1] ?? null, node.children[2] ?? null]
       };
     } else if (position === 1) {
       leftNode = {
         type: '2',
-        keys: [allKeys[0]],
-        children: [node.children[0], leftSplit]
+        keys: [allKeys[0]!],
+        children: [node.children[0] ?? null, leftSplit]
       };
       rightNode = {
         type: '2',
-        keys: [allKeys[2]],
-        children: [rightSplit, node.children[2]]
+        keys: [allKeys[2]!],
+        children: [rightSplit, node.children[2] ?? null]
       };
     } else {
       leftNode = {
         type: '2',
-        keys: [allKeys[0]],
-        children: [node.children[0], node.children[1]]
+        keys: [allKeys[0]!],
+        children: [node.children[0] ?? null, node.children[1] ?? null]
       };
       rightNode = {
         type: '2',
-        keys: [allKeys[2]],
+        keys: [allKeys[2]!],
         children: [leftSplit, rightSplit]
       };
     }
@@ -270,20 +270,20 @@ export class TwoThreeTree<T> {
         }
         if (node.children[0] === null) {
           const successor = this.getMin(node.children[1]!);
-          node.keys[0]! = successor;
+          node.keys = [successor];
           const [newRight, deleted] = this.deleteNode(node.children[1]!, successor);
           node.children[1] = newRight;
           return [node, deleted];
         }
         if (node.children[1] === null) {
           const predecessor = this.getMax(node.children[0]!);
-          node.keys[0]! = predecessor;
+          node.keys = [predecessor];
           const [newLeft, deleted] = this.deleteNode(node.children[0]!, predecessor);
           node.children[0] = newLeft;
           return [node, deleted];
         }
         const successor = this.getMin(node.children[1]!);
-        node.keys[0]! = successor;
+        node.keys = [successor];
         const [newRight, deleted] = this.deleteNode(node.children[1]!, successor);
         node.children[1] = newRight;
         return [node, deleted];
@@ -313,7 +313,7 @@ export class TwoThreeTree<T> {
           return [node, true];
         }
         const predecessor = this.getMax(node.children[0]!);
-        node.keys[0]! = predecessor;
+        node.keys = [predecessor];
         const [newLeft, deleted] = this.deleteNode(node.children[0]!, predecessor);
         node.children[0] = newLeft;
         if (!deleted) return [node, false];
@@ -326,7 +326,7 @@ export class TwoThreeTree<T> {
           return [node, true];
         }
         const successor = this.getMin(node.children[2]!);
-        node.keys[1]! = successor;
+        node.keys = [node.keys[0]!, successor];
         const [newRight, deleted] = this.deleteNode(node.children[2]!, successor);
         node.children[2] = newRight;
         if (!deleted) return [node, false];
@@ -374,25 +374,25 @@ export class TwoThreeTree<T> {
   contains(value: T): boolean {
     let current = this.root;
     while (current !== null) {
-      const cmp1 = this.comparator(value, current.keys[0]);
+      const cmp1 = this.comparator(value, current.keys[0]!);
       
       if (current.type === '2') {
         if (cmp1 === 0) return true;
         if (cmp1 < 0) {
-          current = current.children[0];
+          current = current.children[0] ?? null;
         } else {
-          current = current.children[1];
+          current = current.children[1] ?? null;
         }
       } else {
-        const cmp2 = this.comparator(value, current.keys[1]);
+        const cmp2 = this.comparator(value, current.keys[1]!);
         
         if (cmp1 === 0 || cmp2 === 0) return true;
         if (cmp1 < 0) {
-          current = current.children[0];
+          current = current.children[0] ?? null;
         } else if (cmp2 < 0) {
-          current = current.children[1];
+          current = current.children[1] ?? null;
         } else {
-          current = current.children[2];
+          current = current.children[2] ?? null;
         }
       }
     }
@@ -426,15 +426,15 @@ export class TwoThreeTree<T> {
   private inOrder(node: Node<T> | null, result: T[]): void {
     if (node === null) return;
     
-    this.inOrder(node.children[0], result);
+    this.inOrder(node.children[0] ?? null, result);
     result.push(node.keys[0]!);
     
     if (node.type === '3') {
-      this.inOrder(node.children[1], result);
+      this.inOrder(node.children[1] ?? null, result);
       result.push(node.keys[1]!);
     }
     
-    this.inOrder(node.type === '3' ? node.children[2] : node.children[1], result);
+    this.inOrder(node.type === '3' ? (node.children[2] ?? null) : (node.children[1] ?? null), result);
   }
 
   size(): number {
@@ -460,9 +460,9 @@ export class TwoThreeTree<T> {
 
   private computeHeight(node: Node<T> | null): number {
     if (node === null) return 0;
-    const leftHeight = this.computeHeight(node.children[0]);
-    const rightHeight = this.computeHeight(node.children[1]);
-    const middleHeight = node.type === '3' ? this.computeHeight(node.children[2]) : 0;
+    const leftHeight = this.computeHeight(node.children[0] ?? null);
+    const rightHeight = this.computeHeight(node.children[1] ?? null);
+    const middleHeight = node.type === '3' ? this.computeHeight(node.children[2] ?? null) : 0;
     return 1 + Math.max(leftHeight, rightHeight, middleHeight);
   }
 
