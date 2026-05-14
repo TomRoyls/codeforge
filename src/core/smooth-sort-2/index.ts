@@ -1,4 +1,4 @@
-import { CompareFn } from '../types.js';
+import type { CompareFn } from '../types.js';
 
 export class SmoothSort2 {
   private comparisons: number = 0;
