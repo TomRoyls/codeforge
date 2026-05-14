@@ -136,7 +136,7 @@ export class TwoThreeTree<T> {
     }
   }
 
-  private split3Node<T>(keys: [T, T, T], children: (Node<T> | null)[]) {
+  private split3Node(keys: [T, T, T], children: (Node<T> | null)[]) {
     const leftNode: Node<T> = {
       type: '2',
       keys: [keys[0]],
@@ -158,7 +158,7 @@ export class TwoThreeTree<T> {
     };
   }
 
-  private handleSplitIn2Node<T>(
+  private handleSplitIn2Node(
     node: Node<T>,
     promoted: T,
     leftSplit: Node<T> | null,
@@ -181,7 +181,7 @@ export class TwoThreeTree<T> {
     }
   }
 
-  private handleSplitIn3Node<T>(
+  private handleSplitIn3Node(
     node: Node<T>,
     promoted: T,
     leftSplit: Node<T> | null,
