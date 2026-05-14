@@ -63,7 +63,7 @@ export class SkipList<T> {
     const newNode = new SkipListNode<T>(value, nodeLevel);
 
     for (let i = 0; i <= nodeLevel; i++) {
-      newNode.next[i] = update[i]!.next[i];
+      newNode.next[i] = update[i]!.next[i] ?? null;
       update[i]!.next[i] = newNode;
     }
 
@@ -88,7 +88,7 @@ export class SkipList<T> {
         if (update[i]!.next[i] !== current) {
           break;
         }
-        update[i]!.next[i] = current.next[i];
+        update[i]!.next[i] = current.next[i] ?? null;
       }
 
       while (this.level > 0 && this.head.next[this.level] === null) {
@@ -148,7 +148,7 @@ export class SkipList<T> {
 
     while (current !== null) {
       result.push(current.value);
-      current = current.next[0];
+      current = current.next[0] ?? null;
     }
 
     return result;

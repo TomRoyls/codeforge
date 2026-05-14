@@ -385,6 +385,7 @@ type Entry<T> = {rect: Rect, data: T}
 abstract class Node<T> {
   type: 'internal' | 'leaf'
   bounds: Rect
+  _type?: T
 
   constructor(type: 'internal' | 'leaf') {
     this.type = type
