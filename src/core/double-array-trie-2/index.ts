@@ -39,7 +39,7 @@ export class DoubleArrayTrie2 {
     let i = 0;
 
     while (i < chars.length) {
-      const t = this.base[s]! + chars[i];
+      const t = this.base[s]! + chars[i]!;
       this.ensureCapacity(t);
 
       if (this.check[t]! !== s) {
@@ -84,7 +84,7 @@ export class DoubleArrayTrie2 {
     let s = 0;
 
     for (let i = 0; i < chars.length; i++) {
-      const t = this.base[s]! + chars[i];
+      const t = this.base[s]! + chars[i]!;
       if (t >= this.base.length || this.check[t]! !== s) {
         return false;
       }
@@ -117,7 +117,7 @@ export class DoubleArrayTrie2 {
     let s = 0;
 
     for (let i = 0; i < chars.length; i++) {
-      const t = this.base[s]! + chars[i];
+      const t = this.base[s]! + chars[i]!;
       if (t >= this.base.length || this.check[t]! !== s) {
         return false;
       }
@@ -145,7 +145,7 @@ export class DoubleArrayTrie2 {
     let s = 0;
 
     for (let i = 0; i < chars.length; i++) {
-      const t = this.base[s]! + chars[i];
+      const t = this.base[s]! + chars[i]!;
       if (t >= this.base.length || this.check[t]! !== s) {
         return [];
       }
@@ -176,9 +176,9 @@ export class DoubleArrayTrie2 {
 
     const children = this.getChildren(parent);
     if (children.length === 0) {
-      const base = this.findBase([chars[0]]);
+      const base = this.findBase([chars[0]!]);
       this.base[parent]! = base;
-      const t = base + chars[0];
+      const t = base + chars[0]!;
       this.ensureCapacity(t);
       this.check[t]! = parent;
 
@@ -192,10 +192,10 @@ export class DoubleArrayTrie2 {
         this.base[t]! = -tailIndex;
       }
     } else {
-      children.push(chars[0]);
+      children.push(chars[0]!);
       const base = this.findBase(children);
       this.rebase(parent, children, base);
-      const t = base + chars[0];
+      const t = base + chars[0]!;
       this.ensureCapacity(t);
       this.check[t]! = parent;
 
@@ -219,27 +219,27 @@ export class DoubleArrayTrie2 {
       this.tail.push(this.codesToString(remaining));
       this.base[t]! = -newTailIndex;
     } else if (matchLen === 0) {
-      const base = this.findBase([tailCodes[0], remaining[0]]);
+      const base = this.findBase([tailCodes[0]!, remaining[0]!]);
       this.base[t]! = base;
 
-      const t1 = base + tailCodes[0];
+      const t1 = base + tailCodes[0]!;
       this.ensureCapacity(t1);
       const tailIndex1 = this.tail.length;
       this.tail.push(this.codesToString(tailCodes.slice(1)));
       this.base[t1]! = -tailIndex1;
       this.check[t1]! = t;
 
-      const t2 = base + remaining[0];
+      const t2 = base + remaining[0]!;
       this.ensureCapacity(t2);
       const tailIndex2 = this.tail.length;
       this.tail.push(this.codesToString(remaining.slice(1)));
       this.base[t2]! = -tailIndex2;
       this.check[t2]! = t;
     } else {
-      const base = this.findBase([tailCodes[0]]);
+      const base = this.findBase([tailCodes[0]!]);
       this.base[t]! = base;
 
-      const t1 = base + tailCodes[0];
+      const t1 = base + tailCodes[0]!;
       this.ensureCapacity(t1);
       const tailIndex1 = this.tail.length;
       this.tail.push(this.codesToString(tailCodes.slice(matchLen)));
@@ -247,14 +247,14 @@ export class DoubleArrayTrie2 {
       this.check[t1]! = t;
 
       if (matchLen < remaining.length) {
-        const t2 = base + remaining[0];
+        const t2 = base + remaining[0]!;
         this.ensureCapacity(t2);
         const tailIndex2 = this.tail.length;
         this.tail.push(this.codesToString(remaining.slice(matchLen)));
         this.base[t2]! = -tailIndex2;
         this.check[t2]! = t;
       } else {
-        const t2 = base + remaining[0];
+        const t2 = base + remaining[0]!;
         this.ensureCapacity(t2);
         const tailIndex2 = this.tail.length;
         this.tail.push('');
