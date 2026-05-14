@@ -23,7 +23,7 @@ export class TernaryHeap<T> {
     if (this.heap.length === 1) {
       return this.heap.pop()!;
     }
-    const min = this.heap[0];
+    const min = this.heap[0]!;
     this.heap[0] = this.heap.pop()!;
     this.siftDown(0);
     return min;
@@ -69,7 +69,7 @@ export class TernaryHeap<T> {
       this.insert(value);
       return undefined;
     }
-    const oldMin = this.heap[0];
+    const oldMin = this.heap[0]!;
     this.heap[0] = value;
     this.siftDown(0);
     return oldMin;
@@ -96,10 +96,10 @@ export class TernaryHeap<T> {
   private siftUp(index: number): void {
     while (index > 0) {
       const parentIndex = this.parent(index);
-      if (this.comparator(this.heap[index], this.heap[parentIndex]) >= 0) {
+      if (this.comparator(this.heap[index]!, this.heap[parentIndex]!) >= 0) {
         break;
       }
-      [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+      [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex]!, this.heap[index]!];
       index = parentIndex;
     }
   }
@@ -110,7 +110,7 @@ export class TernaryHeap<T> {
       let minIndex = index;
 
       for (const childIndex of childIndices) {
-        if (childIndex < this.heap.length && this.comparator(this.heap[childIndex], this.heap[minIndex]) < 0) {
+        if (childIndex < this.heap.length && this.comparator(this.heap[childIndex]!, this.heap[minIndex]!) < 0) {
           minIndex = childIndex;
         }
       }
@@ -119,7 +119,7 @@ export class TernaryHeap<T> {
         break;
       }
 
-      [this.heap[index], this.heap[minIndex]] = [this.heap[minIndex], this.heap[index]];
+      [this.heap[index], this.heap[minIndex]] = [this.heap[minIndex]!, this.heap[index]!];
       index = minIndex;
     }
   }

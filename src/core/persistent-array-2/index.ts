@@ -8,7 +8,7 @@ export class PersistentArray2<T> {
   set(index: number, value: T): PersistentArray2<T> {
     const newItems: T[] = []
     for (let i = 0; i < this.items.length; i++) {
-      newItems[i] = this.items[i]
+      newItems[i] = this.items[i]!
     }
     newItems[index] = value
     return new PersistentArray2(newItems)
@@ -17,7 +17,7 @@ export class PersistentArray2<T> {
   push(value: T): PersistentArray2<T> {
     const newItems: T[] = []
     for (let i = 0; i < this.items.length; i++) {
-      newItems[i] = this.items[i]
+      newItems[i] = this.items[i]!
     }
     newItems[this.items.length] = value
     return new PersistentArray2(newItems)
@@ -29,9 +29,9 @@ export class PersistentArray2<T> {
     }
     const newItems: T[] = []
     for (let i = 0; i < this.items.length - 1; i++) {
-      newItems[i] = this.items[i]
+      newItems[i] = this.items[i]!
     }
-    return [this.items[this.items.length - 1], new PersistentArray2(newItems)]
+    return [this.items[this.items.length - 1]!, new PersistentArray2(newItems)]
   }
 
   get length(): number {
@@ -41,7 +41,7 @@ export class PersistentArray2<T> {
   toArray(): T[] {
     const result: T[] = []
     for (let i = 0; i < this.items.length; i++) {
-      result[i] = this.items[i]
+      result[i] = this.items[i]!
     }
     return result
   }
@@ -49,7 +49,7 @@ export class PersistentArray2<T> {
   map(fn: (item: T, index: number) => T): PersistentArray2<T> {
     const newItems: T[] = []
     for (let i = 0; i < this.items.length; i++) {
-      newItems[i] = fn(this.items[i], i)
+      newItems[i] = fn(this.items[i]!, i)
     }
     return new PersistentArray2(newItems)
   }
@@ -58,8 +58,8 @@ export class PersistentArray2<T> {
     const newItems: T[] = []
     let j = 0
     for (let i = 0; i < this.items.length; i++) {
-      if (fn(this.items[i], i)) {
-        newItems[j] = this.items[i]
+      if (fn(this.items[i]!, i)) {
+        newItems[j] = this.items[i]!
         j++
       }
     }

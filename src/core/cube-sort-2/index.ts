@@ -43,8 +43,8 @@ export class CubeSort2 {
       let minValue: T | null = null;
 
       for (let i = 0; i < cubes.length; i++) {
-        if (indices[i] < cubes[i].length) {
-          const current = cubes[i][indices[i]!];
+        if (indices[i]! < cubes[i]!.length) {
+          const current = cubes[i]![indices[i]!];
           if (minValue === null || this.comparator(current, minValue) < 0) {
             minValue = current;
             minIndex = i;
@@ -53,7 +53,7 @@ export class CubeSort2 {
       }
 
       if (minIndex !== -1) {
-        arr[outputIndex] = cubes[minIndex][indices[minIndex]!];
+        arr[outputIndex] = cubes[minIndex]![indices[minIndex]!]!;
         indices[minIndex]++;
         outputIndex++;
       }

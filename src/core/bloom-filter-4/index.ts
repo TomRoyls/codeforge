@@ -16,7 +16,7 @@ export class BloomFilter {
   add(item: string): void {
     const hashes = this.hash(item);
     for (let i = 0; i < hashes.length; i++) {
-      const bitIndex = hashes[i];
+      const bitIndex = hashes[i]!;
       const byteIndex = Math.floor(bitIndex / 8);
       const bitOffset = bitIndex % 8;
       this.bits[byteIndex] |= 1 << bitOffset;
@@ -27,7 +27,7 @@ export class BloomFilter {
   mightContain(item: string): boolean {
     const hashes = this.hash(item);
     for (let i = 0; i < hashes.length; i++) {
-      const bitIndex = hashes[i];
+      const bitIndex = hashes[i]!;
       const byteIndex = Math.floor(bitIndex / 8);
       const bitOffset = bitIndex % 8;
       if ((this.bits[byteIndex] & (1 << bitOffset)) === 0) {
