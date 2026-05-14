@@ -1,7 +1,6 @@
 export class ThreadSafeStack2<T> {
   private items: T[] = [];
   private locked: boolean = false;
-  private lockHolder: symbol | null = null;
 
   constructor() {}
 

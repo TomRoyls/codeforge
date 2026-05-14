@@ -83,7 +83,7 @@ export class SmoothSort2 {
     this.siftDown(arr, heap, sizes, idx, k, -1, -1);
   }
 
-  private siftDown(arr: number[], heap: number[], sizes: number[], idx: number, k: number, l: number, r: number): void {
+  private siftDown(arr: number[], _heap: number[], _sizes: number[], idx: number, k: number, l: number, r: number): void {
     while (k > 1) {
       let largest = idx;
       let lk = this.leonardoNumbers[k - 2]!;

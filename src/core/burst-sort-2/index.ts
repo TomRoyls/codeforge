@@ -1,11 +1,5 @@
 import { CompareFn } from '../types.js'
 
-type TrieNode<T> = {
-  children: Map<string | number, TrieNode<T>>
-  items: T[]
-  depth: number
-}
-
 export class BurstSort2<T> {
   private array: T[]
   private compare: CompareFn<T>

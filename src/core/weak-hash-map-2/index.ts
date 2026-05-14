@@ -84,7 +84,7 @@ class WeakHashMap2<K extends Key, V> {
 
   clear(): void {
     this.primitiveEntries.clear();
-    this.objectEntries.forEach((entry, symbol) => {
+    this.objectEntries.forEach((entry, _symbol) => {
       this.registry.unregister(entry.unregisterToken);
     });
     this.objectEntries.clear();

@@ -141,11 +141,6 @@ function findNode<K, V>(
   return null;
 }
 
-function countNodes<K, V>(node: Node<K, V> | null): number {
-  if (!node) return 0;
-  return 1 + countNodes(node.left) + countNodes(node.right);
-}
-
 function inOrderKeys<K, V>(node: Node<K, V> | null, result: K[]): void {
   if (!node) return;
   inOrderKeys(node.left, result);
@@ -194,13 +189,6 @@ function findMaxNode<K, V>(node: Node<K, V> | null): K | undefined {
     node = node.right;
   }
   return node.key;
-}
-
-function checkBalance<K, V>(node: Node<K, V> | null): boolean {
-  if (!node) return true;
-  const bf = balanceFactor(node);
-  if (bf < -1 || bf > 1) return false;
-  return checkBalance(node.left) && checkBalance(node.right);
 }
 
 export class AVLMap3<K, V> {

@@ -382,7 +382,7 @@ type Rect = {minX: number, minY: number, maxX: number, maxY: number}
 
 type Entry<T> = {rect: Rect, data: T}
 
-abstract class Node<T> {
+abstract class Node<_T> {
   type: 'internal' | 'leaf'
   bounds: Rect
 
@@ -392,7 +392,7 @@ abstract class Node<T> {
   }
 }
 
-class LeafNode<T> extends Node<T> {
+class LeafNode<T> extends Node<_T> {
   entries: Entry<T>[] | null
 
   constructor() {
@@ -401,7 +401,7 @@ class LeafNode<T> extends Node<T> {
   }
 }
 
-class InternalNode<T> extends Node<T> {
+class InternalNode<T> extends Node<_T> {
   children: Node<T>[] | null
 
   constructor(left: Node<T>, right: Node<T>) {

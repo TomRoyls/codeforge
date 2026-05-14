@@ -49,9 +49,6 @@ export class BlockSort2 {
   }
 
   private blockMerge(arr: number[], left: number, mid: number, right: number, blockSize: number): void {
-    const leftSize = mid - left + 1;
-    const rightSize = right - mid;
-
     const leftBlocks: number[][] = [];
     const rightBlocks: number[][] = [];
 

@@ -281,22 +281,6 @@ class RopeString2 {
       const valueLeft = root.value.slice(0, valueSplit);
       const valueRight = root.value.slice(valueSplit);
 
-      const leftNode: RopeNode = {
-        left: leftLeft,
-        right: null,
-        value: valueLeft,
-        length: (leftLeft ? leftLeft.length : 0) + valueLeft.length,
-        weight: (leftLeft ? leftLeft.weight : 0) + valueLeft.length
-      };
-
-      const rightNode: RopeNode = {
-        left: null,
-        right: rightRight,
-        value: valueRight,
-        length: valueRight.length + (rightRight ? rightRight.length : 0),
-        weight: valueRight.length
-      };
-
       return [this.merge(leftLeft, { left: null, right: null, value: valueLeft, length: valueLeft.length, weight: valueLeft.length }), this.merge({ left: null, right: null, value: valueRight, length: valueRight.length, weight: valueRight.length }, rightRight)];
     }
 

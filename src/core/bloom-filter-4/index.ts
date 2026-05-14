@@ -3,12 +3,8 @@ export class BloomFilter {
   private size: number;
   private hashCount: number;
   private itemCount: number;
-  private expectedItems: number;
-  private falsePositiveRate: number;
 
   constructor(expectedItems: number = 1000, falsePositiveRate: number = 0.01) {
-    this.expectedItems = expectedItems;
-    this.falsePositiveRate = falsePositiveRate;
     this.itemCount = 0;
     this.size = Math.ceil(
       -(expectedItems * Math.log(falsePositiveRate)) / (Math.log(2) * Math.log(2))

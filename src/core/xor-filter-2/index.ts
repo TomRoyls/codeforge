@@ -87,7 +87,6 @@ export class XorFilter2 {
 
       const hashes = itemHashes[foundIdx];
       const [h1, h2, h3] = hashes;
-      const f = ((h1 + h2 + h3) & 0xFF) | 1;
 
       const idx1 = XorFilter2.getBlockIndex(h1, blockSize, 0);
       const idx2 = XorFilter2.getBlockIndex(h2, blockSize, 1);

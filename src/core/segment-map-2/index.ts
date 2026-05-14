@@ -101,7 +101,6 @@ export class SegmentMap2<V> {
       return node;
     }
 
-    const result: Segment<V>[] = [];
     const remaining: Segment<V>[] = [];
 
     this.collectNonOverlapping(node, start, end, remaining);

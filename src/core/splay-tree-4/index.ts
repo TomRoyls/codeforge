@@ -488,13 +488,6 @@ export class SplayTree4<T> {
     return 1 + this.countNodes(node.left) + this.countNodes(node.right);
   }
 
-  private countLessThan(node: Node<T> | null): number {
-    if (node === null) {
-      return 0;
-    }
-    return this.countNodes(node.left);
-  }
-
   private calculateHeight(node: Node<T> | null): number {
     if (node === null) {
       return 0;

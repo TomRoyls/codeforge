@@ -91,10 +91,6 @@ export class FlashSort2<T> {
       return Math.min(m - 1, Math.floor(ratio * m))
     }
 
-    const sortedValues = [min, max]
-    let low = 0
-    let high = 1
-
     for (let i = 0; i < m; i++) {
       const mid = i / (m - 1)
       const threshold = mid >= 0.5 ? max : min
