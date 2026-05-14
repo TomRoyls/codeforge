@@ -11,35 +11,35 @@ describe('PairingFunction2', () => {
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (1, 0) correctly', () => {
+    it('should encode and decode (1, 0) correctly', () => {
       const z = PairingFunction2.cantorPair(1, 0);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(1);
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (0, 1) correctly', () => {
+    it('should encode and decode (0, 1) correctly', () => {
       const z = PairingFunction2.cantorPair(0, 1);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(0);
       expect(y).toBe(1);
     });
 
-    it.skip('should encode and decode (5, 7) correctly', () => {
+    it('should encode and decode (5, 7) correctly', () => {
       const z = PairingFunction2.cantorPair(5, 7);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(5);
       expect(y).toBe(7);
     });
 
-    it.skip('should encode and decode (100, 200) correctly', () => {
+    it('should encode and decode (100, 200) correctly', () => {
       const z = PairingFunction2.cantorPair(100, 200);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(100);
       expect(y).toBe(200);
     });
 
-    it.skip('should encode and decode (1000, 1000) correctly', () => {
+    it('should encode and decode (1000, 1000) correctly', () => {
       const z = PairingFunction2.cantorPair(1000, 1000);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(1000);
@@ -51,7 +51,7 @@ describe('PairingFunction2', () => {
       expect(() => PairingFunction2.cantorUnpair(-1n)).toThrow();
     });
 
-    it.skip('should encode and decode large numbers correctly', () => {
+    it('should encode and decode large numbers correctly', () => {
       const z = PairingFunction2.cantorPair(50000, 60000);
       const [x, y] = PairingFunction2.cantorUnpair(z);
       expect(x).toBe(50000);
@@ -81,44 +81,44 @@ describe('PairingFunction2', () => {
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (1, 0) correctly', () => {
+    it('should encode and decode (1, 0) correctly', () => {
       const z = PairingFunction2.szudzikPair(1, 0);
-      expect(z).toBe(1n);
+      expect(z).toBe(2n);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(1);
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (0, 1) correctly', () => {
+    it('should encode and decode (0, 1) correctly', () => {
       const z = PairingFunction2.szudzikPair(0, 1);
-      expect(z).toBe(2n);
+      expect(z).toBe(1n);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(0);
       expect(y).toBe(1);
     });
 
-    it.skip('should encode and decode (5, 7) correctly', () => {
+    it('should encode and decode (5, 7) correctly', () => {
       const z = PairingFunction2.szudzikPair(5, 7);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(5);
       expect(y).toBe(7);
     });
 
-    it.skip('should encode and decode (7, 5) correctly', () => {
+    it('should encode and decode (7, 5) correctly', () => {
       const z = PairingFunction2.szudzikPair(7, 5);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(7);
       expect(y).toBe(5);
     });
 
-    it.skip('should encode and decode (100, 200) correctly', () => {
+    it('should encode and decode (100, 200) correctly', () => {
       const z = PairingFunction2.szudzikPair(100, 200);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(100);
       expect(y).toBe(200);
     });
 
-    it.skip('should encode and decode (1000, 1000) correctly', () => {
+    it('should encode and decode (1000, 1000) correctly', () => {
       const z = PairingFunction2.szudzikPair(1000, 1000);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(1000);
@@ -130,7 +130,7 @@ describe('PairingFunction2', () => {
       expect(() => PairingFunction2.szudzikUnpair(-1n)).toThrow();
     });
 
-    it.skip('should encode and decode large numbers correctly', () => {
+    it('should encode and decode large numbers correctly', () => {
       const z = PairingFunction2.szudzikPair(50000, 60000);
       const [x, y] = PairingFunction2.szudzikUnpair(z);
       expect(x).toBe(50000);
@@ -160,7 +160,7 @@ describe('PairingFunction2', () => {
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (1, 0) correctly', () => {
+    it('should encode and decode (1, 0) correctly', () => {
       const z = PairingFunction2.elegantPair(1, 0);
       expect(z).toBe(2n);
       const [x, y] = PairingFunction2.elegantUnpair(z);
@@ -168,7 +168,7 @@ describe('PairingFunction2', () => {
       expect(y).toBe(0);
     });
 
-    it.skip('should encode and decode (0, 1) correctly', () => {
+    it('should encode and decode (0, 1) correctly', () => {
       const z = PairingFunction2.elegantPair(0, 1);
       expect(z).toBe(1n);
       const [x, y] = PairingFunction2.elegantUnpair(z);
@@ -176,28 +176,28 @@ describe('PairingFunction2', () => {
       expect(y).toBe(1);
     });
 
-    it.skip('should encode and decode (5, 7) correctly', () => {
+    it('should encode and decode (5, 7) correctly', () => {
       const z = PairingFunction2.elegantPair(5, 7);
       const [x, y] = PairingFunction2.elegantUnpair(z);
       expect(x).toBe(5);
       expect(y).toBe(7);
     });
 
-    it.skip('should encode and decode (7, 5) correctly', () => {
+    it('should encode and decode (7, 5) correctly', () => {
       const z = PairingFunction2.elegantPair(7, 5);
       const [x, y] = PairingFunction2.elegantUnpair(z);
       expect(x).toBe(7);
       expect(y).toBe(5);
     });
 
-    it.skip('should encode and decode (100, 200) correctly', () => {
+    it('should encode and decode (100, 200) correctly', () => {
       const z = PairingFunction2.elegantPair(100, 200);
       const [x, y] = PairingFunction2.elegantUnpair(z);
       expect(x).toBe(100);
       expect(y).toBe(200);
     });
 
-    it.skip('should encode and decode (1000, 1000) correctly', () => {
+    it('should encode and decode (1000, 1000) correctly', () => {
       const z = PairingFunction2.elegantPair(1000, 1000);
       const [x, y] = PairingFunction2.elegantUnpair(z);
       expect(x).toBe(1000);
@@ -209,7 +209,7 @@ describe('PairingFunction2', () => {
       expect(() => PairingFunction2.elegantUnpair(-1n)).toThrow();
     });
 
-    it.skip('should encode and decode large numbers correctly', () => {
+    it('should encode and decode large numbers correctly', () => {
       const z = PairingFunction2.elegantPair(50000, 60000);
       const [x, y] = PairingFunction2.elegantUnpair(z);
       expect(x).toBe(50000);
@@ -269,7 +269,7 @@ describe('PairingFunction2', () => {
       expect(y3).toBe(y1);
     });
 
-    it.skip('should handle multiple consecutive roundtrips consistently for Szudzik', () => {
+    it('should handle multiple consecutive roundtrips consistently for Szudzik', () => {
       const [x1, y1] = [123, 456];
       const z1 = PairingFunction2.szudzikPair(x1, y1);
       const [x2, y2] = PairingFunction2.szudzikUnpair(z1);
@@ -279,7 +279,7 @@ describe('PairingFunction2', () => {
       expect(y3).toBe(y1);
     });
 
-    it.skip('should handle multiple consecutive roundtrips consistently for Elegant', () => {
+    it('should handle multiple consecutive roundtrips consistently for Elegant', () => {
       const [x1, y1] = [123, 456];
       const z1 = PairingFunction2.elegantPair(x1, y1);
       const [x2, y2] = PairingFunction2.elegantUnpair(z1);
@@ -289,7 +289,7 @@ describe('PairingFunction2', () => {
       expect(y3).toBe(y1);
     });
 
-    it.skip('should handle symmetric pairs (x, x) consistently across all functions', () => {
+    it('should handle symmetric pairs (x, x) consistently across all functions', () => {
       const pairs = [0, 1, 10, 100, 1000];
       for (const n of pairs) {
         const cantorZ = PairingFunction2.cantorPair(n, n);
@@ -326,7 +326,7 @@ describe('PairingFunction2', () => {
       expect(elegantY).toBe(0);
     });
 
-    it.skip('should produce unique encodings for different pairs', () => {
+    it('should produce unique encodings for different pairs', () => {
       const pairs = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 3], [3, 2]];
       const cantorCodes = new Set<bigint>();
       const szudzikCodes = new Set<bigint>();
@@ -343,7 +343,7 @@ describe('PairingFunction2', () => {
       expect(elegantCodes.size).toBe(pairs.length);
     });
 
-    it.skip('should maintain function consistency: all roundtrip functions work correctly', () => {
+    it('should maintain function consistency: all roundtrip functions work correctly', () => {
       const testCases = [
         [0, 0],
         [1, 0],

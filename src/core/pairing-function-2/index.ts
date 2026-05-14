@@ -26,10 +26,10 @@ export class PairingFunction2 {
     }
     const xBig = BigInt(x);
     const yBig = BigInt(y);
-    if (xBig >= yBig) {
-      return xBig * xBig + yBig;
+    if (xBig < yBig) {
+      return yBig * yBig + xBig;
     } else {
-      return yBig * yBig + xBig + yBig;
+      return xBig * xBig + xBig + yBig;
     }
   }
 
@@ -39,15 +39,15 @@ export class PairingFunction2 {
     }
     const s = PairingFunction2.integerSqrt(z);
     const sSquared = s * s;
+    const diff = z - sSquared;
     let x: bigint;
     let y: bigint;
-    const diff = z - sSquared;
-    if (diff <= s) {
-      x = s;
-      y = diff;
+    if (diff < s) {
+      x = diff;
+      y = s;
     } else {
-      x = diff - s - 1n;
-      y = s + 1n;
+      x = s;
+      y = diff - s;
     }
     return [Number(x), Number(y)];
   }
@@ -71,15 +71,15 @@ export class PairingFunction2 {
     }
     const e = PairingFunction2.integerSqrt(z);
     const eSquared = e * e;
+    const diff = z - eSquared;
     let x: bigint;
     let y: bigint;
-    const diff = z - eSquared;
-    if (diff <= e) {
-      x = e;
-      y = diff;
+    if (diff < e) {
+      x = diff;
+      y = e;
     } else {
-      x = diff - e - 1n;
-      y = e + 1n;
+      x = e;
+      y = diff - e;
     }
     return [Number(x), Number(y)];
   }

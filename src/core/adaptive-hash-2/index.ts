@@ -1,6 +1,7 @@
 export class AdaptiveHash2<K, V> {
   private mode: 'open-addressing' | 'chaining';
-  private buckets: Array<[K, V] | [K, V][] | null>;
+  private oaBuckets: Array<[K, V] | null>;
+  private chBuckets: Array<[K, V][] | null>;
   private _size: number;
   private initialCapacity: number;
   private loadFactorThreshold: number;
@@ -9,7 +10,8 @@ export class AdaptiveHash2<K, V> {
 
   constructor(initialCapacity: number = 16, loadFactorThreshold: number = 0.75, collisionThreshold: number = 3) {
     this.mode = 'open-addressing';
-    this.buckets = new Array(initialCapacity).fill(null);
+    this.oaBuckets = new Array(initialCapacity).fill(null);
+    this.chBuckets = [];
     this._size = 0;
     this.initialCapacity = initialCapacity;
     this.loadFactorThreshold = loadFactorThreshold;
@@ -17,110 +19,103 @@ export class AdaptiveHash2<K, V> {
     this.totalCollisions = 0;
   }
 
-  private hash(key: K): number {
+  private hash(key: K, capacity: number): number {
     const str = String(key);
-    let hash = 0;
+    let h = 0;
     for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash = hash & hash;
+      h = ((h << 5) - h) + str.charCodeAt(i);
+      h = h & h;
     }
-    return Math.abs(hash) % this.buckets.length;
+    return Math.abs(h) % capacity;
+  }
+
+  private currentCapacity(): number {
+    return this.mode === 'open-addressing' ? this.oaBuckets.length : this.chBuckets.length;
   }
 
   set(key: K, value: V): void {
     if (this.mode === 'open-addressing') {
-      this.setOpenAddressing(key, value);
+      this.setOA(key, value);
     } else {
-      this.setChaining(key, value);
+      this.setCH(key, value);
     }
     this.checkResize();
   }
 
-  private setOpenAddressing(key: K, value: V): void {
-    const index = this.hash(key);
-    let currentIndex = index;
-    let collisionCount = 0;
+  private setOA(key: K, value: V): void {
+    const cap = this.oaBuckets.length;
+    const index = this.hash(key, cap);
+    let ci = index;
 
-    while (this.buckets![currentIndex] !== null) {
-      if (Array.isArray(this.buckets![currentIndex])) {
-        this.convertToChaining();
-        this.setChaining(key, value);
-        return;
-      }
-      const entry = this.buckets![currentIndex] as [K, V];
+    while (this.oaBuckets[ci] !== null) {
+      const entry = this.oaBuckets[ci]!;
       if (entry[0] === key) {
         entry[1] = value;
         return;
       }
-      collisionCount++;
       this.totalCollisions++;
-      currentIndex = (currentIndex + 1) % this.buckets.length;
-      if (currentIndex === index) {
-        this.resize();
-        this.setOpenAddressing(key, value);
+      ci = (ci + 1) % cap;
+      if (ci === index) {
+        this.resizeOA();
+        this.setOA(key, value);
         return;
       }
     }
 
-    this.buckets![currentIndex] = [key, value];
+    this.oaBuckets[ci] = [key, value];
     this._size++;
   }
 
-  private setChaining(key: K, value: V): void {
-    const index = this.hash(key);
-    if (this.buckets![index] === null) {
-      this.buckets![index] = [[key, value]];
+  private setCH(key: K, value: V): void {
+    const cap = this.chBuckets.length;
+    const index = this.hash(key, cap);
+    const bucket = this.chBuckets[index]!;
+    if (bucket === null) {
+      this.chBuckets[index] = [[key, value]];
       this._size++;
       return;
     }
-
-    const chain = this.buckets![index] as [K, V][];
-    for (let i = 0; i < chain.length; i++) {
-      if (chain[i]![0] === key) {
-        chain[i]![1] = value;
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i]![0] === key) {
+        bucket[i]![1] = value;
         return;
       }
     }
-    chain.push([key, value]);
+    bucket.push([key, value]);
     this._size++;
   }
 
   get(key: K): V | undefined {
     if (this.mode === 'open-addressing') {
-      return this.getOpenAddressing(key);
+      return this.getOA(key);
     }
-    return this.getChaining(key);
+    return this.getCH(key);
   }
 
-  private getOpenAddressing(key: K): V | undefined {
-    const index = this.hash(key);
-    let currentIndex = index;
+  private getOA(key: K): V | undefined {
+    const cap = this.oaBuckets.length;
+    const index = this.hash(key, cap);
+    let ci = index;
 
-    while (this.buckets![currentIndex] !== null) {
-      if (Array.isArray(this.buckets![currentIndex])) {
-        return this.getChaining(key);
-      }
-      const entry = this.buckets![currentIndex] as [K, V];
+    while (this.oaBuckets[ci] !== null) {
+      const entry = this.oaBuckets[ci]!;
       if (entry[0] === key) {
         return entry[1];
       }
-      currentIndex = (currentIndex + 1) % this.buckets.length;
-      if (currentIndex === index) {
-        break;
-      }
+      ci = (ci + 1) % cap;
+      if (ci === index) break;
     }
     return undefined;
   }
 
-  private getChaining(key: K): V | undefined {
-    const index = this.hash(key);
-    const chain = this.buckets![index] as [K, V][] | null;
-    if (chain === null) {
-      return undefined;
-    }
-    for (let i = 0; i < chain.length; i++) {
-      if (chain[i]![0] === key) {
-        return chain[i]![1];
+  private getCH(key: K): V | undefined {
+    const cap = this.chBuckets.length;
+    const index = this.hash(key, cap);
+    const bucket = this.chBuckets[index]!;
+    if (bucket === null) return undefined;
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i]![0] === key) {
+        return bucket[i]![1];
       }
     }
     return undefined;
@@ -132,46 +127,41 @@ export class AdaptiveHash2<K, V> {
 
   delete(key: K): boolean {
     if (this.mode === 'open-addressing') {
-      return this.deleteOpenAddressing(key);
+      return this.deleteOA(key);
     }
-    return this.deleteChaining(key);
+    return this.deleteCH(key);
   }
 
-  private deleteOpenAddressing(key: K): boolean {
-    const index = this.hash(key);
-    let currentIndex = index;
+  private deleteOA(key: K): boolean {
+    const cap = this.oaBuckets.length;
+    const index = this.hash(key, cap);
+    let ci = index;
 
-    while (this.buckets![currentIndex] !== null) {
-      if (Array.isArray(this.buckets![currentIndex])) {
-        return this.deleteChaining(key);
-      }
-      const entry = this.buckets![currentIndex] as [K, V];
+    while (this.oaBuckets[ci] !== null) {
+      const entry = this.oaBuckets[ci]!;
       if (entry[0] === key) {
-        this.buckets![currentIndex] = null;
+        this.oaBuckets[ci] = null;
         this._size--;
-        this.rehash();
+        this.rehashOA();
         return true;
       }
-      currentIndex = (currentIndex + 1) % this.buckets.length;
-      if (currentIndex === index) {
-        break;
-      }
+      ci = (ci + 1) % cap;
+      if (ci === index) break;
     }
     return false;
   }
 
-  private deleteChaining(key: K): boolean {
-    const index = this.hash(key);
-    const chain = this.buckets![index] as [K, V][] | null;
-    if (chain === null) {
-      return false;
-    }
-    for (let i = 0; i < chain.length; i++) {
-      if (chain[i]![0] === key) {
-        chain.splice(i, 1);
+  private deleteCH(key: K): boolean {
+    const cap = this.chBuckets.length;
+    const index = this.hash(key, cap);
+    const bucket = this.chBuckets[index]!;
+    if (bucket === null) return false;
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i]![0] === key) {
+        bucket.splice(i, 1);
         this._size--;
-        if (chain.length === 0) {
-          this.buckets![index] = null;
+        if (bucket.length === 0) {
+          this.chBuckets[index] = null;
         }
         return true;
       }
@@ -185,7 +175,8 @@ export class AdaptiveHash2<K, V> {
 
   clear(): void {
     this.mode = 'open-addressing';
-    this.buckets = new Array(this.initialCapacity).fill(null);
+    this.oaBuckets = new Array(this.initialCapacity).fill(null);
+    this.chBuckets = [];
     this._size = 0;
     this.totalCollisions = 0;
   }
@@ -195,91 +186,74 @@ export class AdaptiveHash2<K, V> {
   }
 
   capacity(): number {
-    return this.buckets.length;
+    return this.currentCapacity();
   }
 
   private checkResize(): void {
-    const loadFactor = this._size / this.buckets.length;
-    if (loadFactor > this.loadFactorThreshold) {
-      this.resize();
-    }
-    if (this.mode === 'open-addressing' && this.totalCollisions > this.collisionThreshold) {
-      this.convertToChaining();
+    const cap = this.currentCapacity();
+    const loadFactor = this._size / cap;
+    if (this.mode === 'open-addressing') {
+      if (this.totalCollisions > this.collisionThreshold) {
+        this.convertToChaining();
+        return;
+      }
+      if (loadFactor > this.loadFactorThreshold) {
+        this.resizeOA();
+      }
+    } else {
+      if (loadFactor > this.loadFactorThreshold) {
+        this.resizeCH();
+      }
     }
   }
 
-  private resize(): void {
-    const oldBuckets = this.buckets;
-    this.buckets = new Array(this.buckets.length * 2).fill(null);
+  private resizeOA(): void {
+    const oldBuckets = this.oaBuckets;
+    const newCap = oldBuckets.length * 2;
+    this.oaBuckets = new Array(newCap).fill(null);
     this._size = 0;
-    this.totalCollisions = 0;
-
-    oldBuckets.forEach((bucket) => {
+    for (const bucket of oldBuckets) {
       if (bucket !== null) {
-        if (Array.isArray(bucket)) {
-          const chain = bucket as [K, V][];
-          chain.forEach(([k, v]) => {
-            if (this.mode === 'open-addressing') {
-              this.setOpenAddressing(k, v);
-            } else {
-              this.setChaining(k, v);
-            }
-          });
-        } else {
-          if (this.mode === 'open-addressing') {
-            this.setOpenAddressing(bucket[0], bucket[1]);
-          } else {
-            this.setChaining(bucket[0], bucket[1]);
-          }
+        this.setOA(bucket[0], bucket[1]);
+      }
+    }
+  }
+
+  private resizeCH(): void {
+    const oldBuckets = this.chBuckets;
+    const newCap = oldBuckets.length * 2;
+    this.chBuckets = new Array(newCap).fill(null);
+    this._size = 0;
+    for (const bucket of oldBuckets) {
+      if (bucket !== null) {
+        for (const [k, v] of bucket) {
+          this.setCH(k, v);
         }
       }
-    });
+    }
   }
 
   private convertToChaining(): void {
-    this.mode = 'chaining';
-    const oldBuckets = this.buckets;
-    this.buckets = new Array(oldBuckets.length).fill(null);
+    const oldBuckets = this.oaBuckets;
+    this.chBuckets = new Array(oldBuckets.length).fill(null);
     this._size = 0;
-
-    oldBuckets.forEach((bucket) => {
+    for (const bucket of oldBuckets) {
       if (bucket !== null) {
-        if (Array.isArray(bucket)) {
-          const chain = bucket as [K, V][];
-          chain.forEach(([k, v]) => {
-            this.setChaining(k, v);
-          });
-        } else {
-          this.setChaining(bucket[0], bucket[1]);
-        }
+        this.setCH(bucket[0], bucket[1]);
       }
-    });
+    }
+    this.mode = 'chaining';
+    this.totalCollisions = 0;
   }
 
-  private rehash(): void {
-    const oldBuckets = this.buckets;
-    this.buckets = new Array(this.buckets.length).fill(null);
+  private rehashOA(): void {
+    const oldBuckets = this.oaBuckets;
+    this.oaBuckets = new Array(oldBuckets.length).fill(null);
     this._size = 0;
-
-    oldBuckets.forEach((bucket) => {
+    for (const bucket of oldBuckets) {
       if (bucket !== null) {
-        if (Array.isArray(bucket)) {
-          const chain = bucket as [K, V][];
-          chain.forEach(([k, v]) => {
-            if (this.mode === 'open-addressing') {
-              this.setOpenAddressing(k, v);
-            } else {
-              this.setChaining(k, v);
-            }
-          });
-        } else {
-          if (this.mode === 'open-addressing') {
-            this.setOpenAddressing(bucket[0], bucket[1]);
-          } else {
-            this.setChaining(bucket[0], bucket[1]);
-          }
-        }
+        this.setOA(bucket[0], bucket[1]);
       }
-    });
+    }
   }
 }
