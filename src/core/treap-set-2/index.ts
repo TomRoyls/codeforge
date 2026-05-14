@@ -214,13 +214,13 @@ export class TreapSet2<T> {
     let j = 0
 
     while (i < values.length && j < otherValues.length) {
-      const cmp = this.compare(values[i], otherValues[j])
+      const cmp = this.compare(values[i]!, otherValues[j]!)
       if (cmp < 0) {
         i++
       } else if (cmp > 0) {
         j++
       } else {
-        result.add(values[i])
+        result.add(values[i]!)
         i++
         j++
       }

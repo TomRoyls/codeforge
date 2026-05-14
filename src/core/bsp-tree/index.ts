@@ -110,13 +110,13 @@ export class BSPTree {
         return true;
       }
       if (frontSegments.length > 0) {
-        const first = frontSegments[0];
+        const first = frontSegments[0]!;
         node.segment = first;
         frontSegments.shift();
         node.front = this.rebuildTree(frontSegments.concat(backSegments));
         node.back = null;
       } else if (backSegments.length > 0) {
-        const first = backSegments[0];
+        const first = backSegments[0]!;
         node.segment = first;
         backSegments.shift();
         node.front = this.rebuildTree(backSegments.concat(frontSegments));

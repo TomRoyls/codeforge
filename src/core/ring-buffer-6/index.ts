@@ -31,7 +31,7 @@ export class RingBuffer6<T> {
     const newCapacity = this.buffer.length * 2;
     const newBuffer = new Array<T>(newCapacity);
     for (let i = 0; i < this._size; i++) {
-      newBuffer[i] = this.buffer[(this.head + i) % this.buffer.length];
+      newBuffer[i] = this.buffer[(this.head + i) % this.buffer.length]!;
     }
     this.buffer = newBuffer;
     this.head = 0;
@@ -104,14 +104,14 @@ export class RingBuffer6<T> {
   toArray(): T[] {
     const arr: T[] = new Array(this._size);
     for (let i = 0; i < this._size; i++) {
-      arr[i] = this.buffer[(this.head + i) % this.buffer.length];
+      arr[i] = this.buffer[(this.head + i) % this.buffer.length]!;
     }
     return arr;
   }
 
   forEach(callback: (item: T, index: number) => void): void {
     for (let i = 0; i < this._size; i++) {
-      callback(this.buffer[(this.head + i) % this.buffer.length], i);
+      callback(this.buffer[(this.head + i) % this.buffer.length]!, i);
     }
   }
 }
