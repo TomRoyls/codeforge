@@ -84,7 +84,7 @@ describe('EditBuffer2', () => {
   });
 
   describe('delete', () => {
-    it.skip('should delete text from cursor position', () => {
+    it('should delete text from cursor position', () => {
       buffer.insert('hello');
       buffer.moveCursor(2);
       const deleted = buffer.delete(2);
@@ -93,7 +93,7 @@ describe('EditBuffer2', () => {
       expect(buffer.getCursor()).toBe(2);
     });
 
-    it.skip('should delete from end of buffer', () => {
+    it('should delete from end of buffer', () => {
       buffer.insert('hello');
       const deleted = buffer.delete(10);
       expect(deleted).toBe('');
@@ -101,7 +101,7 @@ describe('EditBuffer2', () => {
       expect(buffer.getCursor()).toBe(5);
     });
 
-    it.skip('should delete all remaining content', () => {
+    it('should delete all remaining content', () => {
       buffer.insert('hello');
       buffer.moveCursor(2);
       const deleted = buffer.delete(10);
@@ -132,7 +132,7 @@ describe('EditBuffer2', () => {
       expect(buffer.canRedo()).toBe(false);
     });
 
-    it.skip('should return deleted text', () => {
+    it('should return deleted text', () => {
       buffer.insert('hello');
       buffer.moveCursor(1);
       const deleted = buffer.delete(3);
@@ -286,7 +286,7 @@ describe('EditBuffer2', () => {
       expect(buffer.getCursor()).toBe(2);
     });
 
-    it.skip('should restore previous cursor position on delete undo', () => {
+    it('should restore previous cursor position on delete undo', () => {
       buffer.insert('hello');
       buffer.moveCursor(1);
       expect(buffer.getCursor()).toBe(1);
@@ -601,7 +601,7 @@ describe('EditBuffer2', () => {
       expect(buffer.canRedo()).toBe(false);
     });
 
-    it.skip('should handle delete at end', () => {
+    it('should handle delete at end', () => {
       buffer.insert('hello');
       const deleted = buffer.delete(10);
       expect(deleted).toBe('');
