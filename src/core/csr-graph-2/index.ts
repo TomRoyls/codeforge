@@ -60,8 +60,8 @@ export class CSRGraph2 {
     const end = this.offsets![vertex + 1];
     const neighbors: Array<{ to: number; weight?: number }> = [];
 
-    for (let i = start; i < end; i++) {
-      neighbors.push({ ...this.csrEdges![i] });
+    for (let i = start!; i < end!; i++) {
+      neighbors.push({ ...this.csrEdges![i]! });
     }
 
     return neighbors;
@@ -83,8 +83,8 @@ export class CSRGraph2 {
     const start = this.offsets![from];
     const end = this.offsets![from + 1];
 
-    for (let i = start; i < end; i++) {
-      if (this.csrEdges![i].to === to) {
+    for (let i = start!; i < end!; i++) {
+      if (this.csrEdges![i]!.to === to) {
         return true;
       }
     }

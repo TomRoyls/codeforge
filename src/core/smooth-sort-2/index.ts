@@ -18,8 +18,8 @@ export class SmoothSort2 {
 
   private generateLeonardoNumbers(maxSize: number): void {
     this.leonardoNumbers = [1, 1];
-    while (this.leonardoNumbers[this.leonardoNumbers.length - 1] + this.leonardoNumbers[this.leonardoNumbers.length - 2] + 1 <= maxSize) {
-      const next = this.leonardoNumbers[this.leonardoNumbers.length - 1] + this.leonardoNumbers[this.leonardoNumbers.length - 2] + 1;
+    while (this.leonardoNumbers[this.leonardoNumbers.length - 1]! + this.leonardoNumbers[this.leonardoNumbers.length - 2]! + 1 <= maxSize) {
+      const next = this.leonardoNumbers[this.leonardoNumbers.length - 1]! + this.leonardoNumbers[this.leonardoNumbers.length - 2]! + 1;
       this.leonardoNumbers.push(next);
     }
   }
@@ -29,7 +29,7 @@ export class SmoothSort2 {
       return this.leonardoNumbers[k]!;
     }
     while (k >= this.leonardoNumbers.length) {
-      const next = this.leonardoNumbers[this.leonardoNumbers.length - 1] + this.leonardoNumbers[this.leonardoNumbers.length - 2] + 1;
+      const next = this.leonardoNumbers[this.leonardoNumbers.length - 1]! + this.leonardoNumbers[this.leonardoNumbers.length - 2]! + 1;
       this.leonardoNumbers.push(next);
     }
     return this.leonardoNumbers[k]!;
@@ -57,7 +57,7 @@ export class SmoothSort2 {
     for (let i = n - 1; i >= 0; i--) {
       const k = sizes.pop()!;
       const root = heap.pop()!;
-      arr[i] = arr[root];
+      arr[i] = arr[root]!;
       this.swaps++;
       if (k > 1) {
         const l = sizes[sizes.length - 1]!;
@@ -89,10 +89,10 @@ export class SmoothSort2 {
       let lk = this.leonardoNumbers[k - 2]!;
       let rk = this.leonardoNumbers[k - 1]!;
 
-      if (l >= 0 && this.compare(arr[idx + lk - 1], arr[largest]) > 0) {
+      if (l >= 0 && this.compare(arr[idx + lk - 1]!, arr[largest]!) > 0) {
         largest = idx + lk - 1;
       }
-      if (r >= 0 && this.compare(arr[idx + lk + rk - 1], arr[largest]) > 0) {
+      if (r >= 0 && this.compare(arr[idx + lk + rk - 1]!, arr[largest]!) > 0) {
         largest = idx + lk + rk - 1;
       }
 
@@ -100,8 +100,8 @@ export class SmoothSort2 {
         break;
       }
 
-      const temp = arr[idx];
-      arr[idx] = arr[largest];
+      const temp = arr[idx]!;
+      arr[idx] = arr[largest]!;
       arr[largest] = temp;
       this.swaps++;
 
