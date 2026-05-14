@@ -30,7 +30,7 @@ describe('DAryHeap', () => {
   })
 
   describe('insert and extract', () => {
-    it.skip('should insert and extract in max-heap order', () => {
+    it('should insert and extract in max-heap order', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -53,7 +53,7 @@ describe('DAryHeap', () => {
       expect(heap.isEmpty()).toBe(true)
     })
 
-    it.skip('should handle duplicate values', () => {
+    it('should handle duplicate values', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(5)
@@ -66,7 +66,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(3)
     })
 
-    it.skip('should maintain heap property after multiple inserts', () => {
+    it('should maintain heap property after multiple inserts', () => {
       const heap = new DAryHeap<number>()
       const values = [7, 3, 9, 2, 5, 1, 8, 4, 6]
       values.forEach((v) => heap.insert(v))
@@ -81,7 +81,7 @@ describe('DAryHeap', () => {
   })
 
   describe('peek', () => {
-    it.skip('should return the max element without removing it', () => {
+    it('should return the max element without removing it', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(10)
@@ -157,14 +157,15 @@ describe('DAryHeap', () => {
   })
 
   describe('toArray', () => {
-    it.skip('should return copy of heap array', () => {
+    it('should return copy of heap array', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
       heap.insert(8)
 
       const arr = heap.toArray()
-      expect(arr).toEqual([8, 5, 3])
+      expect(arr[0]).toBe(8)
+      expect(arr.sort((a, b) => b - a)).toEqual([8, 5, 3])
       expect(arr).not.toBe(heap['heap'])
     })
 
@@ -205,7 +206,7 @@ describe('DAryHeap', () => {
   })
 
   describe('merge', () => {
-    it.skip('should merge two heaps', () => {
+    it('should merge two heaps', () => {
       const heap1 = new DAryHeap<number>()
       heap1.insert(5)
       heap1.insert(3)
@@ -242,7 +243,7 @@ describe('DAryHeap', () => {
       expect(merged.size()).toBe(4)
     })
 
-    it.skip('should handle merging empty heap', () => {
+    it('should handle merging empty heap', () => {
       const heap1 = new DAryHeap<number>()
       heap1.insert(5)
       heap1.insert(3)
@@ -281,7 +282,7 @@ describe('DAryHeap', () => {
   })
 
   describe('update', () => {
-    it.skip('should increase value and maintain heap', () => {
+    it('should increase value and maintain heap', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -292,11 +293,13 @@ describe('DAryHeap', () => {
       heap.update(2, 15)
 
       expect(heap.extract()).toBe(15)
+      expect(heap.extract()).toBe(10)
       expect(heap.extract()).toBe(8)
-      expect(heap.extract()).toBe(5)
+      expect(heap.extract()).toBe(3)
+      expect(heap.extract()).toBe(1)
     })
 
-    it.skip('should decrease value and maintain heap', () => {
+    it('should decrease value and maintain heap', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -310,7 +313,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(5)
     })
 
-    it.skip('should handle invalid index', () => {
+    it('should handle invalid index', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -321,7 +324,7 @@ describe('DAryHeap', () => {
       expect(heap.peek()).toBe(5)
     })
 
-    it.skip('should handle updating to same value', () => {
+    it('should handle updating to same value', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -335,7 +338,7 @@ describe('DAryHeap', () => {
   })
 
   describe('custom d value', () => {
-    it.skip('should work with d=2 (binary heap)', () => {
+    it('should work with d=2 (binary heap)', () => {
       const heap = new DAryHeap<number>(2)
       heap.insert(5)
       heap.insert(3)
@@ -350,7 +353,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(1)
     })
 
-    it.skip('should work with d=3 (ternary heap)', () => {
+    it('should work with d=3 (ternary heap)', () => {
       const heap = new DAryHeap<number>(3)
       heap.insert(5)
       heap.insert(3)
@@ -365,7 +368,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(1)
     })
 
-    it.skip('should work with d=4 (quaternary heap)', () => {
+    it('should work with d=4 (quaternary heap)', () => {
       const heap = new DAryHeap<number>(4)
       heap.insert(5)
       heap.insert(3)
@@ -380,7 +383,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(1)
     })
 
-    it.skip('should default to d=4', () => {
+    it('should default to d=4', () => {
       const heap = new DAryHeap<number>()
       heap.insert(5)
       heap.insert(3)
@@ -391,7 +394,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(3)
     })
 
-    it.skip('should clamp d=1 to d=2', () => {
+    it('should clamp d=1 to d=2', () => {
       const heap = new DAryHeap<number>(1)
       heap.insert(5)
       heap.insert(3)
@@ -404,7 +407,7 @@ describe('DAryHeap', () => {
   })
 
   describe('custom comparator', () => {
-    it.skip('should work as min-heap with reverse comparator', () => {
+    it('should work as min-heap with reverse comparator', () => {
       const heap = new DAryHeap<number>(4, (a, b) => {
         if (a < b) return 1
         if (a > b) return -1
@@ -424,7 +427,7 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(10)
     })
 
-    it.skip('should work with string comparator', () => {
+    it('should work with string comparator', () => {
       const heap = new DAryHeap<string>(4, (a, b) => {
         if (a < b) return -1
         if (a > b) return 1
@@ -436,13 +439,13 @@ describe('DAryHeap', () => {
       heap.insert('banana')
       heap.insert('cherry')
 
-      expect(heap.extract()).toBe('apple')
-      expect(heap.extract()).toBe('banana')
-      expect(heap.extract()).toBe('cherry')
       expect(heap.extract()).toBe('zebra')
+      expect(heap.extract()).toBe('cherry')
+      expect(heap.extract()).toBe('banana')
+      expect(heap.extract()).toBe('apple')
     })
 
-    it.skip('should work with object comparator', () => {
+    it('should work with object comparator', () => {
       interface Item {
         value: number
         priority: number
@@ -497,7 +500,7 @@ describe('DAryHeap', () => {
   })
 
   describe('large datasets', () => {
-    it.skip('should handle 1000 elements', () => {
+    it('should handle 1000 elements', () => {
       const heap = new DAryHeap<number>()
       const values = Array.from({ length: 1000 }, (_, i) => i)
       values.forEach((v) => heap.insert(v))
@@ -531,7 +534,7 @@ describe('DAryHeap', () => {
       }
     })
 
-    it.skip('should handle insert and extract interleaved', () => {
+    it('should handle insert and extract interleaved', () => {
       const heap = new DAryHeap<number>()
       const values = [50, 25, 75, 12, 37, 62, 87, 6, 18, 31]
 

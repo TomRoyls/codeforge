@@ -87,9 +87,9 @@ export class DAryHeap<T> {
     const old = this.heap[index]!
     this.heap[index] = value
     const cmpResult = this.cmp(value, old)
-    if (cmpResult < 0) {
+    if (cmpResult > 0) {
       this.bubbleUp(index)
-    } else if (cmpResult > 0) {
+    } else if (cmpResult < 0) {
       this.trickleDown(index)
     }
   }
@@ -112,7 +112,7 @@ export class DAryHeap<T> {
   private bubbleUp(index: number): void {
     while (index > 0) {
       const p = this.parent(index)
-      if (this.cmp(this.heap[index]!, this.heap[p]!) < 0) {
+      if (this.cmp(this.heap[index]!, this.heap[p]!) > 0) {
         this.swap(index, p)
         index = p
       } else {
