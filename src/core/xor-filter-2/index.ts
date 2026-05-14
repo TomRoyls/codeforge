@@ -43,12 +43,12 @@ export class XorFilter2 {
 
     const counts = new Uint16Array(size);
     for (const hashes of itemHashes) {
-      const idx1 = XorFilter2.getBlockIndex(hashes[0], blockSize, 0);
-      const idx2 = XorFilter2.getBlockIndex(hashes[1], blockSize, 1);
-      const idx3 = XorFilter2.getBlockIndex(hashes[2], blockSize, 2);
-      counts[idx1]++;
-      counts[idx2]++;
-      counts[idx3]++;
+      const idx1 = XorFilter2.getBlockIndex(hashes[0]!, blockSize, 0);
+      const idx2 = XorFilter2.getBlockIndex(hashes[1]!, blockSize, 1);
+      const idx3 = XorFilter2.getBlockIndex(hashes[2]!, blockSize, 2);
+      counts[idx1] = (counts[idx1] ?? 0) + 1;
+      counts[idx2] = (counts[idx2] ?? 0) + 1;
+      counts[idx3] = (counts[idx3] ?? 0) + 1;
     }
 
     const queue: number[] = [];
@@ -72,10 +72,10 @@ export class XorFilter2 {
       for (let i = 0; i < items.length; i++) {
         if (assigned[i]) continue;
 
-        const hashes = itemHashes[i];
-        const idx1 = XorFilter2.getBlockIndex(hashes[0], blockSize, 0);
-        const idx2 = XorFilter2.getBlockIndex(hashes[1], blockSize, 1);
-        const idx3 = XorFilter2.getBlockIndex(hashes[2], blockSize, 2);
+        const hashes = itemHashes[i]!;
+        const idx1 = XorFilter2.getBlockIndex(hashes[0]!, blockSize, 0);
+        const idx2 = XorFilter2.getBlockIndex(hashes[1]!, blockSize, 1);
+        const idx3 = XorFilter2.getBlockIndex(hashes[2]!, blockSize, 2);
 
         if (idx1 === pos || idx2 === pos || idx3 === pos) {
           foundIdx = i;
@@ -85,7 +85,7 @@ export class XorFilter2 {
 
       if (foundIdx === -1) continue;
 
-      const hashes = itemHashes[foundIdx];
+      const hashes = itemHashes[foundIdx]!;
       const [h1, h2, h3] = hashes;
 
       const idx1 = XorFilter2.getBlockIndex(h1, blockSize, 0);
@@ -106,7 +106,7 @@ export class XorFilter2 {
       assigned[foundIdx] = 1;
 
       for (const p of [idx1, idx2, idx3]) {
-        counts[p]--;
+        counts[p] = (counts[p] ?? 0) - 1;
         if (counts[p] === 1) {
           queue.push(p);
         }
@@ -132,9 +132,9 @@ export class XorFilter2 {
     const idx2 = XorFilter2.getBlockIndex(h2, this.blockSize, 1);
     const idx3 = XorFilter2.getBlockIndex(h3, this.blockSize, 2);
 
-    const f1 = this.fingerprints[idx1];
-    const f2 = this.fingerprints[idx2];
-    const f3 = this.fingerprints[idx3];
+    const f1 = this.fingerprints[idx1]!;
+    const f2 = this.fingerprints[idx2]!;
+    const f3 = this.fingerprints[idx3]!;
 
     const xf = f1 ^ f2 ^ f3;
     return (xf & 0xFF) === (f & 0xFF);

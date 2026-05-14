@@ -19,9 +19,9 @@ export class UnionFind4 {
 
   find(x: number): number {
     if (this.parent[x] !== x) {
-      this.parent[x] = this.find(this.parent[x]);
+      this.parent[x] = this.find(this.parent[x]!);
     }
-    return this.parent[x];
+    return this.parent[x]!;
   }
 
   union(x: number, y: number): void {
@@ -32,16 +32,16 @@ export class UnionFind4 {
       return;
     }
 
-    if (this.rank[rootX] < this.rank[rootY]) {
+    if (this.rank[rootX]! < this.rank[rootY]!) {
       this.parent[rootX] = rootY;
-      this.size[rootY] += this.size[rootX];
-    } else if (this.rank[rootX] > this.rank[rootY]) {
+      this.size[rootY]! += this.size[rootX]!;
+    } else if (this.rank[rootX]! > this.rank[rootY]!) {
       this.parent[rootY] = rootX;
-      this.size[rootX] += this.size[rootY];
+      this.size[rootX]! += this.size[rootY]!;
     } else {
       this.parent[rootY] = rootX;
-      this.rank[rootX] += 1;
-      this.size[rootX] += this.size[rootY];
+      this.rank[rootX]! += 1;
+      this.size[rootX]! += this.size[rootY]!;
     }
 
     this.components -= 1;
@@ -52,7 +52,7 @@ export class UnionFind4 {
   }
 
   componentSize(x: number): number {
-    return this.size[this.find(x)];
+    return this.size[this.find(x)]!;
   }
 
   componentCount(): number {

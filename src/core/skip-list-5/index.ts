@@ -144,7 +144,7 @@ export class SkipList<T> {
 
   toArray(): T[] {
     const result: T[] = [];
-    let current = this.head.next[0];
+    let current = this.head.next[0] ?? null;
 
     while (current !== null) {
       result.push(current.value);
