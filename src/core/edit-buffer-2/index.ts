@@ -41,31 +41,20 @@ export class EditBuffer2 {
       return '';
     }
     
-    let startPosition: number;
-    let actualCount: number;
-    
-    if (count > this.cursor) {
-      startPosition = 0;
-      actualCount = this.cursor;
-    } else {
-      startPosition = this.cursor - count;
-      actualCount = count;
-    }
-    
+    const actualCount = Math.min(count, this.content.length - this.cursor);
     if (actualCount === 0) {
       return '';
     }
     
-    const deletedText = this.content.slice(startPosition, startPosition + actualCount);
+    const deletedText = this.content.slice(this.cursor, this.cursor + actualCount);
     const previousCursor = this.cursor;
     
-    this.content = this.content.slice(0, startPosition) + this.content.slice(startPosition + actualCount);
-    this.cursor = startPosition;
+    this.content = this.content.slice(0, this.cursor) + this.content.slice(this.cursor + actualCount);
     
     this.undoStack.push({
       type: 'delete',
       text: deletedText,
-      position: startPosition,
+      position: this.cursor,
       previousCursor
     });
     

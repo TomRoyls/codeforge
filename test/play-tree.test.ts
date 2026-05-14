@@ -456,7 +456,7 @@ describe('PlayTree', () => {
       expect(tree.last()).toBeUndefined();
     });
 
-    it('should return max with duplicates', () => {
+    it('should return max without duplicates', () => {
       tree.insert(5);
       tree.insert(7);
       tree.insert(5);

@@ -265,7 +265,7 @@ describe('CuckooHash3', () => {
   });
 
   describe('many insertions', () => {
-    it.skip('should handle many insertions', () => {
+    it('should handle many insertions', () => {
       for (let i = 0; i < 100; i++) {
         map.set(`key${i}`, i);
       }
@@ -275,7 +275,7 @@ describe('CuckooHash3', () => {
       }
     });
 
-    it.skip('should handle many insertions with numeric keys', () => {
+    it('should handle many insertions with numeric keys', () => {
       for (let i = 0; i < 50; i++) {
         map.set(i as any, i * 2);
       }
@@ -285,7 +285,7 @@ describe('CuckooHash3', () => {
       }
     });
 
-    it.skip('should maintain correct values after many insertions', () => {
+    it('should maintain correct values after many insertions', () => {
       for (let i = 0; i < 200; i++) {
         map.set(`key${i}`, i * 10);
       }
@@ -296,7 +296,7 @@ describe('CuckooHash3', () => {
   });
 
   describe('auto-resize', () => {
-    it.skip('should auto-resize when needed', () => {
+    it('should auto-resize when needed', () => {
       for (let i = 0; i < 50; i++) {
         map.set(`key${i}`, i);
       }
@@ -306,7 +306,7 @@ describe('CuckooHash3', () => {
       }
     });
 
-    it.skip('should preserve values after resize', () => {
+    it('should preserve values after resize', () => {
       for (let i = 0; i < 30; i++) {
         map.set(`key${i}`, i);
       }
@@ -320,7 +320,7 @@ describe('CuckooHash3', () => {
       }
     });
 
-    it.skip('should handle multiple resizes', () => {
+    it('should handle multiple resizes', () => {
       for (let i = 0; i < 200; i++) {
         map.set(`key${i}`, i);
       }

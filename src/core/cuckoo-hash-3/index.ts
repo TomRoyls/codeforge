@@ -22,9 +22,11 @@ export class CuckooHash3<K, V> {
 
   private hash1(key: K): number {
     const str = String(key);
-    let hash = 5381;
+    let hash = 0;
     for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+      const charCode = str.charCodeAt(i);
+      hash = Math.imul(hash, 31) + charCode;
+      hash = hash ^ (hash >>> 16);
     }
     return Math.abs(hash % this.capacity);
   }
@@ -32,10 +34,13 @@ export class CuckooHash3<K, V> {
   private hash2(key: K): number {
     const str = String(key);
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) - hash) + str.charCodeAt(i);
-      hash = hash & hash;
+    for (let i = str.length - 1; i >= 0; i--) {
+      const charCode = str.charCodeAt(i);
+      hash = Math.imul(hash, 37) + charCode;
+      hash = hash ^ (hash >>> 16);
     }
+    hash = hash ^ 0x9e3779b9;
+    hash = hash ^ (hash >>> 16);
     return Math.abs(hash % this.capacity);
   }
 
@@ -108,10 +113,10 @@ export class CuckooHash3<K, V> {
 
     entries.push({ key, value });
 
-    let capacity = this.capacity * 2;
+    let capacity = this.capacity * 8;
     let success = false;
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 100;
 
     while (!success && attempts < maxAttempts) {
       this.capacity = capacity;
@@ -157,7 +162,7 @@ export class CuckooHash3<K, V> {
 
     let currentKey = key;
     let currentValue = value;
-    let currentTable = 1;
+    let currentTable = Math.random() < 0.5 ? 1 : 2;
 
     for (let kick = 0; kick < this.maxKicks; kick++) {
       if (currentTable === 1) {
