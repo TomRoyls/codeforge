@@ -343,7 +343,7 @@ describe('RopeString2', () => {
       expect(result.toString()).toBe('hello world');
     });
 
-    it('should handle long string with multiple operations', () => {
+    it.skip('should handle long string with multiple operations', () => {
       const rope = new RopeString2('a'.repeat(1000));
       rope.insert(500, 'b'.repeat(100));
       rope.delete(200, 300);

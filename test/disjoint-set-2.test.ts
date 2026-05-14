@@ -60,11 +60,13 @@ describe('DisjointSet', () => {
 
     it('should handle objects', () => {
       const objDs = new DisjointSet<{ id: number }>();
-      objDs.makeSet({ id: 1 });
-      objDs.makeSet({ id: 2 });
+      const obj1 = { id: 1 };
+      const obj2 = { id: 2 };
+      objDs.makeSet(obj1);
+      objDs.makeSet(obj2);
       expect(objDs.size).toBe(2);
-      expect(objDs.has({ id: 1 })).toBe(true);
-      expect(objDs.has({ id: 2 })).toBe(true);
+      expect(objDs.has(obj1)).toBe(true);
+      expect(objDs.has(obj2)).toBe(true);
     });
   });
 
