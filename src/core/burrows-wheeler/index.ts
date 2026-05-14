@@ -17,7 +17,7 @@ export function bwtEncode(input: string): { transformed: string; originalIndex: 
   const sorted = [...rotations];
   sorted.sort();
 
-  const originalIndex = sorted.indexOf(rotations[0]);
+  const originalIndex = sorted.indexOf(rotations[0]!);
   const transformed = sorted.map((s) => s[s.length - 1]).join("");
 
   return { transformed, originalIndex };
