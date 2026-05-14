@@ -66,9 +66,9 @@ export class BipartiteGraph2 {
       const leftIds = Array.from(this.edges.keys());
       for (let i = 0; i < leftIds.length; i++) {
         const leftId = leftIds[i];
-        const rightEdges = this.edges.get(leftId);
+        const rightEdges = this.edges.get(leftId!);
         if (rightEdges && rightEdges.has(vertexId)) {
-          neighbors.push(leftId);
+          neighbors.push(leftId!);
         }
       }
       return neighbors;

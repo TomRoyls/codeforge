@@ -1,4 +1,4 @@
-import { CompareFn } from '../types'
+import type { CompareFn } from '../types.js'
 
 export class FlashSort2<T> {
   private compare: CompareFn<T>

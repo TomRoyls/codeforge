@@ -54,7 +54,6 @@ export class ThreadSafeStack2<T> {
       throw new Error('Stack is already locked');
     }
     this.locked = true;
-    this.lockHolder = Symbol('lock');
   }
 
   unlock(): void {
@@ -62,6 +61,5 @@ export class ThreadSafeStack2<T> {
       throw new Error('Stack is not locked');
     }
     this.locked = false;
-    this.lockHolder = null;
   }
 }
