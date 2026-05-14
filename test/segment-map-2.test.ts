@@ -56,7 +56,7 @@ describe('SegmentMap2', () => {
     expect(result[2]).toEqual({ start: 10, end: 15, value: 'C' });
   });
 
-  it.skip('size tracking', () => {
+  it('size tracking', () => {
     const map = new SegmentMap2<string>();
     expect(map.size).toBe(0);
     map.set(0, 10, 'A');
@@ -64,7 +64,7 @@ describe('SegmentMap2', () => {
     map.set(10, 20, 'B');
     expect(map.size).toBe(2);
     map.set(5, 15, 'C');
-    expect(map.size).toBe(1);
+    expect(map.size).toBe(3);
     map.delete(0, 20);
     expect(map.size).toBe(0);
   });
