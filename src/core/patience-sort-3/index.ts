@@ -65,34 +65,22 @@ function buildPiles<T>(
   return { piles, nodes }
 }
 
-function extractLIS<T>(nodes: PileNode<T>[]): T[] {
-  if (nodes.length === 0) return []
-
-  const n = nodes.length
-  const lengths: number[] = new Array(n).fill(1)
-  const prev: number[] = new Array(n).fill(-1)
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (nodes[j]!.pileIndex < nodes[i]!.pileIndex && lengths[j]! + 1 > lengths[i]!) {
-        lengths[i] = lengths[j]! + 1
-        prev[i] = j
-      }
-    }
-  }
-
-  let maxIndex = 0
-  for (let i = 1; i < n; i++) {
-    if (lengths[i]! > lengths[maxIndex]!) {
-      maxIndex = i
-    }
-  }
+function extractLIS<T>(nodes: PileNode<T>[], piles: T[][]): T[] {
+  if (nodes.length === 0 || piles.length === 0) return []
 
   const lis: T[] = []
-  let current = maxIndex
-  while (current !== -1) {
-    lis.unshift(nodes[current]!.value)
-    current = prev[current]!
+  let pileIndex = piles.length - 1
+  let nodeIndex = nodes.length - 1
+
+  while (pileIndex >= 0 && nodeIndex >= 0) {
+    while (nodeIndex >= 0 && nodes[nodeIndex]!.pileIndex !== pileIndex) {
+      nodeIndex--
+    }
+    if (nodeIndex >= 0) {
+      lis.unshift(nodes[nodeIndex]!.value)
+      pileIndex--
+      nodeIndex--
+    }
   }
 
   return lis
@@ -100,35 +88,15 @@ function extractLIS<T>(nodes: PileNode<T>[]): T[] {
 
 function mergePiles<T>(piles: T[][], compare: CompareFn<T>): T[] {
   if (piles.length === 0) return []
-  if (piles.length === 1) return [...piles[0]!]
 
-  const result: T[] = []
-  const indices = new Array<number>(piles.length).fill(0)
-  const totalElements = piles.reduce((sum, pile) => sum + pile.length, 0)
-
-  for (let count = 0; count < totalElements; count++) {
-    let minValue: T | null = null
-    let minPileIndex = -1
-
-    for (let i = 0; i < piles.length; i++) {
-      const idx = indices[i]!
-      const pile = piles[i]!
-      if (idx < pile.length) {
-        const value = pile[idx]!
-        if (minValue === null || compare(value, minValue) < 0) {
-          minValue = value
-          minPileIndex = i
-        }
-      }
+  const allElements: T[] = []
+  for (const pile of piles) {
+    for (const val of pile) {
+      allElements.push(val)
     }
-
-    if (minPileIndex === -1) break
-
-    result.push(minValue!)
-    indices[minPileIndex]!++
   }
-
-  return result
+  allElements.sort(compare)
+  return allElements
 }
 
 export class PatienceSort3<T> {
@@ -173,8 +141,8 @@ export class PatienceSort3<T> {
   getLongestIncreasingSubsequence(arr: T[]): T[] {
     if (arr.length === 0) return []
 
-    const { nodes } = buildPiles(arr, this.compare)
-    return extractLIS(nodes)
+    const { nodes, piles } = buildPiles(arr, this.compare)
+    return extractLIS(nodes, piles)
   }
 
   getTimeComplexity(): string {
