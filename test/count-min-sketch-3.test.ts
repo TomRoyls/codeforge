@@ -90,4 +90,61 @@ describe('CountMinSketch3', () => {
     cms.update('item');
     expect(cms.estimate('item')).toBe(3);
   });
+
+  it('should never underestimate counts', () => {
+    const cms = new CountMinSketch3(100, 5);
+    cms.update('x', 42);
+    expect(cms.estimate('x')).toBeGreaterThanOrEqual(42);
+  });
+
+  it('should handle large count values', () => {
+    const cms = new CountMinSketch3(1000, 5);
+    cms.update('big', 1000000);
+    expect(cms.estimate('big')).toBeGreaterThanOrEqual(1000000);
+  });
+
+  it('should handle many distinct items', () => {
+    const cms = new CountMinSketch3(2000, 7);
+    for (let i = 0; i < 100; i++) {
+      cms.update(`item_${i}`, i + 1);
+    }
+    for (let i = 0; i < 100; i++) {
+      expect(cms.estimate(`item_${i}`)).toBeGreaterThanOrEqual(i + 1);
+    }
+  });
+
+  it('should handle reset and re-use', () => {
+    const cms = new CountMinSketch3(100, 5);
+    cms.update('a', 10);
+    cms.reset();
+    expect(cms.estimate('a')).toBe(0);
+
+    cms.update('b', 20);
+    expect(cms.estimate('b')).toBe(20);
+  });
+
+  it('should estimate zero for never-updated items', () => {
+    const cms = new CountMinSketch3(100, 5);
+    cms.update('exists', 5);
+    expect(cms.estimate('nothere')).toBe(0);
+  });
+
+  it('should handle empty string keys', () => {
+    const cms = new CountMinSketch3();
+    cms.update('', 5);
+    expect(cms.estimate('')).toBe(5);
+  });
+
+  it('should handle merge of empty sketches', () => {
+    const cms1 = new CountMinSketch3(100, 5);
+    const cms2 = new CountMinSketch3(100, 5);
+    cms1.merge(cms2);
+    expect(cms1.estimate('anything')).toBe(0);
+  });
+
+  it('should handle update with zero count', () => {
+    const cms = new CountMinSketch3();
+    cms.update('item', 0);
+    expect(cms.estimate('item')).toBe(0);
+  });
 });

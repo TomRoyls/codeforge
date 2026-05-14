@@ -52,4 +52,76 @@ describe('RateLimiter2', () => {
     expect(limiter.getAvailableTokens()).toBe(5);
     expect(limiter.tryAcquire()).toBe(true);
   });
+
+  it('should handle maxRequests of 1', () => {
+    const limiter = new RateLimiter2({ maxRequests: 1, windowMs: 1000 });
+
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.getAvailableTokens()).toBe(0);
+    expect(limiter.tryAcquire()).toBe(false);
+  });
+
+  it('should allow requests after reset when previously exhausted', () => {
+    const limiter = new RateLimiter2({ maxRequests: 2, windowMs: 1000 });
+
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(false);
+
+    limiter.reset();
+
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(false);
+  });
+
+  it('should handle large maxRequests', () => {
+    const limiter = new RateLimiter2({ maxRequests: 1000, windowMs: 1000 });
+
+    expect(limiter.getAvailableTokens()).toBe(1000);
+
+    for (let i = 0; i < 500; i++) {
+      expect(limiter.tryAcquire()).toBe(true);
+    }
+
+    expect(limiter.getAvailableTokens()).toBe(500);
+  });
+
+  it('should return false consistently when exhausted', () => {
+    const limiter = new RateLimiter2({ maxRequests: 3, windowMs: 1000 });
+
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+
+    expect(limiter.tryAcquire()).toBe(false);
+    expect(limiter.tryAcquire()).toBe(false);
+    expect(limiter.tryAcquire()).toBe(false);
+  });
+
+  it('should handle multiple reset cycles', () => {
+    const limiter = new RateLimiter2({ maxRequests: 2, windowMs: 1000 });
+
+    for (let cycle = 0; cycle < 5; cycle++) {
+      expect(limiter.tryAcquire()).toBe(true);
+      expect(limiter.tryAcquire()).toBe(true);
+      expect(limiter.tryAcquire()).toBe(false);
+      limiter.reset();
+    }
+  });
+
+  it('should track tokens after partial use and reset', () => {
+    const limiter = new RateLimiter2({ maxRequests: 10, windowMs: 1000 });
+
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(7);
+
+    limiter.reset();
+    expect(limiter.getAvailableTokens()).toBe(10);
+
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(9);
+  });
 });
