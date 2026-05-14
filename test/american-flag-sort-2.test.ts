@@ -110,7 +110,7 @@ describe('AmericanFlagSort2', () => {
       expect(sorter.isSorted(result)).toBe(true);
     });
 
-    it.skip('should sort floating point numbers', () => {
+    it('should sort floating point numbers', () => {
       const sorter = new AmericanFlagSort2();
       const result = sorter.sort([3.5, 1.2, 4.8, 1.1, 5.3]);
       expect(result).toEqual([1.1, 1.2, 3.5, 4.8, 5.3]);
@@ -218,7 +218,7 @@ describe('AmericanFlagSort2', () => {
       expect(arr).toEqual([-5, -2, -1, 3, 7]);
     });
 
-    it.skip('should sort floating point numbers', () => {
+    it('should sort floating point numbers', () => {
       const sorter = new AmericanFlagSort2();
       const arr = [3.5, 1.2, 4.8, 1.1, 5.3];
       sorter.sortInPlace(arr);
@@ -227,13 +227,13 @@ describe('AmericanFlagSort2', () => {
   });
 
   describe('custom comparator', () => {
-    it.skip('should sort with custom descending comparator', () => {
+    it('should sort with custom descending comparator', () => {
       const sorter = new AmericanFlagSort2((a, b) => b - a);
       const result = sorter.sort([1, 2, 3, 4, 5]);
       expect(result).toEqual([5, 4, 3, 2, 1]);
     });
 
-    it.skip('should sortInPlace with custom descending comparator', () => {
+    it('should sortInPlace with custom descending comparator', () => {
       const sorter = new AmericanFlagSort2((a, b) => b - a);
       const arr = [1, 2, 3, 4, 5];
       sorter.sortInPlace(arr);

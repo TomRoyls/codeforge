@@ -112,7 +112,7 @@ describe('Geohash', () => {
   });
 
   describe('decode', () => {
-    it.skip('should decode geohash to coordinates', () => {
+    it('should decode geohash to coordinates', () => {
       const result = Geohash.decode('s0000');
       expect(result.lat).toBeCloseTo(0, 0.5);
       expect(result.lon).toBeCloseTo(0, 0.5);
@@ -187,7 +187,7 @@ describe('Geohash', () => {
       expect(() => Geohash.decode('abcde')).toThrow('Invalid geohash character');
     });
 
-    it.skip('should throw error for character with special symbols', () => {
+    it('should throw error for character with special symbols', () => {
       expect(() => Geohash.decode('test!')).toThrow('Invalid geohash character');
     });
 
