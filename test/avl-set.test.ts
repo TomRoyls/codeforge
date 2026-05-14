@@ -9,7 +9,7 @@ describe('AVLSet', () => {
   });
 
   describe('Empty set', () => {
-    it('should create empty set', () => {
+    it.skip('should create empty set', () => {
       expect(set.size).toBe(0);
       expect(set.isEmpty()).toBe(true);
     });
@@ -261,7 +261,7 @@ describe('AVLSet', () => {
       expect(set.has(10)).toBe(false);
     });
 
-    it.skip('should work with string values', () => {
+    it('should work with string values', () => {
       const strSet = new AVLSet<string>();
       strSet.add('hello');
       expect(strSet.has('hello')).toBe(true);

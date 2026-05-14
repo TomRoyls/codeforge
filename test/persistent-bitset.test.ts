@@ -732,7 +732,7 @@ describe('PersistentBitset', () => {
       expect(bs2.count).toBe(1);
     });
 
-    it.skip('should not modify original', () => {
+    it('should not modify original', () => {
       const bs1 = PersistentBitset.create({ size: 10, bits: [5] });
       const bs2 = bs1.clone();
       const bs3 = bs2.set(10);

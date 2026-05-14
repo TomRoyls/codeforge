@@ -281,7 +281,7 @@ describe('RTree3', async () => {
     expect(midResults.length).toBeGreaterThan(0)
   })
 
-  await it.skip('should maintain entries after many operations', async () => {
+  await it('should maintain entries after many operations', async () => {
     const tree = new RTree3<number>()
     const entries: {rect: {minX: number, minY: number, maxX: number, maxY: number}, data: number}[] = []
 

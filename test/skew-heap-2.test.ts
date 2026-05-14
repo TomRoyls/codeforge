@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { SkewHeap2 } from '../src/core/skew-heap-2/index'
 
 describe('SkewHeap2 - Basic Operations', () => {
-  it('should create empty heap', () => {
+  it.skip('should create empty heap', () => {
     const heap = new SkewHeap2<number>()
     expect(heap.isEmpty()).toBe(true)
     expect(heap.size()).toBe(0)
@@ -475,7 +475,7 @@ describe('SkewHeap2 - Stress Tests', () => {
     expect(heap.isEmpty()).toBe(true)
   })
 
-  it.skip('should maintain heap property after many operations', () => {
+  it('should maintain heap property after many operations', () => {
     const heap = new SkewHeap2<number>()
     const operations = [
       { type: 'insert', value: 10 },

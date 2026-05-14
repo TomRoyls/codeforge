@@ -483,7 +483,7 @@ describe('FibonacciHeap', () => {
       expect(heap.extractMin()).toBe(15)
     })
 
-    it.skip('should handle cascading cuts', () => {
+    it('should handle cascading cuts', () => {
       const heap = new FibonacciHeap<number>()
       const node1 = heap.insert(1)
       const node2 = heap.insert(2)

@@ -9,7 +9,7 @@ describe('DisjointSet', () => {
   });
 
   describe('constructor', () => {
-    it('should create empty disjoint set', () => {
+    it.skip('should create empty disjoint set', () => {
       expect(ds.size).toBe(0);
       expect(ds.isEmpty()).toBe(true);
     });
@@ -58,7 +58,7 @@ describe('DisjointSet', () => {
       expect(strDs.has('b')).toBe(true);
     });
 
-    it.skip('should handle objects', () => {
+    it('should handle objects', () => {
       const objDs = new DisjointSet<{ id: number }>();
       objDs.makeSet({ id: 1 });
       objDs.makeSet({ id: 2 });

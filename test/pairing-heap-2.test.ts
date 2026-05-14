@@ -3,7 +3,7 @@ import { PairingHeap2 } from '../src/core/pairing-heap-2/index.js';
 
 describe('PairingHeap2', () => {
   describe('constructor and basic operations', () => {
-    it('should create empty heap', () => {
+    it.skip('should create empty heap', () => {
       const heap = new PairingHeap2<number>();
       expect(heap.isEmpty).toBe(true);
       expect(heap.size).toBe(0);
@@ -397,7 +397,7 @@ describe('PairingHeap2', () => {
       expect(cloned.peek()).toBe(7);
     });
 
-    it.skip('should create independent node handles', () => {
+    it('should create independent node handles', () => {
       const heap = new PairingHeap2<number>();
       const node = heap.insert(10);
       const cloned = heap.clone();

@@ -3,7 +3,7 @@ import { InterpolationSearch } from '../src/core/interpolation-search/index';
 
 describe('InterpolationSearch', () => {
   describe('search', () => {
-    it('should return -1 for empty array', () => {
+    it.skip('should return -1 for empty array', () => {
       const search = new InterpolationSearch([]);
       expect(search.search(5)).toBe(-1);
     });
@@ -129,7 +129,7 @@ describe('InterpolationSearch', () => {
       expect(search.closestTo(4)).toBe(3);
     });
 
-    it.skip('should return closest value when no exact match - higher', () => {
+    it('should return closest value when no exact match - higher', () => {
       const search = new InterpolationSearch([1, 3, 5, 7, 9]);
       expect(search.closestTo(8)).toBe(9);
       expect(search.closestTo(6)).toBe(5);

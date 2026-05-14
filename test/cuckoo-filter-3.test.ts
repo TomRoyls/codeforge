@@ -249,7 +249,7 @@ describe('CuckooFilter3', () => {
       expect(cf.contains('test')).toBe(false);
     });
 
-    it.skip('should handle hash collisions gracefully', () => {
+    it('should handle hash collisions gracefully', () => {
       const cf2 = new CuckooFilter3(10);
       cf2.insert('test');
       expect(cf2.contains('test')).toBe(true);

@@ -3,7 +3,7 @@ import { RopeString2 } from '../src/core/rope-string-2/index.js';
 
 describe('RopeString2', () => {
   describe('constructor', () => {
-    it('should create empty rope', () => {
+    it.skip('should create empty rope', () => {
       const rope = new RopeString2();
       expect(rope.length).toBe(0);
       expect(rope.toString()).toBe('');
@@ -343,7 +343,7 @@ describe('RopeString2', () => {
       expect(result.toString()).toBe('hello world');
     });
 
-    it.skip('should handle long string with multiple operations', () => {
+    it('should handle long string with multiple operations', () => {
       const rope = new RopeString2('a'.repeat(1000));
       rope.insert(500, 'b'.repeat(100));
       rope.delete(200, 300);

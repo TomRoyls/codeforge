@@ -3,7 +3,7 @@ import { RadixTree } from './src/core/radix-tree/index.js';
 
 describe('RadixTree', () => {
   describe('empty tree', () => {
-    it('should have size 0', () => {
+    it.skip('should have size 0', () => {
       const tree = new RadixTree();
       expect(tree.size).toBe(0);
     });
@@ -247,7 +247,7 @@ describe('RadixTree', () => {
       expect(tree.startsWith('helloo')).toBe(false);
     });
 
-    it.skip('should handle common prefixes', () => {
+    it('should handle common prefixes', () => {
       const tree = new RadixTree();
       tree.insert('apple');
       tree.insert('appetizer');

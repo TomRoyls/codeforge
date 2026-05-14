@@ -49,9 +49,9 @@ describe('BoyerMoore2', () => {
       expect(bm.search('the cat sat')).toEqual([4]);
     });
 
-    it.skip('finds single match with longer pattern', () => {
+    it('finds single match with longer pattern', () => {
       const bm = new BoyerMoore2('algorithm');
-      expect(bm.search('this is an algorithm test')).toEqual([12]);
+      expect(bm.search('this is an algorithm test')).toEqual([11]);
     });
 
     it('finds match with repeated characters', () => {

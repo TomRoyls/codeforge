@@ -1153,7 +1153,7 @@ describe('PlayTree', () => {
       expect(clone.toArray()).toEqual([2, 1]);
     });
 
-    it.skip('should work with object comparator', () => {
+    it('should work with object comparator', () => {
       interface Person {
         id: number;
         name: string;
