@@ -56,7 +56,7 @@ export class AdaptivePQ2<T> {
       const copy = [...this.items]
 
       while (copy.length > 0) {
-        sorted.push(copy[0])
+        sorted.push(copy[0]!)
         this.heapSwap(copy, 0, copy.length - 1)
         copy.pop()
 
@@ -97,9 +97,9 @@ export class AdaptivePQ2<T> {
     }
 
     if (this.shouldUseHeap()) {
-      this.items[index].priority = newPriority
+      this.items[index]!.priority = newPriority
       const parentIndex = this.heapParent(index)
-      if (parentIndex >= 0 && this.items[index].priority < this.items[parentIndex].priority) {
+      if (parentIndex >= 0 && this.items[index]!.priority < this.items[parentIndex]!.priority) {
         this.heapifyUp(index)
       } else {
         this.heapifyDown(index)
@@ -122,7 +122,7 @@ export class AdaptivePQ2<T> {
 
     while (low < high) {
       const mid = Math.floor((low + high) / 2)
-      if (this.items[mid].priority < priority) {
+      if (this.items[mid]!.priority < priority) {
         low = mid + 1
       } else {
         high = mid
@@ -162,7 +162,7 @@ export class AdaptivePQ2<T> {
     this.items[index] = this.items.pop()!
 
     const parentIndex = this.heapParent(index)
-    if (parentIndex >= 0 && this.items[index].priority < this.items[parentIndex].priority) {
+    if (parentIndex >= 0 && this.items[index]!.priority < this.items[parentIndex]!.priority) {
       this.heapifyUp(index)
     } else {
       this.heapifyDown(index)
@@ -172,7 +172,7 @@ export class AdaptivePQ2<T> {
   private heapifyUp(index: number): void {
     while (index > 0) {
       const parentIndex = this.heapParent(index)
-      if (this.items[index].priority >= this.items[parentIndex].priority) {
+      if (this.items[index]!.priority >= this.items[parentIndex]!.priority) {
         break
       }
 
@@ -189,16 +189,16 @@ export class AdaptivePQ2<T> {
       const leftIndex = this.heapLeft(index)
       const rightIndex = this.heapRight(index)
 
-      if (leftIndex < length && this.items[leftIndex].priority < this.items[smallest].priority) {
+      if (leftIndex < length && this.items[leftIndex]!.priority < this.items[smallest]!.priority) {
         smallest = leftIndex
       }
 
-      if (rightIndex < length && this.items[rightIndex].priority < this.items[smallest].priority) {
+      if (rightIndex < length && this.items[rightIndex]!.priority < this.items[smallest]!.priority) {
         smallest = rightIndex
       }
 
       if (smallest === index) {
-        break
+        break;
       }
 
       this.heapSwap(this.items, index, smallest)
@@ -214,11 +214,11 @@ export class AdaptivePQ2<T> {
       const leftIndex = this.heapLeft(index)
       const rightIndex = this.heapRight(index)
 
-      if (leftIndex < length && arr[leftIndex].priority < arr[smallest].priority) {
+      if (leftIndex < length && arr[leftIndex]!.priority < arr[smallest]!.priority) {
         smallest = leftIndex
       }
 
-      if (rightIndex < length && arr[rightIndex].priority < arr[smallest].priority) {
+      if (rightIndex < length && arr[rightIndex]!.priority < arr[smallest]!.priority) {
         smallest = rightIndex
       }
 
@@ -244,6 +244,8 @@ export class AdaptivePQ2<T> {
   }
 
   private heapSwap(arr: {priority: number, value: T}[], i: number, j: number): void {
-    [arr[i], arr[j]] = [arr[j], arr[i]]
+    const temp = arr[i]!
+    arr[i] = arr[j]!
+    arr[j] = temp
   }
 }
