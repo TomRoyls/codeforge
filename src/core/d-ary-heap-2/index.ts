@@ -110,6 +110,13 @@ export class DAryHeap<T> {
   }
 
   merge(other: DAryHeap<T>): void {
+    if (other === this) {
+      const copy = [...other.heap];
+      for (const item of copy) {
+        this.push(item);
+      }
+      return;
+    }
     for (let i = 0; i < other.heap.length; i++) {
       this.push(other.heap[i]!)
     }

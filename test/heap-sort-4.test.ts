@@ -66,7 +66,7 @@ describe('HeapSort4', () => {
       expect(sorted).toEqual([1, 2, 3])
     })
 
-    it.skip('should work with custom comparator', () => {
+    it('should work with custom comparator', () => {
       const sorter = new HeapSort4<number>((a, b) => b - a)
       expect(sorter.sort([3, 1, 4, 1, 5])).toEqual([5, 4, 3, 1, 1])
     })
@@ -241,7 +241,7 @@ describe('HeapSort4', () => {
       expect(sorter.partialSort([1, 5, 3, 4, 2], 3)).toEqual([5, 4, 3])
     })
 
-    it.skip('should handle large arrays', () => {
+    it('should handle large arrays', () => {
       const sorter = new HeapSort4<number>()
       const arr = shuffledRange(1000)
       const result = sorter.partialSort(arr, 100)
@@ -251,12 +251,12 @@ describe('HeapSort4', () => {
   })
 
   describe('kthSmallest', () => {
-    it.skip('should return first element when k=1', () => {
+    it('should return first element when k=1', () => {
       const sorter = new HeapSort4<number>()
       expect(sorter.kthSmallest([5, 3, 1, 4, 2], 1)).toBe(1)
     })
 
-    it.skip('should return second element when k=2', () => {
+    it('should return second element when k=2', () => {
       const sorter = new HeapSort4<number>()
       expect(sorter.kthSmallest([5, 3, 1, 4, 2], 2)).toBe(2)
     })
@@ -266,7 +266,7 @@ describe('HeapSort4', () => {
       expect(sorter.kthSmallest([5, 3, 1, 4, 2], 3)).toBe(3)
     })
 
-    it.skip('should return largest element when k=length', () => {
+    it('should return largest element when k=length', () => {
       const sorter = new HeapSort4<number>()
       expect(sorter.kthSmallest([1, 2, 3, 4, 5], 5)).toBe(5)
     })
@@ -567,7 +567,7 @@ describe('HeapSort4', () => {
       expect(sorter.isMaxHeap(heap)).toBe(true)
     })
 
-    it.skip('kthSmallest(k=1) should equal min element', () => {
+    it('kthSmallest(k=1) should equal min element', () => {
       const sorter = new HeapSort4<number>()
       const arr = shuffledRange(100)
       const min = Math.min(...arr)

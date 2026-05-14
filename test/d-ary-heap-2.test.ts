@@ -40,7 +40,7 @@ describe('DAryHeap', () => {
       expect(heap.peek()).toBe('apple');
     });
 
-    it.skip('should use custom comparator', () => {
+    it('should use custom comparator', () => {
       const heap = new DAryHeap<number>({ comparator: (a, b) => b - a });
       heap.push(5);
       heap.push(3);
@@ -86,7 +86,7 @@ describe('DAryHeap', () => {
       expect(heap.peek()).toBe('apple');
     });
 
-    it.skip('should push objects with custom comparator', () => {
+    it('should push objects with custom comparator', () => {
       const heap = new DAryHeap<{ id: number }>({
         comparator: (a, b) => b.id - a.id
       });
@@ -285,7 +285,7 @@ describe('DAryHeap', () => {
       expect(heap.peek()).toBe(peekBefore);
     });
 
-    it.skip('should handle duplicates', () => {
+    it('should handle duplicates', () => {
       const heap = new DAryHeap<number>();
       heap.push(5);
       heap.push(3);
@@ -343,7 +343,7 @@ describe('DAryHeap', () => {
       expect(heap.contains(5)).toBe(true);
     });
 
-    it.skip('should use custom comparator', () => {
+    it('should use custom comparator', () => {
       const heap = new DAryHeap<{ id: number }>({
         comparator: (a, b) => a.id - b.id
       });
@@ -422,7 +422,7 @@ describe('DAryHeap', () => {
       expect(heap.size).toBe(4);
     });
 
-    it.skip('should use custom comparator for matching', () => {
+    it('should use custom comparator for matching', () => {
       const heap = new DAryHeap<{ id: number }>({
         comparator: (a, b) => a.id - b.id
       });
@@ -562,7 +562,7 @@ describe('DAryHeap', () => {
       expect(result).toEqual([2, 3, 5]);
     });
 
-    it.skip('should use custom comparator for matching', () => {
+    it('should use custom comparator for matching', () => {
       const heap = new DAryHeap<{ id: number }>({
         comparator: (a, b) => a.id - b.id
       });
@@ -669,7 +669,7 @@ describe('DAryHeap', () => {
       expect(cloned.size).toBe(3);
     });
 
-    it.skip('should clone with same comparator', () => {
+    it('should clone with same comparator', () => {
       const heap = new DAryHeap<number>({ comparator: (a, b) => a - b });
       heap.push(5);
       heap.push(3);
@@ -740,7 +740,7 @@ describe('DAryHeap', () => {
       expect(result).toEqual([1, 2, 3]);
     });
 
-    it.skip('should handle self-merge', () => {
+    it('should handle self-merge', () => {
       const heap = new DAryHeap<number>();
       heap.push(1);
       heap.push(2);
@@ -755,7 +755,7 @@ describe('DAryHeap', () => {
       expect(result).toEqual([1, 1, 2, 2, 3, 3]);
     });
 
-    it.skip('should merge heaps with same comparator', () => {
+    it('should merge heaps with same comparator', () => {
       const heap1 = new DAryHeap<number>({ comparator: (a, b) => a - b });
       heap1.push(1);
       heap1.push(5);
@@ -854,7 +854,7 @@ describe('DAryHeap', () => {
       expect(heap.peek()).toBe('apple');
     });
 
-    it.skip('should use custom comparator', () => {
+    it('should use custom comparator', () => {
       const heap = DAryHeap.from<number>(
         [5, 3, 7, 1, 9],
         { comparator: (a, b) => b - a }
