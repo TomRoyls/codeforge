@@ -250,8 +250,8 @@ export class BTree<T> {
   }
 
   private ensureMinKeys(node: BTreeNode<T>, idx: number): void {
-    const leftSibling = idx > 0 ? node.children[idx - 1] : null;
-    const rightSibling = idx < node.keys.length ? node.children[idx + 1] : null;
+    const leftSibling = idx > 0 ? node.children[idx - 1]! : null;
+    const rightSibling = idx < node.keys.length ? node.children[idx + 1]! : null;
 
     if (leftSibling !== null && leftSibling.keys.length >= this.order) {
       this.borrowFromPrev(node, idx);
