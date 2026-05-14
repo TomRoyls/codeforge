@@ -13,7 +13,7 @@ describe('SmoothSort2', () => {
       expect(sorter.sort([5])).toEqual([5]);
     });
 
-    it.skip('should sort two element array', () => {
+    it('should sort two element array', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([2, 1])).toEqual([1, 2]);
     });
@@ -23,17 +23,17 @@ describe('SmoothSort2', () => {
       expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it.skip('should sort reverse sorted array', () => {
+    it('should sort reverse sorted array', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it.skip('should sort array with duplicates', () => {
+    it('should sort array with duplicates', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([3, 1, 4, 1, 5, 9, 2, 6, 5])).toEqual([1, 1, 2, 3, 4, 5, 5, 6, 9]);
     });
 
-    it.skip('should sort array with negative numbers', () => {
+    it('should sort array with negative numbers', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([-3, 1, -4, 1, 5, -9, 2, 6, -5])).toEqual([-9, -5, -4, -3, 1, 1, 2, 5, 6]);
     });
@@ -45,7 +45,7 @@ describe('SmoothSort2', () => {
       expect(original).toEqual([3, 1, 4, 1, 5]);
     });
 
-    it.skip('should sort large random array', () => {
+    it('should sort large random array', () => {
       const sorter = new SmoothSort2();
       const arr = Array.from({ length: 10000 }, () => Math.floor(Math.random() * 10000));
       const result = sorter.sort(arr);
@@ -53,12 +53,12 @@ describe('SmoothSort2', () => {
       expect(sorter.isSorted(result)).toBe(true);
     });
 
-    it.skip('should sort with custom comparator (descending)', () => {
+    it('should sort with custom comparator (descending)', () => {
       const sorter = new SmoothSort2((a, b) => b - a);
       expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([5, 4, 3, 2, 1]);
     });
 
-    it.skip('should sort array with floating point numbers', () => {
+    it('should sort array with floating point numbers', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([3.5, 1.2, 4.8, 1.1, 5.0])).toEqual([1.1, 1.2, 3.5, 4.8, 5.0]);
     });
@@ -68,7 +68,7 @@ describe('SmoothSort2', () => {
       expect(sorter.sort([5, 5, 5, 5, 5])).toEqual([5, 5, 5, 5, 5]);
     });
 
-    it.skip('should sort array with zeros', () => {
+    it('should sort array with zeros', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([0, 0, 1, 0, 2, 0])).toEqual([0, 0, 0, 0, 1, 2]);
     });
@@ -78,7 +78,7 @@ describe('SmoothSort2', () => {
       expect(sorter.sort([-1000, -500, -100, -50, -10])).toEqual([-1000, -500, -100, -50, -10]);
     });
 
-    it.skip('should sort array with mix of positive and negative', () => {
+    it('should sort array with mix of positive and negative', () => {
       const sorter = new SmoothSort2();
       expect(sorter.sort([-5, 3, -2, 7, -1])).toEqual([-5, -2, -1, 3, 7]);
     });
@@ -99,56 +99,56 @@ describe('SmoothSort2', () => {
       expect(arr).toEqual([5]);
     });
 
-    it.skip('should sort array in place', () => {
+    it('should sort array in place', () => {
       const sorter = new SmoothSort2();
       const arr = [3, 1, 4, 1, 5];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([1, 1, 3, 4, 5]);
     });
 
-    it.skip('should mutate original array', () => {
+    it('should mutate original array', () => {
       const sorter = new SmoothSort2();
       const arr = [3, 1, 4, 1, 5];
       sorter.sortInPlace(arr);
       expect(arr).not.toEqual([3, 1, 4, 1, 5]);
     });
 
-    it.skip('should sort reverse sorted array in place', () => {
+    it('should sort reverse sorted array in place', () => {
       const sorter = new SmoothSort2();
       const arr = [5, 4, 3, 2, 1];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it.skip('should sort array with duplicates in place', () => {
+    it('should sort array with duplicates in place', () => {
       const sorter = new SmoothSort2();
       const arr = [3, 1, 4, 1, 5, 9, 2, 6, 5];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([1, 1, 2, 3, 4, 5, 5, 6, 9]);
     });
 
-    it.skip('should sort array with negative numbers in place', () => {
+    it('should sort array with negative numbers in place', () => {
       const sorter = new SmoothSort2();
       const arr = [-3, 1, -4, 1, 5, -9, 2, 6, -5];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([-9, -5, -4, -3, 1, 1, 2, 5, 6]);
     });
 
-    it.skip('should sort large array in place', () => {
+    it('should sort large array in place', () => {
       const sorter = new SmoothSort2();
       const arr = Array.from({ length: 10000 }, () => Math.floor(Math.random() * 10000));
       sorter.sortInPlace(arr);
       expect(sorter.isSorted(arr)).toBe(true);
     });
 
-    it.skip('should work with custom comparator in place', () => {
+    it('should work with custom comparator in place', () => {
       const sorter = new SmoothSort2((a, b) => b - a);
       const arr = [1, 2, 3, 4, 5];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([5, 4, 3, 2, 1]);
     });
 
-    it.skip('should sort array with two elements in place', () => {
+    it('should sort array with two elements in place', () => {
       const sorter = new SmoothSort2();
       const arr = [2, 1];
       sorter.sortInPlace(arr);
@@ -162,14 +162,14 @@ describe('SmoothSort2', () => {
       expect(arr).toEqual([5, 5, 5, 5, 5]);
     });
 
-    it.skip('should sort array where first element is smallest in place', () => {
+    it('should sort array where first element is smallest in place', () => {
       const sorter = new SmoothSort2();
       const arr = [1, 5, 4, 3, 2];
       sorter.sortInPlace(arr);
       expect(arr).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it.skip('should sort array where last element is largest in place', () => {
+    it('should sort array where last element is largest in place', () => {
       const sorter = new SmoothSort2();
       const arr = [2, 1, 3, 4, 5];
       sorter.sortInPlace(arr);
