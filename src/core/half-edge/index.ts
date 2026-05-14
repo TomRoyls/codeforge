@@ -37,8 +37,8 @@ export class HalfEdgeMesh {
     const faceHalfEdgeIndices: number[] = [];
 
     for (let i = 0; i < vertexIds.length; i++) {
-      const fromVertex = vertexIds[i];
-      const toVertex = vertexIds[(i + 1) % vertexIds.length];
+      const fromVertex = vertexIds[i]!;
+      const toVertex = vertexIds[(i + 1) % vertexIds.length]!;
 
       if (fromVertex < 0 || fromVertex >= this.vertices.length) {
         throw new Error(`Invalid vertex id: ${fromVertex}`);
@@ -67,15 +67,15 @@ export class HalfEdgeMesh {
     }
 
     for (let i = 0; i < faceHalfEdgeIndices.length; i++) {
-      const current = faceHalfEdgeIndices[i];
-      const next = faceHalfEdgeIndices[(i + 1) % faceHalfEdgeIndices.length];
+      const current = faceHalfEdgeIndices[i]!;
+      const next = faceHalfEdgeIndices[(i + 1) % faceHalfEdgeIndices.length]!;
       this.halfEdges[current]!.next = next;
     }
 
     for (let i = 0; i < vertexIds.length; i++) {
-      const fromVertex = vertexIds[i];
-      const toVertex = vertexIds[(i + 1) % vertexIds.length];
-      const currentHalfEdge = faceHalfEdgeIndices[i];
+      const fromVertex = vertexIds[i]!;
+      const toVertex = vertexIds[(i + 1) % vertexIds.length]!;
+      const currentHalfEdge = faceHalfEdgeIndices[i]!;
 
       const twinHalfEdge = this.findHalfEdge(toVertex, fromVertex);
       if (twinHalfEdge !== null) {
@@ -84,7 +84,7 @@ export class HalfEdgeMesh {
       }
     }
 
-    this.faces.push({ halfEdge: faceHalfEdgeIndices[0] });
+    this.faces.push({ halfEdge: faceHalfEdgeIndices[0]! });
     return faceId;
   }
 
@@ -102,7 +102,7 @@ export class HalfEdgeMesh {
       if (he === null) {
         continue;
       }
-      const next = this.halfEdges[he.next!];
+      const next = this.halfEdges[he.next!]!;
       if (next === null) {
         continue;
       }
@@ -125,7 +125,7 @@ export class HalfEdgeMesh {
     if (faceId < 0 || faceId >= this.faces.length) {
       return [];
     }
-    const face = this.faces[faceId];
+    const face = this.faces[faceId]!;
     if (face === null) {
       return [];
     }
@@ -136,12 +136,12 @@ export class HalfEdgeMesh {
     const vertices: number[] = [];
     let current = face.halfEdge;
     do {
-      const he = this.halfEdges[current!];
+      const he = this.halfEdges[current!]!;
       if (he === null) {
         break;
       }
       vertices.push(he.vertex);
-      current = he.next;
+      current = he.next!;
       if (current === face.halfEdge) {
         break;
       }
@@ -154,7 +154,7 @@ export class HalfEdgeMesh {
     if (faceId < 0 || faceId >= this.faces.length) {
       return [];
     }
-    const face = this.faces[faceId];
+    const face = this.faces[faceId]!;
     if (face === null || face.halfEdge === null) {
       return [];
     }
@@ -162,7 +162,7 @@ export class HalfEdgeMesh {
     const adjacentFaces = new Set<number>();
     let current = face.halfEdge;
     do {
-      const he = this.halfEdges[current!];
+      const he = this.halfEdges[current!]!;
       if (he === null) {
         break;
       }
@@ -172,7 +172,7 @@ export class HalfEdgeMesh {
           adjacentFaces.add(twin.face);
         }
       }
-      current = he.next;
+      current = he.next!;
     } while (current !== face.halfEdge);
 
     return Array.from(adjacentFaces);
@@ -185,7 +185,7 @@ export class HalfEdgeMesh {
 
     const neighbors = new Set<number>();
 
-    const startHe = this.vertexHalfEdges[vertexId];
+    const startHe = this.vertexHalfEdges[vertexId]!;
     if (startHe !== null) {
       let current = startHe;
       const visitedHalfEdges = new Set<number>();
@@ -196,12 +196,12 @@ export class HalfEdgeMesh {
         }
         visitedHalfEdges.add(current);
 
-        const he = this.halfEdges[current];
+        const he = this.halfEdges[current]!;
         if (he === null || he.next === null) {
           break;
         }
 
-        const nextHe = this.halfEdges[he.next];
+        const nextHe = this.halfEdges[he.next]!;
         if (nextHe !== null) {
           neighbors.add(nextHe.vertex);
         }
@@ -229,7 +229,7 @@ export class HalfEdgeMesh {
 
     const faces = new Set<number>();
 
-    const startHe = this.vertexHalfEdges[vertexId];
+    const startHe = this.vertexHalfEdges[vertexId]!;
     if (startHe !== null) {
       let current = startHe;
       const visitedHalfEdges = new Set<number>();
@@ -240,7 +240,7 @@ export class HalfEdgeMesh {
         }
         visitedHalfEdges.add(current);
 
-        const he = this.halfEdges[current];
+        const he = this.halfEdges[current]!;
         if (he === null) {
           break;
         }
@@ -269,7 +269,7 @@ export class HalfEdgeMesh {
     if (faceId < 0 || faceId >= this.faces.length) {
       return false;
     }
-    const face = this.faces[faceId];
+    const face = this.faces[faceId]!;
     if (face === null) {
       return false;
     }
@@ -279,16 +279,16 @@ export class HalfEdgeMesh {
       let current = face.halfEdge;
       do {
         halfEdgesToRemove.push(current!);
-        const he = this.halfEdges[current!];
+        const he = this.halfEdges[current!]!;
         if (he === null) {
           break;
         }
-        current = he.next;
+        current = he.next!;
       } while (current !== face.halfEdge);
     }
 
     for (const heId of halfEdgesToRemove) {
-      const he = this.halfEdges[heId];
+      const he = this.halfEdges[heId]!;
       if (he === null) {
         continue;
       }
@@ -309,12 +309,12 @@ export class HalfEdgeMesh {
     const edgeFaceCount = new Map<string, number>();
 
     for (let i = 0; i < this.halfEdges.length; i++) {
-      const he = this.halfEdges[i];
+      const he = this.halfEdges[i]!;
       if (he === null || he.next === null || he.face === null) {
         continue;
       }
 
-      const nextHe = this.halfEdges[he.next];
+      const nextHe = this.halfEdges[he.next]!;
       if (nextHe === null) {
         continue;
       }
@@ -345,7 +345,7 @@ export class HalfEdgeMesh {
     const visitedHalfEdges = new Set<number>();
 
     for (let i = 0; i < this.halfEdges.length; i++) {
-      const he = this.halfEdges[i];
+      const he = this.halfEdges[i]!;
       if (he === null || he.next === null) {
         continue;
       }
@@ -366,14 +366,14 @@ export class HalfEdgeMesh {
         }
         visitedHalfEdges.add(current);
 
-        const currentHe = this.halfEdges[current];
+        const currentHe = this.halfEdges[current]!;
         if (currentHe === null || currentHe.next === null) {
           break;
         }
 
         boundary.push(currentHe.vertex);
 
-        const nextHe = this.halfEdges[currentHe.next];
+        const nextHe = this.halfEdges[currentHe.next]!;
         if (nextHe === null) {
           break;
         }
@@ -402,7 +402,7 @@ export class HalfEdgeMesh {
   }
 
   private findHalfEdge(fromVertex: number, toVertex: number): number | null {
-    const startHe = this.vertexHalfEdges[fromVertex];
+    const startHe = this.vertexHalfEdges[fromVertex]!;
     if (startHe === null) {
       return null;
     }
@@ -415,12 +415,12 @@ export class HalfEdgeMesh {
       }
       visitedHalfEdges.add(current);
 
-      const he = this.halfEdges[current];
+      const he = this.halfEdges[current]!;
       if (he === null || he.next === null) {
         break;
       }
 
-      const nextHe = this.halfEdges[he.next];
+      const nextHe = this.halfEdges[he.next]!;
       if (nextHe !== null && nextHe.vertex === toVertex && he.vertex === fromVertex) {
         return he.next;
       }
