@@ -296,4 +296,35 @@ describe('LRUCache5', () => {
       expect(cache.values()).toEqual([40, 10, 30]);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle clear', () => {
+      const cache = new LRUCache5<number, number>(5);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.clear();
+      expect(cache.size).toBe(0);
+      expect(cache.has(1)).toBe(false);
+    });
+
+    it('should handle keys after set and get', () => {
+      const cache = new LRUCache5<number, number>(3);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.set(3, 30);
+      cache.get(1);
+      const keys = cache.keys();
+      expect(keys).toContain(1);
+      expect(keys).toContain(2);
+      expect(keys).toContain(3);
+    });
+
+    it('should handle update on existing key', () => {
+      const cache = new LRUCache5<number, number>(5);
+      cache.set(1, 10);
+      cache.set(1, 99);
+      expect(cache.get(1)).toBe(99);
+      expect(cache.size).toBe(1);
+    });
+  });
 });

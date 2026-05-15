@@ -270,4 +270,21 @@ describe('WindowHeap2', () => {
     expect(heap.getMax()).toBe(10);
     expect(heap.getAverage()).toBe(0);
   });
+
+  it('should handle window size of 1', () => {
+    const heap = new WindowHeap2(1);
+    heap.push(5);
+    expect(heap.getMin()).toBe(5);
+    expect(heap.getMax()).toBe(5);
+    expect(heap.getMedian()).toBe(5);
+    heap.push(10);
+    expect(heap.getMin()).toBe(10);
+    expect(heap.size).toBe(1);
+  });
+
+  it('should handle getAverage with single element', () => {
+    const heap = new WindowHeap2(3);
+    heap.push(7);
+    expect(heap.getAverage()).toBe(7);
+  });
 });

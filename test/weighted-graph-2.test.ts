@@ -248,5 +248,16 @@ describe('WeightedGraph2', () => {
       expect(graph.edgeCount()).toBe(1);
       expect(graph.vertexCount()).toBe(3);
     });
+
+    it('should handle getEdgeWeight on non-existent edge', () => {
+      const graph = new WeightedGraph2();
+      expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
+    });
+
+    it('should handle vertexCount on empty graph', () => {
+      const graph = new WeightedGraph2();
+      expect(graph.vertexCount()).toBe(0);
+      expect(graph.edgeCount()).toBe(0);
+    });
   });
 });
