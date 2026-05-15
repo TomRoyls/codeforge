@@ -176,4 +176,46 @@ describe('SparseMatrix2', () => {
     expect(matrix.get(0, 2)).toBe(0);
     expect(matrix.get(1, 3)).toBe(0);
   });
+
+  it('should handle 1x1 matrix', () => {
+    const matrix = new SparseMatrix2(1, 1);
+    expect(matrix.nonZeroCount()).toBe(0);
+    matrix.set(0, 0, 42);
+    expect(matrix.get(0, 0)).toBe(42);
+    expect(matrix.nonZeroCount()).toBe(1);
+    matrix.set(0, 0, 0);
+    expect(matrix.get(0, 0)).toBe(0);
+    expect(matrix.nonZeroCount()).toBe(0);
+  });
+
+  it('should handle negative values', () => {
+    const matrix = new SparseMatrix2(2, 2);
+    matrix.set(0, 0, -5);
+    matrix.set(1, 1, -10);
+    expect(matrix.get(0, 0)).toBe(-5);
+    expect(matrix.get(1, 1)).toBe(-10);
+    expect(matrix.nonZeroCount()).toBe(2);
+  });
+
+  it('should handle transpose of symmetric matrix', () => {
+    const matrix = new SparseMatrix2(2, 2);
+    matrix.set(0, 1, 7);
+    matrix.set(1, 0, 7);
+    const t = matrix.transpose();
+    expect(t.get(0, 1)).toBe(7);
+    expect(t.get(1, 0)).toBe(7);
+  });
+
+  it('should compute density for empty matrix', () => {
+    const matrix = new SparseMatrix2(5, 5);
+    expect(matrix.density()).toBe(0);
+  });
+
+  it('should handle multiplyVector with all zeros', () => {
+    const matrix = new SparseMatrix2(2, 3);
+    matrix.set(0, 0, 5);
+    matrix.set(1, 2, 3);
+    const result = matrix.multiplyVector([0, 0, 0]);
+    expect(result).toEqual([0, 0]);
+  });
 });
