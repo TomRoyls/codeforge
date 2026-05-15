@@ -312,4 +312,10 @@ describe('DisjointSet3', () => {
     expect(ds.find('x')).toBe('x');
     expect(ds.setSize('x')).toBe(1);
   });
+
+  it('should handle connected on same element', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    expect(ds.connected('a', 'a')).toBe(true);
+  });
 });

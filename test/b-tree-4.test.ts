@@ -424,4 +424,25 @@ describe('BTree', () => {
       expect(tree.getTimeComplexity()).toBe('O(log n)');
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle contains on empty tree', () => {
+      const tree = new BTree<number>();
+      expect(tree.contains(1)).toBe(false);
+    });
+
+    it('should handle delete on empty tree', () => {
+      const tree = new BTree<number>();
+      expect(tree.delete(1)).toBe(false);
+    });
+
+    it('should handle min and max', () => {
+      const tree = new BTree<number>();
+      tree.insert(5);
+      tree.insert(3);
+      tree.insert(7);
+      expect(tree.min()).toBe(3);
+      expect(tree.max()).toBe(7);
+    });
+  });
 });

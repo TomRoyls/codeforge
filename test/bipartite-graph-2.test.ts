@@ -306,4 +306,13 @@ describe('BipartiteGraph2', () => {
     const graph = new BipartiteGraph2();
     expect(graph.removeEdge('L1', 'R1')).toBe(false);
   });
+
+  it('should handle leftVertexCount and rightVertexCount', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addLeftVertex('L2');
+    graph.addRightVertex('R1');
+    expect(graph.getNeighbors('L1')).toEqual([]);
+    expect(graph.getNeighbors('R1')).toEqual([]);
+  });
 });

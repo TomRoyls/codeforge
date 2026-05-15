@@ -325,4 +325,19 @@ describe('IndexedPQ2', () => {
 
     expect(pq.peek()).toEqual({ id: 2, priority: Number.MIN_SAFE_INTEGER });
   });
+
+  it('should handle clear', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    pq.insert(2, 20);
+    pq.clear();
+    expect(pq.isEmpty()).toBe(true);
+    expect(pq.size).toBe(0);
+  });
+
+  it('should handle update on missing element', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    expect(pq.update(99, 5)).toBe(false);
+  });
 });
