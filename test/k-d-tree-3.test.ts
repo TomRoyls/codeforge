@@ -177,4 +177,53 @@ describe('KDTree3', () => {
     const neighbors = tree.kNearestNeighbors({x: 0, y: 0}, 5)
     expect(neighbors).toHaveLength(2)
   })
+
+  it('should return undefined nearestNeighbor on empty tree', () => {
+    const tree = new KDTree3([])
+    expect(tree.nearestNeighbor({x: 0, y: 0})).toBeUndefined()
+  })
+
+  it('should return empty kNearestNeighbors for k=0', () => {
+    const tree = new KDTree3([{x: 1, y: 1}])
+    expect(tree.kNearestNeighbors({x: 0, y: 0}, 0)).toEqual([])
+  })
+
+  it('should return all points via toArray', () => {
+    const points = [{x: 1, y: 2}, {x: 3, y: 4}, {x: 5, y: 6}]
+    const tree = new KDTree3(points)
+    const arr = tree.toArray()
+    expect(arr).toHaveLength(3)
+  })
+
+  it('should find exact nearest neighbor', () => {
+    const tree = new KDTree3([
+      {x: 0, y: 0},
+      {x: 10, y: 10},
+      {x: 5, y: 5}
+    ])
+    expect(tree.nearestNeighbor({x: 4, y: 4})).toEqual({x: 5, y: 5})
+  })
+
+  it('should find k nearest neighbors', () => {
+    const tree = new KDTree3([
+      {x: 0, y: 0},
+      {x: 1, y: 1},
+      {x: 10, y: 10},
+      {x: 20, y: 20}
+    ])
+    const neighbors = tree.kNearestNeighbors({x: 0, y: 0}, 2)
+    expect(neighbors).toHaveLength(2)
+    expect(neighbors).toContainEqual({x: 0, y: 0})
+  })
+
+  it('should find range of points', () => {
+    const tree = new KDTree3([
+      {x: 1, y: 1},
+      {x: 5, y: 5},
+      {x: 10, y: 10},
+      {x: 15, y: 15}
+    ])
+    const result = tree.rangeSearch({x: 0, y: 0}, {x: 6, y: 6})
+    expect(result.length).toBeGreaterThanOrEqual(2)
+  })
 })
