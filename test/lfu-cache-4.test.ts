@@ -300,5 +300,10 @@ describe('LFUCache4', () => {
       expect(cache.delete('missing')).toBe(false)
       expect(cache.size).toBe(1)
     })
+
+    it('should handle has on missing key', () => {
+      const cache = new LFUCache4(5)
+      expect(cache.has('missing')).toBe(false)
+    })
   })
 })

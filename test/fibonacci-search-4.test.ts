@@ -257,4 +257,10 @@ describe('FibonacciSearch4', () => {
     expect(searcher.searchLast(42)).toBe(0);
     expect(searcher.searchFirst(99)).toBe(-1);
   });
+
+  it('should handle searchRange for single match', () => {
+    const searcher = new FibonacciSearch4([1, 3, 5, 7]);
+    expect(searcher.searchRange(3)).toEqual([1, 1]);
+    expect(searcher.searchRange(4)).toEqual([-1, -1]);
+  });
 });
