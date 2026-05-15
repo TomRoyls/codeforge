@@ -43,8 +43,8 @@ describe('RabinKarp2', () => {
       expect(rk.search('test test test', 'test')).toEqual([0, 5, 10]);
     });
 
-    it.skip('finds many repeated patterns', () => {
-      expect(rk.search('aaaaaa', 'aa')).toEqual([0, 2, 4]);
+    it('finds many repeated patterns', () => {
+      expect(rk.search('aaaaaa', 'aa')).toEqual([0, 1, 2, 3, 4]);
     });
   });
 
@@ -128,8 +128,8 @@ describe('RabinKarp2', () => {
   });
 
   describe('search - Unicode characters', () => {
-    it.skip('handles basic Unicode', () => {
-      expect(rk.search('héllo wörld', 'llo')).toEqual([3]);
+    it('handles basic Unicode', () => {
+      expect(rk.search('héllo wörld', 'llo')).toEqual([2]);
     });
   });
 
@@ -248,8 +248,8 @@ describe('RabinKarp2', () => {
       expect(rk.search('abc', 'def')).toEqual([]);
     });
 
-    it.skip('handles pattern with only one occurrence', () => {
-      expect(rk.search('aabbaabb', 'ab')).toEqual([2, 6]);
+    it('handles pattern with only one occurrence', () => {
+      expect(rk.search('aabbaabb', 'ab')).toEqual([1, 5]);
     });
   });
 });

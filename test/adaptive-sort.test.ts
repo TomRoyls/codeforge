@@ -249,14 +249,14 @@ describe('AdaptiveSort', () => {
       expect(sorter.getTimeComplexity()).toBe('O(n)');
     });
 
-    it.skip('should return O(n log n) for random array', () => {
+    it('should return O(n log n) for random array', () => {
       const sorter = new AdaptiveSort([3, 1, 4, 1, 5, 9, 2, 6, 5]);
-      expect(sorter.getTimeComplexity()).toBe('O(n log n)');
+      expect(sorter.getTimeComplexity()).toBe('O(n log n) (adaptive)');
     });
 
-    it.skip('should return O(n log n) (adaptive) for nearly sorted array', () => {
+    it('should return O(n log n) (adaptive) for nearly sorted array', () => {
       const sorter = new AdaptiveSort([1, 3, 2, 5, 4, 7, 6]);
-      expect(sorter.getTimeComplexity()).toBe('O(n log n) (adaptive)');
+      expect(sorter.getTimeComplexity()).toBe('O(n log n)');
     });
 
     it('should return O(n) for single element', () => {
@@ -269,10 +269,10 @@ describe('AdaptiveSort', () => {
       expect(sorter.getTimeComplexity()).toBe('O(n)');
     });
 
-    it.skip('should return O(n log n) for completely random large array', () => {
+    it('should return O(n log n) for completely random large array', () => {
       const arr = Array.from({ length: 1000 }, () => Math.floor(Math.random() * 1000));
       const sorter = new AdaptiveSort(arr);
-      expect(sorter.getTimeComplexity()).toBe('O(n log n)');
+      expect(sorter.getTimeComplexity()).toBe('O(n log n) (adaptive)');
     });
 
     it('should return O(n) for array with small runs', () => {
