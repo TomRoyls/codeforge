@@ -189,4 +189,32 @@ describe('DisjointSet3', () => {
     expect(ds.connected('e', 'f')).toBe(true);
     expect(ds.connected('a', 'c')).toBe(false);
   });
+
+  it('should handle transitive connections', () => {
+    const ds = new DisjointSet3<number>();
+    ds.makeSet(1);
+    ds.makeSet(2);
+    ds.makeSet(3);
+    ds.union(1, 2);
+    ds.union(2, 3);
+    expect(ds.connected(1, 3)).toBe(true);
+    expect(ds.count()).toBe(1);
+  });
+
+  it('should handle self-union', () => {
+    const ds = new DisjointSet3<number>();
+    ds.makeSet(1);
+    ds.union(1, 1);
+    expect(ds.count()).toBe(1);
+    expect(ds.connected(1, 1)).toBe(true);
+  });
+
+  it('should handle union of already connected', () => {
+    const ds = new DisjointSet3<number>();
+    ds.makeSet(1);
+    ds.makeSet(2);
+    ds.union(1, 2);
+    ds.union(1, 2);
+    expect(ds.count()).toBe(1);
+  });
 });
