@@ -251,4 +251,9 @@ describe('ElasticQueue2', () => {
     const queue = new ElasticQueue2<number>();
     expect(queue.capacity()).toBeUndefined();
   });
+
+  it('should handle peek on empty queue', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.peek()).toBeUndefined();
+  });
 });

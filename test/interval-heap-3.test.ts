@@ -340,4 +340,9 @@ describe('IntervalHeap3', () => {
     expect(heap.getMax()).toBe(3);
     expect(heap.size).toBe(3);
   });
+
+  it('should handle isEmpty on fresh heap', async () => {
+    const heap = new IntervalHeap3<number>();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

@@ -288,5 +288,13 @@ describe('HashArray2', () => {
       expect(map.get('c')).toBe(3);
       expect(map.size).toBe(1);
     });
+
+    it('should handle entries method', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const entries = map.entries();
+      expect(entries).toHaveLength(2);
+    });
   });
 });

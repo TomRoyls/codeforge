@@ -300,5 +300,14 @@ describe('CSRGraph2', () => {
         expect(graph.getNeighbors(i)).toEqual([]);
       }
     });
+
+    it('should handle weighted edges', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1, 5);
+      graph.addEdge(1, 2, 10);
+      graph.build();
+      const n0 = graph.getNeighbors(0);
+      expect(n0[0].weight).toBe(5);
+    });
   });
 });
