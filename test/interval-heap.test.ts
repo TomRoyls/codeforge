@@ -42,7 +42,7 @@ describe('IntervalHeap constructor', () => {
     expect(heap.getMax()).toBe(7)
   })
 
-  it.skip('should initialize with empty initialValues', () => {
+  it('should initialize with empty initialValues', () => {
     const heap = new IntervalHeap<number>({ initialValues: [] })
     expect(heap.size).toBe(0)
     expect(heap.isEmpty).toBe(true)

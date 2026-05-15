@@ -580,7 +580,7 @@ describe('LeftistHeap', () => {
       expect(heap.peek()).toBe(10);
     });
 
-    it.skip('should work after other operations', () => {
+    it('should work after other operations', () => {
       const heap = new LeftistHeap<number>();
       const handle = heap.insert(20);
       heap.insert(10);
@@ -962,7 +962,7 @@ describe('LeftistHeap', () => {
       expect(heap.extractMin()).toBe(4);
     });
 
-    it.skip('should handle many decreaseKey operations', () => {
+    it('should handle many decreaseKey operations', () => {
       const heap = new LeftistHeap<number>();
       const handles = [];
       for (let i = 0; i < 10; i++) {
@@ -990,7 +990,7 @@ describe('LeftistHeap', () => {
       expect(heap.isEmpty()).toBe(true);
     });
 
-    it.skip('should maintain heap property with random operations', () => {
+    it('should maintain heap property with random operations', () => {
       const heap = new LeftistHeap<number>();
       const handles = [];
       for (let i = 0; i < 100; i++) {
