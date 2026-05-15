@@ -386,4 +386,14 @@ describe('AVLTreeSet2', () => {
     expect(set.lowerBound(15)).toBe(20);
     expect(set.upperBound(20)).toBe(30);
   });
+
+  it('should handle forEach', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    const collected: number[] = [];
+    set.forEach(v => collected.push(v));
+    expect(collected).toEqual([10, 20, 30]);
+  });
 });

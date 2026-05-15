@@ -263,5 +263,13 @@ describe('BloomFilter4', () => {
       bf.clear();
       expect(bf.mightContain('test')).toBe(false);
     });
+
+    it('should handle getEstimatedFalsePositiveRate', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('a');
+      bf.add('b');
+      const rate = bf.getEstimatedFalsePositiveRate();
+      expect(rate).toBeGreaterThanOrEqual(0);
+    });
   });
 });

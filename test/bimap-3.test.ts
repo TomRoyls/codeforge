@@ -307,4 +307,13 @@ describe('BiMap3', () => {
     expect(entries.length).toBe(2)
     expect(entries.some(([k, v]) => k === 'a' && v === 1)).toBe(true)
   })
+
+  it('should handle deleteValue', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    expect(bimap.deleteValue(1)).toBe(true)
+    expect(bimap.has('a')).toBe(false)
+    expect(bimap.size).toBe(1)
+  })
 })

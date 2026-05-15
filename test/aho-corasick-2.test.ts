@@ -215,4 +215,12 @@ describe('AhoCorasick2', () => {
     expect(ac.hasMatch('I have a cat')).toBe(true);
     expect(ac.hasMatch('I have a bird')).toBe(false);
   });
+
+  it('should handle addPattern', () => {
+    const ac = new AhoCorasick2(['cat']);
+    ac.addPattern('dog');
+    expect(ac.patterns()).toContain('dog');
+    const result = ac.search('I have a dog');
+    expect(result.length).toBeGreaterThanOrEqual(1);
+  });
 });

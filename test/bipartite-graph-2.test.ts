@@ -331,4 +331,13 @@ describe('BipartiteGraph2', () => {
     graph.addRightVertex('R1');
     expect(graph.vertexCount()).toBe(3);
   });
+
+  it('should handle removeEdge', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    expect(graph.removeEdge('L1', 'R1')).toBe(true);
+    expect(graph.edgeCount()).toBe(0);
+  });
 });

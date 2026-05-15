@@ -353,4 +353,15 @@ describe('BinaryHeap', () => {
       expect(heap.contains(99)).toBe(false);
     });
   });
+
+  describe('clear()', () => {
+    it('should clear the heap', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(10);
+      heap.insert(20);
+      heap.clear();
+      expect(heap.size()).toBe(0);
+      expect(heap.isEmpty()).toBe(true);
+    });
+  });
 });
