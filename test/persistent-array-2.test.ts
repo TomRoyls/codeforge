@@ -189,4 +189,43 @@ describe('PersistentArray2', () => {
     const arr2 = arr.set(3, 99)
     expect(arr2.get(3)).toBe(99)
   })
+
+  it('should handle map with index parameter', () => {
+    const arr = new PersistentArray2([10, 20, 30])
+    const mapped = arr.map((x, i) => x + i)
+    expect(mapped.toArray()).toEqual([10, 21, 32])
+  })
+
+  it('should handle filter with index parameter', () => {
+    const arr = new PersistentArray2([10, 20, 30, 40])
+    const filtered = arr.filter((x, i) => i % 2 === 0)
+    expect(filtered.toArray()).toEqual([10, 30])
+  })
+
+  it('should handle multiple pops in sequence', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const [v1, arr2] = arr1.pop()
+    const [v2, arr3] = arr2.pop()
+    expect(v1).toBe(3)
+    expect(v2).toBe(2)
+    expect(arr3.toArray()).toEqual([1])
+  })
+
+  it('should handle set on same index twice', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.set(1, 10)
+    const arr3 = arr2.set(1, 20)
+    expect(arr1.get(1)).toBe(2)
+    expect(arr2.get(1)).toBe(10)
+    expect(arr3.get(1)).toBe(20)
+  })
+
+  it('should handle push then pop returning to original', () => {
+    const arr1 = new PersistentArray2([1, 2])
+    const arr2 = arr1.push(3)
+    const [val, arr3] = arr2.pop()
+    expect(val).toBe(3)
+    expect(arr3.toArray()).toEqual([1, 2])
+    expect(arr1.toArray()).toEqual([1, 2])
+  })
 })

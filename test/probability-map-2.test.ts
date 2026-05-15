@@ -289,4 +289,46 @@ describe('ProbabilityMap2', () => {
     expect(entries.map(e => e[0])).toContain('a');
     expect(entries.map(e => e[0])).toContain('b');
   });
+
+  it('should update weight and recalculate probabilities', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 10);
+    expect(map.get('a')).toBe(0.5);
+    map.set('a', 30);
+    expect(map.get('a')).toBeCloseTo(30 / 40);
+    expect(map.get('b')).toBeCloseTo(10 / 40);
+  });
+
+  it('should handle normalize then add more items', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.normalize();
+    expect(map.totalWeight()).toBe(1);
+    map.set('c', 0.5);
+    expect(map.totalWeight()).toBe(1.5);
+    expect(map.get('c')).toBeCloseTo(0.5 / 1.5);
+  });
+
+  it('should handle delete then re-add same key', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.delete('a');
+    expect(map.has('a')).toBe(false);
+    map.set('a', 20);
+    expect(map.getWeight('a')).toBe(20);
+    expect(map.has('a')).toBe(true);
+  });
+
+  it('should handle multiple items with same weight', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 10);
+    map.set('c', 10);
+    expect(map.get('a')).toBeCloseTo(1 / 3);
+    expect(map.get('b')).toBeCloseTo(1 / 3);
+    expect(map.get('c')).toBeCloseTo(1 / 3);
+    expect(map.totalWeight()).toBe(30);
+  });
 });

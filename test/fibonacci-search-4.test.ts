@@ -209,4 +209,38 @@ describe('FibonacciSearch4', () => {
     expect(searcher.contains(20)).toBe(true);
     expect(searcher.contains(25)).toBe(false);
   });
+
+  it('should handle four-element array', () => {
+    const searcher = new FibonacciSearch4([1, 3, 5, 7]);
+    expect(searcher.search(1)).toBe(0);
+    expect(searcher.search(3)).toBe(1);
+    expect(searcher.search(5)).toBe(2);
+    expect(searcher.search(7)).toBe(3);
+    expect(searcher.search(4)).toBe(-1);
+  });
+
+  it('should handle all same element array', () => {
+    const searcher = new FibonacciSearch4([3, 3, 3, 3]);
+    expect(searcher.searchFirst(3)).toBe(0);
+    expect(searcher.searchLast(3)).toBe(3);
+    expect(searcher.count(3)).toBe(4);
+    expect(searcher.contains(3)).toBe(true);
+    expect(searcher.contains(1)).toBe(false);
+  });
+
+  it('should handle descending gap values', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30, 40, 50, 60, 70, 80]);
+    expect(searcher.search(10)).toBe(0);
+    expect(searcher.search(80)).toBe(7);
+    expect(searcher.search(45)).toBe(-1);
+    expect(searcher.searchRange(30)).toEqual([2, 2]);
+  });
+
+  it('should handle array with single duplicate pair', () => {
+    const searcher = new FibonacciSearch4([1, 2, 2, 3]);
+    expect(searcher.searchRange(2)).toEqual([1, 2]);
+    expect(searcher.count(2)).toBe(2);
+    expect(searcher.count(1)).toBe(1);
+    expect(searcher.count(3)).toBe(1);
+  });
 });

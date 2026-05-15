@@ -178,4 +178,34 @@ describe('GodelNumber2', () => {
       expect(GodelNumber2.primeFactorization(210n)).toEqual(new Map([[2n, 1], [3n, 1], [5n, 1], [7n, 1]]));
     });
   });
+
+  describe('encode/decode edge cases', () => {
+    it('should encode and decode sequence of zeros', () => {
+      const encoded = GodelNumber2.encode([0, 0, 0]);
+      expect(encoded).toBe(1n);
+    });
+
+    it('should encode single large exponent', () => {
+      const encoded = GodelNumber2.encode([20]);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual([20]);
+    });
+
+    it('should handle roundtrip with zeros in middle', () => {
+      const seq = [3, 0, 2, 0, 1];
+      const encoded = GodelNumber2.encode(seq);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual(seq);
+    });
+
+    it('should handle roundtrip with trailing zeros lost', () => {
+      const encoded = GodelNumber2.encode([1, 1, 0, 0]);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual([1, 1]);
+    });
+
+    it('should handle prime factorization of power of 2', () => {
+      expect(GodelNumber2.primeFactorization(1024n)).toEqual(new Map([[2n, 10]]));
+    });
+  });
 });
