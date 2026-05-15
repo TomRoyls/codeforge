@@ -263,5 +263,12 @@ describe('BloomierFilter2', () => {
       filter.set('key', 42);
       expect(filter.get('key')).toBe(42);
     });
+
+    it('should handle clear', () => {
+      const filter = new BloomierFilter2(100, 3);
+      filter.set('key', 42);
+      filter.clear();
+      expect(filter.size).toBe(0);
+    });
   });
 });

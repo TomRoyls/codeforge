@@ -479,5 +479,14 @@ describe('BTree', () => {
       t.insert(20);
       expect(t.toArray()).toEqual([10, 20, 30]);
     });
+
+    it('should handle delete', () => {
+      const t = new BTree<number>();
+      t.insert(10);
+      t.insert(20);
+      t.insert(30);
+      expect(t.delete(20)).toBe(true);
+      expect(t.search(20)).toBe(false);
+    });
   });
 });

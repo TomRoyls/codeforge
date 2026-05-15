@@ -428,4 +428,9 @@ describe('AdaptivePQ2', () => {
       expect(pq.pop()).toEqual({ priority: 2.5, value: 'c' })
     })
   })
+
+  it('should handle peek on empty', () => {
+    const pq = new AdaptivePQ2<string>()
+    expect(pq.peek()).toBeUndefined()
+  })
 })

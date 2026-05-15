@@ -389,5 +389,14 @@ describe('BinaryHeap', () => {
       expect(heap.contains(20)).toBe(true);
       expect(heap.size()).toBe(3);
     });
+
+    it('should handle extractMin', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(3);
+      heap.insert(1);
+      heap.insert(2);
+      expect(heap.extractMin()).toBe(1);
+      expect(heap.extractMin()).toBe(2);
+    });
   });
 });

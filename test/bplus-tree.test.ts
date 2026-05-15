@@ -333,4 +333,12 @@ describe('BPlusTree', () => {
     const tree = new BPlusTree<number, string>();
     expect(tree.update(999, 'new')).toBe(false);
   });
+
+  it('should handle insert and get', async () => {
+    const tree = new BPlusTree<number, string>();
+    tree.insert(1, 'a');
+    tree.insert(2, 'b');
+    tree.insert(3, 'c');
+    expect(tree.get(2)).toBe('b');
+  });
 });

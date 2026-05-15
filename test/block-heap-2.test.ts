@@ -419,5 +419,13 @@ describe('BlockHeap2', () => {
         prev = current;
       }
     });
+
+    it('should handle peek', () => {
+      const heap = new BlockHeap2(3);
+      heap.push(5);
+      heap.push(3);
+      heap.push(8);
+      expect(heap.peek()).toBe(3);
+    });
   });
 });

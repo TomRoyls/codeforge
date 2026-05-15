@@ -455,4 +455,15 @@ describe('AtomicSet2', () => {
     set.forEach(v => collected.push(v));
     expect(collected).toHaveLength(3);
   });
+
+  it('should handle union', () => {
+    const a = new AtomicSet2<number>();
+    a.add(1);
+    a.add(2);
+    const b = new AtomicSet2<number>();
+    b.add(2);
+    b.add(3);
+    const union = a.union(b);
+    expect(union.size).toBe(3);
+  });
 });

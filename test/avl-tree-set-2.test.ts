@@ -423,4 +423,14 @@ describe('AVLTreeSet2', () => {
     expect(set.min()).toBe(10);
     expect(set.max()).toBe(30);
   });
+
+  it('should handle delete', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    expect(set.delete(20)).toBe(true);
+    expect(set.has(20)).toBe(false);
+    expect(set.size).toBe(2);
+  });
 });

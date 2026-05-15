@@ -234,5 +234,10 @@ describe('BoyerMooreHorspool2', () => {
     const searcher = new BoyerMooreHorspool2('hello');
     expect(searcher.findFirst('hello world')).toBe(0);
   });
+
+  it('should handle pattern longer than text', async () => {
+    const searcher = new BoyerMooreHorspool2('longpattern');
+    expect(searcher.findFirst('short')).toBe(-1);
+  });
 });
 });

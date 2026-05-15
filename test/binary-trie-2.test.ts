@@ -341,5 +341,15 @@ describe('BinaryTrie2', () => {
       expect(trie.min()).toBe(10);
       expect(trie.max()).toBe(30);
     });
+
+    it('should handle delete', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(10);
+      trie.insert(20);
+      trie.insert(30);
+      expect(trie.delete(20)).toBe(true);
+      expect(trie.has(20)).toBe(false);
+      expect(trie.size).toBe(2);
+    });
   });
 });

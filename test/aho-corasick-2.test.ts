@@ -241,4 +241,10 @@ describe('AhoCorasick2', () => {
     expect(ac.patterns()).toContain('cat');
     expect(ac.patterns()).toContain('dog');
   });
+
+  it('should handle case-sensitive search', () => {
+    const ac = new AhoCorasick2(['cat']);
+    const result = ac.search('CAT');
+    expect(result).toEqual([]);
+  });
 });

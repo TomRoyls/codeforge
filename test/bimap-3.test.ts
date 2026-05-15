@@ -342,4 +342,12 @@ describe('BiMap3', () => {
     expect(bimap.size).toBe(0)
     expect(bimap.isEmpty()).toBe(true)
   })
+
+  it('should handle keys and values', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    expect(bimap.keys()).toEqual(['a', 'b'])
+    expect(bimap.values()).toEqual([1, 2])
+  })
 })

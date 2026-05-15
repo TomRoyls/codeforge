@@ -286,5 +286,13 @@ describe('BloomFilter4', () => {
       const bf = new BloomFilter(100, 0.01);
       expect(bf.getBitCount()).toBeGreaterThan(0);
     });
+
+    it('should handle add and mightContain', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('hello');
+      bf.add('world');
+      expect(bf.mightContain('hello')).toBe(true);
+      expect(bf.mightContain('world')).toBe(true);
+    });
   });
 });
