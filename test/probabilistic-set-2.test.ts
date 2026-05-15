@@ -151,4 +151,44 @@ describe('ProbabilisticSet2', () => {
     expect(set.has(42)).toBe(true);
     expect(set.has('123')).toBe(true);
   });
+
+  it('should handle duplicate adds incrementing size', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('a');
+    set.add('a');
+    set.add('a');
+    expect(set.size).toBe(3);
+    expect(set.has('a')).toBe(true);
+  });
+
+  it('should handle clear and re-add', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('x');
+    set.add('y');
+    set.clear();
+    expect(set.has('x')).toBe(false);
+    set.add('z');
+    expect(set.has('z')).toBe(true);
+    expect(set.size).toBe(1);
+  });
+
+  it('should work with many unique elements', () => {
+    const set = new ProbabilisticSet2<number>(1000, 0.01);
+    for (let i = 0; i < 100; i++) {
+      set.add(i);
+    }
+    expect(set.size).toBe(100);
+    for (let i = 0; i < 100; i++) {
+      expect(set.has(i)).toBe(true);
+    }
+  });
+
+  it('should handle boolean-like values', () => {
+    const set = new ProbabilisticSet2<number>(100, 0.01);
+    set.add(0);
+    set.add(1);
+    expect(set.has(0)).toBe(true);
+    expect(set.has(1)).toBe(true);
+    expect(set.has(2)).toBe(false);
+  });
 });
