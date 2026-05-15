@@ -306,5 +306,12 @@ describe('SpatialHash2', () => {
       const result = hash.query(0, 0, 5);
       expect(result).toHaveLength(0);
     });
+
+    it('should handle has check', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 50, 50);
+      expect(hash.has('a')).toBe(true);
+      expect(hash.has('b')).toBe(false);
+    });
   });
 });

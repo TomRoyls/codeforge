@@ -268,5 +268,11 @@ describe('Matrix2', () => {
       const t = m.transpose();
       expect(t.toArray()).toEqual([[1, 4], [2, 5], [3, 6]]);
     });
+
+    it('should scale matrix by negative', () => {
+      const m = Matrix2.fromArray([[1, -2], [3, 4]]);
+      const s = m.scale(-1);
+      expect(s.toArray()).toEqual([[-1, 2], [-3, -4]]);
+    });
   });
 });

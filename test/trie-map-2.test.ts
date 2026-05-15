@@ -281,5 +281,14 @@ describe('TrieMap2', () => {
       expect(trie.has('hello')).toBe(false);
       expect(trie.size).toBe(0);
     });
+
+    it('should handle clear', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      trie.set('world', 2);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      expect(trie.isEmpty()).toBe(true);
+    });
   });
 });

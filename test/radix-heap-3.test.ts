@@ -324,4 +324,11 @@ describe('RadixHeap3', () => {
         const heap = new RadixHeap3(16);
         expect(heap.keyBits).toBe(16);
     });
+
+    it('should handle isEmpty', () => {
+        const heap = new RadixHeap3();
+        expect(heap.isEmpty()).toBe(true);
+        heap.insert(5, 'a');
+        expect(heap.isEmpty()).toBe(false);
+    });
 });

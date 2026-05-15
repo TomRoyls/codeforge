@@ -296,4 +296,14 @@ describe('WindowHeap2', () => {
     expect(heap.size).toBe(0);
     expect(heap.isEmpty()).toBe(true);
   });
+
+  it('should handle getWindow', () => {
+    const heap = new WindowHeap2(3);
+    heap.push(10);
+    heap.push(20);
+    const win = heap.getWindow();
+    expect(win).toHaveLength(2);
+    expect(win).toContain(10);
+    expect(win).toContain(20);
+  });
 });

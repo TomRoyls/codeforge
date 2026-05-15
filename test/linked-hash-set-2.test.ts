@@ -414,5 +414,14 @@ describe('LinkedHashSet', () => {
       set.add(30);
       expect(set.toArray()).toEqual([10, 20, 30]);
     });
+
+    it('should handle first and last', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      expect(set.first()).toBe(10);
+      expect(set.last()).toBe(30);
+    });
   });
 });

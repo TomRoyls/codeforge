@@ -374,4 +374,13 @@ describe('ProbabilityMap2', () => {
     expect(entries.some(([k]) => k === 'a')).toBe(true);
     expect(entries.some(([k]) => k === 'b')).toBe(true);
   });
+
+  it('should handle normalize', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 30);
+    map.normalize();
+    expect(map.get('a')).toBeCloseTo(0.25, 5);
+    expect(map.get('b')).toBeCloseTo(0.75, 5);
+  });
 });

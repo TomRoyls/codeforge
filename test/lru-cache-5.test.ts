@@ -327,4 +327,16 @@ describe('LRUCache5', () => {
       expect(cache.size).toBe(1);
     });
   });
+
+  describe('additional', () => {
+    it('should handle keys and values', () => {
+      const cache = new LRUCache5<number, string>(5);
+      cache.set(1, 'a');
+      cache.set(2, 'b');
+      expect(cache.keys()).toContain(1);
+      expect(cache.keys()).toContain(2);
+      expect(cache.values()).toContain('a');
+      expect(cache.values()).toContain('b');
+    });
+  });
 });

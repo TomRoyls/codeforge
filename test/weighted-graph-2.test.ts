@@ -267,5 +267,12 @@ describe('WeightedGraph2', () => {
       graph.addVertex('C');
       expect(graph.vertices()).toEqual(['A', 'B', 'C']);
     });
+
+    it('should handle hasVertex', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('A');
+      expect(graph.hasVertex('A')).toBe(true);
+      expect(graph.hasVertex('Z')).toBe(false);
+    });
   });
 });

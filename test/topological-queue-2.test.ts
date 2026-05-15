@@ -359,4 +359,13 @@ describe('TopologicalQueue2', () => {
     expect(ts.inDegree('B')).toBe(1);
     expect(ts.outDegree('B')).toBe(0);
   });
+
+  it('should handle clear', () => {
+    const ts = new TopologicalQueue2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('B', 'C');
+    ts.clear();
+    expect(ts.getNodes()).toEqual([]);
+    expect(ts.getEdges()).toEqual([]);
+  });
 });

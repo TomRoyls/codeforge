@@ -289,4 +289,15 @@ describe('ThreadSafeStack2', () => {
       expect(stack.size).toBe(2)
     })
   })
+
+  describe('clear', () => {
+    it('clears the stack', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.push(1)
+      stack.push(2)
+      stack.clear()
+      expect(stack.size).toBe(0)
+      expect(stack.isEmpty()).toBe(true)
+    })
+  })
 })

@@ -285,4 +285,11 @@ describe('ProbabilisticSet2', () => {
     expect(set.size).toBe(0);
     expect(set.isEmpty()).toBe(true);
   });
+
+  it('should handle falsePositiveRate', () => {
+    const set = new ProbabilisticSet2<string>(1000, 0.01);
+    const rate = set.falsePositiveRate();
+    expect(rate).toBeGreaterThan(0);
+    expect(rate).toBeLessThanOrEqual(1);
+  });
 });

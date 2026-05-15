@@ -233,5 +233,10 @@ describe("SparseTable", () => {
       const st = new SparseTable([5, 3, 8, 1]);
       expect(st.getSize()).toBe(4);
     });
+
+    it("should handle toArray", () => {
+      const st = new SparseTable([5, 3, 8, 1]);
+      expect(st.toArray()).toEqual([5, 3, 8, 1]);
+    });
   });
 });

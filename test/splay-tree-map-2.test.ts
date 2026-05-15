@@ -366,4 +366,14 @@ describe('SplayTreeMap2', () => {
     expect(map.min()).toBe(2);
     expect(map.max()).toBe(8);
   });
+
+  it('should iterate with forEach', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const result: string[] = [];
+    map.forEach((key, value) => result.push(value));
+    expect(result).toEqual(['a', 'b', 'c']);
+  });
 });

@@ -298,4 +298,13 @@ describe('SegmentTreeMap2', () => {
     expect(tree.get(1)).toBe(12)
     expect(tree.get(2)).toBe(13)
   })
+
+  it('should handle toArray', async () => {
+    const tree = new SegmentTreeMap2(3)
+    tree.set(0, 1)
+    tree.set(1, 2)
+    tree.set(2, 3)
+    const arr = tree.toArray()
+    expect(arr).toEqual([1, 2, 3])
+  })
 })

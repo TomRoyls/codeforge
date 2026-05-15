@@ -163,4 +163,9 @@ describe('MergeSort5', () => {
   it('single element sort', () => {
     expect(ms.sort([42])).toEqual([42]);
   });
+
+  it('isSorted check', () => {
+    expect(ms.isSorted([1, 2, 3])).toBe(true);
+    expect(ms.isSorted([3, 1, 2])).toBe(false);
+  });
 });

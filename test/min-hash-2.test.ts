@@ -249,4 +249,12 @@ describe('MinHash2', () => {
     const mh = new MinHash2(50);
     expect(mh.getSignature().length).toBe(50);
   });
+
+  it('should handle size', () => {
+    const mh = new MinHash2();
+    expect(mh.size()).toBe(0);
+    mh.add('a');
+    mh.add('b');
+    expect(mh.size()).toBe(2);
+  });
 });

@@ -342,4 +342,12 @@ describe('RadixMap2', () => {
     expect(map.min()).toBe(2);
     expect(map.max()).toBe(8);
   });
+
+  it('should handle entries', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+  });
 });

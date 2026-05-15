@@ -280,4 +280,16 @@ describe('RingHash2', () => {
     expect(ring.size()).toBe(0);
     expect(ring.nodes()).toEqual([]);
   });
+
+  it('should handle multiple keys distribution', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.addNode('node3');
+    const results = new Set<string>();
+    for (let i = 0; i < 30; i++) {
+      const node = ring.getNode(`key-${i}`);
+      if (node) results.add(node);
+    }
+    expect(results.size).toBeGreaterThan(0);
+  });
 });

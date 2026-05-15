@@ -292,4 +292,13 @@ describe('RedBlackTreeMap2', () => {
     map.forEach((key, value) => result.push(value))
     expect(result).toEqual(['a', 'b', 'c'])
   })
+
+  it('should handle toArray', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const arr = map.toArray()
+    expect(arr).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
+  })
 })

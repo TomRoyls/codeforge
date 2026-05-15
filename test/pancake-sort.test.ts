@@ -239,4 +239,12 @@ describe('PancakeSort', () => {
       expect(sorter.getFlipCount()).toBeGreaterThan(0);
     });
   });
+
+  describe('isSorted()', () => {
+    it('should report sorted after sort', () => {
+      const sorter = new PancakeSort<number>([5, 3, 1, 4, 2]);
+      sorter.sort();
+      expect(sorter.isSorted()).toBe(true);
+    });
+  });
 });

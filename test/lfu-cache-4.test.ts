@@ -315,4 +315,13 @@ describe('LFUCache4', () => {
       expect(cache.get('c')).toBe(3)
     })
   })
+
+  describe('additional', () => {
+    it('should handle has check', () => {
+      const cache = new LFUCache4(3)
+      cache.set('a', 1)
+      expect(cache.has('a')).toBe(true)
+      expect(cache.has('b')).toBe(false)
+    })
+  })
 })

@@ -343,5 +343,14 @@ describe('JellyHash2', () => {
       expect(entries.some(([k, v]) => k === 'a' && v === 1)).toBe(true);
       expect(entries.some(([k, v]) => k === 'b' && v === 2)).toBe(true);
     });
+
+    it('should handle keys method', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const keys = map.keys();
+      expect(keys).toContain('a');
+      expect(keys).toContain('b');
+    });
   });
 });

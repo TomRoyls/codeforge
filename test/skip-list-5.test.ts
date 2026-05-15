@@ -313,5 +313,14 @@ describe('SkipList5', () => {
       list.insert(2);
       expect(list.toArray()).toEqual([1, 2, 3]);
     });
+
+    it('should handle min and max', () => {
+      const list = new SkipList<number>();
+      list.insert(10);
+      list.insert(5);
+      list.insert(20);
+      expect(list.min()).toBe(5);
+      expect(list.max()).toBe(20);
+    });
   });
 });

@@ -351,4 +351,13 @@ describe('RoaringBitmap3', () => {
     expect(bitmap.has(1)).toBe(false);
     expect(bitmap.has(2)).toBe(true);
   });
+
+  it('should handle min and max', async () => {
+    const bitmap = new RoaringBitmap3();
+    bitmap.add(10);
+    bitmap.add(5);
+    bitmap.add(20);
+    expect(bitmap.min()).toBe(5);
+    expect(bitmap.max()).toBe(20);
+  });
 });

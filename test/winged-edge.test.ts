@@ -403,4 +403,11 @@ describe('WingedEdgeMesh', () => {
     const mesh = new WingedEdgeMesh();
     expect(typeof mesh.getTimeComplexity()).toBe('string');
   });
+
+  it('should handle getVertex returning coordinates', () => {
+    const mesh = new WingedEdgeMesh();
+    const v = mesh.addVertex(1, 2, 3);
+    const vertex = mesh.getVertex(v);
+    expect(vertex).toBeDefined();
+  });
 });

@@ -404,5 +404,15 @@ describe('RingBuffer6', () => {
       const buffer = new RingBuffer6<number>();
       expect(buffer.isEmpty()).toBe(true);
     });
+
+    it('should handle forEach iteration', () => {
+      const buffer = new RingBuffer6<number>();
+      buffer.push(1);
+      buffer.push(2);
+      buffer.push(3);
+      const collected: number[] = [];
+      buffer.forEach(item => collected.push(item));
+      expect(collected).toEqual([1, 2, 3]);
+    });
   });
 });

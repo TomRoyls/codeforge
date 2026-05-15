@@ -247,4 +247,12 @@ describe('PersistentArray2', () => {
     const arr = new PersistentArray2([1, 2])
     expect(arr.get(5)).toBeUndefined()
   })
+
+  it('should handle push returning new array', () => {
+    const arr1 = new PersistentArray2([1, 2])
+    const arr2 = arr1.push(3)
+    expect(arr1.length).toBe(2)
+    expect(arr2.length).toBe(3)
+    expect(arr2.toArray()).toEqual([1, 2, 3])
+  })
 })

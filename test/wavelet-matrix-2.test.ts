@@ -322,4 +322,11 @@ describe('WaveletMatrix2', () => {
     expect(wm.rank(1, 5)).toBe(3);
     expect(wm.rank(2, 5)).toBe(1);
   });
+
+  it('should handle select', async () => {
+    const data = [1, 2, 1, 2, 1];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.select(1, 0)).toBe(0);
+    expect(wm.select(1, 1)).toBe(2);
+  });
 });

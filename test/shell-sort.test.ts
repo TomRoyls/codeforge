@@ -232,4 +232,12 @@ describe('ShellSort', () => {
       expect(sorter.getSwaps()).toBeGreaterThan(0);
     });
   });
+
+  describe('getComparisons()', () => {
+    it('should track comparisons during sort', () => {
+      const sorter = new ShellSort<number>([5, 3, 1, 4, 2]);
+      sorter.sort();
+      expect(sorter.getComparisons()).toBeGreaterThan(0);
+    });
+  });
 });

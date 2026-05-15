@@ -240,4 +240,11 @@ describe('RobinHoodHash2', () => {
     expect(hash.capacity()).toBeGreaterThan(0);
     expect(hash.capacity()).toBeGreaterThanOrEqual(hash.size);
   });
+
+  it('should handle maxProbeLength', () => {
+    hash.set('a', 1);
+    hash.set('b', 2);
+    hash.set('c', 3);
+    expect(hash.maxProbeLength()).toBeGreaterThanOrEqual(0);
+  });
 });
