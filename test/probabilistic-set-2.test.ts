@@ -310,4 +310,12 @@ describe('ProbabilisticSet2', () => {
     expect(set.has('hello')).toBe(true);
     expect(set.has('world')).toBe(true);
   });
+
+  it('should handle clear', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('item1');
+    set.add('item2');
+    set.clear();
+    expect(set.has('item1')).toBe(false);
+  });
 });

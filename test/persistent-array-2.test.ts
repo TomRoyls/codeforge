@@ -274,4 +274,11 @@ describe('PersistentArray2', () => {
     const filtered = arr.filter(x => x > 2)
     expect(filtered.toArray()).toEqual([3, 4, 5])
   })
+
+  it('should handle get', () => {
+    const arr = new PersistentArray2([10, 20, 30])
+    expect(arr.get(0)).toBe(10)
+    expect(arr.get(1)).toBe(20)
+    expect(arr.get(2)).toBe(30)
+  })
 })

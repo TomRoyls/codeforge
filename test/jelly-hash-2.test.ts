@@ -375,5 +375,13 @@ describe('JellyHash2', () => {
       expect(map.has('a')).toBe(false);
       expect(map.size).toBe(1);
     });
+
+    it('should handle clear', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      map.clear();
+      expect(map.size).toBe(0);
+    });
   });
 });

@@ -182,4 +182,8 @@ describe('MergeSort5', () => {
   it('handles empty array', () => {
     expect(ms.sort([])).toEqual([]);
   });
+
+  it('handles single element', () => {
+    expect(ms.sort([42])).toEqual([42]);
+  });
 });

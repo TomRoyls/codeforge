@@ -369,5 +369,14 @@ describe('MinHeap', () => {
       expect(heap.size()).toBe(0);
       expect(heap.isEmpty()).toBe(true);
     });
+
+    it('should handle extractMin', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(3);
+      heap.insert(1);
+      heap.insert(2);
+      expect(heap.extractMin()).toBe(1);
+      expect(heap.extractMin()).toBe(2);
+    });
   });
 });

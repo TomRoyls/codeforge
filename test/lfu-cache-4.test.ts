@@ -347,5 +347,13 @@ describe('LFUCache4', () => {
       const cache = new LFUCache4(3)
       expect(cache.get('nonexistent')).toBeUndefined()
     })
+
+    it('should handle overwrite', () => {
+      const cache = new LFUCache4(3)
+      cache.set('a', 1)
+      cache.set('a', 2)
+      expect(cache.get('a')).toBe(2)
+      expect(cache.size).toBe(1)
+    })
   })
 })

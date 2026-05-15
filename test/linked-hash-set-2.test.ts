@@ -446,5 +446,13 @@ describe('LinkedHashSet', () => {
       expect(set.has(5)).toBe(true);
       expect(set.has(99)).toBe(false);
     });
+
+    it('should handle delete', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      expect(set.delete(10)).toBe(true);
+      expect(set.has(10)).toBe(false);
+    });
   });
 });

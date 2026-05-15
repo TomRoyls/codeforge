@@ -338,4 +338,12 @@ describe('Octree2', () => {
     tree.insert(50, 50, 50, 1);
     expect(tree.size()).toBe(1);
   });
+
+  it('should handle multiple inserts', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(10, 10, 10, 1);
+    tree.insert(50, 50, 50, 2);
+    tree.insert(90, 90, 90, 3);
+    expect(tree.size()).toBe(3);
+  });
 });

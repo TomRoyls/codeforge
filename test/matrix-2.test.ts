@@ -293,5 +293,11 @@ describe('Matrix2', () => {
       const result = a.multiply(b);
       expect(result.toArray()).toEqual([[19, 22], [43, 50]]);
     });
+
+    it('should handle scale', () => {
+      const m = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const result = m.scale(2);
+      expect(result.toArray()).toEqual([[2, 4], [6, 8]]);
+    });
   });
 });

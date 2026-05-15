@@ -279,4 +279,12 @@ describe('MinHash2', () => {
     expect(Array.isArray(sig)).toBe(true);
     expect(sig.length).toBeGreaterThan(0);
   });
+
+  it('should handle clear', () => {
+    const mh = new MinHash2();
+    mh.addAll(['a', 'b', 'c']);
+    expect(mh.size()).toBe(3);
+    mh.clear();
+    expect(mh.size()).toBe(0);
+  });
 });

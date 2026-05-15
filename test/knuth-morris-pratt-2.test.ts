@@ -238,5 +238,11 @@ describe('KnuthMorrisPratt2', () => {
       const result = kmp.hasMatch('test');
       expect(result).toBe(true);
     });
+
+    it('should handle empty text search', () => {
+      const kmp = new KnuthMorrisPratt2('test');
+      const result = kmp.search('');
+      expect(result).toEqual([]);
+    });
   });
 });
