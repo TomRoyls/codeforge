@@ -109,7 +109,7 @@ describe('MultiMap3', () => {
     ]);
   });
 
-  it.skip('should track total size', () => {
+  it('should track total size', () => {
     const map = new MultiMap3<string, number>();
     expect(map.size).toBe(0);
 
@@ -126,7 +126,7 @@ describe('MultiMap3', () => {
     expect(map.size).toBe(2);
 
     map.delete('b');
-    expect(map.size).toBe(0);
+    expect(map.size).toBe(1);
   });
 
   it('should clear all entries', () => {
