@@ -45,6 +45,10 @@ export class GallopingHeap<T> {
       return;
     }
 
+    if (other === this) {
+      return;
+    }
+
     this._root = this._mergeNodes(this._root, other._root);
     this._size += other._size;
 
