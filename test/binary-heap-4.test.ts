@@ -368,5 +368,17 @@ describe('BinaryHeap', () => {
       const heap = new BinaryHeap<number>();
       expect(typeof heap.getTimeComplexity()).toBe('string');
     });
+
+    it('should handle toArray after inserts', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(30);
+      heap.insert(10);
+      heap.insert(20);
+      const arr = heap.toArray();
+      expect(arr).toHaveLength(3);
+      expect(arr).toContain(10);
+      expect(arr).toContain(20);
+      expect(arr).toContain(30);
+    });
   });
 });

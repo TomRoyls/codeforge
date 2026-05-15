@@ -229,4 +229,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('abc');
     expect(result.length).toBe(2);
   });
+
+  it('should handle empty search', () => {
+    const ac = new AhoCorasick2(['cat', 'dog']);
+    const result = ac.search('');
+    expect(result).toEqual([]);
+  });
 });

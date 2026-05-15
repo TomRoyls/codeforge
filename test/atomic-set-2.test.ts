@@ -433,4 +433,16 @@ describe('AtomicSet2', () => {
     expect(set.has(10)).toBe(true);
     expect(set.has(5)).toBe(false);
   });
+
+  it('should handle toArray', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.add(3);
+    const arr = set.toArray();
+    expect(arr).toHaveLength(3);
+    expect(arr).toContain(1);
+    expect(arr).toContain(2);
+    expect(arr).toContain(3);
+  });
 });

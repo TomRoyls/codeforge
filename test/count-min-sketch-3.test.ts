@@ -287,4 +287,14 @@ describe('CountMinSketch3', () => {
     cms.update('item', -3);
     expect(cms.estimate('item')).toBeGreaterThanOrEqual(7);
   });
+
+  it('should handle multiple different keys', () => {
+    const cms = new CountMinSketch3();
+    cms.update('a', 1);
+    cms.update('b', 2);
+    cms.update('c', 3);
+    expect(cms.estimate('a')).toBeGreaterThanOrEqual(1);
+    expect(cms.estimate('b')).toBeGreaterThanOrEqual(2);
+    expect(cms.estimate('c')).toBeGreaterThanOrEqual(3);
+  });
 });

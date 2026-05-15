@@ -463,5 +463,13 @@ describe('BTree', () => {
       t.insert(20);
       expect(t.inOrderTraversal()).toEqual([10, 20, 30]);
     });
+
+    it('should handle getHeight', () => {
+      const t = new BTree<number>();
+      expect(t.getHeight()).toBe(0);
+      t.insert(10);
+      t.insert(20);
+      expect(t.getHeight()).toBeGreaterThan(0);
+    });
   });
 });

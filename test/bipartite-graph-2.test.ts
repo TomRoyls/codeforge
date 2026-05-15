@@ -349,4 +349,13 @@ describe('BipartiteGraph2', () => {
     expect(graph.hasEdge('L1', 'R1')).toBe(true);
     expect(graph.hasEdge('R1', 'L1')).toBe(false);
   });
+
+  it('should handle getEdgeWeight', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1', 7);
+    expect(graph.getEdgeWeight('L1', 'R1')).toBe(7);
+    expect(graph.getEdgeWeight('R1', 'L1')).toBeUndefined();
+  });
 });

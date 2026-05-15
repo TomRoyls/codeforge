@@ -405,4 +405,13 @@ describe('AVLTreeSet2', () => {
     expect(set.size).toBe(0);
     expect(set.isEmpty()).toBe(true);
   });
+
+  it('should handle toArray', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(30);
+    set.add(10);
+    set.add(20);
+    const arr = set.toArray();
+    expect(arr).toEqual([10, 20, 30]);
+  });
 });

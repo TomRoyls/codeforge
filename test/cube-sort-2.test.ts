@@ -259,5 +259,10 @@ describe('CubeSort2', () => {
       const sorter = new CubeSort2();
       expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
     });
+
+    it('should handle empty array', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([])).toEqual([]);
+    });
   });
 });

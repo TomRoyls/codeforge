@@ -249,5 +249,13 @@ describe('BloomierFilter2', () => {
       const filter = new BloomierFilter2(100, 3);
       expect(filter.delete('nonexistent')).toBe(false);
     });
+
+    it('should handle size tracking', () => {
+      const filter = new BloomierFilter2(100, 3);
+      expect(filter.size).toBe(0);
+      filter.set('a', 1);
+      filter.set('b', 2);
+      expect(filter.size).toBe(2);
+    });
   });
 });

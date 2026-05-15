@@ -323,5 +323,14 @@ describe('BinaryTrie2', () => {
       expect(typeof result).toBe('number');
       expect([10, 20, 30]).toContain(result);
     });
+
+    it('should handle clear', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(10);
+      trie.insert(20);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      expect(trie.isEmpty()).toBe(true);
+    });
   });
 });
