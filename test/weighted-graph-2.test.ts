@@ -166,5 +166,37 @@ describe('WeightedGraph2', () => {
       expect(graph.getNeighbors('A')).toEqual([{to: 'B', weight: 5}]);
       expect(graph.getNeighbors('B')).toEqual([]);
     });
+
+    it('should handle self-loop', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'A', 1);
+      expect(graph.hasEdge('A', 'A')).toBe(true);
+      expect(graph.vertexCount()).toBe(1);
+    });
+
+    it('should handle isolated vertex', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('isolated');
+      expect(graph.vertexCount()).toBe(1);
+      expect(graph.getNeighbors('isolated')).toEqual([]);
+      expect(graph.hasEdge('isolated', 'any')).toBe(false);
+    });
+
+    it('should update edge weight', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 5);
+      graph.addEdge('A', 'B', 10);
+      expect(graph.getEdgeWeight('A', 'B')).toBe(10);
+    });
+
+    it('should handle multiple edges from same vertex', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 1);
+      graph.addEdge('A', 'C', 2);
+      graph.addEdge('A', 'D', 3);
+      const neighbors = graph.getNeighbors('A');
+      expect(neighbors).toHaveLength(3);
+      expect(graph.edgeCount()).toBe(3);
+    });
   });
 });
