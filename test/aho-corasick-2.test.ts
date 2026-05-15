@@ -199,4 +199,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('here');
     expect(result.length).toBeGreaterThanOrEqual(2);
   });
+
+  it('should handle empty text search', () => {
+    const ac = new AhoCorasick2(['test']);
+    expect(ac.search('')).toEqual([]);
+  });
 });
