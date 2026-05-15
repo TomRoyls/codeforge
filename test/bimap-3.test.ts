@@ -275,4 +275,20 @@ describe('BiMap3', () => {
     expect(bimap.getKey(1)).toBe('b')
     expect(bimap.size).toBe(1)
   })
+
+  it('should handle clear', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    bimap.clear()
+    expect(bimap.size).toBe(0)
+    expect(bimap.get('a')).toBeUndefined()
+  })
+
+  it('should handle hasValue for missing value', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    expect(bimap.hasValue(1)).toBe(true)
+    expect(bimap.hasValue(99)).toBe(false)
+  })
 })

@@ -228,4 +228,23 @@ describe('PersistentArray2', () => {
     expect(arr3.toArray()).toEqual([1, 2])
     expect(arr1.toArray()).toEqual([1, 2])
   })
+
+  it('should handle map producing new array', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    const doubled = arr.map(x => x * 2)
+    expect(doubled.toArray()).toEqual([2, 4, 6])
+    expect(arr.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('should handle set returning new array', () => {
+    const arr1 = new PersistentArray2([10, 20, 30])
+    const arr2 = arr1.set(0, 99)
+    expect(arr1.toArray()).toEqual([10, 20, 30])
+    expect(arr2.toArray()).toEqual([99, 20, 30])
+  })
+
+  it('should handle get on out of bounds', () => {
+    const arr = new PersistentArray2([1, 2])
+    expect(arr.get(5)).toBeUndefined()
+  })
 })
