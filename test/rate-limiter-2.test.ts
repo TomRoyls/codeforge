@@ -124,4 +124,61 @@ describe('RateLimiter2', () => {
     limiter.tryAcquire();
     expect(limiter.getAvailableTokens()).toBe(9);
   });
+
+  it('should allow requests after window expires', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 1, windowMs: 100 });
+
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(false);
+
+    await new Promise((r) => setTimeout(r, 150));
+
+    expect(limiter.tryAcquire()).toBe(true);
+  });
+
+  it('should clean up old timestamps on getAvailableTokens', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 2, windowMs: 100 });
+
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(0);
+
+    await new Promise((r) => setTimeout(r, 150));
+
+    expect(limiter.getAvailableTokens()).toBe(2);
+  });
+
+  it('should handle window expiry with partial overlap', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 2, windowMs: 150 });
+
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(1);
+
+    await new Promise((r) => setTimeout(r, 80));
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(0);
+
+    await new Promise((r) => setTimeout(r, 100));
+    expect(limiter.getAvailableTokens()).toBe(1);
+  });
+
+  it('acquire should wait and then succeed', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 1, windowMs: 100 });
+
+    limiter.tryAcquire();
+
+    const start = Date.now();
+    await limiter.acquire();
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeGreaterThanOrEqual(80);
+  });
+
+  it('should handle zero available tokens reporting', () => {
+    const limiter = new RateLimiter2({ maxRequests: 1, windowMs: 1000 });
+
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(0);
+    expect(limiter.tryAcquire()).toBe(false);
+    expect(limiter.getAvailableTokens()).toBe(0);
+  });
 });
