@@ -358,5 +358,13 @@ describe('CSRGraph2', () => {
       expect(neighbors[0]!.weight).toBe(5);
       expect(neighbors[1]!.weight).toBe(10);
     });
+
+    it('should handle vertexCount', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.build();
+      expect(graph.vertexCount()).toBe(3);
+    });
   });
 });

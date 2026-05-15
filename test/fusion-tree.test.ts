@@ -295,7 +295,14 @@ describe('FusionTree', () => {
       tree.insert(10);
       tree.insert(15);
       expect(tree.delete(10)).toBe(true);
-      expect(tree.has(10)).toBe(false);
+    expect(tree.has(10)).toBe(false);
+    });
+
+    it('should handle isEmpty property', () => {
+      const tree = new FusionTree();
+      expect(tree.isEmpty).toBe(true);
+      tree.insert(5);
+      expect(tree.isEmpty).toBe(false);
     });
   });
 });

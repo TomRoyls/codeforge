@@ -305,4 +305,9 @@ describe('FibonacciSearch4', () => {
     const searcher = new FibonacciSearch4([10, 20, 30, 40, 50]);
     expect(searcher.search(10)).toBe(0);
   });
+
+  it('should handle not found', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30]);
+    expect(searcher.search(99)).toBe(-1);
+  });
 });

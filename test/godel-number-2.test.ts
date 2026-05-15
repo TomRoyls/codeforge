@@ -256,5 +256,12 @@ describe('GodelNumber2', () => {
       expect(GodelNumber2.isPrime(4n)).toBe(false);
       expect(GodelNumber2.isPrime(17n)).toBe(true);
     });
+
+    it('should handle encode and decode consistency', () => {
+      const data = [2, 3, 5];
+      const encoded = GodelNumber2.encode(data);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual([2, 3, 5]);
+    });
   });
 });

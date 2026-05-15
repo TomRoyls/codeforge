@@ -326,4 +326,13 @@ describe('FenwickTree3 - Edge Cases', () => {
     const ft = new FenwickTree3(10);
     expect(ft.size).toBe(10);
   });
+
+  it('should handle range query', () => {
+    const ft = new FenwickTree3(5);
+    ft.update(0, 10);
+    ft.update(1, 20);
+    ft.update(2, 30);
+    const total = ft.query(2);
+    expect(total).toBe(60);
+  });
 });

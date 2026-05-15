@@ -249,5 +249,10 @@ describe('CountingSort', () => {
       const result = sorter.sort();
       expect(result).toEqual([-3, -1, 1, 2, 3]);
     });
+
+    it('should handle empty array', () => {
+      const sorter = new CountingSort([]);
+      expect(sorter.sort()).toEqual([]);
+    });
   });
 });

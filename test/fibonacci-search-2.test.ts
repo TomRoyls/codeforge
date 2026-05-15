@@ -245,4 +245,9 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
     expect(fs.search(10)).toBe(0);
   });
+
+  it('should handle not found', () => {
+    const fs = new FibonacciSearch([10, 20, 30]);
+    expect(fs.search(99)).toBe(-1);
+  });
 });

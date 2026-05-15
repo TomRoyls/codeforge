@@ -351,5 +351,13 @@ describe('BinaryTrie2', () => {
       expect(trie.has(20)).toBe(false);
       expect(trie.size).toBe(2);
     });
+
+    it('should handle xorMin', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(10);
+      trie.insert(15);
+      trie.insert(5);
+      expect(trie.xorMin(10)).toBe(10);
+    });
   });
 });

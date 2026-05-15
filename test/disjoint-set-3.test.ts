@@ -377,4 +377,14 @@ describe('DisjointSet3', () => {
     ds.makeSet('b');
     expect(ds.connected('a', 'b')).toBe(false);
   });
+
+  it('should handle transitive union', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    ds.union('a', 'b');
+    ds.union('b', 'c');
+    expect(ds.connected('a', 'c')).toBe(true);
+  });
 });
