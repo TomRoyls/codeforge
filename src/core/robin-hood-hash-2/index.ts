@@ -28,7 +28,7 @@ export class RobinHoodHash2<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this._size / this.entries.length > this._loadFactorThreshold) {
+    if (this._size / this.entries.length >= this._loadFactorThreshold) {
       this.resize();
     }
 

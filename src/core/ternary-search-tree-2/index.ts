@@ -186,8 +186,6 @@ export class TernarySearchTree2 {
       words.push(prefix)
     }
 
-    this.collectWords(node.right, prefix, words)
-
     return words.sort()
   }
 

@@ -247,13 +247,13 @@ describe('RadixTree', () => {
       expect(tree.startsWith('helloo')).toBe(false);
     });
 
-    it.skip('should handle common prefixes', () => {
+    it('should handle common prefixes', () => {
       const tree = new RadixTree();
       tree.insert('apple');
       tree.insert('appetizer');
       expect(tree.startsWith('app')).toBe(true);
       expect(tree.startsWith('appl')).toBe(true);
-      expect(tree.startsWith('appe')).toBe(false);
+      expect(tree.startsWith('appe')).toBe(true);
     });
   });
 

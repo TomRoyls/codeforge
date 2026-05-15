@@ -11,6 +11,11 @@ export class IntervalHeap<T> {
 
   constructor(options?: IntervalHeapOptions<T>) {
     this._comparator = (options?.comparator ?? defaultComparator) as Comparator<T>
+    if (options?.initialValues) {
+      for (const val of options.initialValues) {
+        this.insert(val)
+      }
+    }
   }
 
   private _fixNode(i: number): void {

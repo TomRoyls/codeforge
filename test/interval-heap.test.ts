@@ -35,7 +35,7 @@ describe('IntervalHeap constructor', () => {
     expect(heap.getMax()).toBe('zebra')
   })
 
-  it.skip('should initialize with initialValues', () => {
+  it('should initialize with initialValues', () => {
     const heap = new IntervalHeap<number>({ initialValues: [5, 3, 7] })
     expect(heap.size).toBe(3)
     expect(heap.getMin()).toBe(3)
@@ -892,7 +892,7 @@ describe('IntervalHeap stress tests', () => {
     }
   })
 
-  it.skip('should handle bulk insert via initialValues', () => {
+  it('should handle bulk insert via initialValues', () => {
     const values: number[] = []
     for (let i = 0; i < 100; i++) {
       values.push(i)
