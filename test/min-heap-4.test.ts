@@ -320,4 +320,20 @@ describe('MinHeap', () => {
       expect(heap.extractMin()).toBe('zebra');
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle clear', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(1);
+      heap.insert(2);
+      heap.clear();
+      expect(heap.size()).toBe(0);
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should handle extractMin on empty heap', () => {
+      const heap = new MinHeap<number>();
+      expect(heap.extractMin()).toBeUndefined();
+    });
+  });
 });

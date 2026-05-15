@@ -155,4 +155,12 @@ describe('MergeSort5', () => {
       expect(arr[i]! <= arr[i + 1]!).toBe(true);
     }
   });
+
+  it('empty array sort', () => {
+    expect(ms.sort([])).toEqual([]);
+  });
+
+  it('single element sort', () => {
+    expect(ms.sort([42])).toEqual([42]);
+  });
 });

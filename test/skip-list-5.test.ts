@@ -298,4 +298,20 @@ describe('SkipList5', () => {
       expect(list.getTimeComplexity()).toContain('O(log n)');
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle delete on missing element', () => {
+      const list = new SkipList<number>();
+      list.insert(1);
+      expect(list.delete(99)).toBe(false);
+    });
+
+    it('should handle toArray', () => {
+      const list = new SkipList<number>();
+      list.insert(3);
+      list.insert(1);
+      list.insert(2);
+      expect(list.toArray()).toEqual([1, 2, 3]);
+    });
+  });
 });
