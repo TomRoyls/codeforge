@@ -186,4 +186,17 @@ describe('AhoCorasick2', () => {
     const result = ac.search('test');
     expect(result).toContainEqual({ pattern: 'test', startIndex: 0, endIndex: 3 });
   });
+
+  it('should handle single char patterns', () => {
+    const ac = new AhoCorasick2(['a', 'b']);
+    const result = ac.search('abba');
+    expect(result.filter(r => r.pattern === 'a').length).toBe(2);
+    expect(result.filter(r => r.pattern === 'b').length).toBe(2);
+  });
+
+  it('should handle overlapping patterns', () => {
+    const ac = new AhoCorasick2(['he', 'she', 'her', 'here']);
+    const result = ac.search('here');
+    expect(result.length).toBeGreaterThanOrEqual(2);
+  });
 });

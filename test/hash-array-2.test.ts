@@ -263,5 +263,30 @@ describe('HashArray2', () => {
       expect(map.get('person1')).toEqual({ name: 'Alice', age: 30 });
       expect(map.get('person2')).toEqual({ name: 'Bob', age: 25 });
     });
+
+    it('should handle delete and re-add', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.delete('a');
+      expect(map.has('a')).toBe(false);
+      map.set('a', 2);
+      expect(map.get('a')).toBe(2);
+    });
+
+    it('should handle has on missing key', () => {
+      const map = new HashArray2<number>();
+      expect(map.has('missing')).toBe(false);
+    });
+
+    it('should handle clear then set', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      map.clear();
+      expect(map.size).toBe(0);
+      map.set('c', 3);
+      expect(map.get('c')).toBe(3);
+      expect(map.size).toBe(1);
+    });
   });
 });

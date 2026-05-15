@@ -350,4 +350,20 @@ describe('GraphColoring2', () => {
       expect(graph.getColorCount(coloring)).toBe(3);
     });
   });
+
+  describe('additional coverage', () => {
+    it('handles single node graph', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', []]]);
+      const result = graph.colorGreedy(adj);
+      expect(result.get('A')).toBeGreaterThanOrEqual(0);
+    });
+
+    it('handles disconnected graph', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', []], ['B', []], ['C', []]]);
+      const result = graph.colorGreedy(adj);
+      expect(result.size).toBe(3);
+    });
+  });
 });

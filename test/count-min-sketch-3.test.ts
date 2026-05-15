@@ -237,4 +237,18 @@ describe('CountMinSketch3', () => {
     cms.update(longKey, 7);
     expect(cms.estimate(longKey)).toBe(7);
   });
+
+  it('should handle estimate for never-seen key', () => {
+    const cms = new CountMinSketch3();
+    cms.update('seen', 10);
+    expect(cms.estimate('unseen')).toBeGreaterThanOrEqual(0);
+    expect(cms.estimate('seen')).toBeGreaterThanOrEqual(10);
+  });
+
+  it('should handle multiple updates to same key', () => {
+    const cms = new CountMinSketch3();
+    cms.update('x', 5);
+    cms.update('x', 3);
+    expect(cms.estimate('x')).toBeGreaterThanOrEqual(8);
+  });
 });
