@@ -176,4 +176,64 @@ describe('Matrix2', () => {
       expect(matrix.get(0, 0)).toBe(1);
     });
   });
+
+  describe('identity', () => {
+    it('should create 3x3 identity matrix', () => {
+      const m = Matrix2.identity(3);
+      expect(m.get(0, 0)).toBe(1);
+      expect(m.get(1, 1)).toBe(1);
+      expect(m.get(2, 2)).toBe(1);
+      expect(m.get(0, 1)).toBe(0);
+      expect(m.get(1, 0)).toBe(0);
+    });
+
+    it('should create 1x1 identity matrix', () => {
+      const m = Matrix2.identity(1);
+      expect(m.get(0, 0)).toBe(1);
+    });
+  });
+
+  describe('transpose', () => {
+    it('should transpose rectangular matrix', () => {
+      const m = Matrix2.fromArray([[1, 2, 3], [4, 5, 6]]);
+      const t = m.transpose();
+      expect(t.rows()).toBe(3);
+      expect(t.cols()).toBe(2);
+      expect(t.get(0, 0)).toBe(1);
+      expect(t.get(0, 1)).toBe(4);
+      expect(t.get(2, 0)).toBe(3);
+      expect(t.get(2, 1)).toBe(6);
+    });
+  });
+
+  describe('scale', () => {
+    it('should scale all elements', () => {
+      const m = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const s = m.scale(2);
+      expect(s.toArray()).toEqual([[2, 4], [6, 8]]);
+    });
+
+    it('should scale by zero', () => {
+      const m = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const s = m.scale(0);
+      expect(s.toArray()).toEqual([[0, 0], [0, 0]]);
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle 1x1 matrix operations', () => {
+      const m = Matrix2.fromArray([[5]]);
+      expect(m.get(0, 0)).toBe(5);
+      m.set(0, 0, 10);
+      expect(m.get(0, 0)).toBe(10);
+    });
+
+    it('should handle large matrix', () => {
+      const m = new Matrix2(100, 100);
+      m.set(50, 50, 42);
+      expect(m.get(50, 50)).toBe(42);
+      expect(m.rows()).toBe(100);
+      expect(m.cols()).toBe(100);
+    });
+  });
 });
