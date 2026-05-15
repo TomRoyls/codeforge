@@ -215,5 +215,9 @@ describe('GodelNumber2', () => {
     it('should handle encode empty array returns 1', () => {
       expect(GodelNumber2.encode([])).toBe(1n);
     });
+
+    it('should handle decode of 1n returns empty', () => {
+      expect(GodelNumber2.decode(1n)).toEqual([]);
+    });
   });
 });

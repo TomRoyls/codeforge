@@ -263,4 +263,11 @@ describe('FibonacciSearch4', () => {
     expect(searcher.searchRange(3)).toEqual([1, 1]);
     expect(searcher.searchRange(4)).toEqual([-1, -1]);
   });
+
+  it('should handle two-element array', () => {
+    const searcher = new FibonacciSearch4([10, 20]);
+    expect(searcher.search(10)).toBe(0);
+    expect(searcher.search(20)).toBe(1);
+    expect(searcher.search(15)).toBe(-1);
+  });
 });
