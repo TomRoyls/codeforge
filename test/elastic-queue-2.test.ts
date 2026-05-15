@@ -272,4 +272,14 @@ describe('ElasticQueue2', () => {
     queue.enqueue(2);
     expect(queue.isFull()).toBe(true);
   });
+
+  it('should handle enqueue then dequeue order', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(queue.dequeue()).toBe(1);
+    expect(queue.dequeue()).toBe(2);
+    expect(queue.dequeue()).toBe(3);
+  });
 });

@@ -326,5 +326,13 @@ describe("GoldenRatioSearch", () => {
     const search = new GoldenRatioSearch(fn);
     expect(search.getTimeComplexity()).toBe("O(log(1/tolerance))");
   });
+
+  it("finds maximum of quadratic", () => {
+    const fn = (x: number) => -(x - 3) * (x - 3) + 10;
+    const search = new GoldenRatioSearch(fn);
+    const result = search.findMaximum(-10, 10);
+    expect(result.x).toBeCloseTo(3, 5);
+    expect(result.value).toBeCloseTo(10, 5);
+  });
 });
 });

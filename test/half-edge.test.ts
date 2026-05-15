@@ -423,4 +423,14 @@ describe('HalfEdgeMesh - Complex Mesh', () => {
     const vertex4Neighbors = mesh.getVertexNeighbors(4);
     expect(vertex4Neighbors.length).toBeGreaterThan(0);
   });
+
+  it('should handle getVertexFaces', () => {
+    const he = new HalfEdgeMesh();
+    const v0 = he.addVertex(0, 0, 0);
+    const v1 = he.addVertex(1, 0, 0);
+    const v2 = he.addVertex(0, 1, 0);
+    he.addFace([v0, v1, v2]);
+    const faces = he.getVertexFaces(v0);
+    expect(faces.length).toBeGreaterThan(0);
+  });
 });

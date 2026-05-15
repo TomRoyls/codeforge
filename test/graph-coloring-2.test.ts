@@ -393,5 +393,12 @@ describe('GraphColoring2', () => {
       const result = graph.colorBacktracking(adj, 2);
       expect(result).not.toBeNull();
     });
+
+    it('handles linear graph coloring', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A', 'C']], ['C', ['B']], ['D', ['C']], ['C', ['D']]]);
+      const result = graph.colorGreedy(adj);
+      expect(graph.isValid(adj, result)).toBe(true);
+    });
   });
 });

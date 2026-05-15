@@ -357,4 +357,12 @@ describe('IndexedPQ2', () => {
     expect(top).toBeDefined();
     expect(top!.priority).toBe(5);
   });
+
+  it('should handle contains', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    pq.insert(2, 20);
+    expect(pq.contains(1)).toBe(true);
+    expect(pq.contains(99)).toBe(false);
+  });
 });

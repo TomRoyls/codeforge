@@ -361,5 +361,10 @@ describe('JellyHash2', () => {
       expect(vals).toContain(1);
       expect(vals).toContain(2);
     });
+
+    it('should handle capacity getter', () => {
+      const map = new JellyHash2<string, number>();
+      expect(map.capacity).toBeGreaterThan(0);
+    });
   });
 });

@@ -231,5 +231,12 @@ describe('GodelNumber2', () => {
       expect(GodelNumber2.isPrime(4n)).toBe(false);
       expect(GodelNumber2.isPrime(13n)).toBe(true);
     });
+
+    it('should roundtrip encode then decode', () => {
+      const seq = [3, 1, 2];
+      const encoded = GodelNumber2.encode(seq);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual(seq);
+    });
   });
 });

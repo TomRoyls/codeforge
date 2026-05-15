@@ -307,4 +307,14 @@ describe('HyperLogLog3', () => {
       expect(hll1.count()).toBeGreaterThanOrEqual(1)
     })
   })
+
+  describe('count accuracy', () => {
+    it('estimates within reasonable range for small sets', () => {
+      const hll = new HyperLogLog3(12)
+      for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
+      const estimate = hll.count()
+      expect(estimate).toBeGreaterThan(50)
+      expect(estimate).toBeLessThan(200)
+    })
+  })
 })

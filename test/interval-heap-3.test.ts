@@ -366,4 +366,13 @@ describe('IntervalHeap3', () => {
     expect(heap.size).toBe(0);
     expect(heap.isEmpty()).toBe(true);
   });
+
+  it('should handle extractMax', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(8);
+    expect(heap.extractMax()).toBe(8);
+    expect(heap.size).toBe(2);
+  });
 });

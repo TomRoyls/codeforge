@@ -271,5 +271,10 @@ describe('FusionTree', () => {
       tree.forEach(key => collected.push(key));
       expect(collected.length).toBe(10);
     });
+
+    it('should handle toArray', () => {
+      for (let i = 5; i >= 0; i--) tree.insert(i);
+      expect(tree.toArray()).toEqual([0, 1, 2, 3, 4, 5]);
+    });
   });
 });

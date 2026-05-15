@@ -283,4 +283,9 @@ describe('FibonacciSearch4', () => {
     expect(searcher.isEmpty()).toBe(false);
     expect(searcher.length).toBe(3);
   });
+
+  it('should handle toArray', () => {
+    const searcher = new FibonacciSearch4([3, 1, 4, 1, 5]);
+    expect(searcher.toArray()).toEqual([3, 1, 4, 1, 5]);
+  });
 });
