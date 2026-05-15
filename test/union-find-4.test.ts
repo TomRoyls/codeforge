@@ -121,4 +121,58 @@ describe('UnionFind4', () => {
     expect(uf.find(0)).toBe(uf.find(5));
     expect(uf.componentSize(0)).toBe(6);
   });
+
+  it('connected returns true for same component', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    expect(uf.connected(0, 1)).toBe(true);
+    expect(uf.connected(2, 3)).toBe(true);
+    expect(uf.connected(0, 2)).toBe(false);
+    expect(uf.connected(0, 4)).toBe(false);
+  });
+
+  it('transitive connectivity', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(1, 2);
+    uf.union(2, 3);
+    expect(uf.connected(0, 3)).toBe(true);
+    expect(uf.connected(0, 4)).toBe(false);
+  });
+
+  it('self-union is no-op', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 0);
+    expect(uf.componentCount()).toBe(5);
+  });
+
+  it('repeated union of same pair', () => {
+    const uf = new UnionFind4(3);
+    uf.union(0, 1);
+    uf.union(0, 1);
+    uf.union(0, 1);
+    expect(uf.connected(0, 1)).toBe(true);
+    expect(uf.componentSize(0)).toBe(2);
+  });
+
+  it('single element', () => {
+    const uf = new UnionFind4(1);
+    expect(uf.find(0)).toBe(0);
+    expect(uf.componentSize(0)).toBe(1);
+    expect(uf.componentCount()).toBe(1);
+    expect(uf.connected(0, 0)).toBe(true);
+  });
+
+  it('all elements in one component', () => {
+    const uf = new UnionFind4(10);
+    for (let i = 1; i < 10; i++) {
+      uf.union(0, i);
+    }
+    expect(uf.componentCount()).toBe(1);
+    expect(uf.componentSize(0)).toBe(10);
+    for (let i = 0; i < 10; i++) {
+      expect(uf.connected(0, i)).toBe(true);
+    }
+  });
 });

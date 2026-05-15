@@ -120,4 +120,52 @@ describe('ConcurrentQueue3', () => {
     const queue = new ConcurrentQueue3<number>();
     expect(queue.peek()).toBe(undefined);
   });
+
+  it('should handle string items', async () => {
+    const queue = new ConcurrentQueue3<string>();
+    await queue.enqueue('hello');
+    await queue.enqueue('world');
+    expect(await queue.dequeue()).toBe('hello');
+    expect(await queue.dequeue()).toBe('world');
+  });
+
+  it('should handle object items', async () => {
+    const queue = new ConcurrentQueue3<{ id: number }>();
+    await queue.enqueue({ id: 1 });
+    await queue.enqueue({ id: 2 });
+    const item = await queue.dequeue();
+    expect(item!.id).toBe(1);
+  });
+
+  it('should handle enqueue after clear', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    await queue.enqueue(1);
+    await queue.enqueue(2);
+    queue.clear();
+    await queue.enqueue(3);
+    expect(queue.size).toBe(1);
+    expect(await queue.dequeue()).toBe(3);
+  });
+
+  it('should handle rapid enqueue/dequeue cycle', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    for (let i = 0; i < 100; i++) {
+      await queue.enqueue(i);
+      await queue.dequeue();
+    }
+    expect(queue.size).toBe(0);
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle single item lifecycle', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    await queue.enqueue(42);
+    expect(queue.size).toBe(1);
+    expect(queue.isEmpty()).toBe(false);
+    expect(queue.peek()).toBe(42);
+    expect(await queue.dequeue()).toBe(42);
+    expect(queue.size).toBe(0);
+    expect(queue.isEmpty()).toBe(true);
+    expect(queue.peek()).toBe(undefined);
+  });
 });

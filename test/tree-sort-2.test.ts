@@ -141,4 +141,31 @@ describe('TreeSort2 - edge cases', () => {
     const result = sorter.sort([1, 1, 1, 1, 2, 2, 2, 3, 3])
     expect(result).toEqual([1, 1, 1, 1, 2, 2, 2, 3, 3])
   })
+
+  test('custom comparator for descending sort', () => {
+    const sorter = new TreeSort2<number>((a, b) => b - a)
+    expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([5, 4, 3, 2, 1])
+  })
+
+  test('custom comparator for string sort', () => {
+    const sorter = new TreeSort2<string>((a, b) => a.localeCompare(b))
+    expect(sorter.sort(['banana', 'apple', 'cherry'])).toEqual(['apple', 'banana', 'cherry'])
+  })
+
+  test('handles negative numbers', () => {
+    const sorter = new TreeSort2<number>()
+    expect(sorter.sort([-3, -1, -2, 0, 2, 1])).toEqual([-3, -2, -1, 0, 1, 2])
+  })
+
+  test('preserves duplicates count', () => {
+    const sorter = new TreeSort2<number>()
+    const result = sorter.sort([5, 3, 5, 1, 3, 5])
+    expect(result).toEqual([1, 3, 3, 5, 5, 5])
+    expect(result.length).toBe(6)
+  })
+
+  test('single element array', () => {
+    const sorter = new TreeSort2<number>()
+    expect(sorter.sort([42])).toEqual([42])
+  })
 })
