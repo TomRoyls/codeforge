@@ -226,4 +226,39 @@ describe('ProbabilisticSet2', () => {
     expect(set.has('日本語')).toBe(true);
     expect(set.has('🎉')).toBe(true);
   });
+
+  it('should handle null and undefined stringified', () => {
+    const set = new ProbabilisticSet2<string | null | undefined>(100, 0.01);
+    set.add(null);
+    set.add(undefined);
+    expect(set.has(null)).toBe(true);
+    expect(set.has(undefined)).toBe(true);
+    expect(set.size).toBe(2);
+  });
+
+  it('should handle clear then add and verify', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    for (let i = 0; i < 20; i++) {
+      set.add(`item-${i}`);
+    }
+    set.clear();
+    expect(set.isEmpty()).toBe(true);
+    set.add('new-item');
+    expect(set.has('new-item')).toBe(true);
+    expect(set.size).toBe(1);
+  });
+
+  it('should have larger bitCount for lower false positive rate', () => {
+    const set1 = new ProbabilisticSet2<string>(100, 0.1);
+    const set2 = new ProbabilisticSet2<string>(100, 0.001);
+    expect(set2.bitCount()).toBeGreaterThan(set1.bitCount());
+  });
+
+  it('should handle single element correctly', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('only');
+    expect(set.has('only')).toBe(true);
+    expect(set.size).toBe(1);
+    expect(set.isEmpty()).toBe(false);
+  });
 });

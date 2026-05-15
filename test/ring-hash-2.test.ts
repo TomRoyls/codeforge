@@ -224,4 +224,37 @@ describe('RingHash2', () => {
     const final = ring.getNode('test-key');
     expect(final).toBe(baseline);
   });
+
+  it('should handle clear then re-add', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.clear();
+    expect(ring.size()).toBe(0);
+    ring.addNode('node3');
+    expect(ring.size()).toBe(100);
+    expect(ring.getNode('key')).toBe('node3');
+  });
+
+  it('should handle removing all nodes', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.removeNode('node1');
+    ring.removeNode('node2');
+    expect(ring.size()).toBe(0);
+    expect(ring.getNode('key')).toBeUndefined();
+  });
+
+  it('should handle very long node names', () => {
+    const longName = 'n'.repeat(1000);
+    ring.addNode(longName);
+    expect(ring.nodes()).toContain(longName);
+    expect(ring.getNode('key')).toBe(longName);
+  });
+
+  it('should handle zero virtual nodes', () => {
+    const zeroRing = new RingHash2(0);
+    zeroRing.addNode('node1');
+    expect(zeroRing.size()).toBe(0);
+    expect(zeroRing.getNode('key')).toBeUndefined();
+  });
 });

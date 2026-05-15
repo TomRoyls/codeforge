@@ -249,4 +249,49 @@ describe('SpatialHash2', () => {
       expect(hash.size).toBe(0);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle negative coordinates', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', -5, -5);
+      expect(hash.has('a')).toBe(true);
+      const result = hash.query(-5, -5, 2);
+      expect(result).toHaveLength(1);
+    });
+
+    it('should handle zero radius query', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      const result = hash.query(5, 5, 0);
+      expect(result).toHaveLength(1);
+    });
+
+    it('should handle large cell size', () => {
+      const hash = new SpatialHash2<number>(1000);
+      hash.insert('a', 5, 5);
+      hash.insert('b', 500, 500);
+      expect(hash.size).toBe(2);
+      const result = hash.query(5, 5, 10);
+      expect(result).toHaveLength(1);
+    });
+
+    it('should handle remove then re-insert', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      hash.remove('a');
+      hash.insert('a', 10, 10);
+      expect(hash.has('a')).toBe(true);
+      const result = hash.query(10, 10, 2);
+      expect(result).toHaveLength(1);
+    });
+
+    it('should handle update to same position', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      hash.update('a', 5, 5);
+      expect(hash.size).toBe(1);
+      const result = hash.query(5, 5, 2);
+      expect(result).toHaveLength(1);
+    });
+  });
 });

@@ -226,4 +226,39 @@ describe('KDTree3', () => {
     const result = tree.rangeSearch({x: 0, y: 0}, {x: 6, y: 6})
     expect(result.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('should handle range search on single point tree', () => {
+    const tree = new KDTree3([{x: 5, y: 5}])
+    const inside = tree.rangeSearch({x: 0, y: 0}, {x: 10, y: 10})
+    expect(inside).toHaveLength(1)
+    const outside = tree.rangeSearch({x: 6, y: 6}, {x: 10, y: 10})
+    expect(outside).toHaveLength(0)
+  })
+
+  it('should handle nearest neighbor for exact point', () => {
+    const tree = new KDTree3([
+      {x: 1, y: 1},
+      {x: 5, y: 5},
+      {x: 10, y: 10}
+    ])
+    expect(tree.nearestNeighbor({x: 5, y: 5})).toEqual({x: 5, y: 5})
+  })
+
+  it('should handle large dataset', () => {
+    const points = Array.from({length: 1000}, (_, i) => ({x: i % 50, y: Math.floor(i / 50)}))
+    const tree = new KDTree3(points)
+    expect(tree.size).toBe(1000)
+    const nearest = tree.nearestNeighbor({x: 25, y: 10})
+    expect(nearest).toBeDefined()
+  })
+
+  it('should handle kNearestNeighbors with k=1', () => {
+    const tree = new KDTree3([
+      {x: 0, y: 0},
+      {x: 10, y: 10}
+    ])
+    const neighbors = tree.kNearestNeighbors({x: 9, y: 9}, 1)
+    expect(neighbors).toHaveLength(1)
+    expect(neighbors[0]).toEqual({x: 10, y: 10})
+  })
 })
