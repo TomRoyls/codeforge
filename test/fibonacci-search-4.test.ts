@@ -288,4 +288,10 @@ describe('FibonacciSearch4', () => {
     const searcher = new FibonacciSearch4([3, 1, 4, 1, 5]);
     expect(searcher.toArray()).toEqual([3, 1, 4, 1, 5]);
   });
+
+  it('should handle empty array', () => {
+    const searcher = new FibonacciSearch4([]);
+    expect(searcher.isEmpty()).toBe(true);
+    expect(searcher.length).toBe(0);
+  });
 });

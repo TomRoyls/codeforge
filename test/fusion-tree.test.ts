@@ -276,5 +276,11 @@ describe('FusionTree', () => {
       for (let i = 5; i >= 0; i--) tree.insert(i);
       expect(tree.toArray()).toEqual([0, 1, 2, 3, 4, 5]);
     });
+
+    it('should handle isEmpty on new tree', () => {
+      expect(tree.isEmpty).toBe(true);
+      tree.insert(1);
+      expect(tree.isEmpty).toBe(false);
+    });
   });
 });

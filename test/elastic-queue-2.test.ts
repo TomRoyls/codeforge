@@ -282,4 +282,11 @@ describe('ElasticQueue2', () => {
     expect(queue.dequeue()).toBe(2);
     expect(queue.dequeue()).toBe(3);
   });
+
+  it('should handle isEmpty after draining', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.dequeue();
+    expect(queue.isEmpty()).toBe(true);
+  });
 });

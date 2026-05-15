@@ -321,5 +321,14 @@ describe('HashArray2', () => {
       expect(vals).toContain(1);
       expect(vals).toContain(2);
     });
+
+    it('should handle keys method', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const keys = map.keys();
+      expect(keys).toContain('a');
+      expect(keys).toContain('b');
+    });
   });
 });

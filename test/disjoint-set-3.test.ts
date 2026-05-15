@@ -352,4 +352,14 @@ describe('DisjointSet3', () => {
     ds.makeSet('x');
     expect(ds.find('x')).toBe('x');
   });
+
+  it('should handle multiple unions forming single component', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    ds.union('a', 'b');
+    ds.union('b', 'c');
+    expect(ds.find('a')).toBe(ds.find('c'));
+  });
 });

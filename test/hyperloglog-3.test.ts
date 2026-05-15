@@ -317,4 +317,14 @@ describe('HyperLogLog3', () => {
       expect(estimate).toBeLessThan(200)
     })
   })
+
+  it('should handle merge', () => {
+    const hll1 = new HyperLogLog3(12)
+    const hll2 = new HyperLogLog3(12)
+    for (let i = 0; i < 50; i++) hll1.add(`a-${i}`)
+    for (let i = 0; i < 50; i++) hll2.add(`b-${i}`)
+    hll1.merge(hll2)
+    const estimate = hll1.count()
+    expect(estimate).toBeGreaterThan(50)
+  })
 })

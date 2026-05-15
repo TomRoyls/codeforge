@@ -334,5 +334,13 @@ describe("GoldenRatioSearch", () => {
     expect(result.x).toBeCloseTo(3, 5);
     expect(result.value).toBeCloseTo(10, 5);
   });
+
+  it("finds minimum of convex function", () => {
+    const fn = (x: number) => (x - 2) * (x - 2) + 5;
+    const search = new GoldenRatioSearch(fn);
+    const result = search.findMinimum(0, 10);
+    expect(result.x).toBeCloseTo(2, 5);
+    expect(result.value).toBeCloseTo(5, 5);
+  });
 });
 });

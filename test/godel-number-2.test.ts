@@ -238,5 +238,11 @@ describe('GodelNumber2', () => {
       const decoded = GodelNumber2.decode(encoded);
       expect(decoded).toEqual(seq);
     });
+
+    it('should handle single element encode decode', () => {
+      const encoded = GodelNumber2.encode([5]);
+      const decoded = GodelNumber2.decode(encoded);
+      expect(decoded).toEqual([5]);
+    });
   });
 });
