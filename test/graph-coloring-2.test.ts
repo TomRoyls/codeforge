@@ -407,5 +407,12 @@ describe('GraphColoring2', () => {
       const result = graph.colorGreedy(adj);
       expect(result.size).toBe(0);
     });
+
+    it('handles single vertex', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', []]]);
+      const colored = graph.colorGreedy(adj);
+      expect(colored.get('A')).toBe(0);
+    });
   });
 });

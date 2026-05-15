@@ -384,4 +384,13 @@ describe('IntervalHeap3', () => {
     heap.insert(3);
     expect(heap.size).toBe(3);
   });
+
+  it('should handle extractMin', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(8);
+    expect(heap.extractMin()).toBe(3);
+    expect(heap.size).toBe(2);
+  });
 });

@@ -235,4 +235,9 @@ describe('FibonacciSearch', () => {
       expect(fs.rangeSearch(-75, 75)).toEqual([-50, -25, -10, 0, 10, 25, 50]);
     });
   });
+
+  it('should handle length property', () => {
+    const fs = new FibonacciSearch([10, 20, 30]);
+    expect(fs.n).toBe(3);
+  });
 });

@@ -282,5 +282,12 @@ describe('FusionTree', () => {
       tree.insert(1);
       expect(tree.isEmpty).toBe(false);
     });
+
+    it('should handle contains', () => {
+      tree.insert(5);
+      tree.insert(10);
+      expect(tree.has(5)).toBe(true);
+      expect(tree.has(99)).toBe(false);
+    });
   });
 });

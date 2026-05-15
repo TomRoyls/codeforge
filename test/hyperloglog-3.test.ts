@@ -327,4 +327,9 @@ describe('HyperLogLog3', () => {
     const estimate = hll1.count()
     expect(estimate).toBeGreaterThan(50)
   })
+
+  it('should handle empty count', () => {
+    const hll = new HyperLogLog3(12)
+    expect(hll.count()).toBe(0)
+  })
 })

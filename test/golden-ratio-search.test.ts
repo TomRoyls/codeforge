@@ -342,5 +342,11 @@ describe("GoldenRatioSearch", () => {
     expect(result.x).toBeCloseTo(2, 5);
     expect(result.value).toBeCloseTo(5, 5);
   });
+
+  it("getTimeComplexity returns string", () => {
+    const fn = (x: number) => x;
+    const search = new GoldenRatioSearch(fn);
+    expect(typeof search.getTimeComplexity()).toBe('string');
+  });
 });
 });

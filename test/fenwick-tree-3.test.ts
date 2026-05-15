@@ -311,4 +311,14 @@ describe('FenwickTree3 - Edge Cases', () => {
     ft.update(0, 42);
     expect(ft.rangeQuery(0, 0)).toBe(42);
   });
+
+  it('should handle get method', () => {
+    const ft = new FenwickTree3(3);
+    ft.update(0, 10);
+    ft.update(1, 20);
+    ft.update(2, 30);
+    expect(ft.get(0)).toBe(10);
+    expect(ft.get(1)).toBe(20);
+    expect(ft.get(2)).toBe(30);
+  });
 });

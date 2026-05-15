@@ -294,4 +294,10 @@ describe('FibonacciSearch4', () => {
     expect(searcher.isEmpty()).toBe(true);
     expect(searcher.length).toBe(0);
   });
+
+  it('should handle search on sorted array', () => {
+    const searcher = new FibonacciSearch4([1, 2, 3, 4, 5]);
+    expect(searcher.search(3)).toBe(2);
+    expect(searcher.search(99)).toBe(-1);
+  });
 });

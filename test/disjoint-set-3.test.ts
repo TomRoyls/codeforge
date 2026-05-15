@@ -362,4 +362,12 @@ describe('DisjointSet3', () => {
     ds.union('b', 'c');
     expect(ds.find('a')).toBe(ds.find('c'));
   });
+
+  it('should handle connected check', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.union('a', 'b');
+    expect(ds.connected('a', 'b')).toBe(true);
+  });
 });

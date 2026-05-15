@@ -330,5 +330,14 @@ describe('HashArray2', () => {
       expect(keys).toContain('a');
       expect(keys).toContain('b');
     });
+
+    it('should handle delete', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      expect(map.delete('a')).toBe(true);
+      expect(map.has('a')).toBe(false);
+      expect(map.size).toBe(1);
+    });
   });
 });

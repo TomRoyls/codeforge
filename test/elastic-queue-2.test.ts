@@ -289,4 +289,12 @@ describe('ElasticQueue2', () => {
     queue.dequeue();
     expect(queue.isEmpty()).toBe(true);
   });
+
+  it('should handle size tracking', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.size).toBe(0);
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.size).toBe(2);
+  });
 });

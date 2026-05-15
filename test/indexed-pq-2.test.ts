@@ -375,4 +375,12 @@ describe('IndexedPQ2', () => {
     expect(pq.contains(2)).toBe(false);
     expect(pq.size()).toBe(2);
   });
+
+  it('should handle updatePriority', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    pq.insert(2, 20);
+    pq.update(1, 25);
+    expect(pq.getPriority(1)).toBe(25);
+  });
 });
