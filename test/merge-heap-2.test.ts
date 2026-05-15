@@ -194,4 +194,75 @@ describe('MergeHeap2', () => {
       expect(heap.extractMin()!.value).toBe('c');
     });
   });
+
+  describe('additional edge cases', () => {
+    it('handles single element', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(42);
+      expect(heap.size).toBe(1);
+      expect(heap.peek()).toBe(42);
+      expect(heap.extractMin()).toBe(42);
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('handles duplicate values', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(5);
+      heap.insert(5);
+      heap.insert(5);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(5);
+    });
+
+    it('merge then extract maintains order', () => {
+      const h1 = new MergeHeap2<number>();
+      h1.insert(10);
+      h1.insert(30);
+
+      const h2 = new MergeHeap2<number>();
+      h2.insert(20);
+      h2.insert(40);
+
+      h1.merge(h2);
+      expect(h1.extractMin()).toBe(10);
+      expect(h1.extractMin()).toBe(20);
+      expect(h1.extractMin()).toBe(30);
+      expect(h1.extractMin()).toBe(40);
+    });
+
+    it('clear then reuse', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(1);
+      heap.insert(2);
+      heap.clear();
+      expect(heap.isEmpty()).toBe(true);
+      heap.insert(10);
+      heap.insert(5);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(10);
+    });
+
+    it('handles negative numbers', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(-5);
+      heap.insert(3);
+      heap.insert(-10);
+      heap.insert(0);
+      expect(heap.extractMin()).toBe(-10);
+      expect(heap.extractMin()).toBe(-5);
+      expect(heap.extractMin()).toBe(0);
+      expect(heap.extractMin()).toBe(3);
+    });
+
+    it('handles large number of elements', () => {
+      const heap = new MergeHeap2<number>();
+      for (let i = 100; i >= 0; i--) {
+        heap.insert(i);
+      }
+      for (let i = 0; i <= 100; i++) {
+        expect(heap.extractMin()).toBe(i);
+      }
+    });
+  });
 });

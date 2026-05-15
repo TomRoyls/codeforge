@@ -146,4 +146,63 @@ describe('ThrottleQueue2', () => {
     expect(queue.dequeue()).toBe(obj1);
     expect(queue.dequeue()).toBe(obj2);
   });
+
+  it('should handle peek at front item', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    expect(queue.dequeue()).toBeUndefined();
+    queue.enqueue(10);
+    queue.enqueue(20);
+    expect(queue.dequeue()).toBe(10);
+    expect(queue.dequeue()).toBe(20);
+  });
+
+  it('should handle multiple clear cycles', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(1);
+    queue.clear();
+    queue.enqueue(2);
+    queue.clear();
+    queue.enqueue(3);
+    expect(queue.size).toBe(1);
+    expect(queue.dequeue()).toBe(3);
+  });
+
+  it('should process items sequentially with delay', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1, delayMs: 20 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+
+    const r1 = await queue.processNext();
+    const r2 = await queue.processNext();
+    expect(r1).toBe(1);
+    expect(r2).toBe(2);
+  });
+
+  it('should respect maxConcurrent of 3', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    queue.enqueue(4);
+
+    expect(await queue.processNext()).toBe(1);
+    expect(await queue.processNext()).toBe(2);
+    expect(await queue.processNext()).toBe(3);
+    expect(await queue.processNext()).toBe(4);
+    expect(await queue.processNext()).toBeUndefined();
+  });
+
+  it('should handle enqueue-dequeue-interleave pattern', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 5 });
+    queue.enqueue(1);
+    expect(queue.dequeue()).toBe(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(queue.dequeue()).toBe(2);
+    queue.enqueue(4);
+    expect(queue.size).toBe(2);
+    expect(queue.dequeue()).toBe(3);
+    expect(queue.dequeue()).toBe(4);
+    expect(queue.isEmpty()).toBe(true);
+  });
 });
