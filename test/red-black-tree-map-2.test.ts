@@ -165,4 +165,37 @@ describe('RedBlackTreeMap2', () => {
     map.set('c', 3)
     expect(map.keys()).toEqual(['c', 'b', 'a'])
   })
+
+  it('should clear all entries', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.clear()
+    expect(map.size).toBe(0)
+    expect(map.get(1)).toBeUndefined()
+  })
+
+  it('should return correct values', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.values()).toEqual(['a', 'b', 'c'])
+  })
+
+  it('should update value for existing key', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'old')
+    map.set(1, 'new')
+    expect(map.get(1)).toBe('new')
+    expect(map.size).toBe(1)
+  })
+
+  it('should handle delete of non-existent key', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    expect(map.delete(99)).toBe(false)
+    expect(map.size).toBe(1)
+  })
 })
