@@ -279,4 +279,13 @@ describe('UnionFind4', () => {
     expect(uf.componentCount()).toBe(1);
     expect(uf.connected(0, 4)).toBe(true);
   });
+
+  it('should handle initial state', () => {
+    const uf = new UnionFind4(5);
+    expect(uf.componentCount()).toBe(5);
+    for (let i = 0; i < 5; i++) {
+      expect(uf.find(i)).toBe(i);
+      expect(uf.componentSize(i)).toBe(1);
+    }
+  });
 });

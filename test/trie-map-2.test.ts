@@ -266,5 +266,12 @@ describe('TrieMap2', () => {
       expect(trie.hasPrefix('hel')).toBe(true);
       expect(trie.hasPrefix('xyz')).toBe(false);
     });
+
+    it('should handle startsWith same as keysWithPrefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('apple', 1);
+      trie.set('application', 2);
+      expect(trie.startsWith('app')).toEqual(['apple', 'application']);
+    });
   });
 });
