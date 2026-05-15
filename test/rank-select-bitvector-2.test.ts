@@ -228,4 +228,28 @@ describe('RankSelectBitvector2', () => {
     const bv = new RankSelectBitvector2([true, false, true, false, true]);
     expect(bv.rank0(5)).toBe(2);
   });
+
+  it('handles toArray round-trip', async () => {
+    const bits = [true, false, true, true, false];
+    const bv = new RankSelectBitvector2(bits);
+    expect(bv.toArray()).toEqual(bits);
+  });
+
+  it('handles countZeros', async () => {
+    const bv = new RankSelectBitvector2([true, false, true, false]);
+    expect(bv.countZeros()).toBe(2);
+    expect(bv.countOnes()).toBe(2);
+  });
+
+  it('handles isEmpty after construction from array', async () => {
+    const bv = new RankSelectBitvector2([false, false, false]);
+    expect(bv.isEmpty()).toBe(true);
+  });
+
+  it('handles select1 for first and last positions', async () => {
+    const bv = new RankSelectBitvector2([true, false, false, true, true]);
+    expect(bv.select1(0)).toBe(0);
+    expect(bv.select1(1)).toBe(3);
+    expect(bv.select1(2)).toBe(4);
+  });
 });

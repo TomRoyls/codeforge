@@ -243,4 +243,37 @@ describe('RedBlackTreeMap2', () => {
     const entries = map.toArray()
     expect(entries).toEqual([[1, 'a'], [3, 'c'], [4, 'd']])
   })
+
+  it('should handle update existing key', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(1, 'b')
+    expect(map.get(1)).toBe('b')
+    expect(map.size).toBe(1)
+  })
+
+  it('should handle forEach iteration', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const result: [number, string][] = []
+    map.forEach((k, v) => result.push([k, v]))
+    expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
+  })
+
+  it('should handle values in order', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.values()).toEqual(['a', 'b', 'c'])
+  })
+
+  it('should handle has for missing key', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    expect(map.has(1)).toBe(true)
+    expect(map.has(2)).toBe(false)
+  })
 })

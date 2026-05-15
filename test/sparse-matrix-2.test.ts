@@ -260,4 +260,38 @@ describe('SparseMatrix2', () => {
     expect(matrix.get(1, 1)).toBe(10);
     expect(matrix.nonZeroCount()).toBe(1);
   });
+
+  it('should handle forEach on empty matrix', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    expect(matrix.nonZeroCount()).toBe(0);
+    expect(matrix.rows()).toBe(3);
+    expect(matrix.cols()).toBe(3);
+  });
+
+  it('should handle get on unset positions', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    expect(matrix.get(0, 0)).toBe(0);
+    expect(matrix.get(2, 2)).toBe(0);
+  });
+
+  it('should handle transpose of empty matrix', () => {
+    const matrix = new SparseMatrix2(3, 5);
+    const t = matrix.transpose();
+    expect(t.rows()).toBe(5);
+    expect(t.cols()).toBe(3);
+    expect(t.nonZeroCount()).toBe(0);
+  });
+
+  it('should handle multiplyVector with identity-like matrix', () => {
+    const matrix = new SparseMatrix2(2, 2);
+    matrix.set(0, 0, 1);
+    matrix.set(1, 1, 1);
+    const result = matrix.multiplyVector([3, 7]);
+    expect(result).toEqual([3, 7]);
+  });
+
+  it('should handle density on zero matrix', () => {
+    const matrix = new SparseMatrix2(5, 5);
+    expect(matrix.density()).toBe(0);
+  });
 });
