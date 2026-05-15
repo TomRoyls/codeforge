@@ -194,4 +194,43 @@ describe('TrieMap2', () => {
       expect(trie.get('world')).toBe(2);
     });
   });
+
+  describe('edge cases', () => {
+    it('should handle empty string key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('', 42);
+      expect(trie.get('')).toBe(42);
+      expect(trie.has('')).toBe(true);
+    });
+
+    it('should handle prefix search', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('car', 1);
+      trie.set('card', 2);
+      trie.set('care', 3);
+      trie.set('careful', 4);
+      expect(trie.has('car')).toBe(true);
+      expect(trie.has('card')).toBe(true);
+      expect(trie.has('care')).toBe(true);
+      expect(trie.has('careful')).toBe(true);
+      expect(trie.has('cat')).toBe(false);
+    });
+
+    it('should handle update existing key', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('key', 1);
+      trie.set('key', 2);
+      expect(trie.get('key')).toBe(2);
+      expect(trie.size).toBe(1);
+    });
+
+    it('should handle numeric string keys', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('123', 1);
+      trie.set('124', 2);
+      expect(trie.get('123')).toBe(1);
+      expect(trie.get('124')).toBe(2);
+      expect(trie.get('12')).toBeUndefined();
+    });
+  });
 });
