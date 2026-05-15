@@ -406,5 +406,13 @@ describe('LinkedHashSet', () => {
       expect(set.has(1)).toBe(true);
       expect(set.has(99)).toBe(false);
     });
+
+    it('should handle toArray', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      expect(set.toArray()).toEqual([10, 20, 30]);
+    });
   });
 });

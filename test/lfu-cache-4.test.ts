@@ -305,5 +305,14 @@ describe('LFUCache4', () => {
       const cache = new LFUCache4(5)
       expect(cache.has('missing')).toBe(false)
     })
+
+    it('should handle get on present key after multiple sets', () => {
+      const cache = new LFUCache4(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      expect(cache.get('a')).toBe(1)
+      expect(cache.get('c')).toBe(3)
+    })
   })
 })
