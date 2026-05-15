@@ -38,7 +38,7 @@ describe('ConcurrentSet', () => {
       expect(set.size).toBe(2);
     });
 
-    it.skip('should work with custom compare function - requires custom hash for objects', () => {
+    it('should work with custom compare function - requires custom hash for objects', () => {
       const set = new ConcurrentSet<{ id: number }>({
         hash: (v) => v.id.toString(),
         compare: (a, b) => a.id - b.id,

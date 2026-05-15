@@ -276,18 +276,17 @@ describe('PatienceSort3', () => {
       expect(sorter.getLongestIncreasingSubsequence([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
     })
 
-    it.skip('should find LIS for simple unsorted array', () => {
+    it('should find LIS for simple unsorted array', () => {
       const sorter = new PatienceSort3<number>()
       const lis = sorter.getLongestIncreasingSubsequence([3, 1, 4, 2, 5])
       expect(lis.length).toBe(3)
       expect(lis).toContain(1)
-      expect(lis).toContain(4)
       expect(lis).toContain(5)
     })
 
-    it.skip('should find LIS for array with all equal elements', () => {
+    it('should find LIS for array with all equal elements', () => {
       const sorter = new PatienceSort3<number>()
-      expect(sorter.getLongestIncreasingSubsequence([5, 5, 5, 5])).toEqual([5, 5, 5, 5])
+      expect(sorter.getLongestIncreasingSubsequence([5, 5, 5, 5])).toEqual([5])
     })
 
     it('should find LIS for reverse sorted array', () => {
