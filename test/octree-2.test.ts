@@ -296,4 +296,9 @@ describe('Octree2', () => {
     const results = tree.queryRange({ x: 50, y: 50, z: 50, size: 1 });
     expect(results.length).toBe(3);
   });
+
+  it('should handle contains on empty tree', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    expect(tree.contains(50, 50, 50)).toBe(false);
+  });
 });

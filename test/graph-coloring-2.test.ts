@@ -365,5 +365,12 @@ describe('GraphColoring2', () => {
       const result = graph.colorGreedy(adj);
       expect(result.size).toBe(3);
     });
+
+    it('validates correct coloring', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+      const coloring = new Map<string, number>([['A', 0], ['B', 1]]);
+      expect(graph.isValid(adj, coloring)).toBe(true);
+    });
   });
 });

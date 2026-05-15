@@ -349,4 +349,12 @@ describe('SplayTreeMap2', () => {
     }
     expect(map.size).toBe(50);
   });
+
+  it('should handle clear then isEmpty', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.clear();
+    expect(map.isEmpty()).toBe(true);
+    expect(map.size).toBe(0);
+  });
 });
