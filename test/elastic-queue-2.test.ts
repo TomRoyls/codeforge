@@ -124,4 +124,43 @@ describe('ElasticQueue2', () => {
     expect(queue.size).toBe(3);
     expect(queue.capacity()).toBe(5);
   });
+
+  it('should enqueue after dequeue frees space', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 2 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.isFull()).toBe(true);
+    queue.dequeue();
+    expect(queue.isFull()).toBe(false);
+    queue.enqueue(3);
+    expect(queue.size).toBe(2);
+    expect(queue.dequeue()).toBe(2);
+    expect(queue.dequeue()).toBe(3);
+  });
+
+  it('should handle clear then reuse', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 3 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.clear();
+    expect(queue.isFull()).toBe(false);
+    queue.enqueue(10);
+    expect(queue.peek()).toBe(10);
+  });
+
+  it('should handle objects', () => {
+    const queue = new ElasticQueue2<{ id: number }>();
+    const obj = { id: 42 };
+    queue.enqueue(obj);
+    expect(queue.dequeue()).toBe(obj);
+  });
+
+  it('should handle alternating enqueue dequeue', () => {
+    const queue = new ElasticQueue2<number>();
+    for (let i = 0; i < 50; i++) {
+      queue.enqueue(i);
+      expect(queue.dequeue()).toBe(i);
+    }
+    expect(queue.isEmpty()).toBe(true);
+  });
 });
