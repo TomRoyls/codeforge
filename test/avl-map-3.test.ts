@@ -227,4 +227,37 @@ describe('AVLMap3', () => {
     expect(map.has('apple')).toBe(true);
     expect(map.has('date')).toBe(false);
   });
+
+  it('should handle update existing key', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(1, 'original');
+    map.set(1, 'updated');
+    expect(map.get(1)).toBe('updated');
+    expect(map.size).toBe(1);
+  });
+
+  it('should handle forEach traversal', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const keys: number[] = [];
+    map.forEach((key) => keys.push(key));
+    expect(keys).toEqual([1, 2, 3]);
+  });
+
+  it('should handle delete non-existent key', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('should return correct entries', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(2, 'b');
+    map.set(1, 'a');
+    map.set(3, 'c');
+    expect(map.entries()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);
+  });
 });
