@@ -228,5 +228,10 @@ describe("SparseTable", () => {
       expect(st.rangeMinQuery(0, 1)).toBe(10);
       expect(st.rangeMaxQuery(0, 1)).toBe(20);
     });
+
+    it("should report correct size", () => {
+      const st = new SparseTable([5, 3, 8, 1]);
+      expect(st.getSize()).toBe(4);
+    });
   });
 });

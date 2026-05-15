@@ -273,5 +273,13 @@ describe('TrieMap2', () => {
       trie.set('application', 2);
       expect(trie.startsWith('app')).toEqual(['apple', 'application']);
     });
+
+    it('should handle delete then has', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.delete('hello')).toBe(true);
+      expect(trie.has('hello')).toBe(false);
+      expect(trie.size).toBe(0);
+    });
   });
 });

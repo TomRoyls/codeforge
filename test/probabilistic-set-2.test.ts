@@ -276,4 +276,13 @@ describe('ProbabilisticSet2', () => {
     const set = new ProbabilisticSet2<string>(100, 0.01);
     expect(set.isEmpty()).toBe(true);
   });
+
+  it('should clear all elements', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('a');
+    set.add('b');
+    set.clear();
+    expect(set.size).toBe(0);
+    expect(set.isEmpty()).toBe(true);
+  });
 });

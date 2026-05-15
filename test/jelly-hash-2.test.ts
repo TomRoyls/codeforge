@@ -333,5 +333,15 @@ describe('JellyHash2', () => {
       expect(map.has('x')).toBe(false);
       expect(map.size).toBe(0);
     });
+
+    it('should return correct entries', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const entries = map.entries();
+      expect(entries.length).toBe(2);
+      expect(entries.some(([k, v]) => k === 'a' && v === 1)).toBe(true);
+      expect(entries.some(([k, v]) => k === 'b' && v === 2)).toBe(true);
+    });
   });
 });

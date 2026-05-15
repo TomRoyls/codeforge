@@ -287,4 +287,15 @@ describe('SegmentTreeMap2', () => {
     const tree = new SegmentTreeMap2(5)
     expect(tree.size).toBe(5)
   })
+
+  it('should handle updateRange', async () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 1)
+    tree.set(1, 2)
+    tree.set(2, 3)
+    tree.updateRange(0, 2, 10)
+    expect(tree.get(0)).toBe(11)
+    expect(tree.get(1)).toBe(12)
+    expect(tree.get(2)).toBe(13)
+  })
 })

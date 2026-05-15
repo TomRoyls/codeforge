@@ -288,4 +288,12 @@ describe('UnionFind4', () => {
       expect(uf.componentSize(i)).toBe(1);
     }
   });
+
+  it('should handle count as total elements not components', () => {
+    const uf = new UnionFind4(4);
+    expect(uf.count()).toBe(4);
+    uf.union(0, 1);
+    expect(uf.count()).toBe(4);
+    expect(uf.componentCount()).toBe(3);
+  });
 });

@@ -301,4 +301,12 @@ describe('Octree2', () => {
     const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
     expect(tree.contains(50, 50, 50)).toBe(false);
   });
+
+  it('should query boundary region', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(0, 0, 0, 1);
+    tree.insert(99, 99, 99, 2);
+    const results = tree.queryRange({ x: 0, y: 0, z: 0, size: 100 });
+    expect(results.length).toBe(2);
+  });
 });

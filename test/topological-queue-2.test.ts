@@ -349,4 +349,14 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('C', 'A');
     expect(ts.hasCycle()).toBe(true);
   });
+
+  it('should report inDegree and outDegree', () => {
+    const ts = new TopologicalQueue2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('A', 'C');
+    expect(ts.inDegree('A')).toBe(0);
+    expect(ts.outDegree('A')).toBe(2);
+    expect(ts.inDegree('B')).toBe(1);
+    expect(ts.outDegree('B')).toBe(0);
+  });
 });

@@ -258,4 +258,14 @@ describe('CountMinSketch3', () => {
     cms.reset();
     expect(cms.estimate('a')).toBe(0);
   });
+
+  it('should merge non-overlapping sketches', () => {
+    const a = new CountMinSketch3();
+    const b = new CountMinSketch3();
+    a.update('x', 5);
+    b.update('y', 3);
+    a.merge(b);
+    expect(a.estimate('x')).toBeGreaterThanOrEqual(5);
+    expect(a.estimate('y')).toBeGreaterThanOrEqual(3);
+  });
 });

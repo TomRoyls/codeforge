@@ -262,5 +262,11 @@ describe('Matrix2', () => {
       const result = a.multiply(id);
       expect(result.toArray()).toEqual([[1, 2], [3, 4]]);
     });
+
+    it('should transpose 2x3 matrix to 3x2', () => {
+      const m = Matrix2.fromArray([[1, 2, 3], [4, 5, 6]]);
+      const t = m.transpose();
+      expect(t.toArray()).toEqual([[1, 4], [2, 5], [3, 6]]);
+    });
   });
 });

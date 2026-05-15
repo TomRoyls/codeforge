@@ -272,4 +272,12 @@ describe('RingHash2', () => {
     const second = ring.getNode('test-key');
     expect(first).toBe(second);
   });
+
+  it('should handle clear', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.clear();
+    expect(ring.size()).toBe(0);
+    expect(ring.nodes()).toEqual([]);
+  });
 });

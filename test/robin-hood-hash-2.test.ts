@@ -235,4 +235,9 @@ describe('RobinHoodHash2', () => {
     expect(hash.get('a')).toBe(1);
     expect(hash.get('b')).toBe(2);
   });
+
+  it('should report capacity', () => {
+    expect(hash.capacity()).toBeGreaterThan(0);
+    expect(hash.capacity()).toBeGreaterThanOrEqual(hash.size);
+  });
 });

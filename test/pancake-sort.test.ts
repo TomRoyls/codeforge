@@ -231,4 +231,12 @@ describe('PancakeSort', () => {
       expect(sorter.getTimeComplexity()).toBe('O(n²)');
     });
   });
+
+  describe('getFlipCount()', () => {
+    it('should track flip count during sort', () => {
+      const sorter = new PancakeSort<number>([5, 3, 1, 4, 2]);
+      sorter.sort();
+      expect(sorter.getFlipCount()).toBeGreaterThan(0);
+    });
+  });
 });

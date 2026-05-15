@@ -287,4 +287,13 @@ describe('WindowHeap2', () => {
     heap.push(7);
     expect(heap.getAverage()).toBe(7);
   });
+
+  it('should handle clear', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(1);
+    heap.push(2);
+    heap.clear();
+    expect(heap.size).toBe(0);
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

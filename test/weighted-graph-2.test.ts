@@ -259,5 +259,13 @@ describe('WeightedGraph2', () => {
       expect(graph.vertexCount()).toBe(0);
       expect(graph.edgeCount()).toBe(0);
     });
+
+    it('should list vertices', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addVertex('C');
+      expect(graph.vertices()).toEqual(['A', 'B', 'C']);
+    });
   });
 });

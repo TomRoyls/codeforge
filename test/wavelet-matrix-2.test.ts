@@ -315,4 +315,11 @@ describe('WaveletMatrix2', () => {
     expect(wm.access(1)).toBe(20);
     expect(wm.access(2)).toBe(30);
   });
+
+  it('should handle rank', async () => {
+    const data = [1, 2, 1, 3, 1];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.rank(1, 5)).toBe(3);
+    expect(wm.rank(2, 5)).toBe(1);
+  });
 });

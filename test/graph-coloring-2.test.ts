@@ -372,5 +372,11 @@ describe('GraphColoring2', () => {
       const coloring = new Map<string, number>([['A', 0], ['B', 1]]);
       expect(graph.isValid(adj, coloring)).toBe(true);
     });
+
+    it('chromatic number for triangle graph is 3', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B', 'C']], ['B', ['A', 'C']], ['C', ['A', 'B']]]);
+      expect(graph.chromaticNumber(adj)).toBe(3);
+    });
   });
 });

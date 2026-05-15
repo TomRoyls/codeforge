@@ -224,4 +224,12 @@ describe('ShellSort', () => {
       expect(sorter.getTimeComplexity()).toBe('O(n^(3/2))');
     });
   });
+
+  describe('getSwaps()', () => {
+    it('should track swaps during sort', () => {
+      const sorter = new ShellSort<number>([5, 3, 1, 4, 2]);
+      sorter.sort();
+      expect(sorter.getSwaps()).toBeGreaterThan(0);
+    });
+  });
 });

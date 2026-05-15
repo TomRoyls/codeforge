@@ -357,4 +357,13 @@ describe('SplayTreeMap2', () => {
     expect(map.isEmpty()).toBe(true);
     expect(map.size).toBe(0);
   });
+
+  it('should return min and max keys', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(5, 'e');
+    map.set(2, 'b');
+    map.set(8, 'h');
+    expect(map.min()).toBe(2);
+    expect(map.max()).toBe(8);
+  });
 });

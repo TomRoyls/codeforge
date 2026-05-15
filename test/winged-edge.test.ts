@@ -398,4 +398,9 @@ describe('WingedEdgeMesh', () => {
     const v = mesh.addVertex(5, 5, 5);
     expect(mesh.getVertexEdges(v)).toEqual([]);
   });
+
+  it('should report getTimeComplexity', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(typeof mesh.getTimeComplexity()).toBe('string');
+  });
 });

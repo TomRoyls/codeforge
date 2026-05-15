@@ -333,4 +333,13 @@ describe('RadixMap2', () => {
     expect(map.get(1)).toBe('new');
     expect(map.size).toBe(1);
   });
+
+  it('should return min and max keys', () => {
+    const map = new RadixMap2<string>();
+    map.set(5, 'e');
+    map.set(2, 'b');
+    map.set(8, 'h');
+    expect(map.min()).toBe(2);
+    expect(map.max()).toBe(8);
+  });
 });

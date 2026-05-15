@@ -282,4 +282,14 @@ describe('RedBlackTreeMap2', () => {
     expect(map.delete(99)).toBe(false)
     expect(map.size).toBe(0)
   })
+
+  it('should iterate with forEach in order', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const result: string[] = []
+    map.forEach((key, value) => result.push(value))
+    expect(result).toEqual(['a', 'b', 'c'])
+  })
 })

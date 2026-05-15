@@ -364,4 +364,14 @@ describe('ProbabilityMap2', () => {
     expect(map.getWeight('b')).toBe(20);
     expect(map.getWeight('c')).toBeUndefined();
   });
+
+  it('should handle entries', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+    expect(entries.some(([k]) => k === 'a')).toBe(true);
+    expect(entries.some(([k]) => k === 'b')).toBe(true);
+  });
 });
