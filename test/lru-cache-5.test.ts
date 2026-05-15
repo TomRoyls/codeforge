@@ -189,4 +189,111 @@ describe('LRUCache5', () => {
       expect(() => new LRUCache5<number, number>(-1)).toThrow('Capacity must be positive');
     });
   });
+
+  describe('string keys', () => {
+    it('should work with string keys', () => {
+      const cache = new LRUCache5<string, number>(3);
+      cache.set('a', 1);
+      cache.set('b', 2);
+      cache.set('c', 3);
+      expect(cache.get('a')).toBe(1);
+      expect(cache.get('b')).toBe(2);
+      expect(cache.get('c')).toBe(3);
+    });
+
+    it('should evict string keys correctly', () => {
+      const cache = new LRUCache5<string, number>(2);
+      cache.set('x', 10);
+      cache.set('y', 20);
+      cache.set('z', 30);
+      expect(cache.get('x')).toBeUndefined();
+      expect(cache.get('y')).toBe(20);
+    });
+  });
+
+  describe('forEach', () => {
+    it('should iterate over entries', () => {
+      const cache = new LRUCache5<number, number>(3);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.set(3, 30);
+      const entries: Array<[number, number]> = cache.entries();
+      expect(entries).toEqual([[3, 30], [2, 20], [1, 10]]);
+    });
+  });
+
+  describe('clear and reuse', () => {
+    it('should allow set after clear', () => {
+      const cache = new LRUCache5<number, number>(2);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.clear();
+      expect(cache.size).toBe(0);
+      cache.set(3, 30);
+      expect(cache.get(3)).toBe(30);
+      expect(cache.size).toBe(1);
+    });
+  });
+
+  describe('delete middle element', () => {
+    it('should delete middle element and maintain order', () => {
+      const cache = new LRUCache5<number, number>(5);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.set(3, 30);
+      cache.set(4, 40);
+      cache.delete(2);
+      expect(cache.get(2)).toBeUndefined();
+      expect(cache.size).toBe(3);
+      expect(cache.keys()).toEqual([4, 3, 1]);
+    });
+  });
+
+  describe('repeated set on same key', () => {
+    it('should not grow size on repeated set', () => {
+      const cache = new LRUCache5<number, number>(3);
+      cache.set(1, 10);
+      cache.set(1, 20);
+      cache.set(1, 30);
+      expect(cache.size).toBe(1);
+      expect(cache.get(1)).toBe(30);
+    });
+  });
+
+  describe('edge case: capacity 1', () => {
+    it('should only hold one element', () => {
+      const cache = new LRUCache5<number, number>(1);
+      cache.set(1, 10);
+      expect(cache.get(1)).toBe(10);
+      cache.set(2, 20);
+      expect(cache.get(1)).toBeUndefined();
+      expect(cache.get(2)).toBe(20);
+      expect(cache.size).toBe(1);
+    });
+  });
+
+  describe('has after eviction', () => {
+    it('should return false for evicted key', () => {
+      const cache = new LRUCache5<number, number>(2);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.set(3, 30);
+      expect(cache.has(1)).toBe(false);
+      expect(cache.has(2)).toBe(true);
+      expect(cache.has(3)).toBe(true);
+    });
+  });
+
+  describe('values after mixed ops', () => {
+    it('should return correct values after get/update/delete', () => {
+      const cache = new LRUCache5<number, number>(4);
+      cache.set(1, 10);
+      cache.set(2, 20);
+      cache.set(3, 30);
+      cache.get(1);
+      cache.set(4, 40);
+      cache.delete(2);
+      expect(cache.values()).toEqual([40, 10, 30]);
+    });
+  });
 });

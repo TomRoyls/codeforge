@@ -292,4 +292,78 @@ describe('WingedEdgeMesh', () => {
 
     expect(faces).toHaveLength(2);
   });
+
+  it('should remove face and re-add it', () => {
+    const mesh = new WingedEdgeMesh();
+
+    const v0 = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(0, 1, 0);
+
+    const e0 = mesh.addEdge(v0, v1);
+    const e1 = mesh.addEdge(v1, v2);
+    const e2 = mesh.addEdge(v2, v0);
+
+    const f0 = mesh.addFace([e0, e1, e2]);
+    mesh.removeFace(f0);
+    expect(mesh.getFaceCount()).toBe(0);
+
+    const f1 = mesh.addFace([e0, e1, e2]);
+    expect(mesh.getFaceCount()).toBe(1);
+    expect(mesh.getEdgeFaces(e0)).toContain(f1);
+  });
+
+  it('should return empty array for getVertexEdges of non-existent vertex', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(mesh.getVertexEdges(999)).toEqual([]);
+  });
+
+  it('should return empty array for getFaceEdges of non-existent face', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(mesh.getFaceEdges(999)).toEqual([]);
+  });
+
+  it('should return empty array for getEdgeFaces of non-existent edge', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(mesh.getEdgeFaces(999)).toEqual([]);
+  });
+
+  it('should return empty array for getAdjacentEdges of non-existent edge', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(mesh.getAdjacentEdges(999)).toEqual([]);
+  });
+
+  it('should handle mesh with isolated edges (no faces)', () => {
+    const mesh = new WingedEdgeMesh();
+
+    const v0 = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(2, 0, 0);
+
+    mesh.addEdge(v0, v1);
+    mesh.addEdge(v1, v2);
+
+    expect(mesh.getVertexCount()).toBe(3);
+    expect(mesh.getEdgeCount()).toBe(2);
+    expect(mesh.getFaceCount()).toBe(0);
+  });
+
+  it('should handle vertex with multiple edges', () => {
+    const mesh = new WingedEdgeMesh();
+
+    const center = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(0, 1, 0);
+    const v3 = mesh.addVertex(-1, 0, 0);
+
+    const e0 = mesh.addEdge(center, v1);
+    const e1 = mesh.addEdge(center, v2);
+    const e2 = mesh.addEdge(center, v3);
+
+    const edges = mesh.getVertexEdges(center);
+    expect(edges).toHaveLength(3);
+    expect(edges).toContain(e0);
+    expect(edges).toContain(e1);
+    expect(edges).toContain(e2);
+  });
 });

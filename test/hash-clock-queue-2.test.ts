@@ -198,4 +198,42 @@ describe('HashClock2', () => {
     
     expect(clock.current()).toBe(lastHash);
   });
+
+  it('should handle isEqual after merge', async () => {
+    const clock = new HashClock2('node1');
+    clock.tick();
+    clock.merge('ext-hash');
+    expect(clock.isEqual('ext-hash')).toBe(true);
+    const nextTick = clock.tick();
+    expect(clock.isEqual(nextTick)).toBe(true);
+    expect(clock.isEqual('ext-hash')).toBe(false);
+  });
+
+  it('should merge empty string as valid hash', async () => {
+    const clock = new HashClock2('node1');
+    clock.tick();
+    const result = clock.merge('');
+    expect(result).toBe(true);
+    expect(clock.length).toBe(2);
+  });
+
+  it('should handle large number of ticks', async () => {
+    const clock = new HashClock2('node1');
+    let lastHash = '';
+    for (let i = 0; i < 100; i++) {
+      lastHash = clock.tick();
+    }
+    expect(clock.length).toBe(100);
+    expect(clock.current()).toBe(lastHash);
+    expect(clock.getHistory().length).toBe(100);
+  });
+
+  it('should happenBefore includes current hash', async () => {
+    const clock = new HashClock2('node1');
+    const hash1 = clock.tick();
+    const hash2 = clock.tick();
+    expect(clock.happenedBefore(hash1)).toBe(true);
+    expect(clock.happenedBefore(hash2)).toBe(true);
+    expect(clock.happenedBefore('non-existent')).toBe(false);
+  });
 });
