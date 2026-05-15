@@ -252,4 +252,9 @@ describe('RankSelectBitvector2', () => {
     expect(bv.select1(1)).toBe(3);
     expect(bv.select1(2)).toBe(4);
   });
+
+  it('handles select0 for first zero position', async () => {
+    const bv = new RankSelectBitvector2([true, false, true]);
+    expect(bv.select0(0)).toBe(1);
+  });
 });

@@ -276,4 +276,10 @@ describe('RedBlackTreeMap2', () => {
     expect(map.has(1)).toBe(true)
     expect(map.has(2)).toBe(false)
   })
+
+  it('should handle delete of non-existent key', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    expect(map.delete(99)).toBe(false)
+    expect(map.size).toBe(0)
+  })
 })

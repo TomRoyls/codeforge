@@ -307,4 +307,12 @@ describe('WaveletMatrix2', () => {
     const wm = new WaveletMatrix2(data);
     expect(wm.rangeFreq(0, 5, 2, 4)).toBe(3);
   });
+
+  it('should handle access on each index', async () => {
+    const data = [10, 20, 30];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.access(0)).toBe(10);
+    expect(wm.access(1)).toBe(20);
+    expect(wm.access(2)).toBe(30);
+  });
 });
