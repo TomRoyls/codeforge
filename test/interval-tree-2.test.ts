@@ -199,4 +199,39 @@ describe('IntervalTree2', () => {
     const result = tree.search(3);
     expect(result).toHaveLength(2);
   });
+
+  it('handles non-overlapping intervals', () => {
+    const tree = new IntervalTree2();
+    tree.insert(1, 5);
+    tree.insert(10, 15);
+
+    expect(tree.search(7)).toHaveLength(0);
+    expect(tree.search(3)).toHaveLength(1);
+    expect(tree.search(12)).toHaveLength(1);
+  });
+
+  it('handles point at interval boundary', () => {
+    const tree = new IntervalTree2();
+    tree.insert(1, 10);
+
+    expect(tree.search(1)).toHaveLength(1);
+    expect(tree.search(10)).toHaveLength(1);
+  });
+
+  it('handles remove from empty tree', () => {
+    const tree = new IntervalTree2();
+    expect(tree.remove(1, 5)).toBe(false);
+    expect(tree.size()).toBe(0);
+  });
+
+  it('handles multiple inserts and removes', () => {
+    const tree = new IntervalTree2();
+    tree.insert(1, 10);
+    tree.insert(5, 15);
+    tree.insert(20, 30);
+    expect(tree.size()).toBe(3);
+    tree.remove(5, 15);
+    expect(tree.size()).toBe(2);
+    expect(tree.search(7)).toHaveLength(1);
+  });
 });
