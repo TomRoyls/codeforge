@@ -235,5 +235,32 @@ describe('Matrix2', () => {
       expect(m.rows()).toBe(100);
       expect(m.cols()).toBe(100);
     });
+
+    it('should clone matrix', () => {
+      const m = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const c = m.clone();
+      c.set(0, 0, 99);
+      expect(m.get(0, 0)).toBe(1);
+      expect(c.get(0, 0)).toBe(99);
+    });
+
+    it('should fill matrix', () => {
+      const m = new Matrix2(2, 3);
+      m.fill(7);
+      expect(m.toArray()).toEqual([[7, 7, 7], [7, 7, 7]]);
+    });
+
+    it('should subtract matrices', () => {
+      const a = Matrix2.fromArray([[5, 6], [7, 8]]);
+      const b = Matrix2.fromArray([[1, 2], [3, 4]]);
+      expect(a.add(b).toArray()).toEqual([[6, 8], [10, 12]]);
+    });
+
+    it('should multiply identity matrix', () => {
+      const a = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const id = Matrix2.identity(2);
+      const result = a.multiply(id);
+      expect(result.toArray()).toEqual([[1, 2], [3, 4]]);
+    });
   });
 });

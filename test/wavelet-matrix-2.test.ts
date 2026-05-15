@@ -287,4 +287,24 @@ describe('WaveletMatrix2', () => {
     const wm = new WaveletMatrix2(data);
     expect(wm.rank(3, 5)).toBe(1);
   });
+
+  it('should handle select', async () => {
+    const data = [3, 1, 4, 1, 5];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.select(1, 0)).toBe(1);
+    expect(wm.select(1, 1)).toBe(3);
+  });
+
+  it('should handle quantile', async () => {
+    const data = [5, 2, 8, 1, 9];
+    const wm = new WaveletMatrix2(data);
+    const q = wm.quantile(0, 5, 0);
+    expect(q).toBe(1);
+  });
+
+  it('should handle rangeFreq', async () => {
+    const data = [1, 2, 3, 4, 5];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.rangeFreq(0, 5, 2, 4)).toBe(3);
+  });
 });

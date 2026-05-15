@@ -305,4 +305,41 @@ describe('RoaringBitmap3', () => {
     expect(result.size).toBe(1);
     expect(result.has(3)).toBe(true);
   });
+
+  it('should handle min and max', async () => {
+    const bitmap = new RoaringBitmap3();
+    expect(bitmap.min()).toBeUndefined();
+    expect(bitmap.max()).toBeUndefined();
+    bitmap.add(5);
+    bitmap.add(1);
+    bitmap.add(10);
+    expect(bitmap.min()).toBe(1);
+    expect(bitmap.max()).toBe(10);
+  });
+
+  it('should handle clear', async () => {
+    const bitmap = new RoaringBitmap3();
+    bitmap.add(1);
+    bitmap.add(2);
+    bitmap.clear();
+    expect(bitmap.size).toBe(0);
+    expect(bitmap.isEmpty()).toBe(true);
+  });
+
+  it('should handle toArray sorted', async () => {
+    const bitmap = new RoaringBitmap3();
+    bitmap.add(5);
+    bitmap.add(1);
+    bitmap.add(3);
+    expect(bitmap.toArray()).toEqual([1, 3, 5]);
+  });
+
+  it('should handle forEach', async () => {
+    const bitmap = new RoaringBitmap3();
+    bitmap.add(10);
+    bitmap.add(20);
+    const values: number[] = [];
+    bitmap.forEach(v => values.push(v));
+    expect(values).toEqual([10, 20]);
+  });
 });
