@@ -313,4 +313,13 @@ describe('SegmentTreeMap2', () => {
     tree.set(0, 1)
     expect(tree.isEmpty()).toBe(false)
   })
+
+  it('should report correct size and isEmpty', async () => {
+    const empty = new SegmentTreeMap2(0)
+    expect(empty.isEmpty()).toBe(true)
+    expect(empty.size).toBe(0)
+    const tree = new SegmentTreeMap2(5)
+    expect(tree.size).toBe(5)
+    expect(tree.isEmpty()).toBe(false)
+  })
 })

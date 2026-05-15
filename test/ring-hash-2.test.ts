@@ -300,4 +300,12 @@ describe('RingHash2', () => {
     expect(n1).toBeDefined();
     expect(n2).toBeDefined();
   });
+
+  it('should handle removeNode', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.removeNode('node1');
+    expect(ring.size()).toBe(100);
+    expect(ring.nodes()).not.toContain('node1');
+  });
 });

@@ -246,5 +246,11 @@ describe('ShellSort', () => {
       const sorter2 = new ShellSort<number>([3, 1, 2]);
       expect(sorter2.isSorted()).toBe(false);
     });
+
+    it('should handle toArray after sort', () => {
+      const sorter = new ShellSort<number>([3, 1, 2]);
+      sorter.sort();
+      expect(sorter.toArray()).toEqual([1, 2, 3]);
+    });
   });
 });

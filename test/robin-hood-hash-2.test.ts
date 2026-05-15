@@ -255,4 +255,10 @@ describe('RobinHoodHash2', () => {
     expect(hash.size).toBe(0);
     expect(hash.has('a')).toBe(false);
   });
+
+  it('should handle delete returning false for missing', () => {
+    hash.set('a', 1);
+    expect(hash.delete('missing')).toBe(false);
+    expect(hash.size).toBe(1);
+  });
 });
