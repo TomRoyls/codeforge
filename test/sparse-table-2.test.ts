@@ -262,5 +262,11 @@ describe("SparseTable", () => {
       expect(st.rangeMinQuery(0, 1)).toBe(10);
       expect(st.rangeMaxQuery(0, 1)).toBe(20);
     });
+
+    it('should handle rangeMinQuery on longer array', () => {
+      const st = new SparseTable([5, 3, 7, 1, 4]);
+      expect(st.rangeMinQuery(0, 4)).toBe(1);
+      expect(st.rangeMaxQuery(0, 4)).toBe(7);
+    });
   });
 });

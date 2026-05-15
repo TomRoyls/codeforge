@@ -333,4 +333,11 @@ describe("WaveletTree", () => {
     const tree = new WaveletTree(arr);
     expect(tree.getSize()).toBe(5);
   });
+
+  it('should handle access', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.access(0)).toBe(3);
+    expect(tree.access(2)).toBe(4);
+  });
 });

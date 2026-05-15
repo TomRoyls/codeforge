@@ -369,4 +369,11 @@ describe('ThrottleQueue2', () => {
     for (let i = 0; i < 50; i++) queue.enqueue(i);
     expect(queue.size).toBe(50);
   });
+
+  it('should handle clear', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    for (let i = 0; i < 5; i++) queue.enqueue(i);
+    queue.clear();
+    expect(queue.size).toBe(0);
+  });
 });

@@ -341,4 +341,10 @@ describe('SegmentTreeMap2', () => {
     tree.set(4, 50)
     expect(tree.queryRange(0, 4)).toBe(150)
   })
+
+  it('should handle isEmpty on non-empty tree', () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    expect(tree.isEmpty()).toBe(false)
+  })
 })

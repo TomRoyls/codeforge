@@ -404,4 +404,13 @@ describe('SplayTreeMap2', () => {
     expect(map.delete(99)).toBe(false);
     expect(map.size).toBe(1);
   });
+
+  it('should handle clear', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.clear();
+    expect(map.size).toBe(0);
+  });
 });

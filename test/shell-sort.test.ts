@@ -264,5 +264,11 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.toArray()).toEqual([42]);
     });
+
+    it('should handle getTimeComplexity', () => {
+      const sorter = new ShellSort<number>([5, 3, 1]);
+      sorter.sort();
+      expect(typeof sorter.getTimeComplexity()).toBe('string');
+    });
   });
 });

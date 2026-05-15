@@ -357,5 +357,13 @@ describe('SkipList5', () => {
       expect(list.search(20)).toBe(false);
       expect(list.size()).toBe(2);
     });
+
+    it('should handle contains', () => {
+      const list = new SkipList<number>();
+      list.insert(10);
+      list.insert(20);
+      expect(list.search(10)).toBe(true);
+      expect(list.search(99)).toBe(false);
+    });
   });
 });

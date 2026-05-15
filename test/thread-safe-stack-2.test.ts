@@ -328,7 +328,15 @@ describe('ThreadSafeStack2', () => {
       stack.push(2)
       expect(stack.pop()).toBe(2)
       expect(stack.pop()).toBe(1)
-      expect(stack.size).toBe(0)
-    })
+    expect(stack.size).toBe(0)
+  })
+
+  it('should handle peek', () => {
+    const stack = new ThreadSafeStack2<number>()
+    stack.push(1)
+    stack.push(2)
+    expect(stack.peek()).toBe(2)
+    expect(stack.size).toBe(2)
+  })
   })
 })

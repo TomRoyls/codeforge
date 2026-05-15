@@ -487,4 +487,12 @@ describe('SkewHeap3', () => {
     heap.insert(3);
     expect(heap.size).toBe(3);
   });
+
+  it('should handle peek', () => {
+    const heap = new SkewHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    expect(heap.peek()).toBe(3);
+    expect(heap.size).toBe(2);
+  });
 });

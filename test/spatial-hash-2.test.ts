@@ -346,5 +346,13 @@ describe('SpatialHash2', () => {
       expect(hash.size).toBe(2);
       expect(hash.has('b')).toBe(false);
     });
+
+    it('should handle clear', () => {
+      const hash = new SpatialHash2<{x: number; y: number}>();
+      hash.insert('a', {x: 0, y: 0});
+      hash.insert('b', {x: 10, y: 10});
+      hash.clear();
+      expect(hash.size).toBe(0);
+    });
   });
 });

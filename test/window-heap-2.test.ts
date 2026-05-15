@@ -339,4 +339,11 @@ describe('WindowHeap2', () => {
     expect(heap.getMin()).toBe(10);
     expect(heap.getMax()).toBe(30);
   });
+
+  it('should handle isEmpty', () => {
+    const heap = new WindowHeap2<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.push(1);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

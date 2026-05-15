@@ -313,5 +313,13 @@ describe('WeightedGraph2', () => {
       expect(graph.hasVertex('A')).toBe(false);
       expect(graph.edgeCount()).toBe(0);
     });
+
+    it('should handle getEdgeWeight', () => {
+      const graph = new WeightedGraph2<string>();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addEdge('A', 'B', 5);
+      expect(graph.getEdgeWeight('A', 'B')).toBe(5);
+    });
   });
 });

@@ -456,4 +456,12 @@ describe('WingedEdgeMesh', () => {
     const faceEdges = mesh.getFaceEdges(face);
     expect(faceEdges).toHaveLength(3);
   });
+
+  it('should handle getVertexCount', () => {
+    const mesh = new WingedEdgeMesh();
+    const v0 = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(0, 1, 0);
+    expect(mesh.getVertexCount()).toBe(3);
+  });
 });
