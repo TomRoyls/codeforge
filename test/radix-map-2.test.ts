@@ -280,4 +280,57 @@ describe('RadixMap2', () => {
     expect(keys).toEqual([1, 5]);
     expect(map.max()).toBe(5);
   });
+
+  it('should return undefined for min/max on empty', () => {
+    const map = new RadixMap2<string>();
+    expect(map.min()).toBeUndefined();
+    expect(map.max()).toBeUndefined();
+  });
+
+  it('should return correct entries', () => {
+    const map = new RadixMap2<string>();
+    map.set(3, 'three');
+    map.set(1, 'one');
+    map.set(2, 'two');
+    expect(map.entries()).toEqual([[1, 'one'], [2, 'two'], [3, 'three']]);
+  });
+
+  it('should return correct values in order', () => {
+    const map = new RadixMap2<string>();
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.values()).toEqual(['a', 'b', 'c']);
+  });
+
+  it('should clear all entries', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.isEmpty()).toBe(true);
+  });
+
+  it('should report isEmpty correctly', () => {
+    const map = new RadixMap2<string>();
+    expect(map.isEmpty()).toBe(true);
+    map.set(1, 'a');
+    expect(map.isEmpty()).toBe(false);
+  });
+
+  it('should handle delete of non-existent key', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('should update value for existing key', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'old');
+    map.set(1, 'new');
+    expect(map.get(1)).toBe('new');
+    expect(map.size).toBe(1);
+  });
 });
