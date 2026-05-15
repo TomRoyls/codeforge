@@ -339,4 +339,47 @@ describe('AtomicSet2', () => {
     expect(array).toContain(8);
     expect(array.length).toBe(4);
   });
+
+  it('should handle clear then re-add', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.clear();
+    expect(set.isEmpty()).toBe(true);
+    set.add(3);
+    expect(set.size).toBe(1);
+    expect(set.has(3)).toBe(true);
+    expect(set.has(1)).toBe(false);
+  });
+
+  it('should handle union of identical sets', () => {
+    const set1 = new AtomicSet2<number>();
+    set1.add(1);
+    set1.add(2);
+    const set2 = new AtomicSet2<number>();
+    set2.add(1);
+    set2.add(2);
+    const result = set1.union(set2);
+    expect(result.size).toBe(2);
+  });
+
+  it('should handle compareAndSwap after delete', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.delete(2);
+    expect(set.compareAndSwap(2, 20)).toBe(false);
+    expect(set.compareAndSwap(1, 10)).toBe(true);
+  });
+
+  it('should handle difference of identical sets', () => {
+    const set1 = new AtomicSet2<number>();
+    set1.add(1);
+    set1.add(2);
+    const set2 = new AtomicSet2<number>();
+    set2.add(1);
+    set2.add(2);
+    const result = set1.difference(set2);
+    expect(result.size).toBe(0);
+  });
 });

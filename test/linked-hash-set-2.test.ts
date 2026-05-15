@@ -358,5 +358,46 @@ describe('LinkedHashSet', () => {
       expect(set.has(obj3)).toBe(true);
       expect(set.size()).toBe(3);
     });
+
+    it('should handle first and last', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(1);
+      set.add(2);
+      set.add(3);
+      expect(set.first()).toBe(1);
+      expect(set.last()).toBe(3);
+    });
+
+    it('should handle forEach iteration order', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      const items: number[] = [];
+      set.forEach(v => items.push(v));
+      expect(items).toEqual([10, 20, 30]);
+    });
+
+    it('should handle clear then re-add', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(1);
+      set.add(2);
+      set.clear();
+      expect(set.isEmpty()).toBe(true);
+      set.add(3);
+      expect(set.size()).toBe(1);
+      expect(set.first()).toBe(3);
+    });
+
+    it('should handle delete first and last', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(1);
+      set.add(2);
+      set.add(3);
+      set.delete(1);
+      expect(set.first()).toBe(2);
+      set.delete(3);
+      expect(set.last()).toBe(2);
+    });
   });
 });

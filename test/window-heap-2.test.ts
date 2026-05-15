@@ -237,4 +237,37 @@ describe('WindowHeap2', () => {
     heap.push(3);
     expect(heap.getWindow()).toEqual([3]);
   });
+
+  it('should handle clear then push', () => {
+    const heap = new WindowHeap2(3);
+    heap.push(1);
+    heap.push(2);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+    heap.push(3);
+    expect(heap.size).toBe(1);
+    expect(heap.getMedian()).toBe(3);
+  });
+
+  it('should handle getSum on empty window returning 0', () => {
+    const heap = new WindowHeap2(5);
+    expect(heap.getSum()).toBe(0);
+  });
+
+  it('should handle median with two elements', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(3);
+    heap.push(7);
+    expect(heap.getMedian()).toBe(5);
+  });
+
+  it('should handle mixed positive and negative', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(-10);
+    heap.push(0);
+    heap.push(10);
+    expect(heap.getMin()).toBe(-10);
+    expect(heap.getMax()).toBe(10);
+    expect(heap.getAverage()).toBe(0);
+  });
 });

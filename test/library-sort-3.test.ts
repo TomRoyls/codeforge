@@ -172,5 +172,28 @@ describe('LibrarySort3', () => {
       const result = sorter.sort();
       expect(result.map(o => o.v)).toEqual([1, 2, 3]);
     });
+
+    it('should handle sortInPlace modifying array', () => {
+      const arr = [5, 3, 1, 4, 2];
+      const sorter = new LibrarySort3(arr);
+      sorter.sortInPlace(arr);
+      expect(arr).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should handle descending comparator', () => {
+      const sorter = new LibrarySort3([1, 2, 3, 4, 5], (a, b) => b - a);
+      expect(sorter.sort()).toEqual([5, 4, 3, 2, 1]);
+    });
+
+    it('should handle empty array sortInPlace', () => {
+      const arr: number[] = [];
+      const sorter = new LibrarySort3(arr);
+      expect(sorter.sortInPlace(arr)).toEqual([]);
+    });
+
+    it('should handle already sorted array', () => {
+      const sorter = new LibrarySort3([1, 2, 3, 4, 5]);
+      expect(sorter.sort()).toEqual([1, 2, 3, 4, 5]);
+    });
   });
 });
