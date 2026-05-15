@@ -158,4 +158,50 @@ describe('SegmentTree5', () => {
     expect(st.query(0, 6)).toBe(28);
     expect(st.query(3, 5)).toBe(15);
   });
+
+  it('should handle max operation', () => {
+    const data = [3, 1, 4, 1, 5, 9, 2, 6];
+    const st = new SegmentTree5(data, (a, b) => Math.max(a, b));
+    expect(st.query(0, 7)).toBe(9);
+    expect(st.query(2, 4)).toBe(5);
+    expect(st.query(6, 7)).toBe(6);
+  });
+
+  it('should handle min operation', () => {
+    const data = [5, 3, 7, 1, 9, 2];
+    const st = new SegmentTree5(data, (a, b) => Math.min(a, b));
+    expect(st.query(0, 5)).toBe(1);
+    expect(st.query(0, 2)).toBe(3);
+    expect(st.query(4, 5)).toBe(2);
+  });
+
+  it('should update and re-query with max', () => {
+    const data = [1, 5, 3, 8, 2];
+    const st = new SegmentTree5(data, (a, b) => Math.max(a, b));
+    expect(st.query(0, 4)).toBe(8);
+    st.update(3, 0);
+    expect(st.query(0, 4)).toBe(5);
+  });
+
+  it('should handle get after update', () => {
+    const data = [10, 20, 30];
+    const st = new SegmentTree5(data);
+    st.update(1, 99);
+    expect(st.get(1)).toBe(99);
+    expect(st.get(0)).toBe(10);
+  });
+
+  it('should query single element range', () => {
+    const data = [5, 10, 15];
+    const st = new SegmentTree5(data);
+    expect(st.query(1, 1)).toBe(10);
+  });
+
+  it('should handle multiplication operation', () => {
+    const data = [2, 3, 4];
+    const st = new SegmentTree5(data, (a, b) => a * b);
+    expect(st.query(0, 2)).toBe(24);
+    expect(st.query(0, 1)).toBe(6);
+    expect(st.query(1, 2)).toBe(12);
+  });
 });
