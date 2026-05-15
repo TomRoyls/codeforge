@@ -371,5 +371,14 @@ describe('LRUCache5', () => {
       expect(cache.get(1)).toBe('b');
       expect(cache.size).toBe(1);
     });
+
+    it('should handle delete', () => {
+      const c = new LRUCache5<string, number>(10);
+      c.set('x', 1);
+      c.set('y', 2);
+      expect(c.delete('x')).toBe(true);
+      expect(c.get('x')).toBeUndefined();
+      expect(c.size).toBe(1);
+    });
   });
 });

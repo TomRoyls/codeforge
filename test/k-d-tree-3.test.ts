@@ -311,4 +311,11 @@ describe('KDTree3', () => {
     const result = tree.rangeSearch({x: 0, y: 0}, {x: 6, y: 6})
     expect(result.length).toBe(2)
   })
+
+  it('should handle contains', () => {
+    const points = [{x: 1, y: 1}, {x: 5, y: 5}]
+    const tree = new KDTree3(points)
+    expect(tree.contains({x: 1, y: 1})).toBe(true)
+    expect(tree.contains({x: 9, y: 9})).toBe(false)
+  })
 })

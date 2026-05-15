@@ -339,5 +339,15 @@ describe('HashArray2', () => {
       expect(map.has('a')).toBe(false);
       expect(map.size).toBe(1);
     });
+
+    it('should return keys and values', () => {
+      const map = new HashArray2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      expect(map.keys()).toContain('a');
+      expect(map.keys()).toContain('b');
+      expect(map.values()).toContain(1);
+      expect(map.values()).toContain(2);
+    });
   });
 });

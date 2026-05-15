@@ -244,5 +244,11 @@ describe('KnuthMorrisPratt2', () => {
       const result = kmp.search('');
       expect(result).toEqual([]);
     });
+
+    it('should find pattern at start', () => {
+      const kmp = new KnuthMorrisPratt2('abc');
+      const result = kmp.search('abcdef');
+      expect(result).toEqual([0]);
+    });
   });
 });

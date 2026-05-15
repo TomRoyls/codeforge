@@ -186,4 +186,8 @@ describe('MergeSort5', () => {
   it('handles single element', () => {
     expect(ms.sort([42])).toEqual([42]);
   });
+
+  it('should handle merge', () => {
+    expect(ms.merge([1, 3, 5], [2, 4, 6])).toEqual([1, 2, 3, 4, 5, 6]);
+  });
 });

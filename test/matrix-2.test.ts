@@ -299,5 +299,12 @@ describe('Matrix2', () => {
       const result = m.scale(2);
       expect(result.toArray()).toEqual([[2, 4], [6, 8]]);
     });
+
+    it('should handle add', () => {
+      const a = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const b = Matrix2.fromArray([[5, 6], [7, 8]]);
+      const result = a.add(b);
+      expect(result.toArray()).toEqual([[6, 8], [10, 12]]);
+    });
   });
 });

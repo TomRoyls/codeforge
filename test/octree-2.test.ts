@@ -346,4 +346,12 @@ describe('Octree2', () => {
     tree.insert(90, 90, 90, 3);
     expect(tree.size()).toBe(3);
   });
+
+  it('should handle clear', () => {
+    const t = new Octree2({ x: 0, y: 0, z: 0, size: 100 });
+    t.insert(10, 10, 10, 1);
+    t.insert(50, 50, 50, 2);
+    t.clear();
+    expect(t.size()).toBe(0);
+  });
 });

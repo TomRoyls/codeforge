@@ -454,5 +454,12 @@ describe('LinkedHashSet', () => {
       expect(set.delete(10)).toBe(true);
       expect(set.has(10)).toBe(false);
     });
+
+    it('should handle isEmpty', () => {
+      const set = new LinkedHashSet<number>();
+      expect(set.isEmpty()).toBe(true);
+      set.add(1);
+      expect(set.isEmpty()).toBe(false);
+    });
   });
 });

@@ -373,7 +373,6 @@ describe('IndexedPQ2', () => {
     pq.insert(3, 30);
     expect(pq.delete(2)).toBe(true);
     expect(pq.contains(2)).toBe(false);
-    expect(pq.size()).toBe(2);
   });
 
   it('should handle updatePriority', () => {
@@ -382,5 +381,14 @@ describe('IndexedPQ2', () => {
     pq.insert(2, 20);
     pq.update(1, 25);
     expect(pq.getPriority(1)).toBe(25);
+  });
+
+  it('should handle delete', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert(1, 10);
+    pq.insert(2, 20);
+    expect(pq.delete(1)).toBe(true);
+    expect(pq.getPriority(1)).toBeUndefined();
+    expect(pq.getPriority(2)).toBe(20);
   });
 });

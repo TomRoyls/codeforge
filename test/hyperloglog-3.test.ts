@@ -332,4 +332,10 @@ describe('HyperLogLog3', () => {
     const hll = new HyperLogLog3(12)
     expect(hll.count()).toBe(0)
   })
+
+  it('should count single element', () => {
+    const hll = new HyperLogLog3(12)
+    hll.add('test')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })
