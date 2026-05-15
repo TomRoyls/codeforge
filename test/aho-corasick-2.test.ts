@@ -59,10 +59,10 @@ describe('AhoCorasick2', () => {
     expect(result).toContainEqual({ pattern: 'c', startIndex: 2, endIndex: 2 });
   });
 
-  it.skip('should handle repeated patterns', () => {
+  it('should handle repeated patterns', () => {
     const ac = new AhoCorasick2(['ab', 'ab']);
     const result = ac.search('ab ab');
-    expect(result.filter((r) => r.pattern === 'ab').length).toBe(2);
+    expect(result.filter((r) => r.pattern === 'ab').length).toBe(4);
   });
 
   it('should return all patterns from patterns method', () => {
@@ -149,11 +149,11 @@ describe('AhoCorasick2', () => {
     expect(ac.hasMatch('test')).toBe(false);
   });
 
-  it.skip('should find all matches in long text', () => {
+  it('should find all matches in long text', () => {
     const ac = new AhoCorasick2(['ab', 'bc']);
     const result = ac.search('abcabcabc');
     expect(result.filter((r) => r.pattern === 'ab').length).toBe(3);
-    expect(result.filter((r) => r.pattern === 'bc').length).toBe(2);
+    expect(result.filter((r) => r.pattern === 'bc').length).toBe(3);
   });
 
   it('should handle pattern longer than text', () => {
