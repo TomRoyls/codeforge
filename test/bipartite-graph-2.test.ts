@@ -315,4 +315,12 @@ describe('BipartiteGraph2', () => {
     expect(graph.getNeighbors('L1')).toEqual([]);
     expect(graph.getNeighbors('R1')).toEqual([]);
   });
+
+  it('should handle edgeCount', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    expect(graph.edgeCount()).toBe(1);
+  });
 });
