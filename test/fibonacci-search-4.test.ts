@@ -145,4 +145,35 @@ describe('FibonacciSearch4', () => {
     expect(searcher.count(7)).toBe(2);
     expect(searcher.count(9)).toBe(1);
   });
+
+  it('should handle two-element array', () => {
+    const searcher = new FibonacciSearch4([1, 3]);
+    expect(searcher.search(1)).toBe(0);
+    expect(searcher.search(3)).toBe(1);
+    expect(searcher.search(2)).toBe(-1);
+    expect(searcher.contains(1)).toBe(true);
+    expect(searcher.contains(2)).toBe(false);
+  });
+
+  it('should handle three-element array', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30]);
+    expect(searcher.search(10)).toBe(0);
+    expect(searcher.search(20)).toBe(1);
+    expect(searcher.search(30)).toBe(2);
+    expect(searcher.searchRange(20)).toEqual([1, 1]);
+  });
+
+  it('should search edge values', () => {
+    const searcher = new FibonacciSearch4([2, 4, 6, 8, 10]);
+    expect(searcher.search(6)).toBe(2);
+    expect(searcher.search(2)).toBe(0);
+    expect(searcher.search(10)).toBe(4);
+  });
+
+  it('should handle all same negative numbers', () => {
+    const searcher = new FibonacciSearch4([-3, -3, -3]);
+    expect(searcher.searchFirst(-3)).toBe(0);
+    expect(searcher.searchLast(-3)).toBe(2);
+    expect(searcher.count(-3)).toBe(3);
+  });
 });

@@ -118,4 +118,44 @@ describe('PersistentArray2', () => {
     expect(arr4.toArray()).toEqual([1, 99, 3])
     expect(arr5.toArray()).toEqual([1, 3])
   })
+
+  it('set beyond array length pads with undefined', () => {
+    const arr1 = new PersistentArray2([1, 2])
+    const arr2 = arr1.set(5, 99)
+    expect(arr2.length).toBe(6)
+    expect(arr2.get(0)).toBe(1)
+    expect(arr2.get(5)).toBe(99)
+    expect(arr2.get(3)).toBeUndefined()
+  })
+
+  it('map preserves length', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.map((x) => x + 10)
+    expect(arr2.length).toBe(3)
+    expect(arr2.toArray()).toEqual([11, 12, 13])
+  })
+
+  it('filter to empty array', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const arr2 = arr1.filter(() => false)
+    expect(arr2.length).toBe(0)
+    expect(arr2.toArray()).toEqual([])
+  })
+
+  it('multiple pushes from same base', () => {
+    const base = new PersistentArray2([1])
+    const a = base.push(2)
+    const b = base.push(3)
+    expect(a.toArray()).toEqual([1, 2])
+    expect(b.toArray()).toEqual([1, 3])
+    expect(base.toArray()).toEqual([1])
+  })
+
+  it('handles string type', () => {
+    const arr1 = new PersistentArray2(['a', 'b'])
+    const arr2 = arr1.push('c')
+    expect(arr2.toArray()).toEqual(['a', 'b', 'c'])
+    const arr3 = arr2.set(1, 'X')
+    expect(arr3.toArray()).toEqual(['a', 'X', 'c'])
+  })
 })
