@@ -772,7 +772,7 @@ describe('OrderedStatisticsTree', () => {
       expect(revTree.max()).toBe(1)
     })
 
-    it.skip('should work with string comparator', () => {
+    it('should work with string comparator', () => {
       const strTree = new OrderedStatisticsTree<string>((a, b) => a.localeCompare(b))
       strTree.insert('banana')
       strTree.insert('apple')
@@ -780,7 +780,7 @@ describe('OrderedStatisticsTree', () => {
       expect(strTree.toArray()).toEqual(['apple', 'banana', 'cherry'])
     })
 
-    it.skip('should work with custom object comparator', () => {
+    it('should work with custom object comparator', () => {
       interface Item {
         id: number
         value: string

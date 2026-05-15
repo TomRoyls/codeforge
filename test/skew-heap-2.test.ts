@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { SkewHeap2 } from '../src/core/skew-heap-2/index'
 
 describe('SkewHeap2 - Basic Operations', () => {
-  it.skip('should create empty heap', () => {
+  it('should create empty heap', () => {
     const heap = new SkewHeap2<number>()
     expect(heap.isEmpty()).toBe(true)
     expect(heap.size()).toBe(0)

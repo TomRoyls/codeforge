@@ -206,7 +206,7 @@ describe('KDTree nearestNeighbor', () => {
     expect(result).toEqual([5, 5]);
   });
 
-  it.skip('should work with custom distance function', () => {
+  it('should work with custom distance function', () => {
     const customDist = (a, b) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
     const tree = new KDTree([[0, 0], [10, 0]], 2, { distance: customDist });
     tree.insert([1, 1]);

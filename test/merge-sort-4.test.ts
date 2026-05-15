@@ -18,7 +18,7 @@ function reverseRange(n: number): number[] {
 
 describe('MergeSort4', () => {
   describe('sort', () => {
-    it.skip('should return empty array for empty input', () => {
+    it('should return empty array for empty input', () => {
       const sorter = new MergeSort4<number>()
       expect(sorter.sort([])).toEqual([])
     })

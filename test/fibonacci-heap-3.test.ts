@@ -3,7 +3,7 @@ import { FibonacciHeap3, FibonacciHeap3Node } from './src/core/fibonacci-heap-3/
 
 describe('FibonacciHeap3', () => {
   describe('insert and extractMin', () => {
-    it.skip('should insert and extract a single element', () => {
+    it('should insert and extract a single element', () => {
       const heap = new FibonacciHeap3<number>();
       const node = heap.insert(5);
       expect(heap.size).toBe(1);

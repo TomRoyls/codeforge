@@ -3,7 +3,7 @@ import { PairingHeap2 } from '../src/core/pairing-heap-2/index.js';
 
 describe('PairingHeap2', () => {
   describe('constructor and basic operations', () => {
-    it.skip('should create empty heap', () => {
+    it('should create empty heap', () => {
       const heap = new PairingHeap2<number>();
       expect(heap.isEmpty).toBe(true);
       expect(heap.size).toBe(0);

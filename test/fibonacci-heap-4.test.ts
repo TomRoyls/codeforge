@@ -320,7 +320,7 @@ describe('FibonacciHeap4', () => {
       expect(heap.peek()).toBe(5);
     });
 
-    it.skip('should work with custom comparator', () => {
+    it('should work with custom comparator', () => {
       const heap = new FibonacciHeap4<{ value: number }>((a, b) => b.value - a.value);
       const node = heap.insert({ value: 5 });
       heap.decreaseKey(node, { value: 10 });

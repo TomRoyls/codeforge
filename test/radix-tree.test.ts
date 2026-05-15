@@ -3,7 +3,7 @@ import { RadixTree } from './src/core/radix-tree/index.js';
 
 describe('RadixTree', () => {
   describe('empty tree', () => {
-    it.skip('should have size 0', () => {
+    it('should have size 0', () => {
       const tree = new RadixTree();
       expect(tree.size).toBe(0);
     });

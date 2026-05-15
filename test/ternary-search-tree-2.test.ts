@@ -3,7 +3,7 @@ import { TernarySearchTree2 } from '../src/core/ternary-search-tree-2/index.js'
 
 describe('TernarySearchTree2', () => {
   describe('insert and search', () => {
-    it.skip('should insert and search a single word', () => {
+    it('should insert and search a single word', () => {
       const tst = new TernarySearchTree2()
       tst.insert('hello')
       expect(tst.search('hello')).toBe(true)

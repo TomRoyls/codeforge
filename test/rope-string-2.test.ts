@@ -3,7 +3,7 @@ import { RopeString2 } from '../src/core/rope-string-2/index.js';
 
 describe('RopeString2', () => {
   describe('constructor', () => {
-    it.skip('should create empty rope', () => {
+    it('should create empty rope', () => {
       const rope = new RopeString2();
       expect(rope.length).toBe(0);
       expect(rope.toString()).toBe('');

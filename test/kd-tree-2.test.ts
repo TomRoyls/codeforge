@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { KDTree } from '../src/core/kd-tree-2/index.js';
 
 describe('KDTree constructor', () => {
-  it.skip('should create empty tree with default dimensions', () => {
+  it('should create empty tree with default dimensions', () => {
     const tree = new KDTree();
     expect(tree.size).toBe(0);
     expect(tree.isEmpty()).toBe(true);

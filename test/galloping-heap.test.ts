@@ -3,7 +3,7 @@ import { GallopingHeap, GallopingHeapNode } from '../src/core/galloping-heap/ind
 
 describe('GallopingHeap', () => {
   describe('constructor', () => {
-    it.skip('should create empty heap', () => {
+    it('should create empty heap', () => {
       const heap = new GallopingHeap<number>();
       expect(heap.size).toBe(0);
       expect(heap.isEmpty()).toBe(true);

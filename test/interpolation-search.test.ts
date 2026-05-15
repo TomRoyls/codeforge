@@ -3,7 +3,7 @@ import { InterpolationSearch } from '../src/core/interpolation-search/index';
 
 describe('InterpolationSearch', () => {
   describe('search', () => {
-    it.skip('should return -1 for empty array', () => {
+    it('should return -1 for empty array', () => {
       const search = new InterpolationSearch([]);
       expect(search.search(5)).toBe(-1);
     });

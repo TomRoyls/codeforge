@@ -377,14 +377,14 @@ describe('isSorted - Custom Comparator', () => {
 });
 
 describe('GrailSort - Performance', () => {
-  it.skip('should handle 10000 numbers', () => {
+  it('should handle 10000 numbers', () => {
     const arr = Array.from({ length: 10000 }, () => Math.floor(Math.random() * 100000));
     const result = GrailSort.sort(arr);
     const sorted = [...arr].sort((a, b) => a - b);
     expect(result).toEqual(sorted);
   });
 
-  it.skip('should handle 100000 numbers', () => {
+  it('should handle 100000 numbers', () => {
     const arr = Array.from({ length: 100000 }, () => Math.floor(Math.random() * 1000000));
     const result = GrailSort.sort(arr);
     const sorted = [...arr].sort((a, b) => a - b);

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { MultiMap3 } from '../src/core/multimap-3/index.js';
 
 describe('MultiMap3', () => {
-  it.skip('should set and get multiple values for a key', () => {
+  it('should set and get multiple values for a key', () => {
     const map = new MultiMap3<string, number>();
     map.set('a', 1);
     map.set('a', 2);

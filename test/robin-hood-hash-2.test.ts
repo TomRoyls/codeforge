@@ -8,7 +8,7 @@ describe('RobinHoodHash2', () => {
     hash = new RobinHoodHash2<string, string>();
   });
 
-  it.skip('should create empty hash table', () => {
+  it('should create empty hash table', () => {
     expect(hash.size).toBe(0);
     expect(hash.capacity()).toBe(16);
   });

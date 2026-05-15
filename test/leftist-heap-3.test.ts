@@ -638,7 +638,7 @@ describe('LeftistHeap3', () => {
       expect(heap.extractMin()).toBe(15)
     })
 
-    it.skip('should work with node reference', () => {
+    it('should work with node reference', () => {
       const heap = new LeftistHeap3<number>()
       const node = heap.insert(10)
       heap.insert(5)
@@ -749,7 +749,7 @@ describe('LeftistHeap3', () => {
       expect(heap.size).toBe(0)
     })
 
-    it.skip('should handle node reference updates', () => {
+    it('should handle node reference updates', () => {
       const heap = new LeftistHeap3<number>()
       const node = heap.insert(10)
       heap.insert(5)

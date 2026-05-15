@@ -3,7 +3,7 @@ import { LeftistHeap } from '../src/core/leftist-heap/index.js'
 
 describe('LeftistHeap', () => {
   describe('constructor', () => {
-    it.skip('should create empty heap with no arguments', () => {
+    it('should create empty heap with no arguments', () => {
       const heap = new LeftistHeap<number>()
       expect(heap.size).toBe(0)
       expect(heap.isEmpty()).toBe(true)

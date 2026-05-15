@@ -37,12 +37,17 @@ export class CoalescingMap<K, V> {
   private findRangeIndex(key: K): number {
     let lo = 0
     let hi = this._ranges.length - 1
+    const ascending = this._ranges.length < 2 || this.cmp(this._ranges[0]!.start, this._ranges[this._ranges.length - 1]!.start) <= 0
     while (lo <= hi) {
       const mid = (lo + hi) >>> 1
       const r = this._ranges[mid]!
-      if (this.cmp(key, r.start) < 0) {
+      const cmpStart = this.cmp(key, r.start)
+      const cmpEnd = this.cmp(key, r.end)
+      const beforeRange = ascending ? cmpStart < 0 : cmpStart > 0
+      const afterRange = ascending ? cmpEnd > 0 : cmpEnd < 0
+      if (beforeRange) {
         hi = mid - 1
-      } else if (this.cmp(key, r.end) > 0) {
+      } else if (afterRange) {
         lo = mid + 1
       } else {
         return mid
