@@ -251,4 +251,42 @@ describe('ProbabilityMap2', () => {
     
     expect(map.get('item')).toBeUndefined();
   });
+
+  it('should handle clear and re-add', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.clear();
+    expect(map.size).toBe(0);
+    map.set('c', 30);
+    expect(map.size).toBe(1);
+    expect(map.getWeight('c')).toBe(30);
+  });
+
+  it('should handle delete and verify remaining', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.delete('a');
+    expect(map.has('a')).toBe(false);
+    expect(map.totalWeight()).toBe(20);
+    expect(map.size).toBe(1);
+  });
+
+  it('should handle single item map', () => {
+    const map = new ProbabilityMap2();
+    map.set('only', 100);
+    expect(map.get('only')).toBe(1);
+    expect(map.sample()).toBe('only');
+  });
+
+  it('should handle entries returning all items', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const entries = map.entries();
+    expect(entries).toHaveLength(2);
+    expect(entries.map(e => e[0])).toContain('a');
+    expect(entries.map(e => e[0])).toContain('b');
+  });
 });
