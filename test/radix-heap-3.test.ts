@@ -240,4 +240,66 @@ describe('RadixHeap3', () => {
         const result = heap.extractMin();
         expect(result).toEqual({key: 1, value: 'd'});
     });
+
+    it('should return correct size', () => {
+        const heap = new RadixHeap3();
+        expect(heap.size).toBe(0);
+        heap.insert(1, 'a');
+        expect(heap.size).toBe(1);
+        heap.insert(2, 'b');
+        expect(heap.size).toBe(2);
+        heap.extractMin();
+        expect(heap.size).toBe(1);
+    });
+
+    it('should report isEmpty correctly', () => {
+        const heap = new RadixHeap3();
+        expect(heap.isEmpty()).toBe(true);
+        heap.insert(1, 'a');
+        expect(heap.isEmpty()).toBe(false);
+        heap.extractMin();
+        expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should peek at minimum without removing', () => {
+        const heap = new RadixHeap3();
+        heap.insert(5, 'a');
+        heap.insert(3, 'b');
+        heap.insert(7, 'c');
+        expect(heap.peek()).toEqual({key: 3, value: 'b'});
+        expect(heap.size).toBe(3);
+    });
+
+    it('should return undefined peek on empty heap', () => {
+        const heap = new RadixHeap3();
+        expect(heap.peek()).toBeUndefined();
+    });
+
+    it('should clear the heap', () => {
+        const heap = new RadixHeap3();
+        heap.insert(1, 'a');
+        heap.insert(2, 'b');
+        heap.clear();
+        expect(heap.size).toBe(0);
+        expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should return default keyBits', () => {
+        const heap = new RadixHeap3();
+        expect(heap.keyBits).toBe(32);
+    });
+
+    it('should extract all in sorted order', () => {
+        const heap = new RadixHeap3();
+        const keys = [5, 3, 8, 1, 9, 2, 7, 4, 6];
+        for (const k of keys) {
+            heap.insert(k, `val-${k}`);
+        }
+        const results: number[] = [];
+        while (!heap.isEmpty()) {
+            const item = heap.extractMin()!;
+            results.push(item.key);
+        }
+        expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    });
 });

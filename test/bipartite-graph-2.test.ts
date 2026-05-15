@@ -244,4 +244,66 @@ describe('BipartiteGraph2', () => {
 
     expect(graph.getLeftVertices()).toHaveLength(1);
   });
+
+  it('should get neighbors of left vertex', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addRightVertex('R2');
+    graph.addEdge('L1', 'R1');
+    graph.addEdge('L1', 'R2');
+
+    expect(graph.getNeighbors('L1')).toEqual(['R1', 'R2']);
+  });
+
+  it('should get neighbors of right vertex', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addLeftVertex('L2');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    graph.addEdge('L2', 'R1');
+
+    const neighbors = graph.getNeighbors('R1');
+    expect(neighbors).toHaveLength(2);
+    expect(neighbors).toContain('L1');
+    expect(neighbors).toContain('L2');
+  });
+
+  it('should return empty neighbors for unknown vertex', () => {
+    const graph = new BipartiteGraph2();
+    expect(graph.getNeighbors('unknown')).toEqual([]);
+  });
+
+  it('should return undefined weight for non-existent edge', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    expect(graph.getEdgeWeight('L1', 'R1')).toBeUndefined();
+  });
+
+  it('should throw when adding edge with non-existent left vertex', () => {
+    const graph = new BipartiteGraph2();
+    graph.addRightVertex('R1');
+    expect(() => graph.addEdge('L_MISSING', 'R1')).toThrow();
+  });
+
+  it('should throw when adding edge with non-existent right vertex', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    expect(() => graph.addEdge('L1', 'R_MISSING')).toThrow();
+  });
+
+  it('should handle default edge weight', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    expect(graph.getEdgeWeight('L1', 'R1')).toBe(1);
+  });
+
+  it('should handle removeEdge on non-existent edge', () => {
+    const graph = new BipartiteGraph2();
+    expect(graph.removeEdge('L1', 'R1')).toBe(false);
+  });
 });

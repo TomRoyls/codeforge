@@ -9,7 +9,7 @@ describe('AVLSet', () => {
   });
 
   describe('Empty set', () => {
-    it.skip('should create empty set', () => {
+    it('should create empty set', () => {
       expect(set.size).toBe(0);
       expect(set.isEmpty()).toBe(true);
     });
