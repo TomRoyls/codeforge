@@ -215,5 +215,30 @@ describe('BloomFilter4', () => {
       const bf = new BloomFilter(1000, 0.01);
       expect(bf.getBitCount() % 8).toBe(0);
     });
+
+    it('should handle add and mightContain with single item', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('test');
+      expect(bf.mightContain('test')).toBe(true);
+      expect(bf.mightContain('nothere')).toBe(false);
+    });
+
+    it('should have no false negatives after many adds', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      for (let i = 0; i < 100; i++) {
+        bf.add(`item-${i}`);
+      }
+      for (let i = 0; i < 100; i++) {
+        expect(bf.mightContain(`item-${i}`)).toBe(true);
+      }
+    });
+
+    it('should report correct size after clear', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('a');
+      bf.add('b');
+      bf.clear();
+      expect(bf.getEstimatedFalsePositiveRate()).toBe(0);
+    });
   });
 });

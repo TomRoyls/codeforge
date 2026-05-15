@@ -290,5 +290,40 @@ describe('JellyHash2', () => {
       expect(map.get(key1)).toBe(100);
       expect(map.get(key2)).toBe(200);
     });
+
+    it('should handle overwrite existing key', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('key', 1);
+      map.set('key', 2);
+      expect(map.get('key')).toBe(2);
+      expect(map.size).toBe(1);
+    });
+
+    it('should handle delete and get', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      expect(map.delete('a')).toBe(true);
+      expect(map.get('a')).toBeUndefined();
+      expect(map.size).toBe(1);
+    });
+
+    it('should handle has check', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('x', 10);
+      expect(map.has('x')).toBe(true);
+      expect(map.has('y')).toBe(false);
+    });
+
+    it('should handle clear then re-add', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      map.clear();
+      expect(map.size).toBe(0);
+      map.set('c', 3);
+      expect(map.get('c')).toBe(3);
+      expect(map.size).toBe(1);
+    });
   });
 });

@@ -249,4 +249,37 @@ describe('SegmentTreeMap2', () => {
     expect(tree.isEmpty()).toBe(true)
     expect(tree.toArray()).toEqual([])
   })
+
+  it('should handle set and get at boundaries', async () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    tree.set(4, 20)
+    expect(tree.get(0)).toBe(10)
+    expect(tree.get(4)).toBe(20)
+    expect(tree.get(2)).toBe(0)
+  })
+
+  it('should handle negative update range values', async () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    tree.set(1, 10)
+    tree.set(2, 10)
+    tree.updateRange(0, 2, -5)
+    expect(tree.get(0)).toBe(5)
+    expect(tree.get(1)).toBe(5)
+    expect(tree.get(2)).toBe(5)
+  })
+
+  it('should handle queryRange on single element', async () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(2, 42)
+    expect(tree.queryRange(2, 2)).toBe(42)
+  })
+
+  it('should handle get out of bounds returning 0', async () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(2, 10)
+    expect(tree.get(-1)).toBe(0)
+    expect(tree.get(5)).toBe(0)
+  })
 })

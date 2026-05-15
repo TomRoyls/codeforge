@@ -197,4 +197,34 @@ describe('RobinHoodHash2', () => {
     expect(hashMixed.get(1)).toBe('num');
     expect(hashMixed.get('str')).toBe('string');
   });
+
+  it('should handle overwrite existing key', () => {
+    hash.set('key1', 'value1');
+    hash.set('key1', 'updated');
+    expect(hash.get('key1')).toBe('updated');
+    expect(hash.size).toBe(1);
+  });
+
+  it('should handle clear and verify empty', () => {
+    hash.set('a', '1');
+    hash.set('b', '2');
+    hash.clear();
+    expect(hash.size).toBe(0);
+    expect(hash.get('a')).toBeUndefined();
+    expect(hash.has('a')).toBe(false);
+  });
+
+  it('should handle has on existing and missing keys', () => {
+    hash.set('exists', 'yes');
+    expect(hash.has('exists')).toBe(true);
+    expect(hash.has('missing')).toBe(false);
+  });
+
+  it('should handle delete and re-add', () => {
+    hash.set('key', 'val');
+    hash.delete('key');
+    expect(hash.get('key')).toBeUndefined();
+    hash.set('key', 'newval');
+    expect(hash.get('key')).toBe('newval');
+  });
 });
