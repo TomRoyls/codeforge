@@ -55,15 +55,15 @@ describe('LazySegmentTree', () => {
     expect(tree.rangeQuery(4, 4)).toBe(15);
   });
 
-  it.skip('should handle alternating updates and queries', () => {
+  it('should handle alternating updates and queries', () => {
     const tree = new LazySegmentTree([1, 2, 3, 4, 5]);
     tree.rangeUpdate(0, 4, 1);
     expect(tree.rangeQuery(0, 2)).toBe(9);
     tree.rangeUpdate(1, 3, 2);
-    expect(tree.rangeQuery(1, 3)).toBe(19);
-    expect(tree.rangeQuery(0, 4)).toBe(28);
+    expect(tree.rangeQuery(1, 3)).toBe(18);
+    expect(tree.rangeQuery(0, 4)).toBe(26);
     tree.pointUpdate(2, 10);
-    expect(tree.rangeQuery(2, 4)).toBe(16);
+    expect(tree.rangeQuery(0, 4)).toBe(30);
   });
 
   it('should handle large arrays', () => {

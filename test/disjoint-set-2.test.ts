@@ -9,7 +9,7 @@ describe('DisjointSet', () => {
   });
 
   describe('constructor', () => {
-    it.skip('should create empty disjoint set', () => {
+    it('should create empty disjoint set', () => {
       expect(ds.size).toBe(0);
       expect(ds.isEmpty()).toBe(true);
     });

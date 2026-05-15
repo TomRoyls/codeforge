@@ -795,7 +795,7 @@ describe('DAryHeap clone', () => {
     expect(cloned.peek()).toBe(10);
   });
 
-  it.skip('should be deep copy of elements', () => {
+  it('should be deep copy of elements', () => {
     const heap = new DAryHeap<{ value: number }>({ arity: 2, comparator: (a, b) => a.value - b.value });
     heap.push({ value: 5 });
     const cloned = heap.clone();

@@ -166,7 +166,7 @@ describe('CuckooFilter', () => {
       expect(cf.contains('🚀')).toBe(true);
     });
 
-    it.skip('should return false when full', () => {
+    it('should return false when full', () => {
       const filter = new CuckooFilter<string>(10, { maxKicks: 1 });
       for (let i = 0; i < 100; i++) {
         filter.insert(`item-${i}`);

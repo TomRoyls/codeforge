@@ -103,10 +103,10 @@ describe('CartesianProduct2', () => {
   })
 
   describe('at with valid index', () => {
-    it.skip('returns element at valid index', () => {
+    it('returns element at valid index', () => {
       const cp = new CartesianProduct2<number>([[1, 2], [3, 4, 5]])
       expect(cp.at(0)).toEqual([1, 3])
-      expect(cp.at(2)).toEqual([1, 5])
+      expect(cp.at(2)).toEqual([1, 4])
       expect(cp.at(5)).toEqual([2, 5])
     })
   })

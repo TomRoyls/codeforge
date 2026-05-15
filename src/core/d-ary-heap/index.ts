@@ -146,7 +146,7 @@ export class DAryHeap<T = number> {
       arity: this.arity,
       comparator: this.compare,
     })
-    cloned.heap = [...this.heap]
+    cloned.heap = this.heap.map(item => typeof item === 'object' && item !== null ? structuredClone(item) : item) as T[]
     return cloned
   }
 
