@@ -282,4 +282,9 @@ describe('SegmentTreeMap2', () => {
     expect(tree.get(-1)).toBe(0)
     expect(tree.get(5)).toBe(0)
   })
+
+  it('should handle size property', async () => {
+    const tree = new SegmentTreeMap2(5)
+    expect(tree.size).toBe(5)
+  })
 })

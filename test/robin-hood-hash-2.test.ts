@@ -227,4 +227,12 @@ describe('RobinHoodHash2', () => {
     hash.set('key', 'newval');
     expect(hash.get('key')).toBe('newval');
   });
+
+  it('should handle keys and values', () => {
+    hash.set('a', 1);
+    hash.set('b', 2);
+    expect(hash.size).toBe(2);
+    expect(hash.get('a')).toBe(1);
+    expect(hash.get('b')).toBe(2);
+  });
 });
