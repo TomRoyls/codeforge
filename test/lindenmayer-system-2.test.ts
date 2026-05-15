@@ -196,4 +196,32 @@ describe('LindenmayerSystem2', () => {
     expect(system1.getCurrent()).toBe('A');
     expect(system2.getCurrent()).toBe('ABAAB');
   });
+
+  it('should handle single character axiom with no rules', () => {
+    const system = new LindenmayerSystem2('X', new Map());
+    expect(system.iterate(1)).toBe('X');
+    expect(system.iterate(3)).toBe('X');
+  });
+
+  it('should handle reset and re-iterate', () => {
+    const rules = new Map([['A', 'AB']]);
+    const system = new LindenmayerSystem2('A', rules);
+    expect(system.iterate(1)).toBe('AB');
+    system.reset();
+    expect(system.getCurrent()).toBe('A');
+    expect(system.iterate(1)).toBe('AB');
+  });
+
+  it('should handle axiom with only constant symbols', () => {
+    const rules = new Map([['X', 'XY']]);
+    const system = new LindenmayerSystem2('+-', rules);
+    expect(system.iterate(1)).toBe('+-');
+  });
+
+  it('should handle rule producing same character', () => {
+    const rules = new Map([['A', 'A']]);
+    const system = new LindenmayerSystem2('A', rules);
+    expect(system.iterate(1)).toBe('A');
+    expect(system.iterate(5)).toBe('A');
+  });
 });
