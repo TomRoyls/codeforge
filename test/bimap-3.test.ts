@@ -350,4 +350,14 @@ describe('BiMap3', () => {
     expect(bimap.keys()).toEqual(['a', 'b'])
     expect(bimap.values()).toEqual([1, 2])
   })
+
+  it('should handle has and hasValue', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    expect(bimap.has('a')).toBe(true)
+    expect(bimap.has('z')).toBe(false)
+    expect(bimap.hasValue(1)).toBe(true)
+    expect(bimap.hasValue(99)).toBe(false)
+  })
 })

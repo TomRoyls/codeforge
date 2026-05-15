@@ -270,5 +270,11 @@ describe('BloomierFilter2', () => {
       filter.clear();
       expect(filter.size).toBe(0);
     });
+
+    it('should handle get after set', () => {
+      const filter = new BloomierFilter2<string>(20);
+      filter.set('key1', 'value1');
+      expect(filter.get('key1')).toBe('value1');
+    });
   });
 });

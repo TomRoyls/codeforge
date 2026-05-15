@@ -488,5 +488,14 @@ describe('BTree', () => {
       expect(t.delete(20)).toBe(true);
       expect(t.search(20)).toBe(false);
     });
+
+    it('should handle toArray', () => {
+      const t = new BTree<number>(3);
+      t.insert(10);
+      t.insert(20);
+      t.insert(30);
+      const arr = t.toArray();
+      expect(arr.sort((a, b) => a - b)).toEqual([10, 20, 30]);
+    });
   });
 });

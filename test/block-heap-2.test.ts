@@ -427,5 +427,14 @@ describe('BlockHeap2', () => {
       heap.push(8);
       expect(heap.peek()).toBe(3);
     });
+
+    it('should handle size after operations', () => {
+      const heap = new BlockHeap2<number>();
+      heap.push(5);
+      heap.push(3);
+      heap.push(8);
+      heap.pop();
+      expect(heap.size).toBe(2);
+    });
   });
 });

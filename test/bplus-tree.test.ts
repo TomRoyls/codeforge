@@ -341,4 +341,11 @@ describe('BPlusTree', () => {
     tree.insert(3, 'c');
     expect(tree.get(2)).toBe('b');
   });
+
+  it('should handle isEmpty', () => {
+    const tree = new BPlusTree<number, string>(4);
+    expect(tree.isEmpty()).toBe(true);
+    tree.insert(1, 'a');
+    expect(tree.isEmpty()).toBe(false);
+  });
 });

@@ -390,13 +390,20 @@ describe('BinaryHeap', () => {
       expect(heap.size()).toBe(3);
     });
 
-    it('should handle extractMin', () => {
+    it('should handle extract', () => {
       const heap = new BinaryHeap<number>();
       heap.insert(3);
       heap.insert(1);
       heap.insert(2);
-      expect(heap.extractMin()).toBe(1);
-      expect(heap.extractMin()).toBe(2);
+      expect(heap.extract()).toBe(3);
+      expect(heap.extract()).toBe(2);
+    });
+
+    it('should handle isEmpty', () => {
+      const heap = new BinaryHeap<number>();
+      expect(heap.isEmpty()).toBe(true);
+      heap.insert(1);
+      expect(heap.isEmpty()).toBe(false);
     });
   });
 });

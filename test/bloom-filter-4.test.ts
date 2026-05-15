@@ -294,5 +294,12 @@ describe('BloomFilter4', () => {
       expect(bf.mightContain('hello')).toBe(true);
       expect(bf.mightContain('world')).toBe(true);
     });
+
+    it('should handle clear', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('hello');
+      bf.clear();
+      expect(bf.getSize()).toBeGreaterThan(0);
+    });
   });
 });

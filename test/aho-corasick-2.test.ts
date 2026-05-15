@@ -247,4 +247,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('CAT');
     expect(result).toEqual([]);
   });
+
+  it('should handle empty pattern list', () => {
+    const ac = new AhoCorasick2([]);
+    const result = ac.search('anything');
+    expect(result).toEqual([]);
+  });
 });

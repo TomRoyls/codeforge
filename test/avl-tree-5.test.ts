@@ -403,5 +403,12 @@ describe('AVLTree', () => {
         expect(tree.search(i)).toBe(true);
       }
     });
+
+    it('should handle isEmpty', () => {
+      const tree = new AVLTree();
+      expect(tree.isEmpty()).toBe(true);
+      tree.insert(1);
+      expect(tree.isEmpty()).toBe(false);
+    });
   });
 });

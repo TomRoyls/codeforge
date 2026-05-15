@@ -433,4 +433,13 @@ describe('AdaptivePQ2', () => {
     const pq = new AdaptivePQ2<string>()
     expect(pq.peek()).toBeUndefined()
   })
+
+  it('should handle clear', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    pq.clear()
+    expect(pq.isEmpty()).toBe(true)
+    expect(pq.size).toBe(0)
+  })
 })

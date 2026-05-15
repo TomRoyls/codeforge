@@ -466,4 +466,16 @@ describe('AtomicSet2', () => {
     const union = a.union(b);
     expect(union.size).toBe(3);
   });
+
+  it('should handle intersection', () => {
+    const a = new AtomicSet2<number>();
+    a.add(1);
+    a.add(2);
+    const b = new AtomicSet2<number>();
+    b.add(2);
+    b.add(3);
+    const inter = a.intersection(b);
+    expect(inter.size).toBe(1);
+    expect(inter.has(2)).toBe(true);
+  });
 });
