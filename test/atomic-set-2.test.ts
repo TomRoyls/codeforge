@@ -393,4 +393,14 @@ describe('AtomicSet2', () => {
     expect(items).toContain(10);
     expect(items).toContain(20);
   });
+
+  it('should handle toArray', () => {
+    const set = new AtomicSet2<number>();
+    set.add(5);
+    set.add(15);
+    const arr = set.toArray();
+    expect(arr).toContain(5);
+    expect(arr).toContain(15);
+    expect(arr).toHaveLength(2);
+  });
 });

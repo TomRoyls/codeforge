@@ -291,4 +291,11 @@ describe('BiMap3', () => {
     expect(bimap.hasValue(1)).toBe(true)
     expect(bimap.hasValue(99)).toBe(false)
   })
+
+  it('should handle getKey for value', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('x', 42)
+    expect(bimap.getKey(42)).toBe('x')
+    expect(bimap.getKey(99)).toBeUndefined()
+  })
 })
