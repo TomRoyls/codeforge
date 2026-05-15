@@ -280,5 +280,25 @@ describe('LFUCache4', () => {
       expect(cache.size).toBe(2)
       expect(cache.get('a')).toBe(10)
     })
+
+    it('should handle get on missing key', () => {
+      const cache = new LFUCache4(5)
+      expect(cache.get('missing')).toBeUndefined()
+    })
+
+    it('should handle updating existing key value', () => {
+      const cache = new LFUCache4(5)
+      cache.set('a', 1)
+      cache.set('a', 2)
+      expect(cache.get('a')).toBe(2)
+      expect(cache.size).toBe(1)
+    })
+
+    it('should handle delete on missing key', () => {
+      const cache = new LFUCache4(5)
+      cache.set('a', 1)
+      expect(cache.delete('missing')).toBe(false)
+      expect(cache.size).toBe(1)
+    })
   })
 })

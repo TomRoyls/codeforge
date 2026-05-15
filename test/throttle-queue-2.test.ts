@@ -288,4 +288,36 @@ describe('ThrottleQueue2', () => {
     }
     expect(queue.isEmpty()).toBe(true);
   });
+
+  it('should handle clear', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    queue.clear();
+    expect(queue.size).toBe(0);
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle enqueue then dequeue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    queue.enqueue(42);
+    expect(queue.dequeue()).toBe(42);
+    expect(queue.size).toBe(0);
+  });
+
+  it('should handle dequeue on empty queue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    expect(queue.dequeue()).toBeUndefined();
+  });
+
+  it('should maintain FIFO order', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.enqueue(30);
+    expect(queue.dequeue()).toBe(10);
+    expect(queue.dequeue()).toBe(20);
+    expect(queue.dequeue()).toBe(30);
+  });
 });

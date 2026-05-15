@@ -331,4 +331,28 @@ describe('ProbabilityMap2', () => {
     expect(map.get('c')).toBeCloseTo(1 / 3);
     expect(map.totalWeight()).toBe(30);
   });
+
+  it('should handle clear', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.totalWeight()).toBe(0);
+  });
+
+  it('should handle keys', () => {
+    const map = new ProbabilityMap2();
+    map.set('x', 1);
+    map.set('y', 2);
+    const keys = map.keys();
+    expect(keys).toContain('x');
+    expect(keys).toContain('y');
+  });
+
+  it('should handle single item probability is 1', () => {
+    const map = new ProbabilityMap2();
+    map.set('only', 42);
+    expect(map.get('only')).toBe(1);
+  });
 });
