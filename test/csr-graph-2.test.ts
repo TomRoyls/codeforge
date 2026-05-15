@@ -190,5 +190,45 @@ describe('CSRGraph2', () => {
       const neighbors = graph.getNeighbors(0);
       expect(neighbors).toHaveLength(2);
     });
+
+    it('should return correct vertex count', () => {
+      const graph = new CSRGraph2(5);
+      expect(graph.vertexCount()).toBe(5);
+    });
+
+    it('should return correct edge count', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.addEdge(0, 2);
+      expect(graph.edgeCount()).toBe(3);
+    });
+
+    it('should handle self-loop', () => {
+      const graph = new CSRGraph2(2);
+      graph.addEdge(0, 0);
+      graph.build();
+      expect(graph.hasEdge(0, 0)).toBe(true);
+      expect(graph.getNeighbors(0)).toHaveLength(1);
+    });
+
+    it('should handle build with no edges', () => {
+      const graph = new CSRGraph2(3);
+      graph.build();
+      for (let i = 0; i < 3; i++) {
+        expect(graph.getNeighbors(i)).toEqual([]);
+      }
+    });
+
+    it('should preserve edge weights', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1, 10);
+      graph.addEdge(0, 2, 20);
+      graph.build();
+      const neighbors = graph.getNeighbors(0);
+      const weights = neighbors.map(n => n.weight);
+      expect(weights).toContain(10);
+      expect(weights).toContain(20);
+    });
   });
 });

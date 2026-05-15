@@ -175,4 +175,45 @@ describe('UnionFind4', () => {
       expect(uf.connected(0, i)).toBe(true);
     }
   });
+
+  it('should return correct count', () => {
+    const uf = new UnionFind4(5);
+    expect(uf.count()).toBe(5);
+  });
+
+  it('should handle componentSize on isolated elements', () => {
+    const uf = new UnionFind4(5);
+    for (let i = 0; i < 5; i++) {
+      expect(uf.componentSize(i)).toBe(1);
+    }
+  });
+
+  it('should handle union of same element', () => {
+    const uf = new UnionFind4(3);
+    uf.union(1, 1);
+    expect(uf.componentSize(1)).toBe(1);
+    expect(uf.componentCount()).toBe(3);
+  });
+
+  it('should track componentCount correctly across unions', () => {
+    const uf = new UnionFind4(5);
+    expect(uf.componentCount()).toBe(5);
+    uf.union(0, 1);
+    expect(uf.componentCount()).toBe(4);
+    uf.union(2, 3);
+    expect(uf.componentCount()).toBe(3);
+    uf.union(0, 2);
+    expect(uf.componentCount()).toBe(2);
+    uf.union(4, 0);
+    expect(uf.componentCount()).toBe(1);
+  });
+
+  it('should handle repeated unions of same set', () => {
+    const uf = new UnionFind4(3);
+    uf.union(0, 1);
+    uf.union(0, 1);
+    uf.union(1, 0);
+    expect(uf.componentCount()).toBe(2);
+    expect(uf.componentSize(0)).toBe(2);
+  });
 });
