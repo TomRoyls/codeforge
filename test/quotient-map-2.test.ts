@@ -355,4 +355,11 @@ describe('QuotientMap2', () => {
     expect(qm.has('key1')).toBe(true);
     expect(qm.has('nonexistent')).toBe(false);
   });
+
+  it('should handle size', () => {
+    const qm = new QuotientMap2((a, b) => a === b);
+    qm.set('a', 1);
+    qm.set('b', 2);
+    expect(qm.size).toBe(2);
+  });
 });

@@ -218,4 +218,9 @@ describe('OddEvenSort3 - Edge Cases', () => {
     expect(sorter.isSorted([1, 2, 3])).toBe(true);
     expect(sorter.isSorted([3, 1, 2])).toBe(false);
   });
+
+  it('should handle getTimeComplexity', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(typeof sorter.getTimeComplexity()).toBe('string');
+  });
 });

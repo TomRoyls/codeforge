@@ -345,4 +345,12 @@ describe('RedBlackTreeMap2', () => {
     map.clear()
     expect(map.size).toBe(0)
   })
+
+  it('should handle has', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.has(1)).toBe(true)
+    expect(map.has(99)).toBe(false)
+  })
 })

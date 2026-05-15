@@ -460,5 +460,14 @@ describe('RingBuffer6', () => {
       buffer.push(3);
       expect(buffer.isFull()).toBe(true);
     });
+
+    it('should handle clear', () => {
+      const buffer = new RingBuffer6<number>(5);
+      buffer.push(1);
+      buffer.push(2);
+      buffer.push(3);
+      buffer.clear();
+      expect(buffer.isEmpty()).toBe(true);
+    });
   });
 });

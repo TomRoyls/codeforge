@@ -288,4 +288,9 @@ describe('PersistentArray2', () => {
     expect(arr2.get(2)).toBe(30)
     expect(arr.get(2)).toBeUndefined()
   })
+
+  it('should handle toArray', () => {
+    const arr = new PersistentArray2([10, 20, 30])
+    expect(arr.toArray()).toEqual([10, 20, 30])
+  })
 })

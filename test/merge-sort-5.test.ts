@@ -190,4 +190,8 @@ describe('MergeSort5', () => {
   it('should handle merge', () => {
     expect(ms.merge([1, 3, 5], [2, 4, 6])).toEqual([1, 2, 3, 4, 5, 6]);
   });
+
+  it('should handle sortRange', () => {
+    expect(ms.sort([5, 3, 1, 4, 2])).toEqual([1, 2, 3, 4, 5]);
+  });
 });

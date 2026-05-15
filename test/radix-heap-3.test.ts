@@ -379,4 +379,11 @@ describe('RadixHeap3', () => {
         expect(heap.peek()!.key).toBe(3);
         expect(heap.size).toBe(2);
     });
+
+    it('should handle isEmpty', () => {
+        const heap = new RadixHeap3<string>();
+        expect(heap.isEmpty()).toBe(true);
+        heap.insert(5, 'a');
+        expect(heap.isEmpty()).toBe(false);
+    });
 });

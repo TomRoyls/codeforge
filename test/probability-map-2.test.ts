@@ -427,4 +427,12 @@ describe('ProbabilityMap2', () => {
     expect(map.has('a')).toBe(false);
     expect(map.size).toBe(1);
   });
+
+  it('should handle clear', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.clear();
+    expect(map.size).toBe(0);
+  });
 });

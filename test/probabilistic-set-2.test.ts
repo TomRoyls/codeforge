@@ -327,4 +327,11 @@ describe('ProbabilisticSet2', () => {
     expect(set.has('a')).toBe(true);
     expect(set.has('d')).toBe(false);
   });
+
+  it('should handle size estimate', () => {
+    const set = new ProbabilisticSet2(100);
+    set.add('x');
+    set.add('y');
+    expect(set.bitCount()).toBeGreaterThan(0);
+  });
 });

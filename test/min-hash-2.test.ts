@@ -297,4 +297,10 @@ describe('MinHash2', () => {
     expect(sim).toBeGreaterThanOrEqual(0);
     expect(sim).toBeLessThanOrEqual(1);
   });
+
+  it('should handle identical sets', () => {
+    const mh = new MinHash2(128);
+    mh.addAll(['a', 'b', 'c']);
+    expect(mh.similarity(mh)).toBeCloseTo(1, 1);
+  });
 });

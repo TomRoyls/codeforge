@@ -387,5 +387,14 @@ describe('MinHeap', () => {
       expect(heap.peek()).toBe(3);
       expect(heap.size()).toBe(3);
     });
+
+    it('should handle toArray', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(3);
+      heap.insert(1);
+      heap.insert(2);
+      const arr = heap.toArray();
+      expect(arr.length).toBe(3);
+    });
   });
 });
