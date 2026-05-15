@@ -147,4 +147,45 @@ describe('CountMinSketch3', () => {
     cms.update('item', 0);
     expect(cms.estimate('item')).toBe(0);
   });
+
+  it('should reset to zero counts', () => {
+    const cms = new CountMinSketch3();
+    cms.update('a', 10);
+    cms.update('b', 20);
+    cms.reset();
+    expect(cms.estimate('a')).toBe(0);
+    expect(cms.estimate('b')).toBe(0);
+  });
+
+  it('should handle negative updates as decrements', () => {
+    const cms = new CountMinSketch3();
+    cms.update('item', 10);
+    cms.update('item', -3);
+    expect(cms.estimate('item')).toBeGreaterThanOrEqual(7);
+  });
+
+  it('should merge sketches with overlapping keys', () => {
+    const cms1 = new CountMinSketch3(1000, 5);
+    const cms2 = new CountMinSketch3(1000, 5);
+    cms1.update('key', 10);
+    cms2.update('key', 20);
+    cms1.merge(cms2);
+    expect(cms1.estimate('key')).toBeGreaterThanOrEqual(30);
+  });
+
+  it('should handle many distinct items', () => {
+    const cms = new CountMinSketch3(1000, 5);
+    for (let i = 0; i < 1000; i++) {
+      cms.update(`item-${i}`, 1);
+    }
+    for (let i = 0; i < 1000; i++) {
+      expect(cms.estimate(`item-${i}`)).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it('should never underestimate', () => {
+    const cms = new CountMinSketch3();
+    cms.update('test', 42);
+    expect(cms.estimate('test')).toBeGreaterThanOrEqual(42);
+  });
 });

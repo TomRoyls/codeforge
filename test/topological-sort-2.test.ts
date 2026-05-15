@@ -123,4 +123,78 @@ describe('TopologicalSort2', () => {
     expect(ts.sort()).toEqual([]);
     expect(ts.hasCycle()).toBe(false);
   });
+
+  it('linear chain', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('B', 'C');
+    ts.addEdge('C', 'D');
+    ts.addEdge('D', 'E');
+    expect(ts.sort()).toEqual(['A', 'B', 'C', 'D', 'E']);
+  });
+
+  it('diamond dependency', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('A', 'C');
+    ts.addEdge('B', 'D');
+    ts.addEdge('C', 'D');
+    const result = ts.sort();
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('B'));
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('C'));
+    expect(result.indexOf('B')).toBeLessThan(result.indexOf('D'));
+    expect(result.indexOf('C')).toBeLessThan(result.indexOf('D'));
+  });
+
+  it('disconnected components', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('C', 'D');
+    const result = ts.sort();
+    expect(result).toHaveLength(4);
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('B'));
+    expect(result.indexOf('C')).toBeLessThan(result.indexOf('D'));
+  });
+
+  it('numeric node ids', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge(1, 2);
+    ts.addEdge(1, 3);
+    ts.addEdge(2, 4);
+    const result = ts.sort();
+    expect(result).toContain(1);
+    expect(result).toContain(2);
+    expect(result).toContain(3);
+    expect(result).toContain(4);
+    expect(result.indexOf(1)).toBeLessThan(result.indexOf(2));
+  });
+
+  it('single node', () => {
+    const ts = new TopologicalSort2();
+    ts.addNode('A');
+    expect(ts.sort()).toEqual(['A']);
+    expect(ts.nodeCount()).toBe(1);
+  });
+
+  it('large graph', () => {
+    const ts = new TopologicalSort2();
+    for (let i = 0; i < 100; i++) {
+      ts.addEdge(i, i + 1);
+    }
+    const result = ts.sort();
+    expect(result).toHaveLength(101);
+    for (let i = 0; i < 100; i++) {
+      expect(result.indexOf(i)).toBeLessThan(result.indexOf(i + 1));
+    }
+  });
+
+  it('wide graph with single root', () => {
+    const ts = new TopologicalSort2();
+    for (let i = 0; i < 50; i++) {
+      ts.addEdge('root', `child-${i}`);
+    }
+    const result = ts.sort();
+    expect(result[0]).toBe('root');
+    expect(result).toHaveLength(51);
+  });
 });
