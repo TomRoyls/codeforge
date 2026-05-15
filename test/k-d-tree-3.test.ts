@@ -132,4 +132,49 @@ describe('KDTree3', () => {
     const nearest = tree.nearestNeighbor({x: 0, y: 0})
     expect(nearest).toEqual({x: -1, y: -2})
   })
+
+  it('should return all points from toArray', () => {
+    const points = [
+      {x: 1, y: 2},
+      {x: 3, y: 4},
+      {x: 5, y: 6}
+    ]
+    const tree = new KDTree3(points)
+    const arr = tree.toArray()
+    expect(arr).toHaveLength(3)
+    expect(arr).toContainEqual({x: 1, y: 2})
+    expect(arr).toContainEqual({x: 3, y: 4})
+    expect(arr).toContainEqual({x: 5, y: 6})
+  })
+
+  it('should return correct size', () => {
+    const tree = new KDTree3([
+      {x: 1, y: 1},
+      {x: 2, y: 2},
+      {x: 3, y: 3}
+    ])
+    expect(tree.size).toBe(3)
+  })
+
+  it('should report empty correctly', () => {
+    const tree = new KDTree3([])
+    expect(tree.isEmpty()).toBe(true)
+    expect(tree.size).toBe(0)
+  })
+
+  it('should handle single point', () => {
+    const tree = new KDTree3([{x: 5, y: 5}])
+    expect(tree.nearestNeighbor({x: 0, y: 0})).toEqual({x: 5, y: 5})
+    expect(tree.contains({x: 5, y: 5})).toBe(true)
+    expect(tree.contains({x: 0, y: 0})).toBe(false)
+  })
+
+  it('kNearestNeighbors with k larger than tree size', () => {
+    const tree = new KDTree3([
+      {x: 1, y: 1},
+      {x: 2, y: 2}
+    ])
+    const neighbors = tree.kNearestNeighbors({x: 0, y: 0}, 5)
+    expect(neighbors).toHaveLength(2)
+  })
 })

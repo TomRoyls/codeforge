@@ -140,4 +140,55 @@ describe('CSRGraph2', () => {
       expect(graph.hasEdge(2, 3)).toBe(true);
     });
   });
+
+  describe('edge cases', () => {
+    it('should handle single vertex graph', () => {
+      const graph = new CSRGraph2(1);
+      graph.build();
+      expect(graph.vertexCount()).toBe(1);
+      expect(graph.edgeCount()).toBe(0);
+      expect(graph.getNeighbors(0)).toEqual([]);
+    });
+
+    it('should handle self-loop', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 0);
+      graph.build();
+      expect(graph.hasEdge(0, 0)).toBe(true);
+      expect(graph.edgeCount()).toBe(1);
+    });
+
+    it('should return correct edge count', () => {
+      const graph = new CSRGraph2(5);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.addEdge(2, 3);
+      graph.addEdge(3, 4);
+      graph.build();
+      expect(graph.edgeCount()).toBe(4);
+    });
+
+    it('should return correct vertex count', () => {
+      const graph = new CSRGraph2(10);
+      graph.build();
+      expect(graph.vertexCount()).toBe(10);
+    });
+
+    it('should handle vertex with no outgoing edges', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.build();
+      expect(graph.getNeighbors(2)).toEqual([]);
+      expect(graph.hasEdge(2, 0)).toBe(false);
+    });
+
+    it('should handle multiple edges to same target', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1, 1);
+      graph.addEdge(0, 1, 2);
+      graph.build();
+      const neighbors = graph.getNeighbors(0);
+      expect(neighbors).toHaveLength(2);
+    });
+  });
 });
