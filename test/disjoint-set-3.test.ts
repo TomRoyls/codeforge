@@ -217,4 +217,99 @@ describe('DisjointSet3', () => {
     ds.union(1, 2);
     expect(ds.count()).toBe(1);
   });
+
+  it('should handle large set of elements', () => {
+    const ds = new DisjointSet3<number>();
+    for (let i = 0; i < 100; i++) {
+      ds.makeSet(i);
+    }
+    expect(ds.count()).toBe(100);
+    for (let i = 0; i < 99; i++) {
+      ds.union(i, i + 1);
+    }
+    expect(ds.count()).toBe(1);
+    expect(ds.setSize(0)).toBe(100);
+  });
+
+  it('should maintain connected after find', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    ds.union('a', 'b');
+    ds.find('a');
+    expect(ds.connected('a', 'b')).toBe(true);
+    expect(ds.connected('a', 'c')).toBe(false);
+  });
+
+  it('should handle star topology union', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('center');
+    for (let i = 0; i < 5; i++) {
+      ds.makeSet(`node-${i}`);
+      ds.union('center', `node-${i}`);
+    }
+    expect(ds.count()).toBe(1);
+    expect(ds.setSize('center')).toBe(6);
+    for (let i = 0; i < 5; i++) {
+      expect(ds.connected('center', `node-${i}`)).toBe(true);
+    }
+  });
+
+  it('should handle binary tree union pattern', () => {
+    const ds = new DisjointSet3<number>();
+    const n = 8;
+    for (let i = 0; i < n; i++) ds.makeSet(i);
+    for (let i = 0; i < n; i += 2) ds.union(i, i + 1);
+    expect(ds.count()).toBe(n / 2);
+  });
+
+  it('should handle large number of elements', () => {
+    const ds = new DisjointSet3<number>();
+    for (let i = 0; i < 100; i++) {
+      ds.makeSet(i);
+    }
+    expect(ds.count()).toBe(100);
+    for (let i = 0; i < 99; i++) {
+      ds.union(i, i + 1);
+    }
+    expect(ds.count()).toBe(1);
+    expect(ds.connected(0, 99)).toBe(true);
+    expect(ds.setSize(50)).toBe(100);
+  });
+
+  it('should connect all into one set', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    ds.makeSet('d');
+    ds.union('a', 'b');
+    ds.union('c', 'd');
+    ds.union('a', 'c');
+    expect(ds.count()).toBe(1);
+    expect(ds.connected('b', 'd')).toBe(true);
+    expect(ds.setSize('a')).toBe(4);
+  });
+
+  it('should track size correctly through unions', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    ds.union('a', 'b');
+    expect(ds.setSize('a')).toBe(2);
+    ds.union('a', 'c');
+    expect(ds.setSize('a')).toBe(3);
+  });
+
+  it('should handle repeated makeSet idempotently', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('x');
+    ds.makeSet('x');
+    ds.makeSet('x');
+    expect(ds.count()).toBe(1);
+    expect(ds.find('x')).toBe('x');
+    expect(ds.setSize('x')).toBe(1);
+  });
 });

@@ -226,4 +226,90 @@ describe('TopologicalSort2', () => {
     expect(result).toHaveLength(3);
     expect(result).toContain('C');
   });
+
+  it('should handle large multi-component graph', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('A', 'C');
+    ts.addEdge('A', 'D');
+    ts.addEdge('B', 'E');
+    ts.addEdge('C', 'E');
+    ts.addEdge('D', 'E');
+    ts.addEdge('E', 'F');
+    const result = ts.sort();
+    expect(result).toHaveLength(6);
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('B'));
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('C'));
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('D'));
+    expect(result.indexOf('B')).toBeLessThan(result.indexOf('E'));
+    expect(result.indexOf('C')).toBeLessThan(result.indexOf('E'));
+    expect(result.indexOf('D')).toBeLessThan(result.indexOf('E'));
+    expect(result.indexOf('E')).toBeLessThan(result.indexOf('F'));
+  });
+
+  it('should detect self-loop as cycle', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'A');
+    expect(ts.hasCycle()).toBe(true);
+    expect(ts.sort()).toEqual([]);
+  });
+
+  it('should sort correctly after many adds', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge(1, 2);
+    ts.addEdge(2, 3);
+    ts.addEdge(1, 4);
+    ts.addEdge(4, 5);
+    const result = ts.sort();
+    expect(result).toHaveLength(5);
+    expect(result.indexOf(1)).toBeLessThan(result.indexOf(2));
+    expect(result.indexOf(2)).toBeLessThan(result.indexOf(3));
+    expect(result.indexOf(1)).toBeLessThan(result.indexOf(4));
+    expect(result.indexOf(4)).toBeLessThan(result.indexOf(5));
+  });
+
+  it('should handle numeric-only graph', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge(10, 20);
+    ts.addEdge(10, 30);
+    ts.addEdge(20, 40);
+    const result = ts.sort();
+    expect(result).toHaveLength(4);
+    expect(result.indexOf(10)).toBeLessThan(result.indexOf(20));
+    expect(result.indexOf(10)).toBeLessThan(result.indexOf(30));
+    expect(result.indexOf(20)).toBeLessThan(result.indexOf(40));
+  });
+
+  it('should return same result on multiple sorts', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('A', 'C');
+    ts.addEdge('B', 'D');
+    const r1 = ts.sort();
+    const r2 = ts.sort();
+    expect(r1).toEqual(r2);
+  });
+
+  it('should handle multi-level wide graph', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('root', 'a1');
+    ts.addEdge('root', 'a2');
+    ts.addEdge('root', 'a3');
+    ts.addEdge('a1', 'b1');
+    ts.addEdge('a2', 'b1');
+    ts.addEdge('a3', 'b1');
+    const result = ts.sort();
+    expect(result).toHaveLength(5);
+    expect(result.indexOf('root')).toBeLessThan(result.indexOf('a1'));
+    expect(result.indexOf('b1')).toBeGreaterThan(result.indexOf('a1'));
+    expect(result.indexOf('b1')).toBeGreaterThan(result.indexOf('a3'));
+  });
+
+  it('should maintain edge count after duplicate nodes', () => {
+    const ts = new TopologicalSort2();
+    ts.addNode('A');
+    ts.addNode('A');
+    ts.addNode('A');
+    expect(ts.nodeCount()).toBe(1);
+  });
 });
