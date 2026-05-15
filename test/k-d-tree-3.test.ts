@@ -261,4 +261,15 @@ describe('KDTree3', () => {
     expect(neighbors).toHaveLength(1)
     expect(neighbors[0]).toEqual({x: 10, y: 10})
   })
+
+  it('should handle empty tree nearestNeighbor', () => {
+    const tree = new KDTree3([])
+    expect(tree.nearestNeighbor({x: 0, y: 0})).toBeUndefined()
+  })
+
+  it('should handle range search returning empty', () => {
+    const tree = new KDTree3([{x: 50, y: 50}])
+    const result = tree.rangeSearch({x: 0, y: 0}, {x: 10, y: 10})
+    expect(result).toHaveLength(0)
+  })
 })
