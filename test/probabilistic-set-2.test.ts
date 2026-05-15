@@ -261,4 +261,19 @@ describe('ProbabilisticSet2', () => {
     expect(set.size).toBe(1);
     expect(set.isEmpty()).toBe(false);
   });
+
+  it('should handle multiple has checks consistency', () => {
+    const set = new ProbabilisticSet2<string>(1000, 0.001);
+    for (let i = 0; i < 50; i++) {
+      set.add(`item-${i}`);
+    }
+    for (let i = 0; i < 50; i++) {
+      expect(set.has(`item-${i}`)).toBe(true);
+    }
+  });
+
+  it('should handle isEmpty on fresh set', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.isEmpty()).toBe(true);
+  });
 });

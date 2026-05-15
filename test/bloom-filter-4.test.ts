@@ -240,5 +240,16 @@ describe('BloomFilter4', () => {
       bf.clear();
       expect(bf.getEstimatedFalsePositiveRate()).toBe(0);
     });
+
+    it('should handle add then mightContain with number', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('42');
+      expect(bf.mightContain('42')).toBe(true);
+    });
+
+    it('should handle getSize returning bit count', () => {
+      const bf = new BloomFilter(100, 0.01);
+      expect(bf.getSize()).toBeGreaterThan(0);
+    });
   });
 });

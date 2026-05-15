@@ -207,5 +207,13 @@ describe('GodelNumber2', () => {
     it('should handle prime factorization of power of 2', () => {
       expect(GodelNumber2.primeFactorization(1024n)).toEqual(new Map([[2n, 10]]));
     });
+
+    it('should handle prime factorization of prime number', () => {
+      expect(GodelNumber2.primeFactorization(13n)).toEqual(new Map([[13n, 1]]));
+    });
+
+    it('should handle encode empty array returns 1', () => {
+      expect(GodelNumber2.encode([])).toBe(1n);
+    });
   });
 });
