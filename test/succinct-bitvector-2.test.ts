@@ -194,4 +194,37 @@ describe('SuccinctBitvector2', () => {
     expect(bv.select1(3)).toBe(6);
     expect(bv.select1(4)).toBe(7);
   });
+
+  it('should handle all ones bitvector', () => {
+    const bv = new SuccinctBitvector2([true, true, true, true]);
+    expect(bv.countOnes()).toBe(4);
+    expect(bv.rank1(4)).toBe(4);
+    expect(bv.select1(0)).toBe(0);
+    expect(bv.select1(3)).toBe(3);
+  });
+
+  it('should handle all zeros bitvector', () => {
+    const bv = new SuccinctBitvector2([false, false, false]);
+    expect(bv.countOnes()).toBe(0);
+    expect(bv.rank1(2)).toBe(0);
+  });
+
+  it('should handle single bit', () => {
+    const bv1 = new SuccinctBitvector2([true]);
+    expect(bv1.get(0)).toBe(true);
+    expect(bv1.countOnes()).toBe(1);
+
+    const bv0 = new SuccinctBitvector2([false]);
+    expect(bv0.get(0)).toBe(false);
+    expect(bv0.countOnes()).toBe(0);
+  });
+
+  it('should handle alternating bits', () => {
+    const bv = new SuccinctBitvector2([true, false, true, false, true]);
+    expect(bv.countOnes()).toBe(3);
+    expect(bv.rank1(5)).toBe(3);
+    expect(bv.select1(0)).toBe(0);
+    expect(bv.select1(1)).toBe(2);
+    expect(bv.select1(2)).toBe(4);
+  });
 });
