@@ -399,5 +399,12 @@ describe('LinkedHashSet', () => {
       set.delete(3);
       expect(set.last()).toBe(2);
     });
+
+    it('should handle has on missing element', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(1);
+      expect(set.has(1)).toBe(true);
+      expect(set.has(99)).toBe(false);
+    });
   });
 });

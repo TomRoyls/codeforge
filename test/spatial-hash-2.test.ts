@@ -293,5 +293,18 @@ describe('SpatialHash2', () => {
       const result = hash.query(5, 5, 2);
       expect(result).toHaveLength(1);
     });
+
+    it('should handle remove on non-existent key', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.remove('nonexistent');
+      expect(hash.size).toBe(0);
+    });
+
+    it('should handle query returning nothing', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 100, 100);
+      const result = hash.query(0, 0, 5);
+      expect(result).toHaveLength(0);
+    });
   });
 });
