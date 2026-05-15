@@ -321,4 +321,23 @@ describe('IntervalHeap3', () => {
     expect(heap.getMin()).toBe(Number.MIN_SAFE_INTEGER);
     expect(heap.getMax()).toBe(Number.MAX_SAFE_INTEGER);
   });
+
+  it('should handle extractMax', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(1);
+    heap.insert(5);
+    heap.insert(3);
+    expect(heap.extractMax()).toBe(5);
+    expect(heap.size).toBe(2);
+  });
+
+  it('should handle duplicate values', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(3);
+    heap.insert(3);
+    heap.insert(3);
+    expect(heap.getMin()).toBe(3);
+    expect(heap.getMax()).toBe(3);
+    expect(heap.size).toBe(3);
+  });
 });

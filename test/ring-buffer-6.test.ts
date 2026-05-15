@@ -381,4 +381,28 @@ describe('RingBuffer6', () => {
       expect(buffer.size).toBe(2);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle getAt', () => {
+      const buffer = new RingBuffer6<number>(4);
+      buffer.push(10);
+      buffer.push(20);
+      buffer.push(30);
+      expect(buffer.toArray()).toEqual([10, 20, 30]);
+    });
+
+    it('should handle clear', () => {
+      const buffer = new RingBuffer6<number>(4);
+      buffer.push(1);
+      buffer.push(2);
+      buffer.clear();
+      expect(buffer.size).toBe(0);
+      expect(buffer.isEmpty()).toBe(true);
+    });
+
+    it('should handle isEmpty on fresh buffer', () => {
+      const buffer = new RingBuffer6<number>();
+      expect(buffer.isEmpty()).toBe(true);
+    });
+  });
 });

@@ -302,4 +302,21 @@ describe('RadixHeap3', () => {
         }
         expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
     });
+
+    it('should handle single element', () => {
+        const heap = new RadixHeap3();
+        heap.insert(42, 'only');
+        expect(heap.extractMin()).toEqual({ key: 42, value: 'only' });
+        expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('should handle decreasing keys', () => {
+        const heap = new RadixHeap3();
+        heap.insert(1, 'a');
+        heap.insert(2, 'b');
+        heap.insert(3, 'c');
+        expect(heap.extractMin()!.key).toBe(1);
+        expect(heap.extractMin()!.key).toBe(2);
+        expect(heap.extractMin()!.key).toBe(3);
+    });
 });

@@ -229,4 +229,19 @@ describe('MinHash2', () => {
     mh2.add('same');
     expect(mh1.getSignature()).not.toEqual(mh2.getSignature());
   });
+
+  it('should handle empty signature', () => {
+    const mh = new MinHash2(10);
+    expect(mh.size()).toBe(0);
+    const sig = mh.getSignature();
+    expect(sig.length).toBe(10);
+  });
+
+  it('should handle jaccard with completely different sets', () => {
+    const mh1 = new MinHash2(200);
+    const mh2 = new MinHash2(200);
+    mh1.addAll(['x', 'y', 'z']);
+    mh2.addAll(['a', 'b', 'c']);
+    expect(mh1.similarity(mh2)).toBeLessThan(0.5);
+  });
 });
