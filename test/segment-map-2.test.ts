@@ -81,4 +81,46 @@ describe('SegmentMap2', () => {
     expect(map.get(15)).toBeUndefined();
     expect(map.get(25)).toBeUndefined();
   });
+
+  it('overlapping set replaces value', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 10, 'A');
+    map.set(0, 10, 'B');
+    expect(map.get(5)).toBe('B');
+  });
+
+  it('partial overlap set', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 10, 'A');
+    map.set(5, 15, 'B');
+    expect(map.get(4)).toBe('A');
+    expect(map.get(5)).toBe('B');
+    expect(map.get(12)).toBe('B');
+  });
+
+  it('delete partial range', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 20, 'A');
+    map.delete(5, 10);
+    expect(map.get(3)).toBe('A');
+    expect(map.get(7)).toBeUndefined();
+    expect(map.get(15)).toBe('A');
+  });
+
+  it('getRange returns all overlapping segments', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 5, 'A');
+    map.set(3, 8, 'B');
+    map.set(10, 15, 'C');
+    const range = map.getRange(2, 7);
+    expect(range.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('handles adjacent segments', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 5, 'A');
+    map.set(5, 10, 'B');
+    expect(map.get(4)).toBe('A');
+    expect(map.get(5)).toBe('B');
+  });
 });
