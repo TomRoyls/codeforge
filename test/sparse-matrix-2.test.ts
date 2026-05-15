@@ -352,4 +352,11 @@ describe('SparseMatrix2', () => {
     expect(matrix.rows()).toBe(3);
     expect(matrix.cols()).toBe(4);
   });
+
+  it('should handle nonZeroCount', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    matrix.set(0, 0, 1);
+    matrix.set(1, 1, 2);
+    expect(matrix.nonZeroCount()).toBe(2);
+  });
 });

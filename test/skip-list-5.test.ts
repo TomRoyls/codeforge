@@ -365,5 +365,13 @@ describe('SkipList5', () => {
       expect(list.search(10)).toBe(true);
       expect(list.search(99)).toBe(false);
     });
+
+    it('should handle delete non-existent', () => {
+      const list = new SkipList<number>();
+      list.insert(10);
+      list.insert(20);
+      expect(list.delete(99)).toBe(false);
+      expect(list.size()).toBe(2);
+    });
   });
 });

@@ -273,4 +273,10 @@ describe("RunLengthEncoding3", () => {
     const decoded = rle.decode(encoded);
     expect(decoded).toBe('AABBB');
   });
+
+  it('should handle empty string', () => {
+    const rle = new RunLengthEncoding3();
+    const encoded = rle.encode('');
+    expect(encoded).toBe('');
+  });
 });

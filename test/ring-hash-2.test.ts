@@ -331,4 +331,12 @@ describe('RingHash2', () => {
     const node = ring.getNode('some-key');
     expect(node).toBeDefined();
   });
+
+  it('should handle size', () => {
+    const ring = new RingHash2();
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.addNode('node3');
+    expect(ring.nodes().length).toBe(3);
+  });
 });

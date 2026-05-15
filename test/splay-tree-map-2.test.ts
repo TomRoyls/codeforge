@@ -413,4 +413,14 @@ describe('SplayTreeMap2', () => {
     map.clear();
     expect(map.size).toBe(0);
   });
+
+  it('should handle forEach', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    const entries: [number, string][] = [];
+    map.forEach((k, v) => entries.push([k, v]));
+    expect(entries.length).toBe(3);
+  });
 });

@@ -283,4 +283,12 @@ describe('RobinHoodHash2', () => {
     hash.clear();
     expect(hash.size).toBe(0);
   });
+
+  it('should handle has', () => {
+    const hash = new RobinHoodHash2<string, number>();
+    hash.set('a', 1);
+    hash.set('b', 2);
+    expect(hash.has('a')).toBe(true);
+    expect(hash.has('c')).toBe(false);
+  });
 });

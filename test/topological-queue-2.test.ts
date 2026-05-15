@@ -405,4 +405,13 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('C', 'A');
     expect(ts.hasCycle()).toBe(true);
   });
+
+  it('should handle acyclic graph sort', () => {
+    const ts = new TopologicalQueue2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('B', 'C');
+    expect(ts.hasCycle()).toBe(false);
+    const sorted = ts.sort();
+    expect(sorted.length).toBe(3);
+  });
 });

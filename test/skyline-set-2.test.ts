@@ -385,5 +385,12 @@ describe('SkylineSet2', () => {
       expect(set.has('a')).toBe(true);
       expect(set.has('z')).toBe(false);
     });
+
+    it('should handle remove', () => {
+      const set = new SkylineSet2<string>(2);
+      set.add('a', [1, 2]);
+      expect(set.remove('a')).toBe(true);
+      expect(set.has('a')).toBe(false);
+    });
   });
 });
