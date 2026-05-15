@@ -243,5 +243,12 @@ describe("SparseTable", () => {
       const st = new SparseTable([5, 3, 8, 1]);
       expect(typeof st.getTimeComplexity()).toBe('string');
     });
+
+    it("should handle getTable", () => {
+      const st = new SparseTable([5, 3, 8, 1]);
+      const table = st.getTable();
+      expect(Array.isArray(table)).toBe(true);
+      expect(table.length).toBeGreaterThan(0);
+    });
   });
 });

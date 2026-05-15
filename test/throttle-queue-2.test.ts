@@ -345,4 +345,15 @@ describe('ThrottleQueue2', () => {
     queue.enqueue(3);
     expect(queue.size).toBe(3);
   });
+
+  it('should handle multiple enqueue and dequeue cycles', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.dequeue()).toBe(1);
+    queue.enqueue(3);
+    expect(queue.dequeue()).toBe(2);
+    expect(queue.dequeue()).toBe(3);
+    expect(queue.isEmpty()).toBe(true);
+  });
 });

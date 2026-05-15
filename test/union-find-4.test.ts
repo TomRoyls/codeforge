@@ -311,4 +311,13 @@ describe('UnionFind4', () => {
     expect(uf.componentSize(0)).toBe(3);
     expect(uf.componentSize(3)).toBe(1);
   });
+
+  it('should handle find returning root', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(1, 2);
+    expect(uf.find(0)).toBe(uf.find(1));
+    expect(uf.find(1)).toBe(uf.find(2));
+    expect(uf.find(3)).not.toBe(uf.find(0));
+  });
 });

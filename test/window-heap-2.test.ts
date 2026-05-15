@@ -313,4 +313,12 @@ describe('WindowHeap2', () => {
     heap.push(20);
     expect(heap.getSum()).toBe(30);
   });
+
+  it('should handle getAverage', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(10);
+    heap.push(20);
+    heap.push(30);
+    expect(heap.getAverage()).toBe(20);
+  });
 });

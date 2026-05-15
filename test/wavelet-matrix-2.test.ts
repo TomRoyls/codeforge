@@ -336,4 +336,10 @@ describe('WaveletMatrix2', () => {
     expect(wm.isEmpty()).toBe(false);
     expect(wm.length).toBe(3);
   });
+
+  it('should handle toArray', async () => {
+    const data = [3, 1, 4, 1, 5];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.toArray()).toEqual([3, 1, 4, 1, 5]);
+  });
 });

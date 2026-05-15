@@ -376,4 +376,14 @@ describe('TopologicalQueue2', () => {
     const edges = ts.getEdges();
     expect(edges).toHaveLength(2);
   });
+
+  it('should handle addNode explicitly', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('X');
+    ts.addNode('Y');
+    ts.addEdge('X', 'Y');
+    expect(ts.sort()).toEqual(['X', 'Y']);
+    expect(ts.getNodes()).toContain('X');
+    expect(ts.getNodes()).toContain('Y');
+  });
 });

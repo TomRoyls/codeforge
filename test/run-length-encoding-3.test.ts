@@ -241,4 +241,14 @@ describe("RunLengthEncoding3", () => {
       expect(rle.runCount).toBe(3);
     });
   });
+
+  it('should handle clear', async () => {
+    const rle = new RunLengthEncoding3();
+    rle.encode('AAABBB');
+    expect(rle.length).toBe(6);
+    rle.clear();
+    expect(rle.isEmpty()).toBe(true);
+    expect(rle.length).toBe(0);
+    expect(rle.runCount).toBe(0);
+  });
 });

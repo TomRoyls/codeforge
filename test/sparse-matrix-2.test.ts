@@ -322,4 +322,14 @@ describe('SparseMatrix2', () => {
     const result = matrix.multiplyVector([1, 1, 1]);
     expect(result).toEqual([6, 15]);
   });
+
+  it('should handle toArray', () => {
+    const matrix = new SparseMatrix2(2, 2);
+    matrix.set(0, 0, 1);
+    matrix.set(0, 1, 2);
+    matrix.set(1, 0, 3);
+    matrix.set(1, 1, 4);
+    const arr = matrix.toArray();
+    expect(arr).toEqual([[1, 2], [3, 4]]);
+  });
 });

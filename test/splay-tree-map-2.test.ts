@@ -385,4 +385,10 @@ describe('SplayTreeMap2', () => {
     const arr = map.toArray();
     expect(arr).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);
   });
+
+  it('should handle values on empty tree', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    expect(map.values()).toEqual([]);
+    expect(map.keys()).toEqual([]);
+  });
 });
