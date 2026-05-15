@@ -250,5 +250,11 @@ describe('GodelNumber2', () => {
       expect(GodelNumber2.nthPrime(2)).toBe(3n);
       expect(GodelNumber2.nthPrime(3)).toBe(5n);
     });
+
+    it('should handle isPrime', () => {
+      expect(GodelNumber2.isPrime(2n)).toBe(true);
+      expect(GodelNumber2.isPrime(4n)).toBe(false);
+      expect(GodelNumber2.isPrime(17n)).toBe(true);
+    });
   });
 });

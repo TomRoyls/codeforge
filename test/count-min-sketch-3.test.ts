@@ -304,4 +304,12 @@ describe('CountMinSketch3', () => {
     cms.reset();
     expect(cms.estimate('item')).toBe(0);
   });
+
+  it('should handle multiple items', () => {
+    const cms = new CountMinSketch3();
+    cms.update('a', 5);
+    cms.update('b', 10);
+    expect(cms.estimate('a')).toBeGreaterThanOrEqual(5);
+    expect(cms.estimate('b')).toBeGreaterThanOrEqual(10);
+  });
 });

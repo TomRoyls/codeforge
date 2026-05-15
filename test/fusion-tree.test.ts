@@ -289,5 +289,13 @@ describe('FusionTree', () => {
       expect(tree.has(5)).toBe(true);
       expect(tree.has(99)).toBe(false);
     });
+
+    it('should handle delete', () => {
+      tree.insert(5);
+      tree.insert(10);
+      tree.insert(15);
+      expect(tree.delete(10)).toBe(true);
+      expect(tree.has(10)).toBe(false);
+    });
   });
 });

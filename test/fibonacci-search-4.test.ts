@@ -300,4 +300,9 @@ describe('FibonacciSearch4', () => {
     expect(searcher.search(3)).toBe(2);
     expect(searcher.search(99)).toBe(-1);
   });
+
+  it('should handle first element search', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30, 40, 50]);
+    expect(searcher.search(10)).toBe(0);
+  });
 });

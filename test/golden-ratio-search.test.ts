@@ -348,5 +348,12 @@ describe("GoldenRatioSearch", () => {
     const search = new GoldenRatioSearch(fn);
     expect(typeof search.getTimeComplexity()).toBe('string');
   });
+
+  it("respects tolerance parameter", () => {
+    const fn = (x: number) => -(x - 5) * (x - 5);
+    const search = new GoldenRatioSearch(fn, 0.001);
+    const result = search.findMaximum(0, 10);
+    expect(result.x).toBeCloseTo(5, 2);
+  });
 });
 });

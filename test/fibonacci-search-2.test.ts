@@ -240,4 +240,9 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30]);
     expect(fs.n).toBe(3);
   });
+
+  it('should handle search for first element', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    expect(fs.search(10)).toBe(0);
+  });
 });

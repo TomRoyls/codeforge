@@ -269,5 +269,10 @@ describe('CubeSort2', () => {
       const sorter = new CubeSort2();
       expect(sorter.sort([42])).toEqual([42]);
     });
+
+    it('should handle reverse sorted array', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
   });
 });

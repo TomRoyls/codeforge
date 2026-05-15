@@ -414,5 +414,12 @@ describe('GraphColoring2', () => {
       const colored = graph.colorGreedy(adj);
       expect(colored.get('A')).toBe(0);
     });
+
+    it('handles two vertex graph', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+      const colored = graph.colorGreedy(adj);
+      expect(graph.isValid(adj, colored)).toBe(true);
+    });
   });
 });

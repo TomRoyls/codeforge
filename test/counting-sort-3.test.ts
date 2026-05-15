@@ -242,5 +242,12 @@ describe('CountingSort', () => {
       const sorter = new CountingSort(array);
       expect(sorter.getTimeComplexity()).toBe('O(n + k) = O(100 + 100)');
     });
+
+    it('should handle sort with negative numbers', () => {
+      const array = [3, -1, 2, -3, 1];
+      const sorter = new CountingSort(array);
+      const result = sorter.sort();
+      expect(result).toEqual([-3, -1, 1, 2, 3]);
+    });
   });
 });
