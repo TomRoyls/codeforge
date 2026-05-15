@@ -410,5 +410,15 @@ describe('AVLTree', () => {
       tree.insert(1);
       expect(tree.isEmpty()).toBe(false);
     });
+
+    it('should handle delete', () => {
+      const tree = new AVLTree();
+      tree.insert(10);
+      tree.insert(5);
+      tree.insert(15);
+      tree.delete(10);
+      expect(tree.search(10)).toBe(false);
+      expect(tree.search(5)).toBe(true);
+    });
   });
 });

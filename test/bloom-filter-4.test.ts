@@ -301,5 +301,10 @@ describe('BloomFilter4', () => {
       bf.clear();
       expect(bf.getSize()).toBeGreaterThan(0);
     });
+
+    it('should handle estimated false positive rate', () => {
+      const bf = new BloomFilter(100, 0.01);
+      expect(bf.getEstimatedFalsePositiveRate()).toBeLessThanOrEqual(0.1);
+    });
   });
 });

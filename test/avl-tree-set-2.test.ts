@@ -442,4 +442,14 @@ describe('AVLTreeSet2', () => {
     const arr = set.toArray();
     expect(arr.sort((a, b) => a - b)).toEqual([10, 20, 30]);
   });
+
+  it('should handle forEach', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    const values: number[] = [];
+    set.forEach((v) => values.push(v));
+    expect(values.length).toBe(3);
+  });
 });

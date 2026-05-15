@@ -405,5 +405,14 @@ describe('BinaryHeap', () => {
       heap.insert(1);
       expect(heap.isEmpty()).toBe(false);
     });
+
+    it('should handle clear', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.clear();
+      expect(heap.isEmpty()).toBe(true);
+    });
   });
 });

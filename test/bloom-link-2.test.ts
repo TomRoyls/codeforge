@@ -350,5 +350,13 @@ describe('BloomLink2', () => {
       filter.add('y');
       expect(filter.mightContain('x')).toBe(true);
     });
+
+    it('should handle clear', () => {
+      const filter = new BloomLink2(100, 3);
+      filter.add('a');
+      filter.add('b');
+      filter.clear();
+      expect(filter.count()).toBe(0);
+    });
   });
 });

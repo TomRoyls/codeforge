@@ -442,4 +442,14 @@ describe('AdaptivePQ2', () => {
     expect(pq.isEmpty()).toBe(true)
     expect(pq.size).toBe(0)
   })
+
+  it('should handle pop order', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(3, 'c')
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    expect(pq.pop()!.value).toBe('a')
+    expect(pq.pop()!.value).toBe('b')
+    expect(pq.pop()!.value).toBe('c')
+  })
 })

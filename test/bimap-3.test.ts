@@ -360,4 +360,13 @@ describe('BiMap3', () => {
     expect(bimap.hasValue(1)).toBe(true)
     expect(bimap.hasValue(99)).toBe(false)
   })
+
+  it('should handle delete', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    expect(bimap.delete('a')).toBe(true)
+    expect(bimap.has('a')).toBe(false)
+    expect(bimap.size).toBe(1)
+  })
 })

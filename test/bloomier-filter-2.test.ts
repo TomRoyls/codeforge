@@ -276,5 +276,12 @@ describe('BloomierFilter2', () => {
       filter.set('key1', 'value1');
       expect(filter.get('key1')).toBe('value1');
     });
+
+    it('should handle delete', () => {
+      const filter = new BloomierFilter2<string>(20);
+      filter.set('key1', 'value1');
+      expect(filter.delete('key1')).toBe(true);
+      expect(filter.get('key1')).toBeUndefined();
+    });
   });
 });

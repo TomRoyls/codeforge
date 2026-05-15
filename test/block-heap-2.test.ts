@@ -436,5 +436,12 @@ describe('BlockHeap2', () => {
       heap.pop();
       expect(heap.size).toBe(2);
     });
+
+    it('should handle isEmpty', () => {
+      const heap = new BlockHeap2<number>();
+      expect(heap.isEmpty()).toBe(true);
+      heap.push(5);
+      expect(heap.isEmpty()).toBe(false);
+    });
   });
 });

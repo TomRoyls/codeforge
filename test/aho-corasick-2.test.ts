@@ -253,4 +253,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('anything');
     expect(result).toEqual([]);
   });
+
+  it('should find multiple pattern matches', () => {
+    const ac = new AhoCorasick2(['he', 'she', 'his', 'hers']);
+    const result = ac.search('ahishers');
+    expect(result.length).toBeGreaterThan(0);
+  });
 });

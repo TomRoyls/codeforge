@@ -348,4 +348,14 @@ describe('BPlusTree', () => {
     tree.insert(1, 'a');
     expect(tree.isEmpty()).toBe(false);
   });
+
+  it('should handle delete', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(1, 'a');
+    tree.insert(2, 'b');
+    tree.insert(3, 'c');
+    expect(tree.delete(2)).toBe(true);
+    expect(tree.get(2)).toBeUndefined();
+    expect(tree.size).toBe(2);
+  });
 });
