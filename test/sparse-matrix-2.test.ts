@@ -218,4 +218,46 @@ describe('SparseMatrix2', () => {
     const result = matrix.multiplyVector([0, 0, 0]);
     expect(result).toEqual([0, 0]);
   });
+
+  it('should handle large sparse matrix', () => {
+    const matrix = new SparseMatrix2(100, 100);
+    matrix.set(0, 0, 1);
+    matrix.set(50, 50, 2);
+    matrix.set(99, 99, 3);
+    expect(matrix.nonZeroCount()).toBe(3);
+    expect(matrix.get(0, 0)).toBe(1);
+    expect(matrix.get(50, 50)).toBe(2);
+    expect(matrix.get(99, 99)).toBe(3);
+    expect(matrix.density()).toBe(3 / 10000);
+  });
+
+  it('should overwrite value in same position', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    matrix.set(1, 1, 5);
+    matrix.set(1, 1, 10);
+    expect(matrix.get(1, 1)).toBe(10);
+    expect(matrix.nonZeroCount()).toBe(1);
+  });
+
+  it('should handle transpose round trip', () => {
+    const matrix = new SparseMatrix2(2, 3);
+    matrix.set(0, 1, 4);
+    matrix.set(1, 2, 7);
+    const roundTrip = matrix.transpose().transpose();
+    expect(roundTrip.rows()).toBe(2);
+    expect(roundTrip.cols()).toBe(3);
+    expect(roundTrip.get(0, 1)).toBe(4);
+    expect(roundTrip.get(1, 2)).toBe(7);
+  });
+
+  it('should set then remove then set again', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    matrix.set(1, 1, 5);
+    expect(matrix.nonZeroCount()).toBe(1);
+    matrix.set(1, 1, 0);
+    expect(matrix.nonZeroCount()).toBe(0);
+    matrix.set(1, 1, 10);
+    expect(matrix.get(1, 1)).toBe(10);
+    expect(matrix.nonZeroCount()).toBe(1);
+  });
 });

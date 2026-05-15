@@ -198,4 +198,49 @@ describe('RedBlackTreeMap2', () => {
     expect(map.delete(99)).toBe(false)
     expect(map.size).toBe(1)
   })
+
+  it('should handle negative keys', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(-5, 'neg5')
+    map.set(0, 'zero')
+    map.set(5, 'pos5')
+    expect(map.keys()).toEqual([-5, 0, 5])
+    expect(map.min()).toBe(-5)
+    expect(map.max()).toBe(5)
+  })
+
+  it('should handle sequential deletes', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.set(4, 'd')
+    map.delete(2)
+    expect(map.keys()).toEqual([1, 3, 4])
+    map.delete(1)
+    expect(map.keys()).toEqual([3, 4])
+    map.delete(4)
+    expect(map.keys()).toEqual([3])
+  })
+
+  it('should handle reverse insertion order', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    for (let i = 10; i >= 1; i--) {
+      map.set(i, `v${i}`)
+    }
+    expect(map.keys()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    expect(map.min()).toBe(1)
+    expect(map.max()).toBe(10)
+  })
+
+  it('should handle toArray after deletes', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    map.set(4, 'd')
+    map.delete(2)
+    const entries = map.toArray()
+    expect(entries).toEqual([[1, 'a'], [3, 'c'], [4, 'd']])
+  })
 })
