@@ -181,4 +181,56 @@ describe('RateLimiter2', () => {
     expect(limiter.tryAcquire()).toBe(false);
     expect(limiter.getAvailableTokens()).toBe(0);
   });
+
+  it('acquire with no prior usage succeeds immediately', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 5, windowMs: 1000 });
+    const start = Date.now();
+    await limiter.acquire();
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(50);
+    expect(limiter.getAvailableTokens()).toBe(4);
+  });
+
+  it('tryAcquire returns true until limit reached', () => {
+    const limiter = new RateLimiter2({ maxRequests: 4, windowMs: 1000 });
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(false);
+    expect(limiter.getAvailableTokens()).toBe(0);
+  });
+
+  it('reset mid-cycle allows new burst', () => {
+    const limiter = new RateLimiter2({ maxRequests: 2, windowMs: 10000 });
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    expect(limiter.tryAcquire()).toBe(false);
+
+    limiter.reset();
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.tryAcquire()).toBe(false);
+  });
+
+  it('handles single request maxRequests', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 1, windowMs: 100 });
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.getAvailableTokens()).toBe(0);
+    limiter.reset();
+    expect(limiter.tryAcquire()).toBe(true);
+  });
+
+  it('tracks available tokens after multiple windows', async () => {
+    const limiter = new RateLimiter2({ maxRequests: 3, windowMs: 100 });
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    limiter.tryAcquire();
+    expect(limiter.getAvailableTokens()).toBe(0);
+
+    await new Promise(r => setTimeout(r, 150));
+    expect(limiter.getAvailableTokens()).toBe(3);
+    expect(limiter.tryAcquire()).toBe(true);
+    expect(limiter.getAvailableTokens()).toBe(2);
+  });
 });

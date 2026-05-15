@@ -214,4 +214,44 @@ describe('SegmentTree', () => {
     expect(st.rangeMin(0, 4)).toBe(1000001);
     expect(st.rangeMax(0, 4)).toBe(1000005);
   });
+
+  it('should handle multiple point updates', () => {
+    const st = new SegmentTree([1, 2, 3, 4, 5]);
+    st.update(0, 10);
+    st.update(2, 20);
+    st.update(4, 30);
+    expect(st.toArray()).toEqual([10, 2, 20, 4, 30]);
+    expect(st.rangeSum(0, 4)).toBe(66);
+  });
+
+  it('should handle point update to same value', () => {
+    const st = new SegmentTree([1, 2, 3, 4, 5]);
+    st.update(2, 3);
+    expect(st.toArray()).toEqual([1, 2, 3, 4, 5]);
+    expect(st.rangeSum(0, 4)).toBe(15);
+  });
+
+  it('should handle range sum of single element after update', () => {
+    const st = new SegmentTree([10, 20, 30]);
+    st.update(1, 50);
+    expect(st.rangeSum(1, 1)).toBe(50);
+    expect(st.rangeSum(0, 2)).toBe(90);
+  });
+
+  it('should handle range add on single element', () => {
+    const st = new SegmentTree([1, 2, 3, 4, 5]);
+    st.rangeAdd(2, 2, 100);
+    expect(st.rangeSum(2, 2)).toBe(103);
+    expect(st.toArray()).toEqual([1, 2, 103, 4, 5]);
+  });
+
+  it('should handle three element array', () => {
+    const st = new SegmentTree([5, 3, 8]);
+    expect(st.rangeSum(0, 2)).toBe(16);
+    expect(st.rangeMin(0, 2)).toBe(3);
+    expect(st.rangeMax(0, 2)).toBe(8);
+    st.update(1, 10);
+    expect(st.rangeSum(0, 2)).toBe(23);
+    expect(st.rangeMax(0, 2)).toBe(10);
+  });
 });

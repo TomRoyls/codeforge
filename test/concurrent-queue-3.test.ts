@@ -168,4 +168,60 @@ describe('ConcurrentQueue3', () => {
     expect(queue.isEmpty()).toBe(true);
     expect(queue.peek()).toBe(undefined);
   });
+
+  it('should resolve multiple dequeue waiters in order', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    const results: number[] = [];
+
+    const p1 = queue.dequeue().then(v => results.push(v));
+    const p2 = queue.dequeue().then(v => results.push(v));
+    const p3 = queue.dequeue().then(v => results.push(v));
+
+    await queue.enqueue(10);
+    await queue.enqueue(20);
+    await queue.enqueue(30);
+
+    await Promise.all([p1, p2, p3]);
+    expect(results).toEqual([10, 20, 30]);
+  });
+
+  it('should dequeue all items from full queue', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    await queue.enqueue(1);
+    await queue.enqueue(2);
+    await queue.enqueue(3);
+    expect(await queue.dequeue()).toBe(1);
+    expect(await queue.dequeue()).toBe(2);
+    expect(await queue.dequeue()).toBe(3);
+    expect(queue.isEmpty()).toBe(true);
+    expect(queue.peek()).toBeUndefined();
+  });
+
+  it('should handle maxSize with multiple dequeues', async () => {
+    const queue = new ConcurrentQueue3<number>(2);
+    await queue.enqueue(1);
+    await queue.enqueue(2);
+
+    let thirdEnqueued = false;
+    const p = queue.enqueue(3).then(() => { thirdEnqueued = true; });
+
+    await new Promise(r => setTimeout(r, 10));
+    expect(thirdEnqueued).toBe(false);
+
+    await queue.dequeue();
+    await p;
+    expect(thirdEnqueued).toBe(true);
+    expect(queue.size).toBe(2);
+  });
+
+  it('should handle enqueue dequeue interleaving', async () => {
+    const queue = new ConcurrentQueue3<number>();
+    await queue.enqueue(1);
+    expect(await queue.dequeue()).toBe(1);
+    await queue.enqueue(2);
+    await queue.enqueue(3);
+    expect(await queue.dequeue()).toBe(2);
+    expect(await queue.dequeue()).toBe(3);
+    expect(queue.isEmpty()).toBe(true);
+  });
 });

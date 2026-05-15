@@ -187,4 +187,54 @@ describe('WeakHashMap2', () => {
     expect(map.get(null as any)).toBe(1);
     expect(map.get(undefined as any)).toBe(2);
   });
+
+  it('update existing object key value', () => {
+    const map = new WeakHashMap2<object, number>();
+    const obj = { id: 1 };
+    map.set(obj, 10);
+    map.set(obj, 20);
+    expect(map.get(obj)).toBe(20);
+    expect(map.size).toBe(1);
+  });
+
+  it('delete non-existent object key returns false', () => {
+    const map = new WeakHashMap2<object, number>();
+    const obj = { id: 1 };
+    expect(map.delete(obj)).toBe(false);
+    expect(map.size).toBe(0);
+  });
+
+  it('multiple objects with same properties are different keys', () => {
+    const map = new WeakHashMap2<object, number>();
+    const obj1 = { id: 1 };
+    const obj2 = { id: 1 };
+    map.set(obj1, 100);
+    map.set(obj2, 200);
+    expect(map.get(obj1)).toBe(100);
+    expect(map.get(obj2)).toBe(200);
+    expect(map.size).toBe(2);
+  });
+
+  it('clear then set new entries', () => {
+    const map = new WeakHashMap2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    map.clear();
+    expect(map.size).toBe(0);
+    map.set('c', 3);
+    expect(map.get('c')).toBe(3);
+    expect(map.size).toBe(1);
+  });
+
+  it('set and get with number keys', () => {
+    const map = new WeakHashMap2<number, string>();
+    map.set(1, 'one');
+    map.set(2, 'two');
+    map.set(3, 'three');
+    expect(map.get(1)).toBe('one');
+    expect(map.get(2)).toBe('two');
+    expect(map.get(3)).toBe('three');
+    expect(map.has(1)).toBe(true);
+    expect(map.has(99)).toBe(false);
+  });
 });
