@@ -185,4 +185,51 @@ describe('RangeMap2', () => {
       expect(map.get(5)).toBeUndefined();
     });
   });
+
+  describe('additional tests', () => {
+    it('sets non-overlapping ranges', () => {
+      const map = new RangeMap2<number>();
+      map.set(0, 10, 1);
+      map.set(20, 30, 2);
+      map.set(40, 50, 3);
+      expect(map.get(5)).toBe(1);
+      expect(map.get(25)).toBe(2);
+      expect(map.get(45)).toBe(3);
+      expect(map.get(15)).toBeUndefined();
+    });
+
+    it('ignores invalid range with start >= end', () => {
+      const map = new RangeMap2<string>();
+      map.set(10, 10, 'a');
+      map.set(20, 10, 'b');
+      expect(map.size).toBe(0);
+      expect(map.get(10)).toBeUndefined();
+    });
+
+    it('handles get after delete and re-set', () => {
+      const map = new RangeMap2<number>();
+      map.set(0, 20, 1);
+      map.delete(5, 15);
+      expect(map.get(10)).toBeUndefined();
+      map.set(5, 15, 2);
+      expect(map.get(10)).toBe(2);
+    });
+
+    it('size decreases after delete', () => {
+      const map = new RangeMap2<string>();
+      map.set(0, 20, 'a');
+      map.delete(5, 15);
+      expect(map.size).toBe(2);
+    });
+
+    it('clear then set works', () => {
+      const map = new RangeMap2<number>();
+      map.set(0, 10, 1);
+      map.set(20, 30, 2);
+      map.clear();
+      map.set(0, 50, 3);
+      expect(map.size).toBe(1);
+      expect(map.get(25)).toBe(3);
+    });
+  });
 });

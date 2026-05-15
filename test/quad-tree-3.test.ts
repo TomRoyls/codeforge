@@ -305,4 +305,47 @@ describe('QuadTree', () => {
       expect(allPoints.some((p) => p.x === 10 && p.y === 10)).toBe(true);
     });
   });
+
+  describe('additional tests', () => {
+    it('should track size with multiple inserts', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      for (let i = 0; i < 10; i++) {
+        qt.insert({ x: i * 5, y: i * 5 });
+      }
+      expect(qt.getSize()).toBe(10);
+    });
+
+    it('should return all inserted points', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 20, y: 20 });
+      qt.insert({ x: 30, y: 30 });
+      const all = qt.getAllPoints();
+      expect(all.length).toBe(3);
+    });
+
+    it('should return empty after clear', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      qt.insert({ x: 10, y: 10 });
+      qt.insert({ x: 20, y: 20 });
+      qt.clear();
+      expect(qt.getAllPoints()).toEqual([]);
+      expect(qt.queryRange({ x: 0, y: 0, width: 100, height: 100 })).toEqual([]);
+    });
+
+    it('should handle insert at boundary corner', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 });
+      expect(qt.insert({ x: 100, y: 100 })).toBe(true);
+      expect(qt.getSize()).toBe(1);
+    });
+
+    it('should handle subdivision with capacity 1', () => {
+      const qt = new QuadTree({ x: 0, y: 0, width: 100, height: 100 }, 1);
+      qt.insert({ x: 10, y: 10 });
+      expect(qt.divided).toBe(false);
+      qt.insert({ x: 20, y: 20 });
+      expect(qt.divided).toBe(true);
+      expect(qt.getSize()).toBe(2);
+    });
+  });
 });
