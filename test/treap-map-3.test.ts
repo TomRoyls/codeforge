@@ -238,4 +238,27 @@ describe('TreapMap3', () => {
     expect(map.get(1)).toBe('third');
     expect(map.keys()).toEqual([1]);
   });
+
+  it('should return correct entries in order', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const entries = map.toArray();
+    expect(entries.map(e => e[0])).toEqual([1, 2, 3]);
+  });
+
+  it('should handle delete non-existent key', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('should handle single entry min/max', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(42, 'answer');
+    expect(map.min()).toBe(42);
+    expect(map.max()).toBe(42);
+  });
 });
