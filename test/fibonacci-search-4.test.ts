@@ -176,4 +176,37 @@ describe('FibonacciSearch4', () => {
     expect(searcher.searchLast(-3)).toBe(2);
     expect(searcher.count(-3)).toBe(3);
   });
+
+  it('should return correct toArray', () => {
+    const data = [1, 3, 5, 7];
+    const searcher = new FibonacciSearch4(data);
+    expect(searcher.toArray()).toEqual(data);
+  });
+
+  it('should report isEmpty correctly', () => {
+    const empty = new FibonacciSearch4([]);
+    expect(empty.isEmpty()).toBe(true);
+    const nonEmpty = new FibonacciSearch4([1]);
+    expect(nonEmpty.isEmpty()).toBe(false);
+  });
+
+  it('should handle searchRange for existing element', () => {
+    const searcher = new FibonacciSearch4([1, 2, 2, 2, 3]);
+    const range = searcher.searchRange(2);
+    expect(range[0]).toBe(1);
+    expect(range[1]).toBe(3);
+  });
+
+  it('should handle searchRange for non-existent', () => {
+    const searcher = new FibonacciSearch4([1, 2, 3]);
+    const range = searcher.searchRange(99);
+    expect(range[0]).toBe(-1);
+    expect(range[1]).toBe(-1);
+  });
+
+  it('should handle contains', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30]);
+    expect(searcher.contains(20)).toBe(true);
+    expect(searcher.contains(25)).toBe(false);
+  });
 });

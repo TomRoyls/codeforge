@@ -163,4 +163,32 @@ describe('ElasticQueue2', () => {
     }
     expect(queue.isEmpty()).toBe(true);
   });
+
+  it('should report correct size after enqueue', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(queue.size).toBe(3);
+  });
+
+  it('should handle dequeue on empty returning undefined', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.dequeue()).toBeUndefined();
+  });
+
+  it('should handle peek on empty returning undefined', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.peek()).toBeUndefined();
+  });
+
+  it('should return undefined capacity when no maxSize', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.capacity()).toBeUndefined();
+  });
+
+  it('should return capacity when maxSize set', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 10 });
+    expect(queue.capacity()).toBe(10);
+  });
 });

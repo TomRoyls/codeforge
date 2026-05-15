@@ -205,4 +205,36 @@ describe('ThrottleQueue2', () => {
     expect(queue.dequeue()).toBe(4);
     expect(queue.isEmpty()).toBe(true);
   });
+
+  it('should return undefined dequeue on empty', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 2 });
+    expect(queue.dequeue()).toBeUndefined();
+  });
+
+  it('should handle clear on already-empty queue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 2 });
+    queue.clear();
+    expect(queue.isEmpty()).toBe(true);
+    expect(queue.size).toBe(0);
+  });
+
+  it('should handle many items sequentially', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 10 });
+    for (let i = 0; i < 100; i++) {
+      queue.enqueue(i);
+    }
+    for (let i = 0; i < 100; i++) {
+      expect(queue.dequeue()).toBe(i);
+    }
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle string items', () => {
+    const queue = new ThrottleQueue2<string>({ maxConcurrent: 3 });
+    queue.enqueue('a');
+    queue.enqueue('b');
+    queue.enqueue('c');
+    expect(queue.dequeue()).toBe('a');
+    expect(queue.dequeue()).toBe('b');
+  });
 });
