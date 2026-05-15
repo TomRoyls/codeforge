@@ -346,4 +346,13 @@ describe('WindowHeap2', () => {
     heap.push(1);
     expect(heap.isEmpty()).toBe(false);
   });
+
+  it('should handle clear', () => {
+    const heap = new WindowHeap2<number>();
+    heap.push(1);
+    heap.push(2);
+    heap.push(3);
+    heap.clear();
+    expect(heap.size).toBe(0);
+  });
 });

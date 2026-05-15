@@ -321,5 +321,13 @@ describe('WeightedGraph2', () => {
       graph.addEdge('A', 'B', 5);
       expect(graph.getEdgeWeight('A', 'B')).toBe(5);
     });
+
+    it('should handle addVertex duplicate', () => {
+      const graph = new WeightedGraph2<string>();
+      graph.addVertex('A');
+      graph.addVertex('A');
+      expect(graph.hasVertex('A')).toBe(true);
+      expect(graph.vertexCount()).toBe(1);
+    });
   });
 });

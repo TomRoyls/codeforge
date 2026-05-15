@@ -363,4 +363,10 @@ describe('WaveletMatrix2', () => {
     const wm = new WaveletMatrix2(data);
     expect(wm.rank(10, 5)).toBe(3);
   });
+
+  it('should handle rangeFreq', () => {
+    const data = [1, 2, 3, 4, 5];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.rangeFreq(0, 5, 2, 4)).toBe(3);
+  });
 });

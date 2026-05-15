@@ -497,4 +497,11 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     const nearest = tree.nearest(query)
     expect(radiusResults).toContain(nearest!)
   })
+
+  it('should handle toArray', () => {
+    const points = [[1, 1], [2, 2], [3, 3]]
+    const tree = new VantagePointTree2(points)
+    const arr = tree.toArray()
+    expect(arr.length).toBe(3)
+  })
 })

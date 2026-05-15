@@ -337,5 +337,13 @@ describe('TrieMap2', () => {
       const keys = t.keysWithPrefix('app');
       expect(keys.length).toBe(2);
     });
+
+    it('should handle hasPrefix', () => {
+      const t = new TrieMap2<number>();
+      t.set('apple', 1);
+      t.set('application', 2);
+      expect(t.hasPrefix('app')).toBe(true);
+      expect(t.hasPrefix('zzz')).toBe(false);
+    });
   });
 });

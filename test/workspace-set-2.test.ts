@@ -295,5 +295,14 @@ describe('WorkspaceSet2', () => {
       expect(ws.getWorkspace('workspace2').has('shared')).toBe(true);
       expect(ws.getWorkspace('workspace3').has('shared')).toBe(true);
     });
+
+    it('should handle workspace names', () => {
+      const ws = new WorkspaceSet2();
+      ws.createWorkspace('a');
+      ws.createWorkspace('b');
+      const names = ws.getWorkspaceNames();
+      expect(names).toContain('a');
+      expect(names).toContain('b');
+    });
   });
 });

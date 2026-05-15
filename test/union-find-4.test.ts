@@ -343,4 +343,9 @@ describe('UnionFind4', () => {
     uf.union(0, 1);
     expect(uf.componentCount()).toBe(4);
   });
+
+  it('should handle count', () => {
+    const uf = new UnionFind4(5);
+    expect(uf.count()).toBe(5);
+  });
 });
