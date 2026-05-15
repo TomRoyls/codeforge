@@ -286,5 +286,19 @@ describe('CSRGraph2', () => {
       expect(graph.getNeighbors(1)).toHaveLength(1);
       expect(graph.getNeighbors(2)).toEqual([]);
     });
+
+    it('should handle vertex count', () => {
+      const graph = new CSRGraph2(5);
+      expect(graph.vertexCount()).toBe(5);
+    });
+
+    it('should handle empty graph', () => {
+      const graph = new CSRGraph2(3);
+      graph.build();
+      expect(graph.edgeCount()).toBe(0);
+      for (let i = 0; i < 3; i++) {
+        expect(graph.getNeighbors(i)).toEqual([]);
+      }
+    });
   });
 });

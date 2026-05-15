@@ -257,4 +257,19 @@ describe('RingHash2', () => {
     expect(zeroRing.size()).toBe(0);
     expect(zeroRing.getNode('key')).toBeUndefined();
   });
+
+  it('should handle removeNode on non-existent node', () => {
+    ring.addNode('node1');
+    ring.removeNode('nonexistent');
+    expect(ring.size()).toBe(100);
+    expect(ring.nodes()).toContain('node1');
+  });
+
+  it('should handle multiple getNode calls consistently', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    const first = ring.getNode('test-key');
+    const second = ring.getNode('test-key');
+    expect(first).toBe(second);
+  });
 });

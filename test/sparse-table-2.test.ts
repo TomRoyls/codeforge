@@ -216,5 +216,11 @@ describe("SparseTable", () => {
       expect(st.rangeMaxQuery(0, 3)).toBe(8);
       expect(st.rangeMaxQuery(4, 7)).toBe(9);
     });
+
+    it("should handle adjacent element queries", () => {
+      const st = new SparseTable([5, 3, 8, 1]);
+      expect(st.rangeMinQuery(0, 1)).toBe(3);
+      expect(st.rangeMaxQuery(1, 2)).toBe(8);
+    });
   });
 });
