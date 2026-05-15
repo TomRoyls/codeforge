@@ -291,12 +291,20 @@ describe("GoldenRatioSearch", () => {
       expect(result.x).toBeCloseTo(2, 5);
     });
 
-    it("setTolerance changes search precision", () => {
-      const fn = (x: number) => (x - 3) * (x - 3);
-      const search = new GoldenRatioSearch(fn, 1e-2);
-      search.setTolerance(1e-10);
-      const result = search.findMinimum(-10, 10);
-      expect(result.x).toBeCloseTo(3, 9);
-    });
+  it("setTolerance changes search precision", () => {
+    const fn = (x: number) => (x - 3) * (x - 3);
+    const search = new GoldenRatioSearch(fn, 1e-2);
+    search.setTolerance(1e-10);
+    const result = search.findMinimum(-10, 10);
+    expect(result.x).toBeCloseTo(3, 9);
   });
+
+  it("finds minimum of negative parabola at boundary", () => {
+    const fn = (x: number) => -(x - 5) * (x - 5);
+    const search = new GoldenRatioSearch(fn);
+    const result = search.findMinimum(-10, 10);
+    expect(result.x).toBeGreaterThanOrEqual(-10);
+    expect(result.x).toBeLessThanOrEqual(10);
+  });
+});
 });

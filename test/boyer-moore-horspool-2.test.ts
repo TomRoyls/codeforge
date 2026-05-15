@@ -196,5 +196,10 @@ describe('BoyerMooreHorspool2', () => {
       const searcher = new BoyerMooreHorspool2('xy');
       expect(searcher.search('abcxydefxy')).toEqual([3, 8]);
     });
+
+    it('should handle pattern equal to text', async () => {
+      const searcher = new BoyerMooreHorspool2('exact');
+      expect(searcher.search('exact')).toEqual([0]);
+    });
   });
 });

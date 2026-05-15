@@ -382,4 +382,15 @@ describe('AtomicSet2', () => {
     const result = set1.difference(set2);
     expect(result.size).toBe(0);
   });
+
+  it('should handle forEach', () => {
+    const set = new AtomicSet2<number>();
+    set.add(10);
+    set.add(20);
+    const items: number[] = [];
+    set.forEach(v => items.push(v));
+    expect(items).toHaveLength(2);
+    expect(items).toContain(10);
+    expect(items).toContain(20);
+  });
 });
