@@ -254,7 +254,7 @@ describe('AdaptiveHeap', () => {
       expect(heap.peek()).toBe(peekBefore);
     });
 
-    it.skip('should handle duplicates', () => {
+    it('should handle duplicates', () => {
       const heap = new AdaptiveHeap<number>();
       heap.push(5);
       heap.push(3);
@@ -656,7 +656,7 @@ describe('AdaptiveHeap', () => {
       expect(cloned.size).toBe(3);
     });
 
-     it.skip('should clone with same comparator', () => {
+     it('should clone with same comparator', () => {
       const heap = new AdaptiveHeap<number>((a, b) => a - b);
       heap.push(5);
       heap.push(3);
@@ -837,7 +837,7 @@ describe('AdaptiveHeap', () => {
       expect(arr[3]).toBe(3.14);
     });
 
-    it.skip('should handle large values', () => {
+    it('should handle large values', () => {
       const heap = new AdaptiveHeap<number>();
       heap.push(Number.MAX_VALUE);
       heap.push(-Number.MAX_VALUE);

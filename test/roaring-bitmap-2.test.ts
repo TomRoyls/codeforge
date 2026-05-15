@@ -70,7 +70,7 @@ describe('RoaringBitmap2', () => {
       expect(bitmap.has(10)).toBe(true);
     });
 
-    it.skip('should handle large ranges', () => {
+    it('should handle large ranges', () => {
       const bitmap = new RoaringBitmap2();
       for (let i = 0; i < 1000; i++) {
         bitmap.add(i);
@@ -377,7 +377,7 @@ describe('RoaringBitmap2', () => {
       expect(result.has(6)).toBe(true);
     });
 
-    it.skip('should handle large ranges', () => {
+    it('should handle large ranges', () => {
       const a = new RoaringBitmap2();
       const b = new RoaringBitmap2();
       for (let i = 0; i < 1000; i++) {
@@ -426,7 +426,7 @@ describe('RoaringBitmap2', () => {
       expect(result.isEmpty()).toBe(true);
     });
 
-    it.skip('should xor overlapping runs', () => {
+    it('should xor overlapping runs', () => {
       const a = new RoaringBitmap2();
       const b = new RoaringBitmap2();
       a.add(1);
@@ -458,7 +458,7 @@ describe('RoaringBitmap2', () => {
       expect(result.has(6)).toBe(true);
     });
 
-    it.skip('should handle large ranges', () => {
+    it('should handle large ranges', () => {
       const a = new RoaringBitmap2();
       const b = new RoaringBitmap2();
       for (let i = 0; i < 1000; i++) {
@@ -514,7 +514,7 @@ describe('RoaringBitmap2', () => {
       expect(bitmap.has(end)).toBe(true);
     });
 
-    it.skip('should perform set operations on large ranges', () => {
+    it('should perform set operations on large ranges', () => {
       const a = new RoaringBitmap2();
       const b = new RoaringBitmap2();
       for (let i = 0; i < 10000; i++) {

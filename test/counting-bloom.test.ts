@@ -189,7 +189,7 @@ describe('CountingBloomFilter', () => {
       expect(cbf.has('🚀')).toBe(false);
     });
 
-    it.skip('should decrement size when removing', () => {
+    it('should decrement size when removing', () => {
       cbf.add('a');
       cbf.add('b');
       expect(cbf.size).toBe(2);
@@ -310,7 +310,7 @@ describe('CountingBloomFilter', () => {
       expect(cbf.count('🚀')).toBe(3);
     });
 
-    it.skip('should handle count with update', () => {
+    it('should handle count with update', () => {
       cbf.add('test');
       cbf.update('test', 5);
       expect(cbf.count('test')).toBe(6);
@@ -378,14 +378,14 @@ describe('CountingBloomFilter', () => {
       expect(cbf.count('🚀')).toBe(7);
     });
 
-    it.skip('should increment size with positive delta', () => {
+    it('should increment size with positive delta', () => {
       cbf.add('a');
       expect(cbf.size).toBe(1);
       cbf.update('a', 5);
       expect(cbf.size).toBe(6);
     });
 
-    it.skip('should not change size with negative delta', () => {
+    it('should not change size with negative delta', () => {
       cbf.add('a');
       cbf.add('a');
       cbf.add('a');
@@ -440,7 +440,7 @@ describe('CountingBloomFilter', () => {
       expect(cbf.expectedFalsePositiveRate()).toBe(0);
     });
 
-    it.skip('should handle duplicate items correctly', () => {
+    it('should handle duplicate items correctly', () => {
       cbf.add('a');
       cbf.add('a');
       cbf.add('a');
@@ -501,7 +501,7 @@ describe('CountingBloomFilter', () => {
       expect(cbf.fillRatio()).toBe(0);
     });
 
-    it.skip('should decrease after removing all occurrences', () => {
+    it('should decrease after removing all occurrences', () => {
       cbf.add('a');
       cbf.add('b');
       const ratio1 = cbf.fillRatio();
@@ -732,7 +732,7 @@ describe('CountingBloomFilter', () => {
       expect(cbf.isEmpty()).toBe(true);
     });
 
-    it.skip('should be true after removing all duplicates', () => {
+    it('should be true after removing all duplicates', () => {
       cbf.add('a');
       cbf.add('a');
       cbf.remove('a');
@@ -1131,7 +1131,7 @@ describe('CountingBloomFilter', () => {
       expect(bf.has('test')).toBe(true);
     });
 
-    it.skip('should handle negative delta in update', () => {
+    it('should handle negative delta in update', () => {
       cbf.add('test');
       cbf.add('test');
       cbf.update('test', -5);

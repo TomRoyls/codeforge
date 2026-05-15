@@ -602,7 +602,7 @@ describe('BinomialHeap4', () => {
   })
 
   describe('delete', () => {
-    it.skip('should delete a node from heap', () => {
+    it('should delete a node from heap', () => {
       const heap = new BinomialHeap4<number>()
       const node1 = heap.insert(5)
       const node2 = heap.insert(10)

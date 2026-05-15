@@ -17,7 +17,7 @@ describe('BootstrappedHeap', () => {
       expect(heap.peek()).toBe(3);
     });
 
-    it.skip('should use custom comparator correctly', async () => {
+    it('should use custom comparator correctly', async () => {
       const heap = new BootstrappedHeap<number>({ comparator: (a, b) => b - a });
       heap.insert(5);
       heap.insert(3);
@@ -224,7 +224,7 @@ describe('BootstrappedHeap', () => {
       expect(result).toEqual([1, 2, 5, 7, 8, 9]);
     });
 
-    it.skip('should merge heaps with same comparator', async () => {
+    it('should merge heaps with same comparator', async () => {
       const heap1 = new BootstrappedHeap<number>({ comparator: (a, b) => b - a });
       const heap2 = new BootstrappedHeap<number>({ comparator: (a, b) => b - a });
       heap1.insert(5);
@@ -539,7 +539,7 @@ describe('BootstrappedHeap', () => {
       expect(cloned.size).toBe(3);
     });
 
-    it.skip('should clone with same comparator', async () => {
+    it('should clone with same comparator', async () => {
       const heap = new BootstrappedHeap<number>({ comparator: (a, b) => b - a });
       heap.insert(5);
       heap.insert(3);
@@ -713,7 +713,7 @@ describe('BootstrappedHeap', () => {
       expect(heap.peek()).toBe('apple');
     });
 
-    it.skip('should use custom comparator', async () => {
+    it('should use custom comparator', async () => {
       const heap = BootstrappedHeap.fromArray<number>(
         [5, 3, 7, 1, 9],
         { comparator: (a, b) => b - a }

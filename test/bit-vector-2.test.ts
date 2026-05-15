@@ -345,7 +345,7 @@ describe('BitVector2', () => {
       expect(bv.rank1(10)).toBe(3);
     });
 
-    it.skip('should work with consecutive ones', () => {
+    it('should work with consecutive ones', () => {
       bv = new BitVector2(10);
       bv.set(2, true);
       bv.set(3, true);
@@ -438,7 +438,7 @@ describe('BitVector2', () => {
       expect(() => bv.select1(1)).toThrow(RangeError);
     });
 
-    it.skip('should work with consecutive ones', () => {
+    it('should work with consecutive ones', () => {
       bv = new BitVector2(10);
       bv.set(2, true);
       bv.set(3, true);
@@ -574,7 +574,7 @@ describe('BitVector2', () => {
       expect(bv.isEmpty()).toBe(true);
     });
 
-    it.skip('should handle multiple resizes', () => {
+    it('should handle multiple resizes', () => {
       bv = new BitVector2(10);
       bv.set(5, true);
       bv.resize(5);

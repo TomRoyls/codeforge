@@ -244,7 +244,7 @@ describe('AdaptiveSort', () => {
       expect(sorter.getTimeComplexity()).toBe('O(n)');
     });
 
-    it.skip('should return O(n) for reverse sorted array', () => {
+    it('should return O(n) for reverse sorted array', () => {
       const sorter = new AdaptiveSort([5, 4, 3, 2, 1]);
       expect(sorter.getTimeComplexity()).toBe('O(n)');
     });
@@ -328,7 +328,7 @@ describe('AdaptiveSort', () => {
   });
 
   describe('integration tests', () => {
-    it.skip('should handle mixed positive and negative zeros', () => {
+    it('should handle mixed positive and negative zeros', () => {
       const sorter = new AdaptiveSort([0, -0, 0, -0]);
       const result = sorter.sort();
       expect(result.length).toBe(4);

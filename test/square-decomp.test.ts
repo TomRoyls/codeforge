@@ -74,7 +74,7 @@ describe('SquareDecomp', () => {
   });
 
   describe('size', () => {
-    it.skip('should return 0 for empty array', () => {
+    it('should return 0 for empty array', () => {
       const sd = new SquareDecomp([]);
       expect(sd.size).toBe(0);
     });
@@ -97,7 +97,7 @@ describe('SquareDecomp', () => {
   });
 
   describe('blockCount', () => {
-    it.skip('should return 0 for empty array', () => {
+    it('should return 0 for empty array', () => {
       const sd = new SquareDecomp([]);
       expect(sd.blockCount).toBe(0);
     });
@@ -148,7 +148,7 @@ describe('SquareDecomp', () => {
   });
 
   describe('queryRangeSum', () => {
-    it.skip('should return 0 for empty array', () => {
+    it('should return 0 for empty array', () => {
       const sd = new SquareDecomp([]);
       expect(sd.queryRangeSum(0, 0)).toBe(0);
     });
