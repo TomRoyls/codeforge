@@ -134,4 +134,86 @@ describe('BloomFilter4', () => {
       expect(bf.getTimeComplexity()).toContain('O(k)');
     });
   });
+
+  describe('edge cases', () => {
+    it('should handle single item', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('only-item');
+      expect(bf.mightContain('only-item')).toBe(true);
+      expect(bf.mightContain('not-present')).toBe(false);
+    });
+
+    it('should handle empty string', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('');
+      expect(bf.mightContain('')).toBe(true);
+    });
+
+    it('should handle unicode strings', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      bf.add('こんにちは');
+      bf.add('Привет');
+      bf.add('🎉🎊');
+      expect(bf.mightContain('こんにちは')).toBe(true);
+      expect(bf.mightContain('Привет')).toBe(true);
+      expect(bf.mightContain('🎉🎊')).toBe(true);
+    });
+
+    it('should handle duplicate adds', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('item');
+      bf.add('item');
+      bf.add('item');
+      expect(bf.mightContain('item')).toBe(true);
+    });
+
+    it('should handle very small false positive rate', () => {
+      const bf = new BloomFilter(1000, 0.0001);
+      expect(bf.getSize()).toBeGreaterThan(10000);
+      for (let i = 0; i < 100; i++) {
+        bf.add(`item-${i}`);
+      }
+      for (let i = 0; i < 100; i++) {
+        expect(bf.mightContain(`item-${i}`)).toBe(true);
+      }
+    });
+
+    it('should handle large expected items', () => {
+      const bf = new BloomFilter(1000000, 0.01);
+      expect(bf.getSize()).toBeGreaterThan(0);
+      bf.add('test-item');
+      expect(bf.mightContain('test-item')).toBe(true);
+    });
+  });
+
+  describe('estimated false positive rate accuracy', () => {
+    it('should be 0 for empty filter after clear', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      bf.add('item');
+      bf.clear();
+      expect(bf.getEstimatedFalsePositiveRate()).toBe(0);
+    });
+
+    it('should approach theoretical rate', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      for (let i = 0; i < 500; i++) {
+        bf.add(`item-${i}`);
+      }
+      const estimated = bf.getEstimatedFalsePositivePositiveRate?.() ?? bf.getEstimatedFalsePositiveRate();
+      expect(estimated).toBeGreaterThan(0);
+      expect(estimated).toBeLessThan(1);
+    });
+  });
+
+  describe('bit count consistency', () => {
+    it('should have bit count >= size', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      expect(bf.getBitCount()).toBeGreaterThanOrEqual(bf.getSize());
+    });
+
+    it('should be byte-aligned', () => {
+      const bf = new BloomFilter(1000, 0.01);
+      expect(bf.getBitCount() % 8).toBe(0);
+    });
+  });
 });

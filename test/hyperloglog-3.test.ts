@@ -157,5 +157,83 @@ describe('HyperLogLog3', () => {
     it('throws error for precision too high', () => {
       expect(() => new HyperLogLog3(17)).toThrow('precision must be between 4 and 16')
     })
+
+    it('higher precision gives more accurate estimates', () => {
+      const hllLow = new HyperLogLog3(4)
+      const hllHigh = new HyperLogLog3(14)
+      for (let i = 0; i < 1000; i++) {
+        hllLow.add(`item-${i}`)
+        hllHigh.add(`item-${i}`)
+      }
+      const errorLow = Math.abs(hllLow.count() - 1000) / 1000
+      const errorHigh = Math.abs(hllHigh.count() - 1000) / 1000
+      expect(errorHigh).toBeLessThanOrEqual(errorLow + 0.1)
+    })
+  })
+
+  describe('merge edge cases', () => {
+    it('merge with empty structure preserves count', () => {
+      const hll = new HyperLogLog3()
+      for (let i = 0; i < 100; i++) {
+        hll.add(`item-${i}`)
+      }
+      const empty = new HyperLogLog3()
+      hll.merge(empty)
+      expect(hll.count()).toBeGreaterThanOrEqual(90)
+    })
+
+    it('merge empty with non-empty preserves count', () => {
+      const empty = new HyperLogLog3()
+      const hll = new HyperLogLog3()
+      for (let i = 0; i < 100; i++) {
+        hll.add(`item-${i}`)
+      }
+      empty.merge(hll)
+      expect(empty.count()).toBeGreaterThanOrEqual(90)
+    })
+
+    it('merge with overlapping values deduplicates', () => {
+      const hll1 = new HyperLogLog3()
+      const hll2 = new HyperLogLog3()
+      for (let i = 0; i < 100; i++) {
+        hll1.add(`item-${i}`)
+        hll2.add(`item-${i}`)
+      }
+      hll1.merge(hll2)
+      expect(hll1.count()).toBeLessThanOrEqual(120)
+      expect(hll1.count()).toBeGreaterThanOrEqual(80)
+    })
+  })
+
+  describe('reset and reuse', () => {
+    it('can add items after reset', () => {
+      const hll = new HyperLogLog3()
+      for (let i = 0; i < 100; i++) {
+        hll.add(`old-${i}`)
+      }
+      hll.reset()
+      for (let i = 0; i < 50; i++) {
+        hll.add(`new-${i}`)
+      }
+      expect(hll.count()).toBeGreaterThanOrEqual(45)
+      expect(hll.count()).toBeLessThanOrEqual(55)
+    })
+  })
+
+  describe('unicode and special characters', () => {
+    it('handles unicode strings', () => {
+      const hll = new HyperLogLog3()
+      hll.add('こんにちは')
+      hll.add('Привет')
+      hll.add('🎉')
+      expect(hll.count()).toBeGreaterThanOrEqual(3)
+      expect(hll.count()).toBeLessThanOrEqual(5)
+    })
+
+    it('handles empty string', () => {
+      const hll = new HyperLogLog3()
+      hll.add('')
+      expect(hll.count()).toBeGreaterThanOrEqual(1)
+    })
   })
 })
