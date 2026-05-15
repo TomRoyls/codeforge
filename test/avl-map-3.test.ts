@@ -260,4 +260,34 @@ describe('AVLMap3', () => {
     map.set(3, 'c');
     expect(map.entries()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);
   });
+
+  it('should handle clear', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.get(1)).toBeUndefined();
+  });
+
+  it('should handle negative keys', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(-5, 'neg5');
+    map.set(0, 'zero');
+    map.set(5, 'pos5');
+    expect(map.keys()).toEqual([-5, 0, 5]);
+    expect(map.get(-5)).toBe('neg5');
+  });
+
+  it('should handle sequential deletes', () => {
+    const map = new AVLMap3<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.delete(2);
+    expect(map.size).toBe(2);
+    expect(map.keys()).toEqual([1, 3]);
+    map.delete(1);
+    expect(map.keys()).toEqual([3]);
+  });
 });
