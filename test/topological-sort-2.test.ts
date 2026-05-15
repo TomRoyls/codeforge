@@ -197,4 +197,33 @@ describe('TopologicalSort2', () => {
     expect(result[0]).toBe('root');
     expect(result).toHaveLength(51);
   });
+
+  it('should report correct nodeCount', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('B', 'C');
+    expect(ts.nodeCount()).toBe(3);
+  });
+
+  it('should handle diamond dependency', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addEdge('A', 'C');
+    ts.addEdge('B', 'D');
+    ts.addEdge('C', 'D');
+    const result = ts.sort();
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('B'));
+    expect(result.indexOf('A')).toBeLessThan(result.indexOf('C'));
+    expect(result.indexOf('B')).toBeLessThan(result.indexOf('D'));
+    expect(result.indexOf('C')).toBeLessThan(result.indexOf('D'));
+  });
+
+  it('should handle isolated nodes added separately', () => {
+    const ts = new TopologicalSort2();
+    ts.addEdge('A', 'B');
+    ts.addNode('C');
+    const result = ts.sort();
+    expect(result).toHaveLength(3);
+    expect(result).toContain('C');
+  });
 });
