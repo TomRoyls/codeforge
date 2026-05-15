@@ -221,4 +221,34 @@ describe('RedBlackMap3', () => {
     expect(map.has('apple')).toBe(true);
     expect(map.has('date')).toBe(false);
   });
+
+  it('should update existing key', () => {
+    const map = new RedBlackMap3<number, string>();
+    map.set(1, 'original');
+    map.set(1, 'updated');
+    expect(map.get(1)).toBe('updated');
+    expect(map.size).toBe(1);
+  });
+
+  it('should delete non-existent key', () => {
+    const map = new RedBlackMap3<number, string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('should return correct entries in order', () => {
+    const map = new RedBlackMap3<number, string>();
+    map.set(2, 'b');
+    map.set(1, 'a');
+    map.set(3, 'c');
+    expect(map.entries()).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);
+  });
+
+  it('should handle single entry min/max', () => {
+    const map = new RedBlackMap3<number, string>();
+    map.set(5, 'five');
+    expect(map.min()).toBe(5);
+    expect(map.max()).toBe(5);
+  });
 });
