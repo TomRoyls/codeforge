@@ -342,4 +342,13 @@ describe('RoaringBitmap3', () => {
     bitmap.forEach(v => values.push(v));
     expect(values).toEqual([10, 20]);
   });
+
+  it('should handle delete', async () => {
+    const bitmap = new RoaringBitmap3();
+    bitmap.add(1);
+    bitmap.add(2);
+    expect(bitmap.delete(1)).toBe(true);
+    expect(bitmap.has(1)).toBe(false);
+    expect(bitmap.has(2)).toBe(true);
+  });
 });

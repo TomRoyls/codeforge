@@ -319,4 +319,9 @@ describe('RadixHeap3', () => {
         expect(heap.extractMin()!.key).toBe(2);
         expect(heap.extractMin()!.key).toBe(3);
     });
+
+    it('should handle keyBits getter', () => {
+        const heap = new RadixHeap3(16);
+        expect(heap.keyBits).toBe(16);
+    });
 });

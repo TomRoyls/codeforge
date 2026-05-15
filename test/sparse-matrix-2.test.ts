@@ -294,4 +294,10 @@ describe('SparseMatrix2', () => {
     const matrix = new SparseMatrix2(5, 5);
     expect(matrix.density()).toBe(0);
   });
+
+  it('should handle rows and cols getters', () => {
+    const matrix = new SparseMatrix2(3, 4);
+    expect(matrix.rows()).toBe(3);
+    expect(matrix.cols()).toBe(4);
+  });
 });
