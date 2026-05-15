@@ -268,4 +268,11 @@ describe('RobinHoodHash2', () => {
     expect(hash.get('a')).toBe(1);
     expect(hash.get('b')).toBe(2);
   });
+
+  it('should handle overwrite', () => {
+    hash.set('a', 1);
+    hash.set('a', 2);
+    expect(hash.get('a')).toBe(2);
+    expect(hash.size).toBe(1);
+  });
 });

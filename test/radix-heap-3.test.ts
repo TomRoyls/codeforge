@@ -360,4 +360,15 @@ describe('RadixHeap3', () => {
         expect(min!.key).toBe(3);
         expect(heap.size).toBe(2);
     });
+
+    it('should handle multiple extractMin', () => {
+        const heap = new RadixHeap3();
+        heap.insert(5, 'a');
+        heap.insert(3, 'b');
+        heap.insert(7, 'c');
+        heap.insert(1, 'd');
+        expect(heap.extractMin()!.key).toBe(1);
+        expect(heap.extractMin()!.key).toBe(3);
+        expect(heap.size).toBe(2);
+    });
 });

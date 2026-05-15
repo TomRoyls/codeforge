@@ -441,5 +441,14 @@ describe('RingBuffer6', () => {
       expect(buffer.size).toBe(0);
       expect(buffer.isEmpty()).toBe(true);
     });
+
+    it('should handle toArray', () => {
+      const buffer = new RingBuffer6<number>();
+      buffer.push(1);
+      buffer.push(2);
+      buffer.push(3);
+      const arr = buffer.toArray();
+      expect(arr).toEqual([1, 2, 3]);
+    });
   });
 });

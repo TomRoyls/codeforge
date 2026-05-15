@@ -347,5 +347,15 @@ describe('SkipList5', () => {
       list.insert(20);
       expect(list.toArray()).toEqual([10, 20, 30]);
     });
+
+    it('should handle delete', () => {
+      const list = new SkipList<number>();
+      list.insert(10);
+      list.insert(20);
+      list.insert(30);
+      expect(list.delete(20)).toBe(true);
+      expect(list.search(20)).toBe(false);
+      expect(list.size()).toBe(2);
+    });
   });
 });

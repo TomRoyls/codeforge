@@ -377,4 +377,12 @@ describe('RadixMap2', () => {
     expect(map.has(1)).toBe(false);
     expect(map.size).toBe(1);
   });
+
+  it('should handle get after set', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.get(1)).toBe('a');
+    expect(map.get(2)).toBe('b');
+  });
 });

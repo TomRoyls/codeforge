@@ -316,4 +316,11 @@ describe('RingHash2', () => {
     expect(node).toBeDefined();
     expect(['node1', 'node2']).toContain(node);
   });
+
+  it('should handle clear', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.clear();
+    expect(ring.nodes()).toEqual([]);
+  });
 });

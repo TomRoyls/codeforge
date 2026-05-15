@@ -328,4 +328,13 @@ describe('RedBlackTreeMap2', () => {
     const keys = map.keys()
     expect(keys).toEqual([1, 2, 3])
   })
+
+  it('should handle values', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const vals = map.values()
+    expect(vals).toEqual(['a', 'b', 'c'])
+  })
 })

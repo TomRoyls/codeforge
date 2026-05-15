@@ -260,4 +260,10 @@ describe("RunLengthEncoding3", () => {
     expect(runs[0]).toEqual({ char: 'A', count: 2 });
     expect(runs[1]).toEqual({ char: 'B', count: 3 });
   });
+
+  it('should handle toString', async () => {
+    const rle = new RunLengthEncoding3();
+    rle.encode('AABBB');
+    expect(typeof rle.toString()).toBe('string');
+  });
 });

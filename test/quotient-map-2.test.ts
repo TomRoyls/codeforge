@@ -340,4 +340,12 @@ describe('QuotientMap2', () => {
       expect(classC).toContain('c');
     });
   });
+
+  it('should handle delete', () => {
+    const qm = new QuotientMap2(8, 16);
+    qm.set('key1', 'value1');
+    qm.set('key2', 'value2');
+    expect(qm.delete('key1')).toBe(true);
+    expect(qm.get('key1')).toBeUndefined();
+  });
 });

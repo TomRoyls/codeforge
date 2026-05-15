@@ -410,4 +410,12 @@ describe('ProbabilityMap2', () => {
     expect(keys).toContain('a');
     expect(keys).toContain('b');
   });
+
+  it('should handle entries', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+  });
 });
