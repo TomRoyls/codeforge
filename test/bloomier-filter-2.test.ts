@@ -237,5 +237,12 @@ describe('BloomierFilter2', () => {
       expect(typeof filter.loadFactor()).toBe('number');
       expect(filter.loadFactor()).toBeGreaterThanOrEqual(0);
     });
+
+    it('should handle delete', () => {
+      const filter = new BloomierFilter2(100, 3);
+      filter.set('key', 42);
+      expect(filter.delete('key')).toBe(true);
+      expect(filter.has('key')).toBe(false);
+    });
   });
 });

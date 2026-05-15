@@ -318,5 +318,10 @@ describe('CSRGraph2', () => {
       expect(graph.hasEdge(0, 1)).toBe(true);
       expect(graph.hasEdge(0, 2)).toBe(false);
     });
+
+    it('should handle vertexCount', () => {
+      const graph = new CSRGraph2(5);
+      expect(graph.vertexCount()).toBe(5);
+    });
   });
 });

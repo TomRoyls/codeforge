@@ -320,5 +320,11 @@ describe("GoldenRatioSearch", () => {
     search.findMinimum(-5, 5);
     expect(search.getIterations()).toBeGreaterThan(0);
   });
+
+  it("returns getTimeComplexity", () => {
+    const fn = (x: number) => x * x;
+    const search = new GoldenRatioSearch(fn);
+    expect(search.getTimeComplexity()).toBe("O(log(1/tolerance))");
+  });
 });
 });

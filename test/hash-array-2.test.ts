@@ -303,5 +303,14 @@ describe('HashArray2', () => {
       map.set('a', 1);
       expect(map.loadFactor()).toBeGreaterThan(0);
     });
+
+    it('should handle keys method', () => {
+      const map = new HashArray2<number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const keys = map.keys();
+      expect(keys).toContain('a');
+      expect(keys).toContain('b');
+    });
   });
 });

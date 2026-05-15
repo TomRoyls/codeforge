@@ -265,4 +265,11 @@ describe('ElasticQueue2', () => {
     expect(queue.size).toBe(0);
     expect(queue.isEmpty()).toBe(true);
   });
+
+  it('should handle isFull with maxSize', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 2 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.isFull()).toBe(true);
+  });
 });

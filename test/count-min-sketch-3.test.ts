@@ -274,4 +274,10 @@ describe('CountMinSketch3', () => {
     cms.update('item');
     expect(cms.estimate('item')).toBeGreaterThanOrEqual(1);
   });
+
+  it('should handle custom dimensions', () => {
+    const cms = new CountMinSketch3(500, 3);
+    cms.update('test', 5);
+    expect(cms.estimate('test')).toBeGreaterThanOrEqual(5);
+  });
 });

@@ -264,5 +264,12 @@ describe('FusionTree', () => {
       expect(result.length).toBe(6);
       expect(result).toEqual([5, 6, 7, 8, 9, 10]);
     });
+
+    it('should handle forEach', () => {
+      for (let i = 0; i < 10; i++) tree.insert(i);
+      const collected: number[] = [];
+      tree.forEach(key => collected.push(key));
+      expect(collected.length).toBe(10);
+    });
   });
 });

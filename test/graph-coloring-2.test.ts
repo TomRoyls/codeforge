@@ -386,5 +386,12 @@ describe('GraphColoring2', () => {
       expect(result.size).toBe(3);
       expect(graph.isValid(adj, result)).toBe(true);
     });
+
+    it('colorBacktracking with limited colors', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+      const result = graph.colorBacktracking(adj, 2);
+      expect(result).not.toBeNull();
+    });
   });
 });

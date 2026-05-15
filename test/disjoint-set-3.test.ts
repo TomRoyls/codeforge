@@ -338,4 +338,12 @@ describe('DisjointSet3', () => {
     expect(ds.setSize('a')).toBe(2);
     expect(ds.setSize('c')).toBe(1);
   });
+
+  it('should handle find', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.union('a', 'b');
+    expect(ds.find('a')).toBe(ds.find('b'));
+  });
 });

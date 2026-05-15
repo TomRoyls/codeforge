@@ -277,4 +277,10 @@ describe('FibonacciSearch4', () => {
     expect(searcher.contains(4)).toBe(false);
     expect(searcher.count(3)).toBe(3);
   });
+
+  it('should handle isEmpty and length', () => {
+    const searcher = new FibonacciSearch4([1, 2, 3]);
+    expect(searcher.isEmpty()).toBe(false);
+    expect(searcher.length).toBe(3);
+  });
 });
