@@ -188,4 +188,31 @@ describe('BiMap3', () => {
     expect(bimap.get(5000)).toBe(10000)
     expect(bimap.getKey(10000)).toBe(5000)
   })
+
+  it('should handle delete non-existent key', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    expect(bimap.delete('b')).toBe(false)
+    expect(bimap.size).toBe(1)
+  })
+
+  it('should handle clear then re-add', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    bimap.clear()
+    expect(bimap.size).toBe(0)
+    bimap.set('c', 3)
+    expect(bimap.get('c')).toBe(3)
+    expect(bimap.getKey(3)).toBe('c')
+  })
+
+  it('should handle update overwriting inverse', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 1)
+    expect(bimap.get('a')).toBeUndefined()
+    expect(bimap.get('b')).toBe(1)
+    expect(bimap.getKey(1)).toBe('b')
+  })
 })
