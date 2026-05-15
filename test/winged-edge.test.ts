@@ -392,4 +392,10 @@ describe('WingedEdgeMesh', () => {
     expect(mesh.getEdgeCount()).toBe(3);
     expect(mesh.getVertexCount()).toBe(3);
   });
+
+  it('should handle getVertexEdges on vertex with no edges', () => {
+    const mesh = new WingedEdgeMesh();
+    const v = mesh.addVertex(5, 5, 5);
+    expect(mesh.getVertexEdges(v)).toEqual([]);
+  });
 });
