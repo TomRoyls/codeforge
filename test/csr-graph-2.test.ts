@@ -323,5 +323,13 @@ describe('CSRGraph2', () => {
       const graph = new CSRGraph2(5);
       expect(graph.vertexCount()).toBe(5);
     });
+
+    it('should handle edgeCount', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.build();
+      expect(graph.edgeCount()).toBe(2);
+    });
   });
 });

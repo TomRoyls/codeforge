@@ -425,4 +425,12 @@ describe('AtomicSet2', () => {
     expect(set.size).toBe(0);
     expect(set.isEmpty()).toBe(true);
   });
+
+  it('should handle compareAndSwap', () => {
+    const set = new AtomicSet2<number>();
+    set.add(5);
+    expect(set.compareAndSwap(5, 10)).toBe(true);
+    expect(set.has(10)).toBe(true);
+    expect(set.has(5)).toBe(false);
+  });
 });

@@ -223,4 +223,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('I have a dog');
     expect(result.length).toBeGreaterThanOrEqual(1);
   });
+
+  it('should handle overlapping matches', () => {
+    const ac = new AhoCorasick2(['ab', 'bc']);
+    const result = ac.search('abc');
+    expect(result.length).toBe(2);
+  });
 });

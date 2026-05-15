@@ -455,5 +455,13 @@ describe('BTree', () => {
       expect(t.min()).toBe(10);
       expect(t.max()).toBe(30);
     });
+
+    it('should handle inOrderTraversal', () => {
+      const t = new BTree<number>();
+      t.insert(30);
+      t.insert(10);
+      t.insert(20);
+      expect(t.inOrderTraversal()).toEqual([10, 20, 30]);
+    });
   });
 });

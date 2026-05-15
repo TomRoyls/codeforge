@@ -244,5 +244,10 @@ describe('BloomierFilter2', () => {
       expect(filter.delete('key')).toBe(true);
       expect(filter.has('key')).toBe(false);
     });
+
+    it('should handle delete non-existent key', () => {
+      const filter = new BloomierFilter2(100, 3);
+      expect(filter.delete('nonexistent')).toBe(false);
+    });
   });
 });

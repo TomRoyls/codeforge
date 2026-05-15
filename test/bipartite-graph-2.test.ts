@@ -340,4 +340,13 @@ describe('BipartiteGraph2', () => {
     expect(graph.removeEdge('L1', 'R1')).toBe(true);
     expect(graph.edgeCount()).toBe(0);
   });
+
+  it('should handle hasEdge', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    expect(graph.hasEdge('L1', 'R1')).toBe(true);
+    expect(graph.hasEdge('R1', 'L1')).toBe(false);
+  });
 });

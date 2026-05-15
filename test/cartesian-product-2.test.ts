@@ -311,5 +311,12 @@ describe('CartesianProduct2', () => {
       const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
       expect(cp.size()).toBe(4)
     })
+
+    it('should handle forEach', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [3]])
+      let count = 0
+      cp.forEach(() => count++)
+      expect(count).toBe(2)
+    })
   })
 })

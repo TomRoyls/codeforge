@@ -271,5 +271,10 @@ describe('BloomFilter4', () => {
       const rate = bf.getEstimatedFalsePositiveRate();
       expect(rate).toBeGreaterThanOrEqual(0);
     });
+
+    it('should handle getTimeComplexity', () => {
+      const bf = new BloomFilter(100, 0.01);
+      expect(typeof bf.getTimeComplexity()).toBe('string');
+    });
   });
 });

@@ -346,4 +346,10 @@ describe('DisjointSet3', () => {
     ds.union('a', 'b');
     expect(ds.find('a')).toBe(ds.find('b'));
   });
+
+  it('should handle find on single element', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('x');
+    expect(ds.find('x')).toBe('x');
+  });
 });

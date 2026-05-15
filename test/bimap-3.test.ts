@@ -316,4 +316,13 @@ describe('BiMap3', () => {
     expect(bimap.has('a')).toBe(false)
     expect(bimap.size).toBe(1)
   })
+
+  it('should handle forEach', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    const result: [string, number][] = []
+    bimap.forEach((k, v) => result.push([k, v]))
+    expect(result.length).toBe(2)
+  })
 })

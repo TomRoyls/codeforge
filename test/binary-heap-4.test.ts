@@ -363,5 +363,10 @@ describe('BinaryHeap', () => {
       expect(heap.size()).toBe(0);
       expect(heap.isEmpty()).toBe(true);
     });
+
+    it('should handle getTimeComplexity', () => {
+      const heap = new BinaryHeap<number>();
+      expect(typeof heap.getTimeComplexity()).toBe('string');
+    });
   });
 });
