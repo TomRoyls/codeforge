@@ -274,5 +274,11 @@ describe('Matrix2', () => {
       const s = m.scale(-1);
       expect(s.toArray()).toEqual([[-1, 2], [-3, -4]]);
     });
+
+    it('should return rows and cols', () => {
+      const m = new Matrix2(3, 4);
+      expect(m.rows()).toBe(3);
+      expect(m.cols()).toBe(4);
+    });
   });
 });

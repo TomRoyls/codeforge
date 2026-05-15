@@ -445,4 +445,15 @@ describe('BTree', () => {
       expect(tree.max()).toBe(7);
     });
   });
+
+  describe('min/max', () => {
+    it('should return min and max', () => {
+      const t = new BTree<number>();
+      t.insert(20);
+      t.insert(10);
+      t.insert(30);
+      expect(t.min()).toBe(10);
+      expect(t.max()).toBe(30);
+    });
+  });
 });

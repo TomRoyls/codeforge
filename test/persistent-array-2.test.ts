@@ -255,4 +255,11 @@ describe('PersistentArray2', () => {
     expect(arr2.length).toBe(3)
     expect(arr2.toArray()).toEqual([1, 2, 3])
   })
+
+  it('should handle pop', () => {
+    const arr1 = new PersistentArray2([1, 2, 3])
+    const [val, arr2] = arr1.pop()
+    expect(val).toBe(3)
+    expect(arr2.length).toBe(2)
+  })
 })

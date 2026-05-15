@@ -344,5 +344,13 @@ describe('MinHeap', () => {
       expect(heap.peek()).toBe(3);
       expect(heap.size()).toBe(3);
     });
+
+    it('should handle contains', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(5);
+      heap.insert(3);
+      expect(heap.contains(3)).toBe(true);
+      expect(heap.contains(99)).toBe(false);
+    });
   });
 });

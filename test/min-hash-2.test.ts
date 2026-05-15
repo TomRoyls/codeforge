@@ -257,4 +257,12 @@ describe('MinHash2', () => {
     mh.add('b');
     expect(mh.size()).toBe(2);
   });
+
+  it('should handle clear', () => {
+    const mh = new MinHash2();
+    mh.add('a');
+    mh.add('b');
+    mh.clear();
+    expect(mh.size()).toBe(0);
+  });
 });
