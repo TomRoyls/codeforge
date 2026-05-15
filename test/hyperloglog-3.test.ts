@@ -236,4 +236,54 @@ describe('HyperLogLog3', () => {
       expect(hll.count()).toBeGreaterThanOrEqual(1)
     })
   })
+
+  describe('isEmpty', () => {
+    it('returns true for new instance', () => {
+      const hll = new HyperLogLog3()
+      expect(hll.isEmpty()).toBe(true)
+    })
+
+    it('returns false after add', () => {
+      const hll = new HyperLogLog3()
+      hll.add('test')
+      expect(hll.isEmpty()).toBe(false)
+    })
+
+    it('returns true after reset', () => {
+      const hll = new HyperLogLog3()
+      hll.add('test')
+      hll.reset()
+      expect(hll.isEmpty()).toBe(true)
+    })
+  })
+
+  describe('precision validation', () => {
+    it('throws for precision below 4', () => {
+      expect(() => new HyperLogLog3(3)).toThrow()
+    })
+
+    it('throws for precision above 16', () => {
+      expect(() => new HyperLogLog3(17)).toThrow()
+    })
+
+    it('accepts precision 4', () => {
+      const hll = new HyperLogLog3(4)
+      hll.add('test')
+      expect(hll.count()).toBeGreaterThanOrEqual(1)
+    })
+
+    it('accepts precision 16', () => {
+      const hll = new HyperLogLog3(16)
+      hll.add('test')
+      expect(hll.count()).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  describe('merge validation', () => {
+    it('throws when merging different precisions', () => {
+      const hll1 = new HyperLogLog3(4)
+      const hll2 = new HyperLogLog3(8)
+      expect(() => hll1.merge(hll2)).toThrow()
+    })
+  })
 })

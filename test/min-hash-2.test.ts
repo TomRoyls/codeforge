@@ -182,4 +182,51 @@ describe('MinHash2', () => {
       expect(isFinite(sig[i])).toBe(true);
     }
   });
+
+  it('clear resets size to 0', () => {
+    const mh = new MinHash2();
+    mh.add('a');
+    mh.add('b');
+    expect(mh.size()).toBe(2);
+    mh.clear();
+    expect(mh.size()).toBe(0);
+  });
+
+  it('clear resets signature to Infinity', () => {
+    const mh = new MinHash2(10);
+    mh.add('test');
+    mh.clear();
+    const sig = mh.getSignature();
+    for (let i = 0; i < sig.length; i++) {
+      expect(sig[i]).toBe(Infinity);
+    }
+  });
+
+  it('addAll adds multiple items', () => {
+    const mh = new MinHash2();
+    mh.addAll(['a', 'b', 'c']);
+    expect(mh.size()).toBe(3);
+  });
+
+  it('addAll deduplicates', () => {
+    const mh = new MinHash2();
+    mh.addAll(['a', 'b', 'a', 'c', 'b']);
+    expect(mh.size()).toBe(3);
+  });
+
+  it('similarity is 1 for identical sets', () => {
+    const mh1 = new MinHash2(100);
+    const mh2 = new MinHash2(100);
+    mh1.addAll(['a', 'b', 'c']);
+    mh2.addAll(['a', 'b', 'c']);
+    expect(mh1.similarity(mh2)).toBe(1.0);
+  });
+
+  it('accepts custom seed', () => {
+    const mh1 = new MinHash2(50, 42);
+    const mh2 = new MinHash2(50, 99);
+    mh1.add('same');
+    mh2.add('same');
+    expect(mh1.getSignature()).not.toEqual(mh2.getSignature());
+  });
 });
