@@ -292,4 +292,12 @@ describe('RingHash2', () => {
     }
     expect(results.size).toBeGreaterThan(0);
   });
+
+  it('should handle multiple keys same node', () => {
+    ring.addNode('node1');
+    const n1 = ring.getNode('key-a');
+    const n2 = ring.getNode('key-b');
+    expect(n1).toBeDefined();
+    expect(n2).toBeDefined();
+  });
 });

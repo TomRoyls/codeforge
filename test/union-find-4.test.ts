@@ -303,4 +303,12 @@ describe('UnionFind4', () => {
     expect(uf.connected(0, 0)).toBe(true);
     expect(uf.componentCount()).toBe(3);
   });
+
+  it('should handle componentSize', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(0, 2);
+    expect(uf.componentSize(0)).toBe(3);
+    expect(uf.componentSize(3)).toBe(1);
+  });
 });

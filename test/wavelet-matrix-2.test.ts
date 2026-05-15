@@ -329,4 +329,11 @@ describe('WaveletMatrix2', () => {
     expect(wm.select(1, 0)).toBe(0);
     expect(wm.select(1, 1)).toBe(2);
   });
+
+  it('should handle isEmpty', async () => {
+    const data = [1, 2, 3];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.isEmpty()).toBe(false);
+    expect(wm.length).toBe(3);
+  });
 });

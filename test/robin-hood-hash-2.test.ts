@@ -247,4 +247,12 @@ describe('RobinHoodHash2', () => {
     hash.set('c', 3);
     expect(hash.maxProbeLength()).toBeGreaterThanOrEqual(0);
   });
+
+  it('should handle clear', () => {
+    hash.set('a', 1);
+    hash.set('b', 2);
+    hash.clear();
+    expect(hash.size).toBe(0);
+    expect(hash.has('a')).toBe(false);
+  });
 });

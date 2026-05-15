@@ -274,5 +274,14 @@ describe('WeightedGraph2', () => {
       expect(graph.hasVertex('A')).toBe(true);
       expect(graph.hasVertex('Z')).toBe(false);
     });
+
+    it('should handle hasEdge', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addEdge('A', 'B', 5);
+      expect(graph.hasEdge('A', 'B')).toBe(true);
+      expect(graph.hasEdge('B', 'A')).toBe(false);
+    });
   });
 });

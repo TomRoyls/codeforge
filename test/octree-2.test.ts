@@ -316,4 +316,12 @@ describe('Octree2', () => {
     const results = tree.queryRange({ x: 0, y: 0, z: 0, size: 1 });
     expect(results.length).toBe(0);
   });
+
+  it('should handle remove', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(50, 50, 50, 1);
+    tree.insert(60, 60, 60, 2);
+    expect(tree.remove(50, 50, 50)).toBe(true);
+    expect(tree.size()).toBe(1);
+  });
 });

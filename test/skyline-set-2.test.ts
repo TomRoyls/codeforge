@@ -348,5 +348,13 @@ describe('SkylineSet2', () => {
       expect(set.dominates([1, 2], [2, 2])).toBe(false);
       expect(set.dominates([1, 1], [1, 2])).toBe(false);
     });
+
+    it('should handle items method', () => {
+      const set = new SkylineSet2<string>(1);
+      set.add('a', [5]);
+      set.add('b', [10]);
+      const items = set.items();
+      expect(items.length).toBeGreaterThanOrEqual(1);
+    });
   });
 });

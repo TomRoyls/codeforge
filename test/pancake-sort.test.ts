@@ -246,5 +246,10 @@ describe('PancakeSort', () => {
       sorter.sort();
       expect(sorter.isSorted()).toBe(true);
     });
+
+    it('should report unsorted before sort', () => {
+      const sorter = new PancakeSort<number>([5, 3, 1]);
+      expect(sorter.isSorted()).toBe(false);
+    });
   });
 });

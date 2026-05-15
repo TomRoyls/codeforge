@@ -292,4 +292,9 @@ describe('ProbabilisticSet2', () => {
     expect(rate).toBeGreaterThan(0);
     expect(rate).toBeLessThanOrEqual(1);
   });
+
+  it('should handle bitCount', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.bitCount()).toBeGreaterThan(0);
+  });
 });

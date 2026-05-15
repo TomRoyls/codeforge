@@ -307,4 +307,10 @@ describe('SegmentTreeMap2', () => {
     const arr = tree.toArray()
     expect(arr).toEqual([1, 2, 3])
   })
+
+  it('should handle isEmpty', async () => {
+    const tree = new SegmentTreeMap2(3)
+    tree.set(0, 1)
+    expect(tree.isEmpty()).toBe(false)
+  })
 })

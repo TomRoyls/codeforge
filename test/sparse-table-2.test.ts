@@ -238,5 +238,10 @@ describe("SparseTable", () => {
       const st = new SparseTable([5, 3, 8, 1]);
       expect(st.toArray()).toEqual([5, 3, 8, 1]);
     });
+
+    it("should handle getTimeComplexity", () => {
+      const st = new SparseTable([5, 3, 8, 1]);
+      expect(typeof st.getTimeComplexity()).toBe('string');
+    });
   });
 });

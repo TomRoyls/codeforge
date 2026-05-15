@@ -350,4 +350,13 @@ describe('RadixMap2', () => {
     const entries = map.entries();
     expect(entries.length).toBe(2);
   });
+
+  it('should handle values', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const vals = map.values();
+    expect(vals).toContain('a');
+    expect(vals).toContain('b');
+  });
 });

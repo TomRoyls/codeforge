@@ -239,5 +239,12 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.getComparisons()).toBeGreaterThan(0);
     });
+
+    it('should handle isSorted', () => {
+      const sorter = new ShellSort<number>([1, 2, 3]);
+      expect(sorter.isSorted()).toBe(true);
+      const sorter2 = new ShellSort<number>([3, 1, 2]);
+      expect(sorter2.isSorted()).toBe(false);
+    });
   });
 });

@@ -271,4 +271,11 @@ describe('RankSelectBitvector2', () => {
     expect(bv.get(1)).toBe(false);
     expect(bv.countOnes()).toBe(2);
   });
+
+  it('handles set operation', async () => {
+    const bv = new RankSelectBitvector2([false, false, false]);
+    bv.set(1);
+    expect(bv.get(1)).toBe(true);
+    expect(bv.countOnes()).toBe(1);
+  });
 });

@@ -306,4 +306,11 @@ describe('WindowHeap2', () => {
     expect(win).toContain(10);
     expect(win).toContain(20);
   });
+
+  it('should handle getSum', () => {
+    const heap = new WindowHeap2(3);
+    heap.push(10);
+    heap.push(20);
+    expect(heap.getSum()).toBe(30);
+  });
 });

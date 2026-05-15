@@ -301,4 +301,13 @@ describe('RedBlackTreeMap2', () => {
     const arr = map.toArray()
     expect(arr).toEqual([[1, 'a'], [2, 'b'], [3, 'c']])
   })
+
+  it('should handle min and max', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(5, 'e')
+    map.set(2, 'b')
+    map.set(8, 'h')
+    expect(map.min()).toBe(2)
+    expect(map.max()).toBe(8)
+  })
 })

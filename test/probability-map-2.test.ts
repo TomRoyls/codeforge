@@ -383,4 +383,13 @@ describe('ProbabilityMap2', () => {
     expect(map.get('a')).toBeCloseTo(0.25, 5);
     expect(map.get('b')).toBeCloseTo(0.75, 5);
   });
+
+  it('should handle delete', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    expect(map.delete('a')).toBe(true);
+    expect(map.has('a')).toBe(false);
+    expect(map.size).toBe(1);
+  });
 });

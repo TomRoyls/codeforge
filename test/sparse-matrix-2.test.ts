@@ -310,4 +310,16 @@ describe('SparseMatrix2', () => {
     expect(t.cols()).toBe(2);
     expect(t.get(1, 0)).toBe(5);
   });
+
+  it('should handle multiplyVector', () => {
+    const matrix = new SparseMatrix2(2, 3);
+    matrix.set(0, 0, 1);
+    matrix.set(0, 1, 2);
+    matrix.set(0, 2, 3);
+    matrix.set(1, 0, 4);
+    matrix.set(1, 1, 5);
+    matrix.set(1, 2, 6);
+    const result = matrix.multiplyVector([1, 1, 1]);
+    expect(result).toEqual([6, 15]);
+  });
 });

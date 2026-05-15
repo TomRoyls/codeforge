@@ -299,5 +299,14 @@ describe('ThreadSafeStack2', () => {
       expect(stack.size).toBe(0)
       expect(stack.isEmpty()).toBe(true)
     })
+
+    it('handles size tracking', () => {
+      const stack = new ThreadSafeStack2<number>()
+      expect(stack.size).toBe(0)
+      stack.push(1)
+      expect(stack.size).toBe(1)
+      stack.pop()
+      expect(stack.size).toBe(0)
+    })
   })
 })
