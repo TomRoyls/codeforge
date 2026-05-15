@@ -324,4 +324,15 @@ describe('LFUCache4', () => {
       expect(cache.has('b')).toBe(false)
     })
   })
+
+  describe('additional2', () => {
+    it('should handle delete', () => {
+      const cache = new LFUCache4(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      expect(cache.delete('a')).toBe(true)
+      expect(cache.has('a')).toBe(false)
+      expect(cache.size).toBe(1)
+    })
+  })
 })

@@ -357,4 +357,13 @@ describe('IntervalHeap3', () => {
     expect(arr).toContain(3);
     expect(arr).toContain(8);
   });
+
+  it('should handle clear', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.size).toBe(0);
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

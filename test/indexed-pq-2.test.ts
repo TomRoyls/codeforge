@@ -347,4 +347,14 @@ describe('IndexedPQ2', () => {
     expect(pq.getPriority(1)).toBe(10);
     expect(pq.getPriority(99)).toBeUndefined();
   });
+
+  it('should handle peek', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    pq.insert(2, 5);
+    pq.insert(3, 20);
+    const top = pq.peek();
+    expect(top).toBeDefined();
+    expect(top!.priority).toBe(5);
+  });
 });

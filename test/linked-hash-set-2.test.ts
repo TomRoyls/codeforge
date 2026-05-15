@@ -423,5 +423,13 @@ describe('LinkedHashSet', () => {
       expect(set.first()).toBe(10);
       expect(set.last()).toBe(30);
     });
+
+    it('should handle clear', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(1);
+      set.add(2);
+      set.clear();
+      expect(set.size()).toBe(0);
+    });
   });
 });

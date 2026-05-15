@@ -284,4 +284,10 @@ describe('KDTree3', () => {
     const nearest = tree.kNearestNeighbors({x: 4, y: 4}, 2)
     expect(nearest).toHaveLength(2)
   })
+
+  it('should handle contains', () => {
+    const tree = new KDTree3([{x: 1, y: 1}, {x: 5, y: 5}])
+    expect(tree.contains({x: 1, y: 1})).toBe(true)
+    expect(tree.contains({x: 3, y: 3})).toBe(false)
+  })
 })

@@ -296,4 +296,15 @@ describe('HyperLogLog3', () => {
       expect(hll.isEmpty()).toBe(true)
     })
   })
+
+  describe('merge same precision', () => {
+    it('merges two sketches', () => {
+      const hll1 = new HyperLogLog3(8)
+      const hll2 = new HyperLogLog3(8)
+      hll1.add('a')
+      hll2.add('b')
+      hll1.merge(hll2)
+      expect(hll1.count()).toBeGreaterThanOrEqual(1)
+    })
+  })
 })
