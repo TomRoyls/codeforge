@@ -223,5 +223,30 @@ describe('SpatialHash2', () => {
       const result = hash.query(10, 10, 20);
       expect(result.length).toBe(0);
     });
+
+    it('handles insert after clear', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      hash.clear();
+      hash.insert('b', 15, 15);
+      expect(hash.size).toBe(1);
+      expect(hash.has('b')).toBe(true);
+    });
+
+    it('handles update position', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('item', 5, 5);
+      hash.update('item', 25, 25);
+      const near5 = hash.query(5, 5, 5);
+      expect(near5.length).toBe(0);
+      const near25 = hash.query(25, 25, 5);
+      expect(near25.length).toBe(1);
+    });
+
+    it('handles remove non-existent', () => {
+      const hash = new SpatialHash2<number>(10);
+      expect(hash.remove('nonexistent')).toBe(false);
+      expect(hash.size).toBe(0);
+    });
   });
 });
