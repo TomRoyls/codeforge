@@ -259,4 +259,44 @@ describe("GoldenRatioSearch", () => {
       expect(maxResult.x).toBeCloseTo(expectedMaxX, 1);
     });
   });
+
+  describe("additional coverage", () => {
+    it("finds minimum of x squared", () => {
+      const fn = (x: number) => x * x;
+      const search = new GoldenRatioSearch(fn);
+      const result = search.findMinimum(-10, 10);
+      expect(result.x).toBeCloseTo(0, 6);
+      expect(result.value).toBeCloseTo(0, 6);
+    });
+
+    it("finds maximum of cosine in first period", () => {
+      const fn = (x: number) => Math.cos(x);
+      const search = new GoldenRatioSearch(fn);
+      const result = search.findMaximum(-Math.PI, Math.PI);
+      expect(result.x).toBeCloseTo(0, 6);
+      expect(result.value).toBeCloseTo(1, 6);
+    });
+
+    it("handles exponential function minimum", () => {
+      const fn = (x: number) => Math.exp(x);
+      const search = new GoldenRatioSearch(fn);
+      const result = search.findMinimum(-5, 5);
+      expect(result.x).toBeCloseTo(-5, 0);
+    });
+
+    it("finds minimum of quartic function", () => {
+      const fn = (x: number) => (x - 2) * (x - 2) * (x - 2) * (x - 2);
+      const search = new GoldenRatioSearch(fn);
+      const result = search.findMinimum(-10, 10);
+      expect(result.x).toBeCloseTo(2, 5);
+    });
+
+    it("setTolerance changes search precision", () => {
+      const fn = (x: number) => (x - 3) * (x - 3);
+      const search = new GoldenRatioSearch(fn, 1e-2);
+      search.setTolerance(1e-10);
+      const result = search.findMinimum(-10, 10);
+      expect(result.x).toBeCloseTo(3, 9);
+    });
+  });
 });

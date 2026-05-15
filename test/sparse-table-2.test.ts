@@ -186,5 +186,35 @@ describe("SparseTable", () => {
       expect(st.rangeMinQuery(0, 4)).toBe(0);
       expect(st.rangeMaxQuery(0, 4)).toBe(9);
     });
+
+    it("should handle power-of-two length array", () => {
+      const st = new SparseTable([3, 1, 4, 1, 5, 9, 2, 6]);
+      expect(st.rangeMinQuery(0, 7)).toBe(1);
+      expect(st.rangeMaxQuery(0, 7)).toBe(9);
+      expect(st.rangeMinQuery(2, 5)).toBe(1);
+      expect(st.rangeMaxQuery(2, 5)).toBe(9);
+    });
+
+    it("should handle alternating high low values", () => {
+      const st = new SparseTable([10, 1, 10, 1, 10]);
+      expect(st.rangeMinQuery(0, 4)).toBe(1);
+      expect(st.rangeMaxQuery(0, 4)).toBe(10);
+      expect(st.rangeMinQuery(1, 3)).toBe(1);
+      expect(st.rangeMaxQuery(1, 3)).toBe(10);
+    });
+
+    it("should handle single negative element", () => {
+      const st = new SparseTable([-42]);
+      expect(st.query(0, 0)).toBe(-42);
+      expect(st.rangeMaxQuery(0, 0)).toBe(-42);
+    });
+
+    it("should handle sub-range queries correctly", () => {
+      const st = new SparseTable([8, 2, 5, 1, 9, 3, 7, 4]);
+      expect(st.rangeMinQuery(0, 3)).toBe(1);
+      expect(st.rangeMinQuery(4, 7)).toBe(3);
+      expect(st.rangeMaxQuery(0, 3)).toBe(8);
+      expect(st.rangeMaxQuery(4, 7)).toBe(9);
+    });
   });
 });

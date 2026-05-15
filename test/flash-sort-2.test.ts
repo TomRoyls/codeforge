@@ -160,4 +160,33 @@ describe('FlashSort2 - edge cases', () => {
     const sorter = new FlashSort2<string>()
     expect(sorter.sort(['banana', 'apple', 'cherry', 'date'])).toEqual(['apple', 'banana', 'cherry', 'date'])
   })
+
+  it('handles two-element reverse', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [10, 1]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 10])
+  })
+
+  it('handles sortInPlace with custom comparator descending', () => {
+    const sorter = new FlashSort2<number>((a, b) => b - a)
+    const arr = [1, 2, 3, 4, 5]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([5, 4, 3, 2, 1])
+  })
+
+  it('handles array of identical elements', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [7, 7, 7, 7]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([7, 7, 7, 7])
+  })
+
+  it('handles sort returning new array', () => {
+    const sorter = new FlashSort2<number>()
+    const input = [5, 3, 1, 4, 2]
+    const result = sorter.sort(input)
+    expect(result).toEqual([1, 2, 3, 4, 5])
+    expect(input).toEqual([5, 3, 1, 4, 2])
+  })
 })

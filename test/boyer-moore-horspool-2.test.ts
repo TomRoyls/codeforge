@@ -169,4 +169,32 @@ describe('BoyerMooreHorspool2', () => {
       expect(result).toEqual([0, 2]);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should find match with single char text', async () => {
+      const searcher = new BoyerMooreHorspool2('a');
+      expect(searcher.search('a')).toEqual([0]);
+      expect(searcher.search('b')).toEqual([]);
+    });
+
+    it('should handle numeric string patterns', async () => {
+      const searcher = new BoyerMooreHorspool2('123');
+      expect(searcher.search('0123456123')).toEqual([1, 7]);
+    });
+
+    it('should handle pattern with special regex characters', async () => {
+      const searcher = new BoyerMooreHorspool2('$.+*');
+      expect(searcher.search('test$.+*test')).toEqual([4]);
+    });
+
+    it('should handle consecutive single char matches', async () => {
+      const searcher = new BoyerMooreHorspool2('a');
+      expect(searcher.search('aaaa')).toEqual([0, 1, 2, 3]);
+    });
+
+    it('should handle two-char pattern in long text', async () => {
+      const searcher = new BoyerMooreHorspool2('xy');
+      expect(searcher.search('abcxydefxy')).toEqual([3, 8]);
+    });
+  });
 });
