@@ -403,4 +403,17 @@ describe('AtomicSet2', () => {
     expect(arr).toContain(15);
     expect(arr).toHaveLength(2);
   });
+
+  it('should handle forEach', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.add(3);
+    const collected: number[] = [];
+    set.forEach(item => collected.push(item));
+    expect(collected.length).toBe(3);
+    expect(collected).toContain(1);
+    expect(collected).toContain(2);
+    expect(collected).toContain(3);
+  });
 });

@@ -256,4 +256,13 @@ describe('ElasticQueue2', () => {
     const queue = new ElasticQueue2<number>();
     expect(queue.peek()).toBeUndefined();
   });
+
+  it('should handle clear', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.clear();
+    expect(queue.size).toBe(0);
+    expect(queue.isEmpty()).toBe(true);
+  });
 });

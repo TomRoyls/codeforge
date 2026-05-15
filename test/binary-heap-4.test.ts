@@ -342,4 +342,15 @@ describe('BinaryHeap', () => {
       expect(heap.extract()).toBe('apple');
     });
   });
+
+  describe('contains()', () => {
+    it('should check if value exists in heap', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(10);
+      heap.insert(20);
+      heap.insert(30);
+      expect(heap.contains(20)).toBe(true);
+      expect(heap.contains(99)).toBe(false);
+    });
+  });
 });

@@ -377,4 +377,13 @@ describe('AVLTreeSet2', () => {
       expect(set.size).toBe(99 - i);
     }
   });
+
+  it('should handle lowerBound and upperBound', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    expect(set.lowerBound(15)).toBe(20);
+    expect(set.upperBound(20)).toBe(30);
+  });
 });

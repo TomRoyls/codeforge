@@ -286,4 +286,14 @@ describe('HyperLogLog3', () => {
       expect(() => hll1.merge(hll2)).toThrow()
     })
   })
+
+  describe('reset', () => {
+    it('resets to empty state', () => {
+      const hll = new HyperLogLog3(8)
+      hll.add('a')
+      hll.add('b')
+      hll.reset()
+      expect(hll.isEmpty()).toBe(true)
+    })
+  })
 })

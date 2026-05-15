@@ -296,5 +296,12 @@ describe('HashArray2', () => {
       const entries = map.entries();
       expect(entries).toHaveLength(2);
     });
+
+    it('should handle loadFactor', () => {
+      const map = new HashArray2<number>();
+      expect(typeof map.loadFactor()).toBe('number');
+      map.set('a', 1);
+      expect(map.loadFactor()).toBeGreaterThan(0);
+    });
   });
 });

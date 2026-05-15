@@ -378,5 +378,13 @@ describe('GraphColoring2', () => {
       const adj = new Map<string, string[]>([['A', ['B', 'C']], ['B', ['A', 'C']], ['C', ['A', 'B']]]);
       expect(graph.chromaticNumber(adj)).toBe(3);
     });
+
+    it('colorGreedy handles path graph correctly', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A', 'C']], ['C', ['B']]]);
+      const result = graph.colorGreedy(adj);
+      expect(result.size).toBe(3);
+      expect(graph.isValid(adj, result)).toBe(true);
+    });
   });
 });

@@ -277,4 +277,11 @@ describe('KDTree3', () => {
     const tree = new KDTree3([])
     expect(tree.size).toBe(0)
   })
+
+  it('should handle kNearestNeighbors', () => {
+    const points = [{x: 1, y: 1}, {x: 5, y: 5}, {x: 10, y: 10}]
+    const tree = new KDTree3(points)
+    const nearest = tree.kNearestNeighbors({x: 4, y: 4}, 2)
+    expect(nearest).toHaveLength(2)
+  })
 })

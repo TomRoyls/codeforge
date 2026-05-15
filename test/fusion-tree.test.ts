@@ -257,5 +257,12 @@ describe('FusionTree', () => {
       expect(tree.size).toBe(10);
       expect(tree.findMin()).toBe(10);
     });
+
+    it('should handle rangeQuery', () => {
+      for (let i = 0; i < 20; i++) tree.insert(i);
+      const result = tree.rangeQuery(5, 10);
+      expect(result.length).toBe(6);
+      expect(result).toEqual([5, 6, 7, 8, 9, 10]);
+    });
   });
 });

@@ -217,7 +217,14 @@ describe('GodelNumber2', () => {
     });
 
     it('should handle decode of 1n returns empty', () => {
-      expect(GodelNumber2.decode(1n)).toEqual([]);
+    expect(GodelNumber2.decode(1n)).toEqual([]);
+  });
+
+    it('should handle nthPrime', () => {
+      expect(GodelNumber2.nthPrime(0)).toBe(2n);
+      expect(GodelNumber2.nthPrime(1)).toBe(3n);
+      expect(GodelNumber2.nthPrime(2)).toBe(5n);
     });
   });
+});
 });

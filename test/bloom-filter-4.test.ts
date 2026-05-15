@@ -256,5 +256,12 @@ describe('BloomFilter4', () => {
       const bf = new BloomFilter(100, 0.01);
       expect(bf.getHashCount()).toBeGreaterThan(0);
     });
+
+    it('should handle clear', () => {
+      const bf = new BloomFilter(100, 0.01);
+      bf.add('test');
+      bf.clear();
+      expect(bf.mightContain('test')).toBe(false);
+    });
   });
 });

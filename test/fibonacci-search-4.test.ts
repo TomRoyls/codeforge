@@ -270,4 +270,11 @@ describe('FibonacciSearch4', () => {
     expect(searcher.search(20)).toBe(1);
     expect(searcher.search(15)).toBe(-1);
   });
+
+  it('should handle contains and count', () => {
+    const searcher = new FibonacciSearch4([1, 3, 3, 3, 5]);
+    expect(searcher.contains(3)).toBe(true);
+    expect(searcher.contains(4)).toBe(false);
+    expect(searcher.count(3)).toBe(3);
+  });
 });

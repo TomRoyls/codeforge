@@ -209,4 +209,10 @@ describe('AhoCorasick2', () => {
     const ac = new AhoCorasick2(['a', 'b', 'c']);
     expect(ac.patterns()).toEqual(['a', 'b', 'c']);
   });
+
+  it('should handle hasMatch', () => {
+    const ac = new AhoCorasick2(['cat', 'dog']);
+    expect(ac.hasMatch('I have a cat')).toBe(true);
+    expect(ac.hasMatch('I have a bird')).toBe(false);
+  });
 });

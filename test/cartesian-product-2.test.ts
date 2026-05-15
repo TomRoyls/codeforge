@@ -301,5 +301,10 @@ describe('CartesianProduct2', () => {
       expect(arr).toContainEqual(['a', 'x'])
       expect(arr).toContainEqual(['b', 'x'])
     })
+
+    it('should handle dimensions', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [3, 4], [5, 6]])
+      expect(cp.dimensions()).toBe(3)
+    })
   })
 })

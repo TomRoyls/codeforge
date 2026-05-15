@@ -204,4 +204,9 @@ describe('FlashSort2 - edge cases', () => {
     const sorter = new FlashSort2<number>()
     expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles reverse sorted array', () => {
+    const sorter = new FlashSort2<number>()
+    expect(sorter.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5])
+  })
 })

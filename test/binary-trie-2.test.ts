@@ -294,5 +294,14 @@ describe('BinaryTrie2', () => {
       trie32.insert(4294967295);
       expect(trie32.has(4294967295)).toBe(true);
     });
+
+    it('should handle clear', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(5);
+      trie.insert(10);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      expect(trie.isEmpty()).toBe(true);
+    });
   });
 });

@@ -345,4 +345,16 @@ describe('IntervalHeap3', () => {
     const heap = new IntervalHeap3<number>();
     expect(heap.isEmpty()).toBe(true);
   });
+
+  it('should handle toArray', async () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(8);
+    const arr = heap.toArray();
+    expect(arr).toHaveLength(3);
+    expect(arr).toContain(5);
+    expect(arr).toContain(3);
+    expect(arr).toContain(8);
+  });
 });

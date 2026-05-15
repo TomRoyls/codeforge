@@ -241,4 +241,11 @@ describe('CubeSort2', () => {
       expect(arr).toEqual([1, 1, 3, 4, 5]);
     });
   });
+
+  describe('additional', () => {
+    it('should handle empty array sort', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([])).toEqual([]);
+    });
+  });
 });

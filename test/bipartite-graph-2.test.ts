@@ -323,4 +323,12 @@ describe('BipartiteGraph2', () => {
     graph.addEdge('L1', 'R1');
     expect(graph.edgeCount()).toBe(1);
   });
+
+  it('should handle vertexCount', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addLeftVertex('L2');
+    graph.addRightVertex('R1');
+    expect(graph.vertexCount()).toBe(3);
+  });
 });

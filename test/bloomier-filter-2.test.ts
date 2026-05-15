@@ -231,5 +231,11 @@ describe('BloomierFilter2', () => {
         expect(filter.get(key)).toBe(value);
       });
     });
+
+    it('should handle loadFactor', () => {
+      const filter = new BloomierFilter2(100, 3);
+      expect(typeof filter.loadFactor()).toBe('number');
+      expect(filter.loadFactor()).toBeGreaterThanOrEqual(0);
+    });
   });
 });

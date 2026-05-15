@@ -340,4 +340,11 @@ describe('IndexedPQ2', () => {
     pq.insert(1, 10);
     expect(pq.update(99, 5)).toBe(false);
   });
+
+  it('should handle getPriority on missing element', () => {
+    const pq = new IndexedPQ2();
+    pq.insert(1, 10);
+    expect(pq.getPriority(1)).toBe(10);
+    expect(pq.getPriority(99)).toBeUndefined();
+  });
 });
