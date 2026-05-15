@@ -244,4 +244,9 @@ describe('MinHash2', () => {
     mh2.addAll(['a', 'b', 'c']);
     expect(mh1.similarity(mh2)).toBeLessThan(0.5);
   });
+
+  it('should handle getSignature length', () => {
+    const mh = new MinHash2(50);
+    expect(mh.getSignature().length).toBe(50);
+  });
 });

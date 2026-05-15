@@ -272,4 +272,9 @@ describe('KDTree3', () => {
     const result = tree.rangeSearch({x: 0, y: 0}, {x: 10, y: 10})
     expect(result).toHaveLength(0)
   })
+
+  it('should handle size of empty tree', () => {
+    const tree = new KDTree3([])
+    expect(tree.size).toBe(0)
+  })
 })

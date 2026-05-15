@@ -204,4 +204,9 @@ describe('AhoCorasick2', () => {
     const ac = new AhoCorasick2(['test']);
     expect(ac.search('')).toEqual([]);
   });
+
+  it('should handle patterns method', () => {
+    const ac = new AhoCorasick2(['a', 'b', 'c']);
+    expect(ac.patterns()).toEqual(['a', 'b', 'c']);
+  });
 });
