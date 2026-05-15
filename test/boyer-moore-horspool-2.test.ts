@@ -227,7 +227,12 @@ describe('BoyerMooreHorspool2', () => {
     it('should handle search with multiple matches', async () => {
       const searcher = new BoyerMooreHorspool2('ab');
       const results = searcher.search('ababab');
-      expect(results.length).toBe(3);
-    });
+    expect(results.length).toBe(3);
   });
+
+  it('should handle findFirst on first position', async () => {
+    const searcher = new BoyerMooreHorspool2('hello');
+    expect(searcher.findFirst('hello world')).toBe(0);
+  });
+});
 });

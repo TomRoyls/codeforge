@@ -358,4 +358,12 @@ describe('BipartiteGraph2', () => {
     expect(graph.getEdgeWeight('L1', 'R1')).toBe(7);
     expect(graph.getEdgeWeight('R1', 'L1')).toBeUndefined();
   });
+
+  it('should handle vertexCount', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addLeftVertex('L2');
+    graph.addRightVertex('R1');
+    expect(graph.vertexCount()).toBe(3);
+  });
 });

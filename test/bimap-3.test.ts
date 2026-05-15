@@ -333,4 +333,13 @@ describe('BiMap3', () => {
     const entries = bimap.entries()
     expect(entries).toHaveLength(2)
   })
+
+  it('should handle clear', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    bimap.clear()
+    expect(bimap.size).toBe(0)
+    expect(bimap.isEmpty()).toBe(true)
+  })
 })

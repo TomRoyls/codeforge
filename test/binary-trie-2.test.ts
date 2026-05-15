@@ -332,5 +332,14 @@ describe('BinaryTrie2', () => {
       expect(trie.size).toBe(0);
       expect(trie.isEmpty()).toBe(true);
     });
+
+    it('should handle min and max', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(10);
+      trie.insert(30);
+      trie.insert(20);
+      expect(trie.min()).toBe(10);
+      expect(trie.max()).toBe(30);
+    });
   });
 });

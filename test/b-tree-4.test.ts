@@ -471,5 +471,13 @@ describe('BTree', () => {
       t.insert(20);
       expect(t.getHeight()).toBeGreaterThan(0);
     });
+
+    it('should handle toArray', () => {
+      const t = new BTree<number>();
+      t.insert(30);
+      t.insert(10);
+      t.insert(20);
+      expect(t.toArray()).toEqual([10, 20, 30]);
+    });
   });
 });

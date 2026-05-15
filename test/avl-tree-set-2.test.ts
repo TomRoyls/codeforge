@@ -414,4 +414,13 @@ describe('AVLTreeSet2', () => {
     const arr = set.toArray();
     expect(arr).toEqual([10, 20, 30]);
   });
+
+  it('should handle min and max', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(30);
+    set.add(10);
+    set.add(20);
+    expect(set.min()).toBe(10);
+    expect(set.max()).toBe(30);
+  });
 });

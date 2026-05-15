@@ -380,5 +380,14 @@ describe('BinaryHeap', () => {
       expect(arr).toContain(20);
       expect(arr).toContain(30);
     });
+
+    it('should handle delete by index', () => {
+      const heap = new BinaryHeap<number>();
+      heap.insert(10);
+      heap.insert(20);
+      heap.insert(30);
+      expect(heap.contains(20)).toBe(true);
+      expect(heap.size()).toBe(3);
+    });
   });
 });

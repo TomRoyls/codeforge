@@ -235,4 +235,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('');
     expect(result).toEqual([]);
   });
+
+  it('should handle patterns method', () => {
+    const ac = new AhoCorasick2(['cat', 'dog']);
+    expect(ac.patterns()).toContain('cat');
+    expect(ac.patterns()).toContain('dog');
+  });
 });

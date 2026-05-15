@@ -328,5 +328,12 @@ describe('BloomLink2', () => {
       expect(filter.isEmpty()).toBe(true);
       expect(filter.count()).toBe(0);
     });
+
+    it('should handle single item operations', () => {
+      const filter = new BloomLink2();
+      filter.add('test');
+      expect(filter.mightContain('test')).toBe(true);
+      expect(filter.mightContain('other')).toBe(false);
+    });
   });
 });

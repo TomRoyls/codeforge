@@ -324,5 +324,13 @@ describe('CartesianProduct2', () => {
       expect(cp.has([1, 3])).toBe(true)
       expect(cp.has([1, 5])).toBe(false)
     })
+
+    it('should handle toArray', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [3]])
+      const arr = cp.toArray()
+      expect(arr).toHaveLength(2)
+      expect(arr[0]).toHaveLength(2)
+      expect(arr[1]).toHaveLength(2)
+    })
   })
 })

@@ -445,4 +445,14 @@ describe('AtomicSet2', () => {
     expect(arr).toContain(2);
     expect(arr).toContain(3);
   });
+
+  it('should handle forEach', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.add(3);
+    const collected: number[] = [];
+    set.forEach(v => collected.push(v));
+    expect(collected).toHaveLength(3);
+  });
 });

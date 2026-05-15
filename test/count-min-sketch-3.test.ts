@@ -297,4 +297,11 @@ describe('CountMinSketch3', () => {
     expect(cms.estimate('b')).toBeGreaterThanOrEqual(2);
     expect(cms.estimate('c')).toBeGreaterThanOrEqual(3);
   });
+
+  it('should handle reset', () => {
+    const cms = new CountMinSketch3();
+    cms.update('item', 10);
+    cms.reset();
+    expect(cms.estimate('item')).toBe(0);
+  });
 });
