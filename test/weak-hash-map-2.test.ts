@@ -130,4 +130,61 @@ describe('WeakHashMap2', () => {
     expect(map.get('stringKey')).toBe(2);
     expect(map.size).toBe(2);
   });
+
+  it('has returns correct boolean', () => {
+    const map = new WeakHashMap2<string, number>();
+    map.set('key', 1);
+    expect(map.has('key')).toBe(true);
+    expect(map.has('missing')).toBe(false);
+  });
+
+  it('has works with object keys', () => {
+    const map = new WeakHashMap2<object, number>();
+    const obj = { id: 1 };
+    map.set(obj, 42);
+    expect(map.has(obj)).toBe(true);
+    expect(map.has({})).toBe(false);
+  });
+
+  it('delete removes entries', () => {
+    const map = new WeakHashMap2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    expect(map.delete('a')).toBe(true);
+    expect(map.get('a')).toBeUndefined();
+    expect(map.has('a')).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('delete returns false for non-existent key', () => {
+    const map = new WeakHashMap2<string, number>();
+    expect(map.delete('missing')).toBe(false);
+  });
+
+  it('clear removes all entries', () => {
+    const map = new WeakHashMap2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    map.set('c', 3);
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.get('a')).toBeUndefined();
+    expect(map.get('b')).toBeUndefined();
+  });
+
+  it('overwriting existing key updates value', () => {
+    const map = new WeakHashMap2<string, number>();
+    map.set('key', 1);
+    map.set('key', 2);
+    expect(map.get('key')).toBe(2);
+    expect(map.size).toBe(2);
+  });
+
+  it('handles null and undefined keys', () => {
+    const map = new WeakHashMap2<null | undefined | string, number>();
+    map.set(null as any, 1);
+    map.set(undefined as any, 2);
+    expect(map.get(null as any)).toBe(1);
+    expect(map.get(undefined as any)).toBe(2);
+  });
 });
