@@ -215,4 +215,64 @@ describe('BiMap3', () => {
     expect(bimap.get('b')).toBe(1)
     expect(bimap.getKey(1)).toBe('b')
   })
+
+  it('should handle set-delete-set cycle', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.delete('a')
+    bimap.set('a', 2)
+    expect(bimap.get('a')).toBe(2)
+    expect(bimap.getKey(2)).toBe('a')
+    expect(bimap.getKey(1)).toBeUndefined()
+  })
+
+  it('should handle hasValue after deletion', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    bimap.deleteValue(1)
+    expect(bimap.hasValue(1)).toBe(false)
+    expect(bimap.hasValue(2)).toBe(true)
+    expect(bimap.has('a')).toBe(false)
+  })
+
+  it('should handle entries after mixed operations', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    bimap.set('c', 3)
+    bimap.delete('b')
+    const entries = bimap.entries()
+    expect(entries).toHaveLength(2)
+    expect(entries.find(e => e[0] === 'a')).toEqual(['a', 1])
+    expect(entries.find(e => e[0] === 'c')).toEqual(['c', 3])
+  })
+
+  it('should handle keys and values consistency', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('x', 10)
+    bimap.set('y', 20)
+    bimap.set('z', 30)
+    const keys = bimap.keys()
+    const values = bimap.values()
+    expect(keys).toHaveLength(3)
+    expect(values).toHaveLength(3)
+    for (const key of keys) {
+      expect(bimap.get(key)).toBeDefined()
+    }
+    for (const value of values) {
+      expect(bimap.hasValue(value)).toBe(true)
+    }
+  })
+
+  it('should handle re-adding deleted value to different key', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.delete('a')
+    expect(bimap.size).toBe(0)
+    bimap.set('b', 1)
+    expect(bimap.get('b')).toBe(1)
+    expect(bimap.getKey(1)).toBe('b')
+    expect(bimap.size).toBe(1)
+  })
 })

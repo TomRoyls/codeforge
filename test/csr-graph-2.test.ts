@@ -231,4 +231,60 @@ describe('CSRGraph2', () => {
       expect(weights).toContain(20);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle chain graph', () => {
+      const graph = new CSRGraph2(5);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.addEdge(2, 3);
+      graph.addEdge(3, 4);
+      graph.build();
+      expect(graph.hasEdge(0, 1)).toBe(true);
+      expect(graph.hasEdge(1, 2)).toBe(true);
+      expect(graph.hasEdge(2, 3)).toBe(true);
+      expect(graph.hasEdge(3, 4)).toBe(true);
+      expect(graph.hasEdge(0, 4)).toBe(false);
+      expect(graph.edgeCount()).toBe(4);
+    });
+
+    it('should handle star graph topology', () => {
+      const graph = new CSRGraph2(5);
+      graph.addEdge(0, 1);
+      graph.addEdge(0, 2);
+      graph.addEdge(0, 3);
+      graph.addEdge(0, 4);
+      graph.build();
+      expect(graph.getNeighbors(0)).toHaveLength(4);
+      for (let i = 1; i < 5; i++) {
+        expect(graph.getNeighbors(i)).toEqual([]);
+      }
+    });
+
+    it('should return undefined weight when not specified', () => {
+      const graph = new CSRGraph2(2);
+      graph.addEdge(0, 1);
+      graph.build();
+      const neighbors = graph.getNeighbors(0);
+      expect(neighbors[0].weight).toBeUndefined();
+    });
+
+    it('should handle edge count before build', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      expect(graph.edgeCount()).toBe(2);
+    });
+
+    it('should handle multiple self-loops', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 0, 1);
+      graph.addEdge(0, 0, 2);
+      graph.addEdge(1, 1, 3);
+      graph.build();
+      expect(graph.getNeighbors(0)).toHaveLength(2);
+      expect(graph.getNeighbors(1)).toHaveLength(1);
+      expect(graph.getNeighbors(2)).toEqual([]);
+    });
+  });
 });

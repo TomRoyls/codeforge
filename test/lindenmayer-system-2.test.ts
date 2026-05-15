@@ -224,4 +224,49 @@ describe('LindenmayerSystem2', () => {
     expect(system.iterate(1)).toBe('A');
     expect(system.iterate(5)).toBe('A');
   });
+
+  it('should handle stochastic-like rules with longer strings', () => {
+    const rules = new Map([['X', 'YZ'], ['Y', 'ZX'], ['Z', 'XY']]);
+    const system = new LindenmayerSystem2('X', rules);
+    expect(system.iterate(1)).toBe('YZ');
+    expect(system.iterate(1)).toBe('ZXXY');
+  });
+
+  it('should handle mixed rules where some chars have no rule', () => {
+    const rules = new Map([['A', 'AB']]);
+    const system = new LindenmayerSystem2('A+A', rules);
+    expect(system.iterate(1)).toBe('AB+AB');
+    expect(system.iterate(1)).toBe('ABB+ABB');
+  });
+
+  it('should add rule and use it mid-iteration sequence', () => {
+    const rules = new Map([['A', 'B']]);
+    const system = new LindenmayerSystem2('A', rules);
+    expect(system.iterate(1)).toBe('B');
+    system.addRule('B', 'AB');
+    expect(system.iterate(1)).toBe('AB');
+  });
+
+  it('should handle iterate with large n producing exponential growth', () => {
+    const rules = new Map([['A', 'AA']]);
+    const system = new LindenmayerSystem2('A', rules);
+    expect(system.iterate(1)).toBe('AA');
+    expect(system.iterate(1)).toBe('AAAA');
+    expect(system.iterate(1)).toBe('AAAAAAAA');
+  });
+
+  it('should preserve state across multiple iterateOnce calls then reset', () => {
+    const rules = new Map([['A', 'AB'], ['B', 'A']]);
+    const system = new LindenmayerSystem2('A', rules);
+    system.iterateOnce();
+    expect(system.getCurrent()).toBe('AB');
+    system.iterateOnce();
+    expect(system.getCurrent()).toBe('ABA');
+    system.iterateOnce();
+    expect(system.getCurrent()).toBe('ABAAB');
+    system.reset();
+    expect(system.getCurrent()).toBe('A');
+    system.iterateOnce();
+    expect(system.getCurrent()).toBe('AB');
+  });
 });
