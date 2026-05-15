@@ -286,5 +286,12 @@ describe('Matrix2', () => {
       const b = Matrix2.fromArray([[5, 6], [7, 8]]);
       expect(a.add(b).toArray()).toEqual([[6, 8], [10, 12]]);
     });
+
+    it('should handle multiply', () => {
+      const a = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const b = Matrix2.fromArray([[5, 6], [7, 8]]);
+      const result = a.multiply(b);
+      expect(result.toArray()).toEqual([[19, 22], [43, 50]]);
+    });
   });
 });

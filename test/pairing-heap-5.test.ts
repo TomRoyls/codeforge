@@ -424,4 +424,11 @@ describe('PairingHeapNode5', () => {
     expect(node.value.id).toBe(1);
     expect(node.value.name).toBe('test');
   });
+
+  it('should handle isEmpty on new heap', async () => {
+    const heap = new PairingHeap5<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(1);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

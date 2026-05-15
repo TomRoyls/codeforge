@@ -359,5 +359,15 @@ describe('MinHeap', () => {
       expect(heap.peek()).toBe(1);
       expect(heap.size()).toBe(5);
     });
+
+    it('should handle clear', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(1);
+      heap.insert(2);
+      heap.insert(3);
+      heap.clear();
+      expect(heap.size()).toBe(0);
+      expect(heap.isEmpty()).toBe(true);
+    });
   });
 });

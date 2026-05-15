@@ -271,4 +271,12 @@ describe('MinHash2', () => {
     mh.addAll(['a', 'b', 'c']);
     expect(mh.similarity(mh)).toBeCloseTo(1, 5);
   });
+
+  it('should handle getSignature', () => {
+    const mh = new MinHash2();
+    mh.addAll(['a', 'b', 'c']);
+    const sig = mh.getSignature();
+    expect(Array.isArray(sig)).toBe(true);
+    expect(sig.length).toBeGreaterThan(0);
+  });
 });

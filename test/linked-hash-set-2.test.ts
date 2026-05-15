@@ -439,5 +439,12 @@ describe('LinkedHashSet', () => {
       set.add(30);
       expect(set.values()).toEqual([10, 20, 30]);
     });
+
+    it('should handle contains', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(5);
+      expect(set.has(5)).toBe(true);
+      expect(set.has(99)).toBe(false);
+    });
   });
 });

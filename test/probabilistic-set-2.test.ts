@@ -302,4 +302,12 @@ describe('ProbabilisticSet2', () => {
     const set = new ProbabilisticSet2<string>(1000, 0.01);
     expect(set.falsePositiveRate()).toBeLessThanOrEqual(0.05);
   });
+
+  it('should handle add and has with multiple items', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('hello');
+    set.add('world');
+    expect(set.has('hello')).toBe(true);
+    expect(set.has('world')).toBe(true);
+  });
 });

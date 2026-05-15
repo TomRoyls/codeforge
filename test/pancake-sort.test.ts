@@ -256,5 +256,10 @@ describe('PancakeSort', () => {
       const sorter = new PancakeSort<number>([1, 2, 3]);
       expect(sorter.isSorted()).toBe(true);
     });
+
+    it('should handle empty array', () => {
+      const sorter = new PancakeSort<number>([]);
+      expect(sorter.isSorted()).toBe(true);
+    });
   });
 });

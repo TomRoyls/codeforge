@@ -331,4 +331,11 @@ describe('Octree2', () => {
     expect(tree.contains(50, 50, 50)).toBe(true);
     expect(tree.contains(10, 10, 10)).toBe(false);
   });
+
+  it('should handle isEmpty', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    expect(tree.size()).toBe(0);
+    tree.insert(50, 50, 50, 1);
+    expect(tree.size()).toBe(1);
+  });
 });

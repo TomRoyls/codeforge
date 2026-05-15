@@ -178,4 +178,8 @@ describe('MergeSort5', () => {
     ms.sortInPlace(arr);
     expect(arr).toEqual([1, 2, 3, 4, 5]);
   });
+
+  it('handles empty array', () => {
+    expect(ms.sort([])).toEqual([]);
+  });
 });

@@ -342,5 +342,10 @@ describe('LFUCache4', () => {
       cache.clear()
       expect(cache.size).toBe(0)
     })
+
+    it('should handle get on non-existent key', () => {
+      const cache = new LFUCache4(3)
+      expect(cache.get('nonexistent')).toBeUndefined()
+    })
   })
 })

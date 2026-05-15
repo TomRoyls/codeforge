@@ -349,4 +349,15 @@ describe('RadixHeap3', () => {
         expect(top).toBeDefined();
         expect(top!.key).toBe(3);
     });
+
+    it('should handle extractMin', () => {
+        const heap = new RadixHeap3();
+        heap.insert(5, 'a');
+        heap.insert(3, 'b');
+        heap.insert(7, 'c');
+        const min = heap.extractMin();
+        expect(min).toBeDefined();
+        expect(min!.key).toBe(3);
+        expect(heap.size).toBe(2);
+    });
 });

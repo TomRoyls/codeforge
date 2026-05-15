@@ -401,4 +401,13 @@ describe('ProbabilityMap2', () => {
     expect(sample).toBeDefined();
     expect(['a', 'b']).toContain(sample);
   });
+
+  it('should handle keys', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const keys = map.keys();
+    expect(keys).toContain('a');
+    expect(keys).toContain('b');
+  });
 });
