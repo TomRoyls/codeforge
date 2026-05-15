@@ -349,5 +349,13 @@ describe('HashArray2', () => {
       expect(map.values()).toContain(1);
       expect(map.values()).toContain(2);
     });
+
+    it('should handle entries', () => {
+      const map = new HashArray2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      const entries = map.entries();
+      expect(entries.length).toBe(2);
+    });
   });
 });

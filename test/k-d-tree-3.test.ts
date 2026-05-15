@@ -318,4 +318,11 @@ describe('KDTree3', () => {
     expect(tree.contains({x: 1, y: 1})).toBe(true)
     expect(tree.contains({x: 9, y: 9})).toBe(false)
   })
+
+  it('should handle toArray', () => {
+    const points = [{x: 1, y: 1}, {x: 5, y: 5}]
+    const tree = new KDTree3(points)
+    const arr = tree.toArray()
+    expect(arr.length).toBe(2)
+  })
 })

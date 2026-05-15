@@ -338,4 +338,10 @@ describe('HyperLogLog3', () => {
     hll.add('test')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+
+  it('should handle multiple adds', () => {
+    const hll = new HyperLogLog3(12)
+    for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
+    expect(hll.count()).toBeGreaterThanOrEqual(50)
+  })
 })

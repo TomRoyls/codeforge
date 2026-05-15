@@ -421,5 +421,12 @@ describe('GraphColoring2', () => {
       const colored = graph.colorGreedy(adj);
       expect(graph.isValid(adj, colored)).toBe(true);
     });
+
+    it('should handle chromaticNumber', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+      const cn = graph.chromaticNumber(adj);
+      expect(cn).toBeGreaterThanOrEqual(1);
+    });
   });
 });

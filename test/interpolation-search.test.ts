@@ -268,5 +268,11 @@ describe('InterpolationSearch', () => {
       const search = new InterpolationSearch([1, 2, 3]);
       expect(search.getTimeComplexity()).toBe('Average: O(log(log(n))), Worst: O(n))');
     });
+
+    it('should handle search', () => {
+      const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+      expect(search.search(30)).toBe(2);
+      expect(search.search(99)).toBe(-1);
+    });
   });
 });

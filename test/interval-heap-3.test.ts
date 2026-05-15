@@ -402,4 +402,11 @@ describe('IntervalHeap3', () => {
     expect(heap.extractMax()).toBe(8);
     expect(heap.extractMin()).toBe(1);
   });
+
+  it('should handle isEmpty', () => {
+    const heap = new IntervalHeap3<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(5);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

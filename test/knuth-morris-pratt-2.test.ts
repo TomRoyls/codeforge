@@ -250,5 +250,11 @@ describe('KnuthMorrisPratt2', () => {
       const result = kmp.search('abcdef');
       expect(result).toEqual([0]);
     });
+
+    it('should handle multiple matches', () => {
+      const kmp = new KnuthMorrisPratt2('ab');
+      const result = kmp.search('ababab');
+      expect(result.length).toBe(3);
+    });
   });
 });

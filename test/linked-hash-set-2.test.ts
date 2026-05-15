@@ -461,5 +461,15 @@ describe('LinkedHashSet', () => {
       set.add(1);
       expect(set.isEmpty()).toBe(false);
     });
+
+    it('should handle toArray', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      const arr = set.toArray();
+      expect(arr.length).toBe(3);
+      expect(arr).toContain(10);
+    });
   });
 });

@@ -306,5 +306,11 @@ describe('Matrix2', () => {
       const result = a.add(b);
       expect(result.toArray()).toEqual([[6, 8], [10, 12]]);
     });
+
+    it('should handle transpose', () => {
+      const m = Matrix2.fromArray([[1, 2, 3], [4, 5, 6]]);
+      const result = m.transpose();
+      expect(result.toArray()).toEqual([[1, 4], [2, 5], [3, 6]]);
+    });
   });
 });
