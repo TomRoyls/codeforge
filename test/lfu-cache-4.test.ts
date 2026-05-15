@@ -226,4 +226,59 @@ describe('LFUCache4', () => {
       expect(cache.has('d')).toBe(true)
     })
   })
+
+  describe('additional coverage', () => {
+    it('multiple sets on same key keep size constant', () => {
+      const cache = new LFUCache4(5)
+      cache.set('a', 1)
+      cache.set('a', 2)
+      cache.set('a', 3)
+      cache.set('a', 4)
+      expect(cache.size).toBe(1)
+      expect(cache.get('a')).toBe(4)
+    })
+
+    it('has returns false after clear', () => {
+      const cache = new LFUCache4(5)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.clear()
+      expect(cache.has('a')).toBe(false)
+      expect(cache.has('b')).toBe(false)
+    })
+
+    it('large capacity stress test', () => {
+      const cache = new LFUCache4(1000)
+      for (let i = 0; i < 500; i++) {
+        cache.set(`key-${i}`, i)
+      }
+      expect(cache.size).toBe(500)
+      for (let i = 0; i < 500; i++) {
+        expect(cache.get(`key-${i}`)).toBe(i)
+      }
+    })
+
+    it('evicts after many gets on single item', () => {
+      const cache = new LFUCache4(3)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.set('c', 3)
+      for (let i = 0; i < 100; i++) cache.get('a')
+      for (let i = 0; i < 100; i++) cache.get('b')
+      cache.set('d', 4)
+      expect(cache.has('a')).toBe(true)
+      expect(cache.has('b')).toBe(true)
+      expect(cache.has('c')).toBe(false)
+    })
+
+    it('delete then re-add works', () => {
+      const cache = new LFUCache4(2)
+      cache.set('a', 1)
+      cache.set('b', 2)
+      cache.delete('a')
+      cache.set('a', 10)
+      expect(cache.size).toBe(2)
+      expect(cache.get('a')).toBe(10)
+    })
+  })
 })

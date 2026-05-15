@@ -237,4 +237,55 @@ describe('ThrottleQueue2', () => {
     expect(queue.dequeue()).toBe('a');
     expect(queue.dequeue()).toBe('b');
   });
+
+  it('should processNext returns undefined on empty', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    expect(await queue.processNext()).toBeUndefined();
+  });
+
+  it('should clear then processNext returns undefined', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.clear();
+    expect(await queue.processNext()).toBeUndefined();
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle interleaved processNext and enqueue', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(1);
+    expect(await queue.processNext()).toBe(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(await queue.processNext()).toBe(2);
+    expect(queue.size).toBe(1);
+    expect(await queue.processNext()).toBe(3);
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle maxConcurrent limits processing', async () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 2, delayMs: 10 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    const r1 = queue.processNext();
+    const r2 = queue.processNext();
+    const r3 = queue.processNext();
+    expect(await r1).toBe(1);
+    expect(await r2).toBe(2);
+    expect(await r3).toBeUndefined();
+  });
+
+  it('should handle large maxConcurrent value', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 100 });
+    for (let i = 0; i < 200; i++) {
+      queue.enqueue(i);
+    }
+    expect(queue.size).toBe(200);
+    for (let i = 0; i < 200; i++) {
+      expect(queue.dequeue()).toBe(i);
+    }
+    expect(queue.isEmpty()).toBe(true);
+  });
 });
