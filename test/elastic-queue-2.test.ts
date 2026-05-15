@@ -191,4 +191,48 @@ describe('ElasticQueue2', () => {
     const queue = new ElasticQueue2<number>({ maxSize: 10 });
     expect(queue.capacity()).toBe(10);
   });
+
+  it('should handle many enqueue dequeue cycles', () => {
+    const queue = new ElasticQueue2<number>();
+    for (let cycle = 0; cycle < 10; cycle++) {
+      queue.enqueue(cycle * 2);
+      queue.enqueue(cycle * 2 + 1);
+      expect(queue.dequeue()).toBe(cycle * 2);
+      expect(queue.dequeue()).toBe(cycle * 2 + 1);
+    }
+    expect(queue.isEmpty()).toBe(true);
+  });
+
+  it('should handle maxSize with dequeues', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 3 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    expect(queue.isFull()).toBe(true);
+    queue.dequeue();
+    queue.enqueue(4);
+    expect(queue.size).toBe(3);
+    expect(queue.dequeue()).toBe(2);
+  });
+
+  it('should handle multiple clears', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.clear();
+    queue.enqueue(2);
+    queue.clear();
+    queue.enqueue(3);
+    expect(queue.size).toBe(1);
+    expect(queue.peek()).toBe(3);
+  });
+
+  it('should handle enqueue after full dequeue', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    expect(queue.dequeue()).toBe(1);
+    expect(queue.isEmpty()).toBe(true);
+    queue.enqueue(2);
+    expect(queue.peek()).toBe(2);
+    expect(queue.size).toBe(1);
+  });
 });

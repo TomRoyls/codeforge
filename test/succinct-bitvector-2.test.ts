@@ -227,4 +227,30 @@ describe('SuccinctBitvector2', () => {
     expect(bv.select1(1)).toBe(2);
     expect(bv.select1(2)).toBe(4);
   });
+
+  it('should handle rank0 on all ones', () => {
+    const bv = new SuccinctBitvector2([true, true, true, true]);
+    expect(bv.rank0(4)).toBe(0);
+    expect(bv.countZeros()).toBe(0);
+  });
+
+  it('should handle select0 on all zeros', () => {
+    const bv = new SuccinctBitvector2([false, false, false, false]);
+    expect(bv.select0(0)).toBe(0);
+    expect(bv.select0(1)).toBe(1);
+    expect(bv.select0(3)).toBe(3);
+    expect(bv.select0(4)).toBe(-1);
+  });
+
+  it('should handle toArray round trip', () => {
+    const bits = [false, true, false, true, false, true, true, false];
+    const bv = new SuccinctBitvector2(bits);
+    expect(bv.toArray()).toEqual(bits);
+  });
+
+  it('should handle rank with index at length', () => {
+    const bv = new SuccinctBitvector2([true, false, true]);
+    expect(bv.rank1(3)).toBe(2);
+    expect(bv.rank0(3)).toBe(1);
+  });
 });
