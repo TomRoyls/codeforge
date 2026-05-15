@@ -188,4 +188,53 @@ describe('CountMinSketch3', () => {
     cms.update('test', 42);
     expect(cms.estimate('test')).toBeGreaterThanOrEqual(42);
   });
+
+  it('should handle merge then reset', () => {
+    const cms1 = new CountMinSketch3(100, 5);
+    const cms2 = new CountMinSketch3(100, 5);
+    cms1.update('a', 10);
+    cms2.update('a', 5);
+    cms1.merge(cms2);
+    expect(cms1.estimate('a')).toBeGreaterThanOrEqual(15);
+    cms1.reset();
+    expect(cms1.estimate('a')).toBe(0);
+  });
+
+  it('should handle unicode keys', () => {
+    const cms = new CountMinSketch3();
+    cms.update('日本語', 5);
+    cms.update('emoji🎉', 3);
+    expect(cms.estimate('日本語')).toBe(5);
+    expect(cms.estimate('emoji🎉')).toBe(3);
+  });
+
+  it('should handle multiple merges', () => {
+    const cms1 = new CountMinSketch3(100, 5);
+    const cms2 = new CountMinSketch3(100, 5);
+    const cms3 = new CountMinSketch3(100, 5);
+    cms1.update('x', 1);
+    cms2.update('x', 2);
+    cms3.update('x', 3);
+    cms1.merge(cms2);
+    cms1.merge(cms3);
+    expect(cms1.estimate('x')).toBeGreaterThanOrEqual(6);
+  });
+
+  it('should estimate 0 for all items after reset', () => {
+    const cms = new CountMinSketch3();
+    for (let i = 0; i < 10; i++) {
+      cms.update(`item-${i}`, i + 1);
+    }
+    cms.reset();
+    for (let i = 0; i < 10; i++) {
+      expect(cms.estimate(`item-${i}`)).toBe(0);
+    }
+  });
+
+  it('should handle very long string keys', () => {
+    const longKey = 'a'.repeat(10000);
+    const cms = new CountMinSketch3();
+    cms.update(longKey, 7);
+    expect(cms.estimate(longKey)).toBe(7);
+  });
 });

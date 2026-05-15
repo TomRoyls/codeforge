@@ -144,4 +144,33 @@ describe('LibrarySort3', () => {
       expect(sorted).toBe(true);
     });
   });
+
+  describe('edge cases', () => {
+    it('should handle array of all same elements', () => {
+      const sorter = new LibrarySort3([7, 7, 7, 7, 7]);
+      expect(sorter.sort()).toEqual([7, 7, 7, 7, 7]);
+    });
+
+    it('should handle two element sorted', () => {
+      const sorter = new LibrarySort3([1, 2]);
+      expect(sorter.sort()).toEqual([1, 2]);
+    });
+
+    it('should handle large negative numbers', () => {
+      const sorter = new LibrarySort3([-1000000, -999999, -999998]);
+      expect(sorter.sort()).toEqual([-1000000, -999999, -999998]);
+    });
+
+    it('should handle array with single negative', () => {
+      const sorter = new LibrarySort3([-5]);
+      expect(sorter.sort()).toEqual([-5]);
+    });
+
+    it('should handle custom comparator with objects', () => {
+      const objs = [{ v: 3 }, { v: 1 }, { v: 2 }];
+      const sorter = new LibrarySort3(objs, (a, b) => a.v - b.v);
+      const result = sorter.sort();
+      expect(result.map(o => o.v)).toEqual([1, 2, 3]);
+    });
+  });
 });

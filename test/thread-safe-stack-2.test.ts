@@ -223,5 +223,60 @@ describe('ThreadSafeStack2', () => {
       expect(stack.size).toBe(0)
       expect(stack.isEmpty()).toBe(true)
     })
+
+    it('peek does not remove item', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.push(42)
+      expect(stack.peek()).toBe(42)
+      expect(stack.size).toBe(1)
+      expect(stack.peek()).toBe(42)
+    })
+
+    it('peek returns undefined on empty stack', () => {
+      const stack = new ThreadSafeStack2<number>()
+      expect(stack.peek()).toBeUndefined()
+    })
+
+    it('clear empties the stack', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.push(1)
+      stack.push(2)
+      stack.push(3)
+      stack.clear()
+      expect(stack.size).toBe(0)
+      expect(stack.isEmpty()).toBe(true)
+    })
+
+    it('lock prevents push', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.lock()
+      expect(() => stack.push(1)).toThrow()
+    })
+
+    it('lock prevents pop', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.push(1)
+      stack.lock()
+      expect(() => stack.pop()).toThrow()
+    })
+
+    it('unlock allows operations again', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.lock()
+      stack.unlock()
+      stack.push(1)
+      expect(stack.pop()).toBe(1)
+    })
+
+    it('double lock throws', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.lock()
+      expect(() => stack.lock()).toThrow()
+    })
+
+    it('unlock on unlocked throws', () => {
+      const stack = new ThreadSafeStack2<number>()
+      expect(() => stack.unlock()).toThrow()
+    })
   })
 })

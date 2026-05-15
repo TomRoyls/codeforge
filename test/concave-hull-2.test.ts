@@ -318,5 +318,64 @@ describe('ConcaveHull2', () => {
 
       expect(hull.isEmpty()).toBe(false)
     })
+
+    it('computes hull for single point', async () => {
+      const hull = new ConcaveHull2([{ x: 5, y: 10 }])
+      expect(hull.compute()).toEqual([{ x: 5, y: 10 }])
+    })
+
+    it('computes hull for two points', async () => {
+      const points = [{ x: 0, y: 0 }, { x: 1, y: 1 }]
+      const hull = new ConcaveHull2(points)
+      expect(hull.compute()).toEqual(points)
+    })
+
+    it('getPoints returns copy of points', async () => {
+      const points = [{ x: 0, y: 0 }, { x: 1, y: 1 }]
+      const hull = new ConcaveHull2(points)
+      const retrieved = hull.getPoints()
+      expect(retrieved).toEqual(points)
+      retrieved.push({ x: 2, y: 2 })
+      expect(hull.getPoints()).toHaveLength(2)
+    })
+
+    it('handles concavity parameter of 1 (convex only)', async () => {
+      const points = [
+        { x: 0, y: 0 },
+        { x: 4, y: 0 },
+        { x: 4, y: 4 },
+        { x: 0, y: 4 },
+        { x: 2, y: 2 }
+      ]
+      const hull = new ConcaveHull2(points)
+      const result = hull.compute(1)
+      expect(result.length).toBeGreaterThanOrEqual(3)
+    })
+
+    it('handles L-shaped points', async () => {
+      const points = [
+        { x: 0, y: 0 },
+        { x: 3, y: 0 },
+        { x: 3, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 3 },
+        { x: 0, y: 3 }
+      ]
+      const hull = new ConcaveHull2(points)
+      const result = hull.compute()
+      expect(result.length).toBeGreaterThanOrEqual(3)
+    })
+
+    it('handles duplicate points', async () => {
+      const points = [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 0, y: 1 }
+      ]
+      const hull = new ConcaveHull2(points)
+      const result = hull.compute()
+      expect(result.length).toBeGreaterThanOrEqual(2)
+    })
   })
 })
