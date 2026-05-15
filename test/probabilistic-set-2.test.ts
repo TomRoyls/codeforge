@@ -191,4 +191,39 @@ describe('ProbabilisticSet2', () => {
     expect(set.has(1)).toBe(true);
     expect(set.has(2)).toBe(false);
   });
+
+  it('should report isEmpty correctly', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.isEmpty()).toBe(true);
+    set.add('test');
+    expect(set.isEmpty()).toBe(false);
+  });
+
+  it('should clear all elements', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('a');
+    set.add('b');
+    set.clear();
+    expect(set.isEmpty()).toBe(true);
+    expect(set.size).toBe(0);
+    expect(set.has('a')).toBe(false);
+  });
+
+  it('should report falsePositiveRate', () => {
+    const set = new ProbabilisticSet2<string>(1000, 0.05);
+    expect(set.falsePositiveRate()).toBe(0.05);
+  });
+
+  it('should report bitCount greater than 0', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.bitCount()).toBeGreaterThan(0);
+  });
+
+  it('should handle unicode strings', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('日本語');
+    set.add('🎉');
+    expect(set.has('日本語')).toBe(true);
+    expect(set.has('🎉')).toBe(true);
+  });
 });

@@ -158,4 +158,35 @@ describe('PersistentArray2', () => {
     const arr3 = arr2.set(1, 'X')
     expect(arr3.toArray()).toEqual(['a', 'X', 'c'])
   })
+
+  it('get returns undefined for out of bounds', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    expect(arr.get(99)).toBeUndefined()
+    expect(arr.get(-1)).toBeUndefined()
+  })
+
+  it('map transforms elements', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    const doubled = arr.map(x => x * 2)
+    expect(doubled.toArray()).toEqual([2, 4, 6])
+  })
+
+  it('map preserves original', () => {
+    const arr = new PersistentArray2([1, 2, 3])
+    arr.map(x => x * 10)
+    expect(arr.toArray()).toEqual([1, 2, 3])
+  })
+
+  it('pop from empty returns undefined', () => {
+    const arr = new PersistentArray2<number>()
+    const [val, newArr] = arr.pop()
+    expect(val).toBeUndefined()
+    expect(newArr.toArray()).toEqual([])
+  })
+
+  it('set at new index extends array', () => {
+    const arr = new PersistentArray2([1, 2])
+    const arr2 = arr.set(3, 99)
+    expect(arr2.get(3)).toBe(99)
+  })
 })
