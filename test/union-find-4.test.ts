@@ -216,4 +216,50 @@ describe('UnionFind4', () => {
     expect(uf.componentCount()).toBe(2);
     expect(uf.componentSize(0)).toBe(2);
   });
+
+  it('should handle two separate components merging', () => {
+    const uf = new UnionFind4(6);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    uf.union(4, 5);
+    expect(uf.componentCount()).toBe(3);
+    uf.union(1, 2);
+    expect(uf.componentCount()).toBe(2);
+    expect(uf.connected(0, 3)).toBe(true);
+    expect(uf.connected(4, 5)).toBe(true);
+    expect(uf.connected(0, 4)).toBe(false);
+  });
+
+  it('should handle componentSize after multiple merges', () => {
+    const uf = new UnionFind4(8);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    uf.union(4, 5);
+    uf.union(6, 7);
+    uf.union(0, 2);
+    uf.union(4, 6);
+    expect(uf.componentSize(0)).toBe(4);
+    expect(uf.componentSize(4)).toBe(4);
+    uf.union(0, 4);
+    expect(uf.componentSize(0)).toBe(8);
+    expect(uf.componentCount()).toBe(1);
+  });
+
+  it('should handle large star topology union', () => {
+    const uf = new UnionFind4(100);
+    for (let i = 1; i < 100; i++) {
+      uf.union(0, i);
+    }
+    expect(uf.componentCount()).toBe(1);
+    expect(uf.componentSize(0)).toBe(100);
+    expect(uf.connected(0, 99)).toBe(true);
+  });
+
+  it('should handle find on unmodified element', () => {
+    const uf = new UnionFind4(10);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    expect(uf.find(5)).toBe(5);
+    expect(uf.find(9)).toBe(9);
+  });
 });

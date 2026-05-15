@@ -153,4 +153,56 @@ describe('MultiMap3', () => {
     expect(map.count('b')).toBe(1);
     expect(map.count('c')).toBe(0);
   });
+
+  it('should handle delete of last value removing key', () => {
+    const map = new MultiMap3<string, number>();
+    map.set('a', 1);
+    map.delete('a', 1);
+    expect(map.has('a')).toBe(false);
+    expect(map.count('a')).toBe(0);
+    expect(map.size).toBe(0);
+  });
+
+  it('should handle multiple keys with overlapping values', () => {
+    const map = new MultiMap3<string, number>();
+    map.set('a', 1);
+    map.set('b', 1);
+    map.set('a', 2);
+    expect(map.get('a')).toEqual([1, 2]);
+    expect(map.get('b')).toEqual([1]);
+    expect(map.size).toBe(3);
+  });
+
+  it('should handle clear then re-add', () => {
+    const map = new MultiMap3<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    map.clear();
+    expect(map.size).toBe(0);
+    map.set('c', 3);
+    expect(map.size).toBe(1);
+    expect(map.get('c')).toEqual([3]);
+  });
+
+  it('should handle entries after partial delete', () => {
+    const map = new MultiMap3<string, number>();
+    map.set('a', 1);
+    map.set('a', 2);
+    map.set('b', 3);
+    map.delete('a', 1);
+    const entries = map.entries();
+    expect(entries).toHaveLength(2);
+    expect(entries.find(e => e[0] === 'a')![1]).toEqual([2]);
+    expect(entries.find(e => e[0] === 'b')![1]).toEqual([3]);
+  });
+
+  it('should handle values after delete across keys', () => {
+    const map = new MultiMap3<string, number>();
+    map.set('a', 1);
+    map.set('a', 2);
+    map.set('b', 3);
+    map.delete('a', 1);
+    const vals = map.values();
+    expect(vals).toEqual([2, 3]);
+  });
 });

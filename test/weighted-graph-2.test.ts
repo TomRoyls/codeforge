@@ -199,4 +199,54 @@ describe('WeightedGraph2', () => {
       expect(graph.edgeCount()).toBe(3);
     });
   });
+
+  describe('additional coverage', () => {
+    it('should handle remove edge and re-add', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 5);
+      graph.removeEdge('A', 'B');
+      expect(graph.hasEdge('A', 'B')).toBe(false);
+      graph.addEdge('A', 'B', 10);
+      expect(graph.getEdgeWeight('A', 'B')).toBe(10);
+    });
+
+    it('should handle remove vertex that has outgoing edges', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 1);
+      graph.addEdge('A', 'C', 2);
+      graph.removeVertex('A');
+      expect(graph.hasVertex('A')).toBe(false);
+      expect(graph.hasEdge('A', 'B')).toBe(false);
+      expect(graph.hasEdge('A', 'C')).toBe(false);
+      expect(graph.edgeCount()).toBe(0);
+    });
+
+    it('should handle negative edge weights', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', -5);
+      expect(graph.getEdgeWeight('A', 'B')).toBe(-5);
+      expect(graph.hasEdge('A', 'B')).toBe(true);
+    });
+
+    it('should handle zero weight edge', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 0);
+      expect(graph.getEdgeWeight('A', 'B')).toBe(0);
+      expect(graph.hasEdge('A', 'B')).toBe(true);
+    });
+
+    it('should handle complex graph with multiple removals', () => {
+      const graph = new WeightedGraph2();
+      graph.addEdge('A', 'B', 1);
+      graph.addEdge('B', 'C', 2);
+      graph.addEdge('C', 'D', 3);
+      graph.addEdge('D', 'A', 4);
+      expect(graph.edgeCount()).toBe(4);
+      graph.removeEdge('B', 'C');
+      expect(graph.edgeCount()).toBe(3);
+      graph.removeVertex('D');
+      expect(graph.edgeCount()).toBe(1);
+      expect(graph.vertexCount()).toBe(3);
+    });
+  });
 });

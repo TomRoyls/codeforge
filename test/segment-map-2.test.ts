@@ -123,4 +123,40 @@ describe('SegmentMap2', () => {
     expect(map.get(4)).toBe('A');
     expect(map.get(5)).toBe('B');
   });
+
+  it('handles set with invalid range (start >= end)', () => {
+    const map = new SegmentMap2<string>();
+    map.set(5, 5, 'A');
+    expect(map.size).toBe(0);
+    map.set(10, 5, 'B');
+    expect(map.size).toBe(0);
+  });
+
+  it('handles multiple non-overlapping segments', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 5, 'A');
+    map.set(10, 15, 'B');
+    map.set(20, 25, 'C');
+    expect(map.size).toBe(3);
+    expect(map.get(2)).toBe('A');
+    expect(map.get(12)).toBe('B');
+    expect(map.get(22)).toBe('C');
+    expect(map.get(7)).toBeUndefined();
+  });
+
+  it('handles delete all segments', () => {
+    const map = new SegmentMap2<string>();
+    map.set(0, 10, 'A');
+    map.set(10, 20, 'B');
+    map.delete(0, 20);
+    expect(map.size).toBe(0);
+    expect(map.get(5)).toBeUndefined();
+    expect(map.get(15)).toBeUndefined();
+  });
+
+  it('handles getRange on empty map', () => {
+    const map = new SegmentMap2<string>();
+    const result = map.getRange(0, 100);
+    expect(result).toEqual([]);
+  });
 });
