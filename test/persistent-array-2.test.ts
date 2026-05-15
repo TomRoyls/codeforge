@@ -281,4 +281,11 @@ describe('PersistentArray2', () => {
     expect(arr.get(1)).toBe(20)
     expect(arr.get(2)).toBe(30)
   })
+
+  it('should handle push', () => {
+    const arr = new PersistentArray2([10, 20])
+    const arr2 = arr.push(30)
+    expect(arr2.get(2)).toBe(30)
+    expect(arr.get(2)).toBeUndefined()
+  })
 })

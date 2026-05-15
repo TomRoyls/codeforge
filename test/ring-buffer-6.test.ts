@@ -450,5 +450,15 @@ describe('RingBuffer6', () => {
       const arr = buffer.toArray();
       expect(arr).toEqual([1, 2, 3]);
     });
+
+    it('should handle isFull and capacity', () => {
+      const buffer = new RingBuffer6<number>(3);
+      expect(buffer.isEmpty()).toBe(true);
+      expect(buffer.capacity).toBe(3);
+      buffer.push(1);
+      buffer.push(2);
+      buffer.push(3);
+      expect(buffer.isFull()).toBe(true);
+    });
   });
 });

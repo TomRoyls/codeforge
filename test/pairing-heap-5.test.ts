@@ -439,4 +439,13 @@ describe('PairingHeapNode5', () => {
     heap.insert(2);
     expect(heap.size).toBe(2);
   });
+
+  it('should handle peek', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.peek()).toBe(3);
+    expect(heap.size).toBe(3);
+  });
 });

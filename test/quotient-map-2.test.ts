@@ -342,10 +342,17 @@ describe('QuotientMap2', () => {
   });
 
   it('should handle delete', () => {
-    const qm = new QuotientMap2(8, 16);
+    const qm = new QuotientMap2((a, b) => a === b);
     qm.set('key1', 'value1');
     qm.set('key2', 'value2');
     expect(qm.delete('key1')).toBe(true);
     expect(qm.get('key1')).toBeUndefined();
+  });
+
+  it('should handle has', () => {
+    const qm = new QuotientMap2((a, b) => a === b);
+    qm.set('key1', 'value1');
+    expect(qm.has('key1')).toBe(true);
+    expect(qm.has('nonexistent')).toBe(false);
   });
 });

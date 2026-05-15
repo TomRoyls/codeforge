@@ -418,4 +418,13 @@ describe('ProbabilityMap2', () => {
     const entries = map.entries();
     expect(entries.length).toBe(2);
   });
+
+  it('should handle delete', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    expect(map.delete('a')).toBe(true);
+    expect(map.has('a')).toBe(false);
+    expect(map.size).toBe(1);
+  });
 });

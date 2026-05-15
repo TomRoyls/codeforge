@@ -385,4 +385,13 @@ describe('RadixMap2', () => {
     expect(map.get(1)).toBe('a');
     expect(map.get(2)).toBe('b');
   });
+
+  it('should handle delete', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.delete(1)).toBe(true);
+    expect(map.get(1)).toBeUndefined();
+    expect(map.size).toBe(1);
+  });
 });

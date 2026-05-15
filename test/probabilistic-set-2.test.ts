@@ -318,4 +318,13 @@ describe('ProbabilisticSet2', () => {
     set.clear();
     expect(set.has('item1')).toBe(false);
   });
+
+  it('should handle size after adds', () => {
+    const set = new ProbabilisticSet2();
+    set.add('a');
+    set.add('b');
+    set.add('c');
+    expect(set.has('a')).toBe(true);
+    expect(set.has('d')).toBe(false);
+  });
 });

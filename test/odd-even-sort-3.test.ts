@@ -212,4 +212,10 @@ describe('OddEvenSort3 - Edge Cases', () => {
     const arr = [Number.MAX_SAFE_INTEGER, 0, Number.MIN_SAFE_INTEGER];
     expect(sorter.sort(arr)).toEqual([Number.MIN_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER]);
   });
+
+  it('should handle isSorted check', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(sorter.isSorted([1, 2, 3])).toBe(true);
+    expect(sorter.isSorted([3, 1, 2])).toBe(false);
+  });
 });

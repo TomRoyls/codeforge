@@ -293,4 +293,10 @@ describe('RankSelectBitvector2', () => {
     const bv = new RankSelectBitvector2([true, false, true, true]);
     expect(bv.rank1(3)).toBe(2);
   });
+
+  it('handles select1', async () => {
+    const bv = new RankSelectBitvector2([true, false, true, true, false]);
+    const pos = bv.select1(0);
+    expect(pos).toBeGreaterThanOrEqual(0);
+  });
 });
