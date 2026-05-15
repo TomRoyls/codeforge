@@ -342,4 +342,11 @@ describe('WaveletMatrix2', () => {
     const wm = new WaveletMatrix2(data);
     expect(wm.toArray()).toEqual([3, 1, 4, 1, 5]);
   });
+
+  it('should handle quantile', async () => {
+    const data = [5, 3, 1, 4, 2];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.quantile(0, 5, 0)).toBe(1);
+    expect(wm.quantile(0, 5, 4)).toBe(5);
+  });
 });

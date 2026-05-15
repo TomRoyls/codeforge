@@ -339,5 +339,13 @@ describe('SkipList5', () => {
       expect(list.search(10)).toBe(true);
       expect(list.search(99)).toBe(false);
     });
+
+    it('should handle toArray', () => {
+      const list = new SkipList<number>();
+      list.insert(30);
+      list.insert(10);
+      list.insert(20);
+      expect(list.toArray()).toEqual([10, 20, 30]);
+    });
   });
 });

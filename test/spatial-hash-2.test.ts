@@ -329,5 +329,11 @@ describe('SpatialHash2', () => {
       hash.clear();
       expect(hash.size).toBe(0);
     });
+
+    it('should handle query in empty hash', () => {
+      const hash = new SpatialHash2<number>(10);
+      const results = hash.query(45, 45, 55, 55);
+      expect(results).toEqual([]);
+    });
   });
 });

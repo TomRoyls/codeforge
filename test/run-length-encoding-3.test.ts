@@ -251,4 +251,13 @@ describe("RunLengthEncoding3", () => {
     expect(rle.length).toBe(0);
     expect(rle.runCount).toBe(0);
   });
+
+  it('should handle getRuns', async () => {
+    const rle = new RunLengthEncoding3();
+    rle.encode('AABBB');
+    const runs = rle.getRuns();
+    expect(runs).toHaveLength(2);
+    expect(runs[0]).toEqual({ char: 'A', count: 2 });
+    expect(runs[1]).toEqual({ char: 'B', count: 3 });
+  });
 });

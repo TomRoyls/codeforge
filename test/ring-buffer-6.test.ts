@@ -432,5 +432,14 @@ describe('RingBuffer6', () => {
       buffer.unshift(0);
       expect(buffer.get(0)).toBe(0);
     });
+
+    it('should handle clear', () => {
+      const buffer = new RingBuffer6<number>();
+      buffer.push(1);
+      buffer.push(2);
+      buffer.clear();
+      expect(buffer.size).toBe(0);
+      expect(buffer.isEmpty()).toBe(true);
+    });
   });
 });

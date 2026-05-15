@@ -332,4 +332,10 @@ describe('SparseMatrix2', () => {
     const arr = matrix.toArray();
     expect(arr).toEqual([[1, 2], [3, 4]]);
   });
+
+  it('should handle rows and cols', () => {
+    const matrix = new SparseMatrix2(3, 4);
+    expect(matrix.rows()).toBe(3);
+    expect(matrix.cols()).toBe(4);
+  });
 });

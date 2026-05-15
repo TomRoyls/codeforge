@@ -292,5 +292,16 @@ describe('WeightedGraph2', () => {
       expect(graph.getEdgeWeight('A', 'B')).toBe(7);
       expect(graph.getEdgeWeight('B', 'A')).toBeUndefined();
     });
+
+    it('should handle getNeighbors', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addVertex('C');
+      graph.addEdge('A', 'B', 5);
+      graph.addEdge('A', 'C', 10);
+      const neighbors = graph.getNeighbors('A');
+      expect(neighbors).toHaveLength(2);
+    });
   });
 });

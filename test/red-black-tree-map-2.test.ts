@@ -319,4 +319,13 @@ describe('RedBlackTreeMap2', () => {
     expect(map.size).toBe(0)
     expect(map.isEmpty()).toBe(true)
   })
+
+  it('should handle keys after inserts', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(3, 'c')
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const keys = map.keys()
+    expect(keys).toEqual([1, 2, 3])
+  })
 })

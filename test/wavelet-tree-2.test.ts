@@ -321,4 +321,10 @@ describe("WaveletTree", () => {
       }
     });
   });
+
+  it('should handle toArray', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.toArray()).toEqual([3, 1, 4, 1, 5]);
+  });
 });

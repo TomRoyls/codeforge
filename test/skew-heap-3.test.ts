@@ -471,4 +471,11 @@ describe('SkewHeap3', () => {
     expect(heap1.extractMin()).toBe(3);
     expect(heap1.extractMin()).toBe(5);
   });
+
+  it('should handle isEmpty', () => {
+    const heap = new SkewHeap3<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(1);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

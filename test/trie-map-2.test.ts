@@ -310,5 +310,14 @@ describe('TrieMap2', () => {
       expect(trie.hasPrefix('ban')).toBe(true);
       expect(trie.hasPrefix('xyz')).toBe(false);
     });
+
+    it('should handle delete', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('apple', 1);
+      trie.set('banana', 2);
+      expect(trie.delete('apple')).toBe(true);
+      expect(trie.has('apple')).toBe(false);
+      expect(trie.size).toBe(1);
+    });
   });
 });

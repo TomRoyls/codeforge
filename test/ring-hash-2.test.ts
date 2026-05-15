@@ -308,4 +308,12 @@ describe('RingHash2', () => {
     expect(ring.size()).toBe(100);
     expect(ring.nodes()).not.toContain('node1');
   });
+
+  it('should handle getNode for valid key', () => {
+    ring.addNode('node1');
+    ring.addNode('node2');
+    const node = ring.getNode('some-key');
+    expect(node).toBeDefined();
+    expect(['node1', 'node2']).toContain(node);
+  });
 });

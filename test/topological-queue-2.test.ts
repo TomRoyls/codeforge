@@ -386,4 +386,10 @@ describe('TopologicalQueue2', () => {
     expect(ts.getNodes()).toContain('X');
     expect(ts.getNodes()).toContain('Y');
   });
+
+  it('should handle single node sort', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('A');
+    expect(ts.sort()).toEqual(['A']);
+  });
 });

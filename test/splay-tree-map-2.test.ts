@@ -391,4 +391,10 @@ describe('SplayTreeMap2', () => {
     expect(map.values()).toEqual([]);
     expect(map.keys()).toEqual([]);
   });
+
+  it('should handle min and max on empty', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    expect(map.min()).toBeUndefined();
+    expect(map.max()).toBeUndefined();
+  });
 });

@@ -261,4 +261,11 @@ describe('RobinHoodHash2', () => {
     expect(hash.delete('missing')).toBe(false);
     expect(hash.size).toBe(1);
   });
+
+  it('should handle get after set', () => {
+    hash.set('a', 1);
+    hash.set('b', 2);
+    expect(hash.get('a')).toBe(1);
+    expect(hash.get('b')).toBe(2);
+  });
 });

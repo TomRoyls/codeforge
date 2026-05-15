@@ -320,4 +320,13 @@ describe('UnionFind4', () => {
     expect(uf.find(1)).toBe(uf.find(2));
     expect(uf.find(3)).not.toBe(uf.find(0));
   });
+
+  it('should handle all elements in same set', () => {
+    const uf = new UnionFind4(4);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    uf.union(0, 2);
+    expect(uf.componentCount()).toBe(1);
+    expect(uf.connected(0, 3)).toBe(true);
+  });
 });

@@ -316,5 +316,10 @@ describe('ThreadSafeStack2', () => {
       expect(stack.peek()).toBe(20)
       expect(stack.size).toBe(2)
     })
+
+    it('handles pop returning undefined on empty', () => {
+      const stack = new ThreadSafeStack2<number>()
+      expect(stack.pop()).toBeUndefined()
+    })
   })
 })

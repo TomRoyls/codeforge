@@ -250,5 +250,11 @@ describe("SparseTable", () => {
       expect(Array.isArray(table)).toBe(true);
       expect(table.length).toBeGreaterThan(0);
     });
+
+    it("should handle single element", () => {
+      const st = new SparseTable([42]);
+      expect(st.rangeMinQuery(0, 0)).toBe(42);
+      expect(st.rangeMaxQuery(0, 0)).toBe(42);
+    });
   });
 });

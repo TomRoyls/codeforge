@@ -252,5 +252,11 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.toArray()).toEqual([1, 2, 3]);
     });
+
+    it('should handle empty array', () => {
+      const sorter = new ShellSort<number>([]);
+      sorter.sort();
+      expect(sorter.toArray()).toEqual([]);
+    });
   });
 });
