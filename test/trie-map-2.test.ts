@@ -319,5 +319,14 @@ describe('TrieMap2', () => {
       expect(trie.has('apple')).toBe(false);
       expect(trie.size).toBe(1);
     });
+
+    it('should handle clear', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('apple', 1);
+      trie.set('banana', 2);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      expect(trie.isEmpty()).toBe(true);
+    });
   });
 });

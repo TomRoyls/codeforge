@@ -321,5 +321,14 @@ describe('ThreadSafeStack2', () => {
       const stack = new ThreadSafeStack2<number>()
       expect(stack.pop()).toBeUndefined()
     })
+
+    it('handles double push and pop', () => {
+      const stack = new ThreadSafeStack2<number>()
+      stack.push(1)
+      stack.push(2)
+      expect(stack.pop()).toBe(2)
+      expect(stack.pop()).toBe(1)
+      expect(stack.size).toBe(0)
+    })
   })
 })

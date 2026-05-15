@@ -303,5 +303,15 @@ describe('WeightedGraph2', () => {
       const neighbors = graph.getNeighbors('A');
       expect(neighbors).toHaveLength(2);
     });
+
+    it('should handle removeVertex', () => {
+      const graph = new WeightedGraph2();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addEdge('A', 'B', 5);
+      expect(graph.removeVertex('A')).toBe(true);
+      expect(graph.hasVertex('A')).toBe(false);
+      expect(graph.edgeCount()).toBe(0);
+    });
   });
 });

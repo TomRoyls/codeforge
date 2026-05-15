@@ -256,5 +256,11 @@ describe("SparseTable", () => {
       expect(st.rangeMinQuery(0, 0)).toBe(42);
       expect(st.rangeMaxQuery(0, 0)).toBe(42);
     });
+
+    it("should handle two elements min and max", () => {
+      const st = new SparseTable([10, 20]);
+      expect(st.rangeMinQuery(0, 1)).toBe(10);
+      expect(st.rangeMaxQuery(0, 1)).toBe(20);
+    });
   });
 });

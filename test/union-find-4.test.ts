@@ -329,4 +329,11 @@ describe('UnionFind4', () => {
     expect(uf.componentCount()).toBe(1);
     expect(uf.connected(0, 3)).toBe(true);
   });
+
+  it('should handle find on unconnected elements', () => {
+    const uf = new UnionFind4(3);
+    expect(uf.find(0)).toBe(0);
+    expect(uf.find(1)).toBe(1);
+    expect(uf.find(2)).toBe(2);
+  });
 });

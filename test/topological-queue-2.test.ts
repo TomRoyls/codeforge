@@ -392,4 +392,9 @@ describe('TopologicalQueue2', () => {
     ts.addNode('A');
     expect(ts.sort()).toEqual(['A']);
   });
+
+  it('should handle empty graph sort', () => {
+    const ts = new TopologicalQueue2();
+    expect(ts.sort()).toEqual([]);
+  });
 });

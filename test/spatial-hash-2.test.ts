@@ -335,5 +335,16 @@ describe('SpatialHash2', () => {
       const results = hash.query(45, 45, 55, 55);
       expect(results).toEqual([]);
     });
+
+    it('should handle multiple inserts and removes', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 50, 50);
+      hash.insert('b', 60, 60);
+      hash.insert('c', 70, 70);
+      expect(hash.size).toBe(3);
+      hash.remove('b');
+      expect(hash.size).toBe(2);
+      expect(hash.has('b')).toBe(false);
+    });
   });
 });

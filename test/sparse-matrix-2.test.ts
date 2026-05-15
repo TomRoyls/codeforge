@@ -338,4 +338,12 @@ describe('SparseMatrix2', () => {
     expect(matrix.rows()).toBe(3);
     expect(matrix.cols()).toBe(4);
   });
+
+  it('should handle get on unset position', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    expect(matrix.get(0, 0)).toBe(0);
+    matrix.set(1, 1, 42);
+    expect(matrix.get(1, 1)).toBe(42);
+    expect(matrix.get(2, 2)).toBe(0);
+  });
 });

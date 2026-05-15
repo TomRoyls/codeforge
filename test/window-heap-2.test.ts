@@ -330,4 +330,13 @@ describe('WindowHeap2', () => {
     expect(heap.size).toBe(0);
     expect(heap.isEmpty()).toBe(true);
   });
+
+  it('should handle getMin and getMax', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(10);
+    heap.push(30);
+    heap.push(20);
+    expect(heap.getMin()).toBe(10);
+    expect(heap.getMax()).toBe(30);
+  });
 });

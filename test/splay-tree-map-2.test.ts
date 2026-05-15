@@ -397,4 +397,11 @@ describe('SplayTreeMap2', () => {
     expect(map.min()).toBeUndefined();
     expect(map.max()).toBeUndefined();
   });
+
+  it('should handle delete returning false for missing key', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
 });
