@@ -264,5 +264,97 @@ describe('MergeHeap2', () => {
         expect(heap.extractMin()).toBe(i);
       }
     });
+
+    it('merge three heaps', () => {
+      const h1 = new MergeHeap2<number>();
+      h1.insert(10);
+      h1.insert(30);
+
+      const h2 = new MergeHeap2<number>();
+      h2.insert(20);
+      h2.insert(40);
+
+      const h3 = new MergeHeap2<number>();
+      h3.insert(5);
+      h3.insert(15);
+
+      h1.merge(h2);
+      h1.merge(h3);
+
+      expect(h1.size).toBe(6);
+      expect(h2.size).toBe(0);
+      expect(h3.size).toBe(0);
+
+      const result: number[] = [];
+      while (!h1.isEmpty()) {
+        result.push(h1.extractMin()!);
+      }
+      expect(result).toEqual([5, 10, 15, 20, 30, 40]);
+    });
+
+    it('extract all then re-insert', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(3);
+      heap.insert(1);
+      heap.insert(2);
+      heap.extractMin();
+      heap.extractMin();
+      heap.extractMin();
+      expect(heap.isEmpty()).toBe(true);
+
+      heap.insert(10);
+      heap.insert(5);
+      heap.insert(7);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.extractMin()).toBe(7);
+      expect(heap.extractMin()).toBe(10);
+    });
+
+    it('merge then continue inserting', () => {
+      const h1 = new MergeHeap2<number>();
+      h1.insert(5);
+      h1.insert(1);
+
+      const h2 = new MergeHeap2<number>();
+      h2.insert(3);
+
+      h1.merge(h2);
+      h1.insert(2);
+      h1.insert(4);
+
+      expect(h1.size).toBe(5);
+      expect(h1.extractMin()).toBe(1);
+      expect(h1.extractMin()).toBe(2);
+      expect(h1.extractMin()).toBe(3);
+      expect(h1.extractMin()).toBe(4);
+      expect(h1.extractMin()).toBe(5);
+    });
+
+    it('handles stress test with many elements', () => {
+      const heap = new MergeHeap2<number>();
+      for (let i = 500; i >= 0; i--) {
+        heap.insert(i);
+      }
+      expect(heap.size).toBe(501);
+      for (let i = 0; i <= 500; i++) {
+        expect(heap.extractMin()).toBe(i);
+      }
+      expect(heap.isEmpty()).toBe(true);
+    });
+
+    it('handles alternating insert and extract', () => {
+      const heap = new MergeHeap2<number>();
+      heap.insert(5);
+      heap.insert(1);
+      expect(heap.extractMin()).toBe(1);
+      heap.insert(3);
+      expect(heap.extractMin()).toBe(3);
+      heap.insert(2);
+      heap.insert(4);
+      expect(heap.extractMin()).toBe(2);
+      expect(heap.extractMin()).toBe(4);
+      expect(heap.extractMin()).toBe(5);
+      expect(heap.isEmpty()).toBe(true);
+    });
   });
 });

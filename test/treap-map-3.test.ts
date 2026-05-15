@@ -261,4 +261,70 @@ describe('TreapMap3', () => {
     expect(map.min()).toBe(42);
     expect(map.max()).toBe(42);
   });
+
+  it('should handle negative keys', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(-5, 'neg5');
+    map.set(0, 'zero');
+    map.set(5, 'pos5');
+    map.set(-10, 'neg10');
+    expect(map.keys()).toEqual([-10, -5, 0, 5]);
+    expect(map.get(-5)).toBe('neg5');
+    expect(map.min()).toBe(-10);
+    expect(map.max()).toBe(5);
+  });
+
+  it('should handle sequential deletes', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.set(4, 'd');
+    map.set(5, 'e');
+    map.delete(3);
+    expect(map.size).toBe(4);
+    expect(map.keys()).toEqual([1, 2, 4, 5]);
+    map.delete(1);
+    expect(map.keys()).toEqual([2, 4, 5]);
+    map.delete(5);
+    expect(map.keys()).toEqual([2, 4]);
+    expect(map.min()).toBe(2);
+    expect(map.max()).toBe(4);
+  });
+
+  it('should maintain order after mixed operations', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(5, 'e');
+    map.set(2, 'b');
+    map.set(8, 'h');
+    map.delete(5);
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.delete(8);
+    map.set(6, 'f');
+    expect(map.keys()).toEqual([1, 2, 3, 6]);
+    expect(map.values()).toEqual(['a', 'b', 'c', 'f']);
+  });
+
+  it('should handle reverse insertion order', async () => {
+    const map = new TreapMap3<number, string>();
+    for (let i = 10; i >= 1; i--) {
+      map.set(i, `v${i}`);
+    }
+    expect(map.keys()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(map.min()).toBe(1);
+    expect(map.max()).toBe(10);
+    expect(map.get(5)).toBe('v5');
+  });
+
+  it('should handle toArray after deletes', async () => {
+    const map = new TreapMap3<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.set(4, 'd');
+    map.delete(2);
+    const arr = map.toArray();
+    expect(arr).toEqual([[1, 'a'], [3, 'c'], [4, 'd']]);
+  });
 });
