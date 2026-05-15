@@ -243,4 +243,18 @@ describe('FibonacciSearch4', () => {
     expect(searcher.count(1)).toBe(1);
     expect(searcher.count(3)).toBe(1);
   });
+
+  it('should handle empty array', () => {
+    const searcher = new FibonacciSearch4([]);
+    expect(searcher.search(1)).toBe(-1);
+    expect(searcher.contains(1)).toBe(false);
+    expect(searcher.count(1)).toBe(0);
+  });
+
+  it('should handle searchFirst and searchLast on single element', () => {
+    const searcher = new FibonacciSearch4([42]);
+    expect(searcher.searchFirst(42)).toBe(0);
+    expect(searcher.searchLast(42)).toBe(0);
+    expect(searcher.searchFirst(99)).toBe(-1);
+  });
 });

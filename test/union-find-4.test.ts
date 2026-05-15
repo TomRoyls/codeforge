@@ -262,4 +262,21 @@ describe('UnionFind4', () => {
     expect(uf.find(5)).toBe(5);
     expect(uf.find(9)).toBe(9);
   });
+
+  it('should handle union of same element', () => {
+    const uf = new UnionFind4(5);
+    uf.union(2, 2);
+    expect(uf.componentCount()).toBe(5);
+    expect(uf.find(2)).toBe(2);
+  });
+
+  it('should handle sequential union chain', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(1, 2);
+    uf.union(2, 3);
+    uf.union(3, 4);
+    expect(uf.componentCount()).toBe(1);
+    expect(uf.connected(0, 4)).toBe(true);
+  });
 });

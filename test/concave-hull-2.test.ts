@@ -377,5 +377,17 @@ describe('ConcaveHull2', () => {
       const result = hull.compute()
       expect(result.length).toBeGreaterThanOrEqual(2)
     })
+
+    it('handles collinear points', async () => {
+      const points = [
+        { x: 0, y: 0 },
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+        { x: 3, y: 3 }
+      ]
+      const hull = new ConcaveHull2(points)
+      const result = hull.compute()
+      expect(result.length).toBeGreaterThanOrEqual(2)
+    })
   })
 })
