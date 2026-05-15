@@ -213,5 +213,32 @@ describe('CubeSort2', () => {
       const result = sorter.sort(items);
       expect(result).toEqual([{ value: 1 }, { value: 2 }, { value: 3 }]);
     });
+
+    it('should handle empty array', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([])).toEqual([]);
+    });
+
+    it('should handle single element', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([42])).toEqual([42]);
+    });
+
+    it('should handle already sorted array', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should handle reverse sorted array', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([5, 4, 3, 2, 1])).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should handle sortInPlace modifying array', () => {
+      const sorter = new CubeSort2();
+      const arr = [3, 1, 4, 1, 5];
+      sorter.sortInPlace(arr);
+      expect(arr).toEqual([1, 1, 3, 4, 5]);
+    });
   });
 });

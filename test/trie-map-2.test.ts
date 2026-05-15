@@ -232,5 +232,39 @@ describe('TrieMap2', () => {
       expect(trie.get('124')).toBe(2);
       expect(trie.get('12')).toBeUndefined();
     });
+
+    it('should handle delete then re-add', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('abc', 1);
+      trie.delete('abc');
+      expect(trie.has('abc')).toBe(false);
+      trie.set('abc', 2);
+      expect(trie.get('abc')).toBe(2);
+      expect(trie.size).toBe(1);
+    });
+
+    it('should handle keysWithPrefix returning empty for missing prefix', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('apple', 1);
+      expect(trie.keysWithPrefix('ban')).toEqual([]);
+    });
+
+    it('should handle clear and re-populate', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('a', 1);
+      trie.set('b', 2);
+      trie.clear();
+      expect(trie.size).toBe(0);
+      trie.set('c', 3);
+      expect(trie.get('c')).toBe(3);
+      expect(trie.size).toBe(1);
+    });
+
+    it('should handle hasPrefix for partial match', () => {
+      const trie = new TrieMap2<number>();
+      trie.set('hello', 1);
+      expect(trie.hasPrefix('hel')).toBe(true);
+      expect(trie.hasPrefix('xyz')).toBe(false);
+    });
   });
 });

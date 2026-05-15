@@ -264,4 +264,42 @@ describe('CartesianProduct2', () => {
       }
     })
   })
+
+  describe('additional coverage', () => {
+    it('should handle empty sets', () => {
+      const cp = new CartesianProduct2<number>([])
+      expect(cp.size()).toBe(0)
+      expect(cp.dimensions()).toBe(0)
+      expect(cp.at(0)).toBeUndefined()
+    })
+
+    it('should handle set with empty sub-array', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [], [3]])
+      expect(cp.size()).toBe(0)
+    })
+
+    it('should handle forEach iteration', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+      const results: number[][] = []
+      cp.forEach(el => results.push(el))
+      expect(results).toHaveLength(4)
+      expect(results).toContainEqual([1, 3])
+      expect(results).toContainEqual([2, 4])
+    })
+
+    it('should handle has for non-existent element', () => {
+      const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+      expect(cp.has([1, 3])).toBe(true)
+      expect(cp.has([5, 6])).toBe(false)
+      expect(cp.has([1])).toBe(false)
+    })
+
+    it('should handle toArray', () => {
+      const cp = new CartesianProduct2<string>([['a', 'b'], ['x']])
+      const arr = cp.toArray()
+      expect(arr).toHaveLength(2)
+      expect(arr).toContainEqual(['a', 'x'])
+      expect(arr).toContainEqual(['b', 'x'])
+    })
+  })
 })

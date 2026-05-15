@@ -312,4 +312,41 @@ describe('SplayTreeMap2', () => {
     expect(keys!.length).toBe(7);
     expect(keys!).toEqual([1, 3, 4, 6, 7, 9, 10]);
   });
+
+  it('should handle delete of non-existent key', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'one');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
+
+  it('should handle toArray on empty tree', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    expect(map.toArray()).toEqual([]);
+    expect(map.keys()).toEqual([]);
+    expect(map.values()).toEqual([]);
+  });
+
+  it('should handle delete all elements one by one', async () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.delete(2);
+    map.delete(1);
+    map.delete(3);
+    expect(map.size).toBe(0);
+    expect(map.isEmpty()).toBe(true);
+  });
+
+  it('should handle sequential access pattern', async () => {
+    const map = new SplayTreeMap2<number, number>();
+    for (let i = 0; i < 50; i++) {
+      map.set(i, i * 10);
+    }
+    for (let i = 0; i < 50; i++) {
+      expect(map.get(i)).toBe(i * 10);
+    }
+    expect(map.size).toBe(50);
+  });
 });
