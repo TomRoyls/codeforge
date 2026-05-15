@@ -359,4 +359,13 @@ describe('RadixMap2', () => {
     expect(vals).toContain('a');
     expect(vals).toContain('b');
   });
+
+  it('should handle clear', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.isEmpty()).toBe(true);
+  });
 });

@@ -352,5 +352,12 @@ describe('MinHeap', () => {
       expect(heap.contains(3)).toBe(true);
       expect(heap.contains(99)).toBe(false);
     });
+
+    it('should handle heapify', () => {
+      const heap = new MinHeap<number>();
+      heap.heapify([5, 3, 1, 4, 2]);
+      expect(heap.peek()).toBe(1);
+      expect(heap.size()).toBe(5);
+    });
   });
 });

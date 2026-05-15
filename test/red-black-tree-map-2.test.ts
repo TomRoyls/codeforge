@@ -310,4 +310,13 @@ describe('RedBlackTreeMap2', () => {
     expect(map.min()).toBe(2)
     expect(map.max()).toBe(8)
   })
+
+  it('should handle clear', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.clear()
+    expect(map.size).toBe(0)
+    expect(map.isEmpty()).toBe(true)
+  })
 })

@@ -431,5 +431,13 @@ describe('LinkedHashSet', () => {
       set.clear();
       expect(set.size()).toBe(0);
     });
+
+    it('should handle values', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      expect(set.values()).toEqual([10, 20, 30]);
+    });
   });
 });

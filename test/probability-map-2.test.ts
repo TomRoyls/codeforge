@@ -392,4 +392,13 @@ describe('ProbabilityMap2', () => {
     expect(map.has('a')).toBe(false);
     expect(map.size).toBe(1);
   });
+
+  it('should handle sample returning valid key', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const sample = map.sample();
+    expect(sample).toBeDefined();
+    expect(['a', 'b']).toContain(sample);
+  });
 });

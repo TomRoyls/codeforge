@@ -251,5 +251,10 @@ describe('PancakeSort', () => {
       const sorter = new PancakeSort<number>([5, 3, 1]);
       expect(sorter.isSorted()).toBe(false);
     });
+
+    it('should handle already sorted input', () => {
+      const sorter = new PancakeSort<number>([1, 2, 3]);
+      expect(sorter.isSorted()).toBe(true);
+    });
   });
 });

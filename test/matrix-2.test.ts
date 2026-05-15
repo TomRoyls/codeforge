@@ -280,5 +280,11 @@ describe('Matrix2', () => {
       expect(m.rows()).toBe(3);
       expect(m.cols()).toBe(4);
     });
+
+    it('should add two matrices', () => {
+      const a = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const b = Matrix2.fromArray([[5, 6], [7, 8]]);
+      expect(a.add(b).toArray()).toEqual([[6, 8], [10, 12]]);
+    });
   });
 });

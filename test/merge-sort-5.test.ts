@@ -172,4 +172,10 @@ describe('MergeSort5', () => {
   it('merge two sorted arrays', () => {
     expect(ms.merge([1, 3, 5], [2, 4, 6])).toEqual([1, 2, 3, 4, 5, 6]);
   });
+
+  it('handles sortInPlace', () => {
+    const arr = [5, 3, 1, 4, 2];
+    ms.sortInPlace(arr);
+    expect(arr).toEqual([1, 2, 3, 4, 5]);
+  });
 });

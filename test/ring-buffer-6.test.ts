@@ -423,5 +423,14 @@ describe('RingBuffer6', () => {
       buffer.set(1, 99);
       expect(buffer.get(1)).toBe(99);
     });
+
+    it('should handle shift and unshift', () => {
+      const buffer = new RingBuffer6<number>();
+      buffer.push(1);
+      buffer.push(2);
+      expect(buffer.shift()).toBe(1);
+      buffer.unshift(0);
+      expect(buffer.get(0)).toBe(0);
+    });
   });
 });

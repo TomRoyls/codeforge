@@ -297,4 +297,9 @@ describe('ProbabilisticSet2', () => {
     const set = new ProbabilisticSet2<string>(100, 0.01);
     expect(set.bitCount()).toBeGreaterThan(0);
   });
+
+  it('should handle falsePositiveRate method', () => {
+    const set = new ProbabilisticSet2<string>(1000, 0.01);
+    expect(set.falsePositiveRate()).toBeLessThanOrEqual(0.05);
+  });
 });

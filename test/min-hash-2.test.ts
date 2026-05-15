@@ -265,4 +265,10 @@ describe('MinHash2', () => {
     mh.clear();
     expect(mh.size()).toBe(0);
   });
+
+  it('should handle similarity with itself', () => {
+    const mh = new MinHash2();
+    mh.addAll(['a', 'b', 'c']);
+    expect(mh.similarity(mh)).toBeCloseTo(1, 5);
+  });
 });
