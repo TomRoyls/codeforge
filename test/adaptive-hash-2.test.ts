@@ -332,4 +332,18 @@ describe('AdaptiveHash2', () => {
       expect(table.strategy()).toBe('open-addressing');
     });
   });
+
+  describe('size tracking', () => {
+    it('should track size after mixed operations', () => {
+      const table = new AdaptiveHash2<string, number>();
+      table.set('a', 1);
+      table.set('b', 2);
+      table.set('c', 3);
+      expect(table.size()).toBe(3);
+      table.delete('b');
+      expect(table.size()).toBe(2);
+      table.set('a', 10);
+      expect(table.size()).toBe(2);
+    });
+  });
 });

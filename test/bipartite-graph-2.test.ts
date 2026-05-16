@@ -399,4 +399,14 @@ describe('BipartiteGraph2', () => {
     graph.addEdge('L1', 'R1', 7);
     expect(graph.getEdgeWeight('L1', 'R1')).toBe(7);
   });
+
+  it('should handle removeEdge', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1');
+    expect(graph.removeEdge('L1', 'R1')).toBe(true);
+    expect(graph.hasEdge('L1', 'R1')).toBe(false);
+    expect(graph.edgeCount()).toBe(0);
+  });
 });

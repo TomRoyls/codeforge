@@ -379,4 +379,13 @@ describe('BiMap3', () => {
     bimap.forEach((k, v) => entries.push([k, v]))
     expect(entries.length).toBe(3)
   })
+
+  it('should handle getByValue', () => {
+    const bimap = new BiMap3<string, number>()
+    bimap.set('a', 1)
+    bimap.set('b', 2)
+    expect(bimap.getKey(1)).toBe('a')
+    expect(bimap.getKey(2)).toBe('b')
+    expect(bimap.getKey(99)).toBeUndefined()
+  })
 })

@@ -453,4 +453,14 @@ describe('BlockHeap2', () => {
       expect(heap.contains(99)).toBe(false);
     });
   });
+
+  it('should handle clear', () => {
+    const heap = new BlockHeap2<number>();
+    heap.push(5);
+    heap.push(3);
+    heap.push(8);
+    heap.clear();
+    expect(heap.size).toBe(0);
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

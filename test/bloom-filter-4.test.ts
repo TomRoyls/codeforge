@@ -312,4 +312,13 @@ describe('BloomFilter4', () => {
       expect(bf.getHashCount()).toBeGreaterThan(0);
     });
   });
+
+  it('should handle adding many items', () => {
+    const bf = new BloomFilter(1000, 0.01);
+    for (let i = 0; i < 500; i++) {
+      bf.add(`item-${i}`);
+    }
+    expect(bf.mightContain('item-0')).toBe(true);
+    expect(bf.mightContain('item-499')).toBe(true);
+  });
 });

@@ -357,4 +357,10 @@ describe('BilinearMap2', () => {
       expect(map.getHeight()).toBe(2);
     });
   });
+
+  it('should handle 1x1 grid', () => {
+    const grid = [[7]];
+    const map = new BilinearMap2(grid);
+    expect(map.get(0, 0)).toBe(7);
+  });
 });

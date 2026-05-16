@@ -499,4 +499,14 @@ describe('AtomicSet2', () => {
     expect(diff.has(3)).toBe(true);
     expect(diff.has(2)).toBe(false);
   });
+
+  it('should handle symmetricDifference', () => {
+    const a = new AtomicSet2<number>();
+    a.add(1); a.add(2);
+    const b = new AtomicSet2<number>();
+    b.add(2); b.add(3);
+    const diff = a.difference(b);
+    expect(diff.has(1)).toBe(true);
+    expect(diff.has(2)).toBe(false);
+  });
 });

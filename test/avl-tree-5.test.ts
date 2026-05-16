@@ -429,4 +429,15 @@ describe('AVLTree', () => {
       expect(tree.contains(99)).toBe(false);
     });
   });
+
+  it('should handle min and max', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(50);
+    tree.insert(25);
+    tree.insert(75);
+    tree.insert(10);
+    tree.insert(90);
+    expect(tree.min()).toBe(10);
+    expect(tree.max()).toBe(90);
+  });
 });

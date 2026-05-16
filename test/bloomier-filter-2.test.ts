@@ -290,4 +290,13 @@ describe('BloomierFilter2', () => {
       expect(filter.loadFactor()).toBeGreaterThan(0);
     });
   });
+
+  it('should handle overwrite value', () => {
+    const filter = new BloomierFilter2<string>(100, 3);
+    filter.set('key', 'value1');
+    expect(filter.get('key')).toBe('value1');
+    filter.set('key', 'value2');
+    expect(filter.get('key')).toBe('value2');
+    expect(filter.size).toBe(1);
+  });
 });

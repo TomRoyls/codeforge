@@ -422,4 +422,13 @@ describe('BinaryHeap', () => {
       expect(heap.size()).toBe(5);
     });
   });
+
+  it('should handle contains', () => {
+    const heap = new BinaryHeap<number>();
+    heap.insert(10);
+    heap.insert(20);
+    heap.insert(30);
+    expect(heap.contains(20)).toBe(true);
+    expect(heap.contains(99)).toBe(false);
+  });
 });

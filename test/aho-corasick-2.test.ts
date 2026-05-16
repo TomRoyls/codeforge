@@ -265,4 +265,10 @@ describe('AhoCorasick2', () => {
     expect(ac.hasMatch('say hello world')).toBe(true);
     expect(ac.hasMatch('no match')).toBe(false);
   });
+
+  it('should handle pattern at end of text', () => {
+    const ac = new AhoCorasick2(['end']);
+    const result = ac.search('the end');
+    expect(result.length).toBeGreaterThanOrEqual(1);
+  });
 });

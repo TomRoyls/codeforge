@@ -461,4 +461,15 @@ describe('AdaptivePQ2', () => {
     const arr = pq.toArray()
     expect(arr.length).toBe(3)
   })
+
+  it('should handle push and update', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(3, 'c')
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    expect(pq.update('a', 10)).toBe(true)
+    expect(pq.pop()!.value).toBe('b')
+    expect(pq.pop()!.value).toBe('c')
+    expect(pq.pop()!.value).toBe('a')
+  })
 })

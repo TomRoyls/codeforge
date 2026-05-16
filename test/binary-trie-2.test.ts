@@ -378,4 +378,16 @@ describe('BinaryTrie2', () => {
       expect(trie.has(10)).toBe(false);
     });
   });
+
+  it('should handle multiple inserts of same value', () => {
+    const trie = new BinaryTrie2();
+    trie.insert(10);
+    trie.insert(10);
+    trie.insert(10);
+    expect(trie.has(10)).toBe(true);
+    expect(trie.size).toBe(3);
+    trie.delete(10);
+    expect(trie.size).toBe(2);
+    expect(trie.has(10)).toBe(true);
+  });
 });

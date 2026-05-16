@@ -365,4 +365,11 @@ describe('BloomLink2', () => {
       expect(filter.falsePositiveRate()).toBeGreaterThanOrEqual(0);
     });
   });
+
+  it('should handle isEmpty on new filter', () => {
+    const filter = new BloomLink2();
+    expect(filter.isEmpty()).toBe(true);
+    filter.add('test');
+    expect(filter.isEmpty()).toBe(false);
+  });
 });

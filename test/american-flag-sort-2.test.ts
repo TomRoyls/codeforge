@@ -321,4 +321,9 @@ describe('AmericanFlagSort2', () => {
       expect(result).toBeUndefined();
     });
   });
+
+  it('should sort single element array', () => {
+    const sorter = new AmericanFlagSort2();
+    expect(sorter.sort([42])).toEqual([42]);
+  });
 });

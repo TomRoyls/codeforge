@@ -462,4 +462,14 @@ describe('AVLTreeSet2', () => {
     expect(set.min()).toBe(5);
     expect(set.max()).toBe(30);
   });
+
+  it('should handle clear', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    set.clear();
+    expect(set.size).toBe(0);
+    expect(set.isEmpty()).toBe(true);
+  });
 });
