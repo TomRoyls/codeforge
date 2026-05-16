@@ -323,5 +323,14 @@ describe('K2Tree2', () => {
             const tree = new K2Tree2(8);
             expect(tree.getMatrixSize()).toBe(8);
         });
+
+        it('should handle set and get', () => {
+            const tree = new K2Tree2(4);
+            tree.set(0, 0);
+            tree.set(1, 2);
+            expect(tree.get(0, 0)).toBe(true);
+            expect(tree.get(1, 2)).toBe(true);
+            expect(tree.get(2, 2)).toBe(false);
+        });
     });
 });

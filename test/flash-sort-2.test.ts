@@ -65,6 +65,12 @@ describe('FlashSort2 - sort', () => {
       expect(sorted[i]!).toBeLessThanOrEqual(sorted[i + 1]!)
     }
   })
+  it('should handle sortInPlace', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [5, 3, 1, 4, 2]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
 })
 
 describe('FlashSort2 - sortInPlace', () => {
@@ -116,6 +122,12 @@ describe('FlashSort2 - sortInPlace', () => {
     sorter.sortInPlace(arr)
     expect(arr).toEqual([-9, -5, -4, -3, -1, -1])
   })
+  it('should handle sortInPlace', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [5, 3, 1, 4, 2]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
 })
 
 describe('FlashSort2 - immutability', () => {
@@ -134,6 +146,12 @@ describe('FlashSort2 - immutability', () => {
     sorter.sortInPlace(arr)
     expect(arr).not.toEqual(original)
     expect(arr).toEqual([1, 1, 3, 4, 5])
+  })
+  it('should handle sortInPlace', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [5, 3, 1, 4, 2]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
   })
 })
 
@@ -257,5 +275,11 @@ describe('FlashSort2 - edge cases', () => {
   it('handles custom comparator', () => {
     const sorter = new FlashSort2<number>((a, b) => b - a)
     expect(sorter.sort([3, 1, 4, 1, 5])).toEqual([5, 4, 3, 1, 1])
+  })
+  it('should handle sortInPlace', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [5, 3, 1, 4, 2]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
   })
 })

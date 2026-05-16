@@ -381,4 +381,11 @@ describe('HashArray2', () => {
     map.set('b', 2);
     expect(map.loadFactor()).toBeGreaterThan(0);
   });
+  it('should handle keys and values', () => {
+    const map = new HashArray2<string>(10);
+    map.set('a', 1);
+    map.set('b', 2);
+    expect(map.keys()).toContain('a');
+    expect(map.keys()).toContain('b');
+  });
 });

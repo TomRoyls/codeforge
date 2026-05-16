@@ -452,4 +452,11 @@ describe('GraphColoring2', () => {
     const colored = graph.colorGreedy(adj);
     expect(graph.getColorCount(colored)).toBeGreaterThanOrEqual(2);
   });
+  it('should handle colorBacktracking', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+    const colored = graph.colorBacktracking(adj, 2);
+    expect(colored).not.toBeNull();
+    expect(graph.getColorCount(colored!)).toBeGreaterThanOrEqual(2);
+  });
 });

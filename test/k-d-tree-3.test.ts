@@ -344,4 +344,9 @@ describe('KDTree3', () => {
     const nearest = tree.nearestNeighbor({x: 4, y: 4})
     expect(nearest).toEqual({x: 5, y: 5})
   })
+  it('should handle toArray', () => {
+    const points = [{x: 1, y: 2}, {x: 3, y: 4}, {x: 5, y: 5}]
+    const tree = new KDTree3(points)
+    expect(tree.toArray().length).toBe(3)
+  })
 })

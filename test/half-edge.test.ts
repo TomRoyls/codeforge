@@ -492,4 +492,12 @@ describe('HalfEdgeMesh - Complex Mesh', () => {
     const vertex = he.getVertex(v0);
     expect(vertex).toEqual({ x: 1, y: 2, z: 3 });
   });
+  it('should handle getFaceCount', () => {
+    const he = new HalfEdgeMesh();
+    const v0 = he.addVertex(0, 0, 0);
+    const v1 = he.addVertex(1, 0, 0);
+    const v2 = he.addVertex(0, 1, 0);
+    he.addFace([v0, v1, v2]);
+    expect(he.getFaceCount()).toBe(1);
+  });
 });

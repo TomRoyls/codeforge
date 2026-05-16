@@ -332,4 +332,9 @@ describe('FusionTree', () => {
     const arr = tree.toArray();
     expect(arr.sort((a, b) => a - b)).toEqual([5, 10, 15]);
   });
+  it('should handle getHeight', () => {
+    const tree = new FusionTree();
+    tree.insert(5);
+    expect(tree.getHeight()).toBeGreaterThan(0);
+  });
 });

@@ -374,4 +374,11 @@ describe('HyperLogLog3', () => {
     hll.reset()
     expect(hll.count()).toBe(0)
   })
+  it('should handle count after many adds', () => {
+    const hll = new HyperLogLog3()
+    for (let i = 0; i < 100; i++) {
+      hll.add('item' + i)
+    }
+    expect(hll.count()).toBeGreaterThan(50)
+  })
 })

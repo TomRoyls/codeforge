@@ -423,4 +423,11 @@ describe('JellyHash2', () => {
     map.set('b', 2);
     expect(map.loadFactor()).toBeGreaterThanOrEqual(0);
   });
+  it('should handle has and clear', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    expect(map.has('a')).toBe(true);
+    map.clear();
+    expect(map.has('a')).toBe(false);
+  });
 });

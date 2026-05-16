@@ -423,4 +423,10 @@ describe('IndexedPQ2', () => {
     pq.clear();
     expect(pq.isEmpty()).toBe(true);
   });
+  it('should handle contains', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert('a', 10);
+    expect(pq.contains('a')).toBe(true);
+    expect(pq.contains('z')).toBe(false);
+  });
 });

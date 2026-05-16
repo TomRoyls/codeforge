@@ -281,4 +281,9 @@ describe('GodelNumber2', () => {
     const decoded = GodelNumber2.decode(encoded);
     expect(decoded).toEqual([2, 3, 5, 7]);
   });
+  it('should handle encode single element', () => {
+    const encoded = GodelNumber2.encode([7]);
+    const decoded = GodelNumber2.decode(encoded);
+    expect(decoded).toEqual([7]);
+  });
 });
