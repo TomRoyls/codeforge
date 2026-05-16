@@ -404,4 +404,12 @@ describe('TernarySearchTrie2', () => {
     expect(trie.has('hello')).toBe(true)
     expect(trie.has('hell')).toBe(false)
   })
+  it('should handle keys', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('apple', 1)
+    trie.set('banana', 2)
+    const keys = trie.keys()
+    expect(keys).toContain('apple')
+    expect(keys).toContain('banana')
+  })
 })

@@ -407,4 +407,9 @@ describe('WaveletMatrix2', () => {
     expect(wm.access(0)).toBe(10);
     expect(wm.access(4)).toBe(50);
   });
+  it('should handle rank', () => {
+    const data = [10, 20, 10, 30, 10];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.rank(10, 5)).toBe(3);
+  });
 });

@@ -461,4 +461,10 @@ describe('TopologicalQueue2', () => {
     const ts = new TopologicalQueue2();
     expect(ts.getNodes()).toEqual([]);
   });
+  it('should handle hasCycle on acyclic graph', () => {
+    const ts = new TopologicalQueue2();
+    ts.addEdge('a', 'b');
+    ts.addEdge('b', 'c');
+    expect(ts.hasCycle()).toBe(false);
+  });
 });

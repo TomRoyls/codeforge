@@ -382,4 +382,11 @@ describe('WeightedGraph2', () => {
     graph.addVertex('B');
     expect(graph.removeEdge('A', 'B')).toBe(false);
   });
+  it('should handle getEdgeWeight', () => {
+    const graph = new WeightedGraph2<string>();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    graph.addEdge('A', 'B', 5);
+    expect(graph.getEdgeWeight('A', 'B')).toBe(5);
+  });
 });

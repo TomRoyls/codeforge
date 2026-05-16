@@ -389,4 +389,14 @@ describe('TrieMap2', () => {
     t.set('apple', 1)
     expect(t.get('banana')).toBeUndefined()
   })
+  it('should handle keysWithPrefix', () => {
+    const t = new TrieMap2<number>()
+    t.set('apple', 1)
+    t.set('application', 2)
+    t.set('banana', 3)
+    const keys = t.keysWithPrefix('app')
+    expect(keys).toContain('apple')
+    expect(keys).toContain('application')
+    expect(keys).not.toContain('banana')
+  })
 });

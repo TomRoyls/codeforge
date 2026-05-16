@@ -466,4 +466,12 @@ describe('SplayTreeMap2', () => {
     map.set(1, 'a');
     expect(map.get(99)).toBeUndefined();
   });
+  it('should handle min and max', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(5, 'e');
+    map.set(1, 'a');
+    map.set(3, 'c');
+    expect(map.min()).toBe(1);
+    expect(map.max()).toBe(5);
+  });
 });

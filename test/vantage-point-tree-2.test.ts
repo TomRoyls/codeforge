@@ -555,4 +555,10 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     expect(nearest).toBeDefined()
     expect(nearest!.x).toBe(3)
   })
+  it('should handle kNearest', () => {
+    const points: Point2D[] = [{x: 1, y: 1}, {x: 5, y: 5}, {x: 3, y: 3}]
+    const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
+    const nearest = tree.kNearest({x: 2, y: 2}, 2)
+    expect(nearest.length).toBe(2)
+  })
 })

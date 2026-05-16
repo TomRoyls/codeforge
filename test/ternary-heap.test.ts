@@ -583,5 +583,16 @@ describe('TernaryHeap', () => {
         expect(arr[parentIndex]).toBeLessThanOrEqual(arr[i]);
       }
     });
+    it('should handle toArray after inserts', () => {
+      const heap = new TernaryHeap<number>();
+      heap.insert(10);
+      heap.insert(5);
+      heap.insert(15);
+      const arr = heap.toArray();
+      expect(arr.length).toBe(3);
+      expect(arr).toContain(5);
+      expect(arr).toContain(10);
+      expect(arr).toContain(15);
+    });
   });
 });

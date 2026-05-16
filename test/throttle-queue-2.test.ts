@@ -427,4 +427,10 @@ describe('ThrottleQueue2', () => {
     const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
     expect(queue.dequeue()).toBeUndefined();
   });
+  it('should handle size', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.size).toBe(2);
+  });
 });
