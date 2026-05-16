@@ -297,4 +297,9 @@ describe('GodelNumber2', () => {
     expect(GodelNumber2.nthPrime(2)).toBe(3n);
     expect(GodelNumber2.nthPrime(3)).toBe(5n);
   });
+  it('should handle round trip for single element', () => {
+    const encoded = GodelNumber2.encode([5]);
+    const decoded = GodelNumber2.decode(encoded);
+    expect(decoded).toEqual([5]);
+  });
 });

@@ -306,4 +306,10 @@ describe('InterpolationSearch', () => {
     const search = new InterpolationSearch([10, 20, 30, 40, 50]);
     expect(search.search(50)).toBe(4);
   });
+  it('should handle closestTo', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    const closest = search.closestTo(25);
+    expect(closest).toBeGreaterThanOrEqual(20);
+    expect(closest).toBeLessThanOrEqual(30);
+  });
 });

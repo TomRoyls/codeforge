@@ -471,4 +471,11 @@ describe('GraphColoring2', () => {
     const colored = graph.colorGreedy(adj);
     expect(graph.getColorCount(colored)).toBe(0);
   });
+  it('should handle single node graph', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>();
+    adj.set('a', []);
+    const colored = graph.colorGreedy(adj);
+    expect(graph.getColorCount(colored)).toBe(1);
+  });
 });

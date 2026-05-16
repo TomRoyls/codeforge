@@ -501,4 +501,10 @@ describe('Hamt3', () => {
     const map3 = map2.delete('a');
     expect(map3.size).toBe(1);
   });
+  it('should handle get on non-existent key', () => {
+    const map = Hamt3.createEmpty<string>();
+    expect(map.get('missing')).toBeUndefined();
+    const map2 = map.set('a', 1);
+    expect(map2.get('b')).toBeUndefined();
+  });
 });

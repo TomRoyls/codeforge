@@ -401,4 +401,12 @@ describe('HashArray2', () => {
     map.set('a', 1);
     expect(map.loadFactor()).toBeGreaterThan(0);
   });
+  it('should handle keys', () => {
+    const map = new HashArray2<string>(10);
+    map.set('x', 1);
+    map.set('y', 2);
+    const keys = map.keys();
+    expect(keys).toContain('x');
+    expect(keys).toContain('y');
+  });
 });

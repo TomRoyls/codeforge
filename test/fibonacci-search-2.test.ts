@@ -282,4 +282,8 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
     expect(fs.search(10)).toBe(0);
   });
+  it('should handle search for last element', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    expect(fs.search(50)).toBe(4);
+  });
 });

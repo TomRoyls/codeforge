@@ -460,4 +460,12 @@ describe('IntervalHeap3', () => {
     heap.insert(5);
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle getMin and getMax', () => {
+    const heap = new IntervalHeap3<number>();
+    heap.insert(30);
+    heap.insert(10);
+    heap.insert(20);
+    expect(heap.getMin()).toBe(10);
+    expect(heap.getMax()).toBe(30);
+  });
 });
