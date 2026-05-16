@@ -490,5 +490,12 @@ describe('CollisionMap2', () => {
       expect(map.get('c')).toBe(3);
       expect(map.get('d')).toBe(4);
     });
+    it('should handle clear', () => {
+      const map = new CollisionMap2<number>();
+      map.set('x', 1);
+      map.set('y', 2);
+      map.clear();
+      expect(map.isEmpty()).toBe(true);
+    });
   });
 });

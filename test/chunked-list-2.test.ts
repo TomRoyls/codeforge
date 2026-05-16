@@ -466,4 +466,11 @@ describe('ChunkedList2', () => {
     list.set(0, 99);
     expect(list.get(0)).toBe(99);
   });
+  it('should handle clear', () => {
+    const list = new ChunkedList2<number>(3);
+    list.push(1);
+    list.push(2);
+    list.clear();
+    expect(list.isEmpty()).toBe(true);
+  });
 });

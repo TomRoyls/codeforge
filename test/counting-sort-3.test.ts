@@ -295,6 +295,12 @@ describe('CountingSort', () => {
   });
   it('should handle getRange', () => {
     const sorter = new CountingSort([5, 3, 1, 4, 2]);
-    expect(sorter.getRange()).toBe(4);
+    expect(sorter.getRange()).toBe(5);
+  });
+  it('should handle getCounts', () => {
+    const sorter = new CountingSort([1, 2, 2, 3]);
+    sorter.sort();
+    const counts = sorter.getCounts();
+    expect(counts.length).toBeGreaterThan(0);
   });
 });

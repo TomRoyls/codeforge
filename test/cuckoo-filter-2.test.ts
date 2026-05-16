@@ -385,4 +385,11 @@ describe('CuckooFilter2', () => {
     filter.insert('b');
     expect(filter.size).toBe(2);
   });
+  it('should handle clear', () => {
+    const filter = new CuckooFilter2(100);
+    filter.insert('a');
+    filter.insert('b');
+    filter.clear();
+    expect(filter.size).toBe(0);
+  });
 });

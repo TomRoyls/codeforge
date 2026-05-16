@@ -431,4 +431,11 @@ describe('CuckooHash3', () => {
     map.set('b', 2);
     expect(map.size).toBe(2);
   });
+  it('should handle clear', () => {
+    const map = new CuckooHash3<string, number>();
+    map.set('a', 1);
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.has('a')).toBe(false);
+  });
 });

@@ -388,4 +388,9 @@ describe('CartesianProduct2', () => {
     const cp = new CartesianProduct2<number>([[1, 2], [3, 4], [5, 6]])
     expect(cp.dimensions()).toBe(3)
   })
+  it('should handle toArray', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+    const arr = cp.toArray()
+    expect(arr.length).toBe(4)
+  })
 })

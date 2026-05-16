@@ -331,4 +331,8 @@ describe('CubeSort2', () => {
     const sorter = new CubeSort2();
     expect(sorter.sort([])).toEqual([]);
   });
+  it('should handle single element', () => {
+    const sorter = new CubeSort2();
+    expect(sorter.sort([42])).toEqual([42]);
+  });
 });

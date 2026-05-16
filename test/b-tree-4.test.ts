@@ -560,4 +560,12 @@ describe('BTree', () => {
     expect(t.contains(5)).toBe(true);
     expect(t.contains(99)).toBe(false);
   });
+  it('should handle min and max', () => {
+    const t = new BTree<number>(3);
+    t.insert(5);
+    t.insert(3);
+    t.insert(8);
+    expect(t.min()).toBe(3);
+    expect(t.max()).toBe(8);
+  });
 });

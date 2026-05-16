@@ -262,5 +262,10 @@ describe('BoyerMoore2', () => {
       expect(bm.hasMatch('xyzabcdef')).toBe(true);
       expect(bm.hasMatch('xyz')).toBe(false);
     });
+    it('should handle search returning multiple positions', () => {
+      const bm = new BoyerMoore2('ab');
+      const result = bm.search('ababab');
+      expect(result.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

@@ -402,4 +402,8 @@ describe('BloomLink2', () => {
     filter.add('test');
     expect(filter.isEmpty()).toBe(false);
   });
+  it('should handle falsePositiveRate on empty filter', () => {
+    const filter = new BloomLink2(100);
+    expect(filter.falsePositiveRate()).toBeGreaterThanOrEqual(0);
+  });
 });

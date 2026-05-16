@@ -417,4 +417,10 @@ describe('BPlusTree', () => {
     expect(tree.update(1, 'updated')).toBe(true);
     expect(tree.get(1)).toBe('updated');
   });
+  it('should handle has method', () => {
+    const tree = new BPlusTree<number, string>();
+    tree.insert(1, 'a');
+    expect(tree.has(1)).toBe(true);
+    expect(tree.has(99)).toBe(false);
+  });
 });
