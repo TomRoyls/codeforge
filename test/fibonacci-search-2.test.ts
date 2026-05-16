@@ -278,4 +278,8 @@ describe('FibonacciSearch', () => {
     expect(closest).toBeGreaterThanOrEqual(20);
     expect(closest).toBeLessThanOrEqual(30);
   });
+  it('should handle search for first element', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    expect(fs.search(10)).toBe(0);
+  });
 });

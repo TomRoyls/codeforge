@@ -345,4 +345,10 @@ describe('FusionTree', () => {
     expect(tree.findMin()).toBe(3);
     expect(tree.findMax()).toBe(7);
   });
+  it('should handle isEmpty on empty tree', () => {
+    const tree = new FusionTree();
+    expect(tree.isEmpty).toBe(true);
+    tree.insert(1);
+    expect(tree.isEmpty).toBe(false);
+  });
 });

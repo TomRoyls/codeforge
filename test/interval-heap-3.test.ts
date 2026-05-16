@@ -454,4 +454,10 @@ describe('IntervalHeap3', () => {
     heap.extractMin();
     expect(heap.getMin()).toBe(5);
   });
+  it('should handle isEmpty on populated heap', () => {
+    const heap = new IntervalHeap3<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(5);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

@@ -436,4 +436,12 @@ describe('IndexedPQ2', () => {
     expect(pq.update('a', 5)).toBe(true);
     expect(pq.peek()!.id).toBe('a');
   });
+  it('should handle clear', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert('a', 10);
+    pq.insert('b', 20);
+    pq.clear();
+    expect(pq.size).toBe(0);
+    expect(pq.isEmpty()).toBe(true);
+  });
 });

@@ -342,5 +342,13 @@ describe('K2Tree2', () => {
             expect(tree.get(0, 0)).toBe(true);
             expect(tree.get(1, 1)).toBe(true);
         });
+
+        it('should handle clear cell operation', () => {
+            const tree = new K2Tree2(4);
+            tree.set(0, 0);
+            expect(tree.get(0, 0)).toBe(true);
+            tree.clear(0, 0);
+            expect(tree.get(0, 0)).toBe(false);
+        });
     });
 });

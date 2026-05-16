@@ -302,4 +302,8 @@ describe('InterpolationSearch', () => {
     expect(search.contains(30)).toBe(true);
     expect(search.contains(99)).toBe(false);
   });
+  it('should handle search for last element', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    expect(search.search(50)).toBe(4);
+  });
 });

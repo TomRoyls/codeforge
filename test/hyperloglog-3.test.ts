@@ -386,4 +386,11 @@ describe('HyperLogLog3', () => {
     hll.add('item')
     expect(hll.count()).toBeGreaterThanOrEqual(1)
   })
+  it('should handle reset', () => {
+    const hll = new HyperLogLog3()
+    hll.add('a')
+    hll.add('b')
+    hll.reset()
+    expect(hll.count()).toBe(0)
+  })
 })

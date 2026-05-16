@@ -292,4 +292,9 @@ describe('GodelNumber2', () => {
     const decoded = GodelNumber2.decode(encoded);
     expect(decoded).toEqual([]);
   });
+  it('should handle nthPrime', () => {
+    expect(GodelNumber2.nthPrime(1)).toBe(2n);
+    expect(GodelNumber2.nthPrime(2)).toBe(3n);
+    expect(GodelNumber2.nthPrime(3)).toBe(5n);
+  });
 });

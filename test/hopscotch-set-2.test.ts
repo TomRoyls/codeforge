@@ -399,4 +399,12 @@ describe('HopscotchSet2', () => {
     expect(set.has('a')).toBe(false);
     expect(set.has('b')).toBe(false);
   });
+  it('should handle toArray', () => {
+    const set = new HopscotchSet2<string>();
+    set.add('a');
+    set.add('b');
+    const arr = set.toArray();
+    expect(arr).toContain('a');
+    expect(arr).toContain('b');
+  });
 });

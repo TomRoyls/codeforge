@@ -465,4 +465,10 @@ describe('GraphColoring2', () => {
     const colored = graph.colorGreedy(adj);
     expect(graph.getColorCount(colored)).toBe(1);
   });
+  it('should handle empty graph', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>();
+    const colored = graph.colorGreedy(adj);
+    expect(graph.getColorCount(colored)).toBe(0);
+  });
 });

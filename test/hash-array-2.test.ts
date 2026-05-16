@@ -396,4 +396,9 @@ describe('HashArray2', () => {
     expect(vals).toContain(1);
     expect(vals).toContain(2);
   });
+  it('should handle loadFactor', () => {
+    const map = new HashArray2<string>(10);
+    map.set('a', 1);
+    expect(map.loadFactor()).toBeGreaterThan(0);
+  });
 });

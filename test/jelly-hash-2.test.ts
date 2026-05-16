@@ -437,4 +437,9 @@ describe('JellyHash2', () => {
     expect(map.get('a')).toBe(1);
     expect(map.get('z')).toBeUndefined();
   });
+  it('should handle loadFactor', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    expect(map.loadFactor()).toBeGreaterThan(0);
+  });
 });
