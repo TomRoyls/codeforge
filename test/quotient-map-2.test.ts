@@ -369,4 +369,13 @@ describe('QuotientMap2', () => {
     qm.set('b', 2);
     expect(qm.classCount()).toBe(2);
   });
+
+  it('should handle keys', () => {
+    const qm = new QuotientMap2((a, b) => a === b);
+    qm.set('a', 1);
+    qm.set('b', 2);
+    const keys = qm.keys();
+    expect(keys).toContain('a');
+    expect(keys).toContain('b');
+  });
 });

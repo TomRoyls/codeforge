@@ -319,5 +319,11 @@ describe('Matrix2', () => {
       expect(c.toArray()).toEqual([[1, 2], [3, 4]]);
       expect(c).not.toBe(m);
     });
+
+    it('should handle fill', () => {
+      const m = new Matrix2(2, 3);
+      m.fill(7);
+      expect(m.toArray()).toEqual([[7, 7, 7], [7, 7, 7]]);
+    });
   });
 });

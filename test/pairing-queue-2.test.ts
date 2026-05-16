@@ -478,5 +478,13 @@ describe('PairingQueue2', () => {
       queue.clear();
       expect(queue.isEmpty()).toBe(true);
     });
+
+    it('should handle peek', () => {
+      const queue = new PairingQueue2<number>();
+      queue.enqueue(3);
+      queue.enqueue(1);
+      queue.enqueue(2);
+      expect(queue.peek()).toBe(1);
+    });
   });
 });

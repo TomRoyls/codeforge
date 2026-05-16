@@ -404,5 +404,17 @@ describe('MinHeap', () => {
       expect(heap.contains(3)).toBe(true);
       expect(heap.contains(99)).toBe(false);
     });
+
+    it('should handle merge', () => {
+      const h1 = new MinHeap<number>();
+      h1.insert(3);
+      h1.insert(1);
+      const h2 = new MinHeap<number>();
+      h2.insert(2);
+      h2.insert(5);
+      const merged = h1.merge(h2);
+      expect(merged.peek()).toBe(1);
+      expect(merged.size()).toBe(4);
+    });
   });
 });

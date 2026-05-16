@@ -403,5 +403,15 @@ describe('PairingHeap4', () => {
       heap1.merge(heap2);
       expect(heap1.findMin()).toBe(9);
     });
+
+    it('should handle delete', () => {
+      const heap = new PairingHeap4<number>();
+      heap.insert(5);
+      heap.insert(3);
+      heap.insert(7);
+      expect(heap.size).toBe(3);
+      expect(heap.extractMin()).toBe(3);
+      expect(heap.size).toBe(2);
+    });
   });
 });

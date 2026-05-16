@@ -284,5 +284,10 @@ describe('PancakeSort', () => {
       const sorter = new PancakeSort<number>([3, 1, 2]);
       expect(typeof sorter.getTimeComplexity()).toBe('string');
     });
+
+    it('should handle isSorted on sorted array', () => {
+      const sorter = new PancakeSort<number>([1, 2, 3]);
+      expect(sorter.isSorted()).toBe(true);
+    });
   });
 });

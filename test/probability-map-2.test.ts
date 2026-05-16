@@ -445,4 +445,11 @@ describe('ProbabilityMap2', () => {
     const totalProb = entries.reduce((sum, e) => sum + e[1].probability, 0);
     expect(totalProb).toBeCloseTo(1, 5);
   });
+
+  it('should handle totalWeight', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 30);
+    expect(map.totalWeight()).toBe(40);
+  });
 });

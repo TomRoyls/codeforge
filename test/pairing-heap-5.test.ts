@@ -467,4 +467,14 @@ describe('PairingHeapNode5', () => {
     expect(h1.peek()).toBe(1);
     expect(h1.size).toBe(4);
   });
+
+  it('should handle clear', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+    expect(heap.size).toBe(0);
+  });
 });

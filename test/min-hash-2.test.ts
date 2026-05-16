@@ -310,4 +310,10 @@ describe('MinHash2', () => {
     const sig = mh.getSignature();
     expect(sig.length).toBe(64);
   });
+
+  it('should handle empty signature', () => {
+    const mh = new MinHash2(32);
+    const sig = mh.getSignature();
+    expect(sig.length).toBe(32);
+  });
 });

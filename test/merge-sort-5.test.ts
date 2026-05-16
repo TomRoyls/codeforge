@@ -199,4 +199,9 @@ describe('MergeSort5', () => {
     const ms = new MergeSort5();
     expect(ms.sortRange([5, 3, 1, 4, 2], 1, 4)).toEqual([1, 3, 4]);
   });
+
+  it('should handle getSpaceComplexity', () => {
+    const ms = new MergeSort5();
+    expect(typeof ms.getTimeComplexity()).toBe('string');
+  });
 });

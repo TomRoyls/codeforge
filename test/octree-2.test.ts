@@ -369,4 +369,12 @@ describe('Octree2', () => {
     expect(tree.contains(10, 10, 10)).toBe(true);
     expect(tree.contains(99, 99, 99)).toBe(false);
   });
+
+  it('should handle remove', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(10, 10, 10, 1);
+    tree.insert(50, 50, 50, 2);
+    expect(tree.remove(10, 10, 10)).toBe(true);
+    expect(tree.size()).toBe(1);
+  });
 });

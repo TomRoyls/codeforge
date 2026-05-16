@@ -300,4 +300,11 @@ describe('PersistentArray2', () => {
     expect(arr2.get(1)).toBe(99)
     expect(arr.get(1)).toBe(20)
   })
+
+  it('should handle pop', () => {
+    const arr = new PersistentArray2([10, 20, 30])
+    const [val, arr2] = arr.pop()
+    expect(val).toBe(30)
+    expect(arr2.toArray()).toEqual([10, 20])
+  })
 })
