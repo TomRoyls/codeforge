@@ -416,4 +416,11 @@ describe('JellyHash2', () => {
       expect(map.has('z')).toBe(false);
     });
   });
+
+  it('should handle loadFactor', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    expect(map.loadFactor()).toBeGreaterThanOrEqual(0);
+  });
 });

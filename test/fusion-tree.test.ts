@@ -323,4 +323,13 @@ describe('FusionTree', () => {
       expect(tree.size).toBe(2);
     });
   });
+
+  it('should handle toArray', () => {
+    const tree = new FusionTree();
+    tree.insert(10);
+    tree.insert(5);
+    tree.insert(15);
+    const arr = tree.toArray();
+    expect(arr.sort((a, b) => a - b)).toEqual([5, 10, 15]);
+  });
 });

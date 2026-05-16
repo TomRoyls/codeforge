@@ -374,4 +374,11 @@ describe('HashArray2', () => {
       expect(map.has('z')).toBe(false);
     });
   });
+
+  it('should handle loadFactor', () => {
+    const map = new HashArray2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    expect(map.loadFactor()).toBeGreaterThan(0);
+  });
 });

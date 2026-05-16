@@ -485,4 +485,11 @@ describe('HalfEdgeMesh - Complex Mesh', () => {
     he.addVertex(0, 1, 0);
     expect(he.getVertexCount()).toBe(3);
   });
+
+  it('should handle getVertex', () => {
+    const he = new HalfEdgeMesh();
+    const v0 = he.addVertex(1, 2, 3);
+    const vertex = he.getVertex(v0);
+    expect(vertex).toEqual({ x: 1, y: 2, z: 3 });
+  });
 });

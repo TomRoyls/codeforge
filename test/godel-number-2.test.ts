@@ -275,4 +275,10 @@ describe('GodelNumber2', () => {
       expect(GodelNumber2.nthPrime(3)).toBe(5n);
     });
   });
+
+  it('should handle encode of large sequence', () => {
+    const encoded = GodelNumber2.encode([2, 3, 5, 7]);
+    const decoded = GodelNumber2.decode(encoded);
+    expect(decoded).toEqual([2, 3, 5, 7]);
+  });
 });

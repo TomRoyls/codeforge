@@ -277,13 +277,24 @@ describe('InterpolationSearch', () => {
 
     it('should handle hasMatch', () => {
       const search = new InterpolationSearch([10, 20, 30, 40, 50]);
-      expect(search.hasMatch(30)).toBe(true);
-      expect(search.hasMatch(99)).toBe(false);
+      expect(search.contains(30)).toBe(true);
+      expect(search.contains(99)).toBe(false);
     });
 
     it('should handle search in sorted array', () => {
       const search = new InterpolationSearch([1, 3, 5, 7, 9, 11, 13]);
       expect(search.search(7)).toBe(3);
     });
+  });
+
+  it('should handle contains', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    expect(search.contains(30)).toBe(true);
+    expect(search.contains(99)).toBe(false);
+  });
+
+  it('should handle closestTo', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    expect(search.closestTo(25)).toBe(20);
   });
 });

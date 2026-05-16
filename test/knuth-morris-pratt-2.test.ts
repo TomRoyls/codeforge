@@ -268,5 +268,10 @@ describe('KnuthMorrisPratt2', () => {
       expect(kmp.findFirst('xyzabcdef')).toBe(3);
       expect(kmp.findFirst('no match')).toBe(-1);
     });
+
+    it('should handle pattern method', () => {
+      const kmp = new KnuthMorrisPratt2('test');
+      expect(kmp.pattern()).toBe('test');
+    });
   });
 });

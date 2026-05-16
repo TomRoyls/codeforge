@@ -376,5 +376,12 @@ describe("GoldenRatioSearch", () => {
     const result = search.findMinimum(-5, 5);
     expect(Math.abs(result.value)).toBeLessThanOrEqual(0.01);
   });
+
+  it("handles getIterations", () => {
+    const fn = (x: number) => (x - 3) * (x - 3);
+    const search = new GoldenRatioSearch(fn);
+    search.findMinimum(0, 10);
+    expect(search.getIterations()).toBeGreaterThan(0);
+  });
 });
 });

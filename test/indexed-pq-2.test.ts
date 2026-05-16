@@ -415,4 +415,12 @@ describe('IndexedPQ2', () => {
     expect(pq.contains(1)).toBe(true);
     expect(pq.contains(99)).toBe(false);
   });
+
+  it('should handle clear', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert(1, 10);
+    pq.insert(2, 20);
+    pq.clear();
+    expect(pq.isEmpty()).toBe(true);
+  });
 });

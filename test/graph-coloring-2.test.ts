@@ -445,4 +445,11 @@ describe('GraphColoring2', () => {
       expect(colored.size).toBe(0);
     });
   });
+
+  it('should handle getColorCount', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']]]);
+    const colored = graph.colorGreedy(adj);
+    expect(graph.getColorCount(colored)).toBeGreaterThanOrEqual(2);
+  });
 });

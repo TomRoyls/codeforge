@@ -474,4 +474,11 @@ describe('Hamt3', () => {
     const map1 = map0.set('a', 1);
     expect(map1.has('a')).toBe(true);
   });
+
+  it('should handle isEmpty', () => {
+    const map0 = Hamt3.createEmpty<string, number>();
+    expect(map0.isEmpty()).toBe(true);
+    const map1 = map0.set('a', 1);
+    expect(map1.isEmpty()).toBe(false);
+  });
 });

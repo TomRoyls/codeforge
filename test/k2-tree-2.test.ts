@@ -318,5 +318,10 @@ describe('K2Tree2', () => {
             expect(() => tree.col(-1)).toThrow('Index out of bounds');
             expect(() => tree.col(4)).toThrow('Index out of bounds');
         });
+
+        it('should handle getMatrixSize', () => {
+            const tree = new K2Tree2(8);
+            expect(tree.getMatrixSize()).toBe(8);
+        });
     });
 });
