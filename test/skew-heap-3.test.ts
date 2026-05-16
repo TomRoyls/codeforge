@@ -561,4 +561,14 @@ describe('SkewHeap3', () => {
     expect(heap.extractMin()).toBe(5);
     expect(heap.extractMin()).toBe(7);
   });
+  it('should handle merge', () => {
+    const h1 = new SkewHeap3<number>();
+    h1.insert(1);
+    h1.insert(5);
+    const h2 = new SkewHeap3<number>();
+    h2.insert(3);
+    h2.insert(7);
+    h1.merge(h2);
+    expect(h1.toArray().length).toBe(4);
+  });
 });

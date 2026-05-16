@@ -462,4 +462,10 @@ describe('SpatialIndex2', () => {
     index.insert('b', 5, 5)
     expect(index.isEmpty()).toBe(false)
   })
+  it('should handle has', () => {
+    const index = new SpatialIndex2<string>(10)
+    index.insert('a', 5, 5)
+    expect(index.has('a')).toBe(true)
+    expect(index.has('b')).toBe(false)
+  })
 })

@@ -405,4 +405,12 @@ describe('SparseMatrix2', () => {
     const m = new SparseMatrix2(3, 3);
     expect(m.get(0, 0)).toBe(0);
   });
+  it('should handle transpose', () => {
+    const m = new SparseMatrix2(2, 3);
+    m.set(0, 1, 5);
+    m.set(1, 0, 10);
+    const t = m.transpose();
+    expect(t.get(1, 0)).toBe(5);
+    expect(t.get(0, 1)).toBe(10);
+  });
 });

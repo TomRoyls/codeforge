@@ -409,4 +409,11 @@ describe('SegmentTreeMap2', () => {
     tree.updateRange(0, 2, 5)
     expect(tree.toArray()).toEqual([15, 25, 35])
   })
+  it('should handle queryRange', () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    tree.set(1, 20)
+    tree.set(2, 30)
+    expect(tree.queryRange(0, 2)).toBeGreaterThanOrEqual(0)
+  })
 })

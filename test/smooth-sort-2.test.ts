@@ -267,5 +267,10 @@ describe('SmoothSort2', () => {
       const sorted = sorter.sort([5, 4, 3, 2, 1]);
       expect(sorted).toEqual([1, 2, 3, 4, 5]);
     });
+    it('should handle getSwaps', () => {
+      const sorter = new SmoothSort2();
+      sorter.sort([5, 4, 3]);
+      expect(sorter.getSwaps()).toBeGreaterThanOrEqual(0);
+    });
   });
 });

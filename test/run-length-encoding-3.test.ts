@@ -319,4 +319,10 @@ describe("RunLengthEncoding3", () => {
     rle.append('B', 2);
     expect(typeof rle.toString()).toBe('string');
   });
+  it('should handle isEmpty', () => {
+    const rle = new RunLengthEncoding3();
+    expect(rle.isEmpty()).toBe(true);
+    rle.append('A', 1);
+    expect(rle.isEmpty()).toBe(false);
+  });
 });

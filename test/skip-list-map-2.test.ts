@@ -497,4 +497,12 @@ describe('SkipListMap2', () => {
     map.set(1, 'a');
     expect(map.get(99)).toBeUndefined();
   });
+  it('should handle delete', () => {
+    const map = new SkipListMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.delete(1)).toBe(true);
+    expect(map.get(1)).toBeUndefined();
+    expect(map.size).toBe(1);
+  });
 });

@@ -348,5 +348,9 @@ describe('SegmentTree', () => {
       tree.update(2, 10)
       expect(tree.rangeQuery(0, 4)).toBe(tree.query(0, 4))
     })
+    it('should handle query on single element', () => {
+      const tree = new SegmentTree([42])
+      expect(tree.query(0, 0)).toBe(42)
+    })
   })
 })

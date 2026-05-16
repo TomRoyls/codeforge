@@ -313,5 +313,10 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.isSorted()).toBe(true);
     });
+    it('should handle getSwaps', () => {
+      const sorter = new ShellSort<number>([5, 4, 3, 2, 1]);
+      sorter.sort();
+      expect(sorter.getSwaps()).toBeGreaterThan(0);
+    });
   });
 });

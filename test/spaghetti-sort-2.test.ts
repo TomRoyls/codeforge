@@ -251,5 +251,10 @@ describe('SpaghettiSort2', () => {
       sorter.sort(input);
       expect(sorter.toArray()).toEqual([3, 1, 4, 1, 5]);
     });
+    it('should handle single element', () => {
+      const sorter = new SpaghettiSort2([42]);
+      sorter.sort([42]);
+      expect(sorter.toArray()).toEqual([42]);
+    });
   });
 });

@@ -424,5 +424,12 @@ describe('SkipList5', () => {
        expect(list.contains(50)).toBe(true);
        expect(list.contains(99)).toBe(true);
      });
+     it('should handle clear', () => {
+       const list = new SkipList<number>();
+       list.insert(10);
+       list.insert(20);
+       list.clear();
+       expect(list.isEmpty()).toBe(true);
+     });
    });
 });
