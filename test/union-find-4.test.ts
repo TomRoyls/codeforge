@@ -371,4 +371,10 @@ describe('UnionFind4', () => {
     uf.union(1, 2);
     expect(uf.find(0)).toBe(uf.find(2));
   });
+  it('should handle componentCount', () => {
+    const uf = new UnionFind4(5);
+    expect(uf.componentCount()).toBe(5);
+    uf.union(0, 1);
+    expect(uf.componentCount()).toBe(4);
+  });
 });

@@ -379,4 +379,11 @@ describe('WindowHeap2', () => {
     heap.push(1);
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle getSum', () => {
+    const heap = new WindowHeap2(3);
+    heap.push(10);
+    heap.push(20);
+    heap.push(30);
+    expect(heap.getSum()).toBe(60);
+  });
 });

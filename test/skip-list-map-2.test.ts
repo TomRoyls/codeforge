@@ -479,4 +479,11 @@ describe('SkipListMap2', () => {
     expect(map.min()!.key).toBe(1);
     expect(map.max()!.key).toBe(9);
   });
+  it('should handle delete', () => {
+    const map = new SkipListMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.delete(1)).toBe(true);
+    expect(map.has(1)).toBe(false);
+  });
 });

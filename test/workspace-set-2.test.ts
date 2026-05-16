@@ -331,4 +331,13 @@ describe('WorkspaceSet2', () => {
     expect(ws.deleteWorkspace('ws1')).toBe(true);
     expect(ws.getWorkspaceNames()).not.toContain('ws1');
   });
+  it('should handle moveItem', () => {
+    const ws = new WorkspaceSet2<string>();
+    ws.createWorkspace('ws1');
+    ws.createWorkspace('ws2');
+    ws.addToWorkspace('ws1', 'a');
+    ws.addToWorkspace('ws1', 'b');
+    ws.moveItem('a', 'ws1', 'ws2');
+    expect(ws.getWorkspace('ws2')).toContain('a');
+  });
 });

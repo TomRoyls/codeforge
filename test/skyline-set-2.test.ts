@@ -413,6 +413,14 @@ describe('SkylineSet2', () => {
     const set = new SkylineSet2<string>(2);
     set.add('a', [1, 2]);
     set.add('b', [3, 4]);
-    expect(set.size).toBe(2);
+    expect(set.size()).toBe(2);
+  });
+
+  it('should handle clear', () => {
+    const set = new SkylineSet2<string>(2);
+    set.add('a', [1, 2]);
+    set.add('b', [3, 4]);
+    set.clear();
+    expect(set.size()).toBe(0);
   });
 });

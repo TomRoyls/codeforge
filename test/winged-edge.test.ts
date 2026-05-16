@@ -506,4 +506,13 @@ describe('WingedEdgeMesh', () => {
     mesh.addVertex(0, 1, 0);
     expect(mesh.getVertexCount()).toBe(3);
   });
+  it('should handle getEdgeCount', () => {
+    const mesh = new WingedEdgeMesh();
+    const v0 = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(0, 1, 0);
+    mesh.addEdge(v0, v1);
+    mesh.addEdge(v1, v2);
+    expect(mesh.getEdgeCount()).toBe(2);
+  });
 });

@@ -360,4 +360,12 @@ describe('WeightedGraph2', () => {
     graph.addEdge('A', 'B', 7);
     expect(graph.getEdgeWeight('A', 'B')).toBe(7);
   });
+  it('should handle removeVertex', () => {
+    const graph = new WeightedGraph2();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    graph.addEdge('A', 'B', 5);
+    expect(graph.removeVertex('A')).toBe(true);
+    expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
+  });
 });

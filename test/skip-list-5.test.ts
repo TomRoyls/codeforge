@@ -391,11 +391,19 @@ describe('SkipList5', () => {
     });
 
     it('should handle clear', () => {
-      const list = new SkipList<number>();
-      list.insert(10);
-      list.insert(20);
-      list.clear();
-      expect(list.isEmpty()).toBe(true);
-    });
-  });
+       const list = new SkipList<number>();
+       list.insert(10);
+       list.insert(20);
+       list.clear();
+       expect(list.isEmpty()).toBe(true);
+     });
+
+     it('should handle contains', () => {
+       const list = new SkipList<number>();
+       list.insert(10);
+       list.insert(20);
+       expect(list.contains(10)).toBe(true);
+       expect(list.contains(99)).toBe(false);
+     });
+   });
 });

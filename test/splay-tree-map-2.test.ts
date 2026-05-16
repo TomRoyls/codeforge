@@ -448,4 +448,11 @@ describe('SplayTreeMap2', () => {
     expect(map.min()).toBe(1);
     expect(map.max()).toBe(9);
   });
+  it('should handle delete', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.delete(1)).toBe(true);
+    expect(map.has(1)).toBe(false);
+  });
 });

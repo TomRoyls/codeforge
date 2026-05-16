@@ -443,4 +443,11 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('C', 'A');
     expect(ts.hasCycle()).toBe(true);
   });
+  it('should handle getNodes', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('A');
+    ts.addNode('B');
+    expect(ts.getNodes()).toContain('A');
+    expect(ts.getNodes()).toContain('B');
+  });
 });

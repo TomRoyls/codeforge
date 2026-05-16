@@ -370,5 +370,14 @@ describe('ThreadSafeStack2', () => {
     expect(stack.peek()).toBe(2)
     expect(stack.size).toBe(2)
   })
+
+  it('should handle push after clear', () => {
+    const stack = new ThreadSafeStack2<number>()
+    stack.push(1)
+    stack.clear()
+    expect(stack.size).toBe(0)
+    stack.push(42)
+    expect(stack.peek()).toBe(42)
+  })
   })
 })

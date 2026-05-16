@@ -386,4 +386,11 @@ describe('TernarySearchTrie2', () => {
     expect(keys).toContain('apple')
     expect(keys).toContain('application')
   })
+  it('should handle keys method', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('apple', 1)
+    trie.set('banana', 2)
+    const keys = trie.keys()
+    expect(keys.length).toBe(2)
+  })
 })

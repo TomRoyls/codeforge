@@ -370,4 +370,12 @@ describe('TrieMap2', () => {
     const keys = t.keysWithPrefix('app');
     expect(keys.length).toBe(2);
   });
+
+  it('should handle delete', () => {
+    const t = new TrieMap2<number>()
+    t.set('apple', 1)
+    t.set('app', 2)
+    expect(t.delete('apple')).toBe(true)
+    expect(t.has('apple')).toBe(false)
+  })
 });
