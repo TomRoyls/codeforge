@@ -285,4 +285,10 @@ describe("SparseTable", () => {
       expect(st.toArray()).toEqual([3, 1, 4, 1, 5]);
     });
   });
+
+  it('should handle rangeMinQuery on range', () => {
+    const st = new SparseTable([5, 2, 8, 1, 9]);
+    expect(st.rangeMinQuery(1, 3)).toBe(1);
+    expect(st.rangeMaxQuery(1, 3)).toBe(8);
+  });
 });

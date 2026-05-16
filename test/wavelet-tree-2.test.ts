@@ -360,4 +360,10 @@ describe("WaveletTree", () => {
     expect(tree.access(3)).toBe(1);
     expect(tree.access(4)).toBe(5);
   });
+
+  it('should handle rank for absent element', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.rank(99, 5)).toBe(0);
+  });
 });

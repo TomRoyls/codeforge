@@ -382,4 +382,11 @@ describe('WaveletMatrix2', () => {
     expect(wm.quantile(0, 5, 0)).toBe(1);
     expect(wm.quantile(0, 5, 4)).toBe(5);
   });
+
+  it('should handle access', () => {
+    const data = [10, 20, 30];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.access(0)).toBe(10);
+    expect(wm.access(2)).toBe(30);
+  });
 });

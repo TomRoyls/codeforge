@@ -527,4 +527,9 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     const nearest = tree.nearest({ x: 4, y: 4 })
     expect(nearest).toBeDefined()
   })
+
+  it('should handle empty tree', () => {
+    const tree = new VantagePointTree2<Point2D>([], euclideanDistance)
+    expect(tree.nearest({ x: 0, y: 0 })).toBeUndefined()
+  })
 })

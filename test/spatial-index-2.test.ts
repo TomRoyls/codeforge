@@ -436,4 +436,11 @@ describe('SpatialIndex2', () => {
       expect(nearest.length).toBeGreaterThan(0)
     })
   })
+
+  it('should handle isEmpty', () => {
+    const index = new SpatialIndex2()
+    expect(index.isEmpty()).toBe(true)
+    index.insert('a', 0, 0)
+    expect(index.isEmpty()).toBe(false)
+  })
 })

@@ -377,4 +377,13 @@ describe('SparseMatrix2', () => {
     const result = matrix.multiplyVector([1, 2]);
     expect(result).toEqual([5, 11]);
   });
+
+  it('should handle transpose', () => {
+    const matrix = new SparseMatrix2(2, 3);
+    matrix.set(0, 1, 5);
+    matrix.set(1, 2, 7);
+    const t = matrix.transpose();
+    expect(t.get(1, 0)).toBe(5);
+    expect(t.get(2, 1)).toBe(7);
+  });
 });

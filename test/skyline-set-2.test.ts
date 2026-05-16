@@ -408,4 +408,11 @@ describe('SkylineSet2', () => {
       expect(set.dominates([1, 2], [3, 4])).toBe(false);
     });
   });
+
+  it('should handle size', () => {
+    const set = new SkylineSet2<string>(2);
+    set.add('a', [1, 2]);
+    set.add('b', [3, 4]);
+    expect(set.size).toBe(2);
+  });
 });
