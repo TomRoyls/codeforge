@@ -361,5 +361,13 @@ describe('SpatialHash2', () => {
       hash.update('a', 10, 10);
       expect(hash.has('a')).toBe(true);
     });
+
+    it('should handle query', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      hash.insert('b', 50, 50);
+      const results = hash.query(5, 5, 10);
+      expect(results.length).toBeGreaterThanOrEqual(1);
+    });
   });
 });

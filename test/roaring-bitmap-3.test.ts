@@ -414,4 +414,15 @@ describe('RoaringBitmap3', () => {
     const result = a.or(b);
     expect(result.toArray()).toEqual([1, 2, 3]);
   });
+
+  it('should handle xor operation', () => {
+    const a = new RoaringBitmap3();
+    a.add(1); a.add(2); a.add(3);
+    const b = new RoaringBitmap3();
+    b.add(2); b.add(3); b.add(4);
+    const result = a.xor(b);
+    expect(result.has(1)).toBe(true);
+    expect(result.has(4)).toBe(true);
+    expect(result.has(2)).toBe(false);
+  });
 });

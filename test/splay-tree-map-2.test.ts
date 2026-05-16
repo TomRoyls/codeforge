@@ -423,4 +423,13 @@ describe('SplayTreeMap2', () => {
     map.forEach((k, v) => entries.push([k, v]));
     expect(entries.length).toBe(3);
   });
+
+  it('should handle has after delete', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.delete(1);
+    expect(map.has(1)).toBe(false);
+    expect(map.has(2)).toBe(true);
+  });
 });

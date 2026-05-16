@@ -360,5 +360,13 @@ describe('TernarySearchTrie2', () => {
       expect(result).toContain('application')
       expect(result.length).toBe(3)
     })
+
+    it('should handle delete', () => {
+      trie.set('hello', 1)
+      trie.set('world', 2)
+      expect(trie.delete('hello')).toBe(true)
+      expect(trie.get('hello')).toBeUndefined()
+      expect(trie.has('world')).toBe(true)
+    })
   })
 })

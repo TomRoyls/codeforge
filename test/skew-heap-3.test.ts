@@ -502,4 +502,13 @@ describe('SkewHeap3', () => {
     heap.insert(5);
     expect(heap.isEmpty()).toBe(false);
   });
+
+  it('should handle clear', () => {
+    const heap = new SkewHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+    expect(heap.size).toBe(0);
+  });
 });

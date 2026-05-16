@@ -279,4 +279,13 @@ describe("RunLengthEncoding3", () => {
     const encoded = rle.encode('');
     expect(encoded).toBe('');
   });
+
+  it('should handle append', () => {
+    const rle = new RunLengthEncoding3();
+    rle.append('A', 3);
+    rle.append('B', 2);
+    const runs = rle.getRuns();
+    expect(runs.length).toBe(2);
+    expect(runs[0]).toEqual({ char: 'A', count: 3 });
+  });
 });

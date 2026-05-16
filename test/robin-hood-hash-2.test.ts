@@ -291,4 +291,9 @@ describe('RobinHoodHash2', () => {
     expect(hash.has('a')).toBe(true);
     expect(hash.has('c')).toBe(false);
   });
+
+  it('should handle capacity', () => {
+    const hash = new RobinHoodHash2<string, number>();
+    expect(hash.capacity()).toBeGreaterThan(0);
+  });
 });

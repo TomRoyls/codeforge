@@ -353,4 +353,13 @@ describe('RedBlackTreeMap2', () => {
     expect(map.has(1)).toBe(true)
     expect(map.has(99)).toBe(false)
   })
+
+  it('should handle min and max', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(5, 'e')
+    map.set(1, 'a')
+    map.set(9, 'i')
+    expect(map.min()).toBe(1)
+    expect(map.max()).toBe(9)
+  })
 })

@@ -339,4 +339,13 @@ describe('RingHash2', () => {
     ring.addNode('node3');
     expect(ring.nodes().length).toBe(3);
   });
+
+  it('should handle removeNode', () => {
+    const ring = new RingHash2();
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.removeNode('node1');
+    expect(ring.nodes().length).toBe(1);
+    expect(ring.nodes()).not.toContain('node1');
+  });
 });

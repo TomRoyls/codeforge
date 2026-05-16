@@ -469,5 +469,15 @@ describe('RingBuffer6', () => {
       buffer.clear();
       expect(buffer.isEmpty()).toBe(true);
     });
+
+    it('should handle forEach', () => {
+      const buffer = new RingBuffer6<number>(5);
+      buffer.push(10);
+      buffer.push(20);
+      buffer.push(30);
+      const items: number[] = [];
+      buffer.forEach((item) => items.push(item));
+      expect(items).toEqual([10, 20, 30]);
+    });
   });
 });

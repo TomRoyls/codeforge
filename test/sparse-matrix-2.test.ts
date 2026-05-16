@@ -359,4 +359,12 @@ describe('SparseMatrix2', () => {
     matrix.set(1, 1, 2);
     expect(matrix.nonZeroCount()).toBe(2);
   });
+
+  it('should handle density', () => {
+    const matrix = new SparseMatrix2(3, 3);
+    matrix.set(0, 0, 1);
+    matrix.set(1, 1, 2);
+    expect(matrix.density()).toBeGreaterThan(0);
+    expect(matrix.density()).toBeLessThanOrEqual(1);
+  });
 });
