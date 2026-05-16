@@ -510,4 +510,10 @@ describe('RingBuffer6', () => {
     expect(buffer.shift()).toBe(1);
     expect(buffer.toArray()).toEqual([2]);
   });
+  it('should handle unshift', () => {
+    const buffer = new RingBuffer6<number>(10);
+    buffer.push(1);
+    buffer.unshift(0);
+    expect(buffer.toArray()).toEqual([0, 1]);
+  });
 });

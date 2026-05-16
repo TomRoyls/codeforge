@@ -342,5 +342,11 @@ describe('SegmentTree', () => {
       tree.update(0, 100)
       expect(tree.query(0, 0)).toBe(100)
     })
+
+    it('should handle update and rangeQuery consistency', () => {
+      const tree = new SegmentTree([1, 2, 3, 4, 5])
+      tree.update(2, 10)
+      expect(tree.rangeQuery(0, 4)).toBe(tree.query(0, 4))
+    })
   })
 })

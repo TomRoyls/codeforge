@@ -424,4 +424,10 @@ describe('RadixHeap3', () => {
     heap.insert(5, 'a');
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle size property', () => {
+    const heap = new RadixHeap3<string>(8);
+    heap.insert(5, 'a');
+    heap.insert(3, 'b');
+    expect(heap.size).toBe(2);
+  });
 });

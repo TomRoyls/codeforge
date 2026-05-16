@@ -511,4 +511,11 @@ describe('PairingQueue2', () => {
     q1.merge(q2);
     expect(q1.peek()).toBe(3);
   });
+  it('should handle toArray', () => {
+    const q = new PairingQueue2<number>();
+    q.enqueue(5);
+    q.enqueue(3);
+    q.enqueue(7);
+    expect(q.toArray().length).toBe(3);
+  });
 });

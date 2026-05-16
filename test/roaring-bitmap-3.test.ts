@@ -459,4 +459,12 @@ describe('RoaringBitmap3', () => {
     expect(result.has(2)).toBe(true);
     expect(result.has(3)).toBe(true);
   });
+  it('should handle min and max', () => {
+    const bm = new RoaringBitmap3();
+    bm.add(10);
+    bm.add(5);
+    bm.add(20);
+    expect(bm.min()).toBe(5);
+    expect(bm.max()).toBe(20);
+  });
 });

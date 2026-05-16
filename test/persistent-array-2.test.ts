@@ -328,4 +328,11 @@ describe('PersistentArray2', () => {
     expect(arr2.get(0)).toBe(99)
     expect(arr.get(0)).toBe(1)
   })
+  it('should handle map', () => {
+    const arr = new PersistentArray2<number>([1, 2, 3])
+    const mapped = arr.map(x => x * 2)
+    expect(mapped.get(0)).toBe(2)
+    expect(mapped.get(1)).toBe(4)
+    expect(mapped.get(2)).toBe(6)
+  })
 })

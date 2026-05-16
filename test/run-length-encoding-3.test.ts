@@ -313,4 +313,10 @@ describe("RunLengthEncoding3", () => {
     const encoded = rle.encode('AAABBC');
     expect(encoded.length).toBeGreaterThan(0);
   });
+  it('should handle toString', () => {
+    const rle = new RunLengthEncoding3();
+    rle.append('A', 3);
+    rle.append('B', 2);
+    expect(typeof rle.toString()).toBe('string');
+  });
 });

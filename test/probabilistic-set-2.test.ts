@@ -364,4 +364,8 @@ describe('ProbabilisticSet2', () => {
     expect(set.has('test')).toBe(true);
     expect(set.has('nothere')).toBe(false);
   });
+  it('should handle bitCount', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.bitCount()).toBeGreaterThan(0);
+  });
 });

@@ -307,5 +307,11 @@ describe('PancakeSort', () => {
     sorter.sort();
     expect(sorter.toArray()).toEqual([42]);
   });
+
+  it('should handle already sorted', () => {
+    const sorter = new PancakeSort<number>([1, 2, 3]);
+    sorter.sort();
+    expect(sorter.toArray()).toEqual([1, 2, 3]);
+  });
  });
 });

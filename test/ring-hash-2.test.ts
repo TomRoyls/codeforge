@@ -377,4 +377,11 @@ describe('RingHash2', () => {
     ring.removeNode('node1');
     expect(ring.nodes().length).toBe(1);
   });
+  it('should handle clear', () => {
+    const ring = new RingHash2(10);
+    ring.addNode('a');
+    ring.addNode('b');
+    ring.clear();
+    expect(ring.nodes().length).toBe(0);
+  });
 });

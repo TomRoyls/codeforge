@@ -472,4 +472,12 @@ describe('ProbabilityMap2', () => {
     map.set('b', 20);
     expect(map.totalWeight()).toBe(30);
   });
+  it('should handle keys', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    const keys = map.keys();
+    expect(keys).toContain('a');
+    expect(keys).toContain('b');
+  });
 });

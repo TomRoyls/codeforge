@@ -441,4 +441,11 @@ describe('RadixMap2', () => {
     map.set(1, 'a');
     expect(map.isEmpty()).toBe(false);
   });
+  it('should handle entries', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+  });
 });

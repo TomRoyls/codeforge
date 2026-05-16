@@ -327,4 +327,11 @@ describe('RobinHoodHash2', () => {
     hash.clear();
     expect(hash.size).toBe(0);
   });
+  it('should handle maxProbeLength after operations', () => {
+    const hash = new RobinHoodHash2<string, number>();
+    hash.set('a', 1);
+    hash.set('b', 2);
+    hash.set('c', 3);
+    expect(hash.maxProbeLength()).toBeGreaterThanOrEqual(0);
+  });
 });

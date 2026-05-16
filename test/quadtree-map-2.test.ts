@@ -351,4 +351,10 @@ describe('QuadTreeMap2', () => {
     tree.remove(10, 10);
     expect(tree.contains(10, 10)).toBe(false);
   });
+  it('should handle contains after insert', () => {
+    const tree = new QuadTreeMap2<string>({ x: 0, y: 0, width: 100, height: 100 });
+    tree.insert(50, 50, 'test');
+    expect(tree.contains(50, 50)).toBe(true);
+    expect(tree.contains(0, 0)).toBe(false);
+  });
 });
