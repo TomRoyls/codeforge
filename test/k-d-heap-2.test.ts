@@ -497,4 +497,10 @@ describe('KDHeap2', () => {
       expect(heap.peek()).toBeUndefined();
     });
   });
+  it('should handle heapify with single element', () => {
+    const heap = new KDHeap2<number>();
+    heap.heapify([42]);
+    expect(heap.size()).toBe(1);
+    expect(heap.peek()).toBe(42);
+  });
 });

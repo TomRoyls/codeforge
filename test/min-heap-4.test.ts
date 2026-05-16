@@ -470,4 +470,11 @@ describe('MinHeap', () => {
     const arr = heap.toArray();
     expect(arr.length).toBe(3);
   });
+  it('should handle delete on single element heap', () => {
+    const heap = new MinHeap<number>();
+    heap.insert(42);
+    heap.delete(0);
+    expect(heap.isEmpty()).toBe(true);
+    expect(heap.size()).toBe(0);
+  });
 });

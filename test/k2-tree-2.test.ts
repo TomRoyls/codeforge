@@ -365,4 +365,13 @@ describe('K2Tree2', () => {
     const tree = new K2Tree2(4);
     expect(tree.size).toBe(4);
   });
+  it('should handle toggle then count', () => {
+    const tree = new K2Tree2(4);
+    tree.set(0, 0);
+    tree.set(1, 1);
+    expect(tree.count()).toBe(2);
+    tree.toggle(0, 0);
+    expect(tree.count()).toBe(1);
+    expect(tree.get(0, 0)).toBe(false);
+  });
 });

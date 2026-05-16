@@ -371,4 +371,10 @@ describe('Matrix2', () => {
     const result = m1.add(m2);
     expect(result.get(0, 0)).toBe(3);
   });
+  it('should handle fromArray with single element', () => {
+    const m = Matrix2.fromArray([[42]]);
+    expect(m.rows()).toBe(1);
+    expect(m.cols()).toBe(1);
+    expect(m.get(0, 0)).toBe(42);
+  });
 });

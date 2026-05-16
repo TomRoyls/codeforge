@@ -374,4 +374,12 @@ describe('KDTree3', () => {
     const found = tree.rangeSearch({x: -1, y: -1}, {x: 6, y: 6})
     expect(found.length).toBe(2)
   })
+  it('should handle nearestNeighbor with identical points', () => {
+    const points = [{x: 1, y: 1}, {x: 1, y: 1}, {x: 5, y: 5}]
+    const tree = new KDTree3(points)
+    const nearest = tree.nearestNeighbor({x: 0, y: 0})
+    expect(nearest).toBeDefined()
+    expect(nearest!.x).toBe(1)
+    expect(nearest!.y).toBe(1)
+  })
 })

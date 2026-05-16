@@ -540,4 +540,9 @@ describe('LinkedHashSet', () => {
     set.add(10);
     expect(set.size()).toBe(1);
   });
+  it('should handle getTimeComplexity', () => {
+    const set = new LinkedHashSet<number>();
+    const complexity = set.getTimeComplexity();
+    expect(typeof complexity).toBe('string');
+  });
 });

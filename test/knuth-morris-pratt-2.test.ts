@@ -299,4 +299,9 @@ describe('KnuthMorrisPratt2', () => {
       expect(kmp.hasMatch('xyz')).toBe(false);
     });
   });
+  it('should handle search with unicode pattern', () => {
+    const kmp = new KnuthMorrisPratt2('café');
+    expect(kmp.search('un café bonito')).toEqual([3]);
+    expect(kmp.hasMatch('no match here')).toBe(false);
+  });
 });

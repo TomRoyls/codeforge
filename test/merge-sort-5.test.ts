@@ -235,4 +235,9 @@ describe('MergeSort5', () => {
     const result = ms.merge([1, 3, 5], [2, 4, 6]);
     expect(result).toEqual([1, 2, 3, 4, 5, 6]);
   });
+  it('should handle sortRange with single element', () => {
+    const ms = new MergeSort5();
+    const result = ms.sortRange([5, 3, 1, 4, 2], 2, 3);
+    expect(result).toEqual([1]);
+  });
 });

@@ -318,4 +318,8 @@ describe('InterpolationSearch', () => {
     expect(search.contains(50)).toBe(true);
     expect(search.contains(25)).toBe(false);
   });
+  it('should handle indexOf on empty array', () => {
+    const search = new InterpolationSearch([]);
+    expect(search.indexOf(5)).toBe(-1);
+  });
 });

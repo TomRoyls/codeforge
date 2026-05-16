@@ -455,4 +455,15 @@ describe('JellyHash2', () => {
     expect(map.delete('a')).toBe(true);
     expect(map.has('a')).toBe(false);
   });
+  it('should handle entries after multiple operations', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    map.delete('a');
+    map.set('c', 3);
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+    expect(map.has('b')).toBe(true);
+    expect(map.has('c')).toBe(true);
+  });
 });

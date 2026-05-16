@@ -287,4 +287,8 @@ describe('LibrarySort3', () => {
     const sorter = new LibrarySort3([3, 1, 2]);
     expect(typeof sorter.getTimeComplexity()).toBe('string');
   });
+  it('should handle sort with boolean-like values', () => {
+    const sorter = new LibrarySort3<number>([1, 0, 1, 0]);
+    expect(sorter.sort()).toEqual([0, 0, 1, 1]);
+  });
 });

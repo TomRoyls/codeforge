@@ -353,4 +353,13 @@ describe('MinHash2', () => {
     expect(sim).toBeGreaterThanOrEqual(0);
     expect(sim).toBeLessThanOrEqual(1);
   });
+  it('should handle similarity after clear', () => {
+    const mh1 = new MinHash2(64);
+    mh1.addAll(['a', 'b', 'c']);
+    mh1.clear();
+    const mh2 = new MinHash2(64);
+    mh2.addAll(['x', 'y', 'z']);
+    expect(mh1.similarity(mh2)).toBeCloseTo(0.0, 0);
+    expect(mh1.size()).toBe(0);
+  });
 });
