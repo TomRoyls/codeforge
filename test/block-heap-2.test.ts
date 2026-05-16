@@ -482,4 +482,11 @@ describe('BlockHeap2', () => {
     heap1.merge(heap2);
     expect(heap1.pop()).toBe(1);
   });
+  it('should handle clear', () => {
+    const heap = new BlockHeap2();
+    heap.push(5);
+    heap.push(3);
+    heap.clear();
+    expect(heap.size).toBe(0);
+  });
 });

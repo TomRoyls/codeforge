@@ -443,4 +443,10 @@ describe('BinaryHeap', () => {
     expect(heap.contains(5)).toBe(true);
     expect(heap.contains(99)).toBe(false);
   });
+  it('should handle heapify', () => {
+    const heap = new BinaryHeap<number>();
+    heap.heapify([5, 3, 8, 1, 9]);
+    expect(heap.extract()).toBe(9);
+    expect(heap.extract()).toBe(8);
+  });
 });

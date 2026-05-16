@@ -313,4 +313,9 @@ describe('BloomierFilter2', () => {
     expect(filter.delete('a')).toBe(true);
     expect(filter.has('a')).toBe(false);
   });
+  it('should handle loadFactor', () => {
+    const filter = new BloomierFilter2(100, 3);
+    filter.set('a', 1);
+    expect(filter.loadFactor()).toBeGreaterThan(0);
+  });
 });

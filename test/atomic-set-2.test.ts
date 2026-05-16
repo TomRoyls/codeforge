@@ -526,4 +526,10 @@ describe('AtomicSet2', () => {
     set.forEach(x => collected.push(x));
     expect(collected.length).toBe(3);
   });
+  it('should handle delete nonexistent', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    expect(set.delete(99)).toBe(false);
+    expect(set.size).toBe(1);
+  });
 });

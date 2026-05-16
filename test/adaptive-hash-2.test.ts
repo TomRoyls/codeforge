@@ -362,4 +362,11 @@ describe('AdaptiveHash2', () => {
     }
     expect(table.size()).toBe(50);
   });
+  it('should handle overwrite existing key', () => {
+    const table = new AdaptiveHash2<string, number>();
+    table.set('a', 1);
+    table.set('a', 2);
+    expect(table.get('a')).toBe(2);
+    expect(table.size()).toBe(1);
+  });
 });

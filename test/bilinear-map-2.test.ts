@@ -376,4 +376,11 @@ describe('BilinearMap2', () => {
     expect(map.getWidth()).toBe(2);
     expect(map.getHeight()).toBe(2);
   });
+  it('should handle single cell grid', () => {
+    const grid = [[42]];
+    const map = new BilinearMap2(grid);
+    expect(map.get(0, 0)).toBe(42);
+    expect(map.getWidth()).toBe(1);
+    expect(map.getHeight()).toBe(1);
+  });
 });

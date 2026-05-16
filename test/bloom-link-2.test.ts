@@ -385,4 +385,10 @@ describe('BloomLink2', () => {
     filter.add('test');
     expect(filter.mightContain('test')).toBe(true);
   });
+  it('should handle isEmpty', () => {
+    const filter = new BloomLink2();
+    expect(filter.isEmpty()).toBe(true);
+    filter.add('test');
+    expect(filter.isEmpty()).toBe(false);
+  });
 });

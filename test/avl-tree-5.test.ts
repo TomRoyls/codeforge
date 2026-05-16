@@ -456,4 +456,11 @@ describe('AVLTree', () => {
     tree.insert(50);
     expect(tree.toArray()).toEqual([10, 30, 50]);
   });
+  it('should handle contains', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(10);
+    tree.insert(30);
+    expect(tree.contains(10)).toBe(true);
+    expect(tree.contains(99)).toBe(false);
+  });
 });

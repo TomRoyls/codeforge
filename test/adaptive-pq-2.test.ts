@@ -485,4 +485,12 @@ describe('AdaptivePQ2', () => {
     const arr = pq.toArray()
     expect(arr.length).toBe(3)
   })
+  it('should handle clear', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    pq.clear()
+    expect(pq.size).toBe(0)
+    expect(pq.pop()).toBeUndefined()
+  })
 })

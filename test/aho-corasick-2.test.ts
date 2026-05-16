@@ -282,4 +282,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('this is his history');
     expect(result.length).toBeGreaterThanOrEqual(3);
   });
+  it('should handle pattern not found', () => {
+    const ac = new AhoCorasick2(['xyz']);
+    const result = ac.search('hello world');
+    expect(result.length).toBe(0);
+  });
 });

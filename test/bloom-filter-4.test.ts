@@ -330,4 +330,9 @@ describe('BloomFilter4', () => {
     const bf = new BloomFilter(100, 0.01);
     expect(bf.getHashCount()).toBeGreaterThan(0);
   });
+  it('should handle getSize returns bit count', () => {
+    const bf = new BloomFilter(100, 0.01);
+    expect(bf.getSize()).toBeGreaterThan(0);
+    expect(bf.getBitCount()).toBeGreaterThan(0);
+  });
 });

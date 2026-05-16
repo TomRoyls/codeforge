@@ -489,4 +489,10 @@ describe('AVLTreeSet2', () => {
     set.delete(20);
     expect(set.size).toBe(2);
   });
+  it('should handle delete nonexistent', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    expect(set.delete(99)).toBe(false);
+    expect(set.size).toBe(1);
+  });
 });
