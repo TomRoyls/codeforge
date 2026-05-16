@@ -472,4 +472,12 @@ describe('AVLTree', () => {
     expect(tree.min()).toBe(5);
     expect(tree.max()).toBe(50);
   });
+  it('should handle delete', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(30);
+    expect(tree.delete(20)).toBe(true);
+    expect(tree.search(20)).toBe(false);
+  });
 });

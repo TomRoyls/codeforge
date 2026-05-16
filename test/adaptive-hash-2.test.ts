@@ -377,4 +377,11 @@ describe('AdaptiveHash2', () => {
     expect(table.has('a')).toBe(false);
     expect(table.size()).toBe(1);
   });
+  it('should handle update existing key', () => {
+    const table = new AdaptiveHash2<string, number>();
+    table.set('a', 1);
+    table.set('a', 99);
+    expect(table.get('a')).toBe(99);
+    expect(table.size()).toBe(1);
+  });
 });

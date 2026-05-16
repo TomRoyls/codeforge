@@ -391,4 +391,9 @@ describe('BilinearMap2', () => {
     expect(map.get(0, 1)).toBe(20);
     expect(map.get(1, 1)).toBe(30);
   });
+  it('should handle get out of bounds', () => {
+    const map = new BilinearMap2(2, 2);
+    expect(() => map.get(-1, 0)).toThrow();
+    expect(() => map.get(0, -1)).toThrow();
+  });
 });

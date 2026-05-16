@@ -341,4 +341,8 @@ describe('BloomFilter4', () => {
     bf.clear();
     expect(bf.mightContain('test')).toBe(false);
   });
+  it('should handle getHashCount', () => {
+    const bf = new BloomFilter(100, 0.01);
+    expect(bf.getHashCount()).toBeGreaterThan(0);
+  });
 });

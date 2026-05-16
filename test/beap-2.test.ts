@@ -462,5 +462,13 @@ describe('Beap2', () => {
       expect(beap.extractMin()!.value).toBe('second');
       expect(beap.peek()!.value).toBe('first');
     });
+    it('should handle size after operations', () => {
+      const beap = new Beap<string>();
+      beap.insert(3, 'a');
+      beap.insert(1, 'b');
+      expect(beap.size).toBe(2);
+      beap.extractMin();
+      expect(beap.size).toBe(1);
+    });
   });
 });

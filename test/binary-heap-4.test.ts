@@ -456,4 +456,12 @@ describe('BinaryHeap', () => {
     heap.clear();
     expect(heap.size()).toBe(0);
   });
+  it('should handle contains after insert', () => {
+    const heap = new BinaryHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.contains(5)).toBe(true);
+    expect(heap.contains(99)).toBe(false);
+  });
 });

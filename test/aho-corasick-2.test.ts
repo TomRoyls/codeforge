@@ -292,4 +292,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('hello world');
     expect(result.length).toBe(0);
   });
+  it('should handle multiple matches of same pattern', () => {
+    const ac = new AhoCorasick2(['ab']);
+    const result = ac.search('ababab');
+    expect(result.length).toBe(3);
+  });
 });

@@ -496,4 +496,11 @@ describe('BlockHeap2', () => {
     heap.push(3);
     expect(heap.size).toBe(2);
   });
+  it('should handle clear', () => {
+    const heap = new BlockHeap2<number>();
+    heap.push(5);
+    heap.push(3);
+    heap.clear();
+    expect(heap.size).toBe(0);
+  });
 });

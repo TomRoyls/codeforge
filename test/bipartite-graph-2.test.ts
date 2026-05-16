@@ -440,4 +440,11 @@ describe('BipartiteGraph2', () => {
     graph.addRightVertex('R1');
     expect(graph.removeEdge('L1', 'R1')).toBe(false);
   });
+  it('should handle getLeftVertices and getRightVertices', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    expect(graph.getLeftVertices()).toContain('L1');
+    expect(graph.getRightVertices()).toContain('R1');
+  });
 });

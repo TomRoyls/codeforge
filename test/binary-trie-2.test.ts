@@ -423,4 +423,11 @@ describe('BinaryTrie2', () => {
     trie.insert(10);
     expect(trie.xorMin(10)).toBe(10);
   });
+  it('should handle size after duplicate inserts', () => {
+    const trie = new BinaryTrie2();
+    trie.insert(5);
+    trie.insert(5);
+    trie.insert(5);
+    expect(trie.size).toBe(3);
+  });
 });

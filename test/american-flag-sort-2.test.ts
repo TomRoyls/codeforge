@@ -343,4 +343,8 @@ describe('AmericanFlagSort2', () => {
     const sorter = new AmericanFlagSort2();
     expect(sorter.sort([3, 1, 2, 1, 3])).toEqual([1, 1, 2, 3, 3]);
   });
+  it('should handle empty array', () => {
+    const sorter = new AmericanFlagSort2();
+    expect(sorter.sort([])).toEqual([]);
+  });
 });

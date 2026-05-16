@@ -323,4 +323,8 @@ describe('BloomierFilter2', () => {
     filter.set('a', 1);
     expect(filter.get('nonexistent')).toBeUndefined();
   });
+  it('should handle loadFactor', () => {
+    const filter = new BloomierFilter2(100, 3);
+    expect(filter.loadFactor()).toBeGreaterThanOrEqual(0);
+  });
 });
