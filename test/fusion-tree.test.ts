@@ -304,5 +304,13 @@ describe('FusionTree', () => {
       tree.insert(5);
       expect(tree.isEmpty).toBe(false);
     });
+
+    it('should handle size property', () => {
+      const tree = new FusionTree();
+      tree.insert(5);
+      tree.insert(10);
+      tree.insert(15);
+      expect(tree.size).toBe(3);
+    });
   });
 });

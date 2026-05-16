@@ -327,5 +327,10 @@ describe('CuckooFilter2', () => {
       expect(filter.contains('APPLE')).toBe(false);
       expect(filter.contains('Apple')).toBe(false);
     });
+
+    it('should handle capacity property', () => {
+      const filter = new CuckooFilter2(100);
+      expect(filter.capacity).toBeGreaterThan(0);
+    });
   });
 });

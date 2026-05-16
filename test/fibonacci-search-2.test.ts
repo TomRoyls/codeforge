@@ -250,4 +250,9 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30]);
     expect(fs.search(99)).toBe(-1);
   });
+
+  it('should handle last element search', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    expect(fs.search(50)).toBe(4);
+  });
 });

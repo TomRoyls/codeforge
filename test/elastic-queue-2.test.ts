@@ -315,4 +315,12 @@ describe('ElasticQueue2', () => {
     expect(queue.dequeue()).toBe(1);
     expect(queue.size).toBe(1);
   });
+
+  it('should handle peek', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.peek()).toBe(1);
+    expect(queue.size).toBe(2);
+  });
 });

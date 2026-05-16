@@ -254,5 +254,10 @@ describe('CountingSort', () => {
       const sorter = new CountingSort([]);
       expect(sorter.sort()).toEqual([]);
     });
+
+    it('should handle duplicates', () => {
+      const sorter = new CountingSort([3, 1, 2, 1, 3]);
+      expect(sorter.sort()).toEqual([1, 1, 2, 3, 3]);
+    });
   });
 });
