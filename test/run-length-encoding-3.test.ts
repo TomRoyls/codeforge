@@ -325,4 +325,13 @@ describe("RunLengthEncoding3", () => {
     rle.append('A', 1);
     expect(rle.isEmpty()).toBe(false);
   });
+  it('should handle getRuns', () => {
+    const rle = new RunLengthEncoding3();
+    rle.append('A', 3);
+    rle.append('B', 2);
+    const runs = rle.getRuns();
+    expect(runs.length).toBe(2);
+    expect(runs[0]!.char).toBe('A');
+    expect(runs[0]!.count).toBe(3);
+  });
 });

@@ -412,4 +412,12 @@ describe('TernarySearchTrie2', () => {
     expect(keys).toContain('apple')
     expect(keys).toContain('banana')
   })
+  it('should handle delete', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('hello', 1)
+    trie.set('world', 2)
+    expect(trie.delete('hello')).toBe(true)
+    expect(trie.has('hello')).toBe(false)
+    expect(trie.has('world')).toBe(true)
+  })
 })

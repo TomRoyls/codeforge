@@ -389,4 +389,10 @@ describe('WeightedGraph2', () => {
     graph.addEdge('A', 'B', 5);
     expect(graph.getEdgeWeight('A', 'B')).toBe(5);
   });
+  it('should handle getEdgeWeight on nonexistent edge', () => {
+    const graph = new WeightedGraph2<string>();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
+  });
 });

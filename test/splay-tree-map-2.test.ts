@@ -474,4 +474,13 @@ describe('SplayTreeMap2', () => {
     expect(map.min()).toBe(1);
     expect(map.max()).toBe(5);
   });
+  it('should handle delete', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    expect(map.delete(2)).toBe(true);
+    expect(map.get(2)).toBeUndefined();
+    expect(map.size).toBe(2);
+  });
 });

@@ -256,5 +256,10 @@ describe('SpaghettiSort2', () => {
       sorter.sort([42]);
       expect(sorter.toArray()).toEqual([42]);
     });
+    it('should handle negative numbers', () => {
+      const sorter = new SpaghettiSort2([-1, -3, 2, 0]);
+      sorter.sort([-1, -3, 2, 0]);
+      expect(sorter.toArray()).toEqual([-3, -1, 0, 2]);
+    });
   });
 });

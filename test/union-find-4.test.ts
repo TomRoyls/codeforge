@@ -397,4 +397,10 @@ describe('UnionFind4', () => {
     expect(uf.connected(0, 1)).toBe(true);
     expect(uf.connected(0, 2)).toBe(false);
   });
+  it('should handle find', () => {
+    const uf = new UnionFind4(3);
+    uf.union(0, 1);
+    expect(uf.find(0)).toBe(uf.find(1));
+    expect(uf.find(2)).not.toBe(uf.find(0));
+  });
 });

@@ -402,4 +402,12 @@ describe('WindowHeap2', () => {
     heap.insert(5);
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle remove', () => {
+    const heap = new WindowHeap2<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.remove(3)).toBe(true);
+    expect(heap.size()).toBe(2);
+  });
 });

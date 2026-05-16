@@ -412,4 +412,10 @@ describe('WaveletMatrix2', () => {
     const wm = new WaveletMatrix2(data);
     expect(wm.rank(10, 5)).toBe(3);
   });
+  it('should handle quantile', () => {
+    const data = [10, 20, 30, 40, 50];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.quantile(0, 5, 0)).toBe(10);
+    expect(wm.quantile(0, 5, 4)).toBe(50);
+  });
 });

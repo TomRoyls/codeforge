@@ -391,4 +391,14 @@ describe('RingHash2', () => {
     const node = ring.getNode('some-key');
     expect(node).toBeDefined();
   });
+  it('should handle multiple getNode calls', () => {
+    const ring = new RingHash2(100);
+    ring.addNode('a');
+    ring.addNode('b');
+    ring.addNode('c');
+    const n1 = ring.getNode('key1');
+    const n2 = ring.getNode('key2');
+    expect(typeof n1).toBe('string');
+    expect(typeof n2).toBe('string');
+  });
 });

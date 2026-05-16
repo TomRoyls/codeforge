@@ -468,4 +468,12 @@ describe('SpatialIndex2', () => {
     expect(index.has('a')).toBe(true)
     expect(index.has('b')).toBe(false)
   })
+  it('should handle get', () => {
+    const index = new SpatialIndex2<string>(10)
+    index.insert('a', 5, 5)
+    const pt = index.get('a')
+    expect(pt).toBeDefined()
+    expect(pt!.x).toBe(5)
+    expect(pt!.y).toBe(5)
+  })
 })

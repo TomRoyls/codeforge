@@ -467,4 +467,11 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('b', 'c');
     expect(ts.hasCycle()).toBe(false);
   });
+  it('should detect cycle', () => {
+    const ts = new TopologicalQueue2();
+    ts.addEdge('a', 'b');
+    ts.addEdge('b', 'c');
+    ts.addEdge('c', 'a');
+    expect(ts.hasCycle()).toBe(true);
+  });
 });

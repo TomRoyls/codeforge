@@ -352,5 +352,11 @@ describe('SegmentTree', () => {
       const tree = new SegmentTree([42])
       expect(tree.query(0, 0)).toBe(42)
     })
+    it('should handle update changes query result', () => {
+      const tree = new SegmentTree([1, 2, 3, 4, 5])
+      expect(tree.query(0, 4)).toBe(15)
+      tree.update(2, 10)
+      expect(tree.query(0, 4)).toBe(22)
+    })
   })
 })

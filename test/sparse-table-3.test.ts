@@ -293,4 +293,9 @@ describe("SparseTable3", () => {
     const st = new SparseTable3([3, 1, 4], 'min');
     expect(st.size()).toBe(3);
   });
+  it('should handle query', () => {
+    const st = new SparseTable3([3, 1, 4, 1, 5], 'min');
+    expect(st.query(0, 4)).toBe(1);
+    expect(st.query(0, 0)).toBe(3);
+  });
 });

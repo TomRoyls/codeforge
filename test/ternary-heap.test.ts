@@ -594,5 +594,12 @@ describe('TernaryHeap', () => {
       expect(arr).toContain(10);
       expect(arr).toContain(15);
     });
+    it('should handle peek', () => {
+      const heap = new TernaryHeap<number>();
+      heap.insert(10);
+      heap.insert(5);
+      heap.insert(15);
+      expect(heap.peek()).toBe(5);
+    });
   });
 });

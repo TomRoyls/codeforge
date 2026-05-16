@@ -523,4 +523,8 @@ describe('RingBuffer6', () => {
     expect(buffer.shift()).toBe(1);
     expect(buffer.toArray()).toEqual([2]);
   });
+  it('should handle capacity', () => {
+    const buffer = new RingBuffer6<number>(5);
+    expect(buffer.capacity()).toBe(5);
+  });
 });

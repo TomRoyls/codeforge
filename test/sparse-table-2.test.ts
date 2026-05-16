@@ -308,4 +308,8 @@ describe("SparseTable", () => {
     const st = new SparseTable([3, 1, 4, 1, 5]);
     expect(st.toArray()).toEqual([3, 1, 4, 1, 5]);
   });
+  it('should handle query on single element', () => {
+    const st = new SparseTable([42]);
+    expect(st.query(0, 0)).toBe(42);
+  });
 });

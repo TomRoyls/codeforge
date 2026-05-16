@@ -401,4 +401,11 @@ describe('ThreadSafeStack2', () => {
     stack.clear()
     expect(stack.size).toBe(0)
   })
+  it('should handle peek', () => {
+    const stack = new ThreadSafeStack2<number>()
+    stack.push(10)
+    stack.push(20)
+    expect(stack.peek()).toBe(20)
+    expect(stack.size).toBe(2)
+  })
 })

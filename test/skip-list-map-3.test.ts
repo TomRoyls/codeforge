@@ -520,5 +520,13 @@ describe('SkipListMap3', () => {
       expect(map.delete(1)).toBe(true);
       expect(map.has(1)).toBe(false);
     });
+    it('should handle size after operations', () => {
+      const map = new SkipListMap3<number, string>();
+      map.set(1, 'a');
+      map.set(2, 'b');
+      map.set(3, 'c');
+      map.delete(2);
+      expect(map.size).toBe(2);
+    });
   });
 });

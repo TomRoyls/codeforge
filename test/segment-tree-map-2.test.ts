@@ -416,4 +416,11 @@ describe('SegmentTreeMap2', () => {
     tree.set(2, 30)
     expect(tree.queryRange(0, 2)).toBeGreaterThanOrEqual(0)
   })
+  it('should handle get method', () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    tree.set(1, 20)
+    expect(tree.get(0)).toBe(10)
+    expect(tree.get(1)).toBe(20)
+  })
 })

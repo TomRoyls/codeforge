@@ -413,4 +413,12 @@ describe('SparseMatrix2', () => {
     expect(t.get(1, 0)).toBe(5);
     expect(t.get(0, 1)).toBe(10);
   });
+  it('should handle multiplyVector', () => {
+    const m = new SparseMatrix2(2, 2);
+    m.set(0, 0, 2);
+    m.set(1, 1, 3);
+    const result = m.multiplyVector([1, 1]);
+    expect(result[0]).toBe(2);
+    expect(result[1]).toBe(3);
+  });
 });

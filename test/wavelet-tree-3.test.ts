@@ -317,5 +317,10 @@ describe('WaveletTree3', () => {
       expect(tree.select('z', 5)).toBe(5);
       expect(tree.toString()).toBe('zzzzzz');
     });
+    it('should handle access', () => {
+      const tree = new WaveletTree3('abcabc');
+      expect(tree.access(0)).toBe('a');
+      expect(tree.access(3)).toBe('a');
+    });
   });
 });
