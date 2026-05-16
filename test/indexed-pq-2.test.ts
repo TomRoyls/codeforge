@@ -458,4 +458,14 @@ describe('IndexedPQ2', () => {
     pq.update('a', 5);
     expect(pq.peek()!.id).toBe('a');
   });
+  it('should handle extractMin after update', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert(1, 30);
+    pq.insert(2, 20);
+    pq.insert(3, 10);
+    pq.update(3, 50);
+    const min = pq.extractMin();
+    expect(min!.id).toBe(2);
+    expect(min!.priority).toBe(20);
+  });
 });

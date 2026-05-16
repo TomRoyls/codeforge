@@ -345,4 +345,11 @@ describe('FibonacciSearch4', () => {
     const searcher = new FibonacciSearch4([10, 20, 30, 40]);
     expect(searcher.search(99)).toBe(-1);
   });
+  it('should handle toArray returns independent copy', () => {
+    const searcher = new FibonacciSearch4([2, 4, 6]);
+    const arr = searcher.toArray();
+    expect(arr).toEqual([2, 4, 6]);
+    arr.push(8);
+    expect(searcher.toArray()).toEqual([2, 4, 6]);
+  });
 });

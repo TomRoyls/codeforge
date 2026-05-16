@@ -530,4 +530,8 @@ describe('HalfEdgeMesh - Complex Mesh', () => {
     expect(vertex!.x).toBe(1);
     expect(vertex!.y).toBe(2);
   });
+  it('should handle getBoundaryEdges on empty mesh', () => {
+    const mesh = new HalfEdgeMesh();
+    expect(mesh.getBoundaryEdges()).toEqual([]);
+  });
 });

@@ -407,4 +407,12 @@ describe('HyperLogLog3', () => {
     hll.add('a')
     expect(hll.isEmpty()).toBe(false)
   })
+  it('should handle isEmpty after reset then add', () => {
+    const hll = new HyperLogLog3()
+    hll.add('a')
+    hll.reset()
+    expect(hll.isEmpty()).toBe(true)
+    hll.add('b')
+    expect(hll.isEmpty()).toBe(false)
+  })
 })

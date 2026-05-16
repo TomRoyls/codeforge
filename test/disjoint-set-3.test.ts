@@ -452,4 +452,8 @@ describe('DisjointSet3', () => {
     ds.makeSet('c');
     expect(ds.count()).toBe(3);
   });
+  it('should handle find on non-existent element', () => {
+    const ds = new DisjointSet3<string>();
+    expect(() => ds.find('nonexistent')).toThrow();
+  });
 });

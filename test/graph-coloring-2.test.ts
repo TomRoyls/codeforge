@@ -486,4 +486,9 @@ describe('GraphColoring2', () => {
     const colored = graph.colorGreedy(adj);
     expect(graph.getColorCount(colored)).toBe(2);
   });
+  it('should handle chromaticNumber for disconnected graph', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>([['A', ['B']], ['B', ['A']], ['C', ['D']], ['D', ['C']]]);
+    expect(graph.chromaticNumber(adj)).toBe(2);
+  });
 });

@@ -417,4 +417,11 @@ describe('HashArray2', () => {
     expect(vals).toContain(1);
     expect(vals).toContain(2);
   });
+  it('should handle capacity after operations', () => {
+    const map = new HashArray2<string>(10);
+    map.set('a', 1);
+    map.set('b', 2);
+    map.delete('a');
+    expect(map.capacity).toBe(10);
+  });
 });

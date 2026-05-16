@@ -395,4 +395,10 @@ describe('FenwickTree3 - Edge Cases', () => {
     ft.update(2, 30);
     expect(ft.query(2)).toBe(60);
   });
+  it('should handle update with large negative delta', () => {
+    const ft = new FenwickTree3(5);
+    ft.update(0, 100);
+    ft.update(0, -99);
+    expect(ft.get(0)).toBe(1);
+  });
 });

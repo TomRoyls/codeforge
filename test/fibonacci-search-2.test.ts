@@ -290,4 +290,8 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
     expect(fs.search(99)).toBe(-1);
   });
+  it('should handle rangeSearch with single element match', () => {
+    const fs = new FibonacciSearch([1, 3, 5, 7, 9]);
+    expect(fs.rangeSearch(5, 5)).toEqual([5]);
+  });
 });

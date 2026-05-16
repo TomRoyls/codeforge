@@ -513,4 +513,12 @@ describe('Hamt3', () => {
     const map2 = map1.set('a', 99);
     expect(map2.get('a')).toBe(99);
   });
+  it('should handle values after delete', () => {
+    const map0 = Hamt3.createEmpty<string>();
+    const map1 = map0.set('a', '1').set('b', '2').set('c', '3');
+    const map2 = map1.delete('b');
+    expect(map2.values()).toHaveLength(2);
+    expect(map2.values()).toContain('1');
+    expect(map2.values()).toContain('3');
+  });
 });

@@ -366,4 +366,15 @@ describe('FusionTree', () => {
     tree.insert(30);
     expect(tree.getHeight()).toBeGreaterThan(0);
   });
+  it('should handle Symbol.iterator', () => {
+    const tree = new FusionTree();
+    tree.insert(5);
+    tree.insert(3);
+    tree.insert(7);
+    const iterated: number[] = [];
+    for (const key of tree) {
+      iterated.push(key);
+    }
+    expect(iterated).toHaveLength(3);
+  });
 });

@@ -307,4 +307,7 @@ describe('GodelNumber2', () => {
     const decoded = GodelNumber2.decode(encoded);
     expect(decoded).toEqual([2, 3]);
   });
+  it('should handle primeFactorization of product of three primes', () => {
+    expect(GodelNumber2.primeFactorization(30n)).toEqual(new Map([[2n, 1], [3n, 1], [5n, 1]]));
+  });
 });

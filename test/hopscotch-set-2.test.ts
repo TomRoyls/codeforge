@@ -421,4 +421,14 @@ describe('HopscotchSet2', () => {
     set.add('a');
     expect(set.size).toBe(1);
   });
+  it('should handle forEach count after operations', () => {
+    const set = new HopscotchSet2<string>();
+    set.add('a');
+    set.add('b');
+    set.add('c');
+    set.delete('b');
+    let count = 0;
+    set.forEach(() => count++);
+    expect(count).toBe(2);
+  });
 });

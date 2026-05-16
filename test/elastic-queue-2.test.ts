@@ -366,4 +366,12 @@ describe('ElasticQueue2', () => {
     queue.enqueue(2);
     expect(queue.isFull()).toBe(true);
   });
+  it('should handle size after enqueue dequeue enqueue', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.dequeue();
+    queue.enqueue(2);
+    expect(queue.size).toBe(1);
+    expect(queue.peek()).toBe(2);
+  });
 });
