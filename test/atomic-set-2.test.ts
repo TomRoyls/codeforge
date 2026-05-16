@@ -517,4 +517,13 @@ describe('AtomicSet2', () => {
     expect(set.has(5)).toBe(false);
     expect(set.has(10)).toBe(true);
   });
+  it('should handle forEach', () => {
+    const set = new AtomicSet2<number>();
+    set.add(1);
+    set.add(2);
+    set.add(3);
+    const collected: number[] = [];
+    set.forEach(x => collected.push(x));
+    expect(collected.length).toBe(3);
+  });
 });

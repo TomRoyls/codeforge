@@ -477,4 +477,12 @@ describe('AdaptivePQ2', () => {
     const pq = new AdaptivePQ2<string>()
     expect(pq.update('nonexistent', 5)).toBe(false)
   })
+  it('should handle toArray', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(3, 'c')
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    const arr = pq.toArray()
+    expect(arr.length).toBe(3)
+  })
 })

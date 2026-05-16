@@ -370,4 +370,10 @@ describe('BilinearMap2', () => {
     expect(map.get(0, 0)).toBe(10);
     expect(map.get(1, 0)).toBe(20);
   });
+  it('should handle getWidth and getHeight', () => {
+    const grid = [[10, 20], [30, 40]];
+    const map = new BilinearMap2(grid);
+    expect(map.getWidth()).toBe(2);
+    expect(map.getHeight()).toBe(2);
+  });
 });

@@ -277,4 +277,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('start of something');
     expect(result.length).toBeGreaterThanOrEqual(1);
   });
+  it('should handle multiple patterns in same text', () => {
+    const ac = new AhoCorasick2(['he', 'she', 'his']);
+    const result = ac.search('this is his history');
+    expect(result.length).toBeGreaterThanOrEqual(3);
+  });
 });

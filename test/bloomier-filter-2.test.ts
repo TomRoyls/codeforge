@@ -306,4 +306,11 @@ describe('BloomierFilter2', () => {
     expect(filter.has('key')).toBe(true);
     expect(filter.has('nonexistent')).toBe(false);
   });
+  it('should handle delete', () => {
+    const filter = new BloomierFilter2(100, 3);
+    filter.set('a', 1);
+    filter.set('b', 2);
+    expect(filter.delete('a')).toBe(true);
+    expect(filter.has('a')).toBe(false);
+  });
 });

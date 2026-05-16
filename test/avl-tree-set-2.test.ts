@@ -481,4 +481,12 @@ describe('AVLTreeSet2', () => {
     expect(set.has(10)).toBe(false);
     expect(set.has(20)).toBe(true);
   });
+  it('should handle size after deletes', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(30);
+    set.delete(20);
+    expect(set.size).toBe(2);
+  });
 });

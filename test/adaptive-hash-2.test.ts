@@ -355,4 +355,11 @@ describe('AdaptiveHash2', () => {
     expect(table.size()).toBe(0);
     expect(table.get('a')).toBeUndefined();
   });
+  it('should handle resize on many inserts', () => {
+    const table = new AdaptiveHash2<string, number>();
+    for (let i = 0; i < 50; i++) {
+      table.set('key' + i, i);
+    }
+    expect(table.size()).toBe(50);
+  });
 });

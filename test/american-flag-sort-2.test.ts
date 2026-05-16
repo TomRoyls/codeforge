@@ -331,4 +331,8 @@ describe('AmericanFlagSort2', () => {
     const sorter = new AmericanFlagSort2();
     expect(sorter.sort([2, 1])).toEqual([1, 2]);
   });
+  it('should sort already sorted array', () => {
+    const sorter = new AmericanFlagSort2();
+    expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
+  });
 });

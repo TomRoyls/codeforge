@@ -401,4 +401,15 @@ describe('BinaryTrie2', () => {
     expect(trie.size).toBe(0);
     expect(trie.isEmpty()).toBe(true);
   });
+  it('should handle multiple deletes', () => {
+    const trie = new BinaryTrie2();
+    trie.insert(10);
+    trie.insert(20);
+    trie.insert(30);
+    trie.delete(20);
+    trie.delete(30);
+    expect(trie.size).toBe(1);
+    expect(trie.has(10)).toBe(true);
+    expect(trie.has(20)).toBe(false);
+  });
 });

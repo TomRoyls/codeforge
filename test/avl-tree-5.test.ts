@@ -449,4 +449,11 @@ describe('AVLTree', () => {
     tree.insert(20);
     expect(tree.inOrderTraversal()).toEqual([10, 20, 30, 50]);
   });
+  it('should handle toArray', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(30);
+    tree.insert(10);
+    tree.insert(50);
+    expect(tree.toArray()).toEqual([10, 30, 50]);
+  });
 });
