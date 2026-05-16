@@ -444,4 +444,11 @@ describe('MinHeap', () => {
     heap.insert(7);
     expect(heap.peek()).toBe(3);
   });
+  it('should handle clear', () => {
+    const heap = new MinHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.size()).toBe(0);
+  });
 });

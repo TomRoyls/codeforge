@@ -334,4 +334,9 @@ describe('MinHash2', () => {
     mh.addAll(['a', 'b']);
     expect(mh.size()).toBe(2);
   });
+  it('should handle similarity with itself', () => {
+    const mh = new MinHash2(64);
+    mh.addAll(['a', 'b', 'c']);
+    expect(mh.similarity(mh)).toBeCloseTo(1, 0);
+  });
 });

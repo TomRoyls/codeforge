@@ -220,4 +220,9 @@ describe('MergeSort5', () => {
     const result = ms.sortRange([5, 3, 1, 4, 2], 1, 4);
     expect(result).toEqual([1, 3, 4]);
   });
+  it('should handle sortRange full array', () => {
+    const ms = new MergeSort5();
+    const result = ms.sortRange([5, 3, 1, 4, 2], 0, 5);
+    expect(result).toEqual([1, 2, 3, 4, 5]);
+  });
 });

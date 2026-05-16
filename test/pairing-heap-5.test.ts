@@ -501,4 +501,11 @@ describe('PairingHeapNode5', () => {
     heap.extractMin();
     expect(heap.isEmpty()).toBe(true);
   });
+  it('should handle toArray', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.toArray().length).toBe(3);
+  });
 });

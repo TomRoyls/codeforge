@@ -518,4 +518,12 @@ describe('LinkedHashSet', () => {
     set.delete(20);
     expect(set.size()).toBe(2);
   });
+  it('should handle has after delete', () => {
+    const set = new LinkedHashSet<number>();
+    set.add(10);
+    set.add(20);
+    set.delete(10);
+    expect(set.has(10)).toBe(false);
+    expect(set.has(20)).toBe(true);
+  });
 });

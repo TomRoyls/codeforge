@@ -413,5 +413,13 @@ describe('LFUCache4', () => {
     cache.set('a', 1)
     expect(cache.get('z')).toBeUndefined()
   })
+  it('should handle delete', () => {
+    const cache = new LFUCache4<string, number>(3)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.delete('a')
+    expect(cache.has('a')).toBe(false)
+    expect(cache.size).toBe(1)
+  })
 })
 })

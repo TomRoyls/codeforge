@@ -437,4 +437,11 @@ describe('PairingHeap4', () => {
     heap1.merge(heap2);
     expect(heap1.findMin()).toBe(3);
   });
+  it('should handle clear', () => {
+    const heap = new PairingHeap4<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

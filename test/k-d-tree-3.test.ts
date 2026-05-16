@@ -356,4 +356,10 @@ describe('KDTree3', () => {
     const tree2 = new KDTree3([{x: 1, y: 2}])
     expect(tree2.isEmpty()).toBe(false)
   })
+  it('should handle nearestNeighbor on single element', () => {
+    const tree = new KDTree3([{x: 5, y: 5}])
+    const nearest = tree.nearestNeighbor({x: 0, y: 0})
+    expect(nearest).toBeDefined()
+    expect(nearest!.x).toBe(5)
+  })
 })

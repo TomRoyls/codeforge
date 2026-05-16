@@ -379,5 +379,10 @@ describe('PairingFunction2', () => {
       expect(result[0]).toBe(2);
       expect(result[1]).toBe(3);
     });
+
+    it('should handle Cantor pair symmetry', () => {
+      const z1 = PairingFunction2.cantorPair(0, 0);
+      expect(z1).toBe(0n);
+    });
   });
 });

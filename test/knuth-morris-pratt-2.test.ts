@@ -284,5 +284,10 @@ describe('KnuthMorrisPratt2', () => {
       const results = kmp.search('ababab');
       expect(results.length).toBe(3);
     });
+
+    it('should handle findFirst', () => {
+      const kmp = new KnuthMorrisPratt2('world');
+      expect(kmp.findFirst('hello world')).toBe(6);
+    });
   });
 });
