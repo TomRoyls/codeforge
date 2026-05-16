@@ -526,4 +526,12 @@ describe('LinkedHashSet', () => {
     expect(set.has(10)).toBe(false);
     expect(set.has(20)).toBe(true);
   });
+  it('should handle size method', () => {
+    const set = new LinkedHashSet<number>();
+    expect(set.size()).toBe(0);
+    set.add(1);
+    set.add(2);
+    set.add(3);
+    expect(set.size()).toBe(3);
+  });
 });

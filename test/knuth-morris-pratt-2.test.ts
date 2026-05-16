@@ -289,5 +289,9 @@ describe('KnuthMorrisPratt2', () => {
       const kmp = new KnuthMorrisPratt2('world');
       expect(kmp.findFirst('hello world')).toBe(6);
     });
+    it('should handle pattern getter', () => {
+      const kmp = new KnuthMorrisPratt2('test');
+      expect(kmp.pattern()).toBe('test');
+    });
   });
 });

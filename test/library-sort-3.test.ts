@@ -277,4 +277,10 @@ describe('LibrarySort3', () => {
     sorter.sortInPlace(arr);
     expect(arr).toEqual([1, 2, 3, 4, 5]);
   });
+  it('should handle single element', () => {
+    const arr = [42];
+    const sorter = new LibrarySort3(arr);
+    sorter.sortInPlace(arr);
+    expect(arr).toEqual([42]);
+  });
 });

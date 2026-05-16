@@ -351,4 +351,14 @@ describe('K2Tree2', () => {
             expect(tree.get(0, 0)).toBe(false);
         });
     });
+  it('should handle multiple set and get', () => {
+    const tree = new K2Tree2(4);
+    tree.set(0, 0);
+    tree.set(1, 1);
+    tree.set(2, 2);
+    expect(tree.get(0, 0)).toBe(true);
+    expect(tree.get(1, 1)).toBe(true);
+    expect(tree.get(2, 2)).toBe(true);
+    expect(tree.get(3, 3)).toBe(false);
+  });
 });

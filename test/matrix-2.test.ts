@@ -354,4 +354,15 @@ describe('Matrix2', () => {
     expect(m.get(0, 0)).toBe(7);
     expect(m.get(1, 1)).toBe(7);
   });
+  it('should handle transpose', () => {
+    const m = new Matrix2(2, 3, 0);
+    m.set(0, 0, 1);
+    m.set(0, 1, 2);
+    m.set(0, 2, 3);
+    const t = m.transpose();
+    expect(t.rows()).toBe(3);
+    expect(t.cols()).toBe(2);
+    expect(t.get(0, 0)).toBe(1);
+    expect(t.get(1, 0)).toBe(2);
+  });
 });

@@ -442,4 +442,10 @@ describe('JellyHash2', () => {
     map.set('a', 1);
     expect(map.loadFactor()).toBeGreaterThan(0);
   });
+  it('should handle has', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    expect(map.has('a')).toBe(true);
+    expect(map.has('b')).toBe(false);
+  });
 });

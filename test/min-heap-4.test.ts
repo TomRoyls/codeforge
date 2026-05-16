@@ -451,4 +451,15 @@ describe('MinHeap', () => {
     heap.clear();
     expect(heap.size()).toBe(0);
   });
+  it('should handle merge', () => {
+    const h1 = new MinHeap<number>();
+    h1.insert(1);
+    h1.insert(3);
+    const h2 = new MinHeap<number>();
+    h2.insert(2);
+    h2.insert(4);
+    const merged = h1.merge(h2);
+    expect(merged.size()).toBe(4);
+    expect(merged.extractMin()).toBe(1);
+  });
 });
