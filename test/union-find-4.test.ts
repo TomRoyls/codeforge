@@ -348,4 +348,12 @@ describe('UnionFind4', () => {
     const uf = new UnionFind4(5);
     expect(uf.count()).toBe(5);
   });
+
+  it('should handle componentSize', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(0, 2);
+    expect(uf.componentSize(0)).toBe(3);
+    expect(uf.componentSize(3)).toBe(1);
+  });
 });

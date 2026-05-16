@@ -345,5 +345,12 @@ describe('TrieMap2', () => {
       expect(t.hasPrefix('app')).toBe(true);
       expect(t.hasPrefix('zzz')).toBe(false);
     });
+
+    it('should handle isEmpty', () => {
+      const t = new TrieMap2<number>();
+      expect(t.isEmpty()).toBe(true);
+      t.set('a', 1);
+      expect(t.isEmpty()).toBe(false);
+    });
   });
 });

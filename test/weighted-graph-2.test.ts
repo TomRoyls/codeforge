@@ -329,5 +329,16 @@ describe('WeightedGraph2', () => {
       expect(graph.hasVertex('A')).toBe(true);
       expect(graph.vertexCount()).toBe(1);
     });
+
+    it('should handle getNeighbors', () => {
+      const graph = new WeightedGraph2<string>();
+      graph.addVertex('A');
+      graph.addVertex('B');
+      graph.addEdge('A', 'B', 5);
+      const neighbors = graph.getNeighbors('A');
+      expect(neighbors.length).toBe(1);
+      expect(neighbors[0]!.to).toBe('B');
+      expect(neighbors[0]!.weight).toBe(5);
+    });
   });
 });

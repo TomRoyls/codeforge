@@ -346,4 +346,10 @@ describe("WaveletTree", () => {
     const tree = new WaveletTree(arr);
     expect(tree.rank(1, 4)).toBe(2);
   });
+
+  it('should handle getSize', () => {
+    const arr = [3, 1, 4, 1, 5, 9];
+    const tree = new WaveletTree(arr);
+    expect(tree.getSize()).toBe(6);
+  });
 });

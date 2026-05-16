@@ -304,5 +304,13 @@ describe('WorkspaceSet2', () => {
       expect(names).toContain('a');
       expect(names).toContain('b');
     });
+
+    it('should handle totalItems', () => {
+      const ws = new WorkspaceSet2<string>();
+      ws.createWorkspace('ws1');
+      ws.addToWorkspace('ws1', 'a');
+      ws.addToWorkspace('ws1', 'b');
+      expect(ws.totalItems()).toBe(2);
+    });
   });
 });

@@ -355,4 +355,13 @@ describe('WindowHeap2', () => {
     heap.clear();
     expect(heap.size).toBe(0);
   });
+
+  it('should handle getWindow', () => {
+    const heap = new WindowHeap2<number>();
+    heap.push(1);
+    heap.push(2);
+    heap.push(3);
+    const win = heap.getWindow();
+    expect(win.length).toBe(3);
+  });
 });
