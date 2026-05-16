@@ -382,5 +382,12 @@ describe('SkipList5', () => {
       expect(list.min()).toBe(5);
       expect(list.max()).toBe(20);
     });
+
+    it('should handle isEmpty', () => {
+      const list = new SkipList<number>();
+      expect(list.isEmpty()).toBe(true);
+      list.insert(10);
+      expect(list.isEmpty()).toBe(false);
+    });
   });
 });

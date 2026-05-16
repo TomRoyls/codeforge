@@ -459,5 +459,15 @@ describe('SkipListMap2', () => {
       expect(map.get(20)).toBe('twenty');
       expect(map.get(30)).toBe('thirty');
     });
+
+    it('should handle delete', () => {
+      const map = new SkipListMap2<number, string>();
+      map.set(10, 'ten');
+      map.set(20, 'twenty');
+      map.set(30, 'thirty');
+      expect(map.delete(20)).toBe(true);
+      expect(map.get(20)).toBeUndefined();
+      expect(map.size).toBe(2);
+    });
   });
 });

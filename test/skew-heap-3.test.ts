@@ -511,4 +511,16 @@ describe('SkewHeap3', () => {
     expect(heap.isEmpty()).toBe(true);
     expect(heap.size).toBe(0);
   });
+
+  it('should handle merge', () => {
+    const h1 = new SkewHeap3<number>();
+    h1.insert(5);
+    h1.insert(3);
+    const h2 = new SkewHeap3<number>();
+    h2.insert(1);
+    h2.insert(7);
+    h1.merge(h2);
+    expect(h1.peek()).toBe(1);
+    expect(h1.size).toBe(4);
+  });
 });

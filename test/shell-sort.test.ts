@@ -282,5 +282,11 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.getComparisons()).toBeGreaterThan(0);
     });
+
+    it('should handle getSwaps', () => {
+      const sorter = new ShellSort<number>([5, 3, 1]);
+      sorter.sort();
+      expect(sorter.getSwaps()).toBeGreaterThan(0);
+    });
   });
 });

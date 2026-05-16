@@ -363,4 +363,15 @@ describe('SegmentTreeMap2', () => {
     tree.set(2, 30)
     expect(tree.toArray()).toEqual([10, 20, 30])
   })
+
+  it('should handle updateRange', () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    tree.set(1, 20)
+    tree.set(2, 30)
+    tree.set(3, 40)
+    tree.set(4, 50)
+    tree.updateRange(1, 3, 5)
+    expect(tree.queryRange(1, 3)).toBe(105)
+  })
 })

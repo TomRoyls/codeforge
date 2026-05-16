@@ -288,4 +288,11 @@ describe("RunLengthEncoding3", () => {
     expect(runs.length).toBe(2);
     expect(runs[0]).toEqual({ char: 'A', count: 3 });
   });
+
+  it('should handle isEmpty', () => {
+    const rle = new RunLengthEncoding3();
+    expect(rle.isEmpty()).toBe(true);
+    rle.encode('AA');
+    expect(rle.isEmpty()).toBe(false);
+  });
 });

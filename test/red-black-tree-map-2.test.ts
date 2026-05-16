@@ -362,4 +362,13 @@ describe('RedBlackTreeMap2', () => {
     expect(map.min()).toBe(1)
     expect(map.max()).toBe(9)
   })
+
+  it('should handle toArray', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    map.set(3, 'c')
+    const arr = map.toArray()
+    expect(arr.length).toBe(3)
+  })
 })

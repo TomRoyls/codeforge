@@ -348,4 +348,12 @@ describe('RingHash2', () => {
     expect(ring.nodes().length).toBe(1);
     expect(ring.nodes()).not.toContain('node1');
   });
+
+  it('should handle size method', () => {
+    const ring = new RingHash2();
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.addNode('node3');
+    expect(ring.size()).toBeGreaterThan(0);
+  });
 });

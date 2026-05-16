@@ -479,5 +479,13 @@ describe('RingBuffer6', () => {
       buffer.forEach((item) => items.push(item));
       expect(items).toEqual([10, 20, 30]);
     });
+
+    it('should handle unshift and shift', () => {
+      const buffer = new RingBuffer6<number>(5);
+      buffer.unshift(1);
+      buffer.unshift(2);
+      expect(buffer.shift()).toBe(2);
+      expect(buffer.shift()).toBe(1);
+    });
   });
 });

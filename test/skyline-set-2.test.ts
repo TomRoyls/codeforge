@@ -401,5 +401,11 @@ describe('SkylineSet2', () => {
       expect(items.length).toBe(2);
       expect(items[0]!.item).toBeDefined();
     });
+
+    it('should handle dominates', () => {
+      const set = new SkylineSet2<string>(2);
+      expect(set.dominates([3, 4], [1, 2])).toBe(true);
+      expect(set.dominates([1, 2], [3, 4])).toBe(false);
+    });
   });
 });
