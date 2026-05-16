@@ -354,4 +354,12 @@ describe('RankSelectBitvector2', () => {
     const bv = new RankSelectBitvector2([true, false, true, false]);
     expect(bv.rank0(2)).toBe(1);
   });
+  it('should handle countZeros after set', () => {
+    const bv = new RankSelectBitvector2(10);
+    expect(bv.countZeros()).toBe(10);
+    bv.set(0);
+    bv.set(5);
+    expect(bv.countZeros()).toBe(8);
+    expect(bv.countOnes()).toBe(2);
+  });
 });

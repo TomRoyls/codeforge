@@ -381,4 +381,14 @@ describe('ProbabilisticSet2', () => {
     expect(set.has('a')).toBe(true);
     expect(set.has('b')).toBe(true);
   });
+  it('should handle size after clear and re-add', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('a');
+    set.add('b');
+    set.clear();
+    expect(set.size).toBe(0);
+    set.add('c');
+    expect(set.size).toBe(1);
+    expect(set.has('c')).toBe(true);
+  });
 });

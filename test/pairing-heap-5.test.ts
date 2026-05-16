@@ -522,4 +522,13 @@ describe('PairingHeapNode5', () => {
     heap.insert(5);
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle size after clear and re-insert', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.size).toBe(0);
+    heap.insert(7);
+    expect(heap.size).toBe(1);
+  });
 });

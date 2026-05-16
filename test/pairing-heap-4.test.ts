@@ -463,4 +463,12 @@ describe('PairingHeap4', () => {
     h1.merge(h2);
     expect(h1.toArray().length).toBe(3);
   });
+  it('should handle isEmpty after extractMin', () => {
+    const heap = new PairingHeap4<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.extractMin();
+    heap.extractMin();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

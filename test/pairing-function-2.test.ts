@@ -397,4 +397,9 @@ describe('PairingFunction2', () => {
       expect(y).toBe(2n);
     });
   });
+  it('should handle isPairable with boundary values', () => {
+    expect(PairingFunction2.isPairable(Number.MAX_SAFE_INTEGER, 0)).toBe(true);
+    expect(PairingFunction2.isPairable(0, Number.MAX_SAFE_INTEGER)).toBe(true);
+    expect(PairingFunction2.isPairable(0, 0)).toBe(true);
+  });
 });

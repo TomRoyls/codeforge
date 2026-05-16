@@ -435,12 +435,22 @@ describe('RadixHeap3', () => {
     heap.insert(5, 'a');
     expect(heap.decreaseKey(5, 2, 'a')).toBe(true);
   });
-  it('should handle extractMin', () => {
+   it('should handle extractMin', () => {
     const heap = new RadixHeap3<string>(8);
     heap.insert(5, 'a');
     heap.insert(3, 'b');
     heap.insert(7, 'c');
     const result = heap.extractMin();
     expect(result).toBeDefined();
+  });
+  it('should handle clear then re-insert', () => {
+    const heap = new RadixHeap3<string>();
+    heap.insert(5, 'a');
+    heap.insert(3, 'b');
+    heap.clear();
+    expect(heap.size).toBe(0);
+    heap.insert(1, 'c');
+    expect(heap.size).toBe(1);
+    expect(heap.peek()!.value).toBe('c');
   });
 });

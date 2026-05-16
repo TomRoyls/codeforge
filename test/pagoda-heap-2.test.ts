@@ -475,4 +475,15 @@ describe('PagodaHeap2', () => {
       expect(heap.isEmpty()).toBe(false);
     });
   });
+  it('should handle toArray after extractMin', () => {
+    const heap = new PagodaHeap2<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.extractMin();
+    const arr = heap.toArray();
+    expect(arr.length).toBe(2);
+    expect(arr).toContain(5);
+    expect(arr).toContain(7);
+  });
 });

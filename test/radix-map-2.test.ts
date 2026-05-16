@@ -461,4 +461,14 @@ describe('RadixMap2', () => {
     expect(map.delete(1)).toBe(true);
     expect(map.has(1)).toBe(false);
   });
+  it('should handle clear then re-set', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.clear();
+    expect(map.size).toBe(0);
+    map.set(3, 'c');
+    expect(map.size).toBe(1);
+    expect(map.get(3)).toBe('c');
+  });
 });

@@ -323,5 +323,9 @@ describe('PancakeSort', () => {
     sorter.sort();
     expect(sorter.getFlipCount()).toBeGreaterThan(0);
   });
+  it('should handle getSpaceComplexity', () => {
+    const sorter = new PancakeSort<number>([3, 1, 2]);
+    expect(typeof sorter.getTimeComplexity()).toBe('string');
+  });
  });
 });

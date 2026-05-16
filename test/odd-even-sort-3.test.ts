@@ -261,4 +261,9 @@ describe('OddEvenSort3 - Edge Cases', () => {
     const sorter = new OddEvenSort3<number>();
     expect(typeof sorter.getTimeComplexity()).toBe('string');
   });
+  it('should handle getSwapCount after sortDescending', () => {
+    const sorter = new OddEvenSort3<number>();
+    sorter.sortDescending([5, 2, 8, 1]);
+    expect(sorter.getSwapCount()).toBeGreaterThanOrEqual(0);
+  });
 });

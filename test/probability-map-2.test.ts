@@ -492,4 +492,13 @@ describe('ProbabilityMap2', () => {
     expect(map.get('a')).toBe(10);
     expect(map.get('b')).toBeUndefined();
   });
+  it('should handle totalWeight after delete and re-add', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    map.delete('a');
+    expect(map.totalWeight()).toBe(20);
+    map.set('c', 30);
+    expect(map.totalWeight()).toBe(50);
+  });
 });

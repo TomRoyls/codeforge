@@ -534,4 +534,13 @@ describe('PairingQueue2', () => {
     expect(q.dequeue()).toBe(1);
     expect(q.dequeue()).toBe(2);
   });
+  it('should handle size after clear and re-enqueue', () => {
+    const q = new PairingQueue2<number>();
+    q.enqueue(5);
+    q.enqueue(3);
+    q.clear();
+    expect(q.size).toBe(0);
+    q.enqueue(7);
+    expect(q.size).toBe(1);
+  });
 });

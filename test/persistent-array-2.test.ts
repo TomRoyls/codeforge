@@ -345,4 +345,10 @@ describe('PersistentArray2', () => {
     const arr = new PersistentArray2<number>([1, 2, 3, 4, 5])
     expect(arr.length).toBe(5)
   })
+  it('should handle filter returning empty from full', () => {
+    const arr = new PersistentArray2<number>([1, 2, 3])
+    const filtered = arr.filter(x => x > 10)
+    expect(filtered.length).toBe(0)
+    expect(filtered.toArray()).toEqual([])
+  })
 })
