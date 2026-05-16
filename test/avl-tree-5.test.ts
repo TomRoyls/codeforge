@@ -420,5 +420,13 @@ describe('AVLTree', () => {
       expect(tree.search(10)).toBe(false);
       expect(tree.search(5)).toBe(true);
     });
+
+    it('should handle contains', () => {
+      const tree = new AVLTree();
+      tree.insert(10);
+      tree.insert(5);
+      expect(tree.contains(10)).toBe(true);
+      expect(tree.contains(99)).toBe(false);
+    });
   });
 });

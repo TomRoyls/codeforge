@@ -349,5 +349,12 @@ describe('BilinearMap2', () => {
       const map = new BilinearMap2(grid, 2.0);
       expect(map.get(10, 10)).toBe(30);
     });
+
+    it('should handle getWidth and getHeight', () => {
+      const grid = [[0, 10, 20], [30, 40, 50]];
+      const map = new BilinearMap2(grid, 1.0);
+      expect(map.getWidth()).toBe(3);
+      expect(map.getHeight()).toBe(2);
+    });
   });
 });

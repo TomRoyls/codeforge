@@ -414,5 +414,12 @@ describe('BinaryHeap', () => {
       heap.clear();
       expect(heap.isEmpty()).toBe(true);
     });
+
+    it('should handle heapify', () => {
+      const heap = new BinaryHeap<number>();
+      heap.heapify([5, 3, 1, 4, 2]);
+      expect(heap.peek()).toBe(5);
+      expect(heap.size()).toBe(5);
+    });
   });
 });

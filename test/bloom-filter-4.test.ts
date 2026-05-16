@@ -306,5 +306,10 @@ describe('BloomFilter4', () => {
       const bf = new BloomFilter(100, 0.01);
       expect(bf.getEstimatedFalsePositiveRate()).toBeLessThanOrEqual(0.1);
     });
+
+    it('should handle getHashCount', () => {
+      const bf = new BloomFilter(100, 0.01);
+      expect(bf.getHashCount()).toBeGreaterThan(0);
+    });
   });
 });

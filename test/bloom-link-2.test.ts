@@ -358,5 +358,11 @@ describe('BloomLink2', () => {
       filter.clear();
       expect(filter.count()).toBe(0);
     });
+
+    it('should handle falsePositiveRate', () => {
+      const filter = new BloomLink2(100, 3);
+      expect(typeof filter.falsePositiveRate()).toBe('number');
+      expect(filter.falsePositiveRate()).toBeGreaterThanOrEqual(0);
+    });
   });
 });

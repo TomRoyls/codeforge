@@ -358,4 +358,14 @@ describe('BPlusTree', () => {
     expect(tree.get(2)).toBeUndefined();
     expect(tree.size).toBe(2);
   });
+
+  it('should handle size after multiple inserts', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(1, 'a');
+    tree.insert(2, 'b');
+    tree.insert(3, 'c');
+    tree.insert(4, 'd');
+    tree.insert(5, 'e');
+    expect(tree.size).toBe(5);
+  });
 });

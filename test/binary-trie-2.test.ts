@@ -368,5 +368,14 @@ describe('BinaryTrie2', () => {
       const result = trie.xorMax(10);
       expect(result).toBeGreaterThanOrEqual(5);
     });
+
+    it('should handle delete', () => {
+      const trie = new BinaryTrie2();
+      trie.insert(10);
+      trie.insert(5);
+      expect(trie.has(10)).toBe(true);
+      expect(trie.delete(10)).toBe(true);
+      expect(trie.has(10)).toBe(false);
+    });
   });
 });

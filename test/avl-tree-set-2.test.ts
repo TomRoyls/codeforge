@@ -452,4 +452,14 @@ describe('AVLTreeSet2', () => {
     set.forEach((v) => values.push(v));
     expect(values.length).toBe(3);
   });
+
+  it('should handle min and max', () => {
+    const set = new AVLTreeSet2<number>();
+    set.add(10);
+    set.add(20);
+    set.add(5);
+    set.add(30);
+    expect(set.min()).toBe(5);
+    expect(set.max()).toBe(30);
+  });
 });

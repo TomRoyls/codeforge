@@ -259,4 +259,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('ahishers');
     expect(result.length).toBeGreaterThan(0);
   });
+
+  it('should handle hasMatch', () => {
+    const ac = new AhoCorasick2(['hello']);
+    expect(ac.hasMatch('say hello world')).toBe(true);
+    expect(ac.hasMatch('no match')).toBe(false);
+  });
 });
