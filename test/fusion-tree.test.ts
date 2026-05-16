@@ -359,4 +359,11 @@ describe('FusionTree', () => {
     expect(tree.delete(20)).toBe(true);
     expect(tree.search(20)).toBe(false);
   });
+  it('should handle getHeight on non-empty tree', () => {
+    const tree = new FusionTree();
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(30);
+    expect(tree.getHeight()).toBeGreaterThan(0);
+  });
 });

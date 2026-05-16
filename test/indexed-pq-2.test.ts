@@ -451,4 +451,11 @@ describe('IndexedPQ2', () => {
     expect(pq.contains('x')).toBe(true);
     expect(pq.contains('z')).toBe(false);
   });
+  it('should handle update priority', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert('a', 10);
+    pq.insert('b', 20);
+    pq.update('a', 5);
+    expect(pq.peek()!.id).toBe('a');
+  });
 });

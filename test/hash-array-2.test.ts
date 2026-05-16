@@ -409,4 +409,12 @@ describe('HashArray2', () => {
     expect(keys).toContain('x');
     expect(keys).toContain('y');
   });
+  it('should handle values', () => {
+    const map = new HashArray2<string>(10);
+    map.set('x', 1);
+    map.set('y', 2);
+    const vals = map.values();
+    expect(vals).toContain(1);
+    expect(vals).toContain(2);
+  });
 });

@@ -507,4 +507,10 @@ describe('Hamt3', () => {
     const map2 = map.set('a', 1);
     expect(map2.get('b')).toBeUndefined();
   });
+  it('should handle overwrite via set', () => {
+    const map0 = Hamt3.createEmpty<string>();
+    const map1 = map0.set('a', 1);
+    const map2 = map1.set('a', 99);
+    expect(map2.get('a')).toBe(99);
+  });
 });

@@ -401,4 +401,10 @@ describe('HyperLogLog3', () => {
     hll1.merge(hll2)
     expect(hll1.count()).toBeGreaterThanOrEqual(2)
   })
+  it('should handle isEmpty', () => {
+    const hll = new HyperLogLog3()
+    expect(hll.isEmpty()).toBe(true)
+    hll.add('a')
+    expect(hll.isEmpty()).toBe(false)
+  })
 })

@@ -478,4 +478,12 @@ describe('GraphColoring2', () => {
     const colored = graph.colorGreedy(adj);
     expect(graph.getColorCount(colored)).toBe(1);
   });
+  it('should handle two connected nodes', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>();
+    adj.set('a', ['b']);
+    adj.set('b', ['a']);
+    const colored = graph.colorGreedy(adj);
+    expect(graph.getColorCount(colored)).toBe(2);
+  });
 });

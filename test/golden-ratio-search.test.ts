@@ -411,5 +411,12 @@ describe("GoldenRatioSearch", () => {
     expect(result.x).toBeGreaterThanOrEqual(2.5);
     expect(result.x).toBeLessThanOrEqual(3.5);
   });
+  it("handles findMinimum on narrow range", () => {
+    const fn = (x: number) => (x - 3) * (x - 3);
+    const search = new GoldenRatioSearch(fn);
+    const result = search.findMinimum(2.9, 3.1);
+    expect(result).toBeGreaterThanOrEqual(2.9);
+    expect(result).toBeLessThanOrEqual(3.1);
+  });
  });
 });

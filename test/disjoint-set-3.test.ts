@@ -445,4 +445,11 @@ describe('DisjointSet3', () => {
     ds.union('x', 'y');
     expect(ds.connected('x', 'y')).toBe(true);
   });
+  it('should handle count', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    expect(ds.count()).toBe(3);
+  });
 });

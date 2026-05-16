@@ -415,4 +415,10 @@ describe('HopscotchSet2', () => {
     expect(set.has('a')).toBe(false);
     expect(set.size).toBe(0);
   });
+  it('should handle add duplicate', () => {
+    const set = new HopscotchSet2<string>();
+    set.add('a');
+    set.add('a');
+    expect(set.size).toBe(1);
+  });
 });

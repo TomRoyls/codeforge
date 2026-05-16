@@ -360,4 +360,10 @@ describe('ElasticQueue2', () => {
     expect(queue.isEmpty()).toBe(true);
     expect(queue.peek()).toBeUndefined();
   });
+  it('should handle isFull', () => {
+    const queue = new ElasticQueue2<number>({ maxSize: 2 });
+    queue.enqueue(1);
+    queue.enqueue(2);
+    expect(queue.isFull()).toBe(true);
+  });
 });
