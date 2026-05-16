@@ -525,7 +525,7 @@ describe('RingBuffer6', () => {
   });
   it('should handle capacity', () => {
     const buffer = new RingBuffer6<number>(5);
-    expect(buffer.capacity()).toBe(5);
+    expect(buffer.capacity).toBe(5);
   });
   it('should handle push after clear', () => {
     const buffer = new RingBuffer6<number>(5);

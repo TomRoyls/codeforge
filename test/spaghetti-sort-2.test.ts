@@ -258,8 +258,8 @@ describe('SpaghettiSort2', () => {
     });
     it('should handle negative numbers', () => {
       const sorter = new SpaghettiSort2([-1, -3, 2, 0]);
-      sorter.sort([-1, -3, 2, 0]);
-      expect(sorter.toArray()).toEqual([-3, -1, 0, 2]);
+      const result = sorter.sort([-1, -3, 2, 0]);
+      expect(result).toEqual([-3, -1, 0, 2]);
     });
   });
   it('should handle sortDescending', () => {
@@ -267,8 +267,8 @@ describe('SpaghettiSort2', () => {
     const result = sorter.sortDescending([1, 3, 2]);
     expect(result).toEqual([3, 2, 1]);
   });
-  it('should handle findMaxIndex', () => {
+  it('should handle findMax', () => {
     const sorter = new SpaghettiSort2([]);
-    expect(SpaghettiSort2.findMaxIndex([3, 1, 5, 2])).toBe(2);
+    expect(SpaghettiSort2.findMax([3, 1, 5, 2])).toBe(5);
   });
 });

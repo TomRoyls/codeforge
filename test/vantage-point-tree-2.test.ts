@@ -564,7 +564,7 @@ describe('VantagePointTree2 - Mixed Operations', () => {
   it('should handle getAllPoints', () => {
     const points: Point2D[] = [{x: 1, y: 1}, {x: 5, y: 5}, {x: 3, y: 3}]
     const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
-    expect(tree.getAllPoints().length).toBe(3)
+    expect(tree.toArray().length).toBe(3)
   })
   it('should handle contains method', () => {
     const points: Point2D[] = [{x: 1, y: 1}, {x: 5, y: 5}]
