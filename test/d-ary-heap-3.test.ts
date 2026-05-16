@@ -572,4 +572,13 @@ describe('DAryHeap', () => {
     const merged = h1.merge(h2);
     expect(merged.size()).toBe(4);
   })
+  it('should handle clear', () => {
+    const heap = new DAryHeap<number>(3);
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.clear();
+    expect(heap.size()).toBe(0);
+    expect(heap.isEmpty()).toBe(true);
+  })
 })
