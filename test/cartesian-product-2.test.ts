@@ -384,4 +384,8 @@ describe('CartesianProduct2', () => {
     expect(cp.has([2, 4])).toBe(true)
     expect(cp.has([1, 5])).toBe(false)
   })
+  it('should handle dimensions', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4], [5, 6]])
+    expect(cp.dimensions()).toBe(3)
+  })
 })

@@ -378,4 +378,11 @@ describe('CuckooFilter2', () => {
     expect(filter.contains('x')).toBe(false);
     expect(filter.contains('y')).toBe(true);
   });
+  it('should handle size property', () => {
+    const filter = new CuckooFilter2(100);
+    expect(filter.size).toBe(0);
+    filter.insert('a');
+    filter.insert('b');
+    expect(filter.size).toBe(2);
+  });
 });

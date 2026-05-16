@@ -562,4 +562,14 @@ describe('DAryHeap', () => {
     expect(heap.contains(5)).toBe(true);
     expect(heap.contains(7)).toBe(false);
   })
+  it('should handle merge', () => {
+    const h1 = new DAryHeap<number>(3);
+    h1.insert(1);
+    h1.insert(5);
+    const h2 = new DAryHeap<number>(3);
+    h2.insert(3);
+    h2.insert(7);
+    const merged = h1.merge(h2);
+    expect(merged.size()).toBe(4);
+  })
 })

@@ -260,4 +260,9 @@ describe('CocktailSort3 - Type Safety', () => {
     sorter.sort([3, 1, 2]);
     expect(sorter.getPassCount()).toBeGreaterThan(0);
   });
+  it('should handle getLastSwapIndex', () => {
+    const sorter = new CocktailSort3<number>();
+    sorter.sort([5, 3, 1, 4, 2]);
+    expect(sorter.getLastSwapIndex()).toBeGreaterThanOrEqual(0);
+  });
 });

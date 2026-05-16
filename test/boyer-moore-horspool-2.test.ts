@@ -282,5 +282,10 @@ describe('BoyerMooreHorspool2', () => {
     const searcher = new BoyerMooreHorspool2('test');
     expect(searcher.pattern()).toBe('test');
   });
+  it('should handle hasMatch', () => {
+    const searcher = new BoyerMooreHorspool2('abc');
+    expect(searcher.hasMatch('xyzabc')).toBe(true);
+    expect(searcher.hasMatch('xyz')).toBe(false);
+  });
  });
 });

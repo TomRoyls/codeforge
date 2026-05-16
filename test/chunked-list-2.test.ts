@@ -459,4 +459,11 @@ describe('ChunkedList2', () => {
     list.push(2);
     expect(list.size).toBe(2);
   });
+  it('should handle set method', () => {
+    const list = new ChunkedList2<number>(3);
+    list.push(10);
+    list.push(20);
+    list.set(0, 99);
+    expect(list.get(0)).toBe(99);
+  });
 });

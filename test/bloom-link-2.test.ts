@@ -396,4 +396,10 @@ describe('BloomLink2', () => {
     filter.add('test');
     expect(filter.falsePositiveRate()).toBeGreaterThanOrEqual(0);
   });
+  it('should handle isEmpty', () => {
+    const filter = new BloomLink2(100);
+    expect(filter.isEmpty()).toBe(true);
+    filter.add('test');
+    expect(filter.isEmpty()).toBe(false);
+  });
 });

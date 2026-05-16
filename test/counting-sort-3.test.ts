@@ -293,4 +293,8 @@ describe('CountingSort', () => {
     expect(sorter.getMin()).toBe(1);
     expect(sorter.getMax()).toBe(5);
   });
+  it('should handle getRange', () => {
+    const sorter = new CountingSort([5, 3, 1, 4, 2]);
+    expect(sorter.getRange()).toBe(4);
+  });
 });

@@ -257,5 +257,10 @@ describe('BoyerMoore2', () => {
       const bm = new BoyerMoore2('abc');
       expect(bm.pattern()).toBe('abc');
     });
+    it('should handle hasMatch', () => {
+      const bm = new BoyerMoore2('abc');
+      expect(bm.hasMatch('xyzabcdef')).toBe(true);
+      expect(bm.hasMatch('xyz')).toBe(false);
+    });
   });
 });

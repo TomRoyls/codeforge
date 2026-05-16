@@ -410,4 +410,11 @@ describe('BPlusTree', () => {
     expect(range.length).toBe(2);
     expect(range.map(e => e.key)).toEqual([20, 30]);
   });
+  it('should handle update', () => {
+    const tree = new BPlusTree<number, string>();
+    tree.insert(1, 'a');
+    tree.insert(2, 'b');
+    expect(tree.update(1, 'updated')).toBe(true);
+    expect(tree.get(1)).toBe('updated');
+  });
 });

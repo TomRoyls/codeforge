@@ -553,4 +553,11 @@ describe('BTree', () => {
     const arr = t.toArray();
     expect(arr.sort()).toEqual([3, 5, 7]);
   });
+  it('should handle contains', () => {
+    const t = new BTree<number>(3);
+    t.insert(5);
+    t.insert(3);
+    expect(t.contains(5)).toBe(true);
+    expect(t.contains(99)).toBe(false);
+  });
 });

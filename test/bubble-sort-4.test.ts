@@ -256,4 +256,8 @@ describe('BubbleSort4 - Edge Cases', () => {
     sorter.sort([3, 1, 2]);
     expect(sorter.getPassCount()).toBeGreaterThan(0);
   });
+  it('should handle sortDescending', () => {
+    const sorter = new BubbleSort4<number>();
+    expect(sorter.sortDescending([1, 3, 2])).toEqual([3, 2, 1]);
+  });
 });
