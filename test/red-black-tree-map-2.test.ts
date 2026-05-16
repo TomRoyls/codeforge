@@ -402,4 +402,12 @@ describe('RedBlackTreeMap2', () => {
     const arr = map.toArray()
     expect(arr.length).toBe(3)
   })
+  it('should handle values', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    const vals = map.values()
+    expect(vals).toContain('a')
+    expect(vals).toContain('b')
+  })
 })

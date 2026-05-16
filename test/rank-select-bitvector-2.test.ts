@@ -343,4 +343,11 @@ describe('RankSelectBitvector2', () => {
     const arr = bv.toArray();
     expect(arr).toEqual([true, false, true]);
   });
+  it('should handle set and unset', () => {
+    const bv = new RankSelectBitvector2([false, false, false]);
+    bv.set(1);
+    expect(bv.get(1)).toBe(true);
+    bv.unset(1);
+    expect(bv.get(1)).toBe(false);
+  });
 });

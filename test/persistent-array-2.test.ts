@@ -335,4 +335,10 @@ describe('PersistentArray2', () => {
     expect(mapped.get(1)).toBe(4)
     expect(mapped.get(2)).toBe(6)
   })
+  it('should handle persistence after set', () => {
+    const arr = new PersistentArray2<number>([1, 2, 3])
+    const arr2 = arr.set(1, 99)
+    expect(arr.get(1)).toBe(2)
+    expect(arr2.get(1)).toBe(99)
+  })
 })

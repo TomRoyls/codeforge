@@ -518,4 +518,12 @@ describe('PairingQueue2', () => {
     q.enqueue(7);
     expect(q.toArray().length).toBe(3);
   });
+  it('should handle merge', () => {
+    const q1 = new PairingQueue2<number>();
+    q1.enqueue(1);
+    const q2 = new PairingQueue2<number>();
+    q2.enqueue(2);
+    q1.merge(q2);
+    expect(q1.toArray().length).toBe(2);
+  });
 });

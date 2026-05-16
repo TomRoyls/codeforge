@@ -480,4 +480,10 @@ describe('ProbabilityMap2', () => {
     expect(keys).toContain('a');
     expect(keys).toContain('b');
   });
+  it('should handle totalWeight', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    expect(map.totalWeight()).toBe(30);
+  });
 });

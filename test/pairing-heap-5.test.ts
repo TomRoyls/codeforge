@@ -508,4 +508,12 @@ describe('PairingHeapNode5', () => {
     heap.insert(7);
     expect(heap.toArray().length).toBe(3);
   });
+  it('should handle extractMin after inserts', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.extractMin()).toBe(3);
+    expect(heap.extractMin()).toBe(5);
+  });
 });

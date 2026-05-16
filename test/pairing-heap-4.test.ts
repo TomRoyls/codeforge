@@ -444,4 +444,14 @@ describe('PairingHeap4', () => {
     heap.clear();
     expect(heap.isEmpty()).toBe(true);
   });
+  it('should handle merge', () => {
+    const h1 = new PairingHeap4<number>();
+    h1.insert(1);
+    h1.insert(3);
+    const h2 = new PairingHeap4<number>();
+    h2.insert(2);
+    h2.insert(4);
+    h1.merge(h2);
+    expect(h1.extractMin()).toBe(1);
+  });
 });

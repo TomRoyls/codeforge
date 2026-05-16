@@ -448,4 +448,10 @@ describe('RadixMap2', () => {
     const entries = map.entries();
     expect(entries.length).toBe(2);
   });
+  it('should handle has', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    expect(map.has(1)).toBe(true);
+    expect(map.has(2)).toBe(false);
+  });
 });

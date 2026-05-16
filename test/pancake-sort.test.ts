@@ -313,5 +313,10 @@ describe('PancakeSort', () => {
     sorter.sort();
     expect(sorter.toArray()).toEqual([1, 2, 3]);
   });
+  it('should handle reverse sorted', () => {
+    const sorter = new PancakeSort<number>([5, 4, 3, 2, 1]);
+    sorter.sort();
+    expect(sorter.toArray()).toEqual([1, 2, 3, 4, 5]);
+  });
  });
 });
