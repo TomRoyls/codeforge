@@ -398,4 +398,10 @@ describe('TernarySearchTrie2', () => {
     const keys = trie.keys()
     expect(keys.length).toBe(0)
   })
+  it('should handle has on existing key', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('hello', 1)
+    expect(trie.has('hello')).toBe(true)
+    expect(trie.has('hell')).toBe(false)
+  })
 })

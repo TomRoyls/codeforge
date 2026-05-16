@@ -379,4 +379,9 @@ describe("WaveletTree", () => {
     expect(tree.access(1)).toBe(20);
     expect(tree.access(2)).toBe(30);
   });
+  it('should handle rank on element present', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.rank(1, 5)).toBe(2);
+  });
 });

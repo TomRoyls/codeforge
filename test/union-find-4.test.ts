@@ -385,4 +385,10 @@ describe('UnionFind4', () => {
     expect(uf.connected(0, 3)).toBe(true);
     expect(uf.connected(0, 4)).toBe(false);
   });
+  it('should handle count after all unions', () => {
+    const uf = new UnionFind4(3);
+    uf.union(0, 1);
+    uf.union(1, 2);
+    expect(uf.componentCount()).toBe(1);
+  });
 });

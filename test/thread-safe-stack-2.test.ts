@@ -390,4 +390,8 @@ describe('ThreadSafeStack2', () => {
     expect(stack.pop()).toBe(1)
     expect(stack.size).toBe(0)
   })
+  it('should handle pop on empty stack', () => {
+    const stack = new ThreadSafeStack2<number>()
+    expect(stack.pop()).toBeUndefined()
+  })
 })

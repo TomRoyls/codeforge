@@ -401,4 +401,10 @@ describe('WaveletMatrix2', () => {
     expect(wm.quantile(1, 4, 0)).toBe(20);
     expect(wm.quantile(1, 4, 2)).toBe(40);
   });
+  it('should handle access on all elements', () => {
+    const data = [10, 20, 30, 40, 50];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.access(0)).toBe(10);
+    expect(wm.access(4)).toBe(50);
+  });
 });

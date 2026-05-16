@@ -423,4 +423,8 @@ describe('ThrottleQueue2', () => {
     queue.enqueue(2);
     expect(queue.size).toBe(1);
   });
+  it('should handle dequeue on empty queue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
+    expect(queue.dequeue()).toBeUndefined();
+  });
 });

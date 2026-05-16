@@ -392,4 +392,8 @@ describe('WindowHeap2', () => {
     heap.push(1);
     expect(heap.isEmpty()).toBe(false);
   });
+  it('should handle getSum on empty heap', () => {
+    const heap = new WindowHeap2<number>();
+    expect(heap.getSum()).toBe(0);
+  });
 });

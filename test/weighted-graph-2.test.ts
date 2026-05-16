@@ -376,4 +376,10 @@ describe('WeightedGraph2', () => {
     expect(graph.removeEdge('A', 'B')).toBe(true);
     expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
   });
+  it('should handle removeEdge nonexistent', () => {
+    const graph = new WeightedGraph2<string>();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    expect(graph.removeEdge('A', 'B')).toBe(false);
+  });
 });

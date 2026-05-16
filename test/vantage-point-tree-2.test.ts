@@ -548,4 +548,11 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     expect(nearest!.x).toBe(5)
     expect(nearest!.y).toBe(5)
   })
+  it('should handle nearest on multi point tree', () => {
+    const points: Point2D[] = [{ x: 0, y: 0 }, { x: 10, y: 10 }, { x: 3, y: 3 }]
+    const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
+    const nearest = tree.nearest({ x: 2, y: 2 })
+    expect(nearest).toBeDefined()
+    expect(nearest!.x).toBe(3)
+  })
 })

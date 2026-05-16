@@ -361,5 +361,13 @@ describe('TrieMap3', () => {
       expect(trie.has('ab')).toBe(false);
       expect(trie.has('xyz')).toBe(false);
     });
+
+    it('should handle delete', () => {
+      const trie = new TrieMap3<string>();
+      trie.set('a', 'v1');
+      trie.set('b', 'v2');
+      expect(trie.delete('a')).toBe(true);
+      expect(trie.has('a')).toBe(false);
+    });
   });
 });

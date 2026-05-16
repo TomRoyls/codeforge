@@ -457,4 +457,8 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('A', 'B');
     expect(ts.hasCycle()).toBe(false);
   });
+  it('should handle getNodes on empty graph', () => {
+    const ts = new TopologicalQueue2();
+    expect(ts.getNodes()).toEqual([]);
+  });
 });

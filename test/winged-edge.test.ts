@@ -521,4 +521,14 @@ describe('WingedEdgeMesh', () => {
     mesh.addVertex(4, 5, 6);
     expect(mesh.getVertexCount()).toBe(2);
   });
+  it('should handle addFace with existing edges', () => {
+    const mesh = new WingedEdgeMesh();
+    const v0 = mesh.addVertex(0, 0, 0);
+    const v1 = mesh.addVertex(1, 0, 0);
+    const v2 = mesh.addVertex(0, 1, 0);
+    mesh.addEdge(v0, v1);
+    mesh.addEdge(v1, v2);
+    mesh.addEdge(v2, v0);
+    expect(mesh.getEdgeCount()).toBe(3);
+  });
 });
