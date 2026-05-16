@@ -464,4 +464,12 @@ describe('BinaryHeap', () => {
     expect(heap.contains(5)).toBe(true);
     expect(heap.contains(99)).toBe(false);
   });
+  it('should handle toArray after extract', () => {
+    const heap = new BinaryHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.extract();
+    expect(heap.toArray().length).toBe(2);
+  });
 });

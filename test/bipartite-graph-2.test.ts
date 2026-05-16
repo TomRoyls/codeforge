@@ -447,4 +447,11 @@ describe('BipartiteGraph2', () => {
     expect(graph.getLeftVertices()).toContain('L1');
     expect(graph.getRightVertices()).toContain('R1');
   });
+  it('should handle getEdgeWeight', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    graph.addEdge('L1', 'R1', 5);
+    expect(graph.getEdgeWeight('L1', 'R1')).toBe(5);
+  });
 });

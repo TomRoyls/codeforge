@@ -480,4 +480,12 @@ describe('AVLTree', () => {
     expect(tree.delete(20)).toBe(true);
     expect(tree.search(20)).toBe(false);
   });
+  it('should handle toArray', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(30);
+    tree.insert(10);
+    tree.insert(20);
+    const arr = tree.toArray();
+    expect(arr.sort()).toEqual([10, 20, 30]);
+  });
 });

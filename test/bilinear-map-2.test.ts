@@ -396,4 +396,11 @@ describe('BilinearMap2', () => {
     expect(() => map.get(-1, 0)).toThrow();
     expect(() => map.get(0, -1)).toThrow();
   });
+  it('should handle setGridValue and get', () => {
+    const map = new BilinearMap2([[0, 0], [0, 0]]);
+    map.setGridValue(0, 0, 7);
+    map.setGridValue(1, 1, 42);
+    expect(map.getRaw(0, 0)).toBe(7);
+    expect(map.getRaw(1, 1)).toBe(42);
+  });
 });

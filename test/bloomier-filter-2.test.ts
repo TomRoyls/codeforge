@@ -327,4 +327,10 @@ describe('BloomierFilter2', () => {
     const filter = new BloomierFilter2(100, 3);
     expect(filter.loadFactor()).toBeGreaterThanOrEqual(0);
   });
+  it('should handle overwrite via set', () => {
+    const filter = new BloomierFilter2(100, 3);
+    filter.set('a', 1);
+    filter.set('a', 99);
+    expect(filter.get('a')).toBe(99);
+  });
 });

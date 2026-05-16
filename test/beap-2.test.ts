@@ -463,12 +463,18 @@ describe('Beap2', () => {
       expect(beap.peek()!.value).toBe('first');
     });
     it('should handle size after operations', () => {
-      const beap = new Beap<string>();
+      const beap = new Beap2<string>();
       beap.insert(3, 'a');
       beap.insert(1, 'b');
       expect(beap.size).toBe(2);
       beap.extractMin();
       expect(beap.size).toBe(1);
+    });
+    it('should handle isEmpty', () => {
+      const beap = new Beap2<string>();
+      expect(beap.isEmpty()).toBe(true);
+      beap.insert(1, 'a');
+      expect(beap.isEmpty()).toBe(false);
     });
   });
 });

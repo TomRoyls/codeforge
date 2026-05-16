@@ -551,4 +551,16 @@ describe('AtomicSet2', () => {
     expect(set.size).toBe(0);
     expect(set.has(1)).toBe(false);
   });
+  it('should handle union', () => {
+    const set1 = new AtomicSet2<number>();
+    set1.add(1);
+    set1.add(2);
+    const set2 = new AtomicSet2<number>();
+    set2.add(2);
+    set2.add(3);
+    const union = set1.union(set2);
+    expect(union.has(1)).toBe(true);
+    expect(union.has(2)).toBe(true);
+    expect(union.has(3)).toBe(true);
+  });
 });

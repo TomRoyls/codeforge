@@ -503,4 +503,14 @@ describe('BlockHeap2', () => {
     heap.clear();
     expect(heap.size).toBe(0);
   });
+  it('should handle merge', () => {
+    const h1 = new BlockHeap2<number>();
+    h1.push(5);
+    h1.push(3);
+    const h2 = new BlockHeap2<number>();
+    h2.push(1);
+    h2.push(7);
+    h1.merge(h2);
+    expect(h1.size).toBe(4);
+  });
 });

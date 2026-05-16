@@ -384,4 +384,11 @@ describe('AdaptiveHash2', () => {
     expect(table.get('a')).toBe(99);
     expect(table.size()).toBe(1);
   });
+  it('should handle clear', () => {
+    const table = new AdaptiveHash2<string, number>();
+    table.set('a', 1);
+    table.set('b', 2);
+    table.clear();
+    expect(table.size()).toBe(0);
+  });
 });

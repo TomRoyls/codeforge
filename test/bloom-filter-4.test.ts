@@ -345,4 +345,8 @@ describe('BloomFilter4', () => {
     const bf = new BloomFilter(100, 0.01);
     expect(bf.getHashCount()).toBeGreaterThan(0);
   });
+  it('should handle getSize', () => {
+    const bf = new BloomFilter(100, 0.01);
+    expect(bf.getSize()).toBeGreaterThan(0);
+  });
 });

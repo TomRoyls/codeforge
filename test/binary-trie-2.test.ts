@@ -430,4 +430,8 @@ describe('BinaryTrie2', () => {
     trie.insert(5);
     expect(trie.size).toBe(3);
   });
+  it('should handle xorMin on empty trie throws', () => {
+    const trie = new BinaryTrie2();
+    expect(() => trie.xorMin(10)).toThrow();
+  });
 });

@@ -297,4 +297,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('ababab');
     expect(result.length).toBe(3);
   });
+  it('should handle overlapping patterns', () => {
+    const ac = new AhoCorasick2(['a', 'aa']);
+    const result = ac.search('aaa');
+    expect(result.length).toBeGreaterThanOrEqual(2);
+  });
 });

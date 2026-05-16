@@ -509,4 +509,10 @@ describe('AdaptivePQ2', () => {
     const arr = pq.toArray()
     expect(arr.length).toBe(3)
   })
+  it('should handle isEmpty', () => {
+    const pq = new AdaptivePQ2<string>()
+    expect(pq.isEmpty()).toBe(true)
+    pq.push(1, 'a')
+    expect(pq.isEmpty()).toBe(false)
+  })
 })
