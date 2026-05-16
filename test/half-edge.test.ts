@@ -500,4 +500,10 @@ describe('HalfEdgeMesh - Complex Mesh', () => {
     he.addFace([v0, v1, v2]);
     expect(he.getFaceCount()).toBe(1);
   });
+  it('should handle getVertexCount', () => {
+    const he = new HalfEdgeMesh();
+    he.addVertex(0, 0, 0);
+    he.addVertex(1, 0, 0);
+    expect(he.getVertexCount()).toBe(2);
+  });
 });

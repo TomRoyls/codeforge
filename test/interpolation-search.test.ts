@@ -297,4 +297,9 @@ describe('InterpolationSearch', () => {
     const search = new InterpolationSearch([10, 20, 30, 40, 50]);
     expect(search.closestTo(25)).toBe(20);
   });
+  it('should handle contains', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    expect(search.contains(30)).toBe(true);
+    expect(search.contains(99)).toBe(false);
+  });
 });

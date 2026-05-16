@@ -488,4 +488,9 @@ describe('Hamt3', () => {
     expect(map2.has('a')).toBe(false);
     expect(map2.isEmpty()).toBe(true);
   });
+  it('should handle has on empty', () => {
+    const map = Hamt3.createEmpty<string>();
+    expect(map.has('a')).toBe(false);
+    expect(map.get('a')).toBeUndefined();
+  });
 });

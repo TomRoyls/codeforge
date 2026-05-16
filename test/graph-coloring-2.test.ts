@@ -459,4 +459,10 @@ describe('GraphColoring2', () => {
     expect(colored).not.toBeNull();
     expect(graph.getColorCount(colored!)).toBeGreaterThanOrEqual(2);
   });
+  it('should handle single vertex graph', () => {
+    const graph = new GraphColoring2();
+    const adj = new Map<string, string[]>([['A', []]]);
+    const colored = graph.colorGreedy(adj);
+    expect(graph.getColorCount(colored)).toBe(1);
+  });
 });

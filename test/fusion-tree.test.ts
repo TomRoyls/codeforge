@@ -337,4 +337,12 @@ describe('FusionTree', () => {
     tree.insert(5);
     expect(tree.getHeight()).toBeGreaterThan(0);
   });
+  it('should handle findMin and findMax', () => {
+    const tree = new FusionTree();
+    tree.insert(5);
+    tree.insert(3);
+    tree.insert(7);
+    expect(tree.findMin()).toBe(3);
+    expect(tree.findMax()).toBe(7);
+  });
 });

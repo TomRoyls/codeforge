@@ -388,4 +388,12 @@ describe('HashArray2', () => {
     expect(map.keys()).toContain('a');
     expect(map.keys()).toContain('b');
   });
+  it('should handle values', () => {
+    const map = new HashArray2<string>(10);
+    map.set('a', 1);
+    map.set('b', 2);
+    const vals = map.values();
+    expect(vals).toContain(1);
+    expect(vals).toContain(2);
+  });
 });

@@ -429,4 +429,11 @@ describe('IndexedPQ2', () => {
     expect(pq.contains('a')).toBe(true);
     expect(pq.contains('z')).toBe(false);
   });
+  it('should handle update', () => {
+    const pq = new IndexedPQ2<number>();
+    pq.insert('a', 10);
+    pq.insert('b', 20);
+    expect(pq.update('a', 5)).toBe(true);
+    expect(pq.peek()!.id).toBe('a');
+  });
 });

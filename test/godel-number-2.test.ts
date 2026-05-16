@@ -286,4 +286,10 @@ describe('GodelNumber2', () => {
     const decoded = GodelNumber2.decode(encoded);
     expect(decoded).toEqual([7]);
   });
+  it('should handle encode empty array', () => {
+    const encoded = GodelNumber2.encode([]);
+    expect(encoded).toBe(1n);
+    const decoded = GodelNumber2.decode(encoded);
+    expect(decoded).toEqual([]);
+  });
 });

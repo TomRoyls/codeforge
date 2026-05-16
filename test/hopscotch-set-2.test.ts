@@ -391,4 +391,12 @@ describe('HopscotchSet2', () => {
     set.delete('a');
     expect(set.has('a')).toBe(false);
   });
+  it('should handle clear', () => {
+    const set = new HopscotchSet2<string>();
+    set.add('a');
+    set.add('b');
+    set.clear();
+    expect(set.has('a')).toBe(false);
+    expect(set.has('b')).toBe(false);
+  });
 });

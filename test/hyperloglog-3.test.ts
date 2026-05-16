@@ -381,4 +381,9 @@ describe('HyperLogLog3', () => {
     }
     expect(hll.count()).toBeGreaterThan(50)
   })
+  it('should handle single item count', () => {
+    const hll = new HyperLogLog3()
+    hll.add('item')
+    expect(hll.count()).toBeGreaterThanOrEqual(1)
+  })
 })
