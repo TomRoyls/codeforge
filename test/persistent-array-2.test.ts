@@ -313,4 +313,12 @@ describe('PersistentArray2', () => {
     const mapped = arr.map(x => x * 2)
     expect(mapped.toArray()).toEqual([2, 4, 6])
   })
+  it('should handle push and pop', () => {
+    const arr = new PersistentArray2<number>([1, 2])
+    const arr2 = arr.push(3)
+    expect(arr2.toArray()).toEqual([1, 2, 3])
+    const [val, arr3] = arr2.pop()
+    expect(val).toBe(3)
+    expect(arr3.toArray()).toEqual([1, 2])
+  })
 })

@@ -459,4 +459,11 @@ describe('ProbabilityMap2', () => {
     map.set('b', 30);
     expect(map.keys()).toEqual(['a', 'b']);
   });
+  it('should handle delete', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 20);
+    expect(map.delete('a')).toBe(true);
+    expect(map.has('a')).toBe(false);
+  });
 });

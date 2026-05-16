@@ -428,4 +428,11 @@ describe('RadixMap2', () => {
     const entries = map.entries();
     expect(entries.length).toBe(2);
   });
+  it('should handle delete', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.delete(1)).toBe(true);
+    expect(map.has(1)).toBe(false);
+  });
 });

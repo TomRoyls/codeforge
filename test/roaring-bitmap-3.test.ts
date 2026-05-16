@@ -439,4 +439,14 @@ describe('RoaringBitmap3', () => {
     bm.clear();
     expect(bm.has(1)).toBe(false);
   });
+  it('should handle and operation', () => {
+    const bm1 = new RoaringBitmap3();
+    bm1.add(1); bm1.add(2); bm1.add(3);
+    const bm2 = new RoaringBitmap3();
+    bm2.add(2); bm2.add(3); bm2.add(4);
+    const result = bm1.and(bm2);
+    expect(result.has(2)).toBe(true);
+    expect(result.has(3)).toBe(true);
+    expect(result.has(1)).toBe(false);
+  });
 });

@@ -338,4 +338,11 @@ describe('QuadTreeMap2', () => {
     expect(tree.contains(10, 10)).toBe(true);
     expect(tree.contains(99, 99)).toBe(false);
   });
+  it('should handle query', () => {
+    const tree = new QuadTreeMap2<string>({ x: 0, y: 0, width: 100, height: 100 });
+    tree.insert(10, 10, 'a');
+    tree.insert(50, 50, 'b');
+    const results = tree.query({ x: 0, y: 0, width: 30, height: 30 });
+    expect(results.length).toBeGreaterThanOrEqual(1);
+  });
 });
