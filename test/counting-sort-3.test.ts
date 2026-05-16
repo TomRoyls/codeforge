@@ -288,4 +288,9 @@ describe('CountingSort', () => {
       expect(sorted[i]!).toBeGreaterThanOrEqual(sorted[i - 1]!);
     }
   });
+  it('should handle getMin and getMax', () => {
+    const sorter = new CountingSort([5, 3, 1, 4, 2]);
+    expect(sorter.getMin()).toBe(1);
+    expect(sorter.getMax()).toBe(5);
+  });
 });

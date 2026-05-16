@@ -400,4 +400,14 @@ describe('BPlusTree', () => {
     expect(tree.get(2)).toBe('b');
     expect(tree.get(3)).toBe('c');
   });
+  it('should handle range query', () => {
+    const tree = new BPlusTree<number, string>();
+    tree.insert(10, 'a');
+    tree.insert(20, 'b');
+    tree.insert(30, 'c');
+    tree.insert(40, 'd');
+    const range = tree.range(15, 35);
+    expect(range.length).toBe(2);
+    expect(range.map(e => e.key)).toEqual([20, 30]);
+  });
 });

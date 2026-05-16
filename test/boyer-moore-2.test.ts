@@ -253,5 +253,9 @@ describe('BoyerMoore2', () => {
       const bm = new BoyerMoore2('\n');
       expect(bm.search('line1\nline2')).toEqual([5]);
     });
+    it('should handle pattern getter', () => {
+      const bm = new BoyerMoore2('abc');
+      expect(bm.pattern()).toBe('abc');
+    });
   });
 });

@@ -378,4 +378,10 @@ describe('CartesianProduct2', () => {
     cp.forEach(x => collected.push(x))
     expect(collected.length).toBe(4)
   })
+  it('should handle has', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+    expect(cp.has([1, 3])).toBe(true)
+    expect(cp.has([2, 4])).toBe(true)
+    expect(cp.has([1, 5])).toBe(false)
+  })
 })

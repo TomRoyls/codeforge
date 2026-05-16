@@ -545,4 +545,12 @@ describe('BTree', () => {
     const t = new BTree<number>(3);
     expect(t.search(1)).toBe(false);
   });
+  it('should handle toArray', () => {
+    const t = new BTree<number>(3);
+    t.insert(5);
+    t.insert(3);
+    t.insert(7);
+    const arr = t.toArray();
+    expect(arr.sort()).toEqual([3, 5, 7]);
+  });
 });

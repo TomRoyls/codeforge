@@ -278,5 +278,9 @@ describe('BoyerMooreHorspool2', () => {
     const searcher = new BoyerMooreHorspool2('world');
     expect(searcher.findFirst('hello world')).toBe(6);
   });
+  it('should handle pattern getter', () => {
+    const searcher = new BoyerMooreHorspool2('test');
+    expect(searcher.pattern()).toBe('test');
+  });
  });
 });

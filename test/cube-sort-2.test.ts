@@ -318,4 +318,13 @@ describe('CubeSort2', () => {
     const sorted = sorter.sort([1, 2, 3, 4, 5]);
     expect(sorted).toEqual([1, 2, 3, 4, 5]);
   });
+  it('should handle sort with custom comparator', () => {
+    const sorter = new CubeSort2(2, (a, b) => {
+      if (a! > b!) return -1;
+      if (a! < b!) return 1;
+      return 0;
+    });
+    const sorted = sorter.sort([1, 2, 3]);
+    expect(sorted).toEqual([3, 2, 1]);
+  });
 });

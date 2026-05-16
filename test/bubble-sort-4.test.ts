@@ -251,4 +251,9 @@ describe('BubbleSort4 - Edge Cases', () => {
     const sorter = new BubbleSort4<number>();
     expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
   });
+  it('should handle getPassCount', () => {
+    const sorter = new BubbleSort4<number>();
+    sorter.sort([3, 1, 2]);
+    expect(sorter.getPassCount()).toBeGreaterThan(0);
+  });
 });

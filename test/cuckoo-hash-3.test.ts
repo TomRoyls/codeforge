@@ -418,4 +418,10 @@ describe('CuckooHash3', () => {
       expect(map2.get('a')).toBe(2);
     });
   });
+  it('should handle has', () => {
+    const map = new CuckooHash3<string, number>();
+    map.set('a', 1);
+    expect(map.has('a')).toBe(true);
+    expect(map.has('b')).toBe(false);
+  });
 });

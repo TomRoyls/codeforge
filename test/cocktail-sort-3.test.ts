@@ -255,4 +255,9 @@ describe('CocktailSort3 - Type Safety', () => {
     const sorter = new CocktailSort3<number>();
     expect(sorter.sort([42])).toEqual([42]);
   });
+  it('should handle getPassCount', () => {
+    const sorter = new CocktailSort3<number>();
+    sorter.sort([3, 1, 2]);
+    expect(sorter.getPassCount()).toBeGreaterThan(0);
+  });
 });

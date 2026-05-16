@@ -555,4 +555,11 @@ describe('DAryHeap', () => {
     heap.insert(7);
     expect(heap.toArray().length).toBe(3);
   })
+  it('should handle contains', () => {
+    const heap = new DAryHeap<number>(3);
+    heap.insert(5);
+    heap.insert(3);
+    expect(heap.contains(5)).toBe(true);
+    expect(heap.contains(7)).toBe(false);
+  })
 })

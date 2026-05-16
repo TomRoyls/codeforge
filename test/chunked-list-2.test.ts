@@ -452,4 +452,11 @@ describe('ChunkedList2', () => {
     expect(list.get(1)).toBe(20);
     expect(list.get(2)).toBe(30);
   });
+  it('should handle size property', () => {
+    const list = new ChunkedList2<number>(3);
+    expect(list.size).toBe(0);
+    list.push(1);
+    list.push(2);
+    expect(list.size).toBe(2);
+  });
 });
