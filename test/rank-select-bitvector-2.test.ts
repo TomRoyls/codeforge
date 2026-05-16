@@ -333,4 +333,9 @@ describe('RankSelectBitvector2', () => {
     bv.unset(0);
     expect(bv.get(0)).toBe(false);
   });
+  it('should handle rank', () => {
+    const bv = new RankSelectBitvector2([true, false, true, true]);
+    expect(bv.rank1(2)).toBe(1);
+    expect(bv.rank0(2)).toBe(1);
+  });
 });

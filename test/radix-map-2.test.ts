@@ -435,4 +435,10 @@ describe('RadixMap2', () => {
     expect(map.delete(1)).toBe(true);
     expect(map.has(1)).toBe(false);
   });
+  it('should handle isEmpty', () => {
+    const map = new RadixMap2<string>();
+    expect(map.isEmpty()).toBe(true);
+    map.set(1, 'a');
+    expect(map.isEmpty()).toBe(false);
+  });
 });

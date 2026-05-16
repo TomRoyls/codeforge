@@ -321,4 +321,11 @@ describe('PersistentArray2', () => {
     expect(val).toBe(3)
     expect(arr3.toArray()).toEqual([1, 2])
   })
+  it('should handle get and set', () => {
+    const arr = new PersistentArray2<number>([1, 2, 3])
+    expect(arr.get(0)).toBe(1)
+    const arr2 = arr.set(0, 99)
+    expect(arr2.get(0)).toBe(99)
+    expect(arr.get(0)).toBe(1)
+  })
 })

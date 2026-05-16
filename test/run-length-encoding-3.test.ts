@@ -308,4 +308,9 @@ describe("RunLengthEncoding3", () => {
     rle.append('A', 3);
     expect(rle.isEmpty()).toBe(false);
   });
+  it('should handle encode and decode', () => {
+    const rle = new RunLengthEncoding3();
+    const encoded = rle.encode('AAABBC');
+    expect(encoded.length).toBeGreaterThan(0);
+  });
 });

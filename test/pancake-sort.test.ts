@@ -301,5 +301,11 @@ describe('PancakeSort', () => {
     sorter.flip(3);
     expect(sorter.toArray()).toEqual([2, 1, 3]);
   });
+
+  it('should handle sort single element', () => {
+    const sorter = new PancakeSort<number>([42]);
+    sorter.sort();
+    expect(sorter.toArray()).toEqual([42]);
+  });
  });
 });

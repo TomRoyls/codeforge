@@ -358,4 +358,10 @@ describe('ProbabilisticSet2', () => {
     set.add('a');
     expect(set.isEmpty()).toBe(false);
   });
+  it('should handle has', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    set.add('test');
+    expect(set.has('test')).toBe(true);
+    expect(set.has('nothere')).toBe(false);
+  });
 });

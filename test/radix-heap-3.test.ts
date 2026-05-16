@@ -418,4 +418,10 @@ describe('RadixHeap3', () => {
     heap.insert(10, 'b');
     expect(heap.decreaseKey(10, 3, 'b')).toBe(true);
   });
+  it('should handle isEmpty', () => {
+    const heap = new RadixHeap3<string>(8);
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(5, 'a');
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

@@ -370,4 +370,11 @@ describe('RingHash2', () => {
     const node = ring.getNode('some-key');
     expect(node).toBe('node1');
   });
+  it('should handle removeNode', () => {
+    const ring = new RingHash2(10);
+    ring.addNode('node1');
+    ring.addNode('node2');
+    ring.removeNode('node1');
+    expect(ring.nodes().length).toBe(1);
+  });
 });
