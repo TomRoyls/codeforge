@@ -422,4 +422,11 @@ describe('PairingHeap4', () => {
     heap.clear();
     expect(heap.isEmpty()).toBe(true);
   });
+  it('should handle findMin', () => {
+    const heap = new PairingHeap4<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.findMin()).toBe(3);
+  });
 });

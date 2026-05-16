@@ -332,4 +332,14 @@ describe('Matrix2', () => {
     expect(m.rows()).toBe(3);
     expect(m.cols()).toBe(4);
   });
+  it('should handle scale', () => {
+    const m = new Matrix2(2, 2);
+    m.set(0, 0, 1);
+    m.set(0, 1, 2);
+    m.set(1, 0, 3);
+    m.set(1, 1, 4);
+    const scaled = m.scale(2);
+    expect(scaled.get(0, 0)).toBe(2);
+    expect(scaled.get(1, 1)).toBe(8);
+  });
 });

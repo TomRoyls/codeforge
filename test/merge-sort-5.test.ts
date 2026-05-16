@@ -209,4 +209,10 @@ describe('MergeSort5', () => {
     const ms = new MergeSort5();
     expect(ms.sort([3, 1, 4, 1, 5])).toEqual([1, 1, 3, 4, 5]);
   });
+  it('should handle sortInPlace', () => {
+    const ms = new MergeSort5();
+    const arr = [5, 3, 1, 4, 2];
+    ms.sortInPlace(arr);
+    expect(arr).toEqual([1, 2, 3, 4, 5]);
+  });
 });

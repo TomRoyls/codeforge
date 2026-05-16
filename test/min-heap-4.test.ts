@@ -426,4 +426,15 @@ describe('MinHeap', () => {
     heap.clear();
     expect(heap.isEmpty()).toBe(true);
   });
+  it('should handle merge', () => {
+    const heap1 = new MinHeap<number>();
+    heap1.insert(5);
+    heap1.insert(3);
+    const heap2 = new MinHeap<number>();
+    heap2.insert(1);
+    heap2.insert(7);
+    const merged = heap1.merge(heap2);
+    expect(merged.extractMin()).toBe(1);
+    expect(merged.extractMin()).toBe(3);
+  });
 });

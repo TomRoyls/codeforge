@@ -258,4 +258,11 @@ describe('LibrarySort3', () => {
     sorter.sortInPlace(arr);
     expect(arr).toEqual([1, 2, 3, 4, 5]);
   });
+
+  it('should handle sort method', () => {
+    const arr = [5, 3, 1, 4, 2];
+    const sorter = new LibrarySort3(arr);
+    const sorted = sorter.sort();
+    expect(sorted).toEqual([1, 2, 3, 4, 5]);
+  });
 });

@@ -436,5 +436,13 @@ describe('PagodaHeap2', () => {
       expect(heap1.size).toBe(2);
       expect(heap2.isEmpty()).toBe(true);
     });
+
+    it('should handle peek', () => {
+      const heap = new PagodaHeap2<number>();
+      heap.insert(5);
+      heap.insert(3);
+      heap.insert(7);
+      expect(heap.peek()).toBe(3);
+    });
   });
 });

@@ -322,4 +322,11 @@ describe('MinHash2', () => {
     mh.addAll(['x', 'y', 'z']);
     expect(mh.size()).toBe(3);
   });
+  it('should handle similarity with identical sets', () => {
+    const mh1 = new MinHash2(64);
+    mh1.addAll(['a', 'b', 'c']);
+    const mh2 = new MinHash2(64);
+    mh2.addAll(['a', 'b', 'c']);
+    expect(mh1.similarity(mh2)).toBeCloseTo(1, 0);
+  });
 });

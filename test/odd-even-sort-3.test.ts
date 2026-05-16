@@ -240,4 +240,8 @@ describe('OddEvenSort3 - Edge Cases', () => {
     sorter.sort([3, 1, 2]);
     expect(sorter.getPassCount()).toBeGreaterThanOrEqual(0);
   });
+  it('should handle already sorted input', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
+  });
 });

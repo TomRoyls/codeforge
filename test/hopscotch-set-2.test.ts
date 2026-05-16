@@ -383,4 +383,12 @@ describe('HopscotchSet2', () => {
     expect(arr.length).toBe(3);
     expect(arr).toContain('a');
   });
+
+  it('should handle delete', () => {
+    const set = new HopscotchSet2<string>();
+    set.add('a');
+    expect(set.has('a')).toBe(true);
+    set.delete('a');
+    expect(set.has('a')).toBe(false);
+  });
 });
