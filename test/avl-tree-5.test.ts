@@ -440,4 +440,13 @@ describe('AVLTree', () => {
     expect(tree.min()).toBe(10);
     expect(tree.max()).toBe(90);
   });
+
+  it('should handle inOrderTraversal', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(30);
+    tree.insert(10);
+    tree.insert(50);
+    tree.insert(20);
+    expect(tree.inOrderTraversal()).toEqual([10, 20, 30, 50]);
+  });
 });

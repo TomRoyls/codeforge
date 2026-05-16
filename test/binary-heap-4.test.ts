@@ -431,4 +431,9 @@ describe('BinaryHeap', () => {
     expect(heap.contains(20)).toBe(true);
     expect(heap.contains(99)).toBe(false);
   });
+
+  it('should handle getTimeComplexity', () => {
+    const heap = new BinaryHeap<number>();
+    expect(typeof heap.getTimeComplexity()).toBe('string');
+  });
 });

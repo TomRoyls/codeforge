@@ -409,4 +409,13 @@ describe('BipartiteGraph2', () => {
     expect(graph.hasEdge('L1', 'R1')).toBe(false);
     expect(graph.edgeCount()).toBe(0);
   });
+
+  it('should handle getLeftVertices and getRightVertices', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addLeftVertex('L2');
+    graph.addRightVertex('R1');
+    expect(graph.getLeftVertices()).toEqual(['L1', 'L2']);
+    expect(graph.getRightVertices()).toEqual(['R1']);
+  });
 });

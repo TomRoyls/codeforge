@@ -363,4 +363,11 @@ describe('BilinearMap2', () => {
     const map = new BilinearMap2(grid);
     expect(map.get(0, 0)).toBe(7);
   });
+
+  it('should handle 3x1 grid', () => {
+    const grid = [[10, 20, 30]];
+    const map = new BilinearMap2(grid);
+    expect(map.get(0, 0)).toBe(10);
+    expect(map.get(1, 0)).toBe(20);
+  });
 });

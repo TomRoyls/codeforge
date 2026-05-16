@@ -463,4 +463,14 @@ describe('BlockHeap2', () => {
     expect(heap.size).toBe(0);
     expect(heap.isEmpty()).toBe(true);
   });
+
+  it('should handle peek after push', () => {
+    const heap = new BlockHeap2<number>();
+    heap.push(10);
+    heap.push(5);
+    heap.push(20);
+    expect(heap.peek()).toBe(5);
+    heap.pop();
+    expect(heap.peek()).toBe(10);
+  });
 });

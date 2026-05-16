@@ -346,4 +346,13 @@ describe('AdaptiveHash2', () => {
       expect(table.size()).toBe(2);
     });
   });
+
+  it('should handle clear', () => {
+    const table = new AdaptiveHash2<string, number>();
+    table.set('a', 1);
+    table.set('b', 2);
+    table.clear();
+    expect(table.size()).toBe(0);
+    expect(table.get('a')).toBeUndefined();
+  });
 });

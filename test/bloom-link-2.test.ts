@@ -372,4 +372,12 @@ describe('BloomLink2', () => {
     filter.add('test');
     expect(filter.isEmpty()).toBe(false);
   });
+
+  it('should handle count after duplicates', () => {
+    const filter = new BloomLink2();
+    filter.add('a');
+    filter.add('a');
+    filter.add('a');
+    expect(filter.count()).toBe(1);
+  });
 });

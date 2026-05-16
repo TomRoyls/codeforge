@@ -472,4 +472,9 @@ describe('AdaptivePQ2', () => {
     expect(pq.pop()!.value).toBe('c')
     expect(pq.pop()!.value).toBe('a')
   })
+
+  it('should handle update non-existent', () => {
+    const pq = new AdaptivePQ2<string>()
+    expect(pq.update('nonexistent', 5)).toBe(false)
+  })
 })

@@ -299,4 +299,11 @@ describe('BloomierFilter2', () => {
     expect(filter.get('key')).toBe('value2');
     expect(filter.size).toBe(1);
   });
+
+  it('should handle has after set', () => {
+    const filter = new BloomierFilter2<string>(100, 3);
+    filter.set('key', 'value');
+    expect(filter.has('key')).toBe(true);
+    expect(filter.has('nonexistent')).toBe(false);
+  });
 });

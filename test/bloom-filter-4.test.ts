@@ -321,4 +321,9 @@ describe('BloomFilter4', () => {
     expect(bf.mightContain('item-0')).toBe(true);
     expect(bf.mightContain('item-499')).toBe(true);
   });
+
+  it('should handle getBitCount', () => {
+    const bf = new BloomFilter(100, 0.01);
+    expect(bf.getBitCount()).toBeGreaterThan(0);
+  });
 });

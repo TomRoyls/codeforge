@@ -271,4 +271,10 @@ describe('AhoCorasick2', () => {
     const result = ac.search('the end');
     expect(result.length).toBeGreaterThanOrEqual(1);
   });
+
+  it('should handle pattern at start of text', () => {
+    const ac = new AhoCorasick2(['start']);
+    const result = ac.search('start of something');
+    expect(result.length).toBeGreaterThanOrEqual(1);
+  });
 });
