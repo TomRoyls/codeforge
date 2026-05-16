@@ -355,4 +355,15 @@ describe('HyperLogLog3', () => {
     hll1.merge(hll2)
     expect(hll1.count()).toBeGreaterThanOrEqual(3)
   })
+
+  it('should handle merge of identical sets', () => {
+    const hll = new HyperLogLog3(12)
+    hll.add('a')
+    hll.add('b')
+    const hll2 = new HyperLogLog3(12)
+    hll2.add('a')
+    hll2.add('b')
+    hll.merge(hll2)
+    expect(hll.count()).toBeGreaterThanOrEqual(2)
+  })
 })

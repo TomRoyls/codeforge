@@ -418,4 +418,11 @@ describe('IntervalHeap3', () => {
     const arr = heap.toArray();
     expect(arr.length).toBe(3);
   });
+
+  it('should handle isEmpty', () => {
+    const heap = new IntervalHeap3<number>();
+    expect(heap.isEmpty()).toBe(true);
+    heap.insert(5);
+    expect(heap.isEmpty()).toBe(false);
+  });
 });

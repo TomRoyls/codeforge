@@ -481,5 +481,15 @@ describe('LinkedHashSet', () => {
       set.forEach((v) => values.push(v));
       expect(values.length).toBe(3);
     });
+
+    it('should handle delete', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      expect(set.delete(20)).toBe(true);
+      expect(set.has(20)).toBe(false);
+      expect(set.size()).toBe(2);
+    });
   });
 });

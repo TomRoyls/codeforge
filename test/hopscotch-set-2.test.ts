@@ -361,5 +361,16 @@ describe('HopscotchSet2', () => {
       expect(set.has('cherry')).toBe(true);
       expect(set.has('apple')).toBe(false);
     });
+
+    it('should handle contains after multiple ops', () => {
+      const set = new HopscotchSet2<string>();
+      set.add('x');
+      set.add('y');
+      set.delete('x');
+      set.add('z');
+      expect(set.has('x')).toBe(false);
+      expect(set.has('y')).toBe(true);
+      expect(set.has('z')).toBe(true);
+    });
   });
 });

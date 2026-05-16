@@ -437,5 +437,12 @@ describe('GraphColoring2', () => {
       const colored = graph.colorGreedy(adj);
       expect(graph.isValid(adj, colored)).toBe(true);
     });
+
+    it('handles empty graph', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>();
+      const colored = graph.colorGreedy(adj);
+      expect(colored.size).toBe(0);
+    });
   });
 });

@@ -280,5 +280,10 @@ describe('InterpolationSearch', () => {
       expect(search.hasMatch(30)).toBe(true);
       expect(search.hasMatch(99)).toBe(false);
     });
+
+    it('should handle search in sorted array', () => {
+      const search = new InterpolationSearch([1, 3, 5, 7, 9, 11, 13]);
+      expect(search.search(7)).toBe(3);
+    });
   });
 });

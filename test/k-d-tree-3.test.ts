@@ -330,4 +330,11 @@ describe('KDTree3', () => {
     const tree = new KDTree3([])
     expect(tree.toArray().length).toBe(0)
   })
+
+  it('should handle range search', () => {
+    const points = [{x: 1, y: 2}, {x: 3, y: 4}, {x: 5, y: 6}, {x: 7, y: 8}]
+    const tree = new KDTree3(points)
+    const results = tree.rangeSearch({x: 0, y: 0}, {x: 4, y: 5})
+    expect(results.length).toBeGreaterThanOrEqual(1)
+  })
 })

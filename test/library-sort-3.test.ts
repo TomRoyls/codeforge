@@ -245,5 +245,10 @@ describe('LibrarySort3', () => {
       const sorter = new LibrarySort3([3, 1, 2, 1, 3]);
       expect(sorter.sort()).toEqual([1, 1, 2, 3, 3]);
     });
+
+    it('should handle single element', () => {
+      const sorter = new LibrarySort3([42]);
+      expect(sorter.sort()).toEqual([42]);
+    });
   });
 });

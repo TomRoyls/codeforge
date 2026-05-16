@@ -365,5 +365,13 @@ describe('HashArray2', () => {
       map.clear();
       expect(map.size).toBe(0);
     });
+
+    it('should handle has', () => {
+      const map = new HashArray2<string, number>();
+      map.set('a', 1);
+      map.set('b', 2);
+      expect(map.has('a')).toBe(true);
+      expect(map.has('z')).toBe(false);
+    });
   });
 });

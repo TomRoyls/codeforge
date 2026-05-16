@@ -408,5 +408,12 @@ describe('JellyHash2', () => {
       expect(vals.length).toBe(2);
       expect(vals).toContain(1);
     });
+
+    it('should handle has', () => {
+      const map = new JellyHash2<string, number>();
+      map.set('a', 1);
+      expect(map.has('a')).toBe(true);
+      expect(map.has('z')).toBe(false);
+    });
   });
 });

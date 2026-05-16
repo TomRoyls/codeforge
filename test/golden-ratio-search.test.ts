@@ -369,5 +369,12 @@ describe("GoldenRatioSearch", () => {
     const result = search.findMaximum(0, 10);
     expect(result.value).toBe(5);
   });
+
+  it("handles findMinimum", () => {
+    const fn = (x: number) => x * x;
+    const search = new GoldenRatioSearch(fn);
+    const result = search.findMinimum(-5, 5);
+    expect(Math.abs(result.value)).toBeLessThanOrEqual(0.01);
+  });
 });
 });
