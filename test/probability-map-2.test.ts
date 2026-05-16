@@ -452,4 +452,11 @@ describe('ProbabilityMap2', () => {
     map.set('b', 30);
     expect(map.totalWeight()).toBe(40);
   });
+
+  it('should handle keys', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 30);
+    expect(map.keys()).toEqual(['a', 'b']);
+  });
 });

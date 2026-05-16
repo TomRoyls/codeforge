@@ -320,4 +320,9 @@ describe('RankSelectBitvector2', () => {
     bv.unset(1);
     expect(bv.get(1)).toBe(false);
   });
+
+  it('handles toArray', async () => {
+    const bv = new RankSelectBitvector2([true, false, true]);
+    expect(bv.toArray()).toEqual([true, false, true]);
+  });
 });

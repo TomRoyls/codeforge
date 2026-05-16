@@ -488,4 +488,12 @@ describe('RingBuffer6', () => {
       expect(buffer.shift()).toBe(1);
     });
   });
+
+  it('should handle toArray', () => {
+    const buffer = new RingBuffer6<number>(5);
+    buffer.push(10);
+    buffer.push(20);
+    buffer.push(30);
+    expect(buffer.toArray()).toEqual([10, 20, 30]);
+  });
 });

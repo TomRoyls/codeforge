@@ -288,5 +288,11 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.getSwaps()).toBeGreaterThan(0);
     });
+
+    it('should handle isSorted', () => {
+      const sorter = new ShellSort<number>([5, 3, 1]);
+      sorter.sort();
+      expect(sorter.isSorted()).toBe(true);
+    });
   });
 });

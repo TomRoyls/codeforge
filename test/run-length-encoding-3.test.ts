@@ -295,4 +295,11 @@ describe("RunLengthEncoding3", () => {
     rle.encode('AA');
     expect(rle.isEmpty()).toBe(false);
   });
+
+  it('should handle toString', () => {
+    const rle = new RunLengthEncoding3();
+    rle.append('A', 3);
+    rle.append('B', 2);
+    expect(typeof rle.toString()).toBe('string');
+  });
 });

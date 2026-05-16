@@ -420,4 +420,12 @@ describe('RadixMap2', () => {
     const vals = map.values();
     expect(vals.length).toBe(3);
   });
+
+  it('should handle entries', () => {
+    const map = new RadixMap2<string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    const entries = map.entries();
+    expect(entries.length).toBe(2);
+  });
 });

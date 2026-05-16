@@ -523,4 +523,13 @@ describe('SkewHeap3', () => {
     expect(h1.peek()).toBe(1);
     expect(h1.size).toBe(4);
   });
+
+  it('should handle toArray', () => {
+    const heap = new SkewHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    const arr = heap.toArray();
+    expect(arr.length).toBe(3);
+  });
 });

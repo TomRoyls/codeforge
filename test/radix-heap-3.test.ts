@@ -403,4 +403,13 @@ describe('RadixHeap3', () => {
         expect(heap.decreaseKey(5, 1, 'a')).toBe(true);
         expect(heap.peek()!.key).toBe(1);
     });
+
+    it('should handle extractMin', () => {
+        const heap = new RadixHeap3<string>();
+        heap.insert(5, 'a');
+        heap.insert(3, 'b');
+        heap.insert(7, 'c');
+        expect(heap.extractMin()!.value).toBe('b');
+        expect(heap.size).toBe(2);
+    });
 });

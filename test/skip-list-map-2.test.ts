@@ -470,4 +470,13 @@ describe('SkipListMap2', () => {
       expect(map.size).toBe(2);
     });
   });
+
+  it('should handle min and max', () => {
+    const map = new SkipListMap2<number, string>();
+    map.set(5, 'five');
+    map.set(1, 'one');
+    map.set(9, 'nine');
+    expect(map.min()!.key).toBe(1);
+    expect(map.max()!.key).toBe(9);
+  });
 });
