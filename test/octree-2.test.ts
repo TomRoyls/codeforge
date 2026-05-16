@@ -391,4 +391,10 @@ describe('Octree2', () => {
     const results = tree.queryRange({ x: 0, y: 0, z: 0, size: 50 });
     expect(results.length).toBeGreaterThanOrEqual(1);
   });
+  it('should handle size after insert', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(10, 10, 10, 1);
+    tree.insert(50, 50, 50, 2);
+    expect(tree.size()).toBe(2);
+  });
 });

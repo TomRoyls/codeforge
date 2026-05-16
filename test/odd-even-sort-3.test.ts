@@ -244,4 +244,8 @@ describe('OddEvenSort3 - Edge Cases', () => {
     const sorter = new OddEvenSort3<number>();
     expect(sorter.sort([1, 2, 3, 4, 5])).toEqual([1, 2, 3, 4, 5]);
   });
+  it('should handle sortDescending', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(sorter.sortDescending([3, 1, 2])).toEqual([3, 2, 1]);
+  });
 });

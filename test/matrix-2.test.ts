@@ -342,4 +342,10 @@ describe('Matrix2', () => {
     expect(scaled.get(0, 0)).toBe(2);
     expect(scaled.get(1, 1)).toBe(8);
   });
+  it('should handle add', () => {
+    const m1 = new Matrix2(2, 2, 1);
+    const m2 = new Matrix2(2, 2, 2);
+    const result = m1.add(m2);
+    expect(result.get(0, 0)).toBe(3);
+  });
 });

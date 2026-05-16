@@ -429,4 +429,12 @@ describe('PairingHeap4', () => {
     heap.insert(7);
     expect(heap.findMin()).toBe(3);
   });
+  it('should handle merge into empty', () => {
+    const heap1 = new PairingHeap4<number>();
+    heap1.insert(5);
+    const heap2 = new PairingHeap4<number>();
+    heap2.insert(3);
+    heap1.merge(heap2);
+    expect(heap1.findMin()).toBe(3);
+  });
 });

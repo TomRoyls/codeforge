@@ -444,5 +444,14 @@ describe('PagodaHeap2', () => {
       heap.insert(7);
       expect(heap.peek()).toBe(3);
     });
+
+    it('should handle extractMin', () => {
+      const heap = new PagodaHeap2<number>();
+      heap.insert(5);
+      heap.insert(3);
+      heap.insert(7);
+      expect(heap.extractMin()).toBe(3);
+      expect(heap.extractMin()).toBe(5);
+    });
   });
 });

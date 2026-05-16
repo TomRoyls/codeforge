@@ -407,5 +407,11 @@ describe('LFUCache4', () => {
     expect(cache.has('a')).toBe(false)
     expect(cache.has('b')).toBe(true)
   })
+
+  it('should handle get non-existent key', () => {
+    const cache = new LFUCache4<string, number>(3)
+    cache.set('a', 1)
+    expect(cache.get('z')).toBeUndefined()
+  })
 })
 })

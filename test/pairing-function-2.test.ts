@@ -372,5 +372,12 @@ describe('PairingFunction2', () => {
         expect(elegantY).toBe(y);
       }
     });
+
+    it('should handle Cantor pair and unpair', () => {
+      const z = PairingFunction2.cantorPair(2, 3);
+      const result = PairingFunction2.cantorUnpair(z);
+      expect(result[0]).toBe(2);
+      expect(result[1]).toBe(3);
+    });
   });
 });

@@ -495,4 +495,10 @@ describe('PairingHeapNode5', () => {
     expect(heap.extractMin()).toBe(3);
     expect(heap.extractMin()).toBe(5);
   });
+  it('should handle isEmpty after extract', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.extractMin();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

@@ -503,4 +503,12 @@ describe('PairingQueue2', () => {
     queue.enqueue(7);
     expect(queue.peek()).toBe(3);
   });
+  it('should handle merge', () => {
+    const q1 = new PairingQueue2<number>();
+    q1.enqueue(5);
+    const q2 = new PairingQueue2<number>();
+    q2.enqueue(3);
+    q1.merge(q2);
+    expect(q1.peek()).toBe(3);
+  });
 });

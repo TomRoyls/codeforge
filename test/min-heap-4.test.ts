@@ -437,4 +437,11 @@ describe('MinHeap', () => {
     expect(merged.extractMin()).toBe(1);
     expect(merged.extractMin()).toBe(3);
   });
+  it('should handle peek', () => {
+    const heap = new MinHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.peek()).toBe(3);
+  });
 });
