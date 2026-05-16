@@ -506,5 +506,15 @@ describe('BTree', () => {
       t.clear();
       expect(t.isEmpty()).toBe(true);
     });
+
+    it('should handle min and max', () => {
+      const t = new BTree<number>(3);
+      t.insert(20);
+      t.insert(10);
+      t.insert(30);
+      t.insert(5);
+      expect(t.min()).toBe(5);
+      expect(t.max()).toBe(30);
+    });
   });
 });

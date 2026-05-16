@@ -312,5 +312,15 @@ describe('FusionTree', () => {
       tree.insert(15);
       expect(tree.size).toBe(3);
     });
+
+    it('should handle delete', () => {
+      const tree = new FusionTree();
+      tree.insert(5);
+      tree.insert(10);
+      tree.insert(15);
+      expect(tree.delete(10)).toBe(true);
+      expect(tree.search(10)).toBe(false);
+      expect(tree.size).toBe(2);
+    });
   });
 });

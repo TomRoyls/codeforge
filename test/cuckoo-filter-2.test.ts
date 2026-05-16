@@ -332,5 +332,13 @@ describe('CuckooFilter2', () => {
       const filter = new CuckooFilter2(100);
       expect(filter.capacity).toBeGreaterThan(0);
     });
+
+    it('should handle delete', () => {
+      const filter = new CuckooFilter2(100);
+      filter.insert('hello');
+      expect(filter.contains('hello')).toBe(true);
+      expect(filter.delete('hello')).toBe(true);
+      expect(filter.contains('hello')).toBe(false);
+    });
   });
 });

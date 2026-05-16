@@ -375,5 +375,14 @@ describe('CSRGraph2', () => {
       expect(graph.hasEdge(0, 1)).toBe(true);
       expect(graph.hasEdge(0, 2)).toBe(false);
     });
+
+    it('should handle edgeCount', () => {
+      const graph = new CSRGraph2(3);
+      graph.addEdge(0, 1);
+      graph.addEdge(1, 2);
+      graph.addEdge(0, 2);
+      graph.build();
+      expect(graph.edgeCount()).toBe(3);
+    });
   });
 });

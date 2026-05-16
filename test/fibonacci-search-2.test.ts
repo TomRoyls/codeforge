@@ -255,4 +255,10 @@ describe('FibonacciSearch', () => {
     const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
     expect(fs.search(50)).toBe(4);
   });
+
+  it('should handle contains', () => {
+    const fs = new FibonacciSearch([10, 20, 30]);
+    expect(fs.contains(20)).toBe(true);
+    expect(fs.contains(99)).toBe(false);
+  });
 });

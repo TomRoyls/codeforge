@@ -246,4 +246,11 @@ describe('FlashSort2 - edge cases', () => {
     const sorter = new FlashSort2<number>()
     expect(sorter.sort([])).toEqual([])
   })
+
+  it('handles sortInPlace', () => {
+    const sorter = new FlashSort2<number>()
+    const arr = [5, 3, 1, 4, 2]
+    sorter.sortInPlace(arr)
+    expect(arr).toEqual([1, 2, 3, 4, 5])
+  })
 })

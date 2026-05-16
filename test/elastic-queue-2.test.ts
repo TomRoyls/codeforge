@@ -323,4 +323,11 @@ describe('ElasticQueue2', () => {
     expect(queue.peek()).toBe(1);
     expect(queue.size).toBe(2);
   });
+
+  it('should handle isEmpty', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.isEmpty()).toBe(true);
+    queue.enqueue(1);
+    expect(queue.isEmpty()).toBe(false);
+  });
 });

@@ -349,5 +349,11 @@ describe('CartesianProduct2', () => {
     expect(cp.at(0)).toEqual([1, 3])
     expect(cp.at(3)).toEqual([2, 4])
   })
+
+  it('should handle indexOf', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+    expect(cp.indexOf([1, 3])).toBe(0)
+    expect(cp.indexOf([2, 4])).toBe(3)
+  })
   })
 })

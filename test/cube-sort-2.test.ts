@@ -286,5 +286,10 @@ describe('CubeSort2', () => {
       sorter.sortInPlace(arr);
       expect(arr).toEqual([1, 2, 3, 4, 5]);
     });
+
+    it('should handle single element', () => {
+      const sorter = new CubeSort2();
+      expect(sorter.sort([42])).toEqual([42]);
+    });
   });
 });

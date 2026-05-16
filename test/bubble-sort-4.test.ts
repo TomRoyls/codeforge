@@ -229,4 +229,9 @@ describe('BubbleSort4 - Edge Cases', () => {
     const arr = [Number.MAX_SAFE_INTEGER, 0, Number.MIN_SAFE_INTEGER];
     expect(sorter.sort(arr)).toEqual([Number.MIN_SAFE_INTEGER, 0, Number.MAX_SAFE_INTEGER]);
   });
+
+  it('should handle getSpaceComplexity', () => {
+    const sorter = new BubbleSort4<number>();
+    expect(typeof sorter.getSpaceComplexity()).toBe('string');
+  });
 });
