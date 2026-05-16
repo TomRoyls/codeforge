@@ -499,8 +499,8 @@ describe('VantagePointTree2 - Mixed Operations', () => {
   })
 
   it('should handle toArray', () => {
-    const points = [[1, 1], [2, 2], [3, 3]]
-    const tree = new VantagePointTree2(points)
+    const points: Point2D[] = [{ x: 1, y: 1 }, { x: 2, y: 2 }, { x: 3, y: 3 }]
+    const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
     const arr = tree.toArray()
     expect(arr.length).toBe(3)
   })
@@ -539,5 +539,13 @@ describe('VantagePointTree2 - Mixed Operations', () => {
     expect(nearest).toBeDefined()
     expect(nearest!.x).toBeGreaterThanOrEqual(1)
     expect(nearest!.x).toBeLessThanOrEqual(3)
+  })
+  it('should handle single point tree', () => {
+    const points: Point2D[] = [{ x: 5, y: 5 }]
+    const tree = new VantagePointTree2<Point2D>(points, euclideanDistance)
+    const nearest = tree.nearest({ x: 0, y: 0 })
+    expect(nearest).toBeDefined()
+    expect(nearest!.x).toBe(5)
+    expect(nearest!.y).toBe(5)
   })
 })

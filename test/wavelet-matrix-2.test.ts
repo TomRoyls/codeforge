@@ -395,4 +395,10 @@ describe('WaveletMatrix2', () => {
     expect(wm.quantile(0, 5, 0)).toBe(10);
     expect(wm.quantile(0, 5, 4)).toBe(50);
   });
+  it('should handle quantile on sub-range', () => {
+    const data = [10, 20, 30, 40, 50];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.quantile(1, 4, 0)).toBe(20);
+    expect(wm.quantile(1, 4, 2)).toBe(40);
+  });
 });

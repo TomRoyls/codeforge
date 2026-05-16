@@ -368,4 +368,12 @@ describe('WeightedGraph2', () => {
     expect(graph.removeVertex('A')).toBe(true);
     expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
   });
+  it('should handle removeEdge', () => {
+    const graph = new WeightedGraph2<string>();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    graph.addEdge('A', 'B', 5);
+    expect(graph.removeEdge('A', 'B')).toBe(true);
+    expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
+  });
 });

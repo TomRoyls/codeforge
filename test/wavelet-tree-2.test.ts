@@ -372,4 +372,11 @@ describe("WaveletTree", () => {
     expect(tree.access(0)).toBe(3);
     expect(tree.access(4)).toBe(5);
   });
+  it('should handle access on all elements', () => {
+    const arr = [10, 20, 30];
+    const tree = new WaveletTree(arr);
+    expect(tree.access(0)).toBe(10);
+    expect(tree.access(1)).toBe(20);
+    expect(tree.access(2)).toBe(30);
+  });
 });

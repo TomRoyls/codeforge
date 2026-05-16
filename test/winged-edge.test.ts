@@ -515,4 +515,10 @@ describe('WingedEdgeMesh', () => {
     mesh.addEdge(v1, v2);
     expect(mesh.getEdgeCount()).toBe(2);
   });
+  it('should handle getVertexPositions', () => {
+    const mesh = new WingedEdgeMesh();
+    mesh.addVertex(1, 2, 3);
+    mesh.addVertex(4, 5, 6);
+    expect(mesh.getVertexCount()).toBe(2);
+  });
 });

@@ -353,5 +353,13 @@ describe('TrieMap3', () => {
       expect(trie.get('a')).toEqual(obj1);
       expect(trie.get('b')).toEqual(obj2);
     });
+
+    it('should handle has on nonexistent key', () => {
+      const trie = new TrieMap3<string>();
+      trie.set('abc', 'value');
+      expect(trie.has('abc')).toBe(true);
+      expect(trie.has('ab')).toBe(false);
+      expect(trie.has('xyz')).toBe(false);
+    });
   });
 });

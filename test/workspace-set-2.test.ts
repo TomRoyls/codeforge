@@ -340,4 +340,12 @@ describe('WorkspaceSet2', () => {
     ws.moveItem('a', 'ws1', 'ws2');
     expect(ws.getWorkspace('ws2')).toContain('a');
   });
+  it('should handle getWorkspaceNames', () => {
+    const ws = new WorkspaceSet2<string>();
+    ws.createWorkspace('alpha');
+    ws.createWorkspace('beta');
+    const names = ws.getWorkspaceNames();
+    expect(names).toContain('alpha');
+    expect(names).toContain('beta');
+  });
 });

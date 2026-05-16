@@ -378,4 +378,10 @@ describe('TrieMap2', () => {
     expect(t.delete('apple')).toBe(true)
     expect(t.has('apple')).toBe(false)
   })
+  it('should handle delete nonexistent key', () => {
+    const t = new TrieMap2<number>()
+    t.set('apple', 1)
+    expect(t.delete('banana')).toBe(false)
+    expect(t.has('apple')).toBe(true)
+  })
 });

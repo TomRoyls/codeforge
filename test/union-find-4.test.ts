@@ -377,4 +377,12 @@ describe('UnionFind4', () => {
     uf.union(0, 1);
     expect(uf.componentCount()).toBe(4);
   });
+  it('should handle connected after multiple unions', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    uf.union(1, 2);
+    expect(uf.connected(0, 3)).toBe(true);
+    expect(uf.connected(0, 4)).toBe(false);
+  });
 });
