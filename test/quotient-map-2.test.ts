@@ -362,4 +362,11 @@ describe('QuotientMap2', () => {
     qm.set('b', 2);
     expect(qm.size).toBe(2);
   });
+
+  it('should handle classCount', () => {
+    const qm = new QuotientMap2((a, b) => a === b);
+    qm.set('a', 1);
+    qm.set('b', 2);
+    expect(qm.classCount()).toBe(2);
+  });
 });

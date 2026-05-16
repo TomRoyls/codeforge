@@ -469,5 +469,14 @@ describe('PairingQueue2', () => {
       expect(queue.dequeue()!.value).toBe('two');
       expect(queue.dequeue()!.value).toBe('three');
     });
+
+    it('should handle clear', () => {
+      const queue = new PairingQueue2<number>();
+      queue.enqueue(3);
+      queue.enqueue(1);
+      queue.enqueue(2);
+      queue.clear();
+      expect(queue.isEmpty()).toBe(true);
+    });
   });
 });

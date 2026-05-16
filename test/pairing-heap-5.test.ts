@@ -455,4 +455,16 @@ describe('PairingHeapNode5', () => {
     heap.insert(5);
     expect(heap.isEmpty()).toBe(false);
   });
+
+  it('should handle merge', () => {
+    const h1 = new PairingHeap5<number>();
+    h1.insert(5);
+    h1.insert(3);
+    const h2 = new PairingHeap5<number>();
+    h2.insert(1);
+    h2.insert(7);
+    h1.merge(h2);
+    expect(h1.peek()).toBe(1);
+    expect(h1.size).toBe(4);
+  });
 });

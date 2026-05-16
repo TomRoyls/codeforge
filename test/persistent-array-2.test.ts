@@ -293,4 +293,11 @@ describe('PersistentArray2', () => {
     const arr = new PersistentArray2([10, 20, 30])
     expect(arr.toArray()).toEqual([10, 20, 30])
   })
+
+  it('should handle set returning new instance', () => {
+    const arr = new PersistentArray2([10, 20, 30])
+    const arr2 = arr.set(1, 99)
+    expect(arr2.get(1)).toBe(99)
+    expect(arr.get(1)).toBe(20)
+  })
 })

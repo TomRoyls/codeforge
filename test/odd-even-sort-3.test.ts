@@ -223,4 +223,9 @@ describe('OddEvenSort3 - Edge Cases', () => {
     const sorter = new OddEvenSort3<number>();
     expect(typeof sorter.getTimeComplexity()).toBe('string');
   });
+
+  it('should handle getSpaceComplexity', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(typeof sorter.getSpaceComplexity()).toBe('string');
+  });
 });

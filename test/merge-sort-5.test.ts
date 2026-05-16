@@ -194,4 +194,9 @@ describe('MergeSort5', () => {
   it('should handle sortRange', () => {
     expect(ms.sort([5, 3, 1, 4, 2])).toEqual([1, 2, 3, 4, 5]);
   });
+
+  it('should handle sortRange with indices', () => {
+    const ms = new MergeSort5();
+    expect(ms.sortRange([5, 3, 1, 4, 2], 1, 4)).toEqual([1, 3, 4]);
+  });
 });

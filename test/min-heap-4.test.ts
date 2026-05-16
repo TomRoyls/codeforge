@@ -396,5 +396,13 @@ describe('MinHeap', () => {
       const arr = heap.toArray();
       expect(arr.length).toBe(3);
     });
+
+    it('should handle contains', () => {
+      const heap = new MinHeap<number>();
+      heap.insert(3);
+      heap.insert(1);
+      expect(heap.contains(3)).toBe(true);
+      expect(heap.contains(99)).toBe(false);
+    });
   });
 });

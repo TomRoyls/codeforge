@@ -312,5 +312,12 @@ describe('Matrix2', () => {
       const result = m.transpose();
       expect(result.toArray()).toEqual([[1, 4], [2, 5], [3, 6]]);
     });
+
+    it('should handle clone', () => {
+      const m = Matrix2.fromArray([[1, 2], [3, 4]]);
+      const c = m.clone();
+      expect(c.toArray()).toEqual([[1, 2], [3, 4]]);
+      expect(c).not.toBe(m);
+    });
   });
 });

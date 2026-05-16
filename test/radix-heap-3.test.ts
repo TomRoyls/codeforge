@@ -386,4 +386,13 @@ describe('RadixHeap3', () => {
         heap.insert(5, 'a');
         expect(heap.isEmpty()).toBe(false);
     });
+
+    it('should handle clear', () => {
+        const heap = new RadixHeap3<string>();
+        heap.insert(5, 'a');
+        heap.insert(3, 'b');
+        heap.clear();
+        expect(heap.isEmpty()).toBe(true);
+        expect(heap.size).toBe(0);
+    });
 });

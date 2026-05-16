@@ -435,4 +435,14 @@ describe('ProbabilityMap2', () => {
     map.clear();
     expect(map.size).toBe(0);
   });
+
+  it('should handle normalize', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    map.set('b', 30);
+    map.normalize();
+    const entries = map.entries();
+    const totalProb = entries.reduce((sum, e) => sum + e[1].probability, 0);
+    expect(totalProb).toBeCloseTo(1, 5);
+  });
 });

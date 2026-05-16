@@ -334,4 +334,10 @@ describe('ProbabilisticSet2', () => {
     set.add('y');
     expect(set.bitCount()).toBeGreaterThan(0);
   });
+
+  it('should handle falsePositiveRate', () => {
+    const set = new ProbabilisticSet2<string>(100, 0.01);
+    expect(set.falsePositiveRate()).toBeLessThanOrEqual(1);
+    expect(set.falsePositiveRate()).toBeGreaterThan(0);
+  });
 });
