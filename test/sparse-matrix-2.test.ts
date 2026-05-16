@@ -401,4 +401,8 @@ describe('SparseMatrix2', () => {
     expect(t.get(1, 0)).toBe(4);
     expect(t.get(0, 2)).toBe(7);
   });
+  it('should handle get on unset position', () => {
+    const m = new SparseMatrix2(3, 3);
+    expect(m.get(0, 0)).toBe(0);
+  });
 });

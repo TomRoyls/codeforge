@@ -455,4 +455,11 @@ describe('SpatialIndex2', () => {
     index.remove('a')
     expect(index.isEmpty()).toBe(true)
   })
+  it('should handle insert after remove', () => {
+    const index = new SpatialIndex2()
+    index.insert('a', 0, 0)
+    index.remove('a')
+    index.insert('b', 5, 5)
+    expect(index.isEmpty()).toBe(false)
+  })
 })

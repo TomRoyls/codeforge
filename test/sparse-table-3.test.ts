@@ -285,4 +285,8 @@ describe("SparseTable3", () => {
     expect(st.query(0, 4)).toBe(15);
     expect(st.query(1, 3)).toBe(9);
   });
+  it('should handle toArray after construction', () => {
+    const st = new SparseTable3([3, 1, 4], 'min');
+    expect(st.toArray()).toEqual([3, 1, 4]);
+  });
 });

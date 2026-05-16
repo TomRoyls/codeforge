@@ -401,4 +401,10 @@ describe('SpatialHash2', () => {
     const results = hash.query(5, 5, 2);
     expect(results.length).toBe(1);
   });
+  it('should handle multiple inserts at same position', () => {
+    const hash = new SpatialHash2<number>(10);
+    hash.insert('a', 5, 5);
+    hash.insert('b', 5, 5);
+    expect(hash.size).toBe(2);
+  });
 });

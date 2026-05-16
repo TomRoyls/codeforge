@@ -300,4 +300,8 @@ describe("SparseTable", () => {
     expect(st.rangeMinQuery(0, 0)).toBe(42);
     expect(st.rangeMaxQuery(0, 0)).toBe(42);
   });
+  it('should handle getSize', () => {
+    const st = new SparseTable([1, 2, 3, 4, 5]);
+    expect(st.getSize()).toBe(5);
+  });
 });

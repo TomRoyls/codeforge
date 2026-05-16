@@ -506,5 +506,12 @@ describe('SkipListMap3', () => {
       expect(map.get(1000000)).toBe(1);
       expect(map.get(999999999)).toBe(2);
     });
+
+    it('should handle has on nonexistent key', () => {
+      const map = new SkipListMap3<number>();
+      map.set(1, 'a');
+      expect(map.has(1)).toBe(true);
+      expect(map.has(99)).toBe(false);
+    });
   });
 });

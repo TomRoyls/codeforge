@@ -461,4 +461,9 @@ describe('SplayTreeMap2', () => {
     expect(map.delete(99)).toBe(false);
     expect(map.size).toBe(1);
   });
+  it('should handle get nonexistent key', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    expect(map.get(99)).toBeUndefined();
+  });
 });

@@ -550,4 +550,15 @@ describe('SkewHeap3', () => {
     heap.insert(3);
     expect(heap.toArray().length).toBe(4);
   });
+  it('should handle extractMin in order', () => {
+    const heap = new SkewHeap3<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.insert(1);
+    expect(heap.extractMin()).toBe(1);
+    expect(heap.extractMin()).toBe(3);
+    expect(heap.extractMin()).toBe(5);
+    expect(heap.extractMin()).toBe(7);
+  });
 });

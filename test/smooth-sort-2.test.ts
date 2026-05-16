@@ -261,5 +261,11 @@ describe('SmoothSort2', () => {
       sorter.sort([1, 2, 3, 4, 5]);
       expect(sorter.getComparisons()).toBeGreaterThanOrEqual(0);
     });
+
+    it('should handle reverse sorted array', () => {
+      const sorter = new SmoothSort2();
+      const sorted = sorter.sort([5, 4, 3, 2, 1]);
+      expect(sorted).toEqual([1, 2, 3, 4, 5]);
+    });
   });
 });

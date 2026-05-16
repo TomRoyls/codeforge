@@ -307,5 +307,11 @@ describe('ShellSort', () => {
       expect(sorter.isSorted()).toBe(true);
       expect(sorter.getSwaps()).toBe(0);
     });
+
+    it('should handle reverse sorted array', () => {
+      const sorter = new ShellSort<number>([5, 4, 3, 2, 1]);
+      sorter.sort();
+      expect(sorter.isSorted()).toBe(true);
+    });
   });
 });
