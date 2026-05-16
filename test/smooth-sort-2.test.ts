@@ -285,7 +285,8 @@ describe('SmoothSort2', () => {
   });
   it('should handle isSorted after sort', () => {
     const sorter = new SmoothSort2();
-    sorter.sort([3, 1, 2]);
-    expect(sorter.isSorted()).toBe(true);
+    const arr = [3, 1, 2];
+    const sorted = sorter.sort(arr);
+    expect(sorter.isSorted(sorted)).toBe(true);
   });
 });

@@ -614,6 +614,6 @@ describe('TernaryHeap', () => {
     heap.insert(3);
     heap.insert(7);
     heap.extractMin();
-    expect(heap.size()).toBe(2);
+    expect(heap.size).toBe(2);
   });
 });

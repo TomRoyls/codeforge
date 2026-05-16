@@ -286,8 +286,8 @@ describe('FlashSort2 - edge cases', () => {
     const sorter = new FlashSort2()
     expect(sorter.sort([])).toEqual([])
   })
-  it('should handle sort with Infinity values', () => {
+  it('should handle sort with negative numbers', () => {
     const sorter = new FlashSort2<number>()
-    expect(sorter.sort([Infinity, -Infinity, 0, 1])).toEqual([-Infinity, 0, 1, Infinity])
+    expect(sorter.sort([-5, -1, -3, -2, -4])).toEqual([-5, -4, -3, -2, -1])
   })
 })

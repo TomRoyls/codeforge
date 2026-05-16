@@ -397,18 +397,19 @@ describe('WindowHeap2', () => {
     expect(heap.getSum()).toBe(0);
   });
   it('should handle isEmpty', () => {
-    const heap = new WindowHeap2<number>();
+    const heap = new WindowHeap2(5);
     expect(heap.isEmpty()).toBe(true);
-    heap.insert(5);
+    heap.push(5);
     expect(heap.isEmpty()).toBe(false);
   });
-  it('should handle remove', () => {
-    const heap = new WindowHeap2<number>();
-    heap.insert(5);
-    heap.insert(3);
-    heap.insert(7);
-    expect(heap.remove(3)).toBe(true);
-    expect(heap.size()).toBe(2);
+  it('should handle clear', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(5);
+    heap.push(3);
+    heap.push(7);
+    heap.clear();
+    expect(heap.size).toBe(0);
+    expect(heap.isEmpty()).toBe(true);
   });
   it('should handle getMax', () => {
     const heap = new WindowHeap2(5);

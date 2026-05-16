@@ -470,10 +470,10 @@ describe('IntervalHeap3', () => {
   });
   it('should handle size property', () => {
     const heap = new IntervalHeap3<number>();
-    expect(heap.size()).toBe(0);
+    expect(heap.size).toBe(0);
     heap.insert(5);
     heap.insert(3);
-    expect(heap.size()).toBe(2);
+    expect(heap.size).toBe(2);
   });
   it('should handle clear then re-insert', () => {
     const heap = new IntervalHeap3<number>();

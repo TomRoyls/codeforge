@@ -486,11 +486,11 @@ describe('ProbabilityMap2', () => {
     map.set('b', 20);
     expect(map.totalWeight()).toBe(30);
   });
-  it('should handle get', () => {
+  it('should handle getWeight', () => {
     const map = new ProbabilityMap2();
     map.set('a', 10);
-    expect(map.get('a')).toBe(10);
-    expect(map.get('b')).toBeUndefined();
+    expect(map.getWeight('a')).toBe(10);
+    expect(map.getWeight('b')).toBeUndefined();
   });
   it('should handle totalWeight after delete and re-add', () => {
     const map = new ProbabilityMap2();

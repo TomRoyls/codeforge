@@ -543,6 +543,7 @@ describe('LinkedHashSet', () => {
   it('should handle getTimeComplexity', () => {
     const set = new LinkedHashSet<number>();
     const complexity = set.getTimeComplexity();
-    expect(typeof complexity).toBe('string');
+    expect(typeof complexity).toBe('object');
+    expect(complexity).toHaveProperty('add');
   });
 });

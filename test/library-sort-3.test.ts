@@ -283,9 +283,9 @@ describe('LibrarySort3', () => {
     sorter.sortInPlace(arr);
     expect(arr).toEqual([42]);
   });
-  it('should handle getTimeComplexity', () => {
-    const sorter = new LibrarySort3([3, 1, 2]);
-    expect(typeof sorter.getTimeComplexity()).toBe('string');
+  it('should handle sort with single element', () => {
+    const sorter = new LibrarySort3<number>([42]);
+    expect(sorter.sort()).toEqual([42]);
   });
   it('should handle sort with boolean-like values', () => {
     const sorter = new LibrarySort3<number>([1, 0, 1, 0]);

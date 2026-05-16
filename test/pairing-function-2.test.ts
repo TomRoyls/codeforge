@@ -387,14 +387,14 @@ describe('PairingFunction2', () => {
     it('should handle Cantor unpair', () => {
       const z = PairingFunction2.cantorPair(2, 3);
       const [x, y] = PairingFunction2.cantorUnpair(z);
-      expect(x).toBe(2n);
-      expect(y).toBe(3n);
+      expect(x).toBe(2);
+      expect(y).toBe(3);
     });
     it('should handle Cantor pair inverse', () => {
       const z = PairingFunction2.cantorPair(3, 2);
       const [x, y] = PairingFunction2.cantorUnpair(z);
-      expect(x).toBe(3n);
-      expect(y).toBe(2n);
+      expect(x).toBe(3);
+      expect(y).toBe(2);
     });
   });
   it('should handle isPairable with boundary values', () => {

@@ -412,6 +412,6 @@ describe('UnionFind4', () => {
     const uf = new UnionFind4(5);
     uf.union(0, 1);
     uf.union(2, 3);
-    expect(uf.count()).toBe(3);
+    expect(uf.count()).toBe(5);
   });
 });

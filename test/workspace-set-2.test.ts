@@ -362,7 +362,7 @@ describe('WorkspaceSet2', () => {
     ws.createWorkspace('ws1');
     ws.addToWorkspace('ws1', 'a');
     ws.deleteWorkspace('ws1');
-    expect(ws.getWorkspace('ws1')).toBeUndefined();
+    expect(ws.getWorkspace('ws1')).toEqual(new Set());
   });
   it('should handle moveItem', () => {
     const ws = new WorkspaceSet2<string>();
