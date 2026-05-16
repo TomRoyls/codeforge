@@ -261,4 +261,10 @@ describe('FibonacciSearch', () => {
     expect(fs.contains(20)).toBe(true);
     expect(fs.contains(99)).toBe(false);
   });
+
+  it('should handle indexOf', () => {
+    const fs = new FibonacciSearch([10, 20, 30]);
+    expect(fs.indexOf(20)).toBe(1);
+    expect(fs.indexOf(99)).toBe(-1);
+  });
 });

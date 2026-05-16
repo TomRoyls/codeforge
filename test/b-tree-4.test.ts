@@ -517,4 +517,12 @@ describe('BTree', () => {
       expect(t.max()).toBe(30);
     });
   });
+
+  it('should handle getHeight', () => {
+    const t = new BTree<number>(3);
+    t.insert(10);
+    t.insert(20);
+    t.insert(30);
+    expect(t.getHeight()).toBeGreaterThan(0);
+  });
 });

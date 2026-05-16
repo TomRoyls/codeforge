@@ -333,4 +333,13 @@ describe('CountMinSketch3', () => {
     cms.reset();
     expect(cms.estimate('x')).toBe(0);
   });
+
+  it('should handle merge', () => {
+    const cms1 = new CountMinSketch3(100, 5);
+    cms1.update('a', 10);
+    const cms2 = new CountMinSketch3(100, 5);
+    cms2.update('a', 5);
+    cms1.merge(cms2);
+    expect(cms1.estimate('a')).toBeGreaterThanOrEqual(15);
+  });
 });

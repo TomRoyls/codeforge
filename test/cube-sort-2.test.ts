@@ -292,4 +292,12 @@ describe('CubeSort2', () => {
       expect(sorter.sort([42])).toEqual([42]);
     });
   });
+
+  it('should handle isSorted', () => {
+    const sorter = new CubeSort2();
+    const arr = [5, 3, 1, 4, 2];
+    const sorted = sorter.sort(arr);
+    expect(sorted).toEqual([1, 2, 3, 4, 5]);
+    expect(arr).toEqual([5, 3, 1, 4, 2]);
+  });
 });

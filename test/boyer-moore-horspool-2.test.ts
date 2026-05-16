@@ -257,5 +257,10 @@ describe('BoyerMooreHorspool2', () => {
     expect(searcher.findFirst('xyzabcdef')).toBe(3);
     expect(searcher.findFirst('no match')).toBe(-1);
   });
+
+  it('should handle pattern method', () => {
+    const searcher = new BoyerMooreHorspool2('test');
+    expect(searcher.pattern()).toBe('test');
+  });
 });
 });

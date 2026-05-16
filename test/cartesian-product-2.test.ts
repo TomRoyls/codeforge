@@ -355,5 +355,12 @@ describe('CartesianProduct2', () => {
     expect(cp.indexOf([1, 3])).toBe(0)
     expect(cp.indexOf([2, 4])).toBe(3)
   })
+
+  it('should handle forEach', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3]])
+    const collected: number[][] = []
+    cp.forEach(e => collected.push(e))
+    expect(collected.length).toBe(2)
+  })
   })
 })

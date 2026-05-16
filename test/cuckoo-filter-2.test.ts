@@ -341,4 +341,13 @@ describe('CuckooFilter2', () => {
       expect(filter.contains('hello')).toBe(false);
     });
   });
+
+  it('should handle clear', () => {
+    const filter = new CuckooFilter2(100);
+    filter.insert('a');
+    filter.insert('b');
+    filter.clear();
+    expect(filter.contains('a')).toBe(false);
+    expect(filter.contains('b')).toBe(false);
+  });
 });

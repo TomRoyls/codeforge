@@ -253,4 +253,9 @@ describe('FlashSort2 - edge cases', () => {
     sorter.sortInPlace(arr)
     expect(arr).toEqual([1, 2, 3, 4, 5])
   })
+
+  it('handles custom comparator', () => {
+    const sorter = new FlashSort2<number>((a, b) => b - a)
+    expect(sorter.sort([3, 1, 4, 1, 5])).toEqual([5, 4, 3, 1, 1])
+  })
 })

@@ -385,4 +385,14 @@ describe('CSRGraph2', () => {
       expect(graph.edgeCount()).toBe(3);
     });
   });
+
+  it('should handle getEdgeWeight', () => {
+    const graph = new CSRGraph2(3);
+    graph.addEdge(0, 1, 7);
+    graph.addEdge(0, 2, 3);
+    graph.build();
+    const neighbors = graph.getNeighbors(0);
+    expect(neighbors[0]!.weight).toBe(7);
+    expect(neighbors[1]!.weight).toBe(3);
+  });
 });

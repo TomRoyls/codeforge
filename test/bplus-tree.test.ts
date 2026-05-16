@@ -368,4 +368,13 @@ describe('BPlusTree', () => {
     tree.insert(5, 'e');
     expect(tree.size).toBe(5);
   });
+
+  it('should handle min and max', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(5, 'e');
+    tree.insert(1, 'a');
+    tree.insert(3, 'c');
+    expect(tree.min()!.key).toBe(1);
+    expect(tree.max()!.key).toBe(5);
+  });
 });

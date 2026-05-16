@@ -265,4 +265,10 @@ describe('CountingSort', () => {
       expect(sorter.getRange()).toBeGreaterThanOrEqual(0);
     });
   });
+
+  it('should handle getMin and getMax', () => {
+    const sorter = new CountingSort([3, -1, 5, 2]);
+    expect(sorter.getMin()).toBe(-1);
+    expect(sorter.getMax()).toBe(5);
+  });
 });
