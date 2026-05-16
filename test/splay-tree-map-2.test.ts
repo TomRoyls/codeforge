@@ -432,4 +432,11 @@ describe('SplayTreeMap2', () => {
     expect(map.has(1)).toBe(false);
     expect(map.has(2)).toBe(true);
   });
+
+  it('should handle isEmpty', () => {
+    const map = new SplayTreeMap2<number, string>();
+    expect(map.isEmpty()).toBe(true);
+    map.set(1, 'a');
+    expect(map.isEmpty()).toBe(false);
+  });
 });

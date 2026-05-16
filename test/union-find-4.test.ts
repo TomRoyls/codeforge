@@ -356,4 +356,12 @@ describe('UnionFind4', () => {
     expect(uf.componentSize(0)).toBe(3);
     expect(uf.componentSize(3)).toBe(1);
   });
+
+  it('should handle connected', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    expect(uf.connected(0, 1)).toBe(true);
+    expect(uf.connected(0, 2)).toBe(false);
+  });
 });

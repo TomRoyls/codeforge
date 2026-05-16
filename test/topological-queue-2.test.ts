@@ -423,4 +423,13 @@ describe('TopologicalQueue2', () => {
     const nodes = ts.getNodes();
     expect(nodes.length).toBe(3);
   });
+
+  it('should handle sort with no edges', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('A');
+    ts.addNode('B');
+    ts.addNode('C');
+    const sorted = ts.sort();
+    expect(sorted.length).toBe(3);
+  });
 });

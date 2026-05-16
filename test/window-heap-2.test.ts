@@ -364,4 +364,12 @@ describe('WindowHeap2', () => {
     const win = heap.getWindow();
     expect(win.length).toBe(3);
   });
+
+  it('should handle getSum', () => {
+    const heap = new WindowHeap2<number>();
+    heap.push(1);
+    heap.push(2);
+    heap.push(3);
+    expect(heap.getSum()).toBe(6);
+  });
 });

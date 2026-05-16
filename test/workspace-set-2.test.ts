@@ -312,5 +312,15 @@ describe('WorkspaceSet2', () => {
       ws.addToWorkspace('ws1', 'b');
       expect(ws.totalItems()).toBe(2);
     });
+
+    it('should handle moveItem', () => {
+      const ws = new WorkspaceSet2<string>();
+      ws.createWorkspace('ws1');
+      ws.createWorkspace('ws2');
+      ws.addToWorkspace('ws1', 'item');
+      expect(ws.moveItem('item', 'ws1', 'ws2')).toBe(true);
+      expect(ws.getWorkspace('ws1').has('item')).toBe(false);
+      expect(ws.getWorkspace('ws2').has('item')).toBe(true);
+    });
   });
 });

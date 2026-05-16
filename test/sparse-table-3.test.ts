@@ -265,5 +265,10 @@ describe("SparseTable3", () => {
       expect(st3.query(0, 0)).toBe(7);
       expect(st4.query(0, 0)).toBe(7);
     });
+
+    it('should handle size', () => {
+      const st = new SparseTable3([1, 2, 3, 4, 5]);
+      expect(st.size()).toBe(5);
+    });
   });
 });

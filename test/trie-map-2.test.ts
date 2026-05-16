@@ -352,5 +352,13 @@ describe('TrieMap2', () => {
       t.set('a', 1);
       expect(t.isEmpty()).toBe(false);
     });
+
+    it('should handle clear', () => {
+      const t = new TrieMap2<number>();
+      t.set('apple', 1);
+      t.set('banana', 2);
+      t.clear();
+      expect(t.isEmpty()).toBe(true);
+    });
   });
 });

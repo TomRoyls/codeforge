@@ -353,5 +353,14 @@ describe('ThreadSafeStack2', () => {
     stack.push(1)
     expect(stack.isEmpty()).toBe(false)
   })
+
+  it('should handle lock and unlock', () => {
+    const stack = new ThreadSafeStack2<number>()
+    stack.push(1)
+    stack.lock()
+    expect(() => stack.pop()).toThrow()
+    stack.unlock()
+    expect(stack.pop()).toBe(1)
+  })
   })
 })

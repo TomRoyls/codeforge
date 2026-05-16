@@ -368,5 +368,12 @@ describe('TernarySearchTrie2', () => {
       expect(trie.get('hello')).toBeUndefined()
       expect(trie.has('world')).toBe(true)
     })
+
+    it('should handle clear', () => {
+      trie.set('apple', 1)
+      trie.set('banana', 2)
+      trie.clear()
+      expect(trie.size).toBe(0)
+    })
   })
 })

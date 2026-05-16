@@ -426,5 +426,14 @@ describe('SpatialIndex2', () => {
       expect(index.size).toBe(0)
       expect(index.isEmpty()).toBe(true)
     })
+
+    it('should handle queryNearest', () => {
+      const index = new SpatialIndex2()
+      index.insert('a', 0, 0)
+      index.insert('b', 10, 10)
+      index.insert('c', 5, 5)
+      const nearest = index.queryNearest(4, 4, 2)
+      expect(nearest.length).toBeGreaterThan(0)
+    })
   })
 })

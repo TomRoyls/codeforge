@@ -369,5 +369,14 @@ describe('SpatialHash2', () => {
       const results = hash.query(5, 5, 10);
       expect(results.length).toBeGreaterThanOrEqual(1);
     });
+
+    it('should handle remove', () => {
+      const hash = new SpatialHash2<number>(10);
+      hash.insert('a', 5, 5);
+      hash.insert('b', 10, 10);
+      expect(hash.remove('a')).toBe(true);
+      expect(hash.has('a')).toBe(false);
+      expect(hash.size).toBe(1);
+    });
   });
 });

@@ -352,4 +352,12 @@ describe("WaveletTree", () => {
     const tree = new WaveletTree(arr);
     expect(tree.getSize()).toBe(6);
   });
+
+  it('should handle access multiple', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.access(0)).toBe(3);
+    expect(tree.access(3)).toBe(1);
+    expect(tree.access(4)).toBe(5);
+  });
 });
