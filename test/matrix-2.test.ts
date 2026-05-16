@@ -326,4 +326,10 @@ describe('Matrix2', () => {
       expect(m.toArray()).toEqual([[7, 7, 7], [7, 7, 7]]);
     });
   });
+
+  it('should handle getRows and getCols', () => {
+    const m = new Matrix2(3, 4);
+    expect(m.rows()).toBe(3);
+    expect(m.cols()).toBe(4);
+  });
 });

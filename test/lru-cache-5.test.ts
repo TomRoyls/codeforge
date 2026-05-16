@@ -397,13 +397,22 @@ describe('LRUCache5', () => {
       expect(cache.size).toBe(1);
     });
 
-    it('should handle delete', () => {
-      const cache = new LRUCache5<number, number>(3);
-      cache.set(1, 10);
-      cache.set(2, 20);
-      cache.delete(1);
-      expect(cache.get(1)).toBeUndefined();
-      expect(cache.size).toBe(1);
-    });
+  it('should handle delete', () => {
+    const cache = new LRUCache5<number, number>(3);
+    cache.set(1, 10);
+    cache.set(2, 20);
+    cache.delete(1);
+    expect(cache.get(1)).toBeUndefined();
+    expect(cache.size).toBe(1);
   });
+
+  it('should handle entries', () => {
+    const cache = new LRUCache5<number, number>(5);
+    cache.set(1, 10);
+    cache.set(2, 20);
+    cache.set(3, 30);
+    const entries = cache.entries();
+    expect(entries.length).toBe(3);
+  });
+});
 });

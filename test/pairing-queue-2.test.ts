@@ -487,4 +487,13 @@ describe('PairingQueue2', () => {
       expect(queue.peek()).toBe(1);
     });
   });
+
+  it('should handle toArray', () => {
+    const queue = new PairingQueue2<number>();
+    queue.enqueue(3);
+    queue.enqueue(1);
+    queue.enqueue(2);
+    const arr = queue.toArray();
+    expect(arr.length).toBe(3);
+  });
 });

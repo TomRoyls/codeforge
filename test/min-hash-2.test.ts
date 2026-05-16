@@ -316,4 +316,10 @@ describe('MinHash2', () => {
     const sig = mh.getSignature();
     expect(sig.length).toBe(32);
   });
+
+  it('should handle addAll', () => {
+    const mh = new MinHash2(64);
+    mh.addAll(['x', 'y', 'z']);
+    expect(mh.size()).toBe(3);
+  });
 });

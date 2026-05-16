@@ -389,5 +389,14 @@ describe('LFUCache4', () => {
     expect(cache.has('a')).toBe(false)
     expect(cache.has('b')).toBe(true)
   })
+
+  it('should handle eviction', () => {
+    const cache = new LFUCache4<string, number>(2)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.get('a')
+    cache.set('c', 3)
+    expect(cache.has('a')).toBe(true)
+  })
   })
 })

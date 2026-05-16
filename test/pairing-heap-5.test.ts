@@ -477,4 +477,14 @@ describe('PairingHeapNode5', () => {
     expect(heap.isEmpty()).toBe(true);
     expect(heap.size).toBe(0);
   });
+
+  it('should handle toArray', () => {
+    const heap = new PairingHeap5<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    const arr = heap.toArray();
+    expect(arr.length).toBe(3);
+    expect(arr).toContain(3);
+  });
 });

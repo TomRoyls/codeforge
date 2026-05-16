@@ -234,4 +234,10 @@ describe('OddEvenSort3 - Edge Cases', () => {
     sorter.sort([3, 1, 2]);
     expect(sorter.getSwapCount()).toBeGreaterThanOrEqual(0);
   });
+
+  it('should handle getPassCount', () => {
+    const sorter = new OddEvenSort3<number>();
+    sorter.sort([3, 1, 2]);
+    expect(sorter.getPassCount()).toBeGreaterThanOrEqual(0);
+  });
 });

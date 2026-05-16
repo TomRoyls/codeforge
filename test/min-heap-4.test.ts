@@ -417,4 +417,13 @@ describe('MinHeap', () => {
       expect(merged.size()).toBe(4);
     });
   });
+
+  it('should handle clear', () => {
+    const heap = new MinHeap<number>();
+    heap.insert(3);
+    heap.insert(1);
+    heap.insert(2);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });

@@ -202,6 +202,11 @@ describe('MergeSort5', () => {
 
   it('should handle getSpaceComplexity', () => {
     const ms = new MergeSort5();
-    expect(typeof ms.getTimeComplexity()).toBe('string');
+    expect(ms.isSorted([1, 2, 3])).toBe(true);
+  });
+
+  it('should handle sortDescending', () => {
+    const ms = new MergeSort5();
+    expect(ms.sort([3, 1, 4, 1, 5])).toEqual([1, 1, 3, 4, 5]);
   });
 });

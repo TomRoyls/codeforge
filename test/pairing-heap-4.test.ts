@@ -414,4 +414,12 @@ describe('PairingHeap4', () => {
       expect(heap.size).toBe(2);
     });
   });
+
+  it('should handle clear', () => {
+    const heap = new PairingHeap4<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.isEmpty()).toBe(true);
+  });
 });
