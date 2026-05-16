@@ -375,4 +375,10 @@ describe('FenwickTree3 - Edge Cases', () => {
     expect(ft.get(0)).toBe(10);
     expect(ft.get(1)).toBe(20);
   });
+  it('should handle set method', () => {
+    const ft = new FenwickTree3(5);
+    ft.update(0, 10);
+    ft.set(0, 50);
+    expect(ft.get(0)).toBe(50);
+  });
 });

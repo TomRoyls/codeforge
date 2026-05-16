@@ -372,4 +372,10 @@ describe('CartesianProduct2', () => {
     expect(cp.at(0)).toEqual([1, 3])
     expect(cp.at(3)).toEqual([2, 4])
   })
+  it('should handle forEach', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+    const collected: number[][] = []
+    cp.forEach(x => collected.push(x))
+    expect(collected.length).toBe(4)
+  })
 })

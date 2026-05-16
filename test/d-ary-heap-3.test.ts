@@ -548,4 +548,11 @@ describe('DAryHeap', () => {
       expect(heap.extract()).toBe(80)
     })
   })
+  it('should handle toArray', () => {
+    const heap = new DAryHeap<number>(3);
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    expect(heap.toArray().length).toBe(3);
+  })
 })

@@ -348,4 +348,8 @@ describe('ElasticQueue2', () => {
     queue.enqueue(2);
     expect(queue.peek()).toBe(1);
   });
+  it('should handle peek on empty queue', () => {
+    const queue = new ElasticQueue2<number>();
+    expect(queue.peek()).toBeUndefined();
+  });
 });

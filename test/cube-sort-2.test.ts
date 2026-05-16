@@ -313,4 +313,9 @@ describe('CubeSort2', () => {
     expect(sorted).toEqual([1, 2, 3]);
     expect(arr).toEqual([3, 1, 2]);
   });
+  it('should handle already sorted array', () => {
+    const sorter = new CubeSort2();
+    const sorted = sorter.sort([1, 2, 3, 4, 5]);
+    expect(sorted).toEqual([1, 2, 3, 4, 5]);
+  });
 });

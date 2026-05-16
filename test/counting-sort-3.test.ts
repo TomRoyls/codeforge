@@ -281,4 +281,11 @@ describe('CountingSort', () => {
     expect(sorter.getMin()).toBe(42);
     expect(sorter.getMax()).toBe(42);
   });
+  it('should handle sorted property after sort', () => {
+    const sorter = new CountingSort([5, 3, 1, 4, 2]);
+    const sorted = sorter.sort();
+    for (let i = 1; i < sorted.length; i++) {
+      expect(sorted[i]!).toBeGreaterThanOrEqual(sorted[i - 1]!);
+    }
+  });
 });

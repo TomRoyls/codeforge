@@ -442,4 +442,14 @@ describe('ChunkedList2', () => {
       expect(list.size).toBe(2);
     });
   });
+
+  it('should handle get after multiple pushes', () => {
+    const list = new ChunkedList2<number>(3);
+    list.push(10);
+    list.push(20);
+    list.push(30);
+    expect(list.get(0)).toBe(10);
+    expect(list.get(1)).toBe(20);
+    expect(list.get(2)).toBe(30);
+  });
 });

@@ -362,4 +362,12 @@ describe('CuckooFilter2', () => {
     expect(filter.delete('test')).toBe(true);
     expect(filter.contains('test')).toBe(false);
   });
+  it('should handle clear', () => {
+    const filter = new CuckooFilter2(100);
+    filter.insert('a');
+    filter.insert('b');
+    filter.clear();
+    expect(filter.contains('a')).toBe(false);
+    expect(filter.size).toBe(0);
+  });
 });

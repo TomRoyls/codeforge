@@ -391,4 +391,13 @@ describe('BPlusTree', () => {
     tree.delete(1);
     expect(tree.isEmpty()).toBe(true);
   });
+  it('should handle insert and get multiple keys', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(1, 'a');
+    tree.insert(2, 'b');
+    tree.insert(3, 'c');
+    expect(tree.get(1)).toBe('a');
+    expect(tree.get(2)).toBe('b');
+    expect(tree.get(3)).toBe('c');
+  });
 });

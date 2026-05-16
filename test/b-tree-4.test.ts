@@ -541,4 +541,8 @@ describe('BTree', () => {
     expect(t.delete(3)).toBe(true);
     expect(t.search(3)).toBe(false);
   });
+  it('should handle search on empty tree', () => {
+    const t = new BTree<number>(3);
+    expect(t.search(1)).toBe(false);
+  });
 });
