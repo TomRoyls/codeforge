@@ -342,4 +342,10 @@ describe('CountMinSketch3', () => {
     cms1.merge(cms2);
     expect(cms1.estimate('a')).toBeGreaterThanOrEqual(15);
   });
+  it('should handle reset clearing estimates', () => {
+    const cms = new CountMinSketch3(100, 5);
+    cms.update('a', 100);
+    cms.reset();
+    expect(cms.estimate('a')).toBe(0);
+  });
 });

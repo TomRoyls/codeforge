@@ -300,4 +300,10 @@ describe('CubeSort2', () => {
     expect(sorted).toEqual([1, 2, 3, 4, 5]);
     expect(arr).toEqual([5, 3, 1, 4, 2]);
   });
+  it('should handle sortInPlace single element', () => {
+    const sorter = new CubeSort2();
+    const arr = [42];
+    sorter.sortInPlace(arr);
+    expect(arr).toEqual([42]);
+  });
 });

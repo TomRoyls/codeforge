@@ -267,4 +267,9 @@ describe('FibonacciSearch', () => {
     expect(fs.indexOf(20)).toBe(1);
     expect(fs.indexOf(99)).toBe(-1);
   });
+  it('should handle contains', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    expect(fs.contains(30)).toBe(true);
+    expect(fs.contains(99)).toBe(false);
+  });
 });

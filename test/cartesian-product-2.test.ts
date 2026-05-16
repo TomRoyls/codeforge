@@ -363,4 +363,8 @@ describe('CartesianProduct2', () => {
     expect(collected.length).toBe(2)
   })
   })
+  it('should handle indexOf not found', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3]])
+    expect(cp.indexOf([9, 9])).toBe(-1)
+  })
 })

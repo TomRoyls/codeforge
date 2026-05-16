@@ -350,4 +350,10 @@ describe('CuckooFilter2', () => {
     expect(filter.contains('a')).toBe(false);
     expect(filter.contains('b')).toBe(false);
   });
+  it('should handle loadFactor', () => {
+    const filter = new CuckooFilter2(100);
+    expect(filter.loadFactor()).toBeGreaterThanOrEqual(0);
+    filter.insert('test');
+    expect(filter.loadFactor()).toBeGreaterThan(0);
+  });
 });

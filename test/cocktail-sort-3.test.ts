@@ -242,4 +242,8 @@ describe('CocktailSort3 - Type Safety', () => {
     const sorter = new CocktailSort3<string>();
     expect(sorter.sort(['a', 'b', 'a', 'c', 'b'])).toEqual(['a', 'a', 'b', 'b', 'c']);
   });
+  it('should handle empty array sort', () => {
+    const sorter = new CocktailSort3<number>();
+    expect(sorter.sort([])).toEqual([]);
+  });
 });

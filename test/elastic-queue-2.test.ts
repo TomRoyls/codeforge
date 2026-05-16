@@ -335,4 +335,11 @@ describe('ElasticQueue2', () => {
     const queue = new ElasticQueue2<number>({ maxSize: 5 });
     expect(queue.capacity()).toBe(5);
   });
+  it('should handle clear', () => {
+    const queue = new ElasticQueue2<number>();
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.clear();
+    expect(queue.isEmpty()).toBe(true);
+  });
 });

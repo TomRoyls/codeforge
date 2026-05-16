@@ -395,4 +395,10 @@ describe('CSRGraph2', () => {
     expect(neighbors[0]!.weight).toBe(7);
     expect(neighbors[1]!.weight).toBe(3);
   });
+  it('should handle getNeighbors for vertex with no edges', () => {
+    const graph = new CSRGraph2(3);
+    graph.addEdge(0, 1, 5);
+    graph.build();
+    expect(graph.getNeighbors(2)).toEqual([]);
+  });
 });

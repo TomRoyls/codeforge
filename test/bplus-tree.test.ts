@@ -377,4 +377,12 @@ describe('BPlusTree', () => {
     expect(tree.min()!.key).toBe(1);
     expect(tree.max()!.key).toBe(5);
   });
+  it('should handle delete', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(10, 'a');
+    tree.insert(20, 'b');
+    expect(tree.delete(10)).toBe(true);
+    expect(tree.get(10)).toBeUndefined();
+    expect(tree.delete(99)).toBe(false);
+  });
 });

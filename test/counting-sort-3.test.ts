@@ -271,4 +271,9 @@ describe('CountingSort', () => {
     expect(sorter.getMin()).toBe(-1);
     expect(sorter.getMax()).toBe(5);
   });
+  it('should handle constructor with negative values', () => {
+    const sorter = new CountingSort([-3, -1, -2, -5]);
+    const sorted = sorter.sort();
+    expect(sorted).toEqual([-5, -3, -2, -1]);
+  });
 });

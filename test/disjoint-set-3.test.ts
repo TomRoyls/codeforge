@@ -413,4 +413,13 @@ describe('DisjointSet3', () => {
     expect(ds.setSize('a')).toBe(2);
     expect(ds.setSize('c')).toBe(1);
   });
+  it('should handle count method', () => {
+    const ds = new DisjointSet3<string>();
+    ds.makeSet('a');
+    ds.makeSet('b');
+    ds.makeSet('c');
+    expect(ds.count()).toBe(3);
+    ds.union('a', 'b');
+    expect(ds.count()).toBe(2);
+  });
 });

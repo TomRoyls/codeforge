@@ -325,4 +325,8 @@ describe('FibonacciSearch4', () => {
     const searcher = new FibonacciSearch4([10, 20, 20, 20, 30]);
     expect(searcher.searchLast(20)).toBe(3);
   });
+  it('should handle searchLast not found', () => {
+    const searcher = new FibonacciSearch4([10, 20, 30, 40]);
+    expect(searcher.searchLast(99)).toBe(-1);
+  });
 });
