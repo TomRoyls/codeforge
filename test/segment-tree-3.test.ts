@@ -359,4 +359,17 @@ describe('SegmentTree', () => {
       expect(tree.query(0, 4)).toBe(22)
     })
   })
+  it('should handle getTreeArray', () => {
+    const tree = new SegmentTree([1, 2, 3])
+    const arr = tree.getTreeArray()
+    expect(arr.length).toBeGreaterThan(0)
+  })
+})
+  })
+  it('should handle getTreeArray after update', () => {
+    const tree = new SegmentTree([1, 2, 3, 4, 5])
+    tree.update(0, 10)
+    const arr = tree.getTreeArray()
+    expect(arr[0]).toBe(24)
+  })
 })

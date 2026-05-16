@@ -351,4 +351,17 @@ describe('RobinHoodHash2', () => {
     expect(hash.size).toBe(0);
     expect(hash.has('a')).toBe(false);
   });
+  it('should handle get on empty hash', () => {
+    const hash = new RobinHoodHash2<string, number>();
+    expect(hash.get('nonexistent')).toBeUndefined();
+  });
+  it('should handle capacity after resize', () => {
+    const hash = new RobinHoodHash2<string, number>(4, 0.75);
+    hash.set('a', 1);
+    hash.set('b', 2);
+    hash.set('c', 3);
+    hash.set('d', 4);
+    expect(hash.capacity()).toBeGreaterThan(4);
+    expect(hash.size).toBe(4);
+  });
 });

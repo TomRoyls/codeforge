@@ -323,4 +323,12 @@ describe('WaveletTree3', () => {
       expect(tree.access(3)).toBe('a');
     });
   });
+  it('should handle toString', () => {
+    const tree = new WaveletTree3('hello');
+    expect(tree.toString()).toBe('hello');
+  });
+  it('should handle rank on empty string', () => {
+    const tree = new WaveletTree3('');
+    expect(tree.length()).toBe(0);
+  });
 });

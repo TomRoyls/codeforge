@@ -395,4 +395,19 @@ describe('WeightedGraph2', () => {
     graph.addVertex('B');
     expect(graph.getEdgeWeight('A', 'B')).toBeUndefined();
   });
+  it('should handle vertexCount after addVertex', () => {
+    const graph = new WeightedGraph2<string>();
+    graph.addVertex('X');
+    graph.addVertex('Y');
+    graph.addVertex('Z');
+    expect(graph.vertexCount()).toBe(3);
+  });
+  it('should handle hasEdge', () => {
+    const graph = new WeightedGraph2();
+    graph.addVertex('A');
+    graph.addVertex('B');
+    graph.addEdge('A', 'B', 5);
+    expect(graph.hasEdge('A', 'B')).toBe(true);
+    expect(graph.hasEdge('B', 'A')).toBe(false);
+  });
 });

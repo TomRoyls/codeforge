@@ -420,4 +420,22 @@ describe('TernarySearchTrie2', () => {
     expect(trie.has('hello')).toBe(false)
     expect(trie.has('world')).toBe(true)
   })
+  it('should handle size after clear', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('apple', 1)
+    trie.set('banana', 2)
+    trie.clear()
+    expect(trie.size).toBe(0)
+  })
+})
+  it('should handle values', () => {
+    const trie = new TernarySearchTrie2<number>()
+    trie.set('a', 1)
+    trie.set('b', 2)
+    const values: number[] = []
+    trie.forEach((value) => values.push(value))
+    expect(values.length).toBe(2)
+    expect(values).toContain(1)
+    expect(values).toContain(2)
+  })
 })

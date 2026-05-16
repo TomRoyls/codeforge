@@ -262,4 +262,13 @@ describe('SpaghettiSort2', () => {
       expect(sorter.toArray()).toEqual([-3, -1, 0, 2]);
     });
   });
+  it('should handle sortDescending', () => {
+    const sorter = new SpaghettiSort2([1, 3, 2]);
+    const result = sorter.sortDescending([1, 3, 2]);
+    expect(result).toEqual([3, 2, 1]);
+  });
+  it('should handle findMaxIndex', () => {
+    const sorter = new SpaghettiSort2([]);
+    expect(SpaghettiSort2.findMaxIndex([3, 1, 5, 2])).toBe(2);
+  });
 });

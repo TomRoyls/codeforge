@@ -527,4 +527,21 @@ describe('RingBuffer6', () => {
     const buffer = new RingBuffer6<number>(5);
     expect(buffer.capacity()).toBe(5);
   });
+  it('should handle push after clear', () => {
+    const buffer = new RingBuffer6<number>(5);
+    buffer.push(1);
+    buffer.push(2);
+    buffer.clear();
+    buffer.push(3);
+    expect(buffer.size).toBe(1);
+    expect(buffer.get(0)).toBe(3);
+  });
+  it('should handle resize on many pushes', () => {
+    const buffer = new RingBuffer6<number>(4);
+    for (let i = 0; i < 20; i++) {
+      buffer.push(i);
+    }
+    expect(buffer.size).toBe(20);
+    expect(buffer.capacity).toBeGreaterThanOrEqual(20);
+  });
 });

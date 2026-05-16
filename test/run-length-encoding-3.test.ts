@@ -334,4 +334,20 @@ describe("RunLengthEncoding3", () => {
     expect(runs[0]!.char).toBe('A');
     expect(runs[0]!.count).toBe(3);
   });
+  it('should handle clear then encode', () => {
+    const rle = new RunLengthEncoding3();
+    rle.append('A', 3);
+    rle.clear();
+    expect(rle.isEmpty()).toBe(true);
+    const encoded = rle.encode('BBBCC');
+    expect(encoded.length).toBeGreaterThan(0);
+  });
+  it('should handle clear after encode', () => {
+    const rle = new RunLengthEncoding3();
+    rle.encode('AAABBC');
+    expect(rle.runCount).toBe(3);
+    rle.clear();
+    expect(rle.runCount).toBe(0);
+    expect(rle.length).toBe(0);
+  });
 });

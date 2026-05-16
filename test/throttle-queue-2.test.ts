@@ -439,4 +439,17 @@ describe('ThrottleQueue2', () => {
     queue.enqueue(1);
     expect(queue.isEmpty()).toBe(false);
   });
+  it('should handle peek after enqueue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
+    queue.enqueue(42);
+    expect(queue.peek()).toBe(42);
+    expect(queue.size).toBe(1);
+  });
+  it('should handle size after dequeue', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 1 });
+    queue.enqueue(10);
+    queue.enqueue(20);
+    queue.dequeue();
+    expect(queue.size).toBe(1);
+  });
 });

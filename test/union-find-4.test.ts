@@ -403,4 +403,15 @@ describe('UnionFind4', () => {
     expect(uf.find(0)).toBe(uf.find(1));
     expect(uf.find(2)).not.toBe(uf.find(0));
   });
+  it('should handle count matches initial size', () => {
+    const uf = new UnionFind4(10);
+    expect(uf.count()).toBe(10);
+    expect(uf.componentCount()).toBe(10);
+  });
+  it('should handle count after unions', () => {
+    const uf = new UnionFind4(5);
+    uf.union(0, 1);
+    uf.union(2, 3);
+    expect(uf.count()).toBe(3);
+  });
 });

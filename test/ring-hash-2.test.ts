@@ -401,4 +401,18 @@ describe('RingHash2', () => {
     expect(typeof n1).toBe('string');
     expect(typeof n2).toBe('string');
   });
+  it('should handle getNode on empty ring', () => {
+    const ring = new RingHash2(10);
+    const node = ring.getNode('any-key');
+    expect(node).toBeUndefined();
+  });
+  it('should handle getNode after clear and re-add', () => {
+    const ring = new RingHash2(10);
+    ring.addNode('a');
+    ring.addNode('b');
+    ring.clear();
+    ring.addNode('c');
+    expect(ring.getNode('key')).toBe('c');
+    expect(ring.nodes()).toEqual(['c']);
+  });
 });

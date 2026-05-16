@@ -512,4 +512,18 @@ describe('SkipListMap2', () => {
     expect(map.has(1)).toBe(true);
     expect(map.has(99)).toBe(false);
   });
+  it('should handle size on empty map', () => {
+    const map = new SkipListMap2<number, string>();
+    expect(map.size).toBe(0);
+  });
+  it('should handle clear then set', () => {
+    const map = new SkipListMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.clear();
+    expect(map.size).toBe(0);
+    map.set(3, 'c');
+    expect(map.get(3)).toBe('c');
+    expect(map.size).toBe(1);
+  });
 });

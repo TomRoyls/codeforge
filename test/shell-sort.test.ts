@@ -324,4 +324,14 @@ describe('ShellSort', () => {
       expect(typeof sorter.getTimeComplexity()).toBe('string');
     });
   });
+  it('should handle toArray after sort', () => {
+    const sorter = new ShellSort<number>([5, 3, 1, 4, 2]);
+    sorter.sort();
+    expect(sorter.toArray()).toEqual([1, 2, 3, 4, 5]);
+  });
+  it('should handle toArray after multiple sorts', () => {
+    const sorter = new ShellSort<number>([5, 3, 1]);
+    sorter.sort();
+    expect(sorter.toArray()).toEqual([1, 3, 5]);
+  });
 });

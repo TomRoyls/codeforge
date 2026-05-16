@@ -451,4 +451,17 @@ describe('SkylineSet2', () => {
     set.remove('a');
     expect(set.has('a')).toBe(false);
   });
+  it('should handle size on empty set', () => {
+    const set = new SkylineSet2<string>(2);
+    expect(set.size()).toBe(0);
+  });
+  it('should handle items after remove', () => {
+    const set = new SkylineSet2<string>(2);
+    set.add('a', [3, 1]);
+    set.add('b', [1, 3]);
+    set.remove('a');
+    const items = set.items();
+    expect(items.length).toBe(1);
+    expect(items[0]!.item).toBe('b');
+  });
 });

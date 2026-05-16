@@ -423,4 +423,14 @@ describe('SegmentTreeMap2', () => {
     expect(tree.get(0)).toBe(10)
     expect(tree.get(1)).toBe(20)
   })
+  it('should handle isEmpty after set', () => {
+    const tree = new SegmentTreeMap2(3)
+    tree.set(0, 0)
+    expect(tree.isEmpty()).toBe(false)
+  })
+  it('should handle get on unset index', () => {
+    const tree = new SegmentTreeMap2(5)
+    tree.set(0, 10)
+    expect(tree.get(1)).toBe(0)
+  })
 })

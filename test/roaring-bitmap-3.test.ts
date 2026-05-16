@@ -485,4 +485,20 @@ describe('RoaringBitmap3', () => {
     expect(bm.has(1000)).toBe(true);
     expect(bm.has(2)).toBe(false);
   });
+  it('should handle delete on non-existent element', () => {
+    const bm = new RoaringBitmap3();
+    bm.add(1);
+    bm.add(2);
+    expect(bm.delete(99)).toBe(false);
+    expect(bm.size).toBe(2);
+  it('should handle forEach after clear and re-add', () => {
+    const bm = new RoaringBitmap3();
+    bm.add(10);
+    bm.add(20);
+    bm.clear();
+    bm.add(5);
+    const values: number[] = [];
+    bm.forEach(v => values.push(v));
+    expect(values).toEqual([5]);
+  });
 });

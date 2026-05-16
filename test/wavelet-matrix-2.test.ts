@@ -418,4 +418,16 @@ describe('WaveletMatrix2', () => {
     expect(wm.quantile(0, 5, 0)).toBe(10);
     expect(wm.quantile(0, 5, 4)).toBe(50);
   });
+  it('should handle access', () => {
+    const wm = new WaveletMatrix2([3, 1, 4, 1, 5]);
+    expect(wm.access(0)).toBe(3);
+    expect(wm.access(4)).toBe(5);
+  });
+  it('should handle select on duplicate values', () => {
+    const data = [3, 3, 3];
+    const wm = new WaveletMatrix2(data);
+    expect(wm.select(3, 0)).toBe(0);
+    expect(wm.select(3, 1)).toBe(1);
+    expect(wm.select(3, 2)).toBe(2);
+  });
 });

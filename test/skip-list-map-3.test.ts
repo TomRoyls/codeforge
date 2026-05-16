@@ -529,4 +529,18 @@ describe('SkipListMap3', () => {
       expect(map.size).toBe(2);
     });
   });
+  it('should handle delete nonexistent key', () => {
+    const map = new SkipListMap3<number>();
+    expect(map.delete(99)).toBe(false);
+  });
+  it('should handle forEach after clear and re-add', () => {
+    const map = new SkipListMap3<number>();
+    map.set(1, 10);
+    map.set(2, 20);
+    map.clear();
+    map.set(3, 30);
+    const entries: [number, number][] = [];
+    map.forEach((value, key) => entries.push([key, value]));
+    expect(entries).toEqual([[3, 30]]);
+  });
 });

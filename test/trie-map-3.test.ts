@@ -383,4 +383,14 @@ describe('TrieMap3', () => {
       expect(trie.has('hello')).toBe(false);
     });
   });
+  it('should handle size after multiple deletes', () => {
+    const trie = new TrieMap3<number>();
+    trie.set('a', 1);
+    trie.set('b', 2);
+    trie.set('c', 3);
+    trie.delete('a');
+    trie.delete('b');
+    expect(trie.size).toBe(1);
+    expect(trie.isEmpty()).toBe(false);
+  });
 });

@@ -483,4 +483,20 @@ describe('SplayTreeMap2', () => {
     expect(map.get(2)).toBeUndefined();
     expect(map.size).toBe(2);
   });
+  it('should handle values method', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(3, 'c');
+    map.set(1, 'a');
+    map.set(2, 'b');
+    expect(map.values()).toEqual(['a', 'b', 'c']);
+  });
+  it('should handle clear', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    map.set(2, 'b');
+    map.set(3, 'c');
+    map.clear();
+    expect(map.size).toBe(0);
+    expect(map.isEmpty()).toBe(true);
+  });
 });

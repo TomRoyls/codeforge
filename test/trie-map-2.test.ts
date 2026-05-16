@@ -405,4 +405,13 @@ describe('TrieMap2', () => {
     t.set('a', 1)
     expect(t.isEmpty()).toBe(false)
   })
+  it('should handle has on empty trie', () => {
+    const t = new TrieMap2<number>()
+    expect(t.has('anything')).toBe(false)
+  })
+})
+  it('should handle keysWithPrefix on empty trie', () => {
+    const t = new TrieMap2<number>()
+    expect(t.keysWithPrefix('')).toEqual([])
+  })
 });

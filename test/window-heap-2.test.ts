@@ -410,4 +410,16 @@ describe('WindowHeap2', () => {
     expect(heap.remove(3)).toBe(true);
     expect(heap.size()).toBe(2);
   });
+  it('should handle getMax', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(10);
+    heap.push(30);
+    heap.push(20);
+    expect(heap.getMax()).toBe(30);
+  });
+  it('should handle getMedian on single value', () => {
+    const heap = new WindowHeap2(5);
+    heap.push(10);
+    expect(heap.getMedian()).toBe(10);
+  });
 });

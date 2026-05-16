@@ -395,4 +395,16 @@ describe("WaveletTree", () => {
     const tree = new WaveletTree(arr);
     expect(tree.rank(99, 5)).toBe(0);
   });
+  it('should handle rangeCount', () => {
+    const arr = [3, 1, 4, 1, 5];
+    const tree = new WaveletTree(arr);
+    expect(tree.rangeCount(1, 0, 5)).toBe(2);
+    expect(tree.rangeCount(3, 0, 5)).toBe(1);
+  });
+  it('should handle access on multiple elements', () => {
+    const tree = new WaveletTree([10, 20, 30]);
+    expect(tree.access(0)).toBe(10);
+    expect(tree.access(1)).toBe(20);
+    expect(tree.access(2)).toBe(30);
+  });
 });

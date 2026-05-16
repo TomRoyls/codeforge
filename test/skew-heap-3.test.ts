@@ -580,4 +580,14 @@ describe('SkewHeap3', () => {
     h1.merge(h2);
     expect(h1.extractMin()).toBe(1);
   });
+  it('should handle fromArray', () => {
+    const heap = SkewHeap3.fromArray([5, 3, 1, 4, 2]);
+    expect(heap.size).toBe(5);
+    expect(heap.peek()).toBe(1);
+  });
+  it('should handle fromArray with single element', () => {
+    const heap = SkewHeap3.fromArray([42]);
+    expect(heap.size).toBe(1);
+    expect(heap.peek()).toBe(42);
+  });
 });

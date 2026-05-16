@@ -431,13 +431,24 @@ describe('SkipList5', () => {
        list.clear();
        expect(list.isEmpty()).toBe(true);
      });
-     it('should handle delete', () => {
-       const list = new SkipList<number>();
-       list.insert(10);
-       list.insert(20);
-       list.insert(30);
-       expect(list.delete(20)).toBe(true);
-       expect(list.contains(20)).toBe(false);
-     });
-   });
+      it('should handle delete', () => {
+        const list = new SkipList<number>();
+        list.insert(10);
+        list.insert(20);
+        list.insert(30);
+        expect(list.delete(20)).toBe(true);
+        expect(list.contains(20)).toBe(false);
+      });
+    });
+  it('should handle contains on empty list', () => {
+    const list = new SkipList<number>();
+    expect(list.contains(1)).toBe(false);
+  });
+  it('should handle getTimeComplexity after operations', () => {
+    const list = new SkipList<number>();
+    list.insert(5);
+    list.insert(3);
+    list.insert(7);
+    expect(typeof list.getTimeComplexity()).toBe('string');
+  });
 });

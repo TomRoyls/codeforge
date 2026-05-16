@@ -602,4 +602,18 @@ describe('TernaryHeap', () => {
       expect(heap.peek()).toBe(5);
     });
   });
+  it('should handle heapify from array', () => {
+    const heap = new TernaryHeap<number>();
+    heap.heapify([5, 3, 1, 4, 2]);
+    expect(heap.size).toBe(5);
+    expect(heap.peek()).toBe(1);
+  });
+  it('should handle size after extractMin', () => {
+    const heap = new TernaryHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.insert(7);
+    heap.extractMin();
+    expect(heap.size()).toBe(2);
+  });
 });

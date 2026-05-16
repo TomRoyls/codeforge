@@ -550,4 +550,19 @@ describe('WingedEdgeMesh', () => {
     expect(mesh.getEdgeCount()).toBe(3);
     expect(mesh.getFaceCount()).toBe(1);
   });
+  it('should handle getEdgeCount on empty mesh', () => {
+    const mesh = new WingedEdgeMesh();
+    expect(mesh.getEdgeCount()).toBe(0);
+    expect(mesh.getVertexCount()).toBe(0);
+    expect(mesh.getFaceCount()).toBe(0);
+  });
+  it('should handle getVertex', () => {
+    const mesh = new WingedEdgeMesh();
+    const v0 = mesh.addVertex(1, 2, 3);
+    const vertex = mesh.getVertex(v0);
+    expect(vertex).toBeDefined();
+    expect(vertex!.x).toBe(1);
+    expect(vertex!.y).toBe(2);
+    expect(vertex!.z).toBe(3);
+  });
 });

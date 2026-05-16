@@ -278,4 +278,14 @@ describe('SmoothSort2', () => {
       expect(sorter.getComparisons()).toBeGreaterThanOrEqual(0);
     });
   });
+  it('should handle getSwaps on empty array', () => {
+    const sorter = new SmoothSort2();
+    sorter.sort([]);
+    expect(sorter.getSwaps()).toBe(0);
+  });
+  it('should handle isSorted after sort', () => {
+    const sorter = new SmoothSort2();
+    sorter.sort([3, 1, 2]);
+    expect(sorter.isSorted()).toBe(true);
+  });
 });

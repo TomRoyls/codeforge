@@ -421,4 +421,17 @@ describe('SparseMatrix2', () => {
     expect(result[0]).toBe(2);
     expect(result[1]).toBe(3);
   });
+  it('should handle density calculation', () => {
+    const m = new SparseMatrix2(3, 3);
+    m.set(0, 0, 1);
+    m.set(1, 1, 2);
+    expect(m.nonZeroCount()).toBe(2);
+    expect(m.density()).toBeCloseTo(2 / 9);
+  });
+  it('should handle nonZeroCount', () => {
+    const m = new SparseMatrix2(2, 2);
+    m.set(0, 0, 1);
+    m.set(0, 1, 2);
+    expect(m.nonZeroCount()).toBe(2);
+  });
 });

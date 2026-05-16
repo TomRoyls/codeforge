@@ -373,4 +373,18 @@ describe('WorkspaceSet2', () => {
     expect(ws.getWorkspace('ws1')).not.toContain('a');
     expect(ws.getWorkspace('ws2')).toContain('a');
   });
+  it('should handle workspaceSize on empty workspace', () => {
+    const ws = new WorkspaceSet2<string>();
+    ws.createWorkspace('ws1');
+    expect(ws.workspaceSize('ws1')).toBe(0);
+  });
+  it('should handle totalItems across workspaces', () => {
+    const ws = new WorkspaceSet2<string>();
+    ws.createWorkspace('ws1');
+    ws.createWorkspace('ws2');
+    ws.addToWorkspace('a', 'ws1');
+    ws.addToWorkspace('b', 'ws1');
+    ws.addToWorkspace('c', 'ws2');
+    expect(ws.totalItems()).toBe(3);
+  });
 });

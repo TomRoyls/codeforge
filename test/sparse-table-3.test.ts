@@ -298,4 +298,13 @@ describe("SparseTable3", () => {
     expect(st.query(0, 4)).toBe(1);
     expect(st.query(0, 0)).toBe(3);
   });
+  it('should handle max mode query', () => {
+    const st = new SparseTable3([3, 1, 4, 1, 5], 'max');
+    expect(st.query(0, 4)).toBe(5);
+    expect(st.query(0, 2)).toBe(4);
+  });
+  it('should handle size method', () => {
+    const st = new SparseTable3([3, 1, 4, 1, 5]);
+    expect(st.size()).toBe(5);
+  });
 });

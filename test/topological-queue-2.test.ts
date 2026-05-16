@@ -474,4 +474,20 @@ describe('TopologicalQueue2', () => {
     ts.addEdge('c', 'a');
     expect(ts.hasCycle()).toBe(true);
   });
+  it('should handle inDegree on isolated node', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('A');
+    ts.addNode('B');
+    expect(ts.inDegree('A')).toBe(0);
+    expect(ts.outDegree('A')).toBe(0);
+  });
+  it('should handle addNode without edges', () => {
+    const ts = new TopologicalQueue2();
+    ts.addNode('A');
+    ts.addNode('B');
+    const result = ts.sort();
+    expect(result).toHaveLength(2);
+    expect(result).toContain('A');
+    expect(result).toContain('B');
+  });
 });
