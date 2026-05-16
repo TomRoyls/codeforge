@@ -243,4 +243,8 @@ describe('BubbleSort4 - Edge Cases', () => {
     const sorter = new BubbleSort4<number>();
     expect(typeof sorter.getTimeComplexity()).toBe('string');
   });
+  it('should handle getSpaceComplexity', () => {
+    const sorter = new BubbleSort4<number>();
+    expect(typeof sorter.getSpaceComplexity()).toBe('string');
+  });
 });

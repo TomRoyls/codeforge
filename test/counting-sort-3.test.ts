@@ -276,4 +276,9 @@ describe('CountingSort', () => {
     const sorted = sorter.sort();
     expect(sorted).toEqual([-5, -3, -2, -1]);
   });
+  it('should handle getMin and getMax with single element', () => {
+    const sorter = new CountingSort([42]);
+    expect(sorter.getMin()).toBe(42);
+    expect(sorter.getMax()).toBe(42);
+  });
 });

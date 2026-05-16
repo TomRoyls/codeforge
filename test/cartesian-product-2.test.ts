@@ -367,4 +367,9 @@ describe('CartesianProduct2', () => {
     const cp = new CartesianProduct2<number>([[1, 2], [3]])
     expect(cp.indexOf([9, 9])).toBe(-1)
   })
+  it('should handle at', () => {
+    const cp = new CartesianProduct2<number>([[1, 2], [3, 4]])
+    expect(cp.at(0)).toEqual([1, 3])
+    expect(cp.at(3)).toEqual([2, 4])
+  })
 })

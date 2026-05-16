@@ -432,5 +432,14 @@ describe('ChunkedList2', () => {
       list.set(0, 10);
       expect(list.toArray()).toEqual([10, 20, 4]);
     });
+
+    it('should handle push and pop', () => {
+      const list = new ChunkedList2<number>(3);
+      list.push(1);
+      list.push(2);
+      list.push(3);
+      expect(list.pop()).toBe(3);
+      expect(list.size).toBe(2);
+    });
   });
 });

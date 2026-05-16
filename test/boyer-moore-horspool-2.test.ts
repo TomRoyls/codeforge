@@ -267,5 +267,11 @@ describe('BoyerMooreHorspool2', () => {
     const searcher = new BoyerMooreHorspool2('xyz');
     expect(searcher.hasMatch('hello world')).toBe(false);
   });
+
+  it('should handle search returning positions', () => {
+    const searcher = new BoyerMooreHorspool2('ab');
+    const results = searcher.search('ababab');
+    expect(results.length).toBe(3);
+  });
  });
 });

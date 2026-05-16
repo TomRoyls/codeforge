@@ -401,4 +401,10 @@ describe('CSRGraph2', () => {
     graph.build();
     expect(graph.getNeighbors(2)).toEqual([]);
   });
+  it('should handle getVertexCount', () => {
+    const graph = new CSRGraph2(3);
+    graph.addEdge(0, 1, 5);
+    graph.build();
+    expect(graph.vertexCount()).toBe(3);
+  });
 });

@@ -246,4 +246,9 @@ describe('CocktailSort3 - Type Safety', () => {
     const sorter = new CocktailSort3<number>();
     expect(sorter.sort([])).toEqual([]);
   });
+  it('should handle isSorted on sorted', () => {
+    const sorter = new CocktailSort3<number>();
+    expect(sorter.isSorted([1, 2, 3])).toBe(true);
+    expect(sorter.isSorted([3, 1, 2])).toBe(false);
+  });
 });

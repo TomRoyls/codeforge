@@ -385,4 +385,10 @@ describe('BPlusTree', () => {
     expect(tree.get(10)).toBeUndefined();
     expect(tree.delete(99)).toBe(false);
   });
+  it('should handle isEmpty after delete all', () => {
+    const tree = new BPlusTree<number, string>(4);
+    tree.insert(1, 'a');
+    tree.delete(1);
+    expect(tree.isEmpty()).toBe(true);
+  });
 });

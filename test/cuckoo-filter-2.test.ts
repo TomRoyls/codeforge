@@ -356,4 +356,10 @@ describe('CuckooFilter2', () => {
     filter.insert('test');
     expect(filter.loadFactor()).toBeGreaterThan(0);
   });
+  it('should handle delete', () => {
+    const filter = new CuckooFilter2(100);
+    filter.insert('test');
+    expect(filter.delete('test')).toBe(true);
+    expect(filter.contains('test')).toBe(false);
+  });
 });

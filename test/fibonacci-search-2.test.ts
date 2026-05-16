@@ -272,4 +272,10 @@ describe('FibonacciSearch', () => {
     expect(fs.contains(30)).toBe(true);
     expect(fs.contains(99)).toBe(false);
   });
+  it('should handle closestTo', () => {
+    const fs = new FibonacciSearch([10, 20, 30, 40, 50]);
+    const closest = fs.closestTo(25);
+    expect(closest).toBeGreaterThanOrEqual(20);
+    expect(closest).toBeLessThanOrEqual(30);
+  });
 });

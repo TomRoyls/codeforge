@@ -306,4 +306,11 @@ describe('CubeSort2', () => {
     sorter.sortInPlace(arr);
     expect(arr).toEqual([42]);
   });
+  it('should handle sort returning new array', () => {
+    const sorter = new CubeSort2();
+    const arr = [3, 1, 2];
+    const sorted = sorter.sort(arr);
+    expect(sorted).toEqual([1, 2, 3]);
+    expect(arr).toEqual([3, 1, 2]);
+  });
 });

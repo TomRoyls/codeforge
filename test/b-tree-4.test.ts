@@ -533,4 +533,12 @@ describe('BTree', () => {
     expect(t.toArray()).toEqual([3, 5, 7]);
     expect(t.inOrderTraversal()).toEqual([3, 5, 7]);
   });
+  it('should handle delete', () => {
+    const t = new BTree<number>(3);
+    t.insert(5);
+    t.insert(3);
+    t.insert(7);
+    expect(t.delete(3)).toBe(true);
+    expect(t.search(3)).toBe(false);
+  });
 });
