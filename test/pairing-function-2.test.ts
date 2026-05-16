@@ -390,5 +390,11 @@ describe('PairingFunction2', () => {
       expect(x).toBe(2n);
       expect(y).toBe(3n);
     });
+    it('should handle Cantor pair inverse', () => {
+      const z = PairingFunction2.cantorPair(3, 2);
+      const [x, y] = PairingFunction2.cantorUnpair(z);
+      expect(x).toBe(3n);
+      expect(y).toBe(2n);
+    });
   });
 });

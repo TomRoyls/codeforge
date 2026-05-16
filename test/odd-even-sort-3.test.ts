@@ -257,4 +257,8 @@ describe('OddEvenSort3 - Edge Cases', () => {
     const sorter = new OddEvenSort3<number>();
     expect(sorter.sortDescending([1, 3, 2])).toEqual([3, 2, 1]);
   });
+  it('should handle getTimeComplexity', () => {
+    const sorter = new OddEvenSort3<number>();
+    expect(typeof sorter.getTimeComplexity()).toBe('string');
+  });
 });

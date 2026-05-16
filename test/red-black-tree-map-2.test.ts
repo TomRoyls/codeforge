@@ -410,4 +410,12 @@ describe('RedBlackTreeMap2', () => {
     expect(vals).toContain('a')
     expect(vals).toContain('b')
   })
+  it('should handle delete', () => {
+    const map = new RedBlackTreeMap2<number, string>()
+    map.set(1, 'a')
+    map.set(2, 'b')
+    expect(map.delete(1)).toBe(true)
+    expect(map.get(1)).toBeUndefined()
+    expect(map.size).toBe(1)
+  })
 })

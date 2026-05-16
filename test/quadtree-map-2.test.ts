@@ -364,4 +364,11 @@ describe('QuadTreeMap2', () => {
     tree.insert(30, 30, 'c');
     expect(tree.size()).toBe(3);
   });
+  it('should handle clear', () => {
+    const tree = new QuadTreeMap2<string>({ x: 0, y: 0, width: 100, height: 100 });
+    tree.insert(10, 10, 'a');
+    tree.insert(20, 20, 'b');
+    tree.clear();
+    expect(tree.size()).toBe(0);
+  });
 });

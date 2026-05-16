@@ -341,4 +341,8 @@ describe('PersistentArray2', () => {
     expect(arr.get(1)).toBe(2)
     expect(arr2.get(1)).toBe(99)
   })
+  it('should handle length property', () => {
+    const arr = new PersistentArray2<number>([1, 2, 3, 4, 5])
+    expect(arr.length).toBe(5)
+  })
 })

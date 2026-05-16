@@ -409,4 +409,11 @@ describe('Octree2', () => {
     expect(tree.contains(10, 10, 10)).toBe(true);
     expect(tree.contains(20, 20, 20)).toBe(false);
   });
+  it('should handle queryRange', () => {
+    const tree = new Octree2<number>({ x: 0, y: 0, z: 0, size: 100 });
+    tree.insert(10, 10, 10, 1);
+    tree.insert(50, 50, 50, 2);
+    const results = tree.queryRange({ x: 0, y: 0, z: 0, size: 30 });
+    expect(results.length).toBe(1);
+  });
 });

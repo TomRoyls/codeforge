@@ -454,4 +454,13 @@ describe('PairingHeap4', () => {
     h1.merge(h2);
     expect(h1.extractMin()).toBe(1);
   });
+  it('should handle toArray after merge', () => {
+    const h1 = new PairingHeap4<number>();
+    h1.insert(1);
+    h1.insert(3);
+    const h2 = new PairingHeap4<number>();
+    h2.insert(2);
+    h1.merge(h2);
+    expect(h1.toArray().length).toBe(3);
+  });
 });

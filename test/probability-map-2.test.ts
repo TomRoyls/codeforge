@@ -486,4 +486,10 @@ describe('ProbabilityMap2', () => {
     map.set('b', 20);
     expect(map.totalWeight()).toBe(30);
   });
+  it('should handle get', () => {
+    const map = new ProbabilityMap2();
+    map.set('a', 10);
+    expect(map.get('a')).toBe(10);
+    expect(map.get('b')).toBeUndefined();
+  });
 });

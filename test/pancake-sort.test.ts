@@ -318,5 +318,10 @@ describe('PancakeSort', () => {
     sorter.sort();
     expect(sorter.toArray()).toEqual([1, 2, 3, 4, 5]);
   });
+  it('should handle getFlipCount', () => {
+    const sorter = new PancakeSort<number>([5, 4, 3, 2, 1]);
+    sorter.sort();
+    expect(sorter.getFlipCount()).toBeGreaterThan(0);
+  });
  });
 });
