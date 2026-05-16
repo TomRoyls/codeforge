@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
 import type { AnalysisResult, Reporter, Violation } from '../../../src/reporters/types.js'
+import { createReporter, type OutputFormat } from '../../../src/commands/report-helpers.js'
 
 function createMockAnalysisResult(overrides: Partial<AnalysisResult> = {}): AnalysisResult {
   return {
@@ -249,16 +250,11 @@ describe('Report Command', () => {
       expect(Report.examples.length).toBeGreaterThan(0)
     })
 
-    test('format flag has correct options', () => {
-      expect(Report.flags.format.options).toEqual([
-        'console',
-        'gitlab',
-        'html',
-        'json',
-        'junit',
-        'markdown',
-        'sarif',
-      ])
+    test('format flag has description mentioning supported formats', () => {
+      expect(Report.flags.format.description).toContain('console')
+      expect(Report.flags.format.description).toContain('json')
+      expect(Report.flags.format.description).toContain('html')
+      expect(Report.flags.format.description).toContain('custom')
     })
 
     test('format flag has default console', () => {
@@ -432,72 +428,57 @@ describe('Report Command', () => {
   // createReporter - all formats (18 tests)
   // ============================================
   describe('createReporter', () => {
-    function getTestableCommand() {
-      return new Report([], {} as never) as unknown as {
-        createReporter(format: string, options: Record<string, unknown>): Reporter
-      }
-    }
-
     test('creates ConsoleReporter for console format', async () => {
       const { ConsoleReporter } = await import('../../../src/reporters/console-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('console', {})
+      await createReporter('console' as OutputFormat, {})
       expect(ConsoleReporter).toHaveBeenCalled()
     })
 
     test('creates JSONReporter for json format', async () => {
       const { JSONReporter } = await import('../../../src/reporters/json-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('json', {})
+      await createReporter('json' as OutputFormat, {})
       expect(JSONReporter).toHaveBeenCalled()
     })
 
     test('creates HTMLReporter for html format', async () => {
       const { HTMLReporter } = await import('../../../src/reporters/html-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('html', { outputPath: '/out.html' })
+      await createReporter('html' as OutputFormat, { outputPath: '/out.html' })
       expect(HTMLReporter).toHaveBeenCalled()
     })
 
     test('creates GitLabReporter for gitlab format', async () => {
       const { GitLabReporter } = await import('../../../src/reporters/gitlab-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('gitlab', {})
+      await createReporter('gitlab' as OutputFormat, {})
       expect(GitLabReporter).toHaveBeenCalled()
     })
 
     test('creates JUnitReporter for junit format', async () => {
       const { JUnitReporter } = await import('../../../src/reporters/junit-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('junit', {})
+      await createReporter('junit' as OutputFormat, {})
       expect(JUnitReporter).toHaveBeenCalled()
     })
 
     test('creates MarkdownReporter for markdown format', async () => {
       const { MarkdownReporter } = await import('../../../src/reporters/markdown-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('markdown', {})
+      await createReporter('markdown' as OutputFormat, {})
       expect(MarkdownReporter).toHaveBeenCalled()
     })
 
     test('creates SARIFReporter for sarif format', async () => {
       const { SARIFReporter } = await import('../../../src/reporters/sarif-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('sarif', {})
+      await createReporter('sarif' as OutputFormat, {})
       expect(SARIFReporter).toHaveBeenCalled()
     })
 
     test('creates ConsoleReporter for unknown format (default)', async () => {
       const { ConsoleReporter } = await import('../../../src/reporters/console-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('unknown', {})
+      await createReporter('unknown' as OutputFormat, {})
       expect(ConsoleReporter).toHaveBeenCalled()
     })
 
     test('passes options to JSONReporter', async () => {
       const { JSONReporter } = await import('../../../src/reporters/json-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('json', { pretty: true, verbose: true })
+      await createReporter('json' as OutputFormat, { pretty: true, verbose: true })
       expect(JSONReporter).toHaveBeenCalledWith(
         expect.objectContaining({ pretty: true, verbose: true }),
       )
@@ -505,58 +486,49 @@ describe('Report Command', () => {
 
     test('passes outputPath to HTMLReporter', async () => {
       const { HTMLReporter } = await import('../../../src/reporters/html-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('html', { outputPath: '/report.html' })
+      await createReporter('html' as OutputFormat, { outputPath: '/report.html' })
       expect(HTMLReporter).toHaveBeenCalledWith(
         expect.objectContaining({ outputPath: '/report.html' }),
       )
     })
 
-    test('returns reporter with report method', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('console', {})
+    test('returns reporter with report method', async () => {
+      const reporter = await createReporter('console' as OutputFormat, {})
       expect(typeof reporter.report).toBe('function')
     })
 
-    test('returns reporter with format method', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('console', {})
+    test('returns reporter with format method', async () => {
+      const reporter = await createReporter('console' as OutputFormat, {})
       expect(typeof reporter.format).toBe('function')
     })
 
-    test('returns reporter with name property', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('console', {})
+    test('returns reporter with name property', async () => {
+      const reporter = await createReporter('console' as OutputFormat, {})
       expect(reporter.name).toBe('console')
     })
 
-    test('json reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('json', {})
+    test('json reporter has correct name', async () => {
+      const reporter = await createReporter('json' as OutputFormat, {})
       expect(reporter.name).toBe('json')
     })
 
-    test('html reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('html', { outputPath: '/r.html' })
+    test('html reporter has correct name', async () => {
+      const reporter = await createReporter('html' as OutputFormat, { outputPath: '/r.html' })
       expect(reporter.name).toBe('html')
     })
 
-    test('gitlab reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('gitlab', {})
+    test('gitlab reporter has correct name', async () => {
+      const reporter = await createReporter('gitlab' as OutputFormat, {})
       expect(reporter.name).toBe('gitlab')
     })
 
-    test('junit reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('junit', {})
+    test('junit reporter has correct name', async () => {
+      const reporter = await createReporter('junit' as OutputFormat, {})
       expect(reporter.name).toBe('junit')
     })
 
-    test('sarif reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('sarif', {})
+    test('sarif reporter has correct name', async () => {
+      const reporter = await createReporter('sarif' as OutputFormat, {})
       expect(reporter.name).toBe('sarif')
     })
   })
@@ -3563,37 +3535,27 @@ describe('Report Command', () => {
   })
 
   describe('createReporter - options propagation', () => {
-    function getTestableCommand() {
-      return new Report([], {} as never) as unknown as {
-        createReporter(format: string, options: Record<string, unknown>): Reporter
-      }
-    }
-
     test('passes empty options to ConsoleReporter', async () => {
       const { ConsoleReporter } = await import('../../../src/reporters/console-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('console', {})
+      await createReporter('console' as OutputFormat, {})
       expect(ConsoleReporter).toHaveBeenCalledWith(expect.objectContaining({}))
     })
 
     test('passes verbose option to ConsoleReporter', async () => {
       const { ConsoleReporter } = await import('../../../src/reporters/console-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('console', { verbose: true })
+      await createReporter('console' as OutputFormat, { verbose: true })
       expect(ConsoleReporter).toHaveBeenCalledWith(expect.objectContaining({ verbose: true }))
     })
 
     test('passes pretty option to JSONReporter', async () => {
       const { JSONReporter } = await import('../../../src/reporters/json-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('json', { pretty: true })
+      await createReporter('json' as OutputFormat, { pretty: true })
       expect(JSONReporter).toHaveBeenCalledWith(expect.objectContaining({ pretty: true }))
     })
 
     test('passes outputPath to GitLabReporter', async () => {
       const { GitLabReporter } = await import('../../../src/reporters/gitlab-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('gitlab', { outputPath: '/gl.json' })
+      await createReporter('gitlab' as OutputFormat, { outputPath: '/gl.json' })
       expect(GitLabReporter).toHaveBeenCalledWith(
         expect.objectContaining({ outputPath: '/gl.json' }),
       )
@@ -3601,8 +3563,7 @@ describe('Report Command', () => {
 
     test('passes outputPath to JUnitReporter', async () => {
       const { JUnitReporter } = await import('../../../src/reporters/junit-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('junit', { outputPath: '/junit.xml' })
+      await createReporter('junit' as OutputFormat, { outputPath: '/junit.xml' })
       expect(JUnitReporter).toHaveBeenCalledWith(
         expect.objectContaining({ outputPath: '/junit.xml' }),
       )
@@ -3610,8 +3571,7 @@ describe('Report Command', () => {
 
     test('passes outputPath to SARIFReporter', async () => {
       const { SARIFReporter } = await import('../../../src/reporters/sarif-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('sarif', { outputPath: '/results.sarif' })
+      await createReporter('sarif' as OutputFormat, { outputPath: '/results.sarif' })
       expect(SARIFReporter).toHaveBeenCalledWith(
         expect.objectContaining({ outputPath: '/results.sarif' }),
       )
@@ -3619,16 +3579,14 @@ describe('Report Command', () => {
 
     test('passes outputPath to MarkdownReporter', async () => {
       const { MarkdownReporter } = await import('../../../src/reporters/markdown-reporter.js')
-      const cmd = getTestableCommand()
-      cmd.createReporter('markdown', { outputPath: '/report.md' })
+      await createReporter('markdown' as OutputFormat, { outputPath: '/report.md' })
       expect(MarkdownReporter).toHaveBeenCalledWith(
         expect.objectContaining({ outputPath: '/report.md' }),
       )
     })
 
-    test('markdown reporter has correct name', () => {
-      const cmd = getTestableCommand()
-      const reporter = cmd.createReporter('markdown', {})
+    test('markdown reporter has correct name', async () => {
+      const reporter = await createReporter('markdown' as OutputFormat, {})
       expect(reporter.name).toBe('markdown')
     })
   })

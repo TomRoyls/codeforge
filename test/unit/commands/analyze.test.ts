@@ -678,16 +678,17 @@ describe('Analyze Command', () => {
   // Flag options and properties
   // =====================================================
   describe('Flag options and properties', () => {
-    it('format flag has all 8 output options', () => {
+    it('format flag has all 9 output options', () => {
       expect(Analyze.flags.format.options).toEqual([
         'console',
+        'csv',
+        'gitlab',
         'html',
         'json',
         'junit',
         'markdown',
         'sarif',
-        'gitlab',
-        'csv',
+        'sonarqube',
       ])
     })
 

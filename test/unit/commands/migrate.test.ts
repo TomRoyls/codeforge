@@ -148,8 +148,8 @@ describe('Migrate Command', () => {
       expect(typeof Migrate.flags.output.description).toBe('string')
     })
 
-    test('from flag has only eslint as option', () => {
-      expect(Migrate.flags.from.options).toEqual(['eslint'])
+    test('from flag has eslint, tslint, and biome as options', () => {
+      expect(Migrate.flags.from.options).toEqual(['eslint', 'tslint', 'biome'])
     })
 
     test('examples is an array', () => {
@@ -3144,12 +3144,12 @@ describe('Migrate Command', () => {
       expect(Migrate.flags.output.required).toBeFalsy()
     })
 
-    test('from options length is 1', () => {
-      expect(Migrate.flags.from.options).toHaveLength(1)
+    test('from options length is 3', () => {
+      expect(Migrate.flags.from.options).toHaveLength(3)
     })
 
-    test('from options contains only eslint', () => {
-      expect(Migrate.flags.from.options).toEqual(['eslint'])
+    test('from options contains eslint, tslint, and biome', () => {
+      expect(Migrate.flags.from.options).toEqual(['eslint', 'tslint', 'biome'])
     })
   })
 

@@ -1640,10 +1640,10 @@ describe('Watch Command', () => {
       expect(filterFilesByExtension(files, '')).toEqual(files)
     })
 
-    test('should return all files when extensions resolve to empty', async () => {
+    test('should return empty array when extensions resolve to empty', async () => {
       const { filterFilesByExtension } = await import('../../../src/utils/command-helpers.js')
       const files = [{ path: 'a.ts', size: 100 }]
-      expect(filterFilesByExtension(files, '   ')).toEqual(files)
+      expect(filterFilesByExtension(files, '   ')).toEqual([])
     })
 
     test('should handle files with no extension', async () => {
