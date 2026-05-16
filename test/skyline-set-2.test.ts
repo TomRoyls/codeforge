@@ -395,8 +395,8 @@ describe('SkylineSet2', () => {
 
     it('should handle items', () => {
       const set = new SkylineSet2<string>(2);
-      set.add('a', [1, 2]);
-      set.add('b', [3, 4]);
+      set.add('a', [1, 5]);
+      set.add('b', [5, 1]);
       const items = set.items();
       expect(items.length).toBe(2);
       expect(items[0]!.item).toBeDefined();
@@ -409,10 +409,10 @@ describe('SkylineSet2', () => {
     });
   });
 
-  it('should handle size', () => {
+  it('should handle size with non-dominating items', () => {
     const set = new SkylineSet2<string>(2);
-    set.add('a', [1, 2]);
-    set.add('b', [3, 4]);
+    set.add('a', [1, 5]);
+    set.add('b', [5, 1]);
     expect(set.size()).toBe(2);
   });
 
@@ -422,5 +422,12 @@ describe('SkylineSet2', () => {
     set.add('b', [3, 4]);
     set.clear();
     expect(set.size()).toBe(0);
+  });
+  it('should handle clear then re-add', () => {
+    const set = new SkylineSet2<string>(2);
+    set.add('a', [1, 2]);
+    set.clear();
+    set.add('b', [5, 6]);
+    expect(set.size()).toBe(1);
   });
 });

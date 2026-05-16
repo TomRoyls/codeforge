@@ -415,4 +415,12 @@ describe('ThrottleQueue2', () => {
     queue.dequeue();
     expect(queue.isEmpty()).toBe(false);
   });
+  it('should handle enqueue after clear', () => {
+    const queue = new ThrottleQueue2<number>({ maxConcurrent: 3 });
+    queue.enqueue(1);
+    queue.clear();
+    expect(queue.isEmpty()).toBe(true);
+    queue.enqueue(2);
+    expect(queue.size).toBe(1);
+  });
 });

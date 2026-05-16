@@ -255,5 +255,11 @@ describe('SmoothSort2', () => {
       sorter.sort([5, 3, 1, 4, 2]);
       expect(sorter.getSwaps()).toBeGreaterThanOrEqual(0);
     });
+
+    it('should handle already sorted array', () => {
+      const sorter = new SmoothSort2();
+      sorter.sort([1, 2, 3, 4, 5]);
+      expect(sorter.getComparisons()).toBeGreaterThanOrEqual(0);
+    });
   });
 });

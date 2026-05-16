@@ -300,5 +300,12 @@ describe('ShellSort', () => {
       sorter.sort();
       expect(sorter.getSwaps()).toBeGreaterThanOrEqual(0);
     });
+
+    it('should handle already sorted array', () => {
+      const sorter = new ShellSort<number>([1, 2, 3, 4, 5]);
+      sorter.sort();
+      expect(sorter.isSorted()).toBe(true);
+      expect(sorter.getSwaps()).toBe(0);
+    });
   });
 });

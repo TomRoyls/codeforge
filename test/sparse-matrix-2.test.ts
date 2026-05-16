@@ -393,4 +393,12 @@ describe('SparseMatrix2', () => {
     const result = m.multiplyVector([1, 1]);
     expect(result).toEqual([2, 3]);
   });
+  it('should handle transpose on rectangular matrix', () => {
+    const m = new SparseMatrix2(3, 2);
+    m.set(0, 1, 4);
+    m.set(2, 0, 7);
+    const t = m.transpose();
+    expect(t.get(1, 0)).toBe(4);
+    expect(t.get(0, 2)).toBe(7);
+  });
 });

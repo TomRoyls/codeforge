@@ -455,4 +455,10 @@ describe('SplayTreeMap2', () => {
     expect(map.delete(1)).toBe(true);
     expect(map.has(1)).toBe(false);
   });
+  it('should handle delete nonexistent key', () => {
+    const map = new SplayTreeMap2<number, string>();
+    map.set(1, 'a');
+    expect(map.delete(99)).toBe(false);
+    expect(map.size).toBe(1);
+  });
 });

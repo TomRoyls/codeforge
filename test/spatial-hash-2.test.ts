@@ -393,4 +393,12 @@ describe('SpatialHash2', () => {
     expect(hash.remove('a')).toBe(true);
     expect(hash.remove('a')).toBe(false);
   });
+  it('should handle query after remove', () => {
+    const hash = new SpatialHash2<number>(10);
+    hash.insert('a', 5, 5);
+    hash.insert('b', 6, 6);
+    hash.remove('a');
+    const results = hash.query(5, 5, 2);
+    expect(results.length).toBe(1);
+  });
 });

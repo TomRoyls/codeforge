@@ -328,7 +328,8 @@ describe('ThreadSafeStack2', () => {
       stack.push(2)
       expect(stack.pop()).toBe(2)
       expect(stack.pop()).toBe(1)
-    expect(stack.size).toBe(0)
+      expect(stack.size).toBe(0)
+    })
   })
 
   it('should handle peek', () => {
@@ -379,5 +380,14 @@ describe('ThreadSafeStack2', () => {
     stack.push(42)
     expect(stack.peek()).toBe(42)
   })
+  it('should handle multiple push and pop', () => {
+    const stack = new ThreadSafeStack2<number>()
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    expect(stack.pop()).toBe(3)
+    expect(stack.pop()).toBe(2)
+    expect(stack.pop()).toBe(1)
+    expect(stack.size).toBe(0)
   })
 })

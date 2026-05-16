@@ -280,4 +280,9 @@ describe("SparseTable3", () => {
     const st = new SparseTable3([3, 1, 4, 1, 5], 'min');
     expect(st.size()).toBe(5);
   });
+  it('should handle sum query', () => {
+    const st = new SparseTable3([1, 2, 3, 4, 5], 'sum');
+    expect(st.query(0, 4)).toBe(15);
+    expect(st.query(1, 3)).toBe(9);
+  });
 });

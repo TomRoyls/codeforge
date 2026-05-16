@@ -542,4 +542,12 @@ describe('SkewHeap3', () => {
     heap1.merge(heap2);
     expect(heap1.extractMin()).toBe(1);
   });
+  it('should handle toArray after multiple inserts', () => {
+    const heap = new SkewHeap3<number>();
+    heap.insert(10);
+    heap.insert(5);
+    heap.insert(15);
+    heap.insert(3);
+    expect(heap.toArray().length).toBe(4);
+  });
 });

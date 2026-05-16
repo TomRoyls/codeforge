@@ -393,4 +393,9 @@ describe('TernarySearchTrie2', () => {
     const keys = trie.keys()
     expect(keys.length).toBe(2)
   })
+  it('should handle keys on empty trie', () => {
+    const trie = new TernarySearchTrie2<number>()
+    const keys = trie.keys()
+    expect(keys.length).toBe(0)
+  })
 })
