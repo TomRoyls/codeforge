@@ -460,4 +460,11 @@ describe('Hamt3', () => {
     expect(map3.has('a')).toBe(false);
     expect(map3.has('b')).toBe(true);
   });
+
+  it('should handle get on deleted key', () => {
+    const map0 = Hamt3.createEmpty<string, number>();
+    const map1 = map0.set('x', 42);
+    const map2 = map1.delete('x');
+    expect(map2.get('x')).toBeUndefined();
+  });
 });

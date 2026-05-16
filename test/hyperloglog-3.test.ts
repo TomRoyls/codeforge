@@ -344,4 +344,15 @@ describe('HyperLogLog3', () => {
     for (let i = 0; i < 100; i++) hll.add(`item-${i}`)
     expect(hll.count()).toBeGreaterThanOrEqual(50)
   })
+
+  it('should handle merge', () => {
+    const hll1 = new HyperLogLog3(12)
+    const hll2 = new HyperLogLog3(12)
+    hll1.add('a')
+    hll1.add('b')
+    hll2.add('b')
+    hll2.add('c')
+    hll1.merge(hll2)
+    expect(hll1.count()).toBeGreaterThanOrEqual(3)
+  })
 })

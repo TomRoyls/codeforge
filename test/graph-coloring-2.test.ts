@@ -428,5 +428,14 @@ describe('GraphColoring2', () => {
       const cn = graph.chromaticNumber(adj);
       expect(cn).toBeGreaterThanOrEqual(1);
     });
+
+    it('handles three-color graph', () => {
+      const graph = new GraphColoring2();
+      const adj = new Map<string, string[]>([
+        ['A', ['B', 'C']], ['B', ['A', 'C']], ['C', ['A', 'B']]
+      ]);
+      const colored = graph.colorGreedy(adj);
+      expect(graph.isValid(adj, colored)).toBe(true);
+    });
   });
 });

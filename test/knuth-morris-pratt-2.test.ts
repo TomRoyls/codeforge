@@ -256,5 +256,11 @@ describe('KnuthMorrisPratt2', () => {
       const result = kmp.search('ababab');
       expect(result.length).toBe(3);
     });
+
+    it('should build LPS table correctly', () => {
+      const kmp = new KnuthMorrisPratt2('AABA');
+      const result = kmp.search('AABAABAABAA');
+      expect(result.length).toBeGreaterThanOrEqual(2);
+    });
   });
 });

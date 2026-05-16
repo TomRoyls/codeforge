@@ -388,5 +388,13 @@ describe('LRUCache5', () => {
       cache.clear();
       expect(cache.size).toBe(0);
     });
+
+    it('should handle overwrite', () => {
+      const cache = new LRUCache5<number, number>(3);
+      cache.set(1, 10);
+      cache.set(1, 20);
+      expect(cache.get(1)).toBe(20);
+      expect(cache.size).toBe(1);
+    });
   });
 });

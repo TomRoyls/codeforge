@@ -372,5 +372,13 @@ describe('LFUCache4', () => {
     cache.clear()
     expect(cache.size).toBe(0)
   })
+
+  it('should handle has', () => {
+    const cache = new LFUCache4<string, number>(10)
+    cache.set('a', 1)
+    cache.set('b', 2)
+    expect(cache.has('a')).toBe(true)
+    expect(cache.has('z')).toBe(false)
+  })
   })
 })

@@ -274,5 +274,11 @@ describe('InterpolationSearch', () => {
       expect(search.search(30)).toBe(2);
       expect(search.search(99)).toBe(-1);
     });
+
+    it('should handle hasMatch', () => {
+      const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+      expect(search.hasMatch(30)).toBe(true);
+      expect(search.hasMatch(99)).toBe(false);
+    });
   });
 });

@@ -325,4 +325,9 @@ describe('KDTree3', () => {
     const arr = tree.toArray()
     expect(arr.length).toBe(2)
   })
+
+  it('should handle empty tree', () => {
+    const tree = new KDTree3([])
+    expect(tree.toArray().length).toBe(0)
+  })
 })

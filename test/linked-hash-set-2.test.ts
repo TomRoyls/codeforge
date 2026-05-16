@@ -471,5 +471,15 @@ describe('LinkedHashSet', () => {
       expect(arr.length).toBe(3);
       expect(arr).toContain(10);
     });
+
+    it('should handle forEach', () => {
+      const set = new LinkedHashSet<number>();
+      set.add(10);
+      set.add(20);
+      set.add(30);
+      const values: number[] = [];
+      set.forEach((v) => values.push(v));
+      expect(values.length).toBe(3);
+    });
   });
 });
