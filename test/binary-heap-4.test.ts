@@ -449,4 +449,11 @@ describe('BinaryHeap', () => {
     expect(heap.extract()).toBe(9);
     expect(heap.extract()).toBe(8);
   });
+  it('should handle clear', () => {
+    const heap = new BinaryHeap<number>();
+    heap.insert(5);
+    heap.insert(3);
+    heap.clear();
+    expect(heap.size()).toBe(0);
+  });
 });

@@ -532,4 +532,15 @@ describe('AtomicSet2', () => {
     expect(set.delete(99)).toBe(false);
     expect(set.size).toBe(1);
   });
+  it('should handle difference', () => {
+    const set1 = new AtomicSet2<number>();
+    set1.add(1);
+    set1.add(2);
+    set1.add(3);
+    const set2 = new AtomicSet2<number>();
+    set2.add(2);
+    const diff = set1.difference(set2);
+    expect(diff.has(1)).toBe(true);
+    expect(diff.has(2)).toBe(false);
+  });
 });

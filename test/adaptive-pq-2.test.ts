@@ -493,4 +493,12 @@ describe('AdaptivePQ2', () => {
     expect(pq.size).toBe(0)
     expect(pq.pop()).toBeUndefined()
   })
+  it('should handle update priority', () => {
+    const pq = new AdaptivePQ2<string>()
+    pq.push(3, 'c')
+    pq.push(1, 'a')
+    pq.push(2, 'b')
+    pq.update('c', 0)
+    expect(pq.pop()!.value).toBe('c')
+  })
 })

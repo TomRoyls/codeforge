@@ -463,4 +463,13 @@ describe('AVLTree', () => {
     expect(tree.contains(10)).toBe(true);
     expect(tree.contains(99)).toBe(false);
   });
+  it('should handle min and max', () => {
+    const tree = new AVLTree<number>();
+    tree.insert(30);
+    tree.insert(10);
+    tree.insert(50);
+    tree.insert(5);
+    expect(tree.min()).toBe(5);
+    expect(tree.max()).toBe(50);
+  });
 });

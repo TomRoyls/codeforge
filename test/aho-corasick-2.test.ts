@@ -287,4 +287,9 @@ describe('AhoCorasick2', () => {
     const result = ac.search('hello world');
     expect(result.length).toBe(0);
   });
+  it('should handle empty pattern list', () => {
+    const ac = new AhoCorasick2([]);
+    const result = ac.search('hello world');
+    expect(result.length).toBe(0);
+  });
 });

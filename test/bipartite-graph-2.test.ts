@@ -434,4 +434,10 @@ describe('BipartiteGraph2', () => {
     expect(graph.removeEdge('L1', 'R1')).toBe(true);
     expect(graph.hasEdge('L1', 'R1')).toBe(false);
   });
+  it('should handle removeEdge nonexistent', () => {
+    const graph = new BipartiteGraph2();
+    graph.addLeftVertex('L1');
+    graph.addRightVertex('R1');
+    expect(graph.removeEdge('L1', 'R1')).toBe(false);
+  });
 });

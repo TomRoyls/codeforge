@@ -335,4 +335,10 @@ describe('BloomFilter4', () => {
     expect(bf.getSize()).toBeGreaterThan(0);
     expect(bf.getBitCount()).toBeGreaterThan(0);
   });
+  it('should handle mightContain after clear', () => {
+    const bf = new BloomFilter(100, 0.01);
+    bf.add('test');
+    bf.clear();
+    expect(bf.mightContain('test')).toBe(false);
+  });
 });

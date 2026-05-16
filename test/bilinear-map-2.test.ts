@@ -383,4 +383,12 @@ describe('BilinearMap2', () => {
     expect(map.getWidth()).toBe(1);
     expect(map.getHeight()).toBe(1);
   });
+  it('should handle get at grid positions', () => {
+    const grid = [[0, 10], [20, 30]];
+    const map = new BilinearMap2(grid);
+    expect(map.get(0, 0)).toBe(0);
+    expect(map.get(1, 0)).toBe(10);
+    expect(map.get(0, 1)).toBe(20);
+    expect(map.get(1, 1)).toBe(30);
+  });
 });
