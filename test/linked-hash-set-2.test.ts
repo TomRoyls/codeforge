@@ -534,4 +534,10 @@ describe('LinkedHashSet', () => {
     set.add(3);
     expect(set.size()).toBe(3);
   });
+  it('should handle duplicate add', () => {
+    const set = new LinkedHashSet<number>();
+    set.add(10);
+    set.add(10);
+    expect(set.size()).toBe(1);
+  });
 });

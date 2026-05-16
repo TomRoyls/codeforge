@@ -283,4 +283,8 @@ describe('LibrarySort3', () => {
     sorter.sortInPlace(arr);
     expect(arr).toEqual([42]);
   });
+  it('should handle getTimeComplexity', () => {
+    const sorter = new LibrarySort3([3, 1, 2]);
+    expect(typeof sorter.getTimeComplexity()).toBe('string');
+  });
 });

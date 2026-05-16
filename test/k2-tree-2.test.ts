@@ -361,4 +361,8 @@ describe('K2Tree2', () => {
     expect(tree.get(2, 2)).toBe(true);
     expect(tree.get(3, 3)).toBe(false);
   });
+  it('should handle row/col count', () => {
+    const tree = new K2Tree2(4);
+    expect(tree.size).toBe(4);
+  });
 });

@@ -365,4 +365,10 @@ describe('Matrix2', () => {
     expect(t.get(0, 0)).toBe(1);
     expect(t.get(1, 0)).toBe(2);
   });
+  it('should handle add', () => {
+    const m1 = new Matrix2(2, 2, 1);
+    const m2 = new Matrix2(2, 2, 2);
+    const result = m1.add(m2);
+    expect(result.get(0, 0)).toBe(3);
+  });
 });

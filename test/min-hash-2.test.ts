@@ -344,4 +344,13 @@ describe('MinHash2', () => {
     mh.addAll([]);
     expect(mh.size()).toBe(0);
   });
+  it('should handle jaccard similarity', () => {
+    const mh1 = new MinHash2(64);
+    mh1.addAll(['a', 'b', 'c']);
+    const mh2 = new MinHash2(64);
+    mh2.addAll(['b', 'c', 'd']);
+    const sim = mh1.similarity(mh2);
+    expect(sim).toBeGreaterThanOrEqual(0);
+    expect(sim).toBeLessThanOrEqual(1);
+  });
 });

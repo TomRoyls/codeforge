@@ -490,5 +490,11 @@ describe('KDHeap2', () => {
       expect(heap.extract()!.id).toBe(2);
       expect(heap.extract()!.id).toBe(3);
     });
+    it('should handle peek on empty', () => {
+      const heap = new KDHeap2<{ id: number }>([{ id: 1 }, { id: 2 }], 2, (a, b) => a.id - b.id);
+      heap.extract();
+      heap.extract();
+      expect(heap.peek()).toBeUndefined();
+    });
   });
 });

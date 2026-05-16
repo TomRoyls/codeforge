@@ -448,4 +448,11 @@ describe('JellyHash2', () => {
     expect(map.has('a')).toBe(true);
     expect(map.has('b')).toBe(false);
   });
+  it('should handle delete', () => {
+    const map = new JellyHash2<string, number>();
+    map.set('a', 1);
+    map.set('b', 2);
+    expect(map.delete('a')).toBe(true);
+    expect(map.has('a')).toBe(false);
+  });
 });

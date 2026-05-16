@@ -447,5 +447,9 @@ describe('LRUCache5', () => {
      expect(cache.has(1)).toBe(false);
      expect(cache.size).toBe(1);
    });
+   it('should handle capacity property', () => {
+     const cache = new LRUCache5<number, number>(3);
+     expect(cache.capacity).toBe(3);
+   });
  });
 });

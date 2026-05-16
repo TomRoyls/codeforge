@@ -312,4 +312,10 @@ describe('InterpolationSearch', () => {
     expect(closest).toBeGreaterThanOrEqual(20);
     expect(closest).toBeLessThanOrEqual(30);
   });
+  it('should handle contains on edges', () => {
+    const search = new InterpolationSearch([10, 20, 30, 40, 50]);
+    expect(search.contains(10)).toBe(true);
+    expect(search.contains(50)).toBe(true);
+    expect(search.contains(25)).toBe(false);
+  });
 });

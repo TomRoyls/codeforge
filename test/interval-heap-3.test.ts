@@ -468,4 +468,11 @@ describe('IntervalHeap3', () => {
     expect(heap.getMin()).toBe(10);
     expect(heap.getMax()).toBe(30);
   });
+  it('should handle size property', () => {
+    const heap = new IntervalHeap3<number>();
+    expect(heap.size()).toBe(0);
+    heap.insert(5);
+    heap.insert(3);
+    expect(heap.size()).toBe(2);
+  });
 });

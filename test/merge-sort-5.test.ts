@@ -230,4 +230,9 @@ describe('MergeSort5', () => {
     expect(ms.isSorted([1, 2, 3])).toBe(true);
     expect(ms.isSorted([3, 1, 2])).toBe(false);
   });
+  it('should handle merge method', () => {
+    const ms = new MergeSort5();
+    const result = ms.merge([1, 3, 5], [2, 4, 6]);
+    expect(result).toEqual([1, 2, 3, 4, 5, 6]);
+  });
 });

@@ -293,5 +293,10 @@ describe('KnuthMorrisPratt2', () => {
       const kmp = new KnuthMorrisPratt2('test');
       expect(kmp.pattern()).toBe('test');
     });
+    it('should handle hasMatch', () => {
+      const kmp = new KnuthMorrisPratt2('abc');
+      expect(kmp.hasMatch('xyzabcdef')).toBe(true);
+      expect(kmp.hasMatch('xyz')).toBe(false);
+    });
   });
 });
