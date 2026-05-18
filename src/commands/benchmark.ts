@@ -166,7 +166,7 @@ export default class Benchmark extends Command {
     }
 
     this.log(chalk.cyan('Benchmarking rules...'))
-    const results: BenchmarkResult[] = []
+    let results: BenchmarkResult[] = []
 
     const benchmarkPromises = rulesToBenchmark.map(async ([ruleId, ruleDef]) => {
       const result = await this.benchmarkRule(ruleId, ruleDef, parseCache, flags.iterations)
