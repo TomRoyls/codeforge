@@ -1,7 +1,7 @@
 import type { BenchmarkConfig, BenchmarkSuite, RuleBenchmarkResult } from './benchmark-types.js'
 
 import { DEFAULT_BENCHMARK_CONFIG } from './benchmark-types.js'
-import { clamp } from '../../utils/math-helpers.js'
+import { clamp } from '../utils/math-helpers.js'
 
 function percentile(sorted: number[], p: number): number {
   if (sorted.length === 0) return 0
