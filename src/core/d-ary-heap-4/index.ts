@@ -1,0 +1,134 @@
+export class DAryHeap4<T> {
+  private heap: T[] = [];
+  private cmp: (a: T, b: T) => number;
+
+  constructor(comparator?: (a: T, b: T) => number) {
+    this.cmp = comparator ?? this.defaultComparator;
+  }
+
+  private defaultComparator(a: T, b: T): number {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  }
+
+  insert(value: T): void {
+    this.heap.push(value);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  extract(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    const top = this.heap[0]!;
+    const last = this.heap.pop()!;
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.trickleDown(0);
+    }
+    return top;
+  }
+
+  peek(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    return this.heap[0];
+  }
+
+  get size(): number {
+    return this.heap.length;
+  }
+
+  get isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
+
+  heapify(array: T[]): void {
+    this.heap = [...array];
+    const start = Math.floor((this.heap.length - 2) / 4);
+    for (let i = start; i >= 0; i--) {
+      this.trickleDown(i);
+    }
+  }
+
+  toArray(): T[] {
+    return [...this.heap];
+  }
+
+  contains(value: T): boolean {
+    for (let i = 0; i < this.heap.length; i++) {
+      if (this.cmp(this.heap[i]!, value) === 0) return true;
+    }
+    return false;
+  }
+
+  merge(other: DAryHeap4<T>): DAryHeap4<T> {
+    const result = new DAryHeap4<T>(this.cmp);
+    for (const item of this.heap) {
+      result.insert(item);
+    }
+    for (const item of other.heap) {
+      result.insert(item);
+    }
+    return result;
+  }
+
+  clear(): void {
+    this.heap.length = 0;
+  }
+
+  update(index: number, value: T): void {
+    if (index < 0 || index >= this.heap.length) return;
+    const old = this.heap[index]!;
+    this.heap[index] = value;
+    const cmpResult = this.cmp(value, old);
+    if (cmpResult > 0) {
+      this.bubbleUp(index);
+    } else if (cmpResult < 0) {
+      this.trickleDown(index);
+    }
+  }
+
+  private parent(index: number): number {
+    return Math.floor((index - 1) / 4);
+  }
+
+  private child(index: number, k: number): number {
+    return 4 * index + k + 1;
+  }
+
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const p = this.parent(index);
+      if (this.cmp(this.heap[index]!, this.heap[p]!) > 0) {
+        this.swap(index, p);
+        index = p;
+      } else {
+        break;
+      }
+    }
+  }
+
+  private trickleDown(index: number): void {
+    const n = this.heap.length;
+    while (true) {
+      let largest = index;
+      for (let k = 0; k < 4; k++) {
+        const c = this.child(index, k);
+        if (c < n && this.cmp(this.heap[c]!, this.heap[largest]!) > 0) {
+          largest = c;
+        }
+      }
+      if (largest !== index) {
+        this.swap(index, largest);
+        index = largest;
+      } else {
+        break;
+      }
+    }
+  }
+
+  private swap(i: number, j: number): void {
+    const tmp = this.heap[i]!;
+    this.heap[i] = this.heap[j]!;
+    this.heap[j] = tmp;
+  }
+}
