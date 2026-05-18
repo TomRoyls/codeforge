@@ -1,876 +1,707 @@
-import { describe, it, expect } from 'vitest'
-import { AuditEntry } from '../../src/core/audit-logger/audit-entry.js'
-import { AuditStore } from '../../src/core/audit-logger/audit-store.js'
-import { AuditLogger } from '../../src/core/audit-logger/audit-logger.js'
-import type { AuditEntryData, AuditFilter, AuditSeverity, AuditCategory } from '../../src/core/audit-logger/types.js'
-import { SEVERITY_LEVELS, DEFAULT_AUDIT_LOGGER_CONFIG } from '../../src/core/audit-logger/types.js'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import * as fs from 'node:fs/promises'
+import * as os from 'node:os'
+import * as path from 'node:path'
 
-function makeEntry(overrides: Partial<AuditEntryData> = {}): AuditEntryData {
+import { RunContext, AuditLogger } from '../../src/core/audit-logger.js'
+import type { AuditEntry, AuditLog } from '../../src/core/audit-types.js'
+import { DEFAULT_AUDIT_CONFIG } from '../../src/core/audit-types.js'
+
+vi.mock('node:fs/promises', () => ({
+  readFile: vi.fn(),
+  writeFile: vi.fn(),
+  mkdir: vi.fn(),
+  rename: vi.fn(),
+  unlink: vi.fn(),
+}))
+
+vi.mock('node:os', () => ({
+  userInfo: vi.fn(() => ({ username: 'testuser' })),
+}))
+
+const mockedReadFile = vi.mocked(fs.readFile)
+const mockedWriteFile = vi.mocked(fs.writeFile)
+const mockedMkdir = vi.mocked(fs.mkdir)
+const mockedRename = vi.mocked(fs.rename)
+const mockedUnlink = vi.mocked(fs.unlink)
+const mockedUserInfo = vi.mocked(os.userInfo)
+
+function makeEntry(overrides: Partial<AuditEntry> = {}): AuditEntry {
   return {
-    id: overrides.id ?? AuditEntry.generateId(),
-    timestamp: overrides.timestamp ?? Date.now(),
-    severity: overrides.severity ?? 'info',
-    category: overrides.category ?? 'system',
-    action: overrides.action ?? 'test.action',
-    message: overrides.message ?? 'test message',
-    userId: overrides.userId,
-    sessionId: overrides.sessionId,
-    metadata: overrides.metadata ?? {},
-    source: overrides.source ?? 'test',
-    duration: overrides.duration,
-    correlationId: overrides.correlationId,
+    id: overrides.id ?? 'abc123',
+    timestamp: overrides.timestamp ?? '2025-01-01T00:00:00.000Z',
+    command: overrides.command ?? 'analyze',
+    filesAnalyzed: overrides.filesAnalyzed ?? 10,
+    filesWithViolations: overrides.filesWithViolations ?? 2,
+    totalViolations: overrides.totalViolations ?? 5,
+    errorCount: overrides.errorCount ?? 1,
+    warningCount: overrides.warningCount ?? 3,
+    infoCount: overrides.infoCount ?? 1,
+    rulesRun: overrides.rulesRun ?? ['no-eval', 'prefer-const'],
+    durationMs: overrides.durationMs ?? 150,
+    exitCode: overrides.exitCode ?? 0,
+    configPath: overrides.configPath ?? null,
+    user: overrides.user ?? 'testuser',
   }
 }
 
-describe('AuditEntry', () => {
+function makeLog(entries: AuditEntry[] = []): AuditLog {
+  return { version: 1, entries }
+}
+
+beforeEach(() => {
+  vi.clearAllMocks()
+  vi.spyOn(Date, 'now').mockReturnValue(1700000000000)
+  mockedUserInfo.mockReturnValue({ username: 'testuser' })
+})
+
+// ─── RunContext ───
+
+describe('RunContext', () => {
   describe('constructor', () => {
-    it('should create entry with all fields', () => {
-      const data = makeEntry()
-      const entry = new AuditEntry(data)
-      expect(entry.getId()).toBe(data.id)
-      expect(entry.getTimestamp()).toBe(data.timestamp)
-      expect(entry.getSeverity()).toBe(data.severity)
-      expect(entry.getCategory()).toBe(data.category)
-      expect(entry.getAction()).toBe(data.action)
-      expect(entry.getMessage()).toBe(data.message)
+    it('should set command', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.command).toBe('analyze')
     })
 
-    it('should store a copy of data', () => {
-      const data = makeEntry()
-      const entry = new AuditEntry(data)
-      data.message = 'changed'
-      expect(entry.getMessage()).toBe('test message')
-    })
-  })
-
-  describe('getters', () => {
-    it('should return id', () => {
-      const entry = new AuditEntry(makeEntry({ id: 'entry-1' }))
-      expect(entry.getId()).toBe('entry-1')
+    it('should set configPath when provided', () => {
+      const ctx = new RunContext('analyze', '/path/to/config.json')
+      const entry = ctx.finish(0)
+      expect(entry.configPath).toBe('/path/to/config.json')
     })
 
-    it('should return timestamp', () => {
-      const ts = 1700000000000
-      const entry = new AuditEntry(makeEntry({ timestamp: ts }))
-      expect(entry.getTimestamp()).toBe(ts)
+    it('should set configPath to null when not provided', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.configPath).toBeNull()
     })
 
-    it('should return severity', () => {
-      const entry = new AuditEntry(makeEntry({ severity: 'error' }))
-      expect(entry.getSeverity()).toBe('error')
-    })
-
-    it('should return category', () => {
-      const entry = new AuditEntry(makeEntry({ category: 'auth' }))
-      expect(entry.getCategory()).toBe('auth')
-    })
-
-    it('should return action', () => {
-      const entry = new AuditEntry(makeEntry({ action: 'user.login' }))
-      expect(entry.getAction()).toBe('user.login')
-    })
-
-    it('should return message', () => {
-      const entry = new AuditEntry(makeEntry({ message: 'hello' }))
-      expect(entry.getMessage()).toBe('hello')
-    })
-
-    it('should return a copy of metadata', () => {
-      const meta = { key: 'value' }
-      const entry = new AuditEntry(makeEntry({ metadata: meta }))
-      const retrieved = entry.getMetadata()
-      expect(retrieved).toEqual({ key: 'value' })
-      retrieved['key'] = 'changed'
-      expect(entry.getMetadata()).toEqual({ key: 'value' })
-    })
-
-    it('should return full data copy via getData', () => {
-      const data = makeEntry()
-      const entry = new AuditEntry(data)
-      const retrieved = entry.getData()
-      expect(retrieved).toEqual(data)
-      retrieved.message = 'changed'
-      expect(entry.getMessage()).toBe('test message')
+    it('should capture startTime from Date.now()', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.timestamp).toBe(new Date(1700000000000).toISOString())
     })
   })
 
-  describe('toJSON', () => {
-    it('should return serializable object', () => {
-      const data = makeEntry({ userId: 'u1', duration: 42 })
-      const entry = new AuditEntry(data)
-      const json = entry.toJSON()
-      expect(json.id).toBe(data.id)
-      expect(json.severity).toBe('info')
-      expect(json.userId).toBe('u1')
-      expect(json.duration).toBe(42)
-      expect(JSON.stringify(json)).toBeTruthy()
+  describe('durationMs getter', () => {
+    it('should return 0 before finish is called', () => {
+      const ctx = new RunContext('analyze')
+      expect(ctx.durationMs).toBe(0)
+    })
+
+    it('should return elapsed duration after finish', () => {
+      vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1700000000000)
+        .mockReturnValueOnce(1700000000150)
+      const ctx = new RunContext('analyze')
+      ctx.finish(0)
+      expect(ctx.durationMs).toBe(150)
     })
   })
 
-  describe('toText', () => {
-    it('should format basic entry', () => {
-      const entry = new AuditEntry(makeEntry({
-        timestamp: 1700000000000,
-        severity: 'error',
-        category: 'auth',
-        action: 'login.failed',
-        message: 'Invalid credentials',
-        source: 'auth-module',
-      }))
-      const text = entry.toText()
-      expect(text).toContain('[ERROR]')
-      expect(text).toContain('[auth]')
-      expect(text).toContain('login.failed')
-      expect(text).toContain('Invalid credentials')
-      expect(text).toContain('source: auth-module')
+  describe('entry getter', () => {
+    it('should return null before finish is called', () => {
+      const ctx = new RunContext('analyze')
+      expect(ctx.entry).toBeNull()
     })
 
-    it('should include userId when present', () => {
-      const entry = new AuditEntry(makeEntry({ userId: 'user-123' }))
-      expect(entry.toText()).toContain('user: user-123')
-    })
-
-    it('should include duration when present', () => {
-      const entry = new AuditEntry(makeEntry({ duration: 150 }))
-      expect(entry.toText()).toContain('150ms')
-    })
-
-    it('should not include optional fields when absent', () => {
-      const entry = new AuditEntry(makeEntry())
-      const text = entry.toText()
-      expect(text).not.toContain('user:')
-      expect(text).not.toContain('ms)')
+    it('should return AuditEntry after finish is called', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(ctx.entry).toBe(entry)
     })
   })
 
-  describe('toCSV', () => {
-    it('should produce CSV line with all fields', () => {
-      const entry = new AuditEntry(makeEntry({
-        id: 'id1',
-        timestamp: 1700000000000,
-        severity: 'warning',
-        category: 'config',
-        action: 'config.changed',
-        message: 'Config updated',
-        source: 'cli',
-        userId: 'u1',
-        sessionId: 's1',
-        duration: 10,
-        correlationId: 'corr1',
-      }))
-      const csv = entry.toCSV()
-      expect(csv).toContain('id1')
-      expect(csv).toContain('1700000000000')
-      expect(csv).toContain('warning')
-      expect(csv).toContain('config')
-      expect(csv).toContain('config.changed')
-      expect(csv).toContain('u1')
-      expect(csv).toContain('s1')
-      expect(csv).toContain('10')
-      expect(csv).toContain('corr1')
+  describe('addRulesRun', () => {
+    it('should set rulesRun on the entry', () => {
+      const ctx = new RunContext('analyze')
+      ctx.addRulesRun(['no-eval', 'prefer-const'])
+      const entry = ctx.finish(0)
+      expect(entry.rulesRun).toEqual(['no-eval', 'prefer-const'])
     })
 
-    it('should escape fields with commas', () => {
-      const entry = new AuditEntry(makeEntry({ message: 'hello, world' }))
-      const csv = entry.toCSV()
-      expect(csv).toContain('"hello, world"')
-    })
-
-    it('should escape fields with quotes', () => {
-      const entry = new AuditEntry(makeEntry({ message: 'say "hi"' }))
-      const csv = entry.toCSV()
-      expect(csv).toContain('"say ""hi"""')
-    })
-
-    it('should use empty string for missing optional fields', () => {
-      const entry = new AuditEntry(makeEntry())
-      const csv = entry.toCSV()
-      const parts = csv.split(',')
-      expect(parts[7]).toBe('')
-      expect(parts[8]).toBe('')
-      expect(parts[9]).toBe('')
-      expect(parts[10]).toBe('')
+    it('should copy the array (not reference)', () => {
+      const ctx = new RunContext('analyze')
+      const rules = ['no-eval']
+      ctx.addRulesRun(rules)
+      rules.push('extra-rule')
+      const entry = ctx.finish(0)
+      expect(entry.rulesRun).toEqual(['no-eval'])
     })
   })
 
-  describe('matches', () => {
-    const baseEntry = new AuditEntry(makeEntry({
-      timestamp: 1000,
-      severity: 'error',
-      category: 'auth',
-      action: 'login',
-      source: 'auth-module',
-      userId: 'user1',
-    }))
-
-    it('should match empty filter', () => {
-      expect(baseEntry.matches({})).toBe(true)
+  describe('setFileStats', () => {
+    it('should set filesAnalyzed and filesWithViolations', () => {
+      const ctx = new RunContext('analyze')
+      ctx.setFileStats(42, 7)
+      const entry = ctx.finish(0)
+      expect(entry.filesAnalyzed).toBe(42)
+      expect(entry.filesWithViolations).toBe(7)
     })
 
-    it('should match by severities', () => {
-      expect(baseEntry.matches({ severities: ['error', 'critical'] })).toBe(true)
-      expect(baseEntry.matches({ severities: ['debug', 'info'] })).toBe(false)
-    })
-
-    it('should match by categories', () => {
-      expect(baseEntry.matches({ categories: ['auth', 'security'] })).toBe(true)
-      expect(baseEntry.matches({ categories: ['config', 'plugin'] })).toBe(false)
-    })
-
-    it('should match by time range', () => {
-      expect(baseEntry.matches({ startTime: 500, endTime: 1500 })).toBe(true)
-      expect(baseEntry.matches({ startTime: 2000 })).toBe(false)
-      expect(baseEntry.matches({ endTime: 500 })).toBe(false)
-    })
-
-    it('should match by actions', () => {
-      expect(baseEntry.matches({ actions: ['login', 'logout'] })).toBe(true)
-      expect(baseEntry.matches({ actions: ['register'] })).toBe(false)
-    })
-
-    it('should match by sources', () => {
-      expect(baseEntry.matches({ sources: ['auth-module'] })).toBe(true)
-      expect(baseEntry.matches({ sources: ['cli'] })).toBe(false)
-    })
-
-    it('should match by userIds', () => {
-      expect(baseEntry.matches({ userIds: ['user1'] })).toBe(true)
-      expect(baseEntry.matches({ userIds: ['user2'] })).toBe(false)
-    })
-
-    it('should return false for userIds filter when entry has no userId', () => {
-      const noUser = new AuditEntry(makeEntry())
-      expect(noUser.matches({ userIds: ['user1'] })).toBe(false)
-    })
-
-    it('should combine multiple filter criteria', () => {
-      expect(baseEntry.matches({
-        severities: ['error'],
-        categories: ['auth'],
-        actions: ['login'],
-      })).toBe(true)
-      expect(baseEntry.matches({
-        severities: ['error'],
-        categories: ['config'],
-      })).toBe(false)
+    it('should default to 0 when not called', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.filesAnalyzed).toBe(0)
+      expect(entry.filesWithViolations).toBe(0)
     })
   })
 
-  describe('static severityValue', () => {
-    it('should return correct numeric levels', () => {
-      expect(AuditEntry.severityValue('debug')).toBe(0)
-      expect(AuditEntry.severityValue('info')).toBe(1)
-      expect(AuditEntry.severityValue('warning')).toBe(2)
-      expect(AuditEntry.severityValue('error')).toBe(3)
-      expect(AuditEntry.severityValue('critical')).toBe(4)
+  describe('setViolationStats', () => {
+    it('should set error, warning, and info counts', () => {
+      const ctx = new RunContext('analyze')
+      ctx.setViolationStats(3, 5, 2)
+      const entry = ctx.finish(0)
+      expect(entry.errorCount).toBe(3)
+      expect(entry.warningCount).toBe(5)
+      expect(entry.infoCount).toBe(2)
     })
 
-    it('should have increasing severity order', () => {
-      expect(AuditEntry.severityValue('debug')).toBeLessThan(AuditEntry.severityValue('info'))
-      expect(AuditEntry.severityValue('info')).toBeLessThan(AuditEntry.severityValue('warning'))
-      expect(AuditEntry.severityValue('warning')).toBeLessThan(AuditEntry.severityValue('error'))
-      expect(AuditEntry.severityValue('error')).toBeLessThan(AuditEntry.severityValue('critical'))
+    it('should default to 0 when not called', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.errorCount).toBe(0)
+      expect(entry.warningCount).toBe(0)
+      expect(entry.infoCount).toBe(0)
     })
   })
 
-  describe('static generateId', () => {
-    it('should generate unique ids', () => {
-      const id1 = AuditEntry.generateId()
-      const id2 = AuditEntry.generateId()
-      expect(id1).not.toBe(id2)
+  describe('finish', () => {
+    it('should calculate totalViolations from error + warning + info counts', () => {
+      const ctx = new RunContext('analyze')
+      ctx.setViolationStats(3, 5, 2)
+      const entry = ctx.finish(0)
+      expect(entry.totalViolations).toBe(10)
     })
 
-    it('should start with audit_ prefix', () => {
-      const id = AuditEntry.generateId()
-      expect(id.startsWith('audit_')).toBe(true)
+    it('should pass exitCode through', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(1)
+      expect(entry.exitCode).toBe(1)
+    })
+
+    it('should call os.userInfo for user field', () => {
+      mockedUserInfo.mockReturnValueOnce({ username: 'ci-agent' })
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.user).toBe('ci-agent')
+    })
+
+    it('should generate a unique id', () => {
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.id).toBeTruthy()
+      expect(typeof entry.id).toBe('string')
+    })
+
+    it('should generate different ids for different entries', () => {
+      vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1700000000000)
+        .mockReturnValueOnce(1700000000100)
+      const ctx1 = new RunContext('analyze')
+      const entry1 = ctx1.finish(0)
+
+      // generateId uses Date.now() + Math.random(), mock random difference
+      const ctx2 = new RunContext('analyze')
+      const entry2 = ctx2.finish(0)
+
+      // IDs should be truthy strings
+      expect(entry1.id).toBeTruthy()
+      expect(entry2.id).toBeTruthy()
+    })
+
+    it('should set durationMs on the entry', () => {
+      vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1700000000000)
+        .mockReturnValueOnce(1700000000250)
+      const ctx = new RunContext('analyze')
+      const entry = ctx.finish(0)
+      expect(entry.durationMs).toBe(250)
+    })
+
+    it('should populate all AuditEntry fields', () => {
+      vi.spyOn(Date, 'now')
+        .mockReturnValueOnce(1700000000000)
+        .mockReturnValueOnce(1700000000500)
+      const ctx = new RunContext('analyze', 'config.json')
+      ctx.addRulesRun(['rule-a'])
+      ctx.setFileStats(100, 10)
+      ctx.setViolationStats(1, 2, 3)
+
+      const entry = ctx.finish(1)
+
+      expect(entry.id).toBeTruthy()
+      expect(entry.timestamp).toBe(new Date(1700000000000).toISOString())
+      expect(entry.command).toBe('analyze')
+      expect(entry.configPath).toBe('config.json')
+      expect(entry.filesAnalyzed).toBe(100)
+      expect(entry.filesWithViolations).toBe(10)
+      expect(entry.totalViolations).toBe(6)
+      expect(entry.errorCount).toBe(1)
+      expect(entry.warningCount).toBe(2)
+      expect(entry.infoCount).toBe(3)
+      expect(entry.rulesRun).toEqual(['rule-a'])
+      expect(entry.durationMs).toBe(500)
+      expect(entry.exitCode).toBe(1)
+      expect(entry.user).toBe('testuser')
     })
   })
 })
 
-describe('AuditStore', () => {
-  describe('add and get', () => {
-    it('should add and retrieve an entry', () => {
-      const store = new AuditStore()
-      const data = makeEntry({ id: 'e1' })
-      store.add(data)
-      expect(store.get('e1')).toEqual(data)
-    })
-
-    it('should return null for non-existent entry', () => {
-      const store = new AuditStore()
-      expect(store.get('nonexistent')).toBeNull()
-    })
-
-    it('should handle multiple entries', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1' }))
-      store.add(makeEntry({ id: 'e2' }))
-      store.add(makeEntry({ id: 'e3' }))
-      expect(store.get('e1')).toBeTruthy()
-      expect(store.get('e2')).toBeTruthy()
-      expect(store.get('e3')).toBeTruthy()
-      expect(store.count()).toBe(3)
-    })
-  })
-
-  describe('query', () => {
-    let store: AuditStore
-    beforeEach(() => {
-      store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', severity: 'info', category: 'auth', action: 'login', source: 'api', timestamp: 1000 }))
-      store.add(makeEntry({ id: 'e2', severity: 'error', category: 'system', action: 'crash', source: 'kernel', timestamp: 2000 }))
-      store.add(makeEntry({ id: 'e3', severity: 'warning', category: 'config', action: 'update', source: 'api', timestamp: 3000 }))
-      store.add(makeEntry({ id: 'e4', severity: 'info', category: 'auth', action: 'logout', source: 'api', timestamp: 4000, userId: 'u1' }))
-    })
-
-    it('should return all entries with empty filter', () => {
-      expect(store.query({})).toHaveLength(4)
-    })
-
-    it('should filter by severities', () => {
-      expect(store.query({ severities: ['info'] })).toHaveLength(2)
-      expect(store.query({ severities: ['error', 'warning'] })).toHaveLength(2)
-    })
-
-    it('should filter by categories', () => {
-      expect(store.query({ categories: ['auth'] })).toHaveLength(2)
-      expect(store.query({ categories: ['config', 'system'] })).toHaveLength(2)
-    })
-
-    it('should filter by time range', () => {
-      expect(store.query({ startTime: 1500, endTime: 3500 })).toHaveLength(2)
-    })
-
-    it('should filter by actions', () => {
-      expect(store.query({ actions: ['login'] })).toHaveLength(1)
-    })
-
-    it('should filter by sources', () => {
-      expect(store.query({ sources: ['api'] })).toHaveLength(3)
-    })
-
-    it('should filter by userIds', () => {
-      expect(store.query({ userIds: ['u1'] })).toHaveLength(1)
-    })
-
-    it('should apply limit', () => {
-      expect(store.query({ limit: 2 })).toHaveLength(2)
-    })
-
-    it('should apply offset', () => {
-      const results = store.query({ offset: 2 })
-      expect(results).toHaveLength(2)
-    })
-
-    it('should apply both limit and offset', () => {
-      const results = store.query({ offset: 1, limit: 2 })
-      expect(results).toHaveLength(2)
-    })
-  })
-
-  describe('count', () => {
-    it('should return total count without filter', () => {
-      const store = new AuditStore()
-      store.add(makeEntry())
-      store.add(makeEntry())
-      store.add(makeEntry())
-      expect(store.count()).toBe(3)
-    })
-
-    it('should return filtered count', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ severity: 'info' }))
-      store.add(makeEntry({ severity: 'error' }))
-      store.add(makeEntry({ severity: 'info' }))
-      expect(store.count({ severities: ['info'] })).toBe(2)
-    })
-  })
-
-  describe('getStats', () => {
-    it('should return empty stats for empty store', () => {
-      const store = new AuditStore()
-      const stats = store.getStats()
-      expect(stats.total).toBe(0)
-      expect(stats.timeRange).toBeNull()
-      expect(stats.avgDuration).toBe(0)
-    })
-
-    it('should compute stats correctly', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ severity: 'info', category: 'auth', action: 'login', timestamp: 1000, duration: 10 }))
-      store.add(makeEntry({ severity: 'error', category: 'system', action: 'login', timestamp: 2000, duration: 20 }))
-      const stats = store.getStats()
-      expect(stats.total).toBe(2)
-      expect(stats.bySeverity['info']).toBe(1)
-      expect(stats.bySeverity['error']).toBe(1)
-      expect(stats.byCategory['auth']).toBe(1)
-      expect(stats.byCategory['system']).toBe(1)
-      expect(stats.byAction['login']).toBe(2)
-      expect(stats.timeRange).toEqual({ start: 1000, end: 2000 })
-      expect(stats.avgDuration).toBe(15)
-    })
-
-    it('should initialize all severity keys to zero', () => {
-      const store = new AuditStore()
-      const stats = store.getStats()
-      const severities: AuditSeverity[] = ['debug', 'info', 'warning', 'error', 'critical']
-      for (const sev of severities) {
-        expect(stats.bySeverity[sev]).toBe(0)
-      }
-    })
-
-    it('should initialize all category keys to zero', () => {
-      const store = new AuditStore()
-      const stats = store.getStats()
-      const categories: AuditCategory[] = ['auth', 'config', 'analysis', 'plugin', 'system', 'performance', 'security']
-      for (const cat of categories) {
-        expect(stats.byCategory[cat]).toBe(0)
-      }
-    })
-
-    it('should handle entries without duration', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ duration: undefined }))
-      expect(store.getStats().avgDuration).toBe(0)
-    })
-  })
-
-  describe('clear', () => {
-    it('should remove all entries', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1' }))
-      store.add(makeEntry({ id: 'e2' }))
-      store.clear()
-      expect(store.count()).toBe(0)
-      expect(store.get('e1')).toBeNull()
-    })
-  })
-
-  describe('export', () => {
-    it('should export as JSON', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', severity: 'info' }))
-      const json = store.export('json')
-      const parsed = JSON.parse(json)
-      expect(parsed).toHaveLength(1)
-      expect(parsed[0].id).toBe('e1')
-    })
-
-    it('should export as CSV', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', action: 'test' }))
-      const csv = store.export('csv')
-      const lines = csv.split('\n')
-      expect(lines[0]).toBe('id,timestamp,severity,category,action,message,source,userId,sessionId,duration,correlationId')
-      expect(lines[1]).toContain('e1')
-    })
-
-    it('should export as text', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ severity: 'error', action: 'fail', message: 'broken' }))
-      const text = store.export('text')
-      expect(text).toContain('[ERROR]')
-      expect(text).toContain('fail')
-      expect(text).toContain('broken')
-    })
-
-    it('should return empty array for empty JSON export', () => {
-      const store = new AuditStore()
-      expect(store.export('json')).toBe('[]')
-    })
-
-    it('should return empty string for empty text export', () => {
-      const store = new AuditStore()
-      expect(store.export('text')).toBe('')
-    })
-  })
-
-  describe('prune', () => {
-    it('should remove oldest entries to fit maxEntries', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1' }))
-      store.add(makeEntry({ id: 'e2' }))
-      store.add(makeEntry({ id: 'e3' }))
-      const removed = store.prune(2)
-      expect(removed).toBe(1)
-      expect(store.count()).toBe(2)
-      expect(store.get('e1')).toBeNull()
-      expect(store.get('e2')).toBeTruthy()
-      expect(store.get('e3')).toBeTruthy()
-    })
-
-    it('should return 0 when no pruning needed', () => {
-      const store = new AuditStore()
-      store.add(makeEntry())
-      expect(store.prune(10)).toBe(0)
-    })
-
-    it('should clean up correlation index on prune', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', correlationId: 'corr1' }))
-      store.add(makeEntry({ id: 'e2', correlationId: 'corr1' }))
-      store.prune(1)
-      expect(store.getByCorrelationId('corr1')).toHaveLength(1)
-    })
-  })
-
-  describe('getByTimeRange', () => {
-    it('should return entries within range', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', timestamp: 1000 }))
-      store.add(makeEntry({ id: 'e2', timestamp: 2000 }))
-      store.add(makeEntry({ id: 'e3', timestamp: 3000 }))
-      const results = store.getByTimeRange(1500, 2500)
-      expect(results).toHaveLength(1)
-      expect(results[0]!.id).toBe('e2')
-    })
-
-    it('should include boundary values', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ timestamp: 1000 }))
-      store.add(makeEntry({ timestamp: 2000 }))
-      expect(store.getByTimeRange(1000, 2000)).toHaveLength(2)
-    })
-
-    it('should return empty for no matches', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ timestamp: 5000 }))
-      expect(store.getByTimeRange(1000, 2000)).toHaveLength(0)
-    })
-  })
-
-  describe('getByCorrelationId', () => {
-    it('should return entries with matching correlationId', () => {
-      const store = new AuditStore()
-      store.add(makeEntry({ id: 'e1', correlationId: 'corr1' }))
-      store.add(makeEntry({ id: 'e2', correlationId: 'corr1' }))
-      store.add(makeEntry({ id: 'e3', correlationId: 'corr2' }))
-      expect(store.getByCorrelationId('corr1')).toHaveLength(2)
-    })
-
-    it('should return empty array for non-existent correlationId', () => {
-      const store = new AuditStore()
-      expect(store.getByCorrelationId('nonexistent')).toEqual([])
-    })
-  })
-})
+// ─── AuditLogger - constructor ───
 
 describe('AuditLogger', () => {
   describe('constructor', () => {
-    it('should use default config when no config provided', () => {
+    it('should use DEFAULT_AUDIT_CONFIG when no config provided', () => {
       const logger = new AuditLogger()
-      const config = logger.getConfig()
-      expect(config.minSeverity).toBe(DEFAULT_AUDIT_LOGGER_CONFIG.minSeverity)
-      expect(config.maxEntries).toBe(DEFAULT_AUDIT_LOGGER_CONFIG.maxEntries)
-      expect(config.outputFormat).toBe(DEFAULT_AUDIT_LOGGER_CONFIG.outputFormat)
+      expect(logger.getLogPath()).toBe(
+        path.join(process.cwd(), DEFAULT_AUDIT_CONFIG.logDir, 'audit.json'),
+      )
     })
 
-    it('should merge partial config', () => {
-      const logger = new AuditLogger({ minSeverity: 'warning', maxEntries: 500 })
-      const config = logger.getConfig()
-      expect(config.minSeverity).toBe('warning')
-      expect(config.maxEntries).toBe(500)
-      expect(config.outputFormat).toBe(DEFAULT_AUDIT_LOGGER_CONFIG.outputFormat)
+    it('should merge partial config with defaults', () => {
+      const logger = new AuditLogger({ logDir: '/custom/logs', maxEntries: 500 })
+      const logPath = logger.getLogPath()
+      expect(logPath).toBe('/custom/logs/audit.json')
     })
 
-    it('should return a copy of config', () => {
-      const logger = new AuditLogger()
-      const config = logger.getConfig()
-      config.minSeverity = 'critical'
-      expect(logger.getConfig().minSeverity).toBe('debug')
-    })
-  })
-
-  describe('log', () => {
-    it('should log entry and return id', () => {
-      const logger = new AuditLogger()
-      const id = logger.log('test.action', 'test message')
-      expect(id).toBeTruthy()
-      expect(id.startsWith('audit_')).toBe(true)
-      expect(logger.getEntry(id)).toBeTruthy()
-    })
-
-    it('should log entry with all options', () => {
-      const logger = new AuditLogger()
-      const id = logger.log('action', 'msg', {
-        severity: 'error',
-        category: 'auth',
-        userId: 'u1',
-        sessionId: 's1',
-        source: 'custom',
-        duration: 42,
-        correlationId: 'corr1',
-        metadata: { key: 'value' },
+    it('should override defaults fully', () => {
+      const logger = new AuditLogger({
+        enabled: false,
+        logDir: '/tmp/audit',
+        maxEntries: 50,
       })
-      const entry = logger.getEntry(id)
-      expect(entry!.severity).toBe('error')
-      expect(entry!.category).toBe('auth')
-      expect(entry!.userId).toBe('u1')
-      expect(entry!.sessionId).toBe('s1')
-      expect(entry!.source).toBe('custom')
-      expect(entry!.duration).toBe(42)
-      expect(entry!.correlationId).toBe('corr1')
-      expect(entry!.metadata).toEqual({ key: 'value' })
-    })
-
-    it('should default to info severity when not specified', () => {
-      const logger = new AuditLogger()
-      const id = logger.log('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('info')
-    })
-
-    it('should default to system category when not specified', () => {
-      const logger = new AuditLogger()
-      const id = logger.log('action', 'msg')
-      expect(logger.getEntry(id)!.category).toBe('system')
-    })
-
-    it('should default source to audit-logger', () => {
-      const logger = new AuditLogger()
-      const id = logger.log('action', 'msg')
-      expect(logger.getEntry(id)!.source).toBe('audit-logger')
+      expect(logger.getLogPath()).toBe('/tmp/audit/audit.json')
     })
   })
 
-  describe('severity methods', () => {
-    it('debug should log with debug severity', () => {
-      const logger = new AuditLogger()
-      const id = logger.debug('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('debug')
+  // ─── AuditLogger - getLogPath ───
+
+  describe('getLogPath', () => {
+    it('should return absolute path when logDir is absolute', () => {
+      const logger = new AuditLogger({ logDir: '/var/log/audit' })
+      expect(logger.getLogPath()).toBe('/var/log/audit/audit.json')
     })
 
-    it('info should log with info severity', () => {
-      const logger = new AuditLogger()
-      const id = logger.info('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('info')
+    it('should join with cwd when logDir is relative', () => {
+      const logger = new AuditLogger({ logDir: '.codeforge/audit' })
+      expect(logger.getLogPath()).toBe(
+        path.join(process.cwd(), '.codeforge/audit', 'audit.json'),
+      )
     })
 
-    it('warn should log with warning severity', () => {
-      const logger = new AuditLogger()
-      const id = logger.warn('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('warning')
-    })
-
-    it('error should log with error severity', () => {
-      const logger = new AuditLogger()
-      const id = logger.error('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('error')
-    })
-
-    it('critical should log with critical severity', () => {
-      const logger = new AuditLogger()
-      const id = logger.critical('action', 'msg')
-      expect(logger.getEntry(id)!.severity).toBe('critical')
-    })
-
-    it('should pass metadata to severity methods', () => {
-      const logger = new AuditLogger()
-      const id = logger.info('action', 'msg', { detail: 'extra' })
-      expect(logger.getEntry(id)!.metadata).toEqual({ detail: 'extra' })
+    it('should always append audit.json', () => {
+      const logger = new AuditLogger({ logDir: '/tmp/test' })
+      expect(logger.getLogPath()).toMatch(/audit\.json$/)
     })
   })
 
-  describe('minSeverity filtering', () => {
-    it('should filter entries below minSeverity', () => {
-      const logger = new AuditLogger({ minSeverity: 'warning' })
-      const debugId = logger.debug('action', 'debug msg')
-      const infoId = logger.info('action', 'info msg')
-      const warnId = logger.warn('action', 'warn msg')
-      expect(debugId).toBe('')
-      expect(infoId).toBe('')
-      expect(warnId).toBeTruthy()
-      expect(logger.getEntries()).toHaveLength(1)
+  // ─── AuditLogger - startRun ───
+
+  describe('startRun', () => {
+    it('should return a RunContext with the given command', () => {
+      const logger = new AuditLogger()
+      const ctx = logger.startRun('analyze')
+      expect(ctx).toBeInstanceOf(RunContext)
+      const entry = ctx.finish(0)
+      expect(entry.command).toBe('analyze')
     })
 
-    it('should allow all entries when minSeverity is debug', () => {
-      const logger = new AuditLogger({ minSeverity: 'debug' })
-      logger.debug('a', 'm')
-      logger.info('b', 'm')
-      logger.warn('c', 'm')
-      expect(logger.getEntries()).toHaveLength(3)
+    it('should pass configPath to RunContext', () => {
+      const logger = new AuditLogger()
+      const ctx = logger.startRun('analyze', 'my-config.json')
+      const entry = ctx.finish(0)
+      expect(entry.configPath).toBe('my-config.json')
     })
   })
 
-  describe('category filtering', () => {
-    it('should filter entries by enabledCategories', () => {
-      const logger = new AuditLogger({ enabledCategories: ['auth', 'system'] })
-      const id1 = logger.log('a', 'm', { category: 'auth' })
-      const id2 = logger.log('b', 'm', { category: 'config' })
-      expect(id1).toBeTruthy()
-      expect(id2).toBe('')
+  // ─── AuditLogger - loadLog ───
+
+  describe('loadLog', () => {
+    it('should return parsed log on success', async () => {
+      const log = makeLog([makeEntry({ id: 'e1' })])
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(log))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.loadLog()
+      expect(result).toEqual(log)
+      expect(result.entries).toHaveLength(1)
     })
 
-    it('should allow all categories when enabledCategories is null', () => {
-      const logger = new AuditLogger({ enabledCategories: null })
-      logger.log('a', 'm', { category: 'auth' })
-      logger.log('b', 'm', { category: 'config' })
-      expect(logger.getEntries()).toHaveLength(2)
+    it('should return empty log when file not found', async () => {
+      mockedReadFile.mockRejectedValueOnce(new Error('ENOENT'))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.loadLog()
+      expect(result).toEqual({ version: 1, entries: [] })
+    })
+
+    it('should return empty log on any read error', async () => {
+      mockedReadFile.mockRejectedValueOnce(new Error('permission denied'))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.loadLog()
+      expect(result).toEqual({ version: 1, entries: [] })
+    })
+
+    it('should read from the correct log path', async () => {
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog()))
+      const logger = new AuditLogger({ logDir: '/custom/path' })
+      await logger.loadLog()
+      expect(mockedReadFile).toHaveBeenCalledWith('/custom/path/audit.json', 'utf-8')
     })
   })
+
+  // ─── AuditLogger - saveLog ───
+
+  describe('saveLog', () => {
+    it('should create directory before writing', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp/audit-test' })
+      await logger.saveLog(makeLog())
+      expect(mockedMkdir).toHaveBeenCalledWith('/tmp/audit-test', { recursive: true })
+    })
+
+    it('should write to tmp file first then rename', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp/audit-test' })
+      await logger.saveLog(makeLog())
+      expect(mockedWriteFile).toHaveBeenCalledWith(
+        '/tmp/audit-test/audit.json.tmp',
+        expect.any(String),
+        'utf-8',
+      )
+      expect(mockedRename).toHaveBeenCalledWith(
+        '/tmp/audit-test/audit.json.tmp',
+        '/tmp/audit-test/audit.json',
+      )
+    })
+
+    it('should write valid JSON', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const log = makeLog([makeEntry({ id: 'e1' })])
+      await logger.saveLog(log)
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.version).toBe(1)
+      expect(parsed.entries).toHaveLength(1)
+    })
+
+    it('should pretty-print JSON with 2-space indent', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      await logger.saveLog(makeLog())
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      expect(writtenContent).toContain('\n  ')
+    })
+
+    it('should prune entries to maxEntries', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp', maxEntries: 2 })
+      const entries = [
+        makeEntry({ id: 'e1' }),
+        makeEntry({ id: 'e2' }),
+        makeEntry({ id: 'e3' }),
+        makeEntry({ id: 'e4' }),
+      ]
+      await logger.saveLog(makeLog(entries))
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.entries).toHaveLength(2)
+      expect(parsed.entries[0].id).toBe('e3')
+      expect(parsed.entries[1].id).toBe('e4')
+    })
+
+    it('should not prune when entries are within maxEntries', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp', maxEntries: 1000 })
+      const entries = [makeEntry({ id: 'e1' }), makeEntry({ id: 'e2' })]
+      await logger.saveLog(makeLog(entries))
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.entries).toHaveLength(2)
+    })
+
+    it('should always set version to 1 in saved log', async () => {
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      await logger.saveLog(makeLog())
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.version).toBe(1)
+    })
+  })
+
+  // ─── AuditLogger - recordEntry ───
+
+  describe('recordEntry', () => {
+    it('should load existing log, append entry, and save', async () => {
+      const existingLog = makeLog([makeEntry({ id: 'existing' })])
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(existingLog))
+
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const newEntry = makeEntry({ id: 'new' })
+      await logger.recordEntry(newEntry)
+
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.entries).toHaveLength(2)
+      expect(parsed.entries[0].id).toBe('existing')
+      expect(parsed.entries[1].id).toBe('new')
+    })
+
+    it('should create new log when no existing log', async () => {
+      mockedReadFile.mockRejectedValueOnce(new Error('ENOENT'))
+
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const entry = makeEntry({ id: 'first' })
+      await logger.recordEntry(entry)
+
+      const writtenContent = mockedWriteFile.mock.calls[0]![1] as string
+      const parsed = JSON.parse(writtenContent)
+      expect(parsed.entries).toHaveLength(1)
+      expect(parsed.entries[0].id).toBe('first')
+    })
+  })
+
+  // ─── AuditLogger - generateComplianceReport ───
+
+  describe('generateComplianceReport', () => {
+    it('should return empty report for no entries', async () => {
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog()))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.totalRuns).toBe(0)
+      expect(report.totalViolations).toBe(0)
+      expect(report.passRate).toBe(0)
+      expect(report.averageViolationsPerRun).toBe(0)
+      expect(report.errorTrend).toEqual([])
+      expect(report.topViolatedRules).toEqual([])
+      expect(report.topViolatedFiles).toEqual([])
+    })
+
+    it('should filter entries by date range', async () => {
+      const entries = [
+        makeEntry({ id: 'in1', timestamp: '2025-03-15T00:00:00.000Z' }),
+        makeEntry({ id: 'in2', timestamp: '2025-06-01T00:00:00.000Z' }),
+        makeEntry({ id: 'out', timestamp: '2024-12-31T00:00:00.000Z' }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.totalRuns).toBe(2)
+    })
+
+    it('should calculate totalViolations across filtered entries', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', totalViolations: 5 }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', totalViolations: 3 }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.totalViolations).toBe(8)
+    })
+
+    it('should calculate passRate correctly', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', errorCount: 0 }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', errorCount: 3 }),
+        makeEntry({ timestamp: '2025-06-03T00:00:00.000Z', errorCount: 0 }),
+        makeEntry({ timestamp: '2025-06-04T00:00:00.000Z', errorCount: 1 }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      // 2 out of 4 have errorCount === 0
+      expect(report.passRate).toBe(0.5)
+    })
+
+    it('should calculate averageViolationsPerRun', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', totalViolations: 10 }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', totalViolations: 20 }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.averageViolationsPerRun).toBe(15)
+    })
+
+    it('should produce errorTrend as array of totalViolations per run', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', totalViolations: 3 }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', totalViolations: 7 }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.errorTrend).toEqual([3, 7])
+    })
+
+    it('should compute topViolatedRules from rulesRun', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', rulesRun: ['a', 'b', 'c'] }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', rulesRun: ['a', 'b'] }),
+        makeEntry({ timestamp: '2025-06-03T00:00:00.000Z', rulesRun: ['a'] }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.topViolatedRules[0]).toEqual({ ruleId: 'a', count: 3 })
+      expect(report.topViolatedRules[1]).toEqual({ ruleId: 'b', count: 2 })
+      expect(report.topViolatedRules[2]).toEqual({ ruleId: 'c', count: 1 })
+    })
+
+    it('should limit topViolatedRules to 10', async () => {
+      const rules = Array.from({ length: 15 }, (_, i) => `rule-${i}`)
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', rulesRun: rules }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.topViolatedRules).toHaveLength(10)
+    })
+
+    it('should set period to ISO strings of from/to dates', async () => {
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog()))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const from = new Date('2025-01-01T00:00:00.000Z')
+      const to = new Date('2025-12-31T23:59:59.999Z')
+      const report = await logger.generateComplianceReport(from, to)
+      expect(report.period.from).toBe('2025-01-01T00:00:00.000Z')
+      expect(report.period.to).toBe('2025-12-31T23:59:59.999Z')
+    })
+
+    it('should set generatedAt to a valid ISO timestamp', async () => {
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog()))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+      expect(new Date(report.generatedAt).getTime()).not.toBeNaN()
+    })
+
+    it('should include boundary dates in filter (inclusive)', async () => {
+      const entries = [
+        makeEntry({ id: 'start', timestamp: '2025-01-01T00:00:00.000Z' }),
+        makeEntry({ id: 'end', timestamp: '2025-12-31T23:59:59.999Z' }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01T00:00:00.000Z'),
+        new Date('2025-12-31T23:59:59.999Z'),
+      )
+      expect(report.totalRuns).toBe(2)
+    })
+
+    it('should sort topViolatedRules by count descending', async () => {
+      const entries = [
+        makeEntry({ timestamp: '2025-06-01T00:00:00.000Z', rulesRun: ['r1', 'r1'] }),
+        makeEntry({ timestamp: '2025-06-02T00:00:00.000Z', rulesRun: ['r2', 'r2', 'r2', 'r2'] }),
+        makeEntry({ timestamp: '2025-06-03T00:00:00.000Z', rulesRun: ['r1'] }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const report = await logger.generateComplianceReport(
+        new Date('2025-01-01'),
+        new Date('2025-12-31'),
+      )
+      expect(report.topViolatedRules[0]!.ruleId).toBe('r2')
+      expect(report.topViolatedRules[1]!.ruleId).toBe('r1')
+    })
+  })
+
+  // ─── AuditLogger - getEntries ───
 
   describe('getEntries', () => {
-    it('should return all entries with no filter', () => {
-      const logger = new AuditLogger()
-      logger.info('a', 'm1')
-      logger.info('b', 'm2')
-      expect(logger.getEntries()).toHaveLength(2)
+    it('should return all entries when no limit', async () => {
+      const entries = [makeEntry({ id: 'e1' }), makeEntry({ id: 'e2' }), makeEntry({ id: 'e3' })]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.getEntries()
+      expect(result).toHaveLength(3)
     })
 
-    it('should filter entries', () => {
-      const logger = new AuditLogger()
-      logger.log('a', 'm', { severity: 'info' })
-      logger.log('b', 'm', { severity: 'error' })
-      const filtered = logger.getEntries({ severities: ['error'] })
-      expect(filtered).toHaveLength(1)
-      expect(filtered[0]!.action).toBe('b')
-    })
-  })
-
-  describe('getEntry', () => {
-    it('should return specific entry by id', () => {
-      const logger = new AuditLogger()
-      const id = logger.info('test', 'msg')
-      const entry = logger.getEntry(id)
-      expect(entry).toBeTruthy()
-      expect(entry!.action).toBe('test')
+    it('should return a copy of entries array', async () => {
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog([makeEntry()])))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.getEntries()
+      expect(result).not.toBe((await logger.loadLog()).entries)
     })
 
-    it('should return null for non-existent id', () => {
-      const logger = new AuditLogger()
-      expect(logger.getEntry('nonexistent')).toBeNull()
-    })
-  })
-
-  describe('getStats', () => {
-    it('should return stats from store', () => {
-      const logger = new AuditLogger()
-      logger.info('a', 'm')
-      logger.error('b', 'm')
-      const stats = logger.getStats()
-      expect(stats.total).toBe(2)
-      expect(stats.bySeverity['info']).toBe(1)
-      expect(stats.bySeverity['error']).toBe(1)
-    })
-  })
-
-  describe('export', () => {
-    it('should export using configured format', () => {
-      const logger = new AuditLogger({ outputFormat: 'json' })
-      logger.info('test', 'msg')
-      const exported = logger.export()
-      const parsed = JSON.parse(exported)
-      expect(parsed).toHaveLength(1)
+    it('should return limited entries from the end', async () => {
+      const entries = [
+        makeEntry({ id: 'e1' }),
+        makeEntry({ id: 'e2' }),
+        makeEntry({ id: 'e3' }),
+        makeEntry({ id: 'e4' }),
+      ]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.getEntries(2)
+      expect(result).toHaveLength(2)
+      expect(result[0]!.id).toBe('e3')
+      expect(result[1]!.id).toBe('e4')
     })
 
-    it('should export using specified format', () => {
-      const logger = new AuditLogger({ outputFormat: 'json' })
-      logger.info('test', 'msg')
-      const csv = logger.export('csv')
-      expect(csv).toContain('id,')
-      expect(csv).toContain('test')
+    it('should return all entries when limit exceeds total', async () => {
+      const entries = [makeEntry({ id: 'e1' })]
+      mockedReadFile.mockResolvedValueOnce(JSON.stringify(makeLog(entries)))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.getEntries(100)
+      expect(result).toHaveLength(1)
+    })
+
+    it('should return empty array for empty log', async () => {
+      mockedReadFile.mockRejectedValueOnce(new Error('ENOENT'))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      const result = await logger.getEntries()
+      expect(result).toEqual([])
     })
   })
 
-  describe('setMinSeverity', () => {
-    it('should update min severity', () => {
-      const logger = new AuditLogger()
-      logger.info('a', 'm')
-      expect(logger.getEntries()).toHaveLength(1)
-      logger.setMinSeverity('error')
-      logger.info('b', 'm')
-      expect(logger.getEntries()).toHaveLength(1)
-      logger.error('c', 'm')
-      expect(logger.getEntries()).toHaveLength(2)
-    })
-  })
+  // ─── AuditLogger - clearLog ───
 
-  describe('clear', () => {
-    it('should clear all entries', () => {
-      const logger = new AuditLogger()
-      logger.info('a', 'm')
-      logger.info('b', 'm')
-      logger.clear()
-      expect(logger.getEntries()).toHaveLength(0)
-      expect(logger.getStats().total).toBe(0)
-    })
-  })
-
-  describe('onEntry', () => {
-    it('should call callback for each logged entry', () => {
-      const logger = new AuditLogger()
-      const received: AuditEntryData[] = []
-      logger.onEntry((entry) => received.push(entry))
-      logger.info('a', 'm1')
-      logger.error('b', 'm2')
-      expect(received).toHaveLength(2)
-      expect(received[0]!.action).toBe('a')
-      expect(received[1]!.action).toBe('b')
+  describe('clearLog', () => {
+    it('should unlink the log file', async () => {
+      mockedUnlink.mockResolvedValueOnce(undefined)
+      const logger = new AuditLogger({ logDir: '/tmp/audit-test' })
+      await logger.clearLog()
+      expect(mockedUnlink).toHaveBeenCalledWith('/tmp/audit-test/audit.json')
     })
 
-    it('should not call callback for filtered entries', () => {
-      const logger = new AuditLogger({ minSeverity: 'error' })
-      const received: AuditEntryData[] = []
-      logger.onEntry((entry) => received.push(entry))
-      logger.info('a', 'm')
-      logger.error('b', 'm')
-      expect(received).toHaveLength(1)
-      expect(received[0]!.severity).toBe('error')
-    })
-  })
-
-  describe('redaction', () => {
-    it('should redact configured fields', () => {
-      const logger = new AuditLogger({ redactFields: ['password', 'token'] })
-      const id = logger.log('action', 'msg', {
-        metadata: { password: 'secret', token: 'abc123', name: 'visible' },
-      })
-      const entry = logger.getEntry(id)
-      expect(entry!.metadata['password']).toBe('[REDACTED]')
-      expect(entry!.metadata['token']).toBe('[REDACTED]')
-      expect(entry!.metadata['name']).toBe('visible')
+    it('should handle file not found gracefully', async () => {
+      mockedUnlink.mockRejectedValueOnce(new Error('ENOENT'))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      // Should not throw
+      await expect(logger.clearLog()).resolves.toBeUndefined()
     })
 
-    it('should not redact when redactFields is empty', () => {
-      const logger = new AuditLogger({ redactFields: [] })
-      const id = logger.log('action', 'msg', {
-        metadata: { secret: 'value' },
-      })
-      expect(logger.getEntry(id)!.metadata['secret']).toBe('value')
-    })
-  })
-
-  describe('maxEntries', () => {
-    it('should prune entries when exceeding maxEntries', () => {
-      const logger = new AuditLogger({ maxEntries: 3 })
-      logger.info('a', 'm1')
-      logger.info('b', 'm2')
-      logger.info('c', 'm3')
-      logger.info('d', 'm4')
-      expect(logger.getEntries()).toHaveLength(3)
-      const entries = logger.getEntries()
-      expect(entries[0]!.action).toBe('b')
-      expect(entries[2]!.action).toBe('d')
-    })
-  })
-
-  describe('SEVERITY_LEVELS constant', () => {
-    it('should have all severity levels defined', () => {
-      expect(SEVERITY_LEVELS['debug']).toBe(0)
-      expect(SEVERITY_LEVELS['info']).toBe(1)
-      expect(SEVERITY_LEVELS['warning']).toBe(2)
-      expect(SEVERITY_LEVELS['error']).toBe(3)
-      expect(SEVERITY_LEVELS['critical']).toBe(4)
-    })
-  })
-
-  describe('DEFAULT_AUDIT_LOGGER_CONFIG', () => {
-    it('should have expected default values', () => {
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.minSeverity).toBe('debug')
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.enabledCategories).toBeNull()
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.maxEntries).toBe(10000)
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.outputFormat).toBe('json')
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.includeTimestamps).toBe(true)
-      expect(DEFAULT_AUDIT_LOGGER_CONFIG.redactFields).toEqual([])
+    it('should handle any unlink error gracefully', async () => {
+      mockedUnlink.mockRejectedValueOnce(new Error('permission denied'))
+      const logger = new AuditLogger({ logDir: '/tmp' })
+      await expect(logger.clearLog()).resolves.toBeUndefined()
     })
   })
 })

@@ -1,0 +1,344 @@
+import { beforeEach, describe, expect, it } from 'vitest'
+
+import { MonotonicQueue } from '../../src/utils/monotonic-queue.js'
+
+// ─── Empty queue operations ──────────────────────────────
+describe('MonotonicQueue - empty queue', () => {
+  it('isEmpty returns true on empty queue', () => {
+    const q = new MonotonicQueue<number>()
+    expect(q.isEmpty()).toBe(true)
+  })
+
+  it('size is 0 on empty queue', () => {
+    const q = new MonotonicQueue<number>()
+    expect(q.size).toBe(0)
+  })
+
+  it('current throws RangeError on empty queue', () => {
+    const q = new MonotonicQueue<number>()
+    expect(() => q.current()).toThrow(RangeError)
+  })
+
+  it('current throws with descriptive message', () => {
+    const q = new MonotonicQueue<number>()
+    expect(() => q.current()).toThrow('Cannot get current from empty MonotonicQueue')
+  })
+
+  it('toArray returns empty array on empty queue', () => {
+    const q = new MonotonicQueue<number>()
+    expect(q.toArray()).toEqual([])
+  })
+
+  it('clear on empty queue does not throw', () => {
+    const q = new MonotonicQueue<number>()
+    expect(() => q.clear()).not.toThrow()
+  })
+})
+
+// ─── Default mode (min) ──────────────────────────────────
+describe('MonotonicQueue - min mode (default)', () => {
+  it('tracks minimum element', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(5)
+    q.push(3)
+    q.push(7)
+    expect(q.current()).toBe(3)
+  })
+
+  it('updates minimum when smaller element is pushed', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(10)
+    expect(q.current()).toBe(10)
+    q.push(5)
+    expect(q.current()).toBe(5)
+    q.push(1)
+    expect(q.current()).toBe(1)
+  })
+
+  it('keeps minimum when larger elements are pushed', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(3)
+    q.push(5)
+    q.push(7)
+    q.push(9)
+    expect(q.current()).toBe(3)
+  })
+
+  it('tracks size correctly', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    expect(q.size).toBe(3)
+  })
+
+  it('isEmpty returns false after push', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    expect(q.isEmpty()).toBe(false)
+  })
+
+  it('toArray returns all pushed elements in order', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(5)
+    q.push(3)
+    q.push(7)
+    expect(q.toArray()).toEqual([5, 3, 7])
+  })
+
+  it('handles duplicate values', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(3)
+    q.push(3)
+    q.push(1)
+    q.push(1)
+    expect(q.current()).toBe(1)
+    expect(q.size).toBe(4)
+  })
+})
+
+// ─── Max mode ────────────────────────────────────────────
+describe('MonotonicQueue - max mode', () => {
+  it('tracks maximum element', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(5)
+    q.push(3)
+    q.push(7)
+    expect(q.current()).toBe(7)
+  })
+
+  it('updates maximum when larger element is pushed', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(1)
+    expect(q.current()).toBe(1)
+    q.push(5)
+    expect(q.current()).toBe(5)
+    q.push(10)
+    expect(q.current()).toBe(10)
+  })
+
+  it('keeps maximum when smaller elements are pushed', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(9)
+    q.push(7)
+    q.push(5)
+    q.push(3)
+    expect(q.current()).toBe(9)
+  })
+
+  it('handles duplicate values in max mode', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    q.push(5)
+    q.push(5)
+    q.push(3)
+    q.push(5)
+    expect(q.current()).toBe(5)
+    expect(q.size).toBe(4)
+  })
+})
+
+// ─── Sliding window ──────────────────────────────────────
+describe('MonotonicQueue - sliding window', () => {
+  it('maintains window size in data', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    expect(q.size).toBe(3)
+    q.push(4)
+    expect(q.size).toBe(3)
+    expect(q.toArray()).toEqual([2, 3, 4])
+  })
+
+  it('updates current when minimum slides out of window', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    expect(q.current()).toBe(1)
+    q.push(4)
+    expect(q.current()).toBe(2)
+  })
+
+  it('keeps current when minimum is still in window', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    q.push(5)
+    q.push(1)
+    q.push(3)
+    expect(q.current()).toBe(1)
+    q.push(4)
+    expect(q.current()).toBe(1)
+  })
+
+  it('works correctly for sliding window minimum problem', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 3 })
+    const input = [1, 3, -1, -3, 5, 3, 6, 7]
+    const mins: number[] = []
+    for (const v of input) {
+      q.push(v)
+      mins.push(q.current())
+    }
+    expect(mins).toEqual([1, 1, -1, -3, -3, -3, 3, 3])
+  })
+
+  it('sliding window with max mode', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max', windowSize: 3 })
+    const input = [1, 3, -1, -3, 5, 3, 6, 7]
+    const maxs: number[] = []
+    for (const v of input) {
+      q.push(v)
+      maxs.push(q.current())
+    }
+    expect(maxs).toEqual([1, 3, 3, 3, 5, 5, 6, 7])
+  })
+
+  it('windowSize of 1 always returns latest element', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 1 })
+    q.push(5)
+    expect(q.current()).toBe(5)
+    q.push(3)
+    expect(q.current()).toBe(3)
+    q.push(10)
+    expect(q.current()).toBe(10)
+  })
+})
+
+// ─── Single element ──────────────────────────────────────
+describe('MonotonicQueue - single element', () => {
+  it('current returns the single element', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(42)
+    expect(q.current()).toBe(42)
+  })
+
+  it('size is 1 after single push', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(42)
+    expect(q.size).toBe(1)
+  })
+
+  it('isEmpty returns false', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(42)
+    expect(q.isEmpty()).toBe(false)
+  })
+
+  it('toArray returns single-element array', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(42)
+    expect(q.toArray()).toEqual([42])
+  })
+})
+
+// ─── Clear ───────────────────────────────────────────────
+describe('MonotonicQueue - clear', () => {
+  it('clears all elements', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    q.push(2)
+    q.push(3)
+    q.clear()
+    expect(q.size).toBe(0)
+    expect(q.isEmpty()).toBe(true)
+  })
+
+  it('current throws after clear', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    q.push(2)
+    q.clear()
+    expect(() => q.current()).toThrow(RangeError)
+  })
+
+  it('toArray returns empty after clear', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(1)
+    q.push(2)
+    q.clear()
+    expect(q.toArray()).toEqual([])
+  })
+
+  it('can push after clear', () => {
+    const q = new MonotonicQueue<number>()
+    q.push(5)
+    q.clear()
+    q.push(3)
+    expect(q.current()).toBe(3)
+    expect(q.size).toBe(1)
+  })
+})
+
+// ─── Custom comparator ───────────────────────────────────
+describe('MonotonicQueue - custom comparator', () => {
+  it('works with string values', () => {
+    const q = new MonotonicQueue<string>(undefined, (a, b) => a.localeCompare(b))
+    q.push('cherry')
+    q.push('apple')
+    q.push('banana')
+    expect(q.current()).toBe('apple')
+  })
+
+  it('works with reverse string comparator (max)', () => {
+    const q = new MonotonicQueue<string>({ mode: 'max' }, (a, b) => a.localeCompare(b))
+    q.push('cherry')
+    q.push('apple')
+    q.push('banana')
+    expect(q.current()).toBe('cherry')
+  })
+
+  it('works with object values using custom key', () => {
+    interface Item {
+      priority: number
+      name: string
+    }
+    const q = new MonotonicQueue<Item>(undefined, (a, b) => a.priority - b.priority)
+    q.push({ priority: 3, name: 'c' })
+    q.push({ priority: 1, name: 'a' })
+    q.push({ priority: 2, name: 'b' })
+    expect(q.current().name).toBe('a')
+  })
+})
+
+// ─── Accessor methods ────────────────────────────────────
+describe('MonotonicQueue - accessor methods', () => {
+  it('getMode returns default min', () => {
+    const q = new MonotonicQueue<number>()
+    expect(q.getMode()).toBe('min')
+  })
+
+  it('getMode returns max when configured', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    expect(q.getMode()).toBe('max')
+  })
+
+  it('getWindowSize returns undefined when not set', () => {
+    const q = new MonotonicQueue<number>()
+    expect(q.getWindowSize()).toBeUndefined()
+  })
+
+  it('getWindowSize returns configured value', () => {
+    const q = new MonotonicQueue<number>({ windowSize: 5 })
+    expect(q.getWindowSize()).toBe(5)
+  })
+})
+
+// ─── Large scale ─────────────────────────────────────────
+describe('MonotonicQueue - large scale', () => {
+  it('handles 100+ elements maintaining minimum', () => {
+    const q = new MonotonicQueue<number>()
+    for (let i = 100; i >= 1; i--) {
+      q.push(i)
+    }
+    expect(q.current()).toBe(1)
+    expect(q.size).toBe(100)
+  })
+
+  it('handles 100+ elements maintaining maximum', () => {
+    const q = new MonotonicQueue<number>({ mode: 'max' })
+    for (let i = 1; i <= 100; i++) {
+      q.push(i)
+    }
+    expect(q.current()).toBe(100)
+    expect(q.size).toBe(100)
+  })
+})

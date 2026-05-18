@@ -1,0 +1,269 @@
+import { beforeEach, describe, expect, it } from 'vitest'
+
+import { FenwickTree } from '../../src/utils/fenwick-tree.js'
+
+// ─── Constructor ─────────────────────────────────────────
+describe('FenwickTree - constructor', () => {
+  it('creates a tree with given size', () => {
+    const ft = new FenwickTree(5)
+    expect(ft.size).toBe(5)
+  })
+
+  it('creates a tree with size 0', () => {
+    const ft = new FenwickTree(0)
+    expect(ft.size).toBe(0)
+  })
+
+  it('throws RangeError for negative size', () => {
+    expect(() => new FenwickTree(-1)).toThrow(RangeError)
+    expect(() => new FenwickTree(-1)).toThrow('Size must be non-negative')
+  })
+})
+
+// ─── Empty tree ──────────────────────────────────────────
+describe('FenwickTree - empty tree', () => {
+  it('query returns 0 on empty tree', () => {
+    const ft = new FenwickTree(0)
+    expect(ft.query(0)).toBe(0)
+  })
+
+  it('rangeQuery returns 0 on empty tree', () => {
+    const ft = new FenwickTree(0)
+    expect(ft.rangeQuery(0, 0)).toBe(0)
+  })
+
+  it('toArray returns empty array', () => {
+    const ft = new FenwickTree(0)
+    expect(ft.toArray()).toEqual([])
+  })
+
+  it('size is 0', () => {
+    const ft = new FenwickTree(0)
+    expect(ft.size).toBe(0)
+  })
+})
+
+// ─── Single element ──────────────────────────────────────
+describe('FenwickTree - single element', () => {
+  let ft: FenwickTree
+
+  beforeEach(() => {
+    ft = new FenwickTree(1)
+    ft.update(0, 42)
+  })
+
+  it('query returns the single value', () => {
+    expect(ft.query(0)).toBe(42)
+  })
+
+  it('pointQuery returns the single value', () => {
+    expect(ft.pointQuery(0)).toBe(42)
+  })
+
+  it('rangeQuery on single element returns the value', () => {
+    expect(ft.rangeQuery(0, 0)).toBe(42)
+  })
+
+  it('toArray returns [42]', () => {
+    expect(ft.toArray()).toEqual([42])
+  })
+})
+
+// ─── Update and query ────────────────────────────────────
+describe('FenwickTree - update and query', () => {
+  it('accumulates values with multiple updates', () => {
+    const ft = new FenwickTree(3)
+    ft.update(0, 10)
+    ft.update(1, 20)
+    ft.update(2, 30)
+    expect(ft.query(0)).toBe(10)
+    expect(ft.query(1)).toBe(30)
+    expect(ft.query(2)).toBe(60)
+  })
+
+  it('supports incremental updates on same index', () => {
+    const ft = new FenwickTree(3)
+    ft.update(1, 5)
+    ft.update(1, 3)
+    ft.update(1, 2)
+    expect(ft.pointQuery(1)).toBe(10)
+  })
+
+  it('handles negative deltas', () => {
+    const ft = new FenwickTree(3)
+    ft.update(0, 10)
+    ft.update(0, -3)
+    expect(ft.pointQuery(0)).toBe(7)
+  })
+
+  it('handles zero delta', () => {
+    const ft = new FenwickTree(2)
+    ft.update(0, 5)
+    ft.update(0, 0)
+    expect(ft.pointQuery(0)).toBe(5)
+  })
+})
+
+// ─── rangeQuery ──────────────────────────────────────────
+describe('FenwickTree - rangeQuery', () => {
+  it('computes range sum correctly', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3, 4, 5])
+    expect(ft.rangeQuery(1, 3)).toBe(9)
+  })
+
+  it('rangeQuery of full range returns total sum', () => {
+    const ft = FenwickTree.fromArray([10, 20, 30])
+    expect(ft.rangeQuery(0, 2)).toBe(60)
+  })
+
+  it('rangeQuery with from > to returns 0', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    expect(ft.rangeQuery(2, 1)).toBe(0)
+  })
+
+  it('rangeQuery handles negative from gracefully', () => {
+    const ft = FenwickTree.fromArray([5, 10, 15])
+    expect(ft.rangeQuery(-1, 1)).toBe(15)
+  })
+
+  it('rangeQuery single element', () => {
+    const ft = FenwickTree.fromArray([7, 8, 9])
+    expect(ft.rangeQuery(1, 1)).toBe(8)
+  })
+})
+
+// ─── pointQuery ──────────────────────────────────────────
+describe('FenwickTree - pointQuery', () => {
+  it('returns correct value for each index', () => {
+    const ft = FenwickTree.fromArray([3, 1, 4, 1, 5])
+    expect(ft.pointQuery(0)).toBe(3)
+    expect(ft.pointQuery(2)).toBe(4)
+    expect(ft.pointQuery(4)).toBe(5)
+  })
+
+  it('throws for negative index', () => {
+    const ft = new FenwickTree(3)
+    expect(() => ft.pointQuery(-1)).toThrow(RangeError)
+  })
+
+  it('throws for index >= size', () => {
+    const ft = new FenwickTree(3)
+    expect(() => ft.pointQuery(3)).toThrow(RangeError)
+  })
+})
+
+// ─── Query edge cases ────────────────────────────────────
+describe('FenwickTree - query edge cases', () => {
+  it('query with negative index returns 0', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    expect(ft.query(-1)).toBe(0)
+  })
+
+  it('query clamps index >= size', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    expect(ft.query(100)).toBe(6)
+  })
+})
+
+// ─── Update error handling ───────────────────────────────
+describe('FenwickTree - update error handling', () => {
+  it('throws for negative index', () => {
+    const ft = new FenwickTree(5)
+    expect(() => ft.update(-1, 1)).toThrow(RangeError)
+  })
+
+  it('throws for index >= size', () => {
+    const ft = new FenwickTree(5)
+    expect(() => ft.update(5, 1)).toThrow(RangeError)
+  })
+})
+
+// ─── toArray ─────────────────────────────────────────────
+describe('FenwickTree - toArray', () => {
+  it('returns all point values', () => {
+    const ft = FenwickTree.fromArray([10, 20, 30, 40, 50])
+    expect(ft.toArray()).toEqual([10, 20, 30, 40, 50])
+  })
+
+  it('reflects updates in toArray', () => {
+    const ft = new FenwickTree(3)
+    ft.update(0, 1)
+    ft.update(1, 2)
+    ft.update(2, 3)
+    ft.update(1, 10)
+    expect(ft.toArray()).toEqual([1, 12, 3])
+  })
+})
+
+// ─── Reset ───────────────────────────────────────────────
+describe('FenwickTree - reset', () => {
+  it('resets all values to zero', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3, 4, 5])
+    ft.reset()
+    expect(ft.toArray()).toEqual([0, 0, 0, 0, 0])
+  })
+
+  it('allows updates after reset', () => {
+    const ft = FenwickTree.fromArray([10, 20])
+    ft.reset()
+    ft.update(0, 5)
+    ft.update(1, 7)
+    expect(ft.toArray()).toEqual([5, 7])
+  })
+
+  it('preserves size after reset', () => {
+    const ft = new FenwickTree(5)
+    ft.update(0, 1)
+    ft.reset()
+    expect(ft.size).toBe(5)
+  })
+})
+
+// ─── Clone ───────────────────────────────────────────────
+describe('FenwickTree - clone', () => {
+  it('creates an independent copy', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    const copy = ft.clone()
+    expect(copy.toArray()).toEqual([1, 2, 3])
+    expect(copy.size).toBe(3)
+  })
+
+  it('clone is independent from original', () => {
+    const ft = FenwickTree.fromArray([1, 2, 3])
+    const copy = ft.clone()
+    ft.update(0, 100)
+    expect(ft.pointQuery(0)).toBe(101)
+    expect(copy.pointQuery(0)).toBe(1)
+  })
+})
+
+// ─── fromArray ───────────────────────────────────────────
+describe('FenwickTree - fromArray', () => {
+  it('creates tree from array of values', () => {
+    const ft = FenwickTree.fromArray([5, 3, 7, 1, 9])
+    expect(ft.size).toBe(5)
+    expect(ft.query(4)).toBe(25)
+  })
+
+  it('creates tree from empty array', () => {
+    const ft = FenwickTree.fromArray([])
+    expect(ft.size).toBe(0)
+  })
+
+  it('fromArray with single element', () => {
+    const ft = FenwickTree.fromArray([42])
+    expect(ft.size).toBe(1)
+    expect(ft.pointQuery(0)).toBe(42)
+  })
+})
+
+// ─── Larger data ─────────────────────────────────────────
+describe('FenwickTree - larger data', () => {
+  it('handles 100 elements correctly', () => {
+    const values = Array.from({ length: 100 }, (_, i) => i + 1)
+    const ft = FenwickTree.fromArray(values)
+    expect(ft.query(99)).toBe(5050)
+    expect(ft.rangeQuery(0, 9)).toBe(55)
+    expect(ft.rangeQuery(90, 99)).toBe(955)
+  })
+})

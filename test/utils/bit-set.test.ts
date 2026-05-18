@@ -1,0 +1,336 @@
+import { describe, expect, it } from 'vitest'
+
+import { BitSet } from '../../src/utils/bit-set.js'
+
+// ─── Creation ────────────────────────────────────────────
+describe('BitSet - creation', () => {
+  it('creates a bitset with given size', () => {
+    const bs = new BitSet(64)
+    expect(bs.size).toBe(64)
+  })
+
+  it('creates a bitset with size 0', () => {
+    const bs = new BitSet(0)
+    expect(bs.size).toBe(0)
+    expect(bs.isEmpty()).toBe(true)
+  })
+
+  it('throws on negative size', () => {
+    expect(() => new BitSet(-1)).toThrow(RangeError)
+  })
+
+  it('creates with odd sizes', () => {
+    const bs = new BitSet(17)
+    expect(bs.size).toBe(17)
+  })
+})
+
+// ─── Set / Clear / Get / Flip ────────────────────────────
+describe('BitSet - set/clear/get/flip', () => {
+  it('sets and gets a bit', () => {
+    const bs = new BitSet(32)
+    bs.set(5)
+    expect(bs.get(5)).toBe(1)
+    expect(bs.get(0)).toBe(0)
+  })
+
+  it('clears a set bit', () => {
+    const bs = new BitSet(32)
+    bs.set(5)
+    bs.clear(5)
+    expect(bs.get(5)).toBe(0)
+  })
+
+  it('flips a bit', () => {
+    const bs = new BitSet(32)
+    expect(bs.get(3)).toBe(0)
+    bs.flip(3)
+    expect(bs.get(3)).toBe(1)
+    bs.flip(3)
+    expect(bs.get(3)).toBe(0)
+  })
+
+  it('has returns boolean', () => {
+    const bs = new BitSet(32)
+    expect(bs.has(7)).toBe(false)
+    bs.set(7)
+    expect(bs.has(7)).toBe(true)
+  })
+
+  it('throws on out-of-bounds index', () => {
+    const bs = new BitSet(16)
+    expect(() => bs.get(16)).toThrow(RangeError)
+    expect(() => bs.get(-1)).toThrow(RangeError)
+    expect(() => bs.set(16)).toThrow(RangeError)
+    expect(() => bs.clear(-1)).toThrow(RangeError)
+  })
+})
+
+// ─── Range operations ────────────────────────────────────
+describe('BitSet - range operations', () => {
+  it('sets a range of bits', () => {
+    const bs = new BitSet(32)
+    bs.setRange(2, 6)
+    expect(bs.toArray()).toEqual([2, 3, 4, 5])
+  })
+
+  it('clears a range of bits', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 8)
+    bs.clearRange(3, 6)
+    expect(bs.toArray()).toEqual([0, 1, 2, 6, 7])
+  })
+
+  it('flips a range of bits', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 4)
+    bs.flipRange(2, 6)
+    expect(bs.toArray()).toEqual([0, 1, 4, 5])
+  })
+
+  it('throws on invalid range', () => {
+    const bs = new BitSet(16)
+    expect(() => bs.setRange(-1, 5)).toThrow(RangeError)
+    expect(() => bs.setRange(5, 17)).toThrow(RangeError)
+    expect(() => bs.setRange(5, 3)).toThrow(RangeError)
+  })
+
+  it('handles empty range (from === to)', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 0)
+    expect(bs.isEmpty()).toBe(true)
+  })
+})
+
+// ─── Count / isEmpty / isFull ────────────────────────────
+describe('BitSet - count / isEmpty / isFull', () => {
+  it('counts set bits', () => {
+    const bs = new BitSet(32)
+    bs.set(0)
+    bs.set(5)
+    bs.set(31)
+    expect(bs.count()).toBe(3)
+  })
+
+  it('isEmpty returns true when no bits set', () => {
+    const bs = new BitSet(64)
+    expect(bs.isEmpty()).toBe(true)
+  })
+
+  it('isEmpty returns false after setting a bit', () => {
+    const bs = new BitSet(64)
+    bs.set(10)
+    expect(bs.isEmpty()).toBe(false)
+  })
+
+  it('isFull returns true when all bits set', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 16)
+    expect(bs.isFull()).toBe(true)
+  })
+
+  it('isFull returns false when not all bits set', () => {
+    const bs = new BitSet(16)
+    bs.setRange(0, 15)
+    expect(bs.isFull()).toBe(false)
+  })
+})
+
+// ─── Bitwise AND / OR / XOR / NOT ────────────────────────
+describe('BitSet - bitwise operations', () => {
+  it('AND returns intersection', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(16)
+    a.setRange(0, 4)
+    b.setRange(2, 6)
+    const r = a.and(b)
+    expect(r.toArray()).toEqual([2, 3])
+  })
+
+  it('OR returns union', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(16)
+    a.set(0)
+    a.set(2)
+    b.set(1)
+    b.set(3)
+    const r = a.or(b)
+    expect(r.toArray()).toEqual([0, 1, 2, 3])
+  })
+
+  it('XOR returns symmetric difference', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(16)
+    a.setRange(0, 4)
+    b.setRange(2, 6)
+    const r = a.xor(b)
+    expect(r.toArray()).toEqual([0, 1, 4, 5])
+  })
+
+  it('NOT inverts all bits', () => {
+    const bs = new BitSet(8)
+    bs.set(0)
+    bs.set(2)
+    bs.set(4)
+    const r = bs.not()
+    expect(r.toArray()).toEqual([1, 3, 5, 6, 7])
+  })
+
+  it('NOT of empty bitset returns full', () => {
+    const bs = new BitSet(8)
+    const r = bs.not()
+    expect(r.isFull()).toBe(true)
+  })
+
+  it('NOT of full bitset returns empty', () => {
+    const bs = new BitSet(8)
+    bs.setRange(0, 8)
+    const r = bs.not()
+    expect(r.isEmpty()).toBe(true)
+  })
+})
+
+// ─── Equals ──────────────────────────────────────────────
+describe('BitSet - equals', () => {
+  it('equal bitsets', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(16)
+    a.set(3)
+    b.set(3)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('unequal bitsets', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(16)
+    a.set(3)
+    expect(a.equals(b)).toBe(false)
+  })
+
+  it('different sizes are not equal', () => {
+    const a = new BitSet(16)
+    const b = new BitSet(32)
+    expect(a.equals(b)).toBe(false)
+  })
+})
+
+// ─── Clone ───────────────────────────────────────────────
+describe('BitSet - clone', () => {
+  it('creates an independent copy', () => {
+    const bs = new BitSet(32)
+    bs.set(5)
+    const copy = bs.clone()
+    expect(copy.equals(bs)).toBe(true)
+    copy.clear(5)
+    expect(bs.has(5)).toBe(true)
+    expect(copy.has(5)).toBe(false)
+  })
+})
+
+// ─── toString ────────────────────────────────────────────
+describe('BitSet - toString', () => {
+  it('returns binary string representation', () => {
+    const bs = new BitSet(8)
+    bs.set(0)
+    bs.set(7)
+    expect(bs.toString()).toBe('10000001')
+  })
+
+  it('empty bitset returns all zeros', () => {
+    const bs = new BitSet(4)
+    expect(bs.toString()).toBe('0000')
+  })
+})
+
+// ─── toArray ─────────────────────────────────────────────
+describe('BitSet - toArray', () => {
+  it('returns indices of set bits', () => {
+    const bs = new BitSet(16)
+    bs.set(1)
+    bs.set(3)
+    bs.set(5)
+    expect(bs.toArray()).toEqual([1, 3, 5])
+  })
+
+  it('returns empty array when no bits set', () => {
+    const bs = new BitSet(16)
+    expect(bs.toArray()).toEqual([])
+  })
+})
+
+// ─── Different-sized bitset operations ───────────────────
+describe('BitSet - different sized operations', () => {
+  it('AND with different sizes uses max size', () => {
+    const a = new BitSet(8)
+    const b = new BitSet(16)
+    a.set(0)
+    a.set(3)
+    b.set(0)
+    b.set(10)
+    const r = a.and(b)
+    expect(r.size).toBe(16)
+    expect(r.toArray()).toEqual([0])
+  })
+
+  it('OR with different sizes uses max size', () => {
+    const a = new BitSet(8)
+    const b = new BitSet(16)
+    a.set(0)
+    b.set(10)
+    const r = a.or(b)
+    expect(r.size).toBe(16)
+    expect(r.toArray()).toEqual([0, 10])
+  })
+
+  it('XOR with different sizes', () => {
+    const a = new BitSet(8)
+    const b = new BitSet(16)
+    a.set(0)
+    b.set(0)
+    b.set(10)
+    const r = a.xor(b)
+    expect(r.size).toBe(16)
+    expect(r.toArray()).toEqual([10])
+  })
+})
+
+// ─── Large bitset ────────────────────────────────────────
+describe('BitSet - large scale', () => {
+  it('handles 10000 bits correctly', () => {
+    const bs = new BitSet(10000)
+    bs.set(0)
+    bs.set(9999)
+    bs.set(5001)
+    expect(bs.size).toBe(10000)
+    expect(bs.count()).toBe(3)
+    expect(bs.has(0)).toBe(true)
+    expect(bs.has(9999)).toBe(true)
+    expect(bs.has(5000)).toBe(false)
+    expect(bs.has(5001)).toBe(true)
+  })
+
+  it('setRange and clearRange on large bitset', () => {
+    const bs = new BitSet(10000)
+    bs.setRange(0, 10000)
+    expect(bs.isFull()).toBe(true)
+    expect(bs.count()).toBe(10000)
+    bs.clearRange(100, 200)
+    expect(bs.count()).toBe(9900)
+  })
+
+  it('clone and equals on large bitset', () => {
+    const bs = new BitSet(10000)
+    bs.set(100)
+    bs.set(500)
+    const copy = bs.clone()
+    expect(copy.equals(bs)).toBe(true)
+    expect(copy.size).toBe(10000)
+  })
+
+  it('toString on non-word-aligned size', () => {
+    const bs = new BitSet(5)
+    bs.set(0)
+    bs.set(4)
+    expect(bs.toString()).toBe('10001')
+  })
+})

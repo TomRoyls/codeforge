@@ -1,0 +1,500 @@
+import { describe, expect, it } from 'vitest'
+
+import { VanEmdeBoas } from '../../src/utils/van-emde-boas.js'
+
+// ─── Construction ──────────────────────────────────────────
+describe('VanEmdeBoas construction', () => {
+  it('creates tree with universe size 2', () => {
+    const tree = new VanEmdeBoas(2)
+    expect(tree.universeSize).toBe(2)
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+  })
+
+  it('creates tree with universe size 16', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.universeSize).toBe(16)
+    expect(tree.isEmpty()).toBe(true)
+  })
+
+  it('throws for non-power-of-2 universe size', () => {
+    expect(() => new VanEmdeBoas(3)).toThrow(RangeError)
+    expect(() => new VanEmdeBoas(5)).toThrow(RangeError)
+    expect(() => new VanEmdeBoas(6)).toThrow(RangeError)
+  })
+
+  it('throws for universe size < 2', () => {
+    expect(() => new VanEmdeBoas(1)).toThrow(RangeError)
+    expect(() => new VanEmdeBoas(0)).toThrow(RangeError)
+  })
+})
+
+// ─── Empty tree operations ─────────────────────────────────
+describe('VanEmdeBoas empty tree', () => {
+  it('returns undefined for min and max on empty tree', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.min()).toBeUndefined()
+    expect(tree.max()).toBeUndefined()
+  })
+
+  it('isEmpty returns true on new tree', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.isEmpty()).toBe(true)
+  })
+
+  it('has returns false for any value on empty tree', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.has(0)).toBe(false)
+    expect(tree.has(5)).toBe(false)
+  })
+
+  it('successor returns undefined on empty tree', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.successor(0)).toBeUndefined()
+  })
+
+  it('predecessor returns undefined on empty tree', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.predecessor(5)).toBeUndefined()
+  })
+})
+
+// ─── Single insert ─────────────────────────────────────────
+describe('VanEmdeBoas single insert', () => {
+  it('inserts a single value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    expect(tree.has(5)).toBe(true)
+    expect(tree.min()).toBe(5)
+    expect(tree.max()).toBe(5)
+    expect(tree.size).toBe(1)
+  })
+
+  it('inserts value 0', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(0)
+    expect(tree.has(0)).toBe(true)
+    expect(tree.min()).toBe(0)
+    expect(tree.max()).toBe(0)
+  })
+
+  it('inserts max universe value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(15)
+    expect(tree.has(15)).toBe(true)
+    expect(tree.min()).toBe(15)
+    expect(tree.max()).toBe(15)
+  })
+})
+
+// ─── Multiple inserts and min/max ──────────────────────────
+describe('VanEmdeBoas multiple inserts', () => {
+  it('tracks min and max after multiple inserts', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(8)
+    tree.insert(3)
+    tree.insert(12)
+    tree.insert(1)
+    expect(tree.min()).toBe(1)
+    expect(tree.max()).toBe(12)
+    expect(tree.size).toBe(4)
+  })
+
+  it('updates min when inserting smaller value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(10)
+    tree.insert(2)
+    expect(tree.min()).toBe(2)
+  })
+
+  it('updates max when inserting larger value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.insert(14)
+    expect(tree.max()).toBe(14)
+  })
+})
+
+// ─── Sequential inserts 0..15 ──────────────────────────────
+describe('VanEmdeBoas sequential inserts', () => {
+  it('inserts 0..15 with universeSize=16', () => {
+    const tree = new VanEmdeBoas(16)
+    for (let i = 0; i < 16; i++) {
+      tree.insert(i)
+    }
+    expect(tree.size).toBe(16)
+    expect(tree.min()).toBe(0)
+    expect(tree.max()).toBe(15)
+    for (let i = 0; i < 16; i++) {
+      expect(tree.has(i)).toBe(true)
+    }
+  })
+})
+
+// ─── Delete ────────────────────────────────────────────────
+describe('VanEmdeBoas delete', () => {
+  it('deletes a single element', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.delete(5)
+    expect(tree.has(5)).toBe(false)
+    expect(tree.isEmpty()).toBe(true)
+    expect(tree.size).toBe(0)
+  })
+
+  it('deletes non-existing element (no-op)', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(7)
+    tree.delete(5)
+    expect(tree.size).toBe(2)
+    expect(tree.has(3)).toBe(true)
+    expect(tree.has(7)).toBe(true)
+  })
+
+  it('deletes all elements one by one', () => {
+    const tree = new VanEmdeBoas(16)
+    const values = [3, 7, 1, 12, 0, 15, 8]
+    for (const v of values) tree.insert(v)
+    for (const v of values) {
+      tree.delete(v)
+      expect(tree.has(v)).toBe(false)
+    }
+    expect(tree.isEmpty()).toBe(true)
+    expect(tree.size).toBe(0)
+  })
+
+  it('maintains min/max after deleting min', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(2)
+    tree.insert(5)
+    tree.insert(10)
+    tree.delete(2)
+    expect(tree.min()).toBe(5)
+    expect(tree.max()).toBe(10)
+  })
+
+  it('maintains min/max after deleting max', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(2)
+    tree.insert(5)
+    tree.insert(10)
+    tree.delete(10)
+    expect(tree.min()).toBe(2)
+    expect(tree.max()).toBe(5)
+  })
+
+  it('maintains min/max after deleting middle element', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(2)
+    tree.insert(5)
+    tree.insert(10)
+    tree.delete(5)
+    expect(tree.min()).toBe(2)
+    expect(tree.max()).toBe(10)
+    expect(tree.size).toBe(2)
+  })
+})
+
+// ─── Insert duplicate ──────────────────────────────────────
+describe('VanEmdeBoas insert duplicate', () => {
+  it('inserting duplicate does not increase size', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.insert(5)
+    tree.insert(5)
+    expect(tree.size).toBe(1)
+    expect(tree.has(5)).toBe(true)
+  })
+})
+
+// ─── Successor ─────────────────────────────────────────────
+describe('VanEmdeBoas successor', () => {
+  it('returns successor of existing value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(7)
+    tree.insert(10)
+    expect(tree.successor(3)).toBe(7)
+    expect(tree.successor(7)).toBe(10)
+  })
+
+  it('returns successor of non-existing value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(7)
+    expect(tree.successor(4)).toBe(7)
+    expect(tree.successor(5)).toBe(7)
+  })
+
+  it('returns undefined for successor of max', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(10)
+    expect(tree.successor(10)).toBeUndefined()
+  })
+
+  it('returns first element for value below min', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    tree.insert(10)
+    expect(tree.successor(0)).toBe(5)
+  })
+})
+
+// ─── Predecessor ───────────────────────────────────────────
+describe('VanEmdeBoas predecessor', () => {
+  it('returns predecessor of existing value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(7)
+    tree.insert(10)
+    expect(tree.predecessor(7)).toBe(3)
+    expect(tree.predecessor(10)).toBe(7)
+  })
+
+  it('returns predecessor of non-existing value', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(10)
+    expect(tree.predecessor(8)).toBe(3)
+  })
+
+  it('returns undefined for predecessor of min', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(10)
+    expect(tree.predecessor(3)).toBeUndefined()
+  })
+
+  it('returns max for value above max', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(10)
+    expect(tree.predecessor(15)).toBe(10)
+  })
+})
+
+// ─── Size tracking ─────────────────────────────────────────
+describe('VanEmdeBoas size tracking', () => {
+  it('tracks size through inserts and deletes', () => {
+    const tree = new VanEmdeBoas(16)
+    expect(tree.size).toBe(0)
+    tree.insert(1)
+    tree.insert(2)
+    tree.insert(3)
+    expect(tree.size).toBe(3)
+    tree.delete(2)
+    expect(tree.size).toBe(2)
+    tree.delete(1)
+    tree.delete(3)
+    expect(tree.size).toBe(0)
+  })
+})
+
+// ─── Clear ─────────────────────────────────────────────────
+describe('VanEmdeBoas clear', () => {
+  it('clears all elements', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(1)
+    tree.insert(5)
+    tree.insert(10)
+    tree.clear()
+    expect(tree.size).toBe(0)
+    expect(tree.isEmpty()).toBe(true)
+    expect(tree.min()).toBeUndefined()
+    expect(tree.max()).toBeUndefined()
+    expect(tree.has(1)).toBe(false)
+    expect(tree.has(5)).toBe(false)
+    expect(tree.has(10)).toBe(false)
+  })
+})
+
+// ─── Universe size getter ──────────────────────────────────
+describe('VanEmdeBoas universe size', () => {
+  it('returns the universe size', () => {
+    expect(new VanEmdeBoas(2).universeSize).toBe(2)
+    expect(new VanEmdeBoas(4).universeSize).toBe(4)
+    expect(new VanEmdeBoas(16).universeSize).toBe(16)
+    expect(new VanEmdeBoas(256).universeSize).toBe(256)
+    expect(new VanEmdeBoas(1024).universeSize).toBe(1024)
+  })
+})
+
+// ─── Random inserts with successor/predecessor chains ──────
+describe('VanEmdeBoas random inserts', () => {
+  it('verifies successor/predecessor chains', () => {
+    const tree = new VanEmdeBoas(64)
+    const values = [42, 7, 23, 55, 13, 60, 1, 38]
+    for (const v of values) tree.insert(v)
+    const sorted = [...values].sort((a, b) => a - b)
+
+    let current = tree.min()!
+    for (let i = 0; i < sorted.length; i++) {
+      expect(current).toBe(sorted[i])
+      current = tree.successor(current)!
+      if (i === sorted.length - 1) {
+        expect(tree.successor(sorted[i]!)).toBeUndefined()
+      }
+    }
+
+    current = tree.max()!
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      expect(current).toBe(sorted[i])
+      current = tree.predecessor(current)!
+      if (i === 0) {
+        expect(tree.predecessor(sorted[0]!)).toBeUndefined()
+      }
+    }
+  })
+})
+
+// ─── Large universe with sparse inserts ────────────────────
+describe('VanEmdeBoas large universe', () => {
+  it('handles sparse inserts in universe size 256', () => {
+    const tree = new VanEmdeBoas(256)
+    tree.insert(0)
+    tree.insert(100)
+    tree.insert(200)
+    tree.insert(255)
+    expect(tree.size).toBe(4)
+    expect(tree.min()).toBe(0)
+    expect(tree.max()).toBe(255)
+    expect(tree.successor(0)).toBe(100)
+    expect(tree.successor(100)).toBe(200)
+    expect(tree.successor(200)).toBe(255)
+    expect(tree.predecessor(255)).toBe(200)
+    expect(tree.predecessor(200)).toBe(100)
+    expect(tree.predecessor(100)).toBe(0)
+  })
+
+  it('handles sparse inserts in universe size 1024', () => {
+    const tree = new VanEmdeBoas(1024)
+    tree.insert(500)
+    tree.insert(1)
+    tree.insert(999)
+    tree.insert(512)
+    expect(tree.min()).toBe(1)
+    expect(tree.max()).toBe(999)
+    expect(tree.successor(1)).toBe(500)
+    expect(tree.successor(500)).toBe(512)
+    expect(tree.successor(512)).toBe(999)
+    expect(tree.predecessor(999)).toBe(512)
+    expect(tree.predecessor(512)).toBe(500)
+    expect(tree.predecessor(500)).toBe(1)
+  })
+})
+
+// ─── Interleaved operations ────────────────────────────────
+describe('VanEmdeBoas interleaved operations', () => {
+  it('interleaves insert/delete/successor operations', () => {
+    const tree = new VanEmdeBoas(16)
+
+    tree.insert(4)
+    tree.insert(8)
+    tree.insert(12)
+    expect(tree.successor(4)).toBe(8)
+    expect(tree.successor(8)).toBe(12)
+
+    tree.delete(8)
+    expect(tree.successor(4)).toBe(12)
+    expect(tree.has(8)).toBe(false)
+
+    tree.insert(6)
+    expect(tree.successor(4)).toBe(6)
+    expect(tree.successor(6)).toBe(12)
+
+    tree.delete(12)
+    expect(tree.max()).toBe(6)
+    expect(tree.successor(6)).toBeUndefined()
+
+    tree.insert(2)
+    expect(tree.min()).toBe(2)
+    expect(tree.predecessor(4)).toBe(2)
+  })
+
+  it('handles insert-delete cycles', () => {
+    const tree = new VanEmdeBoas(16)
+    for (let i = 0; i < 8; i++) tree.insert(i)
+    for (let i = 0; i < 8; i++) tree.delete(i)
+    expect(tree.isEmpty()).toBe(true)
+
+    tree.insert(10)
+    expect(tree.min()).toBe(10)
+    expect(tree.max()).toBe(10)
+  })
+})
+
+// ─── Min/max after complex deletions ───────────────────────
+describe('VanEmdeBoas min/max maintenance', () => {
+  it('correctly updates min/max through alternating deletions', () => {
+    const tree = new VanEmdeBoas(16)
+    for (let i = 0; i < 16; i++) tree.insert(i)
+
+    tree.delete(0)
+    expect(tree.min()).toBe(1)
+    tree.delete(15)
+    expect(tree.max()).toBe(14)
+    tree.delete(1)
+    expect(tree.min()).toBe(2)
+    tree.delete(14)
+    expect(tree.max()).toBe(13)
+    expect(tree.size).toBe(12)
+  })
+
+  it('handles deleting down to one element', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(3)
+    tree.insert(10)
+    tree.delete(10)
+    expect(tree.min()).toBe(3)
+    expect(tree.max()).toBe(3)
+    expect(tree.size).toBe(1)
+  })
+})
+
+// ─── Contains / has alias ──────────────────────────────────
+describe('VanEmdeBoas contains/has', () => {
+  it('has and contains are equivalent', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(7)
+    expect(tree.has(7)).toBe(tree.contains(7))
+    expect(tree.has(3)).toBe(tree.contains(3))
+    expect(tree.has(7)).toBe(true)
+    expect(tree.has(3)).toBe(false)
+  })
+
+  it('returns false for out-of-range values', () => {
+    const tree = new VanEmdeBoas(16)
+    tree.insert(5)
+    expect(tree.has(-1)).toBe(false)
+    expect(tree.has(16)).toBe(false)
+    expect(tree.has(100)).toBe(false)
+  })
+})
+
+// ─── Base case (universe size 2) ──────────────────────────
+describe('VanEmdeBoas universe size 2', () => {
+  it('handles both elements', () => {
+    const tree = new VanEmdeBoas(2)
+    tree.insert(0)
+    tree.insert(1)
+    expect(tree.min()).toBe(0)
+    expect(tree.max()).toBe(1)
+    expect(tree.has(0)).toBe(true)
+    expect(tree.has(1)).toBe(true)
+    expect(tree.successor(0)).toBe(1)
+    expect(tree.predecessor(1)).toBe(0)
+  })
+
+  it('deletes from size-2 universe', () => {
+    const tree = new VanEmdeBoas(2)
+    tree.insert(0)
+    tree.insert(1)
+    tree.delete(0)
+    expect(tree.min()).toBe(1)
+    expect(tree.max()).toBe(1)
+    tree.delete(1)
+    expect(tree.isEmpty()).toBe(true)
+  })
+})

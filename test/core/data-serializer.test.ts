@@ -661,12 +661,13 @@ describe('DataSerializer', () => {
       expect(parsed.name).toBe('roundtrip')
     })
 
-    it('should handle clone with Date objects by converting to string', () => {
+    it('should handle clone with Date objects by preserving them', () => {
       const serializer = new DataSerializer()
       const date = new Date('2024-01-01')
       const original = { date }
       const cloned = serializer.clone(original)
-      expect(cloned.date).toBe(date.toISOString())
+      expect(cloned.date).toBeInstanceOf(Date)
+      expect((cloned.date as Date).toISOString()).toBe(date.toISOString())
     })
 
     it('should handle diff with null vs undefined', () => {

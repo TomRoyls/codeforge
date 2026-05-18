@@ -1,1129 +1,1429 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { AVLSet } from '../src/core/avl-set/index.js';
+import { AVLSet } from '../src/core/avl-set/index.js'
+
+// ─── Constructor ────────────────────────────────────────────────────────
 
 describe('AVLSet', () => {
-  let set: AVLSet<number>;
+  describe('constructor', () => {
+    it('creates an empty set with default number comparator', () => {
+      const set = new AVLSet<number>()
+      expect(set.size).toBe(0)
+      expect(set.isEmpty()).toBe(true)
+    })
 
-  beforeEach(() => {
-    set = new AVLSet<number>();
-  });
+    it('creates a set with a custom string comparator', () => {
+      const set = new AVLSet<string>({
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      set.add('banana')
+      set.add('apple')
+      set.add('cherry')
+      expect(set.toArray()).toEqual(['apple', 'banana', 'cherry'])
+    })
 
-  describe('Empty set', () => {
-    it('should create empty set', () => {
-      expect(set.size).toBe(0);
-      expect(set.isEmpty()).toBe(true);
-    });
+    it('creates a set with reverse order comparator', () => {
+      const set = new AVLSet<number>({ comparator: (a, b) => b - a })
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect(set.toArray()).toEqual([3, 2, 1])
+    })
+  })
 
-    it('should return undefined for min on empty set', () => {
-      expect(set.min()).toBeUndefined();
-    });
+  // ─── add ─────────────────────────────────────────────────────────────
 
-    it('should return undefined for max on empty set', () => {
-      expect(set.max()).toBeUndefined();
-    });
+  describe('add', () => {
+    it('adds a value to an empty set and returns true', () => {
+      const set = new AVLSet<number>()
+      expect(set.add(5)).toBe(true)
+      expect(set.size).toBe(1)
+      expect(set.has(5)).toBe(true)
+    })
 
-    it('should return false for has on empty set', () => {
-      expect(set.has(5)).toBe(false);
-    });
+    it('returns false when adding a duplicate value', () => {
+      const set = new AVLSet<number>()
+      expect(set.add(5)).toBe(true)
+      expect(set.add(5)).toBe(false)
+      expect(set.size).toBe(1)
+    })
 
-    it('should return empty array for toArray on empty set', () => {
-      expect(set.toArray()).toEqual([]);
-    });
+    it('adds multiple values and maintains sorted order', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(1)
+      set.add(4)
+      set.add(1)
+      set.add(5)
+      set.add(9)
+      set.add(2)
+      set.add(6)
+      expect(set.size).toBe(7)
+      expect(set.toArray()).toEqual([1, 2, 3, 4, 5, 6, 9])
+    })
 
-    it('should not throw error on forEach with empty set', () => {
-      const callback = vi.fn();
-      set.forEach(callback);
-      expect(callback).not.toHaveBeenCalled();
-    });
-
-    it('should delete from empty set and return false', () => {
-      expect(set.delete(5)).toBe(false);
-    });
-
-    it('should return undefined for floor on empty set', () => {
-      expect(set.floor(5)).toBeUndefined();
-    });
-
-    it('should return undefined for ceiling on empty set', () => {
-      expect(set.ceiling(5)).toBeUndefined();
-    });
-
-    it('should return undefined for lower on empty set', () => {
-      expect(set.lower(5)).toBeUndefined();
-    });
-
-    it('should return undefined for higher on empty set', () => {
-      expect(set.higher(5)).toBeUndefined();
-    });
-
-    it('should return -1 for indexOf on empty set', () => {
-      expect(set.indexOf(5)).toBe(-1);
-    });
-
-    it('should return undefined for at on empty set', () => {
-      expect(set.at(0)).toBeUndefined();
-    });
-
-    it('should be balanced when empty', () => {
-      expect(set.isAVLBalanced).toBe(true);
-    });
-  });
-
-  describe('Single element', () => {
-    it('should add single element', () => {
-      expect(set.add(5)).toBe(true);
-      expect(set.size).toBe(1);
-      expect(set.isEmpty()).toBe(false);
-    });
-
-    it('should not add duplicate', () => {
-      expect(set.add(5)).toBe(true);
-      expect(set.add(5)).toBe(false);
-      expect(set.size).toBe(1);
-    });
-
-    it('should find single element after add', () => {
-      set.add(5);
-      expect(set.has(5)).toBe(true);
-    });
-
-    it('should not find element not in single element set', () => {
-      set.add(5);
-      expect(set.has(10)).toBe(false);
-    });
-
-    it('should return same value for min and max with single element', () => {
-      set.add(5);
-      expect(set.min()).toBe(5);
-      expect(set.max()).toBe(5);
-    });
-
-    it('should delete single element', () => {
-      set.add(5);
-      expect(set.delete(5)).toBe(true);
-      expect(set.isEmpty()).toBe(true);
-    });
-
-    it('should clear single element set', () => {
-      set.add(5);
-      set.clear();
-      expect(set.isEmpty()).toBe(true);
-      expect(set.size).toBe(0);
-    });
-
-    it('should iterate with forEach on single element', () => {
-      set.add(5);
-      const values: number[] = [];
-      set.forEach((v) => values.push(v));
-      expect(values).toEqual([5]);
-    });
-
-    it('should iterate with for...of on single element', () => {
-      set.add(5);
-      const values: number[] = [];
-      for (const v of set) {
-        values.push(v);
+    it('maintains sorted order after descending insertions', () => {
+      const set = new AVLSet<number>()
+      for (let i = 20; i >= 0; i--) {
+        set.add(i)
       }
-      expect(values).toEqual([5]);
-    });
+      expect(set.toArray()).toEqual(Array.from({ length: 21 }, (_, i) => i))
+    })
 
-    it('should return index 0 for single element', () => {
-      set.add(5);
-      expect(set.indexOf(5)).toBe(0);
-    });
+    it('handles adding negative numbers', () => {
+      const set = new AVLSet<number>()
+      set.add(-5)
+      set.add(-10)
+      set.add(0)
+      set.add(5)
+      set.add(10)
+      expect(set.toArray()).toEqual([-10, -5, 0, 5, 10])
+    })
 
-    it('should return element at index 0', () => {
-      set.add(5);
-      expect(set.at(0)).toBe(5);
-    });
-  });
+    it('handles adding zero', () => {
+      const set = new AVLSet<number>()
+      set.add(0)
+      expect(set.has(0)).toBe(true)
+      expect(set.size).toBe(1)
+    })
 
-  describe('Add operations', () => {
-    it('should add multiple elements', () => {
-      expect(set.add(1)).toBe(true);
-      expect(set.add(2)).toBe(true);
-      expect(set.add(3)).toBe(true);
-      expect(set.size).toBe(3);
-    });
+    it('does not increase size on duplicate adds', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(1)
+      set.add(1)
+      expect(set.size).toBe(1)
+    })
+  })
 
-    it('should add elements in random order', () => {
-      set.add(5);
-      set.add(1);
-      set.add(10);
-      set.add(3);
-      set.add(8);
-      expect(set.size).toBe(5);
-    });
+  // ─── has ─────────────────────────────────────────────────────────────
 
-    it('should not add duplicate values', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.add(2)).toBe(false);
-      expect(set.size).toBe(3);
-    });
+  describe('has', () => {
+    it('returns true for a value in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(42)
+      expect(set.has(42)).toBe(true)
+    })
 
-    it('should handle many adds', () => {
+    it('returns false for a value not in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.has(99)).toBe(false)
+    })
+
+    it('returns false on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.has(1)).toBe(false)
+    })
+
+    it('finds values after many insertions', () => {
+      const set = new AVLSet<number>()
       for (let i = 0; i < 100; i++) {
-        expect(set.add(i)).toBe(true);
+        set.add(i)
       }
-      expect(set.size).toBe(100);
-    });
+      expect(set.has(0)).toBe(true)
+      expect(set.has(50)).toBe(true)
+      expect(set.has(99)).toBe(true)
+      expect(set.has(100)).toBe(false)
+    })
 
-    it('should maintain order after adds', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      set.add(1);
-      expect(set.toArray()).toEqual([1, 3, 5, 7]);
-    });
-  });
+    it('still finds values after deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.delete(2)
+      expect(set.has(1)).toBe(true)
+      expect(set.has(2)).toBe(false)
+      expect(set.has(3)).toBe(true)
+    })
+  })
 
-  describe('Delete operations', () => {
-    it('should delete element from middle', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.delete(2)).toBe(true);
-      expect(set.size).toBe(2);
-    });
+  // ─── delete ──────────────────────────────────────────────────────────
 
-    it('should delete min element', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.delete(1)).toBe(true);
-      expect(set.min()).toBe(2);
-    });
+  describe('delete', () => {
+    it('removes a value and returns true', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.delete(5)).toBe(true)
+      expect(set.size).toBe(0)
+      expect(set.has(5)).toBe(false)
+    })
 
-    it('should delete max element', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.delete(3)).toBe(true);
-      expect(set.max()).toBe(2);
-    });
+    it('returns false when deleting a value not in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.delete(99)).toBe(false)
+      expect(set.size).toBe(1)
+    })
 
-    it('should return false when deleting non-existent element', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.delete(10)).toBe(false);
-      expect(set.size).toBe(3);
-    });
+    it('returns false when deleting from an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.delete(1)).toBe(false)
+    })
 
-    it('should delete all elements one by one', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      expect(set.delete(1)).toBe(true);
-      expect(set.delete(2)).toBe(true);
-      expect(set.delete(3)).toBe(true);
-      expect(set.isEmpty()).toBe(true);
-    });
+    it('removes the root node', () => {
+      const set = new AVLSet<number>()
+      set.add(2)
+      set.add(1)
+      set.add(3)
+      expect(set.delete(2)).toBe(true)
+      expect(set.toArray()).toEqual([1, 3])
+    })
 
-    it('should not find element after delete', () => {
-      set.add(5);
-      set.delete(5);
-      expect(set.has(5)).toBe(false);
-    });
+    it('removes a leaf node', () => {
+      const set = new AVLSet<number>()
+      set.add(2)
+      set.add(1)
+      set.add(3)
+      expect(set.delete(1)).toBe(true)
+      expect(set.toArray()).toEqual([2, 3])
+    })
 
-    it('should find remaining elements after delete', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.delete(2);
-      expect(set.has(1)).toBe(true);
-      expect(set.has(3)).toBe(true);
-    });
+    it('removes all elements one by one', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect(set.delete(2)).toBe(true)
+      expect(set.delete(1)).toBe(true)
+      expect(set.delete(3)).toBe(true)
+      expect(set.size).toBe(0)
+      expect(set.isEmpty()).toBe(true)
+    })
 
-    it('should maintain correct structure after multiple deletes', () => {
+    it('maintains sorted order after deletions', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 10; i++) set.add(i)
+      set.delete(3)
+      set.delete(7)
+      set.delete(0)
+      set.delete(9)
+      expect(set.toArray()).toEqual([1, 2, 4, 5, 6, 8])
+    })
+
+    it('handles deleting a node with one child', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(7)
+      set.add(6)
+      expect(set.delete(7)).toBe(true)
+      expect(set.toArray()).toEqual([3, 5, 6])
+    })
+
+    it('double delete returns false second time', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.delete(1)).toBe(true)
+      expect(set.delete(1)).toBe(false)
+    })
+  })
+
+  // ─── size ────────────────────────────────────────────────────────────
+
+  describe('size', () => {
+    it('returns 0 for an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.size).toBe(0)
+    })
+
+    it('returns 1 after a single add', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.size).toBe(1)
+    })
+
+    it('tracks size incrementally', () => {
+      const set = new AVLSet<number>()
       for (let i = 0; i < 10; i++) {
-        set.add(i);
+        set.add(i)
+        expect(set.size).toBe(i + 1)
       }
-      set.delete(5);
-      set.delete(7);
-      expect(set.has(5)).toBe(false);
-      expect(set.has(7)).toBe(false);
-      expect(set.has(6)).toBe(true);
-      expect(set.has(8)).toBe(true);
-    });
-  });
+    })
 
-  describe('Has operation', () => {
-    it('should return true for has when element exists', () => {
-      set.add(5);
-      expect(set.has(5)).toBe(true);
-    });
+    it('decreases after deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect(set.size).toBe(3)
+      set.delete(2)
+      expect(set.size).toBe(2)
+      set.delete(1)
+      expect(set.size).toBe(1)
+    })
 
-    it('should return false for has when element does not exist', () => {
-      set.add(5);
-      expect(set.has(10)).toBe(false);
-    });
+    it('reports zero after clear', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 10; i++) set.add(i)
+      set.clear()
+      expect(set.size).toBe(0)
+    })
+  })
 
-    it.skip('should work with string values', () => {
-      const strSet = new AVLSet<string>();
-      strSet.add('hello');
-      expect(strSet.has('hello')).toBe(true);
-      expect(strSet.has('world')).toBe(false);
-    });
-  });
+  // ─── isEmpty ─────────────────────────────────────────────────────────
 
-  describe('Size operation', () => {
-    it('should report correct size after adds', () => {
-      for (let i = 0; i < 10; i++) {
-        set.add(i);
-        expect(set.size).toBe(i + 1);
-      }
-    });
+  describe('isEmpty', () => {
+    it('returns true for a new set', () => {
+      expect(new AVLSet<number>().isEmpty()).toBe(true)
+    })
 
-    it('should report correct size after deletes', () => {
-      for (let i = 0; i < 10; i++) {
-        set.add(i);
-      }
-      set.delete(5);
-      expect(set.size).toBe(9);
-    });
+    it('returns false after adding an element', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.isEmpty()).toBe(false)
+    })
 
-    it('should report zero after clear', () => {
-      for (let i = 0; i < 10; i++) {
-        set.add(i);
-      }
-      set.clear();
-      expect(set.size).toBe(0);
-    });
-  });
+    it('returns true after clearing all elements', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.clear()
+      expect(set.isEmpty()).toBe(true)
+    })
 
-  describe('IsEmpty operation', () => {
-    it('should return true for empty set', () => {
-      expect(set.isEmpty()).toBe(true);
-    });
+    it('returns true after all elements are deleted', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.delete(1)
+      expect(set.isEmpty()).toBe(true)
+    })
+  })
 
-    it('should return false after add', () => {
-      set.add(1);
-      expect(set.isEmpty()).toBe(false);
-    });
+  // ─── clear ───────────────────────────────────────────────────────────
 
-    it('should return true after clear', () => {
-      set.add(1);
-      set.clear();
-      expect(set.isEmpty()).toBe(true);
-    });
-  });
+  describe('clear', () => {
+    it('removes all elements from the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.clear()
+      expect(set.size).toBe(0)
+      expect(set.isEmpty()).toBe(true)
+    })
 
-  describe('Clear operation', () => {
-    it('should clear all elements', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.clear();
-      expect(set.isEmpty()).toBe(true);
-      expect(set.size).toBe(0);
-    });
+    it('does nothing on an already empty set', () => {
+      const set = new AVLSet<number>()
+      set.clear()
+      expect(set.size).toBe(0)
+    })
 
-    it('should allow adds after clear', () => {
-      set.add(1);
-      set.clear();
-      set.add(2);
-      expect(set.has(2)).toBe(true);
-      expect(set.size).toBe(1);
-    });
-  });
+    it('allows adding elements after clearing', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.clear()
+      set.add(2)
+      expect(set.size).toBe(1)
+      expect(set.has(2)).toBe(true)
+      expect(set.has(1)).toBe(false)
+    })
 
-  describe('Min operation', () => {
-    it('should return correct min after multiple adds', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      expect(set.min()).toBe(3);
-    });
+    it('clear and rebuild', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.clear()
+      expect(set.size).toBe(0)
+      set.add(10)
+      set.add(20)
+      expect(set.size).toBe(2)
+      expect(set.toArray()).toEqual([10, 20])
+    })
+  })
 
-    it('should return correct min after delete', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.delete(1);
-      expect(set.min()).toBe(2);
-    });
+  // ─── min ─────────────────────────────────────────────────────────────
 
-    it('should return undefined for empty set', () => {
-      expect(set.min()).toBeUndefined();
-    });
-  });
+  describe('min', () => {
+    it('returns undefined on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.min()).toBeUndefined()
+    })
 
-  describe('Max operation', () => {
-    it('should return correct max after multiple adds', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      expect(set.max()).toBe(7);
-    });
+    it('returns the single element', () => {
+      const set = new AVLSet<number>()
+      set.add(42)
+      expect(set.min()).toBe(42)
+    })
 
-    it('should return correct max after delete', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.delete(3);
-      expect(set.max()).toBe(2);
-    });
+    it('returns the smallest element', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(8)
+      set.add(1)
+      set.add(9)
+      expect(set.min()).toBe(1)
+    })
 
-    it('should return undefined for empty set', () => {
-      expect(set.max()).toBeUndefined();
-    });
-  });
+    it('updates after deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.delete(1)
+      expect(set.min()).toBe(2)
+    })
+  })
 
-  describe('Floor operation', () => {
-    it('should return floor when element exists', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.floor(3)).toBe(3);
-    });
+  // ─── max ─────────────────────────────────────────────────────────────
 
-    it('should return floor when element does not exist', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.floor(4)).toBe(3);
-    });
+  describe('max', () => {
+    it('returns undefined on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.max()).toBeUndefined()
+    })
 
-    it('should return undefined for floor below min', () => {
-      set.add(3);
-      set.add(5);
-      expect(set.floor(2)).toBeUndefined();
-    });
+    it('returns the single element', () => {
+      const set = new AVLSet<number>()
+      set.add(42)
+      expect(set.max()).toBe(42)
+    })
 
-    it('should return max for floor above max', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.floor(10)).toBe(5);
-    });
-  });
+    it('returns the largest element', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(8)
+      set.add(1)
+      set.add(9)
+      expect(set.max()).toBe(9)
+    })
 
-  describe('Ceiling operation', () => {
-    it('should return ceiling when element exists', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.ceiling(3)).toBe(3);
-    });
+    it('updates after deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.delete(3)
+      expect(set.max()).toBe(2)
+    })
+  })
 
-    it('should return ceiling when element does not exist', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.ceiling(4)).toBe(5);
-    });
+  // ─── floor ───────────────────────────────────────────────────────────
 
-    it('should return min for ceiling below min', () => {
-      set.add(3);
-      set.add(5);
-      expect(set.ceiling(2)).toBe(3);
-    });
+  describe('floor', () => {
+    it('returns undefined on empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.floor(5)).toBeUndefined()
+    })
 
-    it('should return undefined for ceiling above max', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.ceiling(10)).toBeUndefined();
-    });
-  });
+    it('returns the value itself if it exists', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.floor(5)).toBe(5)
+    })
 
-  describe('Lower operation', () => {
-    it('should return lower when element exists', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.lower(3)).toBe(1);
-    });
+    it('returns the largest value <= given value', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      set.add(5)
+      set.add(7)
+      expect(set.floor(4)).toBe(3)
+    })
 
-    it('should return lower when element does not exist', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.lower(4)).toBe(3);
-    });
+    it('returns undefined if all values are greater', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      expect(set.floor(5)).toBeUndefined()
+    })
 
-    it('should return undefined for lower at or below min', () => {
-      set.add(3);
-      set.add(5);
-      expect(set.lower(3)).toBeUndefined();
-      expect(set.lower(2)).toBeUndefined();
-    });
-  });
+    it('returns the exact match over a lower value', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect(set.floor(5)).toBe(5)
+    })
 
-  describe('Higher operation', () => {
-    it('should return higher when element exists', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.higher(3)).toBe(5);
-    });
+    it('returns max for floor above max', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      set.add(5)
+      expect(set.floor(10)).toBe(5)
+    })
+  })
 
-    it('should return higher when element does not exist', () => {
-      set.add(1);
-      set.add(3);
-      set.add(5);
-      expect(set.higher(4)).toBe(5);
-    });
+  // ─── ceiling ─────────────────────────────────────────────────────────
 
-    it('should return undefined for higher at or above max', () => {
-      set.add(1);
-      set.add(3);
-      expect(set.higher(3)).toBeUndefined();
-      expect(set.higher(4)).toBeUndefined();
-    });
-  });
+  describe('ceiling', () => {
+    it('returns undefined on empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.ceiling(5)).toBeUndefined()
+    })
 
-  describe('Range operation', () => {
-    it('should return values in range', () => {
-      for (let i = 1; i <= 10; i++) {
-        set.add(i);
-      }
-      const result = [...set.range(3, 7)];
-      expect(result).toEqual([3, 4, 5, 6, 7]);
-    });
+    it('returns the value itself if it exists', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.ceiling(5)).toBe(5)
+    })
 
-    it('should return empty range when no values in range', () => {
-      for (let i = 1; i <= 5; i++) {
-        set.add(i);
-      }
-      const result = [...set.range(10, 20)];
-      expect(result).toEqual([]);
-    });
+    it('returns the smallest value >= given value', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      set.add(5)
+      set.add(7)
+      expect(set.ceiling(4)).toBe(5)
+    })
 
-    it('should handle range at boundaries', () => {
-      for (let i = 1; i <= 10; i++) {
-        set.add(i);
-      }
-      const result = [...set.range(5, 5)];
-      expect(result).toEqual([5]);
-    });
+    it('returns undefined if all values are smaller', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect(set.ceiling(10)).toBeUndefined()
+    })
 
-    it('should return all values when range covers all', () => {
-      for (let i = 1; i <= 5; i++) {
-        set.add(i);
-      }
-      const result = [...set.range(1, 5)];
-      expect(result).toEqual([1, 2, 3, 4, 5]);
-    });
-  });
+    it('returns min for ceiling below min', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(5)
+      expect(set.ceiling(2)).toBe(3)
+    })
+  })
 
-  describe('IndexOf operation', () => {
-    it('should return correct index for element', () => {
-      set.add(3);
-      set.add(1);
-      set.add(5);
-      set.add(2);
-      set.add(4);
-      expect(set.indexOf(1)).toBe(0);
-      expect(set.indexOf(2)).toBe(1);
-      expect(set.indexOf(3)).toBe(2);
-      expect(set.indexOf(4)).toBe(3);
-      expect(set.indexOf(5)).toBe(4);
-    });
+  // ─── lower ───────────────────────────────────────────────────────────
 
-    it('should return -1 for non-existent element', () => {
-      set.add(1);
-      set.add(3);
-      expect(set.indexOf(2)).toBe(-1);
-    });
+  describe('lower', () => {
+    it('returns undefined on empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.lower(5)).toBeUndefined()
+    })
 
-    it('should return -1 for empty set', () => {
-      expect(set.indexOf(5)).toBe(-1);
-    });
-  });
+    it('returns the largest value strictly less than given value', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      set.add(5)
+      expect(set.lower(5)).toBe(3)
+    })
 
-  describe('At operation', () => {
-    it('should return element at index', () => {
-      set.add(3);
-      set.add(1);
-      set.add(5);
-      set.add(2);
-      set.add(4);
-      expect(set.at(0)).toBe(1);
-      expect(set.at(1)).toBe(2);
-      expect(set.at(2)).toBe(3);
-      expect(set.at(3)).toBe(4);
-      expect(set.at(4)).toBe(5);
-    });
+    it('returns undefined if no value is strictly less', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(10)
+      expect(set.lower(5)).toBeUndefined()
+    })
 
-    it('should return undefined for negative index', () => {
-      set.add(1);
-      expect(set.at(-1)).toBeUndefined();
-    });
+    it('works with values not in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect(set.lower(7)).toBe(5)
+    })
 
-    it('should return undefined for index beyond size', () => {
-      set.add(1);
-      expect(set.at(10)).toBeUndefined();
-    });
+    it('returns undefined for lower below min', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(5)
+      expect(set.lower(2)).toBeUndefined()
+    })
+  })
 
-    it('should return undefined for empty set', () => {
-      expect(set.at(0)).toBeUndefined();
-    });
-  });
+  // ─── higher ──────────────────────────────────────────────────────────
 
-  describe('ToArray operation', () => {
-    it('should return empty array for empty set', () => {
-      expect(set.toArray()).toEqual([]);
-    });
+  describe('higher', () => {
+    it('returns undefined on empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.higher(5)).toBeUndefined()
+    })
 
-    it('should return sorted array', () => {
-      set.add(3);
-      set.add(1);
-      set.add(2);
-      expect(set.toArray()).toEqual([1, 2, 3]);
-    });
+    it('returns the smallest value strictly greater than given value', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      set.add(5)
+      expect(set.higher(3)).toBe(5)
+    })
 
-    it('should work with many elements', () => {
-      const values = [5, 3, 7, 1, 9, 2, 8, 4, 6];
-      values.forEach(v => set.add(v));
-      expect(set.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-    });
+    it('returns undefined if no value is strictly greater', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(10)
+      expect(set.higher(10)).toBeUndefined()
+    })
 
-    it('should return new array on each call', () => {
-      set.add(1);
-      const arr1 = set.toArray();
-      const arr2 = set.toArray();
-      expect(arr1).not.toBe(arr2);
-      expect(arr1).toEqual(arr2);
-    });
-  });
+    it('works with values not in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect(set.higher(3)).toBe(5)
+    })
 
-  describe('ForEach operation', () => {
-    it('should call callback for each element', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      const values: number[] = [];
-      set.forEach((v) => values.push(v));
-      expect(values).toEqual([1, 2, 3]);
-    });
+    it('returns undefined for higher above max', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(3)
+      expect(set.higher(4)).toBeUndefined()
+    })
+  })
 
-    it('should pass correct index to callback', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      const indices: number[] = [];
-      set.forEach((_, i) => indices.push(i));
-      expect(indices).toEqual([0, 1, 2]);
-    });
+  // ─── range ───────────────────────────────────────────────────────────
 
-    it('should not call callback on empty set', () => {
-      const callback = vi.fn();
-      set.forEach(callback);
-      expect(callback).not.toHaveBeenCalled();
-    });
+  describe('range', () => {
+    it('yields values within the inclusive range', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.add(4)
+      set.add(5)
+      expect([...set.range(2, 4)]).toEqual([2, 3, 4])
+    })
 
-    it('should iterate in sorted order', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      set.add(1);
-      set.add(9);
-      const values: number[] = [];
-      set.forEach((v) => values.push(v));
-      expect(values).toEqual([1, 3, 5, 7, 9]);
-    });
-  });
+    it('yields nothing on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect([...set.range(1, 10)]).toEqual([])
+    })
 
-  describe('Iterator operation', () => {
-    it('should iterate with for...of', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      const values: number[] = [];
+    it('yields a single value when lo equals hi and value exists', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect([...set.range(2, 2)]).toEqual([2])
+    })
+
+    it('yields nothing when no values fall in range', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect([...set.range(10, 20)]).toEqual([])
+    })
+
+    it('yields values at the boundaries', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect([...set.range(1, 10)]).toEqual([1, 5, 10])
+    })
+
+    it('works as a generator with lazy iteration', () => {
+      const set = new AVLSet<number>()
+      for (let i = 1; i <= 100; i++) set.add(i)
+      const gen = set.range(1, 3)
+      expect(gen.next().value).toBe(1)
+      expect(gen.next().value).toBe(2)
+      expect(gen.next().value).toBe(3)
+      expect(gen.next().done).toBe(true)
+    })
+
+    it('returns all values when range covers all elements', () => {
+      const set = new AVLSet<number>()
+      for (let i = 1; i <= 5; i++) set.add(i)
+      expect([...set.range(1, 5)]).toEqual([1, 2, 3, 4, 5])
+    })
+  })
+
+  // ─── indexOf ─────────────────────────────────────────────────────────
+
+  describe('indexOf', () => {
+    it('returns the index of a value in sorted order', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      expect(set.indexOf(10)).toBe(0)
+      expect(set.indexOf(20)).toBe(1)
+      expect(set.indexOf(30)).toBe(2)
+    })
+
+    it('returns -1 for a value not in the set', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      expect(set.indexOf(99)).toBe(-1)
+    })
+
+    it('returns -1 on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.indexOf(1)).toBe(-1)
+    })
+
+    it('returns correct index after deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      set.add(4)
+      set.add(5)
+      set.delete(3)
+      expect(set.indexOf(4)).toBe(2)
+      expect(set.indexOf(5)).toBe(3)
+    })
+
+    it('returns correct indices for unsorted insertion order', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(1)
+      set.add(5)
+      set.add(2)
+      set.add(4)
+      expect(set.indexOf(1)).toBe(0)
+      expect(set.indexOf(2)).toBe(1)
+      expect(set.indexOf(3)).toBe(2)
+      expect(set.indexOf(4)).toBe(3)
+      expect(set.indexOf(5)).toBe(4)
+    })
+  })
+
+  // ─── at ──────────────────────────────────────────────────────────────
+
+  describe('at', () => {
+    it('returns the value at the given index', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      expect(set.at(0)).toBe(10)
+      expect(set.at(1)).toBe(20)
+      expect(set.at(2)).toBe(30)
+    })
+
+    it('returns undefined for out-of-bounds index', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.at(1)).toBeUndefined()
+      expect(set.at(100)).toBeUndefined()
+    })
+
+    it('returns undefined for negative index', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      expect(set.at(-1)).toBeUndefined()
+    })
+
+    it('returns undefined on an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.at(0)).toBeUndefined()
+    })
+
+    it('returns correct values after insertions and deletions', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(7)
+      set.add(1)
+      set.add(9)
+      set.delete(5)
+      expect(set.at(0)).toBe(1)
+      expect(set.at(1)).toBe(3)
+      expect(set.at(2)).toBe(7)
+      expect(set.at(3)).toBe(9)
+    })
+  })
+
+  // ─── toArray ─────────────────────────────────────────────────────────
+
+  describe('toArray', () => {
+    it('returns an empty array for an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.toArray()).toEqual([])
+    })
+
+    it('returns sorted elements', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(1)
+      set.add(2)
+      expect(set.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('returns a new array each time', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      const a1 = set.toArray()
+      const a2 = set.toArray()
+      expect(a1).toEqual(a2)
+      expect(a1).not.toBe(a2)
+    })
+
+    it('returns correct array after mixed operations', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(8)
+      set.add(1)
+      set.delete(3)
+      expect(set.toArray()).toEqual([1, 5, 8])
+    })
+
+    it('handles many elements in sorted order', () => {
+      const set = new AVLSet<number>()
+      const values = [5, 3, 7, 1, 9, 2, 8, 4, 6]
+      for (const v of values) set.add(v)
+      expect(set.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9])
+    })
+  })
+
+  // ─── forEach ─────────────────────────────────────────────────────────
+
+  describe('forEach', () => {
+    it('iterates over all elements in sorted order', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(1)
+      set.add(2)
+      const results: Array<{ value: number; index: number }> = []
+      set.forEach((value, index) => {
+        results.push({ value, index })
+      })
+      expect(results).toEqual([
+        { value: 1, index: 0 },
+        { value: 2, index: 1 },
+        { value: 3, index: 2 },
+      ])
+    })
+
+    it('does not call callback on an empty set', () => {
+      const set = new AVLSet<number>()
+      let callCount = 0
+      set.forEach(() => {
+        callCount++
+      })
+      expect(callCount).toBe(0)
+    })
+
+    it('provides correct indices', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      const indices: number[] = []
+      set.forEach((_value, index) => {
+        indices.push(index)
+      })
+      expect(indices).toEqual([0, 1, 2])
+    })
+  })
+
+  // ─── Symbol.iterator ─────────────────────────────────────────────────
+
+  describe('Symbol.iterator', () => {
+    it('iterates over elements in sorted order', () => {
+      const set = new AVLSet<number>()
+      set.add(3)
+      set.add(1)
+      set.add(2)
+      expect([...set]).toEqual([1, 2, 3])
+    })
+
+    it('yields nothing for an empty set', () => {
+      const set = new AVLSet<number>()
+      expect([...set]).toEqual([])
+    })
+
+    it('works with for-of loop', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(7)
+      const result: number[] = []
       for (const v of set) {
-        values.push(v);
+        result.push(v)
       }
-      expect(values).toEqual([1, 2, 3]);
-    });
+      expect(result).toEqual([3, 5, 7])
+    })
 
-    it('should iterate in sorted order', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      set.add(1);
-      set.add(9);
-      const values: number[] = [];
-      for (const v of set) {
-        values.push(v);
+    it('supports Array.from', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(2)
+      set.add(3)
+      expect(Array.from(set)).toEqual([1, 2, 3])
+    })
+  })
+
+  // ─── union ───────────────────────────────────────────────────────────
+
+  describe('union', () => {
+    it('returns a new set with all elements from both sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(2)
+      b.add(3)
+      const result = a.union(b)
+      expect(result.toArray()).toEqual([1, 2, 3])
+    })
+
+    it('does not modify the original sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      b.add(2)
+      a.union(b)
+      expect(a.toArray()).toEqual([1])
+      expect(b.toArray()).toEqual([2])
+    })
+
+    it('returns a copy when unioned with an empty set', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      const result = a.union(b)
+      expect(result.toArray()).toEqual([1, 2])
+    })
+
+    it('returns a copy when empty set is unioned with non-empty', () => {
+      const a = new AVLSet<number>()
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      const result = a.union(b)
+      expect(result.toArray()).toEqual([1, 2])
+    })
+
+    it('union of two empty sets is empty', () => {
+      const a = new AVLSet<number>()
+      const b = new AVLSet<number>()
+      expect(a.union(b).size).toBe(0)
+    })
+
+    it('handles identical sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      b.add(3)
+      const result = a.union(b)
+      expect(result.toArray()).toEqual([1, 2, 3])
+      expect(result.size).toBe(3)
+    })
+
+    it('returns a new independent set', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      b.add(2)
+      const u = a.union(b)
+      u.add(3)
+      expect(a.size).toBe(1)
+      expect(b.size).toBe(1)
+      expect(u.size).toBe(3)
+    })
+  })
+
+  // ─── intersection ────────────────────────────────────────────────────
+
+  describe('intersection', () => {
+    it('returns common elements', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(2)
+      b.add(3)
+      b.add(4)
+      const result = a.intersection(b)
+      expect(result.toArray()).toEqual([2, 3])
+    })
+
+    it('returns empty set when no common elements', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(3)
+      b.add(4)
+      const result = a.intersection(b)
+      expect(result.size).toBe(0)
+    })
+
+    it('returns empty set when intersecting with empty set', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      expect(a.intersection(b).size).toBe(0)
+    })
+
+    it('returns identical set when both sets are the same', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      b.add(3)
+      expect(a.intersection(b).toArray()).toEqual([1, 2, 3])
+    })
+
+    it('does not modify the original sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      a.intersection(b)
+      expect(a.toArray()).toEqual([1])
+      expect(b.toArray()).toEqual([1, 2])
+    })
+  })
+
+  // ─── difference ──────────────────────────────────────────────────────
+
+  describe('difference', () => {
+    it('returns elements in self but not in other', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(2)
+      b.add(3)
+      b.add(4)
+      const result = a.difference(b)
+      expect(result.toArray()).toEqual([1])
+    })
+
+    it('returns a copy when sets are disjoint', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(3)
+      b.add(4)
+      expect(a.difference(b).toArray()).toEqual([1, 2])
+    })
+
+    it('returns empty set when self is a subset of other', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      b.add(3)
+      expect(a.difference(b).size).toBe(0)
+    })
+
+    it('returns full set when other is empty', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      expect(a.difference(b).toArray()).toEqual([1, 2])
+    })
+
+    it('does not modify the original sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(2)
+      b.add(3)
+      a.difference(b)
+      expect(a.toArray()).toEqual([1, 2])
+      expect(b.toArray()).toEqual([2, 3])
+    })
+  })
+
+  // ─── isSubsetOf ──────────────────────────────────────────────────────
+
+  describe('isSubsetOf', () => {
+    it('returns true when all elements are contained', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      b.add(3)
+      expect(a.isSubsetOf(b)).toBe(true)
+    })
+
+    it('returns true for identical sets', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      expect(a.isSubsetOf(b)).toBe(true)
+    })
+
+    it('returns false when some elements are not in other', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      expect(a.isSubsetOf(b)).toBe(false)
+    })
+
+    it('returns true for empty set (empty is subset of anything)', () => {
+      const a = new AVLSet<number>()
+      const b = new AVLSet<number>()
+      b.add(1)
+      expect(a.isSubsetOf(b)).toBe(true)
+    })
+
+    it('returns true for two empty sets', () => {
+      const a = new AVLSet<number>()
+      const b = new AVLSet<number>()
+      expect(a.isSubsetOf(b)).toBe(true)
+    })
+
+    it('returns false when self has elements and other is empty', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      expect(a.isSubsetOf(b)).toBe(false)
+    })
+  })
+
+  // ─── isSupersetOf ────────────────────────────────────────────────────
+
+  describe('isSupersetOf', () => {
+    it('returns true when self contains all elements of other', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      a.add(2)
+      a.add(3)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(true)
+    })
+
+    it('returns false when self is missing elements', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      b.add(1)
+      b.add(2)
+      expect(a.isSupersetOf(b)).toBe(false)
+    })
+
+    it('returns true for empty other set', () => {
+      const a = new AVLSet<number>()
+      a.add(1)
+      const b = new AVLSet<number>()
+      expect(a.isSupersetOf(b)).toBe(true)
+    })
+
+    it('returns true for two empty sets', () => {
+      const a = new AVLSet<number>()
+      const b = new AVLSet<number>()
+      expect(a.isSupersetOf(b)).toBe(true)
+    })
+  })
+
+  // ─── isAVLBalanced ───────────────────────────────────────────────────
+
+  describe('isAVLBalanced', () => {
+    it('returns true for an empty set', () => {
+      const set = new AVLSet<number>()
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('returns true for a single element', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('returns true after sequential insertions', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 100; i++) set.add(i)
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('returns true after reverse sequential insertions', () => {
+      const set = new AVLSet<number>()
+      for (let i = 100; i >= 0; i--) set.add(i)
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('returns true after mixed insertions and deletions', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 50; i++) set.add(i)
+      for (let i = 10; i < 40; i++) set.delete(i)
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('returns true while deleting all elements one by one', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 20; i++) set.add(i)
+      for (let i = 0; i < 20; i++) {
+        set.delete(i)
+        expect(set.isAVLBalanced).toBe(true)
       }
-      expect(values).toEqual([1, 3, 5, 7, 9]);
-    });
+    })
+  })
 
-    it('should not iterate empty set', () => {
-      const values: number[] = [];
-      for (const v of set) {
-        values.push(v);
+  // ─── Custom Comparator ───────────────────────────────────────────────
+
+  describe('custom comparator', () => {
+    it('works with string values', () => {
+      const set = new AVLSet<string>({
+        comparator: (a, b) => a.localeCompare(b),
+      })
+      set.add('cherry')
+      set.add('apple')
+      set.add('banana')
+      expect(set.toArray()).toEqual(['apple', 'banana', 'cherry'])
+    })
+
+    it('works with object values by key', () => {
+      interface Item {
+        id: number
+        name: string
       }
-      expect(values).toEqual([]);
-    });
+      const set = new AVLSet<Item>({
+        comparator: (a, b) => a.id - b.id,
+      })
+      set.add({ id: 3, name: 'c' })
+      set.add({ id: 1, name: 'a' })
+      set.add({ id: 2, name: 'b' })
+      expect(set.toArray().map((item) => item.name)).toEqual(['a', 'b', 'c'])
+    })
 
-    it('should support spread operator', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      const arr = [...set];
-      expect(arr).toEqual([1, 2, 3]);
-    });
-  });
+    it('set operations preserve custom comparator', () => {
+      const a = new AVLSet<string>({
+        comparator: (x, y) => x.localeCompare(y),
+      })
+      a.add('b')
+      a.add('a')
+      const b = new AVLSet<string>({
+        comparator: (x, y) => x.localeCompare(y),
+      })
+      b.add('c')
+      b.add('a')
+      const result = a.union(b)
+      expect(result.toArray()).toEqual(['a', 'b', 'c'])
+    })
+  })
 
-  describe('Union operation', () => {
-    it('should union two non-overlapping sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(3);
-      set2.add(4);
-      const result = set1.union(set2);
-      expect(result.toArray()).toEqual([1, 2, 3, 4]);
-    });
+  // ─── Large Datasets ──────────────────────────────────────────────────
 
-    it('should union two overlapping sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(2);
-      set2.add(3);
-      set2.add(4);
-      const result = set1.union(set2);
-      expect(result.toArray()).toEqual([1, 2, 3, 4]);
-    });
-
-    it('should union with empty set', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      const result = set1.union(set2);
-      expect(result.toArray()).toEqual([1, 2]);
-    });
-
-    it('should not modify original sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set2.add(2);
-      const size1 = set1.size;
-      const size2 = set2.size;
-      set1.union(set2);
-      expect(set1.size).toBe(size1);
-      expect(set2.size).toBe(size2);
-    });
-  });
-
-  describe('Intersection operation', () => {
-    it('should intersect two overlapping sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(2);
-      set2.add(3);
-      set2.add(4);
-      const result = set1.intersection(set2);
-      expect(result.toArray()).toEqual([2, 3]);
-    });
-
-    it('should intersect identical sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(1);
-      set2.add(2);
-      set2.add(3);
-      const result = set1.intersection(set2);
-      expect(result.toArray()).toEqual([1, 2, 3]);
-    });
-
-    it('should return empty set for non-overlapping sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(3);
-      set2.add(4);
-      const result = set1.intersection(set2);
-      expect(result.toArray()).toEqual([]);
-    });
-
-    it('should intersect with empty set', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      const result = set1.intersection(set2);
-      expect(result.toArray()).toEqual([]);
-    });
-
-    it('should not modify original sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(2);
-      set2.add(3);
-      const size1 = set1.size;
-      const size2 = set2.size;
-      set1.intersection(set2);
-      expect(set1.size).toBe(size1);
-      expect(set2.size).toBe(size2);
-    });
-  });
-
-  describe('Difference operation', () => {
-    it('should difference two overlapping sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(2);
-      set2.add(3);
-      set2.add(4);
-      const result = set1.difference(set2);
-      expect(result.toArray()).toEqual([1]);
-    });
-
-    it('should difference with empty set', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      const result = set1.difference(set2);
-      expect(result.toArray()).toEqual([1, 2]);
-    });
-
-    it('should return empty set when subtracting all', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(1);
-      set2.add(2);
-      const result = set1.difference(set2);
-      expect(result.toArray()).toEqual([]);
-    });
-
-    it('should return all elements when subtracting empty set', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      const result = set2.difference(set1);
-      expect(result.toArray()).toEqual([]);
-    });
-
-    it('should not modify original sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(2);
-      set2.add(3);
-      const size1 = set1.size;
-      const size2 = set2.size;
-      set1.difference(set2);
-      expect(set1.size).toBe(size1);
-      expect(set2.size).toBe(size2);
-    });
-  });
-
-  describe('IsSubsetOf operation', () => {
-    it('should return true for proper subset', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(1);
-      set2.add(2);
-      set2.add(3);
-      expect(set1.isSubsetOf(set2)).toBe(true);
-    });
-
-    it('should return true for equal sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(1);
-      set2.add(2);
-      expect(set1.isSubsetOf(set2)).toBe(true);
-    });
-
-    it('should return false for non-subset', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(1);
-      set2.add(2);
-      expect(set1.isSubsetOf(set2)).toBe(false);
-    });
-
-    it('should return true for empty set as subset', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set2.add(1);
-      set2.add(2);
-      expect(set1.isSubsetOf(set2)).toBe(true);
-    });
-  });
-
-  describe('IsSupersetOf operation', () => {
-    it('should return true for proper superset', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set1.add(3);
-      set2.add(1);
-      set2.add(2);
-      expect(set1.isSupersetOf(set2)).toBe(true);
-    });
-
-    it('should return true for equal sets', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(1);
-      set2.add(2);
-      expect(set1.isSupersetOf(set2)).toBe(true);
-    });
-
-    it('should return false for non-superset', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      set2.add(1);
-      set2.add(2);
-      set2.add(3);
-      expect(set1.isSupersetOf(set2)).toBe(false);
-    });
-
-    it('should return true for any set as superset of empty set', () => {
-      const set1 = new AVLSet<number>();
-      const set2 = new AVLSet<number>();
-      set1.add(1);
-      set1.add(2);
-      expect(set1.isSupersetOf(set2)).toBe(true);
-    });
-  });
-
-  describe('IsAVLBalanced operation', () => {
-    it('should be balanced when empty', () => {
-      expect(set.isAVLBalanced).toBe(true);
-    });
-
-    it('should be balanced with single element', () => {
-      set.add(5);
-      expect(set.isAVLBalanced).toBe(true);
-    });
-
-    it('should be balanced with multiple elements', () => {
-      for (let i = 0; i < 100; i++) {
-        set.add(i);
-      }
-      expect(set.isAVLBalanced).toBe(true);
-    });
-
-    it('should be balanced after deletions', () => {
-      for (let i = 0; i < 50; i++) {
-        set.add(i);
-      }
-      for (let i = 0; i < 25; i++) {
-        set.delete(i);
-      }
-      expect(set.isAVLBalanced).toBe(true);
-    });
-  });
-
-  describe('Custom comparator', () => {
-    it('should work with custom comparator for strings', () => {
-      const strSet = new AVLSet<string>({ comparator: (a, b) => a.localeCompare(b) });
-      strSet.add('banana');
-      strSet.add('apple');
-      strSet.add('cherry');
-      expect(strSet.toArray()).toEqual(['apple', 'banana', 'cherry']);
-    });
-
-    it('should work with reverse comparator', () => {
-      const revSet = new AVLSet<number>({ comparator: (a, b) => b - a });
-      revSet.add(1);
-      revSet.add(2);
-      revSet.add(3);
-      expect(revSet.toArray()).toEqual([3, 2, 1]);
-    });
-
-    it('should work with object comparator', () => {
-      interface Person {
-        id: number;
-        name: string;
-      }
-      const personSet = new AVLSet<Person>({ comparator: (a, b) => a.id - b.id });
-      personSet.add({ id: 2, name: 'Bob' });
-      personSet.add({ id: 1, name: 'Alice' });
-      personSet.add({ id: 3, name: 'Charlie' });
-      expect(personSet.size).toBe(3);
-      expect(personSet.min()).toEqual({ id: 1, name: 'Alice' });
-    });
-  });
-
-  describe('Many elements', () => {
-    it('should handle 100 elements', () => {
-      for (let i = 0; i < 100; i++) {
-        set.add(i);
-      }
-      expect(set.size).toBe(100);
-      expect(set.min()).toBe(0);
-      expect(set.max()).toBe(99);
-    });
-
-    it('should find all elements in large set', () => {
-      for (let i = 0; i < 50; i++) {
-        set.add(i);
-      }
-      for (let i = 0; i < 50; i++) {
-        expect(set.has(i)).toBe(true);
-      }
-    });
-
-    it('should delete all elements from large set', () => {
-      for (let i = 0; i < 50; i++) {
-        set.add(i);
-      }
-      for (let i = 0; i < 50; i++) {
-        expect(set.delete(i)).toBe(true);
-      }
-      expect(set.isEmpty()).toBe(true);
-    });
-
-    it('should maintain balance with large dataset', () => {
+  describe('large datasets', () => {
+    it('handles inserting 1000 elements', () => {
+      const set = new AVLSet<number>()
       for (let i = 0; i < 1000; i++) {
-        set.add(i);
+        set.add(i)
       }
-      expect(set.isAVLBalanced).toBe(true);
-      expect(set.size).toBe(1000);
-    });
-  });
+      expect(set.size).toBe(1000)
+      expect(set.min()).toBe(0)
+      expect(set.max()).toBe(999)
+      expect(set.isAVLBalanced).toBe(true)
+    })
 
-  describe('Edge cases', () => {
-    it('should handle negative numbers', () => {
-      set.add(-3);
-      set.add(-1);
-      set.add(-2);
-      expect(set.toArray()).toEqual([-3, -2, -1]);
-      expect(set.min()).toBe(-3);
-      expect(set.max()).toBe(-1);
-    });
-
-    it('should handle mixed positive and negative numbers', () => {
-      set.add(-2);
-      set.add(0);
-      set.add(2);
-      set.add(-1);
-      set.add(1);
-      expect(set.toArray()).toEqual([-2, -1, 0, 1, 2]);
-    });
-
-    it('should handle sequential insertions', () => {
-      for (let i = 1; i <= 10; i++) {
-        set.add(i);
+    it('handles inserting elements in reverse order', () => {
+      const set = new AVLSet<number>()
+      for (let i = 999; i >= 0; i--) {
+        set.add(i)
       }
-      expect(set.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    });
+      expect(set.size).toBe(1000)
+      expect(set.toArray()[0]).toBe(0)
+      expect(set.toArray()[999]).toBe(999)
+      expect(set.isAVLBalanced).toBe(true)
+    })
 
-    it('should handle reverse insertions', () => {
-      for (let i = 10; i >= 1; i--) {
-        set.add(i);
+    it('handles deleting many elements', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 500; i++) set.add(i)
+      for (let i = 0; i < 250; i++) set.delete(i)
+      expect(set.size).toBe(250)
+      expect(set.min()).toBe(250)
+      expect(set.max()).toBe(499)
+      expect(set.isAVLBalanced).toBe(true)
+    })
+
+    it('handles random-looking insert pattern', () => {
+      const set = new AVLSet<number>()
+      const values = [7, 3, 9, 1, 5, 8, 10, 0, 2, 4, 6]
+      for (const v of values) set.add(v)
+      expect(set.toArray()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    })
+
+    it('range iteration over large dataset', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 100; i++) set.add(i)
+      const ranged = [...set.range(20, 30)]
+      expect(ranged).toEqual(Array.from({ length: 11 }, (_, i) => i + 20))
+    })
+
+    it('finds all elements in large set', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 100; i++) set.add(i)
+      for (let i = 0; i < 100; i++) {
+        expect(set.has(i)).toBe(true)
       }
-      expect(set.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    });
+      expect(set.has(100)).toBe(false)
+    })
 
-    it('should handle mixed operations', () => {
-      set.add(5);
-      set.add(3);
-      set.add(7);
-      set.delete(5);
-      set.add(1);
-      set.add(9);
-      set.delete(3);
-      expect(set.toArray()).toEqual([1, 7, 9]);
-    });
+    it('deletes all elements from large set', () => {
+      const set = new AVLSet<number>()
+      for (let i = 0; i < 50; i++) set.add(i)
+      for (let i = 0; i < 50; i++) {
+        expect(set.delete(i)).toBe(true)
+      }
+      expect(set.isEmpty()).toBe(true)
+    })
+  })
 
-    it('should allow adding after delete', () => {
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.delete(2);
-      expect(set.add(4)).toBe(true);
-      expect(set.size).toBe(3);
-      expect(set.has(4)).toBe(true);
-    });
+  // ─── Edge Cases ──────────────────────────────────────────────────────
 
-    it('should handle repeated add and delete', () => {
+  describe('edge cases', () => {
+    it('add, delete, add same value', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.delete(5)).toBe(true)
+      expect(set.add(5)).toBe(true)
+      expect(set.has(5)).toBe(true)
+      expect(set.size).toBe(1)
+    })
+
+    it('floor and ceiling on a single-element set', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.floor(5)).toBe(5)
+      expect(set.floor(10)).toBe(5)
+      expect(set.floor(0)).toBeUndefined()
+      expect(set.ceiling(5)).toBe(5)
+      expect(set.ceiling(0)).toBe(5)
+      expect(set.ceiling(10)).toBeUndefined()
+    })
+
+    it('lower and higher on a single-element set', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      expect(set.lower(5)).toBeUndefined()
+      expect(set.lower(10)).toBe(5)
+      expect(set.higher(5)).toBeUndefined()
+      expect(set.higher(0)).toBe(5)
+    })
+
+    it('indexOf and at are consistent', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      for (let i = 0; i < set.size; i++) {
+        const value = set.at(i)!
+        expect(set.indexOf(value)).toBe(i)
+      }
+    })
+
+    it('toArray matches forEach order', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(8)
+      set.add(1)
+      set.add(9)
+      const fromToArray = set.toArray()
+      const fromForEach: number[] = []
+      set.forEach((v) => fromForEach.push(v))
+      expect(fromForEach).toEqual(fromToArray)
+    })
+
+    it('toArray matches iterator order', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(8)
+      set.add(1)
+      set.add(9)
+      expect([...set]).toEqual(set.toArray())
+    })
+
+    it('handles negative numbers', () => {
+      const set = new AVLSet<number>()
+      set.add(-3)
+      set.add(-1)
+      set.add(-2)
+      expect(set.toArray()).toEqual([-3, -2, -1])
+      expect(set.min()).toBe(-3)
+      expect(set.max()).toBe(-1)
+    })
+
+    it('handles mixed positive and negative numbers', () => {
+      const set = new AVLSet<number>()
+      set.add(-2)
+      set.add(0)
+      set.add(2)
+      set.add(-1)
+      set.add(1)
+      expect(set.toArray()).toEqual([-2, -1, 0, 1, 2])
+    })
+
+    it('handles mixed operations', () => {
+      const set = new AVLSet<number>()
+      set.add(5)
+      set.add(3)
+      set.add(7)
+      set.delete(5)
+      set.add(1)
+      set.add(9)
+      set.delete(3)
+      expect(set.toArray()).toEqual([1, 7, 9])
+    })
+
+    it('handles repeated add and delete cycles', () => {
+      const set = new AVLSet<number>()
       for (let i = 0; i < 10; i++) {
-        expect(set.add(i)).toBe(true);
+        expect(set.add(i)).toBe(true)
       }
       for (let i = 0; i < 10; i++) {
-        expect(set.delete(i)).toBe(true);
+        expect(set.delete(i)).toBe(true)
       }
       for (let i = 0; i < 10; i++) {
-        expect(set.add(i)).toBe(true);
+        expect(set.add(i)).toBe(true)
       }
-      expect(set.size).toBe(10);
-    });
+      expect(set.size).toBe(10)
+    })
 
-    it('should handle indexOf at boundaries', () => {
-      set.add(1);
-      set.add(5);
-      set.add(10);
-      expect(set.indexOf(1)).toBe(0);
-      expect(set.indexOf(5)).toBe(1);
-      expect(set.indexOf(10)).toBe(2);
-    });
+    it('consecutive floor and ceiling queries', () => {
+      const set = new AVLSet<number>()
+      set.add(10)
+      set.add(20)
+      set.add(30)
+      set.add(40)
+      set.add(50)
+      expect(set.floor(25)).toBe(20)
+      expect(set.ceiling(25)).toBe(30)
+      expect(set.lower(30)).toBe(20)
+      expect(set.higher(30)).toBe(40)
+    })
 
-    it('should handle at at boundaries', () => {
-      set.add(1);
-      set.add(5);
-      set.add(10);
-      expect(set.at(0)).toBe(1);
-      expect(set.at(1)).toBe(5);
-      expect(set.at(2)).toBe(10);
-      expect(set.at(3)).toBeUndefined();
-    });
+    it('floor and ceiling with exact match', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect(set.floor(5)).toBe(5)
+      expect(set.ceiling(5)).toBe(5)
+    })
 
-    it('should handle range with single element', () => {
-      set.add(5);
-      const result = [...set.range(5, 5)];
-      expect(result).toEqual([5]);
-    });
-
-    it('should handle floor and ceiling with exact match', () => {
-      set.add(1);
-      set.add(5);
-      set.add(10);
-      expect(set.floor(5)).toBe(5);
-      expect(set.ceiling(5)).toBe(5);
-    });
-
-    it('should handle lower and higher with exact match', () => {
-      set.add(1);
-      set.add(5);
-      set.add(10);
-      expect(set.lower(5)).toBe(1);
-      expect(set.higher(5)).toBe(10);
-    });
-  });
-});
+    it('lower and higher with exact match', () => {
+      const set = new AVLSet<number>()
+      set.add(1)
+      set.add(5)
+      set.add(10)
+      expect(set.lower(5)).toBe(1)
+      expect(set.higher(5)).toBe(10)
+    })
+  })
+})
