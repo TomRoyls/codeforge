@@ -2,8 +2,13 @@ import { createHash } from 'node:crypto'
 import type { CloneGroup, CloneInstance, DuplicationConfig, DuplicationReport, DuplicationSummary } from './types.js'
 import { DuplicationType, DEFAULT_DUPLICATION_CONFIG } from './types.js'
 import { HashGenerator } from './hash-generator.js'
+import { countLines } from '../../utils/string-helpers.js'
+import { roundTo } from '../../utils/math-helpers.js'
+import { increment, append } from '../../utils/map-helpers.js'
 
 let groupCounter = 0
+
+const globRegexCache = new Map<string, RegExp>()
 
 function nextGroupId(): string {
   groupCounter++
@@ -47,7 +52,7 @@ export class CloneDetector {
     for (const [filePath, content] of files) {
       if (!this.shouldAnalyzeFile(filePath)) continue
       filesAnalyzed++
-      totalLines += content.split('\n').length
+      totalLines += countLines(content)
       const instances = this.analyzeFile(filePath, content)
       allInstances.push(...instances)
     }
@@ -67,7 +72,7 @@ export class CloneDetector {
     return {
       totalDuplicates: limited.reduce((sum, g) => sum + g.clones.length, 0),
       totalDuplicatedLines,
-      duplicationPercentage: Math.round(duplicationPercentage * 100) / 100,
+      duplicationPercentage: roundTo(duplicationPercentage, 2),
       cloneGroups: limited,
       summary,
     }
@@ -78,12 +83,7 @@ export class CloneDetector {
 
     for (const instance of instances) {
       const key = instance.hash
-      const existing = hashGroups.get(key)
-      if (existing) {
-        existing.push(instance)
-      } else {
-        hashGroups.set(key, [instance])
-      }
+      append(hashGroups, key, instance)
     }
 
     const groups: CloneGroup[] = []
@@ -106,12 +106,7 @@ export class CloneDetector {
 
     for (const instance of instances) {
       const structuralHash = this.hasher.generateStructuralHash(instance.content)
-      const existing = structuralGroups.get(structuralHash)
-      if (existing) {
-        existing.push(instance)
-      } else {
-        structuralGroups.set(structuralHash, [instance])
-      }
+      append(structuralGroups, structuralHash, instance)
     }
 
     const groups: CloneGroup[] = []
@@ -240,17 +235,22 @@ export class CloneDetector {
   }
 
   private matchesGlob(filePath: string, pattern: string): boolean {
-    const regexStr = pattern
-      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-      .replace(/\*\*/g, '§§')
-      .replace(/\*/g, '[^/]*')
-      .replace(/§§/g, '.*')
-      .replace(/\?/g, '[^/]')
-    try {
-      return new RegExp(regexStr).test(filePath)
-    } catch {
-      return filePath.includes(pattern.replace(/\*\*/g, '').replace(/\*/g, ''))
+    let regex = globRegexCache.get(pattern)
+    if (!regex) {
+      const regexStr = pattern
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*\*/g, '§§')
+        .replace(/\*/g, '[^/]*')
+        .replace(/§§/g, '.*')
+        .replace(/\?/g, '[^/]')
+      try {
+        regex = new RegExp(regexStr)
+        globRegexCache.set(pattern, regex)
+      } catch {
+        return filePath.includes(pattern.replace(/\*\*/g, '').replace(/\*/g, ''))
+      }
     }
+    return regex.test(filePath)
   }
 
   private computeGroupSimilarity(clones: CloneInstance[]): number {
@@ -309,7 +309,7 @@ export class CloneDetector {
     for (const group of groups) {
       const filesInGroup = new Set(group.clones.map(c => c.filePath))
       for (const f of filesInGroup) {
-        hotspotCounts.set(f, (hotspotCounts.get(f) ?? 0) + 1)
+        increment(hotspotCounts, f)
       }
     }
 

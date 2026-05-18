@@ -6,6 +6,7 @@ import type {
   LoadResult,
   PluginState,
 } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class PluginLoader {
   private plugins: Map<string, PluginInstance> = new Map()
@@ -205,12 +206,7 @@ export class PluginLoader {
   }
 
   registerHook(hook: PluginHook, fn: PluginHookFn): void {
-    const existing = this.hooks.get(hook)
-    if (existing) {
-      existing.push(fn)
-    } else {
-      this.hooks.set(hook, [fn])
-    }
+    append(this.hooks, hook, fn)
   }
 
   executeHook(hook: PluginHook, context: Record<string, unknown>): Record<string, unknown>[] {
@@ -250,13 +246,22 @@ export class PluginLoader {
     for (const fns of this.hooks.values()) {
       hookCount += fns.length
     }
+    let loaded = 0, initialized = 0, active = 0, errorCount = 0, disabledCount = 0
+    for (let i = 0; i < plugins.length; i++) {
+      const s = plugins[i]!.state
+      if (s === 'loaded') loaded++
+      else if (s === 'initialized') initialized++
+      else if (s === 'active') active++
+      else if (s === 'error') errorCount++
+      else if (s === 'disabled') disabledCount++
+    }
     return {
       total: plugins.length,
-      loaded: plugins.filter(p => p.state === 'loaded').length,
-      initialized: plugins.filter(p => p.state === 'initialized').length,
-      active: plugins.filter(p => p.state === 'active').length,
-      error: plugins.filter(p => p.state === 'error').length,
-      disabled: plugins.filter(p => p.state === 'disabled').length,
+      loaded,
+      initialized,
+      active,
+      error: errorCount,
+      disabled: disabledCount,
       hooks: hookCount,
     }
   }

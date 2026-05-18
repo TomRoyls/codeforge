@@ -1,4 +1,5 @@
 import type { FormatterConfig, FormatResult, FormatChange } from './types.js'
+import { countLines } from '../../utils/string-helpers.js'
 
 export class IndentationFormatter {
   format(source: string, config: FormatterConfig): FormatResult {
@@ -40,7 +41,7 @@ export class IndentationFormatter {
     const withNewline = this.ensureFinalNewline(result)
     if (withNewline !== result) {
       changes.push({
-        line: result.split('\n').length + 1,
+        line: countLines(result) + 1,
         type: 'newline',
         description: 'Added final newline',
       })

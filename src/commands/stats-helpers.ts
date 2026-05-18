@@ -48,6 +48,15 @@ export interface StatsResult {
   }
 }
 
+const EMPTY_STRUCTURES: CodeStructures = Object.freeze({
+  classes: 0,
+  enums: 0,
+  functions: 0,
+  interfaces: 0,
+  methods: 0,
+  typeAliases: 0,
+})
+
 interface LineCounts {
   blank: number
   comments: number
@@ -111,16 +120,8 @@ export async function processFileStats(
   const { blank, comments, loc } = countLines(content)
   const ext = extname(file.path).toLowerCase()
 
-  const defaultStructures: CodeStructures = {
-    classes: 0,
-    enums: 0,
-    functions: 0,
-    interfaces: 0,
-    methods: 0,
-    typeAliases: 0,
-  }
   let complexity = 1
-  let structures = defaultStructures
+  let structures: CodeStructures = EMPTY_STRUCTURES
 
   if (parser && tsExtensions.has(ext)) {
     try {
@@ -130,7 +131,7 @@ export async function processFileStats(
       parser.releaseFile(file.absolutePath)
     } catch {
       complexity = 1
-      structures = { ...defaultStructures }
+      structures = EMPTY_STRUCTURES
     }
   }
 
@@ -170,7 +171,7 @@ export function aggregateStats(
 
     const { blank, comments, complexity, ext, file, loc, size, structures } = result
 
-    fileTypes[ext] = (fileTypes[ext] || 0) + 1
+    fileTypes[ext] = (fileTypes[ext] ?? 0) + 1
 
     totalLoc += loc
     totalComments += comments
@@ -209,7 +210,7 @@ export function aggregateStats(
 }
 
 export function sortFileStats(fileStats: FileStats[], sortBy: string): FileStats[] {
-  return [...fileStats].sort((a, b) => {
+  return fileStats.slice().sort((a, b) => {
     switch (sortBy) {
       case 'complexity': {
         return b.complexity - a.complexity

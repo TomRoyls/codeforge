@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 
 import type { StatsResult } from './stats-helpers.js'
+import { formatNumber } from '../utils/format-utils.js'
 
 export function formatCsv(stats: StatsResult): string {
   const headers = ['File', 'LOC', 'Complexity', 'Size (bytes)', 'Type']
@@ -21,10 +22,10 @@ export function formatTable(stats: StatsResult, top: number): string {
     chalk.bold('\n📊 Codebase Statistics\n'),
     chalk.dim('Summary:'),
     `  Total files: ${summary.files}`,
-    `  Lines of code: ${summary.loc.toLocaleString()}`,
-    `  Total complexity: ${summary.complexity.toLocaleString()}`,
-    `  Blank lines: ${summary.blankLines.toLocaleString()}`,
-    `  Comment lines: ${summary.commentLines.toLocaleString()}`,
+    `  Lines of code: ${formatNumber(summary.loc)}`,
+    `  Total complexity: ${formatNumber(summary.complexity)}`,
+    `  Blank lines: ${formatNumber(summary.blankLines)}`,
+    `  Comment lines: ${formatNumber(summary.commentLines)}`,
     '',
     chalk.dim('Code structures:'),
     `  Classes: ${summary.classes}`,

@@ -1,5 +1,7 @@
 import type { ChangelogConfig, CommitGroup, ConventionalCommit, ReleaseNote } from './types.js'
 import { DEFAULT_CHANGELOG_CONFIG } from './types.js'
+import { groupBy } from '../../utils/array-helpers.js'
+import { capitalize } from '../../utils/string-helpers.js'
 
 export class ChangelogGenerator {
   private config: ChangelogConfig
@@ -88,23 +90,14 @@ export class ChangelogGenerator {
   createReleaseNote(version: string, commits: ConventionalCommit[], date?: string): ReleaseNote {
     const releaseDate = date ?? new Date().toISOString().split('T')[0]!
 
-    const groups = new Map<string, ConventionalCommit[]>()
-
-    for (const commit of commits) {
-      const existing = groups.get(commit.type)
-      if (existing) {
-        existing.push(commit)
-      } else {
-        groups.set(commit.type, [commit])
-      }
-    }
+    const groups = groupBy(commits, (c) => c.type)
 
     const sections: CommitGroup[] = []
     for (const [type, typeCommits] of groups) {
       const configType = this.config.types.find((t) => t.type === type)
       sections.push({
         type,
-        title: configType?.section ?? type.charAt(0).toUpperCase() + type.slice(1),
+        title: configType?.section ?? capitalize(type),
         commits: typeCommits,
       })
     }

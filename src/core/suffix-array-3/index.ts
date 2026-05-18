@@ -83,7 +83,7 @@ export class SuffixArray3 {
 
   getSuffix(index: number): string {
     if (index < 0 || index >= this.suffixArray.length) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${index}, length=${this.suffixArray.length}`);
     }
     return this.text.slice(this.suffixArray[index]);
   }

@@ -1,4 +1,5 @@
 import type { BenchmarkSuite } from './benchmark-types.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
 
 /**
  * @internal
@@ -21,7 +22,7 @@ function pad(str: string, len: number, align: 'left' | 'right' = 'right'): strin
  * @internal
  */
 export function formatBenchmarkTable(suite: BenchmarkSuite): string {
-  const sorted = [...suite.results].sort((a, b) => b.averageMs - a.averageMs)
+  const sorted = sortedByDesc(suite.results, r => r.averageMs)
 
   const colRule = 30
   const colNum = 12
@@ -85,7 +86,7 @@ export function formatBenchmarkJSON(suite: BenchmarkSuite): string {
  * @internal
  */
 export function formatBenchmarkMarkdown(suite: BenchmarkSuite): string {
-  const sorted = [...suite.results].sort((a, b) => b.averageMs - a.averageMs)
+  const sorted = sortedByDesc(suite.results, r => r.averageMs)
 
   const lines: string[] = []
 

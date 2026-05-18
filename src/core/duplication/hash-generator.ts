@@ -41,13 +41,7 @@ export class HashGenerator {
   }
 
   tokenize(content: string): string[] {
-    const tokens: string[] = []
-    let match: RegExpExecArray | null
-    const pattern = new RegExp(TOKEN_PATTERN.source, TOKEN_PATTERN.flags)
-    while ((match = pattern.exec(content)) !== null) {
-      tokens.push(match[0])
-    }
-    return tokens
+    return content.match(TOKEN_PATTERN) ?? []
   }
 
   computeSimilarity(tokens1: string[], tokens2: string[]): number {

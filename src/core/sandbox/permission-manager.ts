@@ -6,6 +6,8 @@ import type {
   SecurityViolation,
 } from './types.js'
 
+const _globCache = new Map<string, RegExp>()
+
 const DEFAULT_PERMISSIONS: PermissionSet = {
   fs: { read: [], write: [], execute: [] },
   network: false,
@@ -123,13 +125,17 @@ export class PermissionManager {
   }
 
   matchesGlob(path: string, pattern: string): boolean {
-    const regexStr = pattern
-      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-      .replace(/\*\*/g, '<<<DOUBLESTAR>>>')
-      .replace(/\*/g, '[^/]*')
-      .replace(/<<<DOUBLESTAR>>>/g, '.*')
-      .replace(/\?/g, '[^/]')
-    const regex = new RegExp(`^${regexStr}$`)
+    let regex = _globCache.get(pattern)
+    if (!regex) {
+      const regexStr = pattern
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*\*/g, '<<<DOUBLESTAR>>>')
+        .replace(/\*/g, '[^/]*')
+        .replace(/<<<DOUBLESTAR>>>/g, '.*')
+        .replace(/\?/g, '[^/]')
+      regex = new RegExp(`^${regexStr}$`)
+      _globCache.set(pattern, regex)
+    }
     return regex.test(path)
   }
 

@@ -1,4 +1,6 @@
 import { EventStore } from './event-store.js'
+import { logger } from '../../utils/logger.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 import type {
   Event,
   EventListener,
@@ -256,8 +258,7 @@ class EventBusV2 {
       }
     }
 
-    matches.sort((a, b) => b.priority - a.priority)
-    return matches
+    return sortedByDesc(matches, m => m.priority)
   }
 
   private dispatch(event: Event): void {
@@ -306,7 +307,7 @@ class EventBusV2 {
     if (this.config.errorHandling === 'throw') {
       throw err
     } else if (this.config.errorHandling === 'log') {
-      console.error('[EventBusV2] Error in listener:', err)
+      logger.error(`[EventBusV2] Error in listener: ${err instanceof Error ? err.message : String(err)}`)
     }
   }
 }

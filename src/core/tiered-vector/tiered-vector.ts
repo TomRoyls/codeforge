@@ -64,7 +64,7 @@ export class TieredVector<T = unknown> {
     if (tierIndex > 0) {
       const prev = this.tiers[tierIndex - 1]!
       if (prev.length + tier.length <= this._baseSize * 2) {
-        const merged = prev.concat(tier)
+        const merged = [...prev, ...tier]
         this.tiers[tierIndex - 1] = merged
         this.tiers.splice(tierIndex, 1)
         this.stats.rebalances++
@@ -76,7 +76,7 @@ export class TieredVector<T = unknown> {
     if (tierIndex < this.tiers.length - 1) {
       const next = this.tiers[tierIndex + 1]!
       if (tier.length + next.length <= this._baseSize * 2) {
-        const merged = tier.concat(next)
+        const merged = [...tier, ...next]
         this.tiers[tierIndex] = merged
         this.tiers.splice(tierIndex + 1, 1)
         this.stats.rebalances++

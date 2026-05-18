@@ -1,4 +1,6 @@
-import type { Change, ChangeSet } from './types.js';
+import type { Change, ChangeSet } from './types.js'
+import { globToRegex } from '../../utils/glob.js';
+import { unique } from '../../utils/array-helpers.js';
 
 export function extractImports(content: string): string[] {
   const results: string[] = [];
@@ -14,7 +16,7 @@ export function extractImports(content: string): string[] {
       results.push(match[1]!);
     }
   }
-  return [...new Set(results)];
+  return unique(results);
 }
 
 export function extractExports(content: string): string[] {
@@ -43,7 +45,7 @@ export function extractExports(content: string): string[] {
       results.push(parts[0]!.trim());
     }
   }
-  return [...new Set(results)];
+  return unique(results);
 }
 
 export function getChangedSymbols(content: string): string[] {
@@ -63,7 +65,7 @@ export function getChangedSymbols(content: string): string[] {
       results.push(match[1]!);
     }
   }
-  return [...new Set(results)];
+  return unique(results);
 }
 
 export function fromDiff(diff: string): ChangeSet {
@@ -84,8 +86,8 @@ export function fromDiff(diff: string): ChangeSet {
         type: changeType,
         additions,
         deletions,
-        imports: [...new Set(imports)],
-        exports: [...new Set(exports)],
+        imports: unique(imports),
+        exports: unique(exports),
       });
     }
   };
@@ -179,8 +181,8 @@ export function mergeChangeSets(sets: ChangeSet[]): ChangeSet {
       if (existing) {
         existing.additions += change.additions;
         existing.deletions += change.deletions;
-        existing.imports = [...new Set([...existing.imports, ...change.imports])];
-        existing.exports = [...new Set([...existing.exports, ...change.exports])];
+        existing.imports = unique([...existing.imports, ...change.imports]);
+        existing.exports = unique([...existing.exports, ...change.exports]);
         if (change.type === 'deleted') {
           existing.type = 'deleted';
         } else if (change.type === 'added' && existing.type !== 'deleted') {
@@ -200,9 +202,13 @@ export function mergeChangeSets(sets: ChangeSet[]): ChangeSet {
       }
     }
   }
+  let maxTs = Date.now()
+  for (let i = 0; i < sets.length; i++) {
+    if (sets[i]!.timestamp > maxTs) maxTs = sets[i]!.timestamp
+  }
   return {
     changes: allChanges,
-    timestamp: Math.max(...sets.map((s) => s.timestamp), Date.now()),
+    timestamp: maxTs,
   };
 }
 
@@ -215,16 +221,6 @@ export function filterByPattern(set: ChangeSet, pattern: string): ChangeSet {
     author: set.author,
     description: set.description,
   };
-}
-
-function globToRegex(pattern: string): RegExp {
-  const escaped = pattern
-    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-    .replace(/\*\*/g, '{{GLOBSTAR}}')
-    .replace(/\*/g, '[^/]*')
-    .replace(/\?/g, '[^/]')
-    .replace(/\{\{GLOBSTAR\}\}/g, '.*');
-  return new RegExp(`^${escaped}$`);
 }
 
 export class ChangeSetBuilder {

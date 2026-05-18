@@ -20,9 +20,7 @@ export class ParseCache {
   private misses: number = 0
 
   constructor(options: ParseCacheOptions = {}) {
-    this.cache = new LRUCache<string, CachedSourceFile>({
-      maxSize: options.maxSize ?? 100,
-    })
+    this.cache = new LRUCache<string, CachedSourceFile>(options.maxSize ?? 100)
   }
 
   get size(): number {

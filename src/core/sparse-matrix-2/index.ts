@@ -28,7 +28,7 @@ export class SparseMatrix2 {
 
   set(row: number, col: number, value: number): void {
     if (row < 0 || row >= this.rowCount || col < 0 || col >= this.colCount) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: row=${row}, col=${col}, dimensions=${this.rowCount}x${this.colCount}`);
     }
 
     const start = this.rowPtr[row]!;

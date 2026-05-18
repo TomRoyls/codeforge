@@ -1,3 +1,5 @@
+import { increment } from '../../utils/map-helpers.js'
+
 export interface Vertex {
   x: number;
   y: number;
@@ -207,8 +209,8 @@ export class WingedEdgeMesh {
           return false;
         }
 
-        vertexCount.set(edge.v1, (vertexCount.get(edge.v1) || 0) + 1);
-        vertexCount.set(edge.v2, (vertexCount.get(edge.v2) || 0) + 1);
+increment(vertexCount, edge.v1);
+  increment(vertexCount, edge.v2);
       }
 
       for (const count of vertexCount.values()) {

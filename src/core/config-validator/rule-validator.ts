@@ -257,8 +257,12 @@ export class RuleValidator {
       issues.push(...ruleIssues)
     }
 
-    const errors = issues.filter((i) => i.severity === 'error').length
-    const warnings = issues.filter((i) => i.severity === 'warning').length
+    let errors = 0
+    let warnings = 0
+    for (const i of issues) {
+      if (i.severity === 'error') errors++
+      else if (i.severity === 'warning') warnings++
+    }
 
     return { valid: errors === 0, issues, warnings, errors }
   }

@@ -2,13 +2,12 @@ export function isValidPluginName(name: string): boolean {
   return /^[a-z0-9-]+$/.test(name)
 }
 
+import { capitalize } from '../utils/string-helpers.js'
+
 export function toCamelCase(str: string): string {
   return str
     .split('-')
-    .map((word, index) => {
-      if (index === 0) return word
-      return word.charAt(0).toUpperCase() + word.slice(1)
-    })
+    .map((word, index) => (index === 0 ? word : capitalize(word)))
     .join('')
 }
 

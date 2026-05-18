@@ -17,7 +17,7 @@ export class MultiMap3<K, V> {
   }
 
   get(key: K): V[] {
-    return this.map.get(key) || [];
+    return this.map.get(key) ?? [];
   }
 
   delete(key: K, value?: V): boolean {

@@ -1,4 +1,5 @@
 import type { FileStats, ProjectStats, StatsSnapshot } from './types.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 const LANGUAGE_PATTERNS: Record<string, RegExp> = {
   typescript: /\.(ts|tsx|mts|cts)$/,
@@ -83,10 +84,10 @@ function countPatterns(source: string): { functions: number; classes: number; im
   const exportPattern = /(?:export\s+(?:default\s+)?(?:function|class|const|let|var|interface|type|enum|async)|module\.exports\s*=|exports\.\w+\s*=)/g
 
   return {
-    functions: (source.match(functionPattern) || []).length,
-    classes: (source.match(classPattern) || []).length,
-    imports: (source.match(importPattern) || []).length,
-    exports: (source.match(exportPattern) || []).length,
+    functions: (source.match(functionPattern) ?? []).length,
+    classes: (source.match(classPattern) ?? []).length,
+    imports: (source.match(importPattern) ?? []).length,
+    exports: (source.match(exportPattern) ?? []).length,
   }
 }
 
@@ -145,7 +146,7 @@ export class StatsCollector {
       languages.set(file.language, count + 1)
     }
 
-    const sorted = [...files].sort((a, b) => b.complexity - a.complexity)
+    const sorted = sortedByDesc(files, f => f.complexity)
     const topComplexFiles = sorted.slice(0, Math.min(10, sorted.length))
 
     return {

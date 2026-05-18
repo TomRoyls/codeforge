@@ -3,10 +3,10 @@ export class GraphColoring2 {
 
   colorGreedy(adjacencyList: Map<string, string[]>): Map<string, number> {
     const coloring: Map<string, number> = new Map();
-    const vertices = Array.from(adjacencyList.keys());
+    const vertices = [...adjacencyList.keys()];
 
     for (const vertex of vertices) {
-      const neighbors = adjacencyList.get(vertex) || [];
+      const neighbors = adjacencyList.get(vertex) ?? [];
       const usedColors = new Set<number>();
 
       for (const neighbor of neighbors) {
@@ -28,7 +28,7 @@ export class GraphColoring2 {
   }
 
   colorBacktracking(adjacencyList: Map<string, string[]>, maxColors: number): Map<string, number> | null {
-    const vertices = Array.from(adjacencyList.keys());
+    const vertices = [...adjacencyList.keys()];
     const coloring: Map<string, number> = new Map();
 
     const backtrack = (index: number): boolean => {
@@ -37,7 +37,7 @@ export class GraphColoring2 {
       }
 
       const vertex = vertices[index]!;
-      const neighbors = adjacencyList.get(vertex) || [];
+      const neighbors = adjacencyList.get(vertex) ?? [];
 
       for (let color = 0; color < maxColors; color++) {
         let valid = true;

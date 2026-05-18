@@ -1,4 +1,6 @@
 import type { MetricDataPoint, MetricSeries, TimeBucket } from './types.js'
+import { percentile } from '../stats-aggregator/percentile.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 const SPARKLINE_CHARS = '\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588'
 
@@ -42,7 +44,7 @@ export class TimeSeries {
     const s = this.series.get(name)
     if (!s || s.points.length === 0) return []
 
-    const sortedPoints = [...s.points].sort((a, b) => a.timestamp - b.timestamp)
+    const sortedPoints = sortedBy(s.points, p => p.timestamp)
     const minTime = sortedPoints[0]!.timestamp
     const maxTime = sortedPoints[sortedPoints.length - 1]!.timestamp
 
@@ -54,16 +56,23 @@ export class TimeSeries {
       )
 
       if (bucketPoints.length > 0) {
-        const values = bucketPoints.map((p) => p.value)
-        const sum = values.reduce((a, b) => a + b, 0)
+        let sum = 0
+        let min = bucketPoints[0]!.value
+        let max = bucketPoints[0]!.value
+        for (let j = 0; j < bucketPoints.length; j++) {
+          const v = bucketPoints[j]!.value
+          sum += v
+          if (v < min) min = v
+          if (v > max) max = v
+        }
         buckets.push({
           start: bucketStart,
           end: bucketEnd,
-          count: values.length,
+          count: bucketPoints.length,
           sum,
-          avg: sum / values.length,
-          min: Math.min(...values),
-          max: Math.max(...values),
+          avg: sum / bucketPoints.length,
+          min,
+          max,
         })
       }
     }
@@ -84,7 +93,10 @@ export class TimeSeries {
 
     const values = s.points.map((p) => p.value)
     const sorted = [...values].sort((a, b) => a - b)
-    const sum = sorted.reduce((a, b) => a + b, 0)
+    let sum = 0
+    for (let i = 0; i < sorted.length; i++) {
+      sum += sorted[i]!
+    }
 
     return {
       count: sorted.length,
@@ -92,9 +104,9 @@ export class TimeSeries {
       avg: sum / sorted.length,
       min: sorted[0]!,
       max: sorted[sorted.length - 1]!,
-      p50: this.percentile(sorted, 50),
-      p95: this.percentile(sorted, 95),
-      p99: this.percentile(sorted, 99),
+      p50: percentile(sorted, 50),
+      p95: percentile(sorted, 95),
+      p99: percentile(sorted, 99),
     }
   }
 
@@ -103,8 +115,12 @@ export class TimeSeries {
     if (!s || s.points.length === 0) return ''
 
     const values = s.points.map((p) => p.value)
-    const min = Math.min(...values)
-    const max = Math.max(...values)
+    let min = values[0]!
+    let max = values[0]!
+    for (let i = 1; i < values.length; i++) {
+      if (values[i]! < min) min = values[i]!
+      if (values[i]! > max) max = values[i]!
+    }
     const range = max - min
 
     const sampled = this.sample(values, width)
@@ -127,22 +143,6 @@ export class TimeSeries {
 
   removeSeries(name: string): boolean {
     return this.series.delete(name)
-  }
-
-  private percentile(sorted: number[], p: number): number {
-    if (sorted.length === 0) return 0
-    if (sorted.length === 1) return sorted[0]!
-
-    const index = (p / 100) * (sorted.length - 1)
-    const lower = Math.floor(index)
-    const upper = Math.ceil(index)
-    const fraction = index - lower
-
-    if (lower === upper) {
-      return sorted[lower]!
-    }
-
-    return sorted[lower]! + fraction * (sorted[upper]! - sorted[lower]!)
   }
 
   private sample(values: number[], width: number): number[] {

@@ -1,9 +1,13 @@
 import type { GraphNode, GraphEdge, DependencyGraph, GraphMetrics } from './types.js'
+import { escapeRegex } from '../../utils/string-helpers.js'
+import { roundTo } from '../../utils/math-helpers.js'
 
 const IMPORT_REGEX = /import\s+(?:(?:type\s+)?(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g
 const RE_EXPORT_REGEX = /export\s+(?:\{[^}]*\}\s+from|\*\s+from)\s+['"]([^'"]+)['"]/g
 const DYNAMIC_IMPORT_REGEX = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g
 const TYPE_IMPORT_REGEX = /import\s+type\s+(?:\{[^}]*\}\s+from\s+)?['"]([^'"]+)['"]/g
+
+const _extractNamesCache = new Map<string, RegExp[]>()
 
 export class GraphBuilder {
   private nodes: Map<string, GraphNode> = new Map()
@@ -75,10 +79,15 @@ export class GraphBuilder {
   }
 
   private extractNames(source: string, specifier: string): string[] {
-    const patterns = [
-      new RegExp(`import\\s+\\{([^}]+)\\}\\s+from\\s+['"]${this.escapeRegExp(specifier)}['"]`),
-      new RegExp(`import\\s+type\\s+\\{([^}]+)\\}\\s+from\\s+['"]${this.escapeRegExp(specifier)}['"]`),
-    ]
+    let patterns = _extractNamesCache.get(specifier)
+    if (!patterns) {
+      const escaped = escapeRegex(specifier)
+      patterns = [
+        new RegExp(`import\\s+\\{([^}]+)\\}\\s+from\\s+['"]${escaped}['"]`),
+        new RegExp(`import\\s+type\\s+\\{([^}]+)\\}\\s+from\\s+['"]${escaped}['"]`),
+      ]
+      _extractNamesCache.set(specifier, patterns)
+    }
     for (const pattern of patterns) {
       const m = source.match(pattern)
       if (m && m[1]) {
@@ -86,10 +95,6 @@ export class GraphBuilder {
       }
     }
     return []
-  }
-
-  private escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 
   private resolveModule(specifier: string, _fromPath: string): string {
@@ -215,7 +220,7 @@ export class GraphBuilder {
     return {
       totalNodes,
       totalEdges,
-      avgDegree: Math.round(avgDegree * 100) / 100,
+      avgDegree: roundTo(avgDegree, 2),
       maxDepth,
       cycleCount,
       orphanCount: orphans.length,

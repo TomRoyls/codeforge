@@ -69,7 +69,7 @@ export class GraphBFS {
     const seenEdges = new Set<string>();
 
     for (const [from, neighbors] of Array.from(this.adjacencyList.entries())) {
-      for (const [to, weight] of Array.from(neighbors.entries())) {
+      for (const [to, weight] of neighbors) {
         if (this.directed) {
           result.push([from, to, weight]);
         } else {
@@ -100,7 +100,7 @@ export class GraphBFS {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             queue.push(neighbor);
@@ -128,7 +128,7 @@ export class GraphBFS {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             parent.set(neighbor, current);
@@ -167,7 +167,7 @@ export class GraphBFS {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             distances.set(neighbor, currentDistance + 1);
@@ -201,7 +201,7 @@ export class GraphBFS {
 
         const neighbors = this.adjacencyList.get(current);
         if (neighbors) {
-          for (const neighbor of Array.from(neighbors.keys())) {
+          for (const neighbor of neighbors.keys()) {
             if (!visited.has(neighbor)) {
               visited.add(neighbor);
               queue.push(neighbor);
@@ -277,7 +277,7 @@ export class GraphBFS {
 
     const neighbors = this.adjacencyList.get(vertex);
     if (neighbors) {
-      for (const neighbor of Array.from(neighbors.keys())) {
+      for (const neighbor of neighbors.keys()) {
         if (!colors.has(neighbor)) {
           if (!this.checkBipartiteDFS(neighbor, 1 - color, colors)) {
             return false;

@@ -43,7 +43,11 @@ export class GraphVisualizer {
   renderAdjacencyMatrix(graph: VizGraph): string {
     if (graph.nodes.length === 0) return ''
     const nodeIds = graph.nodes.map((n) => n.id)
-    const maxIdLen = Math.max(...nodeIds.map((id) => id.length), 3)
+    let maxIdLen = 3
+    for (let i = 0; i < nodeIds.length; i++) {
+      const len = nodeIds[i]!.length
+      if (len > maxIdLen) maxIdLen = len
+    }
     const header = ' '.repeat(maxIdLen + 1) + nodeIds.map((id) => id.padStart(maxIdLen)).join(' ')
     const lines: string[] = [header]
 

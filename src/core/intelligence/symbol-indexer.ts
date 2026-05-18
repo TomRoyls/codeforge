@@ -11,6 +11,7 @@ import type {
   CallGraphNode,
   CallGraphEdge,
 } from './types.js'
+import { escapeRegex } from '../../utils/string-helpers.js'
 
 interface RawSymbol {
   name: string
@@ -173,10 +174,29 @@ const EXTENDS_PATTERN = /(?:extends|implements)\s+(\w+)/gm
 
 const OVERRIDE_PATTERN = /\b(\w+)\s*\(.*override/gm
 
-function _escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+// Pre-computed global-flagged regex copies for iteration (avoids new RegExp() per call)
+const SYMBOL_PATTERNS_GLOBAL = SYMBOL_PATTERNS.map((p) => {
+  const flags = p.regex.flags.includes('g') ? p.regex.flags : p.regex.flags + 'g'
+  return new RegExp(p.regex.source, flags)
+})
+
+const CONST_VAR_REGEX_GLOBAL = new RegExp(CONST_VAR_PATTERN.source, CONST_VAR_PATTERN.flags)
+
+const METHOD_PROPERTY_REGEXES_GLOBAL = METHOD_PROPERTY_PATTERNS.map((mp) => {
+  const flags = mp.regex.flags.includes('g') ? mp.regex.flags : mp.regex.flags + 'g'
+  return new RegExp(mp.regex.source, flags)
+})
+
+const IMPORT_REGEX_GLOBAL = new RegExp(IMPORT_PATTERN.source, IMPORT_PATTERN.flags)
+const USAGE_REGEX_GLOBAL = new RegExp(USAGE_PATTERN.source, USAGE_PATTERN.flags)
+const TYPE_REF_REGEXES_GLOBAL = TYPE_REF_PATTERNS.map((trp) => new RegExp(trp.source, trp.flags))
+const EXTENDS_REGEX_GLOBAL = new RegExp(EXTENDS_PATTERN.source, EXTENDS_PATTERN.flags)
+const OVERRIDE_REGEX_GLOBAL = new RegExp(OVERRIDE_PATTERN.source, OVERRIDE_PATTERN.flags)
+
+/** Creates a fresh copy of a cached regex (resets lastIndex for .exec() iteration) */
+function freshCopy(cached: RegExp): RegExp {
+  return new RegExp(cached.source, cached.flags)
 }
-void _escapeRegex
 
 function extractLineAndColumn(source: string, offset: number): { line: number; column: number } {
   let line = 1
@@ -606,9 +626,9 @@ export class SymbolIndexer {
     const symbols: RawSymbol[] = []
     const seenPositions = new Set<string>()
 
-    for (const pattern of SYMBOL_PATTERNS) {
-      const flags = pattern.regex.flags.includes('g') ? pattern.regex.flags : pattern.regex.flags + 'g'
-      const regex = new RegExp(pattern.regex.source, flags)
+    for (let pi = 0; pi < SYMBOL_PATTERNS.length; pi++) {
+      const pattern = SYMBOL_PATTERNS[pi]!
+      const regex = freshCopy(SYMBOL_PATTERNS_GLOBAL[pi]!)
       let match: RegExpExecArray | null
 
       while ((match = regex.exec(source)) !== null) {
@@ -649,7 +669,7 @@ export class SymbolIndexer {
       }
     }
 
-    const constVarRegex = new RegExp(CONST_VAR_PATTERN.source, CONST_VAR_PATTERN.flags)
+    const constVarRegex = freshCopy(CONST_VAR_REGEX_GLOBAL)
     let cvMatch: RegExpExecArray | null
     while ((cvMatch = constVarRegex.exec(source)) !== null) {
       const name = cvMatch[5]
@@ -687,9 +707,9 @@ export class SymbolIndexer {
       })
     }
 
-    for (const mp of METHOD_PROPERTY_PATTERNS) {
-      const flags = mp.regex.flags.includes('g') ? mp.regex.flags : mp.regex.flags + 'g'
-      const regex = new RegExp(mp.regex.source, flags)
+    for (let mi = 0; mi < METHOD_PROPERTY_PATTERNS.length; mi++) {
+      const mp = METHOD_PROPERTY_PATTERNS[mi]!
+      const regex = freshCopy(METHOD_PROPERTY_REGEXES_GLOBAL[mi]!)
       let mpMatch: RegExpExecArray | null
 
       while ((mpMatch = regex.exec(source)) !== null) {
@@ -744,7 +764,7 @@ export class SymbolIndexer {
     const refs: RawReference[] = []
     const definedNames = new Set(_definedSymbols.map((s) => s.name))
 
-    const importRegex = new RegExp(IMPORT_PATTERN.source, IMPORT_PATTERN.flags)
+    const importRegex = freshCopy(IMPORT_REGEX_GLOBAL)
     let importMatch: RegExpExecArray | null
     while ((importMatch = importRegex.exec(source)) !== null) {
       const pos = extractLineAndColumn(source, importMatch.index)
@@ -795,7 +815,7 @@ export class SymbolIndexer {
       }
     }
 
-    const usageRegex = new RegExp(USAGE_PATTERN.source, USAGE_PATTERN.flags)
+    const usageRegex = freshCopy(USAGE_REGEX_GLOBAL)
     const usageSeen = new Set<string>()
     let usageMatch: RegExpExecArray | null
     while ((usageMatch = usageRegex.exec(source)) !== null) {
@@ -828,8 +848,8 @@ export class SymbolIndexer {
       })
     }
 
-    for (const typeRefPattern of TYPE_REF_PATTERNS) {
-      const regex = new RegExp(typeRefPattern.source, typeRefPattern.flags)
+    for (let ti = 0; ti < TYPE_REF_PATTERNS.length; ti++) {
+      const regex = freshCopy(TYPE_REF_REGEXES_GLOBAL[ti]!)
       let typeMatch: RegExpExecArray | null
       while ((typeMatch = regex.exec(source)) !== null) {
         const name = typeMatch[1]
@@ -857,7 +877,7 @@ export class SymbolIndexer {
       }
     }
 
-    const extendsRegex = new RegExp(EXTENDS_PATTERN.source, EXTENDS_PATTERN.flags)
+    const extendsRegex = freshCopy(EXTENDS_REGEX_GLOBAL)
     let extendsMatch: RegExpExecArray | null
     while ((extendsMatch = extendsRegex.exec(source)) !== null) {
       const name = extendsMatch[1]
@@ -881,7 +901,7 @@ export class SymbolIndexer {
       })
     }
 
-    const overrideRegex = new RegExp(OVERRIDE_PATTERN.source, OVERRIDE_PATTERN.flags)
+    const overrideRegex = freshCopy(OVERRIDE_REGEX_GLOBAL)
     let overrideMatch: RegExpExecArray | null
     while ((overrideMatch = overrideRegex.exec(source)) !== null) {
       const name = overrideMatch[1]

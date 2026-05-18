@@ -30,7 +30,11 @@ export class CPUProfiler {
     session.endTime = Date.now()
     session.totalDuration = session.endTime - session.startTime
     if (session.samples.length > 0) {
-      session.peakMemory = Math.max(...session.samples.map((s) => s.memoryUsage))
+      let peak = session.samples[0]!.memoryUsage
+      for (let i = 1; i < session.samples.length; i++) {
+        if (session.samples[i]!.memoryUsage > peak) peak = session.samples[i]!.memoryUsage
+      }
+      session.peakMemory = peak
     }
     if (this.currentSessionId === sessionId) {
       this.currentSessionId = null

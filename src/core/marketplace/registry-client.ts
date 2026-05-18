@@ -10,6 +10,7 @@ import type {
 } from './types.js'
 import { DEFAULT_MARKETPLACE_CONFIG } from './types.js'
 import { PluginValidator } from './plugin-validator.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 const FIELD_WEIGHTS: Record<string, number> = {
   name: 10,
@@ -236,16 +237,13 @@ export class RegistryClient {
       categories[plugin.category] = (categories[plugin.category] ?? 0) + 1
     }
 
-    const topPlugins = [...all]
-      .sort((a, b) => b.downloads - a.downloads)
+    const topPlugins = sortedByDesc(all, p => p.downloads)
       .slice(0, 10)
 
-    const recentlyUpdated = [...all]
-      .sort((a, b) => b.updatedAt - a.updatedAt)
+    const recentlyUpdated = sortedByDesc(all, p => p.updatedAt)
       .slice(0, 10)
 
-    const recentlyAdded = [...all]
-      .sort((a, b) => b.createdAt - a.createdAt)
+    const recentlyAdded = sortedByDesc(all, p => p.createdAt)
       .slice(0, 10)
 
     return {
@@ -290,16 +288,13 @@ export class RegistryClient {
       return { plugin, score }
     })
 
-    scored.sort((a, b) => b.score - a.score)
-
-    return scored
+    return sortedByDesc(scored, s => s.score)
       .slice(0, limit ?? 10)
       .map((s) => s.plugin)
   }
 
   getRecentlyUpdated(limit?: number): MarketplacePlugin[] {
-    return Array.from(this.plugins.values())
-      .sort((a, b) => b.updatedAt - a.updatedAt)
+    return sortedByDesc(Array.from(this.plugins.values()), p => p.updatedAt)
       .slice(0, limit ?? 10)
   }
 

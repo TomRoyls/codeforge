@@ -1,5 +1,6 @@
 import type { RuleEnvConfig } from '../config/types.js'
 import type { RuleSeverity } from '../rules/types.js'
+import { capitalize } from '../utils/string-helpers.js'
 
 export type SeverityProfile = 'lenient' | 'moderate' | 'strict'
 
@@ -97,7 +98,7 @@ export function getProfileMeta(profile: SeverityProfile, config: RuleEnvConfig):
   return {
     description: descriptions[profile],
     errorCount,
-    name: profile.charAt(0).toUpperCase() + profile.slice(1),
+    name: capitalize(profile),
     warningCount,
   }
 }

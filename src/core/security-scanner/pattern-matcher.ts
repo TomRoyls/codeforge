@@ -1,5 +1,7 @@
 import type { SecurityRule, SecurityFinding } from './types.js'
 
+const securityRegexCache = new Map<string, RegExp>()
+
 function simpleHash(str: string): number {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -37,15 +39,21 @@ export class PatternMatcher {
   matchWithRule(rule: SecurityRule, content: string, file: string): SecurityFinding[] {
     const findings: SecurityFinding[] = []
     const lines = content.split('\n')
+    const lineStarts = this.buildLineStarts(content)
 
     for (const pattern of rule.patterns) {
-      const regex = new RegExp(pattern.regex, 'g')
+      let regex = securityRegexCache.get(pattern.regex)
+      if (!regex) {
+        regex = new RegExp(pattern.regex, 'g')
+        securityRegexCache.set(pattern.regex, regex)
+      }
+      regex.lastIndex = 0
       let match: RegExpExecArray | null
 
       while ((match = regex.exec(content)) !== null) {
         const offset = match.index
-        const line = this.getLineNumber(content, offset)
-        const column = this.getColumnNumber(content, offset)
+        const line = this.getLineNumber(lineStarts, offset)
+        const column = this.getColumnNumber(lineStarts, offset)
         const lineContent = lines[line - 1] ?? ''
         const fileHash = simpleHash(file)
 
@@ -236,24 +244,28 @@ export class PatternMatcher {
     ]
   }
 
-  private getLineNumber(content: string, offset: number): number {
-    let line = 1
-    for (let i = 0; i < offset && i < content.length; i++) {
-      if (content[i] === '\n') {
-        line++
-      }
+  private getLineNumber(_lineStarts: number[], offset: number): number {
+    let lo = 0
+    let hi = _lineStarts.length - 1
+    while (lo <= hi) {
+      const mid = (lo + hi) >>> 1
+      if (_lineStarts[mid]! <= offset) lo = mid + 1
+      else hi = mid - 1
     }
-    return line
+    return lo
   }
 
-  private getColumnNumber(content: string, offset: number): number {
-    let column = 1
-    for (let i = offset - 1; i >= 0; i--) {
-      if (content[i] === '\n') {
-        break
-      }
-      column++
+  private getColumnNumber(lineStarts: number[], offset: number): number {
+    const line = this.getLineNumber(lineStarts, offset)
+    const lineStart = lineStarts[line - 1] ?? 0
+    return offset - lineStart + 1
+  }
+
+  private buildLineStarts(content: string): number[] {
+    const starts = [0]
+    for (let i = 0; i < content.length; i++) {
+      if (content[i] === '\n') starts.push(i + 1)
     }
-    return column
+    return starts
   }
 }

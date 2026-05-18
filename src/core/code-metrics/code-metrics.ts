@@ -8,6 +8,12 @@ import type {
   MetricTotals,
   MetricAverages,
 } from './types.js'
+import { clampPercent } from '../../utils/math-helpers.js'
+
+const MI_GRADE_A = 80
+const MI_GRADE_B = 60
+const MI_GRADE_C = 40
+const MI_GRADE_D = 20
 
 export class CodeMetrics {
   analyzeFile(file: CodeFile): MetricResult {
@@ -214,14 +220,14 @@ export class CodeMetrics {
     if (lines === 0) return 100
     const volume = lines * Math.log2(Math.max(lines, 2))
     const mi = 171 - 5.2 * Math.log(Math.max(volume, 1)) - 0.23 * complexity - 16.2 * Math.log(Math.max(lines, 1)) + 50 * Math.sin(Math.sqrt(2.4 * commentRatio))
-    return Math.max(0, Math.min(100, mi))
+    return clampPercent(mi)
   }
 
   getMaintainabilityGrade(mi: number): 'A' | 'B' | 'C' | 'D' | 'F' {
-    if (mi >= 80) return 'A'
-    if (mi >= 60) return 'B'
-    if (mi >= 40) return 'C'
-    if (mi >= 20) return 'D'
+    if (mi >= MI_GRADE_A) return 'A'
+    if (mi >= MI_GRADE_B) return 'B'
+    if (mi >= MI_GRADE_C) return 'C'
+    if (mi >= MI_GRADE_D) return 'D'
     return 'F'
   }
 

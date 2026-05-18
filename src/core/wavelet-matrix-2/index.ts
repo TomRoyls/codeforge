@@ -50,7 +50,7 @@ export class WaveletMatrix2 {
 
   access(index: number): number {
     if (index < 0 || index >= this.n) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${index}, length=${this.n}`);
     }
 
     let pos = index;
@@ -85,7 +85,7 @@ export class WaveletMatrix2 {
 
   quantile(start: number, end: number, k: number): number {
     if (start < 0 || end > this.n || start >= end) {
-      throw new Error('Invalid range');
+      throw new Error(`Invalid range: start=${start}, end=${end}, n=${this.n}`);
     }
 
     if (k < 0 || k >= end - start) {
@@ -116,7 +116,7 @@ export class WaveletMatrix2 {
 
   rangeFreq(start: number, end: number, minValue: number, maxValue: number): number {
     if (start < 0 || end > this.n || start > end) {
-      throw new Error('Invalid range');
+      throw new Error(`Invalid range: start=${start}, end=${end}, n=${this.n}`);
     }
 
     if (minValue > maxValue) {

@@ -1,4 +1,5 @@
 import type { Migration, MigrationStep } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 export class MigrationStore {
   private migrations: Map<string, Migration> = new Map()
@@ -24,7 +25,7 @@ export class MigrationStore {
   }
 
   getAll(): Migration[] {
-    return Array.from(this.migrations.values()).sort((a, b) => a.version - b.version)
+    return sortedBy(Array.from(this.migrations.values()), m => m.version)
   }
 
   getPending(applied: Set<string>): Migration[] {

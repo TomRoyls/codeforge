@@ -5,6 +5,7 @@ import type {
   VersionMismatch,
   WorkspacePackage,
 } from './types.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 export interface RawPackageVersions {
   dependencies?: Record<string, string>
@@ -251,7 +252,7 @@ export class DependencyGraphBuilder {
       }
     }
 
-    return hubs.sort((a, b) => b.dependents - a.dependents)
+    return sortedByDesc(hubs, h => h.dependents)
   }
 
   detectVersionMismatches(

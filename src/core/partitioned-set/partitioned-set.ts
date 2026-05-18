@@ -114,7 +114,7 @@ export class PartitionedSet<T = unknown> {
       }
       rootMap.get(root)!.push(el)
     })
-    return Array.from(rootMap.values())
+    return [...rootMap.values()]
   }
 
   getPartitionSize(element: T): number {

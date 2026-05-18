@@ -309,10 +309,10 @@ export class BTree<T> {
     const rightChild = node.children[idx + 1]!;
 
     leftChild.keys.push(node.keys[idx]!);
-    leftChild.keys = leftChild.keys.concat(rightChild.keys);
+    leftChild.keys = [...leftChild.keys, ...rightChild.keys];
 
     if (!leftChild.leaf) {
-      leftChild.children = leftChild.children.concat(rightChild.children);
+      leftChild.children = [...leftChild.children, ...rightChild.children];
     }
 
     node.keys.splice(idx, 1);

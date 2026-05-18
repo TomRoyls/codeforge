@@ -1,6 +1,7 @@
 import type { ParallelConfig, BatchResult, WorkerPoolStats, ParallelExecutionOptions } from './types.js'
 import { DEFAULT_PARALLEL_CONFIG } from './types.js'
 import { TaskQueue } from './task-queue.js'
+import { chunk } from '../../utils/array-helpers.js'
 
 export class ParallelExecutor {
   private queue: TaskQueue
@@ -32,10 +33,7 @@ export class ParallelExecutor {
     const stats = this.queue.getStats()
     const batchSize = this.getBatchSize()
 
-    const batches: string[][] = []
-    for (let i = 0; i < filePaths.length; i += batchSize) {
-      batches.push(filePaths.slice(i, i + batchSize))
-    }
+    const batches = chunk(filePaths, batchSize)
 
     const batchResults: BatchResult<unknown>[] = []
     for (const batch of batches) {
@@ -51,15 +49,29 @@ export class ParallelExecutor {
         retries: 0,
       }))
 
-      const durations = results.map(r => r.duration)
+      let avgDur = 0
+      let minDur = 0
+      let maxDur = 0
+      if (results.length > 0) {
+        let durSum = results[0]!.duration
+        minDur = durSum
+        maxDur = durSum
+        for (let i = 1; i < results.length; i++) {
+          const d = results[i]!.duration
+          durSum += d
+          if (d < minDur) minDur = d
+          if (d > maxDur) maxDur = d
+        }
+        avgDur = durSum / results.length
+      }
       batchResults.push({
         results,
         totalDuration: batchDuration,
         successCount: results.length,
         failureCount: 0,
-        averageDuration: durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0,
-        minDuration: durations.length > 0 ? Math.min(...durations) : 0,
-        maxDuration: durations.length > 0 ? Math.max(...durations) : 0,
+        averageDuration: avgDur,
+        minDuration: minDur,
+        maxDuration: maxDur,
         throughput: batchDuration > 0 ? (results.length / batchDuration) * 1000 : 0,
       })
     }

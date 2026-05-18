@@ -1,4 +1,5 @@
 import type { ReviewResult, ReviewComment, GitHubComment } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 const SEVERITY_ICONS: Record<string, string> = {
   blocker: '🚫',
@@ -140,9 +141,7 @@ export class ReviewFormatter {
     const commentMap = new Map<number, ReviewComment[]>()
 
     for (const comment of comments) {
-      const existing = commentMap.get(comment.line) ?? []
-      existing.push(comment)
-      commentMap.set(comment.line, existing)
+      append(commentMap, comment.line, comment)
     }
 
     const output: string[] = []

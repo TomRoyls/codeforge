@@ -11,6 +11,7 @@ import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { getProfileConfig, type SeverityProfile } from '../profiles/index.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
+import { findClosestMatches } from '../utils/string-similarity.js'
 import {
   detectExistingConfig as detectExistingConfigHelper,
   displayConfigSummary,
@@ -269,7 +270,15 @@ export default class Init extends Command {
         )
 
         if (invalid.length > 0) {
+          const allRuleIds = rules.map((r) => r.id)
+          const suggestions = invalid.flatMap((inv) =>
+            findClosestMatches(inv, allRuleIds, { limit: 1, minScore: 0.5 })
+              .map((s) => `${inv} → ${s.candidate}`),
+          )
           this.log(chalk.yellow(`Unknown rules ignored: ${invalid.join(', ')}`))
+          if (suggestions.length > 0) {
+            this.log(chalk.gray(`Did you mean: ${suggestions.join(', ')}?`))
+          }
         }
 
         resolve(valid)

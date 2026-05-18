@@ -19,7 +19,7 @@ export class SleepSort2 {
 
     for (let i = 0; i < this.array.length; i++) {
       const value = this.array[i]!;
-      const bucket = this.buckets.get(value) || [];
+      const bucket = this.buckets.get(value) ?? [];
       bucket.push(value);
       this.buckets.set(value, bucket);
     }
@@ -36,7 +36,7 @@ export class SleepSort2 {
 
     for (let i = 0; i < arr.length; i++) {
       const value = arr[i]!;
-      const bucket = buckets.get(value) || [];
+      const bucket = buckets.get(value) ?? [];
       bucket.push(value);
       buckets.set(value, bucket);
     }
@@ -65,7 +65,7 @@ export class SleepSort2 {
 
     for (let i = 0; i < arr.length; i++) {
       const value = arr[i]!;
-      const bucket = buckets.get(value) || [];
+      const bucket = buckets.get(value) ?? [];
       bucket.push(value);
       buckets.set(value, bucket);
     }

@@ -11,7 +11,7 @@ export class Bitmap3 {
 
   private getWordIndex(bitIndex: number): number {
     if (bitIndex < 0 || bitIndex >= this.size) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${bitIndex}, size=${this.size}`);
     }
     return Math.floor(bitIndex / 32);
   }

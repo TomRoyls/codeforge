@@ -41,46 +41,52 @@ export class JUnitReporter implements Reporter {
     const testName = escapeXml(`${violation.ruleId}: ${violation.message}`)
     const location = `${filepath}:${violation.line}:${violation.column}`
 
-    let xml = '    <testcase\n'
-    xml += `      name="${testName}"\n`
-    xml += `      classname="${className}"\n`
-    xml += `    >\n`
+    const parts: string[] = [
+      '    <testcase\n',
+      `      name="${testName}"\n`,
+      `      classname="${className}"\n`,
+      '    >\n',
+    ]
 
     if (violation.severity === 'error') {
-      xml += '      <error\n'
-      xml += `        message="${escapeXml(violation.message)}"\n`
-      xml += `        type="${violation.ruleId}"\n`
-      xml += `      >\n`
-      xml += `        Location: ${escapeXml(location)}\n`
+      parts.push(
+        '      <error\n',
+        `        message="${escapeXml(violation.message)}"\n`,
+        `        type="${violation.ruleId}"\n`,
+        '      >\n',
+        `        Location: ${escapeXml(location)}\n`,
+      )
       if (violation.source) {
-        xml += `        Source:\n${escapeXml(violation.source)}\n`
+        parts.push(`        Source:\n${escapeXml(violation.source)}\n`)
       }
 
       if (violation.suggestion) {
-        xml += `        Suggestion: ${escapeXml(violation.suggestion)}\n`
+        parts.push(`        Suggestion: ${escapeXml(violation.suggestion)}\n`)
       }
 
-      xml += '      </error>\n'
+      parts.push('      </error>\n')
     } else {
       // warning and info are treated as failures in JUnit
-      xml += '      <failure\n'
-      xml += `        message="${escapeXml(violation.message)}"\n`
-      xml += `        type="${violation.severity}"\n`
-      xml += `      >\n`
-      xml += `        Location: ${escapeXml(location)}\n`
+      parts.push(
+        '      <failure\n',
+        `        message="${escapeXml(violation.message)}"\n`,
+        `        type="${violation.severity}"\n`,
+        '      >\n',
+        `        Location: ${escapeXml(location)}\n`,
+      )
       if (violation.source) {
-        xml += `        Source:\n${escapeXml(violation.source)}\n`
+        parts.push(`        Source:\n${escapeXml(violation.source)}\n`)
       }
 
       if (violation.suggestion) {
-        xml += `        Suggestion: ${escapeXml(violation.suggestion)}\n`
+        parts.push(`        Suggestion: ${escapeXml(violation.suggestion)}\n`)
       }
 
-      xml += '      </failure>\n'
+      parts.push('      </failure>\n')
     }
 
-    xml += '    </testcase>\n'
-    return xml
+    parts.push('    </testcase>\n')
+    return parts.join('')
   }
 
   private generateTestSuite(file: FileAnalysisResult): string {
@@ -91,41 +97,45 @@ export class JUnitReporter implements Reporter {
     const totalViolations = file.violations.length
     const timeInSeconds = (file.stats.totalTime / 1000).toFixed(3)
 
-    let xml = '  <testsuite\n'
-    xml += `    name="${escapeXml(file.filePath)}"\n`
-    xml += `    tests="${totalViolations}"\n`
-    xml += `    failures="${warningCount + infoCount}"\n`
-    xml += `    errors="${errorCount}"\n`
-    xml += `    time="${timeInSeconds}"\n`
-    xml += `    timestamp="${this.formatTimestamp()}"\n`
-    xml += '  >\n'
+    const parts: string[] = [
+      '  <testsuite\n',
+      `    name="${escapeXml(file.filePath)}"\n`,
+      `    tests="${totalViolations}"\n`,
+      `    failures="${warningCount + infoCount}"\n`,
+      `    errors="${errorCount}"\n`,
+      `    time="${timeInSeconds}"\n`,
+      `    timestamp="${this.formatTimestamp()}"\n`,
+      '  >\n',
+    ]
 
     for (const violation of file.violations) {
-      xml += this.generateTestCase(violation, file.filePath)
+      parts.push(this.generateTestCase(violation, file.filePath))
     }
 
-    xml += '  </testsuite>\n'
-    return xml
+    parts.push('  </testsuite>\n')
+    return parts.join('')
   }
 
   private generateXML(results: AnalysisResult): string {
     const { summary } = results
     const totalTests = summary.errorCount + summary.warningCount + summary.infoCount
 
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
-    xml += '<testsuites\n'
-    xml += `  name="CodeForge Analysis"\n`
-    xml += `  tests="${totalTests}"\n`
-    xml += `  failures="${summary.warningCount + summary.infoCount}"\n`
-    xml += `  errors="${summary.errorCount}"\n`
-    xml += `  time="${formatTimeSeconds(summary.totalTime)}"\n`
-    xml += '>\n'
+    const parts: string[] = [
+      '<?xml version="1.0" encoding="UTF-8"?>\n',
+      '<testsuites\n',
+      `  name="CodeForge Analysis"\n`,
+      `  tests="${totalTests}"\n`,
+      `  failures="${summary.warningCount + summary.infoCount}"\n`,
+      `  errors="${summary.errorCount}"\n`,
+      `  time="${formatTimeSeconds(summary.totalTime)}"\n`,
+      '>\n',
+    ]
 
     for (const file of results.files) {
-      xml += this.generateTestSuite(file)
+      parts.push(this.generateTestSuite(file))
     }
 
-    xml += '</testsuites>'
-    return xml
+    parts.push('</testsuites>')
+    return parts.join('')
   }
 }

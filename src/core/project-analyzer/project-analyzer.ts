@@ -4,6 +4,13 @@ import type { ComplexityMetrics } from './types.js'
 import type { DependencyMetrics } from './types.js'
 import type { ProjectHealth, HealthIssue } from './types.js'
 import type { AnalysisResult } from './types.js'
+import { clampPercent, roundTo } from '../../utils/math-helpers.js'
+import { sortedBy, sortedByDesc } from '../../utils/array-helpers.js'
+
+const GRADE_A_THRESHOLD = 90
+const GRADE_B_THRESHOLD = 75
+const GRADE_C_THRESHOLD = 60
+const GRADE_D_THRESHOLD = 40
 
 export class ProjectAnalyzer {
   analyze(files: FileInfo[]): AnalysisResult {
@@ -189,7 +196,7 @@ export class ProjectAnalyzer {
       })
     }
 
-    score = Math.max(0, Math.min(100, score))
+    score = clampPercent(score)
 
     const health: ProjectHealth = {
       score,
@@ -234,11 +241,11 @@ export class ProjectAnalyzer {
   }
 
   getLargestFiles(files: FileInfo[], n: number): FileInfo[] {
-    return [...files].sort((a, b) => b.size - a.size).slice(0, n)
+    return sortedByDesc(files, f => f.size).slice(0, n)
   }
 
   getSmallestFiles(files: FileInfo[], n: number): FileInfo[] {
-    return [...files].sort((a, b) => a.size - b.size).slice(0, n)
+    return sortedBy(files, f => f.size).slice(0, n)
   }
 
   getMostComplexFiles(files: FileInfo[], n: number): FileInfo[] {
@@ -298,14 +305,14 @@ export class ProjectAnalyzer {
       100 /
       171
 
-    return Math.max(0, Math.min(100, Math.round(raw * 100) / 100))
+    return clampPercent(roundTo(raw, 2))
   }
 
   getGrade(score: number): 'A' | 'B' | 'C' | 'D' | 'F' {
-    if (score >= 90) return 'A'
-    if (score >= 75) return 'B'
-    if (score >= 60) return 'C'
-    if (score >= 40) return 'D'
+    if (score >= GRADE_A_THRESHOLD) return 'A'
+    if (score >= GRADE_B_THRESHOLD) return 'B'
+    if (score >= GRADE_C_THRESHOLD) return 'C'
+    if (score >= GRADE_D_THRESHOLD) return 'D'
     return 'F'
   }
 
@@ -354,7 +361,7 @@ export class ProjectAnalyzer {
       suggestions.push('Add source files to the project')
     }
 
-    if (health.score >= 90) {
+    if (health.score >= GRADE_A_THRESHOLD) {
       suggestions.push(
         'Great code quality! Consider sharing best practices with the team',
       )

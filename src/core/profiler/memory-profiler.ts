@@ -39,7 +39,11 @@ export class MemoryProfiler {
 
   getPeakMemory(): number {
     if (this.snapshots.length === 0) return 0
-    return Math.max(...this.snapshots.map((s) => s.heapUsed))
+    let peak = this.snapshots[0]!.heapUsed
+    for (let i = 1; i < this.snapshots.length; i++) {
+      if (this.snapshots[i]!.heapUsed > peak) peak = this.snapshots[i]!.heapUsed
+    }
+    return peak
   }
 
   getAverageMemory(): number {

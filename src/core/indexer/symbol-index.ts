@@ -1,4 +1,5 @@
 import type { SymbolEntry, IndexStats } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class SymbolIndex {
   private symbols: Map<string, SymbolEntry[]> = new Map()
@@ -6,12 +7,7 @@ export class SymbolIndex {
   private lastUpdated: number = 0
 
   addSymbol(entry: SymbolEntry): void {
-    const existing = this.symbols.get(entry.name)
-    if (existing) {
-      existing.push(entry)
-    } else {
-      this.symbols.set(entry.name, [entry])
-    }
+    append(this.symbols, entry.name, entry)
 
     const fileExisting = this.fileSymbols.get(entry.filePath)
     if (fileExisting) {

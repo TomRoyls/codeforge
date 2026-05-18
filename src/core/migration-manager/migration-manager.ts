@@ -171,8 +171,10 @@ export class MigrationManager {
   status(): MigrationPlan {
     const applied = this.history.filter((r) => r.status === 'applied' && this.appliedIds.has(r.migrationId))
     const pending = this.store.getPending(this.appliedIds)
-    const appliedVersions = applied.map((r) => r.version)
-    const currentVersion = appliedVersions.length > 0 ? Math.max(...appliedVersions) : 0
+    let currentVersion = 0
+    for (let i = 0; i < applied.length; i++) {
+      if (applied[i]!.version > currentVersion) currentVersion = applied[i]!.version
+    }
     const targetVersion = pending.length > 0 ? pending[pending.length - 1]!.version : currentVersion
 
     return {

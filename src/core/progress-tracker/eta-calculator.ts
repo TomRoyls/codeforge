@@ -2,6 +2,7 @@ export interface HistoryPoint {
   timestamp: number
   value: number
 }
+import { clampPercent } from '../../utils/math-helpers.js'
 
 export class ETACalculator {
   private history: HistoryPoint[] = []
@@ -39,7 +40,7 @@ export class ETACalculator {
   calculatePercent(current: number, total: number): number {
     if (total === 0) return 0
     const raw = (current / total) * 100
-    return Math.min(Math.max(raw, 0), 100)
+    return clampPercent(raw)
   }
 
   getHistory(): HistoryPoint[] {

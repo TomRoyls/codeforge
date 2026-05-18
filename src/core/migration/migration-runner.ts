@@ -319,13 +319,13 @@ export class MigrationRunner {
       }
     }
 
-    const configCopy = JSON.parse(JSON.stringify(config)) as Record<string, unknown>
+    const configCopy = structuredClone(config) as Record<string, unknown>
     const allChanges: MigrationChange[] = []
     const allWarnings: string[] = []
     let canAutoMigrate = true
 
     for (const step of plan.steps) {
-      const result = step.migrate(JSON.parse(JSON.stringify(configCopy)) as Record<string, unknown>)
+      const result = step.migrate(structuredClone(configCopy) as Record<string, unknown>)
       allChanges.push(...result.changes)
       allWarnings.push(...result.warnings)
       if (!result.success) {
@@ -345,7 +345,7 @@ export class MigrationRunner {
   migrate(config: Record<string, unknown>, from: string, to: string): MigrationResult {
     if (!this.isMigrationNeeded(from, to)) {
       return createMigrationResult(
-        JSON.parse(JSON.stringify(config)) as Record<string, unknown>,
+        structuredClone(config) as Record<string, unknown>,
         [],
         ['No migration needed - versions are the same or target is older'],
         [],
@@ -356,7 +356,7 @@ export class MigrationRunner {
 
     if (path.length === 0) {
       return createMigrationResult(
-        JSON.parse(JSON.stringify(config)) as Record<string, unknown>,
+        structuredClone(config) as Record<string, unknown>,
         [],
         [],
         [`No migration path found from ${from} to ${to}`],
@@ -366,7 +366,7 @@ export class MigrationRunner {
     const allChanges: MigrationChange[] = []
     const allWarnings: string[] = []
     const allErrors: string[] = []
-    let currentConfig = JSON.parse(JSON.stringify(config)) as Record<string, unknown>
+    let currentConfig = structuredClone(config) as Record<string, unknown>
 
     for (const step of path) {
       const result = this.migrateStep(currentConfig, step)
@@ -380,7 +380,7 @@ export class MigrationRunner {
   }
 
   migrateStep(config: Record<string, unknown>, migration: VersionMigration): MigrationResult {
-    const configCopy = JSON.parse(JSON.stringify(config)) as Record<string, unknown>
+    const configCopy = structuredClone(config) as Record<string, unknown>
     return migration.migrate(configCopy)
   }
 

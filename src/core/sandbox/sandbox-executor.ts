@@ -6,6 +6,7 @@ import type {
 } from './types.js'
 import { PermissionManager } from './permission-manager.js'
 import { ResourceLimiter } from './resource-limiter.js'
+import { isBlank } from '../../utils/string-helpers.js'
 
 const DEFAULT_CONFIG: SandboxConfig = {
   maxExecutionTime: 5000,
@@ -185,7 +186,7 @@ export class SandboxExecutor {
   }
 
   serializeResult(value: unknown): unknown {
-    return JSON.parse(JSON.stringify(value))
+    return structuredClone(value)
   }
 
   createViolation(
@@ -284,7 +285,7 @@ export class SandboxExecutor {
   }
 
   private simulateExecution(code: string, input: unknown): unknown {
-    if (code.trim().length === 0) {
+    if (isBlank(code)) {
       return undefined
     }
 

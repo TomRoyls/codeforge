@@ -1,3 +1,5 @@
+import { increment } from '../../utils/map-helpers.js'
+
 export class TopologicalSort2 {
   private adjacency: Map<string, Set<string>>;
   private inDegree: Map<string, number>;
@@ -21,7 +23,7 @@ export class TopologicalSort2 {
     const neighbors = this.adjacency.get(from)!;
     if (!neighbors.has(to)) {
       neighbors.add(to);
-      this.inDegree.set(to, (this.inDegree.get(to) ?? 0) + 1);
+      increment(this.inDegree, to);
     }
   }
 

@@ -9,6 +9,7 @@ import type {
   TokenAnalyzerConfig,
 } from './types.js'
 import { DEFAULT_TOKEN_ANALYZER_CONFIG } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export {
   type Token,
@@ -372,7 +373,7 @@ export class TokenAnalyzer {
 
     for (const token of tokens) {
       const val = token.value
-      freq.set(val, (freq.get(val) ?? 0) + 1)
+      increment(freq, val)
       totalLength += val.length
       if (val.length > maxLen) maxLen = val.length
       if (val.length < minLen) minLen = val.length

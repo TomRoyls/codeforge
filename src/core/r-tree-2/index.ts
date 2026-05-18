@@ -30,7 +30,7 @@ export class RTree2<T> {
 
   constructor(minEntries: number = 4, maxEntries: number = 9) {
     if (minEntries < 2 || maxEntries < minEntries) {
-      throw new Error('Invalid min/max entries');
+      throw new Error(`Invalid min/max entries: minEntries=${minEntries}, maxEntries=${maxEntries}`);
     }
     this.root = null;
     this.minEntries = minEntries;

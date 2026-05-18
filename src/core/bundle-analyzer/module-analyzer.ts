@@ -1,4 +1,5 @@
 import type { ModuleInfo, TreeShakeOpportunity } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 const IMPORT_FROM_REGEX = /import\s+(?:(?:type\s+)?(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+|\w+))*\s+from\s+)?['"]([^'"]+)['"]/g
 const RE_EXPORT_FROM_REGEX = /export\s+(?:\{[^}]*\}\s+from|\*\s+from)\s+['"]([^'"]+)['"]/g
@@ -49,12 +50,7 @@ export class ModuleAnalyzer {
     const nameMap = new Map<string, string[]>()
 
     for (const mod of modules) {
-      const existing = nameMap.get(mod.name)
-      if (existing) {
-        existing.push(mod.path)
-      } else {
-        nameMap.set(mod.name, [mod.path])
-      }
+      append(nameMap, mod.name, mod.path)
     }
 
     const duplicates: string[][] = []

@@ -77,6 +77,7 @@ export class RedBlackTree4<T> {
     }
 
     this._size++;
+    this._updateAncestorSizes(parent);
     this._insertFixup(newNode);
   }
 
@@ -100,11 +101,9 @@ export class RedBlackTree4<T> {
             node = parent;
             this._leftRotate(node);
           }
-          if (node.parent !== null && grandparent !== null) {
-            node.parent.color = Color.Black;
-            grandparent.color = Color.Red;
-            this._rightRotate(grandparent);
-          }
+          node.parent!.color = Color.Black;
+          node.parent!.parent!.color = Color.Red;
+          this._rightRotate(node.parent!.parent!);
         }
       } else {
         const uncle = grandparent.left;
@@ -119,11 +118,9 @@ export class RedBlackTree4<T> {
             node = parent;
             this._rightRotate(node);
           }
-          if (node.parent !== null && grandparent !== null) {
-            node.parent.color = Color.Black;
-            grandparent.color = Color.Red;
-            this._leftRotate(grandparent);
-          }
+          node.parent!.color = Color.Black;
+          node.parent!.parent!.color = Color.Red;
+          this._leftRotate(node.parent!.parent!);
         }
       }
     }
@@ -155,10 +152,10 @@ export class RedBlackTree4<T> {
     x.parent = y;
 
     this._updateNodeSize(x);
+    this._updateNodeSize(y);
     if (y.parent !== null) {
       this._updateNodeSize(y.parent);
     }
-    this._updateNodeSize(y);
   }
 
   private _rightRotate(y: RBNode<T>): void {
@@ -176,17 +173,17 @@ export class RedBlackTree4<T> {
     } else if (y === y.parent.left) {
       y.parent.left = x;
     } else {
-      y.parent.right = y;
+      y.parent.right = x;
     }
 
     x.right = y;
     y.parent = x;
 
     this._updateNodeSize(y);
+    this._updateNodeSize(x);
     if (x.parent !== null) {
       this._updateNodeSize(x.parent);
     }
-    this._updateNodeSize(x);
   }
 
   remove(value: T): boolean {
@@ -200,11 +197,11 @@ export class RedBlackTree4<T> {
     if (node.left === null) {
       x = node.right;
       this._transplant(node, node.right);
-      this._updateAncestorSizes(xParent);
+      this._updateAncestorSizes(node.parent);
     } else if (node.right === null) {
       x = node.left;
       this._transplant(node, node.left);
-      this._updateAncestorSizes(xParent);
+      this._updateAncestorSizes(node.parent);
     } else {
       const successor = this._minimumNode(node.right)!;
       originalColor = successor.color;
@@ -218,7 +215,6 @@ export class RedBlackTree4<T> {
         if (successor.right !== null) {
           successor.right.parent = successor;
         }
-        this._updateAncestorSizes(xParent);
       }
 
       this._transplant(node, successor);
@@ -270,7 +266,9 @@ export class RedBlackTree4<T> {
     while (x !== this.root && (x === null || x.color === Color.Black)) {
       if (parent === null) break;
 
-      if (x === parent.left) {
+      const isLeft = x === parent.left;
+
+      if (isLeft) {
         let sibling = parent.right;
         if (sibling !== null && sibling.color === Color.Red) {
           sibling.color = Color.Black;

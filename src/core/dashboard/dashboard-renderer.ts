@@ -9,7 +9,9 @@ import type {
   TableData,
 } from './types.js'
 import { DEFAULT_DASHBOARD_CONFIG } from './types.js'
+import { clamp01 } from '../../utils/math-helpers.js'
 
+const GAUGE_SCALE_SEGMENTS = 8
 const SPARKLINE_CHARS = '\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588'
 
 const BAR_CHARS = {
@@ -121,14 +123,18 @@ export class DashboardRenderer {
     const { values, label } = data
     if (values.length === 0) return `${label}: `
 
-    const min = Math.min(...values)
-    const max = Math.max(...values)
+    let min = values[0]!
+    let max = values[0]!
+    for (let i = 1; i < values.length; i++) {
+      if (values[i]! < min) min = values[i]!
+      if (values[i]! > max) max = values[i]!
+    }
     const range = max - min
 
     const chars = values.map((v) => {
       if (range === 0) return SPARKLINE_CHARS[4]!
       const normalized = (v - min) / range
-      const index = Math.min(Math.floor(normalized * 8), 7)
+      const index = Math.min(Math.floor(normalized * GAUGE_SCALE_SEGMENTS), GAUGE_SCALE_SEGMENTS - 1)
       return SPARKLINE_CHARS[index]!
     })
 
@@ -138,7 +144,7 @@ export class DashboardRenderer {
   renderGauge(data: GaugeData): string {
     const { value, max, label } = data
     const ratio = max > 0 ? value / max : 0
-    const clampedRatio = Math.min(Math.max(ratio, 0), 1)
+    const clampedRatio = clamp01(ratio)
     const percentage = Math.round(clampedRatio * 100)
 
     const gaugeWidth = this.config.width - label.length - 8

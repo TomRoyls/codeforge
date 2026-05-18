@@ -9,6 +9,8 @@ import type {
 } from './types.js'
 import { DEFAULT_VALIDATOR_CONFIG } from './types.js'
 
+const schemaPatternCache = new Map<string, RegExp>()
+
 export type {
   SchemaDefinition,
   SchemaProperty,
@@ -131,8 +133,10 @@ export class SchemaValidator {
     }
 
     this.lastErrors = errors
-    this.stats.totalErrors += errors.filter(e => e.severity === 'error').length
-    this.stats.totalWarnings += errors.filter(e => e.severity === 'warning').length
+    for (const e of errors) {
+      if (e.severity === 'error') this.stats.totalErrors++
+      else if (e.severity === 'warning') this.stats.totalWarnings++
+    }
     return this.buildResult(errors)
   }
 
@@ -250,7 +254,11 @@ export class SchemaValidator {
       }
 
       if (property.pattern) {
-        const regex = new RegExp(property.pattern)
+        let regex = schemaPatternCache.get(property.pattern)
+        if (!regex) {
+          regex = new RegExp(property.pattern)
+          schemaPatternCache.set(property.pattern, regex)
+        }
         if (!regex.test(value)) {
           errors.push({
             path,
@@ -373,8 +381,12 @@ export class SchemaValidator {
   }
 
   private buildResult(errors: ValidationError[]): ValidationResult {
-    const errorCount = errors.filter(e => e.severity === 'error').length
-    const warningCount = errors.filter(e => e.severity === 'warning').length
+    let errorCount = 0
+    let warningCount = 0
+    for (const e of errors) {
+      if (e.severity === 'error') errorCount++
+      else if (e.severity === 'warning') warningCount++
+    }
     return { valid: errorCount === 0, errors, errorCount, warningCount }
   }
 

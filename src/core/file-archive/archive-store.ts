@@ -1,4 +1,5 @@
 import type { ArchivedFile } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 export class ArchiveStore {
   private store = new Map<string, Map<number, ArchivedFile>>()
@@ -36,7 +37,7 @@ export class ArchiveStore {
   getAll(path: string): ArchivedFile[] {
     const versions = this.store.get(path)
     if (!versions) return []
-    return Array.from(versions.values()).sort((a, b) => a.version - b.version)
+    return sortedBy([...versions.values()], v => v.version)
   }
 
   remove(path: string, version?: number): boolean {
@@ -60,7 +61,7 @@ export class ArchiveStore {
   getVersions(path: string): number[] {
     const versions = this.store.get(path)
     if (!versions) return []
-    return Array.from(versions.keys()).sort((a, b) => a - b)
+    return [...versions.keys()].sort((a, b) => a - b)
   }
 
   size(): number {

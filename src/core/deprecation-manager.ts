@@ -1,5 +1,6 @@
 import type { APISignature, DeprecationNotice, StabilityLevel, APIVersion, BreakingChange } from './api-types.js'
 import { parseAPIVersion } from './api-types.js'
+import { append } from '../utils/map-helpers.js'
 
 /**
  * @stable
@@ -111,9 +112,7 @@ export class DeprecationManager {
 
     const byModule = new Map<string, APISignature[]>()
     for (const sig of deprecations) {
-      const existing = byModule.get(sig.module) ?? []
-      existing.push(sig)
-      byModule.set(sig.module, existing)
+      append(byModule, sig.module, sig)
     }
 
     const lines: string[] = []

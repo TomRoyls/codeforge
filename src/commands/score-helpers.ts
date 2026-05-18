@@ -91,7 +91,7 @@ export function buildFileCategoryCounts(
   const categoryCounts: Record<string, number> = {}
   for (const violation of violationsWithPath) {
     const category = getRuleCategoryFn(violation.ruleId)
-    categoryCounts[category] = (categoryCounts[category] || 0) + 1
+    categoryCounts[category] = (categoryCounts[category] ?? 0) + 1
   }
 
   return categoryCounts

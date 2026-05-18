@@ -46,6 +46,7 @@ import {
 } from '../utils/command-helpers.js'
 import { CLIError } from '../utils/errors.js'
 import { logger, LogLevel } from '../utils/logger.js'
+import { append } from '../utils/map-helpers.js'
 import {
   compareWithBaselineReport,
   saveBaselineReport,
@@ -553,12 +554,7 @@ export default class Analyze extends Command {
 
     const violationsByFile = new Map<string, RuleViolation[]>()
     for (const violation of allViolations) {
-      const existing = violationsByFile.get(violation.filePath)
-      if (existing) {
-        existing.push(violation)
-      } else {
-        violationsByFile.set(violation.filePath, [violation])
-      }
+      append(violationsByFile, violation.filePath, violation)
     }
 
     const limit = pLimit(concurrency)
@@ -795,7 +791,8 @@ export default class Analyze extends Command {
         .split('\n')
         .map((line) => line.trim())
         .filter((line) => line && !line.startsWith('#'))
-    } catch {
+    } catch (error) {
+      logger.debug(`Failed to read ignore file ${ignorePath}: ${error instanceof Error ? error.message : String(error)}`)
       return []
     }
   }

@@ -9,7 +9,7 @@ export class WaveletTree3 {
 
   constructor(input: string) {
     this._length = input.length;
-    this.alphabet = Array.from(new Set(input.split(''))).sort();
+    this.alphabet = [...new Set(input.split(''))].sort();
     this.leftChild = null;
     this.rightChild = null;
     this.low = 0;
@@ -108,7 +108,7 @@ export class WaveletTree3 {
 
   access(index: number): string {
     if (index < 0 || index >= this._length) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${index}, length=${this._length}`);
     }
 
     if (this._length === 0) {

@@ -31,7 +31,7 @@ export class MergeHeap2<T> {
   }
 
   merge(other: MergeHeap2<T>): void {
-    this.heap = this.heap.concat(other.heap);
+    this.heap = [...this.heap, ...other.heap];
     this.heapify();
     other.clear();
   }

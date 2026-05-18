@@ -52,7 +52,7 @@ export class DecoratorAnalyzer {
       }
     }
 
-    return Array.from(usageMap.values())
+    return [...usageMap.values()]
   }
 
   getByTarget(decorators: DecoratorInfo[], target: DecoratorTarget): DecoratorInfo[] {

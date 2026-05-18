@@ -8,6 +8,7 @@ import type {
   SchemaProperty,
 } from './types.js'
 import { ConfigReader } from './config-reader.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 const DEFAULT_OPTIONS: NormalizeOptions = {
   camelCase: false,
@@ -36,7 +37,7 @@ export class ConfigNormalizer {
     const opts: NormalizeOptions = { ...DEFAULT_OPTIONS, ...options }
     const warnings: string[] = []
 
-    const sorted = [...sources].sort((a, b) => a.priority - b.priority)
+    const sorted = sortedBy(sources, s => s.priority)
     const overridden = this.resolveOverrides(sorted)
 
     let merged: ConfigObject = {}
@@ -200,7 +201,7 @@ export class ConfigNormalizer {
   ): Record<string, { from: string; to: string; key: string }> {
     const result: Record<string, { from: string; to: string; key: string }> =
       {}
-    const sorted = [...sources].sort((a, b) => a.priority - b.priority)
+    const sorted = sortedBy(sources, s => s.priority)
 
     const firstSeen: Record<string, string> = {}
     for (const source of sorted) {

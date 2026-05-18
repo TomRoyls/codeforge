@@ -8,6 +8,7 @@ import type {
   KnowledgeSilo,
 } from './types.js'
 import { DEFAULT_OWNERSHIP_CONFIG } from './types.js'
+import { unique, sortedByDesc } from '../../utils/array-helpers.js'
 
 export class OwnershipCalculator {
   private config: OwnershipConfig
@@ -120,8 +121,7 @@ export class OwnershipCalculator {
       }
     }
 
-    silos.sort((a, b) => b.ownershipPercentage - a.ownershipPercentage)
-    return silos
+    return sortedByDesc(silos, s => s.ownershipPercentage)
   }
 
   calculateOwnershipConcentration(owners: OwnerShare[]): number {
@@ -167,7 +167,7 @@ export class OwnershipCalculator {
       if (existing) {
         existing.lines += author.lines
         existing.percentage = 0
-        existing.files = [...new Set([...existing.files, ...author.files])]
+        existing.files = unique([...existing.files, ...author.files])
         if (author.lastCommitDate > existing.lastCommitDate) {
           existing.lastCommitDate = author.lastCommitDate
         }
@@ -263,8 +263,7 @@ export class OwnershipCalculator {
       })
     }
 
-    summaries.sort((a, b) => b.totalLines - a.totalLines)
-    return summaries
+    return sortedByDesc(summaries, s => s.totalLines)
   }
 
   private assessSiloRisk(

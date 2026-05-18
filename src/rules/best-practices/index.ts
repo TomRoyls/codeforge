@@ -1,5 +1,6 @@
 export { analyzeExplicitReturnType, explicitReturnTypeRule } from './explicit-return-type.js'
 export { noConsoleRule } from './no-console.js'
+export { noNestedTemplateLiteralsRule } from './no-nested-template-literals.js'
 export { noDynamicDeleteRule } from './no-dynamic-delete.js'
 export { analyzeNoImplicitCoercion, noImplicitCoercionRule } from './no-implicit-coercion.js'
 export { analyzeNoMagicNumbers, noMagicNumbersRule } from './no-magic-numbers.js'

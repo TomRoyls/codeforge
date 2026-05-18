@@ -31,10 +31,8 @@ export class GraphKruskal {
   edges(): [number, number, number][] {
     const edgeSet = new Set<string>();
     const edges: [number, number, number][] = [];
-    const adjacencyListEntries = Array.from(this.adjacencyList.entries());
-    for (const [from, neighbors] of adjacencyListEntries) {
-      const neighborsEntries = Array.from(neighbors.entries());
-      for (const [to, weight] of neighborsEntries) {
+    for (const [from, neighbors] of this.adjacencyList) {
+      for (const [to, weight] of neighbors) {
         const key = `${Math.min(from, to)}-${Math.max(from, to)}`;
         if (!edgeSet.has(key)) {
           edgeSet.add(key);
@@ -110,7 +108,7 @@ export class GraphKruskal {
       const current = stack.pop()!;
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        const neighborKeys = Array.from(neighbors.keys());
+        const neighborKeys = [...neighbors.keys()];
         for (const neighbor of neighborKeys) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
@@ -144,7 +142,7 @@ export class GraphKruskal {
           component.push(current);
           const neighbors = this.adjacencyList.get(current);
           if (neighbors) {
-            const neighborKeys = Array.from(neighbors.keys());
+            const neighborKeys = [...neighbors.keys()];
             for (const neighbor of neighborKeys) {
               if (!visited.has(neighbor)) {
                 visited.add(neighbor);

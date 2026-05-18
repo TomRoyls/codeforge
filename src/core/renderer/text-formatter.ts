@@ -1,4 +1,5 @@
 import type { TextStyle } from './types.js'
+import { stripAnsi } from '../../utils/string-helpers.js'
 
 const ESC = '\x1b['
 
@@ -51,7 +52,7 @@ export class TextFormatter {
   }
 
   stripColors(text: string): string {
-    return text.replace(/\x1b\[[0-9;]*m/g, '')
+    return stripAnsi(text)
   }
 
   wordWrap(text: string, maxWidth: number): string {

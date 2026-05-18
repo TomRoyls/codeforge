@@ -26,7 +26,7 @@ export class SkipList<T> {
 
     const next = current.forward[0] ?? null
 
-    if (next !== null && next.key === key) {
+    if (next != null && next.key === key) {
       next.value = value
       return
     }
@@ -61,7 +61,7 @@ export class SkipList<T> {
     }
 
     const found = current.forward[0] ?? null
-    if (found !== null && found.key === key) {
+    if (found != null && found.key === key) {
       return found.value
     }
     return undefined
@@ -70,12 +70,12 @@ export class SkipList<T> {
   has(key: number): boolean {
     let current: SkipNode<T> = this.header
     for (let i = this.level - 1; i >= 0; i--) {
-      while (current.forward[i] !== null && current.forward[i]!.key < key) {
+      while (current.forward[i] != null && current.forward[i]!.key < key) {
         current = current.forward[i]!
       }
     }
     const found = current.forward[0] ?? null
-    return found !== null && found.key === key
+    return found != null && found.key === key
   }
 
   delete(key: number): boolean {
@@ -126,7 +126,7 @@ export class SkipList<T> {
 
   min(): [number, T] | undefined {
     const first = this.header.forward[0] ?? null
-    return first !== null ? [first.key, first.value] : undefined
+    return first != null ? [first.key, first.value] : undefined
   }
 
   max(): [number, T] | undefined {
@@ -142,7 +142,7 @@ export class SkipList<T> {
 
   forEach(callback: (value: T, key: number) => void): void {
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       callback(current.value, current.key)
       current = current.forward[0] ?? null
     }
@@ -151,7 +151,7 @@ export class SkipList<T> {
   keys(): number[] {
     const result: number[] = []
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       result.push(current.key)
       current = current.forward[0] ?? null
     }
@@ -161,7 +161,7 @@ export class SkipList<T> {
   values(): T[] {
     const result: T[] = []
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       result.push(current.value)
       current = current.forward[0] ?? null
     }
@@ -171,7 +171,7 @@ export class SkipList<T> {
   entries(): [number, T][] {
     const result: [number, T][] = []
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       result.push([current.key, current.value])
       current = current.forward[0] ?? null
     }
@@ -181,7 +181,7 @@ export class SkipList<T> {
   clone(): SkipList<T> {
     const result = new SkipList<T>(this.maxLevel, this.probability)
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       result.insert(current.key, current.value)
       current = current.forward[0] ?? null
     }
@@ -190,7 +190,7 @@ export class SkipList<T> {
 
   *[Symbol.iterator](): Iterator<[number, T]> {
     let current = this.header.forward[0] ?? null
-    while (current !== null) {
+    while (current != null) {
       yield [current.key, current.value]
       current = current.forward[0] ?? null
     }
@@ -206,7 +206,7 @@ export class SkipList<T> {
     }
 
     const found = current.forward[0] ?? null
-    if (found !== null) {
+    if (found != null) {
       return [found.key, found.value]
     }
     return undefined
@@ -222,7 +222,7 @@ export class SkipList<T> {
     }
 
     const found = current.forward[0] ?? null
-    if (found !== null) {
+    if (found != null) {
       return [found.key, found.value]
     }
     return undefined
@@ -239,7 +239,7 @@ export class SkipList<T> {
     }
 
     let node = current.forward[0] ?? null
-    while (node !== null && node.key <= end) {
+    while (node != null && node.key <= end) {
       result.push([node.key, node.value])
       node = node.forward[0] ?? null
     }

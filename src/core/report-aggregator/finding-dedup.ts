@@ -1,4 +1,5 @@
 import type { AnalysisFinding } from './types.js'
+import { groupBy } from '../../utils/array-helpers.js'
 
 const SEVERITY_RANK: Record<string, number> = {
   error: 3,
@@ -39,13 +40,7 @@ export class FindingDeduplicator {
   }
 
   findDuplicates(findings: AnalysisFinding[]): Map<string, AnalysisFinding[]> {
-    const groups = new Map<string, AnalysisFinding[]>()
-    for (const finding of findings) {
-      const key = this.keyFn(finding)
-      const group = groups.get(key) ?? []
-      group.push(finding)
-      groups.set(key, group)
-    }
+    const groups = groupBy(findings, (f) => this.keyFn(f))
 
     const duplicates = new Map<string, AnalysisFinding[]>()
     for (const [key, group] of groups) {

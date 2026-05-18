@@ -116,11 +116,16 @@ export class MetricAggregator {
 
   private computeSummary(name: string, bucket: MetricBucket): MetricSummary {
     const samples = bucket.samples
-    const values = samples.map((s) => s.value)
-    const count = values.length
-    const sum = values.reduce((a, b) => a + b, 0)
-    const min = Math.min(...values)
-    const max = Math.max(...values)
+    const count = samples.length
+    let sum = 0
+    let min = samples[0]!.value
+    let max = samples[0]!.value
+    for (let i = 0; i < count; i++) {
+      const v = samples[i]!.value
+      sum += v
+      if (v < min) min = v
+      if (v > max) max = v
+    }
     const avg = count > 0 ? sum / count : 0
     const lastValue = values[count - 1]!
     const metricType: MetricType | undefined = samples[0]?.type

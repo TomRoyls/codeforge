@@ -4,6 +4,7 @@ import type {
   GraphMetrics,
   TopologicalOrder,
 } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class GraphAnalyzer {
   private graph: DependencyGraph
@@ -81,7 +82,7 @@ export class GraphAnalyzer {
       inDegree.set(id, 0)
     }
     for (const edge of this.graph.edges) {
-      inDegree.set(edge.to, (inDegree.get(edge.to) ?? 0) + 1)
+      increment(inDegree, edge.to)
     }
 
     const queue: string[] = []
@@ -143,8 +144,8 @@ export class GraphAnalyzer {
       outDegrees.set(id, 0)
     }
     for (const edge of this.graph.edges) {
-      inDegrees.set(edge.to, (inDegrees.get(edge.to) ?? 0) + 1)
-      outDegrees.set(edge.from, (outDegrees.get(edge.from) ?? 0) + 1)
+      increment(inDegrees, edge.to)
+      increment(outDegrees, edge.from)
     }
 
     let maxInDeg = { node: '', degree: 0 }

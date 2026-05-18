@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises'
 import type { HashAlgorithm, HashComparison, DeduplicationResult, IntegrityCheck } from './types.js'
 import { HashComputer } from './hash-computer.js'
 import { HashStore } from './hash-store.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class HashUtil {
   private computer: HashComputer
@@ -48,12 +49,7 @@ export class HashUtil {
       const existingKey = hashToKey.get(contentHash)
 
       if (existingKey !== undefined) {
-        const existing = duplicates.get(existingKey)
-        if (existing) {
-          existing.push(key)
-        } else {
-          duplicates.set(existingKey, [key])
-        }
+        append(duplicates, existingKey, key)
         savedBytes += content.length
       } else {
         hashToKey.set(contentHash, key)

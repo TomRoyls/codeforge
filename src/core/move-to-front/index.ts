@@ -1,4 +1,5 @@
 import type { ListNode } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class MoveToFront<T> {
   private head: ListNode<T> | null = null
@@ -57,7 +58,7 @@ export class MoveToFront<T> {
       current = current.next
     }
     this.moveToHead(node)
-    this.frequencies.set(item, (this.frequencies.get(item) ?? 0) + 1)
+    increment(this.frequencies, item)
     return pos
   }
 
@@ -70,7 +71,7 @@ export class MoveToFront<T> {
       current = current.next!
     }
     this.moveToHead(current)
-    this.frequencies.set(current.value, (this.frequencies.get(current.value) ?? 0) + 1)
+    increment(this.frequencies, current.value)
     return current.value
   }
 
@@ -108,7 +109,7 @@ export class MoveToFront<T> {
   add(item: T): void {
     if (this.nodeMap.has(item)) {
       this.moveToHead(this.nodeMap.get(item)!)
-      this.frequencies.set(item, (this.frequencies.get(item) ?? 0) + 1)
+      increment(this.frequencies, item)
       return
     }
     const node: ListNode<T> = { value: item, prev: null, next: this.head }
@@ -117,7 +118,7 @@ export class MoveToFront<T> {
     if (!this.tail) this.tail = node
     this.nodeMap.set(item, node)
     this._size++
-    this.frequencies.set(item, (this.frequencies.get(item) ?? 0) + 1)
+    increment(this.frequencies, item)
   }
 
   size(): number {

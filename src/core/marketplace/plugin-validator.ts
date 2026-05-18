@@ -6,6 +6,10 @@ import type {
 const NAME_REGEX = /^(@[a-z0-9][a-z0-9-]*[a-z0-9]\/)?[a-z0-9]([a-z0-9-]*[a-z0-9])?$/
 const SEMVER_REGEX = /^\d+\.\d+\.\d+(-[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)?(\+[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)?$/
 
+const MIN_PLUGIN_NAME_LENGTH = 2
+const MAX_PLUGIN_NAME_LENGTH = 100
+const MIN_DESCRIPTION_LENGTH = 20
+
 export class PluginValidator {
   validate(plugin: Partial<MarketplacePlugin>): PluginValidationResult {
     const errors: string[] = []
@@ -35,7 +39,7 @@ export class PluginValidator {
   }
 
   validateName(name: string): boolean {
-    if (name.length < 2 || name.length > 100) return false
+    if (name.length < MIN_PLUGIN_NAME_LENGTH || name.length > MAX_PLUGIN_NAME_LENGTH) return false
     return NAME_REGEX.test(name)
   }
 
@@ -69,8 +73,8 @@ export class PluginValidator {
   checkCommonIssues(plugin: Partial<MarketplacePlugin>): string[] {
     const issues: string[] = []
 
-    if (plugin.description !== undefined && plugin.description.length < 20) {
-      issues.push('Description is too short (less than 20 characters)')
+    if (plugin.description !== undefined && plugin.description.length < MIN_DESCRIPTION_LENGTH) {
+      issues.push(`Description is too short (less than ${MIN_DESCRIPTION_LENGTH} characters)`)
     }
 
     if (plugin.tags !== undefined && plugin.tags.length === 0) {

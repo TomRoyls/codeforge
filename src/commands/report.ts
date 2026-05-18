@@ -254,15 +254,28 @@ export default class Report extends Command {
     const allViolations = validResults.flatMap((r) => r.violations)
     const duration = performance.now() - startTime
 
+    let errorCount = 0
+    let warningCount = 0
+    let infoCount = 0
+    for (const v of allViolations) {
+      if (v.severity === 'error') errorCount++
+      else if (v.severity === 'warning') warningCount++
+      else if (v.severity === 'info') infoCount++
+    }
+    let filesWithViolations = 0
+    for (const r of validResults) {
+      if (r.violations.length > 0) filesWithViolations++
+    }
+
     return {
       files: validResults,
       summary: {
-        errorCount: allViolations.filter((v) => v.severity === 'error').length,
-        filesWithViolations: validResults.filter((r) => r.violations.length > 0).length,
-        infoCount: allViolations.filter((v) => v.severity === 'info').length,
+        errorCount,
+        filesWithViolations,
+        infoCount,
         totalFiles: validResults.length,
         totalTime: duration,
-        warningCount: allViolations.filter((v) => v.severity === 'warning').length,
+        warningCount,
       },
       timestamp: new Date().toISOString(),
       version: this.config.version,

@@ -183,7 +183,7 @@ export class WaveletMatrix {
         zeroCount: zeros.length,
       })
 
-      current = zeros.concat(ones)
+      current = [...zeros, ...ones]
     }
   }
 

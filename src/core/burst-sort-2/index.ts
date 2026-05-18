@@ -46,7 +46,7 @@ export class BurstSort2<T> {
       buckets.get(key)!.push(item)
     }
 
-    const sortedKeys = Array.from(buckets.keys()).sort()
+    const sortedKeys = [...buckets.keys()].sort()
     let pos = 0
     for (const key of sortedKeys) {
       const bucket = buckets.get(key)!
@@ -118,7 +118,7 @@ export class BurstSort2<T> {
       }
 
       let pos = 0
-      const sortedKeys = Array.from(buckets.keys()).sort((a, b) => a - b)
+      const sortedKeys = [...buckets.keys()].sort((a, b) => a - b)
       if (isNegative) {
         for (let i = sortedKeys.length - 1; i >= 0; i--) {
           const bucket = buckets.get(sortedKeys[i]!)!

@@ -1,5 +1,6 @@
 import type { DataFlowGraph, TaintPath, SecurityVulnerability, DataFlowAnalysisResult, FlowNode } from './types.js'
 import { TAINT_SINKS } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class TaintAnalyzer {
   analyzeGraph(graph: DataFlowGraph): SecurityVulnerability[] {
@@ -43,10 +44,16 @@ export class TaintAnalyzer {
       allVulnerabilities.push(...vulns)
     }
 
-    const criticalCount = allVulnerabilities.filter((v) => v.severity === 'critical').length
-    const highCount = allVulnerabilities.filter((v) => v.severity === 'high').length
-    const mediumCount = allVulnerabilities.filter((v) => v.severity === 'medium').length
-    const lowCount = allVulnerabilities.filter((v) => v.severity === 'low').length
+    const severityCounts = allVulnerabilities.reduce(
+      (acc, v) => {
+        if (v.severity === 'critical') acc.critical++
+        else if (v.severity === 'high') acc.high++
+        else if (v.severity === 'medium') acc.medium++
+        else if (v.severity === 'low') acc.low++
+        return acc
+      },
+      { critical: 0, high: 0, low: 0, medium: 0 },
+    )
 
     return {
       vulnerabilities: allVulnerabilities,
@@ -55,10 +62,10 @@ export class TaintAnalyzer {
         totalSources,
         totalSinks,
         totalVulnerabilities: allVulnerabilities.length,
-        criticalCount,
-        highCount,
-        mediumCount,
-        lowCount,
+        criticalCount: severityCounts.critical,
+        highCount: severityCounts.high,
+        mediumCount: severityCounts.medium,
+        lowCount: severityCounts.low,
       },
     }
   }
@@ -211,9 +218,7 @@ export class TaintAnalyzer {
     const adjacency = new Map<string, { toId: string; edge: import('./types.js').FlowEdge }[]>()
 
     for (const edge of graph.edges) {
-      const existing = adjacency.get(edge.from) ?? []
-      existing.push({ toId: edge.to, edge })
-      adjacency.set(edge.from, existing)
+      append(adjacency, edge.from, { toId: edge.to, edge })
     }
 
     return adjacency

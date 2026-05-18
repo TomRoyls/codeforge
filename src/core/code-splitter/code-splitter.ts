@@ -1,6 +1,9 @@
 import { ChunkStrategy } from './chunk-strategy.js'
 import { DEFAULT_SPLIT_OPTIONS } from './types.js'
 import type { CodeChunk, SplitOptions, SplitResult, ChunkType } from './types.js'
+import { countLines } from '../../utils/string-helpers.js'
+import { roundTo } from '../../utils/math-helpers.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 let chunkCounter = 0
 
@@ -76,7 +79,7 @@ export class CodeSplitter {
       chunks,
       totalLines: lines.length,
       totalChunks: chunks.length,
-      avgChunkSize: Math.round(avgChunkSize * 100) / 100,
+      avgChunkSize: roundTo(avgChunkSize, 2),
       language: mergedOptions.language,
       source,
     }
@@ -123,13 +126,13 @@ export class CodeSplitter {
     let match: RegExpExecArray | null
     functionRegex.lastIndex = 0
     while ((match = functionRegex.exec(source)) !== null) {
-      const lineNum = source.substring(0, match.index).split('\n').length
+      const lineNum = countLines(source.substring(0, match.index))
       boundaries.push({ start: lineNum, name: match[2]! })
     }
 
     arrowRegex.lastIndex = 0
     while ((match = arrowRegex.exec(source)) !== null) {
-      const lineNum = source.substring(0, match.index).split('\n').length
+      const lineNum = countLines(source.substring(0, match.index))
       boundaries.push({ start: lineNum, name: match[2]! })
     }
 
@@ -190,7 +193,7 @@ export class CodeSplitter {
 
     let match: RegExpExecArray | null
     while ((match = classRegex.exec(source)) !== null) {
-      const lineNum = source.substring(0, match.index).split('\n').length
+      const lineNum = countLines(source.substring(0, match.index))
       boundaries.push({ start: lineNum, name: match[2]! })
     }
 
@@ -324,7 +327,7 @@ export class CodeSplitter {
     for (const para of paragraphs) {
       const trimmed = para.trim()
       if (trimmed.length === 0) {
-        const newlineCount = para.split('\n').length
+        const newlineCount = countLines(para)
         currentLine += newlineCount
         currentChar += para.length + 2
         continue
@@ -358,7 +361,7 @@ export class CodeSplitter {
   }
 
   reconstruct(chunks: CodeChunk[]): string {
-    const sorted = [...chunks].sort((a, b) => a.startLine - b.startLine)
+    const sorted = sortedBy(chunks, c => c.startLine)
     const lines: string[] = []
     let lastLine = 0
 
@@ -542,7 +545,7 @@ export class CodeSplitter {
 
     for (let i = 1; i < chunks.length; i++) {
       const next = chunks[i]!
-      const currentLines = current.content.split('\n').length
+      const currentLines = countLines(current.content)
 
       if (currentLines < minSize) {
         current.content = current.content + '\n' + next.content

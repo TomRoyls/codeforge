@@ -2,6 +2,20 @@ import type { Change, ChangeSet, EffortEstimate, RiskAssessment, RiskFactor, Tes
 import { ImpactType } from './types.js';
 import type { ImpactGraph } from './types.js';
 import type { RiskLevel } from './types.js';
+import { unique } from '../../utils/array-helpers.js';
+
+// ─── Risk Score Thresholds ───
+const LARGE_CHANGE_LINE_THRESHOLD = 200
+const MEDIUM_CHANGE_LINE_THRESHOLD = 50
+const SMALL_CHANGE_LINE_THRESHOLD = 10
+const HIGH_RISK_SCORE_THRESHOLD = 70
+const MEDIUM_RISK_SCORE_THRESHOLD = 40
+const LOW_RISK_SCORE_THRESHOLD = 20
+const MANY_AFFECTED_AREAS_THRESHOLD = 3
+const CRITICAL_CLASSIFY_THRESHOLD = 60
+const HIGH_CLASSIFY_THRESHOLD = 40
+const MEDIUM_CLASSIFY_THRESHOLD = 25
+const LOW_CLASSIFY_THRESHOLD = 10
 
 const CORE_MODULE_PATTERNS = [
   'src/core/',
@@ -80,11 +94,11 @@ export class RiskAssessor {
 
     for (const change of changeSet.changes) {
       const totalLines = change.additions + change.deletions;
-      if (totalLines > 200) {
+      if (totalLines > LARGE_CHANGE_LINE_THRESHOLD) {
         score += 15;
-      } else if (totalLines > 50) {
+      } else if (totalLines > MEDIUM_CHANGE_LINE_THRESHOLD) {
         score += 8;
-      } else if (totalLines > 10) {
+      } else if (totalLines > SMALL_CHANGE_LINE_THRESHOLD) {
         score += 3;
       }
 
@@ -144,7 +158,7 @@ export class RiskAssessor {
       }
 
       const totalLines = change.additions + change.deletions;
-      if (totalLines > 200) {
+      if (totalLines > LARGE_CHANGE_LINE_THRESHOLD) {
         factors.push({
           name: 'Large change',
           description: `Large change (${totalLines} lines) in: ${change.filePath}`,
@@ -213,7 +227,7 @@ export class RiskAssessor {
       }
     }
 
-    if (assessment.score >= 70) {
+    if (assessment.score >= HIGH_RISK_SCORE_THRESHOLD) {
       strategies.push({
         priority: 'must',
         type: 'integration',
@@ -226,7 +240,7 @@ export class RiskAssessor {
         target: 'Critical user flows',
         reason: 'E2E tests recommended for high-risk changes',
       });
-    } else if (assessment.score >= 40) {
+    } else if (assessment.score >= MEDIUM_RISK_SCORE_THRESHOLD) {
       strategies.push({
         priority: 'should',
         type: 'integration',
@@ -244,7 +258,7 @@ export class RiskAssessor {
       });
     }
 
-    if (assessment.affectedAreas.length > 3) {
+    if (assessment.affectedAreas.length > MANY_AFFECTED_AREAS_THRESHOLD) {
       strategies.push({
         priority: 'should',
         type: 'manual',
@@ -253,7 +267,7 @@ export class RiskAssessor {
       });
     }
 
-    if (assessment.score < 20) {
+    if (assessment.score < LOW_RISK_SCORE_THRESHOLD) {
       strategies.push({
         priority: 'could',
         type: 'unit',
@@ -273,7 +287,7 @@ export class RiskAssessor {
 
     const unitTestHours = assessment.factors.filter((f) => f.severity === 'high').length * 1;
     const integrationHours = assessment.affectedAreas.length * 0.5;
-    const e2eHours = assessment.score >= 70 ? 2 : 0;
+    const e2eHours = assessment.score >= HIGH_RISK_SCORE_THRESHOLD ? 2 : 0;
     const reviewHours = assessment.factors.length * 0.3;
 
     breakdown['unit-testing'] = Math.max(0.5, unitTestHours);
@@ -298,15 +312,15 @@ export class RiskAssessor {
     if (this.isCrossCutting(change.filePath)) riskScore += 20;
 
     const totalLines = change.additions + change.deletions;
-    if (totalLines > 200) riskScore += 20;
-    else if (totalLines > 50) riskScore += 10;
+    if (totalLines > LARGE_CHANGE_LINE_THRESHOLD) riskScore += 20;
+    else if (totalLines > MEDIUM_CHANGE_LINE_THRESHOLD) riskScore += 10;
 
     if (this.isConfiguration(change.filePath)) riskScore += 10;
 
-    if (riskScore >= 60) return 'critical';
-    if (riskScore >= 40) return 'high';
-    if (riskScore >= 25) return 'medium';
-    if (riskScore >= 10) return 'low';
+    if (riskScore >= CRITICAL_CLASSIFY_THRESHOLD) return 'critical';
+    if (riskScore >= HIGH_CLASSIFY_THRESHOLD) return 'high';
+    if (riskScore >= MEDIUM_CLASSIFY_THRESHOLD) return 'medium';
+    if (riskScore >= LOW_CLASSIFY_THRESHOLD) return 'low';
     return 'minimal';
   }
 
@@ -400,6 +414,6 @@ export class RiskAssessor {
         }
       }
     }
-    return [...new Set(tests)];
+    return unique(tests);
   }
 }

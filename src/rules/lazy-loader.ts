@@ -11,6 +11,7 @@ import type { RuleDefinition as PluginRuleDefinition } from '../plugins/types.js
 import type { RuleDefinition } from './types.js'
 
 import { SystemError } from '../utils/errors.js'
+import { capitalize } from '../utils/string-helpers.js'
 import { adaptPluginRule } from './adapter.js'
 
 export type RuleCategory =
@@ -2566,7 +2567,7 @@ function createPatternRuleLoaders(): Record<string, () => Promise<Record<string,
   for (const ruleId of patternRules) {
     const camelCaseName = ruleId
       .split('-')
-      .map((part, index) => (index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+      .map((part, index) => (index === 0 ? part : capitalize(part)))
       .join('')
     const exportName = `${camelCaseName}Rule` as keyof typeof import('./patterns/index.js')
 

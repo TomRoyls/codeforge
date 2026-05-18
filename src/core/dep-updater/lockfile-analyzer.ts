@@ -122,7 +122,13 @@ export class LockfileAnalyzer {
   }
 
   getTransitiveCount(entries: LockfileEntry[]): number {
-    const directNames = new Set(entries.filter((e) => e.dependencies.size === 0 || this.hasShallowDeps(e, entries)).map((e) => e.name))
+    const directNames = new Set<string>()
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i]!
+      if (e.dependencies.size === 0 || this.hasShallowDeps(e, entries)) {
+        directNames.add(e.name)
+      }
+    }
     return entries.length - Math.min(directNames.size, entries.length)
   }
 

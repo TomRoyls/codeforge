@@ -170,7 +170,7 @@ export function formatMarkdown(report: AnalysisReport): string {
     '| Metric | Value |',
     '|--------|-------|',
     `| Total Files Analyzed | ${report.summary.totalFiles} |`,
-    `| Files with Violations | ${report.files.filter((f) => f.violations.length > 0).length} |`,
+    `| Files with Violations | ${report.summary.filesWithViolations ?? report.files.reduce((c, f) => c + (f.violations.length > 0 ? 1 : 0), 0)} |`,
     `| Total Violations | ${report.summary.totalViolations} |`,
     `| Errors | ${report.summary.errors} |`,
     `| Warnings | ${report.summary.warnings} |`,

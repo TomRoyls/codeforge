@@ -1,6 +1,7 @@
 import type { ASTNode, MatchPattern, MatchResult, MatchConfig } from './types.js'
 import { DEFAULT_CONFIG } from './types.js'
 import { PatternCompiler } from './pattern-compiler.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class ASTMatcher {
   private config: MatchConfig
@@ -168,9 +169,7 @@ export class ASTMatcher {
     captures: Map<string, ASTNode[]>,
   ): void {
     if (pattern.captureName) {
-      const existing = captures.get(pattern.captureName) ?? []
-      existing.push(node)
-      captures.set(pattern.captureName, existing)
+      append(captures, pattern.captureName, node)
     }
 
     if (pattern.children && pattern.children.length > 0) {

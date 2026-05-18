@@ -8,6 +8,7 @@ import { analyzeFileComplexity, type FunctionComplexity } from '../core/complexi
 import { discoverFiles } from '../core/file-discovery.js'
 import { Parser } from '../core/parser.js'
 import { DEFAULT_IGNORE_PATTERNS } from '../utils/constants.js'
+import { logger } from '../utils/logger.js'
 import {
   buildIgnorePatterns,
   buildJsonOutput,
@@ -134,7 +135,8 @@ export default class Complexity extends Command {
             const fileComplexities = analyzeFileComplexity(parseResult.sourceFile)
             this.parser!.releaseFile(file.absolutePath)
             return fileComplexities
-          } catch {
+          } catch (error) {
+            logger.debug(`Failed to parse ${file.absolutePath}: ${error instanceof Error ? error.message : String(error)}`)
             return []
           }
         }),

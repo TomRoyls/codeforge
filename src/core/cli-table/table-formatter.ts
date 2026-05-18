@@ -1,4 +1,5 @@
 import type { BorderChars, ColumnConfig } from './types.js'
+import { clamp } from '../../utils/math-helpers.js'
 
 export class TableFormatter {
   static getBorderChars(style: 'none' | 'single' | 'double' | 'rounded'): BorderChars {
@@ -122,7 +123,7 @@ export class TableFormatter {
       const config = configs[i]
       if (!config) return header.length
       if (config.width !== undefined) {
-        const bounded = Math.max(config.minWidth, Math.min(config.maxWidth, config.width))
+        const bounded = clamp(config.width, config.minWidth, config.maxWidth)
         return bounded
       }
       let maxLen = header.length
@@ -132,7 +133,7 @@ export class TableFormatter {
           maxLen = cell.length
         }
       }
-      return Math.max(config.minWidth, Math.min(config.maxWidth, maxLen))
+      return clamp(maxLen, config.minWidth, config.maxWidth)
     })
   }
 }

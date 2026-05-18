@@ -1,4 +1,6 @@
 import type { Metric, AggregatedMetric, TimeRange } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class MetricsAggregator {
   aggregate(metrics: Metric[], name: string): AggregatedMetric {
@@ -18,7 +20,10 @@ export class MetricsAggregator {
     }
 
     const sorted = [...values].sort((a, b) => a - b)
-    const sum = values.reduce((a, b) => a + b, 0)
+    let sum = 0
+    for (let i = 0; i < values.length; i++) {
+      sum += values[i]!
+    }
 
     return {
       name,
@@ -42,12 +47,7 @@ export class MetricsAggregator {
     for (const metric of metrics) {
       const labelValue = metric.labels[label]
       if (labelValue !== undefined) {
-        const group = groups.get(labelValue)
-        if (group) {
-          group.push(metric)
-        } else {
-          groups.set(labelValue, [metric])
-        }
+        append(groups, labelValue, metric)
       }
     }
 
@@ -55,7 +55,10 @@ export class MetricsAggregator {
     for (const [labelValue, groupMetrics] of groups) {
       const values = groupMetrics.map((m) => m.value)
       const sorted = [...values].sort((a, b) => a - b)
-      const sum = values.reduce((a, b) => a + b, 0)
+      let sum = 0
+    for (let i = 0; i < values.length; i++) {
+      sum += values[i]!
+    }
 
       result.set(labelValue, {
         name: groupMetrics[0]!.name,
@@ -97,7 +100,7 @@ export class MetricsAggregator {
     )
     if (inRange.length < 2) return 0
 
-    const sorted = [...inRange].sort((a, b) => a.timestamp - b.timestamp)
+    const sorted = sortedBy(inRange, m => m.timestamp)
     const first = sorted[0]!
     const last = sorted[sorted.length - 1]!
     const duration = (last.timestamp - first.timestamp) / 1000
@@ -113,8 +116,11 @@ export class MetricsAggregator {
     const result: number[] = []
     for (let i = 0; i < values.length; i++) {
       const start = Math.max(0, i - window + 1)
-      const slice = values.slice(start, i + 1)
-      const avg = slice.reduce((a, b) => a + b, 0) / slice.length
+      let sliceSum = 0
+      for (let j = start; j <= i; j++) {
+        sliceSum += values[j]!
+      }
+      const avg = sliceSum / (i - start + 1)
       result.push(avg)
     }
     return result
@@ -123,7 +129,7 @@ export class MetricsAggregator {
   trend(metrics: Metric[]): 'increasing' | 'decreasing' | 'stable' {
     if (metrics.length < 2) return 'stable'
 
-    const sorted = [...metrics].sort((a, b) => a.timestamp - b.timestamp)
+    const sorted = sortedBy(metrics, m => m.timestamp)
     const values = sorted.map((m) => m.value)
 
     let increases = 0
@@ -150,8 +156,14 @@ export class MetricsAggregator {
     const x = metrics1.slice(0, len).map((m) => m.value)
     const y = metrics2.slice(0, len).map((m) => m.value)
 
-    const meanX = x.reduce((a, b) => a + b, 0) / len
-    const meanY = y.reduce((a, b) => a + b, 0) / len
+    let sumX = 0
+    let sumY = 0
+    for (let i = 0; i < len; i++) {
+      sumX += x[i]!
+      sumY += y[i]!
+    }
+    const meanX = sumX / len
+    const meanY = sumY / len
 
     let numSum = 0
     let denX = 0

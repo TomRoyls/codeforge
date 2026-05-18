@@ -91,7 +91,7 @@ export class DisjointSet {
 
   toArray(): string[][] {
     const sets = this.getSets()
-    return Array.from(sets.values())
+    return [...sets.values()]
   }
 
   getStats(): { elementCount: number, componentCount: number, maxComponentSize: number, minComponentSize: number } {

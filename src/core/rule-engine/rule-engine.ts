@@ -8,6 +8,8 @@ import type {
   EngineConfig,
 } from './types.js'
 
+const rulePatternCache = new Map<string, RegExp>()
+
 const DEFAULT_CONFIG: EngineConfig = {
   maxRules: 1000,
   stopOnFirstMatch: false,
@@ -157,7 +159,12 @@ export class RuleEngine {
         if (typeof fieldValue !== 'string' || typeof condition.value !== 'string')
           return false
         try {
-          return new RegExp(condition.value).test(fieldValue)
+          let regex = rulePatternCache.get(condition.value)
+          if (!regex) {
+            regex = new RegExp(condition.value)
+            rulePatternCache.set(condition.value, regex)
+          }
+          return regex.test(fieldValue)
         } catch {
           return false
         }

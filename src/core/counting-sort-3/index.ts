@@ -22,7 +22,7 @@ export class CountingSort {
     for (let i = 0; i < this.array.length; i++) {
       const value = this.array[i]!;
       const index = value - this.minValue!;
-      this.counts[index]! = (this.counts[index]! || 0) + 1;
+      this.counts[index]! = (this.counts[index]! ?? 0) + 1;
     }
   }
 
@@ -77,7 +77,7 @@ export class CountingSort {
   }
 
   getRange(): number {
-    return this.maxValue - (this.minValue || 0) + 1;
+    return this.maxValue - (this.minValue ?? 0) + 1;
   }
 
   toArray(): number[] {

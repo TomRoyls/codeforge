@@ -1,5 +1,9 @@
 import type { SplitGranularity, SplitOptions } from './types.js'
 
+const CLASS_CHUNK_LINE_THRESHOLD = 50
+const FUNCTION_CHUNK_LINE_THRESHOLD = 20
+const STATEMENT_CHUNK_LINE_THRESHOLD = 10
+
 export class ChunkStrategy {
   selectStrategy(code: string, language: string): SplitGranularity {
     const lines = code.split('\n')
@@ -8,15 +12,15 @@ export class ChunkStrategy {
     const hasFunctions = this.hasPattern(code, language, 'function')
     const hasClasses = this.hasPattern(code, language, 'class')
 
-    if (hasClasses && lineCount > 50) {
+    if (hasClasses && lineCount > CLASS_CHUNK_LINE_THRESHOLD) {
       return 'class'
     }
 
-    if (hasFunctions && lineCount > 20) {
+    if (hasFunctions && lineCount > FUNCTION_CHUNK_LINE_THRESHOLD) {
       return 'function'
     }
 
-    if (lineCount > 10) {
+    if (lineCount > STATEMENT_CHUNK_LINE_THRESHOLD) {
       return 'statement'
     }
 

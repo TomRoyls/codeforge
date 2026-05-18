@@ -130,7 +130,7 @@ export class GraphDFS {
       callback(node);
       const neighbors = this.adjacencyList.get(node);
       if (neighbors) {
-        const neighborList = Array.from(neighbors.keys()).reverse();
+        const neighborList = [...neighbors.keys()].reverse();
         for (const neighbor of neighborList) {
           if (!visited.has(neighbor)) {
             stack.push(neighbor);

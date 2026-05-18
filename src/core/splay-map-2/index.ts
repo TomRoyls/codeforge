@@ -36,7 +36,7 @@ function splay<K, V>(
       root = rotateRight(root);
     } else if (cmpLeft > 0) {
       root.left = splay(root.left, key, compare);
-      if (root.left) {
+      if (root.left && root.left.right) {
         root.left = rotateLeft(root.left);
       }
       if (root.left) {
@@ -50,7 +50,7 @@ function splay<K, V>(
     const cmpRight = compare(key, root.right.key);
     if (cmpRight < 0) {
       root.right = splay(root.right, key, compare);
-      if (root.right) {
+      if (root.right && root.right.left) {
         root.right = rotateRight(root.right);
       }
       if (root.right) {

@@ -58,7 +58,7 @@ export class BipartiteGraph2 {
   getNeighbors(vertexId: string): string[] {
     if (this.leftVertices.has(vertexId)) {
       const neighbors = this.edges.get(vertexId);
-      return neighbors ? Array.from(neighbors.keys()) : [];
+      return neighbors ? [...neighbors.keys()] : [];
     }
 
     if (this.rightVertices.has(vertexId)) {

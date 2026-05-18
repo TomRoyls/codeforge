@@ -45,7 +45,7 @@ export class GraphBFS2 {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             queue.push(neighbor);
@@ -73,7 +73,7 @@ export class GraphBFS2 {
     let count = 0;
 
     for (const [from, neighbors] of Array.from(this.adjacencyList.entries())) {
-      for (const [to] of Array.from(neighbors.entries())) {
+      for (const [to] of neighbors) {
         if (this.directed) {
           count++;
         } else {
@@ -126,7 +126,7 @@ export class GraphBFS2 {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             parent.set(neighbor, current);
@@ -164,7 +164,7 @@ export class GraphBFS2 {
 
         const neighbors = this.adjacencyList.get(current);
         if (neighbors) {
-          for (const neighbor of Array.from(neighbors.keys())) {
+          for (const neighbor of neighbors.keys()) {
             if (!visited.has(neighbor)) {
               visited.add(neighbor);
               queue.push(neighbor);
@@ -252,7 +252,7 @@ export class GraphBFS2 {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!colors.has(neighbor)) {
             colors.set(neighbor, 1 - currentColor);
             queue.push(neighbor);
@@ -276,7 +276,7 @@ export class GraphBFS2 {
 
       const neighbors = this.adjacencyList.get(current);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visited.add(neighbor);
             parentMap.set(neighbor, current);

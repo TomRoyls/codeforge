@@ -38,14 +38,22 @@ export class WindowHeap2 {
     if (this.values.length === 0) {
       throw new Error('Window is empty');
     }
-    return Math.min(...this.values);
+    let min = this.values[0]!;
+    for (let i = 1; i < this.values.length; i++) {
+      if (this.values[i]! < min) min = this.values[i]!;
+    }
+    return min;
   }
 
   getMax(): number {
     if (this.values.length === 0) {
       throw new Error('Window is empty');
     }
-    return Math.max(...this.values);
+    let max = this.values[0]!;
+    for (let i = 1; i < this.values.length; i++) {
+      if (this.values[i]! > max) max = this.values[i]!;
+    }
+    return max;
   }
 
   getSum(): number {

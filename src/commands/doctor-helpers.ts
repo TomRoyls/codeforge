@@ -13,6 +13,7 @@ import { parseConfigFile } from '../config/parser.js'
 import { CONFIG_FILE_NAMES } from '../config/types.js'
 import { discoverFiles } from '../core/file-discovery.js'
 import { lazyRuleLoader } from '../rules/lazy-loader.js'
+import { findClosestMatches } from '../utils/string-similarity.js'
 import { FILE_COUNT_THRESHOLD, MAX_TOP_RULES_SHOWN } from '../utils/constants.js'
 
 export interface CheckResult {
@@ -142,8 +143,16 @@ export async function checkRulesValid(results: DoctorResult, cwd: string): Promi
         status: 'ok',
       })
     } else {
+      const allRuleIds = await lazyRuleLoader.getRuleIds()
+      const suggestions = unknownRules.flatMap((inv) =>
+        findClosestMatches(inv, allRuleIds, { limit: 1, minScore: 0.5 })
+          .map((s) => `${inv} → ${s.candidate}`),
+      )
+      const details = suggestions.length > 0
+        ? `Did you mean: ${suggestions.join(', ')}?`
+        : `Valid rules: ${[...knownRules].slice(0, MAX_TOP_RULES_SHOWN).join(', ')}, ...`
       results.checks.push({
-        details: `Valid rules: ${[...knownRules].slice(0, MAX_TOP_RULES_SHOWN).join(', ')}, ...`,
+        details,
         message: `Unknown rules found: ${unknownRules.join(', ')}`,
         status: 'error',
       })

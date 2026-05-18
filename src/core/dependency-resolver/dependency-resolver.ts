@@ -4,6 +4,7 @@ import type {
   ResolverConfig,
   ResolverError,
 } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 const DEFAULT_CONFIG: ResolverConfig = {
   allowCycles: false,
@@ -102,7 +103,7 @@ export class DependencyResolver {
     for (const node of this.nodes.values()) {
       for (const dep of node.dependencies) {
         if (this.nodes.has(dep)) {
-          inDegree.set(dep, (inDegree.get(dep) ?? 0) + 1)
+          increment(inDegree, dep)
         }
       }
     }

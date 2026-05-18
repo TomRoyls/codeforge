@@ -1,4 +1,5 @@
 import type { ComplexityMetrics } from './types.js'
+import { roundTo } from '../../utils/math-helpers.js'
 
 export class ComplexityCalculator {
   calculateForFile(content: string, filePath: string): ComplexityMetrics {
@@ -214,6 +215,6 @@ export class ComplexityCalculator {
       - 16.2 * Math.log(avgLoc + 1)
 
     const normalized = Math.max(0, mi) * 100 / 171
-    return Math.round(normalized * 100) / 100
+    return roundTo(normalized, 2)
   }
 }

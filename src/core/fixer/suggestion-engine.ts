@@ -1,9 +1,12 @@
 import type { FixConfidence, FixCategory } from './types.js'
 import type { FixSuggestion, FixPatch, FixPlan, FixRiskAssessment, FixerConfig } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 import {
   DEFAULT_FIXER_CONFIG,
   CONFIDENCE_ORDER,
 } from './types.js'
+
+const _varPrefixCache = new Map<string, RegExp>()
 
 export interface FixTemplate {
   ruleId: string
@@ -41,12 +44,7 @@ export class SuggestionEngine {
   generateSuggestions(violations: ViolationInput[]): FixPlan[] {
     const grouped = new Map<string, ViolationInput[]>()
     for (const v of violations) {
-      const existing = grouped.get(v.filePath)
-      if (existing) {
-        existing.push(v)
-      } else {
-        grouped.set(v.filePath, [v])
-      }
+      append(grouped, v.filePath, v)
     }
 
     const plans: FixPlan[] = []
@@ -65,7 +63,7 @@ export class SuggestionEngine {
         }
       }
 
-      const safeFixCount = suggestions.filter((s) => s.confidence === 'safe').length
+      const safeFixCount = suggestions.reduce((c, s) => s.confidence === 'safe' ? c + 1 : c, 0)
       const basePlan: Omit<FixPlan, 'riskAssessment'> = {
         filePath,
         suggestions,
@@ -211,7 +209,7 @@ export class SuggestionEngine {
       }
     }
 
-    const safeFixCount = suggestions.filter((s) => s.confidence === 'safe').length
+    const safeFixCount = suggestions.reduce((c, s) => s.confidence === 'safe' ? c + 1 : c, 0)
     return {
       filePath,
       suggestions,
@@ -234,8 +232,8 @@ export class SuggestionEngine {
     let breakingChanges = false
     let requiresReview = false
 
-    const unsafeCount = plan.suggestions.filter((s) => s.confidence === 'unsafe' || s.confidence === 'manual').length
-    const safeCount = plan.suggestions.filter((s) => s.confidence === 'safe').length
+    const unsafeCount = plan.suggestions.reduce((c, s) => (s.confidence === 'unsafe' || s.confidence === 'manual') ? c + 1 : c, 0)
+    const safeCount = plan.suggestions.reduce((c, s) => s.confidence === 'safe' ? c + 1 : c, 0)
 
     if (unsafeCount > 0) {
       factors.push(`${unsafeCount} unsafe or manual fix(es) require human review`)
@@ -433,7 +431,12 @@ export class SuggestionEngine {
         if (!match?.[2]) return null
         const varName = match[2]
         if (varName.startsWith('_')) return null
-        const replaced = line.replace(new RegExp(`\\b(var|let|const)\\s+${varName}`), `$1 _${varName}`)
+        let varRegex = _varPrefixCache.get(varName)
+        if (!varRegex) {
+          varRegex = new RegExp(`\\b(var|let|const)\\s+${varName}`)
+          _varPrefixCache.set(varName, varRegex)
+        }
+        const replaced = line.replace(varRegex, `$1 _${varName}`)
         return { replacement: replaced, description: `Prefix unused variable '${varName}' with underscore` }
       },
     })

@@ -4,6 +4,8 @@ import { dirname, join, resolve } from 'node:path'
 
 import { CLIError, SystemError } from './errors.js'
 
+const _matchesPatternCache = new Map<string, RegExp>()
+
 interface CacheEntry<T> {
   timestamp: number
   value: T
@@ -239,7 +241,11 @@ export async function getFileInfo(filePath: string): Promise<FileInfo> {
 }
 
 function matchesPattern(filename: string, pattern: string): boolean {
-  const regexPattern = pattern.replaceAll('.', String.raw`\.`).replaceAll('*', '.*')
-  const regex = new RegExp(`^${regexPattern}$`)
+  let regex = _matchesPatternCache.get(pattern)
+  if (!regex) {
+    const regexPattern = pattern.replaceAll('.', String.raw`\.`).replaceAll('*', '.*')
+    regex = new RegExp(`^${regexPattern}$`)
+    _matchesPatternCache.set(pattern, regex)
+  }
   return regex.test(filename)
 }

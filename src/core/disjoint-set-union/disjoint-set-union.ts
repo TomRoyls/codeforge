@@ -93,7 +93,7 @@ export class DisjointSetUnion {
       }
       arr.push(i)
     }
-    return Array.from(map.values())
+    return [...map.values()]
   }
 
   getComponentCount(): number {

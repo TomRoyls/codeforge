@@ -8,6 +8,7 @@ import type { RuleContext, RuleDefinition, RuleVisitor } from '../../plugins/typ
 import { extractLocation } from '../../ast/location-utils.js'
 import { toASTNode } from '../../utils/ast-helpers.js'
 import { extractRuleOptions } from '../../utils/options-helpers.js'
+import { append } from '../../utils/map-helpers.js'
 
 interface CodeBlock {
   readonly content: string
@@ -191,9 +192,7 @@ export const noDuplicateCodeRule: RuleDefinition = {
         // Group blocks by hash
         const groups = new Map<string, CodeBlock[]>()
         for (const block of codeBlocks) {
-          const existing = groups.get(block.hash) ?? []
-          existing.push(block)
-          groups.set(block.hash, existing)
+          append(groups, block.hash, block)
         }
 
         // Report duplicates

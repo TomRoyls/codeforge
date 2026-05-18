@@ -115,7 +115,10 @@ export class WeightedRoundRobin<T> {
     const total = remaining.reduce((s, v) => s + v, 0)
 
     for (let i = 0; i < total; i++) {
-      const maxVal = Math.max(...remaining)
+      let maxVal = remaining[0]!
+      for (let k = 1; k < remaining.length; k++) {
+        if (remaining[k]! > maxVal) maxVal = remaining[k]!
+      }
       for (let j = 0; j < remaining.length; j++) {
         if (remaining[j] === maxVal) {
           sequence.push(this.entries[j]!.item)

@@ -76,7 +76,8 @@ export class EnvManager {
   diff(from: EnvName, to: EnvName): EnvDiff[] {
     const fromVars = this.resolve(from)
     const toVars = this.resolve(to)
-    const allKeys = new Set([...Object.keys(fromVars), ...Object.keys(toVars)])
+    const allKeys = new Set(Object.keys(fromVars))
+    for (const key of Object.keys(toVars)) allKeys.add(key)
     const diffs: EnvDiff[] = []
     for (const key of allKeys) {
       const oldVal = fromVars[key]

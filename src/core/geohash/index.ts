@@ -58,7 +58,7 @@ export class Geohash {
       const chr = lowerHash[i];
       const idx = BASE32.indexOf(chr!);
       if (idx === -1) {
-        throw new Error('Invalid geohash character');
+        throw new Error(`Invalid geohash character '${chr}' at position ${i}`);
       }
 
       for (let j = 4; j >= 0; j--) {
@@ -136,7 +136,7 @@ export class Geohash {
       const chr = lowerHash[i];
       const idx = BASE32.indexOf(chr!);
       if (idx === -1) {
-        throw new Error('Invalid geohash character');
+        throw new Error(`Invalid geohash character '${chr}' at position ${i}`);
       }
 
       for (let j = 4; j >= 0; j--) {

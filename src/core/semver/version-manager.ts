@@ -1,6 +1,8 @@
 import type { SemVer, VersionBump, VersionConfig, ConventionalCommit, CommitGroup } from './types.js'
 import { DEFAULT_VERSION_CONFIG } from './types.js'
 import { SemVerParser } from './semver-parser.js'
+import { groupBy } from '../../utils/array-helpers.js'
+import { capitalize } from '../../utils/string-helpers.js'
 
 export class VersionManager {
   private config: VersionConfig
@@ -131,16 +133,7 @@ export class VersionManager {
   }
 
   groupByType(commits: ConventionalCommit[]): CommitGroup[] {
-    const groups = new Map<string, ConventionalCommit[]>()
-
-    for (const commit of commits) {
-      const existing = groups.get(commit.type)
-      if (existing) {
-        existing.push(commit)
-      } else {
-        groups.set(commit.type, [commit])
-      }
-    }
+    const groups = groupBy(commits, (c) => c.type)
 
     const result: CommitGroup[] = []
     for (const [type, typeCommits] of groups) {
@@ -164,7 +157,7 @@ export class VersionManager {
       test: 'Tests',
       chore: 'Chores',
     }
-    return titles[type] ?? type.charAt(0).toUpperCase() + type.slice(1)
+    return titles[type] ?? capitalize(type)
   }
 
   isPrerelease(version: SemVer): boolean {

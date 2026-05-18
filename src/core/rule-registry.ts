@@ -3,6 +3,7 @@ import type { SourceFile } from 'ts-morph'
 import type { RuleDefinition, RuleOptions } from '../rules/types.js'
 
 import { type ASTVisitor, type RuleViolation, traverseASTMultiple } from '../ast/visitor.js'
+import { chunk } from '../utils/array-helpers.js'
 
 /**
  * @stable
@@ -67,7 +68,7 @@ export class RuleRegistry {
    * @returns Array of all LoadedRule objects
    */
   getAllRules(): LoadedRule[] {
-    return [...this.rules.values()]
+    return Array.from(this.rules.values())
   }
 
   /**
@@ -82,7 +83,7 @@ export class RuleRegistry {
       return this.enabledRulesCache
     }
 
-    this.enabledRulesCache = [...this.rules.values()].filter((r) => r.enabled)
+    this.enabledRulesCache = Array.from(this.rules.values()).filter((r) => r.enabled)
     return this.enabledRulesCache
   }
 
@@ -169,8 +170,7 @@ export class RuleRegistry {
     const enabledRules = this.getEnabledRules()
     const allViolations: RuleViolation[] = []
 
-    for (let i = 0; i < enabledRules.length; i += batchSize) {
-      const batch = enabledRules.slice(i, i + batchSize)
+    for (const batch of chunk(enabledRules, batchSize)) {
       const visitors: ASTVisitor[] = []
       const onCompleteCallbacks: (() => RuleViolation[])[] = []
 

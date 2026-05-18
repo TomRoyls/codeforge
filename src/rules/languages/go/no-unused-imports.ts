@@ -3,6 +3,8 @@ import type { RuleDefinition, RuleOptions } from '../../types.js'
 
 import { createViolation } from '../../types.js'
 
+const _aliasUsageCache = new Map<string, RegExp>()
+
 interface NoUnusedImportsOptions extends RuleOptions {}
 
 export function analyzeNoUnusedImports(code: string, filePath: string = '<input>'): RuleViolation[] {
@@ -64,8 +66,13 @@ export function analyzeNoUnusedImports(code: string, filePath: string = '<input>
     if (imp.alias) {
       const restOfCodeLines = lines.slice(imp.line)
       const restOfCode = restOfCodeLines.join('\n')
-      const usagePattern = new RegExp(`\\b${imp.alias}\\b`, 'g')
-      const usages = restOfCode.match(usagePattern)
+      let usagePattern = _aliasUsageCache.get(imp.alias)
+      if (!usagePattern) {
+        usagePattern = new RegExp(`\\b${imp.alias}\\b`, 'g')
+        _aliasUsageCache.set(imp.alias, usagePattern)
+      }
+      const freshPattern = new RegExp(usagePattern.source, usagePattern.flags)
+      const usages = restOfCode.match(freshPattern)
       if (!usages || usages.length <= 0) {
         violations.push(
           createViolation(

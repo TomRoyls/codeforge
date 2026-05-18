@@ -1,4 +1,11 @@
 import type { SearchResult, SearchOptions, FileIndexData } from './types.js'
+import { levenshteinDistance } from '../../utils/string-similarity.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
+
+const globPatternCache = new Map<string, RegExp>()
+const _searchRegexCache = new Map<string, RegExp>()
+
+const SEARCH_EDIT_DISTANCE_THRESHOLD = 2
 
 export class SearchEngine {
   private files: Map<string, FileIndexData> = new Map()
@@ -110,17 +117,19 @@ export class SearchEngine {
       }
     }
 
-    results.sort((a, b) => b.score - a.score)
-    return results
+    return sortedByDesc(results, r => r.score)
   }
 
   searchRegex(pattern: string): SearchResult[] {
     let regex: RegExp
     try {
-      regex = new RegExp(pattern, 'gi')
+      const key = `${pattern}|gi`
+      regex = _searchRegexCache.get(key) ?? new RegExp(pattern, 'gi')
+      _searchRegexCache.set(key, regex)
     } catch {
       return []
     }
+    const freshRegex = new RegExp(regex.source, regex.flags)
 
     const results: SearchResult[] = []
 
@@ -128,9 +137,9 @@ export class SearchEngine {
       const lines = this.getLines(file)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]!
-        regex.lastIndex = 0
+        freshRegex.lastIndex = 0
         let match: RegExpExecArray | null
-        while ((match = regex.exec(line)) !== null) {
+        while ((match = freshRegex.exec(line)) !== null) {
           results.push({
             filePath: file.filePath,
             line: i + 1,
@@ -196,7 +205,7 @@ export class SearchEngine {
         for (const word of words) {
           const wordForCompare = options.caseSensitive ? word : word.toLowerCase()
           const dist = this.levenshtein(wordForCompare, lowerQuery)
-          if (dist <= 2) {
+          if (dist <= SEARCH_EDIT_DISTANCE_THRESHOLD) {
             results.push({
               filePath,
               line: i + 1,
@@ -231,19 +240,22 @@ export class SearchEngine {
   searchRegexInSource(filePath: string, source: string, pattern: string): SearchResult[] {
     let regex: RegExp
     try {
-      regex = new RegExp(pattern, 'gi')
+      const key = `${pattern}|gi`
+      regex = _searchRegexCache.get(key) ?? new RegExp(pattern, 'gi')
+      _searchRegexCache.set(key, regex)
     } catch {
       return []
     }
+    const freshRegex = new RegExp(regex.source, regex.flags)
 
     const results: SearchResult[] = []
     const lines = source.split('\n')
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]!
-      regex.lastIndex = 0
+      freshRegex.lastIndex = 0
       let match: RegExpExecArray | null
-      while ((match = regex.exec(line)) !== null) {
+      while ((match = freshRegex.exec(line)) !== null) {
         results.push({
           filePath,
           line: i + 1,
@@ -281,7 +293,11 @@ export class SearchEngine {
 
   private matchesFilePattern(filePath: string, pattern: string | undefined): boolean {
     if (!pattern) return true
-    const regex = new RegExp(pattern.replace(/\*/g, '.*').replace(/\?/g, '.'))
+    let regex = globPatternCache.get(pattern)
+    if (!regex) {
+      regex = new RegExp(pattern.replace(/\*/g, '.*').replace(/\?/g, '.'))
+      globPatternCache.set(pattern, regex)
+    }
     return regex.test(filePath)
   }
 
@@ -290,24 +306,6 @@ export class SearchEngine {
   }
 
   private levenshtein(a: string, b: string): number {
-    const m = a.length
-    const n = b.length
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0) as number[])
-
-    for (let i = 0; i <= m; i++) dp[i]![0] = i
-    for (let j = 0; j <= n; j++) dp[0]![j] = j
-
-    for (let i = 1; i <= m; i++) {
-      for (let j = 1; j <= n; j++) {
-        const cost = a[i - 1] === b[j - 1] ? 0 : 1
-        dp[i]![j] = Math.min(
-          dp[i - 1]![j]! + 1,
-          dp[i]![j - 1]! + 1,
-          dp[i - 1]![j - 1]! + cost,
-        )
-      }
-    }
-
-    return dp[m]![n]!
+    return levenshteinDistance(a, b)
   }
 }

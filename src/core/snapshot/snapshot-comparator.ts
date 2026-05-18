@@ -5,9 +5,15 @@ export class SnapshotComparator {
     const actualLines = actual === '' ? [] : actual.split('\n')
     const expectedLines = expected === '' ? [] : expected.split('\n')
     const changes = this.computeDiff(actualLines, expectedLines)
-    const added = changes.filter((c) => c.type === 'add').length
-    const removed = changes.filter((c) => c.type === 'remove').length
-    const unchanged = changes.filter((c) => c.type === 'equal').length
+    let added = 0
+    let removed = 0
+    let unchanged = 0
+    for (let i = 0; i < changes.length; i++) {
+      const t = changes[i]!.type
+      if (t === 'add') added++
+      else if (t === 'remove') removed++
+      else unchanged++
+    }
     const diff: SnapshotDiff = {
       id: '',
       name: '',

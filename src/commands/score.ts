@@ -40,6 +40,7 @@ import {
 } from './score-calculations.js'
 import { formatDisplayOutput, generateSuggestions } from './score-formatting.js'
 import { type FileScore, type ScoreReport } from './score-helpers.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
 
 export default class Score extends Command {
   static override args = {
@@ -169,7 +170,7 @@ export default class Score extends Command {
       const categoryCounts: Record<string, number> = {}
       for (const violation of violationsWithPath) {
         const category = getRuleCategory(violation.ruleId)
-        categoryCounts[category] = (categoryCounts[category] || 0) + 1
+        categoryCounts[category] = (categoryCounts[category] ?? 0) + 1
       }
 
       const fileScore: number = calculateFileScore(violationsWithPath.length)
@@ -184,7 +185,7 @@ export default class Score extends Command {
 
     parser.dispose()
 
-    fileScores.sort((a, b) => b.violations - a.violations)
+    fileScores = sortedByDesc(fileScores, f => f.violations)
 
     const complexityViolations = allViolations.filter(
       (v) => getRuleCategory(v.ruleId) === 'complexity',

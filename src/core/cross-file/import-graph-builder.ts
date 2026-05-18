@@ -1,6 +1,8 @@
 import type { ModuleExport, ModuleImport, ModuleInfo, ImportGraph } from './types.js'
 import { createEmptyImportGraph } from './types.js'
 
+const _regexCache = new Map<string, RegExp>()
+
 const ES_IMPORT_PATTERN =
   /^import\s+(?:type\s+)?(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+\w+))?)\s+from\s+)?['"]([^'"]+)['"]/gm
 
@@ -38,7 +40,7 @@ export class ImportGraphBuilder {
       dependencies.add(imp.fromModule)
     }
 
-    const reExportCount = exports.filter((e) => e.isReExport).length
+    const reExportCount = exports.reduce((c, e) => e.isReExport ? c + 1 : c, 0)
     const nonReExportCode = this.hasNonReExportCode(source)
     const isBarrel = reExportCount > 0 && !nonReExportCode
 
@@ -381,23 +383,35 @@ export class ImportGraphBuilder {
 
   private matchLine(pattern: RegExp, line: string): string | null {
     const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
-    const regex = new RegExp(pattern.source, flags)
-    regex.lastIndex = 0
-    const match = regex.exec(line)
+    const cacheKey = pattern.source + '|' + flags
+    let regex = _regexCache.get(cacheKey)
+    if (!regex) {
+      regex = new RegExp(pattern.source, flags)
+      _regexCache.set(cacheKey, regex)
+    }
+    const freshRegex = new RegExp(regex.source, regex.flags)
+    freshRegex.lastIndex = 0
+    const match = freshRegex.exec(line)
     return match?.[1] ?? null
   }
 
   private matchAll(pattern: RegExp, line: string): string[] {
     const results: string[] = []
     const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
-    const regex = new RegExp(pattern.source, flags)
-    regex.lastIndex = 0
-    let match = regex.exec(line)
+    const cacheKey = pattern.source + '|' + flags
+    let regex = _regexCache.get(cacheKey)
+    if (!regex) {
+      regex = new RegExp(pattern.source, flags)
+      _regexCache.set(cacheKey, regex)
+    }
+    const freshRegex = new RegExp(regex.source, regex.flags)
+    freshRegex.lastIndex = 0
+    let match = freshRegex.exec(line)
     while (match !== null) {
       if (match[1]) {
         results.push(match[1])
       }
-      match = regex.exec(line)
+      match = freshRegex.exec(line)
     }
     return results
   }

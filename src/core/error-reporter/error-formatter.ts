@@ -1,4 +1,6 @@
 import type { ErrorEntry, ErrorSummary, ErrorReport } from './types.js'
+import { uniqueBy } from '../../utils/array-helpers.js'
+import { append } from '../../utils/map-helpers.js'
 
 const SEVERITY_LABELS: Record<ErrorEntry['severity'], string> = {
   error: 'Error',
@@ -239,8 +241,8 @@ export class ErrorFormatter {
         : {}),
     }))
 
-    const rules = Array.from(new Set(entries.map((e) => e.ruleId))).map((ruleId) => ({
-      id: ruleId,
+    const rules = uniqueBy(entries, (e) => e.ruleId).map((e) => ({
+      id: e.ruleId,
     }))
 
     return {
@@ -267,21 +269,22 @@ export class ErrorFormatter {
 
     const fileMap = new Map<string, ErrorEntry[]>()
     for (const entry of entries) {
-      const existing = fileMap.get(entry.filePath)
-      if (existing) {
-        existing.push(entry)
-      } else {
-        fileMap.set(entry.filePath, [entry])
-      }
+      append(fileMap, entry.filePath, entry)
     }
 
-    const failureCount = entries.filter((e) => e.severity === 'error').length
     const lines: string[] = []
+    let failureCount = 0
+    for (const e of entries) {
+      if (e.severity === 'error') failureCount++
+    }
     lines.push('<?xml version="1.0" encoding="UTF-8"?>')
     lines.push(`<testsuites tests="${entries.length}" failures="${failureCount}">`)
 
     for (const [filePath, fileEntries] of fileMap) {
-      const fileFailures = fileEntries.filter((e) => e.severity === 'error').length
+      let fileFailures = 0
+      for (const e of fileEntries) {
+        if (e.severity === 'error') fileFailures++
+      }
       lines.push(`  <testsuite name="${esc(filePath)}" tests="${fileEntries.length}" failures="${fileFailures}">`)
       for (const entry of fileEntries) {
         lines.push(`    <testcase name="${esc(entry.ruleId)}: ${esc(entry.message)}" classname="${esc(filePath)}">`)

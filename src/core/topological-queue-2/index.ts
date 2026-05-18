@@ -1,3 +1,5 @@
+import { increment } from '../../utils/map-helpers.js'
+
 export class TopologicalQueue2 {
   private adjacency: Map<string, Set<string>>;
   private inDegreeMap: Map<string, number>;
@@ -21,7 +23,7 @@ export class TopologicalQueue2 {
     const neighbors = this.adjacency.get(from)!;
     if (!neighbors.has(to)) {
       neighbors.add(to);
-      this.inDegreeMap.set(to, (this.inDegreeMap.get(to) ?? 0) + 1);
+      increment(this.inDegreeMap, to);
     }
   }
 
@@ -30,7 +32,7 @@ export class TopologicalQueue2 {
     const queue: string[] = [];
     const tempInDegree = new Map(this.inDegreeMap);
 
-    for (const [node, degree] of Array.from(tempInDegree)) {
+    for (const [node, degree] of tempInDegree) {
       if (degree === 0) {
         queue.push(node);
       }
@@ -41,7 +43,7 @@ export class TopologicalQueue2 {
       result.push(node);
 
       const neighbors = this.adjacency.get(node)!;
-      for (const neighbor of Array.from(neighbors)) {
+      for (const neighbor of neighbors) {
         const newDegree = (tempInDegree.get(neighbor) ?? 0) - 1;
         tempInDegree.set(neighbor, newDegree);
         if (newDegree === 0) {
@@ -66,7 +68,7 @@ export class TopologicalQueue2 {
       recursionStack.add(node);
 
       const neighbors = this.adjacency.get(node)!;
-      for (const neighbor of Array.from(neighbors)) {
+      for (const neighbor of neighbors) {
         if (!visited.has(neighbor)) {
           if (dfs(neighbor)) {
             return true;

@@ -10,6 +10,7 @@ export const VALID_CATEGORIES = [
 ] as const
 
 export const VALID_SEVERITIES = ['error', 'warning', 'info'] as const
+import { capitalize } from '../utils/string-helpers.js'
 
 export type ValidCategory = (typeof VALID_CATEGORIES)[number]
 export type ValidSeverity = (typeof VALID_SEVERITIES)[number]
@@ -29,17 +30,14 @@ export function isValidSeverity(severity: string): boolean {
 export function toCamelCase(str: string): string {
   return str
     .split('-')
-    .map((word, index) => {
-      if (index === 0) return word
-      return word.charAt(0).toUpperCase() + word.slice(1)
-    })
+    .map((word, index) => (index === 0 ? word : capitalize(word)))
     .join('')
 }
 
 export function toPascalCase(str: string): string {
   return str
     .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => capitalize(word))
     .join('')
 }
 

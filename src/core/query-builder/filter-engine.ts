@@ -1,5 +1,7 @@
 import type { QueryFilter, SortClause, GroupClause, QueryOptions } from './types.js'
 
+const filterRegexCache = new Map<string, RegExp>()
+
 export class FilterEngine {
   evaluate(item: Record<string, unknown>, filter: QueryFilter): boolean {
     const itemValue = item[filter.field]
@@ -29,7 +31,11 @@ export class FilterEngine {
         return Array.isArray(filter.value) && !filter.value.includes(itemValue)
       case 'matches': {
         if (typeof filter.value !== 'string') return false
-        const regex = new RegExp(filter.value)
+        let regex = filterRegexCache.get(filter.value)
+        if (!regex) {
+          regex = new RegExp(filter.value)
+          filterRegexCache.set(filter.value, regex)
+        }
         return typeof itemValue === 'string' && regex.test(itemValue)
       }
       case 'exists':
@@ -84,18 +90,37 @@ export class FilterEngine {
         case 'count':
           result.set(key, data.count)
           break
-        case 'sum':
-          result.set(key, data.numericValues.reduce((a, b) => a + b, 0))
+        case 'sum': {
+          let s = 0
+          for (let i = 0; i < data.numericValues.length; i++) s += data.numericValues[i]!
+          result.set(key, s)
           break
-        case 'avg':
-          result.set(key, data.numericValues.length > 0 ? data.numericValues.reduce((a, b) => a + b, 0) / data.numericValues.length : 0)
+        }
+        case 'avg': {
+          if (data.numericValues.length === 0) { result.set(key, 0); break }
+          let avgS = 0
+          for (let i = 0; i < data.numericValues.length; i++) avgS += data.numericValues[i]!
+          result.set(key, avgS / data.numericValues.length)
           break
-        case 'min':
-          result.set(key, data.numericValues.length > 0 ? Math.min(...data.numericValues) : 0)
+        }
+        case 'min': {
+          if (data.numericValues.length === 0) { result.set(key, 0); break }
+          let mn = data.numericValues[0]!
+          for (let i = 1; i < data.numericValues.length; i++) {
+            if (data.numericValues[i]! < mn) mn = data.numericValues[i]!
+          }
+          result.set(key, mn)
           break
-        case 'max':
-          result.set(key, data.numericValues.length > 0 ? Math.max(...data.numericValues) : 0)
+        }
+        case 'max': {
+          if (data.numericValues.length === 0) { result.set(key, 0); break }
+          let mx = data.numericValues[0]!
+          for (let i = 1; i < data.numericValues.length; i++) {
+            if (data.numericValues[i]! > mx) mx = data.numericValues[i]!
+          }
+          result.set(key, mx)
           break
+        }
       }
     }
 

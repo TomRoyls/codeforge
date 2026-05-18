@@ -329,9 +329,12 @@ export class LFUCache<K, V> {
 
   private updateMinFreq(): void {
     this.minFreq = 0
-    const freqs = [...this.freqMap.keys()]
-    if (freqs.length > 0) {
-      this.minFreq = Math.min(...freqs)
+    let minF = -1
+    for (const f of this.freqMap.keys()) {
+      if (minF === -1 || f < minF) minF = f
+    }
+    if (minF !== -1) {
+      this.minFreq = minF
     }
   }
 }

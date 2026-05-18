@@ -1,4 +1,5 @@
 import { Node, type SourceFile, type FunctionDeclaration, type FunctionExpression, type ArrowFunction } from 'ts-morph'
+import { increment } from '../utils/map-helpers.js'
 
 // ============================================================================
 // Types and Interfaces
@@ -49,19 +50,19 @@ export function extractImports(sourceFile: SourceFile): Map<string, number> {
   for (const importDecl of sourceFile.getImportDeclarations()) {
     for (const namedImport of importDecl.getNamedImports()) {
       const name = namedImport.getName()
-      imports.set(name, (imports.get(name) ?? 0) + 1)
+      increment(imports, name)
     }
 
     const defaultImport = importDecl.getDefaultImport()
     if (defaultImport) {
       const name = defaultImport.getText()
-      imports.set(name, (imports.get(name) ?? 0) + 1)
+      increment(imports, name)
     }
 
     const namespaceImport = importDecl.getNamespaceImport()
     if (namespaceImport) {
       const name = namespaceImport.getText()
-      imports.set(name, (imports.get(name) ?? 0) + 1)
+      increment(imports, name)
     }
   }
 

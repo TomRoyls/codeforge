@@ -5,6 +5,8 @@ import * as path from 'node:path'
 import type { AuditConfig, AuditEntry, AuditLog, ComplianceReport } from './audit-types.js'
 
 import { DEFAULT_AUDIT_CONFIG } from './audit-types.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
+import { increment } from '../utils/map-helpers.js'
 
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2)
@@ -138,7 +140,10 @@ export class AuditLogger {
     const totalRuns = filtered.length
     const totalViolations = filtered.reduce((sum, e) => sum + e.totalViolations, 0)
     const errorTrend = filtered.map((e) => e.totalViolations)
-    const passCount = filtered.filter((e) => e.errorCount === 0).length
+    let passCount = 0
+    for (const e of filtered) {
+      if (e.errorCount === 0) passCount++
+    }
     const passRate = totalRuns > 0 ? passCount / totalRuns : 0
     const averageViolationsPerRun = totalRuns > 0 ? totalViolations / totalRuns : 0
 
@@ -146,18 +151,18 @@ export class AuditLogger {
     const fileCounts = new Map<string, number>()
     for (const entry of filtered) {
       for (const rule of entry.rulesRun) {
-        ruleCounts.set(rule, (ruleCounts.get(rule) ?? 0) + 1)
+        increment(ruleCounts, rule)
       }
     }
 
-    const topViolatedRules = [...ruleCounts.entries()]
+    const ruleEntries = [...ruleCounts.entries()]
       .map(([ruleId, count]) => ({ ruleId, count }))
-      .sort((a, b) => b.count - a.count)
+    const topViolatedRules = sortedByDesc(ruleEntries, r => r.count)
       .slice(0, 10)
 
-    const topViolatedFiles = [...fileCounts.entries()]
+    const fileEntries = [...fileCounts.entries()]
       .map(([filePath, count]) => ({ filePath, count }))
-      .sort((a, b) => b.count - a.count)
+    const topViolatedFiles = sortedByDesc(fileEntries, f => f.count)
       .slice(0, 10)
 
     return {

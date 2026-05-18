@@ -7,6 +7,8 @@ import type {
   ValidatorConfig,
 } from './types.js'
 
+const validatorPatternCache = new Map<string, RegExp>()
+
 const DEFAULT_CONFIG: ValidatorConfig = {
   strictMode: true,
   stopOnError: false,
@@ -125,7 +127,11 @@ export class ValidatorEngine {
         if (this.config.stopOnError) return
       }
       if (schema.pattern !== undefined) {
-        const regex = new RegExp(schema.pattern)
+        let regex = validatorPatternCache.get(schema.pattern)
+        if (!regex) {
+          regex = new RegExp(schema.pattern)
+          validatorPatternCache.set(schema.pattern, regex)
+        }
         if (!regex.test(value)) {
           this.addError(errors, 'pattern', path, `Value does not match pattern "${schema.pattern}"`, value)
           if (this.config.stopOnError) return

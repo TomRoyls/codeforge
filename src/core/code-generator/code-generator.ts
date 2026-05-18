@@ -7,6 +7,7 @@ import type {
   Language,
 } from './types.js'
 import { DEFAULT_GENERATOR_CONFIG } from './types.js'
+import { countLines } from '../../utils/string-helpers.js'
 
 export type {
   IndentStyle,
@@ -177,7 +178,7 @@ export class CodeGenerator {
     const countFragment = (f: CodeFragment): void => {
       if (f.content.length > 0) {
         totalChars += f.content.length
-        totalLines += f.content.split('\n').length
+        totalLines += countLines(f.content)
       }
       for (const child of f.children) {
         countFragment(child)

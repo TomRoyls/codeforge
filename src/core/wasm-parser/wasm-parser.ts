@@ -70,7 +70,7 @@ export class WasmParser {
       ast,
       duration,
       memoryUsed: estimatedMemory,
-      fromWasm: this.config.fallbackToNative ? false : true,
+      fromWasm: !this.config.fallbackToNative,
       errors: [],
     }
   }

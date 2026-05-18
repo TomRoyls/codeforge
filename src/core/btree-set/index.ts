@@ -265,7 +265,9 @@ export class BTreeSet<T> {
 
   private collectInorder(node: BTreeNode<T>, result: T[]): void {
     if (node.leaf) {
-      result.push(...node.keys)
+      for (let i = 0; i < node.keys.length; i++) {
+        result.push(node.keys[i]!)
+      }
       return
     }
     for (let i = 0; i < node.keys.length; i++) {

@@ -55,7 +55,10 @@ export function formatComplianceReportMarkdown(report: ComplianceReport): string
   if (report.errorTrend.length > 0) {
     lines.push(`## Violation Distribution`)
     lines.push(``)
-    const maxVal = Math.max(...report.errorTrend, 1)
+    let maxVal = 1
+    for (let i = 0; i < report.errorTrend.length; i++) {
+      if (report.errorTrend[i]! > maxVal) maxVal = report.errorTrend[i]!
+    }
     for (let i = 0; i < report.errorTrend.length; i++) {
       const val = report.errorTrend[i]!
       const barLen = Math.round((val / maxVal) * 20)

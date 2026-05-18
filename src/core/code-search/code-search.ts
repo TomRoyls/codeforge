@@ -7,6 +7,9 @@ import type {
   ReplaceResult,
 } from './types.js'
 import { DEFAULT_SEARCH_QUERY, DEFAULT_REPLACE_OPTIONS } from './types.js'
+import { escapeRegex, countLines } from '../../utils/string-helpers.js'
+
+const filePatternCache = new Map<string, RegExp>()
 
 export class CodeSearch {
   private files: Map<string, string> = new Map()
@@ -120,7 +123,7 @@ export class CodeSearch {
       const source = query.wholeWord ? `\\b(?:${query.pattern})\\b` : query.pattern
       regex = new RegExp(source, flags)
     } else {
-      const escaped = query.pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const escaped = escapeRegex(query.pattern)
       const source = query.wholeWord ? `\\b${escaped}\\b` : escaped
       regex = new RegExp(source, flags)
     }
@@ -293,7 +296,7 @@ export class CodeSearch {
   } {
     let totalLines = 0
     for (const content of this.files.values()) {
-      totalLines += content.split('\n').length
+      totalLines += countLines(content)
     }
 
     return {
@@ -358,7 +361,7 @@ export class CodeSearch {
     if (query.isRegex) {
       source = query.pattern
     } else {
-      source = query.pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      source = escapeRegex(query.pattern)
     }
 
     if (query.wholeWord) {
@@ -379,11 +382,16 @@ export class CodeSearch {
   }
 
   private matchesFilePattern(filePath: string, pattern: string): boolean {
-    const regexPattern = pattern
-      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-      .replace(/\*/g, '.*')
-      .replace(/\?/g, '.')
-    return new RegExp(regexPattern).test(filePath)
+    let regex = filePatternCache.get(pattern)
+    if (!regex) {
+      const regexPattern = pattern
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '.*')
+        .replace(/\?/g, '.')
+      regex = new RegExp(regexPattern)
+      filePatternCache.set(pattern, regex)
+    }
+    return regex.test(filePath)
   }
 
   private applyReplacement(replacement: string, args: unknown[]): string {
@@ -395,13 +403,15 @@ export class CodeSearch {
     for (let i = 1; i < args.length - 2; i++) {
       const group = args[i] as string | undefined
       if (group !== undefined) {
-        result = result.replace(new RegExp(`\\$${i}`, 'g'), group)
+        const token = `$${i}`
+        result = result.replaceAll(token, group)
       }
     }
 
     if (groups) {
       for (const [name, value] of Object.entries(groups)) {
-        result = result.replace(new RegExp(`\\$<${name}>`, 'g'), value)
+        const token = `$<${name}>`
+        result = result.replaceAll(token, value)
       }
     }
 

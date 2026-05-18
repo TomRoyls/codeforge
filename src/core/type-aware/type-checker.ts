@@ -10,6 +10,9 @@ import type {
   UnsafeTypeUsage,
 } from './types.js'
 
+const MAX_TYPE_ARGUMENTS = 2
+const MAX_OBJECT_PROPERTIES = 3
+
 function createEmptyTypeCheckResult(): TypeCheckResult {
   return {
     isAny: false,
@@ -343,11 +346,11 @@ export class TypeChecker {
       if (type.isIntersection()) intersectionCount++
 
       const typeArgs = type.getTypeArguments()
-      if (typeArgs.length > 2) complexTypes++
+      if (typeArgs.length > MAX_TYPE_ARGUMENTS) complexTypes++
 
       if (type.isObject() && !type.isArray()) {
         const properties = type.getProperties()
-        if (properties.length > 3) complexTypes++
+        if (properties.length > MAX_OBJECT_PROPERTIES) complexTypes++
       }
     }
 
@@ -422,9 +425,15 @@ export class TypeChecker {
       }))
 
     const totalVariables = inferenceResults.length
-    const explicitlyTyped = inferenceResults.filter((r) => r.hasExplicitAnnotation).length
+    let explicitlyTyped = 0
+    for (const r of inferenceResults) {
+      if (r.hasExplicitAnnotation) explicitlyTyped++
+    }
     const implicitlyTyped = totalVariables - explicitlyTyped
-    const anyUsageCount = unsafeUsages.filter((u) => u.typeString === 'any').length
+    let anyUsageCount = 0
+    for (const u of unsafeUsages) {
+      if (u.typeString === 'any') anyUsageCount++
+    }
 
     return {
       complexityMetrics: [complexityMetrics],

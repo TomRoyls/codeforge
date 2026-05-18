@@ -1,4 +1,5 @@
 import type { FormatterConfig, FormatResult, FormatChange, ImportStatement, ImportGroup } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 const BUILTIN_MODULES = new Set([
   'assert', 'async_hooks', 'buffer', 'child_process', 'cluster', 'console',
@@ -248,12 +249,7 @@ export class ImportSorter {
 
     for (const imp of imports) {
       const type = this.classifyImport(imp.module)
-      const existing = groupMap.get(type)
-      if (existing) {
-        existing.push(imp)
-      } else {
-        groupMap.set(type, [imp])
-      }
+      append(groupMap, type, imp)
     }
 
     const result: ImportGroup[] = []

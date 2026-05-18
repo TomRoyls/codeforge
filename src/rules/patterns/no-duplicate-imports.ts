@@ -29,7 +29,7 @@ export const noDuplicateImportsRule: RuleDefinition = {
           return
         }
 
-        const imports = moduleMap.get(module) || []
+        const imports = moduleMap.get(module) ?? []
         imports.push(node)
         moduleMap.set(module, imports)
 

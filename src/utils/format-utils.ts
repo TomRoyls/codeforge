@@ -29,3 +29,10 @@ export function countSeverities(
 
   return counts
 }
+
+export function formatNumber(n: number): string {
+  if (!Number.isFinite(n)) return String(n)
+  const parts = n.toString().split('.')
+  parts[0] = parts[0]!.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return parts.join('.')
+}

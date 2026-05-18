@@ -55,7 +55,7 @@ export class SparseTable3 {
 
   query(left: number, right: number): number {
     if (left < 0 || right >= this.array.length || left > right) {
-      throw new Error("Invalid range");
+      throw new Error(`Invalid range: left=${left}, right=${right}, length=${this.array.length}`);
     }
     const length = right - left + 1;
     const k = this.logs[length]!;

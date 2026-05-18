@@ -1,6 +1,8 @@
 import type { WatchConfig, WatchEvent, WatchListener, FileEntry, WatcherState } from './types.js'
 import { DEFAULT_WATCH_CONFIG } from './types.js'
 
+const ignorePatternCache = new Map<string, RegExp>()
+
 export class FileWatcher {
   private config: WatchConfig
   private state: WatcherState = 'idle'
@@ -165,7 +167,11 @@ export class FileWatcher {
   shouldIgnore(path: string): boolean {
     for (const pattern of this.config.ignorePatterns) {
       if (pattern.includes('*')) {
-        const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$')
+        let regex = ignorePatternCache.get(pattern)
+        if (!regex) {
+          regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$')
+          ignorePatternCache.set(pattern, regex)
+        }
         if (regex.test(path)) {
           return true
         }

@@ -8,6 +8,7 @@ import type {
 } from './types.js'
 import { DependencyGraphBuilder } from './dependency-graph.js'
 import type { RawPackageVersions } from './dependency-graph.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 export class MonorepoAnalyzer {
   private graphBuilder: DependencyGraphBuilder
@@ -170,9 +171,9 @@ export class MonorepoAnalyzer {
       dependentCount.set(edge.to, current + 1)
     }
 
-    return [...dependentCount.entries()]
+    const entries = [...dependentCount.entries()]
       .map(([name, dependents]) => ({ name, dependents }))
-      .sort((a, b) => b.dependents - a.dependents)
+    return sortedByDesc(entries, e => e.dependents)
       .slice(0, 10)
   }
 

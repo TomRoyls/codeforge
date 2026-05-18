@@ -5,6 +5,7 @@ import type {
   TableData,
   ListData,
 } from './types.js'
+import { clamp } from '../../utils/math-helpers.js'
 
 const DEFAULT_THEME: RenderTheme = {
   success: '',
@@ -41,7 +42,7 @@ export class OutputRenderer {
     this.buffer.push({
       type: 'heading',
       content: text,
-      options: { level: Math.max(1, Math.min(3, level)) },
+      options: { level: clamp(level, 1, 3) },
     })
   }
 

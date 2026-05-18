@@ -55,8 +55,8 @@ export class UserService extends EventEmitter {
   }
 
   addUser(id: string, name: string, age: number, email: string): void {
-    if (age < 0) throw new Error('Invalid age');
-    if (!email.includes('@')) throw new Error('Invalid email');
+    if (age < 0) throw new Error(`Invalid age: ${age} (must be >= 0)`);
+    if (!email.includes('@')) throw new Error(`Invalid email: '${email}' (must contain @)`);
     this.users.set(id, { name, age, email });
     this.emit('userAdded', id);
   }

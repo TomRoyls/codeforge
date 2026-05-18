@@ -22,11 +22,19 @@ export function getScoreColor(score: number): ChalkColorFunction {
   return chalk.red
 }
 
+const severityColorCache = new Map<string, string>()
+
 export function colorizeSeverity(severity: string): string {
-  if (severity === 'error') return chalk.red(severity)
-  if (severity === 'warning') return chalk.yellow(severity)
-  if (severity === 'info') return chalk.blue(severity)
-  return severity
+  const cached = severityColorCache.get(severity)
+  if (cached !== undefined) return cached
+
+  const colored =
+    severity === 'error' ? chalk.red(severity)
+    : severity === 'warning' ? chalk.yellow(severity)
+    : severity === 'info' ? chalk.blue(severity)
+    : severity
+  severityColorCache.set(severity, colored)
+  return colored
 }
 
 export function getThresholdColor(

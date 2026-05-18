@@ -36,7 +36,8 @@ export class ConfigDiffer {
     const beforeFlat = this.normalizer.flatten(normalizedBefore)
     const afterFlat = this.normalizer.flatten(normalizedAfter)
 
-    const allKeys = new Set([...Object.keys(beforeFlat), ...Object.keys(afterFlat)])
+    const allKeys = new Set(Object.keys(beforeFlat))
+    for (const key of Object.keys(afterFlat)) allKeys.add(key)
     const entries: ConfigDiffEntry[] = []
     let added = 0
     let removed = 0

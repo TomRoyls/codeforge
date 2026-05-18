@@ -6,6 +6,26 @@ import {
   QUALITY_DIMENSIONS,
   GRADE_THRESHOLDS,
 } from './types.js'
+import { roundTo, clamp } from '../../utils/math-helpers.js'
+
+// ─── Scoring Thresholds ───
+const GOOD_DIMENSION_PERCENTAGE = 80
+const POOR_DIMENSION_PERCENTAGE = 40
+const MEDIUM_DIMENSION_PERCENTAGE = 60
+const HIGH_CHANGE_RATE_THRESHOLD = 2
+const CYCLOMATIC_COMPLEXITY_THRESHOLD = 10
+const MAX_CYCLOMATIC_COMPLEXITY_THRESHOLD = 20
+const COGNITIVE_COMPLEXITY_THRESHOLD = 15
+const LONG_FUNCTION_LINE_COUNT = 50
+const LONG_FUNCTION_PENALTY_CAP = 50
+const ANY_TYPE_PERCENT_THRESHOLD = 5
+const ANY_TYPE_PENALTY = 20
+const IMPLICIT_ANY_PENALTY_CAP = 50
+const TYPE_ASSERTION_PENALTY_CAP = 50
+const NON_NULL_ASSERTION_PENALTY_CAP = 50
+const CRITICAL_COVERAGE_THRESHOLD = 40
+const LOW_COVERAGE_THRESHOLD = 60
+const TARGET_COVERAGE_THRESHOLD = 80
 
 export class ScoringEngine {
   private dimensions: QualityDimension[]
@@ -22,7 +42,7 @@ export class ScoringEngine {
     )
 
     const overall = this.calculateOverallScore(dimensionScores)
-    const percentage = Math.round(overall * 100) / 100
+    const percentage = roundTo(overall, 2)
 
     return {
       overall,
@@ -69,7 +89,7 @@ export class ScoringEngine {
         break
     }
 
-    score = Math.max(0, Math.min(dimension.maxScore, score))
+    score = clamp(score, 0, dimension.maxScore)
     const percentage = dimension.maxScore > 0 ? Math.round((score / dimension.maxScore) * 10000) / 100 : 0
 
     return {
@@ -106,11 +126,11 @@ export class ScoringEngine {
     const recommendations: QualityRecommendation[] = []
 
     for (const ds of score.dimensions) {
-      if (ds.percentage < 80) {
+      if (ds.percentage < GOOD_DIMENSION_PERCENTAGE) {
         let priority: QualityRecommendation['priority']
-        if (ds.percentage < 40) {
+        if (ds.percentage < POOR_DIMENSION_PERCENTAGE) {
           priority = 'critical'
-        } else if (ds.percentage < 60) {
+        } else if (ds.percentage < MEDIUM_DIMENSION_PERCENTAGE) {
           priority = 'high'
         } else {
           priority = 'medium'
@@ -185,23 +205,29 @@ export class ScoringEngine {
     }
 
     const scores = snapshots.map((s) => s.score.percentage)
-    const averageScore = scores.reduce((a, b) => a + b, 0) / scores.length
-    const bestScore = Math.max(...scores)
-    const worstScore = Math.min(...scores)
+    let sum = 0
+    let bestScore = scores[0]!
+    let worstScore = scores[0]!
+    for (let i = 0; i < scores.length; i++) {
+      sum += scores[i]!
+      if (scores[i]! > bestScore) bestScore = scores[i]!
+      if (scores[i]! < worstScore) worstScore = scores[i]!
+    }
+    const averageScore = sum / scores.length
 
     let changeRate = 0
     if (snapshots.length >= 2) {
-      const changes: number[] = []
+      let changeSum = 0
       for (let i = 1; i < snapshots.length; i++) {
-        changes.push(snapshots[i]!.score.percentage - snapshots[i - 1]!.score.percentage)
+        changeSum += snapshots[i]!.score.percentage - snapshots[i - 1]!.score.percentage
       }
-      changeRate = changes.reduce((a, b) => a + b, 0) / changes.length
+      changeRate = changeSum / (snapshots.length - 1)
     }
 
     let direction: QualityTrend['direction']
-    if (changeRate > 2) {
+    if (changeRate > HIGH_CHANGE_RATE_THRESHOLD) {
       direction = 'improving'
-    } else if (changeRate < -2) {
+    } else if (changeRate < -HIGH_CHANGE_RATE_THRESHOLD) {
       direction = 'declining'
     } else {
       direction = 'stable'
@@ -213,11 +239,11 @@ export class ScoringEngine {
     return {
       snapshots,
       direction,
-      changeRate: Math.round(changeRate * 100) / 100,
+      changeRate: roundTo(changeRate, 2),
       period: { from: fromTime, to: toTime },
-      averageScore: Math.round(averageScore * 100) / 100,
-      bestScore: Math.round(bestScore * 100) / 100,
-      worstScore: Math.round(worstScore * 100) / 100,
+      averageScore: roundTo(averageScore, 2),
+      bestScore: roundTo(bestScore, 2),
+      worstScore: roundTo(worstScore, 2),
     }
   }
 
@@ -273,11 +299,11 @@ export class ScoringEngine {
     let score = 100
 
     const avgCyclomatic = metrics['avgCyclomatic'] ?? 0
-    if (avgCyclomatic > 10) {
+    if (avgCyclomatic > CYCLOMATIC_COMPLEXITY_THRESHOLD) {
       score -= 10
       findings.push({
         type: 'negative',
-        message: `Average cyclomatic complexity (${avgCyclomatic}) exceeds threshold (10)`,
+        message: `Average cyclomatic complexity (${avgCyclomatic}) exceeds threshold (${CYCLOMATIC_COMPLEXITY_THRESHOLD})`,
         impact: -10,
       })
     } else {
@@ -289,32 +315,32 @@ export class ScoringEngine {
     }
 
     const maxCyclomatic = metrics['maxCyclomatic'] ?? 0
-    if (maxCyclomatic > 20) {
+    if (maxCyclomatic > MAX_CYCLOMATIC_COMPLEXITY_THRESHOLD) {
       score -= 15
       findings.push({
         type: 'negative',
-        message: `Max cyclomatic complexity (${maxCyclomatic}) exceeds threshold (20)`,
+        message: `Max cyclomatic complexity (${maxCyclomatic}) exceeds threshold (${MAX_CYCLOMATIC_COMPLEXITY_THRESHOLD})`,
         impact: -15,
       })
     }
 
     const avgCognitive = metrics['avgCognitive'] ?? 0
-    if (avgCognitive > 15) {
+    if (avgCognitive > COGNITIVE_COMPLEXITY_THRESHOLD) {
       score -= 10
       findings.push({
         type: 'negative',
-        message: `Average cognitive complexity (${avgCognitive}) exceeds threshold (15)`,
+        message: `Average cognitive complexity (${avgCognitive}) exceeds threshold (${COGNITIVE_COMPLEXITY_THRESHOLD})`,
         impact: -10,
       })
     }
 
     const longFunctions = metrics['longFunctions'] ?? 0
     if (longFunctions > 0) {
-      const penalty = Math.min(longFunctions * 5, 50)
+      const penalty = Math.min(longFunctions * 5, LONG_FUNCTION_PENALTY_CAP)
       score -= penalty
       findings.push({
         type: 'negative',
-        message: `${longFunctions} functions exceed 50 lines`,
+        message: `${longFunctions} functions exceed ${LONG_FUNCTION_LINE_COUNT} lines`,
         impact: -penalty,
       })
     }
@@ -326,12 +352,12 @@ export class ScoringEngine {
     let score = 100
 
     const anyPercent = metrics['anyPercent'] ?? 0
-    if (anyPercent > 5) {
-      score -= 20
+    if (anyPercent > ANY_TYPE_PERCENT_THRESHOLD) {
+      score -= ANY_TYPE_PENALTY
       findings.push({
         type: 'negative',
-        message: `Any type usage (${anyPercent}%) exceeds threshold (5%)`,
-        impact: -20,
+        message: `Any type usage (${anyPercent}%) exceeds threshold (${ANY_TYPE_PERCENT_THRESHOLD}%)`,
+        impact: -ANY_TYPE_PENALTY,
       })
     } else {
       findings.push({
@@ -343,7 +369,7 @@ export class ScoringEngine {
 
     const implicitAny = metrics['implicitAny'] ?? 0
     if (implicitAny > 0) {
-      const penalty = Math.min(implicitAny * 5, 50)
+      const penalty = Math.min(implicitAny * 5, IMPLICIT_ANY_PENALTY_CAP)
       score -= penalty
       findings.push({
         type: 'negative',
@@ -354,7 +380,7 @@ export class ScoringEngine {
 
     const typeAssertions = metrics['typeAssertions'] ?? 0
     if (typeAssertions > 0) {
-      const penalty = Math.min(typeAssertions * 3, 50)
+      const penalty = Math.min(typeAssertions * 3, TYPE_ASSERTION_PENALTY_CAP)
       score -= penalty
       findings.push({
         type: 'negative',
@@ -365,7 +391,7 @@ export class ScoringEngine {
 
     const nonNullAssertions = metrics['nonNullAssertions'] ?? 0
     if (nonNullAssertions > 0) {
-      const penalty = Math.min(nonNullAssertions * 2, 50)
+      const penalty = Math.min(nonNullAssertions * 2, NON_NULL_ASSERTION_PENALTY_CAP)
       score -= penalty
       findings.push({
         type: 'negative',
@@ -539,31 +565,31 @@ export class ScoringEngine {
 
     const coverage = metrics['coverage'] ?? 100
 
-    if (coverage < 40) {
+    if (coverage < CRITICAL_COVERAGE_THRESHOLD) {
       score -= 40
       findings.push({
         type: 'negative',
-        message: `Test coverage (${coverage}%) is critically low (<40%)`,
+        message: `Test coverage (${coverage}%) is critically low (<${CRITICAL_COVERAGE_THRESHOLD}%)`,
         impact: -40,
       })
-    } else if (coverage < 60) {
+    } else if (coverage < LOW_COVERAGE_THRESHOLD) {
       score -= 30
       findings.push({
         type: 'negative',
-        message: `Test coverage (${coverage}%) is below recommended level (<60%)`,
+        message: `Test coverage (${coverage}%) is below recommended level (<${LOW_COVERAGE_THRESHOLD}%)`,
         impact: -30,
       })
-    } else if (coverage < 80) {
+    } else if (coverage < TARGET_COVERAGE_THRESHOLD) {
       score -= 20
       findings.push({
         type: 'negative',
-        message: `Test coverage (${coverage}%) is below target (<80%)`,
+        message: `Test coverage (${coverage}%) is below target (<${TARGET_COVERAGE_THRESHOLD}%)`,
         impact: -20,
       })
     } else {
       findings.push({
         type: 'positive',
-        message: `Test coverage (${coverage}%) meets target (>=80%)`,
+        message: `Test coverage (${coverage}%) meets target (>=${TARGET_COVERAGE_THRESHOLD}%)`,
         impact: 0,
       })
     }
@@ -616,7 +642,7 @@ export class ScoringEngine {
       },
     }
 
-    const level = percentage < 40 ? 'high' : percentage < 60 ? 'medium' : 'low'
+    const level = percentage < POOR_DIMENSION_PERCENTAGE ? 'high' : percentage < MEDIUM_DIMENSION_PERCENTAGE ? 'medium' : 'low'
     const dimensionSuggestions = suggestions[dimensionId]
     if (dimensionSuggestions) {
       return dimensionSuggestions[level] ?? 'Review and improve this area.'

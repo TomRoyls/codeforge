@@ -75,10 +75,16 @@ export class BenchmarkRunner {
       return { min: 0, max: 0, avg: 0, median: 0, stddev: 0, sum: 0 }
     }
 
-    const sum = times.reduce((a, b) => a + b, 0)
+    let sum = 0
+    let min = times[0]!
+    let max = times[0]!
+    for (let i = 0; i < times.length; i++) {
+      const t = times[i]!
+      sum += t
+      if (t < min) min = t
+      if (t > max) max = t
+    }
     const avg = sum / times.length
-    const min = Math.min(...times)
-    const max = Math.max(...times)
 
     const sorted = [...times].sort((a, b) => a - b)
     const mid = Math.floor(sorted.length / 2)

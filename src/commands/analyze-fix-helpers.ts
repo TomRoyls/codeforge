@@ -11,6 +11,7 @@ import { formatDiffForConsole, renderTextChangesAsDiff } from '../fix/diff-rende
 import { applyFixesToFile, type RuleWithFix } from '../fix/fixer.js'
 import { applyFixesToFiles } from '../utils/command-helpers.js'
 import { logger } from '../utils/logger.js'
+import { append } from '../utils/map-helpers.js'
 
 // ============================================================================
 // Types and Interfaces
@@ -55,12 +56,7 @@ export async function applyFixes(options: ApplyFixesOptions): Promise<FixResult>
 
   const violationsByFile = new Map<string, RuleViolation[]>()
   for (const violation of allViolations) {
-    const existing = violationsByFile.get(violation.filePath)
-    if (existing) {
-      existing.push(violation)
-    } else {
-      violationsByFile.set(violation.filePath, [violation])
-    }
+    append(violationsByFile, violation.filePath, violation)
   }
 
   const limit = pLimit(concurrency)

@@ -1,4 +1,5 @@
 import type { DependencyGraph } from './types.js'
+import { increment, append } from '../../utils/map-helpers.js'
 
 export class GraphRenderer {
   toDot(graph: DependencyGraph): string {
@@ -74,12 +75,7 @@ export class GraphRenderer {
     }
 
     for (const edge of graph.edges) {
-      const existing = adjacency.get(edge.from)
-      if (existing) {
-        existing.push(edge.to)
-      } else {
-        adjacency.set(edge.from, [edge.to])
-      }
+      append(adjacency, edge.from, edge.to)
     }
 
     return adjacency
@@ -106,8 +102,8 @@ export class GraphRenderer {
       degrees.set(nodeId, 0)
     }
     for (const edge of graph.edges) {
-      degrees.set(edge.from, (degrees.get(edge.from) ?? 0) + 1)
-      degrees.set(edge.to, (degrees.get(edge.to) ?? 0) + 1)
+      increment(degrees, edge.from)
+      increment(degrees, edge.to)
     }
     return Array.from(graph.nodes.keys()).sort((a, b) => (degrees.get(b) ?? 0) - (degrees.get(a) ?? 0))
   }

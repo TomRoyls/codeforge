@@ -1,4 +1,5 @@
 import type { WaveletStackOptions } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class WaveletStack<T = unknown> {
   private items: T[] = []
@@ -11,7 +12,7 @@ export class WaveletStack<T = unknown> {
 
   push(item: T): void {
     this.items.push(item)
-    this.counts.set(item, (this.counts.get(item) ?? 0) + 1)
+    increment(this.counts, item)
     if (this.items.length > this._capacity) {
       this._capacity = this.items.length * 2
     }

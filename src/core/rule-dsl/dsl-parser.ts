@@ -8,6 +8,7 @@ import type {
   DSLSeverity,
   OperatorType,
 } from './types.js'
+import { isBlank } from '../../utils/string-helpers.js'
 
 const VALID_OPERATORS: ReadonlySet<string> = new Set<string>([
   'gt',
@@ -140,10 +141,10 @@ export class DSLParser {
     const errors: DSLParseError[] = []
     const r = rule as Record<string, unknown>
 
-    if (typeof r['id'] !== 'string' || r['id'].trim().length === 0) {
+    if (typeof r['id'] !== 'string' || isBlank(r['id'])) {
       errors.push({ line: 0, column: 0, message: 'Rule must have a non-empty "id" string' })
     }
-    if (typeof r['name'] !== 'string' || r['name'].trim().length === 0) {
+    if (typeof r['name'] !== 'string' || isBlank(r['name'])) {
       errors.push({ line: 0, column: 0, message: 'Rule must have a non-empty "name" string' })
     }
     if (typeof r['condition'] !== 'object' || r['condition'] === null) {
@@ -151,7 +152,7 @@ export class DSLParser {
     } else {
       errors.push(...this.validateCondition(r['condition'] as DSLCondition))
     }
-    if (typeof r['message'] !== 'string' || r['message'].trim().length === 0) {
+    if (typeof r['message'] !== 'string' || isBlank(r['message'])) {
       errors.push({ line: 0, column: 0, message: 'Rule must have a non-empty "message" string' })
     }
     if (r['severity'] !== undefined && !VALID_SEVERITIES.has(r['severity'] as string)) {

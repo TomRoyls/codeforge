@@ -2,157 +2,120 @@ export interface LRUCacheOptions {
   maxSize: number
 }
 
-interface LRUNode<K, V> {
-  key: K
-  next: LRUNode<K, V> | null
-  prev: LRUNode<K, V> | null
-  value: V
+export interface LRUCacheStats {
+  size: number
+  maxSize: number
+  hits: number
+  misses: number
+  evictions: number
+  hitRate: number
 }
 
 export class LRUCache<K, V> {
-  private cache: Map<K, LRUNode<K, V>>
-  private head: LRUNode<K, V> | null
-  private maxSize: number
-  private tail: LRUNode<K, V> | null
+  private cache: Map<K, V> = new Map()
+  private _maxSize: number
+  private _hits: number = 0
+  private _misses: number = 0
+  private _evictions: number = 0
 
-  constructor(options: LRUCacheOptions) {
-    this.cache = new Map()
-    this.head = null
-    this.tail = null
-    this.maxSize = options.maxSize
+  constructor(maxSize: number) {
+    if (maxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${maxSize}`)
+    this._maxSize = maxSize
   }
 
-  get size(): number {
-    return this.cache.size
-  }
-
-  clear(): void {
-    this.cache.clear()
-    this.head = null
-    this.tail = null
-  }
-
-  delete(key: K): boolean {
-    const node = this.cache.get(key)
-    if (!node) return false
-
+  get(key: K): V | undefined {
+    if (!this.cache.has(key)) {
+      this._misses++
+      return undefined
+    }
+    const value = this.cache.get(key)!
     this.cache.delete(key)
-    this.removeNode(node)
-
-    return true
+    this.cache.set(key, value)
+    this._hits++
+    return value
   }
 
-  entries(): IterableIterator<[K, V]> {
-    const entries: [K, V][] = []
-    for (const [key, node] of this.cache.entries()) {
-      entries.push([key, node.value])
+  set(key: K, value: V): void {
+    if (this.cache.has(key)) {
+      this.cache.delete(key)
+    } else if (this.cache.size >= this._maxSize) {
+      const firstKey = this.cache.keys().next()
+      if (!firstKey.done) {
+        this.cache.delete(firstKey.value)
+        this._evictions++
+      }
     }
-
-    return entries[Symbol.iterator]()
-  }
-
-  forEach(callback: (value: V, key: K) => void): void {
-    for (const [key, node] of this.cache.entries()) {
-      callback(node.value, key)
-    }
-  }
-
-  get(key: K): undefined | V {
-    const node = this.cache.get(key)
-    if (!node) return undefined
-
-    this.moveToHead(node)
-    return node.value
-  }
-
-  getOrDefault(key: K, defaultValue: V): V {
-    const value = this.get(key)
-    return value === undefined ? defaultValue : value
+    this.cache.set(key, value)
   }
 
   has(key: K): boolean {
     return this.cache.has(key)
   }
 
-  keys(): IterableIterator<K> {
-    return this.cache.keys()
+  delete(key: K): boolean {
+    return this.cache.delete(key)
   }
 
-  set(key: K, value: V): void {
-    const existing = this.cache.get(key)
-    if (existing) {
-      existing.value = value
-      this.moveToHead(existing)
-      return
-    }
-
-    if (this.cache.size >= this.maxSize) {
-      this.evictLRU()
-    }
-
-    const node: LRUNode<K, V> = {
-      key,
-      next: null,
-      prev: null,
-      value,
-    }
-
-    this.cache.set(key, node)
-    this.prependNode(node)
+  get size(): number {
+    return this.cache.size
   }
 
-  values(): IterableIterator<V> {
-    const values: V[] = []
-    for (const [, node] of this.cache) {
-      values.push(node.value)
-    }
-
-    return values[Symbol.iterator]()
+  get maxSize(): number {
+    return this._maxSize
   }
 
-  private evictLRU(): void {
-    if (!this.tail) return
-
-    this.cache.delete(this.tail.key)
-    this.removeNode(this.tail)
+  get isEmpty(): boolean {
+    return this.cache.size === 0
   }
 
-  private moveToHead(node: LRUNode<K, V>): void {
-    if (node === this.head) return
-
-    this.removeNode(node)
-    this.prependNode(node)
+  peek(key: K): V | undefined {
+    return this.cache.get(key)
   }
 
-  private prependNode(node: LRUNode<K, V>): void {
-    node.prev = null
-    node.next = this.head
+  clear(): void {
+    this.cache.clear()
+    this._hits = 0
+    this._misses = 0
+    this._evictions = 0
+  }
 
-    if (this.head) {
-      this.head.prev = node
-    }
+  keys(): K[] {
+    return [...this.cache.keys()]
+  }
 
-    this.head = node
+  values(): V[] {
+    return [...this.cache.values()]
+  }
 
-    if (!this.tail) {
-      this.tail = node
+  entries(): [K, V][] {
+    return [...this.cache.entries()]
+  }
+
+  forEach(callback: (value: V, key: K) => void): void {
+    this.cache.forEach((value, key) => callback(value, key))
+  }
+
+  stats(): LRUCacheStats {
+    const total = this._hits + this._misses
+    return {
+      size: this.cache.size,
+      maxSize: this._maxSize,
+      hits: this._hits,
+      misses: this._misses,
+      evictions: this._evictions,
+      hitRate: total === 0 ? 0 : this._hits / total,
     }
   }
 
-  private removeNode(node: LRUNode<K, V>): void {
-    if (node.prev) {
-      node.prev.next = node.next
-    } else {
-      this.head = node.next
+  resize(newMaxSize: number): void {
+    if (newMaxSize < 1) throw new RangeError(`maxSize must be >= 1, got ${newMaxSize}`)
+    while (this.cache.size > newMaxSize) {
+      const firstKey = this.cache.keys().next()
+      if (!firstKey.done) {
+        this.cache.delete(firstKey.value)
+        this._evictions++
+      }
     }
-
-    if (node.next) {
-      node.next.prev = node.prev
-    } else {
-      this.tail = node.prev
-    }
-
-    node.prev = null
-    node.next = null
+    this._maxSize = newMaxSize
   }
 }

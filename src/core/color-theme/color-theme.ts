@@ -1,5 +1,6 @@
 import type { ThemeConfig, ThemeDefinition, ThemeColors } from './types.js'
 import { PRESET_THEMES } from './types.js'
+import { stripAnsi } from '../../utils/string-helpers.js'
 
 export class ColorTheme {
   private themes: Map<string, ThemeDefinition>
@@ -73,7 +74,7 @@ export class ColorTheme {
   }
 
   static stripAnsi(text: string): string {
-    return text.replace(/\x1b\[[0-9;]*m/g, '')
+    return stripAnsi(text)
   }
 
   getConfig(): ThemeConfig {

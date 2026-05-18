@@ -22,7 +22,7 @@ export class CountingSort4 {
     for (let i = 0; i < this.array.length; i++) {
       const value = this.array[i]!;
       const index = value - this.minValue!;
-      this.counts[index]! = (this.counts[index]! || 0) + 1;
+      this.counts[index]! = (this.counts[index]! ?? 0) + 1;
     }
   }
 
@@ -193,7 +193,7 @@ export class CountingSort4 {
 
     for (let i = 0; i < arr.length; i++) {
       const value = arr[i]!;
-      const current = map.get(value) || 0;
+      const current = map.get(value) ?? 0;
       map.set(value, current + 1);
     }
 
@@ -216,7 +216,7 @@ export class CountingSort4 {
   }
 
   getRange(): number {
-    return this.maxValue - (this.minValue || 0) + 1;
+    return this.maxValue - (this.minValue ?? 0) + 1;
   }
 
   toArray(): number[] {

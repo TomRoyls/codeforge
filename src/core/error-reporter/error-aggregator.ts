@@ -1,4 +1,6 @@
 import type { ErrorEntry, ErrorGroup, ErrorSummary, ErrorReport } from './types.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class ErrorAggregator {
   aggregate(entries: ErrorEntry[]): ErrorGroup[] {
@@ -25,8 +27,7 @@ export class ErrorAggregator {
       })
     }
 
-    result.sort((a, b) => b.count - a.count)
-    return result
+    return sortedByDesc(result, r => r.count)
   }
 
   summarize(entries: ErrorEntry[]): ErrorSummary {
@@ -40,8 +41,8 @@ export class ErrorAggregator {
     let suggestions = 0
 
     for (const entry of entries) {
-      byRule.set(entry.ruleId, (byRule.get(entry.ruleId) ?? 0) + 1)
-      byFile.set(entry.filePath, (byFile.get(entry.filePath) ?? 0) + 1)
+      increment(byRule, entry.ruleId)
+      increment(byFile, entry.filePath)
       if (entry.fix !== undefined) fixableCount++
 
       switch (entry.severity) {
@@ -97,16 +98,16 @@ export class ErrorAggregator {
   getTopFiles(entries: ErrorEntry[], count: number): string[] {
     const fileCounts = new Map<string, number>()
     for (const entry of entries) {
-      fileCounts.set(entry.filePath, (fileCounts.get(entry.filePath) ?? 0) + 1)
+      increment(fileCounts, entry.filePath)
     }
-    const sorted = Array.from(fileCounts.entries()).sort((a, b) => b[1] - a[1])
+    const sorted = [...fileCounts].sort((a, b) => b[1] - a[1])
     return sorted.slice(0, count).map(([file]) => file)
   }
 
   getHeatmap(entries: ErrorEntry[]): Map<string, number> {
     const heatmap = new Map<string, number>()
     for (const entry of entries) {
-      heatmap.set(entry.filePath, (heatmap.get(entry.filePath) ?? 0) + 1)
+      increment(heatmap, entry.filePath)
     }
     return heatmap
   }

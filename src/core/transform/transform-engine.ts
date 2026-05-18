@@ -1,5 +1,6 @@
 import type { Transform, TransformResult, TransformRecipe, TransformConfig, TextChange, TransformReport } from './types.js'
 import { DEFAULT_TRANSFORM_CONFIG } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 export class TransformEngine {
   private config: TransformConfig
@@ -137,10 +138,9 @@ export class TransformEngine {
   }
 
   validateChanges(original: string, changes: TextChange[]): boolean {
-    const sorted = [...changes].sort((a, b) => a.startLine - b.startLine)
+    const sorted = sortedBy(changes, c => c.startLine)
 
-    for (let i = 0; i < sorted.length; i++) {
-      const current = sorted[i]!
+    for (const current of sorted) {
       if (current.startLine < 1 || current.endLine < current.startLine) return false
     }
 

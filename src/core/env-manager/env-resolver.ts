@@ -1,5 +1,7 @@
 import type { EnvConfig, EnvName } from './types.js'
 
+const envPatternCache = new Map<string, RegExp>()
+
 export class EnvResolver {
   resolve(configs: EnvConfig[], envName: EnvName): Record<string, string> {
     const chain = this.resolveChain(configs, envName)
@@ -60,7 +62,11 @@ export class EnvResolver {
   }
 
   validatePattern(value: string, pattern: string): boolean {
-    const regex = new RegExp(pattern)
+    let regex = envPatternCache.get(pattern)
+    if (!regex) {
+      regex = new RegExp(pattern)
+      envPatternCache.set(pattern, regex)
+    }
     return regex.test(value)
   }
 }

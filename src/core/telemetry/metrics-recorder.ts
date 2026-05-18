@@ -1,4 +1,6 @@
 import type { MetricPoint, MetricSummary } from './types.js'
+import { percentile } from '../stats-aggregator/percentile.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class MetricsRecorder {
   private metrics: Map<string, MetricPoint[]> = new Map()
@@ -104,12 +106,7 @@ export class MetricsRecorder {
       tags: { ...tags },
       type,
     }
-    const existing = this.metrics.get(name)
-    if (existing) {
-      existing.push(point)
-    } else {
-      this.metrics.set(name, [point])
-    }
+    append(this.metrics, name, point)
   }
 
   private computeSummary(
@@ -118,8 +115,11 @@ export class MetricsRecorder {
   ): MetricSummary {
     const values = points.map((p) => p.value)
     const sorted = [...values].sort((a, b) => a - b)
+    let sum = 0
+    for (let i = 0; i < sorted.length; i++) {
+      sum += sorted[i]!
+    }
     const count = sorted.length
-    const sum = sorted.reduce((a, b) => a + b, 0)
     const min = sorted[0]!
     const max = sorted[count - 1]!
     const mean = sum / count
@@ -131,19 +131,9 @@ export class MetricsRecorder {
       min,
       max,
       mean,
-      p50: this.percentile(sorted, 50),
-      p95: this.percentile(sorted, 95),
-      p99: this.percentile(sorted, 99),
+      p50: percentile(sorted, 50),
+      p95: percentile(sorted, 95),
+      p99: percentile(sorted, 99),
     }
-  }
-
-  private percentile(sorted: number[], p: number): number {
-    if (sorted.length === 1) return sorted[0]!
-    const index = (p / 100) * (sorted.length - 1)
-    const lower = Math.floor(index)
-    const upper = Math.ceil(index)
-    if (lower === upper) return sorted[lower]!
-    const weight = index - lower
-    return sorted[lower]! * (1 - weight) + sorted[upper]! * weight
   }
 }

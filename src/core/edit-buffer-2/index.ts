@@ -9,6 +9,8 @@ type UndoAction = {
   previousCursor: number;
 };
 
+import { clamp } from '../../utils/math-helpers.js'
+
 export class EditBuffer2 {
   private content: string = '';
   private cursor: number = 0;
@@ -65,7 +67,7 @@ export class EditBuffer2 {
   }
 
   moveCursor(position: number): void {
-    this.cursor = Math.max(0, Math.min(position, this.content.length));
+    this.cursor = clamp(position, 0, this.content.length);
   }
 
   getCursor(): number {

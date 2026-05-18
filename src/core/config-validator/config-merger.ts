@@ -4,6 +4,7 @@ import type {
   MergeResult,
 } from './types.js'
 import { DEFAULT_MERGE_STRATEGY } from './types.js'
+import { unique } from '../../utils/array-helpers.js'
 
 export class ConfigMerger {
   merge(
@@ -75,7 +76,7 @@ export class ConfigMerger {
             strategy: 'append',
           })
         } else if (strategy.arrays === 'merge') {
-          const merged = [...new Set([...baseValue, ...overrideValue])]
+          const merged = unique([...baseValue, ...overrideValue])
           config[key] = merged
           conflicts.push({
             path,
@@ -194,7 +195,7 @@ export class ConfigMerger {
         if (strategy.arrays === 'merge') {
           return {
             ...conflict,
-            resolvedValue: [...new Set([...baseObj, ...overrideObj])],
+            resolvedValue: unique([...baseObj, ...overrideObj]),
             strategy: 'merge-unique',
           }
         }

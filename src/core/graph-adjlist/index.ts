@@ -67,7 +67,7 @@ export class GraphAdjList<T> {
 
   getNeighbors(v: T): T[] {
     const neighbors = this.adjacencyList.get(v);
-    return neighbors ? Array.from(neighbors.keys()) : [];
+    return neighbors ? [...neighbors.keys()] : [];
   }
 
   getEdgeWeight(from: T, to: T): number | undefined {
@@ -82,10 +82,8 @@ export class GraphAdjList<T> {
   getEdges(): Array<[from: T, to: T, weight: number]> {
     const edges: Array<[T, T, number]> = [];
 
-    const adjacencyList = Array.from(this.adjacencyList.entries());
-    for (const [from, neighbors] of adjacencyList) {
-      const neighborEntries = Array.from(neighbors.entries());
-      for (const [to, weight] of neighborEntries) {
+    for (const [from, neighbors] of this.adjacencyList) {
+      for (const [to, weight] of neighbors) {
         if (this.directed || from < to || (!this.directed && String(from) <= String(to))) {
           edges.push([from, to, weight]);
         }
@@ -102,9 +100,8 @@ export class GraphAdjList<T> {
   get edgeCount(): number {
     let count = 0;
 
-    const adjacencyList = Array.from(this.adjacencyList.entries());
-    for (const [from, neighbors] of adjacencyList) {
-      const neighborKeys = Array.from(neighbors.keys());
+    for (const [from, neighbors] of this.adjacencyList) {
+      const neighborKeys = [...neighbors.keys()];
       for (const to of neighborKeys) {
         if (this.directed || String(from) <= String(to)) {
           count++;
@@ -218,7 +215,7 @@ export class GraphAdjList<T> {
   private isWeighted(): boolean {
     const neighborsList = Array.from(this.adjacencyList.values());
     for (const neighbors of neighborsList) {
-      const weightList = Array.from(neighbors.values());
+      const weightList = [...neighbors.values()];
       for (const weight of weightList) {
         if (weight !== 1) {
           return true;

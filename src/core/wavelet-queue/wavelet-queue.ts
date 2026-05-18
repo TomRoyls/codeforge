@@ -1,4 +1,5 @@
 import type { WaveletQueueOptions } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class WaveletQueue<T extends string | number = number> {
   private buffer: (T | undefined)[]
@@ -49,7 +50,7 @@ export class WaveletQueue<T extends string | number = number> {
     this.tail = (this.tail + 1) % this._capacity
     this._size++
     this.dirty++
-    this.freqMap.set(item, (this.freqMap.get(item) ?? 0) + 1)
+    increment(this.freqMap, item)
     if (!this.alphabetMap.has(item)) {
       const idx = this.alphabetCount
       this.alphabetMap.set(item, idx)

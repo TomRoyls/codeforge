@@ -1,8 +1,9 @@
 import type { BlameLine } from './types.js'
+import { isBlank } from '../../utils/string-helpers.js'
 
 export class BlameParser {
   parseBlameOutput(output: string): BlameLine[] {
-    if (!output || output.trim().length === 0) {
+    if (isBlank(output)) {
       return []
     }
 

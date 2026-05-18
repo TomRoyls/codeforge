@@ -1,6 +1,7 @@
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { TrendConfig, TrendSnapshot } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 export class TrendStore {
   private config: TrendConfig
@@ -43,8 +44,7 @@ export class TrendStore {
       }
     }
 
-    snapshots.sort((a, b) => a.timestamp - b.timestamp)
-    return snapshots
+    return sortedBy(snapshots, s => s.timestamp)
   }
 
   getLatestSnapshot(): TrendSnapshot | null {
@@ -102,8 +102,7 @@ export class TrendStore {
       }
     }
 
-    snapshots.sort((a, b) => a.timestamp - b.timestamp)
-    return snapshots
+    return sortedBy(snapshots, s => s.timestamp)
   }
 
   private isValidSnapshot(obj: unknown): obj is TrendSnapshot {

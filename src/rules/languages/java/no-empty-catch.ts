@@ -36,7 +36,7 @@ export function analyzeNoEmptyCatch(code: string, filePath: string = '<input>'):
   let multiMatch: RegExpExecArray | null
   while ((multiMatch = multiLineCatchRegex.exec(fullCode)) !== null) {
     const before = fullCode.slice(0, multiMatch.index)
-    const lineNum = (before.match(/\n/g) || []).length + 1
+    const lineNum = (before.match(/\n/g) ?? []).length + 1
     const alreadyReported = violations.some((v) => v.range.start.line === lineNum)
     if (!alreadyReported) {
       const column = multiMatch.index - before.lastIndexOf('\n') - 1

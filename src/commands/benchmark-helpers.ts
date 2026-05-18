@@ -53,12 +53,20 @@ export async function benchmarkRule(
     times.push(endTime - startTime)
   }
 
-  const totalTime = times.reduce((sum, t) => sum + t, 0)
+  let totalTime = 0
+  let maxTime = times[0]!
+  let minTime = times[0]!
+  for (let i = 0; i < times.length; i++) {
+    const t = times[i]!
+    totalTime += t
+    if (t > maxTime) maxTime = t
+    if (t < minTime) minTime = t
+  }
 
   return {
     avgTime: totalTime / times.length,
-    maxTime: Math.max(...times),
-    minTime: Math.min(...times),
+    maxTime,
+    minTime,
     ruleId,
     runCount: iterations,
     totalTime,

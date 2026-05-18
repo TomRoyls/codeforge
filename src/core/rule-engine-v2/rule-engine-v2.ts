@@ -8,6 +8,8 @@ import type {
 import { RuleRegistryV2 } from './rule-registry-v2.js'
 import { RuleComposer } from './rule-composer.js'
 
+const ruleV2PatternCache = new Map<string, RegExp>()
+
 interface BuiltinPattern {
   pattern: RegExp
   message: string
@@ -207,7 +209,11 @@ export class RuleEngineV2 {
         const customPattern = rule.options['pattern'] as string | undefined
         if (customPattern) {
           try {
-            const regex = new RegExp(customPattern, 'g')
+            let regex = ruleV2PatternCache.get(customPattern)
+            if (!regex) {
+              regex = new RegExp(customPattern, 'g')
+              ruleV2PatternCache.set(customPattern, regex)
+            }
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i]!
               regex.lastIndex = 0
@@ -231,10 +237,18 @@ export class RuleEngineV2 {
     }
 
     const duration = performance.now() - start
+    let errors = 0
+    let warnings = 0
+    let infos = 0
+    for (const v of violations) {
+      if (v.severity === 'error') errors++
+      else if (v.severity === 'warn') warnings++
+      else if (v.severity === 'info') infos++
+    }
     const stats = {
-      errors: violations.filter((v) => v.severity === 'error').length,
-      warnings: violations.filter((v) => v.severity === 'warn').length,
-      info: violations.filter((v) => v.severity === 'info').length,
+      errors,
+      warnings,
+      info: infos,
     }
 
     this.totalRuns++

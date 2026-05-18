@@ -14,7 +14,7 @@ export class K2Tree2 {
 
     private validateBounds(row: number, col: number): void {
         if (row < 0 || row >= this.size || col < 0 || col >= this.size) {
-            throw new Error('Index out of bounds');
+            throw new Error(`Index out of bounds: row=${row}, col=${col}, size=${this.size}`);
         }
     }
 
@@ -144,7 +144,7 @@ export class K2Tree2 {
 
     row(row: number): number[] {
         if (row < 0 || row >= this.size) {
-            throw new Error('Index out of bounds');
+            throw new Error(`Index out of bounds: row=${row}, size=${this.size}`);
         }
         const result: number[] = [];
         for (let col = 0; col < this.size; col++) {
@@ -157,7 +157,7 @@ export class K2Tree2 {
 
     col(col: number): number[] {
         if (col < 0 || col >= this.size) {
-            throw new Error('Index out of bounds');
+            throw new Error(`Index out of bounds: col=${col}, size=${this.size}`);
         }
         const result: number[] = [];
         for (let row = 0; row < this.size; row++) {

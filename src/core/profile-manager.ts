@@ -162,8 +162,8 @@ export class ProfileManager {
     let parsed: unknown
     try {
       parsed = JSON.parse(json)
-    } catch {
-      throw new Error('Invalid JSON')
+    } catch (e) {
+      throw new Error(`Invalid JSON: ${e instanceof Error ? e.message : String(e)}`)
     }
     const result = validateProfile(parsed)
     if (!result.valid) {

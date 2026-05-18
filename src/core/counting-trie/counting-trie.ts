@@ -289,9 +289,13 @@ export class CountingTrie {
     const depths: number[] = []
     this.collectDepths(this.root, 0, depths)
     if (depths.length === 0) return { avgDepth: 0, maxDepth: 0 }
-    const maxDepth = Math.max(...depths)
-    const avgDepth = depths.reduce((a, b) => a + b, 0) / depths.length
-    return { avgDepth, maxDepth }
+    let maxDepth = 0
+    let depthSum = 0
+    for (let i = 0; i < depths.length; i++) {
+      depthSum += depths[i]!
+      if (depths[i]! > maxDepth) maxDepth = depths[i]!
+    }
+    return { avgDepth: depthSum / depths.length, maxDepth }
   }
 
   private collectDepths(node: CountingTrieNode, depth: number, result: number[]): void {

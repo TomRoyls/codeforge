@@ -209,7 +209,13 @@ export class ProfileOptimizer {
     const totalMemory = snapshot.entries.reduce((sum, e) => sum + e.memory, 0)
     const totalCalls = snapshot.entries.reduce((sum, e) => sum + e.calls, 0)
     const avgDuration = totalEntries === 0 ? 0 : totalDuration / totalEntries
-    const maxDuration = totalEntries === 0 ? 0 : Math.max(...snapshot.entries.map((e) => e.duration))
+    let maxDuration = 0
+    if (totalEntries > 0) {
+      maxDuration = snapshot.entries[0]!.duration
+      for (let i = 1; i < snapshot.entries.length; i++) {
+        if (snapshot.entries[i]!.duration > maxDuration) maxDuration = snapshot.entries[i]!.duration
+      }
+    }
 
     const categories: Record<string, number> = {}
     for (const entry of snapshot.entries) {
@@ -262,7 +268,7 @@ export class ProfileOptimizer {
       }
     }
 
-    const entries: ProfileEntry[] = Array.from(entryMap.entries()).map(([name, data]) => ({
+    const entries: ProfileEntry[] = [...entryMap].map(([name, data]) => ({
       name,
       duration: data.duration / data.count,
       calls: data.calls / data.count,

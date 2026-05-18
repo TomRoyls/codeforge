@@ -36,13 +36,17 @@ export interface ComplexityResult {
 
 const LOGICAL_OPERATORS = new Set([SyntaxKind.AmpersandAmpersandToken, SyntaxKind.BarBarToken])
 
+const LOW_COMPLEXITY_THRESHOLD = 5
+const MODERATE_COMPLEXITY_THRESHOLD = 10
+const HIGH_COMPLEXITY_THRESHOLD = 20
+
 /**
  * @stable
  */
 export function getComplexityCategory(complexity: number): ComplexityCategory {
-  if (complexity <= 5) return 'low'
-  if (complexity <= 10) return 'moderate'
-  if (complexity <= 20) return 'high'
+  if (complexity <= LOW_COMPLEXITY_THRESHOLD) return 'low'
+  if (complexity <= MODERATE_COMPLEXITY_THRESHOLD) return 'moderate'
+  if (complexity <= HIGH_COMPLEXITY_THRESHOLD) return 'high'
   return 'extreme'
 }
 
@@ -235,10 +239,16 @@ export function calculateComplexitySummary(
     }
   }
 
-  const totalCyclomatic = functions.reduce((sum, f) => sum + f.cyclomatic, 0)
-  const totalCognitive = functions.reduce((sum, f) => sum + f.cognitive, 0)
-  const maxCyclomatic = Math.max(...functions.map((f) => f.cyclomatic))
-  const maxCognitive = Math.max(...functions.map((f) => f.cognitive))
+  let totalCyclomatic = 0
+  let totalCognitive = 0
+  let maxCyclomatic = 0
+  let maxCognitive = 0
+  for (const f of functions) {
+    totalCyclomatic += f.cyclomatic
+    totalCognitive += f.cognitive
+    if (f.cyclomatic > maxCyclomatic) maxCyclomatic = f.cyclomatic
+    if (f.cognitive > maxCognitive) maxCognitive = f.cognitive
+  }
 
   const categoryBreakdown: Record<ComplexityCategory, number> = {
     extreme: 0,

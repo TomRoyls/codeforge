@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 
 import { colorizeSeverity } from '../utils/formatting.js'
+import { clamp } from '../utils/math-helpers.js'
 
 
 
@@ -80,9 +81,18 @@ export function filterRules(
 }
 
 export function formatTable(rules: RuleInfo[], logFn: (msg: string) => void): void {
-  const nameWidth = Math.max(25, ...rules.map((r) => r.name.length))
-  const categoryWidth = Math.max(12, ...rules.map((r) => r.category.length))
-  const descWidth = Math.min(60, Math.max(20, ...rules.map((r) => r.description.length)))
+  let maxNameLen = 0
+  let maxCatLen = 0
+  let maxDescLen = 0
+  for (let i = 0; i < rules.length; i++) {
+    const r = rules[i]!
+    if (r.name.length > maxNameLen) maxNameLen = r.name.length
+    if (r.category.length > maxCatLen) maxCatLen = r.category.length
+    if (r.description.length > maxDescLen) maxDescLen = r.description.length
+  }
+  const nameWidth = Math.max(25, maxNameLen)
+  const categoryWidth = Math.max(12, maxCatLen)
+    const descWidth = clamp(maxDescLen, 20, 60)
   const severityWidth = 9
   const fixableWidth = 8
 

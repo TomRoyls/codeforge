@@ -30,7 +30,8 @@ export class DiffEngine {
 
   diffFiles(oldFiles: Record<string, string>, newFiles: Record<string, string>): DiffResult[] {
     const results: DiffResult[] = []
-    const allPaths = new Set<string>([...Object.keys(oldFiles), ...Object.keys(newFiles)])
+    const allPaths = new Set<string>(Object.keys(oldFiles))
+    for (const key of Object.keys(newFiles)) allPaths.add(key)
 
     for (const filePath of allPaths) {
       const oldContent = oldFiles[filePath] ?? ''
@@ -221,8 +222,12 @@ export class DiffEngine {
         }
       })
 
-      const oldCount = reversedLines.filter((l) => l.type === 'removed' || l.type === 'unchanged').length
-      const newCount = reversedLines.filter((l) => l.type === 'added' || l.type === 'unchanged').length
+      let oldCount = 0
+      let newCount = 0
+      for (const l of reversedLines) {
+        if (l.type === 'removed' || l.type === 'unchanged') oldCount++
+        if (l.type === 'added' || l.type === 'unchanged') newCount++
+      }
 
       return {
         oldStart: hunk.newStart,

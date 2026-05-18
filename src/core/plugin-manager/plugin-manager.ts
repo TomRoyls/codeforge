@@ -6,6 +6,8 @@ import type {
   ManagerConfig,
 } from './types.js'
 import { DEFAULT_MANAGER_CONFIG } from './types.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
+import { append } from '../../utils/map-helpers.js'
 
 export type {
   PluginDefinition,
@@ -94,7 +96,7 @@ export class PluginManager {
   }
 
   getAll(): ManagedPlugin[] {
-    return Array.from(this.plugins.values()).sort((a, b) => b.priority - a.priority)
+    return sortedByDesc(Array.from(this.plugins.values()), p => p.priority)
   }
 
   getByState(state: PluginState): ManagedPlugin[] {
@@ -176,12 +178,7 @@ export class PluginManager {
   }
 
   registerHook(hookName: string, callback: (data: unknown) => unknown): void {
-    const existing = this.hookCallbacks.get(hookName)
-    if (existing) {
-      existing.push(callback)
-    } else {
-      this.hookCallbacks.set(hookName, [callback])
-    }
+    append(this.hookCallbacks, hookName, callback)
   }
 
   executeHook(hookName: string, data?: unknown): unknown[] {
@@ -246,13 +243,22 @@ export class PluginManager {
     error: number
   } {
     const plugins = Array.from(this.plugins.values())
+    let loading = 0, loaded = 0, enabled = 0, disabled = 0, errorCount = 0
+    for (let i = 0; i < plugins.length; i++) {
+      const s = plugins[i]!.state
+      if (s === 'loading') loading++
+      else if (s === 'loaded') loaded++
+      else if (s === 'enabled') enabled++
+      else if (s === 'disabled') disabled++
+      else if (s === 'error') errorCount++
+    }
     return {
       total: plugins.length,
-      loading: plugins.filter(p => p.state === 'loading').length,
-      loaded: plugins.filter(p => p.state === 'loaded').length,
-      enabled: plugins.filter(p => p.state === 'enabled').length,
-      disabled: plugins.filter(p => p.state === 'disabled').length,
-      error: plugins.filter(p => p.state === 'error').length,
+      loading,
+      loaded,
+      enabled,
+      disabled,
+      error: errorCount,
     }
   }
 

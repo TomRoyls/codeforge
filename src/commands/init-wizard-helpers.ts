@@ -1,6 +1,8 @@
 import type { RuleEnvConfig } from '../config/types.js'
 import type { RuleSeverity } from '../rules/types.js'
 import type { SeverityProfile } from '../profiles/index.js'
+import { capitalize } from '../utils/string-helpers.js'
+import { increment } from '../utils/map-helpers.js'
 
 export interface WizardRuleInfo {
   category: string
@@ -61,7 +63,7 @@ export function getCategorySummaries(
     categoryMap.set(rule.category, existing)
   }
 
-  return Array.from(categoryMap.entries())
+  return [...categoryMap]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([id, counts]) => ({
       id,
@@ -197,11 +199,11 @@ export function formatConfigPreview(
   for (const ruleId of Object.keys(config)) {
     const rule = ruleMap.get(ruleId)
     const category = rule?.category ?? 'unknown'
-    categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1)
+    increment(categoryCounts, category)
   }
 
   lines.push('', 'By Category:')
-  for (const [category, count] of Array.from(categoryCounts.entries()).sort(([a], [b]) =>
+  for (const [category, count] of [...categoryCounts].sort(([a], [b]) =>
     a.localeCompare(b),
   )) {
     lines.push(`  ${category}: ${count} rules`)
@@ -254,7 +256,7 @@ export function getProfileOptionsFromConfigs(
       description: descriptions[key] ?? '',
       errorCount,
       key,
-      label: key.charAt(0).toUpperCase() + key.slice(1),
+      label: capitalize(key),
       warningCount,
     })
   }

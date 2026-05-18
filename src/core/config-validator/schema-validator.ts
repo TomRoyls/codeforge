@@ -5,6 +5,8 @@ import type {
   SchemaProperty,
 } from './types.js'
 
+const configPatternCache = new Map<string, RegExp>()
+
 export class SchemaValidator {
   private schemas: Map<string, ConfigSchema> = new Map()
 
@@ -72,8 +74,12 @@ export class SchemaValidator {
       }
     }
 
-    const errors = issues.filter((i) => i.severity === 'error').length
-    const warnings = issues.filter((i) => i.severity === 'warning').length
+    let errors = 0
+    let warnings = 0
+    for (const i of issues) {
+      if (i.severity === 'error') errors++
+      else if (i.severity === 'warning') warnings++
+    }
 
     return { valid: errors === 0, issues, warnings, errors }
   }
@@ -145,7 +151,11 @@ export class SchemaValidator {
     }
 
     if (property.pattern && typeof value === 'string') {
-      const regex = new RegExp(property.pattern)
+      let regex = configPatternCache.get(property.pattern)
+      if (!regex) {
+        regex = new RegExp(property.pattern)
+        configPatternCache.set(property.pattern, regex)
+      }
       if (!regex.test(value)) {
         issues.push({
           path,

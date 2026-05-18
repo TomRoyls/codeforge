@@ -1,4 +1,5 @@
 import type { DiffLine, DiffHunk, DiffStats } from './types.js'
+import { roundTo } from '../../utils/math-helpers.js'
 
 export class DiffComputer {
   compute(oldLines: string[], newLines: string[]): DiffLine[] {
@@ -111,8 +112,12 @@ export class DiffComputer {
       const oldStart = firstOld?.oldLineNumber ?? 1
       const newStart = firstNew?.newLineNumber ?? 1
 
-      const oldCount = hunkLines.filter((l) => l.type === 'removed' || l.type === 'unchanged').length
-      const newCount = hunkLines.filter((l) => l.type === 'added' || l.type === 'unchanged').length
+      let oldCount = 0
+      let newCount = 0
+      for (const l of hunkLines) {
+        if (l.type === 'removed' || l.type === 'unchanged') oldCount++
+        if (l.type === 'added' || l.type === 'unchanged') newCount++
+      }
 
       const header = `@@ -${oldStart},${oldCount} +${newStart},${newCount} @@`
 
@@ -194,7 +199,7 @@ export class DiffComputer {
       modifications,
       unchanged,
       totalLines,
-      changePercent: Math.round(changePercent * 100) / 100,
+      changePercent: roundTo(changePercent, 2),
     }
   }
 

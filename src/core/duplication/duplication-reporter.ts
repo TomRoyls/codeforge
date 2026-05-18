@@ -1,5 +1,6 @@
 import type { CloneGroup, DuplicationReport } from './types.js'
 import { DuplicationType } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class DuplicationReporter {
   formatConsole(report: DuplicationReport): string {
@@ -184,7 +185,7 @@ export class DuplicationReporter {
     for (const group of groups) {
       const filesInGroup = new Set(group.clones.map(c => c.filePath))
       for (const f of filesInGroup) {
-        counts.set(f, (counts.get(f) ?? 0) + 1)
+        increment(counts, f)
       }
     }
     return [...counts.entries()]

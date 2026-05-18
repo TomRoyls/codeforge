@@ -192,7 +192,7 @@ export class ModuleBundler {
       if (inStack.has(id)) {
         const cycleStart = path.indexOf(id)
         if (cycleStart !== -1) {
-          cycles.push(path.slice(cycleStart).concat(id))
+          cycles.push([...path.slice(cycleStart), id])
         }
         return
       }
@@ -285,12 +285,18 @@ export class ModuleBundler {
   getStatistics(): BundleStatistics {
     const mods = [...this.modules.values()]
     const totalModules = mods.length
-    const totalSize = mods.reduce((sum, m) => sum + m.size, 0)
-    const sizes = mods.map((m) => m.size)
-    const maxSize = sizes.length > 0 ? Math.max(...sizes) : 0
-    const minSize = sizes.length > 0 ? Math.min(...sizes) : 0
+    let totalSize = 0
+    let maxSize = 0
+    let minSize = mods.length > 0 ? mods[0]!.size : 0
+    let dependencyCount = 0
+    for (let i = 0; i < mods.length; i++) {
+      const m = mods[i]!
+      totalSize += m.size
+      dependencyCount += m.dependencies.length
+      if (m.size > maxSize) maxSize = m.size
+      if (m.size < minSize) minSize = m.size
+    }
     const avgSize = totalModules > 0 ? totalSize / totalModules : 0
-    const dependencyCount = mods.reduce((sum, m) => sum + m.dependencies.length, 0)
 
     return { totalModules, totalSize, avgSize, maxSize, minSize, dependencyCount }
   }

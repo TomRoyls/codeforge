@@ -3,6 +3,8 @@ import { DEFAULT_WATCHER_CONFIG } from './types.js'
 import { EventBus } from './event-bus.js'
 import { ChangeDetector } from './change-detector.js'
 
+const watcherPatternCache = new Map<string, RegExp>()
+
 export class WatcherEngine {
   private config: WatcherConfig
   private running: boolean = false
@@ -78,8 +80,12 @@ export class WatcherEngine {
 
   shouldIgnore(filePath: string): boolean {
     for (const pattern of this.config.ignorePatterns) {
-      const normalized = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')
-      const regex = new RegExp(normalized)
+      let regex = watcherPatternCache.get(pattern)
+      if (!regex) {
+        const normalized = pattern.replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*')
+        regex = new RegExp(normalized)
+        watcherPatternCache.set(pattern, regex)
+      }
       if (regex.test(filePath)) {
         return true
       }

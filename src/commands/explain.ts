@@ -20,7 +20,8 @@
 import { Args, Command } from '@oclif/core'
 
 import { getRuleCategory } from '../rules/categories.js'
-import { lazyRuleLoader } from '../rules/lazy-loader.js'
+import { ALL_RULE_IDS, lazyRuleLoader } from '../rules/lazy-loader.js'
+import { findClosestMatches } from '../utils/string-similarity.js'
 import {
   displayExplainOutput,
   getBestPractices,
@@ -58,9 +59,13 @@ export default class Explain extends Command {
     const rule = loadedRules[ruleId]
 
     if (!rule) {
-      this.error(
-        `Rule '${ruleId}' not found. Run '${this.config.bin} rules' to see available rules.`,
-      )
+      const suggestions = findClosestMatches(ruleId, ALL_RULE_IDS, { limit: 3, minScore: 0.4 })
+      let message = `Rule '${ruleId}' not found. Run '${this.config.bin} rules' to see available rules.`
+      if (suggestions.length > 0) {
+        const matches = suggestions.map((s) => s.candidate).join(', ')
+        message += `\nDid you mean: ${matches}?`
+      }
+      this.error(message)
     }
 
     const category = rule.meta.category ?? getRuleCategory(ruleId)

@@ -7,6 +7,7 @@ import {
   explicitReturnTypeRule,
   noConsoleRule,
   noMagicNumbersRule,
+  noNestedTemplateLiteralsRule,
   noUnnecessaryTypeAssertionRule,
   preferArrayFindRule,
   preferArraySomeRule,
@@ -1657,6 +1658,7 @@ const adaptedPreferTernaryOperator = adaptPluginRule(
 )
 
 const adaptedNoConsole = adaptPluginRule(noConsoleRule, 'no-console')
+const adaptedNoNestedTemplateLiterals = adaptPluginRule(noNestedTemplateLiteralsRule, 'no-nested-template-literals')
 const adaptedNoUnsafeRegex = adaptPluginRule(noUnsafeRegexRule, 'no-unsafe-regex')
 const adaptedNoSkippedTests = adaptPluginRule(noSkippedTestsRule, 'no-skipped-tests')
 const adaptedNoFocusedTests = adaptPluginRule(noFocusedTestsRule, 'no-focused-tests')
@@ -3193,6 +3195,7 @@ export const allRules: Record<string, RuleDefinition> = {
   'no-confusing-arrow': adaptedNoConfusingArrow,
   'no-console': adaptedNoConsole,
   'no-console-log': adaptedNoConsoleLog,
+  'no-nested-template-literals': adaptedNoNestedTemplateLiterals,
   'no-const-assign': adaptedNoConstAssign,
   'no-const-enum': adaptedNoConstEnum,
   'no-constant-binary-expression': adaptedNoConstantBinaryExpression,

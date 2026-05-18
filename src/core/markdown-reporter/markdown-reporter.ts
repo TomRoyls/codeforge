@@ -1,5 +1,6 @@
 import { TableBuilder } from './table-builder.js'
 import { DEFAULT_REPORT_CONFIG } from './types.js'
+import { clamp } from '../../utils/math-helpers.js'
 import type { ReportConfig, ReportSection, SeverityBadge, MarkdownTableConfig } from './types.js'
 
 const SEVERITY_ICONS: Record<SeverityBadge, string> = {
@@ -26,7 +27,7 @@ export class MarkdownReporter {
   }
 
   heading(text: string, level: number): string {
-    const clampedLevel = Math.max(1, Math.min(6, level))
+    const clampedLevel = clamp(level, 1, 6)
     return '#'.repeat(clampedLevel) + ' ' + text
   }
 

@@ -4,6 +4,9 @@ export interface FunctionLocation {
   content: string
 }
 
+import { unique } from '../../utils/array-helpers.js'
+import { escapeRegex } from '../../utils/string-helpers.js'
+
 export interface ImportStatement {
   module: string
   imports: string[]
@@ -24,18 +27,26 @@ export interface StringLiteral {
   startIndex: number
 }
 
+const _funcPatternCache = new Map<string, RegExp>()
+
 export class TransformParser {
   findFunctionByName(source: string, name: string): FunctionLocation | null {
-    const patterns = [
-      new RegExp(
-        `(?:export\\s+)?(?:async\\s+)?function\\s+${escapeRegExp(name)}\\s*\\([^)]*\\)\\s*(?::\\s*[^{]+)?\\{`,
-        'g'
-      ),
-      new RegExp(
-        `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegExp(name)}\\s*=\\s*(?:async\\s+)?(?:function\\s*)?(?:\\([^)]*\\)\\s*(?::\\s*[^=]+)?|[^=]+)\\s*=>\\s*\\{`,
-        'g'
-      ),
-    ]
+    const cacheKey = `func|${name}`
+    let cached = _funcPatternCache.get(cacheKey)
+    if (!cached) {
+      cached = [
+        new RegExp(
+          `(?:export\\s+)?(?:async\\s+)?function\\s+${escapeRegex(name)}\\s*\\([^)]*\\)\\s*(?::\\s*[^{]+)?\\{`,
+          'g'
+        ),
+        new RegExp(
+          `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegex(name)}\\s*=\\s*(?:async\\s+)?(?:function\\s*)?(?:\\([^)]*\\)\\s*(?::\\s*[^=]+)?|[^=]+)\\s*=>\\s*\\{`,
+          'g'
+        ),
+      ]
+      _funcPatternCache.set(cacheKey, cached)
+    }
+    const patterns = [new RegExp(cached[0].source, cached[0].flags), new RegExp(cached[1].source, cached[1].flags)]
 
     for (const pattern of patterns) {
       pattern.lastIndex = 0
@@ -54,12 +65,18 @@ export class TransformParser {
       }
     }
 
-    const arrowNoBrace = new RegExp(
-      `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegExp(name)}\\s*=\\s*(?:async\\s+)?\\([^)]*\\)\\s*(?::\\s*[^=]+)?\\s*=>\\s*`,
-      'g'
-    )
-    arrowNoBrace.lastIndex = 0
-    const arrowMatch = arrowNoBrace.exec(source)
+    const arrowCacheKey = `arrow|${name}`
+    let arrowNoBrace = _funcPatternCache.get(arrowCacheKey)
+    if (!arrowNoBrace) {
+      arrowNoBrace = new RegExp(
+        `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\([^)]*\\)\\s*(?::\\s*[^=]+)?\\s*=>\\s*`,
+        'g'
+      )
+      _funcPatternCache.set(arrowCacheKey, arrowNoBrace)
+    }
+    const freshArrow = new RegExp(arrowNoBrace.source, arrowNoBrace.flags)
+    freshArrow.lastIndex = 0
+    const arrowMatch = freshArrow.exec(source)
     if (arrowMatch) {
       const start = arrowMatch.index
       const afterArrow = start + arrowMatch[0].length
@@ -87,10 +104,16 @@ export class TransformParser {
   }
 
   findClassByName(source: string, name: string): FunctionLocation | null {
-    const pattern = new RegExp(
-      `(?:export\\s+)?(?:abstract\\s+)?class\\s+${escapeRegExp(name)}\\s*(?:extends\\s+\\S+\\s*)?(?:implements\\s+[^{]+)?\\{`,
-      'g'
-    )
+    const cacheKey = `class|${name}`
+    let cached = _funcPatternCache.get(cacheKey)
+    if (!cached) {
+      cached = new RegExp(
+        `(?:export\\s+)?(?:abstract\\s+)?class\\s+${escapeRegex(name)}\\s*(?:extends\\s+\\S+\\s*)?(?:implements\\s+[^{]+)?\\{`,
+        'g'
+      )
+      _funcPatternCache.set(cacheKey, cached)
+    }
+    const pattern = new RegExp(cached.source, cached.flags)
     pattern.lastIndex = 0
     const match = pattern.exec(source)
     if (!match) return null
@@ -205,7 +228,7 @@ export class TransformParser {
     const existingFromModule = existing.find((imp) => imp.module === module)
 
     if (existingFromModule) {
-      const merged = [...new Set([...existingFromModule.imports, ...imports])]
+      const merged = unique([...existingFromModule.imports, ...imports])
       const newImport = `import { ${merged.join(', ')} } from '${module}'`
       return this.replaceInRange(
         source,
@@ -269,10 +292,6 @@ export class TransformParser {
     }
     return source + '\n' + exportLine + '\n'
   }
-}
-
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 function findMatchingBrace(source: string, openBracePos: number): number {

@@ -5,6 +5,8 @@ import path from 'node:path'
 import { DEFAULT_DEBOUNCE_MS } from './constants.js'
 import { logger } from './logger.js'
 
+const _patternRegExpCache = new Map<string, RegExp>()
+
 export interface FileWatcherOptions {
   /** Debounce time in milliseconds (default: 300) */
   debounceMs?: number
@@ -96,13 +98,18 @@ export class FileWatcher extends EventEmitter {
   }
 
   private patternToRegExp(pattern: string): RegExp {
-    const regexPattern = pattern
-      .replaceAll('**', '<<GLOBSTAR>>')
-      .replaceAll('*', '[^/]*')
-      .replaceAll('<<GLOBSTAR>>', '.*')
-      .replaceAll('?', '[^/]')
-      .replaceAll('.', String.raw`\.`)
-    return new RegExp(regexPattern)
+    let regex = _patternRegExpCache.get(pattern)
+    if (!regex) {
+      const regexPattern = pattern
+        .replaceAll('**', '<<GLOBSTAR>>')
+        .replaceAll('*', '[^/]*')
+        .replaceAll('<<GLOBSTAR>>', '.*')
+        .replaceAll('?', '[^/]')
+        .replaceAll('.', String.raw`\.`)
+      regex = new RegExp(regexPattern)
+      _patternRegExpCache.set(pattern, regex)
+    }
+    return regex
   }
 
   private shouldIgnore(filePath: string): boolean {

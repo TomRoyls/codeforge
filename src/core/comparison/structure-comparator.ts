@@ -10,6 +10,7 @@ import type {
   ImportInfo,
   ExportInfo,
 } from './types.js'
+import { isBlank, countLines } from '../../utils/string-helpers.js'
 
 const DEFAULT_CONFIG: ComparisonConfig = {
   ignoreExports: false,
@@ -31,7 +32,7 @@ export class StructureComparator {
     const imports = this.extractImports(source)
     const exports = this.extractExports(source)
     const lines = source.split('\n')
-    const loc = lines.filter((l) => l.trim().length > 0).length
+    const loc = lines.reduce((c, l) => l.trim().length > 0 ? c + 1 : c, 0)
     const complexity = functions.reduce((s, f) => s + f.complexity, 0) + 1
 
     return {
@@ -171,9 +172,16 @@ export class StructureComparator {
 
     const leftPaths = new Set(left.map((s) => s.filePath))
     const rightPaths = new Set(right.map((s) => s.filePath))
-    const commonCount = [...leftPaths].filter((p) => rightPaths.has(p)).length
-    const addedCount = [...rightPaths].filter((p) => !leftPaths.has(p)).length
-    const removedCount = [...leftPaths].filter((p) => !rightPaths.has(p)).length
+    let commonCount = 0
+    let addedCount = 0
+    let removedCount = 0
+    for (const p of leftPaths) {
+      if (rightPaths.has(p)) commonCount++
+      else removedCount++
+    }
+    for (const p of rightPaths) {
+      if (!leftPaths.has(p)) addedCount++
+    }
     const modifiedCount = allModified.length
     const total = left.length + right.length
     const similarityIndex = total > 0 ? (commonCount * 2) / total : 1
@@ -374,10 +382,10 @@ export class StructureComparator {
       const returnType = (match[3] ?? 'void').trim()
       const isAsync = match[0].includes('async')
       const isExported = match[0].includes('export')
-      const params = paramsStr.trim().length === 0 ? 0 : paramsStr.split(',').length
+      const params = isBlank(paramsStr) ? 0 : paramsStr.split(',').length
 
       const funcBody = this.extractBlockBody(source, match.index + match[0].length - 1)
-      const loc = funcBody.split('\n').length - 1
+      const loc = countLines(funcBody) - 1
       const complexity = this.countComplexity(funcBody)
 
       functions.push({
@@ -400,7 +408,7 @@ export class StructureComparator {
       const returnType = (match[3] ?? 'void').trim()
       const isAsync = match[0].includes('async')
       const isExported = match[0].includes('export')
-      const params = paramsStr.trim().length === 0 ? 0 : paramsStr.split(',').length
+      const params = isBlank(paramsStr) ? 0 : paramsStr.split(',').length
 
       functions.push({
         name,

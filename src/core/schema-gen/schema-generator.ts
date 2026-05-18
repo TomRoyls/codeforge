@@ -2,6 +2,7 @@ import type { JSONSchema, SchemaGenConfig, TypeInfo } from './types.js'
 import { DEFAULT_SCHEMA_GEN_CONFIG } from './types.js'
 import { TypeParser } from './type-parser.js'
 import { SchemaBuilder } from './schema-builder.js'
+import { unique } from '../../utils/array-helpers.js'
 
 export class SchemaGenerator {
   private parser: TypeParser
@@ -108,7 +109,7 @@ export class SchemaGenerator {
       } else if (Array.isArray(baseVal) && Array.isArray(overrideVal)) {
         if (key === 'required') {
           const combined = [...(baseVal as string[]), ...(overrideVal as string[])]
-          merged[key] = [...new Set(combined)]
+          merged[key] = unique(combined)
         } else {
           merged[key] = overrideVal
         }

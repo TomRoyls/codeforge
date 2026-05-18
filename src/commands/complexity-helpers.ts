@@ -5,6 +5,7 @@ import {
   type ComplexityCategory,
   type FunctionComplexity,
 } from '../core/complexity.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
 
 export { filterFilesByExtension } from '../utils/command-helpers.js'
 
@@ -41,7 +42,7 @@ export function sortByField(
   sortBy: SortByField,
 ): FunctionComplexity[] {
   if (sortBy === 'complexity') {
-    return [...results].sort((a, b) => b.cyclomatic - a.cyclomatic)
+    return sortedByDesc(results, r => r.cyclomatic)
   }
 
   if (sortBy === 'file') {

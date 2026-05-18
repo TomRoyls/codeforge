@@ -81,7 +81,7 @@ export class DisjointSetForest<T> {
       }
       group.push(item)
     }
-    return Array.from(groups.values())
+    return [...groups.values()]
   }
 
   components(): Map<T, T[]> {

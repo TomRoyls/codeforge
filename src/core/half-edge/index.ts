@@ -1,3 +1,5 @@
+import { increment } from '../../utils/map-helpers.js'
+
 export interface Vertex {
   x: number;
   y: number;
@@ -320,7 +322,7 @@ export class HalfEdgeMesh {
       }
 
       const edgeKey = `${Math.min(he.vertex, nextHe.vertex)}-${Math.max(he.vertex, nextHe.vertex)}`;
-      edgeFaceCount.set(edgeKey, (edgeFaceCount.get(edgeKey) || 0) + 1);
+      increment(edgeFaceCount, edgeKey);
 
       if (he.twin !== null) {
         const twin = this.halfEdges[he.twin]!;
@@ -330,7 +332,7 @@ export class HalfEdgeMesh {
       }
     }
 
-    const counts = Array.from(edgeFaceCount.values());
+    const counts = [...edgeFaceCount.values()];
     for (const count of counts) {
       if (count > 2) {
         return false;

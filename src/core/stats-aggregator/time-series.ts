@@ -1,4 +1,5 @@
 import type { StatsSnapshot, TrendPoint, TrendAnalysis } from './types.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 const NUMERIC_PROJECT_METRICS: Record<string, (s: StatsSnapshot) => number> = {
   totalFiles: (s) => s.projectStats.totalFiles,
@@ -14,7 +15,7 @@ export class TimeSeries {
 
   addPoint(snapshot: StatsSnapshot): void {
     this.snapshots.push(snapshot)
-    this.snapshots.sort((a, b) => a.timestamp - b.timestamp)
+    this.snapshots = sortedBy(this.snapshots, s => s.timestamp)
   }
 
   getPoints(metric: string): TrendPoint[] {
@@ -68,13 +69,19 @@ export class TimeSeries {
     if (points.length < 2) return 0
 
     const n = points.length
-    const indices = points.map((_, i) => i)
     const values = points.map((p) => p.value)
 
-    const sumX = indices.reduce((a, b) => a + b, 0)
-    const sumY = values.reduce((a, b) => a + b, 0)
-    const sumXY = indices.reduce((acc, x, i) => acc + x * values[i]!, 0)
-    const sumXX = indices.reduce((acc, x) => acc + x * x, 0)
+    let sumX = 0
+    let sumY = 0
+    let sumXY = 0
+    let sumXX = 0
+    for (let i = 0; i < n; i++) {
+      const y = values[i]!
+      sumX += i
+      sumY += y
+      sumXY += i * y
+      sumXX += i * i
+    }
 
     const denominator = n * sumXX - sumX * sumX
     if (denominator === 0) return 0

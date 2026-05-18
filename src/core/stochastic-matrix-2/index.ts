@@ -57,7 +57,8 @@ export class StochasticMatrix2 {
     for (const state of this.states) {
       const row = this.transitions.get(state);
       if (row) {
-        const sum = Array.from(row.values()).reduce((a, b) => a + b, 0);
+        let sum = 0;
+        for (const v of row.values()) sum += v;
         if (Math.abs(sum - 1) > epsilon) {
           return false;
         }
@@ -89,7 +90,8 @@ export class StochasticMatrix2 {
     for (const from of this.states) {
       const row = this.transitions.get(from);
       if (row) {
-        const sum = Array.from(row.values()).reduce((a, b) => a + b, 0);
+        let sum = 0;
+        for (const v of row.values()) sum += v;
         if (sum > 0) {
           for (const [to, prob] of row.entries()) {
             row.set(to, prob / sum);
@@ -174,7 +176,8 @@ export class StochasticMatrix2 {
       }
     }
 
-    let sum = Array.from(distribution.values()).reduce((a, b) => a + b, 0);
+    let sum = 0;
+    for (const v of distribution.values()) sum += v;
     for (const state of this.states) {
       distribution.set(state, (distribution.get(state) ?? 0) / sum);
     }

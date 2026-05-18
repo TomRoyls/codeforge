@@ -73,7 +73,7 @@ export class DoubleBufferQueue<T> {
     for (let i = this.frontIndex; i < this.frontIndex + this.frontCount; i++) {
       result.push(this.frontBuffer[i]!);
     }
-    return result.concat(this.backBuffer);
+    return [...result, ...this.backBuffer];
   }
 
   forEach(callback: (value: T, index: number) => void): void {

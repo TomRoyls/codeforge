@@ -1,6 +1,7 @@
 import { AuditEntry } from './audit-entry.js'
 import type { AuditEntryData, AuditFilter, AuditStats, AuditSeverity, AuditCategory } from './types.js'
 import { ALL_SEVERITIES, ALL_CATEGORIES } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class AuditStore {
   private entries: AuditEntry[] = []
@@ -13,12 +14,7 @@ export class AuditStore {
     this.index.set(data.id, entry)
 
     if (data.correlationId) {
-      const existing = this.correlationIndex.get(data.correlationId)
-      if (existing) {
-        existing.push(entry)
-      } else {
-        this.correlationIndex.set(data.correlationId, [entry])
-      }
+      append(this.correlationIndex, data.correlationId, entry)
     }
   }
 

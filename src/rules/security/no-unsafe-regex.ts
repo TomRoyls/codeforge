@@ -28,7 +28,7 @@ function hasComplexAlternation(pattern: string): boolean {
 
   while ((match = groupPattern.exec(pattern)) !== null) {
     const groupContent = match[1] ?? ''
-    const alternationCount = (groupContent.match(/\|/g) || []).length
+    const alternationCount = (groupContent.match(/\|/g) ?? []).length
     if (alternationCount > 2) {
       return true
     }

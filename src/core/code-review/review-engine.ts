@@ -8,7 +8,13 @@ import type {
   ReviewContext,
   ReviewRule,
 } from './types.js'
+import { roundTo } from '../../utils/math-helpers.js'
+
+const _reassignCache = new Map<string, RegExp>()
+const _ignorePatternCache = new Map<string, RegExp>()
 import { SEVERITY_LEVELS, DEFAULT_CONFIG } from './types.js'
+
+const MAX_FUNCTION_LINES = 50
 
 const noConsoleLogRule: ReviewRule = {
   id: 'no-console-log',
@@ -141,7 +147,11 @@ const preferConstRule: ReviewRule = {
         for (const c of context.allChanges) {
           if (c === change) continue
           if (c.type === 'add') {
-            const reassignPattern = new RegExp(`\\b${varName}\\s*[^=!<>]=[^=]`)
+            let reassignPattern = _reassignCache.get(varName)
+            if (!reassignPattern) {
+              reassignPattern = new RegExp(`\\b${varName}\\s*[^=!<>]=[^=]`)
+              _reassignCache.set(varName, reassignPattern)
+            }
             if (reassignPattern.test(c.content)) {
               reassigned = true
               break
@@ -244,12 +254,12 @@ const largeFunctionRule: ReviewRule = {
       if (started && depth === 0 && lineCount > 1) break
     }
 
-    if (lineCount > 50) {
+    if (lineCount > MAX_FUNCTION_LINES) {
       return {
         filePath: context.filePath,
         line: change.lineNumber,
         side: 'RIGHT',
-        message: `Function is too long (${lineCount} lines). Maximum is 50 lines`,
+        message: `Function is too long (${lineCount} lines). Maximum is ${MAX_FUNCTION_LINES} lines`,
         severity: 'major',
         category: 'complexity',
         suggestion: 'Break the function into smaller, focused functions',
@@ -439,7 +449,7 @@ export class ReviewEngine {
     penalty += summary.infoCount * weights['info']!
 
     const score = Math.max(0, 100 - penalty)
-    return Math.round(score * 100) / 100
+    return roundTo(score, 2)
   }
 
   isApproved(score: number): boolean {
@@ -474,7 +484,11 @@ export class ReviewEngine {
 
   private shouldIgnoreFile(filePath: string): boolean {
     for (const pattern of this.config.ignorePatterns) {
-      const regex = new RegExp(pattern)
+      let regex = _ignorePatternCache.get(pattern)
+      if (!regex) {
+        regex = new RegExp(pattern)
+        _ignorePatternCache.set(pattern, regex)
+      }
       if (regex.test(filePath)) return true
     }
     return false

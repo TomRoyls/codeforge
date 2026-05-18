@@ -98,7 +98,7 @@ export class DisjointSet<T> {
       }
       group.push(element)
     }
-    return Array.from(rootMap.values())
+    return [...rootMap.values()]
   }
 
   getComponentSize(element: T): number {

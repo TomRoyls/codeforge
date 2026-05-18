@@ -1,4 +1,5 @@
 import type { PluginDependency, PluginInfo, VersionConflict } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class VersionResolver {
   private parseVersion(version: string): [number, number, number] {
@@ -23,9 +24,7 @@ export class VersionResolver {
     const grouped = new Map<string, PluginDependency[]>()
 
     for (const dep of dependencies) {
-      const existing = grouped.get(dep.name) ?? []
-      existing.push(dep)
-      grouped.set(dep.name, existing)
+      append(grouped, dep.name, dep)
     }
 
     for (const [name, deps] of grouped) {
@@ -62,9 +61,7 @@ export class VersionResolver {
 
     for (const plugin of plugins) {
       for (const [depName, depVersion] of plugin.dependencies) {
-        const existing = depMap.get(depName) ?? []
-        existing.push({ plugin: plugin.name, version: depVersion })
-        depMap.set(depName, existing)
+        append(depMap, depName, { plugin: plugin.name, version: depVersion })
       }
     }
 

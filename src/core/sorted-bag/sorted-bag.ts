@@ -1,4 +1,5 @@
 import type { SortedBagOptions } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 export class SortedBag<T> {
   private data: T[] = []
@@ -68,7 +69,7 @@ export class SortedBag<T> {
     const otherItems = other.toArray()
     const otherCounts = new Map<T, number>()
     for (const item of otherItems) {
-      otherCounts.set(item, (otherCounts.get(item) ?? 0) + 1)
+      increment(otherCounts, item)
     }
 
     for (const [item, needed] of otherCounts) {
@@ -92,7 +93,7 @@ export class SortedBag<T> {
   retainAll(items: T[]): void {
     const retainCounts = new Map<T, number>()
     for (const item of items) {
-      retainCounts.set(item, (retainCounts.get(item) ?? 0) + 1)
+      increment(retainCounts, item)
     }
     const newData: T[] = []
     const seenCounts = new Map<T, number>()

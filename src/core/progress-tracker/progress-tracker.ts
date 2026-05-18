@@ -1,6 +1,7 @@
 import type { ProgressItem, ProgressSnapshot, TrackerConfig } from './types.js'
 import { DEFAULT_TRACKER_CONFIG } from './types.js'
 import { ETACalculator } from './eta-calculator.js'
+import { clampPercent } from '../../utils/math-helpers.js'
 
 export class ProgressTracker {
   private items: Map<string, ProgressItem> = new Map()
@@ -74,7 +75,7 @@ export class ProgressTracker {
       ? calculator.calculatePercent(item.current, item.total)
       : item.total === 0
         ? 0
-        : Math.min(Math.max((item.current / item.total) * 100, 0), 100)
+        : clampPercent((item.current / item.total) * 100)
 
     return {
       itemId: item.id,
@@ -112,7 +113,7 @@ export class ProgressTracker {
     const percent =
       totalTotal === 0
         ? 0
-        : Math.min(Math.max((totalCurrent / totalTotal) * 100, 0), 100)
+        : clampPercent((totalCurrent / totalTotal) * 100)
     return { totalCurrent, totalTotal, percent }
   }
 

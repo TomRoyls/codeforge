@@ -309,9 +309,13 @@ export class TaskRunner {
 
   private skipBlockedDependents(_taskId: string): void {
     const all = this.queue.getAll()
-    const failedIds = new Set(
-      all.filter((t) => t.status === 'failed' || t.status === 'timeout').map((t) => t.id)
-    )
+    const failedIds = new Set<string>()
+    for (let i = 0; i < all.length; i++) {
+      const status = all[i].status
+      if (status === 'failed' || status === 'timeout') {
+        failedIds.add(all[i].id)
+      }
+    }
     for (const task of all) {
       if (task.status !== 'pending') continue
       if (task.dependencies.some((dep) => failedIds.has(dep))) {

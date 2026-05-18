@@ -3,10 +3,13 @@ export class DoubleArrayTrie2 {
   private check: number[] = [];
   private _size: number = 0;
   private tail: string[] = [];
+  private wordEnd: Set<number> = new Set();
+  private hasEmptyStr: boolean = false;
 
   constructor() {
     this.base.push(1);
     this.check.push(-1);
+    this.tail.push('');
   }
 
   get size(): number {
@@ -21,15 +24,17 @@ export class DoubleArrayTrie2 {
     this.base = [1];
     this.check = [-1];
     this._size = 0;
-    this.tail = [];
+    this.tail = [''];
+    this.wordEnd.clear();
+    this.hasEmptyStr = false;
   }
 
   insert(word: string): boolean {
     if (word === '') {
-      if (this.tail[0] === '') {
+      if (this.hasEmptyStr) {
         return false;
       }
-      this.tail[0] = '';
+      this.hasEmptyStr = true;
       this._size++;
       return true;
     }
@@ -59,7 +64,7 @@ export class DoubleArrayTrie2 {
           return false;
         }
 
-        this.splitAndAdd(t, tailIndex, tailCodes, remaining, s);
+        this.splitAndAdd(t, tailCodes, remaining);
         this._size++;
         return true;
       }
@@ -68,16 +73,31 @@ export class DoubleArrayTrie2 {
       i++;
     }
 
-    const tailIndex = this.tail.length;
-    this.tail.push('');
-    this.base[s]! = -tailIndex;
+    if (this.wordEnd.has(s)) {
+      return false;
+    }
+    if (this.base[s]! < 0) {
+      const ti = -this.base[s]!;
+      if (this.tail[ti] === '') {
+        return false;
+      }
+      return false;
+    }
+
+    if (this.base[s]! > 0) {
+      this.wordEnd.add(s);
+    } else {
+      const tailIndex = this.tail.length;
+      this.tail.push('');
+      this.base[s]! = -tailIndex;
+    }
     this._size++;
     return true;
   }
 
   has(word: string): boolean {
     if (word === '') {
-      return this.tail[0] === '';
+      return this.hasEmptyStr;
     }
 
     const chars = this.stringToCodes(word);
@@ -100,15 +120,22 @@ export class DoubleArrayTrie2 {
       s = t;
     }
 
-    return this.base[s]! < 0;
+    if (this.wordEnd.has(s)) {
+      return true;
+    }
+    if (this.base[s]! < 0) {
+      const ti = -this.base[s]!;
+      return this.tail[ti] === '';
+    }
+    return false;
   }
 
   delete(word: string): boolean {
     if (word === '') {
-      if (this.tail[0] !== '') {
+      if (!this.hasEmptyStr) {
         return false;
       }
-      this.tail[0] = undefined!;
+      this.hasEmptyStr = false;
       this._size--;
       return true;
     }
@@ -121,19 +148,45 @@ export class DoubleArrayTrie2 {
       if (t >= this.base.length || this.check[t]! !== s) {
         return false;
       }
+
+      if (this.base[t]! < 0) {
+        const tailIndex = -this.base[t]!;
+        const tailStr = this.tail[tailIndex]!;
+        const tailCodes = this.stringToCodesFromTail(tailStr);
+        const remaining = chars.slice(i + 1);
+
+        if (!this.codesEqual(tailCodes, remaining)) {
+          return false;
+        }
+
+        this.tail[tailIndex]! = undefined!;
+        this.base[t]! = 0;
+        this.check[t]! = -1;
+        this._size--;
+        return true;
+      }
+
       s = t;
     }
 
-    if (this.base[s]! >= 0) {
-      return false;
+    if (this.wordEnd.has(s)) {
+      this.wordEnd.delete(s);
+      this._size--;
+      return true;
     }
 
-    const tailIndex = -this.base[s]!;
-    this.tail[tailIndex]! = undefined!;
-    this.base[s]! = 0;
-    this.check[s]! = -1;
-    this._size--;
-    return true;
+    if (this.base[s]! < 0) {
+      const tailIndex = -this.base[s]!;
+      if (this.tail[tailIndex] === '') {
+        this.tail[tailIndex]! = undefined!;
+        this.base[s]! = 0;
+        this.check[s]! = -1;
+        this._size--;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   startsWith(prefix: string): string[] {
@@ -159,7 +212,7 @@ export class DoubleArrayTrie2 {
 
   toArray(): string[] {
     const results: string[] = [];
-    if (this.tail[0] === '') {
+    if (this.hasEmptyStr) {
       results.push('');
     }
     this.collectWords(0, '', results);
@@ -168,9 +221,13 @@ export class DoubleArrayTrie2 {
 
   private addWord(parent: number, chars: number[]): void {
     if (chars.length === 0) {
-      const tailIndex = this.tail.length;
-      this.tail.push('');
-      this.base[parent]! = -tailIndex;
+      if (this.base[parent]! > 0) {
+        this.wordEnd.add(parent);
+      } else {
+        const tailIndex = this.tail.length;
+        this.tail.push('');
+        this.base[parent]! = -tailIndex;
+      }
       return;
     }
 
@@ -211,56 +268,81 @@ export class DoubleArrayTrie2 {
     }
   }
 
-  private splitAndAdd(t: number, _tailIndex: number, tailCodes: number[], remaining: number[], _parent: number): void {
+  private splitAndAdd(t: number, tailCodes: number[], remaining: number[]): void {
     const matchLen = this.findCommonPrefixLength(tailCodes, remaining);
 
-    if (matchLen === tailCodes.length) {
-      const newTailIndex = this.tail.length;
-      this.tail.push(this.codesToString(remaining));
-      this.base[t]! = -newTailIndex;
-    } else if (matchLen === 0) {
-      const base = this.findBase([tailCodes[0]!, remaining[0]!]);
-      this.base[t]! = base;
+    let current = t;
+    for (let j = 0; j < matchLen; j++) {
+      const code = tailCodes[j]!;
+      const base = this.findBase([code]);
+      this.base[current]! = base;
+      const child = base + code;
+      this.ensureCapacity(child);
+      this.check[child]! = current;
+      current = child;
+    }
 
-      const t1 = base + tailCodes[0]!;
+    const oldRest = tailCodes.slice(matchLen);
+    const newRest = remaining.slice(matchLen);
+
+    if (oldRest.length === 0 && newRest.length === 0) {
+      if (this.base[current]! > 0) {
+        this.wordEnd.add(current);
+      } else {
+        const tailIndex = this.tail.length;
+        this.tail.push('');
+        this.base[current]! = -tailIndex;
+      }
+    } else if (oldRest.length === 0) {
+      this.wordEnd.add(current);
+      this.addTailChild(current, newRest);
+    } else if (newRest.length === 0) {
+      this.wordEnd.add(current);
+      this.addTailChild(current, oldRest);
+    } else {
+      const codes = [oldRest[0]!, newRest[0]!];
+      const base = this.findBase(codes);
+      this.base[current]! = base;
+
+      const t1 = base + oldRest[0]!;
       this.ensureCapacity(t1);
       const tailIndex1 = this.tail.length;
-      this.tail.push(this.codesToString(tailCodes.slice(1)));
+      this.tail.push(this.codesToString(oldRest.slice(1)));
       this.base[t1]! = -tailIndex1;
-      this.check[t1]! = t;
+      this.check[t1]! = current;
 
-      const t2 = base + remaining[0]!;
+      const t2 = base + newRest[0]!;
       this.ensureCapacity(t2);
       const tailIndex2 = this.tail.length;
-      this.tail.push(this.codesToString(remaining.slice(1)));
+      this.tail.push(this.codesToString(newRest.slice(1)));
       this.base[t2]! = -tailIndex2;
-      this.check[t2]! = t;
+      this.check[t2]! = current;
+    }
+  }
+
+  private addTailChild(parent: number, chars: number[]): void {
+    const children = this.getChildren(parent);
+    if (children.length === 0) {
+      const base = this.findBase([chars[0]!]);
+      this.base[parent]! = base;
+      const t = base + chars[0]!;
+      this.ensureCapacity(t);
+      this.check[t]! = parent;
+
+      const tailIndex = this.tail.length;
+      this.tail.push(this.codesToString(chars.slice(1)));
+      this.base[t]! = -tailIndex;
     } else {
-      const base = this.findBase([tailCodes[0]!]);
-      this.base[t]! = base;
+      children.push(chars[0]!);
+      const base = this.findBase(children);
+      this.rebase(parent, children, base);
+      const t = base + chars[0]!;
+      this.ensureCapacity(t);
+      this.check[t]! = parent;
 
-      const t1 = base + tailCodes[0]!;
-      this.ensureCapacity(t1);
-      const tailIndex1 = this.tail.length;
-      this.tail.push(this.codesToString(tailCodes.slice(matchLen)));
-      this.base[t1]! = -tailIndex1;
-      this.check[t1]! = t;
-
-      if (matchLen < remaining.length) {
-        const t2 = base + remaining[0]!;
-        this.ensureCapacity(t2);
-        const tailIndex2 = this.tail.length;
-        this.tail.push(this.codesToString(remaining.slice(matchLen)));
-        this.base[t2]! = -tailIndex2;
-        this.check[t2]! = t;
-      } else {
-        const t2 = base + remaining[0]!;
-        this.ensureCapacity(t2);
-        const tailIndex2 = this.tail.length;
-        this.tail.push('');
-        this.base[t2]! = -tailIndex2;
-        this.check[t2]! = t;
-      }
+      const tailIndex = this.tail.length;
+      this.tail.push(this.codesToString(chars.slice(1)));
+      this.base[t]! = -tailIndex;
     }
   }
 
@@ -361,6 +443,10 @@ export class DoubleArrayTrie2 {
   }
 
   private collectWords(state: number, prefix: string, results: string[]): void {
+    if (this.wordEnd.has(state)) {
+      results.push(prefix);
+    }
+
     const base = this.base[state]!;
 
     if (base < 0) {
@@ -370,7 +456,9 @@ export class DoubleArrayTrie2 {
         return;
       }
       if (tailStr === '') {
-        results.push(prefix);
+        if (!this.wordEnd.has(state)) {
+          results.push(prefix);
+        }
       } else {
         const tailCodes = this.stringToCodesFromTail(tailStr);
         const tailWord = tailCodes.map(c => String.fromCharCode(c)).join('');

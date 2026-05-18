@@ -1,5 +1,6 @@
 import type { ProgressConfig, ProgressState } from './types.js'
 import { DEFAULT_PROGRESS_CONFIG } from './types.js'
+import { clamp } from '../../utils/math-helpers.js'
 
 export class ProgressTracker {
   private config: ProgressConfig = { ...DEFAULT_PROGRESS_CONFIG }
@@ -25,7 +26,7 @@ export class ProgressTracker {
 
   setProgress(current: number): void {
     if (!this.state) return
-    this.state.current = Math.max(0, Math.min(current, this.state.total))
+    this.state.current = clamp(current, 0, this.state.total)
     this.recalculate()
   }
 

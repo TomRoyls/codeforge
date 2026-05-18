@@ -263,12 +263,25 @@ export class TopTree<K, V> {
     const pathValues = this.collectPathValues(from, to)
     if (pathValues.length === 0) return undefined
     switch (aggType) {
-      case 'sum':
-        return pathValues.reduce((a, b) => a + b, 0)
-      case 'min':
-        return Math.min(...pathValues)
-      case 'max':
-        return Math.max(...pathValues)
+      case 'sum': {
+        let s = 0
+        for (let i = 0; i < pathValues.length; i++) s += pathValues[i]!
+        return s
+      }
+      case 'min': {
+        let mn = pathValues[0]!
+        for (let i = 1; i < pathValues.length; i++) {
+          if (pathValues[i]! < mn) mn = pathValues[i]!
+        }
+        return mn
+      }
+      case 'max': {
+        let mx = pathValues[0]!
+        for (let i = 1; i < pathValues.length; i++) {
+          if (pathValues[i]! > mx) mx = pathValues[i]!
+        }
+        return mx
+      }
       case 'count':
         return pathValues.length
     }

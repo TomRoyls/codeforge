@@ -6,6 +6,7 @@ import { extname, resolve } from 'node:path'
 import ora, { type Ora } from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
+import { increment } from '../utils/map-helpers.js'
 import { Parser } from '../core/parser.js'
 import {
   type AnalysisResult,
@@ -208,6 +209,7 @@ export default class Exports extends Command {
       type: 0,
     }
     const allImports = new Map<string, number>()
+    let failedFiles = 0
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
@@ -231,13 +233,14 @@ export default class Exports extends Command {
 
         const imports = extractImportsHelper(sourceFile)
         for (const [name, count] of imports) {
-          allImports.set(name, (allImports.get(name) ?? 0) + count)
+          increment(allImports, name, count)
         }
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
         if (verbose) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error'
           this.log(`Failed to analyze ${file.path}: ${errorMessage}`)
         }
+        failedFiles++
       }
     }
 

@@ -1,3 +1,5 @@
+import { increment } from '../../utils/map-helpers.js'
+
 export class GraphTopoSort {
   private adjacencyList: Map<number, Set<number>>;
 
@@ -140,13 +142,12 @@ export class GraphTopoSort {
     for (const edges of valuesArray) {
       const edgesList = Array.from(edges);
       for (const to of edgesList) {
-        inDegree.set(to, (inDegree.get(to) ?? 0) + 1);
+        increment(inDegree, to);
       }
     }
 
     const queue: number[] = [];
-    const inDegreeEntries = Array.from(inDegree.entries());
-    for (const [vertex, degree] of inDegreeEntries) {
+    for (const [vertex, degree] of inDegree) {
       if (degree === 0) {
         queue.push(vertex);
       }

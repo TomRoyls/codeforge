@@ -235,7 +235,7 @@ export class IntervalSkipList<T = undefined> {
     let current: IntervalNode<T> | null | undefined = this.header.forward[0]
     while (current != null) {
       const lvl = current.forward.length
-      levelDistribution[lvl] = (levelDistribution[lvl] || 0) + 1
+      levelDistribution[lvl] = (levelDistribution[lvl] ?? 0) + 1
       totalNodes++
       current = current.forward[0]
     }

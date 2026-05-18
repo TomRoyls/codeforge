@@ -196,7 +196,7 @@ export class BucketSort4<T extends number> {
         Math.floor((value - min) / bucketRange),
         numBuckets - 1
       );
-      const count = distribution.get(bucketIndex) || 0;
+      const count = distribution.get(bucketIndex) ?? 0;
       distribution.set(bucketIndex, count + 1);
     }
 

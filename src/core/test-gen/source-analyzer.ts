@@ -1,4 +1,5 @@
 import type { AnalyzedFunction, AnalyzedClass, AnalyzedParam } from './types.js'
+import { escapeRegex } from '../../utils/string-helpers.js'
 
 const FUNCTION_REGEX =
   /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*([^{]+?))?\s*\{/g
@@ -163,13 +164,13 @@ export class SourceAnalyzer {
 
   private findFunctionMatch(source: string, name: string): RegExpMatchArray | null {
     const namedFuncRegex = new RegExp(
-      `(?:export\\s+)?(?:async\\s+)?function\\s+${this.escapeRegex(name)}\\s*\\(([^)]*)\\)\\s*(?::\\s*([^{]+?))?\\s*\\{`,
+      `(?:export\\s+)?(?:async\\s+)?function\\s+${escapeRegex(name)}\\s*\\(([^)]*)\\)\\s*(?::\\s*([^{]+?))?\\s*\\{`,
     )
     let match = source.match(namedFuncRegex)
     if (match) return match
 
     const namedArrowRegex = new RegExp(
-      `(?:export\\s+)?(?:const|let|var)\\s+${this.escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\(([^)]*)\\)\\s*(?::\\s*([^=]+?))?\\s*=>\\s*`,
+      `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\(([^)]*)\\)\\s*(?::\\s*([^=]+?))?\\s*=>\\s*`,
     )
     match = source.match(namedArrowRegex)
     return match
@@ -177,16 +178,16 @@ export class SourceAnalyzer {
 
   private findClassMatch(source: string, name: string): RegExpMatchArray | null {
     const regex = new RegExp(
-      `(?:export\\s+)?(?:abstract\\s+)?class\\s+${this.escapeRegex(name)}\\s*(?:extends\\s+\\w+\\s*)?(?:implements\\s+[\\w,\\s]+\\s*)?\\{`,
+      `(?:export\\s+)?(?:abstract\\s+)?class\\s+${escapeRegex(name)}\\s*(?:extends\\s+\\w+\\s*)?(?:implements\\s+[\\w,\\s]+\\s*)?\\{`,
     )
     return source.match(regex)
   }
 
   private checkExported(source: string, name: string): boolean {
-    const funcExportRegex = new RegExp(`export\\s+(?:async\\s+)?function\\s+${this.escapeRegex(name)}`)
+    const funcExportRegex = new RegExp(`export\\s+(?:async\\s+)?function\\s+${escapeRegex(name)}`)
     if (funcExportRegex.test(source)) return true
 
-    const arrowExportRegex = new RegExp(`export\\s+(?:const|let|var)\\s+${this.escapeRegex(name)}`)
+    const arrowExportRegex = new RegExp(`export\\s+(?:const|let|var)\\s+${escapeRegex(name)}`)
     if (arrowExportRegex.test(source)) return true
 
     return false
@@ -194,7 +195,7 @@ export class SourceAnalyzer {
 
   private extractFunctionBody(source: string, name: string): string {
     const funcRegex = new RegExp(
-      `(?:export\\s+)?(?:async\\s+)?function\\s+${this.escapeRegex(name)}\\s*\\([^)]*\\)\\s*(?::\\s*[^{]+?)?\\s*\\{`,
+      `(?:export\\s+)?(?:async\\s+)?function\\s+${escapeRegex(name)}\\s*\\([^)]*\\)\\s*(?::\\s*[^{]+?)?\\s*\\{`,
     )
     let match = source.match(funcRegex)
     if (match && match.index !== undefined) {
@@ -202,7 +203,7 @@ export class SourceAnalyzer {
     }
 
     const arrowRegex = new RegExp(
-      `(?:export\\s+)?(?:const|let|var)\\s+${this.escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\([^)]*\\)\\s*(?::\\s*[^=]+?)?\\s*=>\\s*`,
+      `(?:export\\s+)?(?:const|let|var)\\s+${escapeRegex(name)}\\s*=\\s*(?:async\\s+)?\\([^)]*\\)\\s*(?::\\s*[^=]+?)?\\s*=>\\s*`,
     )
     match = source.match(arrowRegex)
     if (match && match.index !== undefined) {
@@ -233,7 +234,7 @@ export class SourceAnalyzer {
 
   private extractClassBody(source: string, name: string): string {
     const regex = new RegExp(
-      `(?:export\\s+)?(?:abstract\\s+)?class\\s+${this.escapeRegex(name)}\\s*(?:extends\\s+\\w+\\s*)?(?:implements\\s+[\\w,\\s]+\\s*)?\\{`,
+      `(?:export\\s+)?(?:abstract\\s+)?class\\s+${escapeRegex(name)}\\s*(?:extends\\s+\\w+\\s*)?(?:implements\\s+[\\w,\\s]+\\s*)?\\{`,
     )
     const match = source.match(regex)
     if (match && match.index !== undefined) {
@@ -422,9 +423,5 @@ export class SourceAnalyzer {
       /\bexecSync/,
     ]
     return externalPatterns.some((p) => p.test(body))
-  }
-
-  private escapeRegex(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 }

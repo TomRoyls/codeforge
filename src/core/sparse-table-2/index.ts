@@ -46,7 +46,7 @@ export class SparseTable {
 
   rangeMinQuery(start: number, end: number): number {
     if (start < 0 || end >= this.array.length || start > end) {
-      throw new Error("Invalid range");
+      throw new Error(`Invalid range: start=${start}, end=${end}, length=${this.array.length}`);
     }
     const length = end - start + 1;
     const k = this.logs[length]!;
@@ -58,7 +58,7 @@ export class SparseTable {
 
   rangeMaxQuery(start: number, end: number): number {
     if (start < 0 || end >= this.array.length || start > end) {
-      throw new Error("Invalid range");
+      throw new Error(`Invalid range: start=${start}, end=${end}, length=${this.array.length}`);
     }
     const length = end - start + 1;
     const k = this.logs[length]!;

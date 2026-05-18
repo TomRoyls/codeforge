@@ -1,5 +1,6 @@
 import { DEFAULT_DOC_GENERATION_OPTIONS } from './types.js'
 import type { DocEntry, DocGenerationOptions, TableOfContentsEntry } from './types.js'
+import { groupBy } from '../../utils/array-helpers.js'
 
 export class DocGenerator {
   private options: DocGenerationOptions
@@ -63,7 +64,7 @@ export class DocGenerator {
 
     if (this.options.groupByCategory) {
       const groups = this.groupByCategory()
-      const categories = Array.from(groups.keys())
+      const categories = [...groups.keys()]
       for (const category of categories) {
         const categoryEntries = groups.get(category)
         if (!categoryEntries) continue
@@ -175,7 +176,7 @@ export class DocGenerator {
 
     if (this.options.groupByCategory) {
       const groups = this.groupByCategory()
-      const categories = Array.from(groups.keys())
+      const categories = [...groups.keys()]
       for (const category of categories) {
         const categoryEntries = groups.get(category)
         if (!categoryEntries) continue
@@ -266,7 +267,7 @@ export class DocGenerator {
 
     if (this.options.groupByCategory) {
       const groups = this.groupByCategory()
-      const categories = Array.from(groups.keys())
+      const categories = [...groups.keys()]
       for (const category of categories) {
         const categoryEntries = groups.get(category)
         if (!categoryEntries) continue
@@ -353,7 +354,7 @@ export class DocGenerator {
 
     if (this.options.groupByCategory) {
       const groups = this.groupByCategory()
-      const categories = Array.from(groups.keys())
+      const categories = [...groups.keys()]
       for (const category of categories) {
         const categoryEntries = groups.get(category)
         if (!categoryEntries) continue
@@ -386,19 +387,9 @@ export class DocGenerator {
 
   groupByCategory(): Map<string, DocEntry[]> {
     const entries = this.getEntries()
-    const groups = new Map<string, DocEntry[]>()
-
-    for (const entry of entries) {
-      const category = entry.category.length > 0 ? entry.category : 'Uncategorized'
-      const existing = groups.get(category)
-      if (existing) {
-        existing.push(entry)
-      } else {
-        groups.set(category, [entry])
-      }
-    }
-
-    return groups
+    return groupBy(entries, (entry) =>
+      entry.category.length > 0 ? entry.category : 'Uncategorized',
+    )
   }
 
   getCategories(): string[] {

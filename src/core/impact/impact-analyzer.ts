@@ -1,5 +1,6 @@
 import type { Change, ChangeSet, ImpactEdge, ImpactGraph, ImpactNode } from './types.js';
 import { ImpactType } from './types.js';
+import { unique } from '../../utils/array-helpers.js';
 
 export class ImpactAnalyzer {
   private depMap: Map<string, string[]>;
@@ -179,7 +180,7 @@ export class ImpactAnalyzer {
         }
       }
     }
-    return [...new Set(result)];
+    return unique(result);
   }
 
   findReExporters(filePath: string, allExports: Map<string, string[]>): string[] {

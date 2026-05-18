@@ -11,7 +11,7 @@ export class Bitmap2 {
 
   private getWordIndex(bitIndex: number): number {
     if (bitIndex < 0 || bitIndex >= this.size) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${bitIndex}, size=${this.size}`);
     }
     return Math.floor(bitIndex / 32);
   }
@@ -62,7 +62,7 @@ export class Bitmap2 {
 
   setRange(start: number, end: number): void {
     if (start < 0 || end > this.size || start > end) {
-      throw new Error('Invalid range');
+      throw new Error(`Invalid range: start=${start}, end=${end}, size=${this.size}`);
     }
     for (let i = start; i < end; i++) {
       this.set(i);
@@ -71,7 +71,7 @@ export class Bitmap2 {
 
   clearRange(start: number, end: number): void {
     if (start < 0 || end > this.size || start > end) {
-      throw new Error('Invalid range');
+      throw new Error(`Invalid range: start=${start}, end=${end}, size=${this.size}`);
     }
     for (let i = start; i < end; i++) {
       this.clear(i);

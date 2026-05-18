@@ -85,9 +85,13 @@ export class MetricCollector {
     const totalSamples = allSamples.length
     let timeRange: { start: number; end: number } | null = null
     if (totalSamples > 0) {
-      const timestamps = allSamples.map((s) => s.timestamp)
-      const start = Math.min(...timestamps)
-      const end = Math.max(...timestamps)
+      let start = allSamples[0]!.timestamp
+      let end = start
+      for (let i = 1; i < allSamples.length; i++) {
+        const ts = allSamples[i]!.timestamp
+        if (ts < start) start = ts
+        if (ts > end) end = ts
+      }
       timeRange = { start, end }
     }
     return {

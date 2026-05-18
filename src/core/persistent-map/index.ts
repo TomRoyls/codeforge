@@ -159,7 +159,7 @@ function insertNode<K, V>(
 
   added.value = true
   const newChild = new LeafNode(hash, key, value)
-  const newChildren = node.children.slice(0, idx).concat([newChild], node.children.slice(idx))
+  const newChildren = [...node.children.slice(0, idx), newChild, ...node.children.slice(idx)]
   return new BitmapNode(node.bitmap | bit, newChildren)
 }
 
@@ -246,7 +246,7 @@ function deleteNode<K, V>(
         return remainingChild
       }
     }
-    const newChildren = node.children.slice(0, idx).concat(node.children.slice(idx + 1))
+    const newChildren = [...node.children.slice(0, idx), ...node.children.slice(idx + 1)]
     return new BitmapNode(newBitmap, newChildren)
   }
 

@@ -113,13 +113,13 @@ export class BSPTree {
         const first = frontSegments[0]!;
         node.segment = first;
         frontSegments.shift();
-        node.front = this.rebuildTree(frontSegments.concat(backSegments));
+        node.front = this.rebuildTree([...frontSegments, ...backSegments]);
         node.back = null;
       } else if (backSegments.length > 0) {
         const first = backSegments[0]!;
         node.segment = first;
         backSegments.shift();
-        node.front = this.rebuildTree(backSegments.concat(frontSegments));
+        node.front = this.rebuildTree([...backSegments, ...frontSegments]);
         node.back = null;
       }
       return true;
@@ -265,8 +265,12 @@ export class BSPTree {
       { x: rect.minX, y: rect.maxY }
     ];
     const classifications = corners.map(p => this.classifyPoint(p.x, p.y, partition));
-    const frontCount = classifications.filter(c => c === 'front' || c === 'on').length;
-    const backCount = classifications.filter(c => c === 'back' || c === 'on').length;
+    let frontCount = 0, backCount = 0
+    for (let ci = 0; ci < classifications.length; ci++) {
+      const c = classifications[ci]!
+      if (c === 'front' || c === 'on') frontCount++
+      if (c === 'back' || c === 'on') backCount++
+    }
     if (side === 'front') {
       if (frontCount === 4) return 'inside';
       if (backCount === 4) return 'separate';

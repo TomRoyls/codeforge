@@ -1,6 +1,7 @@
 import type { ModuleInfo, BundleModule, BundleReport, AnalyzeConfig, TreeShakeOpportunity } from './types.js'
 import { DEFAULT_ANALYZE_CONFIG } from './types.js'
 import { ModuleAnalyzer } from './module-analyzer.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 export class BundleAnalyzer {
   private config: AnalyzeConfig
@@ -34,7 +35,7 @@ export class BundleAnalyzer {
       : bundleModules
 
     const totalSize = filteredModules.reduce((sum, m) => sum + m.size, 0)
-    const externalCount = bundleModules.filter((m) => m.isExternal).length
+    const externalCount = bundleModules.reduce((c, m) => m.isExternal ? c + 1 : c, 0)
     const estimatedGzipSize = this.config.gzipEstimate
       ? this.analyzer.estimateGzipSize(totalSize)
       : 0
@@ -52,8 +53,7 @@ export class BundleAnalyzer {
   }
 
   getLargestModules(report: BundleReport, count: number = 5): BundleModule[] {
-    return [...report.modules]
-      .sort((a, b) => b.size - a.size)
+    return sortedByDesc([...report.modules], m => m.size)
       .slice(0, count)
   }
 

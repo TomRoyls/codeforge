@@ -28,7 +28,7 @@ export class XorFilterBloom {
       ...(fingerprintBits !== undefined ? { fingerprintBits } : {}),
     }
 
-    const unique = Array.from(new Set(items))
+    const unique = [...new Set(items)]
     const n = unique.length
 
     if (n === 0) {

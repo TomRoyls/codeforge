@@ -2,6 +2,7 @@ import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
 import type { FileReaderOptions, CachedFile, FileReaderStats } from './types.js'
 import { DEFAULT_FILE_READER_OPTIONS } from './types.js'
+import { globToRegex } from '../../utils/glob.js'
 
 export class CachedFileReader {
   private cache: Map<string, CachedFile> = new Map()
@@ -101,7 +102,7 @@ export class CachedFileReader {
   }
 
   invalidatePattern(pattern: string): number {
-    const regex = this.globToRegex(pattern)
+    const regex = globToRegex(pattern)
     let count = 0
     for (const key of [...this.cache.keys()]) {
       if (regex.test(key)) {
@@ -163,13 +164,4 @@ export class CachedFileReader {
     }
   }
 
-  private globToRegex(pattern: string): RegExp {
-    const escaped = pattern
-      .replace(/[.+^${}()|[\]\\]/g, '\\$&')
-      .replace(/\*\*/g, '{{GLOBSTAR}}')
-      .replace(/\*/g, '[^/]*')
-      .replace(/\{{GLOBSTAR}}/g, '.*')
-      .replace(/\?/g, '[^/]')
-    return new RegExp(escaped)
-  }
 }

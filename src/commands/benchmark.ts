@@ -31,6 +31,7 @@ import { Parser } from '../core/parser.js'
 import { RuleRegistry } from '../core/rule-registry.js'
 import { getRuleCategory } from '../rules/categories.js'
 import { DECIMAL_PRECISION_TIME, LINE_CLEAR_WIDTH } from '../utils/constants.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
 import {
   type BenchmarkResult,
   getRulesToBenchmark as getRulesToBenchmarkHelper,
@@ -182,7 +183,7 @@ export default class Benchmark extends Command {
 
     parser.dispose()
 
-    results.sort((a, b) => b.avgTime - a.avgTime)
+    results = sortedByDesc(results, r => r.avgTime)
 
     for (const line of printResults(results, flags.top)) {
       this.log(line)
@@ -224,12 +225,20 @@ export default class Benchmark extends Command {
       times.push(endTime - startTime)
     }
 
-    const totalTime = times.reduce((sum, t) => sum + t, 0)
+    let totalTime = 0
+    let maxTime = times[0]!
+    let minTime = times[0]!
+    for (let i = 0; i < times.length; i++) {
+      const t = times[i]!
+      totalTime += t
+      if (t > maxTime) maxTime = t
+      if (t < minTime) minTime = t
+    }
 
     return {
       avgTime: totalTime / times.length,
-      maxTime: Math.max(...times),
-      minTime: Math.min(...times),
+      maxTime,
+      minTime,
       ruleId,
       runCount: iterations,
       totalTime,

@@ -27,6 +27,7 @@ import type { RuleViolation } from '../ast/visitor.js'
 import type { FileFixReport, FixableViolation, FixReport, FixResult, TextChange } from './types.js'
 
 import { createFixContext } from './context.js'
+import { sortedByDesc } from '../utils/array-helpers.js'
 
 /**
  * Function type for applying a fix to a specific violation.
@@ -236,7 +237,7 @@ function getFileLines(sourceFile: SourceFile): string[] {
 }
 
 function applyTextChanges(sourceFile: SourceFile, changes: TextChange[]): void {
-  const sortedChanges = [...changes].sort((a, b) => b.start - a.start)
+  const sortedChanges = sortedByDesc(changes, c => c.start)
 
   for (const change of sortedChanges) {
     sourceFile.replaceText([change.start, change.end], change.newText)

@@ -21,8 +21,12 @@ export class RankedMap<K, V> {
       this.items.splice(existingIndex, 1)
       this.rebuildIndex(existingIndex)
     }
+    let maxOrder = 0
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i]!.insertionOrder > maxOrder) maxOrder = this.items[i]!.insertionOrder
+    }
     const insertionOrder = existingIndex !== undefined
-      ? this.items.length > 0 ? Math.max(...this.items.map(e => e.insertionOrder)) + 1 : this.nextInsertionOrder++
+      ? this.items.length > 0 ? maxOrder + 1 : this.nextInsertionOrder++
       : this.nextInsertionOrder++
     const entry: InternalEntry<K, V> = { key, value, score, insertionOrder }
     const pos = this.findInsertPosition(entry)

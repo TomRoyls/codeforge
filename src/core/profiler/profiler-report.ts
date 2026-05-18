@@ -1,4 +1,6 @@
 import type { ProfileSession, MemorySnapshot, ProfileReport, ProfileSummary, Hotspot } from './types.js'
+import { roundTo } from '../../utils/math-helpers.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
 
 export class ProfilerReport {
   generateReport(session: ProfileSession, snapshots: MemorySnapshot[]): ProfileReport {
@@ -72,7 +74,7 @@ export class ProfilerReport {
           selfTime: data.selfTime,
           totalTime: data.totalTime,
           callCount: data.callCount,
-          percentage: Math.round(percentage * 100) / 100,
+          percentage: roundTo(percentage, 2),
         })
       }
     }
@@ -95,18 +97,29 @@ export class ProfilerReport {
       }
     }
 
-    const durations = samples.map((s) => s.duration)
-    const memories = samples.map((s) => s.memoryUsage)
-    const totalDur = durations.reduce((a, b) => a + b, 0)
+    let totalDur = 0
+    let minDur = samples[0]!.duration
+    let maxDur = samples[0]!.duration
+    let sumMem = 0
+    let peakMem = samples[0]!.memoryUsage
+    for (let i = 0; i < samples.length; i++) {
+      const d = samples[i]!.duration
+      const m = samples[i]!.memoryUsage
+      totalDur += d
+      sumMem += m
+      if (d < minDur) minDur = d
+      if (d > maxDur) maxDur = d
+      if (m > peakMem) peakMem = m
+    }
 
     return {
       totalTime: session.totalDuration,
-      avgSampleDuration: totalDur / durations.length,
-      maxSampleDuration: Math.max(...durations),
-      minSampleDuration: Math.min(...durations),
+      avgSampleDuration: totalDur / samples.length,
+      maxSampleDuration: maxDur,
+      minSampleDuration: minDur,
       totalSamples: samples.length,
-      peakMemory: Math.max(...memories),
-      avgMemory: memories.reduce((a, b) => a + b, 0) / memories.length,
+      peakMemory: peakMem,
+      avgMemory: sumMem / samples.length,
     }
   }
 
@@ -188,7 +201,7 @@ export class ProfilerReport {
   }
 
   getTopFunctions(hotspots: Hotspot[], count: number): Hotspot[] {
-    const sorted = [...hotspots].sort((a, b) => b.selfTime - a.selfTime)
+    const sorted = sortedByDesc(hotspots, h => h.selfTime)
     return sorted.slice(0, count)
   }
 

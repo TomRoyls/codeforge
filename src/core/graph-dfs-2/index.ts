@@ -57,7 +57,7 @@ export class GraphDFS2 {
       result.push(node);
       const neighbors = this.adjacencyList.get(node);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           traverse(neighbor);
         }
       }
@@ -81,7 +81,7 @@ export class GraphDFS2 {
       visited.add(node);
       const neighbors = this.adjacencyList.get(node);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             visit(neighbor);
           }
@@ -110,7 +110,7 @@ export class GraphDFS2 {
       recursionStack.add(node);
       const neighbors = this.adjacencyList.get(node);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             if (hasCycle(neighbor)) {
               return true;
@@ -151,7 +151,7 @@ export class GraphDFS2 {
       visited.add(node);
       const neighbors = this.adjacencyList.get(node);
       if (neighbors) {
-        for (const neighbor of Array.from(neighbors.keys())) {
+        for (const neighbor of neighbors.keys()) {
           if (!visited.has(neighbor)) {
             parent.set(neighbor, node);
             if (dfsSearch(neighbor)) {
@@ -193,7 +193,7 @@ export class GraphDFS2 {
           component.push(node);
           const neighbors = this.adjacencyList.get(node);
           if (neighbors) {
-            for (const neighbor of Array.from(neighbors.keys())) {
+            for (const neighbor of neighbors.keys()) {
               if (!visited.has(neighbor)) {
                 stack.push(neighbor);
               }
@@ -218,7 +218,7 @@ export class GraphDFS2 {
         const currentColor = color.get(node)!;
         const neighbors = this.adjacencyList.get(node);
         if (neighbors) {
-          for (const neighbor of Array.from(neighbors.keys())) {
+          for (const neighbor of neighbors.keys()) {
             if (!color.has(neighbor)) {
               color.set(neighbor, 1 - currentColor);
               stack.push(neighbor);

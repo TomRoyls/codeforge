@@ -109,7 +109,7 @@ export class DHeap<T> {
 
   update(i: number, value: T): void {
     if (i < 0 || i >= this.heap.length) {
-      throw new Error('Index out of bounds');
+      throw new Error(`Index out of bounds: index=${i}, size=${this.heap.length}`);
     }
     const oldValue = this.heap[i]!;
     this.heap[i] = value;

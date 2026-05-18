@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 
 import type { TextChange } from './types.js'
+import { sortedBy } from '../utils/array-helpers.js'
 
 export interface DiffLine {
   content: string
@@ -22,7 +23,7 @@ export function renderTextChangesAsDiff(changes: TextChange[], filePath: string)
     return { filePath, hunks: [] }
   }
 
-  const sorted = [...changes].sort((a, b) => a.start - b.start)
+  const sorted = sortedBy(changes, c => c.start)
   const hunks: DiffHunk[] = []
 
   for (const change of sorted) {

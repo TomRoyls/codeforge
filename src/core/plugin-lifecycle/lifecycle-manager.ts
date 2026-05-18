@@ -1,6 +1,10 @@
 import type { InstallOptions, InstallResult, PluginEvent, PluginInfo, PluginState } from './types.js'
 import { PluginRegistry } from './plugin-registry.js'
 import { VersionResolver } from './version-resolver.js'
+import { isBlank } from '../../utils/string-helpers.js'
+import { sortedBy } from '../../utils/array-helpers.js'
+
+const SEMVER_MIN_PARTS = 3
 
 export class LifecycleManager {
   private registry: PluginRegistry
@@ -171,11 +175,10 @@ export class LifecycleManager {
   }
 
   getLoadOrder(): string[] {
-    return this.registry
-      .getAll()
-      .filter(e => e.enabled)
-      .sort((a, b) => a.loadOrder - b.loadOrder)
-      .map(e => e.plugin.name)
+    return sortedBy(
+      this.registry.getAll().filter(e => e.enabled),
+      e => e.loadOrder
+    ).map(e => e.plugin.name)
   }
 
   validate(name: string): { valid: boolean; errors: string[] } {
@@ -188,19 +191,19 @@ export class LifecycleManager {
 
     const plugin = entry.plugin
 
-    if (!plugin.name || plugin.name.trim().length === 0) {
+    if (isBlank(plugin.name)) {
       errors.push('Plugin name is empty.')
     }
 
-    if (!plugin.version || plugin.version.trim().length === 0) {
+    if (isBlank(plugin.version)) {
       errors.push('Plugin version is empty.')
     }
 
-    if (!plugin.entryPoint || plugin.entryPoint.trim().length === 0) {
+    if (isBlank(plugin.entryPoint)) {
       errors.push('Plugin entry point is empty.')
     }
 
-    if (!plugin.license || plugin.license.trim().length === 0) {
+    if (isBlank(plugin.license)) {
       errors.push('Plugin license is empty.')
     }
 
@@ -210,10 +213,10 @@ export class LifecycleManager {
     }
 
     for (const [depName, depVersion] of plugin.dependencies) {
-      if (!depName || depName.trim().length === 0) {
+      if (isBlank(depName)) {
         errors.push('Dependency name is empty.')
       }
-      if (!depVersion || depVersion.trim().length === 0) {
+      if (isBlank(depVersion)) {
         errors.push(`Dependency "${depName}" has empty version.`)
       }
     }
@@ -240,7 +243,7 @@ export class LifecycleManager {
 
   private incrementVersion(version: string): string {
     const parts = version.split('.')
-    if (parts.length < 3) return version
+    if (parts.length < SEMVER_MIN_PARTS) return version
     const patch = parseInt(parts[2] ?? '0', 10) + 1
     return `${parts[0]}.${parts[1]}.${patch}`
   }

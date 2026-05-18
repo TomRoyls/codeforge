@@ -8,6 +8,8 @@ import type {
 } from './types.js'
 import { DEFAULT_NOTIFICATION_CONFIG } from './types.js'
 
+const ONE_HOUR_MS = 3_600_000
+
 let alertCounter = 0
 
 function generateAlertId(): string {
@@ -262,7 +264,7 @@ export class AlertManager {
   }
 
   isRateLimited(): boolean {
-    const oneHourAgo = Date.now() - 3600000
+    const oneHourAgo = Date.now() - ONE_HOUR_MS
     this.recentAlertTimestamps = this.recentAlertTimestamps.filter((ts) => ts > oneHourAgo)
     return this.recentAlertTimestamps.length >= this.config.maxAlertsPerHour
   }

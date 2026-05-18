@@ -7,7 +7,23 @@ import type {
   PatternSuggestion,
   PatternSummary,
 } from './types.js'
+import { countLines } from '../../utils/string-helpers.js'
+import { roundTo } from '../../utils/math-helpers.js'
 
+// ─── Pattern Detection Thresholds ───
+const GOD_OBJECT_LINE_THRESHOLD = 500
+const GOD_OBJECT_FUNCTION_THRESHOLD = 20
+const DEEP_NESTING_LEVEL_THRESHOLD = 4
+const INDENT_PER_LEVEL = 4
+const DEEP_INDENT_CHARACTER_COUNT = 16
+const LONG_METHOD_LINE_THRESHOLD = 50
+const SPAGHETTI_RETURN_THRESHOLD = 10
+const LARGE_CLASS_METHOD_THRESHOLD = 15
+const BARREL_EXPORT_MINIMUM = 2
+const DEAD_CODE_LINE_LENGTH = 80
+const DEAD_CODE_SHORT_LENGTH = 40
+
+const _detectionRegexCache = new Map<string, RegExp>()
 function getLineAndColumn(source: string, offset: number): { line: number; column: number } {
   let line = 1
   let column = 1
@@ -243,16 +259,16 @@ export class PatternDetector {
 
     switch (pattern.id) {
       case 'god-object': {
-        const lineCount = source.split('\n').length
+        const lineCount = countLines(source)
         const functionCount = (source.match(/(?:function\s+\w+|(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\()/g) ?? []).length
-        if (lineCount > 500 && functionCount > 20) {
+        if (lineCount > GOD_OBJECT_LINE_THRESHOLD && functionCount > GOD_OBJECT_FUNCTION_THRESHOLD) {
           matches.push({
             pattern,
             filePath,
             line: 1,
             column: 1,
             matchedText: `File has ${lineCount} lines and ${functionCount} functions`,
-            confidence: Math.min(1, (lineCount / 500 + functionCount / 20) / 2),
+            confidence: Math.min(1, (lineCount / GOD_OBJECT_LINE_THRESHOLD + functionCount / GOD_OBJECT_FUNCTION_THRESHOLD) / 2),
             context: source.split('\n').slice(0, 5).join('\n'),
           })
         }
@@ -264,9 +280,9 @@ export class PatternDetector {
         for (let i = 0; i < lines.length; i++) {
           const indent = lines[i]!.match(/^(\s*)/)?.[1] ?? ''
           const tabDepth = indent.length
-          if (tabDepth >= 16) {
-            const nestingLevel = Math.floor(tabDepth / 4)
-            if (nestingLevel > 4) {
+          if (tabDepth >= DEEP_INDENT_CHARACTER_COUNT) {
+            const nestingLevel = Math.floor(tabDepth / INDENT_PER_LEVEL)
+            if (nestingLevel > DEEP_NESTING_LEVEL_THRESHOLD) {
               matches.push({
                 pattern,
                 filePath,
@@ -310,7 +326,7 @@ export class PatternDetector {
           const funcStart = funcMatch.index
           const funcBody = this.extractBlock(source, funcStart + funcMatch[0].length - 1)
           const returnCount = (funcBody.match(/\breturn\b/g) ?? []).length
-          if (returnCount > 10) {
+          if (returnCount > SPAGHETTI_RETURN_THRESHOLD) {
             const pos = getLineAndColumn(source, funcStart)
             matches.push({
               pattern,
@@ -332,8 +348,8 @@ export class PatternDetector {
         while ((fm = funcRegex.exec(source)) !== null) {
           const funcStart = fm.index
           const funcBody = this.extractBlock(source, funcStart + fm[0].length - 1)
-          const lineCount = funcBody.split('\n').length
-          if (lineCount > 50) {
+          const lineCount = countLines(funcBody)
+          if (lineCount > LONG_METHOD_LINE_THRESHOLD) {
             const pos = getLineAndColumn(source, funcStart)
             matches.push({
               pattern,
@@ -355,7 +371,7 @@ export class PatternDetector {
         while ((cm = classRegex.exec(source)) !== null) {
           const classBody = this.extractBlock(source, cm.index + cm[0].length - 1)
           const methodCount = (classBody.match(/\b(?:public|private|protected)?\s*(?:async\s+)?(?:get\s+|set\s+)?\w+\s*\([^)]*\)\s*(?::\s*\w+)?\s*\{/g) ?? []).length
-          if (methodCount > 15) {
+          if (methodCount > LARGE_CLASS_METHOD_THRESHOLD) {
             const pos = getLineAndColumn(source, cm.index)
             matches.push({
               pattern,
@@ -382,7 +398,7 @@ export class PatternDetector {
             l.trim().startsWith('*'),
         )
         const exportCount = (source.match(/export\s*\{[^}]*\}\s*from/g) ?? []).length
-        if (exportCount >= 2 && exportOnlyLines.length === lines.length) {
+        if (exportCount >= BARREL_EXPORT_MINIMUM && exportOnlyLines.length === lines.length) {
           matches.push({
             pattern,
             filePath,
@@ -407,7 +423,7 @@ export class PatternDetector {
             text.includes('return ') ||
             text.includes('if ') ||
             text.includes('for ') ||
-            text.length > 80
+            text.length > DEAD_CODE_LINE_LENGTH
           ) {
             const pos = getLineAndColumn(source, dm.index)
             matches.push({
@@ -416,7 +432,7 @@ export class PatternDetector {
               line: pos.line,
               column: pos.column,
               matchedText: text.substring(0, 100),
-              confidence: text.length > 40 ? 0.8 : 0.5,
+              confidence: text.length > DEAD_CODE_SHORT_LENGTH ? 0.8 : 0.5,
               context: getContext(source, dm.index),
             })
           }
@@ -425,9 +441,15 @@ export class PatternDetector {
       }
 
       default: {
-        const regex = new RegExp(pattern.detectionRegex.source, 'gm')
+        const cacheKey = pattern.detectionRegex.source
+        let regex = _detectionRegexCache.get(cacheKey)
+        if (!regex) {
+          regex = new RegExp(pattern.detectionRegex.source, 'gm')
+          _detectionRegexCache.set(cacheKey, regex)
+        }
+        const freshRegex = new RegExp(regex.source, regex.flags)
         let m: RegExpExecArray | null
-        while ((m = regex.exec(source)) !== null) {
+        while ((m = freshRegex.exec(source)) !== null) {
           const pos = getLineAndColumn(source, m.index)
           const matchedIndicators = pattern.indicators.filter((ind) =>
             source.toLowerCase().includes(ind.toLowerCase()),
@@ -439,7 +461,7 @@ export class PatternDetector {
             line: pos.line,
             column: pos.column,
             matchedText: m[0],
-            confidence: Math.round(confidence * 100) / 100,
+            confidence: roundTo(confidence, 2),
             context: getContext(source, m.index),
           })
         }

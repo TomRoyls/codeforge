@@ -47,13 +47,17 @@ export class ScopeAnalyzer {
 
   getStatistics(result: ScopeAnalysisResult): ScopeStatistics {
     const scopeDepths = result.scopes.map((s) => this.getScopeDepth(s))
+    let maxDepth = 0
+    for (let i = 0; i < scopeDepths.length; i++) {
+      if (scopeDepths[i]! > maxDepth) maxDepth = scopeDepths[i]!
+    }
     return {
       totalScopes: result.scopes.length,
       totalBindings: result.allBindings.length,
       usedBindings: result.allBindings.filter((b) => b.isUsed).length,
       unusedBindings: result.unusedBindings.length,
       shadowedBindings: result.shadowedBindings.length,
-      scopeDepth: scopeDepths.length > 0 ? Math.max(...scopeDepths) : 0,
+      scopeDepth: maxDepth,
     }
   }
 

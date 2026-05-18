@@ -6,6 +6,8 @@ import type {
   ReExportChain,
   CrossFileAnalysisResult,
 } from './types.js'
+import { unique } from '../../utils/array-helpers.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class CrossFileAnalyzer {
   analyze(graph: ImportGraph): CrossFileAnalysisResult {
@@ -228,7 +230,7 @@ export class CrossFileAnalyzer {
 
     for (const [filePath, module] of graph.modules) {
       if (module.isBarrel) {
-        const reExportCount = module.exports.filter((e) => e.isReExport).length
+        const reExportCount = module.exports.reduce((c, e) => e.isReExport ? c + 1 : c, 0)
         if (reExportCount > threshold) {
           issues.push({
             type: 'barrel-bloat',
@@ -252,7 +254,7 @@ export class CrossFileAnalyzer {
       for (const imp of module.imports) {
         if (!this.isRelativeImport(imp.fromModule)) continue
 
-        const segmentCount = imp.fromModule.split('/').filter((s) => s.length > 0).length
+        const segmentCount = imp.fromModule.split('/').reduce((c, s) => s.length > 0 ? c + 1 : c, 0)
         if (segmentCount > maxDepth) {
           issues.push({
             type: 'deep-import',
@@ -278,10 +280,10 @@ export class CrossFileAnalyzer {
       const total = afferentCoupling + efferentCoupling
       const instability = total > 0 ? efferentCoupling / total : 0
 
-      const abstractExports = module.exports.filter(
-        (e) => e.kind === 'interface' || e.kind === 'type',
-      ).length
-      const totalExports = module.exports.filter((e) => !e.isReExport).length
+      const abstractExports = module.exports.reduce(
+        (c, e) => (e.kind === 'interface' || e.kind === 'type') ? c + 1 : c, 0,
+      )
+      const totalExports = module.exports.reduce((c, e) => !e.isReExport ? c + 1 : c, 0)
       const abstractness = totalExports > 0 ? abstractExports / totalExports : 0
 
       const distance = Math.abs(abstractness + instability - 1)
@@ -332,7 +334,7 @@ export class CrossFileAnalyzer {
       directlyAffected,
       transitivelyAffected,
       totalAffected: allAffected.size,
-      affectedExports: [...new Set(affectedExports)],
+      affectedExports: unique(affectedExports),
     }
   }
 
@@ -353,12 +355,7 @@ export class CrossFileAnalyzer {
     if (result.issues.length > 0) {
       const grouped = new Map<string, CrossFileIssue[]>()
       for (const issue of result.issues) {
-        const existing = grouped.get(issue.type)
-        if (existing) {
-          existing.push(issue)
-        } else {
-          grouped.set(issue.type, [issue])
-        }
+        append(grouped, issue.type, issue)
       }
 
       lines.push('--- Issues ---')

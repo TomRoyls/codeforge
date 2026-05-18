@@ -26,10 +26,17 @@ export class SnapshotDiffComputer {
 
   summarize(diffs: DiffEntry[]): ComparisonSummary {
     const totalKeys = diffs.length
-    const added = diffs.filter((d) => d.changeType === 'added').length
-    const removed = diffs.filter((d) => d.changeType === 'removed').length
-    const modified = diffs.filter((d) => d.changeType === 'modified').length
-    const unchanged = diffs.filter((d) => d.changeType === 'unchanged').length
+    let added = 0
+    let removed = 0
+    let modified = 0
+    let unchanged = 0
+    for (let i = 0; i < diffs.length; i++) {
+      const ct = diffs[i]!.changeType
+      if (ct === 'added') added++
+      else if (ct === 'removed') removed++
+      else if (ct === 'modified') modified++
+      else unchanged++
+    }
     const changed = added + removed + modified
     const changePercent = totalKeys === 0 ? 0 : Math.round((changed / totalKeys) * 10000) / 100
     return { totalKeys, added, removed, modified, unchanged, changePercent }

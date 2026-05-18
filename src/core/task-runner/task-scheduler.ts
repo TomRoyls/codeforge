@@ -16,14 +16,24 @@ export class TaskScheduler {
 
   getReadyTasks(): Task[] {
     const all = this.queue.getAll()
-    const completedIds = new Set(
-      all.filter((t) => t.status === 'completed').map((t) => t.id)
-    )
-    return all.filter(
-      (t) =>
+    const completedIds = new Set<string>()
+    const ready: Task[] = []
+    for (let i = 0; i < all.length; i++) {
+      const t = all[i]
+      if (t.status === 'completed') {
+        completedIds.add(t.id)
+      }
+    }
+    for (let i = 0; i < all.length; i++) {
+      const t = all[i]
+      if (
         t.status === 'pending' &&
         t.dependencies.every((dep) => completedIds.has(dep))
-    )
+      ) {
+        ready.push(t)
+      }
+    }
+    return ready
   }
 
   resolveOrder(): string[] {
@@ -102,15 +112,24 @@ export class TaskScheduler {
     const task = this.queue.get(taskId)
     if (!task) return []
     const all = this.queue.getAll()
-    const completedIds = new Set(
-      all.filter((t) => t.status === 'completed').map((t) => t.id)
-    )
+    const completedIds = new Set<string>()
+    for (let i = 0; i < all.length; i++) {
+      if (all[i].status === 'completed') {
+        completedIds.add(all[i].id)
+      }
+    }
     return task.dependencies.filter((dep) => !completedIds.has(dep))
   }
 
   getDependents(taskId: string): string[] {
     const all = this.queue.getAll()
-    return all.filter((t) => t.dependencies.includes(taskId)).map((t) => t.id)
+    const dependents: string[] = []
+    for (let i = 0; i < all.length; i++) {
+      if (all[i].dependencies.includes(taskId)) {
+        dependents.push(all[i].id)
+      }
+    }
+    return dependents
   }
 
   getQueue(): TaskQueue {

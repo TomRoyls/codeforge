@@ -7,6 +7,7 @@ import type {
   MetricComparison,
   FileTrend,
 } from './types.js'
+import { roundTo } from '../../utils/math-helpers.js'
 
 export class TrendAnalyzer {
   analyzeTrend(snapshots: TrendSnapshot[], metric: keyof TrendSummary): TrendAnalysis {
@@ -86,8 +87,15 @@ export class TrendAnalyzer {
         if (j !== i) windowVals.push(values[j]!)
       }
 
-      const mean = windowVals.reduce((a, b) => a + b, 0) / windowVals.length
-      const variance = windowVals.reduce((a, b) => a + (b - mean) ** 2, 0) / windowVals.length
+      let wSum = 0
+      let wSumSq = 0
+      for (let j = 0; j < windowVals.length; j++) {
+        const v = windowVals[j]!
+        wSum += v
+        wSumSq += v * v
+      }
+      const mean = wSum / windowVals.length
+      const variance = wSumSq / windowVals.length - mean * mean
       const stdDev = Math.sqrt(variance)
 
       const actualValue = values[i]!
@@ -102,9 +110,9 @@ export class TrendAnalyzer {
         anomalies.push({
           timestamp: snapshots[i]!.timestamp,
           metric,
-          expectedValue: Math.round(mean * 100) / 100,
+          expectedValue: roundTo(mean, 2),
           actualValue,
-          deviation: Math.round(deviation * 100) / 100,
+          deviation: roundTo(deviation, 2),
         })
       }
     }
@@ -188,7 +196,7 @@ export class TrendAnalyzer {
         previous,
         current,
         change,
-        changePercent: Math.round(changePercent * 100) / 100,
+        changePercent: roundTo(changePercent, 2),
         direction,
       }
     })

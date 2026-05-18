@@ -6,6 +6,12 @@ import type {
   LintConfig,
 } from './types.js'
 
+const CONSOLE_METHODS = ['log', 'warn', 'error'] as const
+const CONSOLE_PATTERNS: Record<string, RegExp> = {}
+for (const method of CONSOLE_METHODS) {
+  CONSOLE_PATTERNS[method] = new RegExp(`\\bconsole\\.${method}\\s*\\(`)
+}
+
 const DEFAULT_CONFIG: LintConfig = {
   rules: [],
   maxViolations: -1,
@@ -77,10 +83,8 @@ function createBuiltinRules(): LintRule[] {
       severity: 'warning',
       check: (line: string, lineNumber: number): LintViolation[] => {
         const violations: LintViolation[] = []
-        const methods = ['log', 'warn', 'error']
-        for (const method of methods) {
-          const pattern = new RegExp(`\\bconsole\\.${method}\\s*\\(`)
-          const idx = line.search(pattern)
+        for (const method of CONSOLE_METHODS) {
+          const idx = line.search(CONSOLE_PATTERNS[method]!)
           if (idx !== -1) {
             violations.push({
               ruleId: 'no-console',
@@ -248,11 +252,15 @@ export class CodeLinter {
   }
 
   countBySeverity(violations: LintViolation[]): Record<LintSeverity, number> {
-    return {
-      error: violations.filter((v) => v.severity === 'error').length,
-      warning: violations.filter((v) => v.severity === 'warning').length,
-      info: violations.filter((v) => v.severity === 'info').length,
+    let error = 0
+    let warning = 0
+    let info = 0
+    for (const v of violations) {
+      if (v.severity === 'error') error++
+      else if (v.severity === 'warning') warning++
+      else if (v.severity === 'info') info++
     }
+    return { error, warning, info }
   }
 
   private shouldIgnoreLine(line: string): boolean {
@@ -263,11 +271,19 @@ export class CodeLinter {
   }
 
   private buildResult(violations: LintViolation[], totalLines: number): LintResult {
+    let errorCount = 0
+    let warningCount = 0
+    let infoCount = 0
+    for (const v of violations) {
+      if (v.severity === 'error') errorCount++
+      else if (v.severity === 'warning') warningCount++
+      else if (v.severity === 'info') infoCount++
+    }
     return {
       violations,
-      errorCount: violations.filter((v) => v.severity === 'error').length,
-      warningCount: violations.filter((v) => v.severity === 'warning').length,
-      infoCount: violations.filter((v) => v.severity === 'info').length,
+      errorCount,
+      warningCount,
+      infoCount,
       totalLines,
     }
   }

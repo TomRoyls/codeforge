@@ -1,6 +1,7 @@
 import type { ModuleManifest, RegistryEntry, RegistryConfig, ResolveResult, ModuleState } from './types.js'
 import { DEFAULT_REGISTRY_CONFIG } from './types.js'
 import { ModuleRegistry } from './module-registry.js'
+import { isBlank } from '../../utils/string-helpers.js'
 
 export class RegistryManager {
   private config: RegistryConfig
@@ -136,7 +137,7 @@ export class RegistryManager {
   validate(manifest: ModuleManifest): string[] {
     const errors: string[] = []
 
-    if (!manifest.id || manifest.id.trim().length === 0) {
+    if (!manifest.id || isBlank(manifest.id)) {
       errors.push('Module id is required')
     } else {
       const idRegex = /^[a-zA-Z][a-zA-Z0-9_-]*$/
@@ -145,7 +146,7 @@ export class RegistryManager {
       }
     }
 
-    if (!manifest.name || manifest.name.trim().length === 0) {
+    if (!manifest.name || isBlank(manifest.name)) {
       errors.push('Module name is required')
     }
 

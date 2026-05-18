@@ -6,6 +6,8 @@ import type {
 } from './types.js'
 import type { TelemetryCollector } from './telemetry-collector.js'
 import type { MetricsRecorder } from './metrics-recorder.js'
+import { sortedByDesc } from '../../utils/array-helpers.js'
+import { increment, append } from '../../utils/map-helpers.js'
 
 export class TelemetryReporter {
   private performanceEntries: PerformanceEntry[] = []
@@ -47,31 +49,29 @@ export class TelemetryReporter {
   ): Array<{ name: string; count: number }> {
     const counts = new Map<string, number>()
     for (const event of events) {
-      counts.set(event.name, (counts.get(event.name) ?? 0) + 1)
+      increment(counts, event.name)
     }
-    return Array.from(counts.entries())
+    const entries = [...counts]
       .map(([name, cnt]) => ({ name, count: cnt }))
-      .sort((a, b) => b.count - a.count)
+    return sortedByDesc(entries, e => e.count)
       .slice(0, count)
   }
 
   summarizeMetrics(points: MetricPoint[]): MetricSummary[] {
     const grouped = new Map<string, MetricPoint[]>()
     for (const point of points) {
-      const existing = grouped.get(point.name)
-      if (existing) {
-        existing.push(point)
-      } else {
-        grouped.set(point.name, [point])
-      }
+      append(grouped, point.name, point)
     }
 
     const summaries: MetricSummary[] = []
     for (const [name, pts] of grouped) {
       const values = pts.map((p) => p.value)
       const sorted = [...values].sort((a, b) => a - b)
+      let sum = 0
+      for (let i = 0; i < sorted.length; i++) {
+        sum += sorted[i]!
+      }
       const count = sorted.length
-      const sum = sorted.reduce((a, b) => a + b, 0)
       const min = sorted[0]!
       const max = sorted[count - 1]!
       const mean = sum / count

@@ -1,4 +1,5 @@
 import type { MultisearchMatch } from './types.js'
+import { increment } from '../../utils/map-helpers.js'
 
 interface AutomatonNode {
   children: Map<string, number>
@@ -128,7 +129,7 @@ export class Multisearch {
     const counts = new Map<string, number>()
     const matches = this.search(text)
     for (const match of matches) {
-      counts.set(match.pattern, (counts.get(match.pattern) ?? 0) + 1)
+      increment(counts, match.pattern)
     }
     return counts
   }

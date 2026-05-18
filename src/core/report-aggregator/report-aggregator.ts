@@ -1,5 +1,6 @@
 import type { AnalysisFinding, AnalysisReport, AggregatedReport, AggregatorConfig } from './types.js'
 import { FindingDeduplicator } from './finding-dedup.js'
+import { sortedBy } from '../../utils/array-helpers.js'
 
 const SEVERITY_ORDER: Record<string, number> = {
   error: 0,
@@ -114,7 +115,7 @@ export class ReportAggregator {
       } else if (field === 'file') {
         sorted = this.sortByFile(sorted)
       } else if (field === 'line') {
-        sorted = [...sorted].sort((a, b) => a.line - b.line)
+        sorted = sortedBy(sorted, f => f.line)
       }
     }
     return sorted

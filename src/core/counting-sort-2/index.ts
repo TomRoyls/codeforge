@@ -13,7 +13,7 @@ export class CountingSort {
     const map = new Map<number, number>();
     for (let i = 0; i < this.array.length; i++) {
       const value = this.array[i]!;
-      const current = map.get(value) || 0;
+      const current = map.get(value) ?? 0;
       map.set(value, current + 1);
     }
     return map;
@@ -94,7 +94,7 @@ export class CountingSort {
 
   getTimeComplexity(): string {
     const n = this.array.length;
-    const k = this.maxValue !== undefined ? this.maxValue - (this.getMin() || 0) + 1 : this.getCounts().size;
+    const k = this.maxValue !== undefined ? this.maxValue - (this.getMin() ?? 0) + 1 : this.getCounts().size;
     return `O(n + k) where n=${n} (input size), k=${k} (range of values)`;
   }
 }

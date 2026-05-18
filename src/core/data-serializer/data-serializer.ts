@@ -59,7 +59,7 @@ export class DataSerializer {
   }
 
   clone<T>(data: T): T {
-    return JSON.parse(JSON.stringify(data)) as T
+    return structuredClone(data)
   }
 
   merge(
@@ -74,11 +74,12 @@ export class DataSerializer {
     b: Record<string, unknown>,
   ): Record<string, { a: unknown; b: unknown }> {
     const result: Record<string, { a: unknown; b: unknown }> = {}
-    const allKeys = new Set([...Object.keys(a), ...Object.keys(b)])
+    const allKeys = new Set(Object.keys(a))
+    for (const key of Object.keys(b)) allKeys.add(key)
 
     for (const key of allKeys) {
-      const aHas = Object.prototype.hasOwnProperty.call(a, key)
-      const bHas = Object.prototype.hasOwnProperty.call(b, key)
+      const aHas = Object.hasOwn(a, key)
+      const bHas = Object.hasOwn(b, key)
 
       if (!aHas || !bHas) {
         result[key] = { a: a[key], b: b[key] }

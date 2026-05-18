@@ -91,12 +91,20 @@ export class TaskQueue {
     })
 
     const totalDuration = performance.now() - batchStart
-    const successCount = results.filter(r => r.success).length
-    const failureCount = results.filter(r => !r.success).length
-    const durations = results.map(r => r.duration)
-    const averageDuration = durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0
-    const minDuration = durations.length > 0 ? Math.min(...durations) : 0
-    const maxDuration = durations.length > 0 ? Math.max(...durations) : 0
+    let successCount = 0
+    let failureCount = 0
+    let totalResultDuration = 0
+    let minDuration = Infinity
+    let maxDuration = 0
+    for (const r of results) {
+      if (r.success) successCount++
+      else failureCount++
+      totalResultDuration += r.duration
+      if (r.duration < minDuration) minDuration = r.duration
+      if (r.duration > maxDuration) maxDuration = r.duration
+    }
+    const averageDuration = results.length > 0 ? totalResultDuration / results.length : 0
+    if (results.length === 0) { minDuration = 0 }
     const throughput = totalDuration > 0 ? (results.length / totalDuration) * 1000 : 0
 
     return {

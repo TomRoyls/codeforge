@@ -126,7 +126,7 @@ export class GraphDijkstra {
       return null;
     }
     const result = this.dijkstra(from);
-    return result.get(to) || null;
+    return result.get(to) ?? null;
   }
 
   shortestDistance(from: number, to: number): number {

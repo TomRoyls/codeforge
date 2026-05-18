@@ -98,7 +98,8 @@ export class DeltaArray {
   compress(): void {
     if (this._deltas.length === 0) return
     const values = this.toArray()
-    const sum = values.reduce((a, b) => a + b, 0)
+    let sum = 0
+    for (let i = 0; i < values.length; i++) sum += values[i]!
     const newBase = sum / values.length
     this._base = newBase
     this._deltas[0] = values[0]! - newBase

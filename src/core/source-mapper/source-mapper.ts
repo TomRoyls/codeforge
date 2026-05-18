@@ -1,4 +1,5 @@
 import type { SourceMapData, SourceMapping, SourceLocation, GeneratedLocation } from './types.js'
+import { append } from '../../utils/map-helpers.js'
 
 export class SourceMapper {
   private mapData: SourceMapData | null = null
@@ -104,12 +105,7 @@ export class SourceMapper {
     const genKey = `${mapping.generated.line}:${mapping.generated.column}`
     this.generatedToSource.set(genKey, mapping)
     const srcKey = `${mapping.original.file}:${mapping.original.line}:${mapping.original.column}`
-    const existing = this.sourceToGenerated.get(srcKey)
-    if (existing !== undefined) {
-      existing.push(mapping)
-    } else {
-      this.sourceToGenerated.set(srcKey, [mapping])
-    }
+    append(this.sourceToGenerated, srcKey, mapping)
   }
 
   removeMapping(generatedLine: number, generatedColumn: number): boolean {

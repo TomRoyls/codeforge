@@ -1,4 +1,5 @@
 import type { GraphNode, GraphEdge, DependencyGraph } from './types.js'
+import { unique } from '../../utils/array-helpers.js'
 
 const NODE_BUILTINS = new Set([
   'fs', 'path', 'http', 'https', 'crypto', 'os', 'stream', 'url', 'util',
@@ -167,7 +168,7 @@ export class GraphBuilder {
     if (namespaceMatch) {
       names.push(namespaceMatch[1]!)
     }
-    return [...new Set(names)]
+    return unique(names)
   }
 
   private addImportNode(

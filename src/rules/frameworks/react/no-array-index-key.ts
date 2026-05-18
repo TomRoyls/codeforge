@@ -5,6 +5,8 @@ import type { RuleDefinition, RuleOptions } from '../../types.js'
 
 import { getNodeRange } from '../../../ast/visitor.js'
 
+const _keyPatternCache = new Map<string, RegExp>()
+
 interface NoArrayIndexKeyOptions extends RuleOptions {}
 
 export const noArrayIndexKeyRule: RuleDefinition<NoArrayIndexKeyOptions> = {
@@ -38,7 +40,12 @@ export const noArrayIndexKeyRule: RuleDefinition<NoArrayIndexKeyOptions> = {
           const body = callbackArg.getBody()
           const bodyText = body.getText()
 
-          const keyPattern = new RegExp(`\\bkey\\s*=\\s*\\{\\s*${indexName}\\s*\\}`)
+          const cacheKey = indexName
+          let keyPattern = _keyPatternCache.get(cacheKey)
+          if (!keyPattern) {
+            keyPattern = new RegExp(`\\bkey\\s*=\\s*\\{\\s*${indexName}\\s*\\}`)
+            _keyPatternCache.set(cacheKey, keyPattern)
+          }
           if (!keyPattern.test(bodyText)) return
 
           const range = getNodeRange(node)

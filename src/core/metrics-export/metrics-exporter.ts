@@ -1,5 +1,6 @@
 import type { Metric, AggregatedMetric, ExportConfig } from './types.js'
 import { MetricType } from './types.js'
+import { groupBy } from '../../utils/array-helpers.js'
 
 const DEFAULT_CONFIG: ExportConfig = {
   format: 'prometheus',
@@ -137,7 +138,7 @@ export class MetricsExporter {
   }
 
   exportAggregated(aggregated: Map<string, AggregatedMetric>): string {
-    const entries = Array.from(aggregated.entries())
+    const entries = [...aggregated]
 
     switch (this.config.format) {
       case 'json':
@@ -202,16 +203,7 @@ export class MetricsExporter {
   }
 
   private groupByName(metrics: Metric[]): Map<string, Metric[]> {
-    const groups = new Map<string, Metric[]>()
-    for (const metric of metrics) {
-      const group = groups.get(metric.name)
-      if (group) {
-        group.push(metric)
-      } else {
-        groups.set(metric.name, [metric])
-      }
-    }
-    return groups
+    return groupBy(metrics, (m) => m.name)
   }
 
   private formatPrometheusLabels(labels: Record<string, string>): string {

@@ -8,6 +8,7 @@ import type {
   SAMLAssertion,
   UserInfo,
 } from './types.js'
+import { capitalize } from '../../utils/string-helpers.js'
 import { SUPPORTED_PROVIDERS } from './types.js'
 
 function generateMockToken(provider: AuthProvider, expiresIn: number): AuthToken {
@@ -29,7 +30,7 @@ function generateMockUser(provider: AuthProvider, credentials?: { username: stri
     id: `usr_${randomUUID()}`,
     email: `${username}@example.com`,
     name: username,
-    displayName: username.charAt(0).toUpperCase() + username.slice(1),
+    displayName: capitalize(username),
     avatar: `https://avatars.example.com/${username}`,
     roles: ['user'],
     groups: ['developers'],
