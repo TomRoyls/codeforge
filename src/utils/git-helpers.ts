@@ -167,3 +167,103 @@ export function getGitRoot(cwd: string): null | string {
     return null
   }
 }
+
+export interface BlameLine {
+  author: string
+  commit: string
+  date: string
+  line: number
+  summary: string
+}
+
+export function getBlameForFile(filePath: string, cwd: string): BlameLine[] {
+  const resolvedPath = resolve(cwd)
+  const cacheKey = `getBlameForFile:${filePath}:${resolvedPath}`
+
+  const cached = getGitCached<BlameLine[]>(cacheKey, GIT_CACHE_TTL)
+  if (cached !== null) return cached
+
+  try {
+    const output = execSync(
+      `git blame --porcelain -- "${filePath}"`,
+      {
+        cwd: resolvedPath,
+        encoding: 'utf8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+      },
+    )
+
+    const results: BlameLine[] = []
+    const lines = output.split('\n')
+    let currentCommit = ''
+    let currentAuthor = ''
+    let currentDate = ''
+    let currentSummary = ''
+    let currentLineNum = 0
+
+    for (const line of lines) {
+      const headerMatch = /^([0-9a-f]{40})\s+(\d+)\s+(\d+)/.exec(line)
+      if (headerMatch) {
+        if (currentLineNum > 0) {
+          results.push({
+            author: currentAuthor,
+            commit: currentCommit.slice(0, 8),
+            date: currentDate,
+            line: currentLineNum,
+            summary: currentSummary,
+          })
+        }
+        currentCommit = headerMatch[1]!
+        currentLineNum = Number(headerMatch[3]!)
+        currentAuthor = ''
+        currentDate = ''
+        currentSummary = ''
+      } else if (line.startsWith('author ')) {
+        currentAuthor = line.slice(7)
+      } else if (line.startsWith('author-time ')) {
+        const timestamp = Number(line.slice(12))
+        currentDate = new Date(timestamp * 1000).toISOString().split('T')[0] ?? ''
+      } else if (line.startsWith('summary ')) {
+        currentSummary = line.slice(8)
+      }
+    }
+
+    if (currentLineNum > 0) {
+      results.push({
+        author: currentAuthor,
+        commit: currentCommit.slice(0, 8),
+        date: currentDate,
+        line: currentLineNum,
+        summary: currentSummary,
+      })
+    }
+
+    setGitCached(cacheKey, results)
+    return results
+  } catch {
+    setGitCached(cacheKey, [])
+    return []
+  }
+}
+
+export function getCurrentBranch(cwd: string): string {
+  const resolvedPath = resolve(cwd)
+  const cacheKey = `getCurrentBranch:${resolvedPath}`
+
+  const cached = getGitCached<string>(cacheKey, GIT_CACHE_TTL)
+  if (cached !== null) return cached
+
+  try {
+    const result = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: resolvedPath,
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'pipe'],
+    }).trim()
+
+    setGitCached(cacheKey, result)
+    return result
+  } catch {
+    setGitCached(cacheKey, '')
+    return ''
+  }
+}
