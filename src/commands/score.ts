@@ -123,7 +123,7 @@ export default class Score extends Command {
     spinner.text = 'Processing files...'
 
     const filesToProcess = files.slice(0, MAX_FILES_TO_PROCESS)
-    const fileScores: FileScore[] = []
+    let fileScores: FileScore[] = []
     const allViolations: RuleViolation[] = []
     let totalFunctions = 0
     let documentedFunctions = 0
