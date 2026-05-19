@@ -1,238 +1,143 @@
 /**
- * Diff command - compares violations between git branches or commits.
+ * Diff command — analyzes git diffs with risk assessment and statistics.
  *
- * Analyzes two git references (branches or commits) and shows how violations
- * have changed between them, useful for code review and regression detection.
- *
- * Features:
- * - Comparison between any two git refs
- * - Added/removed/improved violation tracking
- * - Net change calculation
- * - Verbose mode for detailed changes
+ * Shows what changed, categorizes changes, highlights risky modifications,
+ * and computes diff statistics for code review and CI workflows.
  *
  * @example
  * ```bash
  * codeforge diff
- * codeforge diff main feature-branch
- * codeforge diff abc123 def456
+ * codeforge diff --staged
+ * codeforge diff --commit abc123
+ * codeforge diff --format json --output diff.json
+ * codeforge diff --stat
+ * codeforge diff --verbose
  * ```
  */
-import { Args, Command, Flags } from '@oclif/core'
-import { execSync } from 'node:child_process'
+import { Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { resolve } from 'node:path'
+import ora from 'ora'
 
-import { type RuleViolation } from '../ast/visitor.js'
-import { discoverFiles } from '../core/file-discovery.js'
-import { Parser } from '../core/parser.js'
-import { RuleRegistry } from '../core/rule-registry.js'
-import { getRuleCategory } from '../rules/categories.js'
-import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import { MAX_FILES_TO_PROCESS } from '../utils/constants.js'
-import { logger } from '../utils/logger.js'
-import {
-  buildDiffReport,
-  type DiffReport,
-  displayDiffReport,
-} from './diff-helpers.js'
+import { buildDiffResult, type DiffResult } from './diff-helpers.js'
+import { formatDiffJson, formatDiffTable } from './diff-format-helpers.js'
 
 export default class Diff extends Command {
-  static override args = {
-    base: Args.string({
-      default: 'HEAD~1',
-      description: 'Base branch or commit to compare from',
-      required: false,
-    }),
-    head: Args.string({
-      default: 'HEAD',
-      description: 'Head branch or commit to compare to',
-      required: false,
-    }),
-  }
+  static override args = {}
 
-  static override description = 'Compare violations between git branches or commits'
+  static override description = 'Analyze git diffs with risk assessment and statistics'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Compare current commit with previous commit',
+      description: 'Show working tree changes',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> main feature-branch',
-      description: 'Compare main branch with feature branch',
+      command: '<%= config.bin %> <%= command.id %> --staged',
+      description: 'Show staged changes',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> abc123 def456',
-      description: 'Compare two specific commits',
+      command: '<%= config.bin %> <%= command.id %> --commit abc123',
+      description: 'Show diff for a specific commit',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --json',
-      description: 'Output diff as JSON',
+      command: '<%= config.bin %> <%= command.id %> --format json --output diff.json',
+      description: 'Export diff analysis as JSON',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --stat',
+      description: 'Show only statistics summary',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file diff lines with colors',
     },
   ]
 
   static override flags = {
-    json: Flags.boolean({
-      default: false,
-      description: 'Output as JSON',
+    commit: Flags.string({
+      char: 'c',
+      description: 'Specific commit hash to diff',
     }),
-    path: Flags.string({
-      default: '.',
-      description: 'Path to analyze',
+    format: Flags.string({
+      char: 'f',
+      default: 'table',
+      description: 'Output format',
+      options: ['json', 'table'],
+    }),
+    output: Flags.string({
+      char: 'o',
+      description: 'Output file path',
+    }),
+    staged: Flags.boolean({
+      default: false,
+      description: 'Show staged changes',
+    }),
+    stat: Flags.boolean({
+      default: false,
+      description: 'Show only statistics, no per-file details',
     }),
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed violation changes',
+      description: 'Show detailed output',
     }),
   }
 
-  createViolationKey(v: RuleViolation): string {
-    return `${v.filePath}:${v.range.start.line}:${v.ruleId}`
-  }
-
   async run(): Promise<void> {
-    const { args, flags } = await this.parse(Diff)
+    const { flags } = await this.parse(Diff)
 
-    const targetPath = resolve(flags.path)
+    const cwd = resolve('.')
 
-    if (!existsSync(targetPath)) {
-      this.error(`Path not found: ${targetPath}`, { exit: 1 })
+    if (!existsSync(cwd)) {
+      this.error(`Path not found: ${cwd}`, { exit: 1 })
     }
 
-    if (!this.isGitRepository(targetPath)) {
-      this.error('Not a git repository', { exit: 1 })
+    const format = flags.format as 'json' | 'table'
+    const spinner = ora('Analyzing git diff...').start()
+
+    let result: DiffResult
+    try {
+      result = buildDiffResult(cwd, {
+        commit: flags.commit,
+        staged: flags.staged,
+      })
+    } catch (error) {
+      spinner.fail('Failed to run git diff')
+      this.error(
+        error instanceof Error ? error.message : String(error),
+        { exit: 1 },
+      )
     }
 
-    const baseRef = args.base as string
-    const headRef = args.head as string
+    const fileCount = result.summary.totalFiles
+    const additionCount = result.summary.totalAdditions
+    const deletionCount = result.summary.totalDeletions
 
-    const report = await this.analyzeDiff(targetPath, baseRef, headRef)
-
-    if (flags.json) {
-      this.log(JSON.stringify(report, null, 2))
-    } else {
-      this.displayReport(report, flags.verbose)
-    }
-  }
-
-  private async analyzeDiff(
-    targetPath: string,
-    baseRef: string,
-    headRef: string,
-  ): Promise<DiffReport> {
-    const baseViolations = await this.getViolationsAtRef(targetPath, baseRef)
-    const headViolations = await this.getViolationsAtRef(targetPath, headRef)
-
-    return buildDiffReport(baseRef, headRef, baseViolations, headViolations)
-  }
-
-  private async analyzeViolations(targetPath: string): Promise<RuleViolation[]> {
-    const files = await discoverFiles({
-      cwd: targetPath,
-      ignore: ['node_modules', 'dist', 'coverage', '.git'],
-      patterns: [],
-    })
-
-    const parser = new Parser()
-    await parser.initialize()
-
-    const registry = new RuleRegistry()
-    const allRules = await lazyRuleLoader.loadAllRules()
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
-    }
-
-    const allViolations: RuleViolation[] = []
-    const filesToProcess = files.slice(0, MAX_FILES_TO_PROCESS)
-
-    const parseResults = await Promise.all(
-      filesToProcess.map(async (file) => {
-        try {
-          return {
-            filePath: file.path,
-            parseResult: await parser.parseFile(file.absolutePath),
-          }
-        } catch (error) {
-          logger.debug(`Failed to parse file ${file.path} during diff analysis: ${error}`)
-          return null
-        }
-      }),
+    spinner.succeed(
+      `Analyzed ${fileCount} files: ${additionCount} additions, ${deletionCount} deletions`,
     )
 
-    for (const result of parseResults) {
-      if (!result) continue
+    const outputData =
+      format === 'json'
+        ? formatDiffJson(result)
+        : formatDiffTable(result, flags.stat, flags.verbose)
 
-      const violations = registry.runRules(result.parseResult.sourceFile)
-      allViolations.push(
-        ...violations.map((v) => ({
-          ...v,
-          filePath: result.filePath,
-        })),
-      )
-    }
-
-    parser.dispose()
-    return allViolations
-  }
-
-  private displayReport(report: DiffReport, verbose: boolean): void {
-    displayDiffReport(report, verbose, (msg) => this.log(msg))
-  }
-
-  private async getViolationsAtRef(targetPath: string, ref: string): Promise<RuleViolation[]> {
-    const tempDir = join(tmpdir(), `codeforge-diff-${Date.now()}`)
-
-    try {
-      execSync(
-        `git worktree add "${tempDir}" "${ref}" 2>/dev/null || git clone --branch "${ref}" . "${tempDir}"`,
-        {
-          cwd: targetPath,
-          encoding: 'utf8',
-          stdio: 'pipe',
-        },
-      )
-    } catch (error) {
-      logger.debug(`Failed to checkout git ref "${ref}" via worktree/clone: ${error}`)
+    if (flags.output) {
       try {
-        execSync(`git archive "${ref}" | tar -x -C "${tempDir}"`, {
-          cwd: targetPath,
-          encoding: 'utf8',
-          stdio: 'pipe',
-        })
-        await fs.mkdir(tempDir, { recursive: true })
+        await fs.writeFile(flags.output, outputData, 'utf8')
+        this.log(`Results written to ${flags.output}`)
       } catch (error) {
-        logger.debug(`Failed to checkout git ref "${ref}" via archive: ${error}`)
-        return this.analyzeViolations(targetPath)
+        this.error(
+          `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
       }
-    }
-
-    try {
-      const violations = await this.analyzeViolations(tempDir)
-      return violations
-    } finally {
-      try {
-        execSync(`git worktree remove "${tempDir}" --force 2>/dev/null || rm -rf "${tempDir}"`, {
-          cwd: targetPath,
-          encoding: 'utf8',
-          stdio: 'pipe',
-        })
-      } catch (error) {
-        logger.debug(`Failed to cleanup temp diff directory "${tempDir}": ${error}`)
-        error satisfies unknown
-      }
-    }
-  }
-
-  private isGitRepository(targetPath: string): boolean {
-    try {
-      execSync('git rev-parse --git-dir', { cwd: targetPath, encoding: 'utf8', stdio: 'pipe' })
-      return true
-    } catch (error) {
-      logger.debug(`Git repository check failed for ${targetPath}: ${error}`)
-      return false
+    } else {
+      this.log(outputData)
     }
   }
 }
+
+export { buildDiffResult, type DiffOptions, type DiffResult, type FileDiff, type DiffLine, type DiffSummary } from './diff-helpers.js'
+export { formatDiffJson, formatDiffTable } from './diff-format-helpers.js'
