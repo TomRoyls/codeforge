@@ -1,284 +1,162 @@
 import { Args, Command, Flags } from '@oclif/core'
-import { exec } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
-import { promisify } from 'node:util'
+import * as fs from 'node:fs/promises'
+import { extname, resolve } from 'node:path'
 import ora from 'ora'
-import pLimit from 'p-limit'
-
-import type { AnalysisResult } from '../reporters/types.js'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { Parser } from '../core/parser.js'
-import { RuleRegistry } from '../core/rule-registry.js'
-import {
-  createReporter,
-  CUSTOM_REPORTER_PREFIX,
-  type OutputFormat,
-  readAnalysisFile,
-} from './report-helpers.js'
-import { getRuleCategory } from '../rules/categories.js'
-import { lazyRuleLoader } from '../rules/lazy-loader.js'
-import { CLIError } from '../utils/errors.js'
-import { logger } from '../utils/logger.js'
-import { getPlatformOpenCommand } from './report-helpers.js'
-
-const execAsync = promisify(exec)
+import { formatReportHtml, formatReportText } from './report-format-helpers.js'
+import { buildFullReport, parseSections, type FileContent } from './report-helpers.js'
 
 export default class Report extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze',
+      description: 'Path to generate report for',
       required: false,
     }),
   }
 
-  static override description = 'Generate analysis reports in various formats'
+  static override description = 'Generate a comprehensive codebase report'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Generate console report for current directory',
+      description: 'Generate report for current directory',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Generate JSON report for src directory',
+      command: '<%= config.bin %> <%= command.id %> ./src --format html --output report.html',
+      description: 'Generate HTML report for src directory',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --format html --output report.html --open',
-      description: 'Generate and open HTML report',
+      command: '<%= config.bin %> <%= command.id %> --sections summary,complexity',
+      description: 'Generate report with only summary and complexity sections',
     },
     {
-      command:
-        '<%= config.bin %> <%= command.id %> --input analysis.json --format html --output report.html',
-      description: 'Generate HTML report from cached analysis',
+      command: '<%= config.bin %> <%= command.id %> --format text --output report.txt',
+      description: 'Save text report to file',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --format junit --output junit.xml',
-      description: 'Generate JUnit XML report for CI/CD',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format sarif --output results.sarif',
-      description: 'Generate SARIF report for GitHub Code Scanning',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format gitlab --output gl-code-quality.json',
-      description: 'Generate GitLab Code Quality report',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format markdown --output REPORT.md',
-      description: 'Generate Markdown report for documentation',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --concurrency 4',
-      description: 'Process 4 files in parallel',
+      command: '<%= config.bin %> <%= command.id %> -i "**/test/**" --verbose',
+      description: 'Generate report ignoring test files with verbose output',
     },
   ]
 
   static override flags = {
-    concurrency: Flags.integer({
-      default: os.cpus().length,
-      description: 'Number of files to process in parallel',
-    }),
     format: Flags.string({
       char: 'f',
-      default: 'console',
-      description:
-        'Output format (console, json, html, junit, sarif, markdown, gitlab, csv, or custom:<path>)',
+      default: 'text',
+      description: 'Output format (text or html)',
+      options: ['html', 'text'],
     }),
-    input: Flags.string({
+    ignore: Flags.string({
       char: 'i',
-      description: 'Input JSON file from previous analyze command',
-    }),
-    open: Flags.boolean({
-      default: false,
-      description: 'Open HTML report in browser (only works with --format html)',
+      description: 'Patterns to ignore',
+      multiple: true,
     }),
     output: Flags.string({
       char: 'o',
       description: 'Output file path (required for html format)',
     }),
-    pretty: Flags.boolean({
-      default: false,
-      description: 'Pretty print JSON output',
+    sections: Flags.string({
+      default: 'all',
+      description: 'Sections to include (comma-separated: all,summary,files,complexity,todos,deps,suggestions)',
     }),
     verbose: Flags.boolean({
+      char: 'v',
       default: false,
-      description: 'Show detailed output',
+      description: 'Show detailed output during generation',
     }),
   }
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(Report)
-    const format = flags.format as OutputFormat
+
+    const targetPath = resolve(args.path as string)
+    const format = flags.format as 'html' | 'text'
+
+    if (!existsSync(targetPath)) {
+      this.error(`Path not found: ${targetPath}`, { exit: 1 })
+    }
 
     if (format === 'html' && !flags.output) {
-      this.error(
-        '--output is required when using --format html. Specify the path where the HTML report should be saved.',
-        { exit: 1 },
-      )
+      this.error('--output is required when using --format html', { exit: 1 })
     }
 
-    if (format.startsWith(CUSTOM_REPORTER_PREFIX) && !flags.output) {
-      this.warn('Custom reporters typically need --output to write results')
-    }
+    const sections = parseSections(flags.sections)
 
-    const results = flags.input
-      ? await this.loadFromInput(flags.input)
-      : await this.runAnalysis(args.path, flags.concurrency)
+    const spinner = ora('Discovering files...').start()
 
-    const reporter = await createReporter(format, {
-      outputPath: flags.output,
-      pretty: flags.pretty,
-      verbose: flags.verbose,
-    })
-
-    reporter.report(results)
-
-    if (flags.open && format === 'html' && flags.output) {
-      await this.openInBrowser(flags.output)
-    }
-  }
-
-  private async loadFromInput(inputPath: string): Promise<AnalysisResult> {
-    try {
-      return await readAnalysisFile(inputPath)
-    } catch (error) {
-      if (error instanceof CLIError) {
-        this.error(error.message, { exit: 1 })
-      }
-
-      throw error
-    }
-  }
-
-  private async openInBrowser(filePath: string): Promise<void> {
-    const absolutePath = path.resolve(filePath)
-
-    if (!existsSync(absolutePath)) {
-      this.error(`Report file not found: ${absolutePath}`, { exit: 1 })
-    }
-
-    this.log(`Opening report in browser: ${absolutePath}`)
-
-    const command = getPlatformOpenCommand(absolutePath, process.platform)
-
-    try {
-      await execAsync(command)
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error'
-      this.warn(`Failed to open browser: ${message}`)
-      this.log(`Please open the report manually: ${absolutePath}`)
-    }
-  }
-
-  private async runAnalysis(targetPath: string, concurrency: number): Promise<AnalysisResult> {
-    const absolutePath = path.resolve(targetPath)
-
-    if (!existsSync(absolutePath)) {
-      this.error(`Path not found: ${absolutePath}`, { exit: 1 })
-    }
-
-    this.log(`Analyzing: ${absolutePath}`)
-
-    const startTime = performance.now()
+    const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
+    const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
 
     const discoveredFiles = await discoverFiles({
-      cwd: absolutePath,
-      ignore: ['node_modules/**', 'dist/**', 'coverage/**'],
-      patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      cwd: targetPath,
+      ignore,
+      patterns: [
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
+        '**/*.json',
+        '**/*.css',
+        '**/*.html',
+        '**/*.md',
+        '**/*.py',
+        '**/*.rs',
+        '**/*.go',
+        '**/*.java',
+        '**/*.rb',
+        '**/*.sh',
+        '**/*.yaml',
+        '**/*.yml',
+        '**/*.xml',
+        '**/*.sql',
+      ],
     })
 
-    const registry = new RuleRegistry()
-    const allRules = await lazyRuleLoader.loadAllRules()
-    for (const [ruleId, ruleDef] of Object.entries(allRules)) {
-      registry.register(ruleId, ruleDef, getRuleCategory(ruleId))
+    spinner.text = 'Reading files...'
+
+    const fileContents: FileContent[] = []
+    for (const file of discoveredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        const stat = await fs.stat(file.absolutePath)
+        fileContents.push({ content, path: file.path, size: stat.size })
+      } catch {
+        if (flags.verbose) {
+          this.warn(`Could not read file: ${file.path}`)
+        }
+      }
     }
 
-    const parser = new Parser()
-    await parser.initialize()
-
-    const limit = pLimit(concurrency)
-    const spinner = ora('Analyzing files...').start()
-    let completedCount = 0
-    const totalFiles = discoveredFiles.length
-
-    const fileResults = await Promise.all(
-      discoveredFiles.map((file) =>
-        limit(async () => {
-          if (!file) return null
-
-          try {
-            const parseResult = await parser.parseFile(file.absolutePath)
-            const violations = registry.runRules(parseResult.sourceFile)
-
-            completedCount++
-            spinner.text = `Analyzing files... (${completedCount}/${totalFiles})`
-
-            return {
-              filePath: file.path,
-              stats: {
-                analysisTime: 0,
-                parseTime: parseResult.parseTime,
-                totalTime: parseResult.parseTime,
-              },
-              violations: violations.map((v) => ({
-                column: v.range.start.column,
-                endColumn: v.range.end.column,
-                endLine: v.range.end.line,
-                filePath: file.path,
-                line: v.range.start.line,
-                message: v.message,
-                ruleId: v.ruleId,
-                severity: v.severity,
-                suggestion: v.suggestion,
-              })),
-            }
-          } catch (error) {
-            logger.debug(`Failed to parse file ${file.path} during report analysis: ${error}`)
-            completedCount++
-            spinner.text = `Analyzing files... (${completedCount}/${totalFiles})`
-            return null
-          }
-        }),
-      ),
-    )
-
-    spinner.succeed(`Analyzed ${totalFiles} files`)
-
-    parser.dispose()
-
-    const validResults = fileResults.filter((r): r is NonNullable<typeof r> => r !== null)
-    const allViolations = validResults.flatMap((r) => r.violations)
-    const duration = performance.now() - startTime
-
-    let errorCount = 0
-    let warningCount = 0
-    let infoCount = 0
-    for (const v of allViolations) {
-      if (v.severity === 'error') errorCount++
-      else if (v.severity === 'warning') warningCount++
-      else if (v.severity === 'info') infoCount++
-    }
-    let filesWithViolations = 0
-    for (const r of validResults) {
-      if (r.violations.length > 0) filesWithViolations++
+    if (flags.verbose) {
+      spinner.info(`Read ${fileContents.length} files`)
     }
 
-    return {
-      files: validResults,
-      summary: {
-        errorCount,
-        filesWithViolations,
-        infoCount,
-        totalFiles: validResults.length,
-        totalTime: duration,
-        warningCount,
-      },
-      timestamp: new Date().toISOString(),
-      version: this.config.version,
+    spinner.text = 'Building report...'
+
+    const report = await buildFullReport(targetPath, fileContents, { sections })
+
+    spinner.succeed(`Report generated for ${fileContents.length} files`)
+
+    const outputData = format === 'html' ? formatReportHtml(report) : formatReportText(report)
+
+    if (flags.output) {
+      try {
+        await fs.writeFile(flags.output, outputData, 'utf8')
+        this.log(`Report written to ${flags.output}`)
+      } catch (error) {
+        this.error(
+          `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
+    } else {
+      this.log(outputData)
     }
   }
 }
+
+export { buildFullReport, parseSections } from './report-helpers.js'
+export { formatReportHtml, formatReportText } from './report-format-helpers.js'
+export type { FileContent, FullReport, ReportOptions, ReportSection } from './report-helpers.js'
