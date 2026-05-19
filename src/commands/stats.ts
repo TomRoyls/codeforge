@@ -3,25 +3,18 @@ import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
 import ora from 'ora'
-import { type BinaryExpression, type SourceFile } from 'ts-morph'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { Parser } from '../core/parser.js'
-import { logger } from '../utils/logger.js'
-import {
-  aggregateStats,
-  buildStatsResult,
-  calculateFileComplexity,
-  type CodeStructures,
-  countCodeStructures as countCodeStructuresHelper,
-  countLines,
-  formatOutput,
-  isLogicalOperator as isLogicalOperatorHelper,
-  type ProcessedFileResult,
-  sortFileStats,
-  type StatsResult,
-} from './stats-helpers.js'
+import { buildStatsResult } from './stats-helpers.js'
+import { formatStatsJson, formatStatsTable } from './stats-format-helpers.js'
 
+/**
+ * @example
+ * codeforge stats
+ * codeforge stats ./src --format json
+ * codeforge stats --ext .ts,.tsx --detailed
+ * codeforge stats --sort functions --format table
+ */
 export default class Stats extends Command {
   static override args = {
     path: Args.string({
@@ -43,29 +36,37 @@ export default class Stats extends Command {
       description: 'Show statistics for src directory as JSON',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --top 10',
-      description: 'Show top 10 largest files',
+      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
+      description: 'Show statistics for TypeScript files only',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --detailed',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --sort functions',
+      description: 'Sort results by function count',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --format json --output stats.json',
       description: 'Save statistics to JSON file',
     },
-    {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Show statistics for TypeScript files only',
-    },
   ]
 
   static override flags = {
+    detailed: Flags.boolean({
+      default: false,
+      description: 'Show per-file breakdown',
+    }),
     ext: Flags.string({
-      default: '',
+      default: '.ts,.tsx,.js,.jsx',
       description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
     }),
     format: Flags.string({
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['csv', 'json', 'table'],
+      options: ['json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -76,28 +77,12 @@ export default class Stats extends Command {
       char: 'o',
       description: 'Output file path',
     }),
-    'sort-by': Flags.string({
+    sort: Flags.string({
       char: 's',
-      default: 'size',
-      description: 'Sort files by metric',
-      options: ['complexity', 'loc', 'name', 'size'],
+      default: 'lines',
+      description: 'Sort results by metric',
+      options: ['classes', 'files', 'functions', 'language', 'lines'],
     }),
-    top: Flags.integer({
-      char: 't',
-      default: 10,
-      description: 'Number of top files to show',
-    }),
-    verbose: Flags.boolean({
-      char: 'v',
-      default: false,
-      description: 'Show detailed file statistics',
-    }),
-  }
-
-  private parser: null | Parser = null
-
-  static isLogicalOperator(node: BinaryExpression): boolean {
-    return isLogicalOperatorHelper(node)
   }
 
   async run(): Promise<void> {
@@ -110,7 +95,7 @@ export default class Stats extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
+    const { detailed, sort } = flags
 
     const spinner = ora('Discovering files...').start()
 
@@ -120,7 +105,27 @@ export default class Stats extends Command {
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
       ignore,
-      patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      patterns: [
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
+        '**/*.json',
+        '**/*.css',
+        '**/*.scss',
+        '**/*.html',
+        '**/*.md',
+        '**/*.py',
+        '**/*.rs',
+        '**/*.go',
+        '**/*.java',
+        '**/*.c',
+        '**/*.h',
+        '**/*.cpp',
+        '**/*.hpp',
+        '**/*.rb',
+        '**/*.zig',
+      ],
     })
 
     const extensions = flags.ext
@@ -128,7 +133,7 @@ export default class Stats extends Command {
           .split(',')
           .map((e) => e.trim())
           .filter(Boolean)
-      : null
+      : ['.ts', '.tsx', '.js', '.jsx']
 
     const filteredFiles = extensions
       ? discoveredFiles.filter((f) => {
@@ -139,23 +144,16 @@ export default class Stats extends Command {
 
     spinner.text = 'Analyzing files...'
 
-    this.parser = new Parser()
-    await this.parser.initialize()
+    const result = await buildStatsResult(filteredFiles, async (absolutePath: string) => {
+      return fs.readFile(absolutePath, 'utf8')
+    })
 
-    let stats: StatsResult
-    try {
-      stats = await this.collectStats(filteredFiles, verbose, flags['sort-by'], format)
-    } finally {
-      this.parser.dispose()
-      this.parser = null
-    }
-
-    spinner.succeed(`Analyzed ${filteredFiles.length} files`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.languages.length} languages`)
 
     const outputData =
       format === 'json'
-        ? JSON.stringify(stats, null, 2)
-        : formatOutput(stats, format, flags.top)
+        ? formatStatsJson(result)
+        : formatStatsTable(result, detailed, sort)
 
     if (flags.output) {
       try {
@@ -163,83 +161,15 @@ export default class Stats extends Command {
         this.log(`Results written to ${flags.output}`)
       } catch (error) {
         this.error(
-          `Failed to write stats output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
+          `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
         )
       }
-    } else if (format === 'json') {
-      this.log(outputData)
     } else {
       this.log(outputData)
     }
   }
-
-  private async collectStats(
-    files: Array<{ absolutePath: string; path: string }>,
-    verbose: boolean,
-    sortBy: string,
-    format: 'json' | 'table',
-  ): Promise<StatsResult> {
-    const tsExtensions = new Set(['.ts', '.tsx'])
-    const defaultStructures: CodeStructures = {
-      classes: 0,
-      enums: 0,
-      functions: 0,
-      interfaces: 0,
-      methods: 0,
-      typeAliases: 0,
-    }
-
-    const results: (null | ProcessedFileResult)[] = await Promise.all(
-      files.map(async (file) => {
-        if (!file) return null
-
-        try {
-          const content = await fs.readFile(file.absolutePath, 'utf8')
-          const { blank, comments, loc } = countLines(content)
-          const ext = extname(file.path).toLowerCase()
-
-          let complexity = 1
-          let structures: CodeStructures = { ...defaultStructures }
-
-          if (this.parser && tsExtensions.has(ext)) {
-            try {
-              const parseResult = await this.parser.parseFile(file.absolutePath)
-              complexity = calculateFileComplexity(parseResult.sourceFile)
-              structures = this.countCodeStructures(parseResult.sourceFile)
-            } catch (error) {
-              logger.debug(`Failed to parse ${file.path} for complexity/structures: ${error}`)
-              complexity = 1
-              structures = { ...defaultStructures }
-            }
-          }
-
-          return { blank, comments, complexity, ext, file, loc, size: content.length, structures }
-        } catch (error) {
-          if (format !== 'json') {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-            this.log(`Failed to process file ${file.path}: ${errorMessage}`)
-          }
-
-          return {
-            blank: 0,
-            comments: 0,
-            complexity: 1,
-            ext: extname(file.path).toLowerCase(),
-            file,
-            loc: 0,
-            size: 0,
-            structures: { ...defaultStructures },
-          }
-        }
-      }),
-    )
-
-    const aggregated = aggregateStats(results, verbose)
-    const sortedStats = sortFileStats(aggregated.fileStats, sortBy)
-    return buildStatsResult(files.length, sortedStats, aggregated)
-  }
-
-  private countCodeStructures(sourceFile: SourceFile): CodeStructures {
-    return countCodeStructuresHelper(sourceFile)
-  }
 }
+
+export { buildStatsResult } from './stats-helpers.js'
+export type { FileStats, LanguageStats, MaintainabilityIndex, StatsResult } from './stats-helpers.js'
+export { formatStatsJson, formatStatsTable } from './stats-format-helpers.js'
