@@ -50,7 +50,7 @@ export function formatTodoTable(result: TodoResult): string {
     return lines.join('\n')
   }
 
-  const files = [...new Set(comments.map((c) => c.file))].sort()
+  const files = Array.from(new Set(comments.map((c) => c.file))).sort()
   lines.push('')
   lines.push(chalk.dim('Comments:'))
   for (const file of files) {

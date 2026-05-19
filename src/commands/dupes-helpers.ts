@@ -82,17 +82,17 @@ function contentSimilarity(a: string, b: string): number {
 
   if (normA === normB) return 1
 
-  const linesA = new Set(normA.split('\n'))
-  const linesB = new Set(normB.split('\n'))
+  const linesA = Array.from(new Set(normA.split('\n')))
+  const linesBSet = new Set(normB.split('\n'))
 
   let intersection = 0
   for (const line of linesA) {
-    if (linesB.has(line)) {
+    if (linesBSet.has(line)) {
       intersection++
     }
   }
 
-  const unionSize = linesA.size + linesB.size - intersection
+  const unionSize = linesA.length + linesBSet.size - intersection
   return unionSize === 0 ? 0 : intersection / unionSize
 }
 
