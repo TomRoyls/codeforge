@@ -5,36 +5,40 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildConstellationMapResult,
-  type ConstellationMapOptions,
-  type ConstellationMapResult,
-} from './constellation-map-helpers.js'
+import { buildConstellationMapResult, type ConstellationMapResult } from './constellation-map-helpers.js'
 import { formatConstellationMapJson, formatConstellationMapTable } from './constellation-map-format-helpers.js'
 
 export default class ConstellationMap extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze',
+      description: 'Path to analyze for dependency constellations',
       required: false,
     }),
   }
 
-  static override description = 'Create a navigational star chart of the codebase'
+  static override description = 'Map code dependencies as constellations in the sky'
 
   static override examples = [
     {
-      command: '<%= config.bin %> constellation-map',
-      description: 'Map codebase constellations',
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Map current directory as constellations',
     },
     {
-      command: '<%= config.bin %> constellation-map ./src --format json',
-      description: 'Map as JSON',
+      command: '<%= config.bin %> <%= command.id %> ./src --format json',
+      description: 'Map src directory as JSON',
     },
     {
-      command: '<%= config.bin %> constellation-map --verbose',
-      description: 'Detailed star chart',
+      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
+      description: 'Analyze TypeScript files only',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show detailed star and constellation analysis',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output map.json',
+      description: 'Export results to JSON file',
     },
   ]
 
@@ -61,7 +65,7 @@ export default class ConstellationMap extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed output',
+      description: 'Show detailed star and constellation analysis',
     }),
   }
 
@@ -75,7 +79,7 @@ export default class ConstellationMap extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const options: ConstellationMapOptions = { verbose: flags.verbose }
+    const { verbose } = flags
 
     const spinner = ora('Scanning star field...').start()
 
@@ -85,7 +89,26 @@ export default class ConstellationMap extends Command {
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
       ignore,
-      patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      patterns: [
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
+        '**/*.json',
+        '**/*.css',
+        '**/*.html',
+        '**/*.md',
+        '**/*.py',
+        '**/*.rs',
+        '**/*.go',
+        '**/*.java',
+        '**/*.rb',
+        '**/*.sh',
+        '**/*.yaml',
+        '**/*.yml',
+        '**/*.xml',
+        '**/*.sql',
+      ],
     })
 
     const extensions = flags.ext
@@ -104,7 +127,7 @@ export default class ConstellationMap extends Command {
 
     spinner.text = 'Mapping constellations...'
 
-    const contents: string[] = await Promise.all(
+    const contents = await Promise.all(
       filteredFiles.map(async (file) => {
         try {
           return await fs.readFile(file.absolutePath, 'utf8')
@@ -115,12 +138,14 @@ export default class ConstellationMap extends Command {
     )
 
     const files = filteredFiles.map((f) => f.path)
+    const result: ConstellationMapResult = buildConstellationMapResult(files, contents, { verbose, format })
 
-    const result: ConstellationMapResult = buildConstellationMapResult(files, contents, options)
+    spinner.succeed(`Mapped ${result.galaxy.totalStars} stars in ${result.galaxy.totalConstellations} constellations`)
 
-    spinner.succeed(`Mapped ${result.stats.totalStars} stars in ${result.stats.totalConstellations} constellations`)
-
-    const outputData = format === 'json' ? formatConstellationMapJson(result) : formatConstellationMapTable(result)
+    const outputData =
+      format === 'json'
+        ? formatConstellationMapJson(result)
+        : formatConstellationMapTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -138,5 +163,5 @@ export default class ConstellationMap extends Command {
 }
 
 export { buildConstellationMapResult } from './constellation-map-helpers.js'
-export type { ConstellationMapResult, ConstellationMapStats, Star, ConstellationGroup, NavigationPath, StarConnection } from './constellation-map-helpers.js'
+export type { StarNode, StarConnection, ConstellationGroup, GalacticStructure, ConstellationMapStats, ConstellationMapResult, StarPosition } from './constellation-map-helpers.js'
 export { formatConstellationMapJson, formatConstellationMapTable } from './constellation-map-format-helpers.js'

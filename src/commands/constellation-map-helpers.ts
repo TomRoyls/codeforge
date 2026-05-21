@@ -1,618 +1,821 @@
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Interfaces ──────────────────────────────────────────────────────────────
 
-export type SpectralClass = 'O' | 'B' | 'A' | 'F' | 'G' | 'K' | 'M'
+export interface StarPosition {
+  x: number
+  y: number
+}
 
 export interface StarConnection {
   from: string
   to: string
+  type: 'import' | 'export' | 'reference' | 'inheritance' | 'composition'
   strength: number
-  type: 'import' | 're-export' | 'type-only'
+  isInterConstellation: boolean
+  isCircular: boolean
+  distance: number
 }
 
-export interface Star {
+export interface StarNode {
   file: string
-  name: string
   brightness: number
   magnitude: number
-  spectralClass: SpectralClass
-  position: [number, number]
+  distance: number
+  spectralClass: 'O' | 'B' | 'A' | 'F' | 'G' | 'K' | 'M'
+  starType: 'supergiant' | 'giant' | 'dwarf' | 'neutron' | 'white-dwarf' | 'brown-dwarf'
   connections: StarConnection[]
+  imports: string[]
+  importedBy: string[]
+  inConstellation: string
+  position: StarPosition
+  isNexus: boolean
+  isOrphan: boolean
+  isBridge: boolean
+  isHub: boolean
+  luminosity: number
 }
 
 export interface ConstellationGroup {
   name: string
-  description: string
-  stars: string[]
+  directory: string
+  stars: StarNode[]
   connections: StarConnection[]
-  brightest: string
-  totalBrightness: number
+  internalConnections: number
+  externalConnections: number
+  bridgeCount: number
+  starCount: number
+  avgBrightness: number
   coherence: number
+  density: number
+  pattern: 'chain' | 'star' | 'mesh' | 'tree' | 'ring' | 'bus' | 'isolated'
+  hasCycle: boolean
+  cycleCount: number
+  brightestStar: string
+  hubStar: string
+  health: 'vibrant' | 'healthy' | 'stable' | 'fading' | 'dim' | 'dark'
+  mythologicalName: string
 }
 
-export interface NavigationPath {
-  from: string
-  to: string
-  path: string[]
-  distance: number
-  difficulty: number
-  waypoints: string[]
+export interface GalacticStructure {
+  totalStars: number
+  totalConnections: number
+  totalConstellations: number
+  avgBrightness: number
+  avgCoherence: number
+  totalBridges: number
+  totalCycles: number
+  nexusCount: number
+  orphanCount: number
+  hubCount: number
+  interConstellationRatio: number
+  connectivity: number
+  isWellStructured: boolean
+  structureType: 'spiral' | 'elliptical' | 'irregular' | 'cluster' | 'void'
 }
 
 export interface ConstellationMapStats {
-  totalStars: number
+  totalFiles: number
   totalConstellations: number
   totalConnections: number
-  brightestStar: string
-  dimmestStar: string
-  largestConstellation: string
-  smallestConstellation: string
+  totalBridges: number
+  totalCycles: number
   avgBrightness: number
   avgMagnitude: number
-  orphanStars: number
-  chartCoverage: number
-  navigability: number
+  avgCoherence: number
+  avgConnectionStrength: number
+  nexusCount: number
+  orphanCount: number
+  hubCount: number
+  bridgeCount: number
+  supergiantCount: number
+  dwarfCount: number
+  interConstellationRatio: number
+  connectivity: number
+  isWellStructured: boolean
+  structureType: string
+  cartographerGrade: 'master-astronomer' | 'astronomer' | 'navigator' | 'stargazer' | 'lost' | 'blind'
+  brightestStar: string
+  dimmestStar: string
+  biggestConstellation: string
+  mostConnected: string
+  mostIsolated: string
+  mostBridged: string
+  cycleWarning: string[]
 }
 
 export interface ConstellationMapResult {
-  stars: Star[]
+  stars: StarNode[]
+  connections: StarConnection[]
   constellations: ConstellationGroup[]
-  paths: NavigationPath[]
+  galaxy: GalacticStructure
   stats: ConstellationMapStats
   recommendations: string[]
 }
 
-export interface ConstellationMapOptions {
-  verbose?: boolean
-}
-
-// ─── Spectral Classification ───────────────────────────────────────────────────
+// ─── Import Extraction ───────────────────────────────────────────────────────
 
 /**
- * Classify spectral class from file path and content.
- *
+ * Extract import paths from file content
  * @example
- * classifySpectralClass('src/commands/foo.ts', 'export default class Foo')
- */
-export function classifySpectralClass(file: string, content: string): SpectralClass {
-  if (file.includes('test/') || file.includes('.test.') || file.includes('.spec.')) return 'F'
-  if (file.includes('format-helpers') || file.includes('-format-helpers')) return 'M'
-  if (content.includes('interface ') || content.includes('type ') && content.includes('export type')) return 'K'
-  if (file.includes('config') || file.includes('Config')) return 'G'
-  if (file.includes('commands/') || file.includes('command')) return 'B'
-  if (file.includes('core/') || file.includes('core')) return 'O'
-  if (content.includes('export function') || content.includes('export default') || content.includes('export class')) return 'A'
-  return 'A'
-}
-
-// ─── Brightness ────────────────────────────────────────────────────────────────
-
-/**
- * Compute star brightness (importance). 0-100.
- *
- * @example
- * computeBrightness('core.ts', 5)
- */
-export function computeBrightness(file: string, importedByCount: number): number {
-  let score = Math.min(importedByCount * 12, 80)
-  if (file.includes('core/')) score += 15
-  if (file.includes('index.ts')) score += 10
-  if (file.includes('commands/') && !file.includes('-helpers') && !file.includes('-format')) score += 8
-  return Math.max(0, Math.min(100, score))
-}
-
-// ─── Magnitude ─────────────────────────────────────────────────────────────────
-
-/**
- * Compute star magnitude (complexity). 0-100.
- * Higher = dimmer/harder to understand.
- *
- * @example
- * computeMagnitude('function foo() { if(x){for(let i=0;i<10;i++){}} }')
- */
-export function computeMagnitude(content: string): number {
-  if (!content || content.trim().length === 0) return 0
-  const lines = content.split('\n')
-  const total = lines.length
-  if (total === 0) return 0
-
-  const branches = (content.match(/\bif\b|\belse\b|\bfor\b|\bwhile\b|\bswitch\b/g) || []).length
-  const functions = (content.match(/function\s+\w+|=>\s*[^;]+/g) || []).length
-  const nesting = computeMaxNesting(content)
-  const anyTypes = (content.match(/:\s*any\b/g) || []).length
-
-  let score = branches * 3 + functions * 2 + nesting * 4 + anyTypes * 5
-  score = Math.round((score / Math.max(total, 1)) * 100)
-  return Math.max(0, Math.min(100, score))
-}
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-
-/**
- * Compute max nesting depth.
- *
- * @example
- * computeMaxNesting('{{{x}}}') // 3
- */
-export function computeMaxNesting(content: string): number {
-  let max = 0
-  let depth = 0
-  for (const ch of content) {
-    if (ch === '{') { depth++; if (depth > max) max = depth }
-    else if (ch === '}') { depth = Math.max(0, depth - 1) }
-  }
-  return max
-}
-
-/**
- * Extract imports from content.
- *
- * @example
- * extractImports("import { foo } from './bar'") // ['./bar']
+ * extractImports('import { x } from "./a"') // ['./a']
  */
 export function extractImports(content: string): string[] {
   const imports: string[] = []
-  for (const m of content.matchAll(/import\s+.*?from\s+['"](.+?)['"]/g) || []) {
-    if (m[1]) imports.push(m[1])
-  }
-  for (const m of content.matchAll(/import\(['"](.+?)['"]\)/g) || []) {
-    if (m[1]) imports.push(m[1])
+  const patterns = [
+    /import\s+.*?from\s+['"]([^'"]+)['"]/g,
+    /import\s+['"]([^'"]+)['"]/g,
+    /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
+  ]
+  for (const pat of patterns) {
+    let m: RegExpExecArray | null
+    while ((m = pat.exec(content)) !== null) {
+      const imp = m[1]
+      if (imp && (imp.startsWith('.') || imp.startsWith('/'))) {
+        imports.push(imp)
+      }
+    }
   }
   return imports
 }
 
+// ─── Classification Functions ────────────────────────────────────────────────
+
 /**
- * Extract re-exports from content.
- *
+ * Classify spectral class from complexity
  * @example
- * extractReExports("export { foo } from './bar'") // ['./bar']
+ * classifySpectralClass(95) // 'O'
  */
-export function extractReExports(content: string): string[] {
-  const exports: string[] = []
-  for (const m of content.matchAll(/export\s+\{[^}]*\}\s+from\s+['"](.+?)['"]/g) || []) {
-    if (m[1]) exports.push(m[1])
-  }
-  for (const m of content.matchAll(/export\s+\*\s+from\s+['"](.+?)['"]/g) || []) {
-    if (m[1]) exports.push(m[1])
-  }
-  return exports
+export function classifySpectralClass(complexity: number): StarNode['spectralClass'] {
+  if (complexity >= 80) return 'O'
+  if (complexity >= 65) return 'B'
+  if (complexity >= 50) return 'A'
+  if (complexity >= 35) return 'F'
+  if (complexity >= 20) return 'G'
+  if (complexity >= 10) return 'K'
+  return 'M'
 }
 
 /**
- * Resolve import path to known file.
- *
+ * Classify star type from exports and connections
  * @example
- * resolveImportPath('./utils', new Set(['utils.ts'])) // 'utils.ts'
+ * classifyStarType(10, 8) // 'supergiant'
  */
-export function resolveImportPath(importPath: string, knownFiles: Set<string>): string | null {
-  const stripped = importPath.replace(/^\.\//, '')
-  for (const ext of ['', '.ts', '.js', '.tsx', '.jsx', '/index.ts', '/index.js']) {
-    const candidate = stripped + ext
-    if (knownFiles.has(candidate)) return candidate
-  }
-  return null
+export function classifyStarType(exports: number, connectionCount: number): StarNode['starType'] {
+  if (exports >= 8 && connectionCount >= 6) return 'supergiant'
+  if (exports >= 5 || connectionCount >= 4) return 'giant'
+  if (exports >= 3 && connectionCount >= 3) return 'giant'
+  if (connectionCount >= 8) return 'neutron'
+  if (exports >= 2) return 'dwarf'
+  if (connectionCount >= 1) return 'white-dwarf'
+  return 'brown-dwarf'
 }
 
-// ─── Connections ───────────────────────────────────────────────────────────────
+/**
+ * Classify constellation pattern from connection structure
+ * @example
+ * classifyConstellationPattern(5, 1, 0, false) // 'star'
+ */
+export function classifyConstellationPattern(
+  starCount: number,
+  maxConnections: number,
+  cycleCount: number,
+  hasSingleHub: boolean,
+): ConstellationGroup['pattern'] {
+  if (starCount <= 1) return 'isolated'
+  if (cycleCount > 0 && starCount >= 3) return 'ring'
+  if (hasSingleHub && maxConnections >= 3) return 'star'
+  if (starCount >= 4 && maxConnections >= 2) return 'mesh'
+  if (maxConnections <= 2 && starCount >= 3) return 'chain'
+  if (starCount >= 3 && maxConnections >= 2) return 'tree'
+  return 'bus'
+}
 
 /**
- * Build connections from files and contents.
- *
+ * Classify constellation health from metrics
  * @example
- * buildConnections(['a.ts', 'b.ts'], ["import { x } from './b'", "export const x = 1"])
+ * classifyConstellationHealth(80, 0.7) // 'vibrant'
  */
-export function buildConnections(files: string[], contents: string[]): StarConnection[] {
-  const knownSet = new Set(files)
-  const connections: StarConnection[] = []
+export function classifyConstellationHealth(
+  avgBrightness: number,
+  coherence: number,
+): ConstellationGroup['health'] {
+  const score = avgBrightness * 0.5 + coherence * 100 * 0.5
+  if (score >= 75) return 'vibrant'
+  if (score >= 60) return 'healthy'
+  if (score >= 45) return 'stable'
+  if (score >= 30) return 'fading'
+  if (score >= 15) return 'dim'
+  return 'dark'
+}
 
-  for (let i = 0; i < files.length; i++) {
-    const content = contents[i] || ''
-    const imports = extractImports(content)
-    for (const imp of imports) {
-      const resolved = resolveImportPath(imp, knownSet)
-      if (resolved) {
-        const isTypeOnly = /^import\s+type\b/.test(content.substring(content.indexOf(imp) - 30, content.indexOf(imp)))
-        connections.push({
-          from: files[i],
-          to: resolved,
-          strength: computeConnectionStrength(files[i], resolved, content),
-          type: isTypeOnly ? 'type-only' : 'import',
-        })
-      }
+/**
+ * Classify structure type of the overall galaxy
+ * @example
+ * classifyStructureType(5, 0.3, 0.6) // 'spiral'
+ */
+export function classifyStructureType(
+  constellationCount: number,
+  interRatio: number,
+  avgCoherence: number,
+): GalacticStructure['structureType'] {
+  if (constellationCount <= 1) return 'cluster'
+  if (constellationCount <= 2 && interRatio < 0.2) return 'void'
+  if (avgCoherence >= 0.6 && interRatio < 0.3) return 'spiral'
+  if (avgCoherence >= 0.4) return 'elliptical'
+  if (interRatio >= 0.5) return 'irregular'
+  return 'elliptical'
+}
+
+/**
+ * Classify cartographer grade from connectivity
+ * @example
+ * classifyCartographerGrade(85) // 'master-astronomer'
+ */
+export function classifyCartographerGrade(connectivity: number): ConstellationMapStats['cartographerGrade'] {
+  if (connectivity >= 80) return 'master-astronomer'
+  if (connectivity >= 60) return 'astronomer'
+  if (connectivity >= 40) return 'navigator'
+  if (connectivity >= 20) return 'stargazer'
+  if (connectivity >= 5) return 'lost'
+  return 'blind'
+}
+
+// ─── Cycle Detection ─────────────────────────────────────────────────────────
+
+/**
+ * Detect circular dependency cycles
+ * @example
+ * detectCycles([{from:'a',to:'b',...},{from:'b',to:'a',...}]) // [['a','b']]
+ */
+export function detectCycles(connections: StarConnection[]): string[][] {
+  const adj = new Map<string, Set<string>>()
+  for (const c of connections) {
+    const existing = adj.get(c.from)
+    if (existing) {
+      existing.add(c.to)
+    } else {
+      adj.set(c.from, new Set([c.to]))
     }
-
-    const reExports = extractReExports(content)
-    for (const exp of reExports) {
-      const resolved = resolveImportPath(exp, knownSet)
-      if (resolved) {
-        connections.push({
-          from: files[i],
-          to: resolved,
-          strength: 60,
-          type: 're-export',
-        })
-      }
-    }
-  }
-
-  return connections
-}
-
-/**
- * Compute connection strength. 0-100.
- *
- * @example
- * computeConnectionStrength('a.ts', 'b.ts', content)
- */
-export function computeConnectionStrength(_from: string, _to: string, content: string): number {
-  const imports = (content.match(/import\s+/g) || []).length
-  const namedImports = (content.match(/\{[^}]+\}/g) || []).length
-  const base = 40
-  return Math.min(100, base + imports * 5 + namedImports * 10)
-}
-
-// ─── Position Assignment ───────────────────────────────────────────────────────
-
-/**
- * Assign positions to stars based on directory grouping.
- *
- * @example
- * assignPositions(['src/a.ts', 'src/b.ts', 'test/c.ts'], connections)
- */
-export function assignPositions(files: string[], _connections: StarConnection[]): Map<string, [number, number]> {
-  const positions = new Map<string, [number, number]>()
-  const groups: Record<string, string[]> = {}
-
-  for (const file of files) {
-    const parts = file.split('/')
-    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
-    if (!groups[dir]) groups[dir] = []
-    groups[dir].push(file)
-  }
-
-  const dirs = Object.keys(groups)
-  const cols = Math.ceil(Math.sqrt(dirs.length))
-  let colIdx = 0
-  let rowIdx = 0
-
-  for (const dir of dirs) {
-    const groupFiles = groups[dir]
-    const baseX = colIdx * 20
-    const baseY = rowIdx * 15
-
-    for (let i = 0; i < groupFiles.length; i++) {
-      const angle = (i / Math.max(groupFiles.length, 1)) * Math.PI * 2
-      const radius = Math.min(5, groupFiles.length)
-      positions.set(groupFiles[i], [
-        Math.round((baseX + Math.cos(angle) * radius) * 10) / 10,
-        Math.round((baseY + Math.sin(angle) * radius) * 10) / 10,
-      ])
-    }
-
-    colIdx++
-    if (colIdx >= cols) { colIdx = 0; rowIdx++ }
-  }
-
-  return positions
-}
-
-// ─── Constellation Grouping ────────────────────────────────────────────────────
-
-const MYTH_PREFIXES = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa']
-const MYTH_NAMES = ['Centauri', 'Orionis', 'Lyrae', 'Cygni', 'Draconis', 'Aquilae', 'Pegasi', 'Tauri', 'Leonis', 'Scorpii']
-
-/**
- * Generate constellation name from files.
- *
- * @example
- * generateConstellationName(['src/helpers/a.ts'], 'utility')
- */
-export function generateConstellationName(files: string[], purpose: string): string {
-  const dir = files.length > 0 ? files[0].split('/').slice(0, -1).join('/') : ''
-  const dirName = dir.split('/').pop() || 'Root'
-  const prefixIdx = Math.abs(hashString(dirName)) % MYTH_PREFIXES.length
-  const nameIdx = Math.abs(hashString(purpose + dirName)) % MYTH_NAMES.length
-  return `${MYTH_PREFIXES[prefixIdx]} ${MYTH_NAMES[nameIdx]}`
-}
-
-function hashString(s: string): number {
-  let hash = 0
-  for (let i = 0; i < s.length; i++) {
-    hash = ((hash << 5) - hash) + s.charCodeAt(i)
-    hash |= 0
-  }
-  return hash
-}
-
-/**
- * Group stars into constellations.
- *
- * @example
- * groupIntoConstellations(stars, connections)
- */
-export function groupIntoConstellations(stars: Star[], connections: StarConnection[]): ConstellationGroup[] {
-  const starMap = new Map(stars.map((s) => [s.file, s]))
-  const dirGroups: Record<string, string[]> = {}
-
-  for (const star of stars) {
-    const parts = star.file.split('/')
-    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
-    if (!dirGroups[dir]) dirGroups[dir] = []
-    dirGroups[dir].push(star.file)
-  }
-
-  const constellations: ConstellationGroup[] = []
-
-  for (const [dir, files] of Object.entries(dirGroups)) {
-    const groupStars = files.map((f) => starMap.get(f)).filter((s): s is Star => s !== undefined)
-    if (groupStars.length === 0) continue
-
-    const dirConnections = connections.filter((c) => files.includes(c.from) && files.includes(c.to))
-    const brightest = [...groupStars].sort((a, b) => b.brightness - a.brightness)[0]
-    const totalBrightness = groupStars.reduce((s, st) => s + st.brightness, 0)
-
-    const internalConns = dirConnections.length
-    const maxConns = files.length * (files.length - 1) / 2
-    const coherence = maxConns > 0 ? Math.round((internalConns / maxConns) * 100) : 0
-
-    const purpose = inferPurpose(groupStars)
-    const name = generateConstellationName(files, purpose)
-
-    constellations.push({
-      name,
-      description: `${purpose} modules in ${dir}`,
-      stars: files,
-      connections: dirConnections,
-      brightest: brightest.file,
-      totalBrightness,
-      coherence,
-    })
-  }
-
-  return constellations
-}
-
-function inferPurpose(stars: Star[]): string {
-  const classes = stars.map((s) => s.spectralClass)
-  if (classes.includes('O')) return 'core infrastructure'
-  if (classes.includes('B')) return 'CLI command'
-  if (classes.includes('F')) return 'test'
-  if (classes.includes('M')) return 'formatting'
-  if (classes.includes('K')) return 'type definition'
-  return 'utility'
-}
-
-// ─── Navigation ────────────────────────────────────────────────────────────────
-
-/**
- * Find shortest navigation path using BFS.
- *
- * @example
- * findNavigationPath('a.ts', 'c.ts', stars, connections)
- */
-export function findNavigationPath(from: string, to: string, stars: Star[], connections: StarConnection[]): NavigationPath | null {
-  if (from === to) return { from, to, path: [from], distance: 0, difficulty: 0, waypoints: [] }
-
-  const adj: Record<string, string[]> = {}
-  for (const star of stars) adj[star.file] = []
-  for (const conn of connections) {
-    if (!adj[conn.from]) adj[conn.from] = []
-    if (!adj[conn.to]) adj[conn.to] = []
-    adj[conn.from].push(conn.to)
-    adj[conn.to].push(conn.from)
   }
 
   const visited = new Set<string>()
-  const queue: { node: string; path: string[] }[] = [{ node: from, path: [from] }]
-  visited.add(from)
+  const inStack = new Set<string>()
+  const cycles: string[][] = []
 
-  while (queue.length > 0) {
-    const current = queue.shift()!
-    if (current.node === to) {
-      const starMap = new Map(stars.map((s) => [s.file, s]))
-      const difficulty = computePathDifficulty(current.path, starMap)
-      const waypoints = current.path.filter((p) => {
-        const star = starMap.get(p)
-        return star && star.brightness > 60
-      })
-      return { from, to, path: current.path, distance: current.path.length - 1, difficulty, waypoints }
-    }
-
-    const neighbors = adj[current.node] || []
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor)
-        queue.push({ node: neighbor, path: [...current.path, neighbor] })
+  function dfs(node: string, path: string[]): void {
+    visited.add(node)
+    inStack.add(node)
+    const neighbors = adj.get(node)
+    if (neighbors) {
+      for (const n of neighbors) {
+        if (inStack.has(n)) {
+          const cycleStart = path.indexOf(n)
+          if (cycleStart !== -1) {
+            cycles.push(path.slice(cycleStart).concat(n))
+          }
+        } else if (!visited.has(n)) {
+          dfs(n, [...path, n])
+        }
       }
     }
+    inStack.delete(node)
   }
 
-  return null
+  for (const node of adj.keys()) {
+    if (!visited.has(node)) {
+      dfs(node, [node])
+    }
+  }
+
+  return cycles
 }
 
+// ─── Connection Mapping ──────────────────────────────────────────────────────
+
 /**
- * Compute path difficulty.
- *
+ * Map a connection between two files
  * @example
- * computePathDifficulty(['a.ts', 'b.ts', 'c.ts'], starMap)
+ * mapConnection('a.ts', 'b.ts', 'import') // StarConnection
  */
-export function computePathDifficulty(path: string[], starMap: Map<string, Star>): number {
-  if (path.length <= 1) return 0
-  let totalMagnitude = 0
-  let count = 0
-  for (const p of path) {
-    const star = starMap.get(p)
-    if (star) { totalMagnitude += star.magnitude; count++ }
+export function mapConnection(
+  from: string,
+  to: string,
+  type: StarConnection['type'],
+): StarConnection {
+  const fromDir = from.includes('/') ? from.slice(0, from.lastIndexOf('/')) : '.'
+  const toDir = to.includes('/') ? to.slice(0, to.lastIndexOf('/')) : '.'
+  const isInterConstellation = fromDir !== toDir
+
+  return {
+    from,
+    to,
+    type,
+    strength: 50,
+    isInterConstellation,
+    isCircular: false,
+    distance: isInterConstellation ? 2 : 1,
   }
-  const avgMag = count > 0 ? totalMagnitude / count : 0
-  return Math.round((avgMag * 0.6 + (path.length - 1) * 10) * 10) / 10
 }
 
-// ─── Orphan Stars ──────────────────────────────────────────────────────────────
+// ─── Star Node Mapping ───────────────────────────────────────────────────────
 
 /**
- * Find orphan stars (no connections).
- *
+ * Map a single file as a star node
  * @example
- * findOrphanStars(stars, connections)
+ * mapStarNode('export function f() {}', 'f.ts', [], []) // StarNode
  */
-export function findOrphanStars(stars: Star[], connections: StarConnection[]): string[] {
-  const connected = new Set<string>()
-  for (const c of connections) {
-    connected.add(c.from)
-    connected.add(c.to)
-  }
-  return stars.filter((s) => !connected.has(s.file)).map((s) => s.file)
-}
+export function mapStarNode(
+  content: string,
+  filePath: string,
+  imports: string[],
+  importedBy: string[],
+): StarNode {
+  const lines = content.split('\n')
+  const totalLines = lines.length
+  const codeLines = lines.filter(l => l.trim().length > 0 && !l.trim().startsWith('//'))
 
-// ─── Chart Coverage & Navigability ─────────────────────────────────────────────
+  const exportCount = (content.match(/\bexport\s+/g) ?? []).length
+  const functionCount = (content.match(/(?:function\s+\w+|=>\s*[{(])/g) ?? []).length
+  const classCount = (content.match(/\bclass\s+\w+/g) ?? []).length
+  const interfaceCount = (content.match(/\binterface\s+\w+/g) ?? []).length
+  const complexity = Math.min(100,
+    functionCount * 8 + classCount * 12 + interfaceCount * 6 + codeLines.length,
+  )
 
-/**
- * Compute chart coverage. 0-100.
- *
- * @example
- * computeChartCoverage(stars, allFiles)
- */
-export function computeChartCoverage(stars: Star[], allFiles: string[]): number {
-  if (allFiles.length === 0) return 100
-  const mapped = new Set(stars.map((s) => s.file))
-  return Math.round((mapped.size / allFiles.length) * 100)
-}
+  const connectionCount = imports.length + importedBy.length
+  const brightness = Math.min(100, exportCount * 10 + importedBy.length * 15 + (totalLines > 50 ? 10 : 0))
+  const magnitude = Math.max(0, 100 - brightness)
+  const distance = filePath.split('/').length - 1
+  const spectralClass = classifySpectralClass(complexity)
+  const starType = classifyStarType(exportCount, connectionCount)
+  const luminosity = Math.min(100, exportCount * 15 + (content.match(/\bexport\s+default\b/g) ?? []).length * 20)
 
-/**
- * Compute navigability. 0-100.
- *
- * @example
- * computeNavigability(paths, connections)
- */
-export function computeNavigability(paths: NavigationPath[], connections: StarConnection[]): number {
-  if (connections.length === 0) return 0
-  const reachable = paths.filter((p) => p !== null).length
-  const totalPossible = paths.length
-  if (totalPossible === 0) return 100
-  const reachFactor = (reachable / totalPossible) * 60
-  const connDensity = Math.min(connections.length / 10, 1) * 40
-  return Math.round(reachFactor + connDensity)
-}
+  const inConstellation = filePath.includes('/')
+    ? filePath.slice(0, filePath.lastIndexOf('/'))
+    : '.'
 
-// ─── Recommendations ───────────────────────────────────────────────────────────
-
-/**
- * Generate recommendations.
- *
- * @example
- * generateConstellationMapRecommendations(stars, constellations, [], stats)
- */
-export function generateConstellationMapRecommendations(stars: Star[], constellations: ConstellationGroup[], _paths: NavigationPath[], stats: ConstellationMapStats): string[] {
-  const recs: string[] = []
-
-  if (stats.orphanStars > 0) {
-    recs.push(`${stats.orphanStars} orphan star(s) found — consider connecting or documenting their isolation`)
-  }
-
-  if (stats.chartCoverage < 80) {
-    recs.push('Chart coverage below 80% — some files may be missing from the map')
-  }
-
-  if (stats.navigability < 50) {
-    reformat: recs.push('Low navigability — add more module connections for easier codebase traversal')
-  }
-
-  const dimStars = stars.filter((s) => s.brightness < 10 && s.magnitude < 20)
-  if (dimStars.length > 0) {
-    recs.push(`${dimStars.length} dim star(s) with low importance — consider if they are needed`)
-  }
-
-  const incoherent = constellations.filter((c) => c.coherence < 20 && c.stars.length > 2)
-  if (incoherent.length > 0) {
-    recs.push(`${incoherent.length} constellation(s) with low coherence — files may not belong together`)
-  }
-
-  if (recs.length === 0) {
-    recs.push('Star chart looks well-organized — constellations are coherent and navigable')
-  }
-
-  return recs
-}
-
-// ─── Build Result ──────────────────────────────────────────────────────────────
-
-/**
- * Build complete constellation map result.
- *
- * @example
- * buildConstellationMapResult(['a.ts'], ['export const x = 1'], {})
- */
-export function buildConstellationMapResult(files: string[], contents: string[], options: ConstellationMapOptions): ConstellationMapResult {
-  const knownSet = new Set(files)
-  const connections = buildConnections(files, contents)
-
-  const importedByCounts: Record<string, number> = {}
-  for (const c of connections) {
-    importedByCounts[c.to] = (importedByCounts[c.to] || 0) + 1
-  }
-
-  const positions = assignPositions(files, connections)
-
-  const stars: Star[] = files.map((file, i) => {
-    const content = contents[i] || ''
-    const name = file.split('/').pop()?.replace(/\.\w+$/, '') || file
-    const brightness = computeBrightness(file, importedByCounts[file] || 0)
-    const magnitude = computeMagnitude(content)
-    const spectralClass = classifySpectralClass(file, content)
-    const pos = positions.get(file) || [0, 0]
-    const starConns = connections.filter((c) => c.from === file || c.to === file)
-
-    return { file, name, brightness, magnitude, spectralClass, position: pos, connections: starConns }
+  const isNexus = connectionCount >= 5
+  const isOrphan = connectionCount === 0
+  const isHub = connectionCount >= 3
+  const isBridge = imports.some(imp => {
+    const impDir = imp.includes('/') ? imp.slice(0, imp.lastIndexOf('/')) : '.'
+    return impDir !== inConstellation
+  }) || importedBy.some(imp => {
+    const impDir = imp.includes('/') ? imp.slice(0, imp.lastIndexOf('/')) : '.'
+    return impDir !== inConstellation
   })
 
-  const constellations = groupIntoConstellations(stars, connections)
+  const position: StarPosition = {
+    x: Math.round((hashCode(filePath) % 200) - 100),
+    y: Math.round(((hashCode(filePath) * 7) % 200) - 100),
+  }
 
-  const paths: NavigationPath[] = []
-  if (files.length >= 2 && files.length <= 30) {
-    const topFiles = [...stars].sort((a, b) => b.brightness - a.brightness).slice(0, 5).map((s) => s.file)
-    for (let i = 0; i < topFiles.length; i++) {
-      for (let j = i + 1; j < topFiles.length; j++) {
-        const path = findNavigationPath(topFiles[i], topFiles[j], stars, connections)
-        if (path) paths.push(path)
+  const connections: StarConnection[] = [
+    ...imports.map(imp => mapConnection(filePath, imp, 'import')),
+    ...importedBy.map(imp => mapConnection(imp, filePath, 'export')),
+  ]
+
+  return {
+    file: filePath,
+    brightness,
+    magnitude,
+    distance,
+    spectralClass,
+    starType,
+    connections,
+    imports,
+    importedBy,
+    inConstellation,
+    position,
+    isNexus,
+    isOrphan,
+    isBridge,
+    isHub,
+    luminosity,
+  }
+}
+
+function hashCode(s: string): number {
+  let h = 0
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0
+  }
+  return Math.abs(h)
+}
+
+// ─── Constellation Mapping ───────────────────────────────────────────────────
+
+/**
+ * Assign mythological name based on pattern and star count
+ * @example
+ * assignMythologicalName('star', 5, 'vibrant') // 'Orion'
+ */
+export function assignMythologicalName(
+  pattern: ConstellationGroup['pattern'],
+  starCount: number,
+  health: ConstellationGroup['health'],
+): string {
+  if (health === 'dark' || health === 'dim') {
+    if (pattern === 'isolated') return 'Dark Nebula'
+    return 'Fading Ember'
+  }
+  if (pattern === 'ring') {
+    if (starCount >= 5) return 'Ouroboros'
+    return 'Serpens'
+  }
+  if (pattern === 'star') {
+    if (starCount >= 5) return 'Sol Invictus'
+    return 'Corona'
+  }
+  if (pattern === 'mesh') {
+    if (starCount >= 6) return 'Andromeda'
+    return 'Lyra'
+  }
+  if (pattern === 'chain') {
+    if (starCount >= 5) return 'Orion\'s Belt'
+    return 'Serpens Cauda'
+  }
+  if (pattern === 'tree') {
+    if (starCount >= 5) return 'Yggdrasil'
+    return 'Cassiopeia'
+  }
+  if (pattern === 'bus') return 'Centaurus'
+  if (pattern === 'isolated') return 'Lonely Star'
+  return 'Unnamed'
+}
+
+/**
+ * Map a directory as a constellation group
+ * @example
+ * mapConstellation(stars, conns, 'src') // ConstellationGroup
+ */
+export function mapConstellation(
+  stars: StarNode[],
+  connections: StarConnection[],
+  dirPath: string,
+): ConstellationGroup {
+  if (stars.length === 0) {
+    return {
+      name: dirPath.split('/').pop() ?? dirPath,
+      directory: dirPath,
+      stars: [],
+      connections: [],
+      internalConnections: 0,
+      externalConnections: 0,
+      bridgeCount: 0,
+      starCount: 0,
+      avgBrightness: 0,
+      coherence: 0,
+      density: 0,
+      pattern: 'isolated',
+      hasCycle: false,
+      cycleCount: 0,
+      brightestStar: 'none',
+      hubStar: 'none',
+      health: 'dark',
+      mythologicalName: 'Void',
+    }
+  }
+
+  const name = dirPath.split('/').pop() ?? dirPath
+  const starCount = stars.length
+
+  const internalConns = connections.filter(c => !c.isInterConstellation)
+  const externalConns = connections.filter(c => c.isInterConstellation)
+  const internalConnections = internalConns.length
+  const externalConnections = externalConns.length
+  const bridgeCount = stars.filter(s => s.isBridge).length
+
+  const avgBrightness = Math.round(
+    stars.reduce((s, n) => s + n.brightness, 0) / starCount,
+  )
+
+  const maxPossible = starCount * (starCount - 1)
+  const coherence = maxPossible > 0
+    ? Math.round((internalConnections / maxPossible) * 100)
+    : 0
+
+  const maxPossibleDensity = starCount * (starCount - 1) / 2
+  const density = maxPossibleDensity > 0
+    ? Math.round(((internalConnections + externalConnections) / maxPossibleDensity) * 100) / 100
+    : 0
+
+  const localConns: Map<string, number> = new Map()
+  for (const s of stars) {
+    localConns.set(s.file, 0)
+  }
+  for (const c of connections) {
+    if (localConns.has(c.from)) localConns.set(c.from, (localConns.get(c.from) ?? 0) + 1)
+    if (localConns.has(c.to)) localConns.set(c.to, (localConns.get(c.to) ?? 0) + 1)
+  }
+  const maxLocalConn = Math.max(...Array.from(localConns.values()), 0)
+  const hasSingleHub = Array.from(localConns.values()).filter(v => v >= 3).length <= 1
+
+  const localCycles = detectCycles(connections)
+  const cycleCount = localCycles.length
+
+  const pattern = classifyConstellationPattern(starCount, maxLocalConn, cycleCount, hasSingleHub)
+
+  const brightestStar = stars.reduce((b, s) =>
+    s.brightness > b.brightness ? s : b, stars[0]).file
+  const hubStar = stars.reduce((h, s) =>
+    (s.connections.length > h.connections.length ? s : h), stars[0]).file
+
+  const health = classifyConstellationHealth(avgBrightness, coherence / 100)
+  const mythologicalName = assignMythologicalName(pattern, starCount, health)
+
+  return {
+    name,
+    directory: dirPath,
+    stars,
+    connections,
+    internalConnections,
+    externalConnections,
+    bridgeCount,
+    starCount,
+    avgBrightness,
+    coherence,
+    density: Math.min(density, 100),
+    pattern,
+    hasCycle: cycleCount > 0,
+    cycleCount,
+    brightestStar,
+    hubStar,
+    health,
+    mythologicalName,
+  }
+}
+
+// ─── Galactic Structure ──────────────────────────────────────────────────────
+
+/**
+ * Build overall galactic structure
+ * @example
+ * buildGalacticStructure(constellations, stars, conns) // GalacticStructure
+ */
+export function buildGalacticStructure(
+  constellations: ConstellationGroup[],
+  stars: StarNode[],
+  connections: StarConnection[],
+): GalacticStructure {
+  const n = stars.length || 1
+  const totalStars = stars.length
+  const totalConnections = connections.length
+  const totalConstellations = constellations.length
+
+  const avgBrightness = Math.round(stars.reduce((s, m) => s + m.brightness, 0) / n)
+  const avgCoherence = constellations.length > 0
+    ? constellations.reduce((s, c) => s + c.coherence, 0) / constellations.length / 100
+    : 0
+
+  const totalBridges = stars.filter(s => s.isBridge).length
+  const allCycles = detectCycles(connections)
+  const totalCycles = allCycles.length
+  const nexusCount = stars.filter(s => s.isNexus).length
+  const orphanCount = stars.filter(s => s.isOrphan).length
+  const hubCount = stars.filter(s => s.isHub).length
+
+  const interConns = connections.filter(c => c.isInterConstellation).length
+  const interConstellationRatio = totalConnections > 0 ? interConns / totalConnections : 0
+
+  const maxPossible = totalStars * (totalStars - 1) / 2
+  const connectivity = maxPossible > 0
+    ? Math.round((totalConnections / maxPossible) * 100)
+    : 0
+
+  const isWellStructured = avgCoherence >= 0.5 && interConstellationRatio < 0.4 && totalCycles === 0
+  const structureType = classifyStructureType(totalConstellations, interConstellationRatio, avgCoherence)
+
+  return {
+    totalStars,
+    totalConnections,
+    totalConstellations,
+    avgBrightness,
+    avgCoherence: Math.round(avgCoherence * 100) / 100,
+    totalBridges,
+    totalCycles,
+    nexusCount,
+    orphanCount,
+    hubCount,
+    interConstellationRatio: Math.round(interConstellationRatio * 100) / 100,
+    connectivity: Math.min(connectivity, 100),
+    isWellStructured,
+    structureType,
+  }
+}
+
+// ─── Recommendations ─────────────────────────────────────────────────────────
+
+/**
+ * Generate constellation map recommendations
+ * @example
+ * generateRecommendations(stars, conns, consts, stats) // string[]
+ */
+export function generateRecommendations(
+  stars: StarNode[],
+  connections: StarConnection[],
+  constellations: ConstellationGroup[],
+  stats: ConstellationMapStats,
+): string[] {
+  const recs: string[] = []
+
+  if (stats.totalCycles > 0) {
+    recs.push(`Circular dependencies detected: ${stats.totalCycles} cycle(s) found — consider breaking these chains`)
+  }
+
+  if (stats.orphanCount > 0) {
+    recs.push(`Orphan stars: ${stats.orphanCount} files have no connections — integrate or remove`)
+  }
+
+  if (stats.avgCoherence < 30) {
+    recs.push('Low coherence: constellations lack internal structure — regroup related files')
+  }
+
+  if (stats.interConstellationRatio > 0.4) {
+    recs.push('High cross-constellation traffic: reduce inter-module coupling')
+  }
+
+  if (stats.connectivity < 20 && stats.totalFiles > 3) {
+    recs.push('Sparse sky: many files lack connections — consider consolidating modules')
+  }
+
+  if (stats.nexusCount > 0) {
+    recs.push(`Nexus stars: ${stats.nexusCount} heavily-connected files may be bottlenecks`)
+  }
+
+  const dimConstellations = constellations.filter(c => c.health === 'dim' || c.health === 'dark')
+  if (dimConstellations.length > 0) {
+    recs.push(`Dim constellations: ${dimConstellations.length} directories need quality improvements`)
+  }
+
+  if (!stats.isWellStructured && stats.totalFiles > 5) {
+    recs.push('Chaotic structure: consider reorganizing for clearer constellation boundaries')
+  }
+
+  if (stats.structureType === 'void') {
+    recs.push('Void structure: too few inter-module connections — add proper dependency relationships')
+  }
+
+  if (stats.structureType === 'irregular') {
+    recs.push('Irregular structure: dependency pattern is tangled — aim for clearer module boundaries')
+  }
+
+  const chainConstellations = constellations.filter(c => c.pattern === 'chain' && c.starCount >= 5)
+  if (chainConstellations.length > 0) {
+    recs.push(`Long chains: ${chainConstellations.length} constellations form linear dependency chains`)
+  }
+
+  if (stats.avgBrightness >= 70) {
+    recs.push('Bright sky: high overall code quality across constellations')
+  }
+
+  if (stats.connectivity >= 60) {
+    recs.push('Well-connected sky: good dependency coverage across modules')
+  }
+
+  return Array.from(new Set(recs))
+}
+
+// ─── Orchestrator ────────────────────────────────────────────────────────────
+
+/**
+ * Build complete constellation map result from files and contents
+ * @example
+ * buildConstellationMapResult(['a.ts'], ['export function a() {}'], {}) // ConstellationMapResult
+ */
+export function buildConstellationMapResult(
+  files: string[],
+  contents: string[],
+  options: Record<string, unknown>,
+): ConstellationMapResult {
+  void options
+
+  const importMap = new Map<string, string[]>()
+  for (let i = 0; i < files.length; i++) {
+    const content = contents[i] ?? ''
+    const rawImports = extractImports(content)
+    const resolvedImports: string[] = []
+    for (const imp of rawImports) {
+      const clean = imp.replace(/\.\w+$/, '')
+      for (const otherFile of files) {
+        if (otherFile.endsWith(imp) || otherFile.includes(imp.replace(/^\.\//, '')) ||
+            otherFile.includes(clean.replace(/^\.\//, ''))) {
+          resolvedImports.push(otherFile)
+          break
+        }
+      }
+    }
+    importMap.set(files[i], resolvedImports)
+  }
+
+  const importedByMap = new Map<string, string[]>()
+  for (const [file, imps] of importMap.entries()) {
+    for (const imp of imps) {
+      const existing = importedByMap.get(imp)
+      if (existing) {
+        existing.push(file)
+      } else {
+        importedByMap.set(imp, [file])
       }
     }
   }
 
-  const orphans = findOrphanStars(stars, connections)
-  const chartCoverage = computeChartCoverage(stars, files)
-  const navigability = computeNavigability(paths, connections)
+  const stars: StarNode[] = files.map((file, i) => {
+    const content = contents[i] ?? ''
+    const imports = importMap.get(file) ?? []
+    const importedBy = importedByMap.get(file) ?? []
+    return mapStarNode(content, file, imports, importedBy)
+  })
 
-  const sortedByBrightness = [...stars].sort((a, b) => b.brightness - a.brightness)
-  const largestConstellation = constellations.length > 0 ? [...constellations].sort((a, b) => b.stars.length - a.stars.length)[0].name : ''
-  const smallestConstellation = constellations.length > 0 ? [...constellations].sort((a, b) => a.stars.length - b.stars.length)[0].name : ''
+  const allConnections: StarConnection[] = []
+  for (const star of stars) {
+    allConnections.push(...star.connections)
+  }
 
-  const avgBrightness = stars.length > 0 ? Math.round(stars.reduce((s, st) => s + st.brightness, 0) / stars.length) : 0
-  const avgMagnitude = stars.length > 0 ? Math.round(stars.reduce((s, st) => s + st.magnitude, 0) / stars.length) : 0
+  const cyclePaths = detectCycles(allConnections)
+  const cycleFileSet = new Set<string>()
+  for (const cycle of cyclePaths) {
+    for (const f of cycle) cycleFileSet.add(f)
+  }
+
+  for (const conn of allConnections) {
+    if (cycleFileSet.has(conn.from) && cycleFileSet.has(conn.to)) {
+      conn.isCircular = true
+    }
+  }
+
+  const dirMap = new Map<string, StarNode[]>()
+  for (const star of stars) {
+    const existing = dirMap.get(star.inConstellation)
+    if (existing) {
+      existing.push(star)
+    } else {
+      dirMap.set(star.inConstellation, [star])
+    }
+  }
+
+  const constellations: ConstellationGroup[] = Array.from(dirMap.entries()).map(([dir, dirStars]) => {
+    const dirConns = allConnections.filter(c =>
+      dirStars.some(s => s.file === c.from || s.file === c.to),
+    )
+    return mapConstellation(dirStars, dirConns, dir)
+  })
+
+  const galaxy = buildGalacticStructure(constellations, stars, allConnections)
+
+  const n = stars.length || 1
+  const supergiantCount = stars.filter(s => s.starType === 'supergiant').length
+  const dwarfCount = stars.filter(s => s.starType === 'brown-dwarf' || s.starType === 'white-dwarf').length
+  const avgConnectionStrength = allConnections.length > 0
+    ? Math.round(allConnections.reduce((s, c) => s + c.strength, 0) / allConnections.length)
+    : 0
+  const bridgeCount = stars.filter(s => s.isBridge).length
+
+  const biggestConstellation = constellations.length > 0
+    ? constellations.reduce((b, c) => c.starCount > b.starCount ? c : b, constellations[0]).name
+    : 'none'
+  const mostBridged = constellations.length > 0
+    ? constellations.reduce((b, c) => c.externalConnections > b.externalConnections ? c : b, constellations[0]).name
+    : 'none'
 
   const stats: ConstellationMapStats = {
-    totalStars: files.length,
+    totalFiles: files.length,
     totalConstellations: constellations.length,
-    totalConnections: connections.length,
-    brightestStar: sortedByBrightness[0]?.file || '',
-    dimmestStar: sortedByBrightness[sortedByBrightness.length - 1]?.file || '',
-    largestConstellation,
-    smallestConstellation,
-    avgBrightness,
-    avgMagnitude,
-    orphanStars: orphans.length,
-    chartCoverage,
-    navigability,
+    totalConnections: allConnections.length,
+    totalBridges: galaxy.totalBridges,
+    totalCycles: galaxy.totalCycles,
+    avgBrightness: Math.round(stars.reduce((s, m) => s + m.brightness, 0) / n),
+    avgMagnitude: Math.round(stars.reduce((s, m) => s + m.magnitude, 0) / n),
+    avgCoherence: galaxy.avgCoherence,
+    avgConnectionStrength,
+    nexusCount: galaxy.nexusCount,
+    orphanCount: galaxy.orphanCount,
+    hubCount: galaxy.hubCount,
+    bridgeCount,
+    supergiantCount,
+    dwarfCount,
+    interConstellationRatio: galaxy.interConstellationRatio,
+    connectivity: galaxy.connectivity,
+    isWellStructured: galaxy.isWellStructured,
+    structureType: galaxy.structureType,
+    cartographerGrade: classifyCartographerGrade(galaxy.connectivity),
+    brightestStar: stars.length > 0
+      ? stars.reduce((b, s) => s.brightness > b.brightness ? s : b, stars[0]).file
+      : 'none',
+    dimmestStar: stars.length > 0
+      ? stars.reduce((b, s) => s.brightness < b.brightness ? s : b, stars[0]).file
+      : 'none',
+    biggestConstellation,
+    mostConnected: stars.length > 0
+      ? stars.reduce((h, s) => s.connections.length > h.connections.length ? s : h, stars[0]).file
+      : 'none',
+    mostIsolated: stars.length > 0
+      ? stars.reduce((o, s) => s.connections.length < o.connections.length ? s : o, stars[0]).file
+      : 'none',
+    mostBridged,
+    cycleWarning: Array.from(cycleFileSet),
   }
 
-  const recommendations = generateConstellationMapRecommendations(stars, constellations, paths, stats)
+  const recommendations = generateRecommendations(stars, allConnections, constellations, stats)
 
-  if (options.verbose) {
-    for (const star of stars) {
-      if (star.connections.length === 0 && star.spectralClass === 'A') {
-        star.connections.push({ from: star.file, to: '(none)', strength: 0, type: 'import' })
-      }
-    }
-  }
-
-  return { stars, constellations, paths, stats, recommendations }
+  return { stars, connections: allConnections, constellations, galaxy, stats, recommendations }
 }

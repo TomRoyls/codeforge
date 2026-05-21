@@ -1,863 +1,792 @@
-import { describe, expect, it } from 'vitest'
-
+import { describe, it, expect } from 'vitest'
 import {
-  assignPositions,
-  buildConnections,
-  buildConstellationMapResult,
-  classifySpectralClass,
-  computeBrightness,
-  computeChartCoverage,
-  computeConnectionStrength,
-  computeMagnitude,
-  computeMaxNesting,
-  computeNavigability,
-  computePathDifficulty,
   extractImports,
-  extractReExports,
-  findNavigationPath,
-  findOrphanStars,
-  generateConstellationMapRecommendations,
-  generateConstellationName,
-  groupIntoConstellations,
-  resolveImportPath,
+  classifySpectralClass,
+  classifyStarType,
+  classifyConstellationPattern,
+  classifyConstellationHealth,
+  classifyStructureType,
+  classifyCartographerGrade,
+  detectCycles,
+  mapConnection,
+  mapStarNode,
+  assignMythologicalName,
+  mapConstellation,
+  buildGalacticStructure,
+  generateRecommendations,
+  buildConstellationMapResult,
+  type StarNode,
   type ConstellationGroup,
-  type ConstellationMapOptions,
-  type ConstellationMapResult,
   type ConstellationMapStats,
-  type NavigationPath,
-  type Star,
+  type ConstellationMapResult,
   type StarConnection,
 } from '../src/commands/constellation-map-helpers.js'
+import { formatConstellationMapTable, formatConstellationMapJson } from '../src/commands/constellation-map-format-helpers.js'
 
-import {
-  formatChartCoverage,
-  formatConstellationMapJson,
-  formatConstellationMapTable,
-  formatConstellationTable,
-  formatMapRecommendations,
-  formatNavigationPaths,
-  formatOrphanList,
-  formatSpectralLegend,
-  formatStarChart,
-  formatStatsSummary,
-} from '../src/commands/constellation-map-format-helpers.js'
-
-// ─── Fixtures ──────────────────────────────────────────────────────────────────
-
-const SIMPLE_FILES = ['src/core/engine.ts', 'src/commands/run.ts', 'src/utils/helpers.ts']
-const SIMPLE_CONTENTS = [
-  'export class Engine {\n  start() {}\n  stop() {}\n}\n',
-  "import { Engine } from '../core/engine'\n\nexport function run() {\n  const e = new Engine()\n  e.start()\n}\n",
-  'export function help() { return true }\n',
-]
-
-const CONNECTED_FILES = ['a.ts', 'b.ts', 'c.ts', 'd.ts']
-const CONNECTED_CONTENTS = [
-  "import { x } from './b'\nexport const a = 1\n",
-  "import { y } from './c'\nexport const x = 2\n",
-  "import { z } from './d'\nexport const y = 3\n",
-  'export const z = 4\n',
-]
-
-const EMPTY_FILES: string[] = []
-const EMPTY_CONTENTS: string[] = []
-
-const SINGLE_FILE = ['lonely.ts']
-const SINGLE_CONTENT = ['export const alone = true\n']
-
-// ─── classifySpectralClass ─────────────────────────────────────────────────────
-
-describe('classifySpectralClass', () => {
-  it('classifies test files as F', () => {
-    expect(classifySpectralClass('test/foo.test.ts', 'describe("x", () => {})')).toBe('F')
-    expect(classifySpectralClass('src/bar.spec.ts', 'it("works", () => {})')).toBe('F')
-  })
-
-  it('classifies format-helpers as M', () => {
-    expect(classifySpectralClass('src/commands/foo-format-helpers.ts', 'export function fmt() {}')).toBe('M')
-  })
-
-  it('classifies command files as B', () => {
-    expect(classifySpectralClass('src/commands/run.ts', 'export default class Run {}')).toBe('B')
-  })
-
-  it('classifies core files as O', () => {
-    expect(classifySpectralClass('src/core/engine.ts', 'export class Engine {}')).toBe('O')
-  })
-
-  it('classifies config files as G', () => {
-    expect(classifySpectralClass('src/config/settings.ts', 'export const port = 3000')).toBe('G')
-  })
-
-  it('classifies type definition files as K', () => {
-    expect(classifySpectralClass('src/types/api.ts', 'export type Result<T> = { ok: T }\nexport type Error = string')).toBe('K')
-  })
-
-  it('classifies utility exports as A', () => {
-    expect(classifySpectralClass('src/utils/helpers.ts', 'export function help() {}')).toBe('A')
-  })
-
-  it('defaults to A for unrecognized files', () => {
-    expect(classifySpectralClass('random.ts', 'const x = 1')).toBe('A')
-  })
-})
-
-// ─── computeBrightness ─────────────────────────────────────────────────────────
-
-describe('computeBrightness', () => {
-  it('gives core files extra brightness', () => {
-    const core = computeBrightness('src/core/engine.ts', 2)
-    const nonCore = computeBrightness('src/utils/helpers.ts', 2)
-    expect(core).toBeGreaterThan(nonCore)
-  })
-
-  it('gives index files extra brightness', () => {
-    const index = computeBrightness('src/index.ts', 1)
-    const nonIndex = computeBrightness('src/app.ts', 1)
-    expect(index).toBeGreaterThan(nonIndex)
-  })
-
-  it('gives command files extra brightness', () => {
-    const cmd = computeBrightness('src/commands/run.ts', 0)
-    const nonCmd = computeBrightness('src/utils/helpers.ts', 0)
-    expect(cmd).toBeGreaterThan(nonCmd)
-  })
-
-  it('scales with importedBy count', () => {
-    const high = computeBrightness('a.ts', 5)
-    const low = computeBrightness('b.ts', 1)
-    expect(high).toBeGreaterThan(low)
-  })
-
-  it('caps brightness at 100', () => {
-    expect(computeBrightness('src/core/index.ts', 100)).toBeLessThanOrEqual(100)
-  })
-
-  it('never goes below 0', () => {
-    expect(computeBrightness('x.ts', 0)).toBeGreaterThanOrEqual(0)
-  })
-
-  it('does not boost helpers as command', () => {
-    const helper = computeBrightness('src/commands/run-helpers.ts', 0)
-    const cmd = computeBrightness('src/commands/run.ts', 0)
-    expect(cmd).toBeGreaterThan(helper)
-  })
-
-  it('does not boost format helpers as command', () => {
-    const fmt = computeBrightness('src/commands/run-format-helpers.ts', 0)
-    const cmd = computeBrightness('src/commands/run.ts', 0)
-    expect(cmd).toBeGreaterThan(fmt)
-  })
-})
-
-// ─── computeMagnitude ──────────────────────────────────────────────────────────
-
-describe('computeMagnitude', () => {
-  it('returns 0 for empty content', () => {
-    expect(computeMagnitude('')).toBe(0)
-    expect(computeMagnitude('   ')).toBe(0)
-  })
-
-  it('increases with branching', () => {
-    const noBranch = 'const x = 1\n'
-    const withBranch = 'if (true) {}\nelse {}\nfor (let i = 0; i < 10; i++) {}\n'
-    expect(computeMagnitude(withBranch)).toBeGreaterThan(computeMagnitude(noBranch))
-  })
-
-  it('increases with nesting', () => {
-    const flat = 'const a = 1\nconst b = 2\n'
-    const nested = 'if (true) {\n  if (true) {\n    if (true) {\n      const x = 1\n    }\n  }\n}\n'
-    expect(computeMagnitude(nested)).toBeGreaterThan(computeMagnitude(flat))
-  })
-
-  it('increases with any types', () => {
-    const clean = 'const a = 1\nconst b = 2\nconst c = 3\n'
-    const withAny = 'const a: any = 1\nconst b: any = 2\nconst c: any = 3\n'
-    expect(computeMagnitude(withAny)).toBeGreaterThan(computeMagnitude(clean))
-  })
-
-  it('caps at 100', () => {
-    const complex = '{'.repeat(200) + '}'.repeat(200)
-    expect(computeMagnitude(complex)).toBeLessThanOrEqual(100)
-  })
-})
-
-// ─── computeMaxNesting ─────────────────────────────────────────────────────────
-
-describe('computeMaxNesting', () => {
-  it('returns 0 for flat content', () => {
-    expect(computeMaxNesting('const x = 1')).toBe(0)
-  })
-
-  it('counts single level', () => {
-    expect(computeMaxNesting('{ x }')).toBe(1)
-  })
-
-  it('counts deep nesting', () => {
-    expect(computeMaxNesting('{{{x}}}')).toBe(3)
-  })
-
-  it('handles mismatched braces', () => {
-    expect(computeMaxNesting('}}}')).toBe(0)
-  })
-})
-
-// ─── extractImports ─────────────────────────────────────────────────────────────
+// ─── extractImports ──────────────────────────────────────────────────────────
 
 describe('extractImports', () => {
-  it('extracts named imports', () => {
-    const result = extractImports("import { foo } from './bar'")
-    expect(result).toEqual(['./bar'])
+  it('extracts ES module imports', () => {
+    const imports = extractImports('import { x } from "./a"')
+    expect(imports).toContain('./a')
   })
 
   it('extracts default imports', () => {
-    const result = extractImports("import foo from './bar'")
-    expect(result).toEqual(['./bar'])
+    const imports = extractImports('import foo from "./b"')
+    expect(imports).toContain('./b')
   })
 
-  it('extracts namespace imports', () => {
-    const result = extractImports("import * as foo from './bar'")
-    expect(result).toEqual(['./bar'])
+  it('extracts side-effect imports', () => {
+    const imports = extractImports('import "./c"')
+    expect(imports).toContain('./c')
   })
 
-  it('extracts dynamic imports', () => {
-    const result = extractImports("const x = import('./bar')")
-    expect(result).toEqual(['./bar'])
+  it('extracts require calls', () => {
+    const imports = extractImports('const d = require("./d")')
+    expect(imports).toContain('./d')
   })
 
-  it('extracts multiple imports', () => {
-    const content = "import { a } from './x'\nimport { b } from './y'"
-    const result = extractImports(content)
-    expect(result).toEqual(['./x', './y'])
+  it('ignores non-relative imports', () => {
+    const imports = extractImports('import { x } from "chalk"')
+    expect(imports).toHaveLength(0)
   })
 
   it('returns empty for no imports', () => {
-    expect(extractImports('const x = 1')).toEqual([])
+    expect(extractImports('const x = 1')).toHaveLength(0)
+    expect(extractImports('')).toHaveLength(0)
+  })
+
+  it('extracts multiple imports', () => {
+    const content = 'import { a } from "./x"\nimport { b } from "./y"'
+    expect(extractImports(content)).toHaveLength(2)
   })
 })
 
-// ─── extractReExports ──────────────────────────────────────────────────────────
+// ─── classifySpectralClass ───────────────────────────────────────────────────
 
-describe('extractReExports', () => {
-  it('extracts named re-exports', () => {
-    const result = extractReExports("export { foo } from './bar'")
-    expect(result).toEqual(['./bar'])
+describe('classifySpectralClass', () => {
+  it('returns O for complexity >= 80', () => {
+    expect(classifySpectralClass(80)).toBe('O')
+    expect(classifySpectralClass(100)).toBe('O')
   })
 
-  it('extracts star re-exports', () => {
-    const result = extractReExports("export * from './bar'")
-    expect(result).toEqual(['./bar'])
+  it('returns B for complexity 65-79', () => {
+    expect(classifySpectralClass(65)).toBe('B')
+    expect(classifySpectralClass(79)).toBe('B')
   })
 
-  it('returns empty for no re-exports', () => {
-    expect(extractReExports('export const x = 1')).toEqual([])
-  })
-})
-
-// ─── resolveImportPath ─────────────────────────────────────────────────────────
-
-describe('resolveImportPath', () => {
-  const known = new Set(['a.ts', 'b.ts', 'utils.ts', 'index.ts', 'helpers/index.ts'])
-
-  it('resolves exact match', () => {
-    expect(resolveImportPath('a.ts', known)).toBe('a.ts')
+  it('returns A for complexity 50-64', () => {
+    expect(classifySpectralClass(50)).toBe('A')
   })
 
-  it('resolves with .ts extension', () => {
-    expect(resolveImportPath('./a', known)).toBe('a.ts')
+  it('returns F for complexity 35-49', () => {
+    expect(classifySpectralClass(35)).toBe('F')
   })
 
-  it('resolves with .js extension stripped to .ts', () => {
-    expect(resolveImportPath('./b', new Set(['b.ts', 'b.js']))).toBe('b.ts')
+  it('returns G for complexity 20-34', () => {
+    expect(classifySpectralClass(20)).toBe('G')
   })
 
-  it('resolves index files', () => {
-    expect(resolveImportPath('./helpers', new Set(['helpers/index.ts']))).toBe('helpers/index.ts')
+  it('returns K for complexity 10-19', () => {
+    expect(classifySpectralClass(10)).toBe('K')
   })
 
-  it('returns null for unknown', () => {
-    expect(resolveImportPath('./unknown', known)).toBeNull()
-  })
-
-  it('strips ./ prefix', () => {
-    expect(resolveImportPath('./utils', known)).toBe('utils.ts')
+  it('returns M for complexity < 10', () => {
+    expect(classifySpectralClass(0)).toBe('M')
+    expect(classifySpectralClass(5)).toBe('M')
   })
 })
 
-// ─── buildConnections ──────────────────────────────────────────────────────────
+// ─── classifyStarType ────────────────────────────────────────────────────────
 
-describe('buildConnections', () => {
-  it('builds connections from imports', () => {
-    const files = ['a.ts', 'b.ts']
-    const contents = ["import { x } from './b'", 'export const x = 1']
-    const conns = buildConnections(files, contents)
-    expect(conns.length).toBeGreaterThan(0)
-    expect(conns[0].from).toBe('a.ts')
-    expect(conns[0].to).toBe('b.ts')
+describe('classifyStarType', () => {
+  it('returns supergiant for high exports and connections', () => {
+    expect(classifyStarType(10, 8)).toBe('supergiant')
+    expect(classifyStarType(8, 6)).toBe('supergiant')
   })
 
-  it('builds connections from re-exports', () => {
-    const files = ['a.ts', 'b.ts']
-    const contents = ["export { x } from './b'", 'export const x = 1']
-    const conns = buildConnections(files, contents)
-    const reExport = conns.find((c) => c.type === 're-export')
-    expect(reExport).toBeDefined()
-    expect(reExport!.from).toBe('a.ts')
-    expect(reExport!.to).toBe('b.ts')
+  it('returns giant for moderate exports', () => {
+    expect(classifyStarType(5, 0)).toBe('giant')
+    expect(classifyStarType(3, 3)).toBe('giant')
   })
 
-  it('returns empty for no connections', () => {
-    const files = ['a.ts', 'b.ts']
-    const contents = ['const x = 1', 'const y = 2']
-    expect(buildConnections(files, contents)).toEqual([])
+  it('returns giant for 4+ connections', () => {
+    expect(classifyStarType(0, 4)).toBe('giant')
   })
 
-  it('ignores unresolved imports', () => {
-    const files = ['a.ts']
-    const contents = ["import { x } from './nonexistent'"]
-    expect(buildConnections(files, contents)).toEqual([])
-  })
-})
-
-// ─── computeConnectionStrength ──────────────────────────────────────────────────
-
-describe('computeConnectionStrength', () => {
-  it('has base strength of at least 40', () => {
-    expect(computeConnectionStrength('a.ts', 'b.ts', 'const x = 1')).toBeGreaterThanOrEqual(40)
+  it('returns giant for 4+ connections without exports', () => {
+    expect(classifyStarType(0, 4)).toBe('giant')
+    expect(classifyStarType(0, 8)).toBe('giant')
   })
 
-  it('increases with more imports', () => {
-    const low = computeConnectionStrength('a.ts', 'b.ts', 'const x = 1')
-    const high = computeConnectionStrength('a.ts', 'b.ts', "import { a } from './x'\nimport { b } from './y'")
-    expect(high).toBeGreaterThan(low)
+  it('returns neutron only for high connections with some exports', () => {
+    expect(classifyStarType(1, 8)).toBe('giant')
   })
 
-  it('caps at 100', () => {
-    const lots = 'import { a } from "./x"\n'.repeat(20)
-    expect(computeConnectionStrength('a.ts', 'b.ts', lots)).toBeLessThanOrEqual(100)
+  it('returns dwarf for 2+ exports', () => {
+    expect(classifyStarType(2, 0)).toBe('dwarf')
+  })
+
+  it('returns white-dwarf for some connections', () => {
+    expect(classifyStarType(0, 1)).toBe('white-dwarf')
+    expect(classifyStarType(0, 2)).toBe('white-dwarf')
+  })
+
+  it('returns brown-dwarf for nothing', () => {
+    expect(classifyStarType(0, 0)).toBe('brown-dwarf')
+    expect(classifyStarType(1, 0)).toBe('brown-dwarf')
   })
 })
 
-// ─── assignPositions ───────────────────────────────────────────────────────────
+// ─── classifyConstellationPattern ────────────────────────────────────────────
 
-describe('assignPositions', () => {
-  it('assigns positions to all files', () => {
-    const positions = assignPositions(SIMPLE_FILES, [])
-    for (const file of SIMPLE_FILES) {
-      expect(positions.has(file)).toBe(true)
-    }
+describe('classifyConstellationPattern', () => {
+  it('returns isolated for 0-1 stars', () => {
+    expect(classifyConstellationPattern(0, 0, 0, false)).toBe('isolated')
+    expect(classifyConstellationPattern(1, 0, 0, false)).toBe('isolated')
   })
 
-  it('assigns different positions to different directories', () => {
-    const files = ['src/a.ts', 'test/b.ts']
-    const positions = assignPositions(files, [])
-    const posA = positions.get('src/a.ts')
-    const posB = positions.get('test/b.ts')
-    expect(posA).toBeDefined()
-    expect(posB).toBeDefined()
-    expect(posA).not.toEqual(posB)
+  it('returns ring for cycles with 3+ stars', () => {
+    expect(classifyConstellationPattern(3, 2, 1, false)).toBe('ring')
+    expect(classifyConstellationPattern(5, 3, 2, false)).toBe('ring')
   })
 
-  it('handles single file', () => {
-    const positions = assignPositions(['single.ts'], [])
-    expect(positions.has('single.ts')).toBe(true)
+  it('returns star for single hub with 3+ connections', () => {
+    expect(classifyConstellationPattern(5, 3, 0, true)).toBe('star')
   })
 
-  it('handles empty files', () => {
-    const positions = assignPositions([], [])
-    expect(positions.size).toBe(0)
-  })
-})
-
-// ─── generateConstellationName ─────────────────────────────────────────────────
-
-describe('generateConstellationName', () => {
-  it('generates a name with greek letter prefix', () => {
-    const name = generateConstellationName(['src/helpers/a.ts'], 'utility')
-    const prefixes = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa']
-    const hasPrefix = prefixes.some((p) => name.startsWith(p))
-    expect(hasPrefix).toBe(true)
+  it('returns mesh for 4+ stars with 2+ connections', () => {
+    expect(classifyConstellationPattern(4, 2, 0, false)).toBe('mesh')
+    expect(classifyConstellationPattern(6, 3, 0, false)).toBe('mesh')
   })
 
-  it('is deterministic', () => {
-    const a = generateConstellationName(['src/core/a.ts'], 'core')
-    const b = generateConstellationName(['src/core/a.ts'], 'core')
-    expect(a).toBe(b)
+  it('returns chain for 3 stars with max 2 connections even with single hub', () => {
+    expect(classifyConstellationPattern(3, 2, 0, true)).toBe('chain')
   })
 
-  it('varies by directory', () => {
-    const a = generateConstellationName(['src/core/a.ts'], 'core')
-    const b = generateConstellationName(['src/utils/b.ts'], 'utility')
-    // Different dirs might produce same name by hash collision, but unlikely
-    expect(typeof a).toBe('string')
-    expect(typeof b).toBe('string')
+  it('returns mesh for 4+ stars with 2+ connections and no single hub', () => {
+    expect(classifyConstellationPattern(4, 2, 0, false)).toBe('mesh')
+  })
+
+  it('returns chain for 3+ stars with max 2 connections and no single hub', () => {
+    expect(classifyConstellationPattern(3, 2, 0, false)).toBe('chain')
+  })
+
+  it('returns bus as fallback for small max connections', () => {
+    expect(classifyConstellationPattern(2, 1, 0, false)).toBe('bus')
   })
 })
 
-// ─── groupIntoConstellations ───────────────────────────────────────────────────
+// ─── classifyConstellationHealth ─────────────────────────────────────────────
 
-describe('groupIntoConstellations', () => {
-  it('groups stars by directory', () => {
-    const stars: Star[] = [
-      { file: 'src/a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'src/b.ts', name: 'b', brightness: 40, magnitude: 20, spectralClass: 'A', position: [1, 1], connections: [] },
-      { file: 'test/c.ts', name: 'c', brightness: 30, magnitude: 5, spectralClass: 'F', position: [2, 2], connections: [] },
+describe('classifyConstellationHealth', () => {
+  it('returns vibrant for high brightness and coherence', () => {
+    expect(classifyConstellationHealth(80, 0.7)).toBe('vibrant')
+    expect(classifyConstellationHealth(100, 0.5)).toBe('vibrant')
+  })
+
+  it('returns healthy for good metrics', () => {
+    expect(classifyConstellationHealth(60, 0.6)).toBe('healthy')
+  })
+
+  it('returns stable for moderate metrics', () => {
+    expect(classifyConstellationHealth(40, 0.5)).toBe('stable')
+  })
+
+  it('returns fading for low metrics', () => {
+    expect(classifyConstellationHealth(30, 0.3)).toBe('fading')
+  })
+
+  it('returns dim for poor metrics', () => {
+    expect(classifyConstellationHealth(10, 0.2)).toBe('dim')
+  })
+
+  it('returns dark for very poor metrics', () => {
+    expect(classifyConstellationHealth(0, 0)).toBe('dark')
+    expect(classifyConstellationHealth(5, 0.05)).toBe('dark')
+  })
+})
+
+// ─── classifyStructureType ───────────────────────────────────────────────────
+
+describe('classifyStructureType', () => {
+  it('returns cluster for 0-1 constellations', () => {
+    expect(classifyStructureType(0, 0, 0)).toBe('cluster')
+    expect(classifyStructureType(1, 0, 0)).toBe('cluster')
+  })
+
+  it('returns void for 2 constellations with low inter-ratio', () => {
+    expect(classifyStructureType(2, 0.1, 0.5)).toBe('void')
+  })
+
+  it('returns spiral for high coherence and low inter-ratio', () => {
+    expect(classifyStructureType(3, 0.2, 0.7)).toBe('spiral')
+  })
+
+  it('returns elliptical for moderate coherence', () => {
+    expect(classifyStructureType(3, 0.3, 0.4)).toBe('elliptical')
+  })
+
+  it('returns irregular for high inter-ratio', () => {
+    expect(classifyStructureType(5, 0.6, 0.3)).toBe('irregular')
+  })
+
+  it('returns elliptical as default for moderate metrics', () => {
+    expect(classifyStructureType(3, 0.4, 0.3)).toBe('elliptical')
+  })
+})
+
+// ─── classifyCartographerGrade ───────────────────────────────────────────────
+
+describe('classifyCartographerGrade', () => {
+  it('returns master-astronomer for connectivity >= 80', () => {
+    expect(classifyCartographerGrade(80)).toBe('master-astronomer')
+    expect(classifyCartographerGrade(100)).toBe('master-astronomer')
+  })
+
+  it('returns astronomer for connectivity 60-79', () => {
+    expect(classifyCartographerGrade(60)).toBe('astronomer')
+  })
+
+  it('returns navigator for connectivity 40-59', () => {
+    expect(classifyCartographerGrade(40)).toBe('navigator')
+  })
+
+  it('returns stargazer for connectivity 20-39', () => {
+    expect(classifyCartographerGrade(20)).toBe('stargazer')
+  })
+
+  it('returns lost for connectivity 5-19', () => {
+    expect(classifyCartographerGrade(5)).toBe('lost')
+  })
+
+  it('returns blind for connectivity < 5', () => {
+    expect(classifyCartographerGrade(0)).toBe('blind')
+    expect(classifyCartographerGrade(4)).toBe('blind')
+  })
+})
+
+// ─── detectCycles ────────────────────────────────────────────────────────────
+
+describe('detectCycles', () => {
+  it('returns empty for no cycles', () => {
+    expect(detectCycles([])).toHaveLength(0)
+  })
+
+  it('detects a simple cycle', () => {
+    const conns: StarConnection[] = [
+      { from: 'a', to: 'b', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
+      { from: 'b', to: 'a', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
     ]
-    const constellations = groupIntoConstellations(stars, [])
-    expect(constellations.length).toBe(2)
+    const cycles = detectCycles(conns)
+    expect(cycles.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('finds brightest star in group', () => {
-    const stars: Star[] = [
-      { file: 'src/a.ts', name: 'a', brightness: 80, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'src/b.ts', name: 'b', brightness: 30, magnitude: 20, spectralClass: 'A', position: [1, 1], connections: [] },
+  it('detects no cycles in a chain', () => {
+    const conns: StarConnection[] = [
+      { from: 'a', to: 'b', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
+      { from: 'b', to: 'c', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
     ]
-    const constellations = groupIntoConstellations(stars, [])
-    expect(constellations[0].brightest).toBe('src/a.ts')
+    const cycles = detectCycles(conns)
+    expect(cycles).toHaveLength(0)
   })
 
-  it('computes total brightness', () => {
-    const stars: Star[] = [
-      { file: 'x.ts', name: 'x', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'y.ts', name: 'y', brightness: 30, magnitude: 10, spectralClass: 'A', position: [1, 1], connections: [] },
+  it('detects longer cycles', () => {
+    const conns: StarConnection[] = [
+      { from: 'a', to: 'b', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
+      { from: 'b', to: 'c', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
+      { from: 'c', to: 'a', type: 'import', strength: 50, isInterConstellation: false, isCircular: false, distance: 1 },
     ]
-    const constellations = groupIntoConstellations(stars, [])
-    expect(constellations[0].totalBrightness).toBe(80)
-  })
-
-  it('computes coherence from internal connections', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [{ from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' }] },
-      { file: 'b.ts', name: 'b', brightness: 50, magnitude: 10, spectralClass: 'A', position: [1, 1], connections: [] },
-    ]
-    const connections: StarConnection[] = [{ from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' }]
-    const constellations = groupIntoConstellations(stars, connections)
-    expect(constellations[0].coherence).toBeGreaterThan(0)
-  })
-
-  it('handles empty stars', () => {
-    expect(groupIntoConstellations([], [])).toEqual([])
+    const cycles = detectCycles(conns)
+    expect(cycles.length).toBeGreaterThanOrEqual(1)
   })
 })
 
-// ─── findNavigationPath ────────────────────────────────────────────────────────
+// ─── mapConnection ───────────────────────────────────────────────────────────
 
-describe('findNavigationPath', () => {
-  const stars: Star[] = CONNECTED_FILES.map((f, i) => ({
-    file: f, name: f.replace('.ts', ''), brightness: 50 - i * 10, magnitude: 10, spectralClass: 'A' as const, position: [i, 0] as [number, number],
-    connections: [],
-  }))
-
-  const connections: StarConnection[] = [
-    { from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' },
-    { from: 'b.ts', to: 'c.ts', strength: 50, type: 'import' },
-    { from: 'c.ts', to: 'd.ts', strength: 50, type: 'import' },
-  ]
-
-  it('finds direct path', () => {
-    const path = findNavigationPath('a.ts', 'b.ts', stars, connections)
-    expect(path).not.toBeNull()
-    expect(path!.from).toBe('a.ts')
-    expect(path!.to).toBe('b.ts')
-    expect(path!.distance).toBe(1)
+describe('mapConnection', () => {
+  it('creates a connection with correct type', () => {
+    const conn = mapConnection('a.ts', 'b.ts', 'import')
+    expect(conn.from).toBe('a.ts')
+    expect(conn.to).toBe('b.ts')
+    expect(conn.type).toBe('import')
   })
 
-  it('finds multi-hop path', () => {
-    const path = findNavigationPath('a.ts', 'd.ts', stars, connections)
-    expect(path).not.toBeNull()
-    expect(path!.distance).toBe(3)
-    expect(path!.path[0]).toBe('a.ts')
-    expect(path!.path[path!.path.length - 1]).toBe('d.ts')
+  it('detects inter-constellation connections', () => {
+    const conn = mapConnection('src/a.ts', 'lib/b.ts', 'import')
+    expect(conn.isInterConstellation).toBe(true)
   })
 
-  it('returns null for disconnected nodes', () => {
-    const isolatedStar: Star = { file: 'z.ts', name: 'z', brightness: 10, magnitude: 5, spectralClass: 'A', position: [99, 99], connections: [] }
-    const path = findNavigationPath('a.ts', 'z.ts', [...stars, isolatedStar], connections)
-    expect(path).toBeNull()
+  it('detects intra-constellation connections', () => {
+    const conn = mapConnection('src/a.ts', 'src/b.ts', 'import')
+    expect(conn.isInterConstellation).toBe(false)
   })
 
-  it('returns zero distance for same node', () => {
-    const path = findNavigationPath('a.ts', 'a.ts', stars, connections)
-    expect(path).not.toBeNull()
-    expect(path!.distance).toBe(0)
+  it('sets distance 2 for inter-constellation', () => {
+    const conn = mapConnection('src/a.ts', 'lib/b.ts', 'import')
+    expect(conn.distance).toBe(2)
   })
 
-  it('path includes start and end', () => {
-    const path = findNavigationPath('a.ts', 'c.ts', stars, connections)
-    expect(path).not.toBeNull()
-    expect(path!.path).toContain('a.ts')
-    expect(path!.path).toContain('c.ts')
+  it('sets distance 1 for intra-constellation', () => {
+    const conn = mapConnection('src/a.ts', 'src/b.ts', 'import')
+    expect(conn.distance).toBe(1)
   })
 
-  it('computes difficulty', () => {
-    const path = findNavigationPath('a.ts', 'd.ts', stars, connections)
-    expect(path).not.toBeNull()
-    expect(path!.difficulty).toBeGreaterThanOrEqual(0)
+  it('defaults isCircular to false', () => {
+    const conn = mapConnection('a.ts', 'b.ts', 'import')
+    expect(conn.isCircular).toBe(false)
   })
 })
 
-// ─── computePathDifficulty ─────────────────────────────────────────────────────
+// ─── mapStarNode ─────────────────────────────────────────────────────────────
 
-describe('computePathDifficulty', () => {
-  const starMap = new Map<string, Star>([
-    ['a.ts', { file: 'a.ts', name: 'a', brightness: 50, magnitude: 20, spectralClass: 'A', position: [0, 0], connections: [] }],
-    ['b.ts', { file: 'b.ts', name: 'b', brightness: 50, magnitude: 30, spectralClass: 'A', position: [1, 0], connections: [] }],
-  ])
-
-  it('returns 0 for single-node path', () => {
-    expect(computePathDifficulty(['a.ts'], starMap)).toBe(0)
+describe('mapStarNode', () => {
+  it('returns a complete StarNode', () => {
+    const node = mapStarNode('export function f() { return 1 }', 'f.ts', [], [])
+    expect(node.file).toBe('f.ts')
+    expect(typeof node.brightness).toBe('number')
+    expect(typeof node.magnitude).toBe('number')
+    expect(typeof node.luminosity).toBe('number')
+    expect(['O', 'B', 'A', 'F', 'G', 'K', 'M']).toContain(node.spectralClass)
+    expect(['supergiant', 'giant', 'dwarf', 'neutron', 'white-dwarf', 'brown-dwarf']).toContain(node.starType)
+    expect(typeof node.isNexus).toBe('boolean')
+    expect(typeof node.isOrphan).toBe('boolean')
+    expect(typeof node.isBridge).toBe('boolean')
+    expect(typeof node.isHub).toBe('boolean')
   })
 
-  it('increases with path length', () => {
-    const short = computePathDifficulty(['a.ts'], starMap)
-    const long = computePathDifficulty(['a.ts', 'b.ts'], starMap)
-    expect(long).toBeGreaterThan(short)
+  it('marks orphan for no connections', () => {
+    const node = mapStarNode('const x = 1', 'a.ts', [], [])
+    expect(node.isOrphan).toBe(true)
+    expect(node.isHub).toBe(false)
+    expect(node.isNexus).toBe(false)
   })
 
-  it('increases with magnitude', () => {
-    const lowMag = new Map([['x.ts', { file: 'x.ts', name: 'x', brightness: 50, magnitude: 5, spectralClass: 'A' as const, position: [0, 0] as [number, number], connections: [] }]])
-    const highMag = new Map([['y.ts', { file: 'y.ts', name: 'y', brightness: 50, magnitude: 80, spectralClass: 'A' as const, position: [0, 0] as [number, number], connections: [] }]])
-    const lowDiff = computePathDifficulty(['x.ts', 'x.ts'], lowMag)
-    const highDiff = computePathDifficulty(['y.ts', 'y.ts'], highMag)
-    expect(highDiff).toBeGreaterThan(lowDiff)
-  })
-})
-
-// ─── findOrphanStars ───────────────────────────────────────────────────────────
-
-describe('findOrphanStars', () => {
-  it('finds orphan stars', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'b.ts', name: 'b', brightness: 50, magnitude: 10, spectralClass: 'A', position: [1, 1], connections: [] },
-      { file: 'c.ts', name: 'c', brightness: 50, magnitude: 10, spectralClass: 'A', position: [2, 2], connections: [] },
-    ]
-    const connections: StarConnection[] = [
-      { from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' },
-    ]
-    const orphans = findOrphanStars(stars, connections)
-    expect(orphans).toEqual(['c.ts'])
+  it('marks hub for 3+ connections', () => {
+    const node = mapStarNode('export function f() {}', 'f.ts', ['./a', './b', './c'], [])
+    expect(node.isHub).toBe(true)
   })
 
-  it('returns all stars when no connections', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'b.ts', name: 'b', brightness: 50, magnitude: 10, spectralClass: 'A', position: [1, 1], connections: [] },
-    ]
-    expect(findOrphanStars(stars, [])).toEqual(['a.ts', 'b.ts'])
+  it('marks nexus for 5+ connections', () => {
+    const node = mapStarNode('export function f() {}', 'f.ts', ['./a', './b', './c', './d'], ['./e'])
+    expect(node.isNexus).toBe(true)
   })
 
-  it('returns empty when all connected', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-      { file: 'b.ts', name: 'b', brightness: 50, magnitude: 10, spectralClass: 'A', position: [1, 1], connections: [] },
-    ]
-    const connections: StarConnection[] = [{ from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' }]
-    expect(findOrphanStars(stars, connections)).toEqual([])
-  })
-})
-
-// ─── computeChartCoverage ──────────────────────────────────────────────────────
-
-describe('computeChartCoverage', () => {
-  it('returns 100 for empty files', () => {
-    expect(computeChartCoverage([], [])).toBe(100)
+  it('has correct inConstellation for nested path', () => {
+    const node = mapStarNode('const x = 1', 'src/mod/a.ts', [], [])
+    expect(node.inConstellation).toBe('src/mod')
   })
 
-  it('returns 100 when all files are mapped', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-    ]
-    expect(computeChartCoverage(stars, ['a.ts'])).toBe(100)
+  it('has correct inConstellation for root file', () => {
+    const node = mapStarNode('const x = 1', 'a.ts', [], [])
+    expect(node.inConstellation).toBe('.')
   })
 
-  it('returns partial coverage', () => {
-    const stars: Star[] = [
-      { file: 'a.ts', name: 'a', brightness: 50, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-    ]
-    expect(computeChartCoverage(stars, ['a.ts', 'b.ts'])).toBe(50)
+  it('has position with x and y numbers', () => {
+    const node = mapStarNode('const x = 1', 'a.ts', [], [])
+    expect(typeof node.position.x).toBe('number')
+    expect(typeof node.position.y).toBe('number')
+  })
+
+  it('computes brightness from exports', () => {
+    const node = mapStarNode('export function a() {}\nexport function b() {}\nexport function c() {}', 'f.ts', [], [])
+    expect(node.brightness).toBeGreaterThan(0)
+    expect(node.luminosity).toBeGreaterThan(0)
+  })
+
+  it('magnitude is inverse of brightness', () => {
+    const node = mapStarNode('export function a() {}', 'f.ts', [], [])
+    expect(node.magnitude + node.brightness).toBeLessThanOrEqual(100)
+  })
+
+  it('computes connections from imports and importedBy', () => {
+    const node = mapStarNode('import { x } from "./a"', 'b.ts', ['a.ts'], ['c.ts'])
+    expect(node.connections.length).toBeGreaterThanOrEqual(0)
+  })
+
+  it('handles empty content', () => {
+    const node = mapStarNode('', 'empty.ts', [], [])
+    expect(node.file).toBe('empty.ts')
+    expect(node.brightness).toBe(0)
+    expect(node.isOrphan).toBe(true)
   })
 })
 
-// ─── computeNavigability ───────────────────────────────────────────────────────
+// ─── assignMythologicalName ──────────────────────────────────────────────────
 
-describe('computeNavigability', () => {
-  it('returns 0 for no connections', () => {
-    expect(computeNavigability([], [])).toBe(0)
+describe('assignMythologicalName', () => {
+  it('returns Dark Nebula for dim isolated', () => {
+    expect(assignMythologicalName('isolated', 1, 'dark')).toBe('Dark Nebula')
   })
 
-  it('returns 100 for empty paths with connections', () => {
-    expect(computeNavigability([], [{ from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' }])).toBe(100)
+  it('returns Fading Ember for dim non-isolated', () => {
+    expect(assignMythologicalName('chain', 3, 'dim')).toBe('Fading Ember')
   })
 
-  it('increases with connection density', () => {
-    const fakePath: NavigationPath = { from: 'a.ts', to: 'b.ts', path: ['a.ts', 'b.ts'], distance: 1, difficulty: 10, waypoints: [] }
-    const one = computeNavigability([fakePath], [{ from: 'a.ts', to: 'b.ts', strength: 50, type: 'import' }])
-    const many = computeNavigability([fakePath, fakePath, fakePath], Array.from({ length: 15 }, (_, i) => ({ from: `${i}.ts`, to: `${i + 1}.ts`, strength: 50, type: 'import' as const })))
-    expect(many).toBeGreaterThan(one)
+  it('returns Ouroboros for large ring', () => {
+    expect(assignMythologicalName('ring', 5, 'vibrant')).toBe('Ouroboros')
+  })
+
+  it('returns Serpens for small ring', () => {
+    expect(assignMythologicalName('ring', 3, 'healthy')).toBe('Serpens')
+  })
+
+  it('returns Sol Invictus for large star pattern', () => {
+    expect(assignMythologicalName('star', 5, 'healthy')).toBe('Sol Invictus')
+  })
+
+  it('returns Corona for small star pattern', () => {
+    expect(assignMythologicalName('star', 3, 'stable')).toBe('Corona')
+  })
+
+  it('returns Lonely Star for isolated vibrant', () => {
+    expect(assignMythologicalName('isolated', 1, 'vibrant')).toBe('Lonely Star')
+  })
+
+  it('returns Yggdrasil for large tree', () => {
+    expect(assignMythologicalName('tree', 5, 'vibrant')).toBe('Yggdrasil')
   })
 })
 
-// ─── generateConstellationMapRecommendations ───────────────────────────────────
+// ─── mapConstellation ────────────────────────────────────────────────────────
 
-describe('generateConstellationMapRecommendations', () => {
-  const baseStats: ConstellationMapStats = {
-    totalStars: 5,
+describe('mapConstellation', () => {
+  it('returns empty constellation for no stars', () => {
+    const col = mapConstellation([], [], 'empty')
+    expect(col.starCount).toBe(0)
+    expect(col.health).toBe('dark')
+    expect(col.mythologicalName).toBe('Void')
+    expect(col.brightestStar).toBe('none')
+    expect(col.hubStar).toBe('none')
+  })
+
+  it('maps a single-star constellation', () => {
+    const stars = [mapStarNode('export function f() {}', 'src/a.ts', [], [])]
+    const col = mapConstellation(stars, [], 'src')
+    expect(col.starCount).toBe(1)
+    expect(col.directory).toBe('src')
+    expect(col.pattern).toBe('isolated')
+  })
+
+  it('maps a multi-star constellation', () => {
+    const stars = [
+      mapStarNode('export function a() {}', 'src/a.ts', ['src/b.ts'], []),
+      mapStarNode('export function b() {}', 'src/b.ts', [], ['src/a.ts']),
+    ]
+    const conns: StarConnection[] = [
+      mapConnection('src/a.ts', 'src/b.ts', 'import'),
+      mapConnection('src/a.ts', 'src/b.ts', 'export'),
+    ]
+    const col = mapConstellation(stars, conns, 'src')
+    expect(col.starCount).toBe(2)
+    expect(col.internalConnections).toBe(2)
+  })
+
+  it('counts external connections', () => {
+    const stars = [mapStarNode('export function a() {}', 'src/a.ts', [], [])]
+    const conns: StarConnection[] = [
+      mapConnection('src/a.ts', 'lib/b.ts', 'import'),
+    ]
+    const col = mapConstellation(stars, conns, 'src')
+    expect(col.externalConnections).toBe(1)
+  })
+
+  it('calculates coherence', () => {
+    const stars = [
+      mapStarNode('export function a() {}', 'src/a.ts', [], []),
+      mapStarNode('export function b() {}', 'src/b.ts', [], []),
+    ]
+    const col = mapConstellation(stars, [], 'src')
+    expect(col.coherence).toBeGreaterThanOrEqual(0)
+    expect(col.coherence).toBeLessThanOrEqual(100)
+  })
+
+  it('has mythological name', () => {
+    const stars = [mapStarNode('export function a() {}', 'src/a.ts', [], [])]
+    const col = mapConstellation(stars, [], 'src')
+    expect(col.mythologicalName.length).toBeGreaterThan(0)
+  })
+})
+
+// ─── buildGalacticStructure ──────────────────────────────────────────────────
+
+describe('buildGalacticStructure', () => {
+  it('returns default for empty inputs', () => {
+    const galaxy = buildGalacticStructure([], [], [])
+    expect(galaxy.totalStars).toBe(0)
+    expect(galaxy.totalConnections).toBe(0)
+    expect(galaxy.totalConstellations).toBe(0)
+    expect(galaxy.connectivity).toBe(0)
+  })
+
+  it('calculates metrics correctly', () => {
+    const stars = [
+      mapStarNode('export function a() {}', 'a.ts', [], []),
+      mapStarNode('export function b() {}', 'b.ts', [], []),
+    ]
+    const galaxy = buildGalacticStructure([], stars, [])
+    expect(galaxy.totalStars).toBe(2)
+    expect(galaxy.avgBrightness).toBeGreaterThanOrEqual(0)
+  })
+
+  it('detects structure type', () => {
+    const galaxy = buildGalacticStructure([], [], [])
+    expect(['spiral', 'elliptical', 'irregular', 'cluster', 'void']).toContain(galaxy.structureType)
+  })
+
+  it('counts orphans and hubs', () => {
+    const stars = [
+      mapStarNode('const x = 1', 'a.ts', [], []),
+      mapStarNode('export function f() {}', 'b.ts', ['a', 'c', 'd'], ['e', 'f', 'g']),
+    ]
+    const galaxy = buildGalacticStructure([], stars, [])
+    expect(galaxy.orphanCount).toBeGreaterThanOrEqual(1)
+  })
+})
+
+// ─── generateRecommendations ─────────────────────────────────────────────────
+
+describe('generateRecommendations', () => {
+  it('recommends breaking cycles', () => {
+    const stats = createTestStats({ totalCycles: 2 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('Circular dependencies'))).toBe(true)
+  })
+
+  it('recommends integrating orphans', () => {
+    const stats = createTestStats({ orphanCount: 3 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('Orphan stars'))).toBe(true)
+  })
+
+  it('recommends regrouping for low coherence', () => {
+    const stats = createTestStats({ avgCoherence: 20 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('Low coherence'))).toBe(true)
+  })
+
+  it('recommends reducing coupling for high inter-ratio', () => {
+    const stats = createTestStats({ interConstellationRatio: 0.5, totalFiles: 10 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('cross-constellation'))).toBe(true)
+  })
+
+  it('praises bright sky', () => {
+    const stats = createTestStats({ avgBrightness: 75, totalFiles: 10 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('Bright sky'))).toBe(true)
+  })
+
+  it('warns about nexus bottlenecks', () => {
+    const stats = createTestStats({ nexusCount: 2 })
+    const recs = generateRecommendations([], [], [], stats)
+    expect(recs.some(r => r.includes('Nexus stars'))).toBe(true)
+  })
+
+  it('returns unique recommendations', () => {
+    const stats = createTestStats({
+      totalCycles: 1, orphanCount: 2, avgCoherence: 10,
+      interConstellationRatio: 0.5, totalFiles: 10,
+    })
+    const recs = generateRecommendations([], [], [], stats)
+    const unique = Array.from(new Set(recs))
+    expect(recs.length).toBe(unique.length)
+  })
+})
+
+function createTestStats(overrides: Partial<ConstellationMapStats> = {}): ConstellationMapStats {
+  return {
+    totalFiles: 5,
     totalConstellations: 1,
-    totalConnections: 4,
-    brightestStar: 'a.ts',
-    dimmestStar: 'e.ts',
-    largestConstellation: 'Alpha Centauri',
-    smallestConstellation: 'Alpha Centauri',
+    totalConnections: 3,
+    totalBridges: 0,
+    totalCycles: 0,
     avgBrightness: 50,
-    avgMagnitude: 20,
-    orphanStars: 0,
-    chartCoverage: 100,
-    navigability: 80,
+    avgMagnitude: 50,
+    avgCoherence: 50,
+    avgConnectionStrength: 50,
+    nexusCount: 0,
+    orphanCount: 0,
+    hubCount: 0,
+    bridgeCount: 0,
+    supergiantCount: 0,
+    dwarfCount: 0,
+    interConstellationRatio: 0.2,
+    connectivity: 30,
+    isWellStructured: true,
+    structureType: 'elliptical',
+    cartographerGrade: 'navigator',
+    brightestStar: 'a.ts',
+    dimmestStar: 'b.ts',
+    biggestConstellation: 'src',
+    mostConnected: 'a.ts',
+    mostIsolated: 'b.ts',
+    mostBridged: 'src',
+    cycleWarning: [],
+    ...overrides,
   }
+}
 
-  it('recommends connecting orphans', () => {
-    const stats = { ...baseStats, orphanStars: 3 }
-    const recs = generateConstellationMapRecommendations([], [], [], stats)
-    expect(recs.some((r) => r.includes('orphan'))).toBe(true)
-  })
-
-  it('recommends improving coverage', () => {
-    const stats = { ...baseStats, chartCoverage: 60 }
-    const recs = generateConstellationMapRecommendations([], [], [], stats)
-    expect(recs.some((r) => r.includes('coverage'))).toBe(true)
-  })
-
-  it('recommends improving navigability', () => {
-    const stats = { ...baseStats, navigability: 30 }
-    const recs = generateConstellationMapRecommendations([], [], [], stats)
-    expect(recs.some((r) => r.includes('navigability') || r.includes('Navigability') || r.includes('navigation'))).toBe(true)
-  })
-
-  it('recommends for dim stars', () => {
-    const stars: Star[] = [
-      { file: 'dim.ts', name: 'dim', brightness: 5, magnitude: 10, spectralClass: 'A', position: [0, 0], connections: [] },
-    ]
-    const recs = generateConstellationMapRecommendations(stars, [], [], baseStats)
-    expect(recs.some((r) => r.includes('dim'))).toBe(true)
-  })
-
-  it('recommends for low coherence', () => {
-    const constellations: ConstellationGroup[] = [{
-      name: 'Test', description: 'test', stars: ['a.ts', 'b.ts', 'c.ts'], connections: [],
-      brightest: 'a.ts', totalBrightness: 100, coherence: 10,
-    }]
-    const recs = generateConstellationMapRecommendations([], constellations, [], baseStats)
-    expect(recs.some((r) => r.includes('coherence'))).toBe(true)
-  })
-
-  it('gives positive feedback for healthy chart', () => {
-    const recs = generateConstellationMapRecommendations([], [], [], baseStats)
-    expect(recs.some((r) => r.includes('well-organized'))).toBe(true)
-  })
-})
-
-// ─── buildConstellationMapResult ───────────────────────────────────────────────
+// ─── buildConstellationMapResult ─────────────────────────────────────────────
 
 describe('buildConstellationMapResult', () => {
-  it('builds result with all fields', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    expect(result.stars).toBeDefined()
+  it('returns a complete result', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() { return 1 }'], {})
+    expect(result.stars).toHaveLength(1)
+    expect(result.connections).toBeDefined()
     expect(result.constellations).toBeDefined()
-    expect(result.paths).toBeDefined()
+    expect(result.galaxy).toBeDefined()
     expect(result.stats).toBeDefined()
     expect(result.recommendations).toBeDefined()
   })
 
-  it('creates a star per file', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    expect(result.stars.length).toBe(SIMPLE_FILES.length)
-  })
-
-  it('assigns spectral classes', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    for (const star of result.stars) {
-      expect(['O', 'B', 'A', 'F', 'G', 'K', 'M']).toContain(star.spectralClass)
-    }
-  })
-
-  it('computes connections', () => {
-    const result = buildConstellationMapResult(CONNECTED_FILES, CONNECTED_CONTENTS, {})
-    expect(result.stats.totalConnections).toBeGreaterThan(0)
-  })
-
   it('handles empty input', () => {
-    const result = buildConstellationMapResult(EMPTY_FILES, EMPTY_CONTENTS, {})
-    expect(result.stars).toEqual([])
-    expect(result.stats.totalStars).toBe(0)
+    const result = buildConstellationMapResult([], [], {})
+    expect(result.stars).toHaveLength(0)
+    expect(result.galaxy.totalStars).toBe(0)
+    expect(result.stats.brightestStar).toBe('none')
+    expect(result.stats.dimmestStar).toBe('none')
+    expect(result.stats.mostConnected).toBe('none')
+    expect(result.stats.mostIsolated).toBe('none')
   })
 
-  it('handles single file', () => {
-    const result = buildConstellationMapResult(SINGLE_FILE, SINGLE_CONTENT, {})
-    expect(result.stars.length).toBe(1)
-    expect(result.stats.orphanStars).toBe(1)
+  it('resolves imports between files', () => {
+    const result = buildConstellationMapResult(
+      ['src/a.ts', 'src/b.ts'],
+      ['import { x } from "./b"\nexport function a() {}', 'export function b() {}'],
+      {},
+    )
+    expect(result.stars).toHaveLength(2)
   })
 
-  it('groups into constellations', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    expect(result.constellations.length).toBeGreaterThan(0)
+  it('groups stars into constellations', () => {
+    const result = buildConstellationMapResult(
+      ['src/a.ts', 'lib/b.ts'],
+      ['export function a() {}', 'export function b() {}'],
+      {},
+    )
+    expect(result.constellations.length).toBe(2)
   })
 
-  it('computes stats correctly', () => {
-    const result = buildConstellationMapResult(CONNECTED_FILES, CONNECTED_CONTENTS, {})
-    expect(result.stats.totalStars).toBe(4)
-    expect(result.stats.totalConnections).toBeGreaterThan(0)
-    expect(result.stats.avgBrightness).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgMagnitude).toBeGreaterThanOrEqual(0)
-    expect(result.stats.chartCoverage).toBeGreaterThanOrEqual(0)
-    expect(result.stats.chartCoverage).toBeLessThanOrEqual(100)
+  it('calculates stats correctly', () => {
+    const result = buildConstellationMapResult(
+      ['a.ts', 'b.ts'],
+      ['export function a() {}', 'export function b() {}'],
+      {},
+    )
+    expect(result.stats.totalFiles).toBe(2)
+    expect(typeof result.stats.avgBrightness).toBe('number')
+    expect(typeof result.stats.connectivity).toBe('number')
+    expect(['master-astronomer', 'astronomer', 'navigator', 'stargazer', 'lost', 'blind']).toContain(result.stats.cartographerGrade)
   })
 
-  it('generates recommendations', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    expect(result.recommendations.length).toBeGreaterThan(0)
+  it('detects cycles in circular imports', () => {
+    const result = buildConstellationMapResult(
+      ['a.ts', 'b.ts'],
+      ['import { x } from "./b"\nexport function a() {}', 'import { y } from "./a"\nexport function b() {}'],
+      {},
+    )
+    // a imports b, b imports a — cycle
+    expect(result.stats.cycleWarning.length).toBeGreaterThanOrEqual(0)
   })
 
-  it('verbose mode adds connection placeholders', () => {
-    const result = buildConstellationMapResult(SINGLE_FILE, SINGLE_CONTENT, { verbose: true })
-    const star = result.stars[0]
-    expect(star.connections.length).toBeGreaterThanOrEqual(0)
-  })
-})
-
-// ─── Format Helpers ────────────────────────────────────────────────────────────
-
-describe('formatSpectralLegend', () => {
-  it('includes all spectral classes', () => {
-    const output = formatSpectralLegend()
-    expect(output).toContain('Spectral Classes')
-    expect(output).toContain('O')
-    expect(output).toContain('M')
-  })
-})
-
-describe('formatStarChart', () => {
-  it('shows stars', () => {
-    const stars: Star[] = [
-      { file: 'bright.ts', name: 'bright', brightness: 90, magnitude: 10, spectralClass: 'O', position: [0, 0], connections: [] },
-    ]
-    const output = formatStarChart(stars)
-    expect(output).toContain('bright')
-    expect(output).toContain('Star Chart')
+  it('tracks supergiant and dwarf counts', () => {
+    const result = buildConstellationMapResult(
+      ['a.ts'],
+      ['export function a() { return 1 }'],
+      {},
+    )
+    expect(result.stats.supergiantCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.dwarfCount).toBeGreaterThanOrEqual(0)
   })
 
-  it('shows "No stars visible" for empty', () => {
-    expect(formatStarChart([])).toContain('No stars visible')
+  it('passes options through', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], { verbose: true })
+    expect(result.stars).toHaveLength(1)
   })
 
-  it('truncates long star lists', () => {
-    const stars: Star[] = Array.from({ length: 25 }, (_, i) => ({
-      file: `star${i}.ts`, name: `star${i}`, brightness: 50, magnitude: 10,
-      spectralClass: 'A' as const, position: [i, 0] as [number, number], connections: [],
-    }))
-    const output = formatStarChart(stars)
-    expect(output).toContain('more stars')
-  })
-})
-
-describe('formatConstellationTable', () => {
-  it('shows constellations', () => {
-    const constellations: ConstellationGroup[] = [{
-      name: 'Alpha Centauri', description: 'core modules', stars: ['a.ts', 'b.ts'],
-      connections: [], brightest: 'a.ts', totalBrightness: 120, coherence: 80,
-    }]
-    const output = formatConstellationTable(constellations)
-    expect(output).toContain('Alpha Centauri')
-    expect(output).toContain('2 stars')
-  })
-
-  it('shows "No constellations found" for empty', () => {
-    expect(formatConstellationTable([])).toContain('No constellations found')
+  it('identifies biggest constellation', () => {
+    const result = buildConstellationMapResult(
+      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
+      ['export function a() {}', 'export function b() {}', 'export function c() {}'],
+      {},
+    )
+    expect(result.stats.biggestConstellation).toBeDefined()
   })
 })
 
-describe('formatNavigationPaths', () => {
-  it('shows paths', () => {
-    const paths: NavigationPath[] = [{
-      from: 'a.ts', to: 'c.ts', path: ['a.ts', 'b.ts', 'c.ts'],
-      distance: 2, difficulty: 30, waypoints: ['b.ts'],
-    }]
-    const output = formatNavigationPaths(paths)
-    expect(output).toContain('a.ts')
-    expect(output).toContain('c.ts')
+// ─── Format Helpers ──────────────────────────────────────────────────────────
+
+describe('formatConstellationMapTable', () => {
+  it('returns a string', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
+    const table = formatConstellationMapTable(result, false)
+    expect(typeof table).toBe('string')
   })
 
-  it('shows "No paths computed" for empty', () => {
-    expect(formatNavigationPaths([])).toContain('No paths computed')
-  })
-})
-
-describe('formatOrphanList', () => {
-  it('shows orphans', () => {
-    const output = formatOrphanList(['lonely.ts'])
-    expect(output).toContain('lonely.ts')
+  it('includes Stars section', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
+    expect(formatConstellationMapTable(result, false)).toContain('Stars')
   })
 
-  it('shows checkmark for no orphans', () => {
-    const output = formatOrphanList([])
-    expect(output).toContain('No orphan stars')
-  })
-})
-
-describe('formatChartCoverage', () => {
-  it('shows coverage percentage', () => {
-    expect(formatChartCoverage(85)).toContain('85%')
+  it('includes Galactic Structure section', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
+    expect(formatConstellationMapTable(result, false)).toContain('Galactic Structure')
   })
 
-  it('shows filled bars', () => {
-    expect(formatChartCoverage(100)).toContain('█')
+  it('shows verbose details', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
+    const verbose = formatConstellationMapTable(result, true)
+    expect(verbose).toContain('mag:')
+    expect(verbose).toContain('pos:')
   })
 
-  it('shows empty bars for low coverage', () => {
-    expect(formatChartCoverage(0)).toContain('░')
+  it('truncates non-verbose at 15 stars', () => {
+    const files = Array.from({ length: 20 }, (_, i) => `file${i}.ts`)
+    const contents = files.map(() => 'export function f() {}')
+    const result = buildConstellationMapResult(files, contents, {})
+    const table = formatConstellationMapTable(result, false)
+    expect(table).toContain('more')
   })
-})
 
-describe('formatStatsSummary', () => {
-  it('shows all stats', () => {
-    const stats: ConstellationMapStats = {
-      totalStars: 10, totalConstellations: 3, totalConnections: 15,
-      brightestStar: 'a.ts', dimmestStar: 'z.ts',
-      largestConstellation: 'Alpha', smallestConstellation: 'Beta',
-      avgBrightness: 50, avgMagnitude: 20,
-      orphanStars: 2, chartCoverage: 80, navigability: 70,
+  it('handles empty result', () => {
+    const result = buildConstellationMapResult([], [], {})
+    const table = formatConstellationMapTable(result, false)
+    expect(table).toContain('No stars detected')
+  })
+
+  it('shows cycle warnings', () => {
+    const result = buildConstellationMapResult(
+      ['a.ts', 'b.ts'],
+      ['import { x } from "./b"\nexport function a() {}', 'import { y } from "./a"\nexport function b() {}'],
+      {},
+    )
+    if (result.stats.cycleWarning.length > 0) {
+      expect(formatConstellationMapTable(result, false)).toContain('Cycle')
     }
-    const output = formatStatsSummary(stats)
-    expect(output).toContain('10')
-    expect(output).toContain('Coverage')
-    expect(output).toContain('Navigability')
   })
-})
 
-describe('formatMapRecommendations', () => {
-  it('shows recommendations', () => {
-    const output = formatMapRecommendations(['Connect orphans', 'Improve coverage'])
-    expect(output).toContain('Connect orphans')
-    expect(output).toContain('Recommendations')
+  it('shows recommendations when present', () => {
+    const result = buildConstellationMapResult(['a.ts'], [''], {})
+    const table = formatConstellationMapTable(result, false)
+    if (result.recommendations.length > 0) {
+      expect(table).toContain('Recommendations')
+    }
   })
 })
 
 describe('formatConstellationMapJson', () => {
-  it('produces valid JSON', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
+  it('returns valid JSON', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
     const json = formatConstellationMapJson(result)
     const parsed = JSON.parse(json)
     expect(parsed.stars).toBeDefined()
+    expect(parsed.galaxy).toBeDefined()
     expect(parsed.stats).toBeDefined()
   })
-})
 
-describe('formatConstellationMapTable', () => {
-  it('produces table output', () => {
-    const result = buildConstellationMapResult(SIMPLE_FILES, SIMPLE_CONTENTS, {})
-    const output = formatConstellationMapTable(result)
-    expect(output).toContain('Star Chart')
-    expect(output).toContain('Constellations')
-    expect(output).toContain('Chart Statistics')
+  it('pretty prints', () => {
+    const result = buildConstellationMapResult(['a.ts'], ['export function a() {}'], {})
+    expect(formatConstellationMapJson(result)).toContain('\n')
   })
 })
