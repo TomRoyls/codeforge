@@ -144,7 +144,7 @@ export default class PotteryWheel extends Command {
 
     const result: PotteryWheelResult = buildPotteryWheelResult(files, contents, {})
 
-    spinner.succeed(`Analyzed ${files.length} pieces with grade ${result.stats.wheelGrade}`)
+    spinner.succeed(`Shaped ${files.length} pieces, craftsmanship ${result.stats.overallCraftsmanship} (${result.stats.potterGrade})`)
 
     const outputData =
       format === 'json'
@@ -167,5 +167,5 @@ export default class PotteryWheel extends Command {
 }
 
 export { buildPotteryWheelResult } from './pottery-wheel-helpers.js'
-export type { PotteryWheelResult, PotteryWheelStats, ThrownPiece, PotteryBatch, PieceShape, PieceWalls, PieceSurface, WheelMarks, PieceFiring } from './pottery-wheel-helpers.js'
+export type { PotteryWheelResult, PotteryWheelStats, PotteryPiece, PotteryStudio } from './pottery-wheel-helpers.js'
 export { formatPotteryWheelJson, formatPotteryWheelTable } from './pottery-wheel-format-helpers.js'

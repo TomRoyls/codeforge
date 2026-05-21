@@ -1,456 +1,492 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
-  classifyForm,
-  classifyClayType,
-  classifyThrowingStyle,
-  classifyCraftsmanship,
-  classifyWheelGrade,
-  classifyCondition,
-  detectThinSpots,
-  detectThickSpots,
-  assessFiring,
-  analyzeThrownPiece,
-  analyzePotteryBatch,
-  generateRecommendations,
+  analyzePotteryPiece,
+  analyzePotteryStudio,
   buildPotteryWheelResult,
-  type ThrownPiece,
-  type PotteryWheelStats,
+  classifyPotterGrade,
+  classifyStudioType,
+  generateRecommendations,
+  measureArtistry,
+  measureClay,
+  measureGlaze,
+  measureKiln,
+  measureShaping,
+  measureWheel,
 } from '../src/commands/pottery-wheel-helpers.js'
-import { formatPotteryWheelTable, formatPotteryWheelJson } from '../src/commands/pottery-wheel-format-helpers.js'
+import { formatPotteryWheelJson, formatPotteryWheelTable } from '../src/commands/pottery-wheel-format-helpers.js'
 
-// ─── classifyForm ───────────────────────────────────────────────────────────
+// ─── measureClay ────────────────────────────────────────────────────────────
 
-describe('classifyForm', () => {
-  it('returns urn for 3+ classes and 2+ interfaces', () => {
-    expect(classifyForm(3, 5, 2)).toBe('urn')
+describe('measureClay', () => {
+  it('returns raku for empty content', () => {
+    const r = measureClay('')
+    expect(r.quality).toBe(25)
+    expect(r.type).toBe('raku')
+    expect(r.isWellPrepared).toBe(false)
+    expect(r.impurityCount).toBe(0)
   })
 
-  it('returns vase for 2+ classes and 5+ functions', () => {
-    expect(classifyForm(2, 5, 0)).toBe('vase')
+  it('detects proper consistency from const-only', () => {
+    const code = 'const x = 1\nconst y = 2'
+    const r = measureClay(code)
+    expect(r.hasProperConsistency).toBe(true)
+    expect(r.hasCorrectPlasticity).toBe(true)
   })
 
-  it('returns pitcher for 5+ functions and 0 classes', () => {
-    expect(classifyForm(0, 5, 0)).toBe('pitcher')
+  it('detects impurities from any types', () => {
+    const code = 'function bad(x: any): any { return x }'
+    const r = measureClay(code)
+    expect(r.hasImpurities).toBe(true)
+    expect(r.impurityCount).toBeGreaterThan(0)
+    expect(r.hasNoAirBubbles).toBe(false)
   })
 
-  it('returns jar for 1+ classes and 1+ interfaces', () => {
-    expect(classifyForm(1, 0, 1)).toBe('jar')
+  it('detects proper wedging from functions with classes', () => {
+    const code = 'class Handler {}\nfunction run() {}'
+    const r = measureClay(code)
+    expect(r.hasProperWedging).toBe(true)
   })
 
-  it('returns sculpture for 2+ classes', () => {
-    expect(classifyForm(2, 1, 0)).toBe('sculpture')
+  it('detects workable from functions', () => {
+    const code = 'function a() {}'
+    const r = measureClay(code)
+    expect(r.isWorkable).toBe(true)
   })
 
-  it('returns bowl for 3+ functions', () => {
-    expect(classifyForm(0, 3, 0)).toBe('bowl')
-  })
-
-  it('returns cup for 1+ functions or 1+ classes', () => {
-    expect(classifyForm(1, 1, 0)).toBe('cup')
-    expect(classifyForm(0, 1, 0)).toBe('cup')
-  })
-
-  it('returns plate for empty', () => {
-    expect(classifyForm(0, 0, 0)).toBe('plate')
-  })
-})
-
-// ─── classifyClayType ───────────────────────────────────────────────────────
-
-describe('classifyClayType', () => {
-  it('returns porcelain for 85+', () => {
-    expect(classifyClayType(85)).toBe('porcelain')
-    expect(classifyClayType(100)).toBe('porcelain')
-  })
-
-  it('returns bone-china for 70-84', () => {
-    expect(classifyClayType(70)).toBe('bone-china')
-    expect(classifyClayType(84)).toBe('bone-china')
-  })
-
-  it('returns stoneware for 55-69', () => {
-    expect(classifyClayType(55)).toBe('stoneware')
-    expect(classifyClayType(69)).toBe('stoneware')
-  })
-
-  it('returns earthenware for 40-54', () => {
-    expect(classifyClayType(40)).toBe('earthenware')
-    expect(classifyClayType(54)).toBe('earthenware')
-  })
-
-  it('returns terracotta for 25-39', () => {
-    expect(classifyClayType(25)).toBe('terracotta')
-    expect(classifyClayType(39)).toBe('terracotta')
-  })
-
-  it('returns raku below 25', () => {
-    expect(classifyClayType(24)).toBe('raku')
-    expect(classifyClayType(0)).toBe('raku')
-  })
-})
-
-// ─── classifyThrowingStyle ──────────────────────────────────────────────────
-
-describe('classifyThrowingStyle', () => {
-  it('returns wheel-thrown for 3+ generics and 3+ exports', () => {
-    expect(classifyThrowingStyle(3, 3, 0)).toBe('wheel-thrown')
-  })
-
-  it('returns slip-cast for 3+ classes', () => {
-    expect(classifyThrowingStyle(0, 2, 3)).toBe('slip-cast')
-  })
-
-  it('returns coil-built for 5+ exports', () => {
-    expect(classifyThrowingStyle(0, 5, 0)).toBe('coil-built')
-  })
-
-  it('returns hand-built for generics and classes', () => {
-    expect(classifyThrowingStyle(1, 1, 1)).toBe('hand-built')
-  })
-
-  it('returns slab-built for 2+ exports', () => {
-    expect(classifyThrowingStyle(0, 2, 0)).toBe('slab-built')
-  })
-
-  it('returns slab-built for 2+ exports', () => {
-    expect(classifyThrowingStyle(0, 2, 0)).toBe('slab-built')
-    expect(classifyThrowingStyle(0, 0, 0)).toBe('pinch-pot')
-    expect(classifyThrowingStyle(0, 1, 0)).toBe('pinch-pot')
-  })
-})
-
-// ─── classifyCraftsmanship ──────────────────────────────────────────────────
-
-describe('classifyCraftsmanship', () => {
-  it('returns master for 85+', () => { expect(classifyCraftsmanship(85)).toBe('master') })
-  it('returns artisan for 70-84', () => { expect(classifyCraftsmanship(70)).toBe('artisan') })
-  it('returns journeyman for 55-69', () => { expect(classifyCraftsmanship(55)).toBe('journeyman') })
-  it('returns apprentice for 40-54', () => { expect(classifyCraftsmanship(40)).toBe('apprentice') })
-  it('returns student for 20-39', () => { expect(classifyCraftsmanship(20)).toBe('student') })
-  it('returns beginner below 20', () => { expect(classifyCraftsmanship(19)).toBe('beginner') })
-})
-
-// ─── classifyWheelGrade ─────────────────────────────────────────────────────
-
-describe('classifyWheelGrade', () => {
-  it('returns master-potter for 85+', () => { expect(classifyWheelGrade(85)).toBe('master-potter') })
-  it('returns artisan for 70-84', () => { expect(classifyWheelGrade(70)).toBe('artisan') })
-  it('returns journeyman for 55-69', () => { expect(classifyWheelGrade(55)).toBe('journeyman') })
-  it('returns apprentice for 40-54', () => { expect(classifyWheelGrade(40)).toBe('apprentice') })
-  it('returns student for 20-39', () => { expect(classifyWheelGrade(20)).toBe('student') })
-  it('returns beginner below 20', () => { expect(classifyWheelGrade(19)).toBe('beginner') })
-})
-
-// ─── classifyCondition ──────────────────────────────────────────────────────
-
-describe('classifyCondition', () => {
-  it('returns pristine for 80+ quality without cracks', () => {
-    expect(classifyCondition(80, false)).toBe('pristine')
-    expect(classifyCondition(90, false)).toBe('pristine')
-  })
-
-  it('returns excellent for 65+', () => {
-    expect(classifyCondition(65, false)).toBe('excellent')
-    expect(classifyCondition(75, true)).toBe('excellent')
-  })
-
-  it('returns good for 50+', () => {
-    expect(classifyCondition(50, false)).toBe('good')
-  })
-
-  it('returns fair for 35+', () => {
-    expect(classifyCondition(35, false)).toBe('fair')
-  })
-
-  it('returns shattered for cracks and quality < 25', () => {
-    expect(classifyCondition(20, true)).toBe('shattered')
-    expect(classifyCondition(10, true)).toBe('shattered')
-  })
-
-  it('returns cracked for cracks with quality < 50', () => {
-    expect(classifyCondition(30, true)).toBe('cracked')
-    expect(classifyCondition(24, true)).toBe('shattered')
-    expect(classifyCondition(10, true)).toBe('shattered')
-  })
-
-  it('returns chipped as default for low quality without cracks', () => {
-    expect(classifyCondition(20, false)).toBe('chipped')
-    expect(classifyCondition(10, false)).toBe('chipped')
-  })
-})
-
-// ─── detectThinSpots ────────────────────────────────────────────────────────
-
-describe('detectThinSpots', () => {
-  it('returns 0 for well-implemented code', () => {
-    const result = detectThinSpots('/** Docs */ export function hello(name: string): string { return name }')
-    expect(result.count).toBe(0)
-    expect(result.present).toBe(false)
-  })
-
-  it('detects empty functions', () => {
-    const result = detectThinSpots('function f() {}')
-    expect(result.count).toBeGreaterThan(0)
-    expect(result.present).toBe(true)
-  })
-
-  it('detects any parameter types', () => {
-    const result = detectThinSpots('function f(x: any, y: any) { return x + y }')
-    expect(result.count).toBeGreaterThan(0)
-    expect(result.present).toBe(true)
-  })
-})
-
-// ─── detectThickSpots ───────────────────────────────────────────────────────
-
-describe('detectThickSpots', () => {
-  it('returns 0 for clean code', () => {
-    const result = detectThickSpots('export function a() { return 1 }')
-    expect(result.count).toBe(0)
-    expect(result.present).toBe(false)
-  })
-
-  it('detects deep nesting', () => {
-    const result = detectThickSpots('if (a) {{ { if (b) { } } }}')
-    expect(result.count).toBeGreaterThan(0)
-    expect(result.present).toBe(true)
-  })
-
-  it('detects long lines', () => {
-    const longLine = 'a'.repeat(200)
-    const result = detectThickSpots(longLine)
-    expect(result.count).toBeGreaterThan(0)
-    expect(result.present).toBe(true)
-  })
-})
-
-// ─── assessFiring ───────────────────────────────────────────────────────────
-
-describe('assessFiring', () => {
-  it('returns perfect for high score', () => {
-    expect(assessFiring(5, 3)).toBe('perfect')
-    expect(assessFiring(3, 5)).toBe('perfect')
-  })
-
-  it('returns good for moderate score', () => {
-    expect(assessFiring(3, 1)).toBe('good')
-    expect(assessFiring(2, 3)).toBe('good')
-  })
-
-  it('returns under-fired for low score', () => {
-    expect(assessFiring(1, 1)).toBe('under-fired')
-    expect(assessFiring(0, 3)).toBe('under-fired')
-  })
-
-  it('returns exploded for zero coverage', () => {
-    expect(assessFiring(0, 0)).toBe('exploded')
-  })
-
-  it('returns over-fired for too much try/catch without tests', () => {
-    expect(assessFiring(1, 6)).toBe('good')
-    expect(assessFiring(0, 6)).toBe('good')
-    expect(assessFiring(1, 0)).toBe('cracked')
-    expect(assessFiring(0, 2)).toBe('cracked')
-    expect(assessFiring(1, 1)).toBe('under-fired')
-  })
-
-  it('returns cracked as fallback', () => {
-    expect(assessFiring(0, 1)).toBe('cracked')
-  })
-})
-
-// ─── analyzeThrownPiece ─────────────────────────────────────────────────────
-
-describe('analyzeThrownPiece', () => {
-  it('analyzes empty content', () => {
-    const piece = analyzeThrownPiece('', 'empty.ts')
-    expect(piece.file).toBe('empty.ts')
-    expect(piece.centering).toBe(0)
-    expect(piece.wallUniformity).toBe(0)
-    expect(piece.surfaceSmoothness).toBe(0)
-    expect(piece.proportion).toBe(0)
-    expect(piece.structuralIntegrity).toBe(0)
-    expect(piece.qualityScore).toBe(0)
-    expect(piece.craftsmanship).toBe('beginner')
-    expect(piece.condition).toBe('chipped')
-    expect(piece.form).toBe('plate')
-    expect(piece.clayType).toBe('raku')
-  })
-
-  it('analyzes well-crafted code', () => {
+  it('detects porcelain for high quality', () => {
     const code = [
-      '/** Module */',
-      'export interface Config { name: string }',
-      'export type Result = string | number',
-      '/** Creates */',
-      'export function create(cfg: Config): Result { return cfg.name }',
-      '/** Validates */',
-      'export function validate(input: string): boolean { try { return input.length > 0 } catch { return false } }',
+      '/** Doc */',
+      'class Handler {}',
+      'interface Config {}',
+      'const x: number = 1',
+      'function a(): void {}',
+      'function b(): void {}',
     ].join('\n')
-    const piece = analyzeThrownPiece(code, 'good.ts')
-    expect(piece.file).toBe('good.ts')
-    expect(piece.centering).toBeGreaterThan(0)
-    expect(piece.surfaceSmoothness).toBeGreaterThan(0)
-    expect(piece.surface.hasGlaze).toBe(true)
-    expect(piece.firing.result).toBeDefined()
+    const r = measureClay(code)
+    expect(r.quality).toBeGreaterThanOrEqual(70)
+    expect(r.isWellPrepared).toBe(true)
   })
 
-  it('detects defects in poor code', () => {
-    const code = [
-      'const x: any = 1',
-      'console.log("debug")',
-      '// TODO fix',
-      '// FIXME broken',
-    ].join('\n')
-    const piece = analyzeThrownPiece(code, 'bad.ts')
-    expect(piece.surface.hasCracks).toBe(true)
-    expect(piece.surface.hasChips).toBe(true)
-    expect(piece.wheelMarks.fingerTraces).toBeGreaterThan(0)
+  it('detects impurities from debugger and TODO', () => {
+    const code = 'debugger;\n// TODO: fix this'
+    const r = measureClay(code)
+    expect(r.hasImpurities).toBe(true)
   })
 
-  it('computes shape metrics', () => {
-    const piece = analyzeThrownPiece('export function a() {} export class B {}', 'ab.ts')
-    expect(piece.shape.height).toBeGreaterThan(0)
-    expect(piece.shape.width).toBeGreaterThan(0)
-    expect(piece.shape.rim).toBeGreaterThan(0)
-    expect(piece.shape.base).toBeGreaterThan(0)
-  })
-
-  it('computes wall analysis', () => {
-    const piece = analyzeThrownPiece('export function a() {}', 'a.ts')
-    expect(piece.walls.uniformity).toBeGreaterThanOrEqual(0)
-    expect(piece.walls.thickness).toBeGreaterThanOrEqual(0)
-  })
-
-  it('computes firing from test/try-catch', () => {
-    const code = 'describe("test", () => { it("works", () => { try { } catch {} }) })'
-    const piece = analyzeThrownPiece(code, 'test.ts')
-    expect(piece.firing.temperature).toBeGreaterThan(0)
-    expect(piece.firing.duration).toBeGreaterThan(0)
-  })
-
-  it('collects issues and highlights', () => {
-    const piece = analyzeThrownPiece('', 'empty.ts')
-    expect(Array.isArray(piece.issues)).toBe(true)
-    expect(Array.isArray(piece.highlights)).toBe(true)
-  })
-
-  it('clamps all metrics to valid ranges', () => {
-    const piece = analyzeThrownPiece('export function a() {}', 'a.ts')
-    for (const val of [piece.centering, piece.wallUniformity, piece.surfaceSmoothness, piece.proportion, piece.structuralIntegrity, piece.throwingTechnique, piece.qualityScore]) {
-      expect(val).toBeGreaterThanOrEqual(0)
-      expect(val).toBeLessThanOrEqual(100)
-    }
+  it('computes quality within valid range', () => {
+    const r = measureClay('function a() {}')
+    expect(r.quality).toBeGreaterThanOrEqual(0)
+    expect(r.quality).toBeLessThanOrEqual(100)
   })
 })
 
-// ─── analyzePotteryBatch ────────────────────────────────────────────────────
+// ─── measureWheel ───────────────────────────────────────────────────────────
 
-describe('analyzePotteryBatch', () => {
-  it('returns empty batch for no pieces', () => {
-    const batch = analyzePotteryBatch([], 'src')
-    expect(batch.directory).toBe('src')
-    expect(batch.pieces).toEqual([])
-    expect(batch.batchQuality).toBe(0)
-    expect(batch.kilnCondition).toBe('broken')
-    expect(batch.dominantForm).toBe('plate')
+describe('measureWheel', () => {
+  it('returns low speed for empty content', () => {
+    const r = measureWheel('')
+    expect(r.speed).toBe(15)
+    expect(r.isCentered).toBe(false)
+    expect(r.wobbleCount).toBe(0)
   })
 
-  it('aggregates piece averages', () => {
-    const pieces: ThrownPiece[] = [
-      analyzeThrownPiece('export function a() {}', 'a.ts'),
-      analyzeThrownPiece('/** D */ export class B {}', 'b.ts'),
-    ]
-    const batch = analyzePotteryBatch(pieces, 'src')
-    expect(batch.pieces.length).toBe(2)
-    expect(batch.avgCentering).toBeGreaterThanOrEqual(0)
-    expect(batch.avgTechnique).toBeGreaterThanOrEqual(0)
+  it('detects centered from exports and functions', () => {
+    const code = 'export function a() {}'
+    const r = measureWheel(code)
+    expect(r.isCentered).toBe(true)
+    expect(r.hasCentering).toBe(true)
   })
 
-  it('counts master and beginner pieces', () => {
-    const pieces: ThrownPiece[] = [
-      analyzeThrownPiece('', 'empty.ts'),
-      analyzeThrownPiece('/** D */ export function f() {} export interface I {} export type T = string', 'mid.ts'),
-    ]
-    const batch = analyzePotteryBatch(pieces, 'src')
-    expect(batch.masterCount).toBeGreaterThanOrEqual(0)
-    expect(batch.beginnerCount).toBeGreaterThanOrEqual(0)
+  it('detects steady rotation from multiple functions', () => {
+    const code = 'function a() {}\nfunction b() {}'
+    const r = measureWheel(code)
+    expect(r.hasSteadyRotation).toBe(true)
   })
 
-  it('computes batch quality and kiln condition', () => {
-    const pieces: ThrownPiece[] = [
-      analyzeThrownPiece('export function a() {}', 'a.ts'),
-    ]
-    const batch = analyzePotteryBatch(pieces, 'src')
-    expect(batch.batchQuality).toBeGreaterThanOrEqual(0)
-    expect(batch.batchQuality).toBeLessThanOrEqual(100)
-    expect(['optimal', 'good', 'adequate', 'poor', 'broken']).toContain(batch.kilnCondition)
+  it('detects balanced from exports and imports', () => {
+    const code = 'import { X } from "y"\nexport function a() {}'
+    const r = measureWheel(code)
+    expect(r.isBalanced).toBe(true)
   })
 
-  it('sums cracks, chips, blemishes', () => {
-    const pieces: ThrownPiece[] = [
-      analyzeThrownPiece('const x: any = 1; // TODO fix', 'bad.ts'),
-    ]
-    const batch = analyzePotteryBatch(pieces, 'src')
-    expect(batch.totalCracks).toBeGreaterThanOrEqual(0)
-    expect(batch.totalChips).toBeGreaterThanOrEqual(0)
+  it('detects wobble from var', () => {
+    const code = 'var x = 1'
+    const r = measureWheel(code)
+    expect(r.hasWobble).toBe(true)
+    expect(r.wobbleCount).toBeGreaterThan(0)
+  })
+
+  it('detects vibration from any types', () => {
+    const code = 'function bad(x: any): any { return x }'
+    const r = measureWheel(code)
+    expect(r.hasVibration).toBe(true)
+  })
+
+  it('detects good control without var or any', () => {
+    const code = 'const x = 1\nfunction a(): void {}'
+    const r = measureWheel(code)
+    expect(r.hasGoodControl).toBe(true)
+  })
+
+  it('computes speed within valid range', () => {
+    const r = measureWheel('function a() {}')
+    expect(r.speed).toBeGreaterThanOrEqual(0)
+    expect(r.speed).toBeLessThanOrEqual(100)
   })
 })
 
-// ─── generateRecommendations ───────────────────────────────────────────────
+// ─── measureShaping ─────────────────────────────────────────────────────────
+
+describe('measureShaping', () => {
+  it('returns pinch for empty content', () => {
+    const r = measureShaping('')
+    expect(r.skill).toBe(30)
+    expect(r.technique).toBe('pinch')
+    expect(r.isWellShaped).toBe(false)
+    expect(r.crackingCount).toBe(0)
+  })
+
+  it('detects slab from single function', () => {
+    const code = 'function a() {}'
+    const r = measureShaping(code)
+    expect(r.technique).toBe('slab')
+  })
+
+  it('detects coil from multiple functions', () => {
+    const code = 'function a() {}\nfunction b() {}\nfunction c() {}\nfunction d() {}'
+    const r = measureShaping(code)
+    expect(r.technique).toBe('coil')
+  })
+
+  it('detects throwing from class with many functions', () => {
+    const code = 'class Handler {}\n' + Array(7).fill('function fn() {}').join('\n')
+    const r = measureShaping(code)
+    expect(r.technique).toBe('throwing')
+  })
+
+  it('detects symmetry from else branches', () => {
+    const code = 'if (x) { a() } else { b() }'
+    const r = measureShaping(code)
+    expect(r.hasSymmetry).toBe(true)
+  })
+
+  it('detects cracking from any types', () => {
+    const code = 'function bad(x: any): any { return x }'
+    const r = measureShaping(code)
+    expect(r.hasCracking).toBe(true)
+    expect(r.crackingCount).toBeGreaterThan(0)
+  })
+
+  it('detects warping from console', () => {
+    const code = 'console.log("debug")'
+    const r = measureShaping(code)
+    expect(r.hasWarping).toBe(true)
+  })
+
+  it('detects collapsing from debugger', () => {
+    const code = 'debugger;'
+    const r = measureShaping(code)
+    expect(r.hasCollapsing).toBe(true)
+  })
+
+  it('detects smooth surface without issues', () => {
+    const code = 'function clean(): void {}'
+    const r = measureShaping(code)
+    expect(r.hasSmoothSurface).toBe(true)
+  })
+
+  it('computes skill within valid range', () => {
+    const r = measureShaping('function a() {}')
+    expect(r.skill).toBeGreaterThanOrEqual(0)
+    expect(r.skill).toBeLessThanOrEqual(100)
+  })
+})
+
+// ─── measureGlaze ───────────────────────────────────────────────────────────
+
+describe('measureGlaze', () => {
+  it('returns shino for empty content', () => {
+    const r = measureGlaze('')
+    expect(r.finish).toBe(40)
+    expect(r.type).toBe('shino')
+    expect(r.isWellApplied).toBe(false)
+    expect(r.flawCount).toBe(0)
+  })
+
+  it('detects well applied from jsdoc and exports', () => {
+    const code = '/** Doc */\nexport function a() {}'
+    const r = measureGlaze(code)
+    expect(r.isWellApplied).toBe(true)
+  })
+
+  it('detects even coating from jsdoc with types', () => {
+    const code = '/** Doc */\ntype X = { a: number }'
+    const r = measureGlaze(code)
+    expect(r.hasEvenCoating).toBe(true)
+  })
+
+  it('detects food safe from no any types', () => {
+    const code = 'function a(): void {}'
+    const r = measureGlaze(code)
+    expect(r.hasFoodSafe).toBe(true)
+  })
+
+  it('detects decorative finish from jsdoc', () => {
+    const code = '/** Doc */\nfunction a() {}'
+    const r = measureGlaze(code)
+    expect(r.hasDecorativeFinish).toBe(true)
+  })
+
+  it('detects proper firing from jsdoc, exports, and types', () => {
+    const code = '/** Doc */\nexport function a(): void {}\ntype Config = { name: string }'
+    const r = measureGlaze(code)
+    expect(r.hasProperFiring).toBe(true)
+  })
+
+  it('detects signature from comments', () => {
+    const code = '// Author: dev'
+    const r = measureGlaze(code)
+    expect(r.hasSignature).toBe(true)
+  })
+
+  it('computes finish within valid range', () => {
+    const r = measureGlaze('function a() {}')
+    expect(r.finish).toBeGreaterThanOrEqual(0)
+    expect(r.finish).toBeLessThanOrEqual(100)
+  })
+})
+
+// ─── measureKiln ────────────────────────────────────────────────────────────
+
+describe('measureKiln', () => {
+  it('returns bisque for empty content', () => {
+    const r = measureKiln('')
+    expect(r.strength).toBe(30)
+    expect(r.temperature).toBe('bisque')
+    expect(r.isVitrified).toBe(false)
+    expect(r.flawCount).toBe(0)
+  })
+
+  it('detects vitrified from try/catch', () => {
+    const code = 'try { run() } catch (e) { handle(e) }'
+    const r = measureKiln(code)
+    expect(r.isVitrified).toBe(true)
+    expect(r.hasProperFiring).toBe(true)
+  })
+
+  it('detects no dunting from try/catch/finally', () => {
+    const code = 'try {} catch {} finally {}'
+    const r = measureKiln(code)
+    expect(r.hasNoDunting).toBe(true)
+  })
+
+  it('detects no bloating from no debugger', () => {
+    const code = 'function a() {}'
+    const r = measureKiln(code)
+    expect(r.hasNoBloating).toBe(true)
+  })
+
+  it('detects no shivering from no any types', () => {
+    const code = 'function a(): void {}'
+    const r = measureKiln(code)
+    expect(r.hasNoShivering).toBe(true)
+  })
+
+  it('detects witness cone from try and throw', () => {
+    const code = 'try { run() } catch (e) { throw e }'
+    const r = measureKiln(code)
+    expect(r.hasWitnessCone).toBe(true)
+  })
+
+  it('detects pyrometric from Error', () => {
+    const code = 'throw new Error("fail")'
+    const r = measureKiln(code)
+    expect(r.hasPyrometric).toBe(true)
+  })
+
+  it('counts flaws from debugger and any', () => {
+    const code = 'debugger;\nfunction bad(x: any): any { return x }'
+    const r = measureKiln(code)
+    expect(r.flawCount).toBeGreaterThan(0)
+  })
+
+  it('computes strength within valid range', () => {
+    const r = measureKiln('try {} catch {}')
+    expect(r.strength).toBeGreaterThanOrEqual(0)
+    expect(r.strength).toBeLessThanOrEqual(100)
+  })
+})
+
+// ─── measureArtistry ────────────────────────────────────────────────────────
+
+describe('measureArtistry', () => {
+  it('returns industrial for empty content', () => {
+    const r = measureArtistry('')
+    expect(r.merit).toBe(10)
+    expect(r.style).toBe('industrial')
+    expect(r.hasAestheticValue).toBe(false)
+    expect(r.expressionCount).toBe(0)
+  })
+
+  it('detects aesthetic value from functions without any', () => {
+    const code = 'function a(): void {}'
+    const r = measureArtistry(code)
+    expect(r.hasAestheticValue).toBe(true)
+  })
+
+  it('detects functional beauty from exports and functions', () => {
+    const code = 'export function a(): void {}'
+    const r = measureArtistry(code)
+    expect(r.hasFunctionalBeauty).toBe(true)
+  })
+
+  it('detects artistic expression from array methods', () => {
+    const code = 'arr.map(x => x).filter(x => x)'
+    const r = measureArtistry(code)
+    expect(r.hasArtisticExpression).toBe(true)
+    expect(r.expressionCount).toBeGreaterThan(0)
+  })
+
+  it('detects cultural significance from jsdoc with types', () => {
+    const code = '/** Doc */\ntype X = { a: number }'
+    const r = measureArtistry(code)
+    expect(r.hasCulturalSignificance).toBe(true)
+  })
+
+  it('detects provenance from jsdoc', () => {
+    const code = '/** Doc */'
+    const r = measureArtistry(code)
+    expect(r.hasProvenance).toBe(true)
+  })
+
+  it('detects unique character from generics or async', () => {
+    const code = 'function id<T>(x: T): T { return x }'
+    const r = measureArtistry(code)
+    expect(r.hasUniqueCharacter).toBe(true)
+  })
+
+  it('detects harmonious form from exports and imports', () => {
+    const code = 'import { X } from "y"\nexport function a() {}'
+    const r = measureArtistry(code)
+    expect(r.hasHarmoniousForm).toBe(true)
+  })
+
+  it('computes merit within valid range', () => {
+    const r = measureArtistry('function a() {}')
+    expect(r.merit).toBeGreaterThanOrEqual(0)
+    expect(r.merit).toBeLessThanOrEqual(100)
+  })
+})
+
+// ─── analyzePotteryPiece ────────────────────────────────────────────────────
+
+describe('analyzePotteryPiece', () => {
+  it('returns student-work for empty content', () => {
+    const p = analyzePotteryPiece('', 'empty.ts')
+    expect(p.condition).toBe('student-work')
+    expect(p.qualityScore).toBe(25)
+    expect(p.file).toBe('empty.ts')
+  })
+
+  it('computes quality score as average of 6 measures', () => {
+    const code = 'export function a(): void {}'
+    const p = analyzePotteryPiece(code, 'a.ts')
+    const expected = Math.round(
+      (p.clayQuality + p.wheelSpeed + p.shapingSkill + p.glazeFinish + p.kilnStrength + p.artisticMerit) / 6,
+    )
+    expect(p.qualityScore).toBe(expected)
+  })
+
+  it('measures all six dimensions', () => {
+    const code = 'export function a(): void {}'
+    const p = analyzePotteryPiece(code, 'a.ts')
+    expect(p.clayQuality).toBeGreaterThanOrEqual(0)
+    expect(p.wheelSpeed).toBeGreaterThanOrEqual(0)
+    expect(p.shapingSkill).toBeGreaterThanOrEqual(0)
+    expect(p.glazeFinish).toBeGreaterThanOrEqual(0)
+    expect(p.kilnStrength).toBeGreaterThanOrEqual(0)
+    expect(p.artisticMerit).toBeGreaterThanOrEqual(0)
+  })
+})
+
+// ─── classifyStudioType ─────────────────────────────────────────────────────
+
+describe('classifyStudioType', () => {
+  it('returns mud-pie for empty array', () => {
+    expect(classifyStudioType([])).toBe('mud-pie')
+  })
+
+  it('returns master-studio for high quality', () => {
+    const pieces = Array(3).fill(null).map(() => ({
+      ...analyzePotteryPiece('/** Doc */\nexport function a(): void {}', 'a.ts'),
+      qualityScore: 90,
+    }))
+    expect(classifyStudioType(pieces)).toBe('master-studio')
+  })
+})
+
+// ─── classifyPotterGrade ────────────────────────────────────────────────────
+
+describe('classifyPotterGrade', () => {
+  it('returns master-potter for high scores', () => {
+    expect(classifyPotterGrade(95)).toBe('master-potter')
+  })
+  it('returns artisan for good scores', () => {
+    expect(classifyPotterGrade(75)).toBe('artisan')
+  })
+  it('returns journeyman for moderate scores', () => {
+    expect(classifyPotterGrade(55)).toBe('journeyman')
+  })
+  it('returns apprentice for low scores', () => {
+    expect(classifyPotterGrade(35)).toBe('apprentice')
+  })
+  it('returns student for poor scores', () => {
+    expect(classifyPotterGrade(18)).toBe('student')
+  })
+  it('returns toddler for terrible scores', () => {
+    expect(classifyPotterGrade(5)).toBe('toddler')
+  })
+})
+
+// ─── analyzePotteryStudio ───────────────────────────────────────────────────
+
+describe('analyzePotteryStudio', () => {
+  it('returns mud-pie for empty array', () => {
+    const s = analyzePotteryStudio([], 'empty/')
+    expect(s.studioType).toBe('mud-pie')
+    expect(s.condition).toBe('mud-hole')
+    expect(s.pieces).toHaveLength(0)
+  })
+
+  it('computes averages from pieces', () => {
+    const p = analyzePotteryPiece('export function a(): void {}', 'src/a.ts')
+    const s = analyzePotteryStudio([p], 'src/')
+    expect(s.avgClayQuality).toBe(p.clayQuality)
+    expect(s.avgShapingSkill).toBe(p.shapingSkill)
+  })
+
+  it('counts conditions correctly', () => {
+    const good = analyzePotteryPiece('/** Doc */\nexport function a(): void { if (x) {} else {} }\ninterface I {}', 'good.ts')
+    const bad = analyzePotteryPiece('', 'bad.ts')
+    const s = analyzePotteryStudio([good, bad], 'mix/')
+    expect(s.pieces).toHaveLength(2)
+    expect(s.crackedPotCount + s.museumPieceCount).toBeLessThanOrEqual(2)
+  })
+})
+
+// ─── generateRecommendations ────────────────────────────────────────────────
 
 describe('generateRecommendations', () => {
-  const baseStats: PotteryWheelStats = {
-    totalFiles: 0, totalBatches: 0,
-    avgCentering: 50, avgWallUniformity: 50, avgSurfaceSmoothness: 50,
-    avgProportion: 50, avgStructuralIntegrity: 50, avgTechnique: 50,
-    masterCraftsman: 0, beginnerCraftsman: 0,
-    pristinePieces: 0, shatteredPieces: 0,
-    porcelainCount: 0, earthenwareCount: 0,
-    wheelThrownCount: 0, handBuiltCount: 0,
-    totalCracks: 0, totalChips: 0, totalBlemishes: 0,
-    perfectFiring: 0, crackedFiring: 0,
-    overallQuality: 50,
-    wheelGrade: 'journeyman',
-    bestPiece: 'none', worstPiece: 'none',
-    mostCentered: 'none', smoothestPiece: 'none', bestProportioned: 'none',
-  }
-
-  it('praises high quality', () => {
-    const recs = generateRecommendations([], [], { ...baseStats, overallQuality: 75 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('Quality')]))
+  it('returns positive message for good pottery', () => {
+    const code = '/** Doc */\nimport { X } from "y"\nexport function a(): void {}\ninterface I {}'
+    const result = buildPotteryWheelResult(['a.ts'], [code], {})
+    const recs = generateRecommendations(result.pieces, result.studios, result.kiln, result.stats)
+    expect(recs.length).toBeGreaterThan(0)
   })
 
-  it('recommends rebalancing poor centering', () => {
-    const pieces: ThrownPiece[] = [
-      { ...analyzeThrownPiece('', 'a.ts'), centering: 20 },
-    ]
-    const recs = generateRecommendations(pieces, [], baseStats)
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('centering')]))
-  })
-
-  it('recommends fixing cracks', () => {
-    const pieces: ThrownPiece[] = [
-      { ...analyzeThrownPiece('', 'a.ts'), surface: { smoothness: 0, hasGlaze: false, glazeQuality: 0, hasCracks: true, hasChips: false, hasBlemishes: false, crackCount: 2, chipCount: 0, blemishCount: 0 } },
-    ]
-    const recs = generateRecommendations(pieces, [], baseStats)
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('cracks')]))
-  })
-
-  it('recommends strengthening thin walls', () => {
-    const pieces: ThrownPiece[] = [
-      { ...analyzeThrownPiece('', 'a.ts'), walls: { uniformity: 0, thickness: 0, hasThinSpots: true, hasThickSpots: false, thinSpotCount: 3, thickSpotCount: 0 } },
-    ]
-    const recs = generateRecommendations(pieces, [], baseStats)
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('thin walls')]))
-  })
-
-  it('recommends adding tests for bad firing', () => {
-    const pieces: ThrownPiece[] = [
-      { ...analyzeThrownPiece('', 'a.ts'), firing: { temperature: 0, duration: 0, result: 'exploded' as const } },
-    ]
-    const recs = generateRecommendations(pieces, [], baseStats)
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('fired')]))
+  it('recommends fixes for low-quality code', () => {
+    const result = buildPotteryWheelResult(['empty.ts'], [''], {})
+    expect(result.recommendations.length).toBeGreaterThan(0)
   })
 })
 
@@ -459,122 +495,100 @@ describe('generateRecommendations', () => {
 describe('buildPotteryWheelResult', () => {
   it('handles empty input', () => {
     const result = buildPotteryWheelResult([], [], {})
-    expect(result.pieces).toEqual([])
-    expect(result.batches).toEqual([])
+    expect(result.pieces).toHaveLength(0)
+    expect(result.studios).toHaveLength(0)
     expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.overallCraftsmanship).toBe(0)
+    expect(result.kiln.isWellFired).toBe(false)
+  })
+
+  it('builds result with single file', () => {
+    const code = 'export function a(): void {}'
+    const result = buildPotteryWheelResult(['a.ts'], [code], {})
+    expect(result.pieces).toHaveLength(1)
+    expect(result.pieces[0].file).toBe('a.ts')
+    expect(result.stats.totalFiles).toBe(1)
+  })
+
+  it('groups files by directory into studios', () => {
+    const result = buildPotteryWheelResult(
+      ['src/a.ts', 'src/b.ts', 'test/c.ts'],
+      ['export function a() {}', 'export function b() {}', 'function c() {}'],
+      {},
+    )
+    expect(result.studios.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('computes kiln averages', () => {
+    const code = 'export function a(): void {}'
+    const result = buildPotteryWheelResult(['a.ts'], [code], {})
+    expect(result.kiln.avgClayQuality).toBeGreaterThanOrEqual(0)
+    expect(result.kiln.avgShapingSkill).toBeGreaterThanOrEqual(0)
+    expect(result.kiln.avgKilnStrength).toBeGreaterThanOrEqual(0)
+  })
+
+  it('identifies best piece, clay, shaped, glazed, strongest', () => {
+    const result = buildPotteryWheelResult(
+      ['a.ts', 'b.ts'],
+      ['export function a(): void {}', ''],
+      {},
+    )
+    expect(result.stats.bestPiece).toBe('a.ts')
+  })
+
+  it('sets potter grade', () => {
+    const result = buildPotteryWheelResult(['a.ts'], ['export function a() {}'], {})
+    expect(result.stats.potterGrade).toBeTruthy()
+  })
+
+  it('generates recommendations', () => {
+    const result = buildPotteryWheelResult(['a.ts'], [''], {})
     expect(result.recommendations.length).toBeGreaterThan(0)
   })
 
-  it('analyzes single file', () => {
-    const result = buildPotteryWheelResult(
-      ['hello.ts'],
-      ['/** Greeting */ export function hello() { return "world" }'],
-      {},
-    )
-    expect(result.pieces).toHaveLength(1)
-    expect(result.pieces[0].file).toBe('hello.ts')
-    expect(result.pieces[0].qualityScore).toBeGreaterThan(0)
-  })
-
-  it('analyzes multiple files', () => {
-    const result = buildPotteryWheelResult(
-      ['a.ts', 'b.ts', 'c.ts'],
-      ['export function a() {}', '/** Docs */ export class B {}', 'const x: any = 1'],
-      {},
-    )
-    expect(result.pieces).toHaveLength(3)
-    expect(result.stats.totalFiles).toBe(3)
-  })
-
-  it('groups into batches by directory', () => {
-    const result = buildPotteryWheelResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      ['export function a() {}', 'export function b() {}', 'export function c() {}'],
-      {},
-    )
-    expect(result.batches.length).toBe(2)
-    const dirs = result.batches.map(b => b.directory).sort()
-    expect(dirs).toContain('src')
-    expect(dirs).toContain('lib')
-  })
-
-  it('computes best/worst/mostCentered/smoothest/bestProportioned', () => {
-    const result = buildPotteryWheelResult(
-      ['good.ts', 'bad.ts'],
-      [
-        '/** Docs */ export function good() {} interface I {} type T = string',
-        'const x: any = 1',
-      ],
-      {},
-    )
-    expect(result.stats.bestPiece).toBe('good.ts')
-    expect(result.stats.worstPiece).toBe('bad.ts')
-  })
-
-  it('computes wheel grade', () => {
-    const result = buildPotteryWheelResult(['a.ts'], ['export function a() {}'], {})
-    expect(['master-potter', 'artisan', 'journeyman', 'apprentice', 'student', 'beginner']).toContain(result.stats.wheelGrade)
-  })
-
-  it('clamps overall quality to valid range', () => {
-    const result = buildPotteryWheelResult(['a.ts'], ['export function a() {}'], {})
-    expect(result.stats.overallQuality).toBeGreaterThanOrEqual(0)
-    expect(result.stats.overallQuality).toBeLessThanOrEqual(100)
+  it('tracks all stat counts', () => {
+    const code = '/** Doc */\nimport { X } from "y"\nexport function a(): void {}\ninterface I {}'
+    const result = buildPotteryWheelResult(['a.ts'], [code], {})
+    expect(result.stats.isWellPreparedCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasImpuritiesCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.isCenteredCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasWobbleCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.isWellShapedCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasCrackingCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.isWellAppliedCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.isVitrifiedCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasProperFiringCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasAestheticValueCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.isMuseumQualityCount).toBeGreaterThanOrEqual(0)
   })
 })
 
-// ─── formatPotteryWheelTable ────────────────────────────────────────────────
+// ─── Format Helpers ─────────────────────────────────────────────────────────
 
 describe('formatPotteryWheelTable', () => {
   it('formats empty result', () => {
     const result = buildPotteryWheelResult([], [], {})
-    const output = formatPotteryWheelTable(result, false)
-    expect(output).toContain('Pottery Wheel')
-    expect(output).toContain('No pieces detected')
+    const table = formatPotteryWheelTable(result, false)
+    expect(table).toContain('Pottery Wheel')
+    expect(table).toContain('No files analyzed')
   })
 
-  it('includes piece info', () => {
+  it('formats with pieces', () => {
     const result = buildPotteryWheelResult(['a.ts'], ['export function a() {}'], {})
-    const output = formatPotteryWheelTable(result, false)
-    expect(output).toContain('a.ts')
-    expect(output).toContain('Statistics')
+    const table = formatPotteryWheelTable(result, false)
+    expect(table).toContain('a.ts')
   })
 
-  it('shows verbose details', () => {
-    const result = buildPotteryWheelResult(['a.ts'], ['export function a() {}'], {})
-    const output = formatPotteryWheelTable(result, true)
-    expect(output).toContain('prop')
-    expect(output).toContain('shape')
-    expect(output).toContain('walls')
-  })
-
-  it('truncates at 15 in non-verbose', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `f${i}.ts`)
-    const codes = files.map(() => 'export function a() {}')
-    const result = buildPotteryWheelResult(files, codes, {})
-    const output = formatPotteryWheelTable(result, false)
-    expect(output).toContain('and 5 more')
-  })
-
-  it('shows batches', () => {
-    const result = buildPotteryWheelResult(
-      ['src/a.ts', 'src/b.ts'],
-      ['export function a() {}', 'export function b() {}'],
-      {},
-    )
-    const output = formatPotteryWheelTable(result, false)
-    expect(output).toContain('Pottery Batches')
-    expect(output).toContain('src')
-  })
-
-  it('shows recommendations', () => {
-    const result = buildPotteryWheelResult([], [], {})
-    const output = formatPotteryWheelTable(result, false)
-    expect(output).toContain('Recommendations')
+  it('respects verbose flag', () => {
+    const files = Array(20).fill('a.ts').map((f, i) => `${i}_${f}`)
+    const contents = Array(20).fill('export function a() {}')
+    const result = buildPotteryWheelResult(files, contents, {})
+    const table = formatPotteryWheelTable(result, false)
+    expect(table).toContain('... and')
+    const verbose = formatPotteryWheelTable(result, true)
+    expect(verbose).toContain('19_a.ts')
   })
 })
-
-// ─── formatPotteryWheelJson ─────────────────────────────────────────────────
 
 describe('formatPotteryWheelJson', () => {
   it('produces valid JSON', () => {
@@ -582,15 +596,5 @@ describe('formatPotteryWheelJson', () => {
     const json = formatPotteryWheelJson(result)
     const parsed = JSON.parse(json)
     expect(parsed.pieces).toHaveLength(1)
-    expect(parsed.stats).toBeDefined()
-    expect(parsed.recommendations).toBeDefined()
-  })
-
-  it('handles empty result', () => {
-    const result = buildPotteryWheelResult([], [], {})
-    const json = formatPotteryWheelJson(result)
-    const parsed = JSON.parse(json)
-    expect(parsed.pieces).toEqual([])
-    expect(parsed.batches).toEqual([])
   })
 })

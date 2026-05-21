@@ -1,641 +1,742 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Types ──────────────────────────────────────────────────────────────────
 
-export interface PieceShape {
-  height: number
-  width: number
-  rim: number
-  base: number
-  belly: number
-  neck: number
+export type ClayType = 'porcelain' | 'stoneware' | 'earthenware' | 'terra-cotta' | 'raku' | 'mud'
+export type ShapingTechnique = 'throwing' | 'hand-building' | 'slip-casting' | 'coil' | 'slab' | 'pinch'
+export type GlazeType = 'celadon' | 'raku' | 'shino' | 'tenmoku' | 'crystalline' | 'matte' | 'unglazed'
+export type KilnTemperature = 'bisque' | 'low-fire' | 'mid-range' | 'high-fire' | 'over-fired' | 'raw'
+export type ArtisticStyle = 'minimalist' | 'organic' | 'geometric' | 'baroque' | 'rustic' | 'industrial'
+export type PieceCondition = 'museum-piece' | 'gallery-quality' | 'studio-pottery' | 'production-ware' | 'student-work' | 'cracked-pot'
+export type StudioType = 'master-studio' | 'production-pottery' | 'teaching-studio' | 'community-center' | 'hobby-shed' | 'mud-pie'
+export type StudioCondition = 'premier-gallery' | 'fine-craft' | 'artisan-workshop' | 'craft-fair' | 'beginner-class' | 'mud-hole'
+export type PotterGrade = 'master-potter' | 'artisan' | 'journeyman' | 'apprentice' | 'student' | 'toddler'
+
+export interface ClayMeasure {
+  quality: number
+  type: ClayType
+  isWellPrepared: boolean
+  hasProperConsistency: boolean
+  hasNoAirBubbles: boolean
+  hasProperMoisture: boolean
+  hasImpurities: boolean
+  hasProperWedging: boolean
+  isWorkable: boolean
+  hasCorrectPlasticity: boolean
+  impurityCount: number
 }
 
-export interface PieceWalls {
-  uniformity: number
-  thickness: number
-  hasThinSpots: boolean
-  hasThickSpots: boolean
-  thinSpotCount: number
-  thickSpotCount: number
+export interface WheelMeasure {
+  speed: number
+  isCentered: boolean
+  hasSteadyRotation: boolean
+  hasProperSpeed: boolean
+  isBalanced: boolean
+  hasWobble: boolean
+  hasVibration: boolean
+  hasGoodControl: boolean
+  hasCentering: boolean
+  wobbleCount: number
 }
 
-export interface PieceSurface {
-  smoothness: number
-  hasGlaze: boolean
-  glazeQuality: number
-  hasCracks: boolean
-  hasChips: boolean
-  hasBlemishes: boolean
-  crackCount: number
-  chipCount: number
-  blemishCount: number
+export interface ShapingMeasure {
+  skill: number
+  technique: ShapingTechnique
+  isWellShaped: boolean
+  hasSymmetry: boolean
+  hasEvenWalls: boolean
+  hasProperProportions: boolean
+  hasSmoothSurface: boolean
+  hasTrimMarks: boolean
+  hasCracking: boolean
+  hasWarping: boolean
+  hasCollapsing: boolean
+  crackingCount: number
+  trimMarkCount: number
 }
 
-export interface WheelMarks {
-  fingerTraces: number
-  toolMarks: number
-  waterMarks: number
-  clayResidue: number
+export interface GlazeMeasure {
+  finish: number
+  type: GlazeType
+  isWellApplied: boolean
+  hasEvenCoating: boolean
+  hasNoRuns: boolean
+  hasNoCrawling: boolean
+  hasNoPinholing: boolean
+  hasProperFiring: boolean
+  hasFoodSafe: boolean
+  hasDecorativeFinish: boolean
+  hasSignature: boolean
+  flawCount: number
 }
 
-export interface PieceFiring {
-  temperature: number
-  duration: number
-  result: 'perfect' | 'good' | 'under-fired' | 'over-fired' | 'cracked' | 'exploded'
+export interface KilnMeasure {
+  strength: number
+  temperature: KilnTemperature
+  isVitrified: boolean
+  hasProperFiring: boolean
+  hasNoThermalShock: boolean
+  hasNoDunting: boolean
+  hasNoBloating: boolean
+  hasNoShivering: boolean
+  hasKilnWash: boolean
+  hasWitnessCone: boolean
+  hasPyrometric: boolean
+  flawCount: number
 }
 
-export interface ThrownPiece {
+export interface ArtistryMeasure {
+  merit: number
+  style: ArtisticStyle
+  hasAestheticValue: boolean
+  hasFunctionalBeauty: boolean
+  hasArtisticExpression: boolean
+  hasCulturalSignificance: boolean
+  hasProvenance: boolean
+  hasUniqueCharacter: boolean
+  hasHarmoniousForm: boolean
+  isMuseumQuality: boolean
+  expressionCount: number
+}
+
+export interface PotteryPiece {
   file: string
-  centering: number
-  wallUniformity: number
-  surfaceSmoothness: number
-  proportion: number
-  structuralIntegrity: number
-  throwingTechnique: number
-  form: 'bowl' | 'vase' | 'plate' | 'cup' | 'pitcher' | 'jar' | 'urn' | 'sculpture'
-  clayType: 'porcelain' | 'stoneware' | 'earthenware' | 'terracotta' | 'raku' | 'bone-china'
-  throwingStyle: 'wheel-thrown' | 'hand-built' | 'slip-cast' | 'coil-built' | 'slab-built' | 'pinch-pot'
-  shape: PieceShape
-  walls: PieceWalls
-  surface: PieceSurface
-  wheelMarks: WheelMarks
-  firing: PieceFiring
-  craftsmanship: 'master' | 'artisan' | 'journeyman' | 'apprentice' | 'student' | 'beginner'
-  condition: 'pristine' | 'excellent' | 'good' | 'fair' | 'chipped' | 'cracked' | 'shattered'
+  clayQuality: number
+  wheelSpeed: number
+  shapingSkill: number
+  glazeFinish: number
+  kilnStrength: number
+  artisticMerit: number
+  clay: ClayMeasure
+  wheel: WheelMeasure
+  shaping: ShapingMeasure
+  glaze: GlazeMeasure
+  kiln: KilnMeasure
+  artistry: ArtistryMeasure
+  condition: PieceCondition
   qualityScore: number
-  issues: string[]
-  highlights: string[]
 }
 
-export interface PotteryBatch {
+export interface PotteryStudio {
   directory: string
-  pieces: ThrownPiece[]
-  avgCentering: number
-  avgWallUniformity: number
-  avgSurfaceSmoothness: number
-  avgProportion: number
-  avgStructuralIntegrity: number
-  avgTechnique: number
-  dominantForm: string
-  dominantClay: string
-  dominantStyle: string
-  masterCount: number
-  beginnerCount: number
-  pristineCount: number
-  shatteredCount: number
-  totalCracks: number
-  totalChips: number
-  totalBlemishes: number
-  avgFiringResult: string
-  batchQuality: number
-  kilnCondition: 'optimal' | 'good' | 'adequate' | 'poor' | 'broken'
+  pieces: PotteryPiece[]
+  avgClayQuality: number
+  avgShapingSkill: number
+  avgKilnStrength: number
+  museumPieceCount: number
+  crackedPotCount: number
+  wellShapedCount: number
+  vitrifiedCount: number
+  studioType: StudioType
+  condition: StudioCondition
 }
 
 export interface PotteryWheelStats {
   totalFiles: number
-  totalBatches: number
-  avgCentering: number
-  avgWallUniformity: number
-  avgSurfaceSmoothness: number
-  avgProportion: number
-  avgStructuralIntegrity: number
-  avgTechnique: number
-  masterCraftsman: number
-  beginnerCraftsman: number
-  pristinePieces: number
-  shatteredPieces: number
-  porcelainCount: number
-  earthenwareCount: number
-  wheelThrownCount: number
-  handBuiltCount: number
-  totalCracks: number
-  totalChips: number
-  totalBlemishes: number
-  perfectFiring: number
-  crackedFiring: number
-  overallQuality: number
-  wheelGrade: 'master-potter' | 'artisan' | 'journeyman' | 'apprentice' | 'student' | 'beginner'
+  totalStudios: number
+  avgClayQuality: number
+  avgWheelSpeed: number
+  avgShapingSkill: number
+  avgGlazeFinish: number
+  avgKilnStrength: number
+  avgArtisticMerit: number
+  museumPieceCount: number
+  galleryQualityCount: number
+  studioPotteryCount: number
+  productionWareCount: number
+  studentWorkCount: number
+  crackedPotCount: number
+  isWellPreparedCount: number
+  hasImpuritiesCount: number
+  isCenteredCount: number
+  hasWobbleCount: number
+  isWellShapedCount: number
+  hasCrackingCount: number
+  isWellAppliedCount: number
+  isVitrifiedCount: number
+  hasProperFiringCount: number
+  hasAestheticValueCount: number
+  isMuseumQualityCount: number
+  overallCraftsmanship: number
+  potterGrade: PotterGrade
   bestPiece: string
-  worstPiece: string
-  mostCentered: string
-  smoothestPiece: string
-  bestProportioned: string
+  bestClay: string
+  bestShaped: string
+  bestGlazed: string
+  strongest: string
 }
 
 export interface PotteryWheelResult {
-  pieces: ThrownPiece[]
-  batches: PotteryBatch[]
+  pieces: PotteryPiece[]
+  studios: PotteryStudio[]
+  kiln: {
+    avgClayQuality: number
+    avgShapingSkill: number
+    avgKilnStrength: number
+    isWellFired: boolean
+    overallCraftsmanship: number
+  }
   stats: PotteryWheelStats
   recommendations: string[]
 }
 
-// ─── Regex Patterns ──────────────────────────────────────────────────────────
+// ─── Regex Constants ────────────────────────────────────────────────────────
 
-const EXPORT_RE = /export\s+(?:default\s+)?(?:function|class|const|let|interface|type)/g
-const FUNCTION_RE = /(?:export\s+)?(?:async\s+)?function\s+\w+/g
-const CLASS_RE = /(?:export\s+)?(?:abstract\s+)?class\s+\w+/g
-const INTERFACE_RE = /(?:export\s+)?interface\s+\w+/g
-const TYPE_RE = /(?:export\s+)?type\s+\w+/g
-const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
-const TODO_RE = /\/\/\s*(TODO|FIXME|HACK|XXX)/gi
+const FUNCTION_RE = /\bfunction\b/g
+const ARROW_RE = /\=>\s*[{(]/g
+const CLASS_RE = /\bclass\b/g
+const INTERFACE_RE = /\binterface\b/g
+const TYPE_RE = /\btype\s+\w+\s*=/g
+const EXPORT_RE = /\bexport\b/g
+const IMPORT_RE = /\bimport\b/g
+const RETURN_RE = /\breturn\b/g
+const CONST_RE = /\bconst\b/g
+const LET_RE = /\blet\b/g
+const VAR_RE = /\bvar\b/g
+const IF_RE = /\bif\s*\(/g
+const ELSE_RE = /\belse\b/g
+const FOR_RE = /\bfor\s*\(/g
+const WHILE_RE = /\bwhile\s*\(/g
+const SWITCH_RE = /\bswitch\s*\(/g
+const TRY_RE = /\btry\s*\{/g
+const CATCH_RE = /\bcatch\b/g
+const FINALLY_RE = /\bfinally\b/g
+const THROW_RE = /\bthrow\b/g
+const ERROR_RE = /\bError\b/g
+const ASYNC_RE = /\basync\b/g
+const AWAIT_RE = /\bawait\b/g
+const PROMISE_RE = /\bPromise\b/g
 const ANY_RE = /:\s*any\b/g
-const CONSOLE_RE = /console\.\w+\(/g
-const GENERIC_RE = /<\w+(\s+extends\s+\w+)?>/g
-const TEST_RE = /(?:describe|it|test)\s*\(/g
-const TRY_CATCH_RE = /try\s*\{/g
-const ARROW_RE = /=>\s*[{(]/g
+const CONSOLE_RE = /\bconsole\.\w+/g
+const DEBUGGER_RE = /\bdebugger\b/g
+const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
+const COMMENT_RE = /\/\/.*$/gm
+const MAP_RE = /\.map\s*\(/g
+const FILTER_RE = /\.filter\s*\(/g
+const REDUCE_RE = /\.reduce\s*\(/g
+const GENERIC_RE = /<\w+>/g
+const TODO_RE = /\bTODO\b|\bFIXME\b|\bHACK\b/g
 
-// ─── Classification Functions ────────────────────────────────────────────────
-
-/**
- * Classify form from code structure
- * @example
- * classifyForm(3, 5, 2) // 'vase'
- */
-export function classifyForm(classes: number, functions: number, interfaces: number): ThrownPiece['form'] {
-  if (classes >= 3 && interfaces >= 2) return 'urn'
-  if (classes >= 2 && functions >= 5) return 'vase'
-  if (functions >= 5 && classes === 0) return 'pitcher'
-  if (classes >= 1 && interfaces >= 1) return 'jar'
-  if (classes >= 2) return 'sculpture'
-  if (functions >= 3) return 'bowl'
-  if (functions >= 1 || classes >= 1) return 'cup'
-  return 'plate'
-}
+// ─── measureClay ────────────────────────────────────────────────────────────
 
 /**
- * Classify clay type from quality score
+ * Measure raw code quality
  * @example
- * classifyClayType(90) // 'porcelain'
+ * measureClay(content) // ClayMeasure
  */
-export function classifyClayType(quality: number): ThrownPiece['clayType'] {
-  if (quality >= 85) return 'porcelain'
-  if (quality >= 70) return 'bone-china'
-  if (quality >= 55) return 'stoneware'
-  if (quality >= 40) return 'earthenware'
-  if (quality >= 25) return 'terracotta'
-  return 'raku'
-}
-
-/**
- * Classify throwing style from implementation approach
- * @example
- * classifyThrowingStyle(3, 5, 2) // 'wheel-thrown'
- */
-export function classifyThrowingStyle(generics: number, exports: number, classes: number): ThrownPiece['throwingStyle'] {
-  if (generics >= 3 && exports >= 3) return 'wheel-thrown'
-  if (classes >= 3) return 'slip-cast'
-  if (exports >= 5) return 'coil-built'
-  if (generics >= 1 && classes >= 1) return 'hand-built'
-  if (exports >= 2) return 'slab-built'
-  return 'pinch-pot'
-}
-
-/**
- * Classify craftsmanship from quality score
- * @example
- * classifyCraftsmanship(90) // 'master'
- */
-export function classifyCraftsmanship(quality: number): ThrownPiece['craftsmanship'] {
-  if (quality >= 85) return 'master'
-  if (quality >= 70) return 'artisan'
-  if (quality >= 55) return 'journeyman'
-  if (quality >= 40) return 'apprentice'
-  if (quality >= 20) return 'student'
-  return 'beginner'
-}
-
-/**
- * Classify wheel grade from overall quality
- * @example
- * classifyWheelGrade(85) // 'master-potter'
- */
-export function classifyWheelGrade(avgQuality: number): PotteryWheelStats['wheelGrade'] {
-  if (avgQuality >= 85) return 'master-potter'
-  if (avgQuality >= 70) return 'artisan'
-  if (avgQuality >= 55) return 'journeyman'
-  if (avgQuality >= 40) return 'apprentice'
-  if (avgQuality >= 20) return 'student'
-  return 'beginner'
-}
-
-/**
- * Classify condition from quality score and defects
- * @example
- * classifyCondition(90, false) // 'pristine'
- */
-export function classifyCondition(quality: number, hasCracks: boolean): ThrownPiece['condition'] {
-  if (quality >= 80 && !hasCracks) return 'pristine'
-  if (quality >= 65) return 'excellent'
-  if (quality >= 50) return 'good'
-  if (quality >= 35) return 'fair'
-  if (hasCracks && quality < 25) return 'shattered'
-  if (hasCracks) return 'cracked'
-  return 'chipped'
-}
-
-// ─── Detection Functions ─────────────────────────────────────────────────────
-
-/**
- * Detect thin spots (under-implemented areas)
- * @example
- * detectThinSpots('function f() {}') // { count: 1, present: true }
- */
-export function detectThinSpots(content: string): { count: number; present: boolean } {
-  let count = 0
-  const emptyFunctions = (content.match(/function\s+\w+\s*\(\s*\)\s*\{\s*\}/g) ?? []).length
-  count += emptyFunctions
-  const anyParams = (content.match(/:\s*any\s*[,)]/g) ?? []).length
-  count += anyParams
-  return { count, present: count > 0 }
-}
-
-/**
- * Detect thick spots (over-engineered areas)
- * @example
- * detectThickSpots(content) // { count: 2, present: true }
- */
-export function detectThickSpots(content: string): { count: number; present: boolean } {
-  let count = 0
-  const deepNesting = (content.match(/\{\s*\{\s*\{/g) ?? []).length
-  count += deepNesting
-  const longLines = content.split('\n').filter(l => l.length > 150).length
-  count += Math.min(3, longLines)
-  return { count, present: count > 0 }
-}
-
-/**
- * Assess firing (testing quality)
- * @example
- * assessFiring(5, 3) // 'perfect'
- */
-export function assessFiring(testRefs: number, tryCatch: number): PieceFiring['result'] {
-  const score = testRefs * 2 + tryCatch
-  if (score >= 10) return 'perfect'
-  if (score >= 6) return 'good'
-  if (score >= 3) return 'under-fired'
-  if (tryCatch === 0 && testRefs === 0) return 'exploded'
-  if (tryCatch > 5 && testRefs < 2) return 'over-fired'
-  return 'cracked'
-}
-
-// ─── Core Analysis ───────────────────────────────────────────────────────────
-
-/**
- * Analyze a single file as a thrown piece
- * @example
- * analyzeThrownPiece('export function a() {}', 'a.ts') // ThrownPiece
- */
-export function analyzeThrownPiece(content: string, filePath: string): ThrownPiece {
-  const lines = content.split('\n')
-  const codeLines = lines.filter(l => l.trim().length > 0)
-
-  const exports = (content.match(EXPORT_RE) ?? []).length
+export function measureClay(content: string): ClayMeasure {
   const functions = (content.match(FUNCTION_RE) ?? []).length
+  const arrows = (content.match(ARROW_RE) ?? []).length
   const classes = (content.match(CLASS_RE) ?? []).length
   const interfaces = (content.match(INTERFACE_RE) ?? []).length
   const types = (content.match(TYPE_RE) ?? []).length
-  const jsdoc = (content.match(JSDOC_RE) ?? []).length
-  const todos = (content.match(TODO_RE) ?? []).length
+  const consts = (content.match(CONST_RE) ?? []).length
+  const lets = (content.match(LET_RE) ?? []).length
+  const vars = (content.match(VAR_RE) ?? []).length
   const anys = (content.match(ANY_RE) ?? []).length
-  const consoles = (content.match(CONSOLE_RE) ?? []).length
-  const generics = (content.match(GENERIC_RE) ?? []).length
-  const testRefs = (content.match(TEST_RE) ?? []).length
-  const tryCatch = (content.match(TRY_CATCH_RE) ?? []).length
-  const arrows = (content.match(ARROW_RE) ?? []).length
+  const debuggers = (content.match(DEBUGGER_RE) ?? []).length
+  const todos = (content.match(TODO_RE) ?? []).length
+  const jsdoc = (content.match(JSDOC_RE) ?? []).length
+  const totalFunctions = functions + arrows
 
-  const centering = computeCentering(exports, interfaces + types, jsdoc, anys, codeLines.length)
-  const wallUniformity = computeWallUniformity(jsdoc, functions, classes, codeLines.length)
-  const surfaceSmoothness = computeSurfaceSmoothness(jsdoc, anys, todos, codeLines.length)
-  const proportion = computeProportion(exports, functions + classes, interfaces + types, codeLines.length)
-  const structuralIntegrity = computeStructuralIntegrity(tryCatch, anys, todos, jsdoc, codeLines.length)
-  const throwingTechnique = computeThrowingTechnique(generics, interfaces, types, arrows, jsdoc, anys, codeLines.length)
+  const impurityCount = anys + debuggers + todos
+  const hasImpurities = impurityCount > 0
+  const hasProperConsistency = consts > 0 && lets === 0 && vars === 0
+  const hasNoAirBubbles = anys === 0
+  const hasProperMoisture = totalFunctions > 0 && totalFunctions <= 20
+  const hasProperWedging = totalFunctions > 0 && (classes > 0 || interfaces > 0)
+  const isWorkable = totalFunctions > 0
+  const hasCorrectPlasticity = consts > lets && consts > vars
 
-  const form = classifyForm(classes, functions, interfaces)
-  const clayType = classifyClayType(throwingTechnique)
-  const throwingStyle = classifyThrowingStyle(generics, exports, classes)
+  let quality = 15
+  if (totalFunctions > 0) quality += 10
+  if (classes > 0) quality += 10
+  if (interfaces > 0 || types > 0) quality += 10
+  if (hasProperConsistency) quality += 10
+  if (hasNoAirBubbles) quality += 10
+  if (hasProperWedging) quality += 10
+  if (jsdoc > 0) quality += 10
+  if (hasCorrectPlasticity) quality += 5
+  if (totalFunctions > 5) quality += 5
+  if (hasImpurities) quality -= 5 * Math.min(impurityCount, 3)
+  quality = Math.max(0, Math.min(100, quality))
 
-  const shape = computeShape(codeLines.length, exports, functions, classes, interfaces + types, generics)
-  const walls = computeWalls(content, wallUniformity, jsdoc, anys, codeLines.length)
-  const surface = computeSurface(content, surfaceSmoothness, jsdoc, anys, todos, consoles)
-  const wheelMarks = computeWheelMarks(todos, anys, consoles, codeLines.length)
-  const firing = computeFiring(testRefs, tryCatch)
+  const isWellPrepared = quality >= 55
 
-  const qualityScore = computeQualityScore(centering, wallUniformity, surfaceSmoothness, proportion, structuralIntegrity, throwingTechnique)
-  const craftsmanship = classifyCraftsmanship(qualityScore)
-  const condition = classifyCondition(qualityScore, surface.hasCracks)
-
-  const { issues, highlights } = collectIssuesHighlights(surface, walls, qualityScore, jsdoc, exports)
+  let type: ClayType = 'mud'
+  if (quality >= 85) type = 'porcelain'
+  else if (quality >= 70) type = 'stoneware'
+  else if (quality >= 50) type = 'earthenware'
+  else if (quality >= 35) type = 'terra-cotta'
+  else if (quality >= 20) type = 'raku'
 
   return {
-    file: filePath,
-    centering,
-    wallUniformity,
-    surfaceSmoothness,
-    proportion,
-    structuralIntegrity,
-    throwingTechnique,
-    form,
-    clayType,
-    throwingStyle,
-    shape,
-    walls,
-    surface,
-    wheelMarks,
-    firing,
-    craftsmanship,
-    condition,
-    qualityScore,
-    issues,
-    highlights,
+    quality, type, isWellPrepared, hasProperConsistency, hasNoAirBubbles,
+    hasProperMoisture, hasImpurities, hasProperWedging, isWorkable,
+    hasCorrectPlasticity, impurityCount,
   }
 }
 
-// ─── Metric Computations ─────────────────────────────────────────────────────
-
-function computeCentering(exports: number, structural: number, jsdoc: number, anys: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 20
-  score += Math.min(20, exports * 3)
-  score += Math.min(20, structural * 4)
-  score += Math.min(15, jsdoc * 3)
-  score -= anys * 8
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeWallUniformity(jsdoc: number, functions: number, classes: number, lines: number): number {
-  if (lines === 0) return 0
-  const consistency = functions > 0 && classes > 0 ? 20 : functions > 0 || classes > 0 ? 10 : 5
-  let score = 20 + consistency
-  score += Math.min(20, jsdoc * 3)
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeSurfaceSmoothness(jsdoc: number, anys: number, todos: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 30
-  score += Math.min(25, jsdoc * 4)
-  score -= anys * 6
-  score -= todos * 4
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeProportion(exports: number, constructs: number, structural: number, lines: number): number {
-  if (lines === 0) return 0
-  const density = constructs > 0 ? Math.min(30, Math.round(exports / constructs * 20 + 10)) : 10
-  const structBonus = Math.min(20, structural * 5)
-  return Math.min(100, Math.max(0, density + structBonus + 20))
-}
-
-function computeStructuralIntegrity(tryCatch: number, anys: number, todos: number, jsdoc: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 20
-  score += Math.min(20, tryCatch * 5)
-  score += Math.min(15, jsdoc * 3)
-  score -= anys * 8
-  score -= todos * 4
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeThrowingTechnique(generics: number, interfaces: number, types: number, arrows: number, jsdoc: number, anys: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 15
-  score += Math.min(15, generics * 4)
-  score += Math.min(15, (interfaces + types) * 4)
-  score += Math.min(10, arrows * 2)
-  score += Math.min(15, jsdoc * 3)
-  score -= anys * 8
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeShape(lines: number, exports: number, functions: number, classes: number, structural: number, generics: number): PieceShape {
-  return {
-    height: Math.min(100, Math.max(0, lines)),
-    width: Math.min(100, (exports + functions + classes) * 5),
-    rim: Math.min(100, exports * 8),
-    base: Math.min(100, (classes + structural) * 8),
-    belly: Math.min(100, functions * 6),
-    neck: Math.min(100, generics * 10),
-  }
-}
-
-function computeWalls(content: string, uniformity: number, jsdoc: number, anys: number, lines: number): PieceWalls {
-  const thin = detectThinSpots(content)
-  const thick = detectThickSpots(content)
-  const thickness = Math.min(100, Math.max(0, Math.round(30 + jsdoc * 3 - anys * 5 + (lines > 0 ? 20 : 0))))
-  return {
-    uniformity,
-    thickness,
-    hasThinSpots: thin.present,
-    hasThickSpots: thick.present,
-    thinSpotCount: thin.count,
-    thickSpotCount: thick.count,
-  }
-}
-
-function computeSurface(content: string, smoothness: number, jsdoc: number, anys: number, todos: number, consoles: number): PieceSurface {
-  const hasGlaze = jsdoc >= 2
-  const glazeQuality = hasGlaze ? Math.min(100, jsdoc * 12) : 0
-  const crackCount = anys
-  const chipCount = todos
-  const blemishCount = Math.min(10, consoles)
-
-  return {
-    smoothness,
-    hasGlaze,
-    glazeQuality,
-    hasCracks: crackCount > 0,
-    hasChips: chipCount > 0,
-    hasBlemishes: blemishCount > 0,
-    crackCount,
-    chipCount,
-    blemishCount,
-  }
-}
-
-function computeWheelMarks(todos: number, anys: number, consoles: number, lines: number): WheelMarks {
-  return {
-    fingerTraces: Math.min(10, anys),
-    toolMarks: Math.min(10, todos),
-    waterMarks: Math.min(10, consoles),
-    clayResidue: Math.min(10, Math.floor((lines > 0 ? 0 : 1) + anys * 0.5)),
-  }
-}
-
-function computeFiring(testRefs: number, tryCatch: number): PieceFiring {
-  const temperature = Math.min(100, (testRefs + tryCatch) * 10)
-  const duration = Math.min(100, testRefs * 8 + tryCatch * 5)
-  const result = assessFiring(testRefs, tryCatch)
-  return { temperature, duration, result }
-}
-
-function computeQualityScore(centering: number, uniformity: number, smoothness: number, proportion: number, integrity: number, technique: number): number {
-  const raw = centering * 0.2 + uniformity * 0.15 + smoothness * 0.2 + proportion * 0.15 + integrity * 0.15 + technique * 0.15
-  return Math.min(100, Math.max(0, Math.round(raw)))
-}
-
-function collectIssuesHighlights(surface: PieceSurface, walls: PieceWalls, quality: number, jsdoc: number, exports: number): { issues: string[]; highlights: string[] } {
-  const issues: string[] = []
-  const highlights: string[] = []
-
-  if (surface.hasCracks) issues.push(`has ${surface.crackCount} crack(s)`)
-  if (surface.hasChips) issues.push(`has ${surface.chipCount} chip(s)`)
-  if (walls.hasThinSpots) issues.push(`${walls.thinSpotCount} thin spot(s)`)
-  if (walls.hasThickSpots) issues.push(`${walls.thickSpotCount} thick spot(s)`)
-  if (jsdoc >= 3) highlights.push('well-documented')
-  if (exports >= 3 && quality >= 60) highlights.push('strong API surface')
-  if (quality >= 80) highlights.push('masterful craftsmanship')
-
-  return { issues, highlights }
-}
-
-// ─── Cluster Analysis ────────────────────────────────────────────────────────
+// ─── measureWheel ───────────────────────────────────────────────────────────
 
 /**
- * Analyze a directory as a pottery batch
+ * Measure development velocity
  * @example
- * analyzePotteryBatch(pieces, 'src') // PotteryBatch
+ * measureWheel(content) // WheelMeasure
  */
-export function analyzePotteryBatch(pieces: ThrownPiece[], dirPath: string): PotteryBatch {
+export function measureWheel(content: string): WheelMeasure {
+  const functions = (content.match(FUNCTION_RE) ?? []).length
+  const arrows = (content.match(ARROW_RE) ?? []).length
+  const exports = (content.match(EXPORT_RE) ?? []).length
+  const imports = (content.match(IMPORT_RE) ?? []).length
+  const classes = (content.match(CLASS_RE) ?? []).length
+  const asyncs = (content.match(ASYNC_RE) ?? []).length
+  const vars = (content.match(VAR_RE) ?? []).length
+  const anys = (content.match(ANY_RE) ?? []).length
+  const totalFunctions = functions + arrows
+
+  const isCentered = exports > 0 && totalFunctions > 0
+  const hasSteadyRotation = totalFunctions > 1
+  const hasProperSpeed = totalFunctions > 0 && totalFunctions <= 15
+  const isBalanced = exports > 0 && imports > 0
+  const hasWobble = vars > 0
+  const hasVibration = anys > 0
+  const hasGoodControl = totalFunctions > 0 && vars === 0
+  const hasCentering = exports > 0
+  const wobbleCount = vars + anys
+
+  let speed = 15
+  if (totalFunctions > 0) speed += 10
+  if (isCentered) speed += 10
+  if (hasSteadyRotation) speed += 10
+  if (hasProperSpeed) speed += 10
+  if (isBalanced) speed += 10
+  if (hasGoodControl) speed += 10
+  if (asyncs > 0) speed += 10
+  if (classes > 0) speed += 10
+  if (hasWobble) speed -= 10
+  if (hasVibration) speed -= 5
+  speed = Math.max(0, Math.min(100, speed))
+
+  return {
+    speed, isCentered, hasSteadyRotation, hasProperSpeed, isBalanced,
+    hasWobble, hasVibration, hasGoodControl, hasCentering, wobbleCount,
+  }
+}
+
+// ─── measureShaping ─────────────────────────────────────────────────────────
+
+/**
+ * Measure refactoring quality
+ * @example
+ * measureShaping(content) // ShapingMeasure
+ */
+export function measureShaping(content: string): ShapingMeasure {
+  const functions = (content.match(FUNCTION_RE) ?? []).length
+  const arrows = (content.match(ARROW_RE) ?? []).length
+  const classes = (content.match(CLASS_RE) ?? []).length
+  const ifs = (content.match(IF_RE) ?? []).length
+  const elses = (content.match(ELSE_RE) ?? []).length
+  const fors = (content.match(FOR_RE) ?? []).length
+  const whiles = (content.match(WHILE_RE) ?? []).length
+  const switches = (content.match(SWITCH_RE) ?? []).length
+  const consts = (content.match(CONST_RE) ?? []).length
+  const anys = (content.match(ANY_RE) ?? []).length
+  const console = (content.match(CONSOLE_RE) ?? []).length
+  const debuggers = (content.match(DEBUGGER_RE) ?? []).length
+  const totalFunctions = functions + arrows
+
+  const hasSymmetry = elses > 0 || switches > 0
+  const hasEvenWalls = totalFunctions > 0 && totalFunctions <= 10
+  const hasProperProportions = totalFunctions > 0 && ifs <= totalFunctions * 2
+  const hasSmoothSurface = anys === 0 && console === 0 && debuggers === 0
+  const hasTrimMarks = elses > 0 || switches > 0
+  const crackingCount = anys + debuggers
+  const hasCracking = crackingCount > 0
+  const hasWarping = console > 0
+  const hasCollapsing = debuggers > 0
+  const trimMarkCount = elses + switches
+  const isWellShaped = hasSmoothSurface && hasProperProportions
+
+  let technique: ShapingTechnique = 'pinch'
+  if (classes > 0 && totalFunctions > 5) technique = 'throwing'
+  else if (classes > 0) technique = 'hand-building'
+  else if (totalFunctions > 8) technique = 'slip-casting'
+  else if (totalFunctions > 3) technique = 'coil'
+  else if (totalFunctions > 0) technique = 'slab'
+
+  let skill = 15
+  if (totalFunctions > 0) skill += 10
+  if (hasSymmetry) skill += 10
+  if (hasEvenWalls) skill += 10
+  if (hasProperProportions) skill += 10
+  if (hasSmoothSurface) skill += 15
+  if (hasTrimMarks) skill += 5
+  if (classes > 0) skill += 10
+  if (hasCracking) skill -= 5 * Math.min(crackingCount, 3)
+  if (hasCollapsing) skill -= 5
+  skill = Math.max(0, Math.min(100, skill))
+
+  return {
+    skill, technique, isWellShaped, hasSymmetry, hasEvenWalls,
+    hasProperProportions, hasSmoothSurface, hasTrimMarks, hasCracking,
+    hasWarping, hasCollapsing, crackingCount, trimMarkCount,
+  }
+}
+
+// ─── measureGlaze ───────────────────────────────────────────────────────────
+
+/**
+ * Measure polish/completeness
+ * @example
+ * measureGlaze(content) // GlazeMeasure
+ */
+export function measureGlaze(content: string): GlazeMeasure {
+  const jsdoc = (content.match(JSDOC_RE) ?? []).length
+  const comments = (content.match(COMMENT_RE) ?? []).length
+  const exports = (content.match(EXPORT_RE) ?? []).length
+  const types = (content.match(TYPE_RE) ?? []).length
+  const interfaces = (content.match(INTERFACE_RE) ?? []).length
+  const anys = (content.match(ANY_RE) ?? []).length
+  const functions = (content.match(FUNCTION_RE) ?? []).length
+  const arrows = (content.match(ARROW_RE) ?? []).length
+  const totalFunctions = functions + arrows
+
+  const isWellApplied = jsdoc > 0 && exports > 0
+  const hasEvenCoating = jsdoc > 0 && (types > 0 || interfaces > 0)
+  const hasNoRuns = comments <= totalFunctions * 3 || totalFunctions === 0
+  const hasNoCrawling = jsdoc > 0 || totalFunctions === 0
+  const hasNoPinholing = exports > 0
+  const hasProperFiring = jsdoc > 0 && exports > 0 && (types > 0 || interfaces > 0)
+  const hasFoodSafe = anys === 0
+  const hasDecorativeFinish = jsdoc > 0
+  const hasSignature = comments > 0
+  const flawCount = (anys > 0 ? 1 : 0) + (!hasNoCrawling ? 1 : 0)
+
+  let finish = 10
+  if (isWellApplied) finish += 15
+  if (hasEvenCoating) finish += 10
+  if (hasNoRuns) finish += 10
+  if (hasNoCrawling) finish += 10
+  if (hasNoPinholing) finish += 10
+  if (hasFoodSafe) finish += 10
+  if (hasDecorativeFinish) finish += 10
+  if (hasProperFiring) finish += 10
+  if (hasSignature) finish += 5
+  if (anys > 0) finish -= 10
+  finish = Math.max(0, Math.min(100, finish))
+
+  let type: GlazeType = 'unglazed'
+  if (finish >= 85) type = 'celadon'
+  else if (finish >= 70) type = 'crystalline'
+  else if (finish >= 55) type = 'tenmoku'
+  else if (finish >= 40) type = 'shino'
+  else if (finish >= 25) type = 'raku'
+  else if (finish >= 15) type = 'matte'
+
+  return {
+    finish, type, isWellApplied, hasEvenCoating, hasNoRuns, hasNoCrawling,
+    hasNoPinholing, hasProperFiring, hasFoodSafe, hasDecorativeFinish,
+    hasSignature, flawCount,
+  }
+}
+
+// ─── measureKiln ────────────────────────────────────────────────────────────
+
+/**
+ * Measure production readiness
+ * @example
+ * measureKiln(content) // KilnMeasure
+ */
+export function measureKiln(content: string): KilnMeasure {
+  const tries = (content.match(TRY_RE) ?? []).length
+  const catches = (content.match(CATCH_RE) ?? []).length
+  const finallys = (content.match(FINALLY_RE) ?? []).length
+  const throws = (content.match(THROW_RE) ?? []).length
+  const errors = (content.match(ERROR_RE) ?? []).length
+  const anys = (content.match(ANY_RE) ?? []).length
+  const types = (content.match(TYPE_RE) ?? []).length
+  const interfaces = (content.match(INTERFACE_RE) ?? []).length
+  const debuggers = (content.match(DEBUGGER_RE) ?? []).length
+
+  const isVitrified = tries > 0 && catches > 0
+  const hasProperFiring = tries > 0
+  const hasNoThermalShock = tries > 0 && catches > 0
+  const hasNoDunting = tries > 0 && finallys > 0
+  const hasNoBloating = debuggers === 0
+  const hasNoShivering = anys === 0
+  const hasKilnWash = tries > 0 && catches > 0
+  const hasWitnessCone = tries > 0 && throws > 0
+  const hasPyrometric = errors > 0
+
+  let flawCount = 0
+  if (!hasNoBloating) flawCount++
+  if (!hasNoShivering) flawCount++
+  if (debuggers > 0) flawCount++
+  if (anys > 0) flawCount++
+
+  let strength = 10
+  if (hasProperFiring) strength += 15
+  if (isVitrified) strength += 15
+  if (hasNoDunting) strength += 10
+  if (hasNoBloating) strength += 10
+  if (hasNoShivering) strength += 10
+  if (hasKilnWash) strength += 10
+  if (hasWitnessCone) strength += 10
+  if (hasPyrometric) strength += 5
+  if (types > 0 || interfaces > 0) strength += 5
+  if (flawCount > 0) strength -= 5 * Math.min(flawCount, 3)
+  strength = Math.max(0, Math.min(100, strength))
+
+  let temperature: KilnTemperature = 'raw'
+  if (strength >= 85) temperature = 'high-fire'
+  else if (strength >= 65) temperature = 'mid-range'
+  else if (strength >= 45) temperature = 'low-fire'
+  else if (strength >= 25) temperature = 'bisque'
+  else if (strength >= 10) temperature = 'over-fired'
+
+  return {
+    strength, temperature, isVitrified, hasProperFiring, hasNoThermalShock,
+    hasNoDunting, hasNoBloating, hasNoShivering, hasKilnWash, hasWitnessCone,
+    hasPyrometric, flawCount,
+  }
+}
+
+// ─── measureArtistry ────────────────────────────────────────────────────────
+
+/**
+ * Measure code elegance
+ * @example
+ * measureArtistry(content) // ArtistryMeasure
+ */
+export function measureArtistry(content: string): ArtistryMeasure {
+  const functions = (content.match(FUNCTION_RE) ?? []).length
+  const arrows = (content.match(ARROW_RE) ?? []).length
+  const classes = (content.match(CLASS_RE) ?? []).length
+  const interfaces = (content.match(INTERFACE_RE) ?? []).length
+  const types = (content.match(TYPE_RE) ?? []).length
+  const exports = (content.match(EXPORT_RE) ?? []).length
+  const imports = (content.match(IMPORT_RE) ?? []).length
+  const maps = (content.match(MAP_RE) ?? []).length
+  const filters = (content.match(FILTER_RE) ?? []).length
+  const reduces = (content.match(REDUCE_RE) ?? []).length
+  const generics = (content.match(GENERIC_RE) ?? []).length
+  const jsdoc = (content.match(JSDOC_RE) ?? []).length
+  const asyncs = (content.match(ASYNC_RE) ?? []).length
+  const anys = (content.match(ANY_RE) ?? []).length
+  const totalFunctions = functions + arrows
+
+  const hasAestheticValue = totalFunctions > 0 && anys === 0
+  const hasFunctionalBeauty = exports > 0 && totalFunctions > 0
+  const hasArtisticExpression = maps > 0 || filters > 0 || reduces > 0
+  const hasCulturalSignificance = jsdoc > 0 && (types > 0 || interfaces > 0)
+  const hasProvenance = jsdoc > 0
+  const hasUniqueCharacter = generics > 0 || asyncs > 0
+  const hasHarmoniousForm = exports > 0 && imports > 0
+  const expressionCount = maps + filters + reduces
+  const isMuseumQuality = hasAestheticValue && hasFunctionalBeauty && hasCulturalSignificance
+
+  let merit = 10
+  if (hasAestheticValue) merit += 15
+  if (hasFunctionalBeauty) merit += 10
+  if (hasArtisticExpression) merit += 10
+  if (hasCulturalSignificance) merit += 10
+  if (hasProvenance) merit += 10
+  if (hasUniqueCharacter) merit += 10
+  if (hasHarmoniousForm) merit += 10
+  if (isMuseumQuality) merit += 10
+  if (classes > 0) merit += 5
+  if (anys > 0) merit -= 10
+  merit = Math.max(0, Math.min(100, merit))
+
+  let style: ArtisticStyle = 'industrial'
+  if (merit >= 80 && totalFunctions <= 5) style = 'minimalist'
+  else if (merit >= 70) style = 'organic'
+  else if (merit >= 55 && classes > 0) style = 'geometric'
+  else if (merit >= 40 && totalFunctions > 8) style = 'baroque'
+  else if (merit >= 25) style = 'rustic'
+
+  return {
+    merit, style, hasAestheticValue, hasFunctionalBeauty, hasArtisticExpression,
+    hasCulturalSignificance, hasProvenance, hasUniqueCharacter, hasHarmoniousForm,
+    isMuseumQuality, expressionCount,
+  }
+}
+
+// ─── analyzePotteryPiece ────────────────────────────────────────────────────
+
+/**
+ * Analyze a single file as a pottery piece
+ * @example
+ * analyzePotteryPiece(content, 'file.ts') // PotteryPiece
+ */
+export function analyzePotteryPiece(content: string, filePath: string): PotteryPiece {
+  const clay = measureClay(content)
+  const wheel = measureWheel(content)
+  const shaping = measureShaping(content)
+  const glaze = measureGlaze(content)
+  const kiln = measureKiln(content)
+  const artistry = measureArtistry(content)
+
+  const clayQuality = clay.quality
+  const wheelSpeed = wheel.speed
+  const shapingSkill = shaping.skill
+  const glazeFinish = glaze.finish
+  const kilnStrength = kiln.strength
+  const artisticMerit = artistry.merit
+
+  const qualityScore = Math.round(
+    (clayQuality + wheelSpeed + shapingSkill + glazeFinish + kilnStrength + artisticMerit) / 6,
+  )
+
+  let condition: PieceCondition = 'cracked-pot'
+  if (qualityScore >= 80) condition = 'museum-piece'
+  else if (qualityScore >= 65) condition = 'gallery-quality'
+  else if (qualityScore >= 45) condition = 'studio-pottery'
+  else if (qualityScore >= 30) condition = 'production-ware'
+  else if (qualityScore >= 15) condition = 'student-work'
+
+  return {
+    file: filePath, clayQuality, wheelSpeed, shapingSkill, glazeFinish,
+    kilnStrength, artisticMerit, clay, wheel, shaping, glaze, kiln, artistry,
+    condition, qualityScore,
+  }
+}
+
+// ─── classifyStudioType ─────────────────────────────────────────────────────
+
+/**
+ * Classify studio by piece quality
+ * @example
+ * classifyStudioType(pieces) // StudioType
+ */
+export function classifyStudioType(pieces: PotteryPiece[]): StudioType {
+  if (pieces.length === 0) return 'mud-pie'
+  const avg = pieces.reduce((s, p) => s + p.qualityScore, 0) / pieces.length
+  if (avg >= 75) return 'master-studio'
+  if (avg >= 55) return 'production-pottery'
+  if (avg >= 35) return 'teaching-studio'
+  if (avg >= 20) return 'community-center'
+  if (avg >= 10) return 'hobby-shed'
+  return 'mud-pie'
+}
+
+// ─── classifyPotterGrade ────────────────────────────────────────────────────
+
+/**
+ * Classify overall potter grade
+ * @example
+ * classifyPotterGrade(90) // 'master-potter'
+ */
+export function classifyPotterGrade(avgCraft: number): PotterGrade {
+  if (avgCraft >= 85) return 'master-potter'
+  if (avgCraft >= 70) return 'artisan'
+  if (avgCraft >= 50) return 'journeyman'
+  if (avgCraft >= 30) return 'apprentice'
+  if (avgCraft >= 15) return 'student'
+  return 'toddler'
+}
+
+// ─── analyzePotteryStudio ───────────────────────────────────────────────────
+
+/**
+ * Analyze a directory of pieces as a pottery studio
+ * @example
+ * analyzePotteryStudio(pieces, 'src/') // PotteryStudio
+ */
+export function analyzePotteryStudio(pieces: PotteryPiece[], dirPath: string): PotteryStudio {
   if (pieces.length === 0) {
     return {
-      directory: dirPath,
-      pieces: [],
-      avgCentering: 0,
-      avgWallUniformity: 0,
-      avgSurfaceSmoothness: 0,
-      avgProportion: 0,
-      avgStructuralIntegrity: 0,
-      avgTechnique: 0,
-      dominantForm: 'plate',
-      dominantClay: 'raku',
-      dominantStyle: 'pinch-pot',
-      masterCount: 0,
-      beginnerCount: 0,
-      pristineCount: 0,
-      shatteredCount: 0,
-      totalCracks: 0,
-      totalChips: 0,
-      totalBlemishes: 0,
-      avgFiringResult: 'exploded',
-      batchQuality: 0,
-      kilnCondition: 'broken',
+      directory: dirPath, pieces: [], avgClayQuality: 0, avgShapingSkill: 0,
+      avgKilnStrength: 0, museumPieceCount: 0, crackedPotCount: 0,
+      wellShapedCount: 0, vitrifiedCount: 0,
+      studioType: 'mud-pie', condition: 'mud-hole',
     }
   }
 
-  const n = pieces.length
-  const avgCentering = Math.round(pieces.reduce((s, p) => s + p.centering, 0) / n)
-  const avgWallUniformity = Math.round(pieces.reduce((s, p) => s + p.wallUniformity, 0) / n)
-  const avgSurfaceSmoothness = Math.round(pieces.reduce((s, p) => s + p.surfaceSmoothness, 0) / n)
-  const avgProportion = Math.round(pieces.reduce((s, p) => s + p.proportion, 0) / n)
-  const avgStructuralIntegrity = Math.round(pieces.reduce((s, p) => s + p.structuralIntegrity, 0) / n)
-  const avgTechnique = Math.round(pieces.reduce((s, p) => s + p.throwingTechnique, 0) / n)
+  const avgClayQuality = Math.round(pieces.reduce((s, p) => s + p.clayQuality, 0) / pieces.length)
+  const avgShapingSkill = Math.round(pieces.reduce((s, p) => s + p.shapingSkill, 0) / pieces.length)
+  const avgKilnStrength = Math.round(pieces.reduce((s, p) => s + p.kilnStrength, 0) / pieces.length)
+  const museumPieceCount = pieces.filter(p => p.condition === 'museum-piece').length
+  const crackedPotCount = pieces.filter(p => p.condition === 'cracked-pot').length
+  const wellShapedCount = pieces.filter(p => p.shaping.isWellShaped).length
+  const vitrifiedCount = pieces.filter(p => p.kiln.isVitrified).length
 
-  const dominantForm = findDominant(pieces.map(p => p.form))
-  const dominantClay = findDominant(pieces.map(p => p.clayType))
-  const dominantStyle = findDominant(pieces.map(p => p.throwingStyle))
+  const studioType = classifyStudioType(pieces)
 
-  const masterCount = pieces.filter(p => p.craftsmanship === 'master').length
-  const beginnerCount = pieces.filter(p => p.craftsmanship === 'beginner').length
-  const pristineCount = pieces.filter(p => p.condition === 'pristine').length
-  const shatteredCount = pieces.filter(p => p.condition === 'shattered').length
-
-  const totalCracks = pieces.reduce((s, p) => s + p.surface.crackCount, 0)
-  const totalChips = pieces.reduce((s, p) => s + p.surface.chipCount, 0)
-  const totalBlemishes = pieces.reduce((s, p) => s + p.surface.blemishCount, 0)
-
-  const firingResults = pieces.map(p => p.firing.result)
-  const avgFiringResult = findDominant(firingResults)
-
-  const batchQuality = Math.round(pieces.reduce((s, p) => s + p.qualityScore, 0) / n)
-  const kilnCondition = classifyKilnCondition(batchQuality)
+  const avg = pieces.reduce((s, p) => s + p.qualityScore, 0) / pieces.length
+  let condition: StudioCondition = 'mud-hole'
+  if (avg >= 75) condition = 'premier-gallery'
+  else if (avg >= 55) condition = 'fine-craft'
+  else if (avg >= 35) condition = 'artisan-workshop'
+  else if (avg >= 20) condition = 'craft-fair'
+  else if (avg >= 10) condition = 'beginner-class'
 
   return {
-    directory: dirPath,
-    pieces,
-    avgCentering,
-    avgWallUniformity,
-    avgSurfaceSmoothness,
-    avgProportion,
-    avgStructuralIntegrity,
-    avgTechnique,
-    dominantForm,
-    dominantClay,
-    dominantStyle,
-    masterCount,
-    beginnerCount,
-    pristineCount,
-    shatteredCount,
-    totalCracks,
-    totalChips,
-    totalBlemishes,
-    avgFiringResult,
-    batchQuality,
-    kilnCondition,
+    directory: dirPath, pieces, avgClayQuality, avgShapingSkill, avgKilnStrength,
+    museumPieceCount, crackedPotCount, wellShapedCount, vitrifiedCount,
+    studioType, condition,
   }
 }
 
-function classifyKilnCondition(quality: number): PotteryBatch['kilnCondition'] {
-  if (quality >= 75) return 'optimal'
-  if (quality >= 55) return 'good'
-  if (quality >= 35) return 'adequate'
-  if (quality >= 15) return 'poor'
-  return 'broken'
-}
-
-function findDominant(items: string[]): string {
-  const counts = new Map<string, number>()
-  for (const item of items) {
-    counts.set(item, (counts.get(item) ?? 0) + 1)
-  }
-  let dominant = items[0] ?? 'none'
-  let max = 0
-  for (const [item, count] of counts) {
-    if (count > max) { max = count; dominant = item }
-  }
-  return dominant
-}
-
-// ─── Recommendations ─────────────────────────────────────────────────────────
+// ─── generateRecommendations ────────────────────────────────────────────────
 
 /**
- * Generate recommendations for improving pottery quality
+ * Generate recommendations for the pottery
  * @example
- * generateRecommendations(pieces, batches, stats) // string[]
+ * generateRecommendations(pieces, studios, kiln, stats) // string[]
  */
 export function generateRecommendations(
-  pieces: ThrownPiece[],
-  batches: PotteryBatch[],
+  pieces: PotteryPiece[],
+  studios: PotteryStudio[],
+  kiln: PotteryWheelResult['kiln'],
   stats: PotteryWheelStats,
 ): string[] {
   const recs: string[] = []
 
-  const poorCenter = pieces.filter(p => p.centering < 30)
-  if (poorCenter.length > 0) recs.push(`${poorCenter.length} piece(s) with poor centering - rebalance concerns`)
-
-  const cracked = pieces.filter(p => p.surface.hasCracks)
-  if (cracked.length > 0) recs.push(`${cracked.length} piece(s) with cracks - fix structural issues`)
-
-  const thinWalls = pieces.filter(p => p.walls.hasThinSpots)
-  if (thinWalls.length > 0) recs.push(`${thinWalls.length} piece(s) with thin walls - strengthen fragile code`)
-
-  const badFiring = pieces.filter(p => p.firing.result === 'exploded' || p.firing.result === 'cracked')
-  if (badFiring.length > 0) recs.push(`${badFiring.length} piece(s) poorly fired - add tests and error handling`)
-
-  const badProp = pieces.filter(p => p.proportion < 25)
-  if (badProp.length > 0) recs.push(`${badProp.length} piece(s) with bad proportion - right-size modules`)
-
-  const brokenKilns = batches.filter(b => b.kilnCondition === 'broken' || b.kilnCondition === 'poor')
-  if (brokenKilns.length > 0) recs.push(`${brokenKilns.length} batch(es) with poor kiln condition - improve testing practices`)
-
-  if (stats.overallQuality >= 70) {
-    recs.push('Quality pottery - the wheel is well-centered and the clay is well-prepared')
+  if (stats.crackedPotCount > 0) {
+    recs.push(`${stats.crackedPotCount} piece(s) are cracked pots — major restructuring needed`)
+  }
+  if (stats.hasImpuritiesCount > 0) {
+    recs.push(`${stats.hasImpuritiesCount} piece(s) have impurities — remove any/debugger/TODO`)
+  }
+  if (stats.hasCrackingCount > 0) {
+    recs.push(`${stats.hasCrackingCount} piece(s) have cracking — fix type safety issues`)
+  }
+  if (stats.hasWobbleCount > 0) {
+    recs.push(`${stats.hasWobbleCount} piece(s) wobble on the wheel — replace var with const/let`)
+  }
+  if (stats.avgKilnStrength < 30) {
+    recs.push('Kiln temperature too low — add try/catch error handling')
+  }
+  if (stats.avgGlazeFinish < 30) {
+    recs.push('Glaze not applied — add JSDoc documentation and type exports')
+  }
+  if (stats.avgClayQuality < 30) {
+    recs.push('Clay quality poor — improve code structure with types and interfaces')
+  }
+  if (stats.avgShapingSkill < 30) {
+    recs.push('Shaping needs work — balance branches and reduce complexity')
+  }
+  if (stats.avgArtisticMerit < 30) {
+    recs.push('Artistic merit low — use functional patterns and add documentation')
+  }
+  if (!kiln.isWellFired) {
+    recs.push('Kiln under-fired — comprehensive quality improvements recommended')
+  }
+  if (kiln.isWellFired && stats.overallCraftsmanship >= 70) {
+    recs.push('Pottery well-crafted — maintain current quality standards')
+  }
+  if (stats.overallCraftsmanship >= 85) {
+    recs.push('Masterful work — document patterns for team learning')
   }
 
-  if (recs.length === 0) recs.push('Masterful throwing - all pieces are well-formed and beautifully crafted')
-  return recs
+  if (recs.length === 0) {
+    recs.push('All pieces beautifully crafted')
+  }
+
+  return Array.from(new Set(recs))
 }
 
-// ─── Build Result ────────────────────────────────────────────────────────────
+// ─── buildPotteryWheelResult ────────────────────────────────────────────────
 
 /**
  * Build the complete pottery wheel analysis result
@@ -645,86 +746,96 @@ export function generateRecommendations(
 export function buildPotteryWheelResult(
   files: string[],
   contents: string[],
-  _options: Record<string, unknown>,
+  options: Record<string, unknown>,
 ): PotteryWheelResult {
-  const pieces: ThrownPiece[] = []
-  for (let i = 0; i < files.length; i++) {
-    pieces.push(analyzeThrownPiece(contents[i], files[i]))
-  }
+  const pieces = files.map((file, i) => analyzePotteryPiece(contents[i] ?? '', file))
 
-  const dirMap = new Map<string, ThrownPiece[]>()
+  const dirMap = new Map<string, PotteryPiece[]>()
   for (const piece of pieces) {
-    const normalized = piece.file.replace(/\\/g, '/')
-    const dir = normalized.includes('/') ? normalized.substring(0, normalized.lastIndexOf('/')) : '.'
+    const dir = piece.file.includes('/') ? piece.file.substring(0, piece.file.lastIndexOf('/')) : '.'
     const existing = dirMap.get(dir)
-    if (existing) existing.push(piece)
-    else dirMap.set(dir, [piece])
+    if (existing) {
+      existing.push(piece)
+    } else {
+      dirMap.set(dir, [piece])
+    }
   }
 
-  const batches: PotteryBatch[] = []
-  for (const [dir, dirPieces] of dirMap) {
-    batches.push(analyzePotteryBatch(dirPieces, dir))
+  const studios = Array.from(dirMap.entries()).map(([dir, pcs]) =>
+    analyzePotteryStudio(pcs, dir),
+  )
+
+  const avgClayQuality = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.clayQuality, 0) / pieces.length) : 0
+  const avgWheelSpeed = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.wheelSpeed, 0) / pieces.length) : 0
+  const avgShapingSkill = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.shapingSkill, 0) / pieces.length) : 0
+  const avgGlazeFinish = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.glazeFinish, 0) / pieces.length) : 0
+  const avgKilnStrength = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.kilnStrength, 0) / pieces.length) : 0
+  const avgArtisticMerit = pieces.length > 0
+    ? Math.round(pieces.reduce((s, p) => s + p.artisticMerit, 0) / pieces.length) : 0
+
+  const overallCraftsmanship = Math.round(
+    (avgClayQuality + avgWheelSpeed + avgShapingSkill + avgGlazeFinish + avgKilnStrength + avgArtisticMerit) / 6,
+  )
+
+  const kilnResult: PotteryWheelResult['kiln'] = {
+    avgClayQuality, avgShapingSkill, avgKilnStrength,
+    isWellFired: overallCraftsmanship >= 50,
+    overallCraftsmanship,
   }
 
-  const stats = computeStats(pieces, batches)
-  const recommendations = generateRecommendations(pieces, batches, stats)
-
-  return { pieces, batches, stats, recommendations }
-}
-
-function computeStats(pieces: ThrownPiece[], batches: PotteryBatch[]): PotteryWheelStats {
-  const totalFiles = pieces.length
-  const totalBatches = batches.length
-
-  const avgCentering = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.centering, 0) / totalFiles) : 0
-  const avgWallUniformity = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.wallUniformity, 0) / totalFiles) : 0
-  const avgSurfaceSmoothness = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.surfaceSmoothness, 0) / totalFiles) : 0
-  const avgProportion = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.proportion, 0) / totalFiles) : 0
-  const avgStructuralIntegrity = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.structuralIntegrity, 0) / totalFiles) : 0
-  const avgTechnique = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.throwingTechnique, 0) / totalFiles) : 0
-
-  const masterCraftsman = pieces.filter(p => p.craftsmanship === 'master').length
-  const beginnerCraftsman = pieces.filter(p => p.craftsmanship === 'beginner').length
-  const pristinePieces = pieces.filter(p => p.condition === 'pristine').length
-  const shatteredPieces = pieces.filter(p => p.condition === 'shattered').length
-
-  const porcelainCount = pieces.filter(p => p.clayType === 'porcelain' || p.clayType === 'bone-china').length
-  const earthenwareCount = pieces.filter(p => p.clayType === 'earthenware' || p.clayType === 'terracotta' || p.clayType === 'raku').length
-  const wheelThrownCount = pieces.filter(p => p.throwingStyle === 'wheel-thrown').length
-  const handBuiltCount = pieces.filter(p => p.throwingStyle === 'hand-built' || p.throwingStyle === 'coil-built' || p.throwingStyle === 'slab-built').length
-
-  const totalCracks = pieces.reduce((s, p) => s + p.surface.crackCount, 0)
-  const totalChips = pieces.reduce((s, p) => s + p.surface.chipCount, 0)
-  const totalBlemishes = pieces.reduce((s, p) => s + p.surface.blemishCount, 0)
-
-  const perfectFiring = pieces.filter(p => p.firing.result === 'perfect').length
-  const crackedFiring = pieces.filter(p => p.firing.result === 'cracked' || p.firing.result === 'exploded').length
-
-  const overallQuality = totalFiles > 0 ? Math.round(pieces.reduce((s, p) => s + p.qualityScore, 0) / totalFiles) : 0
-  const wheelGrade = classifyWheelGrade(overallQuality)
-
-  const sortedByQuality = [...pieces].sort((a, b) => b.qualityScore - a.qualityScore)
-  const bestPiece = sortedByQuality.length > 0 ? sortedByQuality[0].file : 'none'
-  const worstPiece = sortedByQuality.length > 0 ? sortedByQuality[sortedByQuality.length - 1].file : 'none'
-
-  const sortedByCenter = [...pieces].sort((a, b) => b.centering - a.centering)
-  const mostCentered = sortedByCenter.length > 0 ? sortedByCenter[0].file : 'none'
-
-  const sortedBySmooth = [...pieces].sort((a, b) => b.surfaceSmoothness - a.surfaceSmoothness)
-  const smoothestPiece = sortedBySmooth.length > 0 ? sortedBySmooth[0].file : 'none'
-
-  const sortedByProp = [...pieces].sort((a, b) => b.proportion - a.proportion)
-  const bestProportioned = sortedByProp.length > 0 ? sortedByProp[0].file : 'none'
-
-  return {
-    totalFiles, totalBatches,
-    avgCentering, avgWallUniformity, avgSurfaceSmoothness,
-    avgProportion, avgStructuralIntegrity, avgTechnique,
-    masterCraftsman, beginnerCraftsman, pristinePieces, shatteredPieces,
-    porcelainCount, earthenwareCount, wheelThrownCount, handBuiltCount,
-    totalCracks, totalChips, totalBlemishes,
-    perfectFiring, crackedFiring,
-    overallQuality, wheelGrade,
-    bestPiece, worstPiece, mostCentered, smoothestPiece, bestProportioned,
+  const conditionCounts = {
+    museumPiece: pieces.filter(p => p.condition === 'museum-piece').length,
+    galleryQuality: pieces.filter(p => p.condition === 'gallery-quality').length,
+    studioPottery: pieces.filter(p => p.condition === 'studio-pottery').length,
+    productionWare: pieces.filter(p => p.condition === 'production-ware').length,
+    studentWork: pieces.filter(p => p.condition === 'student-work').length,
+    crackedPot: pieces.filter(p => p.condition === 'cracked-pot').length,
   }
+
+  const bestPiece = pieces.length > 0
+    ? pieces.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best).file : ''
+  const bestClay = pieces.length > 0
+    ? pieces.reduce((best, p) => p.clayQuality > best.clayQuality ? p : best).file : ''
+  const bestShaped = pieces.length > 0
+    ? pieces.reduce((best, p) => p.shapingSkill > best.shapingSkill ? p : best).file : ''
+  const bestGlazed = pieces.length > 0
+    ? pieces.reduce((best, p) => p.glazeFinish > best.glazeFinish ? p : best).file : ''
+  const strongest = pieces.length > 0
+    ? pieces.reduce((best, p) => p.kilnStrength > best.kilnStrength ? p : best).file : ''
+
+  const stats: PotteryWheelStats = {
+    totalFiles: files.length,
+    totalStudios: studios.length,
+    avgClayQuality, avgWheelSpeed, avgShapingSkill, avgGlazeFinish,
+    avgKilnStrength, avgArtisticMerit,
+    museumPieceCount: conditionCounts.museumPiece,
+    galleryQualityCount: conditionCounts.galleryQuality,
+    studioPotteryCount: conditionCounts.studioPottery,
+    productionWareCount: conditionCounts.productionWare,
+    studentWorkCount: conditionCounts.studentWork,
+    crackedPotCount: conditionCounts.crackedPot,
+    isWellPreparedCount: pieces.filter(p => p.clay.isWellPrepared).length,
+    hasImpuritiesCount: pieces.filter(p => p.clay.hasImpurities).length,
+    isCenteredCount: pieces.filter(p => p.wheel.isCentered).length,
+    hasWobbleCount: pieces.filter(p => p.wheel.hasWobble).length,
+    isWellShapedCount: pieces.filter(p => p.shaping.isWellShaped).length,
+    hasCrackingCount: pieces.filter(p => p.shaping.hasCracking).length,
+    isWellAppliedCount: pieces.filter(p => p.glaze.isWellApplied).length,
+    isVitrifiedCount: pieces.filter(p => p.kiln.isVitrified).length,
+    hasProperFiringCount: pieces.filter(p => p.kiln.hasProperFiring).length,
+    hasAestheticValueCount: pieces.filter(p => p.artistry.hasAestheticValue).length,
+    isMuseumQualityCount: pieces.filter(p => p.artistry.isMuseumQuality).length,
+    overallCraftsmanship,
+    potterGrade: classifyPotterGrade(overallCraftsmanship),
+    bestPiece, bestClay, bestShaped, bestGlazed, strongest,
+  }
+
+  const recommendations = generateRecommendations(pieces, studios, kilnResult, stats)
+
+  return { pieces, studios, kiln: kilnResult, stats, recommendations }
 }
