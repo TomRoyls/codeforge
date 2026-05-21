@@ -71,7 +71,6 @@ const IF_RE = /\bif\s*\(/g
 const FOR_RE = /\bfor\s*\(/g
 const WHILE_RE = /\bwhile\s*\(/g
 const SWITCH_RE = /\bswitch\s*\(/g
-const CATCH_RE = /\bcatch\s*\(/g
 const TYPE_ANNOTATION_RE = /:\s*(?:string|number|boolean|void|Promise|Record|Map|Set|Array|Date|RegExp|Error|[A-Z]\w+)/
 const ANY_TYPE_RE = /:\s*any\b/
 const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
@@ -85,9 +84,6 @@ const CLASS_RE = /\bclass\s+\w+/
 const ASYNC_RE = /\basync\s+/
 const AWAIT_RE = /\bawait\s+/
 const GENERIC_RE = /<\w+>/
-const CAMEL_CASE_RE = /\b[a-z][a-zA-Z0-9]*\b/g
-const SNAKE_CASE_RE = /\b[a-z][a-z0-9_]*\b/g
-const TODO_FIXME_RE = /(?:TODO|FIXME|HACK|XXX)\b/gi
 
 // ─── measureDimension ────────────────────────────────────
 
@@ -96,7 +92,7 @@ const TODO_FIXME_RE = /(?:TODO|FIXME|HACK|XXX)\b/gi
  * @example
  * measureDimension('const x: number = 1', 'a.ts', 'type-safety') // 80
  */
-export function measureDimension(content: string, filePath: string, dimension: DimensionName): number {
+export function measureDimension(content: string, _filePath: string, dimension: DimensionName): number {
   if (content.trim().length === 0) return 50
 
   switch (dimension) {
@@ -120,7 +116,6 @@ export function measureDimension(content: string, filePath: string, dimension: D
 }
 
 function measureComplexity(content: string): number {
-  const lines = content.split('\n').length
   const branches = ((content.match(IF_RE) ?? []).length +
     (content.match(FOR_RE) ?? []).length +
     (content.match(WHILE_RE) ?? []).length +
@@ -310,7 +305,10 @@ export function computeFileDrift(content: string, filePath: string): FileDrift {
   const isAnchored = Math.abs(overallDrift) <= 10
 
   const entries = Object.entries(dimensions)
-  const largestEntry = entries.reduce((worst, [k, v]) => v < worst[1] ? [k, v] : worst, entries[0])
+  const largestEntry = entries.reduce<[string, number]>(
+    (worst, [k, v]) => v < worst[1] ? [k, v] : worst,
+    entries[0] ?? ['', 100],
+  )
   const largestDrift = largestEntry[0]
 
   const classification = classifyFile(overallDrift, avg)
@@ -355,7 +353,7 @@ export function analyzeZone(files: FileDrift[], dirPath: string): DriftZone {
   if (files.length === 0) {
     return {
       avgDrift: 0,
-      decliningFiles: 0,
+      degradingFiles: 0,
       directory: dirPath,
       dominantDirection: 'stable',
       fileCount: 0,
@@ -528,7 +526,7 @@ export function generateRecommendations(
 export function buildCompassNeedleResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown>,
 ): CompassNeedleResult {
   const allDimensions: DimensionName[] = [
     'complexity', 'type-safety', 'documentation', 'coupling',
@@ -538,7 +536,7 @@ export function buildCompassNeedleResult(
   // Build file drifts
   const fileDrifts: FileDrift[] = []
   for (let i = 0; i < files.length; i++) {
-    fileDrifts.push(computeFileDrift(contents[i] ?? '', files[i]))
+    fileDrifts.push(computeFileDrift(contents[i] ?? '', files[i] ?? ''))
   }
 
   // Build dimension aggregations
@@ -547,9 +545,10 @@ export function buildCompassNeedleResult(
     const contributing: string[] = []
 
     for (let i = 0; i < files.length; i++) {
-      const score = measureDimension(contents[i] ?? '', files[i], dim)
+      const file = files[i] ?? ''
+      const score = measureDimension(contents[i] ?? '', file, dim)
       scores.push(score)
-      if (score < 50) contributing.push(files[i])
+      if (score < 50) contributing.push(file)
     }
 
     const avg = scores.length > 0 ? scores.reduce((s, v) => s + v, 0) / scores.length : 50
@@ -592,9 +591,13 @@ export function buildCompassNeedleResult(
   const degradingDims = dimensions.filter((d) => d.trend === 'degrading' || d.trend === 'rapidly-degrading').length
   const stableDims = dimensions.filter((d) => d.trend === 'stable').length
 
-  const strongestImprovement = dimensions.reduce((best, d) => d.currentScore > best.currentScore ? d : best, dimensions[0]).dimension
-  const weakest = dimensions.reduce((worst, d) => d.currentScore < worst.currentScore ? d : worst, dimensions[0])
-  const strongestDegradation = weakest.currentScore < 60 ? weakest.dimension : ''
+  const strongestImprovement = dimensions.length > 0
+    ? dimensions.reduce((best, d) => d.currentScore > best.currentScore ? d : best, { currentScore: -1, dimension: 'none' } as DriftDimension).dimension
+    : 'none'
+  const weakest = dimensions.length > 0
+    ? dimensions.reduce((worst, d) => d.currentScore < worst.currentScore ? d : worst, { currentScore: 101, dimension: 'none' } as DriftDimension)
+    : null
+  const strongestDegradation = weakest && weakest.currentScore < 60 ? weakest.dimension : ''
 
   const stats: CompassNeedleStats = {
     adriftFiles: fileDrifts.filter((f) => f.classification === 'adrift').length,
