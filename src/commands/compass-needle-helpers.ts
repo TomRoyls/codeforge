@@ -591,11 +591,13 @@ export function buildCompassNeedleResult(
   const degradingDims = dimensions.filter((d) => d.trend === 'degrading' || d.trend === 'rapidly-degrading').length
   const stableDims = dimensions.filter((d) => d.trend === 'stable').length
 
+  const sentinelDim: DriftDimension = { dimension: 'complexity', currentScore: -1, trend: 'stable', velocity: 0, direction: 0, filesContributing: [], description: '' }
+  const worstSentinel: DriftDimension = { dimension: 'complexity', currentScore: 101, trend: 'stable', velocity: 0, direction: 0, filesContributing: [], description: '' }
   const strongestImprovement = dimensions.length > 0
-    ? dimensions.reduce((best, d) => d.currentScore > best.currentScore ? d : best, { currentScore: -1, dimension: 'none' } as DriftDimension).dimension
+    ? dimensions.reduce((best, d) => d.currentScore > best.currentScore ? d : best, sentinelDim).dimension
     : 'none'
   const weakest = dimensions.length > 0
-    ? dimensions.reduce((worst, d) => d.currentScore < worst.currentScore ? d : worst, { currentScore: 101, dimension: 'none' } as DriftDimension)
+    ? dimensions.reduce((worst, d) => d.currentScore < worst.currentScore ? d : worst, worstSentinel)
     : null
   const strongestDegradation = weakest && weakest.currentScore < 60 ? weakest.dimension : ''
 
