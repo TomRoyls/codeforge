@@ -1,635 +1,686 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  buildGravityResult,
-  classifyBody,
-  classifyWellType,
-  computeEscapeVelocity,
-  computeGravitationalConstant,
-  computeGravitationalField,
-  computeGravitationalPull,
-  computeSystemStability,
-  computeWellStability,
-  extractImportTargets,
-  findOrbiters,
-  generateGravityRecommendations,
-  identifyGravityWells,
-  resolveToKey,
-  type BodyClassification,
-  type GravitationalBody,
-  type GravityOptions,
-  type GravityResult,
-  type GravityStats,
-  type GravityWell,
-  type Orbiter,
-  type WellType,
+  analyzeCelestialBody,
+  analyzeStarSystem,
+  buildGravityWellResult,
+  classifyAstrophysicistGrade,
+  classifyBodyCondition,
+  classifySystemCondition,
+  classifySystemType,
+  countAny,
+  countAsync,
+  countBranches,
+  countClasses,
+  countComments,
+  countConsole,
+  countDeprecated,
+  countDescriptiveNames,
+  countErrorHandling,
+  countExports,
+  countFunctions,
+  countImports,
+  countInterfaces,
+  countJSDoc,
+  countLoc,
+  countNestingDepth,
+  countReturnTypes,
+  countTodos,
+  countTypeAnnotations,
+  generateRecommendations,
+  measureBody,
+  measureEscape,
+  measureGravity,
+  measureHorizon,
+  measureLensing,
+  measureOrbit,
+  measureTidal,
+  type CelestialBody,
+  type GravityWellResult,
 } from '../src/commands/gravity-well-helpers.js'
+import { formatGravityWellCsv, formatGravityWellJson, formatGravityWellTable } from '../src/commands/gravity-well-format-helpers.js'
 
-import {
-  formatBodyClassification,
-  formatBodySymbol,
-  formatBodyTable,
-  formatEscapeVelocityChart,
-  formatGravityJson,
-  formatGravityRecommendations,
-  formatGravityStats,
-  formatGravityTable,
-  formatGravityWellDiagram,
-} from '../src/commands/gravity-well-format-helpers.js'
+// ─── Utility Helpers ────────────────────────────────────
 
-// ─── Fixtures ──────────────────────────────────────────────────────────────────
-
-const HUB_FILES = ['core/engine.ts', 'core/utils.ts', 'commands/run.ts', 'commands/build.ts', 'commands/test.ts', 'app.ts']
-const HUB_CONTENTS = [
-  "export class Engine {\n  start() {}\n  stop() {}\n}\nexport function init() { return true }\n",
-  "import { Engine } from './engine'\nexport function format(s: string) { return s }\n",
-  "import { Engine } from '../core/engine'\nimport { format } from '../core/utils'\nexport function run() { return true }\n",
-  "import { Engine } from '../core/engine'\nimport { format } from '../core/utils'\nexport function build() { return true }\n",
-  "import { Engine } from '../core/engine'\nimport { format } from '../core/utils'\nexport function test() { return true }\n",
-  "import { run } from './commands/run'\nimport { build } from './commands/build'\nimport { test } from './commands/test'\nexport { run, build, test }\n",
-]
-
-const ISOLATED_FILES = ['a.ts', 'b.ts', 'c.ts']
-const ISOLATED_CONTENTS = ['const x = 1\n', 'const y = 2\n', 'const z = 3\n']
-
-const SINGLE_FILES = ['solo.ts']
-const SINGLE_CONTENTS = ['const solo = true\n']
-
-const EMPTY_FILES: string[] = []
-const EMPTY_CONTENTS: string[] = []
-
-// ─── resolveToKey ──────────────────────────────────────────────────────────────
-
-describe('resolveToKey', () => {
-  it('resolves a relative import', () => {
-    expect(resolveToKey('./helpers', 'src/app.ts', ['src/helpers.ts'])).toBe('src/helpers.ts')
+describe('gravity-well utility helpers', () => {
+  it('counts lines of code', () => {
+    expect(countLoc('const x = 1\n\nconst y = 2')).toBe(2)
+    expect(countLoc('')).toBe(0)
   })
 
-  it('returns null for unresolvable import', () => {
-    expect(resolveToKey('./missing', 'src/app.ts', ['src/other.ts'])).toBeNull()
+  it('counts functions', () => {
+    expect(countFunctions('function hello() {}')).toBe(1)
+    expect(countFunctions('')).toBe(0)
   })
 
-  it('resolves with extension', () => {
-    expect(resolveToKey('./helpers.ts', 'src/app.ts', ['src/helpers.ts'])).toBe('src/helpers.ts')
+  it('counts classes', () => {
+    expect(countClasses('class Foo {}')).toBe(1)
+    expect(countClasses('')).toBe(0)
   })
 
-  it('resolves index file', () => {
-    expect(resolveToKey('./mod', 'src/app.ts', ['src/mod/index.ts'])).toBe('src/mod/index.ts')
+  it('counts interfaces', () => {
+    expect(countInterfaces('interface Config {}')).toBe(1)
+    expect(countInterfaces('')).toBe(0)
   })
 
-  it('resolves parent directory import', () => {
-    expect(resolveToKey('../core', 'src/commands/run.ts', ['src/core/index.ts'])).toBe('src/core/index.ts')
+  it('counts exports', () => {
+    expect(countExports('export function f() {}')).toBe(1)
+    expect(countExports('')).toBe(0)
   })
 
-  it('returns null for non-relative imports', () => {
-    expect(resolveToKey('chalk', 'src/app.ts', ['src/app.ts'])).toBeNull()
+  it('counts imports', () => {
+    expect(countImports("import { x } from 'y'")).toBe(1)
+    expect(countImports('')).toBe(0)
   })
 
-  it('resolves in same directory', () => {
-    expect(resolveToKey('./utils', 'app.ts', ['utils.ts'])).toBe('utils.ts')
-  })
-})
-
-// ─── extractImportTargets ──────────────────────────────────────────────────────
-
-describe('extractImportTargets', () => {
-  it('extracts single import target', () => {
-    const result = extractImportTargets("import { x } from './helpers'", 'src/app.ts', ['src/helpers.ts'])
-    expect(result).toEqual(['src/helpers.ts'])
+  it('counts JSDoc blocks', () => {
+    expect(countJSDoc('/** doc */\nfunction f() {}')).toBe(1)
+    expect(countJSDoc('')).toBe(0)
   })
 
-  it('extracts multiple import targets', () => {
-    const content = "import { a } from './x'\nimport { b } from './y'"
-    const result = extractImportTargets(content, 'src/app.ts', ['src/x.ts', 'src/y.ts'])
-    expect(result).toEqual(['src/x.ts', 'src/y.ts'])
+  it('counts comments', () => {
+    expect(countComments('// hello\n/* world */')).toBe(2)
+    expect(countComments('')).toBe(0)
   })
 
-  it('returns empty for no imports', () => {
-    const result = extractImportTargets('const x = 1', 'app.ts', ['app.ts'])
-    expect(result).toEqual([])
+  it('counts error handling', () => {
+    expect(countErrorHandling('try { } catch(e) { }')).toBe(1)
+    expect(countErrorHandling('')).toBe(0)
   })
 
-  it('skips external imports', () => {
-    const result = extractImportTargets("import chalk from 'chalk'", 'app.ts', ['app.ts'])
-    expect(result).toEqual([])
-  })
-})
-
-// ─── computeGravitationalPull ──────────────────────────────────────────────────
-
-describe('computeGravitationalPull', () => {
-  it('counts files that import the target', () => {
-    const pull = computeGravitationalPull('core/engine.ts', HUB_FILES, HUB_CONTENTS)
-    expect(pull).toBe(4) // utils, run, build, test
+  it('counts type annotations', () => {
+    expect(countTypeAnnotations('function f(x: number): string {}')).toBe(2)
+    expect(countTypeAnnotations('')).toBe(0)
   })
 
-  it('returns 0 for isolated file', () => {
-    const pull = computeGravitationalPull('a.ts', ISOLATED_FILES, ISOLATED_CONTENTS)
-    expect(pull).toBe(0)
+  it('counts TODOs', () => {
+    expect(countTodos('// TODO: fix')).toBe(1)
+    expect(countTodos('')).toBe(0)
   })
 
-  it('returns 0 for file not importing itself', () => {
-    const pull = computeGravitationalPull('b.ts', ISOLATED_FILES, ISOLATED_CONTENTS)
-    expect(pull).toBe(0)
+  it('counts console calls', () => {
+    expect(countConsole('console.log("hi")')).toBe(1)
+    expect(countConsole('')).toBe(0)
+  })
+
+  it('counts branches', () => {
+    expect(countBranches('if (x) { }')).toBe(1)
+    expect(countBranches('')).toBe(0)
+  })
+
+  it('counts descriptive names', () => {
+    expect(countDescriptiveNames('function getName() {}')).toBe(1)
+    expect(countDescriptiveNames('')).toBe(0)
+  })
+
+  it('counts async keywords', () => {
+    expect(countAsync('async function f() {}')).toBe(1)
+    expect(countAsync('')).toBe(0)
+  })
+
+  it('counts any types', () => {
+    expect(countAny('const x: any = {}')).toBe(1)
+    expect(countAny('')).toBe(0)
+  })
+
+  it('counts return types', () => {
+    expect(countReturnTypes('): number')).toBe(1)
+    expect(countReturnTypes('')).toBe(0)
+  })
+
+  it('counts nesting depth', () => {
+    expect(countNestingDepth('if (x) { if (y) { } }')).toBe(2)
+    expect(countNestingDepth('')).toBe(0)
+  })
+
+  it('counts deprecated markers', () => {
+    expect(countDeprecated('@deprecated')).toBe(1)
+    expect(countDeprecated('')).toBe(0)
   })
 })
 
-// ─── computeGravitationalField ─────────────────────────────────────────────────
+// ─── Body Measurement ───────────────────────────────────
 
-describe('computeGravitationalField', () => {
-  it('returns 0 for zero pull', () => {
-    expect(computeGravitationalField(0, ['content'])).toBe(0)
+describe('measureBody', () => {
+  it('returns zero mass for empty content', () => {
+    const result = measureBody('')
+    expect(result.mass).toBe(0)
+    expect(result.density).toBe(0)
+    expect(result.type).toBe('asteroid')
   })
 
-  it('returns 0 for empty importers', () => {
-    expect(computeGravitationalField(5, [])).toBe(0)
+  it('detects stable code', () => {
+    const code = [
+      '/** Docs */',
+      'export function computeValue(x: number): number { return x; }',
+      'try { computeValue(1); } catch(e) {}',
+    ].join('\n')
+    const result = measureBody(code)
+    expect(result.isStable).toBe(true)
+    expect(result.density).toBeGreaterThan(0)
   })
 
-  it('computes field based on coupling ratio', () => {
-    const content = "import { x } from './a'\nconst y = 1\nconst z = 2"
-    const field = computeGravitationalField(3, [content])
-    expect(field).toBeGreaterThan(0)
+  it('detects collapsing code with deprecated', () => {
+    const code = '@deprecated\nfunction old() {}'
+    const result = measureBody(code)
+    expect(result.isCollapsing).toBe(true)
+  })
+
+  it('classifies as black-hole for any types', () => {
+    const code = 'const x: any = 1'
+    const result = measureBody(code)
+    expect(result.type).toBe('black-hole')
   })
 })
 
-// ─── findOrbiters ──────────────────────────────────────────────────────────────
+// ─── Orbit Measurement ──────────────────────────────────
 
-describe('findOrbiters', () => {
-  it('finds orbiters for a hub', () => {
-    const orbiters = findOrbiters('core/engine.ts', HUB_FILES, HUB_CONTENTS)
-    expect(orbiters.length).toBe(4)
-    expect(orbiters.map(o => o.file)).toContain('commands/run.ts')
+describe('measureOrbit', () => {
+  it('returns zeros for empty content', () => {
+    const result = measureOrbit('')
+    expect(result.semiMajorAxis).toBe(0)
+    expect(result.eccentricity).toBe(0)
+    expect(result.inclination).toBe(0)
   })
 
-  it('returns empty for isolated file', () => {
-    const orbiters = findOrbiters('a.ts', ISOLATED_FILES, ISOLATED_CONTENTS)
-    expect(orbiters).toEqual([])
+  it('detects stable orbit', () => {
+    const code = [
+      '/** Docs */',
+      'export function route(x: number): number {',
+      '  try { return x; }',
+      '  catch(e) { return 0; }',
+      '}',
+      'interface IConfig {}',
+    ].join('\n')
+    const result = measureOrbit(code)
+    expect(result.inclination).toBeGreaterThan(50)
   })
 
-  it('each orbiter has distance 1', () => {
-    const orbiters = findOrbiters('core/engine.ts', HUB_FILES, HUB_CONTENTS)
-    for (const o of orbiters) {
-      expect(o.distance).toBe(1)
+  it('detects decaying orbit from TODOs', () => {
+    const code = '// TODO: fix\nfunction f() {}'
+    const result = measureOrbit(code)
+    expect(result.isDecaying).toBe(true)
+  })
+
+  it('detects escaping orbit', () => {
+    const code = 'const x = 1'
+    const result = measureOrbit(code)
+    expect(result.isEscaping).toBe(true)
+  })
+
+  it('detects circular orbit', () => {
+    const code = [
+      "import { x } from 'y'",
+      'export function f() {}',
+    ].join('\n')
+    const result = measureOrbit(code)
+    expect(result.isCircular).toBe(true)
+  })
+})
+
+// ─── Gravity Measurement ────────────────────────────────
+
+describe('measureGravity', () => {
+  it('returns zeros for empty content', () => {
+    const result = measureGravity('')
+    expect(result.pull).toBe(0)
+    expect(result.push).toBe(0)
+  })
+
+  it('detects strong pull from exports', () => {
+    const code = [
+      '/** docs */',
+      'export function api(): void {}',
+      'export function api2(): void {}',
+      'export function api3(): void {}',
+      'export function api4(): void {}',
+    ].join('\n')
+    const result = measureGravity(code)
+    expect(result.pull).toBeGreaterThan(40)
+    expect(result.satelliteCount).toBeGreaterThan(0)
+  })
+
+  it('detects balanced gravity', () => {
+    const code = [
+      "import { x } from 'y'",
+      'export function f() {}',
+    ].join('\n')
+    const result = measureGravity(code)
+    expect(result.isBalanced).toBe(true)
+  })
+
+  it('detects accretion disk', () => {
+    const code = [
+      'export interface A {}',
+      'export interface B {}',
+      'export interface C {}',
+      'export function a() {}',
+      'export function b() {}',
+    ].join('\n')
+    const result = measureGravity(code)
+    expect(result.hasAccretionDisk).toBe(true)
+  })
+})
+
+// ─── Escape Measurement ─────────────────────────────────
+
+describe('measureEscape', () => {
+  it('returns zero for empty content', () => {
+    const result = measureEscape('')
+    expect(result.velocity).toBe(0)
+  })
+
+  it('detects easy to escape for simple code', () => {
+    const code = '/** docs */\nexport function simple(): void {}'
+    const result = measureEscape(code)
+    expect(result.velocity).toBeLessThan(25)
+    if (result.velocity < 25) {
+      expect(result.isEasyToEscape).toBe(true)
     }
   })
 
-  it('each orbiter has tidalForce between 0 and 1', () => {
-    const orbiters = findOrbiters('core/engine.ts', HUB_FILES, HUB_CONTENTS)
-    for (const o of orbiters) {
-      expect(o.tidalForce).toBeGreaterThanOrEqual(0)
-      expect(o.tidalForce).toBeLessThanOrEqual(1)
-    }
+  it('detects locked code', () => {
+    const code = Array.from({ length: 12 }, (_, i) => `if (x${i}) {`).join('\n') +
+      'const a: any = 1\nconst b: any = 2\nconst c: any = 3\nconst d: any = 4\nconst e: any = 5\n' +
+      '}'.repeat(12)
+    const result = measureEscape(code)
+    expect(result.isLocked).toBe(true)
+  })
+
+  it('detects trojan points from error handling', () => {
+    const code = 'try { } catch(e) { }'
+    const result = measureEscape(code)
+    expect(result.hasTrojanPoints).toBe(true)
   })
 })
 
-// ─── computeEscapeVelocity ─────────────────────────────────────────────────────
+// ─── Tidal Measurement ──────────────────────────────────
 
-describe('computeEscapeVelocity', () => {
-  it('returns 0 for no pull or orbiters', () => {
-    expect(computeEscapeVelocity(0, 0)).toBe(0)
+describe('measureTidal', () => {
+  it('returns zero for empty content', () => {
+    const result = measureTidal('')
+    expect(result.force).toBe(0)
   })
 
-  it('increases with pull', () => {
-    const low = computeEscapeVelocity(5, 2)
-    const high = computeEscapeVelocity(15, 5)
-    expect(high).toBeGreaterThan(low)
+  it('detects tidal locking', () => {
+    const code = [
+      "import { x } from 'y'",
+      'export function f() {}',
+    ].join('\n')
+    const result = measureTidal(code)
+    expect(result.hasTidalLocking).toBe(true)
   })
 
-  it('caps at 100', () => {
-    expect(computeEscapeVelocity(50, 20)).toBeLessThanOrEqual(100)
+  it('detects tidal heating from deep nesting', () => {
+    const code = Array.from({ length: 6 }, (_, i) => `if (x${i}) {`).join('\n') + '}'.repeat(6)
+    const result = measureTidal(code)
+    expect(result.hasTidalHeating).toBe(true)
   })
 
-  it('increases with orbiter count', () => {
-    const few = computeEscapeVelocity(10, 2)
-    const many = computeEscapeVelocity(10, 8)
-    expect(many).toBeGreaterThan(few)
+  it('detects tidally locked from imports without exports', () => {
+    const code = [
+      "import { x } from 'y'",
+      "import { z } from 'w'",
+    ].join('\n')
+    const result = measureTidal(code)
+    expect(result.isTidallyLocked).toBe(true)
   })
 
-  it('computes correct value for known input', () => {
-    // baseVelocity = min(60, 10*3) = 30, orbiterBonus = min(40, 3*5) = 15 → 45
-    expect(computeEscapeVelocity(10, 3)).toBe(45)
-  })
-})
-
-// ─── classifyBody ──────────────────────────────────────────────────────────────
-
-describe('classifyBody', () => {
-  it('classifies blackhole for extreme pull', () => {
-    expect(classifyBody(500, 25, 20)).toBe('blackhole')
-  })
-
-  it('classifies star for high pull', () => {
-    expect(classifyBody(100, 12, 8)).toBe('star')
-  })
-
-  it('classifies planet for moderate pull', () => {
-    expect(classifyBody(50, 5, 3)).toBe('planet')
-  })
-
-  it('classifies moon for low pull with no orbiters', () => {
-    expect(classifyBody(30, 1, 0)).toBe('moon')
-  })
-
-  it('classifies asteroid for no pull', () => {
-    expect(classifyBody(10, 0, 0)).toBe('asteroid')
-  })
-
-  it('classifies planet when has pull and orbiters', () => {
-    expect(classifyBody(50, 2, 1)).toBe('planet')
-  })
-
-  it('blackhole threshold at > 20 pull', () => {
-    expect(classifyBody(100, 21, 15)).toBe('blackhole')
-    expect(classifyBody(100, 20, 15)).toBe('star')
-  })
-
-  it('star threshold at > 10 pull', () => {
-    expect(classifyBody(100, 11, 5)).toBe('star')
-    expect(classifyBody(100, 10, 5)).toBe('planet')
-  })
-
-  it('planet threshold at >= 3 pull', () => {
-    expect(classifyBody(50, 3, 1)).toBe('planet')
-    expect(classifyBody(50, 2, 0)).toBe('moon')
+  it('detects tidal bulge from imbalance', () => {
+    const code = [
+      "import { a } from 'x'",
+      "import { b } from 'y'",
+      "import { c } from 'z'",
+      "import { d } from 'w'",
+      "import { e } from 'v'",
+      'export function f() {}',
+    ].join('\n')
+    const result = measureTidal(code)
+    expect(result.hasTidalBulge).toBe(true)
   })
 })
 
-// ─── identifyGravityWells ──────────────────────────────────────────────────────
+// ─── Horizon Measurement ────────────────────────────────
 
-describe('identifyGravityWells', () => {
-  it('identifies wells for bodies with 3+ orbiters', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const engineBody = result.bodies.find(b => b.file === 'core/engine.ts')
-    expect(engineBody).toBeDefined()
-    if (engineBody && engineBody.orbiters.length >= 3) {
-      expect(result.wells.some(w => w.center === 'core/engine.ts')).toBe(true)
-    }
+describe('measureHorizon', () => {
+  it('returns zero for empty content', () => {
+    const result = measureHorizon('')
+    expect(result.radius).toBe(0)
   })
 
-  it('returns empty for isolated bodies', () => {
-    const result = buildGravityResult(ISOLATED_FILES, ISOLATED_CONTENTS, {})
-    expect(result.wells).toEqual([])
+  it('detects approaching horizon from TODOs', () => {
+    const code = '// TODO: fix this'
+    const result = measureHorizon(code)
+    expect(result.isApproaching).toBe(true)
   })
 
-  it('well includes center and orbiters', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const engineWell = result.wells.find(w => w.center === 'core/engine.ts')
-    if (engineWell) {
-      expect(engineWell.bodies).toContain('core/engine.ts')
-    }
-  })
-})
-
-// ─── computeWellStability ──────────────────────────────────────────────────────
-
-describe('computeWellStability', () => {
-  it('returns 100 for body with no orbiters', () => {
-    const body: GravitationalBody = {
-      file: 'a.ts', name: 'a', mass: 10, gravitationalPull: 0,
-      gravitationalField: 0, orbiters: [], escapeVelocity: 0, classification: 'asteroid',
-    }
-    expect(computeWellStability(body, [body])).toBe(100)
+  it('detects receding horizon from clean documented code', () => {
+    const code = '/** Docs */\nexport function clean(): number { return 1; }'
+    const result = measureHorizon(code)
+    expect(result.isReceding).toBe(true)
   })
 
-  it('returns 100 when all orbiters are stable', () => {
-    const body: GravitationalBody = {
-      file: 'a.ts', name: 'a', mass: 50, gravitationalPull: 5,
-      gravitationalField: 10, orbiters: [
-        { file: 'b.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.1, isStable: true },
-        { file: 'c.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.2, isStable: true },
-      ], escapeVelocity: 30, classification: 'planet',
-    }
-    expect(computeWellStability(body, [body])).toBe(100)
+  it('detects singularity risk from any types', () => {
+    const code = Array.from({ length: 4 }, (_, i) => `const x${i}: any = ${i}`).join('\n')
+    const result = measureHorizon(code)
+    expect(result.singularityRisk).toBeGreaterThan(0)
   })
 
-  it('returns 0 when all orbiters are unstable', () => {
-    const body: GravitationalBody = {
-      file: 'a.ts', name: 'a', mass: 50, gravitationalPull: 5,
-      gravitationalField: 10, orbiters: [
-        { file: 'b.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.8, isStable: false },
-        { file: 'c.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.9, isStable: false },
-      ], escapeVelocity: 30, classification: 'planet',
-    }
-    expect(computeWellStability(body, [body])).toBe(0)
+  it('detects hawking radiation', () => {
+    const code = '/** Docs */\n// TODO: fix\nfunction f() {}'
+    const result = measureHorizon(code)
+    expect(result.hasHawkingRadiation).toBe(true)
   })
 })
 
-// ─── classifyWellType ──────────────────────────────────────────────────────────
+// ─── Lensing Measurement ────────────────────────────────
 
-describe('classifyWellType', () => {
-  const makeBody = (pull: number, orbiters: Orbiter[]): GravitationalBody => ({
-    file: 'center.ts', name: 'center', mass: 100, gravitationalPull: pull,
-    gravitationalField: pull * 10, orbiters, escapeVelocity: pull * 3, classification: 'star',
+describe('measureLensing', () => {
+  it('returns zero for empty content', () => {
+    const result = measureLensing('')
+    expect(result.distortion).toBe(0)
   })
 
-  it('classifies binary when both centers are strong', () => {
-    const center = makeBody(8, [
-      { file: 'o.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.3, isStable: true },
-    ])
+  it('detects gravitational lensing from any types', () => {
+    const code = 'const x: any = 1'
+    const result = measureLensing(code)
+    expect(result.hasGravitationalLensing).toBe(true)
+  })
+
+  it('detects strong lensing from high distortion', () => {
+    const code = Array.from({ length: 5 }, (_, i) => `const x${i}: any = ${i}`).join('\n')
+    const result = measureLensing(code)
+    expect(result.hasStrongLensing).toBe(true)
+  })
+})
+
+// ─── Celestial Body Analysis ────────────────────────────
+
+describe('analyzeCelestialBody', () => {
+  it('analyzes a well-connected file', () => {
+    const code = [
+      '/** Route handler */',
+      'export function handleRoute(path: string): number {',
+      '  try {',
+      '    if (path === "/") return 1;',
+      '    return 0;',
+      '  } catch(e) { return -1; }',
+      '}',
+    ].join('\n')
+    const result = analyzeCelestialBody(code, 'src/router.ts')
+    expect(result.file).toBe('src/router.ts')
+    expect(result.gravitationalMass).toBeGreaterThan(0)
+    expect(result.orbitalStability).toBeGreaterThan(0)
+    expect(result.qualityScore).toBeGreaterThan(0)
+  })
+
+  it('handles empty content', () => {
+    const result = analyzeCelestialBody('', 'empty.ts')
+    expect(result.gravitationalMass).toBe(0)
+    expect(result.qualityScore).toBe(30)
+  })
+})
+
+// ─── Classification Helpers ─────────────────────────────
+
+describe('classifyBodyCondition', () => {
+  it('returns stable-star for high score with star type', () => {
+    const result = classifyBodyCondition(
+      90,
+      { isStable: true, type: 'star', mass: 80, density: 80, luminosity: 80, temperature: 50, age: 10, isCollapsing: false } as any,
+      { isLocked: false, velocity: 10 } as any,
+    )
+    expect(result).toBe('stable-star')
+  })
+
+  it('returns black-hole for locked code', () => {
+    const result = classifyBodyCondition(
+      20,
+      { isStable: false, type: 'asteroid', mass: 10, density: 5, luminosity: 0, temperature: 20, age: 30, isCollapsing: true } as any,
+      { isLocked: true, velocity: 85 } as any,
+    )
+    expect(result).toBe('black-hole')
+  })
+
+  it('returns healthy-planet for good score not locked', () => {
+    const result = classifyBodyCondition(
+      70,
+      { isStable: true, type: 'planet', mass: 60, density: 70, luminosity: 50, temperature: 40, age: 10, isCollapsing: false } as any,
+      { isLocked: false, velocity: 30 } as any,
+    )
+    expect(result).toBe('healthy-planet')
+  })
+
+  it('returns dark-matter for very low score', () => {
+    const result = classifyBodyCondition(
+      3,
+      { isStable: false, type: 'asteroid', mass: 2, density: 0, luminosity: 0, temperature: 0, age: 0, isCollapsing: false } as any,
+      { isLocked: false, velocity: 5 } as any,
+    )
+    expect(result).toBe('dark-matter')
+  })
+})
+
+describe('classifySystemType', () => {
+  it('returns void for empty bodies', () => {
+    expect(classifySystemType([])).toBe('void')
+  })
+
+  it('returns binary-system for high star ratio', () => {
+    const bodies = Array.from({ length: 3 }, () => ({
+      gravitationalMass: 60,
+      body: { type: 'star' as const },
+    } as CelestialBody))
+    expect(classifySystemType(bodies)).toBe('binary-system')
+  })
+})
+
+describe('classifySystemCondition', () => {
+  it('returns well-ordered-system for high stability', () => {
+    expect(classifySystemCondition(80)).toBe('well-ordered-system')
+  })
+
+  it('returns void for very low stability', () => {
+    expect(classifySystemCondition(5)).toBe('void')
+  })
+})
+
+describe('classifyAstrophysicistGrade', () => {
+  it('returns nobel-laureate for high stability', () => {
+    expect(classifyAstrophysicistGrade(85)).toBe('nobel-laureate')
+  })
+
+  it('returns flat-earther for very low stability', () => {
+    expect(classifyAstrophysicistGrade(10)).toBe('flat-earther')
+  })
+
+  it('returns astronomer for moderate stability', () => {
+    expect(classifyAstrophysicistGrade(55)).toBe('astronomer')
+  })
+})
+
+// ─── Star System Analysis ───────────────────────────────
+
+describe('analyzeStarSystem', () => {
+  it('handles empty system', () => {
+    const result = analyzeStarSystem([], 'empty-dir')
+    expect(result.systemType).toBe('void')
+    expect(result.condition).toBe('void')
+    expect(result.avgOrbitalStability).toBe(0)
+  })
+
+  it('analyzes system with bodies', () => {
     const bodies = [
-      center,
-      { ...makeBody(6, []), file: 'o.ts' },
+      analyzeCelestialBody('/** docs */\nexport function a(): number { return 1; }', 'dir/a.ts'),
+      analyzeCelestialBody('/** docs */\nexport function b(): string { return "x"; }', 'dir/b.ts'),
     ]
-    expect(classifyWellType(center, bodies)).toBe('binary')
-  })
-
-  it('classifies chaotic when most orbiters unstable', () => {
-    const center = makeBody(15, [
-      { file: 'a.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.8, isStable: false },
-      { file: 'b.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.9, isStable: false },
-      { file: 'c.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.7, isStable: false },
-      { file: 'd.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.1, isStable: true },
-    ])
-    expect(classifyWellType(center, [center])).toBe('chaotic')
-  })
-
-  it('classifies stable by default', () => {
-    const center = makeBody(15, [
-      { file: 'a.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.1, isStable: true },
-      { file: 'b.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.2, isStable: true },
-      { file: 'c.ts', distance: 1, orbitalSpeed: 10, tidalForce: 0.3, isStable: true },
-    ])
-    expect(classifyWellType(center, [center])).toBe('stable')
+    const result = analyzeStarSystem(bodies, 'dir')
+    expect(result.directory).toBe('dir')
+    expect(result.bodies.length).toBe(2)
+    expect(result.avgOrbitalStability).toBeGreaterThan(0)
   })
 })
 
-// ─── computeGravitationalConstant ──────────────────────────────────────────────
+// ─── Recommendations ────────────────────────────────────
 
-describe('computeGravitationalConstant', () => {
-  it('returns 0 for empty bodies', () => {
-    expect(computeGravitationalConstant([])).toBe(0)
+describe('generateRecommendations', () => {
+  it('returns maintenance message for clean code', () => {
+    const result = buildGravityWellResult(
+      ['clean.ts'],
+      ['/** docs */\nexport function clean(): void { try {} catch {} }'],
+    )
+    expect(result.recommendations).toContain('Maintain current orbital mechanics for a stable codebase')
   })
 
-  it('returns 0 for isolated bodies', () => {
-    const bodies: GravitationalBody[] = [
-      { file: 'a.ts', name: 'a', mass: 10, gravitationalPull: 0, gravitationalField: 0, orbiters: [], escapeVelocity: 0, classification: 'asteroid' },
-    ]
-    expect(computeGravitationalConstant(bodies)).toBe(0)
-  })
-
-  it('returns positive for connected bodies', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    expect(result.stats.gravitationalConstant).toBeGreaterThan(0)
-  })
-})
-
-// ─── computeSystemStability ────────────────────────────────────────────────────
-
-describe('computeSystemStability', () => {
-  it('returns 100 for no wells', () => {
-    expect(computeSystemStability([])).toBe(100)
-  })
-
-  it('averages well stabilities', () => {
-    const wells: GravityWell[] = [
-      { center: 'a.ts', bodies: ['a.ts'], radius: 1, totalMass: 50, gravitationalStrength: 10, stability: 80, type: 'stable' },
-      { center: 'b.ts', bodies: ['b.ts'], radius: 1, totalMass: 50, gravitationalStrength: 10, stability: 60, type: 'stable' },
-    ]
-    expect(computeSystemStability(wells)).toBe(70)
-  })
-})
-
-// ─── generateGravityRecommendations ───────────────────────────────────────────
-
-describe('generateGravityRecommendations', () => {
-  const baseStats: GravityStats = {
-    totalBodies: 10,
-    starCount: 1,
-    blackholeCount: 0,
-    wellCount: 1,
-    stableWells: 1,
-    chaoticWells: 0,
-    strongestGravity: 'core.ts',
-    deepestWell: 'core.ts',
-    avgEscapeVelocity: 30,
-    avgFieldStrength: 20,
-    gravitationalConstant: 15,
-    systemStability: 80,
-  }
-
-  it('recommends breaking up black holes', () => {
-    const bhBody: GravitationalBody = {
-      file: 'core.ts', name: 'core', mass: 500, gravitationalPull: 25,
-      gravitationalField: 250, orbiters: [], escapeVelocity: 90, classification: 'blackhole',
+  it('recommends breaking free from black holes', () => {
+    const result = buildGravityWellResult(
+      ['bad.ts'],
+      ['const x: any = 1\nconst y: any = 2\nconst z: any = 3'],
+    )
+    if (result.stats.blackHoleCount > 0) {
+      const hasBlackHole = result.recommendations.some(r => r.includes('black hole'))
+      expect(hasBlackHole).toBe(true)
     }
-    const recs = generateGravityRecommendations([bhBody], [], baseStats)
-    expect(recs.some(r => r.includes('Black hole') && r.includes('core.ts'))).toBe(true)
-  })
-
-  it('recommends structure for chaotic wells', () => {
-    const chaoticWell: GravityWell = {
-      center: 'x.ts', bodies: ['x.ts'], radius: 1, totalMass: 50,
-      gravitationalStrength: 10, stability: 20, type: 'chaotic',
-    }
-    const recs = generateGravityRecommendations([], [chaoticWell], baseStats)
-    expect(recs.some(r => r.includes('chaotic') && r.includes('structure'))).toBe(true)
-  })
-
-  it('recommends abstraction for high escape velocity', () => {
-    const highEsc: GravitationalBody = {
-      file: 'tightly.ts', name: 'tightly', mass: 100, gravitationalPull: 15,
-      gravitationalField: 150, orbiters: [], escapeVelocity: 80, classification: 'star',
-    }
-    const recs = generateGravityRecommendations([highEsc], [], baseStats)
-    expect(recs.some(r => r.includes('escape velocity') && r.includes('abstraction'))).toBe(true)
-  })
-
-  it('recommends connecting asteroids when many isolated', () => {
-    const asteroids = Array.from({ length: 6 }, (_, i) => ({
-      file: `iso${i}.ts`, name: `iso${i}`, mass: 5, gravitationalPull: 0,
-      gravitationalField: 0, orbiters: [], escapeVelocity: 0, classification: 'asteroid' as const,
-    }))
-    const stats = { ...baseStats, totalBodies: 10 }
-    const recs = generateGravityRecommendations(asteroids, [], stats)
-    expect(recs.some(r => r.includes('isolated'))).toBe(true)
-  })
-
-  it('recommends reducing coupling for low stability', () => {
-    const stats = { ...baseStats, systemStability: 30 }
-    const recs = generateGravityRecommendations([], [], stats)
-    expect(recs.some(r => r.includes('stability') && r.includes('coupling'))).toBe(true)
-  })
-
-  it('returns empty for healthy system', () => {
-    const recs = generateGravityRecommendations([], [], baseStats)
-    expect(recs).toEqual([])
   })
 })
 
-// ─── buildGravityResult ───────────────────────────────────────────────────────
+// ─── Orchestrator ───────────────────────────────────────
 
-describe('buildGravityResult', () => {
-  it('builds result with bodies', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    expect(result.bodies).toHaveLength(6)
+describe('buildGravityWellResult', () => {
+  it('handles empty input', () => {
+    const result = buildGravityWellResult([], [])
+    expect(result.bodies).toEqual([])
+    expect(result.systems).toEqual([])
+    expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.astrophysicistGrade).toBe('flat-earther')
   })
 
-  it('computes correct pull for engine', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const engine = result.bodies.find(b => b.file === 'core/engine.ts')
-    expect(engine).toBeDefined()
-    expect(engine!.gravitationalPull).toBe(4)
+  it('analyzes single file', () => {
+    const code = [
+      '/** Calculate value */',
+      'export function calculateValue(x: number): number {',
+      '  try { return x * 2; }',
+      '  catch(e) { return 0; }',
+      '}',
+    ].join('\n')
+    const result = buildGravityWellResult(['src/calc.ts'], [code])
+    expect(result.bodies.length).toBe(1)
+    expect(result.systems.length).toBe(1)
+    expect(result.bodies[0].file).toBe('src/calc.ts')
+    expect(result.bodies[0].gravitationalMass).toBeGreaterThan(0)
+    expect(result.universe.overallStability).toBeGreaterThan(0)
+    expect(result.stats.mostMassive).toBe('src/calc.ts')
   })
 
-  it('classifies engine as planet or star', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const engine = result.bodies.find(b => b.file === 'core/engine.ts')
-    expect(engine).toBeDefined()
-    expect(['planet', 'star']).toContain(engine!.classification)
+  it('analyzes multiple files across systems', () => {
+    const goodCode = '/** docs */\nexport function route(): number { try { return 1; } catch { return 0; } }'
+    const badCode = 'const x: any = 1\n// TODO: fix'
+    const result = buildGravityWellResult(
+      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
+      [goodCode, badCode, goodCode],
+    )
+    expect(result.bodies.length).toBe(3)
+    expect(result.systems.length).toBe(2)
+    expect(result.stats.totalSystems).toBe(2)
+    expect(result.stats.totalFiles).toBe(3)
   })
 
-  it('handles empty file list', () => {
-    const result = buildGravityResult(EMPTY_FILES, EMPTY_CONTENTS, {})
-    expect(result.bodies).toHaveLength(0)
-    expect(result.wells).toHaveLength(0)
-    expect(result.stats.totalBodies).toBe(0)
+  it('computes correct averages', () => {
+    const code1 = '/** docs */\nexport function a(): number { try { return 1; } catch { return 0; } }'
+    const code2 = '/** docs */\nexport function b(): string { try { return "x"; } catch { return ""; } }'
+    const result = buildGravityWellResult(['a.ts', 'b.ts'], [code1, code2])
+    expect(result.stats.avgGravitationalMass).toBeGreaterThan(0)
+    expect(result.stats.avgOrbitalStability).toBeGreaterThan(0)
   })
 
-  it('handles isolated files', () => {
-    const result = buildGravityResult(ISOLATED_FILES, ISOLATED_CONTENTS, {})
-    expect(result.bodies).toHaveLength(3)
-    expect(result.bodies.every(b => b.classification === 'asteroid')).toBe(true)
+  it('tracks condition counts', () => {
+    const goodCode = [
+      '/** docs */',
+      'export interface IRoute { path: string; }',
+      'export class Router { route(): void {} }',
+    ].join('\n')
+    const badCode = 'const x: any = 1'
+    const result = buildGravityWellResult(['good.ts', 'bad.ts'], [goodCode, badCode])
+    const totalConditions = result.stats.stableStarCount +
+      result.stats.healthyPlanetCount +
+      result.stats.tidalMoonCount +
+      result.stats.wanderingAsteroidCount +
+      result.stats.blackHoleCount +
+      result.stats.darkMatterCount
+    expect(totalConditions).toBe(2)
   })
 
-  it('stats are populated', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    expect(result.stats.totalBodies).toBe(6)
+  it('populates best-of fields', () => {
+    const code1 = '/** docs */\nexport function a(): void {}'
+    const code2 = 'const x = 1'
+    const result = buildGravityWellResult(['a.ts', 'b.ts'], [code1, code2])
+    expect(result.stats.mostMassive).toBeTruthy()
+    expect(result.stats.mostStable).toBeTruthy()
+    expect(result.stats.hardestToEscape).toBeTruthy()
     expect(result.stats.strongestGravity).toBeTruthy()
-    expect(result.stats.avgEscapeVelocity).toBeGreaterThanOrEqual(0)
-    expect(result.stats.gravitationalConstant).toBeGreaterThanOrEqual(0)
-  })
-
-  it('includes recommendations', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    expect(Array.isArray(result.recommendations)).toBe(true)
-  })
-
-  it('each body has valid escape velocity', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    for (const b of result.bodies) {
-      expect(b.escapeVelocity).toBeGreaterThanOrEqual(0)
-      expect(b.escapeVelocity).toBeLessThanOrEqual(100)
-    }
-  })
-
-  it('respects verbose option', () => {
-    const opts: GravityOptions = { verbose: true }
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, opts)
-    expect(result).toBeDefined()
+    expect(result.stats.mostDistorting).toBeTruthy()
   })
 })
 
-// ─── Format Helpers ────────────────────────────────────────────────────────────
+// ─── Format Helpers ─────────────────────────────────────
 
-describe('formatBodySymbol', () => {
-  it('returns correct symbols', () => {
-    expect(formatBodySymbol('star')).toBe('★')
-    expect(formatBodySymbol('planet')).toBe('●')
-    expect(formatBodySymbol('moon')).toBe('○')
-    expect(formatBodySymbol('asteroid')).toBe('◌')
-    expect(formatBodySymbol('blackhole')).toBe('◉')
-  })
-})
+describe('gravity-well format helpers', () => {
+  const sampleResult: GravityWellResult = buildGravityWellResult(
+    ['test.ts'],
+    ['/** docs */\nexport function test(): number { return 1; }'],
+  )
 
-describe('formatBodyClassification', () => {
-  it('includes symbol and name', () => {
-    expect(formatBodyClassification('star')).toContain('star')
-    expect(formatBodyClassification('star')).toContain('★')
-    expect(formatBodyClassification('blackhole')).toContain('blackhole')
-  })
-})
-
-describe('formatGravityWellDiagram', () => {
-  it('shows message for no wells', () => {
-    const output = formatGravityWellDiagram([])
-    expect(output).toContain('No gravity wells')
+  it('formatGravityWellTable returns string with report header', () => {
+    const output = formatGravityWellTable(sampleResult, false)
+    expect(output).toContain('Gravity Well Report')
+    expect(output).toContain('Universe Overview')
+    expect(output).toContain('Statistics')
   })
 
-  it('formats wells with centers', () => {
-    const wells: GravityWell[] = [
-      { center: 'core/engine.ts', bodies: ['core/engine.ts', 'a.ts', 'b.ts'], radius: 1, totalMass: 100, gravitationalStrength: 50, stability: 80, type: 'stable' },
-    ]
-    const output = formatGravityWellDiagram(wells)
-    expect(output).toContain('engine')
-    expect(output).toContain('stable')
-  })
-})
-
-describe('formatBodyTable', () => {
-  it('shows message for empty bodies', () => {
-    const output = formatBodyTable([])
-    expect(output).toContain('No bodies')
+  it('formatGravityWellTable shows body details in verbose mode', () => {
+    const output = formatGravityWellTable(sampleResult, true)
+    expect(output).toContain('Celestial Bodies')
+    expect(output).toContain('test.ts')
   })
 
-  it('formats bodies sorted by pull', () => {
-    const bodies: GravitationalBody[] = [
-      { file: 'low.ts', name: 'low', mass: 10, gravitationalPull: 0, gravitationalField: 0, orbiters: [], escapeVelocity: 0, classification: 'asteroid' },
-      { file: 'high.ts', name: 'high', mass: 100, gravitationalPull: 10, gravitationalField: 100, orbiters: [], escapeVelocity: 30, classification: 'star' },
-    ]
-    const output = formatBodyTable(bodies)
-    const highIdx = output.indexOf('high')
-    const lowIdx = output.indexOf('low')
-    expect(highIdx).toBeLessThan(lowIdx)
-  })
-})
-
-describe('formatEscapeVelocityChart', () => {
-  it('shows message for no data', () => {
-    const output = formatEscapeVelocityChart([])
-    expect(output).toContain('No escape velocity')
+  it('formatGravityWellTable shows systems', () => {
+    const output = formatGravityWellTable(sampleResult, false)
+    expect(output).toContain('Star Systems')
   })
 
-  it('formats top bodies', () => {
-    const bodies: GravitationalBody[] = [
-      { file: 'big.ts', name: 'big', mass: 100, gravitationalPull: 15, gravitationalField: 150, orbiters: [], escapeVelocity: 75, classification: 'star' },
-    ]
-    const output = formatEscapeVelocityChart(bodies)
-    expect(output).toContain('big')
-    expect(output).toContain('75')
-  })
-})
-
-describe('formatGravityStats', () => {
-  it('formats all stat fields', () => {
-    const stats: GravityStats = {
-      totalBodies: 10, starCount: 2, blackholeCount: 1,
-      wellCount: 3, stableWells: 2, chaoticWells: 1,
-      strongestGravity: 'core.ts', deepestWell: 'core.ts',
-      avgEscapeVelocity: 35, avgFieldStrength: 25,
-      gravitationalConstant: 12, systemStability: 75,
-    }
-    const output = formatGravityStats(stats)
-    expect(output).toContain('10')
-    expect(output).toContain('core.ts')
-    expect(output).toContain('75%')
-  })
-})
-
-describe('formatGravityRecommendations', () => {
-  it('returns empty for no recs', () => {
-    expect(formatGravityRecommendations([])).toBe('')
+  it('formatGravityWellJson returns valid JSON', () => {
+    const output = formatGravityWellJson(sampleResult)
+    const parsed = JSON.parse(output)
+    expect(parsed.bodies).toBeDefined()
+    expect(parsed.stats).toBeDefined()
+    expect(parsed.universe).toBeDefined()
   })
 
-  it('formats recommendations', () => {
-    const output = formatGravityRecommendations(['Break up black hole', 'Reduce coupling'])
-    expect(output).toContain('Break up black hole')
-    expect(output).toContain('→')
+  it('formatGravityWellCsv returns CSV with headers', () => {
+    const output = formatGravityWellCsv(sampleResult)
+    expect(output).toContain('File,GravitationalMass,OrbitalStability')
+    expect(output).toContain('test.ts')
   })
-})
 
-describe('formatGravityTable', () => {
-  it('formats full result', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const output = formatGravityTable(result)
-    expect(output).toContain('Gravity Well')
+  it('formatGravityWellCsv escapes commas in filenames', () => {
+    const result = buildGravityWellResult(
+      ['file,with,commas.ts'],
+      ['/** docs */\nexport function f(): void {}'],
+    )
+    const output = formatGravityWellCsv(result)
+    expect(output).toContain('"file,with,commas.ts"')
   })
-})
 
-describe('formatGravityJson', () => {
-  it('produces valid JSON', () => {
-    const result = buildGravityResult(HUB_FILES, HUB_CONTENTS, {})
-    const json = formatGravityJson(result)
-    const parsed = JSON.parse(json)
-    expect(parsed.bodies).toHaveLength(6)
+  it('handles empty result in all formats', () => {
+    const empty = buildGravityWellResult([], [])
+    expect(() => formatGravityWellTable(empty, false)).not.toThrow()
+    expect(() => formatGravityWellTable(empty, true)).not.toThrow()
+    expect(() => formatGravityWellJson(empty)).not.toThrow()
+    expect(() => formatGravityWellCsv(empty)).not.toThrow()
+  })
+
+  it('shows recommendations in table output', () => {
+    const output = formatGravityWellTable(sampleResult, false)
+    expect(output).toContain('Recommendations')
   })
 })

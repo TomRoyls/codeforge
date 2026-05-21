@@ -6,22 +6,25 @@ import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
 import {
-  buildGravityResult,
-  type GravityOptions,
-  type GravityResult,
+  buildGravityWellResult,
+  type GravityWellResult,
 } from './gravity-well-helpers.js'
-import { formatGravityJson, formatGravityTable } from './gravity-well-format-helpers.js'
+import {
+  formatGravityWellCsv,
+  formatGravityWellJson,
+  formatGravityWellTable,
+} from './gravity-well-format-helpers.js'
 
 export default class GravityWell extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze',
+      description: 'Path to analyze code coupling and gravity',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code gravity wells and gravitational attraction'
+  static override description = 'Analyze code coupling like gravitational forces'
 
   static override examples = [
     {
@@ -33,16 +36,12 @@ export default class GravityWell extends Command {
       description: 'Analyze src directory as JSON',
     },
     {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file celestial body details',
+    },
+    {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
       description: 'Analyze TypeScript files only',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed gravitational analysis',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output gravity.json',
-      description: 'Export results to JSON file',
     },
   ]
 
@@ -55,7 +54,7 @@ export default class GravityWell extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['json', 'table'],
+      options: ['csv', 'json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -69,7 +68,7 @@ export default class GravityWell extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed output',
+      description: 'Show per-file celestial body details',
     }),
   }
 
@@ -82,10 +81,10 @@ export default class GravityWell extends Command {
       this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
-    const format = flags.format as 'json' | 'table'
+    const format = flags.format as 'csv' | 'json' | 'table'
     const { verbose } = flags
 
-    const spinner = ora('Discovering files...').start()
+    const spinner = ora('Scanning celestial bodies...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -131,24 +130,30 @@ export default class GravityWell extends Command {
 
     spinner.text = 'Computing gravitational fields...'
 
-    const contents = await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          return await fs.readFile(file.absolutePath, 'utf8')
-        } catch {
-          return ''
-        }
-      }),
-    )
+    const files: string[] = []
+    const contents: string[] = []
 
-    const files = filteredFiles.map((f) => f.path)
-    const options: GravityOptions = { verbose }
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        files.push(file.path)
+        contents.push(content)
+      } catch {
+        files.push(file.path)
+        contents.push('')
+      }
+    }
 
-    const result: GravityResult = buildGravityResult(files, contents, options)
+    const result: GravityWellResult = buildGravityWellResult(files, contents, {})
 
-    spinner.succeed(`Analyzed ${files.length} gravitational bodies`)
+    spinner.succeed(`Analyzed ${files.length} bodies across ${result.systems.length} systems`)
 
-    const outputData = format === 'json' ? formatGravityJson(result) : formatGravityTable(result)
+    const outputData =
+      format === 'json'
+        ? formatGravityWellJson(result)
+        : format === 'csv'
+          ? formatGravityWellCsv(result)
+          : formatGravityWellTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -165,6 +170,6 @@ export default class GravityWell extends Command {
   }
 }
 
-export { buildGravityResult } from './gravity-well-helpers.js'
-export type { BodyClassification, GravitationalBody, GravityOptions, GravityResult, GravityStats, GravityWell, Orbiter, WellType } from './gravity-well-helpers.js'
-export { formatGravityJson, formatGravityTable } from './gravity-well-format-helpers.js'
+export { buildGravityWellResult } from './gravity-well-helpers.js'
+export type { GravityWellResult, CelestialBody, StarSystem, GravityWellStats, UniverseMeasure } from './gravity-well-helpers.js'
+export { formatGravityWellCsv, formatGravityWellJson, formatGravityWellTable } from './gravity-well-format-helpers.js'
