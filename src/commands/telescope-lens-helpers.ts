@@ -1,745 +1,802 @@
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Interfaces ──────────────────────────────────────────
 
-export type ZoomLevelName = 'macro' | 'meso' | 'micro' | 'nano'
-export type FindingCategory = 'structure' | 'pattern' | 'quality' | 'risk' | 'insight'
-export type FindingSeverity = 'info' | 'notable' | 'important' | 'critical'
-export type FileClassification = 'crystal' | 'focused' | 'multi-focal' | 'blurry' | 'opaque'
-export type TelescopeGrade = 'hubble' | 'observatory' | 'binoculars' | 'magnifying-glass' | 'naked-eye'
+export type LensType = 'achromatic' | 'apochromatic' | 'plan-achromatic' | 'simple' | 'compound' | 'defective'
+export type ElementCondition = 'hubble-quality' | 'research-grade' | 'observatory' | 'backyard-scope' | 'toy-telescope' | 'broken-lens'
+export type BayType = 'professional-dome' | 'campus-observatory' | 'backyard-observatory' | 'rooftop' | 'window' | 'dark-closet'
+export type BayCondition = 'crystal-clear' | 'sharp' | 'adequate' | 'blurry' | 'distorted' | 'opaque'
+export type AstronomerGrade = 'optical-engineer' | 'telescope-maker' | 'astronomer' | 'stargazer' | 'tourist' | 'blind'
 
-export interface ZoomFinding {
-  level: ZoomLevelName
-  file: string
-  category: FindingCategory
-  description: string
-  severity: FindingSeverity
-  onlyVisibleAt: ZoomLevelName
-}
-
-export interface ZoomLevel {
-  level: ZoomLevelName
-  description: string
-  clarity: number
-  visiblePatterns: string[]
-  blurryAreas: string[]
-  findings: ZoomFinding[]
-}
-
-export interface FocalDepth {
-  file: string
-  depthRequired: number
-  macroView: string
-  mesoView: string
-  microView: string
-  nanoView: string
-  clarity: number
+export interface LensMeasure {
+  type: LensType
+  focalLength: number
+  fNumber: number
+  isFocused: boolean
+  isBlurred: boolean
+  isDistorted: boolean
+  hasMultipleFoci: boolean
   focusScore: number
-  classification: FileClassification
 }
 
-export interface FocusReport {
+export interface ApertureMeasure {
+  diameter: number
+  isOpen: boolean
+  isStopped: boolean
+  isOptimal: boolean
+  hasVignetting: boolean
+  hasFalloff: boolean
+  fStop: number
+}
+
+export interface MagnificationMeasure {
+  level: number
+  isMacro: boolean
+  isNormal: boolean
+  isWide: boolean
+  hasEmptyMagnification: boolean
+  hasUsefulDetail: boolean
+  detailDensity: number
+}
+
+export interface ResolutionMeasure {
+  sharpness: number
+  hasDiffraction: boolean
+  hasSphericalAberration: boolean
+  hasComa: boolean
+  hasAstigmatism: boolean
+  resolvingPower: number
+  contrast: number
+}
+
+export interface AberrationMeasure {
+  chromatic: number
+  isCorrected: boolean
+  hasColorFringing: boolean
+  hasBarrelDistortion: boolean
+  hasPincushion: boolean
+  fringeCount: number
+  isMinimal: boolean
+}
+
+export interface GatheringMeasure {
+  power: number
+  hasFieldStop: boolean
+  hasEyepiece: boolean
+  hasFilter: boolean
+  hasFinder: boolean
+  hasCollimation: boolean
+  lightTransmission: number
+}
+
+export interface MountMeasure {
+  isStable: boolean
+  isAligned: boolean
+  hasTracking: boolean
+  hasGoTo: boolean
+  alignmentScore: number
+}
+
+export interface LensElement {
   file: string
-  zoomLevels: ZoomLevel[]
-  focalDepth: FocalDepth
-  bestZoomLevel: ZoomLevelName
-  worstZoomLevel: ZoomLevelName
+  focalLength: number
+  aperture: number
+  magnification: number
+  resolution: number
+  aberration: number
+  lightGathering: number
+  lens: LensMeasure
+  apertureDetail: ApertureMeasure
+  magnificationDetail: MagnificationMeasure
+  resolutionDetail: ResolutionMeasure
+  aberrationDetail: AberrationMeasure
+  gathering: GatheringMeasure
+  mount: MountMeasure
+  condition: ElementCondition
+  qualityScore: number
+}
+
+export interface ObservatoryBay {
+  directory: string
+  elements: LensElement[]
+  avgFocalLength: number
+  avgResolution: number
+  avgAberration: number
+  hubbleCount: number
+  brokenCount: number
+  focusedCount: number
+  distortedCount: number
+  bayType: BayType
+  condition: BayCondition
+}
+
+export interface Observatory {
+  avgFocalLength: number
+  avgResolution: number
+  avgAberration: number
+  avgLightGathering: number
+  isFocused: boolean
+  overallClarity: number
 }
 
 export interface TelescopeLensStats {
-  totalReports: number
-  avgClarity: number
-  avgDepthRequired: number
-  avgFocusScore: number
-  crystalFiles: number
-  opaqueFiles: number
-  macroClarity: number
-  mesoClarity: number
-  microClarity: number
-  nanoClarity: number
-  findingsPerLevel: Record<string, number>
-  criticalFindings: number
-  bestOverallLevel: ZoomLevelName
-  worstOverallLevel: ZoomLevelName
-  overallFocus: number
-  telescopeGrade: TelescopeGrade
+  totalFiles: number
+  totalBays: number
+  avgFocalLength: number
+  avgAperture: number
+  avgMagnification: number
+  avgResolution: number
+  avgAberration: number
+  avgLightGathering: number
+  hubbleQualityCount: number
+  researchGradeCount: number
+  observatoryCount: number
+  backyardScopeCount: number
+  toyTelescopeCount: number
+  brokenLensCount: number
+  achromaticCount: number
+  apochromaticCount: number
+  simpleCount: number
+  defectiveCount: number
+  focusedCount: number
+  blurredCount: number
+  distortedCount: number
+  multipleFociCount: number
+  correctedCount: number
+  hasFilterCount: number
+  hasCollimationCount: number
+  isStableCount: number
+  overallClarity: number
+  astronomerGrade: AstronomerGrade
+  clearest: string
+  sharpest: string
+  mostAberrated: string
+  bestFocused: string
+  mostPowerful: string
 }
 
 export interface TelescopeLensResult {
-  reports: FocusReport[]
-  globalZoom: ZoomLevel[]
+  elements: LensElement[]
+  bays: ObservatoryBay[]
+  observatory: Observatory
   stats: TelescopeLensStats
   recommendations: string[]
 }
 
-// ─── Internal Helpers ──────────────────────────────────────────────────────────
+// ─── Primitive Counters ──────────────────────────────────
 
-/**
- * Count exports in content
- * @example
- * countExports('export const x = 1; export function f() {}') // 2
- */
-function countExports(content: string): number {
-  return (content.match(/export\s+/g) || []).length
+export function countLoc(content: string): number {
+  if (content.length === 0) return 0
+  return content.split('\n').filter(l => l.trim().length > 0).length
 }
 
-/**
- * Count functions in content
- * @example
- * countFns('function foo() {} const bar = () => {}') // 2
- */
-function countFns(content: string): number {
-  const named = (content.match(/function\s+\w+/g) || []).length
-  const arrow = (content.match(/=>\s*[{(]/g) || []).length
-  return named + arrow
+export function countImports(content: string): number {
+  const matches = content.match(/^import\s/gm)
+  return matches ? matches.length : 0
 }
 
-/**
- * Count classes in content
- * @example
- * countClasses('class A {} class B {}') // 2
- */
-function countClasses(content: string): number {
-  return (content.match(/class\s+\w+/g) || []).length
+export function countExports(content: string): number {
+  const matches = content.match(/^export\s/gm)
+  return matches ? matches.length : 0
 }
 
-/**
- * Count interfaces in content
- * @example
- * countIfaces('interface Config {}') // 1
- */
-function countIfaces(content: string): number {
-  return (content.match(/interface\s+\w+/g) || []).length
+export function countFunctions(content: string): number {
+  const matches = content.match(/\bfunction\s+\w+|\b\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|(?:async\s+)?\([^)]*\)\s*:\s*\w+)/g)
+  return matches ? matches.length : 0
 }
 
-/**
- * Count import statements
- * @example
- * countImports('import { x } from "a"') // 1
- */
-function countImports(content: string): number {
-  return (content.match(/import\s+/g) || []).length
+export function countClasses(content: string): number {
+  const matches = content.match(/\bclass\s+\w+/g)
+  return matches ? matches.length : 0
 }
 
-/**
- * Get max nesting depth
- * @example
- * getMaxNesting('if (a) { if (b) { } }') // 2
- */
-function getMaxNesting(content: string): number {
-  let max = 0
+export function countErrorHandling(content: string): number {
+  let count = 0
+  const tryMatch = content.match(/\btry\s*\{/g)
+  if (tryMatch) count += tryMatch.length
+  const catchMatch = content.match(/\bcatch\s/g)
+  if (catchMatch) count += catchMatch.length
+  const throwMatch = content.match(/\bthrow\s/g)
+  if (throwMatch) count += throwMatch.length
+  return count
+}
+
+export function countTypeAnnotations(content: string): number {
+  const matches = content.match(/:\s*(?:string|number|boolean|void|null|undefined|never|any|unknown|object|bigint|symbol)(?:\[\])?\b/g)
+  return matches ? matches.length : 0
+}
+
+export function countBranches(content: string): number {
+  let count = 0
+  const ifMatch = content.match(/\bif\s*\(/g)
+  if (ifMatch) count += ifMatch.length
+  const elseMatch = content.match(/\belse\s/g)
+  if (elseMatch) count += elseMatch.length
+  const switchMatch = content.match(/\bswitch\s*\(/g)
+  if (switchMatch) count += switchMatch.length
+  return count
+}
+
+export function maxNesting(content: string): number {
+  let maxDepth = 0
   let depth = 0
   for (const ch of content) {
-    if (ch === '{') { depth++; if (depth > max) max = depth }
-    else if (ch === '}') { depth = Math.max(0, depth - 1) }
+    if (ch === '{') { depth++; if (depth > maxDepth) maxDepth = depth }
+    if (ch === '}') { depth = Math.max(0, depth - 1) }
   }
-  return max
+  return maxDepth
 }
 
-/**
- * Count type annotations
- * @example
- * countTypeAnnotations(': number') // 1
- */
-function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*\w+/g) || []).length
+export function countConsole(content: string): number {
+  const matches = content.match(/\bconsole\.\w+/g)
+  return matches ? matches.length : 0
 }
 
-/**
- * Count comment lines
- * @example
- * countComments('// hello') // 1
- */
-function countComments(content: string): number {
-  return (content.match(/\/\/.*$/gm) || []).length
+export function countComments(content: string): number {
+  let count = 0
+  const singleMatch = content.match(/\/\/.*$/gm)
+  if (singleMatch) count += singleMatch.length
+  const blockMatch = content.match(/\/\*[\s\S]*?\*\//g)
+  if (blockMatch) count += blockMatch.length
+  return count
 }
 
-// ─── Macro Analysis ────────────────────────────────────────────────────────────
-
-/**
- * Analyze at macro (project) zoom level
- * @example
- * analyzeMacro(['a.ts'], ['export const x = 1']) // ZoomLevel
- */
-export function analyzeMacro(files: string[], contents: string[]): ZoomLevel {
-  const findings: ZoomFinding[] = []
-  const visiblePatterns: string[] = []
-  const blurryAreas: string[] = []
-
-  const dirs = Array.from(new Set(files.map(f => {
-    const parts = f.split('/')
-    return parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
-  })))
-  const dirCount = dirs.length
-  visiblePatterns.push(`${dirCount} director${dirCount === 1 ? 'y' : 'ies'}`)
-
-  const totalExports = contents.reduce((s, c) => s + countExports(c), 0)
-  const totalImports = contents.reduce((s, c) => s + countImports(c), 0)
-  if (totalExports > 0) visiblePatterns.push(`${totalExports} exports across codebase`)
-  if (totalImports > 0) visiblePatterns.push(`${totalImports} imports across codebase`)
-
-  if (files.length > 50) {
-    blurryAreas.push('Large codebase — fine details obscured at macro level')
-    findings.push({
-      level: 'macro', file: '*', category: 'structure', severity: 'info',
-      description: 'Large codebase requires meso/micro zoom for details',
-      onlyVisibleAt: 'macro',
-    })
-  }
-
-  if (files.length > 0 && totalExports === 0) {
-    blurryAreas.push('No exports detected — module boundaries unclear')
-    findings.push({
-      level: 'macro', file: '*', category: 'risk', severity: 'important',
-      description: 'No exports found — may lack clear module interfaces',
-      onlyVisibleAt: 'macro',
-    })
-  }
-
-  const hasIndex = files.some(f => f.endsWith('index.ts') || f.endsWith('index.js'))
-  if (hasIndex) {
-    visiblePatterns.push('Entry point files detected')
-  } else if (files.length > 5) {
-    blurryAreas.push('No index entry points found')
-  }
-
-  const avgFileSize = contents.length > 0
-    ? contents.reduce((s, c) => s + c.split('\n').length, 0) / contents.length
-    : 0
-
-  if (avgFileSize > 300) {
-    findings.push({
-      level: 'macro', file: '*', category: 'quality', severity: 'notable',
-      description: `Average file size ${Math.round(avgFileSize)} lines — files may be too large`,
-      onlyVisibleAt: 'macro',
-    })
-    blurryAreas.push('Large average file size')
-  }
-
-  let clarity = 50
-  if (dirCount >= 2) clarity += 10
-  if (hasIndex) clarity += 10
-  if (totalExports > 0) clarity += 10
-  if (avgFileSize <= 200) clarity += 10
-  if (totalExports > 0 && totalImports > 0) clarity += 10
-  clarity = Math.max(0, Math.min(100, clarity))
-
-  return {
-    level: 'macro',
-    description: 'Project-level overview: directory structure, module boundaries',
-    clarity,
-    visiblePatterns: Array.from(new Set(visiblePatterns)),
-    blurryAreas: Array.from(new Set(blurryAreas)),
-    findings,
-  }
+export function countTodos(content: string): number {
+  const matches = content.match(/\bTODO\b|\bFIXME\b|\bHACK\b/gi)
+  return matches ? matches.length : 0
 }
 
-// ─── Meso Analysis ─────────────────────────────────────────────────────────────
+export function countJSDoc(content: string): number {
+  const matches = content.match(/\/\*\*[\s\S]*?\*\//g)
+  return matches ? matches.length : 0
+}
+
+export function countDescriptiveNames(content: string): number {
+  const matches = content.match(/\b(?:get|set|is|has|can|should|will|compute|calculate|validate|parse|format|transform|process|handle|build|create|generate|extract|resolve|initialize|configure|update|remove|delete|find|search|check|verify|ensure|assert)\w+/gi)
+  return matches ? matches.length : 0
+}
+
+export function countValidations(content: string): number {
+  const matches = content.match(/\b(typeof|instanceof|\.length\s*[><=!]|\bin\b|\!\s*\w|===|!==)/g)
+  return matches ? matches.length : 0
+}
+
+// ─── Lens Measurement ────────────────────────────────────
 
 /**
- * Analyze at meso (module) zoom level
+ * Measure lens focus properties
  * @example
- * analyzeMeso('export function f() {}', 'a.ts') // ZoomLevel
+ * measureLens('export function calc() {}') // { type, focalLength, ... }
  */
-export function analyzeMeso(content: string, filePath: string): ZoomLevel {
-  const findings: ZoomFinding[] = []
-  const visiblePatterns: string[] = []
-  const blurryAreas: string[] = []
-  const lines = content.split('\n').length
+export function measureLens(content: string): LensMeasure {
+  const loc = countLoc(content)
   const exports = countExports(content)
-  const funcs = countFns(content)
-  const classes = countClasses(content)
-  const ifaces = countIfaces(content)
+  const types = countTypeAnnotations(content)
+  const jsdoc = countJSDoc(content)
+  const descriptive = countDescriptiveNames(content)
   const imports = countImports(content)
 
-  if (exports > 0) visiblePatterns.push(`${exports} export(s)`)
-  if (funcs > 0) visiblePatterns.push(`${funcs} function(s)`)
-  if (classes > 0) visiblePatterns.push(`${classes} class(es)`)
-  if (ifaces > 0) visiblePatterns.push(`${ifaces} interface(s)`)
-  if (imports > 0) visiblePatterns.push(`${imports} import(s)`)
+  const focalLength = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (exports > 0 ? 25 : 0) +
+    (types > 0 ? 20 : 0) +
+    (jsdoc > 0 ? 20 : 0) +
+    (descriptive > 0 ? 15 : 0) +
+    (imports > 0 ? 10 : 0) +
+    (countComments(content) > 0 ? 10 : 0),
+  )))
 
-  const hasDefaultExport = /export\s+default\s+/.test(content)
-  if (hasDefaultExport) {
-    visiblePatterns.push('Default export present')
-  }
+  let type: LensType = 'defective'
+  if (exports > 0 && types > 0 && jsdoc > 0 && descriptive > 0) type = 'apochromatic'
+  else if (exports > 0 && types > 0) type = 'achromatic'
+  else if (exports > 0 && jsdoc > 0) type = 'plan-achromatic'
+  else if (exports > 0 && imports > 0) type = 'compound'
+  else if (loc > 0) type = 'simple'
 
-  if (lines > 300) {
-    blurryAreas.push('Large file — structure hard to see at meso level')
-    findings.push({
-      level: 'meso', file: filePath, category: 'quality', severity: 'notable',
-      description: `File is ${lines} lines — consider splitting`,
-      onlyVisibleAt: 'meso',
-    })
-  }
+  const isFocused = exports > 0 && descriptive > 0
+  const isBlurred = exports === 0 && loc > 0
+  const isDistorted = exports > 0 && descriptive === 0
+  const hasMultipleFoci = exports > 3
+  const focusScore = focalLength
 
-  if (exports === 0 && funcs > 0) {
-    blurryAreas.push('Functions without exports — internal-only module')
-    findings.push({
-      level: 'meso', file: filePath, category: 'pattern', severity: 'info',
-      description: 'Internal module with no public exports',
-      onlyVisibleAt: 'meso',
-    })
-  }
+  const apertureVal = exports + imports + countFunctions(content) + countClasses(content)
+  const fNumber = focalLength === 0 ? 0 : Math.round(Math.min(100, Math.max(1, focalLength / Math.max(1, apertureVal) * 5)))
 
-  if (imports > 10) {
-    findings.push({
-      level: 'meso', file: filePath, category: 'risk', severity: 'important',
-      description: `${imports} imports — high coupling`,
-      onlyVisibleAt: 'meso',
-    })
-    blurryAreas.push('High import count suggests tight coupling')
-  }
-
-  const hasJSDoc = /\/\*\*[\s\S]*?\*\//.test(content)
-  if (hasJSDoc) visiblePatterns.push('JSDoc documentation')
-
-  let clarity = 40
-  if (exports > 0) clarity += 10
-  if (hasJSDoc) clarity += 10
-  if (lines <= 200) clarity += 15
-  if (ifaces > 0) clarity += 10
-  if (imports <= 5) clarity += 10
-  if (classes > 0 || funcs > 0) clarity += 5
-  clarity = Math.max(0, Math.min(100, clarity))
-
-  return {
-    level: 'meso',
-    description: 'Module-level view: file structure, exports, organization',
-    clarity,
-    visiblePatterns: Array.from(new Set(visiblePatterns)),
-    blurryAreas: Array.from(new Set(blurryAreas)),
-    findings,
-  }
+  return { type, focalLength, fNumber, isFocused, isBlurred, isDistorted, hasMultipleFoci, focusScore }
 }
 
-// ─── Micro Analysis ────────────────────────────────────────────────────────────
+// ─── Aperture Measurement ────────────────────────────────
 
 /**
- * Analyze at micro (function) zoom level
+ * Measure aperture scope properties
  * @example
- * analyzeMicro('function f() { if (x) { return 1 } }', 'a.ts') // ZoomLevel
+ * measureAperture('export function calc() {}') // { diameter, isOpen, ... }
  */
-export function analyzeMicro(content: string, filePath: string): ZoomLevel {
-  const findings: ZoomFinding[] = []
-  const visiblePatterns: string[] = []
-  const blurryAreas: string[] = []
-  const funcs = countFns(content)
-  const nesting = getMaxNesting(content)
-  const hasTryCatch = /try\s*\{|catch\s*\(/.test(content)
-  const hasThrow = /throw\s+/.test(content)
-  const hasAsync = /async|await|Promise/.test(content)
+export function measureAperture(content: string): ApertureMeasure {
+  const loc = countLoc(content)
+  const exports = countExports(content)
+  const imports = countImports(content)
+  const functions = countFunctions(content)
+  const classes = countClasses(content)
 
-  if (funcs > 0) visiblePatterns.push(`${funcs} function(s) defined`)
-  if (hasTryCatch) visiblePatterns.push('Error handling present')
-  if (hasAsync) visiblePatterns.push('Async patterns detected')
+  const diameter = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (functions * 10) +
+    (classes * 15) +
+    (imports * 5) +
+    (exports * 8) +
+    Math.min(loc / 5, 20),
+  )))
 
-  if (nesting > 4) {
-    blurryAreas.push(`Deep nesting (${nesting} levels) — hard to follow logic`)
-    findings.push({
-      level: 'micro', file: filePath, category: 'quality', severity: 'important',
-      description: `${nesting} levels of nesting — consider flattening`,
-      onlyVisibleAt: 'micro',
-    })
-  }
+  const isOpen = diameter > 60
+  const isStopped = diameter < 30 && loc > 0
+  const isOptimal = diameter >= 30 && diameter <= 60
+  const hasVignetting = imports > 0 && exports === 0
+  const hasFalloff = functions > 3 && exports <= 1
+  const fStop = diameter === 0 ? 0 : Math.round(Math.min(22, Math.max(1, 100 / diameter)))
 
-  if (hasAsync && !hasTryCatch) {
-    blurryAreas.push('Async code without error handling')
-    findings.push({
-      level: 'micro', file: filePath, category: 'risk', severity: 'critical',
-      description: 'Async operations without try/catch — unhandled rejections likely',
-      onlyVisibleAt: 'micro',
-    })
-  }
-
-  if (funcs > 10) {
-    blurryAreas.push('Many functions — consider extraction')
-    findings.push({
-      level: 'micro', file: filePath, category: 'pattern', severity: 'notable',
-      description: `${funcs} functions in one file — could be split`,
-      onlyVisibleAt: 'micro',
-    })
-  }
-
-  if (hasTryCatch && hasThrow) {
-    visiblePatterns.push('Robust error propagation')
-  }
-
-  if (nesting <= 3 && funcs <= 5) {
-    visiblePatterns.push('Clean control flow')
-  }
-
-  let clarity = 45
-  if (funcs > 0) clarity += 10
-  if (hasTryCatch) clarity += 15
-  if (nesting <= 3) clarity += 15
-  if (funcs <= 5) clarity += 10
-  if (hasAsync && hasTryCatch) clarity += 5
-  clarity = Math.max(0, Math.min(100, clarity))
-
-  return {
-    level: 'micro',
-    description: 'Function-level view: logic flow, error handling, control structures',
-    clarity,
-    visiblePatterns: Array.from(new Set(visiblePatterns)),
-    blurryAreas: Array.from(new Set(blurryAreas)),
-    findings,
-  }
+  return { diameter, isOpen, isStopped, isOptimal, hasVignetting, hasFalloff, fStop }
 }
 
-// ─── Nano Analysis ─────────────────────────────────────────────────────────────
+// ─── Magnification Measurement ───────────────────────────
 
 /**
- * Analyze at nano (line) zoom level
+ * Measure magnification detail properties
  * @example
- * analyzeNano('const value: number = 42;', 'a.ts') // ZoomLevel
+ * measureMagnification('if (x) { return calc() }') // { level, isMacro, ... }
  */
-export function analyzeNano(content: string, filePath: string): ZoomLevel {
-  const findings: ZoomFinding[] = []
-  const visiblePatterns: string[] = []
-  const blurryAreas: string[] = []
-  const lines = content.split('\n')
-  const typeAnnotations = countTypeAnnotations(content)
+export function measureMagnification(content: string): MagnificationMeasure {
+  const loc = countLoc(content)
+  const branches = countBranches(content)
+  const types = countTypeAnnotations(content)
+  const errors = countErrorHandling(content)
+  const validations = countValidations(content)
+  const nesting = maxNesting(content)
+
+  const level = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (branches * 8) +
+    (nesting * 10) +
+    (errors * 8) +
+    (validations * 5) +
+    Math.min(types * 3, 15),
+  )))
+
+  const isMacro = level > 70
+  const isNormal = level >= 30 && level <= 70
+  const isWide = level < 30 && loc > 0
+  const hasEmptyMagnification = branches > 3 && types === 0 && countJSDoc(content) === 0
+  const hasUsefulDetail = branches > 0 && types > 0
+  const detailDensity = loc === 0 ? 0 : Math.min(100, Math.round(
+    ((branches + validations + errors) / Math.max(1, loc)) * 100,
+  ))
+
+  return { level, isMacro, isNormal, isWide, hasEmptyMagnification, hasUsefulDetail, detailDensity }
+}
+
+// ─── Resolution Measurement ──────────────────────────────
+
+/**
+ * Measure resolution sharpness properties
+ * @example
+ * measureResolution('const x: number = validate(input)') // { sharpness, ... }
+ */
+export function measureResolution(content: string): ResolutionMeasure {
+  const loc = countLoc(content)
+  const types = countTypeAnnotations(content)
+  const errors = countErrorHandling(content)
+  const validations = countValidations(content)
+  const imports = countImports(content)
+  const functions = countFunctions(content)
+
+  const sharpness = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (types > 0 ? 25 : 0) +
+    (errors > 0 ? 20 : 0) +
+    (validations > 0 ? 20 : 0) +
+    (countDescriptiveNames(content) > 0 ? 15 : 0) +
+    (countJSDoc(content) > 0 ? 10 : 0) +
+    (countTodos(content) === 0 ? 10 : 0),
+  )))
+
+  const hasDiffraction = imports > 5 && functions > 0 && loc / Math.max(1, functions) < 5
+  const hasSphericalAberration = functions > 2 && types > 0 && errors === 0
+  const hasComa = countConsole(content) > 0 && countExports(content) > 0
+  const hasAstigmatism = types > 0 && types < functions
+
+  const resolvingPower = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (sharpness * 0.4) +
+    (errors > 0 ? 20 : 0) +
+    (validations > 0 ? 15 : 0) +
+    (types > 0 ? 15 : 0) +
+    (countBranches(content) > 0 && errors > 0 ? 10 : 0),
+  )))
+
+  const contrast = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (types > 0 ? 30 : 0) +
+    (errors > 0 ? 25 : 0) +
+    (countConsole(content) === 0 ? 20 : 0) +
+    (countTodos(content) === 0 ? 15 : 0) +
+    (validations > 0 ? 10 : 0),
+  )))
+
+  return { sharpness, hasDiffraction, hasSphericalAberration, hasComa, hasAstigmatism, resolvingPower, contrast }
+}
+
+// ─── Aberration Measurement ──────────────────────────────
+
+/**
+ * Measure aberration distortion properties
+ * @example
+ * measureAberration('export function a() {} export class B {}') // { chromatic, ... }
+ */
+export function measureAberration(content: string): AberrationMeasure {
+  const loc = countLoc(content)
+  const exports = countExports(content)
+  const imports = countImports(content)
+  const functions = countFunctions(content)
+  const classes = countClasses(content)
+  const consoleCount = countConsole(content)
+
+  const exportTypes: string[] = []
+  if (functions > 0) exportTypes.push('function')
+  if (classes > 0) exportTypes.push('class')
+  if (/\bexport\s+(const|let|var)\s/.test(content)) exportTypes.push('variable')
+  if (/\bexport\s+(interface|type)\s/.test(content)) exportTypes.push('type')
+
+  const chromatic = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (exportTypes.length > 2 ? 30 : exportTypes.length > 1 ? 15 : 0) +
+    (consoleCount > 0 ? 20 : 0) +
+    (countTodos(content) > 0 ? 15 : 0) +
+    (functions > 5 ? 15 : 0) +
+    (classes > 2 ? 10 : 0) +
+    (exports > 5 ? 10 : 0),
+  )))
+
+  const isCorrected = exportTypes.length <= 1 && consoleCount === 0 && countTodos(content) === 0
+  const hasColorFringing = exportTypes.length > 2
+  const hasBarrelDistortion = exports > 3 && imports < 2
+  const hasPincushion = imports > 3 && exports < 2
+  const fringeCount = Math.max(0, exportTypes.length - 1) + (consoleCount > 0 ? 1 : 0)
+  const isMinimal = chromatic < 20
+
+  return { chromatic, isCorrected, hasColorFringing, hasBarrelDistortion, hasPincushion, fringeCount, isMinimal }
+}
+
+// ─── Gathering Measurement ───────────────────────────────
+
+/**
+ * Measure light gathering properties
+ * @example
+ * measureGathering('import { x } from "y"; export function calc() {}') // { power, ... }
+ */
+export function measureGathering(content: string): GatheringMeasure {
+  const loc = countLoc(content)
+  const imports = countImports(content)
+  const types = countTypeAnnotations(content)
+  const jsdoc = countJSDoc(content)
   const comments = countComments(content)
-  const hasTypes = typeAnnotations > 0
-  const hasComments = comments > 0
+  const errors = countErrorHandling(content)
 
-  if (hasTypes) visiblePatterns.push(`${typeAnnotations} type annotation(s)`)
-  if (hasComments) visiblePatterns.push(`${comments} comment line(s)`)
+  const power = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (imports > 0 ? 15 : 0) +
+    (types > 0 ? 20 : 0) +
+    (jsdoc > 0 ? 20 : 0) +
+    (comments > 0 ? 10 : 0) +
+    (errors > 0 ? 15 : 0) +
+    (countDescriptiveNames(content) > 0 ? 10 : 0) +
+    (countValidations(content) > 0 ? 10 : 0),
+  )))
 
-  const avgLineLength = lines.reduce((s, l) => s + l.length, 0) / Math.max(1, lines.length)
-  if (avgLineLength <= 80) {
-    visiblePatterns.push('Short, readable lines')
-  } else if (avgLineLength > 120) {
-    blurryAreas.push(`Long average line length (${Math.round(avgLineLength)} chars)`)
-    findings.push({
-      level: 'nano', file: filePath, category: 'quality', severity: 'notable',
-      description: `Average line length ${Math.round(avgLineLength)} chars — hard to read`,
-      onlyVisibleAt: 'nano',
-    })
-  }
+  const hasFieldStop = countValidations(content) > 0
+  const hasEyepiece = countExports(content) > 0
+  const hasFilter = countErrorHandling(content) > 0
+  const hasFinder = jsdoc > 0 || comments > 2
+  const hasCollimation = types > 0 && errors > 0
 
-  if (!hasTypes) {
-    blurryAreas.push('No type annotations')
-    findings.push({
-      level: 'nano', file: filePath, category: 'insight', severity: 'info',
-      description: 'Missing type annotations — types would improve clarity',
-      onlyVisibleAt: 'nano',
-    })
-  }
+  const lightTransmission = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (hasEyepiece ? 20 : 0) +
+    (hasFilter ? 20 : 0) +
+    (hasCollimation ? 20 : 0) +
+    (hasFinder ? 15 : 0) +
+    (hasFieldStop ? 15 : 0) +
+    (countConsole(content) === 0 ? 10 : 0),
+  )))
 
-  if (!hasComments) {
-    blurryAreas.push('No comments')
-  }
-
-  const hasTrailingWhitespace = lines.some(l => l.endsWith(' ') || l.endsWith('\t'))
-  if (hasTrailingWhitespace) {
-    findings.push({
-      level: 'nano', file: filePath, category: 'quality', severity: 'info',
-      description: 'Trailing whitespace detected',
-      onlyVisibleAt: 'nano',
-    })
-  }
-
-  const longLines = lines.filter(l => l.length > 120).length
-  if (longLines > 5) {
-    findings.push({
-      level: 'nano', file: filePath, category: 'quality', severity: 'notable',
-      description: `${longLines} lines exceed 120 characters`,
-      onlyVisibleAt: 'nano',
-    })
-  }
-
-  let clarity = 40
-  if (hasTypes) clarity += 15
-  if (hasComments) clarity += 10
-  if (avgLineLength <= 80) clarity += 15
-  if (avgLineLength <= 120) clarity += 10
-  if (!hasTrailingWhitespace) clarity += 10
-  clarity = Math.max(0, Math.min(100, clarity))
-
-  return {
-    level: 'nano',
-    description: 'Line-level view: naming, formatting, type annotations, style',
-    clarity,
-    visiblePatterns: Array.from(new Set(visiblePatterns)),
-    blurryAreas: Array.from(new Set(blurryAreas)),
-    findings,
-  }
+  return { power, hasFieldStop, hasEyepiece, hasFilter, hasFinder, hasCollimation, lightTransmission }
 }
 
-// ─── Focal Depth ───────────────────────────────────────────────────────────────
+// ─── Mount Measurement ───────────────────────────────────
 
 /**
- * Compute focal depth — how many zoom levels needed to understand
+ * Measure mount stability properties
  * @example
- * computeFocalDepth(macro, meso, micro, nano) // FocalDepth
+ * measureMount('export function calc(): number { try { return 1 } catch { return 0 } }') // { isStable, ... }
  */
-export function computeFocalDepth(
-  filePath: string,
-  macro: ZoomLevel,
-  meso: ZoomLevel,
-  micro: ZoomLevel,
-  nano: ZoomLevel,
-): FocalDepth {
-  const levels = [macro, meso, micro, nano]
-  let depthRequired = 1
-  const threshold = 70
+export function measureMount(content: string): MountMeasure {
+  const loc = countLoc(content)
+  const exports = countExports(content)
+  const types = countTypeAnnotations(content)
+  const errors = countErrorHandling(content)
+  const descriptive = countDescriptiveNames(content)
 
-  for (const level of levels) {
-    if (level.clarity >= threshold && depthRequired === levels.indexOf(level) + 1) {
-      depthRequired = levels.indexOf(level) + 1
-    } else if (level.clarity < threshold) {
-      depthRequired = Math.max(depthRequired, levels.indexOf(level) + 1)
-    }
-  }
+  const isStable = exports > 0 && types > 0 && errors > 0
+  const isAligned = descriptive > 0 && types > 0
+  const hasTracking = /@\w+|deprecated|version/i.test(content)
+  const hasGoTo = /\bexport\s+default\b/.test(content) || (exports === 1 && countFunctions(content) >= 1)
 
-  const allFindings = levels.flatMap(l => l.findings)
-  const hasCritical = allFindings.some(f => f.severity === 'critical')
-  if (hasCritical) depthRequired = 4
+  const alignmentScore = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (exports > 0 ? 20 : 0) +
+    (types > 0 ? 20 : 0) +
+    (errors > 0 ? 20 : 0) +
+    (descriptive > 0 ? 15 : 0) +
+    (countComments(content) > 0 ? 10 : 0) +
+    (countJSDoc(content) > 0 ? 15 : 0),
+  )))
 
-  const clarity = computeClarity(levels)
-  const focusScore = computeFocusScore(clarity, depthRequired)
-  const classification = classifyFile(clarity, focusScore)
-
-  return {
-    file: filePath,
-    depthRequired,
-    macroView: macro.blurryAreas.length === 0 ? 'Clear' : macro.blurryAreas.join('; '),
-    mesoView: meso.blurryAreas.length === 0 ? 'Clear' : meso.blurryAreas.join('; '),
-    microView: micro.blurryAreas.length === 0 ? 'Clear' : micro.blurryAreas.join('; '),
-    nanoView: nano.blurryAreas.length === 0 ? 'Clear' : nano.blurryAreas.join('; '),
-    clarity,
-    focusScore,
-    classification,
-  }
+  return { isStable, isAligned, hasTracking, hasGoTo, alignmentScore }
 }
 
-// ─── Clarity & Focus ───────────────────────────────────────────────────────────
+// ─── Classification ──────────────────────────────────────
 
-/**
- * Compute overall clarity from zoom levels
- * @example
- * computeClarity([macro, meso, micro, nano]) // 75
- */
-export function computeClarity(levels: ZoomLevel[]): number {
-  if (levels.length === 0) return 50
-  const avg = levels.reduce((s, l) => s + l.clarity, 0) / levels.length
-  return Math.round(avg)
+export function classifyCondition(qualityScore: number): ElementCondition {
+  if (qualityScore >= 85) return 'hubble-quality'
+  if (qualityScore >= 68) return 'research-grade'
+  if (qualityScore >= 50) return 'observatory'
+  if (qualityScore >= 32) return 'backyard-scope'
+  if (qualityScore >= 15) return 'toy-telescope'
+  return 'broken-lens'
 }
 
-/**
- * Compute focus score
- * @example
- * computeFocusScore(80, 2) // 90
- */
-export function computeFocusScore(clarity: number, depthRequired: number): number {
-  const depthPenalty = (depthRequired - 1) * 10
-  return Math.max(0, Math.min(100, Math.round(clarity - depthPenalty)))
+export function classifyBayType(elements: LensElement[]): BayType {
+  if (elements.length === 0) return 'dark-closet'
+  const avg = elements.reduce((s, e) => s + e.qualityScore, 0) / elements.length
+  if (avg >= 80) return 'professional-dome'
+  if (avg >= 62) return 'campus-observatory'
+  if (avg >= 45) return 'backyard-observatory'
+  if (avg >= 28) return 'rooftop'
+  if (avg >= 12) return 'window'
+  return 'dark-closet'
 }
 
-/**
- * Classify file based on clarity and focus
- * @example
- * classifyFile(90, 85) // 'crystal'
- */
-export function classifyFile(clarity: number, focusScore: number): FileClassification {
-  if (clarity >= 80 && focusScore >= 70) return 'crystal'
-  if (clarity >= 65 && focusScore >= 55) return 'focused'
-  if (clarity >= 45) return 'multi-focal'
-  if (clarity >= 25) return 'blurry'
+export function classifyBayCondition(elements: LensElement[]): BayCondition {
+  if (elements.length === 0) return 'opaque'
+  const avg = elements.reduce((s, e) => s + e.qualityScore, 0) / elements.length
+  if (avg >= 80) return 'crystal-clear'
+  if (avg >= 62) return 'sharp'
+  if (avg >= 45) return 'adequate'
+  if (avg >= 28) return 'blurry'
+  if (avg >= 12) return 'distorted'
   return 'opaque'
 }
 
-// ─── Overall Focus ─────────────────────────────────────────────────────────────
-
-/**
- * Compute overall focus score across all reports
- * @example
- * computeOverallFocus(reports) // 72
- */
-export function computeOverallFocus(reports: FocusReport[]): number {
-  if (reports.length === 0) return 50
-  const avg = reports.reduce((s, r) => s + r.focalDepth.focusScore, 0) / reports.length
-  return Math.max(0, Math.min(100, Math.round(avg)))
+export function classifyAstronomerGrade(avgClarity: number): AstronomerGrade {
+  if (avgClarity >= 80) return 'optical-engineer'
+  if (avgClarity >= 65) return 'telescope-maker'
+  if (avgClarity >= 48) return 'astronomer'
+  if (avgClarity >= 32) return 'stargazer'
+  if (avgClarity >= 16) return 'tourist'
+  return 'blind'
 }
 
+// ─── Core Analysis ───────────────────────────────────────
+
 /**
- * Classify telescope grade
+ * Analyze a single file as a lens element
  * @example
- * classifyTelescopeGrade(85, 80) // 'hubble'
+ * analyzeLensElement('export function calc() {}', 'calc.ts') // LensElement
  */
-export function classifyTelescopeGrade(focus: number, clarity: number): TelescopeGrade {
-  const combined = (focus + clarity) / 2
-  if (combined >= 80) return 'hubble'
-  if (combined >= 65) return 'observatory'
-  if (combined >= 45) return 'binoculars'
-  if (combined >= 25) return 'magnifying-glass'
-  return 'naked-eye'
+export function analyzeLensElement(content: string, filePath: string): LensElement {
+  const lens = measureLens(content)
+  const apertureDetail = measureAperture(content)
+  const magnificationDetail = measureMagnification(content)
+  const resolutionDetail = measureResolution(content)
+  const aberrationDetail = measureAberration(content)
+  const gathering = measureGathering(content)
+  const mountDetail = measureMount(content)
+
+  const focalLength = lens.focalLength
+  const apertureVal = apertureDetail.diameter
+  const magnificationVal = magnificationDetail.level
+  const resolutionVal = resolutionDetail.resolvingPower
+  const aberrationVal = aberrationDetail.chromatic
+  const lightGatheringVal = gathering.power
+
+  const loc = countLoc(content)
+  const qualityScore = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (focalLength * 0.20) +
+    (resolutionVal * 0.20) +
+    (gathering.lightTransmission * 0.15) +
+    (resolutionDetail.contrast * 0.15) +
+    (mountDetail.alignmentScore * 0.15) +
+    (100 - aberrationVal) * 0.15,
+  )))
+
+  const condition = classifyCondition(qualityScore)
+
+  return {
+    file: filePath,
+    focalLength, aperture: apertureVal, magnification: magnificationVal,
+    resolution: resolutionVal, aberration: aberrationVal, lightGathering: lightGatheringVal,
+    lens, apertureDetail, magnificationDetail, resolutionDetail,
+    aberrationDetail, gathering, mount: mountDetail,
+    condition, qualityScore,
+  }
 }
 
-// ─── Best / Worst Zoom ─────────────────────────────────────────────────────────
+// ─── Observatory Bay ─────────────────────────────────────
 
 /**
- * Find best zoom level for a report
+ * Analyze a directory as an observatory bay
  * @example
- * findBestZoom([macro, meso, micro, nano]) // 'meso'
+ * analyzeObservatoryBay(elements, 'src') // ObservatoryBay
  */
-export function findBestZoom(levels: ZoomLevel[]): ZoomLevelName {
-  if (levels.length === 0) return 'macro'
-  return levels.reduce((best, cur) => cur.clarity > best.clarity ? cur : best).level
+export function analyzeObservatoryBay(elements: LensElement[], dirPath: string): ObservatoryBay {
+  const avgFocalLength = elements.length === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.focalLength, 0) / elements.length)
+  const avgResolution = elements.length === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.resolution, 0) / elements.length)
+  const avgAberration = elements.length === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.aberration, 0) / elements.length)
+  const hubbleCount = elements.filter(e => e.condition === 'hubble-quality').length
+  const brokenCount = elements.filter(e => e.condition === 'broken-lens').length
+  const focusedCount = elements.filter(e => e.lens.isFocused).length
+  const distortedCount = elements.filter(e => e.lens.isDistorted).length
+
+  return {
+    directory: dirPath, elements,
+    avgFocalLength, avgResolution, avgAberration,
+    hubbleCount, brokenCount, focusedCount, distortedCount,
+    bayType: classifyBayType(elements),
+    condition: classifyBayCondition(elements),
+  }
 }
 
-/**
- * Find worst zoom level for a report
- * @example
- * findWorstZoom([macro, meso, micro, nano]) // 'nano'
- */
-export function findWorstZoom(levels: ZoomLevel[]): ZoomLevelName {
-  if (levels.length === 0) return 'nano'
-  return levels.reduce((worst, cur) => cur.clarity < worst.clarity ? cur : worst).level
-}
-
-// ─── Recommendations ───────────────────────────────────────────────────────────
+// ─── Recommendations ─────────────────────────────────────
 
 /**
- * Generate telescope lens recommendations
+ * Generate actionable recommendations
  * @example
- * generateRecommendations(reports, globalZoom, stats) // string[]
+ * generateRecommendations(elements, bays, observatory, stats) // string[]
  */
 export function generateRecommendations(
-  reports: FocusReport[],
-  _globalZoom: ZoomLevel[],
+  elements: LensElement[],
+  bays: ObservatoryBay[],
+  observatory: Observatory,
   stats: TelescopeLensStats,
 ): string[] {
   const recs: string[] = []
 
-  const opaqueFiles = reports.filter(r => r.focalDepth.classification === 'opaque')
-  if (opaqueFiles.length > 0) {
-    recs.push(`Refactor ${opaqueFiles.length} opaque file(s) for better clarity`)
+  if (stats.brokenLensCount + stats.toyTelescopeCount > 0) {
+    recs.push(`Blurry lenses: ${stats.brokenLensCount + stats.toyTelescopeCount} file(s) need better focus with exports and types`)
   }
-
-  if (stats.avgDepthRequired > 3) {
-    recs.push('High focal depth required — simplify code to reduce understanding levels')
+  if (stats.distortedCount > stats.totalFiles * 0.3) {
+    recs.push('High distortion ratio - add descriptive naming to clarify purpose')
   }
-
-  if (stats.nanoClarity < 40) {
-    recs.push('Improve nano-level clarity: add type annotations and comments')
+  if (stats.hasFilterCount === 0 && stats.totalFiles > 0) {
+    recs.push('No filtering detected - add error handling to filter out bad inputs')
   }
-
-  if (stats.macroClarity < 40) {
-    recs.push('Improve macro-level clarity: add entry points and module boundaries')
+  if (stats.blurredCount > 0) {
+    recs.push(`Unfocused code: ${stats.blurredCount} file(s) lack exports, making purpose unclear`)
   }
-
-  if (stats.criticalFindings > 0) {
-    recs.push(`Address ${stats.criticalFindings} critical finding(s) immediately`)
+  if (stats.correctedCount === 0 && stats.totalFiles > 0) {
+    recs.push('No corrected aberrations - single-responsibility files are rare')
   }
-
-  if (stats.overallFocus < 40) {
-    recs.push('Low overall focus score — consider significant refactoring')
+  if (observatory.overallClarity >= 70) {
+    recs.push('Crystal-clear codebase - excellent focus and resolution throughout')
   }
-
-  const blurryLevels: string[] = []
-  if (stats.macroClarity < 50) blurryLevels.push('macro')
-  if (stats.mesoClarity < 50) blurryLevels.push('meso')
-  if (stats.microClarity < 50) blurryLevels.push('micro')
-  if (stats.nanoClarity < 50) blurryLevels.push('nano')
-  if (blurryLevels.length > 0) {
-    recs.push(`Blurry zoom levels: ${blurryLevels.join(', ')} — improve documentation and structure`)
+  if (stats.hasCollimationCount > stats.totalFiles * 0.5) {
+    recs.push('Well-collimated code - types and error handling properly aligned')
+  }
+  if (bays.length > 1) {
+    const darkBays = bays.filter(b => b.bayType === 'window' || b.bayType === 'dark-closet')
+    if (darkBays.length > 0) {
+      recs.push(`Dark bays: ${darkBays.map(b => b.directory).join(', ')} need better illumination`)
+    }
   }
 
   return Array.from(new Set(recs))
 }
 
-// ─── Build Focus Report ────────────────────────────────────────────────────────
-
-/**
- * Build a focus report for a single file
- * @example
- * buildFocusReport('export const x = 1', 'a.ts', macro) // FocusReport
- */
-export function buildFocusReport(content: string, filePath: string, globalMacro: ZoomLevel): FocusReport {
-  const meso = analyzeMeso(content, filePath)
-  const micro = analyzeMicro(content, filePath)
-  const nano = analyzeNano(content, filePath)
-
-  const zoomLevels = [globalMacro, meso, micro, nano]
-  const focalDepth = computeFocalDepth(filePath, globalMacro, meso, micro, nano)
-
-  return {
-    file: filePath,
-    zoomLevels,
-    focalDepth,
-    bestZoomLevel: findBestZoom(zoomLevels),
-    worstZoomLevel: findWorstZoom(zoomLevels),
-  }
-}
-
-// ─── Build Result ──────────────────────────────────────────────────────────────
+// ─── Build Result ────────────────────────────────────────
 
 /**
  * Build the complete telescope-lens result
  * @example
- * buildTelescopeLensResult(['a.ts'], ['const x = 1'], {}) // TelescopeLensResult
+ * buildTelescopeLensResult(['a.ts'], ['export function a() {}'], {}) // TelescopeLensResult
  */
-export function buildTelescopeLensResult(
-  files: string[],
-  contents: string[],
-  _options: Record<string, unknown>,
-): TelescopeLensResult {
-  const globalMacro = analyzeMacro(files, contents)
-  const reports: FocusReport[] = []
+export function buildTelescopeLensResult(files: string[], contents: string[], _options: Record<string, unknown>): TelescopeLensResult {
+  const elements: LensElement[] = files.map((file, i) => {
+    const content = i < contents.length ? contents[i] : ''
+    return analyzeLensElement(content, file)
+  })
 
-  for (let i = 0; i < files.length; i++) {
-    reports.push(buildFocusReport(contents[i], files[i], globalMacro))
+  const dirMap = new Map<string, LensElement[]>()
+  for (const element of elements) {
+    const parts = element.file.split('/')
+    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
+    const existing = dirMap.get(dir)
+    if (existing) { existing.push(element) } else { dirMap.set(dir, [element]) }
   }
 
-  const avg = (arr: number[]) => arr.length > 0
-    ? Math.round(arr.reduce((s, v) => s + v, 0) / arr.length)
-    : 50
+  const bays = Array.from(dirMap.entries()).map(([dir, dirElements]) =>
+    analyzeObservatoryBay(dirElements, dir),
+  )
 
-  const macroClarity = avg(reports.map(r => r.zoomLevels[0].clarity))
-  const mesoClarity = avg(reports.map(r => r.zoomLevels[1].clarity))
-  const microClarity = avg(reports.map(r => r.zoomLevels[2].clarity))
-  const nanoClarity = avg(reports.map(r => r.zoomLevels[3].clarity))
+  const totalFiles = elements.length
+  const avgFocalLength = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.focalLength, 0) / totalFiles)
+  const avgAperture = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.aperture, 0) / totalFiles)
+  const avgMagnification = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.magnification, 0) / totalFiles)
+  const avgResolution = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.resolution, 0) / totalFiles)
+  const avgAberration = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.aberration, 0) / totalFiles)
+  const avgLightGathering = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.lightGathering, 0) / totalFiles)
+  const overallClarity = totalFiles === 0 ? 0 : Math.round(elements.reduce((s, e) => s + e.qualityScore, 0) / totalFiles)
 
-  const findingsPerLevel: Record<string, number> = { macro: 0, meso: 0, micro: 0, nano: 0 }
-  let criticalFindings = 0
-  for (const r of reports) {
-    for (const zl of r.zoomLevels) {
-      findingsPerLevel[zl.level] += zl.findings.length
-      criticalFindings += zl.findings.filter(f => f.severity === 'critical').length
+  const observatory: Observatory = {
+    avgFocalLength,
+    avgResolution,
+    avgAberration,
+    avgLightGathering,
+    isFocused: overallClarity >= 60,
+    overallClarity,
+  }
+
+  const conditionCounts = { hubbleQuality: 0, researchGrade: 0, observatoryCount: 0, backyardScope: 0, toyTelescope: 0, brokenLens: 0 }
+  const lensCounts = { achromatic: 0, apochromatic: 0, planAchromatic: 0, simple: 0, compound: 0, defective: 0 }
+
+  for (const element of elements) {
+    switch (element.condition) {
+      case 'hubble-quality': conditionCounts.hubbleQuality++; break
+      case 'research-grade': conditionCounts.researchGrade++; break
+      case 'observatory': conditionCounts.observatoryCount++; break
+      case 'backyard-scope': conditionCounts.backyardScope++; break
+      case 'toy-telescope': conditionCounts.toyTelescope++; break
+      case 'broken-lens': conditionCounts.brokenLens++; break
+    }
+    switch (element.lens.type) {
+      case 'achromatic': lensCounts.achromatic++; break
+      case 'apochromatic': lensCounts.apochromatic++; break
+      case 'plan-achromatic': lensCounts.planAchromatic++; break
+      case 'simple': lensCounts.simple++; break
+      case 'compound': lensCounts.compound++; break
+      case 'defective': lensCounts.defective++; break
     }
   }
 
-  const levelClarityMap: Record<string, number> = { macro: macroClarity, meso: mesoClarity, micro: microClarity, nano: nanoClarity }
-  const bestOverallLevel = (Object.entries(levelClarityMap) as [string, number][])
-    .sort((a, b) => b[1] - a[1])[0][0] as ZoomLevelName
-  const worstOverallLevel = (Object.entries(levelClarityMap) as [string, number][])
-    .sort((a, b) => a[1] - b[1])[0][0] as ZoomLevelName
-
-  const overallFocus = computeOverallFocus(reports)
-  const avgClarity = avg(reports.map(r => r.focalDepth.clarity))
-  const telescopeGrade = classifyTelescopeGrade(overallFocus, avgClarity)
+  const clearest = totalFiles === 0 ? 'none' : elements.reduce((best, e) => e.focalLength > best.focalLength ? e : best).file
+  const sharpest = totalFiles === 0 ? 'none' : elements.reduce((best, e) => e.resolution > best.resolution ? e : best).file
+  const mostAberrated = totalFiles === 0 ? 'none' : elements.reduce((worst, e) => e.aberration > worst.aberration ? e : worst).file
+  const bestFocused = totalFiles === 0 ? 'none' : elements.reduce((best, e) => e.lens.focusScore > best.lens.focusScore ? e : best).file
+  const mostPowerful = totalFiles === 0 ? 'none' : elements.reduce((best, e) => e.lightGathering > best.lightGathering ? e : best).file
 
   const stats: TelescopeLensStats = {
-    totalReports: reports.length,
-    avgClarity,
-    avgDepthRequired: avg(reports.map(r => r.focalDepth.depthRequired)),
-    avgFocusScore: avg(reports.map(r => r.focalDepth.focusScore)),
-    crystalFiles: reports.filter(r => r.focalDepth.classification === 'crystal').length,
-    opaqueFiles: reports.filter(r => r.focalDepth.classification === 'opaque').length,
-    macroClarity,
-    mesoClarity,
-    microClarity,
-    nanoClarity,
-    findingsPerLevel,
-    criticalFindings,
-    bestOverallLevel,
-    worstOverallLevel,
-    overallFocus,
-    telescopeGrade,
+    totalFiles,
+    totalBays: bays.length,
+    avgFocalLength,
+    avgAperture,
+    avgMagnification,
+    avgResolution,
+    avgAberration,
+    avgLightGathering,
+    hubbleQualityCount: conditionCounts.hubbleQuality,
+    researchGradeCount: conditionCounts.researchGrade,
+    observatoryCount: conditionCounts.observatoryCount,
+    backyardScopeCount: conditionCounts.backyardScope,
+    toyTelescopeCount: conditionCounts.toyTelescope,
+    brokenLensCount: conditionCounts.brokenLens,
+    achromaticCount: lensCounts.achromatic,
+    apochromaticCount: lensCounts.apochromatic,
+    simpleCount: lensCounts.simple,
+    defectiveCount: lensCounts.defective,
+    focusedCount: elements.filter(e => e.lens.isFocused).length,
+    blurredCount: elements.filter(e => e.lens.isBlurred).length,
+    distortedCount: elements.filter(e => e.lens.isDistorted).length,
+    multipleFociCount: elements.filter(e => e.lens.hasMultipleFoci).length,
+    correctedCount: elements.filter(e => e.aberrationDetail.isCorrected).length,
+    hasFilterCount: elements.filter(e => e.gathering.hasFilter).length,
+    hasCollimationCount: elements.filter(e => e.gathering.hasCollimation).length,
+    isStableCount: elements.filter(e => e.mount.isStable).length,
+    overallClarity,
+    astronomerGrade: classifyAstronomerGrade(overallClarity),
+    clearest,
+    sharpest,
+    mostAberrated,
+    bestFocused,
+    mostPowerful,
   }
 
-  const globalZoom = [globalMacro]
-  const recommendations = generateRecommendations(reports, globalZoom, stats)
+  const recommendations = generateRecommendations(elements, bays, observatory, stats)
 
-  return { reports, globalZoom, stats, recommendations }
+  return { elements, bays, observatory, stats, recommendations }
 }
