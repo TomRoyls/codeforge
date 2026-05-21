@@ -1,45 +1,47 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildStainedGlassWindowResult } from './stained-glass-window-helpers.js'
-import type { StainedGlassWindowResult } from './stained-glass-window-helpers.js'
-import { formatStainedGlassWindowJson, formatStainedGlassWindowTable } from './stained-glass-window-format-helpers.js'
+import {
+  buildStainedGlassWindowResult,
+  type StainedGlassWindowResult,
+} from './stained-glass-window-helpers.js'
+import {
+  formatStainedGlassWindowCsv,
+  formatStainedGlassWindowJson,
+  formatStainedGlassWindowTable,
+} from './stained-glass-window-format-helpers.js'
 
 export default class StainedGlassWindow extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze transparency and light transmission',
+      description: 'Path to analyze code transparency',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code transparency and light transmission like a stained glass window'
+  static override description = 'Analyze code transparency like a stained glass window'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze window transparency in current directory',
+      description: 'Analyze current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Output stained glass window analysis as JSON',
+      description: 'Analyze src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed pane and bay analysis',
+      description: 'Show per-file panel details',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze only TypeScript files',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output window.json',
-      description: 'Export analysis to file',
+      description: 'Analyze TypeScript files only',
     },
   ]
 
@@ -52,7 +54,7 @@ export default class StainedGlassWindow extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['json', 'table'],
+      options: ['csv', 'json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -66,7 +68,7 @@ export default class StainedGlassWindow extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed pane and bay analysis',
+      description: 'Show per-file panel details',
     }),
   }
 
@@ -79,10 +81,10 @@ export default class StainedGlassWindow extends Command {
       this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
-    const format = flags.format as 'json' | 'table'
+    const format = flags.format as 'csv' | 'json' | 'table'
     const { verbose } = flags
 
-    const spinner = ora('Discovering files...').start()
+    const spinner = ora('Discovering glass panels...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -91,48 +93,67 @@ export default class StainedGlassWindow extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
+        '**/*.json',
+        '**/*.css',
+        '**/*.html',
+        '**/*.md',
+        '**/*.py',
+        '**/*.rs',
+        '**/*.go',
+        '**/*.java',
+        '**/*.rb',
+        '**/*.sh',
+        '**/*.yaml',
+        '**/*.yml',
+        '**/*.xml',
+        '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
+      ? flags.ext
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean)
       : null
 
     const filteredFiles = extensions
       ? discoveredFiles.filter((f) => {
-          const ext = f.path.slice(f.path.lastIndexOf('.')).toLowerCase()
+          const ext = extname(f.path).toLowerCase()
           return extensions.includes(ext)
         })
       : discoveredFiles
 
-    spinner.text = 'Analyzing stained glass window...'
+    spinner.text = 'Analyzing light transmission...'
 
-    const contents: string[] = await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          return await fs.readFile(file.absolutePath, 'utf8')
-        } catch {
-          return ''
-        }
-      }),
-    )
+    const files: string[] = []
+    const contents: string[] = []
 
-    const result: StainedGlassWindowResult = buildStainedGlassWindowResult(
-      filteredFiles.map((f) => f.path),
-      contents,
-      { ext: flags.ext, format, verbose },
-    )
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        files.push(file.path)
+        contents.push(content)
+      } catch {
+        files.push(file.path)
+        contents.push('')
+      }
+    }
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} panes across ${result.bays.length} bays`)
+    const result: StainedGlassWindowResult = buildStainedGlassWindowResult(files, contents, {})
+
+    spinner.succeed(`Analyzed ${files.length} glass panels across ${result.bays.length} window bays`)
 
     const outputData =
       format === 'json'
         ? formatStainedGlassWindowJson(result)
-        : formatStainedGlassWindowTable(result, verbose)
+        : format === 'csv'
+          ? formatStainedGlassWindowCsv(result)
+          : formatStainedGlassWindowTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -149,6 +170,6 @@ export default class StainedGlassWindow extends Command {
   }
 }
 
-export { buildStainedGlassWindowResult, analyzeWindowPane, analyzeWindowBay, classifyGlassType, classifyFrameMaterial, classifyGlazierGrade, measureLightTransmission, assessFrame, assessLeading, assessGlass, generateRecommendations } from './stained-glass-window-helpers.js'
-export type { StainedGlassWindowResult, StainedGlassWindowStats, CathedralInfo, WindowPane, WindowBay, GlassInfo, FrameInfo, LeadingInfo, LightInfo, GlassType, GlassCondition, FrameMaterial, PaneOrientation, PanePosition, PaneIllumination, BayType, BayCondition, GlazierGrade } from './stained-glass-window-helpers.js'
-export { formatStainedGlassWindowJson, formatStainedGlassWindowTable } from './stained-glass-window-format-helpers.js'
+export { buildStainedGlassWindowResult } from './stained-glass-window-helpers.js'
+export type { StainedGlassWindowResult, GlassPanel, WindowBay, StainedGlassWindowStats, CathedralMeasure } from './stained-glass-window-helpers.js'
+export { formatStainedGlassWindowCsv, formatStainedGlassWindowJson, formatStainedGlassWindowTable } from './stained-glass-window-format-helpers.js'

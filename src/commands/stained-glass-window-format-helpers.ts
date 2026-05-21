@@ -1,142 +1,135 @@
 import chalk from 'chalk'
-import type { StainedGlassWindowResult, WindowPane, WindowBay } from './stained-glass-window-helpers.js'
 
-// ─── Color Utilities ─────────────────────────────────────────────────────────
+import type { StainedGlassWindowResult } from './stained-glass-window-helpers.js'
 
-function scoreColor(s: number): string {
-  if (s >= 70) return chalk.green(String(s))
-  if (s >= 40) return chalk.yellow(String(s))
-  return chalk.red(String(s))
+// ─── Table formatting ───────────────────────────────────
+
+function padRight(str: string, len: number): string {
+  if (str.length >= len) return str
+  return str + ' '.repeat(len - str.length)
 }
 
-function glassColor(t: string): string {
-  switch (t) {
-    case 'transparent': return chalk.rgb(200, 230, 255)(t)
-    case 'cathedral': return chalk.rgb(100, 150, 255)(t)
-    case 'rippled': return chalk.cyan(t)
-    case 'seedy': return chalk.yellow(t)
-    case 'streaky': return chalk.magenta(t)
-    case 'opaque': return chalk.gray(t)
-    default: return chalk.dim(t)
-  }
+function padLeft(str: string, len: number): string {
+  if (str.length >= len) return str
+  return ' '.repeat(len - str.length) + str
 }
 
-function illuminationColor(i: string): string {
-  switch (i) {
-    case 'brilliant': return chalk.rgb(255, 255, 200)(i)
-    case 'bright': return chalk.green(i)
-    case 'moderate': return chalk.blue(i)
-    case 'dim': return chalk.yellow(i)
-    case 'dark': return chalk.rgb(255, 165, 0)(i)
-    case 'opaque': return chalk.red(i)
-    default: return chalk.dim(i)
-  }
-}
-
-function bayCondColor(c: string): string {
-  switch (c) {
-    case 'radiant': return chalk.rgb(255, 215, 0)(c)
-    case 'bright': return chalk.green(c)
-    case 'lit': return chalk.blue(c)
-    case 'dim': return chalk.yellow(c)
-    case 'dark': return chalk.rgb(255, 165, 0)(c)
-    case 'black': return chalk.red(c)
-    default: return chalk.dim(c)
-  }
-}
-
-function gradeColor(g: string): string {
-  switch (g) {
-    case 'master-glazier': return chalk.rgb(255, 215, 0)(g)
-    case 'glazier': return chalk.green(g)
-    case 'artisan': return chalk.blue(g)
-    case 'apprentice': return chalk.cyan(g)
-    case 'hobbyist': return chalk.yellow(g)
-    case 'vandal': return chalk.red(g)
-    default: return chalk.dim(g)
-  }
-}
-
-// ─── Pane Formatting ─────────────────────────────────────────────────────────
-
-function formatPane(p: WindowPane, verbose: boolean): string {
-  const line = ` ${illuminationColor(p.illumination)} ${glassColor(p.glass.type)} ${chalk.bold(p.file)} q:${scoreColor(p.qualityScore)} lum:${scoreColor(p.luminosity)} tx:${scoreColor(p.lightTransmission)}`
-
-  if (!verbose) return line
-  const details = [line]
-  details.push(`    clarity:${scoreColor(p.glassClarity)} color:${scoreColor(p.colorIntensity)} frame:${scoreColor(p.frameSupport)} lead:${scoreColor(p.leadingQuality)} opacity:${scoreColor(p.opacity)}`)
-  details.push(`    glass:${p.glass.condition} frame:${p.frame.material} bubbles:${p.glass.bubbleCount} striations:${p.glass.striationCount}`)
-  return details.join('\n')
-}
-
-// ─── Table Formatter ─────────────────────────────────────────────────────────
-
-/**
- * Format stained glass window result as a table
- * @example
- * formatStainedGlassWindowTable(result, false) // string
- */
 export function formatStainedGlassWindowTable(result: StainedGlassWindowResult, verbose: boolean): string {
-  const lines: string[] = []
-  lines.push(chalk.bold('\n🪟 Stained Glass Window - Code Transparency Analysis\n'))
-  lines.push(chalk.bold('═'.repeat(60)))
+  const { panels, bays, stats, cathedral, recommendations } = result
+  const lines: string[] = [chalk.bold('\n🎨 Stained Glass Window Report'), '']
+
+  lines.push(chalk.bold('Cathedral Overview:'))
+  lines.push(`  Brilliance:        ${chalk.yellow(String(cathedral.overallBrilliance))}/100`)
+  lines.push(`  Light Transmission: ${chalk.cyan(String(cathedral.avgLightTransmission))}/100`)
+  lines.push(`  Color Richness:     ${chalk.magenta(String(cathedral.avgColorRichness))}/100`)
+  lines.push(`  Lead Quality:       ${chalk.blue(String(cathedral.avgLeadQuality))}/100`)
+  lines.push(`  Illuminated:        ${cathedral.isIlluminated ? chalk.green('Yes') : chalk.red('No')}`)
+  lines.push(`  Glazier Grade:      ${chalk.yellow(stats.glazierGrade)}`)
   lines.push('')
 
-  lines.push(chalk.bold('🔲 Window Panes'))
-  if (result.panes.length === 0) {
-    lines.push(chalk.dim('  No files analyzed.'))
-  } else {
-    const display = verbose ? result.panes : result.panes.slice(0, 15)
-    for (const p of display) {
-      lines.push(formatPane(p, verbose))
-    }
-    if (!verbose && result.panes.length > 15) {
-      lines.push(chalk.dim(`  ... and ${result.panes.length - 15} more`))
-    }
-  }
-  lines.push('')
-
-  if (result.bays.length > 0) {
-    lines.push(chalk.bold('🏛️ Window Bays'))
-    for (const b of result.bays) {
-      lines.push(`  ${chalk.bold(b.directory)} ${bayCondColor(b.condition)} illum:${scoreColor(b.bayIllumination)} panes:${b.panes.length} type:${b.bayType}`)
+  if (bays.length > 0) {
+    lines.push(chalk.bold('Window Bays:'))
+    for (const bay of bays) {
+      const condColor = bay.condition === 'divine-light' || bay.condition === 'radiant'
+        ? chalk.green
+        : bay.condition === 'well-lit'
+          ? chalk.cyan
+          : bay.condition === 'dim'
+            ? chalk.yellow
+            : chalk.red
+      lines.push(`  ${padRight(bay.directory, 30)} ${condColor(bay.condition)} (${bay.panels.length} panels, ${bay.bayType})`)
     }
     lines.push('')
   }
 
-  const c = result.cathedral
-  lines.push(chalk.bold('⛪ Cathedral'))
-  lines.push(`  Transmission: ${scoreColor(c.totalLightTransmission)} | Clarity: ${scoreColor(c.avgGlassClarity)} | Luminosity: ${scoreColor(c.avgLuminosity)} | Frame: ${scoreColor(c.avgFrameIntegrity)} | Leading: ${scoreColor(c.avgLeadingQuality)}`)
-  lines.push(`  Well-lit: ${c.isWellIlluminated ? chalk.green('YES') : chalk.yellow('NO')} | Gaps: ${c.totalGaps} | Cracks: ${c.totalCracks}`)
+  if (verbose && panels.length > 0) {
+    lines.push(chalk.bold('Panel Details:'))
+    lines.push('')
+    const colWidths = {
+      condition: 22,
+      file: Math.max(20, ...panels.map(p => p.file.length)),
+      light: 6,
+      quality: 8,
+    }
+    lines.push(
+      chalk.cyan(padRight('File', colWidths.file)) + '  ' +
+      chalk.cyan(padLeft('Light', colWidths.light)) + '  ' +
+      chalk.cyan(padLeft('Quality', colWidths.quality)) + '  ' +
+      chalk.cyan(padRight('Condition', colWidths.condition)),
+    )
+    lines.push(chalk.dim('─'.repeat(colWidths.file + colWidths.light + colWidths.quality + colWidths.condition + 6)))
+
+    for (const panel of panels) {
+      const condColor = panel.condition === 'cathedral-masterpiece' ? chalk.green
+        : panel.condition === 'rose-window' ? chalk.cyan
+          : panel.condition === 'beautiful-window' ? chalk.blue
+            : panel.condition === 'clear-glass' ? chalk.white
+              : panel.condition === 'cracked-glass' ? chalk.yellow
+                : chalk.red
+      lines.push(
+        padRight(panel.file, colWidths.file) + '  ' +
+        padLeft(String(panel.lightTransmission), colWidths.light) + '  ' +
+        padLeft(String(panel.qualityScore), colWidths.quality) + '  ' +
+        condColor(padRight(panel.condition, colWidths.condition)),
+      )
+    }
+    lines.push('')
+  }
+
+  lines.push(chalk.bold('Statistics:'))
+  lines.push(`  Total Files:          ${stats.totalFiles}`)
+  lines.push(`  Masterpieces:         ${chalk.green(String(stats.cathedralMasterpieceCount))}`)
+  lines.push(`  Rose Windows:         ${chalk.cyan(String(stats.roseWindowCount))}`)
+  lines.push(`  Beautiful Windows:    ${chalk.blue(String(stats.beautifulWindowCount))}`)
+  lines.push(`  Clear Glass:          ${stats.clearGlassCount}`)
+  lines.push(`  Cracked Glass:        ${chalk.yellow(String(stats.crackedGlassCount))}`)
+  lines.push(`  Bricked Up:           ${chalk.red(String(stats.brickedUpCount))}`)
   lines.push('')
 
-  const s = result.stats
-  lines.push(chalk.bold('📊 Statistics'))
-  lines.push(`  Grade: ${gradeColor(s.glazierGrade)} | Files: ${s.totalFiles} | Bays: ${s.totalBays} | Luminosity: ${scoreColor(s.overallLuminosity)}`)
-  lines.push(`  Brilliant:${s.brilliantPanes} Bright:${s.brightPanes} Dim:${s.dimPanes} Dark:${s.darkPanes} Opaque:${s.opaquePanes}`)
-  lines.push(`  Cathedral:${s.cathedralGlass} Transparent:${s.transparentGlass} Pristine:${s.pristineCount} Cracked:${s.crackedCount} Broken:${s.brokenCount}`)
-  lines.push(`  Bubbles:${s.totalBubbles} Striations:${s.totalStriations} Inclusions:${s.totalInclusions} Gaps:${s.totalGaps} Overlaps:${s.totalOverlaps} Loose:${s.totalLooseJoints}`)
-  lines.push(`  Brightest: ${chalk.green(s.brightestPane)} | Darkest: ${chalk.red(s.darkestPane)} | BestFrame: ${chalk.blue(s.bestFramed)} | BestLed: ${chalk.cyan(s.bestLed)}`)
-
-  if (result.recommendations.length > 0) {
-    lines.push('')
-    lines.push(chalk.bold('💡 Recommendations'))
-    for (const rec of result.recommendations) {
-      lines.push(`  - ${rec}`)
+  if (recommendations.length > 0) {
+    lines.push(chalk.bold('Recommendations:'))
+    for (const rec of recommendations) {
+      lines.push(`  ${chalk.dim('•')} ${rec}`)
     }
   }
 
-  lines.push('')
   return lines.join('\n')
 }
 
-// ─── JSON Formatter ──────────────────────────────────────────────────────────
+// ─── JSON formatting ────────────────────────────────────
 
-/**
- * Format stained glass window result as JSON
- * @example
- * formatStainedGlassWindowJson(result) // string
- */
 export function formatStainedGlassWindowJson(result: StainedGlassWindowResult): string {
   return JSON.stringify(result, null, 2)
+}
+
+// ─── CSV formatting ─────────────────────────────────────
+
+function escapeCsv(value: string): string {
+  if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+    return `"${value.replace(/"/g, '""')}"`
+  }
+  return value
+}
+
+export function formatStainedGlassWindowCsv(result: StainedGlassWindowResult): string {
+  const headers = ['File', 'LightTransmission', 'ColorRichness', 'LeadQuality', 'GlassThickness', 'PanelArrangement', 'WindowFraming', 'QualityScore', 'Condition']
+  const rows: string[] = [headers.join(',')]
+
+  for (const panel of result.panels) {
+    rows.push(
+      [
+        escapeCsv(panel.file),
+        String(panel.lightTransmission),
+        String(panel.colorRichness),
+        String(panel.leadQuality),
+        String(panel.glassThickness),
+        String(panel.panelArrangement),
+        String(panel.windowFraming),
+        String(panel.qualityScore),
+        panel.condition,
+      ].join(','),
+    )
+  }
+
+  return rows.join('\n')
 }

@@ -1,793 +1,968 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Interfaces ──────────────────────────────────────────
 
-export type GlassType = 'cathedral' | 'opaque' | 'seedy' | 'rippled' | 'streaky' | 'transparent'
-export type GlassCondition = 'pristine' | 'clean' | 'dusty' | 'cloudy' | 'cracked' | 'broken'
-export type FrameMaterial = 'stone' | 'iron' | 'wood' | 'aluminum' | 'plastic' | 'none'
-export type PaneOrientation = 'east' | 'west' | 'north' | 'south' | 'clerestory' | 'rose'
-export type PanePosition = 'center' | 'side' | 'above' | 'below' | 'behind'
-export type PaneIllumination = 'brilliant' | 'bright' | 'moderate' | 'dim' | 'dark' | 'opaque'
-export type BayType = 'nave' | 'aisle' | 'transept' | 'chancel' | 'clerestory' | 'rose-window'
-export type BayCondition = 'radiant' | 'bright' | 'lit' | 'dim' | 'dark' | 'black'
-export type GlazierGrade = 'master-glazier' | 'glazier' | 'artisan' | 'apprentice' | 'hobbyist' | 'vandal'
-
-export interface GlassInfo {
-  type: GlassType
-  condition: GlassCondition
+export interface GlassMeasure {
+  type: 'cathedral' | 'opaque' | 'seeded' | 'rippled' | 'streaky' | 'bullseye'
   thickness: number
+  isTransparent: boolean
+  isTranslucent: boolean
+  isOpaque: boolean
   hasBubbles: boolean
+  hasSeeds: boolean
   hasStriations: boolean
-  hasInclusions: boolean
-  bubbleCount: number
-  striationCount: number
-  inclusionCount: number
+  clarity: number
 }
 
-export interface FrameInfo {
-  material: FrameMaterial
-  integrity: number
-  hasTracery: boolean
-  traceryQuality: number
-  hasMullions: boolean
-  mullionCount: number
-  isStructurallySound: boolean
-  hasSagging: boolean
-  hasCracks: boolean
+export interface LightMeasure {
+  transmission: number
+  isIlluminated: boolean
+  hasSunlight: boolean
+  hasDappled: boolean
+  isShadowed: boolean
+  isDark: boolean
+  hasPrismaticEffect: boolean
+  illuminationScore: number
 }
 
-export interface LeadingInfo {
+export interface ColorMeasure {
+  richness: number
+  palette: string[]
+  isJewelToned: boolean
+  isPastel: boolean
+  isMonochrome: boolean
+  hasComplementary: boolean
+  hasClashing: boolean
+  hasSacredRed: boolean
+  hasRoyalBlue: boolean
+  hasCelestialGold: boolean
+}
+
+export interface LeadMeasure {
   quality: number
-  hasGaps: boolean
-  hasOverlaps: boolean
-  hasLooseJoints: boolean
-  gapCount: number
-  overlapCount: number
-  looseJointCount: number
+  hasCleanJoints: boolean
+  hasSolderMarks: boolean
+  hasWeakPoints: boolean
+  hasLeadFree: boolean
+  isStructurallySound: boolean
+  jointCount: number
+  weakPointCount: number
+}
+
+export interface PanelMeasure {
+  arrangement: number
+  hasGeometricPattern: boolean
+  hasOrganicPattern: boolean
+  hasNarrativeFlow: boolean
+  hasChaoticPattern: boolean
+  hasSymmetry: boolean
+  panelCount: number
+  patternType: 'geometric' | 'floral' | 'narrative' | 'abstract' | 'medallion' | 'chaotic'
+}
+
+export interface FrameMeasure {
+  quality: number
+  hasStoneTracery: boolean
+  hasIronArmature: boolean
   isWeatherTight: boolean
+  hasOrnamentation: boolean
+  hasDamage: boolean
+  isIntact: boolean
 }
 
-export interface LightInfo {
-  incidentLight: number
-  transmittedLight: number
-  absorbedLight: number
-  reflectedLight: number
-  scatteredLight: number
-  transmissionEfficiency: number
+export interface StoryMeasure {
+  isTold: boolean
+  isClear: boolean
+  hasBeginning: boolean
+  hasMiddle: boolean
+  hasEnd: boolean
+  hasPlotTwist: boolean
+  narrativeScore: number
 }
 
-export interface WindowPane {
+export interface GlassPanel {
   file: string
   lightTransmission: number
-  glassClarity: number
-  colorIntensity: number
-  thickness: number
-  frameSupport: number
-  leadingQuality: number
-  opacity: number
-  luminosity: number
-  glass: GlassInfo
-  frame: FrameInfo
-  leading: LeadingInfo
-  light: LightInfo
-  orientation: PaneOrientation
-  position: PanePosition
-  illumination: PaneIllumination
+  colorRichness: number
+  leadQuality: number
+  glassThickness: number
+  panelArrangement: number
+  windowFraming: number
+  glass: GlassMeasure
+  light: LightMeasure
+  color: ColorMeasure
+  lead: LeadMeasure
+  panel: PanelMeasure
+  frame: FrameMeasure
+  story: StoryMeasure
+  condition: 'cathedral-masterpiece' | 'rose-window' | 'beautiful-window' | 'clear-glass' | 'cracked-glass' | 'bricked-up'
   qualityScore: number
 }
 
 export interface WindowBay {
   directory: string
-  panes: WindowPane[]
+  panels: GlassPanel[]
   avgLightTransmission: number
-  avgGlassClarity: number
-  avgLuminosity: number
-  avgFrameIntegrity: number
-  avgLeadingQuality: number
-  brilliantPanes: number
-  darkPanes: number
-  totalGaps: number
-  totalCracks: number
-  bayType: BayType
-  bayIllumination: number
-  condition: BayCondition
+  avgColorRichness: number
+  avgLeadQuality: number
+  masterpieceCount: number
+  brickedUpCount: number
+  illuminatedCount: number
+  darkCount: number
+  bayType: 'cathedral-bay' | 'chapel-window' | 'rose-window-bay' | 'cloister' | 'crypt' | 'walled-up'
+  condition: 'divine-light' | 'radiant' | 'well-lit' | 'dim' | 'gloomy' | 'darkness'
 }
 
-export interface CathedralInfo {
-  totalLightTransmission: number
-  avgGlassClarity: number
-  avgLuminosity: number
-  avgFrameIntegrity: number
-  avgLeadingQuality: number
-  isWellIlluminated: boolean
-  totalGaps: number
-  totalCracks: number
+export interface CathedralMeasure {
+  avgLightTransmission: number
+  avgColorRichness: number
+  avgLeadQuality: number
+  isIlluminated: boolean
+  overallBrilliance: number
 }
 
 export interface StainedGlassWindowStats {
   totalFiles: number
   totalBays: number
   avgLightTransmission: number
-  avgGlassClarity: number
-  avgColorIntensity: number
-  avgLuminosity: number
-  avgFrameIntegrity: number
-  avgLeadingQuality: number
-  avgOpacity: number
-  brilliantPanes: number
-  brightPanes: number
-  dimPanes: number
-  darkPanes: number
-  opaquePanes: number
-  cathedralGlass: number
-  transparentGlass: number
-  pristineCount: number
-  crackedCount: number
-  brokenCount: number
-  totalBubbles: number
-  totalStriations: number
-  totalInclusions: number
-  totalGaps: number
-  totalOverlaps: number
-  totalLooseJoints: number
-  stoneFrames: number
-  noFrames: number
-  overallLuminosity: number
-  glazierGrade: GlazierGrade
-  brightestPane: string
-  darkestPane: string
+  avgColorRichness: number
+  avgLeadQuality: number
+  avgGlassThickness: number
+  avgPanelArrangement: number
+  avgWindowFraming: number
+  cathedralMasterpieceCount: number
+  roseWindowCount: number
+  beautifulWindowCount: number
+  clearGlassCount: number
+  crackedGlassCount: number
+  brickedUpCount: number
+  transparentCount: number
+  opaqueCount: number
+  illuminatedCount: number
+  shadowedCount: number
+  darkCount: number
+  jewelTonedCount: number
+  monochromeCount: number
+  hasCleanJointsCount: number
+  isWeatherTightCount: number
+  hasNarrativeFlowCount: number
+  hasSymmetryCount: number
+  isToldCount: number
+  isIntactCount: number
+  overallBrilliance: number
+  glazierGrade: 'master-glazier' | 'glazier' | 'glass-artisan' | 'apprentice' | 'hobbyist' | 'vandal'
+  mostBrilliant: string
+  mostColorful: string
+  cleanestLead: string
   bestFramed: string
-  bestLed: string
+  bestStory: string
 }
 
 export interface StainedGlassWindowResult {
-  panes: WindowPane[]
+  panels: GlassPanel[]
   bays: WindowBay[]
-  cathedral: CathedralInfo
+  cathedral: CathedralMeasure
   stats: StainedGlassWindowStats
   recommendations: string[]
 }
 
-// ─── Content Primitives ──────────────────────────────────────────────────────
+// ─── Utility helpers ────────────────────────────────────
 
-/**
- * Count lines of code
- * @example
- * countLoc('const x = 1\nconst y = 2') // 2
- */
 export function countLoc(content: string): number {
   return content.split('\n').filter(l => l.trim().length > 0).length
 }
 
-/**
- * Count imports
- * @example
- * countImports('import { x } from "y"') // 1
- */
-export function countImports(content: string): number {
-  return (content.match(/^import\s+/gm) ?? []).length
-}
-
-/**
- * Count exports
- * @example
- * countExports('export function a() {}') // 1
- */
-export function countExports(content: string): number {
-  return (content.match(/\bexport\s+(?:default\s+)?(?:function|class|const|let|var|interface|type|enum)\s+/g) ?? []).length
-}
-
-/**
- * Count functions
- * @example
- * countFunctions('function a() {}') // 1
- */
 export function countFunctions(content: string): number {
-  return (content.match(/(?:function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>)/g) ?? []).length
+  const m = content.match(/\bfunction\s+\w+|\b\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|(?:async\s+)?\([^)]*\)\s*:\s*\w+)/g)
+  return m ? m.length : 0
 }
 
-/**
- * Count error handling
- * @example
- * countErrorHandling('try {} catch(e) {}') // 2
- */
-export function countErrorHandling(content: string): number {
-  return (content.match(/\btry\s*\{|\bcatch\s*\(|\.catch\s*\(|\bthrow\s+/g) ?? []).length
+export function countClasses(content: string): number {
+  const m = content.match(/\bclass\s+\w+/g)
+  return m ? m.length : 0
 }
 
-/**
- * Count type annotations
- * @example
- * countTypeAnnotations('const x: number = 1') // 1
- */
-export function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*(?:string|number|boolean|void|any|never|unknown|object)/g) ?? []).length
+export function countInterfaces(content: string): number {
+  const m = content.match(/\binterface\s+\w+/g)
+  return m ? m.length : 0
 }
 
-/**
- * Count branches
- * @example
- * countBranches('if (a) {}') // 1
- */
-export function countBranches(content: string): number {
-  return (content.match(/\bif\s*\(|\?\s*[^?]\s*:|\bswitch\s*\(/g) ?? []).length
+export function countEnums(content: string): number {
+  const m = content.match(/\benum\s+\w+/g)
+  return m ? m.length : 0
 }
 
-/**
- * Count max nesting depth
- * @example
- * maxNesting('{{{}}}') // 3
- */
-export function maxNesting(content: string): number {
-  let max = 0
-  let cur = 0
-  for (const ch of content) {
-    if (ch === '{') { cur++; if (cur > max) max = cur }
-    else if (ch === '}') { cur = Math.max(0, cur - 1) }
-  }
-  return max
+export function countTypes(content: string): number {
+  const m = content.match(/\btype\s+\w+\s*=/g)
+  return m ? m.length : 0
 }
 
-/**
- * Count console statements
- * @example
- * countConsole('console.log("x")') // 1
- */
-export function countConsole(content: string): number {
-  return (content.match(/console\.\w+\s*\(/g) ?? []).length
+export function countExports(content: string): number {
+  const m = content.match(/^export\s/gm)
+  return m ? m.length : 0
 }
 
-/**
- * Count comments
- * @example
- * countComments('// hello') // 1
- */
+export function countImports(content: string): number {
+  const m = content.match(/^import\s/gm)
+  return m ? m.length : 0
+}
+
+export function countJSDoc(content: string): number {
+  const m = content.match(/\/\*\*[\s\S]*?\*\//g)
+  return m ? m.length : 0
+}
+
 export function countComments(content: string): number {
-  return (content.match(/\/\//g) ?? []).length + (content.match(/\/\*/g) ?? []).length
+  const line = (content.match(/\/\/.*/g) || []).length
+  const block = (content.match(/\/\*[\s\S]*?\*\//g) || []).length
+  return line + block
 }
 
-/**
- * Count TODO markers
- * @example
- * countTodos('TODO: fix') // 1
- */
+export function countErrorHandling(content: string): number {
+  const m = content.match(/\b(catch|finally|throw)\b/g)
+  return m ? m.length : 0
+}
+
+export function countTypeAnnotations(content: string): number {
+  const m = content.match(/:\s*(?:number|string|boolean|void|any|unknown|never|object)\b/g)
+  return m ? m.length : 0
+}
+
 export function countTodos(content: string): number {
-  return (content.match(/TODO|FIXME|HACK|XXX/gi) ?? []).length
+  const m = content.match(/\bTODO\b/gi)
+  return m ? m.length : 0
 }
 
-// ─── Measurement Functions ───────────────────────────────────────────────────
+export function countConsole(content: string): number {
+  const m = content.match(/\bconsole\.\w+/g)
+  return m ? m.length : 0
+}
+
+export function countBranches(content: string): number {
+  const ifs = (content.match(/\bif\b/g) || []).length
+  const switches = (content.match(/\bswitch\b/g) || []).length
+  const ternaries = (content.match(/\?[^:]*:/g) || []).length
+  return ifs + switches + ternaries
+}
+
+export function countDescriptiveNames(content: string): number {
+  const m = content.match(/\b(?:get|set|is|has|can|should|will|compute|calculate|validate|parse|format|transform|process|handle|build|create|generate|extract|resolve|initialize|configure|update|remove|delete|find|search|check|verify|ensure|assert)\w+/gi)
+  return m ? m.length : 0
+}
+
+export function countDefaults(content: string): number {
+  const m = content.match(/\bdefault\b/g)
+  return m ? m.length : 0
+}
+
+export function countDeprecated(content: string): number {
+  const m = content.match(/\bdeprecated\b|\@deprecated/gi)
+  return m ? m.length : 0
+}
+
+export function countReturnTypes(content: string): number {
+  const m = content.match(/\)\s*:\s*\w+/g)
+  return m ? m.length : 0
+}
+
+export function countGenerics(content: string): number {
+  const m = content.match(/<\w+>/g)
+  return m ? m.length : 0
+}
+
+export function countArrowFunctions(content: string): number {
+  const m = content.match(/=>/g)
+  return m ? m.length : 0
+}
+
+export function countAsync(content: string): number {
+  const m = content.match(/\basync\b/g)
+  return m ? m.length : 0
+}
+
+export function countAwait(content: string): number {
+  const m = content.match(/\bawait\b/g)
+  return m ? m.length : 0
+}
+
+// ─── Glass Measurement ──────────────────────────────────
 
 /**
- * Measure light transmission (understanding flow)
+ * Measure code transparency/clarity
  * @example
- * measureLightTransmission('export function calc() { return 1 }') // LightInfo
+ * measureGlass(codeString) // { type, thickness, clarity, ... }
  */
-export function measureLightTransmission(content: string): LightInfo {
+export function measureGlass(content: string): GlassMeasure {
   const loc = countLoc(content)
-  if (loc === 0) {
-    return { incidentLight: 0, transmittedLight: 0, absorbedLight: 0, reflectedLight: 0, scatteredLight: 0, transmissionEfficiency: 0 }
-  }
-
-  const incidentLight = Math.min(100, Math.round(
-    Math.min(30, countImports(content) * 8) +
-    Math.min(25, countLoc(content) * 0.5) +
-    Math.min(20, countFunctions(content) * 5) +
-    (countTypeAnnotations(content) > 0 ? 15 : 0) +
-    (countComments(content) > 0 ? 10 : 0),
-  ))
-
-  const transmittedLight = Math.min(100, Math.round(
-    (countExports(content) > 0 ? 25 : 0) +
-    (/\breturn\b/.test(content) ? 20 : 0) +
-    (countTypeAnnotations(content) > 0 ? 20 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
-    (countErrorHandling(content) > 0 ? 10 : 0) +
-    (maxNesting(content) <= 3 ? 10 : 0),
-  ))
-
-  const absorbedLight = Math.min(100, Math.round(
-    (maxNesting(content) > 4 ? 25 : 0) +
-    (countBranches(content) > 8 ? 20 : 0) +
-    (countTodos(content) > 0 ? 15 : 0) +
-    (countConsole(content) > 2 ? 15 : 0) +
-    (loc > 200 ? 10 : 0),
-  ))
-
-  const reflectedLight = Math.min(100, Math.round(
-    (countErrorHandling(content) === 0 && loc > 30 ? 20 : 0) +
-    (countTypeAnnotations(content) === 0 && loc > 20 ? 20 : 0) +
-    (countExports(content) === 0 && countFunctions(content) > 2 ? 15 : 0),
-  ))
-
-  const scatteredLight = Math.min(100, Math.round(
-    (countConsole(content) * 5) +
-    (countTodos(content) * 8) +
-    (countBranches(content) > 5 ? 10 : 0),
-  ))
-
-  const transmissionEfficiency = incidentLight > 0
-    ? Math.min(100, Math.round((transmittedLight / incidentLight) * 100))
-    : 0
-
-  return { incidentLight, transmittedLight, absorbedLight, reflectedLight, scatteredLight, transmissionEfficiency }
-}
-
-/**
- * Measure glass clarity (code transparency)
- * @example
- * measureGlassClarity('export function calc(): number { return 1 }') // number
- */
-export function measureGlassClarity(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  return Math.min(100, Math.round(
-    (countTypeAnnotations(content) > 0 ? 20 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
-    (/\/\*\*/.test(content) ? 10 : 0) +
-    (countExports(content) > 0 ? 15 : 0) +
-    (maxNesting(content) <= 3 ? 15 : maxNesting(content) <= 5 ? 8 : 0) +
-    (countConsole(content) <= 1 ? 10 : 0) +
-    (countBranches(content) <= 5 ? 10 : 5) +
-    (countErrorHandling(content) > 0 ? 5 : 0),
-  ))
-}
-
-/**
- * Measure color intensity (richness of implementation)
- * @example
- * measureColorIntensity('export function calc() { return helper(input) }') // number
- */
-export function measureColorIntensity(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  return Math.min(100, Math.round(
-    Math.min(25, countFunctions(content) * 6) +
-    Math.min(20, countImports(content) * 5) +
-    Math.min(20, countExports(content) * 6) +
-    Math.min(15, countErrorHandling(content) * 5) +
-    Math.min(10, countTypeAnnotations(content) * 3) +
-    (countBranches(content) > 0 ? 10 : 0),
-  ))
-}
-
-// ─── Classification Functions ────────────────────────────────────────────────
-
-/**
- * Classify glass type from content
- * @example
- * classifyGlassType('export function calc(): number { return 1 }') // string
- */
-export function classifyGlassType(content: string): GlassType {
-  const clarity = measureGlassClarity(content)
-  const exports = countExports(content)
+  const jsdoc = countJSDoc(content)
+  const comments = countComments(content)
   const types = countTypeAnnotations(content)
+  const functions = countFunctions(content)
+  const branches = countBranches(content)
+  const todos = countTodos(content)
 
-  if (clarity >= 70 && types > 2 && exports > 0) return 'transparent'
-  if (clarity >= 55 && types > 0) return 'cathedral'
-  if (clarity >= 40) return 'rippled'
-  if (clarity >= 25) return 'seedy'
-  if (clarity >= 15) return 'streaky'
-  return 'opaque'
+  const clarity = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (jsdoc > 0 ? 25 : 0) +
+    (comments > 0 ? 15 : 0) +
+    (types > 0 ? 20 : 0) +
+    (functions > 0 && branches < functions * 3 ? 15 : 0) +
+    (todos === 0 ? 15 : 0) +
+    (loc < 50 ? 10 : 0),
+  )))
+
+  const thickness = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (functions * 8) +
+    (countClasses(content) * 10) +
+    (countInterfaces(content) * 5) +
+    (branches * 3),
+  )))
+
+  const isTransparent = clarity >= 70
+  const isOpaque = clarity < 30
+  const isTranslucent = !isTransparent && !isOpaque
+  const hasBubbles = todos > 0 || countConsole(content) > 0
+  const hasSeeds = branches > functions * 3 && functions > 0
+  const hasStriations = types > 0 && comments > 0
+
+  let type: GlassMeasure['type'] = 'cathedral'
+  if (isOpaque) type = 'opaque'
+  else if (isTransparent) type = 'cathedral'
+  else if (hasSeeds) type = 'seeded'
+  else if (thickness > 70) type = 'bullseye'
+  else if (hasBubbles) type = 'rippled'
+  else if (hasStriations) type = 'streaky'
+
+  return {
+    type,
+    thickness,
+    isTransparent,
+    isTranslucent,
+    isOpaque,
+    hasBubbles,
+    hasSeeds,
+    hasStriations,
+    clarity,
+  }
 }
 
+// ─── Light Measurement ──────────────────────────────────
+
 /**
- * Classify frame material from content
+ * Measure documentation illumination
  * @example
- * classifyFrameMaterial('export class X {}') // string
+ * measureLight(codeString) // { transmission, isIlluminated, ... }
  */
-export function classifyFrameMaterial(content: string): FrameMaterial {
+export function measureLight(content: string): LightMeasure {
+  const loc = countLoc(content)
+  const jsdoc = countJSDoc(content)
+  const comments = countComments(content)
+  const types = countTypeAnnotations(content)
+  const exports = countExports(content)
+  const functions = countFunctions(content)
+
+  const transmission = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (jsdoc > 0 ? 30 : 0) +
+    (comments > 0 ? 15 : 0) +
+    (types > 0 ? 20 : 0) +
+    (exports > 0 ? 10 : 0) +
+    (functions > 0 ? 10 : 0) +
+    (countDescriptiveNames(content) > 0 ? 10 : 0) +
+    (countReturnTypes(content) > 0 ? 5 : 0),
+  )))
+
+  const illuminationScore = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (jsdoc > 0 ? 35 : 0) +
+    (comments > 0 ? 15 : 0) +
+    (types > 0 ? 20 : 0) +
+    (countDescriptiveNames(content) > 0 ? 15 : 0) +
+    (exports > 0 ? 10 : 0) +
+    (countReturnTypes(content) > 0 ? 5 : 0),
+  )))
+
+  const isIlluminated = illuminationScore >= 60
+  const hasSunlight = jsdoc >= 3 && types > 0 && exports > 0
+  const hasDappled = (jsdoc > 0 || comments > 0) && !hasSunlight
+  const isShadowed = jsdoc === 0 && comments > 0
+  const isDark = jsdoc === 0 && comments === 0 && loc > 0
+  const hasPrismaticEffect = jsdoc > 0 && types > 0 && countGenerics(content) > 0
+
+  return {
+    transmission,
+    isIlluminated,
+    hasSunlight,
+    hasDappled,
+    isShadowed,
+    isDark,
+    hasPrismaticEffect,
+    illuminationScore,
+  }
+}
+
+// ─── Color Measurement ──────────────────────────────────
+
+/**
+ * Measure construct variety
+ * @example
+ * measureColor(codeString) // { richness, palette, isJewelToned, ... }
+ */
+export function measureColor(content: string): ColorMeasure {
+  const loc = countLoc(content)
+  const functions = countFunctions(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const enums = countEnums(content)
+  const types = countTypes(content)
   const exports = countExports(content)
   const imports = countImports(content)
+
+  const palette: string[] = []
+  if (functions > 0) palette.push('function')
+  if (classes > 0) palette.push('class')
+  if (interfaces > 0) palette.push('interface')
+  if (enums > 0) palette.push('enum')
+  if (types > 0) palette.push('type')
+  if (exports > 0) palette.push('export')
+  if (imports > 0) palette.push('import')
+  if (countAsync(content) > 0) palette.push('async')
+  if (countArrowFunctions(content) > 0) palette.push('arrow')
+  if (countGenerics(content) > 0) palette.push('generic')
+
+  const richness = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (palette.length * 10) +
+    (functions > 0 ? 5 : 0) +
+    (classes > 0 ? 5 : 0) +
+    (interfaces > 0 ? 5 : 0),
+  )))
+
+  const isJewelToned = palette.length >= 5
+  const isPastel = palette.length >= 2 && palette.length < 5
+  const isMonochrome = palette.length <= 1
+  const hasComplementary = functions > 0 && classes > 0 && interfaces > 0
+  const hasClashing = countTodos(content) > 2 || countDeprecated(content) > 0
+
+  const hasSacredRed = countErrorHandling(content) > 0
+  const hasRoyalBlue = classes > 0 && interfaces > 0
+  const hasCelestialGold = countJSDoc(content) > 0 && countReturnTypes(content) > 0
+
+  return {
+    richness,
+    palette: Array.from(new Set(palette)),
+    isJewelToned,
+    isPastel,
+    isMonochrome,
+    hasComplementary,
+    hasClashing,
+    hasSacredRed,
+    hasRoyalBlue,
+    hasCelestialGold,
+  }
+}
+
+// ─── Lead Measurement ───────────────────────────────────
+
+/**
+ * Measure interface boundary quality
+ * @example
+ * measureLead(codeString) // { quality, hasCleanJoints, ... }
+ */
+export function measureLead(content: string): LeadMeasure {
+  const loc = countLoc(content)
+  const interfaces = countInterfaces(content)
   const types = countTypeAnnotations(content)
-  const hasClass = /\bclass\s+\w/.test(content)
-  const hasInterface = /interface\s+\w/.test(content)
+  const exports = countExports(content)
+  const imports = countImports(content)
+  const functions = countFunctions(content)
+  const classes = countClasses(content)
 
-  if (hasInterface && hasClass && exports > 2) return 'stone'
-  if (hasClass && types > 0 && imports > 0) return 'iron'
-  if (exports > 1 && types > 0) return 'aluminum'
-  if (exports > 0) return 'wood'
-  if (countFunctions(content) > 0) return 'plastic'
-  return 'none'
-}
-
-/**
- * Classify glass condition from clarity
- * @example
- * classifyGlassCondition(80) // 'clean'
- */
-export function classifyGlassCondition(clarity: number): GlassCondition {
-  if (clarity >= 80) return 'pristine'
-  if (clarity >= 60) return 'clean'
-  if (clarity >= 40) return 'dusty'
-  if (clarity >= 25) return 'cloudy'
-  if (clarity >= 10) return 'cracked'
-  return 'broken'
-}
-
-/**
- * Classify illumination from luminosity
- * @example
- * classifyIllumination(80) // 'bright'
- */
-export function classifyIllumination(luminosity: number): PaneIllumination {
-  if (luminosity >= 80) return 'brilliant'
-  if (luminosity >= 60) return 'bright'
-  if (luminosity >= 40) return 'moderate'
-  if (luminosity >= 20) return 'dim'
-  if (luminosity >= 5) return 'dark'
-  return 'opaque'
-}
-
-/**
- * Classify bay type from pane count
- * @example
- * classifyBayType(5) // string
- */
-export function classifyBayType(paneCount: number): BayType {
-  if (paneCount > 20) return 'rose-window'
-  if (paneCount > 10) return 'clerestory'
-  if (paneCount > 5) return 'nave'
-  if (paneCount > 3) return 'transept'
-  if (paneCount > 1) return 'aisle'
-  return 'chancel'
-}
-
-/**
- * Classify bay condition from illumination
- * @example
- * classifyBayCondition(80) // 'bright'
- */
-export function classifyBayCondition(illumination: number): BayCondition {
-  if (illumination >= 80) return 'radiant'
-  if (illumination >= 60) return 'bright'
-  if (illumination >= 40) return 'lit'
-  if (illumination >= 20) return 'dim'
-  if (illumination >= 10) return 'dark'
-  return 'black'
-}
-
-/**
- * Classify glazier grade from average luminosity
- * @example
- * classifyGlazierGrade(80) // 'glazier'
- */
-export function classifyGlazierGrade(avgLuminosity: number): GlazierGrade {
-  if (avgLuminosity >= 75) return 'master-glazier'
-  if (avgLuminosity >= 60) return 'glazier'
-  if (avgLuminosity >= 45) return 'artisan'
-  if (avgLuminosity >= 30) return 'apprentice'
-  if (avgLuminosity >= 15) return 'hobbyist'
-  return 'vandal'
-}
-
-// ─── Sub-Analysis Functions ──────────────────────────────────────────────────
-
-/**
- * Assess glass details
- * @example
- * assessGlass('export function a(): void {}') // GlassInfo
- */
-export function assessGlass(content: string): GlassInfo {
-  const type = classifyGlassType(content)
-  const clarity = measureGlassClarity(content)
-  const condition = classifyGlassCondition(clarity)
-  const thickness = Math.min(100, countLoc(content))
-  const bubbleCount = countConsole(content)
-  const striationCount = countTodos(content)
-  const inclusionCount = countBranches(content) > 8 ? countBranches(content) - 8 : 0
-  return {
-    type, condition, thickness,
-    hasBubbles: bubbleCount > 0,
-    hasStriations: striationCount > 0,
-    hasInclusions: inclusionCount > 0,
-    bubbleCount, striationCount, inclusionCount,
-  }
-}
-
-/**
- * Assess frame details
- * @example
- * assessFrame('export class X {}') // FrameInfo
- */
-export function assessFrame(content: string): FrameInfo {
-  const loc = countLoc(content)
-  const material = classifyFrameMaterial(content)
-  const hasTracery = countTypeAnnotations(content) > 0
-  const traceryQuality = Math.min(100, countTypeAnnotations(content) * 12)
-  const mullionCount = countExports(content)
-  const hasMullions = mullionCount > 0
-  const integrity = Math.min(100, Math.round(
-    (hasTracery ? 25 : 0) +
-    (hasMullions ? 25 : 0) +
-    (countErrorHandling(content) > 0 ? 20 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
-    (loc > 0 && loc <= 150 ? 15 : 0),
-  ))
-  const hasSagging = loc > 300 && countFunctions(content) > 10
-  const hasCracks = integrity < 30
-
-  return {
-    material, integrity, hasTracery, traceryQuality,
-    hasMullions, mullionCount,
-    isStructurallySound: integrity >= 50,
-    hasSagging, hasCracks,
-  }
-}
-
-/**
- * Assess leading (interface quality)
- * @example
- * assessLeading('export interface I {}') // LeadingInfo
- */
-export function assessLeading(content: string): LeadingInfo {
-  const loc = countLoc(content)
-  const quality = Math.min(100, Math.round(
-    (countTypeAnnotations(content) > 0 ? 30 : 0) +
-    (/interface\s+\w/.test(content) ? 25 : 0) +
-    (countExports(content) > 0 ? 20 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
+  const quality = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (interfaces > 0 ? 25 : 0) +
+    (types > 0 ? 20 : 0) +
+    (exports > 0 ? 15 : 0) +
+    (imports > 0 ? 10 : 0) +
+    (functions > 0 ? 10 : 0) +
+    (classes > 0 ? 10 : 0) +
     (countErrorHandling(content) > 0 ? 10 : 0),
-  ))
+  )))
 
-  const gapCount = countExports(content) > 0 && countTypeAnnotations(content) === 0 ? 1 : 0
-  const overlapCount = countExports(content) > 3 && countFunctions(content) < 2 ? 1 : 0
-  const looseJointCount = countImports(content) > 3 && countErrorHandling(content) === 0 ? 1 : 0
+  const jointCount = interfaces + exports + imports
+  const weakPointCount = countTodos(content) + countDeprecated(content) + countConsole(content)
+
+  const hasCleanJoints = interfaces > 0 && exports > 0 && weakPointCount === 0
+  const hasSolderMarks = imports > 3 || exports > 5
+  const hasWeakPoints = weakPointCount > 0
+  const hasLeadFree = interfaces === 0 && types === 0 && loc > 0
+  const isStructurallySound = quality >= 60
 
   return {
     quality,
-    hasGaps: gapCount > 0,
-    hasOverlaps: overlapCount > 0,
-    hasLooseJoints: looseJointCount > 0,
-    gapCount, overlapCount, looseJointCount,
-    isWeatherTight: quality >= 50 && gapCount === 0,
+    hasCleanJoints,
+    hasSolderMarks,
+    hasWeakPoints,
+    hasLeadFree,
+    isStructurallySound,
+    jointCount,
+    weakPointCount,
   }
 }
 
-// ─── Core Analysis ───────────────────────────────────────────────────────────
+// ─── Panel Measurement ──────────────────────────────────
 
 /**
- * Analyze a single file as a window pane
+ * Measure code organization
  * @example
- * analyzeWindowPane('export function calc() { return 1 }', 'calc.ts') // WindowPane
+ * measurePanel(codeString) // { arrangement, hasGeometricPattern, ... }
  */
-export function analyzeWindowPane(content: string, filePath: string): WindowPane {
-  const glassClarity = measureGlassClarity(content)
-  const light = measureLightTransmission(content)
-  const colorIntensity = measureColorIntensity(content)
-  const thickness = Math.min(100, countLoc(content))
-  const glass = assessGlass(content)
-  const frame = assessFrame(content)
-  const leading = assessLeading(content)
+export function measurePanel(content: string): PanelMeasure {
+  const loc = countLoc(content)
+  const functions = countFunctions(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const exports = countExports(content)
+  const imports = countImports(content)
+  const comments = countComments(content)
+  const jsdoc = countJSDoc(content)
 
-  const opacity = Math.min(100, Math.max(0, 100 - glassClarity))
-  const lightTransmission = light.transmittedLight
-  const frameSupport = frame.integrity
-  const leadingQuality = leading.quality
-
-  const luminosity = Math.min(100, Math.round(
-    lightTransmission * 0.3 +
-    glassClarity * 0.25 +
-    colorIntensity * 0.15 +
-    frameSupport * 0.15 +
-    leadingQuality * 0.15,
-  ))
-
-  const orientation: PaneOrientation = countExports(content) > countImports(content) ? 'east'
-    : countImports(content) > countExports(content) ? 'west'
-    : countFunctions(content) > 3 ? 'south'
-    : countLoc(content) > 0 ? 'north'
-    : 'clerestory'
-
-  const position: PanePosition = luminosity >= 70 ? 'center'
-    : luminosity >= 40 ? 'side'
-    : luminosity >= 20 ? 'above'
-    : luminosity > 0 ? 'below'
-    : 'behind'
-
-  const illumination = classifyIllumination(luminosity)
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    luminosity * 0.3 +
-    lightTransmission * 0.2 +
-    glassClarity * 0.2 +
-    frameSupport * 0.15 +
-    leadingQuality * 0.15,
+  const arrangement = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (imports > 0 ? 15 : 0) +
+    (exports > 0 ? 15 : 0) +
+    (interfaces > 0 ? 10 : 0) +
+    (classes > 0 ? 10 : 0) +
+    (functions > 0 ? 10 : 0) +
+    (comments > 0 ? 10 : 0) +
+    (jsdoc > 0 ? 10 : 0) +
+    (countErrorHandling(content) > 0 ? 10 : 0) +
+    (loc < 100 ? 10 : 0),
   )))
 
+  const panelCount = functions + classes + interfaces + countEnums(content) + countTypes(content)
+
+  const hasGeometricPattern = exports > 0 && interfaces > 0 && classes > 0
+  const hasOrganicPattern = functions > 3 && exports === 0
+  const hasNarrativeFlow = imports > 0 && functions > 0 && exports > 0
+  const hasChaoticPattern = loc > 20 && exports === 0 && interfaces === 0 && comments === 0
+  const hasSymmetry = imports > 0 && exports > 0 && Math.abs(imports - exports) <= 2
+
+  let patternType: PanelMeasure['patternType'] = 'chaotic'
+  if (hasGeometricPattern) patternType = 'geometric'
+  else if (hasNarrativeFlow) patternType = 'narrative'
+  else if (hasOrganicPattern) patternType = 'floral'
+  else if (classes > 0 && functions > 0) patternType = 'medallion'
+  else if (functions > 0 || exports > 0) patternType = 'abstract'
+
   return {
-    file: filePath, lightTransmission, glassClarity, colorIntensity,
-    thickness, frameSupport, leadingQuality, opacity, luminosity,
-    glass, frame, leading, light,
-    orientation, position, illumination, qualityScore,
+    arrangement,
+    hasGeometricPattern,
+    hasOrganicPattern,
+    hasNarrativeFlow,
+    hasChaoticPattern,
+    hasSymmetry,
+    panelCount,
+    patternType,
   }
 }
 
-// ─── Bay Analysis ────────────────────────────────────────────────────────────
+// ─── Frame Measurement ──────────────────────────────────
+
+/**
+ * Measure API design quality
+ * @example
+ * measureFrame(codeString) // { quality, hasStoneTracery, ... }
+ */
+export function measureFrame(content: string): FrameMeasure {
+  const loc = countLoc(content)
+  const types = countTypeAnnotations(content)
+  const exports = countExports(content)
+  const interfaces = countInterfaces(content)
+  const generics = countGenerics(content)
+
+  const quality = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (types > 0 ? 20 : 0) +
+    (exports > 0 ? 20 : 0) +
+    (interfaces > 0 ? 15 : 0) +
+    (countJSDoc(content) > 0 ? 15 : 0) +
+    (countErrorHandling(content) > 0 ? 15 : 0) +
+    (countReturnTypes(content) > 0 ? 10 : 0) +
+    (generics > 0 ? 5 : 0),
+  )))
+
+  const hasStoneTracery = types > 3 || generics > 0
+  const hasIronArmature = countClasses(content) > 0 && countErrorHandling(content) > 0
+  const isWeatherTight = countErrorHandling(content) > 0 && countDefaults(content) > 0
+  const hasOrnamentation = countJSDoc(content) > 0 && countDescriptiveNames(content) > 0
+  const hasDamage = countDeprecated(content) > 0 || countTodos(content) > 2
+  const isIntact = quality >= 60 && !hasDamage
+
+  return {
+    quality,
+    hasStoneTracery,
+    hasIronArmature,
+    isWeatherTight,
+    hasOrnamentation,
+    hasDamage,
+    isIntact,
+  }
+}
+
+// ─── Story Measurement ──────────────────────────────────
+
+/**
+ * Measure code narrative quality
+ * @example
+ * measureStory(codeString) // { isTold, isClear, narrativeScore, ... }
+ */
+export function measureStory(content: string): StoryMeasure {
+  const loc = countLoc(content)
+  const functions = countFunctions(content)
+  const exports = countExports(content)
+  const jsdoc = countJSDoc(content)
+  const types = countTypeAnnotations(content)
+  const errors = countErrorHandling(content)
+
+  const hasBeginning = exports > 0 || countImports(content) > 0
+  const hasMiddle = functions > 0 || countClasses(content) > 0
+  const hasEnd = countReturnTypes(content) > 0 || errors > 0
+  const hasPlotTwist = countAsync(content) > 0 || countAwait(content) > 0
+
+  const narrativeScore = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
+    (hasBeginning ? 20 : 0) +
+    (hasMiddle ? 20 : 0) +
+    (hasEnd ? 20 : 0) +
+    (jsdoc > 0 ? 15 : 0) +
+    (types > 0 ? 10 : 0) +
+    (countDescriptiveNames(content) > 0 ? 10 : 0) +
+    (errors > 0 ? 5 : 0),
+  )))
+
+  const isTold = hasBeginning && hasMiddle && hasEnd
+  const isClear = narrativeScore >= 60
+
+  return {
+    isTold,
+    isClear,
+    hasBeginning,
+    hasMiddle,
+    hasEnd,
+    hasPlotTwist,
+    narrativeScore,
+  }
+}
+
+// ─── Panel Analysis ─────────────────────────────────────
+
+/**
+ * Analyze a single file as a glass panel
+ * @example
+ * analyzeGlassPanel(content, filePath) // GlassPanel
+ */
+export function analyzeGlassPanel(content: string, filePath: string): GlassPanel {
+  const glass = measureGlass(content)
+  const light = measureLight(content)
+  const color = measureColor(content)
+  const lead = measureLead(content)
+  const panel = measurePanel(content)
+  const frame = measureFrame(content)
+  const story = measureStory(content)
+
+  const lightTransmission = light.transmission
+  const colorRichness = color.richness
+  const leadQuality = lead.quality
+  const glassThickness = glass.thickness
+  const panelArrangement = panel.arrangement
+  const windowFraming = frame.quality
+
+  const qualityScore = Math.min(100, Math.max(0, Math.round(
+    (lightTransmission * 0.25) +
+    (colorRichness * 0.15) +
+    (leadQuality * 0.15) +
+    (glass.clarity * 0.15) +
+    (panelArrangement * 0.15) +
+    (windowFraming * 0.15),
+  )))
+
+  const condition = classifyPanelCondition(qualityScore, glass, light)
+
+  return {
+    file: filePath,
+    lightTransmission,
+    colorRichness,
+    leadQuality,
+    glassThickness,
+    panelArrangement,
+    windowFraming,
+    glass,
+    light,
+    color,
+    lead,
+    panel,
+    frame,
+    story,
+    condition,
+    qualityScore,
+  }
+}
+
+/**
+ * Classify panel condition
+ * @example
+ * classifyPanelCondition(90, glass, light) // 'cathedral-masterpiece'
+ */
+export function classifyPanelCondition(
+  score: number,
+  glass: GlassMeasure,
+  light: LightMeasure,
+): GlassPanel['condition'] {
+  if (score >= 80 && glass.isTransparent && light.isIlluminated) return 'cathedral-masterpiece'
+  if (score >= 70 && (glass.isTransparent || glass.isTranslucent)) return 'rose-window'
+  if (score >= 55) return 'beautiful-window'
+  if (score >= 40 && light.transmission > 30) return 'clear-glass'
+  if (score >= 20) return 'cracked-glass'
+  return 'bricked-up'
+}
+
+// ─── Bay Analysis ───────────────────────────────────────
 
 /**
  * Analyze a directory as a window bay
  * @example
- * analyzeWindowBay(panes, 'src') // WindowBay
+ * analyzeWindowBay(panels, dirPath) // WindowBay
  */
-export function analyzeWindowBay(panes: WindowPane[], dirPath: string): WindowBay {
-  if (panes.length === 0) {
+export function analyzeWindowBay(panels: GlassPanel[], dirPath: string): WindowBay {
+  const count = panels.length
+  if (count === 0) {
     return {
-      directory: dirPath, panes: [], avgLightTransmission: 0,
-      avgGlassClarity: 0, avgLuminosity: 0, avgFrameIntegrity: 0,
-      avgLeadingQuality: 0, brilliantPanes: 0, darkPanes: 0,
-      totalGaps: 0, totalCracks: 0, bayType: 'chancel',
-      bayIllumination: 0, condition: 'black',
+      directory: dirPath,
+      panels: [],
+      avgLightTransmission: 0,
+      avgColorRichness: 0,
+      avgLeadQuality: 0,
+      masterpieceCount: 0,
+      brickedUpCount: 0,
+      illuminatedCount: 0,
+      darkCount: 0,
+      bayType: 'walled-up',
+      condition: 'darkness',
     }
   }
 
-  const n = panes.length
-  const avgLightTransmission = Math.round(panes.reduce((s, p) => s + p.lightTransmission, 0) / n)
-  const avgGlassClarity = Math.round(panes.reduce((s, p) => s + p.glassClarity, 0) / n)
-  const avgLuminosity = Math.round(panes.reduce((s, p) => s + p.luminosity, 0) / n)
-  const avgFrameIntegrity = Math.round(panes.reduce((s, p) => s + p.frameSupport, 0) / n)
-  const avgLeadingQuality = Math.round(panes.reduce((s, p) => s + p.leadingQuality, 0) / n)
+  const avgLightTransmission = Math.round(panels.reduce((s, p) => s + p.lightTransmission, 0) / count)
+  const avgColorRichness = Math.round(panels.reduce((s, p) => s + p.colorRichness, 0) / count)
+  const avgLeadQuality = Math.round(panels.reduce((s, p) => s + p.leadQuality, 0) / count)
 
-  const brilliantPanes = panes.filter(p => p.illumination === 'brilliant' || p.illumination === 'bright').length
-  const darkPanes = panes.filter(p => p.illumination === 'dark' || p.illumination === 'opaque').length
-  const totalGaps = panes.reduce((s, p) => s + p.leading.gapCount, 0)
-  const totalCracks = panes.filter(p => p.frame.hasCracks).length
+  const masterpieceCount = panels.filter(p => p.condition === 'cathedral-masterpiece').length
+  const brickedUpCount = panels.filter(p => p.condition === 'bricked-up').length
+  const illuminatedCount = panels.filter(p => p.light.isIlluminated).length
+  const darkCount = panels.filter(p => p.light.isDark).length
 
-  const bayType = classifyBayType(n)
-  const bayIllumination = avgLuminosity
-  const condition = classifyBayCondition(bayIllumination)
+  const bayType = classifyBayType(panels, avgLightTransmission)
+  const condition = classifyBayCondition(avgLightTransmission)
 
   return {
-    directory: dirPath, panes, avgLightTransmission, avgGlassClarity,
-    avgLuminosity, avgFrameIntegrity, avgLeadingQuality,
-    brilliantPanes, darkPanes, totalGaps, totalCracks,
-    bayType, bayIllumination, condition,
+    directory: dirPath,
+    panels,
+    avgLightTransmission,
+    avgColorRichness,
+    avgLeadQuality,
+    masterpieceCount,
+    brickedUpCount,
+    illuminatedCount,
+    darkCount,
+    bayType,
+    condition,
   }
 }
 
-// ─── Recommendations ─────────────────────────────────────────────────────────
+/**
+ * Classify bay type
+ * @example
+ * classifyBayType(panels, 80) // 'cathedral-bay'
+ */
+export function classifyBayType(panels: GlassPanel[], avgLight: number): WindowBay['bayType'] {
+  if (panels.length === 0) return 'walled-up'
+  const masterpieceRatio = panels.filter(p => p.condition === 'cathedral-masterpiece').length / panels.length
+  const allGood = panels.every(p => p.qualityScore >= 50)
+
+  if (masterpieceRatio >= 0.5 && avgLight >= 70) return 'cathedral-bay'
+  if (allGood && avgLight >= 60) return 'rose-window-bay'
+  if (avgLight >= 50) return 'chapel-window'
+  if (avgLight >= 30) return 'cloister'
+  if (avgLight >= 15) return 'crypt'
+  return 'walled-up'
+}
 
 /**
- * Generate stained glass window recommendations
+ * Classify bay condition
  * @example
- * generateRecommendations(panes, bays, cathedral, stats) // string[]
+ * classifyBayCondition(85) // 'divine-light'
+ */
+export function classifyBayCondition(avgLight: number): WindowBay['condition'] {
+  if (avgLight >= 80) return 'divine-light'
+  if (avgLight >= 65) return 'radiant'
+  if (avgLight >= 50) return 'well-lit'
+  if (avgLight >= 30) return 'dim'
+  if (avgLight >= 15) return 'gloomy'
+  return 'darkness'
+}
+
+// ─── Glazier Grade ──────────────────────────────────────
+
+/**
+ * Classify glazier grade from brilliance
+ * @example
+ * classifyGlazierGrade(90) // 'master-glazier'
+ */
+export function classifyGlazierGrade(avgBrilliance: number): StainedGlassWindowStats['glazierGrade'] {
+  if (avgBrilliance >= 80) return 'master-glazier'
+  if (avgBrilliance >= 65) return 'glazier'
+  if (avgBrilliance >= 50) return 'glass-artisan'
+  if (avgBrilliance >= 35) return 'apprentice'
+  if (avgBrilliance >= 20) return 'hobbyist'
+  return 'vandal'
+}
+
+// ─── Recommendations ────────────────────────────────────
+
+/**
+ * Generate recommendations
+ * @example
+ * generateRecommendations(panels, bays, cathedral, stats) // ['Add JSDoc...']
  */
 export function generateRecommendations(
-  panes: WindowPane[],
+  panels: GlassPanel[],
   _bays: WindowBay[],
-  _cathedral: CathedralInfo,
+  _cathedral: CathedralMeasure,
   stats: StainedGlassWindowStats,
 ): string[] {
-  void _bays
-  void _cathedral
   const recs: string[] = []
 
-  if (stats.opaquePanes > 0) {
-    recs.push(`Opaque panes: ${stats.opaquePanes} files block all understanding`)
+  if (stats.darkCount > stats.totalFiles * 0.3) {
+    recs.push('Add JSDoc documentation to illuminate dark files')
+  }
+  if (stats.brickedUpCount > 0) {
+    recs.push('Refactor bricked-up files to improve transparency')
+  }
+  if (stats.monochromeCount > stats.totalFiles * 0.5) {
+    recs.push('Diversify construct types for richer code color palette')
+  }
+  if (stats.avgLeadQuality < 40) {
+    recs.push('Define interfaces to strengthen lead boundaries')
+  }
+  if (stats.avgPanelArrangement < 40) {
+    recs.push('Improve code organization with clear export/import patterns')
+  }
+  if (stats.avgWindowFraming < 40) {
+    recs.push('Add return type annotations and error handling for better framing')
+  }
+  if (stats.crackedGlassCount > stats.totalFiles * 0.3) {
+    recs.push('Fix TODO items and remove deprecated code to repair cracks')
+  }
+  if (stats.hasNarrativeFlowCount < stats.totalFiles * 0.3) {
+    recs.push('Structure files with imports, logic, and exports for narrative flow')
   }
 
-  if (stats.totalGaps > 0) {
-    recs.push(`Leading gaps: ${stats.totalGaps} files need interface definitions`)
+  if (recs.length === 0) {
+    recs.push('Continue maintaining high code transparency standards')
   }
 
-  if (stats.brokenCount > 0) {
-    recs.push(`Broken glass: ${stats.brokenCount} files need complete restructuring`)
-  }
-
-  if (stats.noFrames > stats.totalFiles * 0.3) {
-    recs.push(`Missing frames: ${stats.noFrames} files lack structural support`)
-  }
-
-  if (stats.totalLooseJoints > 0) {
-    recs.push(`Loose joints: ${stats.totalLooseJoints} files have weak connections`)
-  }
-
-  if (stats.totalStriations > 3) {
-    recs.push(`Striations: ${stats.totalStriations} TODO/FIXME markers obscure clarity`)
-  }
-
-  if (stats.overallLuminosity >= 60) {
-    recs.push('Good luminosity: the cathedral is well-illuminated')
-  }
-
-  return Array.from(new Set(recs))
+  return recs
 }
 
-// ─── Orchestrator ────────────────────────────────────────────────────────────
+// ─── Orchestrator ───────────────────────────────────────
 
 /**
- * Build complete stained glass window result from files and contents
+ * Build the full stained glass window result
  * @example
- * buildStainedGlassWindowResult(['a.ts'], ['export function a() {}'], {}) // StainedGlassWindowResult
+ * buildStainedGlassWindowResult(files, contents, {}) // StainedGlassWindowResult
  */
 export function buildStainedGlassWindowResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options: Record<string, unknown> = {},
 ): StainedGlassWindowResult {
-  void options
-
-  const panes: WindowPane[] = files.map((file, i) => {
-    const content = contents[i] ?? ''
-    try {
-      return analyzeWindowPane(content, file)
-    } catch {
-      return analyzeWindowPane('', file)
-    }
-  })
-
-  const dirMap = new Map<string, WindowPane[]>()
-  for (const p of panes) {
-    const dir = p.file.includes('/') ? p.file.slice(0, p.file.lastIndexOf('/')) : '.'
-    const existing = dirMap.get(dir)
-    if (existing) { existing.push(p) } else { dirMap.set(dir, [p]) }
-  }
-
-  const bays: WindowBay[] = Array.from(dirMap.entries()).map(([dir, ps]) =>
-    analyzeWindowBay(ps, dir),
+  const panels: GlassPanel[] = files.map((file, i) =>
+    analyzeGlassPanel(contents[i] ?? '', file),
   )
 
-  const n = panes.length || 1
-  const totalLightTransmission = Math.round(panes.reduce((s, p) => s + p.lightTransmission, 0) / n)
-  const avgGlassClarity = Math.round(panes.reduce((s, p) => s + p.glassClarity, 0) / n)
-  const avgLuminosity = Math.round(panes.reduce((s, p) => s + p.luminosity, 0) / n)
-  const avgFrameIntegrity = Math.round(panes.reduce((s, p) => s + p.frameSupport, 0) / n)
-  const avgLeadingQuality = Math.round(panes.reduce((s, p) => s + p.leadingQuality, 0) / n)
-
-  const totalGaps = panes.reduce((s, p) => s + p.leading.gapCount, 0)
-  const totalCracks = panes.filter(p => p.frame.hasCracks).length
-
-  const cathedral: CathedralInfo = {
-    totalLightTransmission, avgGlassClarity, avgLuminosity,
-    avgFrameIntegrity, avgLeadingQuality,
-    isWellIlluminated: avgLuminosity >= 50,
-    totalGaps, totalCracks,
+  const bayMap = new Map<string, GlassPanel[]>()
+  for (const panel of panels) {
+    const dir = panel.file.includes('/') ? panel.file.substring(0, panel.file.lastIndexOf('/')) : '.'
+    const existing = bayMap.get(dir)
+    if (existing) {
+      existing.push(panel)
+    } else {
+      bayMap.set(dir, [panel])
+    }
   }
 
-  const overallLuminosity = Math.min(100, Math.round(
-    totalLightTransmission * 0.25 + avgGlassClarity * 0.25 +
-    avgFrameIntegrity * 0.2 + avgLeadingQuality * 0.15 +
-    (avgLuminosity >= 50 ? 15 : 0),
-  ))
+  const bays: WindowBay[] = Array.from(bayMap.entries()).map(([dir, bPanels]) =>
+    analyzeWindowBay(bPanels, dir),
+  )
+
+  const totalFiles = panels.length
+  const avg = (fn: (p: GlassPanel) => number) =>
+    totalFiles === 0 ? 0 : Math.round(panels.reduce((s, p) => s + fn(p), 0) / totalFiles)
+
+  const cathedral: CathedralMeasure = {
+    avgLightTransmission: avg(p => p.lightTransmission),
+    avgColorRichness: avg(p => p.colorRichness),
+    avgLeadQuality: avg(p => p.leadQuality),
+    isIlluminated: avg(p => p.lightTransmission) >= 60,
+    overallBrilliance: avg(p => p.qualityScore),
+  }
+
+  const overallBrilliance = cathedral.overallBrilliance
+
+  const mostBrilliant = panels.length > 0
+    ? panels.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best, panels[0]).file
+    : ''
+  const mostColorful = panels.length > 0
+    ? panels.reduce((best, p) => p.colorRichness > best.colorRichness ? p : best, panels[0]).file
+    : ''
+  const cleanestLead = panels.length > 0
+    ? panels.reduce((best, p) => p.leadQuality > best.leadQuality ? p : best, panels[0]).file
+    : ''
+  const bestFramed = panels.length > 0
+    ? panels.reduce((best, p) => p.windowFraming > best.windowFraming ? p : best, panels[0]).file
+    : ''
+  const bestStory = panels.length > 0
+    ? panels.reduce((best, p) => p.story.narrativeScore > best.story.narrativeScore ? p : best, panels[0]).file
+    : ''
 
   const stats: StainedGlassWindowStats = {
-    totalFiles: files.length,
+    totalFiles,
     totalBays: bays.length,
-    avgLightTransmission: totalLightTransmission,
-    avgGlassClarity,
-    avgColorIntensity: Math.round(panes.reduce((s, p) => s + p.colorIntensity, 0) / n),
-    avgLuminosity,
-    avgFrameIntegrity,
-    avgLeadingQuality,
-    avgOpacity: Math.round(panes.reduce((s, p) => s + p.opacity, 0) / n),
-    brilliantPanes: panes.filter(p => p.illumination === 'brilliant').length,
-    brightPanes: panes.filter(p => p.illumination === 'bright').length,
-    dimPanes: panes.filter(p => p.illumination === 'dim').length,
-    darkPanes: panes.filter(p => p.illumination === 'dark').length,
-    opaquePanes: panes.filter(p => p.illumination === 'opaque').length,
-    cathedralGlass: panes.filter(p => p.glass.type === 'cathedral').length,
-    transparentGlass: panes.filter(p => p.glass.type === 'transparent').length,
-    pristineCount: panes.filter(p => p.glass.condition === 'pristine').length,
-    crackedCount: panes.filter(p => p.glass.condition === 'cracked').length,
-    brokenCount: panes.filter(p => p.glass.condition === 'broken').length,
-    totalBubbles: panes.reduce((s, p) => s + p.glass.bubbleCount, 0),
-    totalStriations: panes.reduce((s, p) => s + p.glass.striationCount, 0),
-    totalInclusions: panes.reduce((s, p) => s + p.glass.inclusionCount, 0),
-    totalGaps,
-    totalOverlaps: panes.reduce((s, p) => s + p.leading.overlapCount, 0),
-    totalLooseJoints: panes.reduce((s, p) => s + p.leading.looseJointCount, 0),
-    stoneFrames: panes.filter(p => p.frame.material === 'stone').length,
-    noFrames: panes.filter(p => p.frame.material === 'none').length,
-    overallLuminosity,
-    glazierGrade: classifyGlazierGrade(overallLuminosity),
-    brightestPane: panes.length > 0
-      ? panes.reduce((b, p) => p.luminosity > b.luminosity ? p : b, panes[0]).file : 'none',
-    darkestPane: panes.length > 0
-      ? panes.reduce((b, p) => p.luminosity < b.luminosity ? p : b, panes[0]).file : 'none',
-    bestFramed: panes.length > 0
-      ? panes.reduce((b, p) => p.frameSupport > b.frameSupport ? p : b, panes[0]).file : 'none',
-    bestLed: panes.length > 0
-      ? panes.reduce((b, p) => p.leadingQuality > b.leadingQuality ? p : b, panes[0]).file : 'none',
+    avgLightTransmission: cathedral.avgLightTransmission,
+    avgColorRichness: cathedral.avgColorRichness,
+    avgLeadQuality: cathedral.avgLeadQuality,
+    avgGlassThickness: avg(p => p.glassThickness),
+    avgPanelArrangement: avg(p => p.panelArrangement),
+    avgWindowFraming: avg(p => p.windowFraming),
+    cathedralMasterpieceCount: panels.filter(p => p.condition === 'cathedral-masterpiece').length,
+    roseWindowCount: panels.filter(p => p.condition === 'rose-window').length,
+    beautifulWindowCount: panels.filter(p => p.condition === 'beautiful-window').length,
+    clearGlassCount: panels.filter(p => p.condition === 'clear-glass').length,
+    crackedGlassCount: panels.filter(p => p.condition === 'cracked-glass').length,
+    brickedUpCount: panels.filter(p => p.condition === 'bricked-up').length,
+    transparentCount: panels.filter(p => p.glass.isTransparent).length,
+    opaqueCount: panels.filter(p => p.glass.isOpaque).length,
+    illuminatedCount: panels.filter(p => p.light.isIlluminated).length,
+    shadowedCount: panels.filter(p => p.light.isShadowed).length,
+    darkCount: panels.filter(p => p.light.isDark).length,
+    jewelTonedCount: panels.filter(p => p.color.isJewelToned).length,
+    monochromeCount: panels.filter(p => p.color.isMonochrome).length,
+    hasCleanJointsCount: panels.filter(p => p.lead.hasCleanJoints).length,
+    isWeatherTightCount: panels.filter(p => p.frame.isWeatherTight).length,
+    hasNarrativeFlowCount: panels.filter(p => p.panel.hasNarrativeFlow).length,
+    hasSymmetryCount: panels.filter(p => p.panel.hasSymmetry).length,
+    isToldCount: panels.filter(p => p.story.isTold).length,
+    isIntactCount: panels.filter(p => p.frame.isIntact).length,
+    overallBrilliance,
+    glazierGrade: classifyGlazierGrade(overallBrilliance),
+    mostBrilliant,
+    mostColorful,
+    cleanestLead,
+    bestFramed,
+    bestStory,
   }
 
-  const recommendations = generateRecommendations(panes, bays, cathedral, stats)
+  const recommendations = generateRecommendations(panels, bays, cathedral, stats)
 
-  return { panes, bays, cathedral, stats, recommendations }
+  return { panels, bays, cathedral, stats, recommendations }
 }
