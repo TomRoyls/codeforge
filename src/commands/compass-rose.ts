@@ -5,36 +5,40 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildCompassRoseResult,
-  type CompassRoseOptions,
-  type CompassRoseResult,
-} from './compass-rose-helpers.js'
+import { buildCompassRoseResult, type CompassRoseResult } from './compass-rose-helpers.js'
 import { formatCompassRoseJson, formatCompassRoseTable } from './compass-rose-format-helpers.js'
 
 export default class CompassRose extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze',
+      description: 'Path to analyze directional orientation',
       required: false,
     }),
   }
 
-  static override description = 'Analyze codebase directional flow with compass metaphor'
+  static override description = 'Analyze code directional orientation and bearings'
 
   static override examples = [
     {
-      command: '<%= config.bin %> compass-rose',
-      description: 'Analyze codebase direction',
+      command: '<%= config.bin %> <%= command.id %>',
+      description: 'Analyze orientation in current directory',
     },
     {
-      command: '<%= config.bin %> compass-rose ./src --format json',
-      description: 'Analyze as JSON',
+      command: '<%= config.bin %> <%= command.id %> ./src --format json',
+      description: 'Analyze src directory as JSON',
     },
     {
-      command: '<%= config.bin %> compass-rose --verbose',
-      description: 'Show detailed readings',
+      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
+      description: 'Analyze TypeScript files only',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show detailed compass point breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output compass.json',
+      description: 'Export analysis to JSON file',
     },
   ]
 
@@ -61,7 +65,7 @@ export default class CompassRose extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed output',
+      description: 'Show detailed breakdown',
     }),
   }
 
@@ -75,7 +79,7 @@ export default class CompassRose extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const options: CompassRoseOptions = { verbose: flags.verbose }
+    const { verbose } = flags
 
     const spinner = ora('Discovering files...').start()
 
@@ -85,7 +89,26 @@ export default class CompassRose extends Command {
     const discoveredFiles = await discoverFiles({
       cwd: targetPath,
       ignore,
-      patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+      patterns: [
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
+        '**/*.json',
+        '**/*.css',
+        '**/*.html',
+        '**/*.md',
+        '**/*.py',
+        '**/*.rs',
+        '**/*.go',
+        '**/*.java',
+        '**/*.rb',
+        '**/*.sh',
+        '**/*.yaml',
+        '**/*.yml',
+        '**/*.xml',
+        '**/*.sql',
+      ],
     })
 
     const extensions = flags.ext
@@ -102,25 +125,31 @@ export default class CompassRose extends Command {
         })
       : discoveredFiles
 
-    spinner.text = 'Computing compass readings...'
+    spinner.text = 'Analyzing compass points...'
 
-    const contents: string[] = await Promise.all(
+    const files: string[] = []
+    const contents: string[] = []
+
+    await Promise.all(
       filteredFiles.map(async (file) => {
         try {
-          return await fs.readFile(file.absolutePath, 'utf8')
+          const content = await fs.readFile(file.absolutePath, 'utf8')
+          files.push(file.path)
+          contents.push(content)
         } catch {
-          return ''
+          // Skip unreadable files
         }
       }),
     )
 
-    const files = filteredFiles.map((f) => f.path)
+    const result: CompassRoseResult = buildCompassRoseResult(files, contents, {})
 
-    const result: CompassRoseResult = buildCompassRoseResult(files, contents, options)
+    spinner.succeed(`Analyzed ${files.length} points with grade ${result.stats.navigatorGrade}`)
 
-    spinner.succeed(`Computed compass readings for ${files.length} files`)
-
-    const outputData = format === 'json' ? formatCompassRoseJson(result) : formatCompassRoseTable(result)
+    const outputData =
+      format === 'json'
+        ? formatCompassRoseJson(result)
+        : formatCompassRoseTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -138,5 +167,5 @@ export default class CompassRose extends Command {
 }
 
 export { buildCompassRoseResult } from './compass-rose-helpers.js'
-export type { CompassRoseResult, CompassRoseStats, CompassReading, Heading, FlowVector, Direction } from './compass-rose-helpers.js'
+export type { CompassRoseResult, CompassRoseStats, CompassPoint, CompassRegion } from './compass-rose-helpers.js'
 export { formatCompassRoseJson, formatCompassRoseTable } from './compass-rose-format-helpers.js'
