@@ -1,151 +1,209 @@
 import chalk from 'chalk'
-import type { CoralPolyp, ReefZone, CoralReefResult } from './coral-reef-helpers.js'
 
-// ─── Color Utilities ─────────────────────────────────────────────────────────
+import type { CoralReefResult } from './coral-reef-helpers.js'
 
-function scoreColor(s: number): string {
-  if (s >= 70) return chalk.green(String(s))
-  if (s >= 40) return chalk.yellow(String(s))
-  return chalk.red(String(s))
+// ─── Color Helpers ─────────────────────────────────────────────────────────
+
+/** @example scoreColor(90) returns green string */
+export function scoreColor(score: number): string {
+  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
+  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
+  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
+  return chalk.rgb(231, 76, 60)(String(score))
 }
 
-function conditionColor(c: string): string {
-  switch (c) {
-    case 'thriving': return chalk.rgb(255, 215, 0)(c)
-    case 'healthy': return chalk.green(c)
-    case 'stressed': return chalk.yellow(c)
-    case 'bleaching': return chalk.rgb(255, 165, 0)(c)
-    case 'damaged': return chalk.rgb(255, 69, 0)(c)
-    case 'dead': return chalk.red(c)
-    default: return chalk.dim(c)
+/** @example conditionColor('pristine-reef') returns colored string */
+export function conditionColor(condition: string): string {
+  switch (condition) {
+    case 'pristine-reef': return chalk.rgb(255, 215, 0).bold(condition)
+    case 'healthy-reef': return chalk.rgb(46, 204, 113)(condition)
+    case 'recovering-reef': return chalk.rgb(52, 152, 219)(condition)
+    case 'stressed-reef': return chalk.rgb(241, 196, 15)(condition)
+    case 'degraded': return chalk.rgb(230, 126, 34)(condition)
+    case 'dead-zone': return chalk.rgb(231, 76, 60)(condition)
+    default: return condition
   }
 }
 
-function zoneColor(z: string): string {
-  switch (z) {
-    case 'reef-crest': return chalk.rgb(255, 215, 0)(z)
-    case 'fore-reef': return chalk.green(z)
-    case 'back-reef': return chalk.blue(z)
-    case 'lagoon': return chalk.cyan(z)
-    case 'atoll': return chalk.dim(z)
-    case 'dead-zone': return chalk.red(z)
-    default: return chalk.dim(z)
+/** @example gradeColor('reef-guardian') returns bold string */
+export function gradeColor(grade: string): string {
+  switch (grade) {
+    case 'reef-guardian': return chalk.rgb(255, 215, 0).bold(grade)
+    case 'marine-biologist': return chalk.rgb(46, 204, 113)(grade)
+    case 'conservationist': return chalk.rgb(155, 89, 182)(grade)
+    case 'observer': return chalk.rgb(52, 152, 219)(grade)
+    case 'tourist': return chalk.rgb(241, 196, 15)(grade)
+    case 'polluter': return chalk.rgb(231, 76, 60)(grade)
+    default: return grade
   }
 }
 
-function reefConditionColor(c: string): string {
-  switch (c) {
-    case 'pristine-reef': return chalk.rgb(255, 215, 0)(c)
-    case 'healthy-reef': return chalk.green(c)
-    case 'stressed-reef': return chalk.yellow(c)
-    case 'degraded-reef': return chalk.rgb(255, 165, 0)(c)
-    case 'bleached-reef': return chalk.rgb(255, 69, 0)(c)
-    case 'dead-reef': return chalk.red(c)
-    default: return chalk.dim(c)
+/** @example formationColor('barrier-reef') returns colored string */
+export function formationColor(formation: string): string {
+  switch (formation) {
+    case 'barrier-reef': return chalk.rgb(255, 215, 0).bold(formation)
+    case 'atoll': return chalk.rgb(46, 204, 113)(formation)
+    case 'fringing-reef': return chalk.rgb(155, 89, 182)(formation)
+    case 'patch-reef': return chalk.rgb(52, 152, 219)(formation)
+    case 'rubble': return chalk.rgb(241, 196, 15)(formation)
+    case 'sand': return chalk.rgb(231, 76, 60)(formation)
+    default: return formation
   }
 }
 
-function gradeColor(g: string): string {
-  switch (g) {
-    case 'marine-biologist': return chalk.rgb(255, 215, 0)(g)
-    case 'reef-scientist': return chalk.green(g)
-    case 'aquarist': return chalk.blue(g)
-    case 'diver': return chalk.cyan(g)
-    case 'tourist': return chalk.yellow(g)
-    case 'polluter': return chalk.red(g)
-    default: return chalk.dim(g)
+/** @example vitalityColor('thriving') returns colored string */
+export function vitalityColor(vitality: string): string {
+  switch (vitality) {
+    case 'thriving': return chalk.rgb(255, 215, 0).bold(vitality)
+    case 'healthy': return chalk.rgb(46, 204, 113)(vitality)
+    case 'stressed': return chalk.rgb(155, 89, 182)(vitality)
+    case 'declining': return chalk.rgb(52, 152, 219)(vitality)
+    case 'dying': return chalk.rgb(241, 196, 15)(vitality)
+    case 'dead': return chalk.rgb(231, 76, 60)(vitality)
+    default: return vitality
   }
 }
 
-// ─── Polyp Formatting ────────────────────────────────────────────────────────
-
-function formatPolyp(p: CoralPolyp, verbose: boolean): string {
-  const line = ` ${conditionColor(p.condition)} ${chalk.bold(p.file)} health:${scoreColor(p.coralHealth)} diversity:${scoreColor(p.speciesDiversity)} symbiosis:${scoreColor(p.symbiosisQuality)} clarity:${scoreColor(p.waterClarity)}`
-
-  if (!verbose) return line
-  const details = [line]
-  details.push(`    species:${p.species.total}(${p.species.variety}) dominant:${p.species.dominant} biodiv:${scoreColor(p.biodiversityIndex)} resilience:${scoreColor(p.reefResilience)}`)
-  details.push(`    reef: ${p.reef.growthForm} foundation:${p.reef.isFoundation ? chalk.green('Y') : chalk.red('N')} branching:${p.reef.isBranching ? chalk.green('Y') : chalk.red('N')} massive:${p.reef.isMassive ? chalk.green('Y') : chalk.red('N')}`)
-  details.push(`    water: temp:${p.water.temperature} acid:${scoreColor(p.water.acidity)} turb:${scoreColor(p.water.turbidity)} O2:${scoreColor(p.water.oxygenLevel)} clean:${p.water.isClean ? chalk.green('Y') : chalk.red('N')}`)
-  details.push(`    bleaching: risk:${scoreColor(p.bleaching.risk)} necrosis:${p.bleaching.hasNecrosis ? chalk.red('Y') : chalk.green('N')} dead:${p.bleaching.deadPortions}%`)
-  details.push(`    ecosystem: habitat:${p.ecosystem.providesHabitat ? chalk.green('Y') : chalk.red('N')} keystone:${p.ecosystem.isKeystone ? chalk.green('Y') : chalk.red('N')} indicator:${p.ecosystem.isIndicator ? chalk.green('Y') : chalk.red('N')}`)
-  return details.join('\n')
+/** @example harmonyColor('perfect-symbiosis') returns colored string */
+export function harmonyColor(harmony: string): string {
+  switch (harmony) {
+    case 'perfect-symbiosis': return chalk.rgb(255, 215, 0).bold(harmony)
+    case 'mutualism': return chalk.rgb(46, 204, 113)(harmony)
+    case 'commensalism': return chalk.rgb(155, 89, 182)(harmony)
+    case 'neutral': return chalk.rgb(52, 152, 219)(harmony)
+    case 'parasitism': return chalk.rgb(241, 196, 15)(harmony)
+    case 'toxic': return chalk.rgb(231, 76, 60)(harmony)
+    default: return harmony
+  }
 }
 
-// ─── Zone Formatting ─────────────────────────────────────────────────────────
-
-function formatZone(z: ReefZone): string {
-  return `  ${chalk.bold(z.directory)} ${zoneColor(z.zoneType)} ${reefConditionColor(z.condition)} health:${scoreColor(z.avgHealth)} diversity:${scoreColor(z.avgDiversity)} symb:${scoreColor(z.avgSymbiosis)} clarity:${scoreColor(z.avgClarity)} species:${z.totalSpecies}`
+/** @example strengthColor('tide-proof') returns colored string */
+export function strengthColor(strength: string): string {
+  switch (strength) {
+    case 'tide-proof': return chalk.rgb(255, 215, 0).bold(strength)
+    case 'storm-resistant': return chalk.rgb(46, 204, 113)(strength)
+    case 'weathered': return chalk.rgb(155, 89, 182)(strength)
+    case 'vulnerable': return chalk.rgb(52, 152, 219)(strength)
+    case 'fragile': return chalk.rgb(241, 196, 15)(strength)
+    case 'washed-away': return chalk.rgb(231, 76, 60)(strength)
+    default: return strength
+  }
 }
 
-// ─── Table Formatter ─────────────────────────────────────────────────────────
-
-/**
- * Format coral reef result as a table
- * @example
- * formatCoralReefTable(result, false) // string
- */
-export function formatCoralReefTable(result: CoralReefResult, verbose: boolean): string {
-  const lines: string[] = []
-  lines.push(chalk.bold('\n🪸  Coral Reef - Ecosystem Biodiversity/Symbiosis Analysis\n'))
-  lines.push(chalk.bold('═'.repeat(60)))
-  lines.push('')
-
-  lines.push(chalk.bold('🪸  Coral Polyps'))
-  if (result.polyps.length === 0) {
-    lines.push(chalk.dim('  No files analyzed.'))
-  } else {
-    const display = verbose ? result.polyps : result.polyps.slice(0, 15)
-    for (const p of display) {
-      lines.push(formatPolyp(p, verbose))
-    }
-    if (!verbose && result.polyps.length > 15) {
-      lines.push(chalk.dim(`  ... and ${result.polyps.length - 15} more`))
-    }
+/** @example richnessColor('mega-diverse') returns colored string */
+export function richnessColor(richness: string): string {
+  switch (richness) {
+    case 'mega-diverse': return chalk.rgb(255, 215, 0).bold(richness)
+    case 'high-diversity': return chalk.rgb(46, 204, 113)(richness)
+    case 'moderate': return chalk.rgb(155, 89, 182)(richness)
+    case 'low-diversity': return chalk.rgb(52, 152, 219)(richness)
+    case 'monoculture': return chalk.rgb(241, 196, 15)(richness)
+    case 'barren': return chalk.rgb(231, 76, 60)(richness)
+    default: return richness
   }
-  lines.push('')
-
-  if (result.zones.length > 0) {
-    lines.push(chalk.bold('🏝️  Reef Zones'))
-    for (const z of result.zones) {
-      lines.push(formatZone(z))
-    }
-    lines.push('')
-  }
-
-  const o = result.ocean
-  lines.push(chalk.bold('🌊 Ocean Overview'))
-  lines.push(`  Health:${scoreColor(o.avgHealth)} Diversity:${scoreColor(o.avgDiversity)} Symbiosis:${scoreColor(o.avgSymbiosis)} Clarity:${scoreColor(o.avgClarity)} Biodiversity:${scoreColor(o.totalBiodiversity)} Healthy:${o.isHealthy ? chalk.green('YES') : chalk.red('NO')} ReefHealth:${scoreColor(o.overallReefHealth)}`)
-  lines.push('')
-
-  const s = result.stats
-  lines.push(chalk.bold('📊 Statistics'))
-  lines.push(`  Grade: ${gradeColor(s.marineBiologistGrade)} | ReefHealth: ${scoreColor(s.overallReefHealth)} | Files: ${s.totalFiles} | Zones: ${s.totalZones}`)
-  lines.push(`  Thriving:${s.thrivingCount} Healthy:${s.healthyCount} Stressed:${s.stressedCount} Bleaching:${s.bleachingCount} Damaged:${s.damagedCount} Dead:${s.deadCount}`)
-  lines.push(`  AvgMutualism:${scoreColor(s.avgMutualism)} AvgParasitism:${scoreColor(s.avgParasitism)} Foundation:${s.foundationModules} Keystone:${s.keystoneModules}`)
-  lines.push(`  Clean:${s.isCleanCount} Polluted:${s.isPollutedCount} Zooxanthellae:${s.hasZooxanthellaeCount} Habitat:${s.providesHabitatCount} TotalSpecies:${s.totalSpecies}`)
-  lines.push(`  Healthiest:${chalk.green(s.healthiestPolyp)} | MostDiverse:${chalk.cyan(s.mostDiverse)} | BestSymbiosis:${chalk.blue(s.bestSymbiosis)}`)
-  lines.push(`  MostPolluted:${chalk.red(s.mostPolluted)} | MostBleached:${chalk.rgb(255, 69, 0)(s.mostBleached)}`)
-
-  if (result.recommendations.length > 0) {
-    lines.push('')
-    lines.push(chalk.bold('💡 Recommendations'))
-    for (const rec of result.recommendations) {
-      lines.push(`  - ${rec}`)
-    }
-  }
-
-  lines.push('')
-  return lines.join('\n')
 }
 
-// ─── JSON Formatter ──────────────────────────────────────────────────────────
+/** @example bleachingStatusColor('pristine') returns colored string */
+export function bleachingStatusColor(status: string): string {
+  switch (status) {
+    case 'pristine': return chalk.rgb(255, 215, 0).bold(status)
+    case 'healthy': return chalk.rgb(46, 204, 113)(status)
+    case 'warning': return chalk.rgb(52, 152, 219)(status)
+    case 'stressed': return chalk.rgb(241, 196, 15)(status)
+    case 'bleaching': return chalk.rgb(230, 126, 34)(status)
+    case 'dead-zone': return chalk.rgb(231, 76, 60)(status)
+    default: return status
+  }
+}
 
-/**
- * Format coral reef result as JSON
- * @example
- * formatCoralReefJson(result) // string
- */
+/** @example zoneTypeColor('great-barrier') returns colored string */
+export function zoneTypeColor(type: string): string {
+  switch (type) {
+    case 'great-barrier': return chalk.rgb(255, 215, 0).bold(type)
+    case 'major-reef': return chalk.rgb(46, 204, 113)(type)
+    case 'atoll-system': return chalk.rgb(155, 89, 182)(type)
+    case 'patch-system': return chalk.rgb(52, 152, 219)(type)
+    case 'rocky-shore': return chalk.rgb(241, 196, 15)(type)
+    case 'mud-flat': return chalk.rgb(231, 76, 60)(type)
+    default: return type
+  }
+}
+
+// ─── JSON Formatter ────────────────────────────────────────────────────────
+
+/** @example formatCoralReefJson(result) returns JSON string */
 export function formatCoralReefJson(result: CoralReefResult): string {
   return JSON.stringify(result, null, 2)
+}
+
+// ─── Table Formatter ───────────────────────────────────────────────────────
+
+/** @example formatCoralReefTable(result, verbose) returns formatted string */
+export function formatCoralReefTable(result: CoralReefResult, verbose: boolean): string {
+  const lines: string[] = []
+
+  lines.push('')
+  lines.push(chalk.rgb(52, 152, 219).bold('  Coral Reef Analysis'))
+  lines.push('')
+
+  lines.push(chalk.rgb(210, 180, 140)('  Ocean Overview:'))
+  lines.push(`    Overall Health:          ${scoreColor(result.ocean.overallHealth)}`)
+  lines.push(`    Avg Reef Structure:      ${scoreColor(result.ocean.avgStructure)}`)
+  lines.push(`    Avg Symbiosis Index:     ${scoreColor(result.ocean.avgSymbiosis)}`)
+  lines.push(`    Avg Bleaching Risk:      ${scoreColor(result.ocean.avgBleaching)}`)
+  lines.push(`    Is Healthy:              ${result.ocean.isHealthy ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
+  lines.push('')
+
+  lines.push(chalk.rgb(210, 180, 140)('  Statistics:'))
+  lines.push(`    Total Files:              ${result.stats.totalFiles}`)
+  lines.push(`    Total Zones:              ${result.stats.totalZones}`)
+  lines.push(`    Avg Reef Structure:       ${scoreColor(result.stats.avgReefStructure)}`)
+  lines.push(`    Avg Polyp Health:         ${scoreColor(result.stats.avgPolypHealth)}`)
+  lines.push(`    Avg Symbiosis Index:      ${scoreColor(result.stats.avgSymbiosisIndex)}`)
+  lines.push(`    Avg Tide Resilience:      ${scoreColor(result.stats.avgTideResilience)}`)
+  lines.push(`    Avg Biodiversity:         ${scoreColor(result.stats.avgBiodiversity)}`)
+  lines.push(`    Avg Bleaching Risk:       ${scoreColor(result.stats.avgBleachingRisk)}`)
+  lines.push(`    Guardian Grade:           ${gradeColor(result.stats.guardianGrade)}`)
+  lines.push('')
+
+  lines.push(chalk.rgb(210, 180, 140)('  Condition Counts:'))
+  lines.push(`    Pristine Reef:      ${result.stats.pristineReefCount}`)
+  lines.push(`    Healthy Reef:       ${result.stats.healthyReefCount}`)
+  lines.push(`    Recovering:         ${result.stats.recoveringCount}`)
+  lines.push(`    Stressed:           ${result.stats.stressedCount}`)
+  lines.push(`    Degraded:           ${result.stats.degradedCount}`)
+  lines.push(`    Dead Zone:          ${result.stats.deadZoneCount}`)
+  lines.push('')
+
+  if (result.stats.bestColony) {
+    lines.push(chalk.rgb(210, 180, 140)('  Highlights:'))
+    lines.push(`    Best Colony:          ${result.stats.bestColony}`)
+    lines.push(`    Best Structured:      ${result.stats.bestStructured}`)
+    lines.push(`    Healthiest:           ${result.stats.healthiest}`)
+    lines.push(`    Most Harmonious:      ${result.stats.mostHarmonious}`)
+    lines.push(`    Most Resilient:       ${result.stats.mostResilient}`)
+    lines.push(`    Most Diverse:         ${result.stats.mostDiverse}`)
+    lines.push('')
+  }
+
+  if (verbose && result.colonies.length > 0) {
+    lines.push(chalk.rgb(210, 180, 140)('  Per-File Details:'))
+    for (const colony of result.colonies) {
+      lines.push(`    ${chalk.rgb(52, 152, 219)(colony.file)}`)
+      lines.push(`      Score: ${scoreColor(colony.qualityScore)}  Condition: ${conditionColor(colony.condition)}`)
+      lines.push(`      Reef: ${formationColor(colony.reef.formation)}(${colony.reefStructure})  Polyp: ${vitalityColor(colony.polyp.vitality)}(${colony.polypHealth})  Symbiosis: ${harmonyColor(colony.symbiosis.harmony)}(${colony.symbiosisIndex})`)
+      lines.push(`      Tide: ${strengthColor(colony.tide.strength)}(${colony.tideResilience})  Bio: ${richnessColor(colony.bio.richness)}(${colony.biodiversity})  Bleaching: ${bleachingStatusColor(colony.bleaching.status)}(${colony.bleachingRisk})`)
+    }
+    lines.push('')
+  }
+
+  if (result.recommendations.length > 0) {
+    lines.push(chalk.rgb(210, 180, 140)('  Recommendations:'))
+    for (const rec of result.recommendations) {
+      lines.push(`    ${chalk.rgb(52, 152, 219)('\u{1F41C}')} ${rec}`)
+    }
+    lines.push('')
+  }
+
+  return lines.join('\n')
 }

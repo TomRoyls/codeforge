@@ -5,40 +5,43 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildCoralReefResult, type CoralReefResult } from './coral-reef-helpers.js'
+import {
+  buildCoralReefResult,
+  type CoralReefResult,
+} from './coral-reef-helpers.js'
 import { formatCoralReefJson, formatCoralReefTable } from './coral-reef-format-helpers.js'
 
 export default class CoralReef extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze ecosystem biodiversity',
+      description: 'Path to analyze coral reef patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code ecosystem biodiversity and symbiosis patterns'
+  static override description = 'Analyze code biodiversity, symbiosis, and reef structure like a coral reef'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze biodiversity in current directory',
+      description: 'Analyze coral reef in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
+      description: 'Analyze coral reef in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
+      description: 'Analyze only TypeScript files',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed polyp breakdown',
+      description: 'Show per-file breakdown',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --format json --output reef.json',
-      description: 'Export analysis to JSON file',
+      description: 'Export coral reef analysis to JSON file',
     },
   ]
 
@@ -65,7 +68,7 @@ export default class CoralReef extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed breakdown',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -90,39 +93,19 @@ export default class CoralReef extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
     spinner.text = 'Analyzing coral reef...'
@@ -130,21 +113,20 @@ export default class CoralReef extends Command {
     const files: string[] = []
     const contents: string[] = []
 
-    await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          const content = await fs.readFile(file.absolutePath, 'utf8')
-          files.push(file.path)
-          contents.push(content)
-        } catch {
-          // Skip unreadable files
-        }
-      }),
-    )
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        files.push(file.path)
+        contents.push(content)
+      } catch {
+        files.push(file.path)
+        contents.push('')
+      }
+    }
 
-    const result: CoralReefResult = buildCoralReefResult(files, contents, {})
+    const result: CoralReefResult = buildCoralReefResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} polyps with grade ${result.stats.marineBiologistGrade}`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.zones.length} reef zones`)
 
     const outputData =
       format === 'json'
@@ -167,5 +149,5 @@ export default class CoralReef extends Command {
 }
 
 export { buildCoralReefResult } from './coral-reef-helpers.js'
-export type { CoralReefResult, CoralReefStats, CoralPolyp, ReefZone } from './coral-reef-helpers.js'
+export type { CoralReefResult, CoralColony, ReefZone, ReefMeasure, PolypMeasure, SymbiosisMeasure, TideMeasure, BioMeasure, BleachingMeasure } from './coral-reef-helpers.js'
 export { formatCoralReefJson, formatCoralReefTable } from './coral-reef-format-helpers.js'
