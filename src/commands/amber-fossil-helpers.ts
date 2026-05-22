@@ -1,936 +1,968 @@
-// ─── Interfaces ──────────────────────────────────────────
+// ─── Regex Constants ────────────────────────────────────────────────────────
 
-export interface AmberMeasure {
-  color: 'golden' | 'cognac' | 'butterscotch' | 'cherry' | 'green' | 'blue' | 'milky' | 'black'
-  clarity: number
-  isTransparent: boolean
-  isTranslucent: boolean
-  isOpaque: boolean
-  hasInclusions: boolean
-  hasBubbles: boolean
-  hasCracks: boolean
-  hasCloudiness: boolean
-  crackCount: number
+const EXPORT_REGEX = /\bexport\s+/g
+const IMPORT_REGEX = /\bimport\s+/g
+const FUNCTION_REGEX = /\bfunction\s+\w+/g
+const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
+const CLASS_REGEX = /\bclass\s+\w+/g
+const INTERFACE_REGEX = /\binterface\s+\w+/g
+const TYPE_REGEX = /\btype\s+\w+/g
+const ENUM_REGEX = /\benum\s+\w+/g
+const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
+const ASYNC_REGEX = /\basync\s+/g
+const TRY_CATCH_REGEX = /\btry\s*\{/g
+const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
+const TERNARY_REGEX = /\?[^:]+:/g
+const CONSOLE_REGEX = /\bconsole\.\w+/g
+const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
+const GENERICS_REGEX = /<[^>]+>/g
+const PRIVATE_REGEX = /private\s+/g
+const PROTECTED_REGEX = /protected\s+/g
+const PUBLIC_REGEX = /public\s+/g
+const STATIC_REGEX = /\bstatic\s+/g
+const READONLY_REGEX = /\breadonly\b/g
+const ANY_REGEX = /\bany\b/g
+const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
+const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
+
+// ─── Interfaces ────────────────────────────────────────────────────────────
+
+export interface ClarityMeasure {
+  level: number
+  grade: 'museum-grade' | 'gem-grade' | 'specimen-grade' | 'craft-grade' | 'rough' | 'opaque'
+  isClear: boolean
+  hasTransparency: boolean
+  hasNoBubbles: boolean
+  hasNoCloudiness: boolean
+  hasNoCracks: boolean
+  hasNoScratches: boolean
+  hasFluorescence: boolean
+  hasProperPolish: boolean
+  hasNoInternalFractures: boolean
+  hasColorDepth: boolean
   bubbleCount: number
-  inclusionCount: number
+  crackCount: number
 }
 
-export interface FossilMeasure {
-  type: 'mosquito' | 'spider' | 'ant' | 'flower' | 'feather' | 'leaf' | 'beetle' | 'scorpion'
+export interface InclusionMeasure {
   quality: number
-  isComplete: boolean
-  isFragmentary: boolean
-  isWellPreserved: boolean
-  isDeteriorating: boolean
-  hasSoftTissue: boolean
-  hasMineralization: boolean
-  completeness: number
+  type: 'complete-organism' | 'partial-organism' | 'trace-fossil' | 'plant-matter' | 'debris' | 'empty'
+  hasCompleteDocumentation: boolean
+  hasPreservedDetail: boolean
+  hasVisibleStructure: boolean
+  hasNoDecomposition: boolean
+  hasProperEnvelopment: boolean
+  hasNoShrinkage: boolean
+  hasAirPocket: boolean
+  hasNoContamination: boolean
+  hasProperPosition: boolean
+  hasAppendages: boolean
+  decompositionCount: number
+  contaminationCount: number
+}
+
+export interface HardnessMeasure {
+  level: number
+  scale: 'copal' | 'semi-fossilized' | 'baltic' | 'dominican' | 'burmite' | 'jet'
+  isHard: boolean
+  hasScratchResistance: boolean
+  hasImpactResistance: boolean
+  hasNoCrazing: boolean
+  hasNoChipping: boolean
+  hasProperPolymerization: boolean
+  hasNoSoftSpots: boolean
+  hasThermalStability: boolean
+  hasChemicalResistance: boolean
+  hasNoDeformation: boolean
+  crazingCount: number
+  softSpotCount: number
+}
+
+export interface AgeMeasure {
+  depth: number
+  era: 'cretaceous' | 'jurassic' | 'eocene' | 'oligocene' | 'miocene' | 'holocene'
+  isMature: boolean
+  hasGeologicalRecord: boolean
+  hasStratigraphicContext: boolean
+  hasIndexFossils: boolean
+  hasNoPseudoFossils: boolean
+  hasRadioactiveDating: boolean
+  hasPaleoenvironment: boolean
+  hasNoAgeContamination: boolean
+  hasEvolutionaryRecord: boolean
+  hasNoGap: boolean
+  pseudoCount: number
+  gapCount: number
 }
 
 export interface PreservationMeasure {
   state: number
-  isPerfectlyPreserved: boolean
+  quality: 'pristine' | 'excellent' | 'good' | 'fair' | 'poor' | 'degraded'
   isWellPreserved: boolean
-  isDeteriorating: boolean
-  isFossilized: boolean
-  hasConservationNeeded: boolean
-  hasActiveDecay: boolean
-  isFrozenInTime: boolean
+  hasProperConservation: boolean
+  hasNoDegradation: boolean
+  hasNoOxidation: boolean
+  hasProperStorage: boolean
+  hasUVProtection: boolean
+  hasNoWeathering: boolean
+  hasStabilization: boolean
+  hasNoPyriteDecay: boolean
+  hasConservationRecord: boolean
+  degradationCount: number
+  oxidationCount: number
 }
 
-export interface InclusionMeasure {
-  count: number
-  types: string[]
-  hasAncientPatterns: boolean
-  hasModernPatterns: boolean
-  hasDeprecatedPatterns: boolean
-  hasAntiPatterns: boolean
-  hasWorkarounds: boolean
-  ancientCount: number
-  deprecatedCount: number
-  antiPatternCount: number
-  workaroundCount: number
-}
-
-export interface AgeMeasure {
-  estimation: number
-  epoch: 'precambrian' | 'paleozoic' | 'mesozoic' | 'cenozoic' | 'modern' | 'cutting-edge'
-  isAncient: boolean
-  isMature: boolean
-  isRecent: boolean
-  isDated: boolean
-  hasEvolution: boolean
-  hasStasis: boolean
-}
-
-export interface ExtractionMeasure {
-  difficulty: number
-  isEasyToExtract: boolean
-  isDifficultToExtract: boolean
-  hasDependencies: boolean
-  hasFragileConnections: boolean
-  hasSolidMatrix: boolean
-  hasDissolvableMatrix: boolean
-  dependencyCount: number
-  fragileCount: number
+export interface ValueMeasure {
+  score: number
+  appraisal: 'priceless' | 'museum-quality' | 'collector-grade' | 'specimen-grade' | 'craft-grade' | 'novelty'
+  isValuable: boolean
+  hasRarity: boolean
+  hasScientificValue: boolean
+  hasAestheticValue: boolean
+  hasHistoricalValue: boolean
+  hasNoForgery: boolean
+  hasProperProvenance: boolean
+  hasNoDamage: boolean
+  hasMarketValue: boolean
+  hasNoReproduction: boolean
+  forgeryCount: number
+  damageCount: number
 }
 
 export interface AmberSpecimen {
   file: string
   amberClarity: number
-  fossilQuality: number
+  inclusionQuality: number
+  resinHardness: number
+  fossilAge: number
   preservationState: number
-  inclusionsCount: number
-  ageEstimation: number
-  extractionDifficulty: number
-  amber: AmberMeasure
-  fossil: FossilMeasure
-  preservation: PreservationMeasure
+  specimenValue: number
+  clarity: ClarityMeasure
   inclusion: InclusionMeasure
+  hardness: HardnessMeasure
   age: AgeMeasure
-  extraction: ExtractionMeasure
-  condition: 'pristine-amber' | 'clear-specimen' | 'good-fossil' | 'cloudy-amber' | 'cracked-specimen' | 'decayed-remains'
+  preservation: PreservationMeasure
+  value: ValueMeasure
+  condition: 'baltic-gold' | 'dominican-blue' | 'burmite-royal' | 'copal-raw' | 'jet-black' | 'sandstone'
   qualityScore: number
 }
 
-export interface AmberDeposit {
+export interface AmberCollection {
   directory: string
   specimens: AmberSpecimen[]
   avgClarity: number
-  avgPreservation: number
-  avgAge: number
-  pristineCount: number
-  decayedCount: number
-  ancientCount: number
-  modernCount: number
-  depositType: 'baltic-sea' | 'dominican-mine' | 'burmese-deposit' | 'mexican-quarry' | 'surface-find' | 'barren-ground'
-  condition: 'museum-collection' | 'research-collection' | 'collector-stash' | 'beach-combing' | 'scrap-pile' | 'empty-quarry'
-}
-
-export interface MuseumMeasure {
-  avgClarity: number
-  avgPreservation: number
-  avgAge: number
-  isWellCurated: boolean
-  overallPreservation: number
-}
-
-export interface AmberFossilStats {
-  totalFiles: number
-  totalDeposits: number
-  avgAmberClarity: number
-  avgFossilQuality: number
-  avgPreservationState: number
-  avgInclusionsCount: number
-  avgAgeEstimation: number
-  avgExtractionDifficulty: number
-  pristineAmberCount: number
-  clearSpecimenCount: number
-  goodFossilCount: number
-  cloudyAmberCount: number
-  crackedSpecimenCount: number
-  decayedRemainsCount: number
-  goldenCount: number
-  cognacCount: number
-  milkyCount: number
-  blackColor: number
-  isCompleteCount: number
-  isFragmentaryCount: number
-  isWellPreservedCount: number
-  isDeterioratingCount: number
-  ancientPatternsCount: number
-  deprecatedCount: number
-  antiPatternCount: number
-  workaroundCount: number
-  isAncientCount: number
-  isMatureCount: number
-  isRecentCount: number
-  isEasyToExtractCount: number
-  isDifficultToExtractCount: number
-  overallPreservation: number
-  paleontologistGrade: 'chief-paleontologist' | 'paleontologist' | 'archaeologist' | 'collector' | 'tourist' | 'grave-robber'
-  clearestSpecimen: string
-  bestPreserved: string
-  mostAncient: string
-  mostModern: string
-  easiestToExtract: string
+  avgHardness: number
+  avgValue: number
+  balticGoldCount: number
+  sandstoneCount: number
+  clearCount: number
+  hardCount: number
+  collectionType: 'museum' | 'private-collection' | 'exhibition' | 'workshop' | 'quarry' | 'beach'
+  condition: 'world-heritage' | 'national-collection' | 'university-museum' | 'shop-display' | 'flea-market' | 'sandbox'
 }
 
 export interface AmberFossilResult {
   specimens: AmberSpecimen[]
-  deposits: AmberDeposit[]
-  museum: MuseumMeasure
-  stats: AmberFossilStats
+  collections: AmberCollection[]
+  museum: {
+    avgClarity: number
+    avgHardness: number
+    avgValue: number
+    isPriceless: boolean
+    overallValue: number
+  }
+  stats: {
+    totalFiles: number
+    totalCollections: number
+    avgAmberClarity: number
+    avgInclusionQuality: number
+    avgResinHardness: number
+    avgFossilAge: number
+    avgPreservationState: number
+    avgSpecimenValue: number
+    balticGoldCount: number
+    dominicanBlueCount: number
+    burmiteRoyalCount: number
+    copalRawCount: number
+    jetBlackCount: number
+    sandstoneCount: number
+    isClearCount: number
+    hasCompleteDocumentationCount: number
+    isHardCount: number
+    isMatureCount: number
+    isWellPreservedCount: number
+    isValuableCount: number
+    overallValue: number
+    paleontologistGrade: 'curator' | 'paleontologist' | 'collector' | 'enthusiast' | 'tourist' | 'beachcomber'
+    bestSpecimen: string
+    clearest: string
+    bestDocumented: string
+    hardest: string
+    oldest: string
+    mostValuable: string
+  }
   recommendations: string[]
 }
 
-// ─── Utility helpers ────────────────────────────────────
+// ─── Counter Helpers ────────────────────────────────────────────────────────
 
-export function countLoc(content: string): number {
-  return content.split('\n').filter(l => l.trim().length > 0).length
-}
-
-export function countFunctions(content: string): number {
-  const m = content.match(/\bfunction\s+\w+|\b\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|(?:async\s+)?\([^)]*\)\s*:\s*\w+)/g)
-  return m ? m.length : 0
-}
-
-export function countClasses(content: string): number {
-  const m = content.match(/\bclass\s+\w+/g)
-  return m ? m.length : 0
-}
-
-export function countInterfaces(content: string): number {
-  const m = content.match(/\binterface\s+\w+/g)
-  return m ? m.length : 0
-}
-
-export function countEnums(content: string): number {
-  const m = content.match(/\benum\s+\w+/g)
-  return m ? m.length : 0
-}
-
-export function countTypes(content: string): number {
-  const m = content.match(/\btype\s+\w+\s*=/g)
-  return m ? m.length : 0
-}
-
+/** @example countExports('export const x = 1') returns 1 */
 export function countExports(content: string): number {
-  const m = content.match(/^export\s/gm)
-  return m ? m.length : 0
+  return (content.match(EXPORT_REGEX) ?? []).length
 }
 
-export function countImports(content: string): number {
-  const m = content.match(/^import\s/gm)
-  return m ? m.length : 0
+/** @example countImportKeywords('import { x }') returns 1 */
+export function countImportKeywords(content: string): number {
+  return (content.match(IMPORT_REGEX) ?? []).length
 }
 
+/** @example countFunctions('function foo()') returns 1 */
+export function countFunctions(content: string): number {
+  return (content.match(FUNCTION_REGEX) ?? []).length
+}
+
+/** @example countArrows('const f = () => 1') returns 1 */
+export function countArrows(content: string): number {
+  return (content.match(ARROW_REGEX) ?? []).length
+}
+
+/** @example countClasses('class Foo') returns 1 */
+export function countClasses(content: string): number {
+  return (content.match(CLASS_REGEX) ?? []).length
+}
+
+/** @example countInterfaces('interface Foo') returns 1 */
+export function countInterfaces(content: string): number {
+  return (content.match(INTERFACE_REGEX) ?? []).length
+}
+
+/** @example countTypeAliases('type X = string') returns 1 */
+export function countTypeAliases(content: string): number {
+  return (content.match(TYPE_REGEX) ?? []).length
+}
+
+/** @example countEnums('enum X') returns 1 */
+export function countEnums(content: string): number {
+  return (content.match(ENUM_REGEX) ?? []).length
+}
+
+/** @example countJSDoc(content) returns JSDoc count */
 export function countJSDoc(content: string): number {
-  const m = content.match(/\/\*\*[\s\S]*?\*\//g)
-  return m ? m.length : 0
+  return (content.match(JSDOC_REGEX) ?? []).length
 }
 
-export function countComments(content: string): number {
-  const line = (content.match(/\/\/.*/g) || []).length
-  const block = (content.match(/\/\*[\s\S]*?\*\//g) || []).length
-  return line + block
-}
-
-export function countErrorHandling(content: string): number {
-  const m = content.match(/\b(catch|finally|throw)\b/g)
-  return m ? m.length : 0
-}
-
-export function countTypeAnnotations(content: string): number {
-  const m = content.match(/:\s*(?:number|string|boolean|void|any|unknown|never|object)\b/g)
-  return m ? m.length : 0
-}
-
-export function countTodos(content: string): number {
-  const m = content.match(/\bTODO\b/gi)
-  return m ? m.length : 0
-}
-
-export function countConsole(content: string): number {
-  const m = content.match(/\bconsole\.\w+/g)
-  return m ? m.length : 0
-}
-
-export function countBranches(content: string): number {
-  const ifs = (content.match(/\bif\b/g) || []).length
-  const switches = (content.match(/\bswitch\b/g) || []).length
-  const ternaries = (content.match(/\?[^:]*:/g) || []).length
-  return ifs + switches + ternaries
-}
-
-export function countDescriptiveNames(content: string): number {
-  const m = content.match(/\b(?:get|set|is|has|can|should|will|compute|calculate|validate|parse|format|transform|process|handle|build|create|generate|extract|resolve|initialize|configure|update|remove|delete|find|search|check|verify|ensure|assert)\w+/gi)
-  return m ? m.length : 0
-}
-
-export function countReturnTypes(content: string): number {
-  const m = content.match(/\)\s*:\s*\w+/g)
-  return m ? m.length : 0
-}
-
-export function countDeprecated(content: string): number {
-  const m = content.match(/\bdeprecated\b|\@deprecated/gi)
-  return m ? m.length : 0
-}
-
+/** @example countAsync('async function') returns count */
 export function countAsync(content: string): number {
-  const m = content.match(/\basync\b/g)
-  return m ? m.length : 0
+  return (content.match(ASYNC_REGEX) ?? []).length
 }
 
+/** @example countTryCatch('try {') returns count */
+export function countTryCatch(content: string): number {
+  return (content.match(TRY_CATCH_REGEX) ?? []).length
+}
+
+/** @example countDeepNested(code) returns count */
+export function countDeepNested(content: string): number {
+  return (content.match(DEEP_NESTED_REGEX) ?? []).length
+}
+
+/** @example countConsole('console.log()') returns count */
+export function countConsole(content: string): number {
+  return (content.match(CONSOLE_REGEX) ?? []).length
+}
+
+/** @example countTodos('// TODO') returns count */
+export function countTodos(content: string): number {
+  return (content.match(TODO_REGEX) ?? []).length
+}
+
+/** @example countAny('any') returns count */
 export function countAny(content: string): number {
-  const m = content.match(/:\s*any\b/g)
-  return m ? m.length : 0
+  return (content.match(ANY_REGEX) ?? []).length
 }
 
+/** @example countCommentedCode('// function') returns count */
+export function countCommentedCode(content: string): number {
+  return (content.match(COMMENTED_CODE_REGEX) ?? []).length
+}
+
+/** @example countGenerics('<T>') returns count */
 export function countGenerics(content: string): number {
-  const m = content.match(/<\w+>/g)
-  return m ? m.length : 0
+  return (content.match(GENERICS_REGEX) ?? []).length
 }
 
-export function countNestingDepth(content: string): number {
-  let maxDepth = 0
-  let currentDepth = 0
-  for (const ch of content) {
-    if (ch === '{' || ch === '(' || ch === '[') {
-      currentDepth++
-      if (currentDepth > maxDepth) maxDepth = currentDepth
-    } else if (ch === '}' || ch === ')' || ch === ']') {
-      currentDepth = Math.max(0, currentDepth - 1)
-    }
-  }
-  return maxDepth
+/** @example countAccessModifiers('private x') returns count */
+export function countAccessModifiers(content: string): number {
+  return (
+    (content.match(PRIVATE_REGEX) ?? []).length +
+    (content.match(PROTECTED_REGEX) ?? []).length +
+    (content.match(PUBLIC_REGEX) ?? []).length
+  )
 }
 
-// ─── Amber Measurement ──────────────────────────────────
+// ─── Internal Helpers ───────────────────────────────────────────────────────
 
-/**
- * Measure code transparency like amber clarity
- * @example
- * measureAmber(codeString) // { color, clarity, isTransparent, ... }
- */
-export function measureAmber(content: string): AmberMeasure {
-  const loc = countLoc(content)
-  const jsdoc = countJSDoc(content)
-  const comments = countComments(content)
-  const types = countTypeAnnotations(content)
-  const todos = countTodos(content)
-  const consoles = countConsole(content)
-  const anys = countAny(content)
-
-  const clarity = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 25 : 0) +
-    (comments > 0 ? 10 : 0) +
-    (types > 0 ? 20 : 0) +
-    (countExports(content) > 0 ? 10 : 0) +
-    (countDescriptiveNames(content) > 0 ? 15 : 0) +
-    (countReturnTypes(content) > 0 ? 10 : 0) +
-    (todos === 0 ? 10 : 0),
-  )))
-
-  const isTransparent = clarity >= 70
-  const isOpaque = clarity < 30 && loc > 0
-  const isTranslucent = !isTransparent && !isOpaque
-
-  const crackCount = todos + countDeprecated(content)
-  const bubbleCount = consoles + anys
-  const inclusionCount = countFunctions(content) + countClasses(content) + countInterfaces(content) + countEnums(content) + countTypes(content)
-
-  const hasInclusions = inclusionCount > 0
-  const hasBubbles = bubbleCount > 0
-  const hasCracks = crackCount > 0
-  const hasCloudiness = comments === 0 && jsdoc === 0 && loc > 10
-
-  let color: AmberMeasure['color'] = 'golden'
-  if (isOpaque) color = 'black'
-  else if (hasCloudiness) color = 'milky'
-  else if (countAsync(content) > 0 && clarity >= 50) color = 'blue'
-  else if (countGenerics(content) > 0 && clarity >= 60) color = 'green'
-  else if (hasCracks && !isOpaque) color = 'cherry'
-  else if (clarity >= 60) color = 'cognac'
-  else if (clarity >= 40) color = 'butterscotch'
-  else color = 'milky'
-
-  return {
-    color,
-    clarity,
-    isTransparent,
-    isTranslucent,
-    isOpaque,
-    hasInclusions,
-    hasBubbles,
-    hasCracks,
-    hasCloudiness,
-    crackCount,
-    bubbleCount,
-    inclusionCount,
-  }
+function deepNestedCount(content: string): number {
+  return (content.match(DEEP_NESTED_REGEX) ?? []).length
 }
 
-// ─── Fossil Measurement ─────────────────────────────────
-
-/**
- * Measure legacy code quality like a fossil
- * @example
- * measureFossil(codeString) // { type, quality, isComplete, ... }
- */
-export function measureFossil(content: string): FossilMeasure {
-  const loc = countLoc(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const exports = countExports(content)
-  const errors = countErrorHandling(content)
-  const types = countTypeAnnotations(content)
-
-  const quality = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (types > 0 ? 20 : 0) +
-    (interfaces > 0 ? 15 : 0) +
-    (exports > 0 ? 15 : 0) +
-    (countJSDoc(content) > 0 ? 15 : 0) +
-    (errors > 0 ? 15 : 0) +
-    (functions > 0 ? 10 : 0) +
-    (countDescriptiveNames(content) > 0 ? 10 : 0),
-  )))
-
-  const completeness = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (exports > 0 ? 25 : 0) +
-    (functions > 0 || classes > 0 ? 25 : 0) +
-    (types > 0 ? 20 : 0) +
-    (errors > 0 ? 15 : 0) +
-    (countJSDoc(content) > 0 ? 15 : 0),
-  )))
-
-  const isComplete = completeness >= 70
-  const isFragmentary = completeness < 40 && loc > 0
-  const isWellPreserved = quality >= 60 && countTodos(content) === 0
-  const isDeteriorating = countTodos(content) > 0 || countDeprecated(content) > 0
-  const hasSoftTissue = countAsync(content) > 0 || countBranches(content) > 3
-  const hasMineralization = classes > 0 && interfaces > 0
-
-  let type: FossilMeasure['type'] = 'leaf'
-  if (functions > 5 && classes === 0) type = 'ant'
-  else if (classes > 0 && errors > 0) type = 'beetle'
-  else if (hasSoftTissue && errors === 0) type = 'mosquito'
-  else if (interfaces > 0 && classes > 0) type = 'spider'
-  else if (countAsync(content) > 0) type = 'scorpion'
-  else if (countJSDoc(content) > 0 && exports > 0) type = 'flower'
-  else if (classes > 0) type = 'feather'
-
-  return {
-    type,
-    quality,
-    isComplete,
-    isFragmentary,
-    isWellPreserved,
-    isDeteriorating,
-    hasSoftTissue,
-    hasMineralization,
-    completeness,
-  }
+function accessModsCount(content: string): number {
+  return (
+    (content.match(PRIVATE_REGEX) ?? []).length +
+    (content.match(PROTECTED_REGEX) ?? []).length +
+    (content.match(PUBLIC_REGEX) ?? []).length
+  )
 }
 
-// ─── Preservation Measurement ───────────────────────────
-
-/**
- * Measure code maintenance level
- * @example
- * measurePreservation(codeString) // { state, isPerfectlyPreserved, ... }
- */
-export function measurePreservation(content: string): PreservationMeasure {
-  const loc = countLoc(content)
-  const jsdoc = countJSDoc(content)
-  const types = countTypeAnnotations(content)
-  const errors = countErrorHandling(content)
-  const todos = countTodos(content)
-  const deprecated = countDeprecated(content)
-
-  const state = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 20 : 0) +
-    (types > 0 ? 20 : 0) +
-    (errors > 0 ? 15 : 0) +
-    (todos === 0 ? 15 : 0) +
-    (deprecated === 0 ? 10 : 0) +
-    (countInterfaces(content) > 0 ? 10 : 0) +
-    (countExports(content) > 0 ? 10 : 0),
-  )))
-
-  const isPerfectlyPreserved = state >= 80 && todos === 0 && deprecated === 0
-  const isWellPreserved = state >= 60 && todos === 0
-  const isDeteriorating = todos > 0 || deprecated > 0
-  const isFossilized = loc > 0 && countComments(content) === 0 && countJSDoc(content) === 0 && countExports(content) === 0
-  const hasConservationNeeded = state < 50 && loc > 0
-  const hasActiveDecay = deprecated > 0 || (todos > 3)
-  const isFrozenInTime = loc > 0 && types === 0 && jsdoc === 0 && exports === 0
-
-  return {
-    state,
-    isPerfectlyPreserved,
-    isWellPreserved,
-    isDeteriorating,
-    isFossilized,
-    hasConservationNeeded,
-    hasActiveDecay,
-    isFrozenInTime,
-  }
+function enumCount(content: string): number {
+  return (content.match(ENUM_REGEX) ?? []).length
 }
 
-// ─── Inclusion Measurement ──────────────────────────────
+// ─── Measure Functions ──────────────────────────────────────────────────────
 
-/**
- * Measure embedded code patterns
- * @example
- * measureInclusion(codeString) // { count, types, hasAncientPatterns, ... }
- */
-export function measureInclusion(content: string): InclusionMeasure {
-  const types: string[] = []
-  if (countFunctions(content) > 0) types.push('function')
-  if (countClasses(content) > 0) types.push('class')
-  if (countInterfaces(content) > 0) types.push('interface')
-  if (countEnums(content) > 0) types.push('enum')
-  if (countTypes(content) > 0) types.push('type-alias')
-  if (countExports(content) > 0) types.push('export')
-  if (countImports(content) > 0) types.push('import')
-  if (countAsync(content) > 0) types.push('async')
-  if (countGenerics(content) > 0) types.push('generic')
-
-  const deprecatedCount = countDeprecated(content)
-  const workaroundCount = countTodos(content) + countConsole(content)
+/** @example measureClarity(content) returns ClarityMeasure */
+export function measureClarity(content: string): ClarityMeasure {
+  const exportCount = countExports(content)
+  const importCount = countImportKeywords(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const classCount = countClasses(content)
   const anyCount = countAny(content)
-  const antiPatternCount = anyCount + (countNestingDepth(content) > 5 ? 1 : 0)
-
-  const hasAncientPatterns = countNestingDepth(content) > 4 || anyCount > 0
-  const hasModernPatterns = countGenerics(content) > 0 || countAsync(content) > 0
-  const hasDeprecatedPatterns = deprecatedCount > 0
-  const hasAntiPatterns = antiPatternCount > 0
-  const hasWorkarounds = workaroundCount > 0
-
-  const ancientCount = (hasAncientPatterns ? 1 : 0) + anyCount
-
-  return {
-    count: types.length,
-    types: Array.from(new Set(types)),
-    hasAncientPatterns,
-    hasModernPatterns,
-    hasDeprecatedPatterns,
-    hasAntiPatterns,
-    hasWorkarounds,
-    ancientCount,
-    deprecatedCount,
-    antiPatternCount,
-    workaroundCount,
-  }
-}
-
-// ─── Age Measurement ────────────────────────────────────
-
-/**
- * Measure code maturity
- * @example
- * measureAge(codeString) // { estimation, epoch, isAncient, ... }
- */
-export function measureAge(content: string): AgeMeasure {
-  const loc = countLoc(content)
-  const jsdoc = countJSDoc(content)
-  const types = countTypeAnnotations(content)
-  const exports = countExports(content)
-  const imports = countImports(content)
+  const consoleCount = countConsole(content)
+  const deepNested = countDeepNested(content)
   const generics = countGenerics(content)
-  const asyncs = countAsync(content)
-  const anys = countAny(content)
-  const deprecated = countDeprecated(content)
+  const jsdoc = countJSDoc(content)
+  const accessMods = countAccessModifiers(content)
 
-  const estimation = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 10 : 0) +
-    (types > 0 ? 10 : 0) +
-    (exports > 0 ? 10 : 0) +
-    (imports > 0 ? 10 : 0) +
-    (anys * 15) +
-    (deprecated * 20) +
-    (loc > 50 ? 10 : 0) +
-    (countBranches(content) > 5 ? 10 : 0) +
-    (countNestingDepth(content) > 3 ? 10 : 0) +
-    (countComments(content) === 0 && loc > 10 ? 10 : 0),
-  )))
+  const bubbleCount = consoleCount + anyCount
+  const crackCount = deepNested
+  const isClear = classCount > 0 && (interfaceCount > 0 || typeCount > 0) && bubbleCount === 0
+  const hasTransparency = interfaceCount > 0 && typeCount > 0
+  const hasNoBubbles = bubbleCount === 0
+  const hasNoCloudiness = anyCount === 0
+  const hasNoCracks = crackCount === 0
+  const hasNoScratches = consoleCount === 0
+  const hasFluorescence = generics > 0
+  const hasProperPolish = accessMods > 0
+  const hasNoInternalFractures = deepNested === 0
+  const hasColorDepth = exportCount > 0 && importCount > 0
 
-  let epoch: AgeMeasure['epoch'] = 'modern'
-  if (estimation >= 80) epoch = 'precambrian'
-  else if (estimation >= 60) epoch = 'paleozoic'
-  else if (estimation >= 40) epoch = 'mesozoic'
-  else if (estimation >= 25) epoch = 'cenozoic'
-  else if (generics > 0 || asyncs > 0) epoch = 'cutting-edge'
-  else epoch = 'modern'
+  let level = 0
+  if (isClear) level += 15
+  if (hasTransparency) level += 15
+  if (hasNoBubbles) level += 10
+  if (hasNoCloudiness) level += 10
+  if (hasNoCracks) level += 10
+  if (hasNoScratches) level += 10
+  if (hasFluorescence) level += 10
+  if (hasProperPolish) level += 10
+  if (hasColorDepth) level += 10
+  level = Math.min(level, 100)
+  level = Math.max(level, 0)
 
-  const isAncient = estimation >= 70
-  const isMature = estimation >= 40 && estimation < 70
-  const isRecent = estimation < 25
-  const isDated = anys > 0 || deprecated > 0
-  const hasEvolution = jsdoc > 0 && types > 0 && (deprecated > 0 || countTodos(content) > 0)
-  const hasStasis = loc > 0 && exports === 0 && imports === 0 && jsdoc === 0
+  let grade: ClarityMeasure['grade'] = 'opaque'
+  if (level >= 80 && isClear) grade = 'museum-grade'
+  else if (level >= 65 && hasTransparency) grade = 'gem-grade'
+  else if (level >= 50) grade = 'specimen-grade'
+  else if (level >= 35) grade = 'craft-grade'
+  else if (level >= 20) grade = 'rough'
 
   return {
-    estimation,
-    epoch,
-    isAncient,
+    bubbleCount,
+    crackCount,
+    grade,
+    hasColorDepth,
+    hasFluorescence,
+    hasNoBubbles,
+    hasNoCloudiness,
+    hasNoCracks,
+    hasNoInternalFractures,
+    hasNoScratches,
+    hasProperPolish,
+    hasTransparency,
+    isClear,
+    level,
+  }
+}
+
+/** @example measureInclusion(content) returns InclusionMeasure */
+export function measureInclusion(content: string): InclusionMeasure {
+  const jsdoc = countJSDoc(content)
+  const exportCount = countExports(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const classCount = countClasses(content)
+  const enumCountVal = enumCount(content)
+  const generics = countGenerics(content)
+  const anyCount = countAny(content)
+  const consoleCount = countConsole(content)
+  const commentedCode = countCommentedCode(content)
+
+  const decompositionCount = commentedCode
+  const contaminationCount = anyCount + consoleCount
+  const hasCompleteDocumentation = jsdoc > 0 && exportCount > 0 && (interfaceCount > 0 || typeCount > 0)
+  const hasPreservedDetail = jsdoc > 0
+  const hasVisibleStructure = interfaceCount > 0 && typeCount > 0
+  const hasNoDecomposition = decompositionCount === 0
+  const hasProperEnvelopment = classCount > 0 && (interfaceCount > 0 || typeCount > 0)
+  const hasNoShrinkage = exportCount > 0
+  const hasAirPocket = jsdoc > 0 && generics > 0
+  const hasNoContamination = contaminationCount === 0
+  const hasProperPosition = exportCount > 0 && jsdoc > 0
+  const hasAppendages = enumCountVal > 0
+
+  let quality = 0
+  if (hasCompleteDocumentation) quality += 15
+  if (hasPreservedDetail) quality += 10
+  if (hasVisibleStructure) quality += 10
+  if (hasNoDecomposition) quality += 10
+  if (hasProperEnvelopment) quality += 10
+  if (hasNoShrinkage) quality += 10
+  if (hasAirPocket) quality += 10
+  if (hasNoContamination) quality += 10
+  if (hasProperPosition) quality += 10
+  if (hasAppendages) quality += 5
+  quality = Math.min(quality, 100)
+  quality = Math.max(quality, 0)
+
+  let type: InclusionMeasure['type'] = 'empty'
+  if (quality >= 80 && hasCompleteDocumentation) type = 'complete-organism'
+  else if (quality >= 65 && hasPreservedDetail) type = 'partial-organism'
+  else if (quality >= 50) type = 'trace-fossil'
+  else if (quality >= 35) type = 'plant-matter'
+  else if (quality >= 20) type = 'debris'
+
+  return {
+    contaminationCount,
+    decompositionCount,
+    hasAirPocket,
+    hasAppendages,
+    hasCompleteDocumentation,
+    hasNoContamination,
+    hasNoDecomposition,
+    hasNoShrinkage,
+    hasPreservedDetail,
+    hasProperEnvelopment,
+    hasProperPosition,
+    hasVisibleStructure,
+    quality,
+    type,
+  }
+}
+
+/** @example measureHardness(content) returns HardnessMeasure */
+export function measureHardness(content: string): HardnessMeasure {
+  const classCount = countClasses(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const exportCount = countExports(content)
+  const importCount = countImportKeywords(content)
+  const anyCount = countAny(content)
+  const consoleCount = countConsole(content)
+  const deepNested = countDeepNested(content)
+  const readonlyCount = (content.match(READONLY_REGEX) ?? []).length
+  const staticCount = (content.match(STATIC_REGEX) ?? []).length
+  const tryCatch = countTryCatch(content)
+  const accessMods = countAccessModifiers(content)
+
+  const crazingCount = consoleCount + anyCount
+  const softSpotCount = deepNested
+  const isHard = classCount > 0 && (interfaceCount > 0 || typeCount > 0) && crazingCount === 0
+  const hasScratchResistance = readonlyCount > 0 || staticCount > 0
+  const hasImpactResistance = tryCatch > 0
+  const hasNoCrazing = crazingCount === 0
+  const hasNoChipping = deepNested === 0
+  const hasProperPolymerization = classCount > 0 && interfaceCount > 0
+  const hasNoSoftSpots = softSpotCount === 0
+  const hasThermalStability = accessMods > 0
+  const hasChemicalResistance = anyCount === 0
+  const hasNoDeformation = exportCount > 0 && importCount > 0
+
+  let level = 0
+  if (isHard) level += 15
+  if (hasScratchResistance) level += 10
+  if (hasImpactResistance) level += 10
+  if (hasNoCrazing) level += 10
+  if (hasNoChipping) level += 10
+  if (hasProperPolymerization) level += 10
+  if (hasNoSoftSpots) level += 10
+  if (hasThermalStability) level += 10
+  if (hasChemicalResistance) level += 10
+  if (hasNoDeformation) level += 5
+  level = Math.min(level, 100)
+  level = Math.max(level, 0)
+
+  let scale: HardnessMeasure['scale'] = 'jet'
+  if (level >= 80 && isHard) scale = 'copal'
+  else if (level >= 65 && hasProperPolymerization) scale = 'semi-fossilized'
+  else if (level >= 50) scale = 'baltic'
+  else if (level >= 35) scale = 'dominican'
+  else if (level >= 20) scale = 'burmite'
+
+  return {
+    crazingCount,
+    hasChemicalResistance,
+    hasImpactResistance,
+    hasNoChipping,
+    hasNoCrazing,
+    hasNoDeformation,
+    hasNoSoftSpots,
+    hasProperPolymerization,
+    hasScratchResistance,
+    hasThermalStability,
+    isHard,
+    level,
+    scale,
+    softSpotCount,
+  }
+}
+
+/** @example measureAge(content) returns AgeMeasure */
+export function measureAge(content: string): AgeMeasure {
+  const classCount = countClasses(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const exportCount = countExports(content)
+  const importCount = countImportKeywords(content)
+  const functionCount = countFunctions(content)
+  const arrowCount = countArrows(content)
+  const asyncCount = countAsync(content)
+  const generics = countGenerics(content)
+  const enumCountVal = enumCount(content)
+  const anyCount = countAny(content)
+  const commentedCode = countCommentedCode(content)
+
+  const pseudoCount = anyCount
+  const gapCount = commentedCode
+  const isMature = classCount > 0 && (interfaceCount > 0 || typeCount > 0) && functionCount > 0
+  const hasGeologicalRecord = exportCount > 0 && importCount > 0
+  const hasStratigraphicContext = interfaceCount > 0 && typeCount > 0
+  const hasIndexFossils = generics > 0
+  const hasNoPseudoFossils = pseudoCount === 0
+  const hasRadioactiveDating = asyncCount > 0
+  const hasPaleoenvironment = classCount > 0 && interfaceCount > 0
+  const hasNoAgeContamination = anyCount === 0
+  const hasEvolutionaryRecord = (functionCount + arrowCount) >= 2
+  const hasNoGap = gapCount === 0
+
+  let depth = 0
+  if (isMature) depth += 15
+  if (hasGeologicalRecord) depth += 10
+  if (hasStratigraphicContext) depth += 10
+  if (hasIndexFossils) depth += 10
+  if (hasNoPseudoFossils) depth += 10
+  if (hasRadioactiveDating) depth += 10
+  if (hasPaleoenvironment) depth += 10
+  if (hasNoAgeContamination) depth += 10
+  if (hasEvolutionaryRecord) depth += 10
+  if (hasNoGap) depth += 5
+  depth = Math.min(depth, 100)
+  depth = Math.max(depth, 0)
+
+  let era: AgeMeasure['era'] = 'holocene'
+  if (depth >= 80 && isMature) era = 'cretaceous'
+  else if (depth >= 65) era = 'jurassic'
+  else if (depth >= 50) era = 'eocene'
+  else if (depth >= 35) era = 'oligocene'
+  else if (depth >= 20) era = 'miocene'
+
+  return {
+    depth,
+    era,
+    hasEvolutionaryRecord,
+    hasGeologicalRecord,
+    hasIndexFossils,
+    hasNoAgeContamination,
+    hasNoGap,
+    hasNoPseudoFossils,
+    hasPaleoenvironment,
+    hasRadioactiveDating,
+    hasStratigraphicContext,
     isMature,
-    isRecent,
-    isDated,
-    hasEvolution,
-    hasStasis,
+    gapCount,
+    pseudoCount,
   }
 }
 
-// ─── Extraction Measurement ─────────────────────────────
+/** @example measurePreservation(content) returns PreservationMeasure */
+export function measurePreservation(content: string): PreservationMeasure {
+  const exportCount = countExports(content)
+  const importCount = countImportKeywords(content)
+  const classCount = countClasses(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const anyCount = countAny(content)
+  const consoleCount = countConsole(content)
+  const deepNested = countDeepNested(content)
+  const tryCatch = countTryCatch(content)
+  const commentedCode = countCommentedCode(content)
+  const jsdoc = countJSDoc(content)
+  const accessMods = countAccessModifiers(content)
 
-/**
- * Measure refactoring difficulty
- * @example
- * measureExtraction(codeString) // { difficulty, isEasyToExtract, ... }
- */
-export function measureExtraction(content: string): ExtractionMeasure {
-  const loc = countLoc(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const branches = countBranches(content)
-  const nesting = countNestingDepth(content)
-  const globals = (content.match(/^(?:const|let|var)\s+\w+/gm) || []).length
+  const degradationCount = consoleCount + anyCount
+  const oxidationCount = commentedCode
+  const isWellPreserved = classCount > 0 && (interfaceCount > 0 || typeCount > 0) && degradationCount === 0
+  const hasProperConservation = tryCatch > 0
+  const hasNoDegradation = degradationCount === 0
+  const hasNoOxidation = oxidationCount === 0
+  const hasProperStorage = exportCount > 0 && importCount > 0
+  const hasUVProtection = accessMods > 0
+  const hasNoWeathering = deepNested === 0
+  const hasStabilization = interfaceCount > 0 && typeCount > 0
+  const hasNoPyriteDecay = anyCount === 0
+  const hasConservationRecord = jsdoc > 0
 
-  const difficulty = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (nesting * 8) +
-    (branches * 5) +
-    (functions > 10 ? 10 : 0) +
-    (imports > 5 ? 10 : 0) +
-    (globals > 5 ? 10 : 0) +
-    (countAny(content) * 15) +
-    (classes > 0 && exports === 0 ? 10 : 0),
-  )))
+  let state = 0
+  if (isWellPreserved) state += 15
+  if (hasProperConservation) state += 10
+  if (hasNoDegradation) state += 10
+  if (hasNoOxidation) state += 10
+  if (hasProperStorage) state += 10
+  if (hasUVProtection) state += 10
+  if (hasNoWeathering) state += 10
+  if (hasStabilization) state += 10
+  if (hasNoPyriteDecay) state += 10
+  if (hasConservationRecord) state += 5
+  state = Math.min(state, 100)
+  state = Math.max(state, 0)
 
-  const dependencyCount = imports + exports
-  const fragileCount = countAny(content) + (nesting > 4 ? 1 : 0)
-
-  const isEasyToExtract = difficulty < 30 && loc > 0
-  const isDifficultToExtract = difficulty >= 60
-  const hasDependencies = dependencyCount > 0
-  const hasFragileConnections = fragileCount > 0
-  const hasSolidMatrix = classes > 0 && countInterfaces(content) > 0
-  const hasDissolvableMatrix = functions > 0 && exports > 0 && countErrorHandling(content) > 0
+  let quality: PreservationMeasure['quality'] = 'degraded'
+  if (isWellPreserved && state >= 80) quality = 'pristine'
+  else if (state >= 65) quality = 'excellent'
+  else if (state >= 50) quality = 'good'
+  else if (state >= 35) quality = 'fair'
+  else if (state >= 20) quality = 'poor'
 
   return {
-    difficulty,
-    isEasyToExtract,
-    isDifficultToExtract,
-    hasDependencies,
-    hasFragileConnections,
-    hasSolidMatrix,
-    hasDissolvableMatrix,
-    dependencyCount,
-    fragileCount,
+    degradationCount,
+    hasConservationRecord,
+    hasNoDegradation,
+    hasNoOxidation,
+    hasNoPyriteDecay,
+    hasNoWeathering,
+    hasProperConservation,
+    hasProperStorage,
+    hasStabilization,
+    hasUVProtection,
+    isWellPreserved,
+    oxidationCount,
+    quality,
+    state,
   }
 }
 
-// ─── Specimen Analysis ──────────────────────────────────
+/** @example measureValue(content) returns ValueMeasure */
+export function measureValue(content: string): ValueMeasure {
+  const exportCount = countExports(content)
+  const importCount = countImportKeywords(content)
+  const classCount = countClasses(content)
+  const interfaceCount = countInterfaces(content)
+  const typeCount = countTypeAliases(content)
+  const enumCountVal = enumCount(content)
+  const generics = countGenerics(content)
+  const anyCount = countAny(content)
+  const consoleCount = countConsole(content)
+  const commentedCode = countCommentedCode(content)
+  const jsdoc = countJSDoc(content)
 
-/**
- * Analyze a single file as amber specimen
- * @example
- * analyzeAmberSpecimen(content, filePath) // AmberSpecimen
- */
+  const forgeryCount = commentedCode
+  const damageCount = anyCount + consoleCount
+  const isValuable = classCount > 0 && (interfaceCount > 0 || typeCount > 0) && damageCount === 0
+  const hasRarity = generics > 0
+  const hasScientificValue = interfaceCount > 0 && typeCount > 0
+  const hasAestheticValue = jsdoc > 0
+  const hasHistoricalValue = enumCountVal > 0
+  const hasNoForgery = forgeryCount === 0
+  const hasProperProvenance = exportCount > 0 && importCount > 0
+  const hasNoDamage = damageCount === 0
+  const hasMarketValue = exportCount > 0
+  const hasNoReproduction = classCount > 0
+
+  let score = 0
+  if (isValuable) score += 15
+  if (hasRarity) score += 10
+  if (hasScientificValue) score += 10
+  if (hasAestheticValue) score += 10
+  if (hasHistoricalValue) score += 10
+  if (hasNoForgery) score += 10
+  if (hasProperProvenance) score += 10
+  if (hasNoDamage) score += 10
+  if (hasMarketValue) score += 10
+  if (hasNoReproduction) score += 5
+  score = Math.min(score, 100)
+  score = Math.max(score, 0)
+
+  let appraisal: ValueMeasure['appraisal'] = 'novelty'
+  if (isValuable && score >= 80) appraisal = 'priceless'
+  else if (score >= 65) appraisal = 'museum-quality'
+  else if (score >= 50) appraisal = 'collector-grade'
+  else if (score >= 35) appraisal = 'specimen-grade'
+  else if (score >= 20) appraisal = 'craft-grade'
+
+  return {
+    damageCount,
+    forgeryCount,
+    hasAestheticValue,
+    hasHistoricalValue,
+    hasMarketValue,
+    hasNoDamage,
+    hasNoForgery,
+    hasNoReproduction,
+    hasProperProvenance,
+    hasRarity,
+    hasScientificValue,
+    isValuable,
+    appraisal,
+    score,
+  }
+}
+
+// ─── Classifiers ────────────────────────────────────────────────────────────
+
+/** @example classifyCondition(score) returns condition string */
+export function classifyCondition(score: number): AmberSpecimen['condition'] {
+  if (score >= 80) return 'baltic-gold'
+  if (score >= 65) return 'dominican-blue'
+  if (score >= 50) return 'burmite-royal'
+  if (score >= 35) return 'copal-raw'
+  if (score >= 20) return 'jet-black'
+  return 'sandstone'
+}
+
+/** @example classifyCollectionType(specimens) returns collection type */
+export function classifyCollectionType(specimens: AmberSpecimen[]): AmberCollection['collectionType'] {
+  if (specimens.length === 0) return 'beach'
+  const avgQuality = specimens.reduce((s, sp) => s + sp.qualityScore, 0) / specimens.length
+  const balticCount = specimens.filter((sp) => sp.condition === 'baltic-gold').length
+  if (avgQuality >= 75 && balticCount >= Math.ceil(specimens.length * 0.3)) return 'museum'
+  if (avgQuality >= 60) return 'private-collection'
+  if (avgQuality >= 45) return 'exhibition'
+  if (avgQuality >= 30) return 'workshop'
+  if (avgQuality >= 15) return 'quarry'
+  return 'beach'
+}
+
+/** @example classifyCollectionCondition(avgQuality) returns condition */
+export function classifyCollectionCondition(avgQuality: number): AmberCollection['condition'] {
+  if (avgQuality >= 80) return 'world-heritage'
+  if (avgQuality >= 65) return 'national-collection'
+  if (avgQuality >= 50) return 'university-museum'
+  if (avgQuality >= 35) return 'shop-display'
+  if (avgQuality >= 20) return 'flea-market'
+  return 'sandbox'
+}
+
+/** @example classifyPaleontologistGrade(avgValue) returns grade */
+export function classifyPaleontologistGrade(avgValue: number): AmberFossilResult['stats']['paleontologistGrade'] {
+  if (avgValue >= 80) return 'curator'
+  if (avgValue >= 65) return 'paleontologist'
+  if (avgValue >= 50) return 'collector'
+  if (avgValue >= 35) return 'enthusiast'
+  if (avgValue >= 20) return 'tourist'
+  return 'beachcomber'
+}
+
+// ─── Specimen Analysis ──────────────────────────────────────────────────────
+
+/** @example analyzeAmberSpecimen(content, filePath) returns AmberSpecimen */
 export function analyzeAmberSpecimen(content: string, filePath: string): AmberSpecimen {
-  const amber = measureAmber(content)
-  const fossil = measureFossil(content)
-  const preservation = measurePreservation(content)
+  const clarity = measureClarity(content)
   const inclusion = measureInclusion(content)
+  const hardness = measureHardness(content)
   const age = measureAge(content)
-  const extraction = measureExtraction(content)
+  const preservation = measurePreservation(content)
+  const value = measureValue(content)
 
-  const amberClarity = amber.clarity
-  const fossilQuality = fossil.quality
-  const preservationState = preservation.state
-  const inclusionsCount = inclusion.count
-  const ageEstimation = age.estimation
-  const extractionDifficulty = extraction.difficulty
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    (amberClarity * 0.2) +
-    (fossilQuality * 0.2) +
-    (preservationState * 0.2) +
-    ((100 - extractionDifficulty) * 0.15) +
-    (fossil.completeness * 0.15) +
-    ((100 - ageEstimation) * 0.1),
-  )))
-
-  const condition = classifySpecimenCondition(qualityScore, amber, preservation)
+  const qualityScore = Math.round(
+    clarity.level * 0.2 + inclusion.quality * 0.2 + hardness.level * 0.15 +
+    age.depth * 0.15 + preservation.state * 0.15 + value.score * 0.15,
+  )
 
   return {
-    file: filePath,
-    amberClarity,
-    fossilQuality,
-    preservationState,
-    inclusionsCount,
-    ageEstimation,
-    extractionDifficulty,
-    amber,
-    fossil,
-    preservation,
-    inclusion,
     age,
-    extraction,
-    condition,
+    amberClarity: clarity.level,
+    clarity,
+    condition: classifyCondition(qualityScore),
+    file: filePath,
+    fossilAge: age.depth,
+    hardness,
+    inclusion,
+    inclusionQuality: inclusion.quality,
+    preservation,
+    preservationState: preservation.state,
     qualityScore,
+    resinHardness: hardness.level,
+    specimenValue: value.score,
+    value,
   }
 }
 
-/**
- * Classify specimen condition
- * @example
- * classifySpecimenCondition(90, amber, preservation) // 'pristine-amber'
- */
-export function classifySpecimenCondition(
-  score: number,
-  amber: AmberMeasure,
-  preservation: PreservationMeasure,
-): AmberSpecimen['condition'] {
-  if (score >= 80 && amber.isTransparent && preservation.isPerfectlyPreserved) return 'pristine-amber'
-  if (score >= 65 && amber.isTransparent) return 'clear-specimen'
-  if (score >= 50) return 'good-fossil'
-  if (score >= 30 && !preservation.hasActiveDecay) return 'cloudy-amber'
-  if (score >= 15) return 'cracked-specimen'
-  return 'decayed-remains'
-}
-
-// ─── Deposit Analysis ───────────────────────────────────
-
-/**
- * Analyze a directory as amber deposit
- * @example
- * analyzeAmberDeposit(specimens, dirPath) // AmberDeposit
- */
-export function analyzeAmberDeposit(specimens: AmberSpecimen[], dirPath: string): AmberDeposit {
-  const count = specimens.length
-  if (count === 0) {
-    return {
-      directory: dirPath,
-      specimens: [],
-      avgClarity: 0,
-      avgPreservation: 0,
-      avgAge: 0,
-      pristineCount: 0,
-      decayedCount: 0,
-      ancientCount: 0,
-      modernCount: 0,
-      depositType: 'barren-ground',
-      condition: 'empty-quarry',
-    }
-  }
-
-  const avgClarity = Math.round(specimens.reduce((s, sp) => s + sp.amberClarity, 0) / count)
-  const avgPreservation = Math.round(specimens.reduce((s, sp) => s + sp.preservationState, 0) / count)
-  const avgAge = Math.round(specimens.reduce((s, sp) => s + sp.ageEstimation, 0) / count)
-
-  const pristineCount = specimens.filter(s => s.condition === 'pristine-amber').length
-  const decayedCount = specimens.filter(s => s.condition === 'decayed-remains').length
-  const ancientCount = specimens.filter(s => s.age.isAncient).length
-  const modernCount = specimens.filter(s => s.age.isRecent).length
-
-  const depositType = classifyDepositType(specimens, avgClarity)
-  const condition = classifyDepositCondition(avgClarity)
+/** @example analyzeAmberCollection(specimens, dirPath) returns AmberCollection */
+export function analyzeAmberCollection(specimens: AmberSpecimen[], dirPath: string): AmberCollection {
+  const avgClarity = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.amberClarity, 0) / specimens.length) : 0
+  const avgHardness = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.resinHardness, 0) / specimens.length) : 0
+  const avgValue = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.specimenValue, 0) / specimens.length) : 0
+  const balticGoldCount = specimens.filter((sp) => sp.condition === 'baltic-gold').length
+  const sandstoneCount = specimens.filter((sp) => sp.condition === 'sandstone').length
+  const clearCount = specimens.filter((sp) => sp.clarity.isClear).length
+  const hardCount = specimens.filter((sp) => sp.hardness.isHard).length
+  const collectionType = classifyCollectionType(specimens)
+  const avgQuality = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.qualityScore, 0) / specimens.length) : 0
+  const condition = classifyCollectionCondition(avgQuality)
 
   return {
-    directory: dirPath,
-    specimens,
     avgClarity,
-    avgPreservation,
-    avgAge,
-    pristineCount,
-    decayedCount,
-    ancientCount,
-    modernCount,
-    depositType,
+    avgHardness,
+    avgValue,
+    balticGoldCount,
+    clearCount,
+    collectionType,
     condition,
+    directory: dirPath,
+    hardCount,
+    sandstoneCount,
+    specimens,
   }
 }
 
-/**
- * Classify deposit type
- * @example
- * classifyDepositType(specimens, 70) // 'baltic-sea'
- */
-export function classifyDepositType(specimens: AmberSpecimen[], avgClarity: number): AmberDeposit['depositType'] {
-  if (specimens.length === 0) return 'barren-ground'
-  const pristineRatio = specimens.filter(s => s.condition === 'pristine-amber').length / specimens.length
-
-  if (pristineRatio >= 0.5 && avgClarity >= 70) return 'baltic-sea'
-  if (avgClarity >= 55) return 'dominican-mine'
-  if (avgClarity >= 40) return 'burmese-deposit'
-  if (avgClarity >= 25) return 'mexican-quarry'
-  if (avgClarity >= 10) return 'surface-find'
-  return 'barren-ground'
-}
-
-/**
- * Classify deposit condition
- * @example
- * classifyDepositCondition(80) // 'museum-collection'
- */
-export function classifyDepositCondition(avgClarity: number): AmberDeposit['condition'] {
-  if (avgClarity >= 75) return 'museum-collection'
-  if (avgClarity >= 60) return 'research-collection'
-  if (avgClarity >= 45) return 'collector-stash'
-  if (avgClarity >= 30) return 'beach-combing'
-  if (avgClarity >= 15) return 'scrap-pile'
-  return 'empty-quarry'
-}
-
-// ─── Paleontologist Grade ───────────────────────────────
-
-/**
- * Classify paleontologist grade
- * @example
- * classifyPaleontologistGrade(90) // 'chief-paleontologist'
- */
-export function classifyPaleontologistGrade(avgPreservation: number): AmberFossilStats['paleontologistGrade'] {
-  if (avgPreservation >= 80) return 'chief-paleontologist'
-  if (avgPreservation >= 65) return 'paleontologist'
-  if (avgPreservation >= 50) return 'archaeologist'
-  if (avgPreservation >= 35) return 'collector'
-  if (avgPreservation >= 20) return 'tourist'
-  return 'grave-robber'
-}
-
-// ─── Recommendations ────────────────────────────────────
-
-/**
- * Generate recommendations
- * @example
- * generateRecommendations(specimens, deposits, museum, stats) // ['Add JSDoc...']
- */
+/** @example generateRecommendations(specimens, collections, museum, stats) returns string[] */
 export function generateRecommendations(
   specimens: AmberSpecimen[],
-  _deposits: AmberDeposit[],
-  _museum: MuseumMeasure,
-  stats: AmberFossilStats,
+  _collections: AmberCollection[],
+  museum: AmberFossilResult['museum'],
+  _stats: AmberFossilResult['stats'],
 ): string[] {
-  const recs: string[] = []
+  const recommendations: string[] = []
 
-  if (stats.decayedRemainsCount > 0) {
-    recs.push('Excavate decayed remains: add documentation, types, and error handling')
-  }
-  if (stats.avgAmberClarity < 40) {
-    recs.push('Improve amber clarity with JSDoc documentation and type annotations')
-  }
-  if (stats.deprecatedCount > 0) {
-    recs.push('Remove deprecated patterns trapped in the amber')
-  }
-  if (stats.antiPatternCount > 0) {
-    recs.push('Clean anti-patterns: replace any types and reduce nesting depth')
-  }
-  if (stats.isDeterioratingCount > stats.totalFiles * 0.3) {
-    recs.push('Apply conservation: resolve TODOs to prevent further deterioration')
-  }
-  if (stats.avgExtractionDifficulty > 60) {
-    recs.push('Reduce extraction difficulty by refactoring deep nesting and tangled dependencies')
-  }
-  if (stats.workaroundCount > stats.totalFiles * 0.3) {
-    recs.push('Replace workaround code with proper solutions')
+  if (museum.overallValue < 50) {
+    recommendations.push('Collection value is low — add types, interfaces, and documentation to improve preservation quality')
   }
 
-  if (recs.length === 0) {
-    recs.push('Maintain current preservation standards for the collection')
+  const opaque = specimens.filter((sp) => sp.condition === 'sandstone')
+  if (opaque.length > 0) {
+    recommendations.push(`${opaque.length} specimen/specimens are sandstone — add meaningful code structure and exports`)
   }
 
-  return recs
+  const poorClarity = specimens.filter((sp) => !sp.clarity.isClear)
+  if (poorClarity.length > 0) {
+    recommendations.push(`${poorClarity.length} specimen/specimens have poor clarity — remove any types, console logs, and reduce nesting`)
+  }
+
+  const degraded = specimens.filter((sp) => sp.preservation.degradationCount > 0)
+  if (degraded.length > 0) {
+    recommendations.push(`${degraded.length} specimen/specimens show degradation — clean up technical debt and improve maintainability`)
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push('Amber collection is pristine with museum-quality specimens — maintain current preservation standards')
+  }
+
+  return recommendations
 }
 
-// ─── Orchestrator ───────────────────────────────────────
+// ─── Builder ────────────────────────────────────────────────────────────────
 
-/**
- * Build the full amber fossil result
- * @example
- * buildAmberFossilResult(files, contents, {}) // AmberFossilResult
- */
+/** @example buildAmberFossilResult(files, contents, options) returns AmberFossilResult */
 export function buildAmberFossilResult(
   files: string[],
   contents: string[],
-  _options: Record<string, unknown> = {},
+  _options?: { verbose?: boolean },
 ): AmberFossilResult {
   const specimens: AmberSpecimen[] = files.map((file, i) =>
     analyzeAmberSpecimen(contents[i] ?? '', file),
   )
 
-  const depositMap = new Map<string, AmberSpecimen[]>()
-  for (const sp of specimens) {
-    const dir = sp.file.includes('/') ? sp.file.substring(0, sp.file.lastIndexOf('/')) : '.'
-    const existing = depositMap.get(dir)
+  const dirMap = new Map<string, AmberSpecimen[]>()
+  for (const specimen of specimens) {
+    const dir = specimen.file.includes('/') ? specimen.file.substring(0, specimen.file.lastIndexOf('/')) : '.'
+    const existing = dirMap.get(dir)
     if (existing) {
-      existing.push(sp)
+      existing.push(specimen)
     } else {
-      depositMap.set(dir, [sp])
+      dirMap.set(dir, [specimen])
     }
   }
 
-  const deposits: AmberDeposit[] = Array.from(depositMap.entries()).map(([dir, dSpecs]) =>
-    analyzeAmberDeposit(dSpecs, dir),
+  const collections: AmberCollection[] = Array.from(dirMap.entries()).map(([dir, dirSpecimens]) =>
+    analyzeAmberCollection(dirSpecimens, dir),
   )
 
-  const totalFiles = specimens.length
-  const avg = (fn: (sp: AmberSpecimen) => number) =>
-    totalFiles === 0 ? 0 : Math.round(specimens.reduce((s, sp) => s + fn(sp), 0) / totalFiles)
+  const avgAmberClarity = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.amberClarity, 0) / specimens.length) : 0
+  const avgInclusionQuality = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.inclusionQuality, 0) / specimens.length) : 0
+  const avgResinHardness = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.resinHardness, 0) / specimens.length) : 0
+  const avgFossilAge = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.fossilAge, 0) / specimens.length) : 0
+  const avgPreservationState = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.preservationState, 0) / specimens.length) : 0
+  const avgSpecimenValue = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.specimenValue, 0) / specimens.length) : 0
+  const overallValue = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.qualityScore, 0) / specimens.length) : 0
 
-  const museum: MuseumMeasure = {
-    avgClarity: avg(sp => sp.amberClarity),
-    avgPreservation: avg(sp => sp.preservationState),
-    avgAge: avg(sp => sp.ageEstimation),
-    isWellCurated: avg(sp => sp.preservationState) >= 60,
-    overallPreservation: avg(sp => sp.qualityScore),
+  const museum = {
+    avgClarity: avgAmberClarity,
+    avgHardness: avgResinHardness,
+    avgValue: avgSpecimenValue,
+    isPriceless: overallValue >= 65,
+    overallValue,
   }
 
-  const overallPreservation = museum.overallPreservation
+  const balticGoldCount = specimens.filter((sp) => sp.condition === 'baltic-gold').length
+  const dominicanBlueCount = specimens.filter((sp) => sp.condition === 'dominican-blue').length
+  const burmiteRoyalCount = specimens.filter((sp) => sp.condition === 'burmite-royal').length
+  const copalRawCount = specimens.filter((sp) => sp.condition === 'copal-raw').length
+  const jetBlackCount = specimens.filter((sp) => sp.condition === 'jet-black').length
+  const sandstoneCount = specimens.filter((sp) => sp.condition === 'sandstone').length
+  const isClearCount = specimens.filter((sp) => sp.clarity.isClear).length
+  const hasCompleteDocumentationCount = specimens.filter((sp) => sp.inclusion.hasCompleteDocumentation).length
+  const isHardCount = specimens.filter((sp) => sp.hardness.isHard).length
+  const isMatureCount = specimens.filter((sp) => sp.age.isMature).length
+  const isWellPreservedCount = specimens.filter((sp) => sp.preservation.isWellPreserved).length
+  const isValuableCount = specimens.filter((sp) => sp.value.isValuable).length
 
-  const clearestSpecimen = specimens.length > 0
-    ? specimens.reduce((best, sp) => sp.amberClarity > best.amberClarity ? sp : best, specimens[0]).file
-    : ''
-  const bestPreserved = specimens.length > 0
-    ? specimens.reduce((best, sp) => sp.preservationState > best.preservationState ? sp : best, specimens[0]).file
-    : ''
-  const mostAncient = specimens.length > 0
-    ? specimens.reduce((best, sp) => sp.ageEstimation > best.ageEstimation ? sp : best, specimens[0]).file
-    : ''
-  const mostModern = specimens.length > 0
-    ? specimens.reduce((best, sp) => sp.ageEstimation < best.ageEstimation ? sp : best, specimens[0]).file
-    : ''
-  const easiestToExtract = specimens.length > 0
-    ? specimens.reduce((best, sp) => sp.extractionDifficulty < best.extractionDifficulty ? sp : best, specimens[0]).file
-    : ''
+  const paleontologistGrade = classifyPaleontologistGrade(overallValue)
 
-  const stats: AmberFossilStats = {
-    totalFiles,
-    totalDeposits: deposits.length,
-    avgAmberClarity: museum.avgClarity,
-    avgFossilQuality: avg(sp => sp.fossilQuality),
-    avgPreservationState: museum.avgPreservation,
-    avgInclusionsCount: avg(sp => sp.inclusionsCount),
-    avgAgeEstimation: museum.avgAge,
-    avgExtractionDifficulty: avg(sp => sp.extractionDifficulty),
-    pristineAmberCount: specimens.filter(s => s.condition === 'pristine-amber').length,
-    clearSpecimenCount: specimens.filter(s => s.condition === 'clear-specimen').length,
-    goodFossilCount: specimens.filter(s => s.condition === 'good-fossil').length,
-    cloudyAmberCount: specimens.filter(s => s.condition === 'cloudy-amber').length,
-    crackedSpecimenCount: specimens.filter(s => s.condition === 'cracked-specimen').length,
-    decayedRemainsCount: specimens.filter(s => s.condition === 'decayed-remains').length,
-    goldenCount: specimens.filter(s => s.amber.color === 'golden').length,
-    cognacCount: specimens.filter(s => s.amber.color === 'cognac').length,
-    milkyCount: specimens.filter(s => s.amber.color === 'milky').length,
-    blackColor: specimens.filter(s => s.amber.color === 'black').length,
-    isCompleteCount: specimens.filter(s => s.fossil.isComplete).length,
-    isFragmentaryCount: specimens.filter(s => s.fossil.isFragmentary).length,
-    isWellPreservedCount: specimens.filter(s => s.preservation.isWellPreserved).length,
-    isDeterioratingCount: specimens.filter(s => s.preservation.isDeteriorating).length,
-    ancientPatternsCount: specimens.filter(s => s.inclusion.hasAncientPatterns).length,
-    deprecatedCount: specimens.reduce((s, sp) => s + sp.inclusion.deprecatedCount, 0),
-    antiPatternCount: specimens.reduce((s, sp) => s + sp.inclusion.antiPatternCount, 0),
-    workaroundCount: specimens.reduce((s, sp) => s + sp.inclusion.workaroundCount, 0),
-    isAncientCount: specimens.filter(s => s.age.isAncient).length,
-    isMatureCount: specimens.filter(s => s.age.isMature).length,
-    isRecentCount: specimens.filter(s => s.age.isRecent).length,
-    isEasyToExtractCount: specimens.filter(s => s.extraction.isEasyToExtract).length,
-    isDifficultToExtractCount: specimens.filter(s => s.extraction.isDifficultToExtract).length,
-    overallPreservation,
-    paleontologistGrade: classifyPaleontologistGrade(overallPreservation),
-    clearestSpecimen,
-    bestPreserved,
-    mostAncient,
-    mostModern,
-    easiestToExtract,
+  const bestSpecimen = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.qualityScore > best.qualityScore ? sp : best).file : ''
+  const clearest = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.amberClarity > best.amberClarity ? sp : best).file : ''
+  const bestDocumented = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.inclusionQuality > best.inclusionQuality ? sp : best).file : ''
+  const hardest = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.resinHardness > best.resinHardness ? sp : best).file : ''
+  const oldest = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.fossilAge > best.fossilAge ? sp : best).file : ''
+  const mostValuable = specimens.length > 0
+    ? specimens.reduce((best, sp) => sp.specimenValue > best.specimenValue ? sp : best).file : ''
+
+  const stats = {
+    avgAmberClarity,
+    avgFossilAge,
+    avgInclusionQuality,
+    avgPreservationState,
+    avgResinHardness,
+    avgSpecimenValue,
+    balticGoldCount,
+    bestDocumented,
+    bestSpecimen,
+    burmiteRoyalCount,
+    clearest,
+    copalRawCount,
+    dominicanBlueCount,
+    hasCompleteDocumentationCount,
+    hardest,
+    isClearCount,
+    isHardCount,
+    isMatureCount,
+    isValuableCount,
+    isWellPreservedCount,
+    jetBlackCount,
+    mostValuable,
+    oldest,
+    overallValue,
+    paleontologistGrade,
+    sandstoneCount,
+    totalCollections: collections.length,
+    totalFiles: files.length,
   }
 
-  const recommendations = generateRecommendations(specimens, deposits, museum, stats)
+  const recommendations = generateRecommendations(specimens, collections, museum, stats)
 
-  return { specimens, deposits, museum, stats, recommendations }
+  return { collections, museum, recommendations, specimens, stats }
 }

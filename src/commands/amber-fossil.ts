@@ -9,39 +9,39 @@ import {
   buildAmberFossilResult,
   type AmberFossilResult,
 } from './amber-fossil-helpers.js'
-import {
-  formatAmberFossilCsv,
-  formatAmberFossilJson,
-  formatAmberFossilTable,
-} from './amber-fossil-format-helpers.js'
+import { formatAmberFossilJson, formatAmberFossilTable } from './amber-fossil-format-helpers.js'
 
 export default class AmberFossil extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze code legacy and preservation',
+      description: 'Path to analyze amber fossil patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code legacy like examining amber fossils'
+  static override description = 'Analyze code preservation, clarity, and permanence like amber fossils'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory',
+      description: 'Analyze amber fossils in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file specimen details',
+      description: 'Analyze amber fossils in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
+      description: 'Analyze only TypeScript files',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output amber.json',
+      description: 'Export amber fossil analysis to JSON file',
     },
   ]
 
@@ -54,7 +54,7 @@ export default class AmberFossil extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['csv', 'json', 'table'],
+      options: ['json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -68,7 +68,7 @@ export default class AmberFossil extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file specimen details',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -81,10 +81,10 @@ export default class AmberFossil extends Command {
       this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
-    const format = flags.format as 'csv' | 'json' | 'table'
+    const format = flags.format as 'json' | 'table'
     const { verbose } = flags
 
-    const spinner = ora('Examining amber fossils...').start()
+    const spinner = ora('Discovering files...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -93,42 +93,22 @@ export default class AmberFossil extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
-    spinner.text = 'Analyzing amber specimens...'
+    spinner.text = 'Analyzing amber fossils...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -144,16 +124,14 @@ export default class AmberFossil extends Command {
       }
     }
 
-    const result: AmberFossilResult = buildAmberFossilResult(files, contents, {})
+    const result: AmberFossilResult = buildAmberFossilResult(files, contents)
 
-    spinner.succeed(`Examined ${files.length} specimens across ${result.deposits.length} deposits`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.collections.length} fossil collections`)
 
     const outputData =
       format === 'json'
         ? formatAmberFossilJson(result)
-        : format === 'csv'
-          ? formatAmberFossilCsv(result)
-          : formatAmberFossilTable(result, verbose)
+        : formatAmberFossilTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -171,5 +149,5 @@ export default class AmberFossil extends Command {
 }
 
 export { buildAmberFossilResult } from './amber-fossil-helpers.js'
-export type { AmberFossilResult, AmberSpecimen, AmberDeposit, AmberFossilStats, MuseumMeasure } from './amber-fossil-helpers.js'
-export { formatAmberFossilCsv, formatAmberFossilJson, formatAmberFossilTable } from './amber-fossil-format-helpers.js'
+export type { AmberFossilResult, AmberSpecimen, AmberCollection, ClarityMeasure, InclusionMeasure, HardnessMeasure, AgeMeasure, PreservationMeasure, ValueMeasure } from './amber-fossil-helpers.js'
+export { formatAmberFossilJson, formatAmberFossilTable } from './amber-fossil-format-helpers.js'
