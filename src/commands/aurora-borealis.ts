@@ -1,48 +1,29 @@
-import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
-import * as fs from 'node:fs/promises'
-import { extname, resolve } from 'node:path'
+import { Command, Flags } from '@oclif/core'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildAuroraBorealisResult,
-  type AuroraBorealisResult,
-} from './aurora-borealis-helpers.js'
+import { buildAuroraBorealisResult } from './aurora-borealis-helpers.js'
 import { formatAuroraBorealisJson, formatAuroraBorealisTable } from './aurora-borealis-format-helpers.js'
 
-export default class AuroraBorealis extends Command {
-  static override args = {
-    path: Args.string({
-      default: '.',
-      description: 'Path to analyze aurora borealis',
-      required: false,
-    }),
-  }
+// ─── Constants ─────────────────────────────────────────────────────────────
 
-  static override description = 'Analyze code beauty, luminosity, and energy patterns'
+const FILE_PATTERNS = [
+  '**/*.ts',
+  '**/*.tsx',
+  '**/*.js',
+  '**/*.jsx',
+]
+
+// ─── Command ───────────────────────────────────────────────────────────────
+
+/** @example codeforge aurora-borealis ./src --verbose */
+export default class AuroraBorealis extends Command {
+  static override description = 'Analyze code brilliance, polar energy, and electromagnetic patterns like the aurora borealis'
 
   static override examples = [
-    {
-      command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze aurora borealis in current directory',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze aurora borealis in src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze only TypeScript files',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file breakdown',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output aurora.json',
-      description: 'Export aurora analysis to JSON file',
-    },
+    '<%= config.bin %> <%= command.id %> ./src',
+    '<%= config.bin %> <%= command.id %> ./src --verbose',
+    '<%= config.bin %> <%= command.id %> ./src --json',
   ]
 
   static override flags = {
@@ -68,74 +49,55 @@ export default class AuroraBorealis extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file breakdown',
+      description: 'Show per-file details',
     }),
   }
 
+  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
+
   async run(): Promise<void> {
     const { args, flags } = await this.parse(AuroraBorealis)
-
-    const targetPath = resolve(args.path as string)
-
-    if (!existsSync(targetPath)) {
-      this.error(`Path not found: ${targetPath}`, { exit: 1 })
-    }
-
-    const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
-
-    const spinner = ora('Discovering files...').start()
+    const spinner = ora('Analyzing aurora borealis...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
 
-    const discoveredFiles = await discoverFiles({
-      cwd: targetPath,
-      ignore,
-      patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
-      ],
-    })
+    const discovered = await discoverFiles({ cwd: args.path, ignore, patterns: FILE_PATTERNS })
 
+    const { extname } = await import('node:path')
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
+      ? flags.ext.split(',').map((e: string) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
-      : discoveredFiles
+      ? discovered.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
+      : discovered
 
-    spinner.text = 'Analyzing aurora borealis...'
-
-    const files: string[] = []
+    const files = filteredFiles.map((f) => f.path)
     const contents: string[] = []
 
-    for (const file of filteredFiles) {
+    for (const file of files) {
       try {
-        const content = await fs.readFile(file.absolutePath, 'utf8')
-        files.push(file.path)
-        contents.push(content)
+        const { readFileSync } = await import('fs')
+        contents.push(readFileSync(file, 'utf-8'))
       } catch {
-        files.push(file.path)
         contents.push('')
       }
     }
 
-    const result: AuroraBorealisResult = buildAuroraBorealisResult(files, contents)
+    const result = buildAuroraBorealisResult(files, contents)
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.zones.length} zones`)
+    spinner.stop()
 
-    const outputData =
-      format === 'json'
-        ? formatAuroraBorealisJson(result)
-        : formatAuroraBorealisTable(result, verbose)
+    const format = flags.format as 'json' | 'table'
+    const outputData = format === 'json'
+      ? formatAuroraBorealisJson(result)
+      : formatAuroraBorealisTable(result, flags.verbose)
 
     if (flags.output) {
       try {
-        await fs.writeFile(flags.output, outputData, 'utf8')
+        const { writeFile } = await import('fs/promises')
+        await writeFile(flags.output, outputData, 'utf8')
         this.log(`Results written to ${flags.output}`)
       } catch (error) {
         this.error(
@@ -147,7 +109,3 @@ export default class AuroraBorealis extends Command {
     }
   }
 }
-
-export { buildAuroraBorealisResult } from './aurora-borealis-helpers.js'
-export type { AuroraBorealisResult, AuroraStats, AuroraReading, AuroraZone, AuroraObservatory, LightMeasure, ColorMeasure, MagneticMeasure, SolarMeasure, AtmosphereMeasure, DisplayMeasure } from './aurora-borealis-helpers.js'
-export { formatAuroraBorealisJson, formatAuroraBorealisTable } from './aurora-borealis-format-helpers.js'
