@@ -1,692 +1,811 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
+
 import {
-  countLoc, countImports, countExports, countFunctions,
-  countClasses, countInterfaces, countTypeAliases,
-  countErrorHandling, countTypeAnnotations, countBranches,
-  maxNesting, countConsole, countComments, countTodos,
-  classifySheetCondition, classifyBaseType, classifyPatternType,
-  classifyBoxType, classifyBoxCondition, classifyOrigamiGrade,
-  measureFolds, measureCreases, measurePaper,
-  measureStructure, measureCreasePattern, measureModel,
-  analyzeOrigamiSheet, analyzeOrigamiBox,
-  generateRecommendations, buildOrigamiFoldResult,
+  analyzeOrigamiGallery,
+  analyzeOrigamiModel,
+  buildOrigamiFoldResult,
+  classifyArtistGrade,
+  classifyCondition,
+  classifyGalleryCondition,
+  classifyGalleryType,
+  generateRecommendations,
+  measureCrease,
+  measureMastery,
+  measurePaper,
+  measurePrecision,
+  measureStructure,
+  measureTransformation,
 } from '../src/commands/origami-fold-helpers.js'
-import { formatOrigamiFoldTable, formatOrigamiFoldJson } from '../src/commands/origami-fold-format-helpers.js'
 
-// ─── Sample Code Snippets ─────────────────────────────────────────────────────
+import {
+  conditionColor,
+  formatOrigamiFoldJson,
+  formatOrigamiFoldTable,
+  galleryTypeColor,
+  gradeColor,
+  scoreColor,
+} from '../src/commands/origami-fold-format-helpers.js'
 
-const emptyCode = ''
-const simpleCode = 'const x = 1'
-const typedCode = 'export function calc(x: number): string { return String(x) }'
-const strongCode = [
-  'import { helper } from "./utils.js"',
-  'import type { Config } from "./types.js"',
-  '/**',
-  ' * Calculate result',
-  ' * @example',
-  ' * calc(5) // number',
-  ' */',
-  'export function calc(x: number): number {',
-  '  try {',
-  '    const result: number = helper(x)',
-  '    if (result > 0) { return result }',
-  '    return 0',
-  '  } catch (err) {',
-  '    throw new Error("fail")',
-  '  }',
-  '}',
-  'export interface CalcOptions { value: number; label: string }',
-  'export type CalcResult = number | string',
-].join('\n')
+// ─── Fixtures ──────────────────────────────────────────────────────────────
 
-const diverseCode = [
-  'import { helper } from "./utils.js"',
-  'export function calc(): void {}',
-  'export class Calculator {',
-  '  constructor() {}',
-  '  compute(): number { return 1 }',
-  '}',
-  'export interface Shape { area: number }',
-  'export type Result = string | number',
-  'export enum Direction { N, S, E, W }',
-].join('\n')
+const RICH = `export interface AuroraConfig {
+  readonly id: string
+  name: string
+  intensity: number
+  colors: string[]
+  isActive: boolean
+}
 
-const noExportCode = [
-  'const a = 1',
-  'const b = 2',
-  'const c = 3',
-].join('\n')
+export class AuroraCalculator<T extends AuroraConfig> {
+  private configs: T[] = []
+  protected maxIntensity: number = 100
 
-const todoCode = [
-  '// TODO: fix this',
-  '// FIXME: broken',
-  '// HACK: temp',
-  '// XXX: bad',
-  'export function a() { return 1 }',
-].join('\n')
+  constructor(initialConfigs?: T[]) {
+    if (initialConfigs) {
+      this.configs = initialConfigs
+    }
+  }
 
-const deepCode = 'if (a) { if (b) { if (c) { if (d) { if (e) { return 1 } } } } }'
+  async calculateIntensity(config: T): Promise<number> {
+    try {
+      const base = config.intensity
+      const multiplier = config.isActive ? 2.0 : 0.5
+      const result = Math.min(this.maxIntensity, base * multiplier)
+      return Math.round(result)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message)
+      }
+      return 0
+    }
+  }
 
-const noisyCode = [
-  'console.log("a")',
-  'console.log("b")',
-  'console.log("c")',
-  'console.log("d")',
-  'export function f() {}',
-].join('\n')
+  static createDefault(): AuroraCalculator<AuroraConfig> {
+    return new AuroraCalculator<AuroraConfig>()
+  }
+}
 
-const branchyCode = [
-  'if (a) {}',
-  'if (b) {}',
-  'if (c) {}',
-  'if (d) {}',
-  'if (e) {}',
-  'if (f) {}',
-  'if (g) {}',
-  'const x = 1',
-].join('\n')
+/** Calculates aurora brightness */
+export function calculateBrightness(colors: string[]): number {
+  const green = colors.filter(c => c.includes('green'))
+  return green.length * 10
+}
 
-const heavyImportCode = [
-  'import { a } from "a"',
-  'import { b } from "b"',
-  'import { c } from "c"',
-  'import { d } from "d"',
-  'import { e } from "e"',
-  'import { f } from "f"',
-].join('\n')
+export type AuroraPhase = 'dawn' | 'dusk' | 'night' | 'peak'
+export enum AuroraType { BAND = 'band', CURTAIN = 'curtain', CORONA = 'corona' }
+`
 
-// ─── Primitive Tests ──────────────────────────────────────────────────────────
+const EMPTY = ''
 
-describe('origami-fold primitives', () => {
-  it('countLoc counts non-empty lines', () => {
-    expect(countLoc(emptyCode)).toBe(0)
-    expect(countLoc(simpleCode)).toBe(1)
+const MEDIUM = `export interface Config { name: string; value: number; }
+export class Service {
+  private config: Config;
+  constructor(c: Config) { this.config = c; }
+  async getValue(): Promise<string> {
+    try { return String(this.config.value); } catch(e) { console.log(e); return ""; }
+  }
+}
+export function helper(x: any): any { return x; }
+`
+
+// ─── measurePrecision ──────────────────────────────────────────────────────
+
+describe('measurePrecision', () => {
+  it('returns level 91 for RICH fixture', () => {
+    expect(measurePrecision(RICH).level).toBe(91)
   })
 
-  it('countImports counts imports', () => {
-    expect(countImports(emptyCode)).toBe(0)
-    expect(countImports(strongCode)).toBe(2)
+  it('returns level 37 for EMPTY fixture', () => {
+    expect(measurePrecision(EMPTY).level).toBe(37)
   })
 
-  it('countExports counts exports', () => {
-    expect(countExports(emptyCode)).toBe(0)
-    expect(countExports(typedCode)).toBe(1)
+  it('returns level 79 for MEDIUM fixture', () => {
+    expect(measurePrecision(MEDIUM).level).toBe(79)
   })
 
-  it('countFunctions counts functions', () => {
-    expect(countFunctions(emptyCode)).toBe(0)
-    expect(countFunctions('function a() {}')).toBe(1)
+  it('returns fold double-fold for RICH', () => {
+    expect(measurePrecision(RICH).fold).toBe('double-fold')
   })
 
-  it('countClasses counts classes', () => {
-    expect(countClasses(emptyCode)).toBe(0)
-    expect(countClasses('class Foo {}')).toBe(1)
+  it('returns fold crumple for EMPTY', () => {
+    expect(measurePrecision(EMPTY).fold).toBe('crumple')
   })
 
-  it('countInterfaces counts interfaces', () => {
-    expect(countInterfaces(emptyCode)).toBe(0)
-    expect(countInterfaces('interface Foo {}')).toBe(1)
+  it('returns fold partial-fold for MEDIUM', () => {
+    expect(measurePrecision(MEDIUM).fold).toBe('partial-fold')
   })
 
-  it('countTypeAliases counts types', () => {
-    expect(countTypeAliases(emptyCode)).toBe(0)
-    expect(countTypeAliases('type Foo = string')).toBe(1)
+  it('hasPreciseFolds true for RICH', () => {
+    expect(measurePrecision(RICH).hasPreciseFolds).toBe(true)
   })
 
-  it('countErrorHandling counts try/catch/throw', () => {
-    expect(countErrorHandling(emptyCode)).toBe(0)
-    expect(countErrorHandling(strongCode)).toBeGreaterThanOrEqual(2)
+  it('hasCleanCreases true for RICH', () => {
+    expect(measurePrecision(RICH).hasCleanCreases).toBe(true)
   })
 
-  it('countTypeAnnotations counts types', () => {
-    expect(countTypeAnnotations(emptyCode)).toBe(0)
-    expect(countTypeAnnotations('const x: number = 1')).toBe(1)
+  it('hasNoTearing true for RICH', () => {
+    expect(measurePrecision(RICH).hasNoTearing).toBe(true)
   })
 
-  it('countBranches counts branches', () => {
-    expect(countBranches(emptyCode)).toBe(0)
-    expect(countBranches('if (a) {}')).toBe(1)
+  it('hasProperAlignment true for RICH', () => {
+    expect(measurePrecision(RICH).hasProperAlignment).toBe(true)
   })
 
-  it('maxNesting counts nesting', () => {
-    expect(maxNesting('')).toBe(0)
-    expect(maxNesting('{{{}}}')).toBe(3)
+  it('hasNoWrinkling false for RICH (deepNested)', () => {
+    expect(measurePrecision(RICH).hasNoWrinkling).toBe(false)
   })
 
-  it('countConsole counts console', () => {
-    expect(countConsole(emptyCode)).toBe(0)
-    expect(countConsole('console.log("x")')).toBe(1)
+  it('hasNoBuckling false for RICH (deepNested)', () => {
+    expect(measurePrecision(RICH).hasNoBuckling).toBe(false)
   })
 
-  it('countComments counts comments', () => {
-    expect(countComments(emptyCode)).toBe(0)
-    expect(countComments('// hello')).toBe(1)
+  it('tearCount 0 for RICH', () => {
+    expect(measurePrecision(RICH).tearCount).toBe(0)
   })
 
-  it('countTodos counts todos', () => {
-    expect(countTodos(emptyCode)).toBe(0)
-    expect(countTodos(todoCode)).toBe(4)
+  it('wrinkleCount 2 for RICH', () => {
+    expect(measurePrecision(RICH).wrinkleCount).toBe(2)
+  })
+
+  it('hasCleanCreases true for MEDIUM', () => {
+    expect(measurePrecision(MEDIUM).hasCleanCreases).toBe(true)
+  })
+
+  it('hasNoWrinkling false for MEDIUM (console)', () => {
+    expect(measurePrecision(MEDIUM).hasNoWrinkling).toBe(false)
+  })
+
+  it('hasPreciseFolds false for EMPTY', () => {
+    expect(measurePrecision(EMPTY).hasPreciseFolds).toBe(false)
+  })
+
+  it('hasSymmetry true for RICH', () => {
+    expect(measurePrecision(RICH).hasSymmetry).toBe(true)
+  })
+
+  it('hasProperTension true for RICH', () => {
+    expect(measurePrecision(RICH).hasProperTension).toBe(true)
+  })
+
+  it('hasSharpEdges true for RICH', () => {
+    expect(measurePrecision(RICH).hasSharpEdges).toBe(true)
   })
 })
 
-// ─── Classification Tests ─────────────────────────────────────────────────────
+// ─── measurePaper ──────────────────────────────────────────────────────────
 
-describe('origami-fold classifications', () => {
-  it('classifySheetCondition returns correct conditions', () => {
-    expect(classifySheetCondition(90)).toBe('masterwork')
-    expect(classifySheetCondition(75)).toBe('expert')
-    expect(classifySheetCondition(55)).toBe('skilled')
-    expect(classifySheetCondition(35)).toBe('apprentice')
-    expect(classifySheetCondition(15)).toBe('beginner')
-    expect(classifySheetCondition(5)).toBe('crumpled')
+describe('measurePaper', () => {
+  it('returns quality 91 for RICH fixture', () => {
+    expect(measurePaper(RICH).quality).toBe(91)
   })
 
-  it('classifyBaseType returns correct types', () => {
-    expect(classifyBaseType(diverseCode)).toBe('frog')
-    expect(classifyBaseType('export class Foo {} export interface Bar {}')).toBe('bird')
-    expect(classifyBaseType('interface A {} type B = string')).toBe('fish')
-    expect(classifyBaseType(simpleCode)).toBe('none')
+  it('returns quality 27 for EMPTY fixture', () => {
+    expect(measurePaper(EMPTY).quality).toBe(27)
   })
 
-  it('classifyPatternType returns correct types', () => {
-    expect(classifyPatternType(strongCode)).toBe('wet-fold')
-    expect(classifyPatternType(emptyCode)).toBe('torn')
-    expect(classifyPatternType(diverseCode)).toBe('modular')
-    expect(classifyPatternType(simpleCode)).toBe('traditional')
+  it('returns quality 70 for MEDIUM fixture', () => {
+    expect(measurePaper(MEDIUM).quality).toBe(70)
   })
 
-  it('classifyBoxType returns confetti for empty', () => {
-    expect(classifyBoxType([])).toBe('confetti')
+  it('returns material tant for RICH', () => {
+    expect(measurePaper(RICH).material).toBe('tant')
   })
 
-  it('classifyBoxType detects display-case', () => {
-    const goodSheets = Array.from({ length: 3 }, (_, i) => analyzeOrigamiSheet(strongCode, `${i}.ts`))
-    expect(classifyBoxType(goodSheets)).toBe('display-case')
+  it('returns material toilet-paper for EMPTY', () => {
+    expect(measurePaper(EMPTY).material).toBe('toilet-paper')
   })
 
-  it('classifyBoxCondition returns correct conditions', () => {
-    expect(classifyBoxCondition(85)).toBe('gallery-quality')
-    expect(classifyBoxCondition(65)).toBe('well-crafted')
-    expect(classifyBoxCondition(45)).toBe('serviceable')
-    expect(classifyBoxCondition(30)).toBe('rough')
-    expect(classifyBoxCondition(15)).toBe('messy')
-    expect(classifyBoxCondition(5)).toBe('torn-apart')
+  it('returns material kraft for MEDIUM', () => {
+    expect(measurePaper(MEDIUM).material).toBe('kraft')
   })
 
-  it('classifyOrigamiGrade returns correct grades', () => {
-    expect(classifyOrigamiGrade(85)).toBe('grand-master')
-    expect(classifyOrigamiGrade(70)).toBe('master')
-    expect(classifyOrigamiGrade(50)).toBe('artisan')
-    expect(classifyOrigamiGrade(35)).toBe('folder')
-    expect(classifyOrigamiGrade(18)).toBe('beginner')
-    expect(classifyOrigamiGrade(5)).toBe('paper-shredder')
-  })
-})
-
-// ─── Measurement Tests ────────────────────────────────────────────────────────
-
-describe('origami-fold measurements', () => {
-  it('measureFolds returns correct structure', () => {
-    const f = measureFolds(strongCode)
-    expect(f.count).toBeGreaterThan(0)
-    expect(f.depth).toBeGreaterThanOrEqual(0)
-    expect(typeof f.hasValleyFold).toBe('boolean')
-    expect(typeof f.hasMountainFold).toBe('boolean')
-    expect(typeof f.hasReverseFold).toBe('boolean')
-    expect(typeof f.hasSquashFold).toBe('boolean')
-    expect(typeof f.hasPetalFold).toBe('boolean')
-    expect(typeof f.hasSinkFold).toBe('boolean')
-    expect(f.valleyCount).toBeGreaterThanOrEqual(0)
-    expect(f.mountainCount).toBeGreaterThanOrEqual(0)
-    expect(f.squashCount).toBeGreaterThanOrEqual(0)
-    expect(f.petalCount).toBeGreaterThanOrEqual(0)
+  it('hasHighQuality true for RICH', () => {
+    expect(measurePaper(RICH).hasHighQuality).toBe(true)
   })
 
-  it('measureFolds detects valley fold for exports with functions', () => {
-    expect(measureFolds(typedCode).hasValleyFold).toBe(true)
+  it('hasNoGrain false for RICH (console)', () => {
+    expect(measurePaper(RICH).hasNoGrain).toBe(false)
   })
 
-  it('measureFolds detects mountain fold for classes with interfaces', () => {
-    expect(measureFolds(diverseCode).hasMountainFold).toBe(true)
+  it('hasNoDamage true for RICH', () => {
+    expect(measurePaper(RICH).hasNoDamage).toBe(true)
   })
 
-  it('measureFolds detects petal fold for quality code', () => {
-    expect(measureFolds(strongCode).hasPetalFold).toBe(true)
+  it('hasProperTexture true for RICH', () => {
+    expect(measurePaper(RICH).hasProperTexture).toBe(true)
   })
 
-  it('measureFolds detects squash fold for branchy code without functions', () => {
-    expect(measureFolds(branchyCode).hasSquashFold).toBe(true)
+  it('grainCount 1 for RICH', () => {
+    expect(measurePaper(RICH).grainCount).toBe(1)
   })
 
-  it('measureCreases returns correct structure', () => {
-    const c = measureCreases(strongCode)
-    expect(c.sharpness).toBeGreaterThanOrEqual(0)
-    expect(c.sharpness).toBeLessThanOrEqual(100)
-    expect(typeof c.isClean).toBe('boolean')
-    expect(typeof c.hasTears).toBe('boolean')
-    expect(typeof c.hasWrinkles).toBe('boolean')
-    expect(c.tearCount).toBeGreaterThanOrEqual(0)
-    expect(c.wrinkleCount).toBeGreaterThanOrEqual(0)
-    expect(Array.isArray(c.tearPoints)).toBe(true)
-    expect(Array.isArray(c.wrinklePoints)).toBe(true)
+  it('grainCount 3 for MEDIUM', () => {
+    expect(measurePaper(MEDIUM).grainCount).toBe(3)
   })
 
-  it('measureCreases detects tears for exports without errors', () => {
-    const c = measureCreases(typedCode)
-    expect(c.hasTears).toBe(true)
-  })
-
-  it('measureCreases gives high sharpness for strong code', () => {
-    expect(measureCreases(strongCode).sharpness).toBeGreaterThan(70)
-  })
-
-  it('measurePaper returns correct structure', () => {
-    const p = measurePaper(strongCode)
-    expect(p.area).toBeGreaterThanOrEqual(0)
-    expect(p.thickness).toBeGreaterThanOrEqual(0)
-    expect(p.isUsed).toBeGreaterThanOrEqual(0)
-    expect(p.isUsed).toBeLessThanOrEqual(100)
-    expect(p.waste).toBeGreaterThanOrEqual(0)
-    expect(typeof p.isEconomical).toBe('boolean')
-    expect(typeof p.hasOffcuts).toBe('boolean')
-    expect(p.offcutSize).toBeGreaterThanOrEqual(0)
-  })
-
-  it('measurePaper detects offcuts with todos', () => {
-    expect(measurePaper(todoCode).hasOffcuts).toBe(true)
-  })
-
-  it('measureStructure returns correct structure', () => {
-    const s = measureStructure(strongCode)
-    expect(typeof s.hasBase).toBe('boolean')
-    expect(typeof s.baseType).toBe('string')
-    expect(s.stability).toBeGreaterThanOrEqual(0)
-    expect(s.stability).toBeLessThanOrEqual(100)
-    expect(typeof s.isBalanced).toBe('boolean')
-    expect(typeof s.isCollapsible).toBe('boolean')
-    expect(typeof s.hasWings).toBe('boolean')
-    expect(s.wingSpan).toBeGreaterThanOrEqual(0)
-  })
-
-  it('measureStructure detects base', () => {
-    expect(measureStructure(strongCode).hasBase).toBe(true)
-    expect(measureStructure(noExportCode).hasBase).toBe(false)
-  })
-
-  it('measureStructure detects wings for many exports', () => {
-    expect(measureStructure(diverseCode).hasWings).toBe(true)
-  })
-
-  it('measureCreasePattern returns correct structure', () => {
-    const c = measureCreasePattern(strongCode)
-    expect(typeof c.isSymmetric).toBe('boolean')
-    expect(typeof c.isComplex).toBe('boolean')
-    expect(typeof c.hasMasterCrease).toBe('boolean')
-    expect(typeof c.hasGuideCreases).toBe('boolean')
-    expect(typeof c.patternType).toBe('string')
-    expect(c.elegance).toBeGreaterThanOrEqual(0)
-    expect(c.elegance).toBeLessThanOrEqual(100)
-  })
-
-  it('measureCreasePattern detects master crease', () => {
-    expect(measureCreasePattern(strongCode).hasMasterCrease).toBe(true)
-  })
-
-  it('measureCreasePattern detects guide creases', () => {
-    expect(measureCreasePattern(strongCode).hasGuideCreases).toBe(true)
-  })
-
-  it('measureModel returns correct structure', () => {
-    const m = measureModel(strongCode)
-    expect(typeof m.recognizable).toBe('boolean')
-    expect(m.detail).toBeGreaterThanOrEqual(0)
-    expect(typeof m.isComplete).toBe('boolean')
-    expect(typeof m.hasFlaps).toBe('boolean')
-    expect(m.flapCount).toBeGreaterThanOrEqual(0)
-    expect(typeof m.isDisplay).toBe('boolean')
-    expect(typeof m.isPractice).toBe('boolean')
-  })
-
-  it('measureModel detects recognizable for documented exports', () => {
-    expect(measureModel(strongCode).recognizable).toBe(true)
-  })
-
-  it('measureModel detects practice for no exports', () => {
-    expect(measureModel(noExportCode).isPractice).toBe(true)
-  })
-
-  it('measureModel detects complete for error-handled exports', () => {
-    expect(measureModel(strongCode).isComplete).toBe(true)
+  it('grainCount 0 for EMPTY', () => {
+    expect(measurePaper(EMPTY).grainCount).toBe(0)
   })
 })
 
-// ─── Sheet Analysis Tests ─────────────────────────────────────────────────────
+// ─── measureCrease ─────────────────────────────────────────────────────────
 
-describe('origami-fold sheet analysis', () => {
-  it('analyzeOrigamiSheet returns correct structure', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'calc.ts')
-    expect(s.file).toBe('calc.ts')
-    expect(s.foldPrecision).toBeGreaterThanOrEqual(0)
-    expect(s.foldPrecision).toBeLessThanOrEqual(100)
-    expect(s.creaseSharpness).toBeGreaterThanOrEqual(0)
-    expect(s.paperEconomy).toBeGreaterThanOrEqual(0)
-    expect(s.structuralIntegrity).toBeGreaterThanOrEqual(0)
-    expect(s.complexityReduction).toBeGreaterThanOrEqual(0)
-    expect(s.creaseElegance).toBeGreaterThanOrEqual(0)
-    expect(s.qualityScore).toBeGreaterThanOrEqual(0)
-    expect(s.qualityScore).toBeLessThanOrEqual(100)
-    expect(typeof s.condition).toBe('string')
+describe('measureCrease', () => {
+  it('returns accuracy 91 for RICH fixture', () => {
+    expect(measureCrease(RICH).accuracy).toBe(91)
   })
 
-  it('strong code has better quality than empty', () => {
-    const good = analyzeOrigamiSheet(strongCode, 'good.ts')
-    const bad = analyzeOrigamiSheet(emptyCode, 'bad.ts')
-    expect(good.qualityScore).toBeGreaterThan(bad.qualityScore)
+  it('returns accuracy 32 for EMPTY fixture', () => {
+    expect(measureCrease(EMPTY).accuracy).toBe(32)
   })
 
-  it('empty code sheet is crumpled', () => {
-    const s = analyzeOrigamiSheet(emptyCode, 'empty.ts')
-    expect(s.condition).toBe('crumpled')
-    expect(s.qualityScore).toBe(0)
-    expect(s.foldPrecision).toBe(0)
+  it('returns accuracy 77 for MEDIUM fixture', () => {
+    expect(measureCrease(MEDIUM).accuracy).toBe(77)
   })
 
-  it('strong code has high fold precision', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'strong.ts')
-    expect(s.foldPrecision).toBeGreaterThan(50)
+  it('returns type valley for RICH', () => {
+    expect(measureCrease(RICH).type).toBe('valley')
   })
 
-  it('folds info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(s.folds.count).toBeGreaterThan(0)
+  it('returns type crimp for EMPTY', () => {
+    expect(measureCrease(EMPTY).type).toBe('crimp')
   })
 
-  it('creases info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(s.creases.sharpness).toBeGreaterThan(0)
+  it('returns type petal for MEDIUM', () => {
+    expect(measureCrease(MEDIUM).type).toBe('petal')
   })
 
-  it('paper info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(s.paper.area).toBeGreaterThan(0)
+  it('hasAccurateCreases true for RICH', () => {
+    expect(measureCrease(RICH).hasAccurateCreases).toBe(true)
   })
 
-  it('structure info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(s.structure.hasBase).toBe(true)
-    expect(s.structure.stability).toBeGreaterThan(0)
+  it('hasAccurateCreases true for MEDIUM', () => {
+    expect(measureCrease(MEDIUM).hasAccurateCreases).toBe(true)
   })
 
-  it('creasePattern info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(typeof s.creasePattern.patternType).toBe('string')
+  it('hasProperPleat false for RICH', () => {
+    expect(measureCrease(RICH).hasProperPleat).toBe(false)
   })
 
-  it('model info is populated', () => {
-    const s = analyzeOrigamiSheet(strongCode, 'a.ts')
-    expect(s.model.recognizable).toBe(true)
+  it('hasReversible true for RICH (try-catch)', () => {
+    expect(measureCrease(RICH).hasReversible).toBe(true)
+  })
+
+  it('hasReversible true for MEDIUM (try-catch)', () => {
+    expect(measureCrease(MEDIUM).hasReversible).toBe(true)
+  })
+
+  it('hasNoOverfold false for RICH (deepNested)', () => {
+    expect(measureCrease(RICH).hasNoOverfold).toBe(false)
+  })
+
+  it('misfoldCount 0 for RICH', () => {
+    expect(measureCrease(RICH).misfoldCount).toBe(0)
+  })
+
+  it('overfoldCount 1 for RICH', () => {
+    expect(measureCrease(RICH).overfoldCount).toBe(1)
+  })
+
+  it('hasLockFold true for MEDIUM (private)', () => {
+    expect(measureCrease(MEDIUM).hasLockFold).toBe(true)
   })
 })
 
-// ─── Box Analysis Tests ───────────────────────────────────────────────────────
+// ─── measureTransformation ─────────────────────────────────────────────────
 
-describe('origami-fold box analysis', () => {
-  it('analyzeOrigamiBox handles empty sheets', () => {
-    const b = analyzeOrigamiBox([], 'src')
-    expect(b.directory).toBe('src')
-    expect(b.sheets).toHaveLength(0)
-    expect(b.boxType).toBe('confetti')
+describe('measureTransformation', () => {
+  it('returns beauty 77 for RICH fixture', () => {
+    expect(measureTransformation(RICH).beauty).toBe(77)
   })
 
-  it('analyzeOrigamiBox computes averages', () => {
-    const sheets = [
-      analyzeOrigamiSheet(strongCode, 'a.ts'),
-      analyzeOrigamiSheet(typedCode, 'b.ts'),
-    ]
-    const b = analyzeOrigamiBox(sheets, 'src')
-    expect(b.avgFoldPrecision).toBeGreaterThanOrEqual(0)
-    expect(b.avgCreaseSharpness).toBeGreaterThanOrEqual(0)
-    expect(b.avgPaperEconomy).toBeGreaterThanOrEqual(0)
-    expect(b.avgStructuralIntegrity).toBeGreaterThanOrEqual(0)
-    expect(typeof b.boxType).toBe('string')
-    expect(typeof b.condition).toBe('string')
+  it('returns beauty 27 for EMPTY fixture', () => {
+    expect(measureTransformation(EMPTY).beauty).toBe(27)
   })
 
-  it('analyzeOrigamiBox counts conditions', () => {
-    const sheets = [
-      analyzeOrigamiSheet(strongCode, 'a.ts'),
-      analyzeOrigamiSheet(emptyCode, 'b.ts'),
-    ]
-    const b = analyzeOrigamiBox(sheets, 'src')
-    expect(b.crumpledCount).toBeGreaterThanOrEqual(1)
+  it('returns beauty 69 for MEDIUM fixture', () => {
+    expect(measureTransformation(MEDIUM).beauty).toBe(69)
+  })
+
+  it('returns stage pre-creasing for RICH', () => {
+    expect(measureTransformation(RICH).stage).toBe('pre-creasing')
+  })
+
+  it('returns stage raw-sheet for EMPTY', () => {
+    expect(measureTransformation(EMPTY).stage).toBe('raw-sheet')
+  })
+
+  it('returns stage base-fold for MEDIUM', () => {
+    expect(measureTransformation(MEDIUM).stage).toBe('base-fold')
+  })
+
+  it('hasBeautifulTransformation true for RICH', () => {
+    expect(measureTransformation(RICH).hasBeautifulTransformation).toBe(true)
+  })
+
+  it('hasDimensionalShift false for RICH', () => {
+    expect(measureTransformation(RICH).hasDimensionalShift).toBe(false)
+  })
+
+  it('hasNoDistortion false for RICH (console)', () => {
+    expect(measureTransformation(RICH).hasNoDistortion).toBe(false)
+  })
+
+  it('hasCurves false for RICH', () => {
+    expect(measureTransformation(RICH).hasCurves).toBe(false)
+  })
+
+  it('hasNoSharpCorners false for RICH (deepNested)', () => {
+    expect(measureTransformation(RICH).hasNoSharpCorners).toBe(false)
+  })
+
+  it('distortionCount 1 for RICH', () => {
+    expect(measureTransformation(RICH).distortionCount).toBe(1)
+  })
+
+  it('sharpCornerCount 1 for RICH', () => {
+    expect(measureTransformation(RICH).sharpCornerCount).toBe(1)
+  })
+
+  it('hasProperShaping true for MEDIUM', () => {
+    expect(measureTransformation(MEDIUM).hasProperShaping).toBe(true)
   })
 })
 
-// ─── Build Result Tests ───────────────────────────────────────────────────────
+// ─── measureStructure ──────────────────────────────────────────────────────
 
-describe('origami-fold build result', () => {
-  it('buildOrigamiFoldResult returns correct structure', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [typedCode], {})
-    expect(result.sheets).toHaveLength(1)
-    expect(result.boxes).toHaveLength(1)
+describe('measureStructure', () => {
+  it('returns integrity 91 for RICH fixture', () => {
+    expect(measureStructure(RICH).integrity).toBe(91)
+  })
+
+  it('returns integrity 30 for EMPTY fixture', () => {
+    expect(measureStructure(EMPTY).integrity).toBe(30)
+  })
+
+  it('returns integrity 77 for MEDIUM fixture', () => {
+    expect(measureStructure(MEDIUM).integrity).toBe(77)
+  })
+
+  it('returns form composite for RICH', () => {
+    expect(measureStructure(RICH).form).toBe('composite')
+  })
+
+  it('returns form collapsed for EMPTY', () => {
+    expect(measureStructure(EMPTY).form).toBe('collapsed')
+  })
+
+  it('returns form pureland for MEDIUM', () => {
+    expect(measureStructure(MEDIUM).form).toBe('pureland')
+  })
+
+  it('hasStrongStructure true for RICH', () => {
+    expect(measureStructure(RICH).hasStrongStructure).toBe(true)
+  })
+
+  it('hasStrongStructure true for MEDIUM', () => {
+    expect(measureStructure(MEDIUM).hasStrongStructure).toBe(true)
+  })
+
+  it('hasNoRipping true for RICH', () => {
+    expect(measureStructure(RICH).hasNoRipping).toBe(true)
+  })
+
+  it('hasNoWeakPoints false for RICH (console)', () => {
+    expect(measureStructure(RICH).hasNoWeakPoints).toBe(false)
+  })
+
+  it('gapCount 1 for RICH (deepNested)', () => {
+    expect(measureStructure(RICH).gapCount).toBe(1)
+  })
+
+  it('weakPointCount 1 for RICH (console)', () => {
+    expect(measureStructure(RICH).weakPointCount).toBe(1)
+  })
+
+  it('hasCollapsibility true for RICH', () => {
+    expect(measureStructure(RICH).hasCollapsibility).toBe(true)
+  })
+})
+
+// ─── measureMastery ────────────────────────────────────────────────────────
+
+describe('measureMastery', () => {
+  it('returns score 98 for RICH fixture', () => {
+    expect(measureMastery(RICH).score).toBe(98)
+  })
+
+  it('returns score 25 for EMPTY fixture', () => {
+    expect(measureMastery(EMPTY).score).toBe(25)
+  })
+
+  it('returns score 77 for MEDIUM fixture', () => {
+    expect(measureMastery(MEDIUM).score).toBe(77)
+  })
+
+  it('returns level grand-master for RICH', () => {
+    expect(measureMastery(RICH).level).toBe('grand-master')
+  })
+
+  it('returns level uninitiated for EMPTY', () => {
+    expect(measureMastery(EMPTY).level).toBe('uninitiated')
+  })
+
+  it('returns level intermediate for MEDIUM', () => {
+    expect(measureMastery(MEDIUM).level).toBe('intermediate')
+  })
+
+  it('hasArtisticMastery true for RICH', () => {
+    expect(measureMastery(RICH).hasArtisticMastery).toBe(true)
+  })
+
+  it('hasYoshizawa true for RICH', () => {
+    expect(measureMastery(RICH).hasYoshizawa).toBe(true)
+  })
+
+  it('hasCleanFinish false for RICH (console)', () => {
+    expect(measureMastery(RICH).hasCleanFinish).toBe(false)
+  })
+
+  it('hasProperDisplay true for RICH', () => {
+    expect(measureMastery(RICH).hasProperDisplay).toBe(true)
+  })
+
+  it('amateurCount 2 for RICH (console + deepNested)', () => {
+    expect(measureMastery(RICH).amateurCount).toBe(2)
+  })
+
+  it('hasNoOvercomplication true for RICH', () => {
+    expect(measureMastery(RICH).hasNoOvercomplication).toBe(true)
+  })
+
+  it('hasTimeless true for RICH', () => {
+    expect(measureMastery(RICH).hasTimeless).toBe(true)
+  })
+
+  it('hasMinimal false for RICH (deepNested)', () => {
+    expect(measureMastery(RICH).hasMinimal).toBe(false)
+  })
+})
+
+// ─── classifyCondition ─────────────────────────────────────────────────────
+
+describe('classifyCondition', () => {
+  it('returns tanagra-masterpiece for RICH model', () => {
+    const model = analyzeOrigamiModel(RICH, 'test.ts')
+    expect(classifyCondition(model)).toBe('tanagra-masterpiece')
+  })
+
+  it('returns crumpled-ball for EMPTY model', () => {
+    const model = analyzeOrigamiModel(EMPTY, 'empty.ts')
+    expect(classifyCondition(model)).toBe('crumpled-ball')
+  })
+
+  it('returns yoshizawa-grade for MEDIUM model', () => {
+    const model = analyzeOrigamiModel(MEDIUM, 'medium.ts')
+    expect(classifyCondition(model)).toBe('yoshizawa-grade')
+  })
+})
+
+// ─── analyzeOrigamiModel ───────────────────────────────────────────────────
+
+describe('analyzeOrigamiModel', () => {
+  it('returns qualityScore 90 for RICH', () => {
+    expect(analyzeOrigamiModel(RICH, 'rich.ts').qualityScore).toBe(90)
+  })
+
+  it('returns qualityScore 30 for EMPTY', () => {
+    expect(analyzeOrigamiModel(EMPTY, 'empty.ts').qualityScore).toBe(30)
+  })
+
+  it('returns qualityScore 75 for MEDIUM', () => {
+    expect(analyzeOrigamiModel(MEDIUM, 'medium.ts').qualityScore).toBe(75)
+  })
+
+  it('returns condition tanagra-masterpiece for RICH', () => {
+    expect(analyzeOrigamiModel(RICH, 'rich.ts').condition).toBe('tanagra-masterpiece')
+  })
+
+  it('returns condition crumpled-ball for EMPTY', () => {
+    expect(analyzeOrigamiModel(EMPTY, 'empty.ts').condition).toBe('crumpled-ball')
+  })
+
+  it('returns condition yoshizawa-grade for MEDIUM', () => {
+    expect(analyzeOrigamiModel(MEDIUM, 'medium.ts').condition).toBe('yoshizawa-grade')
+  })
+
+  it('includes all 6 measure properties', () => {
+    const model = analyzeOrigamiModel(RICH, 'test.ts')
+    expect(model).toHaveProperty('precision')
+    expect(model).toHaveProperty('paper')
+    expect(model).toHaveProperty('crease')
+    expect(model).toHaveProperty('transformation')
+    expect(model).toHaveProperty('structure')
+    expect(model).toHaveProperty('mastery')
+  })
+
+  it('stores file path correctly', () => {
+    expect(analyzeOrigamiModel(RICH, 'src/app.ts').file).toBe('src/app.ts')
+  })
+
+  it('foldingPrecision equals precision.level for RICH', () => {
+    expect(analyzeOrigamiModel(RICH, 'rich.ts').foldingPrecision).toBe(91)
+  })
+
+  it('paperQuality equals paper.quality for RICH', () => {
+    expect(analyzeOrigamiModel(RICH, 'rich.ts').paperQuality).toBe(91)
+  })
+})
+
+// ─── classifyGalleryType ───────────────────────────────────────────────────
+
+describe('classifyGalleryType', () => {
+  it('returns recycling-bin for empty models', () => {
+    expect(classifyGalleryType([])).toBe('recycling-bin')
+  })
+
+  it('returns museum for RICH single file', () => {
+    const models = [analyzeOrigamiModel(RICH, 'rich.ts')]
+    expect(classifyGalleryType(models)).toBe('museum')
+  })
+})
+
+// ─── classifyGalleryCondition ──────────────────────────────────────────────
+
+describe('classifyGalleryCondition', () => {
+  it('returns world-exhibition for avgQuality 90', () => {
+    expect(classifyGalleryCondition(90)).toBe('world-exhibition')
+  })
+
+  it('returns trash-can for avgQuality 10', () => {
+    expect(classifyGalleryCondition(10)).toBe('trash-can')
+  })
+
+  it('returns craft-fair for avgQuality 40', () => {
+    expect(classifyGalleryCondition(40)).toBe('craft-fair')
+  })
+
+  it('returns national-gallery for avgQuality 65', () => {
+    expect(classifyGalleryCondition(65)).toBe('national-gallery')
+  })
+
+  it('returns art-show for avgQuality 50', () => {
+    expect(classifyGalleryCondition(50)).toBe('art-show')
+  })
+
+  it('returns desk-drawer for avgQuality 25', () => {
+    expect(classifyGalleryCondition(25)).toBe('desk-drawer')
+  })
+})
+
+// ─── classifyArtistGrade ───────────────────────────────────────────────────
+
+describe('classifyArtistGrade', () => {
+  it('returns living-treasure for 80+', () => {
+    expect(classifyArtistGrade(90)).toBe('living-treasure')
+  })
+
+  it('returns paper-cutter for below 20', () => {
+    expect(classifyArtistGrade(10)).toBe('paper-cutter')
+  })
+
+  it('returns master-artist for 65', () => {
+    expect(classifyArtistGrade(65)).toBe('master-artist')
+  })
+
+  it('returns artist for 50', () => {
+    expect(classifyArtistGrade(50)).toBe('artist')
+  })
+
+  it('returns craftsman for 35', () => {
+    expect(classifyArtistGrade(35)).toBe('craftsman')
+  })
+
+  it('returns student for 20', () => {
+    expect(classifyArtistGrade(20)).toBe('student')
+  })
+})
+
+// ─── analyzeOrigamiGallery ─────────────────────────────────────────────────
+
+describe('analyzeOrigamiGallery', () => {
+  it('returns recycling-bin gallery for empty models', () => {
+    const gallery = analyzeOrigamiGallery([], 'empty-dir')
+    expect(gallery.galleryType).toBe('recycling-bin')
+    expect(gallery.condition).toBe('trash-can')
+    expect(gallery.models).toHaveLength(0)
+  })
+
+  it('computes avgPrecision correctly for RICH', () => {
+    const models = [analyzeOrigamiModel(RICH, 'rich.ts')]
+    const gallery = analyzeOrigamiGallery(models, 'src')
+    expect(gallery.avgPrecision).toBe(91)
+  })
+
+  it('counts masterpieces correctly', () => {
+    const models = [analyzeOrigamiModel(RICH, 'rich.ts')]
+    const gallery = analyzeOrigamiGallery(models, 'src')
+    expect(gallery.masterpieceCount).toBe(1)
+  })
+})
+
+// ─── buildOrigamiFoldResult ────────────────────────────────────────────────
+
+describe('buildOrigamiFoldResult', () => {
+  it('returns empty result for no files', () => {
+    const result = buildOrigamiFoldResult([], [])
+    expect(result.models).toHaveLength(0)
+    expect(result.stats.totalFiles).toBe(0)
+    expect(result.exhibition.overallElegance).toBe(0)
+    expect(result.exhibition.isMasterwork).toBe(false)
+  })
+
+  it('returns correct stats for single RICH file', () => {
+    const result = buildOrigamiFoldResult(['rich.ts'], [RICH])
+    expect(result.models).toHaveLength(1)
     expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.origamiGrade).toBeDefined()
-    expect(Array.isArray(result.recommendations)).toBe(true)
-    expect(result.studio.overallCraftsmanship).toBeGreaterThanOrEqual(0)
+    expect(result.models[0].qualityScore).toBe(90)
+    expect(result.exhibition.overallElegance).toBe(90)
+    expect(result.exhibition.isMasterwork).toBe(true)
+    expect(result.stats.artistGrade).toBe('living-treasure')
+    expect(result.stats.bestModel).toBe('rich.ts')
   })
 
-  it('handles empty files', () => {
-    const result = buildOrigamiFoldResult([], [], {})
-    expect(result.sheets).toHaveLength(0)
-    expect(result.stats.bestFolded).toBe('none')
-    expect(result.stats.worstFolded).toBe('none')
-    expect(result.stats.mostEconomical).toBe('none')
-    expect(result.stats.mostElegant).toBe('none')
-    expect(result.stats.mostTorn).toBe('none')
+  it('returns correct condition counts for mixed files', () => {
+    const result = buildOrigamiFoldResult(
+      ['rich.ts', 'empty.ts', 'medium.ts'],
+      [RICH, EMPTY, MEDIUM],
+    )
+    expect(result.stats.masterpieceCount).toBe(1)
+    expect(result.stats.confettiCount).toBe(0)
+    expect(result.stats.crumpledCount).toBe(1)
   })
 
-  it('groups sheets into boxes by directory', () => {
+  it('computes overallElegance as average qualityScore', () => {
+    const result = buildOrigamiFoldResult(
+      ['rich.ts', 'empty.ts'],
+      [RICH, EMPTY],
+    )
+    expect(result.exhibition.overallElegance).toBe(Math.round((90 + 30) / 2))
+  })
+
+  it('generates recommendations', () => {
+    const result = buildOrigamiFoldResult(['empty.ts'], [EMPTY])
+    expect(result.recommendations.length).toBeGreaterThan(0)
+  })
+
+  it('identifies mostPrecise file', () => {
+    const result = buildOrigamiFoldResult(
+      ['rich.ts', 'medium.ts'],
+      [RICH, MEDIUM],
+    )
+    expect(result.stats.mostPrecise).toBe('rich.ts')
+  })
+
+  it('identifies bestModel', () => {
+    const result = buildOrigamiFoldResult(
+      ['rich.ts', 'empty.ts'],
+      [RICH, EMPTY],
+    )
+    expect(result.stats.bestModel).toBe('rich.ts')
+  })
+
+  it('groups files into galleries by directory', () => {
     const result = buildOrigamiFoldResult(
       ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [typedCode, strongCode, simpleCode],
-      {},
+      [RICH, MEDIUM, EMPTY],
     )
-    expect(result.boxes).toHaveLength(2)
+    expect(result.galleries).toHaveLength(2)
+    expect(result.stats.totalGalleries).toBe(2)
   })
 
-  it('identifies best and worst folded', () => {
-    const result = buildOrigamiFoldResult(
-      ['good.ts', 'bad.ts'],
-      [strongCode, emptyCode],
-      {},
-    )
-    expect(result.stats.bestFolded).toBe('good.ts')
-    expect(result.stats.worstFolded).toBe('bad.ts')
-  })
-
-  it('handles missing contents gracefully', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [], {})
-    expect(result.sheets).toHaveLength(1)
-  })
-
-  it('computes all stat fields', () => {
-    const result = buildOrigamiFoldResult(
-      ['a.ts', 'b.ts'],
-      [strongCode, todoCode],
-      {},
-    )
-    expect(result.stats.avgFoldPrecision).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgCreaseSharpness).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgPaperEconomy).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgStructuralIntegrity).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgComplexityReduction).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgCreaseElegance).toBeGreaterThanOrEqual(0)
-    expect(result.stats.totalFolds).toBeGreaterThanOrEqual(0)
-    expect(result.stats.valleyFolds).toBeGreaterThanOrEqual(0)
-    expect(result.stats.mountainFolds).toBeGreaterThanOrEqual(0)
-    expect(result.stats.symmetricPatterns).toBeGreaterThanOrEqual(0)
-  })
-
-  it('computes studio fields', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [strongCode], {})
-    expect(result.studio.avgFoldPrecision).toBeGreaterThanOrEqual(0)
-    expect(result.studio.isClean).toBeDefined()
-    expect(result.studio.overallCraftsmanship).toBeGreaterThanOrEqual(0)
+  it('single file in root goes to . gallery', () => {
+    const result = buildOrigamiFoldResult(['app.ts'], [RICH])
+    expect(result.galleries).toHaveLength(1)
+    expect(result.galleries[0].directory).toBe('.')
   })
 })
 
-// ─── Recommendations Tests ────────────────────────────────────────────────────
+// ─── generateRecommendations ───────────────────────────────────────────────
 
-describe('origami-fold recommendations', () => {
-  it('returns array', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [strongCode], {})
-    expect(Array.isArray(result.recommendations)).toBe(true)
+describe('generateRecommendations', () => {
+  it('returns masterpiece recommendation when all is good', () => {
+    const result = buildOrigamiFoldResult(['rich.ts'], [RICH])
+    const recs = generateRecommendations(result.models, result.galleries, result.exhibition, result.stats)
+    expect(recs).toContain('Origami masterpiece — your code folds into breathtaking elegance')
   })
 
-  it('warns about crumpled sheets', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [emptyCode], {})
-    if (result.stats.crumpledCount > 0) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('Crumpled')]),
-      )
-    }
+  it('suggests improving precision when low', () => {
+    const result = buildOrigamiFoldResult(['empty.ts'], [EMPTY])
+    const recs = generateRecommendations(result.models, result.galleries, result.exhibition, result.stats)
+    expect(recs.some(r => r.includes('folding precision'))).toBe(true)
   })
 
-  it('includes clean folds message for good code', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [strongCode], {})
-    if (result.stats.overallCraftsmanship >= 60) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('Clean folds')]),
-      )
-    }
-  })
-
-  it('warns about paper waste', () => {
-    const result = buildOrigamiFoldResult(['a.ts'], [noExportCode], {})
-    if (result.stats.wastefulFiles > 0) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('Paper waste')]),
-      )
-    }
+  it('warns about no mastery code', () => {
+    const result = buildOrigamiFoldResult(['empty.ts'], [EMPTY])
+    const recs = generateRecommendations(result.models, result.galleries, result.exhibition, result.stats)
+    expect(recs.some(r => r.includes('masterfully elegant'))).toBe(true)
   })
 })
 
-// ─── Format Tests ─────────────────────────────────────────────────────────────
+// ─── formatOrigamiFoldJson ─────────────────────────────────────────────────
 
-describe('origami-fold formatters', () => {
-  const sampleResult = buildOrigamiFoldResult(
-    ['a.ts', 'b.ts'],
-    [strongCode, typedCode],
-    {},
-  )
-
-  it('formatOrigamiFoldTable returns string with header', () => {
-    const table = formatOrigamiFoldTable(sampleResult, false)
-    expect(table).toContain('Origami Fold')
-    expect(table).toContain('Origami Sheets')
-    expect(table).toContain('Statistics')
-    expect(typeof table).toBe('string')
-  })
-
-  it('formatOrigamiFoldTable verbose shows detail', () => {
-    const table = formatOrigamiFoldTable(sampleResult, true)
-    expect(table).toContain('folds:')
-    expect(table).toContain('crease:')
-  })
-
-  it('formatOrigamiFoldTable handles empty', () => {
-    const empty = buildOrigamiFoldResult([], [], {})
-    const table = formatOrigamiFoldTable(empty, false)
-    expect(table).toContain('No files analyzed')
-  })
-
-  it('formatOrigamiFoldTable truncates sheets at 15', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `${i}.ts`)
-    const contents = Array.from({ length: 20 }, () => typedCode)
-    const big = buildOrigamiFoldResult(files, contents, {})
-    const table = formatOrigamiFoldTable(big, false)
-    expect(table).toContain('more')
-  })
-
-  it('formatOrigamiFoldTable shows boxes', () => {
-    const result = buildOrigamiFoldResult(
-      ['src/a.ts', 'lib/b.ts'],
-      [strongCode, typedCode],
-      {},
-    )
-    const table = formatOrigamiFoldTable(result, false)
-    expect(table).toContain('Origami Boxes')
-  })
-
-  it('formatOrigamiFoldJson returns valid JSON', () => {
-    const json = formatOrigamiFoldJson(sampleResult)
+describe('formatOrigamiFoldJson', () => {
+  it('returns valid JSON string', () => {
+    const result = buildOrigamiFoldResult(['test.ts'], [RICH])
+    const json = formatOrigamiFoldJson(result)
     const parsed = JSON.parse(json)
-    expect(parsed.sheets).toHaveLength(2)
-    expect(parsed.stats).toBeDefined()
-    expect(parsed.studio).toBeDefined()
+    expect(parsed.models).toHaveLength(1)
+    expect(parsed.stats.totalFiles).toBe(1)
   })
 })
 
-// ─── Edge Case Tests ──────────────────────────────────────────────────────────
+// ─── formatOrigamiFoldTable ────────────────────────────────────────────────
 
-describe('origami-fold edge cases', () => {
-  it('handles deeply nested code', () => {
-    const s = analyzeOrigamiSheet(deepCode, 'deep.ts')
-    expect(s.folds.depth).toBeGreaterThan(3)
-    expect(s.paper.thickness).toBeGreaterThan(0)
+describe('formatOrigamiFoldTable', () => {
+  it('includes exhibition overview section', () => {
+    const result = buildOrigamiFoldResult(['test.ts'], [RICH])
+    const table = formatOrigamiFoldTable(result, false)
+    expect(table).toContain('Origami Fold Analysis')
+    expect(table).toContain('Overall Elegance')
   })
 
-  it('handles code with only comments', () => {
-    const s = analyzeOrigamiSheet('// just a comment\n/* block */', 'comment.ts')
-    expect(s.folds.count).toBeGreaterThanOrEqual(0)
+  it('includes per-model breakdown when verbose', () => {
+    const result = buildOrigamiFoldResult(['test.ts'], [RICH])
+    const table = formatOrigamiFoldTable(result, true)
+    expect(table).toContain('Per-Model Breakdown')
+    expect(table).toContain('test.ts')
   })
 
-  it('handles single file with no directory', () => {
-    const result = buildOrigamiFoldResult(['single.ts'], [typedCode], {})
-    expect(result.boxes).toHaveLength(1)
-    expect(result.boxes[0].directory).toBe('.')
+  it('includes recommendations', () => {
+    const result = buildOrigamiFoldResult(['test.ts'], [RICH])
+    const table = formatOrigamiFoldTable(result, false)
+    expect(table).toContain('Recommendations')
+  })
+})
+
+// ─── Color Helpers ─────────────────────────────────────────────────────────
+
+describe('scoreColor', () => {
+  it('returns string for score 90', () => {
+    expect(typeof scoreColor(90)).toBe('string')
   })
 
-  it('handles many files in same directory', () => {
-    const files = ['src/a.ts', 'src/b.ts', 'src/c.ts']
-    const contents = [typedCode, strongCode, simpleCode]
-    const result = buildOrigamiFoldResult(files, contents, {})
-    expect(result.boxes).toHaveLength(1)
-    expect(result.boxes[0].sheets).toHaveLength(3)
+  it('returns string for score 50', () => {
+    expect(typeof scoreColor(50)).toBe('string')
   })
 
-  it('empty code has torn pattern type', () => {
-    const s = analyzeOrigamiSheet(emptyCode, 'empty.ts')
-    expect(s.creasePattern.patternType).toBe('torn')
-    expect(s.creasePattern.elegance).toBe(0)
+  it('returns string for score 10', () => {
+    expect(typeof scoreColor(10)).toBe('string')
+  })
+})
+
+describe('conditionColor', () => {
+  it('returns string for tanagra-masterpiece', () => {
+    expect(typeof conditionColor('tanagra-masterpiece')).toBe('string')
   })
 
-  it('detects squash fold in branchy code without functions', () => {
-    const f = measureFolds(branchyCode)
-    expect(f.hasSquashFold).toBe(true)
+  it('returns string for confetti', () => {
+    expect(typeof conditionColor('confetti')).toBe('string')
+  })
+})
+
+describe('gradeColor', () => {
+  it('returns string for living-treasure', () => {
+    expect(typeof gradeColor('living-treasure')).toBe('string')
   })
 
-  it('detects reverse fold for async code', () => {
-    const f = measureFolds('async function a(): Promise<void> { await b() }')
-    expect(f.hasReverseFold).toBe(true)
+  it('returns string for paper-cutter', () => {
+    expect(typeof gradeColor('paper-cutter')).toBe('string')
+  })
+})
+
+describe('galleryTypeColor', () => {
+  it('returns string for museum', () => {
+    expect(typeof galleryTypeColor('museum')).toBe('string')
   })
 
-  it('noisy code has offcuts', () => {
-    const p = measurePaper(noisyCode)
-    expect(p.hasOffcuts).toBe(true)
-  })
-
-  it('todo code has wrinkles', () => {
-    const c = measureCreases(todoCode)
-    expect(c.hasWrinkles).toBe(true)
-  })
-
-  it('identifies most torn file', () => {
-    const result = buildOrigamiFoldResult(
-      ['clean.ts', 'messy.ts'],
-      [strongCode, typedCode],
-      {},
-    )
-    expect(typeof result.stats.mostTorn).toBe('string')
+  it('returns string for recycling-bin', () => {
+    expect(typeof galleryTypeColor('recycling-bin')).toBe('string')
   })
 })

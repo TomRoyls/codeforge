@@ -5,40 +5,43 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildOrigamiFoldResult, type OrigamiFoldResult } from './origami-fold-helpers.js'
+import {
+  buildOrigamiFoldResult,
+  type OrigamiFoldResult,
+} from './origami-fold-helpers.js'
 import { formatOrigamiFoldJson, formatOrigamiFoldTable } from './origami-fold-format-helpers.js'
 
 export default class OrigamiFold extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze abstraction quality',
+      description: 'Path to analyze origami fold patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code abstraction and folding quality patterns'
+  static override description = 'Analyze code elegance, folding precision, and structural beauty like origami'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze abstractions in current directory',
+      description: 'Analyze origami fold in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
+      description: 'Analyze origami fold in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
+      description: 'Analyze only TypeScript files',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed sheet breakdown',
+      description: 'Show per-file breakdown',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --format json --output origami.json',
-      description: 'Export analysis to JSON file',
+      description: 'Export origami fold analysis to JSON file',
     },
   ]
 
@@ -65,7 +68,7 @@ export default class OrigamiFold extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed breakdown',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -90,39 +93,19 @@ export default class OrigamiFold extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
     spinner.text = 'Analyzing origami folds...'
@@ -130,21 +113,20 @@ export default class OrigamiFold extends Command {
     const files: string[] = []
     const contents: string[] = []
 
-    await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          const content = await fs.readFile(file.absolutePath, 'utf8')
-          files.push(file.path)
-          contents.push(content)
-        } catch {
-          // Skip unreadable files
-        }
-      }),
-    )
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        files.push(file.path)
+        contents.push(content)
+      } catch {
+        files.push(file.path)
+        contents.push('')
+      }
+    }
 
-    const result: OrigamiFoldResult = buildOrigamiFoldResult(files, contents, {})
+    const result: OrigamiFoldResult = buildOrigamiFoldResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} sheets with grade ${result.stats.origamiGrade}`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.galleries.length} origami galleries`)
 
     const outputData =
       format === 'json'
@@ -167,5 +149,5 @@ export default class OrigamiFold extends Command {
 }
 
 export { buildOrigamiFoldResult } from './origami-fold-helpers.js'
-export type { OrigamiFoldResult, OrigamiFoldStats, OrigamiSheet, OrigamiBox } from './origami-fold-helpers.js'
+export type { OrigamiFoldResult, OrigamiModel, OrigamiGallery, PrecisionMeasure, PaperMeasure, CreaseMeasure, TransformationMeasure, StructureMeasure, MasteryMeasure } from './origami-fold-helpers.js'
 export { formatOrigamiFoldJson, formatOrigamiFoldTable } from './origami-fold-format-helpers.js'

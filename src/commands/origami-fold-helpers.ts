@@ -1,866 +1,1078 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Regex Constants ────────────────────────────────────────────────────────
 
-export type SheetCondition = 'masterwork' | 'expert' | 'skilled' | 'apprentice' | 'beginner' | 'crumpled'
-export type BaseType = 'preliminary' | 'waterbomb' | 'fish' | 'bird' | 'frog' | 'none'
-export type PatternType = 'traditional' | 'modern' | 'modular' | 'wet-fold' | 'crumpled' | 'torn'
-export type BoxType = 'display-case' | 'jewelry-box' | 'storage-box' | 'cardboard' | 'crumpled-paper' | 'confetti'
-export type BoxCondition = 'gallery-quality' | 'well-crafted' | 'serviceable' | 'rough' | 'messy' | 'torn-apart'
-export type OrigamiGrade = 'grand-master' | 'master' | 'artisan' | 'folder' | 'beginner' | 'paper-shredder'
+const EXPORT_REGEX = /\bexport\s+/g
+const IMPORT_REGEX = /\bimport\s+/g
+const FUNCTION_REGEX = /\bfunction\s+\w+/g
+const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
+const CLASS_REGEX = /\bclass\s+\w+/g
+const INTERFACE_REGEX = /\binterface\s+\w+/g
+const TYPE_REGEX = /\btype\s+\w+/g
+const ENUM_REGEX = /\benum\s+\w+/g
+const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
+const ASYNC_REGEX = /\basync\s+/g
+const TRY_CATCH_REGEX = /\btry\s*\{/g
+const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
+const CONSOLE_REGEX = /\bconsole\.\w+/g
+const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
+const GENERICS_REGEX = /<[^>]+>/g
+const PRIVATE_REGEX = /private\s+/g
+const PROTECTED_REGEX = /protected\s+/g
+const STATIC_REGEX = /\bstatic\s+/g
+const READONLY_REGEX = /\breadonly\b/g
+const ANY_REGEX = /\bany\b/g
+const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
+const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
+const CONDITIONAL_REGEX = /\bif\s*\(/g
+const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
+const PROMISE_REGEX = /\bPromise\b/g
+const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
+const DESTRUCTURE_REGEX = /\{[^}]*\}\s*=/g
 
-export interface FoldsInfo {
-  count: number
-  depth: number
-  hasValleyFold: boolean
-  hasMountainFold: boolean
-  hasReverseFold: boolean
-  hasSquashFold: boolean
-  hasPetalFold: boolean
-  hasSinkFold: boolean
-  valleyCount: number
-  mountainCount: number
-  squashCount: number
-  petalCount: number
+// ─── Helper Functions ───────────────────────────────────────────────────────
+
+function countMatches(content: string, regex: RegExp): number {
+  const matches = content.match(regex)
+  return matches ? matches.length : 0
 }
 
-export interface CreasesInfo {
-  sharpness: number
-  isClean: boolean
-  hasTears: boolean
-  hasWrinkles: boolean
+function countImportKeywords(content: string): number { return countMatches(content, IMPORT_REGEX) }
+function countExportKeywords(content: string): number { return countMatches(content, EXPORT_REGEX) }
+function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
+function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
+function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
+function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
+function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
+function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
+function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
+function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
+function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
+function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
+function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
+function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
+function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
+function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
+function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
+function countStaticMembers(content: string): number { return countMatches(content, STATIC_REGEX) }
+function countReadonlyMembers(content: string): number { return countMatches(content, READONLY_REGEX) }
+function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
+function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
+function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
+function countConditionals(content: string): number { return countMatches(content, CONDITIONAL_REGEX) }
+function countLoops(content: string): number { return countMatches(content, LOOP_REGEX) }
+function countPromiseUsage(content: string): number { return countMatches(content, PROMISE_REGEX) }
+function countTemplateLiterals(content: string): number { return countMatches(content, STRING_TEMPLATE_REGEX) }
+function countDestructures(content: string): number { return countMatches(content, DESTRUCTURE_REGEX) }
+
+// ─── Interfaces ─────────────────────────────────────────────────────────────
+
+export interface PrecisionMeasure {
+  level: number
+  fold: 'triple-fold' | 'double-fold' | 'single-fold' | 'partial-fold' | 'crumple' | 'unfolded'
+  hasPreciseFolds: boolean
+  hasCleanCreases: boolean
+  hasNoTearing: boolean
+  hasProperAlignment: boolean
+  hasSymmetry: boolean
+  hasProperTension: boolean
+  hasNoWrinkling: boolean
+  hasSharpEdges: boolean
+  hasNoBuckling: boolean
+  hasProperAngle: boolean
   tearCount: number
   wrinkleCount: number
-  tearPoints: string[]
-  wrinklePoints: string[]
 }
 
-export interface PaperInfo {
-  area: number
-  thickness: number
-  isUsed: number
-  waste: number
-  isEconomical: boolean
-  hasOffcuts: boolean
-  offcutSize: number
+export interface PaperMeasure {
+  quality: number
+  material: 'washi' | 'kami' | 'tant' | 'kraft' | 'newsprint' | 'toilet-paper'
+  hasHighQuality: boolean
+  hasProperWeight: boolean
+  hasProperTexture: boolean
+  hasNoGrain: boolean
+  hasGoodFolding: boolean
+  hasProperSize: boolean
+  hasNoDamage: boolean
+  hasAcidFree: boolean
+  hasProperOpacity: boolean
+  hasArchival: boolean
+  grainCount: number
+  damageCount: number
 }
 
-export interface StructureInfo {
-  hasBase: boolean
-  baseType: BaseType
-  stability: number
-  isBalanced: boolean
-  isCollapsible: boolean
-  hasWings: boolean
-  wingSpan: number
+export interface CreaseMeasure {
+  accuracy: number
+  type: 'mountain' | 'valley' | 'petal' | 'sink' | 'crimp' | 'none'
+  hasAccurateCreases: boolean
+  hasProperMountain: boolean
+  hasProperValley: boolean
+  hasNoMisfold: boolean
+  hasReversible: boolean
+  hasProperSquash: boolean
+  hasNoOverfold: boolean
+  hasProperPleat: boolean
+  hasNoCollapse: boolean
+  hasLockFold: boolean
+  misfoldCount: number
+  overfoldCount: number
 }
 
-export interface CreasePatternInfo {
-  isSymmetric: boolean
-  isComplex: boolean
-  hasMasterCrease: boolean
-  hasGuideCreases: boolean
-  patternType: PatternType
-  elegance: number
+export interface TransformationMeasure {
+  beauty: number
+  stage: 'wet-folding' | 'shaping' | 'collapsing' | 'pre-creasing' | 'base-fold' | 'raw-sheet'
+  hasBeautifulTransformation: boolean
+  hasDimensionalShift: boolean
+  hasProperShaping: boolean
+  hasNoDistortion: boolean
+  hasOrganicForm: boolean
+  hasMathematicalBeauty: boolean
+  hasNoDeformation: boolean
+  hasProperProportion: boolean
+  hasCurves: boolean
+  hasNoSharpCorners: boolean
+  distortionCount: number
+  sharpCornerCount: number
 }
 
-export interface ModelInfo {
-  recognizable: boolean
-  detail: number
-  isComplete: boolean
-  hasFlaps: boolean
-  flapCount: number
-  isDisplay: boolean
-  isPractice: boolean
+export interface StructureMeasure {
+  integrity: number
+  form: 'modular' | 'composite' | 'pureland' | 'action' | 'wet-folded' | 'collapsed'
+  hasStrongStructure: boolean
+  hasNoRipping: boolean
+  hasProperLayering: boolean
+  hasInterlocking: boolean
+  hasNoGapping: boolean
+  hasProperTension: boolean
+  hasBoxPleating: boolean
+  hasNoUnraveling: boolean
+  hasCollapsibility: boolean
+  hasNoWeakPoints: boolean
+  gapCount: number
+  weakPointCount: number
 }
 
-export interface OrigamiSheet {
+export interface MasteryMeasure {
+  score: number
+  level: 'grand-master' | 'master' | 'advanced' | 'intermediate' | 'beginner' | 'uninitiated'
+  hasArtisticMastery: boolean
+  hasYoshizawa: boolean
+  hasCleanFinish: boolean
+  hasProperDisplay: boolean
+  hasNoAmateur: boolean
+  hasFlowing: boolean
+  hasMinimal: boolean
+  hasExpressive: boolean
+  hasNoOvercomplication: boolean
+  hasTimeless: boolean
+  amateurCount: number
+  overcomplicationCount: number
+}
+
+export interface OrigamiModel {
   file: string
-  foldPrecision: number
-  creaseSharpness: number
-  paperEconomy: number
+  foldingPrecision: number
+  paperQuality: number
+  creaseAccuracy: number
+  transformationBeauty: number
   structuralIntegrity: number
-  complexityReduction: number
-  creaseElegance: number
-  folds: FoldsInfo
-  creases: CreasesInfo
-  paper: PaperInfo
-  structure: StructureInfo
-  creasePattern: CreasePatternInfo
-  model: ModelInfo
-  condition: SheetCondition
+  artisticMastery: number
+  precision: PrecisionMeasure
+  paper: PaperMeasure
+  crease: CreaseMeasure
+  transformation: TransformationMeasure
+  structure: StructureMeasure
+  mastery: MasteryMeasure
+  condition: 'tanagra-masterpiece' | 'yoshizawa-grade' | 'exhibition-piece' | 'practice-sheet' | 'crumpled-ball' | 'confetti'
   qualityScore: number
 }
 
-export interface OrigamiBox {
+export interface OrigamiGallery {
   directory: string
-  sheets: OrigamiSheet[]
-  avgFoldPrecision: number
-  avgCreaseSharpness: number
-  avgPaperEconomy: number
-  avgStructuralIntegrity: number
-  masterworkCount: number
-  crumpledCount: number
-  totalFolds: number
-  totalTears: number
-  totalWrinkles: number
-  boxType: BoxType
-  condition: BoxCondition
-}
-
-export interface StudioInfo {
-  avgFoldPrecision: number
-  avgCreaseSharpness: number
-  avgPaperEconomy: number
-  avgStructuralIntegrity: number
-  totalFolds: number
-  totalTears: number
-  isClean: boolean
-  overallCraftsmanship: number
-}
-
-export interface OrigamiFoldStats {
-  totalFiles: number
-  totalBoxes: number
-  avgFoldPrecision: number
-  avgCreaseSharpness: number
-  avgPaperEconomy: number
-  avgStructuralIntegrity: number
-  avgComplexityReduction: number
-  avgCreaseElegance: number
-  masterworkCount: number
-  expertCount: number
-  skilledCount: number
-  apprenticeCount: number
-  beginnerCount: number
-  crumpledCount: number
-  totalFolds: number
-  totalTears: number
-  totalWrinkles: number
-  valleyFolds: number
-  mountainFolds: number
-  squashFolds: number
-  petalFolds: number
-  economicalFiles: number
-  wastefulFiles: number
-  symmetricPatterns: number
-  crumpledPatterns: number
-  overallCraftsmanship: number
-  origamiGrade: OrigamiGrade
-  bestFolded: string
-  worstFolded: string
-  mostEconomical: string
-  mostElegant: string
-  mostTorn: string
+  models: OrigamiModel[]
+  avgPrecision: number
+  avgStructure: number
+  avgMastery: number
+  masterpieceCount: number
+  confettiCount: number
+  preciseCount: number
+  masterCount: number
+  galleryType: 'museum' | 'exhibition' | 'studio' | 'classroom' | 'playground' | 'recycling-bin'
+  condition: 'world-exhibition' | 'national-gallery' | 'art-show' | 'craft-fair' | 'desk-drawer' | 'trash-can'
 }
 
 export interface OrigamiFoldResult {
-  sheets: OrigamiSheet[]
-  boxes: OrigamiBox[]
-  studio: StudioInfo
-  stats: OrigamiFoldStats
+  models: OrigamiModel[]
+  galleries: OrigamiGallery[]
+  exhibition: {
+    avgPrecision: number
+    avgStructure: number
+    avgMastery: number
+    isMasterwork: boolean
+    overallElegance: number
+  }
+  stats: {
+    totalFiles: number
+    totalGalleries: number
+    avgFoldingPrecision: number
+    avgPaperQuality: number
+    avgCreaseAccuracy: number
+    avgTransformationBeauty: number
+    avgStructuralIntegrity: number
+    avgArtisticMastery: number
+    masterpieceCount: number
+    yoshizawaCount: number
+    exhibitionCount: number
+    practiceCount: number
+    crumpledCount: number
+    confettiCount: number
+    hasPreciseFoldsCount: number
+    hasHighQualityCount: number
+    hasAccurateCreasesCount: number
+    hasBeautifulTransformationCount: number
+    hasStrongStructureCount: number
+    hasArtisticMasteryCount: number
+    overallElegance: number
+    artistGrade: 'living-treasure' | 'master-artist' | 'artist' | 'craftsman' | 'student' | 'paper-cutter'
+    bestModel: string
+    mostPrecise: string
+    bestQuality: string
+    mostAccurate: string
+    mostBeautiful: string
+    strongest: string
+  }
   recommendations: string[]
 }
 
-// ─── Content Primitives ──────────────────────────────────────────────────────
+// ─── Precision Measurement ──────────────────────────────────────────────────
 
-/**
- * Count lines of code
- * @example
- * countLoc('const x = 1\nconst y = 2') // 2
- */
-export function countLoc(content: string): number {
-  return content.split('\n').filter(l => l.trim().length > 0).length
-}
+/** @example measurePrecision(content) returns precision analysis */
+export function measurePrecision(content: string): PrecisionMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const asyncCount = countAsyncKeywords(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
+  const tryCatchCount = countTryCatch(content)
+  const promiseCount = countPromiseUsage(content)
 
-/**
- * Count imports
- * @example
- * countImports('import { x } from "y"') // 1
- */
-export function countImports(content: string): number {
-  return (content.match(/^import\s+/gm) ?? []).length
-}
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-/**
- * Count exports
- * @example
- * countExports('export function a() {}') // 1
- */
-export function countExports(content: string): number {
-  return (content.match(/\bexport\s+(?:default\s+)?(?:function|class|const|let|var|interface|type|enum)\s+/g) ?? []).length
-}
+  let level = 25
+  if (hasStructure) level += 15
+  if (hasTypes) level += 15
+  if (hasFunctions) level += 10
+  if (exportCount > 0) level += 5
+  if (importCount > 0) level += 5
+  if (jsdocCount > 0) level += 8
+  if (asyncCount > 0) level += 5
+  if (consoleCount === 0) level += 4
+  if (anyCount === 0) level += 4
+  if (todoCount === 0) level += 4
+  level = Math.min(100, Math.max(0, Math.round(level)))
 
-/**
- * Count functions
- * @example
- * countFunctions('function a() {}') // 1
- */
-export function countFunctions(content: string): number {
-  return (content.match(/(?:function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>)/g) ?? []).length
-}
+  const tearCount = todoCount + commentedCodeCount
+  const wrinkleCount = deepNestedCount + consoleCount
 
-/**
- * Count classes
- * @example
- * countClasses('class Foo {}') // 1
- */
-export function countClasses(content: string): number {
-  return (content.match(/\bclass\s+\w+/g) ?? []).length
-}
+  const hasPreciseFolds = level >= 80 && hasStructure && hasTypes
+  const hasCleanCreases = hasStructure && hasTypes && hasFunctions
+  const hasNoTearing = tearCount === 0
+  const hasProperAlignment = hasStructure && hasTypes && hasFunctions
+  const hasSymmetry = hasStructure && hasTypes && exportCount > 0
+  const hasProperTension = hasFunctions && (asyncCount > 0 || tryCatchCount > 0)
+  const hasNoWrinkling = wrinkleCount === 0
+  const hasSharpEdges = hasStructure && hasTypes && anyCount === 0
+  const hasNoBuckling = deepNestedCount === 0
+  const hasProperAngle = hasStructure && hasTypes && hasFunctions
 
-/**
- * Count interfaces
- * @example
- * countInterfaces('interface Foo {}') // 1
- */
-export function countInterfaces(content: string): number {
-  return (content.match(/\binterface\s+\w+/g) ?? []).length
-}
-
-/**
- * Count type aliases
- * @example
- * countTypeAliases('type Foo = string') // 1
- */
-export function countTypeAliases(content: string): number {
-  return (content.match(/\btype\s+\w+\s*=/g) ?? []).length
-}
-
-/**
- * Count error handling constructs
- * @example
- * countErrorHandling('try {} catch(e) {}') // 2
- */
-export function countErrorHandling(content: string): number {
-  return (content.match(/\btry\s*\{|\bcatch\s*\(|\.catch\s*\(|\bthrow\s+/g) ?? []).length
-}
-
-/**
- * Count type annotations
- * @example
- * countTypeAnnotations('const x: number = 1') // 1
- */
-export function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*(?:string|number|boolean|void|any|never|unknown|object)/g) ?? []).length
-}
-
-/**
- * Count branches
- * @example
- * countBranches('if (a) {}') // 1
- */
-export function countBranches(content: string): number {
-  return (content.match(/\bif\s*\(|\?\s*[^?]\s*:|\bswitch\s*\(/g) ?? []).length
-}
-
-/**
- * Count max nesting depth
- * @example
- * maxNesting('{{{}}}') // 3
- */
-export function maxNesting(content: string): number {
-  let m = 0
-  let c = 0
-  for (const ch of content) {
-    if (ch === '{') { c++; if (c > m) m = c }
-    else if (ch === '}') { c = Math.max(0, c - 1) }
-  }
-  return m
-}
-
-/**
- * Count console statements
- * @example
- * countConsole('console.log("x")') // 1
- */
-export function countConsole(content: string): number {
-  return (content.match(/console\.\w+\s*\(/g) ?? []).length
-}
-
-/**
- * Count comments
- * @example
- * countComments('// hello') // 1
- */
-export function countComments(content: string): number {
-  return (content.match(/\/\//g) ?? []).length + (content.match(/\/\*/g) ?? []).length
-}
-
-/**
- * Count TODO markers
- * @example
- * countTodos('TODO: fix') // 1
- */
-export function countTodos(content: string): number {
-  return (content.match(/TODO|FIXME|HACK|XXX/gi) ?? []).length
-}
-
-// ─── Classification Functions ────────────────────────────────────────────────
-
-/**
- * Classify sheet condition from quality score
- * @example
- * classifySheetCondition(90) // 'masterwork'
- */
-export function classifySheetCondition(qualityScore: number): SheetCondition {
-  if (qualityScore >= 85) return 'masterwork'
-  if (qualityScore >= 70) return 'expert'
-  if (qualityScore >= 50) return 'skilled'
-  if (qualityScore >= 30) return 'apprentice'
-  if (qualityScore >= 10) return 'beginner'
-  return 'crumpled'
-}
-
-/**
- * Classify base type from code patterns
- * @example
- * classifyBaseType('export function a() {}') // BaseType
- */
-export function classifyBaseType(content: string): BaseType {
-  const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const types = countTypeAliases(content)
-  const exports = countExports(content)
-
-  if (classes > 0 && interfaces > 0 && funcs > 0) return 'frog'
-  if (classes > 0 && interfaces > 0) return 'bird'
-  if (interfaces > 0 && types > 0) return 'fish'
-  if (exports > 2 && funcs > 2) return 'waterbomb'
-  if (funcs > 0 || classes > 0 || exports > 0) return 'preliminary'
-  return 'none'
-}
-
-/**
- * Classify crease pattern type
- * @example
- * classifyPatternType('export function a() {}') // PatternType
- */
-export function classifyPatternType(content: string): PatternType {
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const todos = countTodos(content)
-  const nest = maxNesting(content)
-  const loc = countLoc(content)
-
-  if (loc === 0) return 'torn'
-  if (todos > 3) return 'torn'
-  if (nest > 5 && countErrorHandling(content) === 0) return 'crumpled'
-  if (classes > 0 && interfaces > 0 && exports > 2) return 'modular'
-  if (exports > 0 && funcs > 0 && countTypeAnnotations(content) > 0) return 'wet-fold'
-  if (imports > 2 && exports > 0) return 'modern'
-  return 'traditional'
-}
-
-/**
- * Classify box type from sheets
- * @example
- * classifyBoxType([]) // 'confetti'
- */
-export function classifyBoxType(sheets: OrigamiSheet[]): BoxType {
-  if (sheets.length === 0) return 'confetti'
-  const n = sheets.length
-  const masterwork = sheets.filter(s => s.condition === 'masterwork' || s.condition === 'expert').length
-  const crumpled = sheets.filter(s => s.condition === 'crumpled' || s.condition === 'beginner').length
-
-  if (crumpled > n * 0.6) return 'confetti'
-  if (crumpled > n * 0.3) return 'crumpled-paper'
-  if (masterwork > n * 0.7) return 'display-case'
-  if (masterwork > n * 0.4) return 'jewelry-box'
-  if (masterwork > 0) return 'storage-box'
-  return 'cardboard'
-}
-
-/**
- * Classify box condition from averages
- * @example
- * classifyBoxCondition(85) // 'gallery-quality'
- */
-export function classifyBoxCondition(avgPrecision: number): BoxCondition {
-  if (avgPrecision >= 80) return 'gallery-quality'
-  if (avgPrecision >= 60) return 'well-crafted'
-  if (avgPrecision >= 40) return 'serviceable'
-  if (avgPrecision >= 25) return 'rough'
-  if (avgPrecision >= 10) return 'messy'
-  return 'torn-apart'
-}
-
-/**
- * Classify origami grade from average craftsmanship
- * @example
- * classifyOrigamiGrade(85) // 'grand-master'
- */
-export function classifyOrigamiGrade(avgCraftsmanship: number): OrigamiGrade {
-  if (avgCraftsmanship >= 80) return 'grand-master'
-  if (avgCraftsmanship >= 65) return 'master'
-  if (avgCraftsmanship >= 45) return 'artisan'
-  if (avgCraftsmanship >= 30) return 'folder'
-  if (avgCraftsmanship >= 15) return 'beginner'
-  return 'paper-shredder'
-}
-
-// ─── Measurement Functions ───────────────────────────────────────────────────
-
-/**
- * Measure folds (abstraction types and counts)
- * @example
- * measureFolds('export function a(): number { return 1 }') // FoldsInfo
- */
-export function measureFolds(content: string): FoldsInfo {
-  const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const types = countTypeAliases(content)
-  const exports = countExports(content)
-  const nest = maxNesting(content)
-  const branches = countBranches(content)
-
-  const count = funcs + classes + interfaces + types
-  const depth = nest
-
-  const hasValleyFold = funcs > 0 && exports > 0
-  const hasMountainFold = classes > 0 && interfaces > 0
-  const hasReverseFold = /Promise|async|await/.test(content)
-  const hasSquashFold = branches > 6 && funcs <= 1
-  const hasPetalFold = funcs > 0 && countTypeAnnotations(content) > 0 && countErrorHandling(content) > 0
-  const hasSinkFold = nest > 3 && funcs > 1
-
-  const valleyCount = hasValleyFold ? 1 : 0
-  const mountainCount = hasMountainFold ? 1 : 0
-  const squashCount = hasSquashFold ? 1 : 0
-  const petalCount = hasPetalFold ? 1 : 0
+  let fold: PrecisionMeasure['fold'] = 'unfolded'
+  if (hasPreciseFolds && hasNoTearing && hasNoWrinkling && hasNoBuckling) fold = 'triple-fold'
+  else if (hasPreciseFolds && hasNoTearing) fold = 'double-fold'
+  else if (hasPreciseFolds) fold = 'single-fold'
+  else if (hasCleanCreases) fold = 'partial-fold'
+  else if (level > 30) fold = 'crumple'
 
   return {
-    count, depth, hasValleyFold, hasMountainFold, hasReverseFold,
-    hasSquashFold, hasPetalFold, hasSinkFold,
-    valleyCount, mountainCount, squashCount, petalCount,
+    level,
+    fold,
+    hasPreciseFolds,
+    hasCleanCreases,
+    hasNoTearing,
+    hasProperAlignment,
+    hasSymmetry,
+    hasProperTension,
+    hasNoWrinkling,
+    hasSharpEdges,
+    hasNoBuckling,
+    hasProperAngle,
+    tearCount,
+    wrinkleCount,
   }
 }
 
-/**
- * Measure creases (interface boundaries, tears, wrinkles)
- * @example
- * measureCreases('export function a(): number { return 1 }') // CreasesInfo
- */
-export function measureCreases(content: string): CreasesInfo {
-  const types = countTypeAnnotations(content)
-  const interfaces = countInterfaces(content)
-  const exports = countExports(content)
-  const errors = countErrorHandling(content)
-  const todos = countTodos(content)
-  const branches = countBranches(content)
+// ─── Paper Measurement ──────────────────────────────────────────────────────
 
-  const sharpness = Math.min(100, Math.max(0, Math.round(
-    (types > 0 ? 25 : 0) +
-    (interfaces > 0 ? 20 : 0) +
-    (exports > 0 ? 15 : 0) +
-    (errors > 0 ? 15 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
-    (countLoc(content) > 0 ? 10 : 0),
-  )))
+/** @example measurePaper(content) returns paper analysis */
+export function measurePaper(content: string): PaperMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const readonlyCount = countReadonlyMembers(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
+  const staticCount = countStaticMembers(content)
+  const asyncCount = countAsyncKeywords(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const todoCount = countTodoComments(content)
+  const enumCount = countEnumKeywords(content)
 
-  const tearPoints: string[] = []
-  const wrinklePoints: string[] = []
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  if (exports > 0 && errors === 0) tearPoints.push('Exported functions without error handling')
-  if (branches > 5 && errors === 0) tearPoints.push('Complex branching without error boundaries')
-  if (todos > 0) wrinklePoints.push('Unresolved markers indicate incomplete folds')
+  let quality = 20
+  if (hasStructure) quality += 12
+  if (hasTypes) quality += 12
+  if (enumCount > 0) quality += 5
+  if (hasFunctions) quality += 10
+  if (jsdocCount > 0) quality += 8
+  if (genericsCount > 0) quality += 5
+  if (exportCount > 0) quality += 5
+  if (importCount > 0) quality += 5
+  if (readonlyCount > 0) quality += 3
+  if (privateCount > 0 || protectedCount > 0) quality += 3
+  if (staticCount > 0) quality += 2
+  if (asyncCount > 0) quality += 3
+  if (anyCount === 0) quality += 3
+  if (consoleCount === 0) quality += 4
+  quality = Math.min(100, Math.max(0, Math.round(quality)))
 
-  const hasTears = tearPoints.length > 0
-  const hasWrinkles = wrinklePoints.length > 0
-  const isClean = !hasTears && !hasWrinkles
+  const grainCount = anyCount + consoleCount
+  const damageCount = todoCount
+
+  const hasHighQuality = quality >= 80 && hasStructure && hasTypes
+  const hasProperWeight = hasStructure && hasTypes && hasFunctions
+  const hasProperTexture = jsdocCount > 0 && exportCount > 0
+  const hasNoGrain = grainCount === 0
+  const hasGoodFolding = hasStructure && hasTypes && exportCount > 0
+  const hasProperSize = hasStructure && hasTypes
+  const hasNoDamage = damageCount === 0
+  const hasAcidFree = anyCount === 0
+  const hasProperOpacity = hasStructure && hasTypes && hasFunctions
+  const hasArchival = hasHighQuality && hasNoGrain && hasNoDamage
+
+  let material: PaperMeasure['material'] = 'toilet-paper'
+  if (hasArchival && genericsCount > 0) material = 'washi'
+  else if (hasHighQuality && hasNoGrain) material = 'kami'
+  else if (hasHighQuality) material = 'tant'
+  else if (hasProperWeight) material = 'kraft'
+  else if (quality > 30) material = 'newsprint'
 
   return {
-    sharpness, isClean, hasTears, hasWrinkles,
-    tearCount: tearPoints.length, wrinkleCount: wrinklePoints.length,
-    tearPoints, wrinklePoints,
+    quality,
+    material,
+    hasHighQuality,
+    hasProperWeight,
+    hasProperTexture,
+    hasNoGrain,
+    hasGoodFolding,
+    hasProperSize,
+    hasNoDamage,
+    hasAcidFree,
+    hasProperOpacity,
+    hasArchival,
+    grainCount,
+    damageCount,
   }
 }
 
-/**
- * Measure paper (code size, density, waste)
- * @example
- * measurePaper('const x = 1') // PaperInfo
- */
-export function measurePaper(content: string): PaperInfo {
-  const loc = countLoc(content)
-  const branches = countBranches(content)
-  const nest = maxNesting(content)
-  const funcs = countFunctions(content)
-  const types = countTypeAnnotations(content)
-  const comments = countComments(content)
-  const todos = countTodos(content)
+// ─── Crease Measurement ─────────────────────────────────────────────────────
 
-  const area = loc
-  const thickness = Math.min(100, Math.round(branches * 5 + nest * 8 + funcs * 3))
+/** @example measureCrease(content) returns crease analysis */
+export function measureCrease(content: string): CreaseMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const asyncCount = countAsyncKeywords(content)
+  const conditionalsCount = countConditionals(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
 
-  const effectiveLines = funcs + types + comments + countExports(content) + countErrorHandling(content)
-  const isUsed = loc > 0 ? Math.min(100, Math.round((effectiveLines / loc) * 100)) : 0
-  const waste = Math.max(0, 100 - isUsed)
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const isEconomical = waste < 30
-  const hasOffcuts = todos > 0 || countConsole(content) > 2
-  const offcutSize = Math.min(100, Math.round(todos * 10 + countConsole(content) * 5))
+  let accuracy = 25
+  if (hasStructure) accuracy += 12
+  if (hasTypes) accuracy += 12
+  if (hasFunctions) accuracy += 10
+  if (jsdocCount > 0) accuracy += 8
+  if (genericsCount > 0) accuracy += 5
+  if (exportCount > 0) accuracy += 5
+  if (importCount > 0) accuracy += 5
+  if (tryCatchCount > 0) accuracy += 5
+  if (asyncCount > 0) accuracy += 3
+  if (conditionalsCount > 0) accuracy += 3
+  if (consoleCount === 0) accuracy += 4
+  if (anyCount === 0) accuracy += 3
+  accuracy = Math.min(100, Math.max(0, Math.round(accuracy)))
 
-  return { area, thickness, isUsed, waste, isEconomical, hasOffcuts, offcutSize }
-}
+  const misfoldCount = anyCount + todoCount
+  const overfoldCount = deepNestedCount
 
-/**
- * Measure structure (base type, stability, balance)
- * @example
- * measureStructure('export function a() {}') // StructureInfo
- */
-export function measureStructure(content: string): StructureInfo {
-  const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const errors = countErrorHandling(content)
-  const types = countTypeAnnotations(content)
+  const hasAccurateCreases = accuracy >= 75 && hasStructure && hasTypes
+  const hasProperMountain = hasStructure && hasTypes && hasFunctions
+  const hasProperValley = hasStructure && hasTypes && exportCount > 0
+  const hasNoMisfold = misfoldCount === 0
+  const hasReversible = tryCatchCount > 0
+  const hasProperSquash = hasStructure && hasTypes && hasFunctions && anyCount === 0
+  const hasNoOverfold = deepNestedCount === 0
+  const hasProperPleat = conditionalsCount > 0 && countLoops(content) > 0
+  const hasNoCollapse = consoleCount === 0
+  const hasLockFold = privateCount > 0 || protectedCount > 0
 
-  const hasBase = funcs > 0 || classes > 0 || interfaces > 0
-  const baseType = classifyBaseType(content)
+  let creaseType: CreaseMeasure['type'] = 'none'
+  if (hasAccurateCreases && hasNoMisfold && hasNoOverfold) creaseType = 'mountain'
+  else if (hasAccurateCreases && hasNoMisfold) creaseType = 'valley'
+  else if (hasAccurateCreases) creaseType = 'petal'
+  else if (hasProperMountain) creaseType = 'sink'
+  else if (accuracy > 30) creaseType = 'crimp'
 
-  const stability = Math.min(100, Math.max(0, Math.round(
-    (errors > 0 ? 30 : 0) +
-    (types > 0 ? 20 : 0) +
-    (interfaces > 0 ? 15 : 0) +
-    (countComments(content) > 0 ? 15 : 0) +
-    (exports > 0 ? 10 : 0) +
-    (hasBase ? 10 : 0),
-  )))
-
-  const isBalanced = Math.abs(exports - imports) <= 2
-  const isCollapsible = branches_gt_3_no_abstraction(content)
-  const hasWings = exports > 2
-  const wingSpan = Math.min(100, exports * 15)
-
-  return { hasBase, baseType, stability, isBalanced, isCollapsible, hasWings, wingSpan }
-}
-
-function branches_gt_3_no_abstraction(content: string): boolean {
-  return countBranches(content) > 3 && countFunctions(content) === 0 && countClasses(content) === 0
-}
-
-/**
- * Measure crease pattern (symmetry, complexity, elegance)
- * @example
- * measureCreasePattern('export function a(): number { return 1 }') // CreasePatternInfo
- */
-export function measureCreasePattern(content: string): CreasePatternInfo {
-  const funcs = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const types = countTypeAliases(content)
-  const exports = countExports(content)
-  const imports = countImports(content)
-
-  const isSymmetric = Math.abs(exports - imports) <= 1
-  const isComplex = funcs + classes + interfaces + types > 5
-  const hasMasterCrease = exports > 0 && countErrorHandling(content) > 0
-  const hasGuideCreases = interfaces > 0 || types > 0
-
-  const patternType = classifyPatternType(content)
-
-  const elegance = Math.min(100, Math.max(0, Math.round(
-    (isSymmetric ? 20 : 0) +
-    (hasMasterCrease ? 20 : 0) +
-    (hasGuideCreases ? 15 : 0) +
-    (countTypeAnnotations(content) > 0 ? 15 : 0) +
-    (countComments(content) > 0 ? 10 : 0) +
-    (countErrorHandling(content) > 0 ? 10 : 0) +
-    (patternType === 'wet-fold' || patternType === 'modular' ? 10 : 0),
-  )))
-
-  return { isSymmetric, isComplex, hasMasterCrease, hasGuideCreases, patternType, elegance }
-}
-
-/**
- * Measure model (recognizability, detail, completeness)
- * @example
- * measureModel('export function a(): number { return 1 }') // ModelInfo
- */
-export function measureModel(content: string): ModelInfo {
-  const exports = countExports(content)
-  const types = countTypeAnnotations(content)
-  const comments = countComments(content)
-  const funcs = countFunctions(content)
-  const errors = countErrorHandling(content)
-  const todos = countTodos(content)
-
-  const recognizable = exports > 0 && (comments > 0 || types > 0)
-  const detail = Math.min(100, Math.round(
-    types * 5 + countInterfaces(content) * 10 + comments * 2 + funcs * 3,
-  ))
-  const isComplete = errors > 0 && todos === 0 && exports > 0
-  const hasFlaps = exports > countFunctions(content) + countClasses(content)
-  const flapCount = Math.max(0, exports - countFunctions(content) - countClasses(content))
-  const isDisplay = isComplete && recognizable && detail > 30
-  const isPractice = todos > 0 || exports === 0
-
-  return { recognizable, detail, isComplete, hasFlaps, flapCount, isDisplay, isPractice }
-}
-
-// ─── Core Analysis ───────────────────────────────────────────────────────────
-
-/**
- * Analyze a single file as an origami sheet
- * @example
- * analyzeOrigamiSheet('export function calc(): number { return 1 }', 'calc.ts') // OrigamiSheet
- */
-export function analyzeOrigamiSheet(content: string, filePath: string): OrigamiSheet {
-  const loc = countLoc(content)
-  if (loc === 0) {
-    return {
-      file: filePath,
-      foldPrecision: 0, creaseSharpness: 0, paperEconomy: 0,
-      structuralIntegrity: 0, complexityReduction: 0, creaseElegance: 0,
-      folds: { count: 0, depth: 0, hasValleyFold: false, hasMountainFold: false, hasReverseFold: false, hasSquashFold: false, hasPetalFold: false, hasSinkFold: false, valleyCount: 0, mountainCount: 0, squashCount: 0, petalCount: 0 },
-      creases: { sharpness: 0, isClean: true, hasTears: false, hasWrinkles: false, tearCount: 0, wrinkleCount: 0, tearPoints: [], wrinklePoints: [] },
-      paper: { area: 0, thickness: 0, isUsed: 0, waste: 100, isEconomical: false, hasOffcuts: false, offcutSize: 0 },
-      structure: { hasBase: false, baseType: 'none', stability: 0, isBalanced: true, isCollapsible: false, hasWings: false, wingSpan: 0 },
-      creasePattern: { isSymmetric: true, isComplex: false, hasMasterCrease: false, hasGuideCreases: false, patternType: 'torn', elegance: 0 },
-      model: { recognizable: false, detail: 0, isComplete: false, hasFlaps: false, flapCount: 0, isDisplay: false, isPractice: true },
-      condition: 'crumpled',
-      qualityScore: 0,
-    }
+  return {
+    accuracy,
+    type: creaseType,
+    hasAccurateCreases,
+    hasProperMountain,
+    hasProperValley,
+    hasNoMisfold,
+    hasReversible,
+    hasProperSquash,
+    hasNoOverfold,
+    hasProperPleat,
+    hasNoCollapse,
+    hasLockFold,
+    misfoldCount,
+    overfoldCount,
   }
+}
 
-  const folds = measureFolds(content)
-  const creases = measureCreases(content)
+// ─── Transformation Measurement ─────────────────────────────────────────────
+
+/** @example measureTransformation(content) returns transformation analysis */
+export function measureTransformation(content: string): TransformationMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const asyncCount = countAsyncKeywords(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const reExportCount = countReExports(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const deepNestedCount = countDeepNested(content)
+  const destructures = countDestructures(content)
+  const templateLiterals = countTemplateLiterals(content)
+
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let beauty = 20
+  if (hasStructure) beauty += 12
+  if (hasTypes) beauty += 12
+  if (hasFunctions) beauty += 10
+  if (jsdocCount > 0) beauty += 5
+  if (genericsCount > 0) beauty += 5
+  if (asyncCount > 0) beauty += 5
+  if (exportCount > 0) beauty += 5
+  if (importCount > 0) beauty += 5
+  if (reExportCount > 0) beauty += 5
+  if (destructures > 0) beauty += 3
+  if (templateLiterals > 0) beauty += 3
+  if (anyCount === 0) beauty += 3
+  if (consoleCount === 0) beauty += 4
+  beauty = Math.min(100, Math.max(0, Math.round(beauty)))
+
+  const distortionCount = anyCount + consoleCount
+  const sharpCornerCount = deepNestedCount
+
+  const hasBeautifulTransformation = beauty >= 75 && hasStructure && hasTypes
+  const hasDimensionalShift = genericsCount > 0 && (destructures > 0 || templateLiterals > 0)
+  const hasProperShaping = hasStructure && hasTypes && exportCount > 0
+  const hasNoDistortion = distortionCount === 0
+  const hasOrganicForm = hasStructure && hasTypes && hasFunctions
+  const hasMathematicalBeauty = genericsCount > 0 && hasStructure && hasTypes
+  const hasNoDeformation = deepNestedCount === 0
+  const hasProperProportion = hasStructure && hasTypes && hasFunctions
+  const hasCurves = destructures > 0 || templateLiterals > 0
+  const hasNoSharpCorners = deepNestedCount === 0
+
+  let stage: TransformationMeasure['stage'] = 'raw-sheet'
+  if (hasBeautifulTransformation && hasDimensionalShift && hasNoDistortion && hasNoDeformation) stage = 'wet-folding'
+  else if (hasBeautifulTransformation && hasDimensionalShift && hasNoDistortion) stage = 'shaping'
+  else if (hasBeautifulTransformation && hasDimensionalShift) stage = 'collapsing'
+  else if (hasBeautifulTransformation) stage = 'pre-creasing'
+  else if (hasProperShaping) stage = 'base-fold'
+
+  return {
+    beauty,
+    stage,
+    hasBeautifulTransformation,
+    hasDimensionalShift,
+    hasProperShaping,
+    hasNoDistortion,
+    hasOrganicForm,
+    hasMathematicalBeauty,
+    hasNoDeformation,
+    hasProperProportion,
+    hasCurves,
+    hasNoSharpCorners,
+    distortionCount,
+    sharpCornerCount,
+  }
+}
+
+// ─── Structure Measurement ──────────────────────────────────────────────────
+
+/** @example measureStructure(content) returns structure analysis */
+export function measureStructure(content: string): StructureMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const reExportCount = countReExports(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const conditionalsCount = countConditionals(content)
+  const loopsCount = countLoops(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let integrity = 25
+  if (hasStructure) integrity += 12
+  if (hasTypes) integrity += 12
+  if (hasFunctions) integrity += 10
+  if (jsdocCount > 0) integrity += 8
+  if (genericsCount > 0) integrity += 5
+  if (exportCount > 0) integrity += 5
+  if (importCount > 0) integrity += 5
+  if (reExportCount > 0) integrity += 5
+  if (asyncCount > 0) integrity += 3
+  if (tryCatchCount > 0) integrity += 5
+  if (conditionalsCount > 0) integrity += 3
+  if (loopsCount > 0) integrity += 2
+  if (anyCount === 0) integrity += 3
+  if (consoleCount === 0) integrity += 2
+  integrity = Math.min(100, Math.max(0, Math.round(integrity)))
+
+  const gapCount = todoCount + deepNestedCount
+  const weakPointCount = anyCount + consoleCount
+
+  const hasStrongStructure = integrity >= 75 && hasStructure && hasTypes
+  const hasNoRipping = todoCount === 0
+  const hasProperLayering = hasStructure && hasTypes && exportCount > 0
+  const hasInterlocking = hasStructure && hasTypes && hasFunctions && anyCount === 0
+  const hasNoGapping = gapCount === 0
+  const hasProperTension = hasFunctions && (asyncCount > 0 || tryCatchCount > 0)
+  const hasBoxPleating = hasStructure && hasTypes && (conditionalsCount > 0 || loopsCount > 0)
+  const hasNoUnraveling = deepNestedCount === 0
+  const hasCollapsibility = hasStructure && hasTypes && hasFunctions
+  const hasNoWeakPoints = weakPointCount === 0
+
+  let form: StructureMeasure['form'] = 'collapsed'
+  if (hasStrongStructure && hasInterlocking && hasNoGapping && hasNoWeakPoints) form = 'modular'
+  else if (hasStrongStructure && hasInterlocking) form = 'composite'
+  else if (hasStrongStructure) form = 'pureland'
+  else if (hasProperLayering) form = 'action'
+  else if (integrity > 30) form = 'wet-folded'
+
+  return {
+    integrity,
+    form,
+    hasStrongStructure,
+    hasNoRipping,
+    hasProperLayering,
+    hasInterlocking,
+    hasNoGapping,
+    hasProperTension,
+    hasBoxPleating,
+    hasNoUnraveling,
+    hasCollapsibility,
+    hasNoWeakPoints,
+    gapCount,
+    weakPointCount,
+  }
+}
+
+// ─── Mastery Measurement ────────────────────────────────────────────────────
+
+/** @example measureMastery(content) returns mastery analysis */
+export function measureMastery(content: string): MasteryMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const enumCount = countEnumKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
+  const staticCount = countStaticMembers(content)
+  const readonlyCount = countReadonlyMembers(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
+
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let score = 20
+  if (hasStructure) score += 12
+  if (hasTypes) score += 12
+  if (enumCount > 0) score += 5
+  if (hasFunctions) score += 10
+  if (jsdocCount > 0) score += 8
+  if (genericsCount > 0) score += 5
+  if (asyncCount > 0) score += 5
+  if (tryCatchCount > 0) score += 5
+  if (exportCount > 0) score += 5
+  if (importCount > 0) score += 5
+  if (privateCount > 0 || protectedCount > 0) score += 3
+  if (staticCount > 0) score += 3
+  if (readonlyCount > 0) score += 2
+  if (anyCount === 0) score += 3
+  if (consoleCount === 0) score += 2
+  score = Math.min(100, Math.max(0, Math.round(score)))
+
+  const amateurCount = consoleCount + deepNestedCount
+  const overcomplicationCount = todoCount + commentedCodeCount
+
+  const hasArtisticMastery = score >= 80 && anyCount === 0 && todoCount === 0
+  const hasYoshizawa = hasStructure && hasTypes && genericsCount > 0 && jsdocCount > 0
+  const hasCleanFinish = anyCount === 0 && consoleCount === 0
+  const hasProperDisplay = jsdocCount > 0 && exportCount > 0
+  const hasNoAmateur = amateurCount === 0
+  const hasFlowing = hasFunctions && (asyncCount > 0 || tryCatchCount > 0)
+  const hasMinimal = hasStructure && hasTypes && hasFunctions && deepNestedCount === 0
+  const hasExpressive = hasStructure && hasTypes && genericsCount > 0
+  const hasNoOvercomplication = overcomplicationCount === 0
+  const hasTimeless = hasArtisticMastery && hasYoshizawa
+
+  let masteryLevel: MasteryMeasure['level'] = 'uninitiated'
+  if (hasArtisticMastery && hasTimeless) masteryLevel = 'grand-master'
+  else if (hasArtisticMastery && hasYoshizawa) masteryLevel = 'master'
+  else if (hasArtisticMastery) masteryLevel = 'advanced'
+  else if (score >= 60 && hasStructure && hasTypes) masteryLevel = 'intermediate'
+  else if (score > 30) masteryLevel = 'beginner'
+
+  return {
+    score,
+    level: masteryLevel,
+    hasArtisticMastery,
+    hasYoshizawa,
+    hasCleanFinish,
+    hasProperDisplay,
+    hasNoAmateur,
+    hasFlowing,
+    hasMinimal,
+    hasExpressive,
+    hasNoOvercomplication,
+    hasTimeless,
+    amateurCount,
+    overcomplicationCount,
+  }
+}
+
+// ─── Condition Classification ───────────────────────────────────────────────
+
+/** @example classifyCondition(model) returns condition string */
+export function classifyCondition(model: OrigamiModel): OrigamiModel['condition'] {
+  const { qualityScore } = model
+  if (qualityScore >= 80) return 'tanagra-masterpiece'
+  if (qualityScore >= 65) return 'yoshizawa-grade'
+  if (qualityScore >= 50) return 'exhibition-piece'
+  if (qualityScore >= 35) return 'practice-sheet'
+  if (qualityScore >= 20) return 'crumpled-ball'
+  return 'confetti'
+}
+
+// ─── Model Analysis ─────────────────────────────────────────────────────────
+
+/** @example analyzeOrigamiModel(content, filePath) returns full model */
+export function analyzeOrigamiModel(content: string, filePath: string): OrigamiModel {
+  const precision = measurePrecision(content)
   const paper = measurePaper(content)
+  const crease = measureCrease(content)
+  const transformation = measureTransformation(content)
   const structure = measureStructure(content)
-  const creasePattern = measureCreasePattern(content)
-  const model = measureModel(content)
+  const mastery = measureMastery(content)
 
-  const foldPrecision = Math.min(100, Math.max(0, Math.round(
-    (folds.hasValleyFold ? 25 : 0) +
-    (folds.hasPetalFold ? 20 : 0) +
-    (folds.hasMountainFold ? 15 : 0) +
-    (structure.stability * 0.15) +
-    (creasePattern.elegance * 0.1) +
-    (folds.count > 0 ? 10 : 0) +
-    (folds.hasSinkFold ? 5 : 0),
-  )))
+  const foldingPrecision = precision.level
+  const paperQuality = paper.quality
+  const creaseAccuracy = crease.accuracy
+  const transformationBeauty = transformation.beauty
+  const structuralIntegrity = structure.integrity
+  const artisticMastery = mastery.score
 
-  const creaseSharpness = creases.sharpness
-
-  const paperEconomy = Math.min(100, Math.max(0, Math.round(
-    paper.isUsed * 0.6 +
-    (paper.isEconomical ? 20 : 0) +
-    (!paper.hasOffcuts ? 20 : 0),
-  )))
-
-  const structuralIntegrity = structure.stability
-
-  const complexityReduction = Math.min(100, Math.max(0, Math.round(
-    (folds.hasValleyFold ? 25 : 0) +
-    (folds.hasPetalFold ? 20 : 0) +
-    (folds.count > 0 && folds.depth <= 4 ? 20 : 0) +
-    (creases.isClean ? 15 : 0) +
-    (structure.isBalanced ? 10 : 0) +
-    (model.isComplete ? 10 : 0),
-  )))
-
-  const creaseElegance = creasePattern.elegance
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    foldPrecision * 0.2 +
-    creaseSharpness * 0.15 +
-    paperEconomy * 0.15 +
+  const qualityScore = Math.round(
+    foldingPrecision * 0.15 +
+    paperQuality * 0.15 +
+    creaseAccuracy * 0.2 +
+    transformationBeauty * 0.15 +
     structuralIntegrity * 0.15 +
-    complexityReduction * 0.15 +
-    creaseElegance * 0.1 +
-    (model.isDisplay ? 10 : 0),
-  )))
+    artisticMastery * 0.2,
+  )
 
-  const condition = classifySheetCondition(qualityScore)
-
-  return {
+  const model: OrigamiModel = {
     file: filePath,
-    foldPrecision, creaseSharpness, paperEconomy,
-    structuralIntegrity, complexityReduction, creaseElegance,
-    folds, creases, paper, structure, creasePattern, model,
-    condition, qualityScore,
+    foldingPrecision,
+    paperQuality,
+    creaseAccuracy,
+    transformationBeauty,
+    structuralIntegrity,
+    artisticMastery,
+    precision,
+    paper,
+    crease,
+    transformation,
+    structure,
+    mastery,
+    condition: 'confetti',
+    qualityScore,
   }
+
+  model.condition = classifyCondition(model)
+
+  return model
 }
 
-// ─── Box Analysis ─────────────────────────────────────────────────────────────
+// ─── Gallery Analysis ───────────────────────────────────────────────────────
 
-/**
- * Analyze a directory as an origami box
- * @example
- * analyzeOrigamiBox(sheets, 'src') // OrigamiBox
- */
-export function analyzeOrigamiBox(sheets: OrigamiSheet[], dirPath: string): OrigamiBox {
-  if (sheets.length === 0) {
+/** @example analyzeOrigamiGallery(models, dirPath) returns gallery */
+export function analyzeOrigamiGallery(models: OrigamiModel[], dirPath: string): OrigamiGallery {
+  if (models.length === 0) {
     return {
-      directory: dirPath, sheets: [],
-      avgFoldPrecision: 100, avgCreaseSharpness: 100, avgPaperEconomy: 100,
-      avgStructuralIntegrity: 100, masterworkCount: 0, crumpledCount: 0,
-      totalFolds: 0, totalTears: 0, totalWrinkles: 0,
-      boxType: 'confetti', condition: 'gallery-quality',
+      directory: dirPath,
+      models: [],
+      avgPrecision: 0,
+      avgStructure: 0,
+      avgMastery: 0,
+      masterpieceCount: 0,
+      confettiCount: 0,
+      preciseCount: 0,
+      masterCount: 0,
+      galleryType: 'recycling-bin',
+      condition: 'trash-can',
     }
   }
 
-  const n = sheets.length
-  const avgFoldPrecision = Math.round(sheets.reduce((s, x) => s + x.foldPrecision, 0) / n)
-  const avgCreaseSharpness = Math.round(sheets.reduce((s, x) => s + x.creaseSharpness, 0) / n)
-  const avgPaperEconomy = Math.round(sheets.reduce((s, x) => s + x.paperEconomy, 0) / n)
-  const avgStructuralIntegrity = Math.round(sheets.reduce((s, x) => s + x.structuralIntegrity, 0) / n)
+  const avgPrecision = Math.round(models.reduce((s, m) => s + m.foldingPrecision, 0) / models.length)
+  const avgStructure = Math.round(models.reduce((s, m) => s + m.structuralIntegrity, 0) / models.length)
+  const avgMastery = Math.round(models.reduce((s, m) => s + m.artisticMastery, 0) / models.length)
 
-  const masterworkCount = sheets.filter(s => s.condition === 'masterwork' || s.condition === 'expert').length
-  const crumpledCount = sheets.filter(s => s.condition === 'crumpled' || s.condition === 'beginner').length
-  const totalFolds = sheets.reduce((s, x) => s + x.folds.count, 0)
-  const totalTears = sheets.reduce((s, x) => s + x.creases.tearCount, 0)
-  const totalWrinkles = sheets.reduce((s, x) => s + x.creases.wrinkleCount, 0)
+  const masterpieceCount = models.filter((m) => m.condition === 'tanagra-masterpiece').length
+  const confettiCount = models.filter((m) => m.condition === 'confetti').length
+  const preciseCount = models.filter((m) => m.precision.hasPreciseFolds).length
+  const masterCount = models.filter((m) => m.mastery.hasArtisticMastery).length
 
-  const boxType = classifyBoxType(sheets)
-  const condition = classifyBoxCondition(avgFoldPrecision)
+  const galleryType = classifyGalleryType(models)
+  const avgQuality = models.reduce((s, m) => s + m.qualityScore, 0) / models.length
+  const condition = classifyGalleryCondition(avgQuality)
 
   return {
-    directory: dirPath, sheets,
-    avgFoldPrecision, avgCreaseSharpness, avgPaperEconomy, avgStructuralIntegrity,
-    masterworkCount, crumpledCount, totalFolds, totalTears, totalWrinkles,
-    boxType, condition,
+    directory: dirPath,
+    models,
+    avgPrecision,
+    avgStructure,
+    avgMastery,
+    masterpieceCount,
+    confettiCount,
+    preciseCount,
+    masterCount,
+    galleryType,
+    condition,
   }
 }
 
-// ─── Recommendations ─────────────────────────────────────────────────────────
+// ─── Gallery Classification ────────────────────────────────────────────────
 
-/**
- * Generate origami fold recommendations
- * @example
- * generateRecommendations(sheets, boxes, studio, stats) // string[]
- */
+/** @example classifyGalleryType(models) returns gallery type */
+export function classifyGalleryType(models: OrigamiModel[]): OrigamiGallery['galleryType'] {
+  if (models.length === 0) return 'recycling-bin'
+  const avgQuality = models.reduce((s, m) => s + m.qualityScore, 0) / models.length
+  const masterpieceCnt = models.filter((m) => m.condition === 'tanagra-masterpiece').length
+  if (avgQuality >= 75 && masterpieceCnt >= Math.ceil(models.length * 0.3)) return 'museum'
+  if (avgQuality >= 60) return 'exhibition'
+  if (avgQuality >= 45) return 'studio'
+  if (avgQuality >= 30) return 'classroom'
+  if (avgQuality >= 15) return 'playground'
+  return 'recycling-bin'
+}
+
+/** @example classifyGalleryCondition(avgQuality) returns condition */
+export function classifyGalleryCondition(avgQuality: number): OrigamiGallery['condition'] {
+  if (avgQuality >= 80) return 'world-exhibition'
+  if (avgQuality >= 65) return 'national-gallery'
+  if (avgQuality >= 50) return 'art-show'
+  if (avgQuality >= 35) return 'craft-fair'
+  if (avgQuality >= 20) return 'desk-drawer'
+  return 'trash-can'
+}
+
+/** @example classifyArtistGrade(avgElegance) returns grade */
+export function classifyArtistGrade(avgElegance: number): OrigamiFoldResult['stats']['artistGrade'] {
+  if (avgElegance >= 80) return 'living-treasure'
+  if (avgElegance >= 65) return 'master-artist'
+  if (avgElegance >= 50) return 'artist'
+  if (avgElegance >= 35) return 'craftsman'
+  if (avgElegance >= 20) return 'student'
+  return 'paper-cutter'
+}
+
+// ─── Recommendations ────────────────────────────────────────────────────────
+
+/** @example generateRecommendations(models, galleries, exhibition, stats) returns recommendations */
 export function generateRecommendations(
-  _sheets: OrigamiSheet[],
-  _boxes: OrigamiBox[],
-  _studio: StudioInfo,
-  stats: OrigamiFoldStats,
+  models: OrigamiModel[],
+  galleries: OrigamiGallery[],
+  exhibition: OrigamiFoldResult['exhibition'],
+  stats: OrigamiFoldResult['stats'],
 ): string[] {
-  void _sheets
-  void _boxes
-  void _studio
   const recs: string[] = []
 
-  if (stats.crumpledCount > 0) {
-    recs.push(`Crumpled sheets: ${stats.crumpledCount} files need better abstractions`)
+  if (stats.avgFoldingPrecision < 50) {
+    recs.push('Improve folding precision — refactor code for cleaner structure')
   }
-  if (stats.totalTears > 0) {
-    recs.push(`Leaky abstractions: ${stats.totalTears} tear points detected`)
+  if (stats.avgPaperQuality < 50) {
+    recs.push('Upgrade paper quality — add more valuable code patterns')
   }
-  if (stats.wastefulFiles > 0) {
-    recs.push(`Paper waste: ${stats.wastefulFiles} files have high dead code ratio`)
+  if (stats.avgCreaseAccuracy < 50) {
+    recs.push('Sharpen crease accuracy — improve code correctness and typing')
   }
-  if (stats.squashFolds > 0) {
-    recs.push(`Squash folds: ${stats.squashFolds} forced abstractions need splitting`)
+  if (stats.avgTransformationBeauty < 50) {
+    recs.push('Enhance transformation beauty — improve code interoperability')
   }
-  if (stats.overallCraftsmanship >= 60) {
-    recs.push('Clean folds: abstractions are well-crafted across the codebase')
+  if (stats.avgStructuralIntegrity < 50) {
+    recs.push('Strengthen structural integrity — add error handling and organization')
+  }
+  if (stats.avgArtisticMastery < 50) {
+    recs.push('Elevate artistic mastery — reduce technical debt and improve quality')
+  }
+  if (stats.confettiCount > models.length * 0.5) {
+    recs.push('Too many confetti files — over half the codebase is poor quality')
+  }
+  if (stats.hasArtisticMasteryCount === 0) {
+    recs.push('No masterfully elegant code found — strive for higher code quality')
+  }
+  if (galleries.length > 0 && exhibition.overallElegance < 60) {
+    recs.push('Overall elegance is low — systematic improvement recommended')
+  }
+  if (recs.length === 0) {
+    recs.push('Origami masterpiece — your code folds into breathtaking elegance')
   }
 
-  return Array.from(new Set(recs))
+  return recs
 }
 
-// ─── Orchestrator ────────────────────────────────────────────────────────────
+// ─── Build Result ───────────────────────────────────────────────────────────
 
-/**
- * Build complete origami fold result from files and contents
- * @example
- * buildOrigamiFoldResult(['a.ts'], ['export function a() {}'], {}) // OrigamiFoldResult
- */
+/** @example buildOrigamiFoldResult(files, contents, options) returns full result */
 export function buildOrigamiFoldResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  _options?: { verbose?: boolean },
 ): OrigamiFoldResult {
-  void options
-
-  const sheets: OrigamiSheet[] = files.map((file, i) => {
-    const content = contents[i] ?? ''
-    try {
-      return analyzeOrigamiSheet(content, file)
-    } catch {
-      return analyzeOrigamiSheet('', file)
-    }
-  })
-
-  const dirMap = new Map<string, OrigamiSheet[]>()
-  for (const s of sheets) {
-    const dir = s.file.includes('/') ? s.file.slice(0, s.file.lastIndexOf('/')) : '.'
-    const existing = dirMap.get(dir)
-    if (existing) { existing.push(s) } else { dirMap.set(dir, [s]) }
-  }
-
-  const boxes: OrigamiBox[] = Array.from(dirMap.entries()).map(([dir, ss]) =>
-    analyzeOrigamiBox(ss, dir),
+  const models: OrigamiModel[] = files.map((file, i) =>
+    analyzeOrigamiModel(contents[i] ?? '', file),
   )
 
-  const n = sheets.length || 1
-  const avgFoldPrecision = Math.round(sheets.reduce((s, x) => s + x.foldPrecision, 0) / n)
-  const avgCreaseSharpness = Math.round(sheets.reduce((s, x) => s + x.creaseSharpness, 0) / n)
-  const avgPaperEconomy = Math.round(sheets.reduce((s, x) => s + x.paperEconomy, 0) / n)
-  const avgStructuralIntegrity = Math.round(sheets.reduce((s, x) => s + x.structuralIntegrity, 0) / n)
-  const totalFolds = sheets.reduce((s, x) => s + x.folds.count, 0)
-  const totalTears = sheets.reduce((s, x) => s + x.creases.tearCount, 0)
-
-  const overallCraftsmanship = Math.min(100, Math.max(0, Math.round(
-    avgFoldPrecision * 0.25 +
-    avgCreaseSharpness * 0.2 +
-    avgPaperEconomy * 0.2 +
-    avgStructuralIntegrity * 0.2 +
-    (sheets.filter(s => s.creasePattern.isSymmetric).length / n) * 100 * 0.15,
-  )))
-
-  const studio: StudioInfo = {
-    avgFoldPrecision, avgCreaseSharpness, avgPaperEconomy, avgStructuralIntegrity,
-    totalFolds, totalTears,
-    isClean: totalTears === 0,
-    overallCraftsmanship,
+  const dirMap = new Map<string, OrigamiModel[]>()
+  for (const model of models) {
+    const dir = model.file.includes('/')
+      ? model.file.substring(0, model.file.lastIndexOf('/'))
+      : '.'
+    const existing = dirMap.get(dir)
+    if (existing) {
+      existing.push(model)
+    } else {
+      dirMap.set(dir, [model])
+    }
   }
 
-  const stats: OrigamiFoldStats = {
+  const galleries: OrigamiGallery[] = Array.from(dirMap.entries()).map(([dir, dirModels]) =>
+    analyzeOrigamiGallery(dirModels, dir),
+  )
+
+  const avgPrecision = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.foldingPrecision, 0) / models.length)
+    : 0
+  const avgStructure = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.structuralIntegrity, 0) / models.length)
+    : 0
+  const avgMastery = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.artisticMastery, 0) / models.length)
+    : 0
+  const overallElegance = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.qualityScore, 0) / models.length)
+    : 0
+  const isMasterwork = overallElegance >= 65
+
+  const exhibition: OrigamiFoldResult['exhibition'] = {
+    avgPrecision,
+    avgStructure,
+    avgMastery,
+    isMasterwork,
+    overallElegance,
+  }
+
+  const avgFoldingPrecision = avgPrecision
+  const avgPaperQuality = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.paperQuality, 0) / models.length)
+    : 0
+  const avgCreaseAccuracy = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.creaseAccuracy, 0) / models.length)
+    : 0
+  const avgTransformationBeauty = models.length > 0
+    ? Math.round(models.reduce((s, m) => s + m.transformationBeauty, 0) / models.length)
+    : 0
+  const avgStructuralIntegrity = avgStructure
+  const avgArtisticMastery = avgMastery
+
+  const conditionCounts = {
+    masterpiece: 0,
+    yoshizawa: 0,
+    exhibitionPiece: 0,
+    practice: 0,
+    crumpled: 0,
+    confetti: 0,
+  }
+  for (const m of models) {
+    switch (m.condition) {
+      case 'tanagra-masterpiece': conditionCounts.masterpiece++; break
+      case 'yoshizawa-grade': conditionCounts.yoshizawa++; break
+      case 'exhibition-piece': conditionCounts.exhibitionPiece++; break
+      case 'practice-sheet': conditionCounts.practice++; break
+      case 'crumpled-ball': conditionCounts.crumpled++; break
+      case 'confetti': conditionCounts.confetti++; break
+    }
+  }
+
+  const hasPreciseFoldsCount = models.filter((m) => m.precision.hasPreciseFolds).length
+  const hasHighQualityCount = models.filter((m) => m.paper.hasHighQuality).length
+  const hasAccurateCreasesCount = models.filter((m) => m.crease.hasAccurateCreases).length
+  const hasBeautifulTransformationCount = models.filter((m) => m.transformation.hasBeautifulTransformation).length
+  const hasStrongStructureCount = models.filter((m) => m.structure.hasStrongStructure).length
+  const hasArtisticMasteryCount = models.filter((m) => m.mastery.hasArtisticMastery).length
+
+  const bestModel = models.length > 0
+    ? models.reduce((best, m) => m.qualityScore > best.qualityScore ? m : best).file
+    : ''
+  const mostPrecise = models.length > 0
+    ? models.reduce((best, m) => m.foldingPrecision > best.foldingPrecision ? m : best).file
+    : ''
+  const bestQuality = models.length > 0
+    ? models.reduce((best, m) => m.paperQuality > best.paperQuality ? m : best).file
+    : ''
+  const mostAccurate = models.length > 0
+    ? models.reduce((best, m) => m.creaseAccuracy > best.creaseAccuracy ? m : best).file
+    : ''
+  const mostBeautiful = models.length > 0
+    ? models.reduce((best, m) => m.transformationBeauty > best.transformationBeauty ? m : best).file
+    : ''
+  const strongest = models.length > 0
+    ? models.reduce((best, m) => m.structuralIntegrity > best.structuralIntegrity ? m : best).file
+    : ''
+
+  const artistGrade = classifyArtistGrade(overallElegance)
+
+  const stats: OrigamiFoldResult['stats'] = {
     totalFiles: files.length,
-    totalBoxes: boxes.length,
-    avgFoldPrecision, avgCreaseSharpness, avgPaperEconomy, avgStructuralIntegrity,
-    avgComplexityReduction: Math.round(sheets.reduce((s, x) => s + x.complexityReduction, 0) / n),
-    avgCreaseElegance: Math.round(sheets.reduce((s, x) => s + x.creaseElegance, 0) / n),
-    masterworkCount: sheets.filter(s => s.condition === 'masterwork').length,
-    expertCount: sheets.filter(s => s.condition === 'expert').length,
-    skilledCount: sheets.filter(s => s.condition === 'skilled').length,
-    apprenticeCount: sheets.filter(s => s.condition === 'apprentice').length,
-    beginnerCount: sheets.filter(s => s.condition === 'beginner').length,
-    crumpledCount: sheets.filter(s => s.condition === 'crumpled').length,
-    totalFolds,
-    totalTears,
-    totalWrinkles: sheets.reduce((s, x) => s + x.creases.wrinkleCount, 0),
-    valleyFolds: sheets.reduce((s, x) => s + x.folds.valleyCount, 0),
-    mountainFolds: sheets.reduce((s, x) => s + x.folds.mountainCount, 0),
-    squashFolds: sheets.reduce((s, x) => s + x.folds.squashCount, 0),
-    petalFolds: sheets.reduce((s, x) => s + x.folds.petalCount, 0),
-    economicalFiles: sheets.filter(s => s.paper.isEconomical).length,
-    wastefulFiles: sheets.filter(s => !s.paper.isEconomical).length,
-    symmetricPatterns: sheets.filter(s => s.creasePattern.isSymmetric).length,
-    crumpledPatterns: sheets.filter(s => s.creasePattern.patternType === 'crumpled' || s.creasePattern.patternType === 'torn').length,
-    overallCraftsmanship,
-    origamiGrade: classifyOrigamiGrade(overallCraftsmanship),
-    bestFolded: sheets.length > 0
-      ? sheets.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, sheets[0]).file : 'none',
-    worstFolded: sheets.length > 0
-      ? sheets.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, sheets[0]).file : 'none',
-    mostEconomical: sheets.length > 0
-      ? sheets.reduce((a, b) => b.paper.isUsed > a.paper.isUsed ? b : a, sheets[0]).file : 'none',
-    mostElegant: sheets.length > 0
-      ? sheets.reduce((a, b) => b.creaseElegance > a.creaseElegance ? b : a, sheets[0]).file : 'none',
-    mostTorn: sheets.length > 0
-      ? sheets.reduce((a, b) => b.creases.tearCount > a.creases.tearCount ? b : a, sheets[0]).file : 'none',
+    totalGalleries: galleries.length,
+    avgFoldingPrecision,
+    avgPaperQuality,
+    avgCreaseAccuracy,
+    avgTransformationBeauty,
+    avgStructuralIntegrity,
+    avgArtisticMastery,
+    masterpieceCount: conditionCounts.masterpiece,
+    yoshizawaCount: conditionCounts.yoshizawa,
+    exhibitionCount: conditionCounts.exhibitionPiece,
+    practiceCount: conditionCounts.practice,
+    crumpledCount: conditionCounts.crumpled,
+    confettiCount: conditionCounts.confetti,
+    hasPreciseFoldsCount,
+    hasHighQualityCount,
+    hasAccurateCreasesCount,
+    hasBeautifulTransformationCount,
+    hasStrongStructureCount,
+    hasArtisticMasteryCount,
+    overallElegance,
+    artistGrade,
+    bestModel,
+    mostPrecise,
+    bestQuality,
+    mostAccurate,
+    mostBeautiful,
+    strongest,
   }
 
-  const recommendations = generateRecommendations(sheets, boxes, studio, stats)
+  const recommendations = generateRecommendations(models, galleries, exhibition, stats)
 
-  return { sheets, boxes, studio, stats, recommendations }
+  return {
+    models,
+    galleries,
+    exhibition,
+    stats,
+    recommendations,
+  }
 }
