@@ -1,40 +1,47 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildRiverDeltaResult } from './river-delta-helpers.js'
+import {
+  buildRiverDeltaResult,
+  type RiverDeltaResult,
+} from './river-delta-helpers.js'
 import { formatRiverDeltaJson, formatRiverDeltaTable } from './river-delta-format-helpers.js'
 
 export default class RiverDelta extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze for branching/fan-out',
+      description: 'Path to analyze river delta patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code branching and fan-out like a river delta'
+  static override description = 'Analyze code flow, sedimentation, and fertility like a river delta'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory for code branching',
+      description: 'Analyze river delta in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory with JSON output',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed per-file channel metrics',
+      description: 'Analyze river delta in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
       description: 'Analyze only TypeScript files',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output delta.json',
+      description: 'Export river delta analysis to JSON file',
     },
   ]
 
@@ -61,7 +68,7 @@ export default class RiverDelta extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed per-file metrics',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -86,28 +93,22 @@ export default class RiverDelta extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = '.' + f.path.split('.').pop()?.toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
-    spinner.text = 'Analyzing river channels...'
+    spinner.text = 'Analyzing river delta...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -123,13 +124,14 @@ export default class RiverDelta extends Command {
       }
     }
 
-    const result = buildRiverDeltaResult(files, contents, {})
+    const result: RiverDeltaResult = buildRiverDeltaResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} files across ${result.regions.length} delta regions`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.regions.length} delta regions`)
 
-    const outputData = format === 'json'
-      ? formatRiverDeltaJson(result)
-      : formatRiverDeltaTable(result, verbose)
+    const outputData =
+      format === 'json'
+        ? formatRiverDeltaJson(result)
+        : formatRiverDeltaTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -146,54 +148,6 @@ export default class RiverDelta extends Command {
   }
 }
 
-export {
-  analyzeDeltaRegion,
-  analyzeWaterChannel,
-  buildRiverDeltaResult,
-  classifyCondition,
-  classifyHydrologistGrade,
-  classifyRegionCondition,
-  classifyRegionType,
-  countBranches,
-  countClasses,
-  countComments,
-  countConsole,
-  countDescriptiveNames,
-  countErrorHandling,
-  countExports,
-  countFunctions,
-  countImports,
-  countJSDoc,
-  countLoc,
-  countTodos,
-  countTypeAnnotations,
-  countValidations,
-  generateRecommendations,
-  maxNesting,
-  measureBank,
-  measureChannel,
-  measureDistributary,
-  measureFlood,
-  measureFlow,
-  measureSediment,
-} from './river-delta-helpers.js'
-export type {
-  BankMeasure,
-  Basin,
-  ChannelCondition,
-  ChannelMeasure,
-  ChannelType,
-  DeltaRegion,
-  DistributaryMeasure,
-  FloodMeasure,
-  FlowDirection,
-  FlowMeasure,
-  HydrologistGrade,
-  RegionCondition,
-  RegionType,
-  RiverDeltaResult,
-  RiverDeltaStats,
-  SedimentMeasure,
-  WaterChannel,
-} from './river-delta-helpers.js'
+export { buildRiverDeltaResult } from './river-delta-helpers.js'
+export type { RiverDeltaResult, SedimentLayer, DeltaRegion, UpstreamMeasure, ChannelMeasure, SedimentMeasure, DistributaryMeasure, FertilityMeasure, ErosionMeasure } from './river-delta-helpers.js'
 export { formatRiverDeltaJson, formatRiverDeltaTable } from './river-delta-format-helpers.js'
