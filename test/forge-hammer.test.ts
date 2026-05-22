@@ -1,707 +1,564 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
+
 import {
-  analyzeForgedPiece,
-  analyzeForgeShop,
+  analyzeForgeArmory,
+  analyzeHammerBlow,
   buildForgeHammerResult,
+  classifyArmoryCondition,
+  classifyArmoryType,
   classifyCondition,
-  classifyShopCondition,
-  classifyShopType,
   classifySmithGrade,
-  countBranches,
-  countClasses,
-  countComments,
-  countConsole,
-  countDescriptiveNames,
-  countErrorHandling,
-  countExports,
-  countFunctions,
-  countImports,
-  countJSDoc,
-  countLoc,
-  countTestIndicators,
-  countTodos,
-  countTypeAnnotations,
-  countValidations,
   generateRecommendations,
-  maxNesting,
-  measureForging,
-  measureHeat,
-  measureImpact,
-  measureMetal,
+  measureBlade,
+  measureEdge,
+  measurePrecision,
+  measureTechnique,
   measureTemper,
-  measureTesting,
+  measureWeight,
 } from '../src/commands/forge-hammer-helpers.js'
-import { formatForgeHammerJson, formatForgeHammerTable } from '../src/commands/forge-hammer-format-helpers.js'
+import {
+  conditionColor,
+  formatForgeHammerJson,
+  formatForgeHammerTable,
+  gradeColor,
+  scoreColor,
+  weightClassColor,
+} from '../src/commands/forge-hammer-format-helpers.js'
 
-// ─── Test Code Snippets ──────────────────────────────────────────────────────
+// ─── Fixtures ───────────────────────────────────────────────────────────────
 
-const emptyCode = ''
-const simpleCode = 'const x = 1'
-const strongCode = `import { something } from 'module'
-export function calculateTotal(items: string[]): number {
-  try {
-    if (items.length === 0) return 0
-    const total = items.reduce((sum: number, item: string) => {
-      return sum + item.length
-    }, 0)
-    return total
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message)
+const RICH = `/**
+ * Elegant calligraphy module
+ */
+export interface Stroke {
+  quality: number
+  inkDensity: number
+}
+
+export class CalligraphyMaster<T extends Stroke> {
+  private strokes: T[] = []
+  private static readonly MAX_STROKES = 100
+
+  constructor(private readonly brush: string) {}
+
+  async paint(stroke: T): Promise<void> {
+    try {
+      if (stroke.quality > 0) {
+        this.strokes.push(stroke)
+      }
+    } catch {
+      this.handleError()
     }
-    throw error
+  }
+
+  private handleError(): void {
+    console.error('Paint failed')
   }
 }
-/**
- * Validate input
- * @example
- * validateInput(['a']) // true
- */
-export function validateInput(data: string[]): boolean {
-  return typeof data !== 'undefined' && Array.isArray(data) && data.length > 0
+
+export type InkType = 'sumi' | 'bokushu'
+export enum BrushGrade { Master, Adept, Novice }
+export function createStroke(quality: number): Stroke {
+  return { quality, inkDensity: quality * 0.8 }
 }
+export { CalligraphyMaster }
+export type { Stroke as BrushStroke }
 `
-const testCode = `import { describe, it, expect } from 'vitest'
-describe('calculateTotal', () => {
-  beforeEach(() => {
-    // setup
-  })
-  it('should return 0 for empty array', () => {
-    expect(calculateTotal([])).toBe(0)
-  })
-  it('should sum correctly', () => {
-    expect(calculateTotal(['a', 'bb'])).toBe(3)
-  })
-})
-`
-const brittleCode = `function a(x) { if (x) { if (y) { if (z) { if (w) { if (v) { return 1 } } } } } }
-function b(x) { if (x) { if (y) { if (z) { if (w) { return 2 } } } } }
-function c(x) { if (x) { if (y) { if (z) { return 3 } } } }
-function d(x) { if (x) { if (y) { return 4 } } }
-console.log('debug')
-// TODO: fix this
-`
-const todoCode = `export function processItems(items: string[]): void {
-  // TODO: implement validation
-  // FIXME: handle edge cases
-  console.log(items)
+
+const EMPTY = ''
+const MEDIUM = `function hello(name) {
+  var x = 1
+  if (name) {
+    console.log(x)
+  }
 }
 `
 
-// ─── Primitive Counters ──────────────────────────────────────────────────────
+// ─── measureWeight ──────────────────────────────────────────────────────────
 
-describe('countLoc', () => {
-  it('counts 0 for empty string', () => {
-    expect(countLoc(emptyCode)).toBe(0)
+describe('measureWeight', () => {
+  it('RICH: impact=91, class=engineer, hasProperWeight=true', () => {
+    const result = measureWeight(RICH)
+    expect(result.impact).toBe(91)
+    expect(result.class).toBe('engineer')
+    expect(result.hasProperWeight).toBe(true)
+    expect(result.hasHeavyImpact).toBe(true)
   })
-  it('counts 1 for single line', () => {
-    expect(countLoc(simpleCode)).toBe(1)
+
+  it('RICH: overstrike=0, mishit=1', () => {
+    const result = measureWeight(RICH)
+    expect(result.overstrikeCount).toBe(0)
+    expect(result.mishitCount).toBe(1)
   })
-  it('counts multiple non-blank lines', () => {
-    expect(countLoc('a\n\nb\nc')).toBe(3)
+
+  it('RICH: hasNoOverstriking=true, hasNoMishit=false', () => {
+    const result = measureWeight(RICH)
+    expect(result.hasNoOverstriking).toBe(true)
+    expect(result.hasNoMishit).toBe(false)
   })
-  it('counts strongCode lines', () => {
-    expect(countLoc(strongCode)).toBeGreaterThan(5)
+
+  it('EMPTY: impact=38, class=tack', () => {
+    const result = measureWeight(EMPTY)
+    expect(result.impact).toBe(38)
+    expect(result.class).toBe('tack')
+    expect(result.hasProperWeight).toBe(false)
+  })
+
+  it('MEDIUM: impact=44, class=tack', () => {
+    const result = measureWeight(MEDIUM)
+    expect(result.impact).toBe(44)
+    expect(result.class).toBe('tack')
   })
 })
 
-describe('countImports', () => {
-  it('counts 0 for no imports', () => {
-    expect(countImports(emptyCode)).toBe(0)
-    expect(countImports(simpleCode)).toBe(0)
+// ─── measurePrecision ───────────────────────────────────────────────────────
+
+describe('measurePrecision', () => {
+  it('RICH: accuracy=88, aim=on-target', () => {
+    const result = measurePrecision(RICH)
+    expect(result.accuracy).toBe(88)
+    expect(result.aim).toBe('on-target')
+    expect(result.hasHighPrecision).toBe(true)
   })
-  it('counts import statements', () => {
-    expect(countImports(strongCode)).toBe(1)
-    expect(countImports(testCode)).toBe(1)
+
+  it('RICH: miss=0, hasNoMisses=true', () => {
+    const result = measurePrecision(RICH)
+    expect(result.missCount).toBe(0)
+    expect(result.hasNoMisses).toBe(true)
+  })
+
+  it('EMPTY: accuracy=35, aim=wild', () => {
+    const result = measurePrecision(EMPTY)
+    expect(result.accuracy).toBe(35)
+    expect(result.aim).toBe('wild')
+  })
+
+  it('MEDIUM: accuracy=41, aim=wild', () => {
+    const result = measurePrecision(MEDIUM)
+    expect(result.accuracy).toBe(41)
+    expect(result.aim).toBe('wild')
   })
 })
 
-describe('countExports', () => {
-  it('counts 0 for no exports', () => {
-    expect(countExports(emptyCode)).toBe(0)
-    expect(countExports(simpleCode)).toBe(0)
-  })
-  it('counts export statements', () => {
-    expect(countExports(strongCode)).toBeGreaterThanOrEqual(2)
-  })
-})
-
-describe('countFunctions', () => {
-  it('counts 0 for no functions', () => {
-    expect(countFunctions(emptyCode)).toBe(0)
-    expect(countFunctions(simpleCode)).toBe(0)
-  })
-  it('counts function declarations', () => {
-    expect(countFunctions(strongCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countClasses', () => {
-  it('counts 0 for no classes', () => {
-    expect(countClasses(emptyCode)).toBe(0)
-  })
-  it('counts class declarations', () => {
-    expect(countClasses('class Foo {}')).toBe(1)
-  })
-})
-
-describe('countErrorHandling', () => {
-  it('counts 0 for no error handling', () => {
-    expect(countErrorHandling(emptyCode)).toBe(0)
-    expect(countErrorHandling(simpleCode)).toBe(0)
-  })
-  it('counts try/catch/throw', () => {
-    const count = countErrorHandling(strongCode)
-    expect(count).toBeGreaterThanOrEqual(2)
-  })
-})
-
-describe('countTypeAnnotations', () => {
-  it('counts 0 for no types', () => {
-    expect(countTypeAnnotations(emptyCode)).toBe(0)
-    expect(countTypeAnnotations(simpleCode)).toBe(0)
-  })
-  it('counts type annotations', () => {
-    expect(countTypeAnnotations(strongCode)).toBeGreaterThanOrEqual(2)
-  })
-})
-
-describe('countBranches', () => {
-  it('counts 0 for no branches', () => {
-    expect(countBranches(emptyCode)).toBe(0)
-  })
-  it('counts if/else/switch', () => {
-    expect(countBranches(strongCode)).toBeGreaterThanOrEqual(2)
-  })
-})
-
-describe('maxNesting', () => {
-  it('returns 0 for empty', () => {
-    expect(maxNesting(emptyCode)).toBe(0)
-  })
-  it('returns 1 for single brace', () => {
-    expect(maxNesting('{}')).toBe(1)
-  })
-  it('measures deep nesting', () => {
-    expect(maxNesting(brittleCode)).toBeGreaterThanOrEqual(3)
-  })
-})
-
-describe('countConsole', () => {
-  it('counts 0 for no console', () => {
-    expect(countConsole(emptyCode)).toBe(0)
-  })
-  it('counts console statements', () => {
-    expect(countConsole(brittleCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countComments', () => {
-  it('counts 0 for no comments', () => {
-    expect(countComments(emptyCode)).toBe(0)
-  })
-  it('counts comments', () => {
-    expect(countComments(strongCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countTodos', () => {
-  it('counts 0 for no todos', () => {
-    expect(countTodos(emptyCode)).toBe(0)
-  })
-  it('counts TODO/FIXME/HACK', () => {
-    expect(countTodos(brittleCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countJSDoc', () => {
-  it('counts 0 for no JSDoc', () => {
-    expect(countJSDoc(emptyCode)).toBe(0)
-  })
-  it('counts JSDoc blocks', () => {
-    expect(countJSDoc(strongCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countDescriptiveNames', () => {
-  it('counts 0 for no descriptive names', () => {
-    expect(countDescriptiveNames(emptyCode)).toBe(0)
-  })
-  it('counts descriptive names', () => {
-    expect(countDescriptiveNames(strongCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-describe('countTestIndicators', () => {
-  it('counts 0 for no tests', () => {
-    expect(countTestIndicators(emptyCode)).toBe(0)
-  })
-  it('counts test indicators', () => {
-    expect(countTestIndicators(testCode)).toBeGreaterThanOrEqual(4)
-  })
-})
-
-describe('countValidations', () => {
-  it('counts 0 for no validations', () => {
-    expect(countValidations(emptyCode)).toBe(0)
-  })
-  it('counts validations', () => {
-    expect(countValidations(strongCode)).toBeGreaterThanOrEqual(1)
-  })
-})
-
-// ─── Measurement Functions ────────────────────────────────────────────────────
-
-describe('measureMetal', () => {
-  it('returns 0 hardness for empty code', () => {
-    const m = measureMetal(emptyCode)
-    expect(m.hardness).toBe(0)
-    expect(m.type).toBe('clay')
-    expect(m.grade).toBe('scrap')
-  })
-  it('returns higher hardness for strong code', () => {
-    const m = measureMetal(strongCode)
-    expect(m.hardness).toBeGreaterThan(0)
-    expect(m.carbonContent).toBeGreaterThanOrEqual(0)
-  })
-  it('detects impurities with todos/console', () => {
-    const m = measureMetal(brittleCode)
-    expect(m.hasImpurities).toBe(true)
-    expect(m.impurityCount).toBeGreaterThan(0)
-  })
-  it('calculates carbon content from branches/nesting', () => {
-    const m = measureMetal(strongCode)
-    expect(m.carbonContent).toBeGreaterThanOrEqual(0)
-    expect(m.carbonContent).toBeLessThanOrEqual(100)
-  })
-  it('assigns steel type for high hardness', () => {
-    const m = measureMetal(strongCode)
-    expect(['steel', 'iron', 'bronze']).toContain(m.type)
-  })
-})
+// ─── measureTemper ──────────────────────────────────────────────────────────
 
 describe('measureTemper', () => {
-  it('returns 0 quality for empty code', () => {
-    const t = measureTemper(emptyCode)
-    expect(t.quality).toBe(0)
-    expect(t.isEvenlyTempered).toBe(false)
+  it('RICH: resilience=90, grade=carbon-steel', () => {
+    const result = measureTemper(RICH)
+    expect(result.resilience).toBe(90)
+    expect(result.grade).toBe('carbon-steel')
+    expect(result.hasProperTemper).toBe(true)
   })
-  it('detects even temper with balanced errors/branches', () => {
-    const t = measureTemper(strongCode)
-    expect(t.quality).toBeGreaterThan(0)
+
+  it('RICH: hasElasticRecovery=true (tryCatch)', () => {
+    const result = measureTemper(RICH)
+    expect(result.hasElasticRecovery).toBe(true)
   })
-  it('detects brittleness in code with many branches but no errors', () => {
-    const t = measureTemper(brittleCode)
-    expect(t.isBrittle).toBe(true)
+
+  it('EMPTY: resilience=30, grade=clay', () => {
+    const result = measureTemper(EMPTY)
+    expect(result.resilience).toBe(30)
+    expect(result.grade).toBe('clay')
   })
-  it('detects ductility with error handling and types', () => {
-    const t = measureTemper(strongCode)
-    expect(t.isDuctile).toBe(true)
+
+  it('MEDIUM: resilience=35, grade=wrought-iron', () => {
+    const result = measureTemper(MEDIUM)
+    expect(result.resilience).toBe(35)
+    expect(result.grade).toBe('wrought-iron')
   })
 })
 
-describe('measureImpact', () => {
-  it('returns 0 resistance for empty code', () => {
-    const i = measureImpact(emptyCode)
-    expect(i.resistance).toBe(0)
-    expect(i.hasDefenses).toBe(false)
-    expect(i.hasShockAbsorbers).toBe(false)
+// ─── measureEdge ────────────────────────────────────────────────────────────
+
+describe('measureEdge', () => {
+  it('RICH: quality=88, retention=steel', () => {
+    const result = measureEdge(RICH)
+    expect(result.quality).toBe(88)
+    expect(result.retention).toBe('steel')
+    expect(result.hasLongEdge).toBe(true)
   })
-  it('detects defenses with validations', () => {
-    const i = measureImpact(strongCode)
-    expect(i.hasDefenses).toBe(true)
+
+  it('RICH: hasNoDulling=false (private=4)', () => {
+    const result = measureEdge(RICH)
+    expect(result.dullingCount).toBe(4)
+    expect(result.hasNoDulling).toBe(false)
   })
-  it('detects crack stoppers with try/catch', () => {
-    const i = measureImpact(strongCode)
-    expect(i.hasCrackStoppers).toBe(true)
+
+  it('EMPTY: quality=37, retention=tin', () => {
+    const result = measureEdge(EMPTY)
+    expect(result.quality).toBe(37)
+    expect(result.retention).toBe('tin')
   })
-  it('reports crack points for unhandled code', () => {
-    const i = measureImpact(brittleCode)
-    expect(i.crackCount).toBeGreaterThan(0)
-    expect(i.crackPoints.length).toBeGreaterThan(0)
+
+  it('MEDIUM: quality=43, retention=tin', () => {
+    const result = measureEdge(MEDIUM)
+    expect(result.quality).toBe(43)
+    expect(result.retention).toBe('tin')
   })
 })
 
-describe('measureForging', () => {
-  it('returns 0 quality for empty code', () => {
-    const f = measureForging(emptyCode)
-    expect(f.quality).toBe(0)
-    expect(f.technique).toBe('duct-tape')
+// ─── measureTechnique ───────────────────────────────────────────────────────
+
+describe('measureTechnique', () => {
+  it('RICH: craftsmanship=87, method=folding', () => {
+    const result = measureTechnique(RICH)
+    expect(result.craftsmanship).toBe(87)
+    expect(result.method).toBe('folding')
+    expect(result.hasHighCraftsmanship).toBe(true)
   })
-  it('detects folded-steel technique for well-documented code', () => {
-    const f = measureForging(strongCode)
-    expect(f.technique).toBe('folded-steel')
+
+  it('RICH: hasMasterwork=false (deepNested=1)', () => {
+    const result = measureTechnique(RICH)
+    expect(result.hasMasterwork).toBe(false)
+    expect(result.sloppyCount).toBe(2)
   })
-  it('detects polish level', () => {
-    const f = measureForging(strongCode)
-    expect(f.polishLevel).toBeGreaterThan(0)
-    expect(f.isPolished).toBe(true)
+
+  it('EMPTY: craftsmanship=46, method=stamping', () => {
+    const result = measureTechnique(EMPTY)
+    expect(result.craftsmanship).toBe(46)
+    expect(result.method).toBe('stamping')
   })
-  it('detects rough code', () => {
-    const code = 'x = 1\ny = 2'
-    const f = measureForging(code)
-    expect(f.quality).toBeGreaterThanOrEqual(0)
-    expect(f.technique).toBe('3d-printed')
+
+  it('MEDIUM: craftsmanship=51, method=stamping', () => {
+    const result = measureTechnique(MEDIUM)
+    expect(result.craftsmanship).toBe(51)
+    expect(result.method).toBe('stamping')
   })
 })
 
-describe('measureTesting', () => {
-  it('returns no tests for non-test code', () => {
-    const t = measureTesting(strongCode)
-    expect(t.hasHardnessTest).toBe(false)
-    expect(t.anvilMarkCount).toBe(0)
+// ─── measureBlade ───────────────────────────────────────────────────────────
+
+describe('measureBlade', () => {
+  it('RICH: quality=88, grade=masterwork', () => {
+    const result = measureBlade(RICH)
+    expect(result.quality).toBe(88)
+    expect(result.grade).toBe('masterwork')
+    expect(result.hasHighQuality).toBe(true)
   })
-  it('detects test indicators', () => {
-    const t = measureTesting(testCode)
-    expect(t.hasHardnessTest).toBe(true)
-    expect(t.hasStressTest).toBe(true)
-    expect(t.hasFatigueTest).toBe(true)
-    expect(t.anvilMarkCount).toBeGreaterThan(0)
+
+  it('RICH: hasNoFlaws=true, hasNoWeakness=false', () => {
+    const result = measureBlade(RICH)
+    expect(result.hasNoFlaws).toBe(true)
+    expect(result.hasNoWeakness).toBe(false)
+    expect(result.weaknessCount).toBe(2)
   })
-  it('calculates test quality', () => {
-    const t = measureTesting(testCode)
-    expect(t.testQuality).toBeGreaterThan(0)
+
+  it('EMPTY: quality=30, grade=scrap', () => {
+    const result = measureBlade(EMPTY)
+    expect(result.quality).toBe(30)
+    expect(result.grade).toBe('scrap')
+  })
+
+  it('MEDIUM: quality=38, grade=crude', () => {
+    const result = measureBlade(MEDIUM)
+    expect(result.quality).toBe(38)
+    expect(result.grade).toBe('crude')
   })
 })
 
-describe('measureHeat', () => {
-  it('returns none treatment for simple code', () => {
-    const h = measureHeat(simpleCode)
-    expect(h.treatmentType).toBe('none')
-    expect(h.hasBeenHardened).toBe(false)
+// ─── analyzeHammerBlow ──────────────────────────────────────────────────────
+
+describe('analyzeHammerBlow', () => {
+  it('RICH: qualityScore=89, condition=excalibur', () => {
+    const result = analyzeHammerBlow(RICH, 'test.ts')
+    expect(result.qualityScore).toBe(89)
+    expect(result.condition).toBe('excalibur')
   })
-  it('detects hardening with error handling', () => {
-    const h = measureHeat(strongCode)
-    expect(h.hasBeenHardened).toBe(true)
+
+  it('RICH: all six measures present', () => {
+    const result = analyzeHammerBlow(RICH, 'test.ts')
+    expect(result.hammerWeight).toBe(91)
+    expect(result.strikePrecision).toBe(88)
+    expect(result.metalTemper).toBe(90)
+    expect(result.edgeQuality).toBe(88)
+    expect(result.forgingTechnique).toBe(87)
+    expect(result.bladeQuality).toBe(88)
   })
-  it('detects still-hot with todos', () => {
-    const h = measureHeat(todoCode)
-    expect(h.isStillHot).toBe(true)
+
+  it('EMPTY: qualityScore=36, condition=serviceable-tool', () => {
+    const result = analyzeHammerBlow(EMPTY, 'empty.ts')
+    expect(result.qualityScore).toBe(36)
+    expect(result.condition).toBe('serviceable-tool')
   })
-  it('detects cooling with todos + errors', () => {
-    const code = `try { x } catch (e) { console.log(e) } // TODO: fix`
-    const h = measureHeat(code)
-    expect(h.isCooling).toBe(true)
-  })
-  it('returns 0 stability for empty code', () => {
-    const h = measureHeat(emptyCode)
-    expect(h.stabilityScore).toBe(0)
+
+  it('MEDIUM: qualityScore=42, condition=serviceable-tool', () => {
+    const result = analyzeHammerBlow(MEDIUM, 'med.ts')
+    expect(result.qualityScore).toBe(42)
+    expect(result.condition).toBe('serviceable-tool')
   })
 })
 
-// ─── Classification Functions ─────────────────────────────────────────────────
+// ─── classifyCondition ──────────────────────────────────────────────────────
 
 describe('classifyCondition', () => {
-  it('classifies scrap-iron for low scores', () => {
-    expect(classifyCondition(0)).toBe('scrap-iron')
-    expect(classifyCondition(10)).toBe('scrap-iron')
+  it('>=80: excalibur', () => {
+    const blow = analyzeHammerBlow(RICH, 'test.ts')
+    expect(classifyCondition(blow)).toBe('excalibur')
   })
-  it('classifies soft-metal', () => {
-    expect(classifyCondition(15)).toBe('soft-metal')
-    expect(classifyCondition(30)).toBe('soft-metal')
+
+  it('>=65: masterwork-blade', () => {
+    expect(classifyCondition({ qualityScore: 70 } as any)).toBe('masterwork-blade')
   })
-  it('classifies brittle-casting', () => {
-    expect(classifyCondition(32)).toBe('brittle-casting')
-    expect(classifyCondition(49)).toBe('brittle-casting')
+
+  it('>=50: fine-weapon', () => {
+    expect(classifyCondition({ qualityScore: 55 } as any)).toBe('fine-weapon')
   })
-  it('classifies serviceable-iron', () => {
-    expect(classifyCondition(50)).toBe('serviceable-iron')
-    expect(classifyCondition(67)).toBe('serviceable-iron')
+
+  it('>=35: serviceable-tool', () => {
+    expect(classifyCondition({ qualityScore: 40 } as any)).toBe('serviceable-tool')
   })
-  it('classifies quality-tool', () => {
-    expect(classifyCondition(68)).toBe('quality-tool')
-    expect(classifyCondition(84)).toBe('quality-tool')
+
+  it('>=20: rusty-nail', () => {
+    expect(classifyCondition({ qualityScore: 25 } as any)).toBe('rusty-nail')
   })
-  it('classifies masterwork-blade', () => {
-    expect(classifyCondition(85)).toBe('masterwork-blade')
-    expect(classifyCondition(100)).toBe('masterwork-blade')
+
+  it('<20: scrap-metal', () => {
+    expect(classifyCondition({ qualityScore: 10 } as any)).toBe('scrap-metal')
   })
 })
 
-describe('classifyShopType', () => {
-  it('returns scrap-yard for empty array', () => {
-    expect(classifyShopType([])).toBe('scrap-yard')
-  })
-  it('classifies based on average quality', () => {
-    const pieces = [{ qualityScore: 85 }, { qualityScore: 90 }].map(qs => ({ qualityScore: qs.qualityScore } as any))
-    expect(classifyShopType(pieces)).toBe('master-forge')
-  })
-})
-
-describe('classifyShopCondition', () => {
-  it('returns condemned for empty array', () => {
-    expect(classifyShopCondition([])).toBe('condemned')
-  })
-})
+// ─── classifySmithGrade ─────────────────────────────────────────────────────
 
 describe('classifySmithGrade', () => {
-  it('classifies scavenger for low scores', () => {
-    expect(classifySmithGrade(0)).toBe('scavenger')
-  })
-  it('classifies master-smith for high scores', () => {
-    expect(classifySmithGrade(85)).toBe('master-smith')
-  })
-  it('classifies journeyman', () => {
-    expect(classifySmithGrade(70)).toBe('journeyman')
-  })
-  it('classifies apprentice', () => {
-    expect(classifySmithGrade(50)).toBe('apprentice')
-  })
-  it('classifies tinkerer', () => {
-    expect(classifySmithGrade(35)).toBe('tinkerer')
-  })
-  it('classifies amateur', () => {
-    expect(classifySmithGrade(20)).toBe('amateur')
-  })
+  it('>=80: legendary-smith', () => expect(classifySmithGrade(85)).toBe('legendary-smith'))
+  it('>=65: master-smith', () => expect(classifySmithGrade(70)).toBe('master-smith'))
+  it('>=50: journeyman', () => expect(classifySmithGrade(55)).toBe('journeyman'))
+  it('>=35: apprentice', () => expect(classifySmithGrade(40)).toBe('apprentice'))
+  it('>=20: novice', () => expect(classifySmithGrade(25)).toBe('novice'))
+  it('<20: vandal', () => expect(classifySmithGrade(10)).toBe('vandal'))
 })
 
-// ─── Core Analysis ────────────────────────────────────────────────────────────
+// ─── classifyArmoryType ─────────────────────────────────────────────────────
 
-describe('analyzeForgedPiece', () => {
-  it('returns correct structure for empty code', () => {
-    const piece = analyzeForgedPiece(emptyCode, 'empty.ts')
-    expect(piece.file).toBe('empty.ts')
-    expect(piece.hardness).toBe(0)
-    expect(piece.temperQuality).toBe(0)
-    expect(piece.impactResistance).toBe(0)
-    expect(piece.ductility).toBe(0)
-    expect(piece.brittleness).toBe(0)
-    expect(piece.anvilMarks).toBe(0)
-    expect(piece.qualityScore).toBe(0)
-    expect(piece.condition).toBe('scrap-iron')
-    expect(piece.metal.type).toBe('clay')
-    expect(piece.forging.technique).toBe('duct-tape')
-    expect(piece.temper.isDuctile).toBe(false)
-  })
-  it('returns high scores for strong code', () => {
-    const piece = analyzeForgedPiece(strongCode, 'strong.ts')
-    expect(piece.file).toBe('strong.ts')
-    expect(piece.hardness).toBeGreaterThan(0)
-    expect(piece.temperQuality).toBeGreaterThan(0)
-    expect(piece.impactResistance).toBeGreaterThan(0)
-    expect(piece.qualityScore).toBeGreaterThan(0)
-    expect(piece.temper.isDuctile).toBe(true)
-    expect(piece.impact.hasCrackStoppers).toBe(true)
-  })
-  it('detects brittleness in branch-heavy code', () => {
-    const piece = analyzeForgedPiece(brittleCode, 'brittle.ts')
-    expect(piece.brittleness).toBeGreaterThan(0)
-  })
-  it('produces valid scores in range 0-100', () => {
-    const piece = analyzeForgedPiece(strongCode, 'range.ts')
-    expect(piece.hardness).toBeGreaterThanOrEqual(0)
-    expect(piece.hardness).toBeLessThanOrEqual(100)
-    expect(piece.qualityScore).toBeGreaterThanOrEqual(0)
-    expect(piece.qualityScore).toBeLessThanOrEqual(100)
-  })
-})
+describe('classifyArmoryType', () => {
+  it('empty: ruins', () => expect(classifyArmoryType([])).toBe('ruins'))
 
-describe('analyzeForgeShop', () => {
-  it('returns zeros for empty pieces', () => {
-    const shop = analyzeForgeShop([], 'empty-dir')
-    expect(shop.directory).toBe('empty-dir')
-    expect(shop.avgHardness).toBe(0)
-    expect(shop.avgTemper).toBe(0)
-    expect(shop.pieces).toEqual([])
-    expect(shop.shopType).toBe('scrap-yard')
-    expect(shop.condition).toBe('condemned')
-  })
-  it('aggregates metrics from pieces', () => {
-    const pieces = [
-      analyzeForgedPiece(strongCode, 'a.ts'),
-      analyzeForgedPiece(simpleCode, 'b.ts'),
+  it('high quality: royal-armory', () => {
+    const blows = [
+      analyzeHammerBlow(RICH, 'a.ts'),
+      analyzeHammerBlow(RICH, 'b.ts'),
+      analyzeHammerBlow(RICH, 'c.ts'),
     ]
-    const shop = analyzeForgeShop(pieces, 'src')
-    expect(shop.avgHardness).toBeGreaterThan(0)
-    expect(shop.pieces).toHaveLength(2)
+    expect(classifyArmoryType(blows)).toBe('royal-armory')
+  })
+
+  it('medium quality: field-forge', () => {
+    const blows = [analyzeHammerBlow(MEDIUM, 'm.ts')]
+    expect(classifyArmoryType(blows)).toBe('field-forge')
   })
 })
 
-// ─── Build Result ─────────────────────────────────────────────────────────────
+// ─── classifyArmoryCondition ────────────────────────────────────────────────
+
+describe('classifyArmoryCondition', () => {
+  it('>=80: legendary-armory', () => expect(classifyArmoryCondition(85)).toBe('legendary-armory'))
+  it('>=65: well-stocked', () => expect(classifyArmoryCondition(70)).toBe('well-stocked'))
+  it('>=50: functional', () => expect(classifyArmoryCondition(55)).toBe('functional'))
+  it('>=35: basic', () => expect(classifyArmoryCondition(40)).toBe('basic'))
+  it('>=20: depleted', () => expect(classifyArmoryCondition(25)).toBe('depleted'))
+  it('<20: empty', () => expect(classifyArmoryCondition(10)).toBe('empty'))
+})
+
+// ─── analyzeForgeArmory ─────────────────────────────────────────────────────
+
+describe('analyzeForgeArmory', () => {
+  it('empty: returns zeroed armory', () => {
+    const armory = analyzeForgeArmory([], 'src')
+    expect(armory.blows).toHaveLength(0)
+    expect(armory.avgImpact).toBe(0)
+    expect(armory.armoryType).toBe('ruins')
+    expect(armory.condition).toBe('empty')
+  })
+
+  it('RICH: returns armory with high values', () => {
+    const blows = [analyzeHammerBlow(RICH, 'src/a.ts')]
+    const armory = analyzeForgeArmory(blows, 'src')
+    expect(armory.avgImpact).toBe(91)
+    expect(armory.avgPrecision).toBe(88)
+    expect(armory.avgQuality).toBe(88)
+    expect(armory.excaliburCount).toBe(1)
+    expect(armory.scrapCount).toBe(0)
+    expect(armory.heavyImpactCount).toBe(1)
+    expect(armory.highPrecisionCount).toBe(1)
+  })
+})
+
+// ─── buildForgeHammerResult ─────────────────────────────────────────────────
 
 describe('buildForgeHammerResult', () => {
-  it('returns empty result for no files', () => {
-    const result = buildForgeHammerResult([], [], {})
-    expect(result.pieces).toEqual([])
-    expect(result.shops).toEqual([])
-    expect(result.foundry.avgHardness).toBe(0)
-    expect(result.foundry.isBattleReady).toBe(false)
-    expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.smithGrade).toBe('scavenger')
-  })
-  it('analyzes single file', () => {
-    const result = buildForgeHammerResult(['calc.ts'], [strongCode], {})
-    expect(result.pieces).toHaveLength(1)
-    expect(result.pieces[0].file).toBe('calc.ts')
+  it('RICH: returns full result with correct values', () => {
+    const result = buildForgeHammerResult(['test.ts'], [RICH])
+    expect(result.blows).toHaveLength(1)
+    expect(result.armories).toHaveLength(1)
+    expect(result.forge.overallQuality).toBe(89)
+    expect(result.forge.isLegendary).toBe(true)
+    expect(result.forge.avgImpact).toBe(91)
+    expect(result.forge.avgPrecision).toBe(88)
+    expect(result.forge.avgQuality).toBe(88)
     expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.hardestPiece).toBe('calc.ts')
+    expect(result.stats.smithGrade).toBe('legendary-smith')
   })
-  it('analyzes multiple files', () => {
+
+  it('EMPTY: returns low-score result', () => {
+    const result = buildForgeHammerResult(['empty.ts'], [EMPTY])
+    expect(result.blows).toHaveLength(1)
+    expect(result.forge.overallQuality).toBe(36)
+    expect(result.forge.isLegendary).toBe(false)
+    expect(result.stats.smithGrade).toBe('apprentice')
+  })
+
+  it('MEDIUM: returns mid-range result', () => {
+    const result = buildForgeHammerResult(['med.ts'], [MEDIUM])
+    expect(result.blows).toHaveLength(1)
+    expect(result.forge.overallQuality).toBe(42)
+    expect(result.stats.smithGrade).toBe('apprentice')
+  })
+
+  it('empty input: returns zeroed result', () => {
+    const result = buildForgeHammerResult([], [])
+    expect(result.blows).toHaveLength(0)
+    expect(result.armories).toHaveLength(0)
+    expect(result.forge.overallQuality).toBe(0)
+    expect(result.forge.isLegendary).toBe(false)
+    expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.smithGrade).toBe('vandal')
+    expect(result.stats.bestBlow).toBe('')
+  })
+
+  it('multi-file: groups by directory correctly', () => {
     const result = buildForgeHammerResult(
-      ['src/a.ts', 'src/b.ts', 'test/a.test.ts'],
-      [strongCode, simpleCode, testCode],
-      {},
+      ['src/app.ts', 'src/utils.ts', 'src/med.ts'],
+      [RICH, RICH, MEDIUM],
     )
-    expect(result.pieces).toHaveLength(3)
-    expect(result.shops).toHaveLength(2)
+    expect(result.blows).toHaveLength(3)
+    expect(result.armories).toHaveLength(1)
+    expect(result.armories[0].armoryType).toBe('guild-armory')
+    expect(result.forge.overallQuality).toBe(73)
+    expect(result.forge.isLegendary).toBe(true)
     expect(result.stats.totalFiles).toBe(3)
-    expect(result.foundry.overallStrength).toBeGreaterThan(0)
-  })
-  it('groups files by directory into shops', () => {
-    const result = buildForgeHammerResult(
-      ['src/foo/a.ts', 'src/bar/b.ts', 'root.ts'],
-      [strongCode, simpleCode, strongCode],
-      {},
-    )
-    expect(result.shops).toHaveLength(3)
-    const dirs = result.shops.map(s => s.directory)
-    expect(dirs).toContain('src/foo')
-    expect(dirs).toContain('src/bar')
-    expect(dirs).toContain('.')
-  })
-  it('tracks condition counts', () => {
-    const result = buildForgeHammerResult(
-      ['a.ts', 'b.ts'],
-      [strongCode, emptyCode],
-      {},
-    )
-    expect(result.stats.masterworkBladeCount + result.stats.qualityToolCount +
-      result.stats.serviceableIronCount + result.stats.brittleCastingCount +
-      result.stats.softMetalCount + result.stats.scrapIronCount
-    ).toBe(2)
-  })
-  it('tracks metal type counts', () => {
-    const result = buildForgeHammerResult(
-      ['a.ts'],
-      [strongCode],
-      {},
-    )
-    const total = result.stats.steelCount + result.stats.ironCount +
-      result.stats.bronzeCount + result.stats.copperCount
-    expect(total).toBe(1)
-  })
-  it('handles files with fewer contents than files', () => {
-    const result = buildForgeHammerResult(['a.ts', 'b.ts'], [strongCode], {})
-    expect(result.pieces).toHaveLength(2)
-    expect(result.pieces[1].hardness).toBe(0)
+    expect(result.stats.excaliburCount).toBe(2)
+    expect(result.stats.serviceableToolCount).toBe(1)
+    expect(result.stats.hasProperWeightCount).toBe(2)
+    expect(result.stats.hasHighPrecisionCount).toBe(2)
+    expect(result.stats.hasProperTemperCount).toBe(2)
+    expect(result.stats.hasLongEdgeCount).toBe(2)
+    expect(result.stats.hasHighCraftsmanshipCount).toBe(2)
+    expect(result.stats.hasHighQualityCount).toBe(2)
+    expect(result.stats.smithGrade).toBe('master-smith')
+    expect(result.stats.avgHammerWeight).toBe(75)
+    expect(result.stats.avgStrikePrecision).toBe(72)
+    expect(result.stats.avgMetalTemper).toBe(Math.round((90 + 90 + 35) / 3))
+    expect(result.stats.avgEdgeQuality).toBe(Math.round((88 + 88 + 43) / 3))
+    expect(result.stats.avgForgingTechnique).toBe(Math.round((87 + 87 + 51) / 3))
+    expect(result.stats.avgBladeQuality).toBe(Math.round((88 + 88 + 38) / 3))
   })
 })
 
-// ─── Recommendations ──────────────────────────────────────────────────────────
+// ─── generateRecommendations ────────────────────────────────────────────────
 
 describe('generateRecommendations', () => {
-  it('generates no recommendations for empty input', () => {
-    const recs = generateRecommendations([], [], { avgHardness: 0, avgTemper: 0, avgImpactResistance: 0, avgDuctility: 0, isBattleReady: false, overallStrength: 0 } as any, { scrapIronCount: 0, softMetalCount: 0, brittleCastingCount: 0, totalFiles: 0, hasHardnessTestCount: 0, isStillHotCount: 0, evenlyTemperedCount: 0, isPolishedCount: 0, overallStrength: 0 } as any)
-    expect(recs).toEqual([])
+  it('returns improvement recs for empty code', () => {
+    const result = buildForgeHammerResult(['test.ts'], [EMPTY])
+    expect(result.recommendations.length).toBeGreaterThanOrEqual(5)
+    const hasWeight = result.recommendations.some((r) => r.includes('weight'))
+    expect(hasWeight).toBe(true)
   })
-  it('recommends hardening for weak metal', () => {
-    const result = buildForgeHammerResult(['a.ts'], [simpleCode], {})
-    const weakRecs = result.recommendations.filter(r => r.includes('Weak metal') || r.includes('hardening'))
-    expect(weakRecs.length).toBeGreaterThanOrEqual(0)
+
+  it('returns multiple recs for medium code', () => {
+    const result = buildForgeHammerResult(['test.ts'], [MEDIUM])
+    expect(result.recommendations.length).toBeGreaterThanOrEqual(2)
+    const hasPrecision = result.recommendations.some((r) => r.includes('precision'))
+    expect(hasPrecision).toBe(true)
   })
-  it('recommends hardness testing when none detected', () => {
-    const result = buildForgeHammerResult(['a.ts'], [simpleCode], {})
-    if (result.stats.totalFiles > 0 && result.stats.hasHardnessTestCount === 0) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('hardness testing')]),
-      )
-    }
+
+  it('returns legendary for RICH code', () => {
+    const result = buildForgeHammerResult(['test.ts'], [RICH])
+    const hasLegendary = result.recommendations.some((r) => r.includes('Legendary'))
+    expect(hasLegendary).toBe(true)
   })
 })
 
-// ─── Format Helpers ───────────────────────────────────────────────────────────
+// ─── Format Helpers ─────────────────────────────────────────────────────────
 
-describe('formatForgeHammerTable', () => {
-  it('formats empty result', () => {
-    const result = buildForgeHammerResult([], [], {})
-    const table = formatForgeHammerTable(result, false)
-    expect(table).toContain('Forge Hammer')
-    expect(table).toContain('No files analyzed')
+describe('format helpers', () => {
+  it('scoreColor returns string for all ranges', () => {
+    expect(scoreColor(90)).toBeTruthy()
+    expect(scoreColor(70)).toBeTruthy()
+    expect(scoreColor(50)).toBeTruthy()
+    expect(scoreColor(30)).toBeTruthy()
   })
-  it('formats result with pieces', () => {
-    const result = buildForgeHammerResult(['a.ts'], [strongCode], {})
-    const table = formatForgeHammerTable(result, false)
-    expect(table).toContain('a.ts')
-    expect(table).toContain('Forge Hammer')
+
+  it('conditionColor handles all conditions', () => {
+    expect(conditionColor('excalibur')).toBeTruthy()
+    expect(conditionColor('masterwork-blade')).toBeTruthy()
+    expect(conditionColor('fine-weapon')).toBeTruthy()
+    expect(conditionColor('serviceable-tool')).toBeTruthy()
+    expect(conditionColor('rusty-nail')).toBeTruthy()
+    expect(conditionColor('scrap-metal')).toBeTruthy()
   })
-  it('formats verbose output', () => {
-    const result = buildForgeHammerResult(['a.ts'], [strongCode], {})
+
+  it('gradeColor handles all grades', () => {
+    expect(gradeColor('legendary-smith')).toBeTruthy()
+    expect(gradeColor('master-smith')).toBeTruthy()
+    expect(gradeColor('journeyman')).toBeTruthy()
+    expect(gradeColor('apprentice')).toBeTruthy()
+    expect(gradeColor('novice')).toBeTruthy()
+    expect(gradeColor('vandal')).toBeTruthy()
+  })
+
+  it('weightClassColor handles all classes', () => {
+    expect(weightClassColor('sledge')).toBeTruthy()
+    expect(weightClassColor('engineer')).toBeTruthy()
+    expect(weightClassColor('cross-peen')).toBeTruthy()
+    expect(weightClassColor('ball-peen')).toBeTruthy()
+    expect(weightClassColor('tack')).toBeTruthy()
+    expect(weightClassColor('feather')).toBeTruthy()
+  })
+
+  it('formatForgeHammerJson returns valid JSON', () => {
+    const result = buildForgeHammerResult(['test.ts'], [RICH])
+    const json = formatForgeHammerJson(result)
+    const parsed = JSON.parse(json)
+    expect(parsed.blows).toHaveLength(1)
+  })
+
+  it('formatForgeHammerTable returns formatted string', () => {
+    const result = buildForgeHammerResult(['test.ts'], [RICH])
+    const table = formatForgeHammerTable(result, false)
+    expect(table).toContain('Forge Hammer Analysis')
+    expect(table).toContain('Forge Overview')
+    expect(table).toContain('Overall Quality')
+    expect(table).toContain('Is Legendary')
+  })
+
+  it('shows verbose blow details', () => {
+    const result = buildForgeHammerResult(['test.ts'], [MEDIUM])
     const table = formatForgeHammerTable(result, true)
-    expect(table).toContain('metal:')
-    expect(table).toContain('temper:')
-    expect(table).toContain('impact:')
-    expect(table).toContain('forging:')
-    expect(table).toContain('testing:')
-    expect(table).toContain('heat:')
+    expect(table).toContain('tack')
+    expect(table).toContain('wild')
+    expect(table).toContain('wrought-iron')
+    expect(table).toContain('tin')
+    expect(table).toContain('stamping')
+    expect(table).toContain('crude')
   })
-  it('truncates non-verbose output at 15 files', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `file${i}.ts`)
-    const contents = files.map(() => simpleCode)
-    const result = buildForgeHammerResult(files, contents, {})
+
+  it('handles empty result table', () => {
+    const result = buildForgeHammerResult([], [])
     const table = formatForgeHammerTable(result, false)
-    expect(table).toContain('and 5 more')
+    expect(table).toContain('Forge Hammer Analysis')
+    expect(table).toContain('Statistics')
   })
-})
 
-describe('formatForgeHammerJson', () => {
-  it('outputs valid JSON', () => {
-    const result = buildForgeHammerResult(['a.ts'], [strongCode], {})
-    const json = formatForgeHammerJson(result)
-    const parsed = JSON.parse(json)
-    expect(parsed.pieces).toHaveLength(1)
-    expect(parsed.stats.totalFiles).toBe(1)
+  it('shows smith grade in table', () => {
+    const result = buildForgeHammerResult(['test.ts'], [RICH])
+    const table = formatForgeHammerTable(result, false)
+    expect(table).toContain('legendary-smith')
   })
-  it('outputs empty result', () => {
-    const result = buildForgeHammerResult([], [], {})
-    const json = formatForgeHammerJson(result)
-    const parsed = JSON.parse(json)
-    expect(parsed.pieces).toEqual([])
-    expect(parsed.stats.totalFiles).toBe(0)
-  })
-})
 
-// ─── Integration Tests ────────────────────────────────────────────────────────
-
-describe('forge-hammer integration', () => {
-  it('produces consistent results for same input', () => {
-    const r1 = buildForgeHammerResult(['a.ts'], [strongCode], {})
-    const r2 = buildForgeHammerResult(['a.ts'], [strongCode], {})
-    expect(r1.pieces[0].qualityScore).toBe(r2.pieces[0].qualityScore)
-    expect(r1.stats.overallStrength).toBe(r2.stats.overallStrength)
-  })
-  it('handles mixed strong and weak code', () => {
-    const result = buildForgeHammerResult(
-      ['strong.ts', 'weak.ts', 'empty.ts', 'test.ts'],
-      [strongCode, simpleCode, emptyCode, testCode],
-      {},
-    )
-    expect(result.pieces).toHaveLength(4)
-    expect(result.foundry.overallStrength).toBeGreaterThan(0)
-    expect(result.foundry.overallStrength).toBeLessThanOrEqual(100)
-  })
-  it('tracks special pieces correctly', () => {
-    const result = buildForgeHammerResult(
-      ['strong.ts', 'weak.ts'],
-      [strongCode, simpleCode],
-      {},
-    )
-    expect(result.stats.hardestPiece).toBeTruthy()
-    expect(result.stats.toughestPiece).toBeTruthy()
-    expect(result.stats.mostBrittle).toBeTruthy()
-    expect(result.stats.mostPolished).toBeTruthy()
-    expect(result.stats.needsForging).toBeTruthy()
-  })
-  it('battle-ready for high strength', () => {
-    const result = buildForgeHammerResult(
-      ['a.ts', 'b.ts'],
-      [strongCode, strongCode],
-      {},
-    )
-    expect(result.foundry.isBattleReady).toBe(result.foundry.overallStrength >= 60)
-  })
-  it('smith grade matches overall strength', () => {
-    const result = buildForgeHammerResult(['a.ts'], [strongCode], {})
-    expect(result.stats.smithGrade).toBeTruthy()
-    expect(['master-smith', 'journeyman', 'apprentice', 'tinkerer', 'amateur', 'scavenger']).toContain(result.stats.smithGrade)
+  it('includes condition counts in table', () => {
+    const result = buildForgeHammerResult(['test.ts'], [EMPTY])
+    const table = formatForgeHammerTable(result, false)
+    expect(table).toContain('Serviceable Tool')
+    expect(table).toContain('1')
   })
 })

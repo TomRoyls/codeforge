@@ -1,775 +1,913 @@
-// ─── Interfaces ──────────────────────────────────────────
+// ─── Regex Constants ────────────────────────────────────────────────────────
 
-export type MetalType = 'steel' | 'iron' | 'bronze' | 'copper' | 'tin' | 'clay'
-export type MetalGrade = 'tool-steel' | 'spring-steel' | 'cast-iron' | 'wrought-iron' | 'pig-iron' | 'scrap'
-export type ForgingTechnique = 'folded-steel' | 'cast' | 'machined' | 'hand-forged' | '3d-printed' | 'duct-tape'
-export type HeatTreatment = 'quench' | 'anneal' | 'normalize' | 'case-harden' | 'none'
-export type PieceCondition = 'masterwork-blade' | 'quality-tool' | 'serviceable-iron' | 'brittle-casting' | 'soft-metal' | 'scrap-iron'
-export type ShopType = 'master-forge' | 'village-smithy' | 'factory' | 'workshop' | 'shed' | 'scrap-yard'
-export type ShopCondition = 'world-class' | 'professional' | 'functional' | 'amateur' | 'dangerous' | 'condemned'
-export type SmithGrade = 'master-smith' | 'journeyman' | 'apprentice' | 'tinkerer' | 'amateur' | 'scavenger'
+const EXPORT_REGEX = /\bexport\s+/g
+const IMPORT_REGEX = /\bimport\s+/g
+const FUNCTION_REGEX = /\bfunction\s+\w+/g
+const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
+const CLASS_REGEX = /\bclass\s+\w+/g
+const INTERFACE_REGEX = /\binterface\s+\w+/g
+const TYPE_REGEX = /\btype\s+\w+/g
+const ENUM_REGEX = /\benum\s+\w+/g
+const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
+const ASYNC_REGEX = /\basync\s+/g
+const TRY_CATCH_REGEX = /\btry\s*\{/g
+const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
+const CONSOLE_REGEX = /\bconsole\.\w+/g
+const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
+const GENERICS_REGEX = /<[^>]+>/g
+const PRIVATE_REGEX = /private\s+/g
+const PROTECTED_REGEX = /protected\s+/g
+const STATIC_REGEX = /\bstatic\s+/g
+const READONLY_REGEX = /\breadonly\b/g
+const ANY_REGEX = /\bany\b/g
+const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
+const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
+const CONDITIONAL_REGEX = /\bif\s*\(/g
+const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
+const PROMISE_REGEX = /\bPromise\b/g
+const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
+const DESTRUCTURE_REGEX = /\{[^}]*\}\s*=/g
 
-export interface MetalMeasure {
-  type: MetalType
-  grade: MetalGrade
-  hardness: number
-  isAlloy: boolean
-  hasImpurities: boolean
-  impurityCount: number
-  carbonContent: number
+// ─── Helper Functions ───────────────────────────────────────────────────────
+
+function countMatches(content: string, regex: RegExp): number {
+  const matches = content.match(regex)
+  return matches ? matches.length : 0
+}
+
+function countImportKeywords(content: string): number { return countMatches(content, IMPORT_REGEX) }
+function countExportKeywords(content: string): number { return countMatches(content, EXPORT_REGEX) }
+function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
+function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
+function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
+function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
+function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
+function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
+function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
+function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
+function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
+function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
+function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
+function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
+function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
+function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
+function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
+function countStaticMembers(content: string): number { return countMatches(content, STATIC_REGEX) }
+function countReadonlyMembers(content: string): number { return countMatches(content, READONLY_REGEX) }
+function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
+function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
+function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
+function countConditionals(content: string): number { return countMatches(content, CONDITIONAL_REGEX) }
+function countLoops(content: string): number { return countMatches(content, LOOP_REGEX) }
+function countPromiseUsage(content: string): number { return countMatches(content, PROMISE_REGEX) }
+function countTemplateLiterals(content: string): number { return countMatches(content, STRING_TEMPLATE_REGEX) }
+function countDestructures(content: string): number { return countMatches(content, DESTRUCTURE_REGEX) }
+
+// ─── Interfaces ─────────────────────────────────────────────────────────────
+
+export interface WeightMeasure {
+  impact: number
+  class: 'sledge' | 'engineer' | 'cross-peen' | 'ball-peen' | 'tack' | 'feather'
+  hasProperWeight: boolean
+  hasHeavyImpact: boolean
+  hasControlledForce: boolean
+  hasNoOverstriking: boolean
+  hasNoUnderstriking: boolean
+  hasProperMomentum: boolean
+  hasKineticTransfer: boolean
+  hasNoRebound: boolean
+  hasProperSwing: boolean
+  hasNoMishit: boolean
+  overstrikeCount: number
+  mishitCount: number
+}
+
+export interface PrecisionMeasure {
+  accuracy: number
+  aim: 'bullseye' | 'on-target' | 'near-miss' | 'glancing' | 'wild' | 'blind'
+  hasHighPrecision: boolean
+  hasConsistentAccuracy: boolean
+  hasNoMisses: boolean
+  hasProperAlignment: boolean
+  hasNoDeflection: boolean
+  hasFocusedImpact: boolean
+  hasNoCollateral: boolean
+  hasProperTiming: boolean
+  hasNoMisalignment: boolean
+  hasCleanStrike: boolean
+  missCount: number
+  collateralCount: number
 }
 
 export interface TemperMeasure {
+  resilience: number
+  grade: 'spring-steel' | 'tool-steel' | 'carbon-steel' | 'cast-iron' | 'wrought-iron' | 'clay'
+  hasProperTemper: boolean
+  hasResilience: boolean
+  hasNoBrittleness: boolean
+  hasNoSoftness: boolean
+  hasProperHardness: boolean
+  hasElasticRecovery: boolean
+  hasNoFatigue: boolean
+  hasProperGrain: boolean
+  hasNoCracking: boolean
+  hasToughness: boolean
+  fatigueCount: number
+  crackingCount: number
+}
+
+export interface EdgeMeasure {
   quality: number
-  isEvenlyTempered: boolean
-  hasHardSpots: boolean
-  hasSoftSpots: boolean
-  isBrittle: boolean
-  isDuctile: boolean
-  hardSpotCount: number
-  softSpotCount: number
+  retention: 'diamond' | 'ceramic' | 'steel' | 'iron' | 'tin' | 'butter'
+  hasLongEdge: boolean
+  hasProperSharpness: boolean
+  hasEdgeRetention: boolean
+  hasNoDulling: boolean
+  hasNoChipping: boolean
+  hasNoRolling: boolean
+  hasProperProfile: boolean
+  hasMaintenanceFree: boolean
+  hasNoCorrosion: boolean
+  hasSelfHealing: boolean
+  dullingCount: number
+  corrosionCount: number
 }
 
-export interface ImpactMeasure {
-  resistance: number
-  hasDefenses: boolean
-  hasShockAbsorbers: boolean
-  hasCrackStoppers: boolean
-  hasStressRelief: boolean
-  crackCount: number
-  crackPoints: string[]
+export interface TechniqueMeasure {
+  craftsmanship: number
+  method: 'pattern-welding' | 'folding' | 'laminating' | 'casting' | 'stamping' | 'unforged'
+  hasHighCraftsmanship: boolean
+  hasProperTechnique: boolean
+  hasNoShortcuts: boolean
+  hasProgressiveRefinement: boolean
+  hasProperAnnealing: boolean
+  hasNoRushing: boolean
+  hasAttentionToDetail: boolean
+  hasProperHeatTreatment: boolean
+  hasNoSloppyWork: boolean
+  hasMasterwork: boolean
+  shortcutCount: number
+  sloppyCount: number
 }
 
-export interface ForgingMeasure {
-  technique: ForgingTechnique
+export interface BladeMeasure {
   quality: number
-  hasHammerMarks: boolean
-  hasGrindMarks: boolean
-  isPolished: boolean
-  isRough: boolean
-  polishLevel: number
+  grade: 'legendary' | 'masterwork' | 'fine' | 'serviceable' | 'crude' | 'scrap'
+  hasHighQuality: boolean
+  hasProperBalance: boolean
+  hasNoFlaws: boolean
+  hasFunctional: boolean
+  hasBeautiful: boolean
+  hasNoDefects: boolean
+  hasProperWeight: boolean
+  hasNoWeakness: boolean
+  hasTestedInBattle: boolean
+  hasLegacy: boolean
+  flawCount: number
+  weaknessCount: number
 }
 
-export interface TestingMeasure {
-  hasHardnessTest: boolean
-  hasStressTest: boolean
-  hasImpactTest: boolean
-  hasFatigueTest: boolean
-  anvilMarkCount: number
-  testQuality: number
-}
-
-export interface HeatMeasure {
-  treatmentType: HeatTreatment
-  hasBeenHardened: boolean
-  isStillHot: boolean
-  isCooling: boolean
-  hasHeatTint: boolean
-  stabilityScore: number
-}
-
-export interface ForgedPiece {
+export interface HammerBlow {
   file: string
-  hardness: number
-  temperQuality: number
-  impactResistance: number
-  ductility: number
-  brittleness: number
-  anvilMarks: number
-  metal: MetalMeasure
+  hammerWeight: number
+  strikePrecision: number
+  metalTemper: number
+  edgeQuality: number
+  forgingTechnique: number
+  bladeQuality: number
+  weight: WeightMeasure
+  precision: PrecisionMeasure
   temper: TemperMeasure
-  impact: ImpactMeasure
-  forging: ForgingMeasure
-  testing: TestingMeasure
-  heat: HeatMeasure
-  condition: PieceCondition
+  edge: EdgeMeasure
+  technique: TechniqueMeasure
+  blade: BladeMeasure
+  condition: 'excalibur' | 'masterwork-blade' | 'fine-weapon' | 'serviceable-tool' | 'rusty-nail' | 'scrap-metal'
   qualityScore: number
 }
 
-export interface ForgeShop {
+export interface ForgeArmory {
   directory: string
-  pieces: ForgedPiece[]
-  avgHardness: number
-  avgTemper: number
-  avgImpactResistance: number
-  avgDuctility: number
-  masterworkCount: number
+  blows: HammerBlow[]
+  avgImpact: number
+  avgPrecision: number
+  avgQuality: number
+  excaliburCount: number
   scrapCount: number
-  testedCount: number
-  brittleCount: number
-  shopType: ShopType
-  condition: ShopCondition
-}
-
-export interface Foundry {
-  avgHardness: number
-  avgTemper: number
-  avgImpactResistance: number
-  avgDuctility: number
-  isBattleReady: boolean
-  overallStrength: number
-}
-
-export interface ForgeHammerStats {
-  totalFiles: number
-  totalShops: number
-  avgHardness: number
-  avgTemperQuality: number
-  avgImpactResistance: number
-  avgDuctility: number
-  avgBrittleness: number
-  avgAnvilMarks: number
-  masterworkBladeCount: number
-  qualityToolCount: number
-  serviceableIronCount: number
-  brittleCastingCount: number
-  softMetalCount: number
-  scrapIronCount: number
-  steelCount: number
-  ironCount: number
-  bronzeCount: number
-  copperCount: number
-  hasHardnessTestCount: number
-  hasStressTestCount: number
-  hasImpactTestCount: number
-  hasFatigueTestCount: number
-  evenlyTemperedCount: number
-  hasDefensesCount: number
-  isPolishedCount: number
-  isStillHotCount: number
-  overallStrength: number
-  smithGrade: SmithGrade
-  hardestPiece: string
-  toughestPiece: string
-  mostBrittle: string
-  mostPolished: string
-  needsForging: string
+  heavyImpactCount: number
+  highPrecisionCount: number
+  armoryType: 'royal-armory' | 'guild-armory' | 'village-forge' | 'field-forge' | 'scrap-yard' | 'ruins'
+  condition: 'legendary-armory' | 'well-stocked' | 'functional' | 'basic' | 'depleted' | 'empty'
 }
 
 export interface ForgeHammerResult {
-  pieces: ForgedPiece[]
-  shops: ForgeShop[]
-  foundry: Foundry
-  stats: ForgeHammerStats
+  blows: HammerBlow[]
+  armories: ForgeArmory[]
+  forge: {
+    avgImpact: number
+    avgPrecision: number
+    avgQuality: number
+    isLegendary: boolean
+    overallQuality: number
+  }
+  stats: {
+    totalFiles: number
+    totalArmories: number
+    avgHammerWeight: number
+    avgStrikePrecision: number
+    avgMetalTemper: number
+    avgEdgeQuality: number
+    avgForgingTechnique: number
+    avgBladeQuality: number
+    excaliburCount: number
+    masterworkBladeCount: number
+    fineWeaponCount: number
+    serviceableToolCount: number
+    rustyNailCount: number
+    scrapMetalCount: number
+    hasProperWeightCount: number
+    hasHighPrecisionCount: number
+    hasProperTemperCount: number
+    hasLongEdgeCount: number
+    hasHighCraftsmanshipCount: number
+    hasHighQualityCount: number
+    overallQuality: number
+    smithGrade: 'legendary-smith' | 'master-smith' | 'journeyman' | 'apprentice' | 'novice' | 'vandal'
+    bestBlow: string
+    heaviest: string
+    mostPrecise: string
+    bestTemper: string
+    sharpest: string
+    finestCraft: string
+  }
   recommendations: string[]
 }
 
-// ─── Primitive Counters ──────────────────────────────────
+// ─── Weight Measurement ─────────────────────────────────────────────────────
 
-export function countLoc(content: string): number {
-  if (content.length === 0) return 0
-  return content.split('\n').filter(l => l.trim().length > 0).length
-}
+/** @example measureWeight(content) returns weight analysis */
+export function measureWeight(content: string): WeightMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const asyncCount = countAsyncKeywords(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
 
-export function countImports(content: string): number {
-  const matches = content.match(/^import\s/gm)
-  return matches ? matches.length : 0
-}
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-export function countExports(content: string): number {
-  const matches = content.match(/^export\s/gm)
-  return matches ? matches.length : 0
-}
+  let impact = 25
+  if (hasStructure) impact += 15
+  if (hasTypes) impact += 15
+  if (hasFunctions) impact += 10
+  if (exportCount > 0) impact += 5
+  if (importCount > 0) impact += 5
+  if (jsdocCount > 0) impact += 8
+  if (asyncCount > 0) impact += 4
+  if (consoleCount === 0) impact += 4
+  if (anyCount === 0) impact += 4
+  if (todoCount === 0) impact += 5
+  impact = Math.min(100, Math.max(0, Math.round(impact)))
 
-export function countFunctions(content: string): number {
-  const matches = content.match(/\bfunction\s+\w+|\b\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|(?:async\s+)?\([^)]*\)\s*:\s*\w+)/g)
-  return matches ? matches.length : 0
-}
+  const overstrikeCount = anyCount + todoCount
+  const mishitCount = deepNestedCount + commentedCodeCount
 
-export function countClasses(content: string): number {
-  const matches = content.match(/\bclass\s+\w+/g)
-  return matches ? matches.length : 0
-}
+  const hasProperWeight = impact >= 75 && hasStructure && hasTypes
+  const hasHeavyImpact = impact >= 80 && hasStructure && hasTypes
+  const hasControlledForce = hasStructure && hasTypes && exportCount > 0
+  const hasNoOverstriking = overstrikeCount === 0
+  const hasNoUnderstriking = hasFunctions && consoleCount === 0
+  const hasProperMomentum = hasStructure && hasTypes && hasFunctions
+  const hasKineticTransfer = hasStructure && hasTypes && exportCount > 0
+  const hasNoRebound = consoleCount === 0
+  const hasProperSwing = hasStructure && hasTypes && hasFunctions
+  const hasNoMishit = mishitCount === 0
 
-export function countErrorHandling(content: string): number {
-  let count = 0
-  const tryMatch = content.match(/\btry\s*\{/g)
-  if (tryMatch) count += tryMatch.length
-  const catchMatch = content.match(/\bcatch\s/g)
-  if (catchMatch) count += catchMatch.length
-  const throwMatch = content.match(/\bthrow\s/g)
-  if (throwMatch) count += throwMatch.length
-  return count
-}
+  let hammerClass: WeightMeasure['class'] = 'feather'
+  if (hasHeavyImpact && hasNoOverstriking && hasNoMishit && hasControlledForce) hammerClass = 'sledge'
+  else if (hasHeavyImpact && hasNoOverstriking) hammerClass = 'engineer'
+  else if (hasHeavyImpact) hammerClass = 'cross-peen'
+  else if (hasProperWeight && hasControlledForce) hammerClass = 'ball-peen'
+  else if (impact > 30) hammerClass = 'tack'
 
-export function countTypeAnnotations(content: string): number {
-  const matches = content.match(/:\s*(?:string|number|boolean|void|null|undefined|never|any|unknown|object|bigint|symbol)(?:\[\])?\b/g)
-  return matches ? matches.length : 0
-}
-
-export function countBranches(content: string): number {
-  let count = 0
-  const ifMatch = content.match(/\bif\s*\(/g)
-  if (ifMatch) count += ifMatch.length
-  const elseMatch = content.match(/\belse\s/g)
-  if (elseMatch) count += elseMatch.length
-  const switchMatch = content.match(/\bswitch\s*\(/g)
-  if (switchMatch) count += switchMatch.length
-  const ternaryMatch = content.match(/\?\s*[^?]/g)
-  if (ternaryMatch) count += ternaryMatch.length
-  return count
-}
-
-export function maxNesting(content: string): number {
-  let maxDepth = 0
-  let depth = 0
-  for (const ch of content) {
-    if (ch === '{') { depth++; if (depth > maxDepth) maxDepth = depth }
-    if (ch === '}') { depth = Math.max(0, depth - 1) }
+  return {
+    impact, class: hammerClass, hasProperWeight, hasHeavyImpact, hasControlledForce,
+    hasNoOverstriking, hasNoUnderstriking, hasProperMomentum, hasKineticTransfer,
+    hasNoRebound, hasProperSwing, hasNoMishit, overstrikeCount, mishitCount,
   }
-  return maxDepth
 }
 
-export function countConsole(content: string): number {
-  const matches = content.match(/\bconsole\.\w+/g)
-  return matches ? matches.length : 0
+// ─── Precision Measurement ──────────────────────────────────────────────────
+
+/** @example measurePrecision(content) returns precision analysis */
+export function measurePrecision(content: string): PrecisionMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const asyncCount = countAsyncKeywords(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let accuracy = 25
+  if (hasStructure) accuracy += 12
+  if (hasTypes) accuracy += 12
+  if (hasFunctions) accuracy += 10
+  if (jsdocCount > 0) accuracy += 8
+  if (genericsCount > 0) accuracy += 5
+  if (exportCount > 0) accuracy += 5
+  if (importCount > 0) accuracy += 5
+  if (tryCatchCount > 0) accuracy += 5
+  if (asyncCount > 0) accuracy += 3
+  if (consoleCount === 0) accuracy += 4
+  if (anyCount === 0) accuracy += 3
+  if (deepNestedCount === 0) accuracy += 3
+  accuracy = Math.min(100, Math.max(0, Math.round(accuracy)))
+
+  const missCount = anyCount + todoCount
+  const collateralCount = deepNestedCount + consoleCount
+
+  const hasHighPrecision = accuracy >= 80 && hasStructure && hasTypes
+  const hasConsistentAccuracy = hasStructure && hasTypes && exportCount > 0
+  const hasNoMisses = missCount === 0
+  const hasProperAlignment = hasStructure && hasTypes && genericsCount > 0
+  const hasNoDeflection = deepNestedCount === 0
+  const hasFocusedImpact = hasStructure && hasTypes && hasFunctions
+  const hasNoCollateral = collateralCount === 0
+  const hasProperTiming = asyncCount > 0 || tryCatchCount > 0
+  const hasNoMisalignment = hasStructure && hasTypes && exportCount > 0
+  const hasCleanStrike = hasFunctions && consoleCount === 0
+
+  let aim: PrecisionMeasure['aim'] = 'blind'
+  if (hasHighPrecision && hasNoMisses && hasNoDeflection && hasProperAlignment) aim = 'bullseye'
+  else if (hasHighPrecision && hasNoMisses) aim = 'on-target'
+  else if (hasHighPrecision) aim = 'near-miss'
+  else if (hasFocusedImpact && hasConsistentAccuracy) aim = 'glancing'
+  else if (accuracy > 30) aim = 'wild'
+
+  return {
+    accuracy, aim, hasHighPrecision, hasConsistentAccuracy, hasNoMisses,
+    hasProperAlignment, hasNoDeflection, hasFocusedImpact, hasNoCollateral,
+    hasProperTiming, hasNoMisalignment, hasCleanStrike, missCount, collateralCount,
+  }
 }
 
-export function countComments(content: string): number {
-  let count = 0
-  const singleMatch = content.match(/\/\/.*$/gm)
-  if (singleMatch) count += singleMatch.length
-  const blockMatch = content.match(/\/\*[\s\S]*?\*\//g)
-  if (blockMatch) count += blockMatch.length
-  return count
-}
+// ─── Temper Measurement ─────────────────────────────────────────────────────
 
-export function countTodos(content: string): number {
-  const matches = content.match(/\bTODO\b|\bFIXME\b|\bHACK\b/gi)
-  return matches ? matches.length : 0
-}
-
-export function countJSDoc(content: string): number {
-  const matches = content.match(/\/\*\*[\s\S]*?\*\//g)
-  return matches ? matches.length : 0
-}
-
-export function countDescriptiveNames(content: string): number {
-  const matches = content.match(/\b(?:get|set|is|has|can|should|will|compute|calculate|validate|parse|format|transform|process|handle|build|create|generate|extract|resolve|initialize|configure|update|remove|delete|find|search|check|verify|ensure|assert)\w+/gi)
-  return matches ? matches.length : 0
-}
-
-export function countTestIndicators(content: string): number {
-  const matches = content.match(/\b(describe|it|test|expect|beforeEach|afterEach|beforeAll|afterAll)\s*[\(.]/g)
-  return matches ? matches.length : 0
-}
-
-export function countValidations(content: string): number {
-  const matches = content.match(/\b(typeof|instanceof|\.length\s*[><=!]|\bin\b|\!\s*\w|===|!==)/g)
-  return matches ? matches.length : 0
-}
-
-// ─── Metal Measurement ───────────────────────────────────
-
-/**
- * Measure metal properties
- * @example
- * measureMetal('export function calc() {}') // { type, grade, hardness, ... }
- */
-export function measureMetal(content: string): MetalMeasure {
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
-  const types = countTypeAnnotations(content)
-  const branches = countBranches(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
-  const todos = countTodos(content)
-  const consoleCount = countConsole(content)
-
-  const hardness = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (errors > 0 ? 25 : 0) +
-    (types > 0 ? 20 : 0) +
-    (errors > 0 && types > 0 ? 15 : 0) +
-    (branches > 0 && errors > 0 ? 15 : 0) +
-    (functions > 0 ? 10 : 0) +
-    (classes > 0 ? 10 : 0) +
-    (todos === 0 ? 5 : 0),
-  )))
-
-  let type: MetalType = 'clay'
-  if (hardness >= 80) type = 'steel'
-  else if (hardness >= 60) type = 'iron'
-  else if (hardness >= 45) type = 'bronze'
-  else if (hardness >= 30) type = 'copper'
-  else if (hardness >= 15) type = 'tin'
-
-  let grade: MetalGrade = 'scrap'
-  if (hardness >= 85 && types > 0) grade = 'tool-steel'
-  else if (hardness >= 70) grade = 'spring-steel'
-  else if (hardness >= 55) grade = 'cast-iron'
-  else if (hardness >= 40) grade = 'wrought-iron'
-  else if (hardness >= 20) grade = 'pig-iron'
-
-  const isAlloy = functions > 0 && classes > 0 && types > 0
-  const impurityCount = todos + consoleCount
-  const hasImpurities = impurityCount > 0
-  const carbonContent = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (branches * 5) +
-    (maxNesting(content) * 10),
-  )))
-
-  return { type, grade, hardness, isAlloy, hasImpurities, impurityCount, carbonContent }
-}
-
-// ─── Temper Measurement ──────────────────────────────────
-
-/**
- * Measure temper quality
- * @example
- * measureTemper('try { x } catch (e) { handle(e) }') // { quality, isEvenlyTempered, ... }
- */
+/** @example measureTemper(content) returns temper analysis */
 export function measureTemper(content: string): TemperMeasure {
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
-  const branches = countBranches(content)
-  const types = countTypeAnnotations(content)
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
 
-  const quality = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (errors > 0 ? 25 : 0) +
-    (types > 0 ? 20 : 0) +
-    (branches > 0 && errors > 0 ? 20 : 0) +
-    (errors >= 2 ? 15 : 0) +
-    (branches <= 10 ? 10 : 0) +
-    (maxNesting(content) <= 3 ? 10 : 0),
-  )))
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const isEvenlyTempered = errors > 0 && branches > 0 && Math.abs(errors - branches) <= 3
-  const hardSpotCount = branches > 0 && errors === 0 ? 1 : 0
-  const softSpotCount = errors > 0 && branches > errors * 2 ? 1 : 0
-  const hasHardSpots = hardSpotCount > 0
-  const hasSoftSpots = softSpotCount > 0
-  const isBrittle = branches > 5 && errors === 0
-  const isDuctile = errors > 0 && types > 0 && branches <= 10
+  let resilience = 20
+  if (hasStructure) resilience += 12
+  if (hasTypes) resilience += 12
+  if (hasFunctions) resilience += 10
+  if (jsdocCount > 0) resilience += 10
+  if (genericsCount > 0) resilience += 5
+  if (exportCount > 0) resilience += 5
+  if (importCount > 0) resilience += 5
+  if (asyncCount > 0) resilience += 3
+  if (tryCatchCount > 0) resilience += 8
+  if (anyCount === 0) resilience += 5
+  if (consoleCount === 0) resilience += 5
+  resilience = Math.min(100, Math.max(0, Math.round(resilience)))
 
-  return { quality, isEvenlyTempered, hasHardSpots, hasSoftSpots, isBrittle, isDuctile, hardSpotCount, softSpotCount }
+  const fatigueCount = todoCount + deepNestedCount
+  const crackingCount = anyCount + commentedCodeCount
+
+  const hasProperTemper = resilience >= 75 && hasStructure && hasTypes
+  const hasResilience = resilience >= 60 && hasStructure && hasTypes
+  const hasNoBrittleness = anyCount === 0 && deepNestedCount === 0
+  const hasNoSoftness = hasStructure && hasTypes && hasFunctions
+  const hasProperHardness = hasStructure && hasTypes && genericsCount > 0
+  const hasElasticRecovery = tryCatchCount > 0
+  const hasNoFatigue = fatigueCount === 0
+  const hasProperGrain = hasStructure && hasTypes && hasFunctions
+  const hasNoCracking = crackingCount === 0
+  const hasToughness = hasStructure && hasTypes && tryCatchCount > 0
+
+  let grade: TemperMeasure['grade'] = 'clay'
+  if (hasProperTemper && hasNoFatigue && hasNoCracking && hasElasticRecovery) grade = 'spring-steel'
+  else if (hasProperTemper && hasNoFatigue) grade = 'tool-steel'
+  else if (hasProperTemper) grade = 'carbon-steel'
+  else if (hasResilience) grade = 'cast-iron'
+  else if (resilience > 30) grade = 'wrought-iron'
+
+  return {
+    resilience, grade, hasProperTemper, hasResilience, hasNoBrittleness,
+    hasNoSoftness, hasProperHardness, hasElasticRecovery, hasNoFatigue,
+    hasProperGrain, hasNoCracking, hasToughness, fatigueCount, crackingCount,
+  }
 }
 
-// ─── Impact Measurement ──────────────────────────────────
+// ─── Edge Measurement ───────────────────────────────────────────────────────
 
-/**
- * Measure impact resistance
- * @example
- * measureImpact('if (x === null) return') // { resistance, hasDefenses, ... }
- */
-export function measureImpact(content: string): ImpactMeasure {
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
-  const validations = countValidations(content)
-  const branches = countBranches(content)
+/** @example measureEdge(content) returns edge analysis */
+export function measureEdge(content: string): EdgeMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const commentedCodeCount = countCommentedCode(content)
 
-  const resistance = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (errors > 0 ? 25 : 0) +
-    (validations > 0 ? 20 : 0) +
-    (branches > 0 && errors > 0 ? 20 : 0) +
-    (errors >= 2 ? 15 : 0) +
-    (countTypeAnnotations(content) > 0 ? 10 : 0) +
-    (loc <= 50 ? 10 : 0),
-  )))
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const hasDefenses = validations > 0
-  const hasShockAbsorbers = errors > 0
-  const hasCrackStoppers = /\btry\s*\{/.test(content) && /\bcatch\s/.test(content)
-  const hasStressRelief = /\bretry\b|\bfallback\b|\bdefault\b|\belse\b/.test(content)
+  let quality = 20
+  if (hasStructure) quality += 12
+  if (hasTypes) quality += 12
+  if (hasFunctions) quality += 10
+  if (jsdocCount > 0) quality += 10
+  if (exportCount > 0) quality += 10
+  if (importCount > 0) quality += 5
+  if (anyCount === 0) quality += 5
+  if (consoleCount === 0) quality += 4
+  if (tryCatchCount > 0) quality += 4
+  if (privateCount === 0 && protectedCount === 0) quality += 3
+  if (commentedCodeCount === 0) quality += 5
+  quality = Math.min(100, Math.max(0, Math.round(quality)))
 
-  const crackPoints: string[] = []
-  if (branches > 0 && errors === 0) crackPoints.push('unhandled-branches')
-  if (loc > 50 && errors === 0) crackPoints.push('long-file-no-errors')
-  if (maxNesting(content) > 3 && errors === 0) crackPoints.push('deep-nesting-no-handling')
-  if (countFunctions(content) > 3 && errors === 0) crackPoints.push('many-functions-no-handling')
+  const dullingCount = privateCount + protectedCount
+  const corrosionCount = anyCount + consoleCount
 
-  const crackCount = crackPoints.length
+  const hasLongEdge = quality >= 75 && hasStructure && hasTypes
+  const hasProperSharpness = hasStructure && hasTypes && genericsCount > 0
+  const hasEdgeRetention = hasStructure && hasTypes && hasFunctions && jsdocCount > 0
+  const hasNoDulling = dullingCount === 0
+  const hasNoChipping = commentedCodeCount === 0
+  const hasNoRolling = corrosionCount === 0
+  const hasProperProfile = hasStructure && hasTypes && exportCount > 0
+  const hasMaintenanceFree = dullingCount === 0 && corrosionCount === 0
+  const hasNoCorrosion = anyCount === 0 && consoleCount === 0
+  const hasSelfHealing = tryCatchCount > 0 && asyncCount > 0
 
-  return { resistance, hasDefenses, hasShockAbsorbers, hasCrackStoppers, hasStressRelief, crackCount, crackPoints }
+  let retention: EdgeMeasure['retention'] = 'butter'
+  if (hasLongEdge && hasNoDulling && hasNoCorrosion && hasEdgeRetention) retention = 'diamond'
+  else if (hasLongEdge && hasNoDulling) retention = 'ceramic'
+  else if (hasLongEdge) retention = 'steel'
+  else if (hasProperProfile && hasEdgeRetention) retention = 'iron'
+  else if (quality > 30) retention = 'tin'
+
+  return {
+    quality, retention, hasLongEdge, hasProperSharpness, hasEdgeRetention,
+    hasNoDulling, hasNoChipping, hasNoRolling, hasProperProfile,
+    hasMaintenanceFree, hasNoCorrosion, hasSelfHealing, dullingCount, corrosionCount,
+  }
 }
 
-// ─── Forging Measurement ─────────────────────────────────
+// ─── Technique Measurement ──────────────────────────────────────────────────
 
-/**
- * Measure forging quality
- * @example
- * measureForging('export function calc() {}') // { technique, quality, ... }
- */
-export function measureForging(content: string): ForgingMeasure {
-  const loc = countLoc(content)
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const types = countTypeAnnotations(content)
-  const jsdoc = countJSDoc(content)
-  const comments = countComments(content)
-  const descriptive = countDescriptiveNames(content)
+/** @example measureTechnique(content) returns technique analysis */
+export function measureTechnique(content: string): TechniqueMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const enumCount = countEnumKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
 
-  const quality = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (exports > 0 ? 15 : 0) +
-    (imports > 0 ? 10 : 0) +
-    (types > 0 ? 15 : 0) +
-    (jsdoc > 0 ? 15 : 0) +
-    (comments > 0 ? 10 : 0) +
-    (descriptive > 0 ? 10 : 0) +
-    (countFunctions(content) > 0 ? 10 : 0) +
-    (countClasses(content) > 0 ? 5 : 0) +
-    (countTodos(content) === 0 ? 10 : 0),
-  )))
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  let technique: ForgingTechnique = 'duct-tape'
-  if (exports > 0 && imports > 0 && types > 0 && jsdoc > 0) technique = 'folded-steel'
-  else if (exports > 0 && types > 0) technique = 'machined'
-  else if (exports > 0 && imports > 0) technique = 'hand-forged'
-  else if (exports > 0) technique = 'cast'
-  else if (loc > 0) technique = '3d-printed'
+  let craftsmanship = 20
+  if (hasStructure) craftsmanship += 12
+  if (hasTypes) craftsmanship += 12
+  if (hasFunctions) craftsmanship += 10
+  if (jsdocCount > 0) craftsmanship += 10
+  if (genericsCount > 0) craftsmanship += 5
+  if (enumCount > 0) craftsmanship += 5
+  if (anyCount === 0) craftsmanship += 8
+  if (consoleCount === 0) craftsmanship += 5
+  if (todoCount === 0) craftsmanship += 5
+  if (deepNestedCount === 0) craftsmanship += 8
+  craftsmanship = Math.min(100, Math.max(0, Math.round(craftsmanship)))
 
-  const hasHammerMarks = comments > 2 || jsdoc > 0
-  const hasGrindMarks = comments > 0 && exports > 0
-  const polishLevel = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 25 : 0) +
-    (types > 0 ? 25 : 0) +
-    (descriptive > 0 ? 20 : 0) +
-    (countTodos(content) === 0 ? 15 : 0) +
-    (countConsole(content) === 0 ? 15 : 0),
-  )))
-  const isPolished = polishLevel >= 60
-  const isRough = polishLevel < 30 && loc > 0
+  const shortcutCount = todoCount + commentedCodeCount
+  const sloppyCount = deepNestedCount + consoleCount
 
-  return { technique, quality, hasHammerMarks, hasGrindMarks, isPolished, isRough, polishLevel }
+  const hasHighCraftsmanship = craftsmanship >= 80 && hasStructure && hasTypes && anyCount === 0
+  const hasProperTechnique = hasStructure && hasTypes && hasFunctions
+  const hasNoShortcuts = shortcutCount === 0
+  const hasProgressiveRefinement = hasStructure && hasTypes && genericsCount > 0
+  const hasProperAnnealing = hasFunctions && exportCount > 0
+  const hasNoRushing = todoCount === 0
+  const hasAttentionToDetail = jsdocCount > 0 && genericsCount > 0
+  const hasProperHeatTreatment = hasStructure && hasTypes && tryCatchCount > 0
+  const hasNoSloppyWork = sloppyCount === 0
+  const hasMasterwork = hasHighCraftsmanship && hasNoShortcuts && hasNoSloppyWork
+
+  let method: TechniqueMeasure['method'] = 'unforged'
+  if (hasMasterwork) method = 'pattern-welding'
+  else if (hasHighCraftsmanship && hasNoShortcuts) method = 'folding'
+  else if (hasHighCraftsmanship) method = 'laminating'
+  else if (hasProperTechnique && hasProgressiveRefinement) method = 'casting'
+  else if (craftsmanship > 30) method = 'stamping'
+
+  return {
+    craftsmanship, method, hasHighCraftsmanship, hasProperTechnique, hasNoShortcuts,
+    hasProgressiveRefinement, hasProperAnnealing, hasNoRushing, hasAttentionToDetail,
+    hasProperHeatTreatment, hasNoSloppyWork, hasMasterwork, shortcutCount, sloppyCount,
+  }
 }
 
-// ─── Testing Measurement ─────────────────────────────────
+// ─── Blade Measurement ──────────────────────────────────────────────────────
 
-/**
- * Measure testing evidence
- * @example
- * measureTesting('describe("x", () => { it("y") })') // { hasHardnessTest, ... }
- */
-export function measureTesting(content: string): TestingMeasure {
-  const tests = countTestIndicators(content)
-  const hasDescribe = /\bdescribe\s*[\(.]/.test(content)
-  const hasExpect = /\bexpect\s*\(/.test(content)
-  const hasBeforeEach = /\b(beforeEach|afterEach|beforeAll|afterAll)\s*[\(.]/.test(content)
+/** @example measureBlade(content) returns blade analysis */
+export function measureBlade(content: string): BladeMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const reExportCount = countReExports(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
 
-  const hasHardnessTest = hasDescribe || tests > 0
-  const hasStressTest = hasDescribe && hasExpect
-  const hasImpactTest = hasExpect && countBranches(content) > 0
-  const hasFatigueTest = hasBeforeEach
-  const anvilMarkCount = tests
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const testQuality = tests === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (tests >= 2 ? 30 : 15) +
-    (hasDescribe ? 20 : 0) +
-    (hasExpect ? 20 : 0) +
-    (hasBeforeEach ? 15 : 0) +
-    (tests >= 5 ? 15 : 0),
-  )))
+  let quality = 25
+  if (hasStructure) quality += 12
+  if (hasTypes) quality += 12
+  if (hasFunctions) quality += 10
+  if (jsdocCount > 0) quality += 8
+  if (genericsCount > 0) quality += 5
+  if (exportCount > 0) quality += 5
+  if (importCount > 0) quality += 5
+  if (reExportCount > 0) quality += 5
+  if (asyncCount > 0) quality += 3
+  if (tryCatchCount > 0) quality += 5
+  if (anyCount === 0) quality += 3
+  if (consoleCount === 0) quality += 2
+  quality = Math.min(100, Math.max(0, Math.round(quality)))
 
-  return { hasHardnessTest, hasStressTest, hasImpactTest, hasFatigueTest, anvilMarkCount, testQuality }
+  const flawCount = anyCount + todoCount
+  const weaknessCount = deepNestedCount + consoleCount
+
+  const hasHighQuality = quality >= 80 && hasStructure && hasTypes
+  const hasProperBalance = hasStructure && hasTypes && hasFunctions
+  const hasNoFlaws = flawCount === 0
+  const hasFunctional = hasFunctions && exportCount > 0
+  const hasBeautiful = jsdocCount > 0 && genericsCount > 0
+  const hasNoDefects = flawCount === 0 && weaknessCount === 0
+  const hasProperWeight = hasStructure && hasTypes && genericsCount > 0
+  const hasNoWeakness = weaknessCount === 0
+  const hasTestedInBattle = tryCatchCount > 0
+  const hasLegacy = hasStructure && hasTypes && reExportCount > 0
+
+  let grade: BladeMeasure['grade'] = 'scrap'
+  if (hasHighQuality && hasNoFlaws && hasNoWeakness && hasBeautiful) grade = 'legendary'
+  else if (hasHighQuality && hasNoFlaws) grade = 'masterwork'
+  else if (hasHighQuality) grade = 'fine'
+  else if (hasProperBalance && hasFunctional) grade = 'serviceable'
+  else if (quality > 30) grade = 'crude'
+
+  return {
+    quality, grade, hasHighQuality, hasProperBalance, hasNoFlaws, hasFunctional,
+    hasBeautiful, hasNoDefects, hasProperWeight, hasNoWeakness, hasTestedInBattle,
+    hasLegacy, flawCount, weaknessCount,
+  }
 }
 
-// ─── Heat Measurement ────────────────────────────────────
+// ─── Condition Classification ───────────────────────────────────────────────
 
-/**
- * Measure heat treatment and stability
- * @example
- * measureHeat('export function calc() {}') // { treatmentType, hasBeenHardened, ... }
- */
-export function measureHeat(content: string): HeatMeasure {
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
-  const tests = countTestIndicators(content)
-  const todos = countTodos(content)
-  const comments = countComments(content)
-  const jsdoc = countJSDoc(content)
-
-  const hasBeenHardened = errors > 0 || tests > 0
-  const isStillHot = todos > 0
-  const isCooling = todos > 0 && errors > 0
-  const hasHeatTint = comments > 0 && errors > 0
-
-  let treatmentType: HeatTreatment = 'none'
-  if (errors > 0 && tests > 0 && jsdoc > 0) treatmentType = 'quench'
-  else if (errors > 0 && tests > 0) treatmentType = 'case-harden'
-  else if (errors > 0) treatmentType = 'anneal'
-  else if (tests > 0) treatmentType = 'normalize'
-
-  const stabilityScore = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (hasBeenHardened ? 30 : 0) +
-    (todos === 0 ? 25 : 0) +
-    (tests > 0 ? 20 : 0) +
-    (errors > 0 ? 15 : 0) +
-    (!isStillHot ? 10 : 0),
-  )))
-
-  return { treatmentType, hasBeenHardened, isStillHot, isCooling, hasHeatTint, stabilityScore }
+/** @example classifyCondition(blow) returns condition string */
+export function classifyCondition(blow: HammerBlow): HammerBlow['condition'] {
+  const { qualityScore } = blow
+  if (qualityScore >= 80) return 'excalibur'
+  if (qualityScore >= 65) return 'masterwork-blade'
+  if (qualityScore >= 50) return 'fine-weapon'
+  if (qualityScore >= 35) return 'serviceable-tool'
+  if (qualityScore >= 20) return 'rusty-nail'
+  return 'scrap-metal'
 }
 
-// ─── Condition Classification ────────────────────────────
+// ─── Blow Analysis ──────────────────────────────────────────────────────────
 
-export function classifyCondition(qualityScore: number): PieceCondition {
-  if (qualityScore >= 85) return 'masterwork-blade'
-  if (qualityScore >= 68) return 'quality-tool'
-  if (qualityScore >= 50) return 'serviceable-iron'
-  if (qualityScore >= 32) return 'brittle-casting'
-  if (qualityScore >= 15) return 'soft-metal'
-  return 'scrap-iron'
-}
-
-export function classifyShopType(pieces: ForgedPiece[]): ShopType {
-  if (pieces.length === 0) return 'scrap-yard'
-  const avg = pieces.reduce((s, p) => s + p.qualityScore, 0) / pieces.length
-  if (avg >= 80) return 'master-forge'
-  if (avg >= 62) return 'village-smithy'
-  if (avg >= 45) return 'factory'
-  if (avg >= 28) return 'workshop'
-  if (avg >= 12) return 'shed'
-  return 'scrap-yard'
-}
-
-export function classifyShopCondition(pieces: ForgedPiece[]): ShopCondition {
-  if (pieces.length === 0) return 'condemned'
-  const avg = pieces.reduce((s, p) => s + p.qualityScore, 0) / pieces.length
-  if (avg >= 80) return 'world-class'
-  if (avg >= 62) return 'professional'
-  if (avg >= 45) return 'functional'
-  if (avg >= 28) return 'amateur'
-  if (avg >= 12) return 'dangerous'
-  return 'condemned'
-}
-
-export function classifySmithGrade(avgStrength: number): SmithGrade {
-  if (avgStrength >= 80) return 'master-smith'
-  if (avgStrength >= 65) return 'journeyman'
-  if (avgStrength >= 48) return 'apprentice'
-  if (avgStrength >= 32) return 'tinkerer'
-  if (avgStrength >= 16) return 'amateur'
-  return 'scavenger'
-}
-
-// ─── Core Analysis ───────────────────────────────────────
-
-/**
- * Analyze a single file as a forged piece
- * @example
- * analyzeForgedPiece('export function calc() {}', 'calc.ts') // ForgedPiece
- */
-export function analyzeForgedPiece(content: string, filePath: string): ForgedPiece {
-  const metal = measureMetal(content)
+/** @example analyzeHammerBlow(content, filePath) returns full blow */
+export function analyzeHammerBlow(content: string, filePath: string): HammerBlow {
+  const weight = measureWeight(content)
+  const precision = measurePrecision(content)
   const temper = measureTemper(content)
-  const impact = measureImpact(content)
-  const forging = measureForging(content)
-  const testing = measureTesting(content)
-  const heat = measureHeat(content)
+  const edge = measureEdge(content)
+  const technique = measureTechnique(content)
+  const blade = measureBlade(content)
 
-  const hardness = metal.hardness
-  const temperQuality = temper.quality
-  const impactResistance = impact.resistance
-  const loc = countLoc(content)
-  const ductility = loc === 0 ? 0 : temper.isDuctile ? Math.min(100, temper.quality + 10) : temper.quality
-  const brittleness = loc === 0 ? 0 : temper.isBrittle ? Math.min(100, 100 - temper.quality + 20) : Math.max(0, 100 - temper.quality - 20)
-  const anvilMarks = testing.anvilMarkCount
+  const hammerWeight = weight.impact
+  const strikePrecision = precision.accuracy
+  const metalTemper = temper.resilience
+  const edgeQuality = edge.quality
+  const forgingTechnique = technique.craftsmanship
+  const bladeQuality = blade.quality
 
-  const qualityScore = countLoc(content) === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (hardness * 0.20) +
-    (temperQuality * 0.15) +
-    (impactResistance * 0.20) +
-    (forging.quality * 0.15) +
-    (testing.testQuality * 0.15) +
-    (heat.stabilityScore * 0.15),
-  )))
+  const qualityScore = Math.round(
+    hammerWeight * 0.15 +
+    strikePrecision * 0.15 +
+    metalTemper * 0.15 +
+    edgeQuality * 0.2 +
+    forgingTechnique * 0.15 +
+    bladeQuality * 0.2,
+  )
 
-  const condition = classifyCondition(qualityScore)
-
-  return {
+  const blow: HammerBlow = {
     file: filePath,
-    hardness, temperQuality, impactResistance, ductility, brittleness, anvilMarks,
-    metal, temper, impact, forging, testing, heat,
-    condition, qualityScore,
+    hammerWeight, strikePrecision, metalTemper, edgeQuality,
+    forgingTechnique, bladeQuality,
+    weight, precision, temper, edge, technique, blade,
+    condition: 'scrap-metal',
+    qualityScore,
   }
+
+  blow.condition = classifyCondition(blow)
+
+  return blow
 }
 
-// ─── Forge Shop ──────────────────────────────────────────
+// ─── Armory Analysis ────────────────────────────────────────────────────────
 
-/**
- * Analyze a directory as a forge shop
- * @example
- * analyzeForgeShop(pieces, 'src') // ForgeShop
- */
-export function analyzeForgeShop(pieces: ForgedPiece[], dirPath: string): ForgeShop {
-  const avgHardness = pieces.length === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.hardness, 0) / pieces.length)
-  const avgTemper = pieces.length === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.temperQuality, 0) / pieces.length)
-  const avgImpactResistance = pieces.length === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.impactResistance, 0) / pieces.length)
-  const avgDuctility = pieces.length === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.ductility, 0) / pieces.length)
-  const masterworkCount = pieces.filter(p => p.condition === 'masterwork-blade').length
-  const scrapCount = pieces.filter(p => p.condition === 'scrap-iron' || p.condition === 'soft-metal').length
-  const testedCount = pieces.filter(p => p.testing.hasHardnessTest).length
-  const brittleCount = pieces.filter(p => p.temper.isBrittle).length
+/** @example analyzeForgeArmory(blows, dirPath) returns armory */
+export function analyzeForgeArmory(blows: HammerBlow[], dirPath: string): ForgeArmory {
+  if (blows.length === 0) {
+    return {
+      directory: dirPath, blows: [], avgImpact: 0, avgPrecision: 0, avgQuality: 0,
+      excaliburCount: 0, scrapCount: 0, heavyImpactCount: 0, highPrecisionCount: 0,
+      armoryType: 'ruins', condition: 'empty',
+    }
+  }
 
-  const shopType = classifyShopType(pieces)
-  const condition = classifyShopCondition(pieces)
+  const avgImpact = Math.round(blows.reduce((s, b) => s + b.hammerWeight, 0) / blows.length)
+  const avgPrecision = Math.round(blows.reduce((s, b) => s + b.strikePrecision, 0) / blows.length)
+  const avgQuality = Math.round(blows.reduce((s, b) => s + b.bladeQuality, 0) / blows.length)
+
+  const excaliburCount = blows.filter((b) => b.condition === 'excalibur').length
+  const scrapCount = blows.filter((b) => b.condition === 'scrap-metal').length
+  const heavyImpactCount = blows.filter((b) => b.weight.hasHeavyImpact).length
+  const highPrecisionCount = blows.filter((b) => b.precision.hasHighPrecision).length
+
+  const armoryType = classifyArmoryType(blows)
+  const avgScore = blows.reduce((s, b) => s + b.qualityScore, 0) / blows.length
+  const condition = classifyArmoryCondition(avgScore)
 
   return {
-    directory: dirPath, pieces,
-    avgHardness, avgTemper, avgImpactResistance, avgDuctility,
-    masterworkCount, scrapCount, testedCount, brittleCount,
-    shopType, condition,
+    directory: dirPath, blows, avgImpact, avgPrecision, avgQuality,
+    excaliburCount, scrapCount, heavyImpactCount, highPrecisionCount,
+    armoryType, condition,
   }
 }
 
-// ─── Recommendations ─────────────────────────────────────
+// ─── Armory Classification ──────────────────────────────────────────────────
 
-/**
- * Generate actionable recommendations
- * @example
- * generateRecommendations(pieces, shops, foundry, stats) // string[]
- */
+/** @example classifyArmoryType(blows) returns armory type */
+export function classifyArmoryType(blows: HammerBlow[]): ForgeArmory['armoryType'] {
+  if (blows.length === 0) return 'ruins'
+  const avgScore = blows.reduce((s, b) => s + b.qualityScore, 0) / blows.length
+  const excalCnt = blows.filter((b) => b.condition === 'excalibur').length
+  if (avgScore >= 75 && excalCnt >= Math.ceil(blows.length * 0.3)) return 'royal-armory'
+  if (avgScore >= 60) return 'guild-armory'
+  if (avgScore >= 45) return 'village-forge'
+  if (avgScore >= 30) return 'field-forge'
+  if (avgScore >= 15) return 'scrap-yard'
+  return 'ruins'
+}
+
+/** @example classifyArmoryCondition(avgScore) returns condition */
+export function classifyArmoryCondition(avgScore: number): ForgeArmory['condition'] {
+  if (avgScore >= 80) return 'legendary-armory'
+  if (avgScore >= 65) return 'well-stocked'
+  if (avgScore >= 50) return 'functional'
+  if (avgScore >= 35) return 'basic'
+  if (avgScore >= 20) return 'depleted'
+  return 'empty'
+}
+
+/** @example classifySmithGrade(avgQuality) returns grade */
+export function classifySmithGrade(avgQuality: number): ForgeHammerResult['stats']['smithGrade'] {
+  if (avgQuality >= 80) return 'legendary-smith'
+  if (avgQuality >= 65) return 'master-smith'
+  if (avgQuality >= 50) return 'journeyman'
+  if (avgQuality >= 35) return 'apprentice'
+  if (avgQuality >= 20) return 'novice'
+  return 'vandal'
+}
+
+// ─── Recommendations ────────────────────────────────────────────────────────
+
+/** @example generateRecommendations(blows, armories, forge, stats) returns recommendations */
 export function generateRecommendations(
-  pieces: ForgedPiece[],
-  shops: ForgeShop[],
-  foundry: Foundry,
-  stats: ForgeHammerStats,
+  blows: HammerBlow[],
+  armories: ForgeArmory[],
+  forge: ForgeHammerResult['forge'],
+  stats: ForgeHammerResult['stats'],
 ): string[] {
   const recs: string[] = []
 
-  if (stats.scrapIronCount + stats.softMetalCount > 0) {
-    recs.push(`Weak metal: ${stats.scrapIronCount + stats.softMetalCount} file(s) need hardening with error handling`)
-  }
-  if (stats.brittleCastingCount > stats.totalFiles * 0.3) {
-    recs.push('High brittleness ratio - add error handling to prevent shattering under stress')
-  }
-  if (stats.hasHardnessTestCount === 0 && stats.totalFiles > 0) {
-    recs.push('No hardness testing detected - add unit tests to verify metal quality')
-  }
-  if (stats.isStillHotCount > 0) {
-    recs.push(`Still hot: ${stats.isStillHotCount} file(s) contain TODOs and may be unstable`)
-  }
-  if (stats.evenlyTemperedCount === 0 && stats.totalFiles > 0) {
-    recs.push('No evenly tempered code - balance error handling with control flow')
-  }
-  if (foundry.overallStrength >= 70) {
-    recs.push('Battle-ready codebase - good hardness and temper across the foundry')
-  }
-  if (stats.isPolishedCount > stats.totalFiles * 0.5) {
-    recs.push('Well-polished code - clean documentation and typing throughout')
-  }
-  if (shops.length > 1) {
-    const weakShops = shops.filter(s => s.shopType === 'shed' || s.shopType === 'scrap-yard')
-    if (weakShops.length > 0) {
-      recs.push(`Weak shops: ${weakShops.map(s => s.directory).join(', ')} need reinforcement`)
-    }
-  }
+  if (stats.avgHammerWeight < 50) recs.push('Increase hammer weight — add more impactful code structures')
+  if (stats.avgStrikePrecision < 50) recs.push('Improve strike precision — enhance code accuracy with types')
+  if (stats.avgMetalTemper < 50) recs.push('Improve temper — strengthen code resilience and error handling')
+  if (stats.avgEdgeQuality < 50) recs.push('Sharpen the edge — improve code longevity and maintainability')
+  if (stats.avgForgingTechnique < 50) recs.push('Refine technique — elevate code craftsmanship and reduce shortcuts')
+  if (stats.avgBladeQuality < 50) recs.push('Improve blade quality — reduce defects and strengthen code quality')
+  if (stats.scrapMetalCount > blows.length * 0.5) recs.push('Too much scrap — over half the codebase is poor quality')
+  if (stats.hasHighQualityCount === 0) recs.push('No high-quality blades found — practice fundamental forging')
+  if (armories.length > 0 && forge.overallQuality < 60) recs.push('Overall quality is low — systematic forging improvement recommended')
+  if (recs.length === 0) recs.push('Legendary forge — your code is forged with the skill of a master smith')
 
-  return Array.from(new Set(recs))
+  return recs
 }
 
-// ─── Build Result ────────────────────────────────────────
+// ─── Build Result ───────────────────────────────────────────────────────────
 
-/**
- * Build the complete forge-hammer result
- * @example
- * buildForgeHammerResult(['a.ts'], ['export function a() {}'], {}) // ForgeHammerResult
- */
-export function buildForgeHammerResult(files: string[], contents: string[], _options: Record<string, unknown>): ForgeHammerResult {
-  const pieces: ForgedPiece[] = files.map((file, i) => {
-    const content = i < contents.length ? contents[i] : ''
-    return analyzeForgedPiece(content, file)
-  })
-
-  const dirMap = new Map<string, ForgedPiece[]>()
-  for (const piece of pieces) {
-    const parts = piece.file.split('/')
-    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
-    const existing = dirMap.get(dir)
-    if (existing) { existing.push(piece) } else { dirMap.set(dir, [piece]) }
-  }
-
-  const shops = Array.from(dirMap.entries()).map(([dir, dirPieces]) =>
-    analyzeForgeShop(dirPieces, dir),
+/** @example buildForgeHammerResult(files, contents, options) returns full result */
+export function buildForgeHammerResult(
+  files: string[],
+  contents: string[],
+  _options?: { verbose?: boolean },
+): ForgeHammerResult {
+  const blows: HammerBlow[] = files.map((file, i) =>
+    analyzeHammerBlow(contents[i] ?? '', file),
   )
 
-  const totalFiles = pieces.length
-  const avgHardness = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.hardness, 0) / totalFiles)
-  const avgTemperQuality = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.temperQuality, 0) / totalFiles)
-  const avgImpactResistance = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.impactResistance, 0) / totalFiles)
-  const avgDuctility = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.ductility, 0) / totalFiles)
-  const avgBrittleness = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.brittleness, 0) / totalFiles)
-  const avgAnvilMarks = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.anvilMarks, 0) / totalFiles)
-  const overallStrength = totalFiles === 0 ? 0 : Math.round(pieces.reduce((s, p) => s + p.qualityScore, 0) / totalFiles)
-
-  const foundry: Foundry = {
-    avgHardness,
-    avgTemper: avgTemperQuality,
-    avgImpactResistance,
-    avgDuctility,
-    isBattleReady: overallStrength >= 60,
-    overallStrength,
+  const dirMap = new Map<string, HammerBlow[]>()
+  for (const blow of blows) {
+    const dir = blow.file.includes('/')
+      ? blow.file.substring(0, blow.file.lastIndexOf('/'))
+      : '.'
+    const existing = dirMap.get(dir)
+    if (existing) {
+      existing.push(blow)
+    } else {
+      dirMap.set(dir, [blow])
+    }
   }
 
-  const conditionCounts = { masterworkBlade: 0, qualityTool: 0, serviceableIron: 0, brittleCasting: 0, softMetal: 0, scrapIron: 0 }
-  const metalCounts = { steel: 0, iron: 0, bronze: 0, copper: 0, tin: 0, clay: 0 }
+  const armories: ForgeArmory[] = Array.from(dirMap.entries()).map(([dir, dirBlows]) =>
+    analyzeForgeArmory(dirBlows, dir),
+  )
 
-  for (const piece of pieces) {
-    switch (piece.condition) {
+  const avgImpact = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.hammerWeight, 0) / blows.length)
+    : 0
+  const avgPrecision = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.strikePrecision, 0) / blows.length)
+    : 0
+  const avgQuality = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.bladeQuality, 0) / blows.length)
+    : 0
+  const overallQuality = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.qualityScore, 0) / blows.length)
+    : 0
+  const isLegendary = overallQuality >= 65
+
+  const forge: ForgeHammerResult['forge'] = {
+    avgImpact, avgPrecision, avgQuality, isLegendary, overallQuality,
+  }
+
+  const avgHammerWeight = avgImpact
+  const avgStrikePrecision = avgPrecision
+  const avgMetalTemper = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.metalTemper, 0) / blows.length)
+    : 0
+  const avgEdgeQuality = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.edgeQuality, 0) / blows.length)
+    : 0
+  const avgForgingTechnique = blows.length > 0
+    ? Math.round(blows.reduce((s, b) => s + b.forgingTechnique, 0) / blows.length)
+    : 0
+  const avgBladeQuality = avgQuality
+
+  const conditionCounts = {
+    excalibur: 0, masterworkBlade: 0, fineWeapon: 0,
+    serviceableTool: 0, rustyNail: 0, scrapMetal: 0,
+  }
+  for (const b of blows) {
+    switch (b.condition) {
+      case 'excalibur': conditionCounts.excalibur++; break
       case 'masterwork-blade': conditionCounts.masterworkBlade++; break
-      case 'quality-tool': conditionCounts.qualityTool++; break
-      case 'serviceable-iron': conditionCounts.serviceableIron++; break
-      case 'brittle-casting': conditionCounts.brittleCasting++; break
-      case 'soft-metal': conditionCounts.softMetal++; break
-      case 'scrap-iron': conditionCounts.scrapIron++; break
-    }
-    switch (piece.metal.type) {
-      case 'steel': metalCounts.steel++; break
-      case 'iron': metalCounts.iron++; break
-      case 'bronze': metalCounts.bronze++; break
-      case 'copper': metalCounts.copper++; break
-      case 'tin': metalCounts.tin++; break
-      case 'clay': metalCounts.clay++; break
+      case 'fine-weapon': conditionCounts.fineWeapon++; break
+      case 'serviceable-tool': conditionCounts.serviceableTool++; break
+      case 'rusty-nail': conditionCounts.rustyNail++; break
+      case 'scrap-metal': conditionCounts.scrapMetal++; break
     }
   }
 
-  const hardestPiece = totalFiles === 0 ? 'none' :
-    pieces.reduce((best, p) => p.hardness > best.hardness ? p : best).file
-  const toughestPiece = totalFiles === 0 ? 'none' :
-    pieces.reduce((best, p) => p.impactResistance > best.impactResistance ? p : best).file
-  const mostBrittle = totalFiles === 0 ? 'none' :
-    pieces.reduce((worst, p) => p.brittleness > worst.brittleness ? p : worst).file
-  const mostPolished = totalFiles === 0 ? 'none' :
-    pieces.reduce((best, p) => p.forging.polishLevel > best.forging.polishLevel ? p : best).file
-  const needsForging = totalFiles === 0 ? 'none' :
-    pieces.reduce((worst, p) => p.qualityScore < worst.qualityScore ? p : worst).file
+  const hasProperWeightCount = blows.filter((b) => b.weight.hasProperWeight).length
+  const hasHighPrecisionCount = blows.filter((b) => b.precision.hasHighPrecision).length
+  const hasProperTemperCount = blows.filter((b) => b.temper.hasProperTemper).length
+  const hasLongEdgeCount = blows.filter((b) => b.edge.hasLongEdge).length
+  const hasHighCraftsmanshipCount = blows.filter((b) => b.technique.hasHighCraftsmanship).length
+  const hasHighQualityCount = blows.filter((b) => b.blade.hasHighQuality).length
 
-  const stats: ForgeHammerStats = {
-    totalFiles,
-    totalShops: shops.length,
-    avgHardness,
-    avgTemperQuality,
-    avgImpactResistance,
-    avgDuctility,
-    avgBrittleness,
-    avgAnvilMarks,
+  const bestBlow = blows.length > 0
+    ? blows.reduce((best, b) => b.qualityScore > best.qualityScore ? b : best).file
+    : ''
+  const heaviest = blows.length > 0
+    ? blows.reduce((best, b) => b.hammerWeight > best.hammerWeight ? b : best).file
+    : ''
+  const mostPrecise = blows.length > 0
+    ? blows.reduce((best, b) => b.strikePrecision > best.strikePrecision ? b : best).file
+    : ''
+  const bestTemper = blows.length > 0
+    ? blows.reduce((best, b) => b.metalTemper > best.metalTemper ? b : best).file
+    : ''
+  const sharpest = blows.length > 0
+    ? blows.reduce((best, b) => b.edgeQuality > best.edgeQuality ? b : best).file
+    : ''
+  const finestCraft = blows.length > 0
+    ? blows.reduce((best, b) => b.forgingTechnique > best.forgingTechnique ? b : best).file
+    : ''
+
+  const smithGrade = classifySmithGrade(overallQuality)
+
+  const stats: ForgeHammerResult['stats'] = {
+    totalFiles: files.length, totalArmories: armories.length,
+    avgHammerWeight, avgStrikePrecision, avgMetalTemper,
+    avgEdgeQuality, avgForgingTechnique, avgBladeQuality,
+    excaliburCount: conditionCounts.excalibur,
     masterworkBladeCount: conditionCounts.masterworkBlade,
-    qualityToolCount: conditionCounts.qualityTool,
-    serviceableIronCount: conditionCounts.serviceableIron,
-    brittleCastingCount: conditionCounts.brittleCasting,
-    softMetalCount: conditionCounts.softMetal,
-    scrapIronCount: conditionCounts.scrapIron,
-    steelCount: metalCounts.steel,
-    ironCount: metalCounts.iron,
-    bronzeCount: metalCounts.bronze,
-    copperCount: metalCounts.copper,
-    hasHardnessTestCount: pieces.filter(p => p.testing.hasHardnessTest).length,
-    hasStressTestCount: pieces.filter(p => p.testing.hasStressTest).length,
-    hasImpactTestCount: pieces.filter(p => p.testing.hasImpactTest).length,
-    hasFatigueTestCount: pieces.filter(p => p.testing.hasFatigueTest).length,
-    evenlyTemperedCount: pieces.filter(p => p.temper.isEvenlyTempered).length,
-    hasDefensesCount: pieces.filter(p => p.impact.hasDefenses).length,
-    isPolishedCount: pieces.filter(p => p.forging.isPolished).length,
-    isStillHotCount: pieces.filter(p => p.heat.isStillHot).length,
-    overallStrength,
-    smithGrade: classifySmithGrade(overallStrength),
-    hardestPiece,
-    toughestPiece,
-    mostBrittle,
-    mostPolished,
-    needsForging,
+    fineWeaponCount: conditionCounts.fineWeapon,
+    serviceableToolCount: conditionCounts.serviceableTool,
+    rustyNailCount: conditionCounts.rustyNail,
+    scrapMetalCount: conditionCounts.scrapMetal,
+    hasProperWeightCount, hasHighPrecisionCount, hasProperTemperCount,
+    hasLongEdgeCount, hasHighCraftsmanshipCount, hasHighQualityCount,
+    overallQuality, smithGrade,
+    bestBlow, heaviest, mostPrecise, bestTemper, sharpest, finestCraft,
   }
 
-  const recommendations = generateRecommendations(pieces, shops, foundry, stats)
+  const recommendations = generateRecommendations(blows, armories, forge, stats)
 
-  return { pieces, shops, foundry, stats, recommendations }
+  return { blows, armories, forge, stats, recommendations }
 }

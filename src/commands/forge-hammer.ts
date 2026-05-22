@@ -1,40 +1,47 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildForgeHammerResult } from './forge-hammer-helpers.js'
+import {
+  buildForgeHammerResult,
+  type ForgeHammerResult,
+} from './forge-hammer-helpers.js'
 import { formatForgeHammerJson, formatForgeHammerTable } from './forge-hammer-format-helpers.js'
 
 export default class ForgeHammer extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze for resilience/stress testing',
+      description: 'Path to analyze forge hammer patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code resilience and stress testing quality'
+  static override description = 'Analyze code power, impact, precision, craftsmanship, and forging like a master smith\'s hammer'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory for code resilience',
+      description: 'Analyze forge hammer in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory with JSON output',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed per-file resilience metrics',
+      description: 'Analyze forge hammer in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
       description: 'Analyze only TypeScript files',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output forge.json',
+      description: 'Export forge hammer analysis to JSON file',
     },
   ]
 
@@ -61,7 +68,7 @@ export default class ForgeHammer extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed per-file metrics',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -86,28 +93,22 @@ export default class ForgeHammer extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = '.' + f.path.split('.').pop()?.toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
-    spinner.text = 'Analyzing resilience...'
+    spinner.text = 'Analyzing forge hammer...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -123,13 +124,14 @@ export default class ForgeHammer extends Command {
       }
     }
 
-    const result = buildForgeHammerResult(files, contents, {})
+    const result: ForgeHammerResult = buildForgeHammerResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} files across ${result.shops.length} shops`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.armories.length} forge armories`)
 
-    const outputData = format === 'json'
-      ? formatForgeHammerJson(result)
-      : formatForgeHammerTable(result, verbose)
+    const outputData =
+      format === 'json'
+        ? formatForgeHammerJson(result)
+        : formatForgeHammerTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -146,57 +148,6 @@ export default class ForgeHammer extends Command {
   }
 }
 
-export {
-  analyzeForgedPiece,
-  analyzeForgeShop,
-  buildForgeHammerResult,
-  classifyCondition,
-  classifyShopCondition,
-  classifyShopType,
-  classifySmithGrade,
-  countBranches,
-  countClasses,
-  countComments,
-  countConsole,
-  countDescriptiveNames,
-  countErrorHandling,
-  countExports,
-  countFunctions,
-  countImports,
-  countJSDoc,
-  countLoc,
-  countTestIndicators,
-  countTodos,
-  countTypeAnnotations,
-  countValidations,
-  generateRecommendations,
-  maxNesting,
-  measureForging,
-  measureHeat,
-  measureImpact,
-  measureMetal,
-  measureTemper,
-  measureTesting,
-} from './forge-hammer-helpers.js'
-export type {
-  ForgeHammerResult,
-  ForgeHammerStats,
-  ForgeShop,
-  ForgedPiece,
-  Foundry,
-  ForgingMeasure,
-  ForgingTechnique,
-  HeatMeasure,
-  HeatTreatment,
-  ImpactMeasure,
-  MetalGrade,
-  MetalMeasure,
-  MetalType,
-  PieceCondition,
-  ShopCondition,
-  ShopType,
-  SmithGrade,
-  TemperMeasure,
-  TestingMeasure,
-} from './forge-hammer-helpers.js'
+export { buildForgeHammerResult } from './forge-hammer-helpers.js'
+export type { ForgeHammerResult, HammerBlow, ForgeArmory, WeightMeasure, PrecisionMeasure, TemperMeasure, EdgeMeasure, TechniqueMeasure, BladeMeasure } from './forge-hammer-helpers.js'
 export { formatForgeHammerJson, formatForgeHammerTable } from './forge-hammer-format-helpers.js'
