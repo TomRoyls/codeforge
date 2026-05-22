@@ -1,923 +1,1086 @@
-// ─── Interfaces ──────────────────────────────────────────
+// ─── Regex Constants ────────────────────────────────────────────────────────
 
-export interface CargoMeasure {
-  type: 'silk' | 'spice' | 'gold' | 'gems' | 'ivory' | 'textiles' | 'tea' | 'salt'
-  value: number
-  weight: number
-  isPerishable: boolean
-  isDurable: boolean
-  isFragile: boolean
-  isValuable: boolean
-  isExotic: boolean
-  isCommon: boolean
+const EXPORT_REGEX = /\bexport\s+/g
+const IMPORT_REGEX = /\bimport\s+/g
+const FUNCTION_REGEX = /\bfunction\s+\w+/g
+const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
+const CLASS_REGEX = /\bclass\s+\w+/g
+const INTERFACE_REGEX = /\binterface\s+\w+/g
+const TYPE_REGEX = /\btype\s+\w+/g
+const ENUM_REGEX = /\benum\s+\w+/g
+const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
+const ASYNC_REGEX = /\basync\s+/g
+const TRY_CATCH_REGEX = /\btry\s*\{/g
+const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
+const CONSOLE_REGEX = /\bconsole\.\w+/g
+const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
+const GENERICS_REGEX = /<[^>]+>/g
+const PRIVATE_REGEX = /private\s+/g
+const PROTECTED_REGEX = /protected\s+/g
+const STATIC_REGEX = /\bstatic\s+/g
+const READONLY_REGEX = /\breadonly\b/g
+const ANY_REGEX = /\bany\b/g
+const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
+const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
+const CONDITIONAL_REGEX = /\bif\s*\(/g
+const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
+const ERROR_THROW_REGEX = /\bthrow\s+/g
+const PROMISE_REGEX = /\bPromise\b/g
+const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
+const DESTRUCTURE_REGEX = /\{[^}]*\}\s*=/g
+const DECORATOR_REGEX = /@\w+/g
+
+// ─── Helper Functions ───────────────────────────────────────────────────────
+
+function countMatches(content: string, regex: RegExp): number {
+  const matches = content.match(regex)
+  return matches ? matches.length : 0
 }
+
+function countImportKeywords(content: string): number { return countMatches(content, IMPORT_REGEX) }
+function countExportKeywords(content: string): number { return countMatches(content, EXPORT_REGEX) }
+function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
+function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
+function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
+function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
+function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
+function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
+function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
+function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
+function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
+function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
+function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
+function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
+function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
+function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
+function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
+function countStaticMembers(content: string): number { return countMatches(content, STATIC_REGEX) }
+function countReadonlyMembers(content: string): number { return countMatches(content, READONLY_REGEX) }
+function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
+function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
+function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
+function countConditionals(content: string): number { return countMatches(content, CONDITIONAL_REGEX) }
+function countLoops(content: string): number { return countMatches(content, LOOP_REGEX) }
+function countErrorThrows(content: string): number { return countMatches(content, ERROR_THROW_REGEX) }
+function countPromiseUsage(content: string): number { return countMatches(content, PROMISE_REGEX) }
+function countTemplateLiterals(content: string): number { return countMatches(content, STRING_TEMPLATE_REGEX) }
+function countDestructures(content: string): number { return countMatches(content, DESTRUCTURE_REGEX) }
+function countDecorators(content: string): number { return countMatches(content, DECORATOR_REGEX) }
+
+// ─── Interfaces ─────────────────────────────────────────────────────────────
 
 export interface RouteMeasure {
-  inboundPaths: number
-  outboundPaths: number
-  totalPaths: number
-  efficiency: number
-  hasDirectRoutes: boolean
-  hasCircuitousRoutes: boolean
-  hasDeadEnds: boolean
-  hasPiracy: boolean
-  circuitousCount: number
+  clarity: number
+  type: 'silk-road' | 'maritime' | 'incense-trail' | 'amber-road' | 'salt-route' | 'no-path'
+  hasClearFlow: boolean
+  hasProperDirection: boolean
+  hasNoDeadEnds: boolean
+  hasNoBanditZones: boolean
+  hasProperSignage: boolean
+  hasRestStops: boolean
+  hasNoDetours: boolean
+  hasProperGrading: boolean
+  hasCaravanCapacity: boolean
+  hasNoTollPoints: boolean
   deadEndCount: number
+  tollPointCount: number
 }
 
-export interface TollMeasure {
-  count: number
-  totalToll: number
-  hasLegitimateTolls: boolean
-  hasExcessiveTolls: boolean
-  hasTollFraud: boolean
-  isReasonable: boolean
-  legitimateCount: number
-  excessiveCount: number
+export interface CargoMeasure {
+  value: number
+  type: 'saffron' | 'cinnamon' | 'pepper' | 'nutmeg' | 'cardamom' | 'sawdust'
+  hasHighValue: boolean
+  isProperlyPackaged: boolean
+  hasNoContamination: boolean
+  hasProperPreservation: boolean
+  hasTradeSecret: boolean
+  hasNoSpoilage: boolean
+  hasProperWeight: boolean
+  hasNoContraband: boolean
+  hasProperLabeling: boolean
+  hasBulkGoods: boolean
+  contaminationCount: number
+  contrabandCount: number
 }
 
-export interface TradeMeasure {
-  volume: number
-  hasWholesale: boolean
-  hasRetail: boolean
-  hasMonopoly: boolean
-  hasCompetition: boolean
-  hasEmbargo: boolean
-  isTradeHub: boolean
-  exportCount: number
-  importCount: number
+export interface WaypointMeasure {
+  quality: number
+  type: 'caravanserai' | 'trading-post' | 'customs-house' | 'toll-booth' | 'bandit-camp' | 'ruins'
+  hasQualityControl: boolean
+  hasProperInspection: boolean
+  hasTestingStation: boolean
+  hasValidationGate: boolean
+  hasNoCorruptOfficials: boolean
+  hasProperDocumentation: boolean
+  hasRestFacility: boolean
+  hasSupplyDepot: boolean
+  hasNoBlockage: boolean
+  hasProperSecurity: boolean
+  hasCommunicationPost: boolean
+  corruptCount: number
+  blockageCount: number
 }
 
-export interface SafetyMeasure {
+export interface EfficiencyMeasure {
   level: number
-  hasEscorts: boolean
-  hasNavalPatrol: boolean
-  hasSafeHarbors: boolean
-  hasPirateZones: boolean
-  hasShipwrecks: boolean
-  hasStormWarnings: boolean
-  pirateZoneCount: number
-  shipwreckCount: number
+  mode: 'clipper-ship' | 'caravan' | 'galley' | 'cart' | 'portage' | 'abandoned'
+  hasHighEfficiency: boolean
+  hasProperVelocity: boolean
+  hasNoWaste: boolean
+  hasProperLoading: boolean
+  hasNoOverloading: boolean
+  hasOptimalPath: boolean
+  hasNoReturnTrips: boolean
+  hasWindAssistance: boolean
+  hasNoStorms: boolean
+  hasProperNavigation: boolean
+  wasteCount: number
+  stormCount: number
 }
 
-export interface TrustMeasure {
+export interface ExchangeMeasure {
   level: number
-  hasGuildSeal: boolean
-  hasLetterOfCredit: boolean
-  hasMerchantCharter: boolean
-  hasBrokenPromise: boolean
-  hasReliableWeights: boolean
-  isTrustedMerchant: boolean
+  culture: 'cosmopolitan' | 'multilingual' | 'bilingual' | 'dialect' | 'isolated' | 'xenophobic'
+  hasCulturalExchange: boolean
+  hasMultiFormat: boolean
+  hasProperInterface: boolean
+  hasTranslation: boolean
+  hasNoTradeBarrier: boolean
+  hasCommonCurrency: boolean
+  hasNoCulturalImposition: boolean
+  hasDiplomaticRelations: boolean
+  hasNoEmbargo: boolean
+  hasKnowledgeTransfer: boolean
+  barrierCount: number
+  embargoCount: number
 }
 
-export interface CaravanMeasure {
-  size: number
-  hasScouts: boolean
-  hasGuards: boolean
-  hasPackAnimals: boolean
-  isOverloaded: boolean
-  hasLostCargo: boolean
-  lostCargoCount: number
-}
-
-export interface TradeWaypoint {
-  file: string
-  cargoValue: number
-  routeEfficiency: number
-  tollStationCount: number
-  tradeVolume: number
-  routeSafety: number
-  merchantTrust: number
-  cargo: CargoMeasure
-  route: RouteMeasure
-  tolls: TollMeasure
-  trade: TradeMeasure
-  safety: SafetyMeasure
-  trust: TrustMeasure
-  caravan: CaravanMeasure
-  condition: 'silk-road-hub' | 'major-port' | 'trading-post' | 'waystation' | 'ghost-town' | 'shipwreck'
-  qualityScore: number
+export interface JourneyMeasure {
+  success: number
+  status: 'arrived-wealthy' | 'successful-trade' | 'broke-even' | 'partial-loss' | 'shipwrecked' | 'never-left'
+  isSuccessful: boolean
+  hasCompleteJourney: boolean
+  hasNoLosses: boolean
+  hasProperReturn: boolean
+  hasNavigationLog: boolean
+  hasNoPirates: boolean
+  hasTreasure: boolean
+  hasProperMaps: boolean
+  hasNoDesertion: boolean
+  hasLegacy: boolean
+  pirateCount: number
+  desertionCount: number
 }
 
 export interface TradeRoute {
+  file: string
+  routeClarity: number
+  cargoValue: number
+  waypointQuality: number
+  tradeEfficiency: number
+  culturalExchange: number
+  journeySuccess: number
+  route: RouteMeasure
+  cargo: CargoMeasure
+  waypoint: WaypointMeasure
+  efficiency: EfficiencyMeasure
+  exchange: ExchangeMeasure
+  journey: JourneyMeasure
+  condition: 'golden-age' | 'prosperous' | 'thriving' | 'surviving' | 'struggling' | 'collapsed'
+  qualityScore: number
+}
+
+export interface RouteNetwork {
   directory: string
-  waypoints: TradeWaypoint[]
-  avgCargoValue: number
-  avgRouteEfficiency: number
-  avgSafety: number
-  avgTrust: number
-  hubCount: number
-  shipwreckCount: number
-  totalTradeVolume: number
-  routeType: 'silk-road' | 'maritime-highway' | 'caravan-route' | 'river-trade' | 'smuggling-trail' | 'dead-route'
-  condition: 'golden-age' | 'prosperous-trade' | 'active-commerce' | 'declining-trade' | 'dangerous-passage' | 'abandoned-route'
-}
-
-export interface SpiceRouteNetwork {
-  avgCargoValue: number
-  avgRouteEfficiency: number
-  avgSafety: number
-  avgTrust: number
-  isProsperous: boolean
-  overallTradeHealth: number
-}
-
-export interface SpiceRouteStats {
-  totalFiles: number
-  totalRoutes: number
-  avgCargoValue: number
-  avgRouteEfficiency: number
-  avgTollStationCount: number
-  avgTradeVolume: number
-  avgRouteSafety: number
-  avgMerchantTrust: number
-  silkRoadHubCount: number
-  majorPortCount: number
-  tradingPostCount: number
-  waystationCount: number
-  ghostTownCount: number
-  shipwreckCount: number
-  silkCargoCount: number
-  spiceCargoCount: number
-  goldCargoCount: number
-  hasPiracyCount: number
-  hasDeadEndsCount: number
-  hasExcessiveTollsCount: number
-  hasPirateZonesCount: number
-  hasShipwrecksCount: number
-  isTradeHubCount: number
-  isTrustedMerchantCount: number
-  hasGuildSealCount: number
-  hasLetterOfCreditCount: number
-  overallTradeHealth: number
-  merchantGrade: 'grand-merchant' | 'guild-master' | 'merchant' | 'trader' | 'peddler' | 'beggar'
-  mostValuable: string
-  mostEfficient: string
-  safestRoute: string
-  mostTrusted: string
-  busiestHub: string
+  routes: TradeRoute[]
+  avgClarity: number
+  avgEfficiency: number
+  avgSuccess: number
+  goldenAgeCount: number
+  collapsedCount: number
+  clearFlowCount: number
+  successfulCount: number
+  networkType: 'grand-trunk' | 'maritime-network' | 'silk-network' | 'regional-trade' | 'local-market' | 'dead-end'
+  condition: 'global-emporium' | 'trading-bloc' | 'merchant-guild' | 'village-market' | 'barter-system' | 'subsistence'
 }
 
 export interface SpiceRouteResult {
-  waypoints: TradeWaypoint[]
   routes: TradeRoute[]
-  network: SpiceRouteNetwork
-  stats: SpiceRouteStats
+  networks: RouteNetwork[]
+  world: {
+    avgClarity: number
+    avgEfficiency: number
+    avgSuccess: number
+    isProsperous: boolean
+    overallProsperity: number
+  }
+  stats: {
+    totalFiles: number
+    totalNetworks: number
+    avgRouteClarity: number
+    avgCargoValue: number
+    avgWaypointQuality: number
+    avgTradeEfficiency: number
+    avgCulturalExchange: number
+    avgJourneySuccess: number
+    goldenAgeCount: number
+    prosperousCount: number
+    thrivingCount: number
+    survivingCount: number
+    strugglingCount: number
+    collapsedCount: number
+    hasClearFlowCount: number
+    hasHighValueCount: number
+    hasQualityControlCount: number
+    hasHighEfficiencyCount: number
+    hasCulturalExchangeCount: number
+    isSuccessfulCount: number
+    overallProsperity: number
+    merchantGrade: 'grand-merchant' | 'master-trader' | 'merchant' | 'peddler' | 'hawker' | 'beggar'
+    bestRoute: string
+    clearest: string
+    mostValuable: string
+    bestWaypoints: string
+    mostEfficient: string
+    mostExchanged: string
+  }
   recommendations: string[]
 }
 
-// ─── Utility helpers ──────────────────────────────────────
+// ─── Route Measurement ──────────────────────────────────────────────────────
 
-const clamp = (n: number, min: number, max: number): number => Math.min(max, Math.max(min, n))
-
-function countLines(content: string): number {
-  if (content.length === 0) return 0
-  return content.split('\n').length
-}
-
-function countImports(content: string): number {
-  return (content.match(/^import\s/gm) || []).length
-}
-
-function countExports(content: string): number {
-  return (content.match(/^export\s/gm) || []).length
-}
-
-function countFunctions(content: string): number {
-  return (content.match(/\bfunction\s+\w+/g) || []).length + (content.match(/\b\w+\s*=\s*(?:async\s+)?\(/g) || []).length
-}
-
-function countClasses(content: string): number {
-  return (content.match(/\bclass\s+\w+/g) || []).length
-}
-
-function countInterfaces(content: string): number {
-  return (content.match(/\binterface\s+\w+/g) || []).length
-}
-
-function countTypeAliases(content: string): number {
-  return (content.match(/\btype\s+\w+\s*=/g) || []).length
-}
-
-function countTryCatch(content: string): number {
-  return (content.match(/\btry\s*\{/g) || []).length
-}
-
-function countThrow(content: string): number {
-  return (content.match(/\bthrow\s/g) || []).length
-}
-
-function countErrorHandling(content: string): number {
-  return countTryCatch(content) + countThrow(content) + (content.match(/\.catch\s*\(/g) || []).length
-}
-
-function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*(?:string|number|boolean|void|any|never|unknown|object|undefined|null|null)\b/g) || []).length
-    + (content.match(/:\s*\w+\[/g) || []).length
-    + (content.match(/:\s*\{[^}]*\}/g) || []).length
-}
-
-function countJSDoc(content: string): number {
-  return (content.match(/\/\*\*[\s\S]*?\*\//g) || []).length
-}
-
-function countTests(content: string): number {
-  return (content.match(/\b(it|test|describe)\s*\(/g) || []).length
-}
-
-function countConditions(content: string): number {
-  return (content.match(/\bif\s*\(/g) || []).length
-}
-
-function countLoops(content: string): number {
-  return (content.match(/\b(for|while)\s*\(/g) || []).length
-}
-
-function countAsyncAwait(content: string): number {
-  return (content.match(/\basync\s/g) || []).length + (content.match(/\bawait\s/g) || []).length
-}
-
-function countNesting(content: string): number {
-  let maxDepth = 0
-  let depth = 0
-  for (const line of content.split('\n')) {
-    const trimmed = line.trim()
-    if (trimmed.startsWith('}') || trimmed.endsWith('}')) {
-      depth = Math.max(0, depth - 1)
-    }
-    if (trimmed.includes('{')) {
-      depth++
-      maxDepth = Math.max(maxDepth, depth)
-    }
-  }
-  return maxDepth
-}
-
-function countMiddlewarePatterns(content: string): number {
-  return (content.match(/\bmiddleware\b/gi) || []).length
-    + (content.match(/\btransformer\b/gi) || []).length
-    + (content.match(/\binterceptor\b/gi) || []).length
-    + (content.match(/\bdecorator\b/gi) || []).length
-    + (content.match(/\.use\s*\(/g) || []).length
-    + (content.match(/\.pipe\s*\(/g) || []).length
-}
-
-function countTypeGuards(content: string): number {
-  return (content.match(/\btypeof\s+\w+\s*(===|!==)\s*/g) || []).length
-    + (content.match(/\binstanceof\s+/g) || []).length
-    + (content.match(/\bis\w+\(/g) || []).length
-}
-
-function countValidation(content: string): number {
-  return (content.match(/\bvalidate\w*\s*\(/gi) || []).length
-    + (content.match(/\bassert\w*\s*\(/gi) || []).length
-    + (content.match(/\bcheck\w*\s*\(/gi) || []).length
-}
-
-function countDeprecation(content: string): number {
-  return (content.match(/@deprecated\b/g) || []).length
-}
-
-function countCircularImports(content: string): number {
-  const reexports = (content.match(/^export\s+\*\s+from/gm) || []).length
-  return reexports
-}
-
-function countUnusedImports(content: string): number {
-  const imports = content.match(/^import\s+\{([^}]+)\}\s+from/gm) || []
-  let unused = 0
-  for (const imp of imports) {
-    const match = imp.match(/\{([^}]+)\}/)
-    if (match) {
-      const names = match[1].split(',').map((s) => s.trim())
-      for (const name of names) {
-        const bareName = name.replace(/\s+as\s+\w+/, '').trim()
-        if (bareName) {
-          const usageRegex = new RegExp('\\b' + bareName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'g')
-          const usages = (content.match(usageRegex) || []).length
-          if (usages <= 2) unused++
-        }
-      }
-    }
-  }
-  return unused
-}
-
-// ─── Measure functions ────────────────────────────────────
-
-/**
- * @example
- * const cargo = measureCargo('export function core() {}')
- * // cargo.type = 'gold', cargo.value > 0
- */
-export function measureCargo(content: string): CargoMeasure {
-  const loc = countLines(content)
-  const exports = countExports(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const types = countTypeAliases(content)
-
-  const value = loc === 0 ? 0 : clamp(Math.round(
-    (exports * 15) + (functions * 5) + (classes * 10) + (interfaces * 8) + (types * 3)
-  ), 0, 100)
-
-  const weight = clamp(Math.round(loc / 5), 0, 100)
-
-  const totalExportable = exports + functions + classes + interfaces
-  const isPerishable = totalExportable > 5
-  const isDurable = !isPerishable && value < 60
-  const isFragile = countErrorHandling(content) === 0 && loc > 10
-  const isValuable = value >= 50
-  const isExotic = types > 3 || interfaces > 2
-  const isCommon = value < 20 && functions <= 2
-
-  let type: CargoMeasure['type']
-  if (value >= 80) type = 'gold'
-  else if (value >= 60) type = 'gems'
-  else if (isExotic) type = 'silk'
-  else if (value >= 40) type = 'spice'
-  else if (value >= 30) type = 'ivory'
-  else if (value >= 20) type = 'textiles'
-  else if (value >= 10) type = 'tea'
-  else type = 'salt'
-
-  return {
-    isCommon,
-    isDurable,
-    isExotic,
-    isFragile,
-    isPerishable,
-    isValuable,
-    type,
-    value,
-    weight,
-  }
-}
-
-/**
- * @example
- * const route = measureRoute('import { x } from "./a"\nexport { y }')
- * // route.inboundPaths > 0, route.outboundPaths > 0
- */
+/** @example measureRoute(content) returns route analysis */
 export function measureRoute(content: string): RouteMeasure {
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const totalPaths = imports + exports
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const asyncCount = countAsyncKeywords(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
+  const tryCatchCount = countTryCatch(content)
+  const promiseCount = countPromiseUsage(content)
 
-  const deadEndCount = countUnusedImports(content)
-  const circuitousCount = countCircularImports(content)
-  const hasPiracy = circuitousCount > 0
-  const hasDeadEnds = deadEndCount > 0
-  const hasDirectRoutes = imports > 0 && deadEndCount === 0
-  const hasCircuitousRoutes = circuitousCount > 0
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const rawEfficiency = totalPaths === 0
-    ? 100
-    : clamp(Math.round(100 - (deadEndCount * 15) - (circuitousCount * 20)), 0, 100)
+  let clarity = 25
+  if (hasStructure) clarity += 15
+  if (hasTypes) clarity += 15
+  if (hasFunctions) clarity += 10
+  if (exportCount > 0) clarity += 5
+  if (importCount > 0) clarity += 5
+  if (jsdocCount > 0) clarity += 8
+  if (asyncCount > 0) clarity += 5
+  if (consoleCount === 0) clarity += 5
+  if (anyCount === 0) clarity += 4
+  if (todoCount === 0) clarity += 3
+  clarity = Math.min(100, Math.max(0, Math.round(clarity)))
+
+  const deadEndCount = todoCount + commentedCodeCount
+  const tollPointCount = consoleCount + anyCount
+
+  const hasClearFlow = clarity >= 80 && hasStructure && hasTypes
+  const hasProperDirection = hasStructure && hasTypes && hasFunctions
+  const hasNoDeadEnds = deadEndCount === 0
+  const hasNoBanditZones = deepNestedCount === 0
+  const hasProperSignage = jsdocCount > 0
+  const hasRestStops = tryCatchCount > 0
+  const hasNoDetours = deepNestedCount === 0
+  const hasProperGrading = hasStructure && hasTypes && hasFunctions
+  const hasCaravanCapacity = hasFunctions && (asyncCount > 0 || promiseCount > 0)
+  const hasNoTollPoints = tollPointCount === 0
+
+  let type: RouteMeasure['type'] = 'no-path'
+  if (hasClearFlow && hasNoDeadEnds && hasNoBanditZones) type = 'silk-road'
+  else if (hasClearFlow && hasNoDeadEnds) type = 'maritime'
+  else if (hasClearFlow) type = 'incense-trail'
+  else if (hasProperDirection) type = 'amber-road'
+  else if (clarity > 30) type = 'salt-route'
 
   return {
-    circuitousCount,
+    clarity,
+    type,
+    hasClearFlow,
+    hasProperDirection,
+    hasNoDeadEnds,
+    hasNoBanditZones,
+    hasProperSignage,
+    hasRestStops,
+    hasNoDetours,
+    hasProperGrading,
+    hasCaravanCapacity,
+    hasNoTollPoints,
     deadEndCount,
-    efficiency: rawEfficiency,
-    hasCircuitousRoutes,
-    hasDeadEnds,
-    hasDirectRoutes,
-    hasPiracy,
-    inboundPaths: imports,
-    outboundPaths: exports,
-    totalPaths,
+    tollPointCount,
   }
 }
 
-/**
- * @example
- * const tolls = measureTolls('app.use(middleware())')
- * // tolls.count > 0
- */
-export function measureTolls(content: string): TollMeasure {
-  const loc = countLines(content)
-  const middleware = countMiddlewarePatterns(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
+// ─── Cargo Measurement ──────────────────────────────────────────────────────
 
-  const count = middleware
-  const totalToll = loc === 0 ? 0 : clamp(Math.round(
-    (middleware * 20) + (classes > 3 ? 15 : 0) + (functions > 10 ? 10 : 0)
-  ), 0, 100)
+/** @example measureCargo(content) returns cargo analysis */
+export function measureCargo(content: string): CargoMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const readonlyCount = countReadonlyMembers(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
+  const staticCount = countStaticMembers(content)
+  const asyncCount = countAsyncKeywords(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const todoCount = countTodoComments(content)
+  const enumCount = countEnumKeywords(content)
 
-  const legitimateCount = middleware > 0 && middleware <= 3 ? middleware : 0
-  const excessiveCount = middleware > 5 ? middleware - 3 : 0
-  const hasLegitimateTolls = legitimateCount > 0
-  const hasExcessiveTolls = excessiveCount > 0
-  const hasTollFraud = middleware > 0 && countErrorHandling(content) === 0
-  const isReasonable = middleware <= 3
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let value = 20
+  if (hasStructure) value += 12
+  if (hasTypes) value += 12
+  if (enumCount > 0) value += 5
+  if (hasFunctions) value += 10
+  if (jsdocCount > 0) value += 8
+  if (genericsCount > 0) value += 5
+  if (exportCount > 0) value += 5
+  if (importCount > 0) value += 5
+  if (readonlyCount > 0) value += 3
+  if (privateCount > 0 || protectedCount > 0) value += 3
+  if (staticCount > 0) value += 2
+  if (asyncCount > 0) value += 3
+  if (anyCount === 0) value += 3
+  if (consoleCount === 0) value += 3
+  value = Math.min(100, Math.max(0, Math.round(value)))
+
+  const contaminationCount = anyCount + consoleCount
+  const contrabandCount = todoCount
+
+  const hasHighValue = value >= 80 && hasStructure && hasTypes
+  const isProperlyPackaged = hasStructure && exportCount > 0
+  const hasNoContamination = contaminationCount === 0
+  const hasProperPreservation = hasStructure && hasTypes && anyCount === 0
+  const hasTradeSecret = hasStructure && hasTypes && genericsCount > 0
+  const hasNoSpoilage = todoCount === 0
+  const hasProperWeight = hasStructure && hasTypes && hasFunctions
+  const hasNoContraband = contrabandCount === 0
+  const hasProperLabeling = jsdocCount > 0 && exportCount > 0
+  const hasBulkGoods = hasFunctions && exportCount > 0
+
+  let type: CargoMeasure['type'] = 'sawdust'
+  if (hasHighValue && hasTradeSecret && hasNoContamination) type = 'saffron'
+  else if (hasHighValue && hasTradeSecret) type = 'cinnamon'
+  else if (hasHighValue) type = 'pepper'
+  else if (hasStructure && hasTypes && hasFunctions) type = 'nutmeg'
+  else if (hasStructure && hasTypes) type = 'cardamom'
 
   return {
-    count,
-    excessiveCount,
-    hasExcessiveTolls,
-    hasLegitimateTolls,
-    hasTollFraud,
-    isReasonable,
-    legitimateCount,
-    totalToll,
+    value,
+    type,
+    hasHighValue,
+    isProperlyPackaged,
+    hasNoContamination,
+    hasProperPreservation,
+    hasTradeSecret,
+    hasNoSpoilage,
+    hasProperWeight,
+    hasNoContraband,
+    hasProperLabeling,
+    hasBulkGoods,
+    contaminationCount,
+    contrabandCount,
   }
 }
 
-/**
- * @example
- * const trade = measureTrade('export function a() {}\nexport function b() {}')
- * // trade.exportCount >= 2, trade.hasWholesale = true
- */
-export function measureTrade(content: string): TradeMeasure {
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
+// ─── Waypoint Measurement ───────────────────────────────────────────────────
 
-  const exportCount = exports
-  const importCount = imports
-  const volume = clamp(Math.round((exports * 12) + (functions * 5) + (classes * 8)), 0, 100)
+/** @example measureWaypoint(content) returns waypoint analysis */
+export function measureWaypoint(content: string): WaypointMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const asyncCount = countAsyncKeywords(content)
+  const conditionalsCount = countConditionals(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
 
-  const hasWholesale = exports >= 3
-  const hasRetail = exports === 1
-  const hasMonopoly = functions >= 5 && exports >= 3
-  const hasCompetition = functions >= 3 && exports <= 1
-  const hasEmbargo = exports === 0 && functions >= 2
-  const isTradeHub = imports >= 3 && exports >= 3
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let quality = 25
+  if (hasStructure) quality += 12
+  if (hasTypes) quality += 12
+  if (hasFunctions) quality += 10
+  if (jsdocCount > 0) quality += 8
+  if (genericsCount > 0) quality += 5
+  if (exportCount > 0) quality += 5
+  if (importCount > 0) quality += 5
+  if (tryCatchCount > 0) quality += 5
+  if (asyncCount > 0) quality += 3
+  if (conditionalsCount > 0) quality += 3
+  if (consoleCount === 0) quality += 3
+  if (anyCount === 0) quality += 4
+  quality = Math.min(100, Math.max(0, Math.round(quality)))
+
+  const corruptCount = anyCount + consoleCount
+  const blockageCount = todoCount + deepNestedCount
+
+  const hasQualityControl = quality >= 75 && hasStructure && hasTypes
+  const hasProperInspection = hasStructure && hasTypes && hasFunctions
+  const hasTestingStation = tryCatchCount > 0
+  const hasValidationGate = conditionalsCount > 0
+  const hasNoCorruptOfficials = corruptCount === 0
+  const hasProperDocumentation = jsdocCount > 0
+  const hasRestFacility = tryCatchCount > 0
+  const hasSupplyDepot = hasStructure && hasTypes && exportCount > 0
+  const hasNoBlockage = blockageCount === 0
+  const hasProperSecurity = privateCount > 0 || protectedCount > 0
+  const hasCommunicationPost = consoleCount === 0 && jsdocCount > 0
+
+  let type: WaypointMeasure['type'] = 'ruins'
+  if (hasQualityControl && hasNoCorruptOfficials && hasNoBlockage) type = 'caravanserai'
+  else if (hasQualityControl && hasNoCorruptOfficials) type = 'trading-post'
+  else if (hasQualityControl) type = 'customs-house'
+  else if (hasProperInspection) type = 'toll-booth'
+  else if (quality > 30) type = 'bandit-camp'
 
   return {
-    exportCount,
-    hasCompetition,
-    hasEmbargo,
-    hasMonopoly,
-    hasRetail,
-    hasWholesale,
-    importCount,
-    isTradeHub,
-    volume,
+    quality,
+    type,
+    hasQualityControl,
+    hasProperInspection,
+    hasTestingStation,
+    hasValidationGate,
+    hasNoCorruptOfficials,
+    hasProperDocumentation,
+    hasRestFacility,
+    hasSupplyDepot,
+    hasNoBlockage,
+    hasProperSecurity,
+    hasCommunicationPost,
+    corruptCount,
+    blockageCount,
   }
 }
 
-/**
- * @example
- * const safety = measureSafety('try { x() } catch(e) { handle(e) }')
- * // safety.hasEscorts = true, safety.level > 50
- */
-export function measureSafety(content: string): SafetyMeasure {
-  const loc = countLines(content)
-  const tryCatch = countTryCatch(content)
-  const throws = countThrow(content)
-  const catches = (content.match(/\.catch\s*\(/g) || []).length
-  const errorHandling = countErrorHandling(content)
-  const conditions = countConditions(content)
-  const deprecations = countDeprecation(content)
+// ─── Efficiency Measurement ─────────────────────────────────────────────────
 
-  const level = loc === 0 ? 100 : clamp(Math.round(
-    (errorHandling > 0 ? 30 : 0) +
-    (tryCatch > 0 ? 20 : 0) +
-    (catches > 0 ? 15 : 0) +
-    (throws > 0 ? 10 : 0) +
-    (conditions > 0 ? 10 : 0) +
-    (loc > 20 && errorHandling > 2 ? 15 : 0)
-  ), 0, 100)
+/** @example measureEfficiency(content) returns efficiency analysis */
+export function measureEfficiency(content: string): EfficiencyMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const reExportCount = countReExports(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const conditionalsCount = countConditionals(content)
+  const loopsCount = countLoops(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
 
-  const pirateZoneCount = loc > 20 && errorHandling === 0 ? 1 : 0
-  const shipwreckCount = (content.match(/\bTODO\b/g) || []).length + (content.match(/\bFIXME\b/g) || []).length
-  const hasEscorts = tryCatch > 0
-  const hasNavalPatrol = errorHandling >= 3
-  const hasSafeHarbors = catches > 0 || tryCatch > 1
-  const hasPirateZones = pirateZoneCount > 0
-  const hasShipwrecks = shipwreckCount > 0
-  const hasStormWarnings = deprecations > 0
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let level = 25
+  if (hasStructure) level += 12
+  if (hasTypes) level += 12
+  if (hasFunctions) level += 10
+  if (jsdocCount > 0) level += 8
+  if (genericsCount > 0) level += 5
+  if (exportCount > 0) level += 5
+  if (importCount > 0) level += 5
+  if (reExportCount > 0) level += 5
+  if (asyncCount > 0) level += 3
+  if (tryCatchCount > 0) level += 5
+  if (conditionalsCount > 0) level += 3
+  if (loopsCount > 0) level += 2
+  if (anyCount === 0) level += 3
+  if (consoleCount === 0) level += 2
+  level = Math.min(100, Math.max(0, Math.round(level)))
+
+  const wasteCount = todoCount + deepNestedCount
+  const stormCount = anyCount + consoleCount
+
+  const hasHighEfficiency = level >= 75 && hasStructure && hasTypes
+  const hasProperVelocity = hasFunctions && (asyncCount > 0 || genericsCount > 0)
+  const hasNoWaste = wasteCount === 0
+  const hasProperLoading = hasStructure && hasTypes && exportCount > 0
+  const hasNoOverloading = deepNestedCount === 0
+  const hasOptimalPath = hasStructure && hasTypes && hasFunctions && anyCount === 0
+  const hasNoReturnTrips = reExportCount > 0 || (exportCount > 0 && importCount > 0)
+  const hasWindAssistance = asyncCount > 0 && tryCatchCount > 0
+  const hasNoStorms = stormCount === 0
+  const hasProperNavigation = hasStructure && hasTypes && tryCatchCount > 0
+
+  let mode: EfficiencyMeasure['mode'] = 'abandoned'
+  if (hasHighEfficiency && hasOptimalPath && hasNoWaste) mode = 'clipper-ship'
+  else if (hasHighEfficiency && hasOptimalPath) mode = 'caravan'
+  else if (hasHighEfficiency) mode = 'galley'
+  else if (hasProperLoading) mode = 'cart'
+  else if (level > 30) mode = 'portage'
 
   return {
-    hasEscorts,
-    hasNavalPatrol,
-    hasPirateZones,
-    hasSafeHarbors,
-    hasShipwrecks,
-    hasStormWarnings,
     level,
-    pirateZoneCount,
-    shipwreckCount,
+    mode,
+    hasHighEfficiency,
+    hasProperVelocity,
+    hasNoWaste,
+    hasProperLoading,
+    hasNoOverloading,
+    hasOptimalPath,
+    hasNoReturnTrips,
+    hasWindAssistance,
+    hasNoStorms,
+    hasProperNavigation,
+    wasteCount,
+    stormCount,
   }
 }
 
-/**
- * @example
- * const trust = measureTrust('export function f(x: number): void {}')
- * // trust.hasGuildSeal = true, trust.level > 50
- */
-export function measureTrust(content: string): TrustMeasure {
-  const loc = countLines(content)
-  const typeAnnotations = countTypeAnnotations(content)
-  const jsdoc = countJSDoc(content)
-  const tests = countTests(content)
-  const functions = countFunctions(content)
+// ─── Exchange Measurement ───────────────────────────────────────────────────
 
-  const hasGuildSeal = typeAnnotations > 0
-  const hasLetterOfCredit = tests > 0
-  const hasMerchantCharter = jsdoc > 0
-  const hasBrokenPromise = typeAnnotations > 0 && (content.match(/:\s*any\b/g) || []).length > 0
-  const hasReliableWeights = functions > 0 && typeAnnotations >= functions
+/** @example measureExchange(content) returns exchange analysis */
+export function measureExchange(content: string): ExchangeMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const asyncCount = countAsyncKeywords(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const reExportCount = countReExports(content)
+  const readonlyCount = countReadonlyMembers(content)
+  const anyCount = countAnyUsage(content)
+  const consoleCount = countConsoleUsage(content)
+  const destructures = countDestructures(content)
+  const templateLiterals = countTemplateLiterals(content)
 
-  const level = loc === 0 ? 100 : clamp(Math.round(
-    (hasGuildSeal ? 30 : 0) +
-    (hasLetterOfCredit ? 25 : 0) +
-    (hasMerchantCharter ? 20 : 0) +
-    (hasReliableWeights ? 15 : 0) +
-    (!hasBrokenPromise ? 10 : 0)
-  ), 0, 100)
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
 
-  const isTrustedMerchant = hasGuildSeal && hasLetterOfCredit && hasMerchantCharter
+  let level = 20
+  if (hasStructure) level += 12
+  if (hasTypes) level += 12
+  if (hasFunctions) level += 10
+  if (jsdocCount > 0) level += 5
+  if (genericsCount > 0) level += 5
+  if (asyncCount > 0) level += 5
+  if (exportCount > 0) level += 5
+  if (importCount > 0) level += 5
+  if (reExportCount > 0) level += 5
+  if (readonlyCount > 0) level += 3
+  if (destructures > 0) level += 3
+  if (templateLiterals > 0) level += 3
+  if (anyCount === 0) level += 3
+  if (consoleCount === 0) level += 4
+  level = Math.min(100, Math.max(0, Math.round(level)))
+
+  const barrierCount = anyCount + consoleCount
+  const embargoCount = anyCount
+
+  const hasCulturalExchange = level >= 75 && hasStructure && hasTypes
+  const hasMultiFormat = genericsCount > 0 && (destructures > 0 || templateLiterals > 0)
+  const hasProperInterface = hasStructure && hasTypes && exportCount > 0
+  const hasTranslation = destructures > 0 || templateLiterals > 0
+  const hasNoTradeBarrier = barrierCount === 0
+  const hasCommonCurrency = exportCount > 0 && importCount > 0
+  const hasNoCulturalImposition = anyCount === 0
+  const hasDiplomaticRelations = importCount > 0 && exportCount > 0
+  const hasNoEmbargo = embargoCount === 0
+  const hasKnowledgeTransfer = reExportCount > 0 || (exportCount > 0 && importCount > 0)
+
+  let culture: ExchangeMeasure['culture'] = 'xenophobic'
+  if (hasCulturalExchange && hasMultiFormat && hasNoTradeBarrier && hasDiplomaticRelations) culture = 'cosmopolitan'
+  else if (hasCulturalExchange && hasMultiFormat && hasNoTradeBarrier) culture = 'multilingual'
+  else if (hasCulturalExchange && hasMultiFormat) culture = 'bilingual'
+  else if (hasCulturalExchange) culture = 'dialect'
+  else if (hasProperInterface) culture = 'isolated'
 
   return {
-    hasBrokenPromise,
-    hasGuildSeal,
-    hasLetterOfCredit,
-    hasMerchantCharter,
-    hasReliableWeights,
-    isTrustedMerchant,
     level,
+    culture,
+    hasCulturalExchange,
+    hasMultiFormat,
+    hasProperInterface,
+    hasTranslation,
+    hasNoTradeBarrier,
+    hasCommonCurrency,
+    hasNoCulturalImposition,
+    hasDiplomaticRelations,
+    hasNoEmbargo,
+    hasKnowledgeTransfer,
+    barrierCount,
+    embargoCount,
   }
 }
 
-/**
- * @example
- * const caravan = measureCaravan('import { a, b, c } from "x"')
- * // caravan.size > 0, caravan.isOverloaded = false
- */
-export function measureCaravan(content: string): CaravanMeasure {
-  const imports = countImports(content)
-  const typeGuards = countTypeGuards(content)
-  const validation = countValidation(content)
-  const helpers = (content.match(/\bhelper\w*\b/gi) || []).length + (content.match(/\butil\w*\b/gi) || []).length
+// ─── Journey Measurement ────────────────────────────────────────────────────
 
-  const size = imports
-  const hasScouts = typeGuards > 0
-  const hasGuards = validation > 0
-  const hasPackAnimals = helpers > 0
-  const isOverloaded = imports > 10
-  const lostCargoCount = countUnusedImports(content)
-  const hasLostCargo = lostCargoCount > 0
+/** @example measureJourney(content) returns journey analysis */
+export function measureJourney(content: string): JourneyMeasure {
+  const classCount = countClassKeywords(content)
+  const interfaceCount = countInterfaceKeywords(content)
+  const typeCount = countTypeKeywords(content)
+  const enumCount = countEnumKeywords(content)
+  const functionCount = countFunctionKeywords(content)
+  const arrowCount = countArrowFunctions(content)
+  const jsdocCount = countJSDocBlocks(content)
+  const genericsCount = countGenericsUsage(content)
+  const asyncCount = countAsyncKeywords(content)
+  const tryCatchCount = countTryCatch(content)
+  const exportCount = countExportKeywords(content)
+  const importCount = countImportKeywords(content)
+  const privateCount = countPrivateMembers(content)
+  const protectedCount = countProtectedMembers(content)
+  const staticCount = countStaticMembers(content)
+  const readonlyCount = countReadonlyMembers(content)
+  const consoleCount = countConsoleUsage(content)
+  const anyCount = countAnyUsage(content)
+  const todoCount = countTodoComments(content)
+  const deepNestedCount = countDeepNested(content)
+  const commentedCodeCount = countCommentedCode(content)
+
+  const hasStructure = classCount > 0
+  const hasTypes = interfaceCount > 0 || typeCount > 0
+  const hasFunctions = functionCount > 0 || arrowCount > 0
+
+  let success = 20
+  if (hasStructure) success += 12
+  if (hasTypes) success += 12
+  if (enumCount > 0) success += 5
+  if (hasFunctions) success += 10
+  if (jsdocCount > 0) success += 8
+  if (genericsCount > 0) success += 5
+  if (asyncCount > 0) success += 5
+  if (tryCatchCount > 0) success += 5
+  if (exportCount > 0) success += 5
+  if (importCount > 0) success += 5
+  if (privateCount > 0 || protectedCount > 0) success += 3
+  if (staticCount > 0) success += 3
+  if (readonlyCount > 0) success += 2
+  if (anyCount === 0) success += 3
+  if (consoleCount === 0) success += 3
+  success = Math.min(100, Math.max(0, Math.round(success)))
+
+  const pirateCount = consoleCount + deepNestedCount
+  const desertionCount = todoCount + commentedCodeCount
+
+  const isSuccessful = success >= 80 && anyCount === 0 && todoCount === 0
+  const hasCompleteJourney = hasStructure && hasTypes && hasFunctions && exportCount > 0
+  const hasNoLosses = desertionCount === 0
+  const hasProperReturn = hasStructure && hasTypes && hasFunctions
+  const hasNavigationLog = jsdocCount > 0
+  const hasNoPirates = pirateCount === 0
+  const hasTreasure = hasStructure && hasTypes && genericsCount > 0 && jsdocCount > 0
+  const hasProperMaps = jsdocCount > 0 && exportCount > 0
+  const hasNoDesertion = desertionCount === 0
+  const hasLegacy = isSuccessful && hasTreasure
+
+  let status: JourneyMeasure['status'] = 'never-left'
+  if (isSuccessful && hasCompleteJourney && hasNoPirates && hasLegacy) status = 'arrived-wealthy'
+  else if (isSuccessful && hasCompleteJourney && hasNoPirates) status = 'successful-trade'
+  else if (isSuccessful && hasCompleteJourney) status = 'broke-even'
+  else if (hasCompleteJourney) status = 'partial-loss'
+  else if (success > 30) status = 'shipwrecked'
 
   return {
-    hasGuards,
-    hasLostCargo,
-    hasPackAnimals,
-    hasScouts,
-    isOverloaded,
-    lostCargoCount,
-    size,
+    success,
+    status,
+    isSuccessful,
+    hasCompleteJourney,
+    hasNoLosses,
+    hasProperReturn,
+    hasNavigationLog,
+    hasNoPirates,
+    hasTreasure,
+    hasProperMaps,
+    hasNoDesertion,
+    hasLegacy,
+    pirateCount,
+    desertionCount,
   }
 }
 
-// ─── Classification ───────────────────────────────────────
+// ─── Condition Classification ───────────────────────────────────────────────
 
-/**
- * @example
- * classifyWaypointCondition(85, 90, 80) // 'silk-road-hub'
- */
-export function classifyWaypointCondition(
-  cargoValue: number,
-  routeEfficiency: number,
-  routeSafety: number,
-): TradeWaypoint['condition'] {
-  const score = (cargoValue + routeEfficiency + routeSafety) / 3
-  if (score >= 75 && cargoValue >= 70) return 'silk-road-hub'
-  if (score >= 60 && routeEfficiency >= 50) return 'major-port'
-  if (score >= 45) return 'trading-post'
-  if (score >= 25) return 'waystation'
-  if (routeSafety >= 30) return 'ghost-town'
-  return 'shipwreck'
+/** @example classifyCondition(route) returns condition string */
+export function classifyCondition(route: TradeRoute): TradeRoute['condition'] {
+  const { qualityScore } = route
+  if (qualityScore >= 80) return 'golden-age'
+  if (qualityScore >= 65) return 'prosperous'
+  if (qualityScore >= 50) return 'thriving'
+  if (qualityScore >= 35) return 'surviving'
+  if (qualityScore >= 20) return 'struggling'
+  return 'collapsed'
 }
 
-/**
- * @example
- * classifyRouteType(waypoints) // 'silk-road'
- */
-export function classifyRouteType(waypoints: TradeWaypoint[]): TradeRoute['routeType'] {
-  if (waypoints.length === 0) return 'dead-route'
-  const avgCargo = waypoints.reduce((s, w) => s + w.cargoValue, 0) / waypoints.length
-  const avgSafety = waypoints.reduce((s, w) => s + w.routeSafety, 0) / waypoints.length
-  const hubRatio = waypoints.filter((w) => w.condition === 'silk-road-hub' || w.condition === 'major-port').length / waypoints.length
+// ─── Route Analysis ─────────────────────────────────────────────────────────
 
-  if (avgCargo >= 60 && hubRatio >= 0.3) return 'silk-road'
-  if (avgCargo >= 50 && avgSafety >= 50) return 'maritime-highway'
-  if (avgCargo >= 35) return 'caravan-route'
-  if (avgSafety >= 40) return 'river-trade'
-  if (avgCargo >= 15) return 'smuggling-trail'
-  return 'dead-route'
+/** @example analyzeTradeRoute(content, filePath) returns full route */
+export function analyzeTradeRoute(content: string, filePath: string): TradeRoute {
+  const route = measureRoute(content)
+  const cargo = measureCargo(content)
+  const waypoint = measureWaypoint(content)
+  const efficiency = measureEfficiency(content)
+  const exchange = measureExchange(content)
+  const journey = measureJourney(content)
+
+  const routeClarity = route.clarity
+  const cargoValue = cargo.value
+  const waypointQuality = waypoint.quality
+  const tradeEfficiency = efficiency.level
+  const culturalExchange = exchange.level
+  const journeySuccess = journey.success
+
+  const qualityScore = Math.round(
+    routeClarity * 0.15 +
+    cargoValue * 0.15 +
+    waypointQuality * 0.2 +
+    tradeEfficiency * 0.15 +
+    culturalExchange * 0.15 +
+    journeySuccess * 0.2,
+  )
+
+  const tradeRoute: TradeRoute = {
+    file: filePath,
+    routeClarity,
+    cargoValue,
+    waypointQuality,
+    tradeEfficiency,
+    culturalExchange,
+    journeySuccess,
+    route,
+    cargo,
+    waypoint,
+    efficiency,
+    exchange,
+    journey,
+    condition: 'collapsed',
+    qualityScore,
+  }
+
+  tradeRoute.condition = classifyCondition(tradeRoute)
+
+  return tradeRoute
 }
 
-/**
- * @example
- * classifyRouteCondition(avgValue, avgSafety) // 'golden-age'
- */
-export function classifyRouteCondition(
-  avgCargoValue: number,
-  avgSafety: number,
-): TradeRoute['condition'] {
-  const score = (avgCargoValue + avgSafety) / 2
-  if (score >= 80) return 'golden-age'
-  if (score >= 65) return 'prosperous-trade'
-  if (score >= 50) return 'active-commerce'
-  if (score >= 35) return 'declining-trade'
-  if (score >= 20) return 'dangerous-passage'
-  return 'abandoned-route'
+// ─── Network Analysis ───────────────────────────────────────────────────────
+
+/** @example analyzeRouteNetwork(routes, dirPath) returns network */
+export function analyzeRouteNetwork(routes: TradeRoute[], dirPath: string): RouteNetwork {
+  if (routes.length === 0) {
+    return {
+      directory: dirPath,
+      routes: [],
+      avgClarity: 0,
+      avgEfficiency: 0,
+      avgSuccess: 0,
+      goldenAgeCount: 0,
+      collapsedCount: 0,
+      clearFlowCount: 0,
+      successfulCount: 0,
+      networkType: 'dead-end',
+      condition: 'subsistence',
+    }
+  }
+
+  const avgClarity = Math.round(routes.reduce((s, r) => s + r.routeClarity, 0) / routes.length)
+  const avgEfficiency = Math.round(routes.reduce((s, r) => s + r.tradeEfficiency, 0) / routes.length)
+  const avgSuccess = Math.round(routes.reduce((s, r) => s + r.journeySuccess, 0) / routes.length)
+
+  const goldenAgeCount = routes.filter((r) => r.condition === 'golden-age').length
+  const collapsedCount = routes.filter((r) => r.condition === 'collapsed').length
+  const clearFlowCount = routes.filter((r) => r.route.hasClearFlow).length
+  const successfulCount = routes.filter((r) => r.journey.isSuccessful).length
+
+  const networkType = classifyNetworkType(routes)
+  const avgQuality = routes.reduce((s, r) => s + r.qualityScore, 0) / routes.length
+  const condition = classifyNetworkCondition(avgQuality)
+
+  return {
+    directory: dirPath,
+    routes,
+    avgClarity,
+    avgEfficiency,
+    avgSuccess,
+    goldenAgeCount,
+    collapsedCount,
+    clearFlowCount,
+    successfulCount,
+    networkType,
+    condition,
+  }
 }
 
-/**
- * @example
- * classifyMerchantGrade(85) // 'grand-merchant'
- */
-export function classifyMerchantGrade(avgHealth: number): SpiceRouteStats['merchantGrade'] {
-  if (avgHealth >= 85) return 'grand-merchant'
-  if (avgHealth >= 70) return 'guild-master'
-  if (avgHealth >= 55) return 'merchant'
-  if (avgHealth >= 40) return 'trader'
-  if (avgHealth >= 20) return 'peddler'
+// ─── Network Classification ────────────────────────────────────────────────
+
+/** @example classifyNetworkType(routes) returns network type */
+export function classifyNetworkType(routes: TradeRoute[]): RouteNetwork['networkType'] {
+  if (routes.length === 0) return 'dead-end'
+  const avgQuality = routes.reduce((s, r) => s + r.qualityScore, 0) / routes.length
+  const goldenCount = routes.filter((r) => r.condition === 'golden-age').length
+  if (avgQuality >= 75 && goldenCount >= Math.ceil(routes.length * 0.3)) return 'grand-trunk'
+  if (avgQuality >= 60) return 'maritime-network'
+  if (avgQuality >= 45) return 'silk-network'
+  if (avgQuality >= 30) return 'regional-trade'
+  if (avgQuality >= 15) return 'local-market'
+  return 'dead-end'
+}
+
+/** @example classifyNetworkCondition(avgQuality) returns condition */
+export function classifyNetworkCondition(avgQuality: number): RouteNetwork['condition'] {
+  if (avgQuality >= 80) return 'global-emporium'
+  if (avgQuality >= 65) return 'trading-bloc'
+  if (avgQuality >= 50) return 'merchant-guild'
+  if (avgQuality >= 35) return 'village-market'
+  if (avgQuality >= 20) return 'barter-system'
+  return 'subsistence'
+}
+
+/** @example classifyMerchantGrade(avgProsperity) returns grade */
+export function classifyMerchantGrade(avgProsperity: number): SpiceRouteResult['stats']['merchantGrade'] {
+  if (avgProsperity >= 80) return 'grand-merchant'
+  if (avgProsperity >= 65) return 'master-trader'
+  if (avgProsperity >= 50) return 'merchant'
+  if (avgProsperity >= 35) return 'peddler'
+  if (avgProsperity >= 20) return 'hawker'
   return 'beggar'
 }
 
-// ─── Analyze functions ────────────────────────────────────
+// ─── Recommendations ────────────────────────────────────────────────────────
 
-/**
- * @example
- * const wp = analyzeTradeWaypoint(content, 'src/core.ts')
- * // wp.cargoValue >= 0, wp.condition is defined
- */
-export function analyzeTradeWaypoint(content: string, filePath: string): TradeWaypoint {
-  const cargo = measureCargo(content)
-  const route = measureRoute(content)
-  const tolls = measureTolls(content)
-  const trade = measureTrade(content)
-  const safety = measureSafety(content)
-  const trust = measureTrust(content)
-  const caravan = measureCaravan(content)
-
-  const cargoValue = cargo.value
-  const routeEfficiency = route.efficiency
-  const tollStationCount = tolls.count
-  const tradeVolume = trade.volume
-  const routeSafety = safety.level
-  const merchantTrust = trust.level
-
-  const condition = classifyWaypointCondition(cargoValue, routeEfficiency, routeSafety)
-
-  const qualityScore = clamp(Math.round(
-    (cargoValue * 0.2) +
-    (routeEfficiency * 0.2) +
-    (routeSafety * 0.2) +
-    (merchantTrust * 0.2) +
-    (tradeVolume * 0.1) +
-    ((100 - tolls.totalToll) * 0.1)
-  ), 0, 100)
-
-  return {
-    caravan,
-    cargo,
-    cargoValue,
-    condition,
-    merchantTrust,
-    qualityScore,
-    route,
-    routeEfficiency,
-    routeSafety,
-    safety,
-    tollStationCount,
-    tolls,
-    trade,
-    tradeVolume,
-    trust,
-    file: filePath,
-  }
-}
-
-/**
- * @example
- * const route = analyzeTradeRoute(waypoints, 'src')
- * // route.routeType = 'silk-road'
- */
-export function analyzeTradeRoute(waypoints: TradeWaypoint[], dirPath: string): TradeRoute {
-  if (waypoints.length === 0) {
-    return {
-      avgCargoValue: 0,
-      avgRouteEfficiency: 0,
-      avgSafety: 0,
-      avgTrust: 0,
-      condition: 'abandoned-route',
-      directory: dirPath,
-      hubCount: 0,
-      routeType: 'dead-route',
-      shipwreckCount: 0,
-      totalTradeVolume: 0,
-      waypoints: [],
-    }
-  }
-
-  const avgCargoValue = Math.round(waypoints.reduce((s, w) => s + w.cargoValue, 0) / waypoints.length)
-  const avgRouteEfficiency = Math.round(waypoints.reduce((s, w) => s + w.routeEfficiency, 0) / waypoints.length)
-  const avgSafety = Math.round(waypoints.reduce((s, w) => s + w.routeSafety, 0) / waypoints.length)
-  const avgTrust = Math.round(waypoints.reduce((s, w) => s + w.merchantTrust, 0) / waypoints.length)
-  const hubCount = waypoints.filter((w) => w.condition === 'silk-road-hub' || w.condition === 'major-port').length
-  const shipwreckCount = waypoints.filter((w) => w.condition === 'shipwreck').length
-  const totalTradeVolume = Math.round(waypoints.reduce((s, w) => s + w.tradeVolume, 0) / waypoints.length)
-  const routeType = classifyRouteType(waypoints)
-  const condition = classifyRouteCondition(avgCargoValue, avgSafety)
-
-  return {
-    avgCargoValue,
-    avgRouteEfficiency,
-    avgSafety,
-    avgTrust,
-    condition,
-    directory: dirPath,
-    hubCount,
-    routeType,
-    shipwreckCount,
-    totalTradeVolume,
-    waypoints,
-  }
-}
-
-// ─── Recommendation generation ────────────────────────────
-
-/**
- * @example
- * const recs = generateRecommendations(waypoints, routes, network, stats)
- * // recs.length > 0
- */
+/** @example generateRecommendations(routes, networks, world, stats) returns recommendations */
 export function generateRecommendations(
-  waypoints: TradeWaypoint[],
-  _routes: TradeRoute[],
-  network: SpiceRouteNetwork,
-  stats: SpiceRouteStats,
+  routes: TradeRoute[],
+  networks: RouteNetwork[],
+  world: SpiceRouteResult['world'],
+  stats: SpiceRouteResult['stats'],
 ): string[] {
   const recs: string[] = []
 
-  if (network.overallTradeHealth < 40) {
-    recs.push('Trade network health is critically low - consider restructuring your module architecture')
+  if (stats.avgRouteClarity < 50) {
+    recs.push('Improve route clarity — build clearer code flow and structure')
   }
-
-  if (stats.hasPiracyCount > 0) {
-    recs.push(`${stats.hasPiracyCount} waypoint(s) have circular import dependencies - break these cycles`)
+  if (stats.avgCargoValue < 50) {
+    recs.push('Increase cargo value — add more valuable code patterns and exports')
   }
-
-  if (stats.hasDeadEndsCount > 2) {
-    recs.push('Many unused imports detected - clean up dead-end routes to improve efficiency')
+  if (stats.avgWaypointQuality < 50) {
+    recs.push('Upgrade waypoint quality — add quality checks and error handling')
   }
-
-  if (stats.hasExcessiveTollsCount > 0) {
-    recs.push(`${stats.hasExcessiveTollsCount} waypoint(s) have excessive middleware - consider simplifying`)
+  if (stats.avgTradeEfficiency < 50) {
+    recs.push('Boost trade efficiency — optimize code performance and reduce waste')
   }
-
-  if (stats.hasPirateZonesCount > 0) {
-    recs.push('Unprotected error zones detected - add error handling to prevent shipwrecks')
+  if (stats.avgCulturalExchange < 50) {
+    recs.push('Enhance cultural exchange — improve code interoperability and interfaces')
   }
-
-  if (stats.hasShipwrecksCount > 3) {
-    recs.push('Many TODO/FIXME markers found - resolve technical debt to stabilize routes')
+  if (stats.avgJourneySuccess < 50) {
+    recs.push('Improve journey success — strengthen overall code quality')
   }
-
-  if (stats.ghostTownCount > stats.totalFiles * 0.3) {
-    recs.push('Many low-value files detected - consider consolidating or removing ghost-town modules')
+  if (stats.collapsedCount > routes.length * 0.5) {
+    recs.push('Too many collapsed routes — over half the codebase is poor quality')
   }
-
-  if (stats.isTrustedMerchantCount < stats.totalFiles * 0.2) {
-    recs.push('Few files have full documentation, types, and tests - invest in merchant trust')
+  if (stats.isSuccessfulCount === 0) {
+    recs.push('No successful journeys found — strive for higher code quality')
   }
-
-  if (network.avgRouteEfficiency < 50) {
-    recs.push('Route efficiency is low - review import patterns and remove circuitous paths')
+  if (networks.length > 0 && world.overallProsperity < 60) {
+    recs.push('Overall prosperity is low — systematic improvement recommended')
   }
-
-  const hubWaypoints = waypoints.filter((w) => w.condition === 'silk-road-hub')
-  if (hubWaypoints.length === 0 && waypoints.length >= 5) {
-    recs.push('No central trade hubs found - consider creating a well-typed, well-documented core module')
-  }
-
   if (recs.length === 0) {
-    recs.push('Trade routes are in excellent condition - your codebase has healthy module architecture')
+    recs.push('Golden age of trade — your code routes are prosperously connecting value')
   }
 
   return recs
 }
 
-// ─── Orchestrator ─────────────────────────────────────────
+// ─── Build Result ───────────────────────────────────────────────────────────
 
-/**
- * @example
- * const result = buildSpiceRouteResult(files, contents, {})
- * // result.stats.totalFiles > 0
- */
+/** @example buildSpiceRouteResult(files, contents, options) returns full result */
 export function buildSpiceRouteResult(
   files: string[],
   contents: string[],
-  _options: Record<string, unknown>,
+  _options?: { verbose?: boolean },
 ): SpiceRouteResult {
-  const waypoints: TradeWaypoint[] = files.map((file, i) =>
-    analyzeTradeWaypoint(contents[i] ?? '', file),
+  const routes: TradeRoute[] = files.map((file, i) =>
+    analyzeTradeRoute(contents[i] ?? '', file),
   )
 
-  // Group by directory
-  const dirMap = new Map<string, TradeWaypoint[]>()
-  for (const wp of waypoints) {
-    const dir = wp.file.includes('/') ? wp.file.substring(0, wp.file.lastIndexOf('/')) : '.'
+  const dirMap = new Map<string, TradeRoute[]>()
+  for (const route of routes) {
+    const dir = route.file.includes('/')
+      ? route.file.substring(0, route.file.lastIndexOf('/'))
+      : '.'
     const existing = dirMap.get(dir)
     if (existing) {
-      existing.push(wp)
+      existing.push(route)
     } else {
-      dirMap.set(dir, [wp])
+      dirMap.set(dir, [route])
     }
   }
 
-  const routes: TradeRoute[] = Array.from(dirMap.entries()).map(([dir, wps]) =>
-    analyzeTradeRoute(wps, dir),
+  const networks: RouteNetwork[] = Array.from(dirMap.entries()).map(([dir, dirRoutes]) =>
+    analyzeRouteNetwork(dirRoutes, dir),
   )
 
-  const avgCargoValue = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.cargoValue, 0) / waypoints.length)
-  const avgRouteEfficiency = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.routeEfficiency, 0) / waypoints.length)
-  const avgSafety = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.routeSafety, 0) / waypoints.length)
-  const avgTrust = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.merchantTrust, 0) / waypoints.length)
-  const overallTradeHealth = clamp(Math.round(
-    (avgCargoValue * 0.25) + (avgRouteEfficiency * 0.2) + (avgSafety * 0.25) + (avgTrust * 0.3)
-  ), 0, 100)
+  const avgClarity = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.routeClarity, 0) / routes.length)
+    : 0
+  const avgEfficiency = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.tradeEfficiency, 0) / routes.length)
+    : 0
+  const avgSuccess = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.journeySuccess, 0) / routes.length)
+    : 0
+  const overallProsperity = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.qualityScore, 0) / routes.length)
+    : 0
+  const isProsperous = overallProsperity >= 65
 
-  const network: SpiceRouteNetwork = {
-    avgCargoValue,
-    avgRouteEfficiency,
-    avgSafety,
-    avgTrust,
-    isProsperous: overallTradeHealth >= 60,
-    overallTradeHealth,
+  const world: SpiceRouteResult['world'] = {
+    avgClarity,
+    avgEfficiency,
+    avgSuccess,
+    isProsperous,
+    overallProsperity,
   }
 
-  const avgTollStationCount = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.tollStationCount, 0) / waypoints.length)
-  const avgTradeVolume = waypoints.length === 0 ? 0 : Math.round(waypoints.reduce((s, w) => s + w.tradeVolume, 0) / waypoints.length)
-  const avgRouteSafety = avgSafety
-  const avgMerchantTrust = avgTrust
+  const avgRouteClarity = avgClarity
+  const avgCargoValue = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.cargoValue, 0) / routes.length)
+    : 0
+  const avgWaypointQuality = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.waypointQuality, 0) / routes.length)
+    : 0
+  const avgTradeEfficiency = avgEfficiency
+  const avgCulturalExchange = routes.length > 0
+    ? Math.round(routes.reduce((s, r) => s + r.culturalExchange, 0) / routes.length)
+    : 0
+  const avgJourneySuccess = avgSuccess
 
-  const conditions = {
-    ghostTown: waypoints.filter((w) => w.condition === 'ghost-town').length,
-    majorPort: waypoints.filter((w) => w.condition === 'major-port').length,
-    shipwreck: waypoints.filter((w) => w.condition === 'shipwreck').length,
-    silkRoadHub: waypoints.filter((w) => w.condition === 'silk-road-hub').length,
-    tradingPost: waypoints.filter((w) => w.condition === 'trading-post').length,
-    waystation: waypoints.filter((w) => w.condition === 'waystation').length,
+  const conditionCounts = {
+    goldenAge: 0,
+    prosperous: 0,
+    thriving: 0,
+    surviving: 0,
+    struggling: 0,
+    collapsed: 0,
+  }
+  for (const r of routes) {
+    switch (r.condition) {
+      case 'golden-age': conditionCounts.goldenAge++; break
+      case 'prosperous': conditionCounts.prosperous++; break
+      case 'thriving': conditionCounts.thriving++; break
+      case 'surviving': conditionCounts.surviving++; break
+      case 'struggling': conditionCounts.struggling++; break
+      case 'collapsed': conditionCounts.collapsed++; break
+    }
   }
 
-  const cargoTypes = {
-    gold: waypoints.filter((w) => w.cargo.type === 'gold').length,
-    silk: waypoints.filter((w) => w.cargo.type === 'silk').length,
-    spice: waypoints.filter((w) => w.cargo.type === 'spice').length,
-  }
+  const hasClearFlowCount = routes.filter((r) => r.route.hasClearFlow).length
+  const hasHighValueCount = routes.filter((r) => r.cargo.hasHighValue).length
+  const hasQualityControlCount = routes.filter((r) => r.waypoint.hasQualityControl).length
+  const hasHighEfficiencyCount = routes.filter((r) => r.efficiency.hasHighEfficiency).length
+  const hasCulturalExchangeCount = routes.filter((r) => r.exchange.hasCulturalExchange).length
+  const isSuccessfulCount = routes.filter((r) => r.journey.isSuccessful).length
 
-  const stats: SpiceRouteStats = {
-    avgCargoValue,
-    avgMerchantTrust,
-    avgRouteEfficiency,
-    avgRouteSafety,
-    avgTollStationCount,
-    avgTradeVolume,
-    busiestHub: waypoints.reduce((best, w) => w.route.totalPaths > (best ? waypoints.find((x) => x.file === best)?.route.totalPaths ?? 0 : 0) ? w.file : best, waypoints[0]?.file ?? 'none'),
-    ghostTownCount: conditions.ghostTown,
-    goldCargoCount: cargoTypes.gold,
-    hasDeadEndsCount: waypoints.filter((w) => w.route.hasDeadEnds).length,
-    hasExcessiveTollsCount: waypoints.filter((w) => w.tolls.hasExcessiveTolls).length,
-    hasGuildSealCount: waypoints.filter((w) => w.trust.hasGuildSeal).length,
-    hasLetterOfCreditCount: waypoints.filter((w) => w.trust.hasLetterOfCredit).length,
-    hasPiracyCount: waypoints.filter((w) => w.route.hasPiracy).length,
-    hasPirateZonesCount: waypoints.filter((w) => w.safety.hasPirateZones).length,
-    hasShipwrecksCount: waypoints.filter((w) => w.safety.hasShipwrecks).length,
-    isTradeHubCount: waypoints.filter((w) => w.trade.isTradeHub).length,
-    isTrustedMerchantCount: waypoints.filter((w) => w.trust.isTrustedMerchant).length,
-    majorPortCount: conditions.majorPort,
-    merchantGrade: classifyMerchantGrade(overallTradeHealth),
-    mostEfficient: waypoints.reduce((best, w) => w.routeEfficiency > (best ? waypoints.find((x) => x.file === best)?.routeEfficiency ?? 0 : 0) ? w.file : best, waypoints[0]?.file ?? 'none'),
-    mostTrusted: waypoints.reduce((best, w) => w.merchantTrust > (best ? waypoints.find((x) => x.file === best)?.merchantTrust ?? 0 : 0) ? w.file : best, waypoints[0]?.file ?? 'none'),
-    mostValuable: waypoints.reduce((best, w) => w.cargoValue > (best ? waypoints.find((x) => x.file === best)?.cargoValue ?? 0 : 0) ? w.file : best, waypoints[0]?.file ?? 'none'),
-    overallTradeHealth,
-    safestRoute: waypoints.reduce((best, w) => w.routeSafety > (best ? waypoints.find((x) => x.file === best)?.routeSafety ?? 0 : 0) ? w.file : best, waypoints[0]?.file ?? 'none'),
-    shipwreckCount: conditions.shipwreck,
-    silkCargoCount: cargoTypes.silk,
-    silkRoadHubCount: conditions.silkRoadHub,
-    spiceCargoCount: cargoTypes.spice,
+  const bestRoute = routes.length > 0
+    ? routes.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best).file
+    : ''
+  const clearest = routes.length > 0
+    ? routes.reduce((best, r) => r.routeClarity > best.routeClarity ? r : best).file
+    : ''
+  const mostValuable = routes.length > 0
+    ? routes.reduce((best, r) => r.cargoValue > best.cargoValue ? r : best).file
+    : ''
+  const bestWaypoints = routes.length > 0
+    ? routes.reduce((best, r) => r.waypointQuality > best.waypointQuality ? r : best).file
+    : ''
+  const mostEfficient = routes.length > 0
+    ? routes.reduce((best, r) => r.tradeEfficiency > best.tradeEfficiency ? r : best).file
+    : ''
+  const mostExchanged = routes.length > 0
+    ? routes.reduce((best, r) => r.culturalExchange > best.culturalExchange ? r : best).file
+    : ''
+
+  const merchantGrade = classifyMerchantGrade(overallProsperity)
+
+  const stats: SpiceRouteResult['stats'] = {
     totalFiles: files.length,
-    totalRoutes: routes.length,
-    tradingPostCount: conditions.tradingPost,
-    waystationCount: conditions.waystation,
+    totalNetworks: networks.length,
+    avgRouteClarity,
+    avgCargoValue,
+    avgWaypointQuality,
+    avgTradeEfficiency,
+    avgCulturalExchange,
+    avgJourneySuccess,
+    goldenAgeCount: conditionCounts.goldenAge,
+    prosperousCount: conditionCounts.prosperous,
+    thrivingCount: conditionCounts.thriving,
+    survivingCount: conditionCounts.surviving,
+    strugglingCount: conditionCounts.struggling,
+    collapsedCount: conditionCounts.collapsed,
+    hasClearFlowCount,
+    hasHighValueCount,
+    hasQualityControlCount,
+    hasHighEfficiencyCount,
+    hasCulturalExchangeCount,
+    isSuccessfulCount,
+    overallProsperity,
+    merchantGrade,
+    bestRoute,
+    clearest,
+    mostValuable,
+    bestWaypoints,
+    mostEfficient,
+    mostExchanged,
   }
 
-  const recommendations = generateRecommendations(waypoints, routes, network, stats)
+  const recommendations = generateRecommendations(routes, networks, world, stats)
 
   return {
-    network,
-    recommendations,
     routes,
+    networks,
+    world,
     stats,
-    waypoints,
+    recommendations,
   }
 }

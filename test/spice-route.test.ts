@@ -1,768 +1,811 @@
 import { describe, expect, it } from 'vitest'
+
 import {
+  analyzeRouteNetwork,
   analyzeTradeRoute,
-  analyzeTradeWaypoint,
   buildSpiceRouteResult,
+  classifyCondition,
   classifyMerchantGrade,
-  classifyRouteCondition,
-  classifyRouteType,
-  classifyWaypointCondition,
+  classifyNetworkCondition,
+  classifyNetworkType,
   generateRecommendations,
   measureCargo,
-  measureCaravan,
+  measureEfficiency,
+  measureExchange,
+  measureJourney,
   measureRoute,
-  measureSafety,
-  measureTolls,
-  measureTrade,
-  measureTrust,
-  type TradeWaypoint,
+  measureWaypoint,
 } from '../src/commands/spice-route-helpers.js'
+
 import {
-  formatSpiceRouteCsv,
+  conditionColor,
   formatSpiceRouteJson,
   formatSpiceRouteTable,
+  gradeColor,
+  networkTypeColor,
+  scoreColor,
 } from '../src/commands/spice-route-format-helpers.js'
 
-describe('measureCargo', () => {
-  it('returns zero values for empty content', () => {
-    const cargo = measureCargo('')
-    expect(cargo.value).toBe(0)
-    expect(cargo.weight).toBe(0)
-    expect(cargo.type).toBe('salt')
-  })
+// ─── Fixtures ──────────────────────────────────────────────────────────────
 
-  it('detects gold cargo for high-value modules', () => {
-    const code = [
-      'export function core1() {}',
-      'export function core2() {}',
-      'export function core3() {}',
-      'export function core4() {}',
-      'export function core5() {}',
-      'export class Engine {}',
-      'export class Builder {}',
-      'export interface ICore {}',
-      'export interface IBuilder {}',
-      'export type Config = {}',
-      'export type Options = {}',
-      'export type Result = {}',
-    ].join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.type).toBe('gold')
-    expect(cargo.value).toBeGreaterThan(60)
-    expect(cargo.isValuable).toBe(true)
-  })
+const RICH = `export interface AuroraConfig {
+  readonly id: string
+  name: string
+  intensity: number
+  colors: string[]
+  isActive: boolean
+}
 
-  it('detects gems for moderately valuable code', () => {
-    const code = [
-      'export class Service {}',
-      'export function run() {}',
-      'export interface Config {}',
-    ].join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.value).toBeGreaterThan(30)
-  })
+export class AuroraCalculator<T extends AuroraConfig> {
+  private configs: T[] = []
+  protected maxIntensity: number = 100
 
-  it('detects silk for exotic code with many types', () => {
-    const code = [
-      'export type A = string',
-      'export type B = number',
-      'export type C = boolean',
-      'export type D = object',
-      'function run() {}',
-    ].join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.isExotic).toBe(true)
-  })
+  constructor(initialConfigs?: T[]) {
+    if (initialConfigs) {
+      this.configs = initialConfigs
+    }
+  }
 
-  it('detects salt for low-value code', () => {
-    const code = 'const x = 1\nconst y = 2'
-    const cargo = measureCargo(code)
-    expect(cargo.type).toBe('salt')
-    expect(cargo.isCommon).toBe(true)
-  })
+  async calculateIntensity(config: T): Promise<number> {
+    try {
+      const base = config.intensity
+      const multiplier = config.isActive ? 2.0 : 0.5
+      const result = Math.min(this.maxIntensity, base * multiplier)
+      return Math.round(result)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(error.message)
+      }
+      return 0
+    }
+  }
 
-  it('marks perishable for high export count', () => {
-    const code = [
-      'export function a() {}',
-      'export function b() {}',
-      'export function c() {}',
-      'export function d() {}',
-      'export function e() {}',
-      'export function f() {}',
-    ].join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.isPerishable).toBe(true)
-  })
+  static createDefault(): AuroraCalculator<AuroraConfig> {
+    return new AuroraCalculator<AuroraConfig>()
+  }
+}
 
-  it('marks fragile for code without error handling', () => {
-    const code = [
-      'function process(data) {',
-      '  return data.map(x => x.value)',
-      '}',
-      'function validate(input) {',
-      '  return input.length > 0',
-      '}',
-      'function transform(item) {',
-      '  return { ...item, done: true }',
-      '}',
-      'function extra() {',
-      '  return 1',
-      '}',
-    ].join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.isFragile).toBe(true)
-  })
+/** Calculates aurora brightness */
+export function calculateBrightness(colors: string[]): number {
+  const green = colors.filter(c => c.includes('green'))
+  return green.length * 10
+}
 
-  it('marks durable for stable low-value code', () => {
-    const code = 'function helper() { return 1 }'
-    const cargo = measureCargo(code)
-    expect(cargo.isDurable).toBe(true)
-  })
+export type AuroraPhase = 'dawn' | 'dusk' | 'night' | 'peak'
+export enum AuroraType { BAND = 'band', CURTAIN = 'curtain', CORONA = 'corona' }
+`
 
-  it('calculates weight based on lines of code', () => {
-    const code = Array.from({ length: 50 }, (_, i) => `const line${i} = ${i}`).join('\n')
-    const cargo = measureCargo(code)
-    expect(cargo.weight).toBe(10)
-  })
-})
+const EMPTY = ''
+
+const MEDIUM = `export class Calculator {
+  private value: number = 0
+
+  constructor(initial: number) {
+    this.value = initial
+  }
+
+  add(x: number): number {
+    return this.value + x
+  }
+
+  subtract(x: number): number {
+    return this.value - x
+  }
+}
+
+export interface Config {
+  name: string
+  max: number
+}
+
+/** Helper function */
+export function process(input: string): string {
+  return input.toUpperCase()
+}
+`
+
+// ─── measureRoute ──────────────────────────────────────────────────────────
 
 describe('measureRoute', () => {
-  it('returns high efficiency for clean imports and exports', () => {
-    const code = 'import { x } from "./a"\nexport { y }'
-    const route = measureRoute(code)
-    expect(route.inboundPaths).toBe(1)
-    expect(route.outboundPaths).toBe(1)
-    expect(route.totalPaths).toBe(2)
-    expect(route.efficiency).toBeGreaterThan(50)
+  it('returns clarity 90 for RICH fixture', () => {
+    expect(measureRoute(RICH).clarity).toBe(90)
   })
 
-  it('detects direct routes when imports are used', () => {
-    const code = 'import { x } from "./a"\nconst y = x\nconst z = x\nconsole.log(y, z)'
-    const route = measureRoute(code)
-    expect(route.hasDirectRoutes).toBe(true)
+  it('returns clarity 37 for EMPTY fixture', () => {
+    expect(measureRoute(EMPTY).clarity).toBe(37)
   })
 
-  it('detects dead ends for unused imports', () => {
-    const code = 'import { unused } from "./a"'
-    const route = measureRoute(code)
-    expect(route.hasDeadEnds).toBe(true)
-    expect(route.deadEndCount).toBeGreaterThan(0)
+  it('returns clarity 90 for MEDIUM fixture', () => {
+    expect(measureRoute(MEDIUM).clarity).toBe(90)
   })
 
-  it('detects piracy from circular re-exports', () => {
-    const code = 'export * from "./a"\nexport * from "./b"'
-    const route = measureRoute(code)
-    expect(route.hasPiracy).toBe(true)
-    expect(route.circuitousCount).toBe(2)
+  it('returns type maritime for RICH', () => {
+    expect(measureRoute(RICH).type).toBe('maritime')
   })
 
-  it('returns 100 efficiency for content with no imports', () => {
-    const code = 'const x = 1'
-    const route = measureRoute(code)
-    expect(route.efficiency).toBe(100)
+  it('returns type salt-route for EMPTY', () => {
+    expect(measureRoute(EMPTY).type).toBe('salt-route')
   })
 
-  it('counts total paths correctly', () => {
-    const code = 'import { a } from "./x"\nimport { b } from "./y"\nexport { c }\nexport { d }'
-    const route = measureRoute(code)
-    expect(route.totalPaths).toBe(4)
+  it('returns type silk-road for MEDIUM', () => {
+    expect(measureRoute(MEDIUM).type).toBe('silk-road')
+  })
+
+  it('hasClearFlow true for RICH', () => {
+    expect(measureRoute(RICH).hasClearFlow).toBe(true)
+  })
+
+  it('hasClearFlow false for EMPTY', () => {
+    expect(measureRoute(EMPTY).hasClearFlow).toBe(false)
+  })
+
+  it('hasNoDeadEnds true for RICH', () => {
+    expect(measureRoute(RICH).hasNoDeadEnds).toBe(true)
+  })
+
+  it('hasNoBanditZones false for RICH (deepNested)', () => {
+    expect(measureRoute(RICH).hasNoBanditZones).toBe(false)
+  })
+
+  it('hasProperSignage true for RICH', () => {
+    expect(measureRoute(RICH).hasProperSignage).toBe(true)
+  })
+
+  it('hasRestStops true for RICH', () => {
+    expect(measureRoute(RICH).hasRestStops).toBe(true)
+  })
+
+  it('hasCaravanCapacity true for RICH', () => {
+    expect(measureRoute(RICH).hasCaravanCapacity).toBe(true)
+  })
+
+  it('hasNoTollPoints false for RICH (console)', () => {
+    expect(measureRoute(RICH).hasNoTollPoints).toBe(false)
+  })
+
+  it('deadEndCount is 0 for RICH', () => {
+    expect(measureRoute(RICH).deadEndCount).toBe(0)
+  })
+
+  it('tollPointCount is 1 for RICH', () => {
+    expect(measureRoute(RICH).tollPointCount).toBe(1)
   })
 })
 
-describe('measureTolls', () => {
-  it('returns zero tolls for code without middleware', () => {
-    const tolls = measureTolls('function hello() { return 1 }')
-    expect(tolls.count).toBe(0)
-    expect(tolls.isReasonable).toBe(true)
+// ─── measureCargo ──────────────────────────────────────────────────────────
+
+describe('measureCargo', () => {
+  it('returns value 91 for RICH', () => {
+    expect(measureCargo(RICH).value).toBe(91)
   })
 
-  it('detects middleware patterns', () => {
-    const code = 'app.use(middleware())\napp.use(auth())'
-    const tolls = measureTolls(code)
-    expect(tolls.count).toBeGreaterThanOrEqual(2)
-    expect(tolls.hasLegitimateTolls).toBe(true)
+  it('returns value 26 for EMPTY', () => {
+    expect(measureCargo(EMPTY).value).toBe(26)
   })
 
-  it('detects excessive tolls', () => {
-    const code = Array.from({ length: 7 }, (_, i) => `app.use(mw${i}())`).join('\n')
-    const tolls = measureTolls(code)
-    expect(tolls.hasExcessiveTolls).toBe(true)
-    expect(tolls.excessiveCount).toBeGreaterThan(0)
+  it('returns value 76 for MEDIUM', () => {
+    expect(measureCargo(MEDIUM).value).toBe(76)
   })
 
-  it('detects toll fraud when no error handling', () => {
-    const code = 'app.use(middleware())'
-    const tolls = measureTolls(code)
-    expect(tolls.hasTollFraud).toBe(true)
+  it('returns type cinnamon for RICH', () => {
+    expect(measureCargo(RICH).type).toBe('cinnamon')
   })
 
-  it('reports reasonable for 3 or fewer middleware', () => {
-    const code = 'app.use(a())\napp.use(b())\napp.use(c())'
-    const tolls = measureTolls(code)
-    expect(tolls.isReasonable).toBe(true)
+  it('returns type sawdust for EMPTY', () => {
+    expect(measureCargo(EMPTY).type).toBe('sawdust')
+  })
+
+  it('returns type nutmeg for MEDIUM', () => {
+    expect(measureCargo(MEDIUM).type).toBe('nutmeg')
+  })
+
+  it('hasHighValue true for RICH', () => {
+    expect(measureCargo(RICH).hasHighValue).toBe(true)
+  })
+
+  it('hasTradeSecret true for RICH', () => {
+    expect(measureCargo(RICH).hasTradeSecret).toBe(true)
+  })
+
+  it('hasNoContamination false for RICH (console)', () => {
+    expect(measureCargo(RICH).hasNoContamination).toBe(false)
+  })
+
+  it('isProperlyPackaged true for RICH', () => {
+    expect(measureCargo(RICH).isProperlyPackaged).toBe(true)
+  })
+
+  it('contaminationCount is 1 for RICH', () => {
+    expect(measureCargo(RICH).contaminationCount).toBe(1)
+  })
+
+  it('contrabandCount is 0 for RICH', () => {
+    expect(measureCargo(RICH).contrabandCount).toBe(0)
+  })
+
+  it('hasProperLabeling true for RICH', () => {
+    expect(measureCargo(RICH).hasProperLabeling).toBe(true)
   })
 })
 
-describe('measureTrade', () => {
-  it('returns zero volume for empty code', () => {
-    const trade = measureTrade('')
-    expect(trade.volume).toBe(0)
-    expect(trade.exportCount).toBe(0)
-    expect(trade.importCount).toBe(0)
+// ─── measureWaypoint ───────────────────────────────────────────────────────
+
+describe('measureWaypoint', () => {
+  it('returns quality 92 for RICH', () => {
+    expect(measureWaypoint(RICH).quality).toBe(92)
   })
 
-  it('detects wholesale exports', () => {
-    const code = [
-      'export function a() {}',
-      'export function b() {}',
-      'export function c() {}',
-    ].join('\n')
-    const trade = measureTrade(code)
-    expect(trade.hasWholesale).toBe(true)
-    expect(trade.exportCount).toBe(3)
+  it('returns quality 32 for EMPTY', () => {
+    expect(measureWaypoint(EMPTY).quality).toBe(32)
   })
 
-  it('detects retail exports', () => {
-    const code = 'export function sole() {}'
-    const trade = measureTrade(code)
-    expect(trade.hasRetail).toBe(true)
+  it('returns quality 79 for MEDIUM', () => {
+    expect(measureWaypoint(MEDIUM).quality).toBe(79)
   })
 
-  it('detects trade hub when many imports and exports', () => {
-    const code = [
-      'import { a } from "./x"',
-      'import { b } from "./y"',
-      'import { c } from "./z"',
-      'export function d() {}',
-      'export function e() {}',
-      'export function f() {}',
-    ].join('\n')
-    const trade = measureTrade(code)
-    expect(trade.isTradeHub).toBe(true)
+  it('returns type customs-house for RICH', () => {
+    expect(measureWaypoint(RICH).type).toBe('customs-house')
   })
 
-  it('detects embargo for unexported functions', () => {
-    const code = 'function a() {}\nfunction b() {}'
-    const trade = measureTrade(code)
-    expect(trade.hasEmbargo).toBe(true)
+  it('returns type bandit-camp for EMPTY', () => {
+    expect(measureWaypoint(EMPTY).type).toBe('bandit-camp')
   })
 
-  it('detects monopoly for many functions with many exports', () => {
-    const code = [
-      'export function a() {}',
-      'export function b() {}',
-      'export function c() {}',
-      'export function d() {}',
-      'export function e() {}',
-    ].join('\n')
-    const trade = measureTrade(code)
-    expect(trade.hasMonopoly).toBe(true)
+  it('returns type caravanserai for MEDIUM', () => {
+    expect(measureWaypoint(MEDIUM).type).toBe('caravanserai')
+  })
+
+  it('hasQualityControl true for RICH', () => {
+    expect(measureWaypoint(RICH).hasQualityControl).toBe(true)
+  })
+
+  it('hasNoCorruptOfficials false for RICH', () => {
+    expect(measureWaypoint(RICH).hasNoCorruptOfficials).toBe(false)
+  })
+
+  it('hasNoBlockage false for RICH', () => {
+    expect(measureWaypoint(RICH).hasNoBlockage).toBe(false)
+  })
+
+  it('corruptCount is 1 for RICH', () => {
+    expect(measureWaypoint(RICH).corruptCount).toBe(1)
+  })
+
+  it('blockageCount is 1 for RICH', () => {
+    expect(measureWaypoint(RICH).blockageCount).toBe(1)
+  })
+
+  it('hasProperSecurity true for RICH', () => {
+    expect(measureWaypoint(RICH).hasProperSecurity).toBe(true)
   })
 })
 
-describe('measureSafety', () => {
-  it('returns high level for empty content', () => {
-    const safety = measureSafety('')
-    expect(safety.level).toBe(100)
+// ─── measureEfficiency ─────────────────────────────────────────────────────
+
+describe('measureEfficiency', () => {
+  it('returns level 91 for RICH', () => {
+    expect(measureEfficiency(RICH).level).toBe(91)
   })
 
-  it('detects escorts from try-catch', () => {
-    const code = 'try { doWork() } catch(e) { handle(e) }'
-    const safety = measureSafety(code)
-    expect(safety.hasEscorts).toBe(true)
-    expect(safety.level).toBeGreaterThanOrEqual(50)
+  it('returns level 30 for EMPTY', () => {
+    expect(measureEfficiency(EMPTY).level).toBe(30)
   })
 
-  it('detects naval patrol from comprehensive error handling', () => {
-    const code = [
-      'try { a() } catch(e) {}',
-      'try { b() } catch(e) {}',
-      'try { c() } catch(e) {}',
-    ].join('\n')
-    const safety = measureSafety(code)
-    expect(safety.hasNavalPatrol).toBe(true)
+  it('returns level 77 for MEDIUM', () => {
+    expect(measureEfficiency(MEDIUM).level).toBe(77)
   })
 
-  it('detects safe harbors from catch calls', () => {
-    const code = 'promise.catch(err => log(err))'
-    const safety = measureSafety(code)
-    expect(safety.hasSafeHarbors).toBe(true)
+  it('returns mode caravan for RICH', () => {
+    expect(measureEfficiency(RICH).mode).toBe('caravan')
   })
 
-  it('detects pirate zones for large unprotected code', () => {
-    const code = Array.from({ length: 30 }, (_, i) => `const x${i} = ${i}`).join('\n')
-    const safety = measureSafety(code)
-    expect(safety.hasPirateZones).toBe(true)
-    expect(safety.pirateZoneCount).toBe(1)
+  it('returns mode abandoned for EMPTY', () => {
+    expect(measureEfficiency(EMPTY).mode).toBe('abandoned')
   })
 
-  it('detects shipwrecks from TODO and FIXME', () => {
-    const code = '// TODO: fix this\n// FIXME: broken'
-    const safety = measureSafety(code)
-    expect(safety.hasShipwrecks).toBe(true)
-    expect(safety.shipwreckCount).toBe(2)
+  it('returns mode clipper-ship for MEDIUM', () => {
+    expect(measureEfficiency(MEDIUM).mode).toBe('clipper-ship')
   })
 
-  it('detects storm warnings from deprecation', () => {
-    const code = '/** @deprecated */\nfunction old() {}'
-    const safety = measureSafety(code)
-    expect(safety.hasStormWarnings).toBe(true)
+  it('hasHighEfficiency true for RICH', () => {
+    expect(measureEfficiency(RICH).hasHighEfficiency).toBe(true)
+  })
+
+  it('hasNoWaste false for RICH', () => {
+    expect(measureEfficiency(RICH).hasNoWaste).toBe(false)
+  })
+
+  it('wasteCount is 1 for RICH', () => {
+    expect(measureEfficiency(RICH).wasteCount).toBe(1)
+  })
+
+  it('stormCount is 1 for RICH', () => {
+    expect(measureEfficiency(RICH).stormCount).toBe(1)
+  })
+
+  it('hasWindAssistance true for RICH', () => {
+    expect(measureEfficiency(RICH).hasWindAssistance).toBe(true)
   })
 })
 
-describe('measureTrust', () => {
-  it('returns 100 level for empty content', () => {
-    const trust = measureTrust('')
-    expect(trust.level).toBe(100)
+// ─── measureExchange ───────────────────────────────────────────────────────
+
+describe('measureExchange', () => {
+  it('returns level 80 for RICH', () => {
+    expect(measureExchange(RICH).level).toBe(80)
   })
 
-  it('detects guild seal from type annotations', () => {
-    const code = 'function greet(name: string): void {}'
-    const trust = measureTrust(code)
-    expect(trust.hasGuildSeal).toBe(true)
+  it('returns level 27 for EMPTY', () => {
+    expect(measureExchange(EMPTY).level).toBe(27)
   })
 
-  it('detects letter of credit from tests', () => {
-    const code = "it('works', () => { expect(1).toBe(1) })"
-    const trust = measureTrust(code)
-    expect(trust.hasLetterOfCredit).toBe(true)
+  it('returns level 71 for MEDIUM', () => {
+    expect(measureExchange(MEDIUM).level).toBe(71)
   })
 
-  it('detects merchant charter from JSDoc', () => {
-    const code = '/** Documentation */\nfunction documented() {}'
-    const trust = measureTrust(code)
-    expect(trust.hasMerchantCharter).toBe(true)
+  it('returns culture dialect for RICH', () => {
+    expect(measureExchange(RICH).culture).toBe('dialect')
   })
 
-  it('detects broken promise from any types', () => {
-    const code = 'function process(data: any): any {}'
-    const trust = measureTrust(code)
-    expect(trust.hasBrokenPromise).toBe(true)
+  it('returns culture xenophobic for EMPTY', () => {
+    expect(measureExchange(EMPTY).culture).toBe('xenophobic')
   })
 
-  it('detects trusted merchant when fully documented', () => {
-    const code = [
-      '/** Docs */',
-      'function calc(x: number): number { return x }',
-      "it('works', () => { expect(calc(1)).toBe(1) })",
-    ].join('\n')
-    const trust = measureTrust(code)
-    expect(trust.isTrustedMerchant).toBe(true)
+  it('returns culture isolated for MEDIUM', () => {
+    expect(measureExchange(MEDIUM).culture).toBe('isolated')
   })
 
-  it('detects reliable weights when all functions are typed', () => {
-    const code = 'function add(a: number, b: number): number { return a + b }'
-    const trust = measureTrust(code)
-    expect(trust.hasReliableWeights).toBe(true)
+  it('hasCulturalExchange true for RICH', () => {
+    expect(measureExchange(RICH).hasCulturalExchange).toBe(true)
+  })
+
+  it('hasNoTradeBarrier false for RICH', () => {
+    expect(measureExchange(RICH).hasNoTradeBarrier).toBe(false)
+  })
+
+  it('hasDiplomaticRelations false for RICH (no imports)', () => {
+    expect(measureExchange(RICH).hasDiplomaticRelations).toBe(false)
+  })
+
+  it('barrierCount is 1 for RICH', () => {
+    expect(measureExchange(RICH).barrierCount).toBe(1)
+  })
+
+  it('embargoCount is 0 for RICH', () => {
+    expect(measureExchange(RICH).embargoCount).toBe(0)
   })
 })
 
-describe('measureCaravan', () => {
-  it('returns zero size for no imports', () => {
-    const caravan = measureCaravan('const x = 1')
-    expect(caravan.size).toBe(0)
-    expect(caravan.isOverloaded).toBe(false)
+// ─── measureJourney ────────────────────────────────────────────────────────
+
+describe('measureJourney', () => {
+  it('returns success 98 for RICH', () => {
+    expect(measureJourney(RICH).success).toBe(98)
   })
 
-  it('counts import size correctly', () => {
-    const code = 'import { a } from "./x"\nimport { b } from "./y"'
-    const caravan = measureCaravan(code)
-    expect(caravan.size).toBe(2)
+  it('returns success 26 for EMPTY', () => {
+    expect(measureJourney(EMPTY).success).toBe(26)
   })
 
-  it('detects scouts from type guards', () => {
-    const code = "if (typeof x === 'string') { process(x) }"
-    const caravan = measureCaravan(code)
-    expect(caravan.hasScouts).toBe(true)
+  it('returns success 76 for MEDIUM', () => {
+    expect(measureJourney(MEDIUM).success).toBe(76)
   })
 
-  it('detects guards from validation', () => {
-    const code = 'function validate(input) { return true }'
-    const caravan = measureCaravan(code)
-    expect(caravan.hasGuards).toBe(true)
+  it('returns status broke-even for RICH', () => {
+    expect(measureJourney(RICH).status).toBe('broke-even')
   })
 
-  it('detects overloaded caravan', () => {
-    const code = Array.from({ length: 12 }, (_, i) => `import { m${i} } from "./m${i}"`).join('\n')
-    const caravan = measureCaravan(code)
-    expect(caravan.isOverloaded).toBe(true)
+  it('returns status never-left for EMPTY', () => {
+    expect(measureJourney(EMPTY).status).toBe('never-left')
   })
 
-  it('detects lost cargo from unused imports', () => {
-    const code = 'import { unused } from "./a"'
-    const caravan = measureCaravan(code)
-    expect(caravan.hasLostCargo).toBe(true)
+  it('returns status partial-loss for MEDIUM', () => {
+    expect(measureJourney(MEDIUM).status).toBe('partial-loss')
   })
 
-  it('detects pack animals from helper patterns', () => {
-    const code = 'const utilHelper = () => {}'
-    const caravan = measureCaravan(code)
-    expect(caravan.hasPackAnimals).toBe(true)
+  it('isSuccessful true for RICH', () => {
+    expect(measureJourney(RICH).isSuccessful).toBe(true)
+  })
+
+  it('hasCompleteJourney true for RICH', () => {
+    expect(measureJourney(RICH).hasCompleteJourney).toBe(true)
+  })
+
+  it('hasNoPirates false for RICH', () => {
+    expect(measureJourney(RICH).hasNoPirates).toBe(false)
+  })
+
+  it('hasTreasure true for RICH', () => {
+    expect(measureJourney(RICH).hasTreasure).toBe(true)
+  })
+
+  it('hasLegacy true for RICH', () => {
+    expect(measureJourney(RICH).hasLegacy).toBe(true)
+  })
+
+  it('pirateCount is 2 for RICH', () => {
+    expect(measureJourney(RICH).pirateCount).toBe(2)
+  })
+
+  it('desertionCount is 0 for RICH', () => {
+    expect(measureJourney(RICH).desertionCount).toBe(0)
   })
 })
 
-describe('classifyWaypointCondition', () => {
-  it('classifies silk-road-hub for high scores', () => {
-    expect(classifyWaypointCondition(80, 80, 80)).toBe('silk-road-hub')
+// ─── classifyCondition ─────────────────────────────────────────────────────
+
+describe('classifyCondition', () => {
+  it('returns golden-age for qualityScore >= 80', () => {
+    const route = { qualityScore: 91 } as any
+    expect(classifyCondition(route)).toBe('golden-age')
   })
 
-  it('classifies major-port for good scores', () => {
-    expect(classifyWaypointCondition(65, 65, 65)).toBe('major-port')
+  it('returns prosperous for qualityScore >= 65', () => {
+    const route = { qualityScore: 78 } as any
+    expect(classifyCondition(route)).toBe('prosperous')
   })
 
-  it('classifies trading-post for moderate scores', () => {
-    expect(classifyWaypointCondition(50, 50, 50)).toBe('trading-post')
+  it('returns thriving for qualityScore >= 50', () => {
+    const route = { qualityScore: 55 } as any
+    expect(classifyCondition(route)).toBe('thriving')
   })
 
-  it('classifies waystation for low scores', () => {
-    expect(classifyWaypointCondition(30, 30, 30)).toBe('waystation')
+  it('returns surviving for qualityScore >= 35', () => {
+    const route = { qualityScore: 40 } as any
+    expect(classifyCondition(route)).toBe('surviving')
   })
 
-  it('classifies ghost-town for very low scores', () => {
-    expect(classifyWaypointCondition(10, 10, 35)).toBe('ghost-town')
+  it('returns struggling for qualityScore >= 20', () => {
+    const route = { qualityScore: 30 } as any
+    expect(classifyCondition(route)).toBe('struggling')
   })
 
-  it('classifies shipwreck for critically low safety', () => {
-    expect(classifyWaypointCondition(5, 5, 5)).toBe('shipwreck')
+  it('returns collapsed for qualityScore < 20', () => {
+    const route = { qualityScore: 10 } as any
+    expect(classifyCondition(route)).toBe('collapsed')
   })
 })
 
-describe('classifyRouteType', () => {
-  it('returns dead-route for empty waypoints', () => {
-    expect(classifyRouteType([])).toBe('dead-route')
-  })
-
-  it('classifies silk-road for high value and hub ratio', () => {
-    const waypoints = Array.from({ length: 10 }, () => ({
-      cargoValue: 70, routeEfficiency: 80, routeSafety: 70, condition: 'silk-road-hub',
-    } as unknown as TradeWaypoint))
-    expect(classifyRouteType(waypoints)).toBe('silk-road')
-  })
-
-  it('classifies maritime-highway for moderate value and safety', () => {
-    const waypoints = Array.from({ length: 5 }, () => ({
-      cargoValue: 55, routeEfficiency: 60, routeSafety: 60, condition: 'major-port',
-    } as unknown as TradeWaypoint))
-    expect(classifyRouteType(waypoints)).toBe('maritime-highway')
-  })
-
-  it('classifies dead-route for very low value', () => {
-    const waypoints = Array.from({ length: 3 }, () => ({
-      cargoValue: 5, routeEfficiency: 5, routeSafety: 5, condition: 'shipwreck',
-    } as unknown as TradeWaypoint))
-    expect(classifyRouteType(waypoints)).toBe('dead-route')
-  })
-})
-
-describe('classifyRouteCondition', () => {
-  it('returns golden-age for top scores', () => {
-    expect(classifyRouteCondition(90, 90)).toBe('golden-age')
-  })
-
-  it('returns prosperous-trade for good scores', () => {
-    expect(classifyRouteCondition(70, 70)).toBe('prosperous-trade')
-  })
-
-  it('returns active-commerce for moderate scores', () => {
-    expect(classifyRouteCondition(55, 55)).toBe('active-commerce')
-  })
-
-  it('returns declining-trade for low scores', () => {
-    expect(classifyRouteCondition(40, 40)).toBe('declining-trade')
-  })
-
-  it('returns dangerous-passage for very low scores', () => {
-    expect(classifyRouteCondition(25, 25)).toBe('dangerous-passage')
-  })
-
-  it('returns abandoned-route for critically low scores', () => {
-    expect(classifyRouteCondition(5, 5)).toBe('abandoned-route')
-  })
-})
-
-describe('classifyMerchantGrade', () => {
-  it('returns grand-merchant for top health', () => {
-    expect(classifyMerchantGrade(90)).toBe('grand-merchant')
-  })
-
-  it('returns guild-master for high health', () => {
-    expect(classifyMerchantGrade(75)).toBe('guild-master')
-  })
-
-  it('returns merchant for moderate health', () => {
-    expect(classifyMerchantGrade(60)).toBe('merchant')
-  })
-
-  it('returns trader for low health', () => {
-    expect(classifyMerchantGrade(45)).toBe('trader')
-  })
-
-  it('returns peddler for very low health', () => {
-    expect(classifyMerchantGrade(25)).toBe('peddler')
-  })
-
-  it('returns beggar for critically low health', () => {
-    expect(classifyMerchantGrade(10)).toBe('beggar')
-  })
-})
-
-describe('analyzeTradeWaypoint', () => {
-  it('handles empty content', () => {
-    const wp = analyzeTradeWaypoint('', 'empty.ts')
-    expect(wp.cargoValue).toBe(0)
-    expect(wp.qualityScore).toBeLessThanOrEqual(100)
-    expect(wp.condition).toBeDefined()
-  })
-
-  it('produces well-structured waypoint for rich code', () => {
-    const code = [
-      '/** Core module */',
-      'import { config } from "./config"',
-      'export function process(data: string): string { return data }',
-      'export function validate(input: unknown): boolean { return true }',
-      'try { process("test") } catch(e) { throw e }',
-    ].join('\n')
-    const wp = analyzeTradeWaypoint(code, 'core.ts')
-    expect(wp.cargoValue).toBeGreaterThan(0)
-    expect(wp.route.inboundPaths).toBeGreaterThan(0)
-    expect(wp.trade.exportCount).toBeGreaterThan(0)
-    expect(wp.safety.hasEscorts).toBe(true)
-    expect(wp.trust.hasGuildSeal).toBe(true)
-    expect(wp.qualityScore).toBeGreaterThan(0)
-  })
-
-  it('calculates quality score from all measures', () => {
-    const code = '/** Docs */\nexport function f(x: number): number { return x }'
-    const wp = analyzeTradeWaypoint(code, 'f.ts')
-    expect(wp.qualityScore).toBeGreaterThan(0)
-    expect(wp.qualityScore).toBeLessThanOrEqual(100)
-  })
-})
+// ─── analyzeTradeRoute ─────────────────────────────────────────────────────
 
 describe('analyzeTradeRoute', () => {
-  it('returns abandoned-route for empty waypoints', () => {
-    const route = analyzeTradeRoute([], 'empty')
-    expect(route.routeType).toBe('dead-route')
-    expect(route.condition).toBe('abandoned-route')
-    expect(route.waypoints).toHaveLength(0)
+  it('returns qualityScore 91 for RICH', () => {
+    const result = analyzeTradeRoute(RICH, 'rich.ts')
+    expect(result.qualityScore).toBe(91)
   })
 
-  it('aggregates waypoint data into route averages', () => {
-    const code = 'export function a() {}'
-    const wp = analyzeTradeWaypoint(code, 'src/a.ts')
-    const route = analyzeTradeRoute([wp], 'src')
-    expect(route.avgCargoValue).toBe(wp.cargoValue)
-    expect(route.directory).toBe('src')
-    expect(route.waypoints).toHaveLength(1)
+  it('returns qualityScore 30 for EMPTY', () => {
+    const result = analyzeTradeRoute(EMPTY, 'empty.ts')
+    expect(result.qualityScore).toBe(30)
+  })
+
+  it('returns qualityScore 78 for MEDIUM', () => {
+    const result = analyzeTradeRoute(MEDIUM, 'medium.ts')
+    expect(result.qualityScore).toBe(78)
+  })
+
+  it('returns golden-age condition for RICH', () => {
+    expect(analyzeTradeRoute(RICH, 'rich.ts').condition).toBe('golden-age')
+  })
+
+  it('returns struggling condition for EMPTY', () => {
+    expect(analyzeTradeRoute(EMPTY, 'empty.ts').condition).toBe('struggling')
+  })
+
+  it('returns prosperous condition for MEDIUM', () => {
+    expect(analyzeTradeRoute(MEDIUM, 'medium.ts').condition).toBe('prosperous')
+  })
+
+  it('stores correct file path', () => {
+    expect(analyzeTradeRoute(RICH, 'my-file.ts').file).toBe('my-file.ts')
+  })
+
+  it('routeClarity matches route clarity', () => {
+    const result = analyzeTradeRoute(RICH, 'rich.ts')
+    expect(result.routeClarity).toBe(90)
+  })
+
+  it('cargoValue matches cargo value', () => {
+    const result = analyzeTradeRoute(RICH, 'rich.ts')
+    expect(result.cargoValue).toBe(91)
   })
 })
+
+// ─── classifyNetworkType ───────────────────────────────────────────────────
+
+describe('classifyNetworkType', () => {
+  it('returns dead-end for empty array', () => {
+    expect(classifyNetworkType([])).toBe('dead-end')
+  })
+
+  it('returns grand-trunk for high quality with enough golden-age', () => {
+    const routes = Array.from({ length: 5 }, () => ({ qualityScore: 90, condition: 'golden-age' } as any))
+    expect(classifyNetworkType(routes)).toBe('grand-trunk')
+  })
+
+  it('returns maritime-network for avgQuality >= 60', () => {
+    const routes = [{ qualityScore: 64, condition: 'prosperous' } as any]
+    expect(classifyNetworkType(routes)).toBe('maritime-network')
+  })
+
+  it('returns silk-network for avgQuality >= 45', () => {
+    const routes = [{ qualityScore: 50, condition: 'thriving' } as any]
+    expect(classifyNetworkType(routes)).toBe('silk-network')
+  })
+
+  it('returns regional-trade for avgQuality >= 30', () => {
+    const routes = [{ qualityScore: 35, condition: 'surviving' } as any]
+    expect(classifyNetworkType(routes)).toBe('regional-trade')
+  })
+
+  it('returns local-market for avgQuality >= 15', () => {
+    const routes = [{ qualityScore: 20, condition: 'struggling' } as any]
+    expect(classifyNetworkType(routes)).toBe('local-market')
+  })
+})
+
+// ─── classifyNetworkCondition ──────────────────────────────────────────────
+
+describe('classifyNetworkCondition', () => {
+  it('returns global-emporium for avg >= 80', () => {
+    expect(classifyNetworkCondition(85)).toBe('global-emporium')
+  })
+
+  it('returns trading-bloc for avg >= 65', () => {
+    expect(classifyNetworkCondition(70)).toBe('trading-bloc')
+  })
+
+  it('returns merchant-guild for avg >= 50', () => {
+    expect(classifyNetworkCondition(55)).toBe('merchant-guild')
+  })
+
+  it('returns village-market for avg >= 35', () => {
+    expect(classifyNetworkCondition(40)).toBe('village-market')
+  })
+
+  it('returns barter-system for avg >= 20', () => {
+    expect(classifyNetworkCondition(25)).toBe('barter-system')
+  })
+
+  it('returns subsistence for avg < 20', () => {
+    expect(classifyNetworkCondition(10)).toBe('subsistence')
+  })
+})
+
+// ─── classifyMerchantGrade ─────────────────────────────────────────────────
+
+describe('classifyMerchantGrade', () => {
+  it('returns grand-merchant for >= 80', () => {
+    expect(classifyMerchantGrade(85)).toBe('grand-merchant')
+  })
+
+  it('returns master-trader for >= 65', () => {
+    expect(classifyMerchantGrade(70)).toBe('master-trader')
+  })
+
+  it('returns merchant for >= 50', () => {
+    expect(classifyMerchantGrade(55)).toBe('merchant')
+  })
+
+  it('returns peddler for >= 35', () => {
+    expect(classifyMerchantGrade(40)).toBe('peddler')
+  })
+
+  it('returns hawker for >= 20', () => {
+    expect(classifyMerchantGrade(25)).toBe('hawker')
+  })
+
+  it('returns beggar for < 20', () => {
+    expect(classifyMerchantGrade(15)).toBe('beggar')
+  })
+})
+
+// ─── analyzeRouteNetwork ───────────────────────────────────────────────────
+
+describe('analyzeRouteNetwork', () => {
+  it('returns dead-end network for empty routes', () => {
+    const result = analyzeRouteNetwork([], 'empty-dir')
+    expect(result.networkType).toBe('dead-end')
+    expect(result.condition).toBe('subsistence')
+    expect(result.routes).toHaveLength(0)
+  })
+
+  it('computes correct averages for single route', () => {
+    const route = analyzeTradeRoute(RICH, 'rich.ts')
+    const result = analyzeRouteNetwork([route], 'src')
+    expect(result.avgClarity).toBe(90)
+    expect(result.avgEfficiency).toBe(91)
+    expect(result.avgSuccess).toBe(98)
+    expect(result.goldenAgeCount).toBe(1)
+  })
+})
+
+// ─── generateRecommendations ───────────────────────────────────────────────
 
 describe('generateRecommendations', () => {
-  it('returns positive recommendation for healthy network', () => {
-    const recs = generateRecommendations([], [], {
-      avgCargoValue: 80, avgRouteEfficiency: 80, avgSafety: 80, avgTrust: 80,
-      isProsperous: true, overallTradeHealth: 80,
-    }, {
-      hasPiracyCount: 0, hasDeadEndsCount: 0, hasExcessiveTollsCount: 0,
-      hasPirateZonesCount: 0, hasShipwrecksCount: 0,
-      ghostTownCount: 0, isTrustedMerchantCount: 5, totalFiles: 10,
-    } as any)
-    expect(recs.length).toBeGreaterThan(0)
-    expect(recs[0]).toContain('excellent condition')
+  it('returns praise when all averages are high', () => {
+    const routes = [analyzeTradeRoute(RICH, 'rich.ts')]
+    const result = buildSpiceRouteResult(['rich.ts'], [RICH])
+    const recs = generateRecommendations(routes, result.networks, result.world, result.stats)
+    expect(recs).toHaveLength(1)
+    expect(recs[0]).toContain('Golden age')
   })
 
-  it('recommends fixing piracy', () => {
-    const recs = generateRecommendations([], [], {
-      avgCargoValue: 70, avgRouteEfficiency: 70, avgSafety: 70, avgTrust: 70,
-      isProsperous: true, overallTradeHealth: 70,
-    }, {
-      hasPiracyCount: 3, hasDeadEndsCount: 0, hasExcessiveTollsCount: 0,
-      hasPirateZonesCount: 0, hasShipwrecksCount: 0,
-      ghostTownCount: 0, isTrustedMerchantCount: 5, totalFiles: 10,
-    } as any)
-    expect(recs.some((r) => r.includes('circular import'))).toBe(true)
+  it('suggests improving route clarity when low', () => {
+    const stats = {
+      avgRouteClarity: 30, avgCargoValue: 80, avgWaypointQuality: 80,
+      avgTradeEfficiency: 80, avgCulturalExchange: 80, avgJourneySuccess: 80,
+      collapsedCount: 0, isSuccessfulCount: 1, overallProsperity: 80,
+    } as any
+    const recs = generateRecommendations([], [], { overallProsperity: 80 } as any, stats)
+    expect(recs.some((r) => r.includes('route clarity'))).toBe(true)
   })
 
-  it('recommends error handling for pirate zones', () => {
-    const recs = generateRecommendations([], [], {
-      avgCargoValue: 60, avgRouteEfficiency: 60, avgSafety: 40, avgTrust: 60,
-      isProsperous: false, overallTradeHealth: 50,
-    }, {
-      hasPiracyCount: 0, hasDeadEndsCount: 0, hasExcessiveTollsCount: 0,
-      hasPirateZonesCount: 2, hasShipwrecksCount: 0,
-      ghostTownCount: 0, isTrustedMerchantCount: 5, totalFiles: 10,
-    } as any)
-    expect(recs.some((r) => r.includes('error handling'))).toBe(true)
-  })
-
-  it('recommends cleaning up dead ends', () => {
-    const recs = generateRecommendations([], [], {
-      avgCargoValue: 60, avgRouteEfficiency: 50, avgSafety: 60, avgTrust: 60,
-      isProsperous: false, overallTradeHealth: 55,
-    }, {
-      hasPiracyCount: 0, hasDeadEndsCount: 5, hasExcessiveTollsCount: 0,
-      hasPirateZonesCount: 0, hasShipwrecksCount: 0,
-      ghostTownCount: 0, isTrustedMerchantCount: 5, totalFiles: 10,
-    } as any)
-    expect(recs.some((r) => r.includes('unused imports'))).toBe(true)
-  })
-
-  it('warns about critically low health', () => {
-    const recs = generateRecommendations([], [], {
-      avgCargoValue: 20, avgRouteEfficiency: 20, avgSafety: 20, avgTrust: 20,
-      isProsperous: false, overallTradeHealth: 20,
-    }, {
-      hasPiracyCount: 0, hasDeadEndsCount: 0, hasExcessiveTollsCount: 0,
-      hasPirateZonesCount: 0, hasShipwrecksCount: 0,
-      ghostTownCount: 0, isTrustedMerchantCount: 5, totalFiles: 10,
-    } as any)
-    expect(recs.some((r) => r.includes('critically low'))).toBe(true)
+  it('warns about collapsed routes', () => {
+    const routes = Array.from({ length: 4 }, () => ({ condition: 'collapsed' } as any))
+    const stats = {
+      avgRouteClarity: 80, avgCargoValue: 80, avgWaypointQuality: 80,
+      avgTradeEfficiency: 80, avgCulturalExchange: 80, avgJourneySuccess: 80,
+      collapsedCount: 3, isSuccessfulCount: 1, overallProsperity: 80,
+    } as any
+    const recs = generateRecommendations(routes, [], { overallProsperity: 80 } as any, stats)
+    expect(recs.some((r) => r.includes('collapsed'))).toBe(true)
   })
 })
+
+// ─── buildSpiceRouteResult ─────────────────────────────────────────────────
 
 describe('buildSpiceRouteResult', () => {
-  it('returns valid result for empty input', () => {
-    const result = buildSpiceRouteResult([], [], {})
-    expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.totalRoutes).toBe(0)
-    expect(result.waypoints).toHaveLength(0)
+  it('returns empty result for no files', () => {
+    const result = buildSpiceRouteResult([], [])
     expect(result.routes).toHaveLength(0)
-    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.networks).toHaveLength(0)
+    expect(result.world.overallProsperity).toBe(0)
+    expect(result.world.isProsperous).toBe(false)
+    expect(result.stats.totalFiles).toBe(0)
   })
 
-  it('analyzes a single file', () => {
-    const code = '/** Core */\nexport function main(x: number): number { return x }\ntry { main(1) } catch(e) {}'
-    const result = buildSpiceRouteResult(['core.ts'], [code], {})
-    expect(result.stats.totalFiles).toBe(1)
-    expect(result.waypoints).toHaveLength(1)
-    expect(result.waypoints[0].file).toBe('core.ts')
-    expect(result.waypoints[0].cargoValue).toBeGreaterThan(0)
+  it('analyzes single RICH file correctly', () => {
+    const result = buildSpiceRouteResult(['rich.ts'], [RICH])
+    expect(result.routes).toHaveLength(1)
+    expect(result.routes[0].qualityScore).toBe(91)
+    expect(result.routes[0].condition).toBe('golden-age')
+    expect(result.stats.goldenAgeCount).toBe(1)
+    expect(result.stats.isSuccessfulCount).toBe(1)
   })
 
-  it('groups files by directory', () => {
-    const code = 'export function a() {}'
+  it('computes correct 3-file mix overall values', () => {
     const result = buildSpiceRouteResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [code, code, code],
-      {},
+      ['src/rich.ts', 'src/empty.ts', 'src/medium.ts'],
+      [RICH, EMPTY, MEDIUM],
     )
-    expect(result.routes.length).toBe(2)
+
+    expect(result.stats.totalFiles).toBe(3)
+    expect(result.stats.totalNetworks).toBe(1)
+    expect(result.world.overallProsperity).toBe(66)
+    expect(result.world.isProsperous).toBe(true)
+    expect(result.world.avgClarity).toBe(72)
+    expect(result.world.avgEfficiency).toBe(66)
+    expect(result.world.avgSuccess).toBe(67)
+
+    expect(result.stats.avgRouteClarity).toBe(72)
+    expect(result.stats.avgCargoValue).toBe(64)
+    expect(result.stats.avgWaypointQuality).toBe(68)
+    expect(result.stats.avgTradeEfficiency).toBe(66)
+    expect(result.stats.avgCulturalExchange).toBe(59)
+    expect(result.stats.avgJourneySuccess).toBe(67)
+
+    expect(result.stats.goldenAgeCount).toBe(1)
+    expect(result.stats.prosperousCount).toBe(1)
+    expect(result.stats.thrivingCount).toBe(0)
+    expect(result.stats.survivingCount).toBe(0)
+    expect(result.stats.strugglingCount).toBe(1)
+    expect(result.stats.collapsedCount).toBe(0)
+
+    expect(result.stats.hasClearFlowCount).toBe(2)
+    expect(result.stats.hasHighValueCount).toBe(1)
+    expect(result.stats.hasQualityControlCount).toBe(2)
+    expect(result.stats.hasHighEfficiencyCount).toBe(2)
+    expect(result.stats.hasCulturalExchangeCount).toBe(1)
+    expect(result.stats.isSuccessfulCount).toBe(1)
+
+    expect(result.stats.merchantGrade).toBe('master-trader')
+    expect(result.stats.bestRoute).toBe('src/rich.ts')
+    expect(result.stats.clearest).toBe('src/rich.ts')
+    expect(result.stats.mostValuable).toBe('src/rich.ts')
+    expect(result.stats.bestWaypoints).toBe('src/rich.ts')
+    expect(result.stats.mostEfficient).toBe('src/rich.ts')
+    expect(result.stats.mostExchanged).toBe('src/rich.ts')
+
+    expect(result.networks).toHaveLength(1)
+    expect(result.networks[0].networkType).toBe('maritime-network')
+    expect(result.networks[0].condition).toBe('trading-bloc')
   })
 
-  it('computes network averages', () => {
-    const code = '/** Docs */\nexport function core(): void {}'
-    const result = buildSpiceRouteResult(['a.ts', 'b.ts'], [code, code], {})
-    expect(result.network.avgCargoValue).toBeGreaterThan(0)
-    expect(result.network.avgRouteEfficiency).toBeGreaterThan(0)
-    expect(result.network.overallTradeHealth).toBeGreaterThan(0)
-  })
-
-  it('computes stats correctly', () => {
-    const code = 'export function a() {}'
-    const result = buildSpiceRouteResult(['a.ts'], [code], {})
-    expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.merchantGrade).toBeDefined()
-    expect(result.stats.mostValuable).toBe('a.ts')
-  })
-
-  it('classifies merchant grade based on health', () => {
-    const richCode = [
-      '/** Docs */',
-      'export function core1(x: number): number { return x }',
-      'export function core2(x: string): string { return x }',
-      'export function core3(x: boolean): boolean { return x }',
-      'export class Service {}',
-      'export interface ICore {}',
-      'try { core1(1) } catch(e) {}',
-      "it('test', () => {})",
-    ].join('\n')
-    const result = buildSpiceRouteResult(['core.ts'], [richCode], {})
-    expect(result.network.overallTradeHealth).toBeGreaterThan(40)
-    expect(result.stats.merchantGrade).toBeDefined()
+  it('creates separate networks for different directories', () => {
+    const result = buildSpiceRouteResult(
+      ['src/a.ts', 'lib/b.ts'],
+      [RICH, EMPTY],
+    )
+    expect(result.networks).toHaveLength(2)
   })
 })
 
-describe('formatSpiceRouteTable', () => {
-  it('produces non-empty table output', () => {
-    const result = buildSpiceRouteResult(['a.ts'], ['export function a() {}'], {})
-    const output = formatSpiceRouteTable(result, false)
-    expect(output.length).toBeGreaterThan(0)
-    expect(output).toContain('Spice Route Report')
+// ─── format-helpers ────────────────────────────────────────────────────────
+
+describe('format-helpers', () => {
+  it('scoreColor returns string for any score', () => {
+    expect(typeof scoreColor(90)).toBe('string')
+    expect(typeof scoreColor(70)).toBe('string')
+    expect(typeof scoreColor(50)).toBe('string')
+    expect(typeof scoreColor(20)).toBe('string')
   })
 
-  it('includes verbose details when enabled', () => {
-    const result = buildSpiceRouteResult(['a.ts'], ['export function a() {}'], {})
-    const output = formatSpiceRouteTable(result, true)
-    expect(output).toContain('Trade Waypoints')
+  it('conditionColor returns string for all conditions', () => {
+    expect(typeof conditionColor('golden-age')).toBe('string')
+    expect(typeof conditionColor('prosperous')).toBe('string')
+    expect(typeof conditionColor('thriving')).toBe('string')
+    expect(typeof conditionColor('surviving')).toBe('string')
+    expect(typeof conditionColor('struggling')).toBe('string')
+    expect(typeof conditionColor('collapsed')).toBe('string')
+    expect(typeof conditionColor('unknown')).toBe('string')
   })
-})
 
-describe('formatSpiceRouteJson', () => {
-  it('produces valid JSON', () => {
-    const result = buildSpiceRouteResult(['a.ts'], ['function a() {}'], {})
+  it('gradeColor returns string for all grades', () => {
+    expect(typeof gradeColor('grand-merchant')).toBe('string')
+    expect(typeof gradeColor('master-trader')).toBe('string')
+    expect(typeof gradeColor('merchant')).toBe('string')
+    expect(typeof gradeColor('peddler')).toBe('string')
+    expect(typeof gradeColor('hawker')).toBe('string')
+    expect(typeof gradeColor('beggar')).toBe('string')
+  })
+
+  it('networkTypeColor returns string for all types', () => {
+    expect(typeof networkTypeColor('grand-trunk')).toBe('string')
+    expect(typeof networkTypeColor('maritime-network')).toBe('string')
+    expect(typeof networkTypeColor('silk-network')).toBe('string')
+    expect(typeof networkTypeColor('regional-trade')).toBe('string')
+    expect(typeof networkTypeColor('local-market')).toBe('string')
+    expect(typeof networkTypeColor('dead-end')).toBe('string')
+  })
+
+  it('formatSpiceRouteJson returns valid JSON', () => {
+    const result = buildSpiceRouteResult(['test.ts'], [RICH])
     const json = formatSpiceRouteJson(result)
     const parsed = JSON.parse(json)
-    expect(parsed.stats.totalFiles).toBe(1)
-  })
-})
-
-describe('formatSpiceRouteCsv', () => {
-  it('produces CSV with headers', () => {
-    const result = buildSpiceRouteResult(['a.ts'], ['export function a() {}'], {})
-    const csv = formatSpiceRouteCsv(result)
-    const lines = csv.split('\n')
-    expect(lines[0]).toContain('file')
-    expect(lines.length).toBeGreaterThan(1)
-  })
-})
-
-describe('integration: full pipeline', () => {
-  it('analyzes a realistic multi-file codebase', () => {
-    const files = ['src/core.ts', 'src/utils.ts', 'src/middleware.ts']
-    const contents = [
-      [
-        '/** Core module */',
-        'import { config } from "./config"',
-        'export function process(data: string): string {',
-        '  try {',
-        '    return data.toUpperCase()',
-        '  } catch(e) {',
-        '    throw e',
-        '  }',
-        '}',
-        'export function validate(input: unknown): boolean {',
-        '  return typeof input === "string"',
-        '}',
-        "it('processes data', () => { expect(process('hello')).toBe('HELLO') })",
-      ].join('\n'),
-      [
-        'function helper() { return 1 }',
-        'function helper2() { return 2 }',
-      ].join('\n'),
-      [
-        'app.use(logger())',
-        'app.use(auth())',
-        'app.use(cors())',
-        'app.use(rateLimit())',
-        'app.use(compress())',
-        'app.use(helmet())',
-      ].join('\n'),
-    ]
-    const result = buildSpiceRouteResult(files, contents, {})
-    expect(result.waypoints).toHaveLength(3)
-    expect(result.routes.length).toBeGreaterThan(0)
-    expect(result.stats.totalFiles).toBe(3)
-    expect(result.network.overallTradeHealth).toBeGreaterThan(0)
-    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(parsed.routes).toHaveLength(1)
   })
 
-  it('handles all cargo types across multiple files', () => {
-    const files = ['gold.ts', 'salt.ts']
-    const goldCode = Array.from({ length: 6 }, (_, i) =>
-      `export function fn${i}() {}`
-    ).join('\n') + '\nexport class A {}\nexport class B {}'
-    const saltCode = 'const x = 1'
-    const result = buildSpiceRouteResult(files, [goldCode, saltCode], {})
-    expect(result.stats.goldCargoCount + result.stats.spiceCargoCount + result.stats.silkCargoCount + result.stats.saltCargoCount).toBeDefined()
+  it('formatSpiceRouteTable returns string with sections', () => {
+    const result = buildSpiceRouteResult(['test.ts'], [RICH])
+    const table = formatSpiceRouteTable(result, false)
+    expect(table).toContain('Spice Route Analysis')
+    expect(table).toContain('World Overview')
+    expect(table).toContain('Statistics')
+    expect(table).toContain('Grades')
+  })
+
+  it('formatSpiceRouteTable includes per-route breakdown when verbose', () => {
+    const result = buildSpiceRouteResult(['test.ts'], [RICH])
+    const table = formatSpiceRouteTable(result, true)
+    expect(table).toContain('Per-Route Breakdown')
+  })
+
+  it('formatSpiceRouteTable omits per-route when not verbose', () => {
+    const result = buildSpiceRouteResult(['test.ts'], [RICH])
+    const table = formatSpiceRouteTable(result, false)
+    expect(table).not.toContain('Per-Route Breakdown')
+  })
+
+  it('formatSpiceRouteTable shows recommendations', () => {
+    const result = buildSpiceRouteResult(['test.ts'], [RICH])
+    const table = formatSpiceRouteTable(result, false)
+    expect(table).toContain('Recommendations')
+  })
+
+  it('formatSpiceRouteTable shows networks', () => {
+    const result = buildSpiceRouteResult(['src/test.ts'], [RICH])
+    const table = formatSpiceRouteTable(result, false)
+    expect(table).toContain('Networks')
   })
 })

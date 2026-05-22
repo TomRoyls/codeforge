@@ -9,39 +9,39 @@ import {
   buildSpiceRouteResult,
   type SpiceRouteResult,
 } from './spice-route-helpers.js'
-import {
-  formatSpiceRouteCsv,
-  formatSpiceRouteJson,
-  formatSpiceRouteTable,
-} from './spice-route-format-helpers.js'
+import { formatSpiceRouteJson, formatSpiceRouteTable } from './spice-route-format-helpers.js'
 
 export default class SpiceRoute extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze code value chains and trade networks',
+      description: 'Path to analyze spice route patterns',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code value chains like ancient spice trade routes'
+  static override description = 'Analyze code flow, trade, exchange, value, and destination like a spice route'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory',
+      description: 'Analyze spice route in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file waypoint details',
+      description: 'Analyze spice route in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
+      description: 'Analyze only TypeScript files',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output spice.json',
+      description: 'Export spice route analysis to JSON file',
     },
   ]
 
@@ -54,7 +54,7 @@ export default class SpiceRoute extends Command {
       char: 'f',
       default: 'table',
       description: 'Output format',
-      options: ['csv', 'json', 'table'],
+      options: ['json', 'table'],
     }),
     ignore: Flags.string({
       char: 'i',
@@ -68,7 +68,7 @@ export default class SpiceRoute extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file waypoint details',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -81,10 +81,10 @@ export default class SpiceRoute extends Command {
       this.error(`Path not found: ${targetPath}`, { exit: 1 })
     }
 
-    const format = flags.format as 'csv' | 'json' | 'table'
+    const format = flags.format as 'json' | 'table'
     const { verbose } = flags
 
-    const spinner = ora('Scouting trade routes...').start()
+    const spinner = ora('Discovering files...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -93,42 +93,22 @@ export default class SpiceRoute extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
+        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
+        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
+        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
+      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
-    spinner.text = 'Evaluating cargo values...'
+    spinner.text = 'Analyzing spice routes...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -144,16 +124,14 @@ export default class SpiceRoute extends Command {
       }
     }
 
-    const result: SpiceRouteResult = buildSpiceRouteResult(files, contents, {})
+    const result: SpiceRouteResult = buildSpiceRouteResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} waypoints across ${result.routes.length} routes`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.networks.length} trade networks`)
 
     const outputData =
       format === 'json'
         ? formatSpiceRouteJson(result)
-        : format === 'csv'
-          ? formatSpiceRouteCsv(result)
-          : formatSpiceRouteTable(result, verbose)
+        : formatSpiceRouteTable(result, verbose)
 
     if (flags.output) {
       try {
@@ -171,5 +149,5 @@ export default class SpiceRoute extends Command {
 }
 
 export { buildSpiceRouteResult } from './spice-route-helpers.js'
-export type { SpiceRouteResult, TradeWaypoint, TradeRoute, SpiceRouteStats, SpiceRouteNetwork } from './spice-route-helpers.js'
-export { formatSpiceRouteCsv, formatSpiceRouteJson, formatSpiceRouteTable } from './spice-route-format-helpers.js'
+export type { SpiceRouteResult, TradeRoute, RouteNetwork, RouteMeasure, CargoMeasure, WaypointMeasure, EfficiencyMeasure, ExchangeMeasure, JourneyMeasure } from './spice-route-helpers.js'
+export { formatSpiceRouteJson, formatSpiceRouteTable } from './spice-route-format-helpers.js'
