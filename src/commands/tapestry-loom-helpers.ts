@@ -1,810 +1,951 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Interfaces ────────────────────────────────────────────────────────────
 
-export interface ThreadConnections {
-  warpConnections: number
-  weftConnections: number
-  crossingPoints: number
-  isInterlaced: boolean
-  interlaceQuality: number
-}
-
-export type ThreadDirection = 'warp' | 'weft' | 'fill' | 'selvedge'
-export type ThreadMaterial = 'silk' | 'cotton' | 'linen' | 'wool' | 'synthetic' | 'metallic' | 'rag'
-
-export interface LoomThread {
-  file: string
-  threadDirection: ThreadDirection
-  tension: number
-  strength: number
-  elasticity: number
-  threadCount: number
-  material: ThreadMaterial
-  dye: string
-  isUnderTension: boolean
-  isSlack: boolean
-  isBroken: boolean
-  isKnotted: boolean
-  connections: ThreadConnections
-}
-
-export interface ShedInfo {
-  isOpen: boolean
-  isClean: boolean
-  isOpeningWidth: number
-  hasStickyShed: boolean
-}
-
-export interface HeddleInfo {
-  count: number
+export interface ThreadMeasure {
   quality: number
-  areProperlySet: boolean
-  hasMissingHeddles: boolean
-  hasBrokenHeddles: boolean
+  material: 'silk' | 'wool' | 'cotton' | 'linen' | 'gold' | 'straw'
+  isStrong: boolean
+  isConsistent: boolean
+  hasNoKnots: boolean
+  hasNoFraying: boolean
+  hasProperTwist: boolean
+  hasSmoothTexture: boolean
+  hasNoSnags: boolean
+  hasProperTension: boolean
+  hasEvenDye: boolean
+  hasColorfast: boolean
+  knotCount: number
+  snagCount: number
 }
 
-export interface BeamInfo {
-  warpBeam: number
-  clothBeam: number
-  isEvenlyWound: boolean
-  hasUnevenWinding: boolean
+export interface WeaveMeasure {
+  density: number
+  technique: 'plain' | 'twill' | 'satin' | 'jacquard' | 'tapestry' | 'rag'
+  isTightWeave: boolean
+  hasProperTension: boolean
+  hasNoGaps: boolean
+  hasNoLooseEnds: boolean
+  hasEvenBeat: boolean
+  hasSelvedge: boolean
+  hasProperShed: boolean
+  hasHeddleControl: boolean
+  hasPickCount: boolean
+  gapCount: number
+  looseEndCount: number
 }
 
-export interface ReedInfo {
-  dents: number
-  dentsPerInch: number
-  isProperlySet: boolean
-  hasGaps: boolean
-  hasCrowding: boolean
+export interface PatternMeasure {
+  richness: number
+  type: 'geometric' | 'floral' | 'figurative' | 'abstract' | 'narrative' | 'random'
+  hasRepeatingMotifs: boolean
+  hasComplexDesigns: boolean
+  hasBorderPatterns: boolean
+  hasCentralMedallion: boolean
+  hasCornerDesigns: boolean
+  hasFillPatterns: boolean
+  hasConnectingThreads: boolean
+  hasMirrorImage: boolean
+  hasHierarchy: boolean
+  hasGoldenRatio: boolean
+  motifCount: number
+  designCount: number
 }
 
-export type LoomMechanicsType = 'jacquard' | 'dobby' | 'counterbalance' | 'countermarch' | 'rigid-heddle' | 'inkle' | 'frame'
-export type LoomCondition = 'perfectly-tuned' | 'well-tuned' | 'in-tune' | 'needs-adjustment' | 'out-of-tune' | 'broken-down'
+export interface ColorMeasure {
+  palette: number
+  richness: 'kaleidoscope' | 'rich' | 'varied' | 'limited' | 'monochrome' | 'bleached'
+  hasVibrantColors: boolean
+  hasSubtleShading: boolean
+  hasContrast: boolean
+  hasGradient: boolean
+  hasPrimaryColors: boolean
+  hasAccentColors: boolean
+  hasWarmTones: boolean
+  hasCoolTones: boolean
+  hasMetallic: boolean
+  hasNoColorBleeding: boolean
+  colorBleedCount: number
+}
 
-export interface LoomMechanics {
+export interface NarrativeMeasure {
+  coherence: number
+  structure: 'linear' | 'circular' | 'branching' | 'episodic' | 'stream-of-consciousness' | 'incoherent'
+  hasClearBeginning: boolean
+  hasMiddle: boolean
+  hasSatisfyingEnd: boolean
+  hasRisingAction: boolean
+  hasClimax: boolean
+  hasFallingAction: boolean
+  hasForeshadowing: boolean
+  hasFlashback: boolean
+  hasNarrativeArc: boolean
+  hasNoPlotHoles: boolean
+  hasDeusExMachina: boolean
+  plotHoleCount: number
+}
+
+export interface ArtistryMeasure {
+  value: number
+  style: 'renaissance' | 'medieval' | 'art-deco' | 'minimalist' | 'baroque' | 'naive'
+  isMasterwork: boolean
+  hasAestheticValue: boolean
+  hasTechnicalPrecision: boolean
+  hasCreativeExpression: boolean
+  hasHistoricalSignificance: boolean
+  hasCulturalContext: boolean
+  hasProvenance: boolean
+  hasSignature: boolean
+  hasRestoration: boolean
+  hasConservation: boolean
+  restorationCount: number
+}
+
+export interface TapestryThread {
   file: string
-  warpTension: number
-  weftTension: number
-  shedClarity: number
-  heddleOperation: number
-  beamWinding: number
-  takeUp: number
-  warpCount: number
-  weftCount: number
-  picksPerInch: number
-  isBalancedWeave: boolean
-  shed: ShedInfo
-  heddles: HeddleInfo
-  beams: BeamInfo
-  reed: ReedInfo
-  mechanics: LoomMechanicsType
-  condition: LoomCondition
+  threadQuality: number
+  weaveDensity: number
+  patternRichness: number
+  colorPalette: number
+  narrativeCoherence: number
+  artisticValue: number
+  thread: ThreadMeasure
+  weave: WeaveMeasure
+  pattern: PatternMeasure
+  color: ColorMeasure
+  narrative: NarrativeMeasure
+  artistry: ArtistryMeasure
+  condition: 'gobelins-masterpiece' | 'fine-tapestry' | 'quality-weave' | 'standard-cloth' | 'rag-rug' | 'tangled-yarn'
   qualityScore: number
 }
 
-export type BenchCondition = 'workshop' | 'studio' | 'garage' | 'shed' | 'salvage'
-
-export interface LoomBench {
+export interface TapestryPanel {
   directory: string
-  mechanics: LoomMechanics[]
-  avgWarpTension: number
-  avgWeftTension: number
-  avgShedClarity: number
-  avgHeddleOperation: number
-  avgBeamWinding: number
-  dominantMechanics: string
-  tunedCount: number
-  brokenCount: number
-  balancedWeaveCount: number
-  totalMissingHeddles: number
-  totalBrokenHeddles: number
-  benchQuality: number
-  condition: BenchCondition
+  threads: TapestryThread[]
+  avgQuality: number
+  avgDensity: number
+  avgNarrative: number
+  masterpieceCount: number
+  tangledCount: number
+  coherentCount: number
+  tightWeaveCount: number
+  panelType: 'historical-narrative' | 'portrait-panel' | 'decorative-hanging' | 'wall-covering' | 'table-runner' | 'floor-rag'
+  condition: 'museum-exhibit' | 'gallery-piece' | 'home-decor' | 'craft-fair' | 'thrift-store' | 'rag-bag'
 }
 
-export interface WorkshopInfo {
-  avgWarpTension: number
-  avgWeftTension: number
-  avgShedClarity: number
-  avgHeddleOperation: number
-  avgBeamWinding: number
-  isBalanced: boolean
-  overallTuning: number
+export interface TapestryGallery {
+  avgQuality: number
+  avgDensity: number
+  avgNarrative: number
+  isMasterwork: boolean
+  overallCraftsmanship: number
 }
 
-export interface TapestryLoomStats {
+export interface TapestryStats {
   totalFiles: number
-  totalBenches: number
-  avgWarpTension: number
-  avgWeftTension: number
-  avgShedClarity: number
-  avgHeddleOperation: number
-  avgBeamWinding: number
-  avgTakeUp: number
-  jacquardCount: number
-  rigidHeddleCount: number
-  frameCount: number
-  tunedCount: number
-  needsAdjustmentCount: number
-  brokenDownCount: number
-  balancedWeaveCount: number
-  totalMissingHeddles: number
-  totalBrokenHeddles: number
-  totalGaps: number
-  totalCrowding: number
-  overallTuning: number
-  weaverGrade: 'master-weaver' | 'journeyman' | 'apprentice' | 'novice' | 'clumsy' | 'tangled'
-  bestTuned: string
-  worstTuned: string
-  bestShed: string
-  bestHeddles: string
+  totalPanels: number
+  avgThreadQuality: number
+  avgWeaveDensity: number
+  avgPatternRichness: number
+  avgColorPalette: number
+  avgNarrativeCoherence: number
+  avgArtisticValue: number
+  gobelinsMasterpieceCount: number
+  fineTapestryCount: number
+  qualityWeaveCount: number
+  standardClothCount: number
+  ragRugCount: number
+  tangledYarnCount: number
+  isStrongCount: number
+  hasNoKnotsCount: number
+  isTightWeaveCount: number
+  hasNoGapsCount: number
+  hasRepeatingMotifsCount: number
+  hasVibrantColorsCount: number
+  hasNoColorBleedingCount: number
+  hasNarrativeArcCount: number
+  hasNoPlotHolesCount: number
+  isMasterworkCount: number
+  overallCraftsmanship: number
+  weaverGrade: 'master-weaver' | 'journeyman-weaver' | 'apprentice' | 'novice' | 'hobbyist' | 'cat'
+  bestThread: string
+  finestWeave: string
+  richestPattern: string
+  bestNarrative: string
+  mostArtistic: string
 }
 
 export interface TapestryLoomResult {
-  mechanics: LoomMechanics[]
-  benches: LoomBench[]
-  workshop: WorkshopInfo
-  stats: TapestryLoomStats
+  threads: TapestryThread[]
+  panels: TapestryPanel[]
+  gallery: TapestryGallery
+  stats: TapestryStats
   recommendations: string[]
 }
 
-// ─── Content Primitives ──────────────────────────────────────────────────────
+// ─── Regex Constants ───────────────────────────────────────────────────────
 
-/**
- * Count lines of code
- * @example
- * countLoc('const x = 1\nconst y = 2') // 2
- */
-export function countLoc(content: string): number {
-  return content.split('\n').filter(l => l.trim().length > 0).length
+const IMPORT_REGEX = /import\s/g
+const EXPORT_REGEX = /export\s/g
+const FROM_REGEX = /from\s+['"]/g
+const REQUIRE_REGEX = /require\s*\(/g
+const CLASS_REGEX = /\bclass\s+\w+/g
+const INTERFACE_REGEX = /\binterface\s+\w+/g
+const TYPE_REGEX = /\btype\s+\w+/g
+const FUNCTION_REGEX = /\b(function|const\s+\w+\s*=\s*(\(|[^=]=>))\b/g
+const ASYNC_REGEX = /\basync\b/g
+const AWAIT_REGEX = /\bawait\b/g
+const RETURN_REGEX = /\breturn\b/g
+const THROW_REGEX = /\bthrow\b/g
+const TRY_CATCH_REGEX = /\btry\s*\{/g
+const IF_REGEX = /\bif\s*\(/g
+const FOR_REGEX = /\bfor\s*\(/g
+const WHILE_REGEX = /\bwhile\s*\(/g
+const NEW_REGEX = /\bnew\s+\w+/g
+const EXTENDS_REGEX = /\bextends\s+/g
+const IMPLEMENTS_REGEX = /\bimplements\s+/g
+const CONSOLE_REGEX = /\bconsole\./g
+const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
+const DEPRECATED_REGEX = /@deprecated/g
+const ANY_REGEX = /:\s*any\b/g
+const TS_IGNORE_REGEX = /@ts-ignore/g
+const TYPE_ANNOTATION_REGEX = /:\s*(string|number|boolean|void|never|unknown|any|null|undefined|object)/g
+const GENERIC_REGEX = /<\w+/g
+const ARROW_REGEX = /=>/g
+const SPREAD_REGEX = /\.\.\./g
+const OPTIONAL_CHAIN_REGEX = /\?\.\w/g
+const NULLISH_REGEX = /\?\?/g
+const PRIVATE_REGEX = /\bprivate\s/g
+const PROTECTED_REGEX = /\bprotected\s/g
+const STATIC_REGEX = /\bstatic\s/g
+const READONLY_REGEX = /\breadonly\s/g
+const ABSTRACT_REGEX = /\babstract\s/g
+const EMIT_REGEX = /\.emit\s*\(/g
+const DEFAULT_EXPORT_REGEX = /export\s+default/g
+const RE_EXPORT_REGEX = /export\s+\*\s+from/g
+const DYNAMIC_IMPORT_REGEX = /import\s*\(/g
+
+// ─── Helper Counting Functions ─────────────────────────────────────────────
+
+function countMatches(content: string, regex: RegExp): number {
+  const matches = content.match(regex)
+  return matches ? matches.length : 0
 }
 
-/**
- * Count imports
- * @example
- * countImports('import { x } from "y"') // 1
- */
-export function countImports(content: string): number {
-  return (content.match(/^import\s+/gm) ?? []).length
-}
-
-/**
- * Count exports
- * @example
- * countExports('export function a() {}') // 1
- */
-export function countExports(content: string): number {
-  return (content.match(/\bexport\s+(?:default\s+)?(?:function|class|const|let|var|interface|type|enum)\s+/g) ?? []).length
-}
-
-/**
- * Count functions
- * @example
- * countFunctions('function a() {}') // 1
- */
-export function countFunctions(content: string): number {
-  return (content.match(/(?:function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>)/g) ?? []).length
-}
-
-/**
- * Count error handling
- * @example
- * countErrorHandling('try {} catch(e) {}') // 2
- */
-export function countErrorHandling(content: string): number {
-  return (content.match(/\btry\s*\{|\bcatch\s*\(|\.catch\s*\(|\bthrow\s+/g) ?? []).length
-}
-
-/**
- * Count type annotations
- * @example
- * countTypeAnnotations('const x: number = 1') // 1
- */
-export function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*(?:string|number|boolean|void|any|never|unknown|object)/g) ?? []).length
-}
-
-/**
- * Count branches
- * @example
- * countBranches('if (a) {}') // 1
- */
-export function countBranches(content: string): number {
-  return (content.match(/\bif\s*\(|\?\s*[^?]\s*:|\bswitch\s*\(/g) ?? []).length
-}
-
-/**
- * Count max nesting depth
- * @example
- * maxNesting('{{{}}}') // 3
- */
-export function maxNesting(content: string): number {
-  let max = 0
-  let cur = 0
-  for (const ch of content) {
-    if (ch === '{') { cur++; if (cur > max) max = cur }
-    else if (ch === '}') { cur = Math.max(0, cur - 1) }
+function countNonEmptyLines(content: string): number {
+  let count = 0
+  for (const line of content.split('\n')) {
+    if (line.trim().length > 0) count++
   }
-  return max
+  return count
 }
 
-/**
- * Count console statements
- * @example
- * countConsole('console.log("x")') // 1
- */
-export function countConsole(content: string): number {
-  return (content.match(/console\.\w+\s*\(/g) ?? []).length
+function countImports(content: string): number {
+  return countMatches(content, IMPORT_REGEX) + countMatches(content, REQUIRE_REGEX)
 }
 
-/**
- * Count comments
- * @example
- * countComments('// hello') // 1
- */
-export function countComments(content: string): number {
-  return (content.match(/\/\//g) ?? []).length + (content.match(/\/\*/g) ?? []).length
+function countExports(content: string): number {
+  return countMatches(content, EXPORT_REGEX)
 }
 
-/**
- * Count TODO markers
- * @example
- * countTodos('TODO: fix') // 1
- */
-export function countTodos(content: string): number {
-  return (content.match(/TODO|FIXME|HACK|XXX/gi) ?? []).length
+function countFunctions(content: string): number {
+  return countMatches(content, FUNCTION_REGEX) + countMatches(content, ARROW_REGEX)
 }
 
-// ─── Measurement Functions ───────────────────────────────────────────────────
-
-/**
- * Measure warp tension (dependency coupling strength)
- * @example
- * measureWarpTension('import { x } from "y"\nexport function a() {}') // number
- */
-export function measureWarpTension(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const types = countTypeAnnotations(content)
-  return Math.min(100, Math.round(
-    Math.min(30, imports * 6) +
-    Math.min(30, exports * 6) +
-    Math.min(20, types * 4) +
-    (countFunctions(content) > 0 ? 10 : 0) +
-    (loc <= 150 ? 10 : 0),
-  ))
+function countClasses(content: string): number {
+  return countMatches(content, CLASS_REGEX)
 }
 
-/**
- * Measure weft tension (functional coupling strength)
- * @example
- * measureWeftTension('export function calc() { return helper() }') // number
- */
-export function measureWeftTension(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  return Math.min(100, Math.round(
-    (countFunctions(content) > 0 ? 20 : 0) +
-    (countExports(content) > 0 ? 20 : 0) +
-    (countErrorHandling(content) > 0 ? 20 : 0) +
-    (countBranches(content) <= 5 ? 20 : 10) +
-    (maxNesting(content) <= 3 ? 20 : 10),
-  ))
+function countInterfaces(content: string): number {
+  return countMatches(content, INTERFACE_REGEX)
 }
 
-/**
- * Measure shed clarity (layer separation)
- * @example
- * measureShedClarity('export function calc() { return 1 }') // number
- */
-export function measureShedClarity(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  const hasExports = countExports(content) > 0 ? 25 : 0
-  const hasTypes = countTypeAnnotations(content) > 0 ? 25 : 0
-  const lowNesting = maxNesting(content) <= 3 ? 25 : maxNesting(content) <= 5 ? 12 : 0
-  const lowConsole = countConsole(content) <= 1 ? 15 : 0
-  const hasDocs = countComments(content) > 0 ? 10 : 0
-  return Math.min(100, hasExports + hasTypes + lowNesting + lowConsole + hasDocs)
+function countTypeAnnotations(content: string): number {
+  return countMatches(content, TYPE_ANNOTATION_REGEX)
 }
 
-/**
- * Measure heddle operation (interface mechanism quality)
- * @example
- * measureHeddleOperation('export interface Config { name: string }') // number
- */
-export function measureHeddleOperation(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  const hasInterface = /interface\s+\w/.test(content) ? 25 : 0
-  const hasTypeAlias = /type\s+\w+\s*=/.test(content) ? 20 : 0
-  const hasExports = countExports(content) > 0 ? 20 : 0
-  const hasTypes = countTypeAnnotations(content) > 0 ? 20 : 0
-  const hasDocs = /\/\*\*/.test(content) ? 15 : 0
-  return Math.min(100, hasInterface + hasTypeAlias + hasExports + hasTypes + hasDocs)
+function countConditionals(content: string): number {
+  return countMatches(content, IF_REGEX)
 }
 
-/**
- * Measure beam winding (data flow quality)
- * @example
- * measureBeamWinding('export function calc(x: number): number { return x }') // number
- */
-export function measureBeamWinding(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  const hasReturn = /\breturn\b/.test(content) ? 20 : 0
-  const hasTypes = countTypeAnnotations(content) > 0 ? 25 : 0
-  const hasError = countErrorHandling(content) > 0 ? 20 : 0
-  const hasImports = countImports(content) > 0 ? 15 : 0
-  const hasExports = countExports(content) > 0 ? 20 : 0
-  return Math.min(100, hasReturn + hasTypes + hasError + hasImports + hasExports)
+function countLoops(content: string): number {
+  return countMatches(content, FOR_REGEX) + countMatches(content, WHILE_REGEX)
 }
 
-/**
- * Measure take-up (code absorption quality)
- * @example
- * measureTakeUp('import { x } from "y"\nexport function a() { return x }') // number
- */
-export function measureTakeUp(content: string): number {
-  const loc = countLoc(content)
-  if (loc === 0) return 0
-  const importUsage = countImports(content) > 0 && countExports(content) > 0 ? 30 : 0
-  const typeUsage = countTypeAnnotations(content) > 0 ? 25 : 0
-  const lowTodos = countTodos(content) === 0 ? 20 : 0
-  const lowConsole = countConsole(content) <= 1 ? 15 : 0
-  const focused = countFunctions(content) <= 5 ? 10 : 0
-  return Math.min(100, importUsage + typeUsage + lowTodos + lowConsole + focused)
+function countErrorHandling(content: string): number {
+  return countMatches(content, TRY_CATCH_REGEX)
 }
 
-// ─── Classification Functions ────────────────────────────────────────────────
-
-/**
- * Classify loom mechanics type from content
- * @example
- * classifyMechanics('export interface A {}') // string
- */
-export function classifyMechanics(content: string): LoomMechanicsType {
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const functions = countFunctions(content)
-  const loc = countLoc(content)
-  const hasInterface = /interface\s+\w/.test(content)
-  const hasClass = /\bclass\s+\w/.test(content)
-
-  if (hasInterface && hasClass && exports > 2) return 'jacquard'
-  if (exports > 3 && imports > 1 && functions > 2) return 'dobby'
-  if (hasClass && imports > 1) return 'counterbalance'
-  if (exports > 1 && imports > 0 && hasInterface) return 'countermarch'
-  if (exports === 1 && loc <= 50) return 'rigid-heddle'
-  if (loc > 0 && exports === 0 && imports === 0) return 'inkle'
-  return 'frame'
+function countSmells(content: string): number {
+  return countMatches(content, CONSOLE_REGEX) + countMatches(content, TODO_REGEX) + countMatches(content, DEPRECATED_REGEX) + countMatches(content, ANY_REGEX) + countMatches(content, TS_IGNORE_REGEX)
 }
 
-/**
- * Classify weaver grade from average tuning
- * @example
- * classifyWeaverGrade(80) // 'master-weaver'
- */
-export function classifyWeaverGrade(avgTuning: number): TapestryLoomStats['weaverGrade'] {
-  if (avgTuning >= 75) return 'master-weaver'
-  if (avgTuning >= 60) return 'journeyman'
-  if (avgTuning >= 45) return 'apprentice'
-  if (avgTuning >= 30) return 'novice'
-  if (avgTuning >= 15) return 'clumsy'
-  return 'tangled'
+function countTodos(content: string): number {
+  return countMatches(content, TODO_REGEX)
 }
 
-/**
- * Classify loom condition from quality score
- * @example
- * classifyLoomCondition(80) // 'well-tuned'
- */
-export function classifyLoomCondition(quality: number): LoomCondition {
-  if (quality >= 85) return 'perfectly-tuned'
-  if (quality >= 70) return 'well-tuned'
-  if (quality >= 50) return 'in-tune'
-  if (quality >= 30) return 'needs-adjustment'
-  if (quality >= 15) return 'out-of-tune'
-  return 'broken-down'
-}
+// ─── measureThread ─────────────────────────────────────────────────────────
 
-/**
- * Classify bench condition from quality
- * @example
- * classifyBenchCondition(80) // 'workshop'
- */
-export function classifyBenchCondition(quality: number): BenchCondition {
-  if (quality >= 70) return 'workshop'
-  if (quality >= 50) return 'studio'
-  if (quality >= 30) return 'garage'
-  if (quality >= 15) return 'shed'
-  return 'salvage'
-}
-
-/**
- * Classify thread material from content
- * @example
- * classifyThreadMaterial('export function calc() {}') // string
- */
-export function classifyThreadMaterial(content: string): ThreadMaterial {
-  const types = countTypeAnnotations(content)
-  const loc = countLoc(content)
-  const exports = countExports(content)
+/** @example measureThread('export function add(a: number, b: number): number { return a + b; }') returns ThreadMeasure */
+export function measureThread(content: string): ThreadMeasure {
+  const lines = countNonEmptyLines(content)
+  const funcs = countFunctions(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const typeAnnotations = countTypeAnnotations(content)
   const errorHandling = countErrorHandling(content)
-
-  if (types > 3 && exports > 0 && loc > 20) return 'silk'
-  if (types > 0 && errorHandling > 0) return 'cotton'
-  if (types > 0) return 'linen'
-  if (errorHandling > 0 && exports > 0) return 'wool'
-  if (/async|Promise/.test(content)) return 'synthetic'
-  if (/class\s+\w/.test(content)) return 'metallic'
-  return 'rag'
-}
-
-// ─── Sub-Analysis Functions ──────────────────────────────────────────────────
-
-/**
- * Analyze shed (separation clarity)
- * @example
- * analyzeShed(content) // ShedInfo
- */
-export function analyzeShed(content: string): ShedInfo {
-  const nesting = maxNesting(content)
-  const branches = countBranches(content)
-  const console_ = countConsole(content)
-
-  const isOpeningWidth = Math.min(100, Math.round(
-    (nesting <= 2 ? 40 : nesting <= 4 ? 20 : 0) +
-    (branches <= 3 ? 30 : branches <= 7 ? 15 : 0) +
-    (console_ === 0 ? 30 : 10),
-  ))
-
-  const isOpen = isOpeningWidth >= 60
-  const isClean = nesting <= 4 && console_ <= 2
-  const hasStickyShed = nesting > 4 || (branches > 8 && console_ > 2)
-
-  return { isOpen, isClean, isOpeningWidth, hasStickyShed }
-}
-
-/**
- * Analyze heddles (interface mechanism quality)
- * @example
- * analyzeHeddles(content) // HeddleInfo
- */
-export function analyzeHeddles(content: string): HeddleInfo {
-  const count = countExports(content) + countTypeAnnotations(content)
-  const quality = Math.min(100, Math.round(
-    (countTypeAnnotations(content) > 0 ? 30 : 0) +
-    (countExports(content) > 0 ? 25 : 0) +
-    (/interface|type\s+\w/.test(content) ? 25 : 0) +
-    (countComments(content) > 0 ? 20 : 0),
-  ))
-
-  const areProperlySet = quality >= 50
-  const hasMissingHeddles = countExports(content) > 0 && countTypeAnnotations(content) === 0
-  const hasBrokenHeddles = countErrorHandling(content) === 0 && countExports(content) > 0 && countLoc(content) > 30
-
-  return { count, quality, areProperlySet, hasMissingHeddles, hasBrokenHeddles }
-}
-
-/**
- * Analyze beams (data flow quality)
- * @example
- * analyzeBeams(content) // BeamInfo
- */
-export function analyzeBeams(content: string): BeamInfo {
-  const warpBeam = Math.min(100, Math.round(
-    (countImports(content) > 0 ? 25 : 0) +
-    (countTypeAnnotations(content) > 0 ? 25 : 0) +
-    (countComments(content) > 0 ? 25 : 0) +
-    (countLoc(content) > 10 ? 25 : 0),
-  ))
-
-  const clothBeam = Math.min(100, Math.round(
-    (countExports(content) > 0 ? 25 : 0) +
-    (countErrorHandling(content) > 0 ? 25 : 0) +
-    (/\breturn\b/.test(content) ? 25 : 0) +
-    (countTypeAnnotations(content) > 0 ? 25 : 0),
-  ))
-
-  const diff = Math.abs(warpBeam - clothBeam)
-  const isEvenlyWound = diff <= 20
-  const hasUnevenWinding = diff > 30
-
-  return { warpBeam, clothBeam, isEvenlyWound, hasUnevenWinding }
-}
-
-/**
- * Analyze reed (interface density)
- * @example
- * analyzeReed(content) // ReedInfo
- */
-export function analyzeReed(content: string): ReedInfo {
-  const dents = countExports(content) + countFunctions(content)
-  const loc = countLoc(content)
-  const dentsPerInch = loc > 0 ? Math.round((dents / loc) * 100) : 0
-
-  const isProperlySet = dentsPerInch >= 10 && dentsPerInch <= 60
-  const hasGaps = dentsPerInch < 10 && loc > 20
-  const hasCrowding = dentsPerInch > 60
-
-  return { dents, dentsPerInch, isProperlySet, hasGaps, hasCrowding }
-}
-
-// ─── Thread Analysis ─────────────────────────────────────────────────────────
-
-/**
- * Analyze thread connections
- * @example
- * analyzeConnections(content) // ThreadConnections
- */
-export function analyzeConnections(content: string): ThreadConnections {
-  const warpConnections = countImports(content)
-  const weftConnections = countExports(content)
-  const crossingPoints = Math.min(warpConnections, weftConnections)
-  const isInterlaced = warpConnections > 0 && weftConnections > 0
-  const interlaceQuality = Math.min(100, Math.round(
-    (isInterlaced ? 40 : 0) +
-    (crossingPoints > 0 ? 30 : 0) +
-    (countTypeAnnotations(content) > 0 ? 30 : 0),
-  ))
-
-  return { warpConnections, weftConnections, crossingPoints, isInterlaced, interlaceQuality }
-}
-
-/**
- * Classify thread direction from content
- * @example
- * classifyThreadDirection('import { x } from "y"') // string
- */
-export function classifyThreadDirection(content: string): ThreadDirection {
+  const returns = countMatches(content, RETURN_REGEX)
+  const conditionals = countConditionals(content)
+  const smells = countSmells(content)
   const imports = countImports(content)
   const exports = countExports(content)
 
-  if (imports > exports) return 'warp'
-  if (exports > imports) return 'weft'
-  if (imports > 0 && exports > 0) return 'fill'
-  return 'selvedge'
-}
+  const hasCode = lines > 0
+  const baseQuality = lines === 0 ? 5 : Math.min(40, typeAnnotations * 3 + errorHandling * 6 + classes * 3)
+  const structureBonus = Math.min(25, funcs * 3 + interfaces * 5)
+  const flowBonus = Math.min(20, returns * 2 + conditionals * 2)
+  const smellPenalty = Math.min(30, smells * 5)
+  const quality = Math.max(0, Math.min(100, baseQuality + structureBonus + flowBonus - smellPenalty))
 
-// ─── Core Analysis ───────────────────────────────────────────────────────────
+  const isStrong = quality >= 60
+  const isConsistent = hasCode && (funcs > 0 || classes > 0) && exports > 0
+  const hasNoKnots = smells === 0
+  const hasNoFraying = hasCode && imports <= 10
+  const hasProperTwist = hasCode && conditionals > 0 && errorHandling > 0
+  const hasSmoothTexture = hasCode && returns > 0 && (funcs > 0 || classes > 0)
+  const hasNoSnags = imports < 5
+  const hasProperTension = hasCode && quality >= 30 && quality <= 80
+  const hasEvenDye = hasCode && (typeAnnotations > 0 || interfaces > 0)
+  const hasColorfast = hasCode && smells === 0 && errorHandling > 0
 
-/**
- * Analyze a single file as loom mechanics
- * @example
- * analyzeLoomMechanics('export function calc() { return 1 }', 'calc.ts') // LoomMechanics
- */
-export function analyzeLoomMechanics(content: string, filePath: string): LoomMechanics {
-  const warpTension = measureWarpTension(content)
-  const weftTension = measureWeftTension(content)
-  const shedClarity = measureShedClarity(content)
-  const heddleOperation = measureHeddleOperation(content)
-  const beamWinding = measureBeamWinding(content)
-  const takeUp = measureTakeUp(content)
+  const knotCount = smells
+  const snagCount = Math.max(0, imports - 5)
 
-  const warpCount = countImports(content)
-  const weftCount = countExports(content)
-  const loc = countLoc(content)
-  const picksPerInch = loc > 0 ? Math.round((warpCount + weftCount) / loc * 100) : 0
-
-  const isBalancedWeave = Math.abs(warpTension - weftTension) <= 25
-
-  const shed = analyzeShed(content)
-  const heddles = analyzeHeddles(content)
-  const beams = analyzeBeams(content)
-  const reed = analyzeReed(content)
-
-  const mechanics = classifyMechanics(content)
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    warpTension * 0.15 +
-    weftTension * 0.15 +
-    shedClarity * 0.2 +
-    heddleOperation * 0.15 +
-    beamWinding * 0.15 +
-    takeUp * 0.1 +
-    (isBalancedWeave ? 10 : 0),
-  )))
-
-  const condition = classifyLoomCondition(qualityScore)
+  let material: ThreadMeasure['material']
+  if (quality >= 90) material = 'gold'
+  else if (quality >= 70) material = 'silk'
+  else if (quality >= 50) material = 'wool'
+  else if (quality >= 30) material = 'cotton'
+  else if (quality >= 15) material = 'linen'
+  else material = 'straw'
 
   return {
-    file: filePath, warpTension, weftTension, shedClarity,
-    heddleOperation, beamWinding, takeUp, warpCount, weftCount,
-    picksPerInch, isBalancedWeave, shed, heddles, beams, reed,
-    mechanics, condition, qualityScore,
+    quality,
+    material,
+    isStrong,
+    isConsistent,
+    hasNoKnots,
+    hasNoFraying,
+    hasProperTwist,
+    hasSmoothTexture,
+    hasNoSnags,
+    hasProperTension,
+    hasEvenDye,
+    hasColorfast,
+    knotCount,
+    snagCount,
   }
 }
 
-// ─── Bench Analysis ──────────────────────────────────────────────────────────
+// ─── measureWeave ──────────────────────────────────────────────────────────
 
-/**
- * Analyze a directory as a loom bench
- * @example
- * analyzeLoomBench(mechanics, 'src') // LoomBench
- */
-export function analyzeLoomBench(mechanics: LoomMechanics[], dirPath: string): LoomBench {
-  if (mechanics.length === 0) {
-    return {
-      directory: dirPath, mechanics: [], avgWarpTension: 0,
-      avgWeftTension: 0, avgShedClarity: 0, avgHeddleOperation: 0,
-      avgBeamWinding: 0, dominantMechanics: 'frame', tunedCount: 0,
-      brokenCount: 0, balancedWeaveCount: 0, totalMissingHeddles: 0,
-      totalBrokenHeddles: 0, benchQuality: 0, condition: 'salvage',
-    }
-  }
+/** @example measureWeave('export class Foo { method() { return this.bar(); } }') returns WeaveMeasure */
+export function measureWeave(content: string): WeaveMeasure {
+  const lines = countNonEmptyLines(content)
+  const funcs = countFunctions(content)
+  const classes = countClasses(content)
+  const imports = countImports(content)
+  const exports = countExports(content)
+  const conditionals = countConditionals(content)
+  const loops = countLoops(content)
+  const returns = countMatches(content, RETURN_REGEX)
+  const errorHandling = countErrorHandling(content)
+  const typeAnnotations = countTypeAnnotations(content)
 
-  const n = mechanics.length
-  const avgWarpTension = Math.round(mechanics.reduce((s, m) => s + m.warpTension, 0) / n)
-  const avgWeftTension = Math.round(mechanics.reduce((s, m) => s + m.weftTension, 0) / n)
-  const avgShedClarity = Math.round(mechanics.reduce((s, m) => s + m.shedClarity, 0) / n)
-  const avgHeddleOperation = Math.round(mechanics.reduce((s, m) => s + m.heddleOperation, 0) / n)
-  const avgBeamWinding = Math.round(mechanics.reduce((s, m) => s + m.beamWinding, 0) / n)
+  const hasCode = lines > 0
+  const baseDensity = lines === 0 ? 5 : Math.min(35, lines)
+  const structureBonus = Math.min(25, funcs * 3 + classes * 5)
+  const connectionBonus = Math.min(20, imports * 2 + exports * 3)
+  const flowBonus = Math.min(15, conditionals * 2 + loops * 3)
+  const typingBonus = Math.min(10, typeAnnotations * 2)
+  const density = Math.min(100, baseDensity + structureBonus + connectionBonus + flowBonus + typingBonus)
 
-  const typeCounts: Record<string, number> = {}
-  for (const m of mechanics) {
-    typeCounts[m.mechanics] = (typeCounts[m.mechanics] ?? 0) + 1
-  }
-  const dominantMechanics = Array.from(Object.entries(typeCounts)).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'frame'
+  const isTightWeave = density >= 60
+  const hasProperTension = hasCode && density >= 30 && density <= 80
+  const hasNoGaps = hasCode && (funcs > 0 || classes > 0) && returns > 0
+  const hasNoLooseEnds = hasCode && exports > 0
+  const hasEvenBeat = hasCode && funcs > 0 && conditionals > 0
+  const hasSelvedge = imports > 0 && exports > 0
+  const hasProperShed = hasCode && (classes > 0 || funcs > 1)
+  const hasHeddleControl = hasCode && errorHandling > 0
+  const hasPickCount = hasCode && (conditionals > 0 || loops > 0)
 
-  const tunedCount = mechanics.filter(m => m.condition === 'perfectly-tuned' || m.condition === 'well-tuned' || m.condition === 'in-tune').length
-  const brokenCount = mechanics.filter(m => m.condition === 'out-of-tune' || m.condition === 'broken-down').length
-  const balancedWeaveCount = mechanics.filter(m => m.isBalancedWeave).length
-  const totalMissingHeddles = mechanics.reduce((s, m) => s + (m.heddles.hasMissingHeddles ? 1 : 0), 0)
-  const totalBrokenHeddles = mechanics.reduce((s, m) => s + (m.heddles.hasBrokenHeddles ? 1 : 0), 0)
+  const gapCount = hasNoGaps ? 0 : 1
+  const looseEndCount = hasNoLooseEnds ? 0 : 1
 
-  const benchQuality = Math.round(
-    avgWarpTension * 0.15 + avgWeftTension * 0.15 + avgShedClarity * 0.2 +
-    avgHeddleOperation * 0.2 + avgBeamWinding * 0.15 +
-    (tunedCount / n * 100) * 0.15,
-  )
-
-  const condition = classifyBenchCondition(benchQuality)
+  let technique: WeaveMeasure['technique']
+  if (density >= 80) technique = 'jacquard'
+  else if (density >= 60) technique = 'tapestry'
+  else if (density >= 40) technique = 'satin'
+  else if (density >= 25) technique = 'twill'
+  else if (density >= 10) technique = 'plain'
+  else technique = 'rag'
 
   return {
-    directory: dirPath, mechanics, avgWarpTension, avgWeftTension,
-    avgShedClarity, avgHeddleOperation, avgBeamWinding,
-    dominantMechanics, tunedCount, brokenCount, balancedWeaveCount,
-    totalMissingHeddles, totalBrokenHeddles, benchQuality, condition,
+    density,
+    technique,
+    isTightWeave,
+    hasProperTension,
+    hasNoGaps,
+    hasNoLooseEnds,
+    hasEvenBeat,
+    hasSelvedge,
+    hasProperShed,
+    hasHeddleControl,
+    hasPickCount,
+    gapCount,
+    looseEndCount,
   }
 }
 
-// ─── Recommendations ─────────────────────────────────────────────────────────
+// ─── measurePattern ────────────────────────────────────────────────────────
 
-/**
- * Generate tapestry loom recommendations
- * @example
- * generateLoomRecommendations(mechanics, benches, workshop, stats) // string[]
- */
-export function generateLoomRecommendations(
-  mechanics: LoomMechanics[],
-  benches: LoomBench[],
-  _workshop: WorkshopInfo,
-  stats: TapestryLoomStats,
+/** @example measurePattern('interface A {}; interface B {}; class C implements A, B {}') returns PatternMeasure */
+export function measurePattern(content: string): PatternMeasure {
+  const lines = countNonEmptyLines(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const types = countMatches(content, TYPE_REGEX)
+  const funcs = countFunctions(content)
+  const exports = countExports(content)
+  const extends_ = countMatches(content, EXTENDS_REGEX)
+  const implements_ = countMatches(content, IMPLEMENTS_REGEX)
+  const abstracts = countMatches(content, ABSTRACT_REGEX)
+  const generics = countMatches(content, GENERIC_REGEX)
+  const statics = countMatches(content, STATIC_REGEX)
+
+  const hasCode = lines > 0
+  const designSignals = classes + interfaces + types + extends_ + implements_ + abstracts
+  const baseRichness = lines === 0 ? 5 : Math.min(30, designSignals * 5)
+  const patternBonus = Math.min(25, (extends_ + implements_) * 8 + abstracts * 10)
+  const featureBonus = Math.min(20, generics * 4 + statics * 3)
+  const exportBonus = Math.min(15, exports * 2)
+  const functionBonus = Math.min(15, funcs * 2)
+  const richness = Math.min(100, baseRichness + patternBonus + featureBonus + exportBonus + functionBonus)
+
+  const hasRepeatingMotifs = funcs > 2 || classes > 1
+  const hasComplexDesigns = (extends_ + implements_) > 0 && generics > 0
+  const hasBorderPatterns = interfaces > 0
+  const hasCentralMedallion = classes > 0 && extends_ > 0
+  const hasCornerDesigns = funcs > 0 && types > 0
+  const hasFillPatterns = funcs > 3
+  const hasConnectingThreads = imports_count(content) > 0 && exports > 0
+  const hasMirrorImage = implements_ > 0 && interfaces > 0
+  const hasHierarchy = classes > 0 && extends_ > 0 && interfaces > 0
+  const hasGoldenRatio = richness >= 60 && (extends_ + implements_) > 0
+
+  const motifCount = funcs + classes
+  const designCount = classes + interfaces + types
+
+  let type: PatternMeasure['type']
+  if (richness >= 80) type = 'narrative'
+  else if (richness >= 60) type = 'figurative'
+  else if (richness >= 40) type = 'floral'
+  else if (richness >= 25) type = 'geometric'
+  else if (richness >= 10) type = 'abstract'
+  else type = 'random'
+
+  return {
+    richness,
+    type,
+    hasRepeatingMotifs,
+    hasComplexDesigns,
+    hasBorderPatterns,
+    hasCentralMedallion,
+    hasCornerDesigns,
+    hasFillPatterns,
+    hasConnectingThreads,
+    hasMirrorImage,
+    hasHierarchy,
+    hasGoldenRatio,
+    motifCount,
+    designCount,
+  }
+}
+
+function imports_count(content: string): number {
+  return countImports(content)
+}
+
+// ─── measureColor ──────────────────────────────────────────────────────────
+
+/** @example measureColor('export function foo(): string { return "bar"; }') returns ColorMeasure */
+export function measureColor(content: string): ColorMeasure {
+  const lines = countNonEmptyLines(content)
+  const funcs = countFunctions(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const types = countMatches(content, TYPE_REGEX)
+  const asyncs = countMatches(content, ASYNC_REGEX)
+  const errorHandling = countErrorHandling(content)
+  const exports = countExports(content)
+  const conditionals = countConditionals(content)
+  const loops = countLoops(content)
+  const spreads = countMatches(content, SPREAD_REGEX)
+  const optionalChains = countMatches(content, OPTIONAL_CHAIN_REGEX)
+  const privateMembers = countMatches(content, PRIVATE_REGEX) + countMatches(content, PROTECTED_REGEX)
+  const emits = countMatches(content, EMIT_REGEX)
+  const generics = countMatches(content, GENERIC_REGEX)
+  const smells = countSmells(content)
+
+  const hasCode = lines > 0
+  const featureSignals = funcs + classes + interfaces + types + asyncs + errorHandling
+  const basePalette = lines === 0 ? 5 : Math.min(30, featureSignals * 3)
+  const varietyBonus = Math.min(20, (asyncs + errorHandling + emits) * 4)
+  const controlBonus = Math.min(15, conditionals * 2 + loops * 3)
+  const eleganceBonus = Math.min(15, optionalChains * 3 + generics * 3 + spreads * 2)
+  const smellPenalty = Math.min(15, smells * 3)
+  const palette = Math.max(0, Math.min(100, basePalette + varietyBonus + controlBonus + eleganceBonus - smellPenalty))
+
+  const hasVibrantColors = featureSignals >= 5
+  const hasSubtleShading = optionalChains > 0 || generics > 0
+  const hasContrast = errorHandling > 0
+  const hasGradient = asyncs > 0 && errorHandling > 0
+  const hasPrimaryColors = exports > 0
+  const hasAccentColors = privateMembers > 0
+  const hasWarmTones = asyncs > 0 || emits > 0
+  const hasCoolTones = interfaces > 0 || types > 0
+  const hasMetallic = generics > 0 && classes > 0
+  const hasNoColorBleeding = smells === 0
+
+  let richness: ColorMeasure['richness']
+  if (palette >= 80) richness = 'kaleidoscope'
+  else if (palette >= 65) richness = 'rich'
+  else if (palette >= 45) richness = 'varied'
+  else if (palette >= 25) richness = 'limited'
+  else if (palette >= 10) richness = 'monochrome'
+  else richness = 'bleached'
+
+  const colorBleedCount = smells
+
+  return {
+    palette,
+    richness,
+    hasVibrantColors,
+    hasSubtleShading,
+    hasContrast,
+    hasGradient,
+    hasPrimaryColors,
+    hasAccentColors,
+    hasWarmTones,
+    hasCoolTones,
+    hasMetallic,
+    hasNoColorBleeding,
+    colorBleedCount,
+  }
+}
+
+// ─── measureNarrative ──────────────────────────────────────────────────────
+
+/** @example measureNarrative('export function run(): void { if (true) { return; } }') returns NarrativeMeasure */
+export function measureNarrative(content: string): NarrativeMeasure {
+  const lines = countNonEmptyLines(content)
+  const funcs = countFunctions(content)
+  const errorHandling = countErrorHandling(content)
+  const returns = countMatches(content, RETURN_REGEX)
+  const throws = countMatches(content, THROW_REGEX)
+  const conditionals = countConditionals(content)
+  const loops = countLoops(content)
+  const asyncs = countMatches(content, ASYNC_REGEX)
+  const imports = countImports(content)
+  const exports = countExports(content)
+  const typeAnnotations = countTypeAnnotations(content)
+  const smells = countSmells(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+
+  const hasCode = lines > 0
+  const baseCoherence = lines === 0 ? 5 : Math.min(30, funcs * 3 + errorHandling * 5 + returns * 2)
+  const flowBonus = Math.min(20, conditionals * 2 + loops * 3)
+  const asyncBonus = Math.min(15, (asyncs + countMatches(content, AWAIT_REGEX)) * 4)
+  const structureBonus = Math.min(15, classes * 3 + interfaces * 4 + typeAnnotations * 2)
+  const exportBonus = Math.min(10, exports * 2)
+  const smellPenalty = Math.min(20, smells * 4)
+  const coherence = Math.max(0, Math.min(100, baseCoherence + flowBonus + asyncBonus + structureBonus + exportBonus - smellPenalty))
+
+  const hasClearBeginning = hasCode && (imports > 0 || classes > 0 || funcs > 0)
+  const hasMiddle = hasCode && conditionals > 0
+  const hasSatisfyingEnd = hasCode && (returns > 0 || throws > 0)
+  const hasRisingAction = hasCode && conditionals > 1
+  const hasClimax = hasCode && (loops > 0 || asyncs > 0)
+  const hasFallingAction = hasCode && errorHandling > 0
+  const hasForeshadowing = hasCode && (interfaces > 0 || typeAnnotations > 0)
+  const hasFlashback = hasCode && imports > 3
+  const hasNarrativeArc = hasClearBeginning && hasMiddle && hasSatisfyingEnd
+  const hasNoPlotHoles = hasCode && funcs > 0 && returns > 0
+  const hasDeusExMachina = countMatches(content, ANY_REGEX) > 0 || countMatches(content, TS_IGNORE_REGEX) > 0
+
+  const plotHoleCount = hasNoPlotHoles ? 0 : (hasCode ? 1 : 0)
+
+  let structure: NarrativeMeasure['structure']
+  if (coherence >= 80) structure = 'linear'
+  else if (coherence >= 65) structure = 'branching'
+  else if (coherence >= 50) structure = 'circular'
+  else if (coherence >= 35) structure = 'episodic'
+  else if (coherence >= 20) structure = 'stream-of-consciousness'
+  else structure = 'incoherent'
+
+  return {
+    coherence,
+    structure,
+    hasClearBeginning,
+    hasMiddle,
+    hasSatisfyingEnd,
+    hasRisingAction,
+    hasClimax,
+    hasFallingAction,
+    hasForeshadowing,
+    hasFlashback,
+    hasNarrativeArc,
+    hasNoPlotHoles,
+    hasDeusExMachina,
+    plotHoleCount,
+  }
+}
+
+// ─── measureArtistry ───────────────────────────────────────────────────────
+
+/** @example measureArtistry('// @deprecated\nconsole.log("debug")') returns ArtistryMeasure */
+export function measureArtistry(content: string): ArtistryMeasure {
+  const lines = countNonEmptyLines(content)
+  const classes = countClasses(content)
+  const interfaces = countInterfaces(content)
+  const types = countMatches(content, TYPE_REGEX)
+  const funcs = countFunctions(content)
+  const asyncs = countMatches(content, ASYNC_REGEX)
+  const errorHandling = countErrorHandling(content)
+  const typeAnnotations = countTypeAnnotations(content)
+  const generics = countMatches(content, GENERIC_REGEX)
+  const optionalChains = countMatches(content, OPTIONAL_CHAIN_REGEX)
+  const nullish = countMatches(content, NULLISH_REGEX)
+  const readonlys = countMatches(content, READONLY_REGEX)
+  const abstracts = countMatches(content, ABSTRACT_REGEX)
+  const smells = countSmells(content)
+  const todos = countTodos(content)
+  const deprecated = countMatches(content, DEPRECATED_REGEX)
+  const reExports = countMatches(content, RE_EXPORT_REGEX)
+  const defaultExports = countMatches(content, DEFAULT_EXPORT_REGEX)
+
+  const hasCode = lines > 0
+  const elegance = optionalChains + nullish + generics + readonlys + abstracts
+  const baseValue = lines === 0 ? 5 : Math.min(30, errorHandling * 4 + typeAnnotations * 2 + classes * 3)
+  const modernBonus = Math.min(20, (optionalChains + nullish + asyncs) * 3)
+  const patternBonus = Math.min(15, (abstracts + readonlys + generics) * 3)
+  const structureBonus = Math.min(15, interfaces * 4 + types * 2)
+  const smellPenalty = Math.min(25, smells * 5)
+  const value = Math.max(0, Math.min(100, baseValue + modernBonus + patternBonus + structureBonus - smellPenalty))
+
+  const isMasterwork = value >= 80
+  const hasAestheticValue = hasCode && elegance > 0
+  const hasTechnicalPrecision = hasCode && typeAnnotations > 0 && errorHandling > 0
+  const hasCreativeExpression = hasCode && (generics > 0 || abstracts > 0)
+  const hasHistoricalSignificance = hasCode && (classes > 0 && errorHandling > 0)
+  const hasCulturalContext = hasCode && (interfaces > 0 || types > 0)
+  const hasProvenance = defaultExports > 0 || reExports > 0
+  const exportCount = countExports(content)
+  const hasSignature = hasCode && exportCount > 0
+  const hasRestoration = deprecated > 0
+  const hasConservation = hasCode && smells === 0
+
+  let style: ArtistryMeasure['style']
+  if (value >= 80) style = 'renaissance'
+  else if (value >= 65) style = 'art-deco'
+  else if (value >= 50) style = 'medieval'
+  else if (value >= 35) style = 'minimalist'
+  else if (value >= 20) style = 'baroque'
+  else style = 'naive'
+
+  const restorationCount = deprecated + todos
+
+  return {
+    value,
+    style,
+    isMasterwork,
+    hasAestheticValue,
+    hasTechnicalPrecision,
+    hasCreativeExpression,
+    hasHistoricalSignificance,
+    hasCulturalContext,
+    hasProvenance,
+    hasSignature,
+    hasRestoration,
+    hasConservation,
+    restorationCount,
+  }
+}
+
+// ─── classifyCondition ─────────────────────────────────────────────────────
+
+/** @example classifyCondition(90) returns 'gobelins-masterpiece' */
+export function classifyCondition(score: number): TapestryThread['condition'] {
+  if (score >= 80) return 'gobelins-masterpiece'
+  if (score >= 65) return 'fine-tapestry'
+  if (score >= 50) return 'quality-weave'
+  if (score >= 35) return 'standard-cloth'
+  if (score >= 20) return 'rag-rug'
+  return 'tangled-yarn'
+}
+
+// ─── classifyPanelType ─────────────────────────────────────────────────────
+
+/** @example classifyPanelType([thread1, thread2]) returns 'portrait-panel' */
+export function classifyPanelType(threads: TapestryThread[]): TapestryPanel['panelType'] {
+  if (threads.length === 0) return 'floor-rag'
+  const avgQuality = Math.round(threads.reduce((s, t) => s + t.qualityScore, 0) / threads.length)
+  if (avgQuality >= 70) return 'historical-narrative'
+  if (avgQuality >= 50) return 'portrait-panel'
+  if (threads.length >= 3) return 'decorative-hanging'
+  if (threads.length === 2) return 'wall-covering'
+  if (threads.length === 1 && avgQuality >= 20) return 'table-runner'
+  return 'floor-rag'
+}
+
+// ─── classifyPanelCondition ────────────────────────────────────────────────
+
+/** @example classifyPanelCondition(70) returns 'gallery-piece' */
+export function classifyPanelCondition(avgQuality: number): TapestryPanel['condition'] {
+  if (avgQuality >= 80) return 'museum-exhibit'
+  if (avgQuality >= 65) return 'gallery-piece'
+  if (avgQuality >= 50) return 'home-decor'
+  if (avgQuality >= 35) return 'craft-fair'
+  if (avgQuality >= 20) return 'thrift-store'
+  return 'rag-bag'
+}
+
+// ─── classifyWeaverGrade ───────────────────────────────────────────────────
+
+/** @example classifyWeaverGrade(85) returns 'master-weaver' */
+export function classifyWeaverGrade(avgCraft: number): TapestryStats['weaverGrade'] {
+  if (avgCraft >= 80) return 'master-weaver'
+  if (avgCraft >= 65) return 'journeyman-weaver'
+  if (avgCraft >= 50) return 'apprentice'
+  if (avgCraft >= 35) return 'novice'
+  if (avgCraft >= 20) return 'hobbyist'
+  return 'cat'
+}
+
+// ─── analyzeTapestryThread ─────────────────────────────────────────────────
+
+/** @example analyzeTapestryThread('export function foo(): void {}', 'test.ts') returns TapestryThread */
+export function analyzeTapestryThread(content: string, filePath: string): TapestryThread {
+  const thread = measureThread(content)
+  const weave = measureWeave(content)
+  const pattern = measurePattern(content)
+  const color = measureColor(content)
+  const narrative = measureNarrative(content)
+  const artistry = measureArtistry(content)
+
+  const threadQuality = thread.quality
+  const weaveDensity = weave.density
+  const patternRichness = pattern.richness
+  const colorPalette = color.palette
+  const narrativeCoherence = narrative.coherence
+  const artisticValue = artistry.value
+
+  const qualityScore = Math.round((threadQuality + weaveDensity + patternRichness + colorPalette + narrativeCoherence + artisticValue) / 6)
+  const condition = classifyCondition(qualityScore)
+
+  return {
+    file: filePath,
+    threadQuality,
+    weaveDensity,
+    patternRichness,
+    colorPalette,
+    narrativeCoherence,
+    artisticValue,
+    thread,
+    weave,
+    pattern,
+    color,
+    narrative,
+    artistry,
+    condition,
+    qualityScore,
+  }
+}
+
+// ─── analyzeTapestryPanel ──────────────────────────────────────────────────
+
+/** @example analyzeTapestryPanel([thread1], 'src') returns TapestryPanel */
+export function analyzeTapestryPanel(threads: TapestryThread[], dirPath: string): TapestryPanel {
+  const count = threads.length
+  const avgQuality = count > 0 ? Math.round(threads.reduce((s, t) => s + t.threadQuality, 0) / count) : 0
+  const avgDensity = count > 0 ? Math.round(threads.reduce((s, t) => s + t.weaveDensity, 0) / count) : 0
+  const avgNarrative = count > 0 ? Math.round(threads.reduce((s, t) => s + t.narrativeCoherence, 0) / count) : 0
+
+  const masterpieceCount = threads.filter((t) => t.condition === 'gobelins-masterpiece').length
+  const tangledCount = threads.filter((t) => t.condition === 'tangled-yarn').length
+  const coherentCount = threads.filter((t) => t.narrative.hasNarrativeArc).length
+  const tightWeaveCount = threads.filter((t) => t.weave.isTightWeave).length
+
+  const panelType = classifyPanelType(threads)
+  const avgScore = count > 0 ? Math.round(threads.reduce((s, t) => s + t.qualityScore, 0) / count) : 0
+  const condition = classifyPanelCondition(avgScore)
+
+  return {
+    directory: dirPath,
+    threads,
+    avgQuality,
+    avgDensity,
+    avgNarrative,
+    masterpieceCount,
+    tangledCount,
+    coherentCount,
+    tightWeaveCount,
+    panelType,
+    condition,
+  }
+}
+
+// ─── generateRecommendations ───────────────────────────────────────────────
+
+/** @example generateRecommendations(threads, panels, gallery, stats) returns string[] */
+export function generateRecommendations(
+  threads: TapestryThread[],
+  _panels: TapestryPanel[],
+  _gallery: TapestryGallery,
+  _stats: TapestryStats,
 ): string[] {
-  void _workshop
-  const recs: string[] = []
+  const recommendations: string[] = []
 
-  if (stats.totalMissingHeddles > 0) {
-    recs.push(`Missing heddles: ${stats.totalMissingHeddles} files need interface definitions`)
+  const hasTangledYarn = threads.some((t) => t.condition === 'tangled-yarn')
+  if (hasTangledYarn) {
+    recommendations.push('Untangle the yarn — add structure, exports, and type annotations to empty files')
   }
 
-  if (stats.totalBrokenHeddles > 0) {
-    recs.push(`Broken heddles: ${stats.totalBrokenHeddles} exported functions lack error handling`)
+  const hasKnots = threads.some((t) => t.thread.knotCount > 0)
+  if (hasKnots) {
+    recommendations.push('Remove knots — clean up console calls, TODOs, and deprecated markers')
   }
 
-  if (stats.totalGaps > 0) {
-    recs.push(`Reed gaps: ${stats.totalGaps} files have sparse connections — add more exports`)
+  const hasGaps = threads.some((t) => t.weave.gapCount > 0)
+  if (hasGaps) {
+    recommendations.push('Fill gaps — add return statements and proper function completion')
   }
 
-  if (stats.totalCrowding > 0) {
-    recs.push(`Reed crowding: ${stats.totalCrowding} files are too dense — reduce connections`)
+  const hasLooseEnds = threads.some((t) => t.weave.looseEndCount > 0)
+  if (hasLooseEnds) {
+    recommendations.push('Tie off loose ends — add exports to connect your code')
   }
 
-  if (stats.brokenDownCount > 0) {
-    recs.push(`Broken looms: ${stats.brokenDownCount} files need complete restructuring`)
+  const hasPlotHoles = threads.some((t) => !t.narrative.hasNoPlotHoles)
+  if (hasPlotHoles) {
+    recommendations.push('Fix plot holes — ensure functions have proper return paths')
   }
 
-  if (stats.needsAdjustmentCount > 3) {
-    recs.push(`Tuning needed: ${stats.needsAdjustmentCount} files require adjustment`)
+  const hasColorBleeding = threads.some((t) => !t.color.hasNoColorBleeding)
+  if (hasColorBleeding) {
+    recommendations.push('Stop color bleeding — separate concerns and remove code smells')
   }
 
-  if (stats.overallTuning >= 60) {
-    recs.push('Good tuning: loom mechanics are generally well-adjusted')
+  const hasDeusExMachina = threads.some((t) => t.narrative.hasDeusExMachina)
+  if (hasDeusExMachina) {
+    recommendations.push('Remove deus ex machina — replace any types and ts-ignore with proper types')
   }
 
-  const salvageBenches = benches.filter(b => b.condition === 'salvage')
-  if (salvageBenches.length > 0) {
-    recs.push(`Salvage benches: ${salvageBenches.length} directories need major overhaul`)
+  const hasRagRug = threads.some((t) => t.condition === 'rag-rug')
+  if (hasRagRug) {
+    recommendations.push('Upgrade from rag rug — add error handling, types, and classes')
   }
 
-  return Array.from(new Set(recs))
+  if (recommendations.length === 0) {
+    recommendations.push('The tapestry is a Gobelins masterpiece — exquisite craftsmanship achieved')
+  }
+
+  return recommendations
 }
 
-// ─── Orchestrator ────────────────────────────────────────────────────────────
+// ─── Build Result ──────────────────────────────────────────────────────────
 
-/**
- * Build complete tapestry loom result from files and contents
- * @example
- * buildTapestryLoomResult(['a.ts'], ['export function a() {}'], {}) // TapestryLoomResult
- */
+/** @example buildTapestryLoomResult(['a.ts'], ['export function foo(): void {}']) returns TapestryLoomResult */
 export function buildTapestryLoomResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
+  options?: { ignore?: string[]; ext?: string[] },
 ): TapestryLoomResult {
-  void options
+  const _opts = options ?? {}
 
-  const mechanics: LoomMechanics[] = files.map((file, i) => {
-    const content = contents[i] ?? ''
-    try {
-      return analyzeLoomMechanics(content, file)
-    } catch {
-      return analyzeLoomMechanics('', file)
-    }
-  })
+  const threads: TapestryThread[] = files.map((file, i) =>
+    analyzeTapestryThread(contents[i] ?? '', file),
+  )
 
-  const dirMap = new Map<string, LoomMechanics[]>()
-  for (const m of mechanics) {
-    const dir = m.file.includes('/') ? m.file.slice(0, m.file.lastIndexOf('/')) : '.'
+  const dirMap = new Map<string, TapestryThread[]>()
+  for (const thread of threads) {
+    const dir = thread.file.includes('/') ? thread.file.substring(0, thread.file.lastIndexOf('/')) : '.'
     const existing = dirMap.get(dir)
-    if (existing) { existing.push(m) } else { dirMap.set(dir, [m]) }
+    if (existing) {
+      existing.push(thread)
+    } else {
+      dirMap.set(dir, [thread])
+    }
   }
 
-  const benches: LoomBench[] = Array.from(dirMap.entries()).map(([dir, ms]) =>
-    analyzeLoomBench(ms, dir),
+  const panels: TapestryPanel[] = Array.from(dirMap.entries()).map(
+    ([dir, dirThreads]) => analyzeTapestryPanel(dirThreads, dir),
   )
 
-  const n = mechanics.length || 1
-  const avgWarpTension = Math.round(mechanics.reduce((s, m) => s + m.warpTension, 0) / n)
-  const avgWeftTension = Math.round(mechanics.reduce((s, m) => s + m.weftTension, 0) / n)
-  const avgShedClarity = Math.round(mechanics.reduce((s, m) => s + m.shedClarity, 0) / n)
-  const avgHeddleOperation = Math.round(mechanics.reduce((s, m) => s + m.heddleOperation, 0) / n)
-  const avgBeamWinding = Math.round(mechanics.reduce((s, m) => s + m.beamWinding, 0) / n)
-  const avgTakeUp = Math.round(mechanics.reduce((s, m) => s + m.takeUp, 0) / n)
+  const count = threads.length
+  const avgThreadQuality = count > 0 ? Math.round(threads.reduce((s, t) => s + t.threadQuality, 0) / count) : 0
+  const avgWeaveDensity = count > 0 ? Math.round(threads.reduce((s, t) => s + t.weaveDensity, 0) / count) : 0
+  const avgPatternRichness = count > 0 ? Math.round(threads.reduce((s, t) => s + t.patternRichness, 0) / count) : 0
+  const avgColorPalette = count > 0 ? Math.round(threads.reduce((s, t) => s + t.colorPalette, 0) / count) : 0
+  const avgNarrativeCoherence = count > 0 ? Math.round(threads.reduce((s, t) => s + t.narrativeCoherence, 0) / count) : 0
+  const avgArtisticValue = count > 0 ? Math.round(threads.reduce((s, t) => s + t.artisticValue, 0) / count) : 0
+  const overallCraftsmanship = count > 0 ? Math.round(threads.reduce((s, t) => s + t.qualityScore, 0) / count) : 0
 
-  const overallTuning = Math.round(
-    avgWarpTension * 0.15 + avgWeftTension * 0.15 + avgShedClarity * 0.2 +
-    avgHeddleOperation * 0.2 + avgBeamWinding * 0.15 + avgTakeUp * 0.15,
-  )
-
-  const isBalanced = Math.abs(avgWarpTension - avgWeftTension) <= 20
-
-  const workshop: WorkshopInfo = {
-    avgWarpTension, avgWeftTension, avgShedClarity,
-    avgHeddleOperation, avgBeamWinding, isBalanced, overallTuning,
+  const gallery: TapestryGallery = {
+    avgQuality: avgThreadQuality,
+    avgDensity: avgWeaveDensity,
+    avgNarrative: avgNarrativeCoherence,
+    isMasterwork: overallCraftsmanship >= 80,
+    overallCraftsmanship,
   }
 
-  const stats: TapestryLoomStats = {
-    totalFiles: files.length,
-    totalBenches: benches.length,
-    avgWarpTension, avgWeftTension, avgShedClarity,
-    avgHeddleOperation, avgBeamWinding, avgTakeUp,
-    jacquardCount: mechanics.filter(m => m.mechanics === 'jacquard').length,
-    rigidHeddleCount: mechanics.filter(m => m.mechanics === 'rigid-heddle').length,
-    frameCount: mechanics.filter(m => m.mechanics === 'frame').length,
-    tunedCount: mechanics.filter(m => m.condition === 'perfectly-tuned' || m.condition === 'well-tuned').length,
-    needsAdjustmentCount: mechanics.filter(m => m.condition === 'needs-adjustment').length,
-    brokenDownCount: mechanics.filter(m => m.condition === 'broken-down').length,
-    balancedWeaveCount: mechanics.filter(m => m.isBalancedWeave).length,
-    totalMissingHeddles: mechanics.reduce((s, m) => s + (m.heddles.hasMissingHeddles ? 1 : 0), 0),
-    totalBrokenHeddles: mechanics.reduce((s, m) => s + (m.heddles.hasBrokenHeddles ? 1 : 0), 0),
-    totalGaps: mechanics.reduce((s, m) => s + (m.reed.hasGaps ? 1 : 0), 0),
-    totalCrowding: mechanics.reduce((s, m) => s + (m.reed.hasCrowding ? 1 : 0), 0),
-    overallTuning,
-    weaverGrade: classifyWeaverGrade(overallTuning),
-    bestTuned: mechanics.length > 0
-      ? mechanics.reduce((b, m) => m.qualityScore > b.qualityScore ? m : b, mechanics[0]).file : 'none',
-    worstTuned: mechanics.length > 0
-      ? mechanics.reduce((w, m) => m.qualityScore < w.qualityScore ? m : w, mechanics[0]).file : 'none',
-    bestShed: mechanics.length > 0
-      ? mechanics.reduce((b, m) => m.shedClarity > b.shedClarity ? m : b, mechanics[0]).file : 'none',
-    bestHeddles: mechanics.length > 0
-      ? mechanics.reduce((b, m) => m.heddleOperation > b.heddleOperation ? m : b, mechanics[0]).file : 'none',
+  const bestBy = <T>(arr: T[], fn: (item: T) => number): T => arr.reduce((a, b) => (fn(a) >= fn(b) ? a : b))
+
+  const stats: TapestryStats = {
+    totalFiles: count,
+    totalPanels: panels.length,
+    avgThreadQuality,
+    avgWeaveDensity,
+    avgPatternRichness,
+    avgColorPalette,
+    avgNarrativeCoherence,
+    avgArtisticValue,
+    gobelinsMasterpieceCount: threads.filter((t) => t.condition === 'gobelins-masterpiece').length,
+    fineTapestryCount: threads.filter((t) => t.condition === 'fine-tapestry').length,
+    qualityWeaveCount: threads.filter((t) => t.condition === 'quality-weave').length,
+    standardClothCount: threads.filter((t) => t.condition === 'standard-cloth').length,
+    ragRugCount: threads.filter((t) => t.condition === 'rag-rug').length,
+    tangledYarnCount: threads.filter((t) => t.condition === 'tangled-yarn').length,
+    isStrongCount: threads.filter((t) => t.thread.isStrong).length,
+    hasNoKnotsCount: threads.filter((t) => t.thread.hasNoKnots).length,
+    isTightWeaveCount: threads.filter((t) => t.weave.isTightWeave).length,
+    hasNoGapsCount: threads.filter((t) => t.weave.hasNoGaps).length,
+    hasRepeatingMotifsCount: threads.filter((t) => t.pattern.hasRepeatingMotifs).length,
+    hasVibrantColorsCount: threads.filter((t) => t.color.hasVibrantColors).length,
+    hasNoColorBleedingCount: threads.filter((t) => t.color.hasNoColorBleeding).length,
+    hasNarrativeArcCount: threads.filter((t) => t.narrative.hasNarrativeArc).length,
+    hasNoPlotHolesCount: threads.filter((t) => t.narrative.hasNoPlotHoles).length,
+    isMasterworkCount: threads.filter((t) => t.artistry.isMasterwork).length,
+    overallCraftsmanship,
+    weaverGrade: classifyWeaverGrade(overallCraftsmanship),
+    bestThread: count > 0 ? bestBy(threads, (t) => t.threadQuality).file : '',
+    finestWeave: count > 0 ? bestBy(threads, (t) => t.weaveDensity).file : '',
+    richestPattern: count > 0 ? bestBy(threads, (t) => t.patternRichness).file : '',
+    bestNarrative: count > 0 ? bestBy(threads, (t) => t.narrativeCoherence).file : '',
+    mostArtistic: count > 0 ? bestBy(threads, (t) => t.artisticValue).file : '',
   }
 
-  const recommendations = generateLoomRecommendations(mechanics, benches, workshop, stats)
+  const recommendations = generateRecommendations(threads, panels, gallery, stats)
 
-  return { mechanics, benches, workshop, stats, recommendations }
+  return { threads, panels, gallery, stats, recommendations }
 }

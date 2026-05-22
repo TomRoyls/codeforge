@@ -1,151 +1,119 @@
 import chalk from 'chalk'
-import type { TapestryLoomResult, LoomMechanics, LoomBench } from './tapestry-loom-helpers.js'
 
-// ─── Color Utilities ─────────────────────────────────────────────────────────
+import type { TapestryLoomResult } from './tapestry-loom-helpers.js'
 
-function scoreColor(s: number): string {
-  if (s >= 70) return chalk.green(String(s))
-  if (s >= 40) return chalk.yellow(String(s))
-  return chalk.red(String(s))
+// ─── Color Helpers ─────────────────────────────────────────────────────────
+
+/** @example scoreColor(90) returns green string */
+export function scoreColor(score: number): string {
+  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
+  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
+  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
+  return chalk.rgb(231, 76, 60)(String(score))
 }
 
-function mechanicsColor(t: string): string {
-  switch (t) {
-    case 'jacquard': return chalk.rgb(255, 215, 0)(t)
-    case 'dobby': return chalk.green(t)
-    case 'counterbalance': return chalk.blue(t)
-    case 'countermarch': return chalk.cyan(t)
-    case 'rigid-heddle': return chalk.magenta(t)
-    case 'inkle': return chalk.yellow(t)
-    case 'frame': return chalk.gray(t)
-    default: return chalk.dim(t)
+/** @example conditionColor('gobelins-masterpiece') returns colored string */
+export function conditionColor(condition: string): string {
+  switch (condition) {
+    case 'gobelins-masterpiece': return chalk.rgb(46, 204, 113).bold(condition)
+    case 'fine-tapestry': return chalk.rgb(52, 152, 219)(condition)
+    case 'quality-weave': return chalk.rgb(155, 89, 182)(condition)
+    case 'standard-cloth': return chalk.rgb(241, 196, 15)(condition)
+    case 'rag-rug': return chalk.rgb(230, 126, 34)(condition)
+    case 'tangled-yarn': return chalk.rgb(231, 76, 60)(condition)
+    default: return condition
   }
 }
 
-function conditionColor(c: string): string {
-  switch (c) {
-    case 'perfectly-tuned': return chalk.rgb(255, 215, 0)(c)
-    case 'well-tuned': return chalk.green(c)
-    case 'in-tune': return chalk.blue(c)
-    case 'needs-adjustment': return chalk.yellow(c)
-    case 'out-of-tune': return chalk.rgb(255, 165, 0)(c)
-    case 'broken-down': return chalk.red(c)
-    default: return chalk.dim(c)
+/** @example gradeColor('master-weaver') returns bold string */
+export function gradeColor(grade: string): string {
+  switch (grade) {
+    case 'master-weaver': return chalk.rgb(46, 204, 113).bold(grade)
+    case 'journeyman-weaver': return chalk.rgb(52, 152, 219)(grade)
+    case 'apprentice': return chalk.rgb(155, 89, 182)(grade)
+    case 'novice': return chalk.rgb(241, 196, 15)(grade)
+    case 'hobbyist': return chalk.rgb(230, 126, 34)(grade)
+    case 'cat': return chalk.rgb(231, 76, 60)(grade)
+    default: return grade
   }
 }
 
-function benchCondColor(c: string): string {
-  switch (c) {
-    case 'workshop': return chalk.rgb(255, 215, 0)(c)
-    case 'studio': return chalk.green(c)
-    case 'garage': return chalk.blue(c)
-    case 'shed': return chalk.yellow(c)
-    case 'salvage': return chalk.red(c)
-    default: return chalk.dim(c)
+/** @example materialColor('silk') returns colored string */
+export function materialColor(material: string): string {
+  switch (material) {
+    case 'gold': return chalk.rgb(241, 196, 15)(material)
+    case 'silk': return chalk.rgb(46, 204, 113)(material)
+    case 'wool': return chalk.rgb(52, 152, 219)(material)
+    case 'cotton': return chalk.rgb(155, 89, 182)(material)
+    case 'linen': return chalk.rgb(230, 126, 34)(material)
+    case 'straw': return chalk.rgb(149, 165, 166)(material)
+    default: return material
   }
 }
 
-function gradeColor(g: string): string {
-  switch (g) {
-    case 'master-weaver': return chalk.rgb(255, 215, 0)(g)
-    case 'journeyman': return chalk.green(g)
-    case 'apprentice': return chalk.blue(g)
-    case 'novice': return chalk.yellow(g)
-    case 'clumsy': return chalk.rgb(255, 165, 0)(g)
-    case 'tangled': return chalk.red(g)
-    default: return chalk.dim(g)
-  }
-}
+// ─── JSON Formatter ────────────────────────────────────────────────────────
 
-// ─── Mechanics Formatting ────────────────────────────────────────────────────
-
-function formatMechanics(m: LoomMechanics, verbose: boolean): string {
-  const line = ` ${conditionColor(m.condition)} ${mechanicsColor(m.mechanics)} ${chalk.bold(m.file)} quality:${scoreColor(m.qualityScore)} warp:${scoreColor(m.warpTension)} weft:${scoreColor(m.weftTension)}`
-
-  if (!verbose) return line
-  const details = [line]
-  details.push(`    shed:${scoreColor(m.shedClarity)} heddle:${scoreColor(m.heddleOperation)} beam:${scoreColor(m.beamWinding)} takeup:${scoreColor(m.takeUp)} balanced:${m.isBalancedWeave ? chalk.green('Y') : chalk.red('N')}`)
-  return details.join('\n')
-}
-
-// ─── Bench Formatting ────────────────────────────────────────────────────────
-
-function formatBench(b: LoomBench, verbose: boolean): string {
-  const line = `  ${chalk.bold(b.directory)} ${benchCondColor(b.condition)} quality:${scoreColor(b.benchQuality)} mechs:${b.mechanics.length}`
-
-  if (!verbose) return line
-  const details = [line]
-  details.push(`    warp:${scoreColor(b.avgWarpTension)} weft:${scoreColor(b.avgWeftTension)} shed:${scoreColor(b.avgShedClarity)} heddle:${scoreColor(b.avgHeddleOperation)} beam:${scoreColor(b.avgBeamWinding)} tuned:${b.tunedCount} broken:${b.brokenCount}`)
-  return details.join('\n')
-}
-
-// ─── Table Formatter ─────────────────────────────────────────────────────────
-
-/**
- * Format tapestry loom result as a table
- * @example
- * formatTapestryLoomTable(result, false) // string
- */
-export function formatTapestryLoomTable(result: TapestryLoomResult, verbose: boolean): string {
-  const lines: string[] = []
-  lines.push(chalk.bold('\n🧵 Tapestry Loom - Interconnection Weaving Analysis\n'))
-  lines.push(chalk.bold('═'.repeat(60)))
-  lines.push('')
-
-  lines.push(chalk.bold('⚙️ Loom Mechanics'))
-  if (result.mechanics.length === 0) {
-    lines.push(chalk.dim('  No files analyzed.'))
-  } else {
-    const display = verbose ? result.mechanics : result.mechanics.slice(0, 15)
-    for (const m of display) {
-      lines.push(formatMechanics(m, verbose))
-    }
-    if (!verbose && result.mechanics.length > 15) {
-      lines.push(chalk.dim(`  ... and ${result.mechanics.length - 15} more`))
-    }
-  }
-  lines.push('')
-
-  if (result.benches.length > 0) {
-    lines.push(chalk.bold('🪑 Loom Benches'))
-    for (const b of result.benches) {
-      lines.push(formatBench(b, verbose))
-    }
-    lines.push('')
-  }
-
-  const w = result.workshop
-  lines.push(chalk.bold('🏭 Workshop'))
-  lines.push(`  Tuning: ${scoreColor(w.overallTuning)} | Warp:${scoreColor(w.avgWarpTension)} Weft:${scoreColor(w.avgWeftTension)} Shed:${scoreColor(w.avgShedClarity)} Heddle:${scoreColor(w.avgHeddleOperation)} Beam:${scoreColor(w.avgBeamWinding)}`)
-  lines.push(`  Balanced: ${w.isBalanced ? chalk.green('YES') : chalk.yellow('NO')}`)
-  lines.push('')
-
-  const s = result.stats
-  lines.push(chalk.bold('📊 Statistics'))
-  lines.push(`  Grade: ${gradeColor(s.weaverGrade)} | Files: ${s.totalFiles} | Benches: ${s.totalBenches}`)
-  lines.push(`  Jacquard:${s.jacquardCount} RigidHeddle:${s.rigidHeddleCount} Frame:${s.frameCount} Tuned:${s.tunedCount} NeedsAdj:${s.needsAdjustmentCount} Broken:${s.brokenDownCount}`)
-  lines.push(`  Balanced:${s.balancedWeaveCount} MissingHeddles:${s.totalMissingHeddles} BrokenHeddles:${s.totalBrokenHeddles} Gaps:${s.totalGaps} Crowding:${s.totalCrowding}`)
-  lines.push(`  Best: ${chalk.green(s.bestTuned)} | Worst: ${chalk.red(s.worstTuned)} | BestShed: ${chalk.blue(s.bestShed)} | BestHeddles: ${chalk.cyan(s.bestHeddles)}`)
-
-  if (result.recommendations.length > 0) {
-    lines.push('')
-    lines.push(chalk.bold('💡 Recommendations'))
-    for (const rec of result.recommendations) {
-      lines.push(`  - ${rec}`)
-    }
-  }
-
-  lines.push('')
-  return lines.join('\n')
-}
-
-// ─── JSON Formatter ──────────────────────────────────────────────────────────
-
-/**
- * Format tapestry loom result as JSON
- * @example
- * formatTapestryLoomJson(result) // string
- */
+/** @example formatTapestryLoomJson(result) returns JSON string */
 export function formatTapestryLoomJson(result: TapestryLoomResult): string {
   return JSON.stringify(result, null, 2)
+}
+
+// ─── Table Formatter ───────────────────────────────────────────────────────
+
+/** @example formatTapestryLoomTable(result, false) returns formatted string */
+export function formatTapestryLoomTable(result: TapestryLoomResult, verbose: boolean): string {
+  const lines: string[] = []
+
+  lines.push(chalk.rgb(155, 89, 182).bold('Tapestry Loom Analysis'))
+  lines.push('')
+  lines.push(`Overall Craftsmanship: ${scoreColor(result.stats.overallCraftsmanship)}/100`)
+  lines.push(`Weaver Grade: ${gradeColor(result.stats.weaverGrade)}`)
+  lines.push(`Files: ${result.stats.totalFiles} | Panels: ${result.stats.totalPanels}`)
+  lines.push('')
+
+  lines.push(chalk.rgb(155, 89, 182).bold('Averages'))
+  lines.push(`  Thread Quality:       ${scoreColor(result.stats.avgThreadQuality)}`)
+  lines.push(`  Weave Density:        ${scoreColor(result.stats.avgWeaveDensity)}`)
+  lines.push(`  Pattern Richness:     ${scoreColor(result.stats.avgPatternRichness)}`)
+  lines.push(`  Color Palette:        ${scoreColor(result.stats.avgColorPalette)}`)
+  lines.push(`  Narrative Coherence:  ${scoreColor(result.stats.avgNarrativeCoherence)}`)
+  lines.push(`  Artistic Value:       ${scoreColor(result.stats.avgArtisticValue)}`)
+  lines.push('')
+
+  lines.push(chalk.rgb(155, 89, 182).bold('Conditions'))
+  lines.push(`  Gobelins Masterpiece: ${result.stats.gobelinsMasterpieceCount}`)
+  lines.push(`  Fine Tapestry:        ${result.stats.fineTapestryCount}`)
+  lines.push(`  Quality Weave:        ${result.stats.qualityWeaveCount}`)
+  lines.push(`  Standard Cloth:       ${result.stats.standardClothCount}`)
+  lines.push(`  Rag Rug:              ${result.stats.ragRugCount}`)
+  lines.push(`  Tangled Yarn:         ${result.stats.tangledYarnCount}`)
+  lines.push('')
+
+  lines.push(chalk.rgb(155, 89, 182).bold('Highlights'))
+  lines.push(`  Best Thread:          ${result.stats.bestThread}`)
+  lines.push(`  Finest Weave:         ${result.stats.finestWeave}`)
+  lines.push(`  Richest Pattern:      ${result.stats.richestPattern}`)
+  lines.push(`  Best Narrative:       ${result.stats.bestNarrative}`)
+  lines.push(`  Most Artistic:        ${result.stats.mostArtistic}`)
+  lines.push('')
+
+  if (verbose) {
+    lines.push(chalk.rgb(155, 89, 182).bold('Threads'))
+    for (const thread of result.threads) {
+      lines.push(`  ${conditionColor(thread.condition).padEnd(30)} ${thread.file}`)
+      lines.push(`    Quality: ${scoreColor(thread.threadQuality)} | Weave: ${scoreColor(thread.weaveDensity)} | Pattern: ${scoreColor(thread.patternRichness)}`)
+      lines.push(`    Color: ${scoreColor(thread.colorPalette)} | Narrative: ${scoreColor(thread.narrativeCoherence)} | Art: ${scoreColor(thread.artisticValue)}`)
+      lines.push(`    Material: ${materialColor(thread.thread.material)} | Score: ${scoreColor(thread.qualityScore)}`)
+    }
+    lines.push('')
+  }
+
+  if (result.recommendations.length > 0) {
+    lines.push(chalk.rgb(155, 89, 182).bold('Recommendations'))
+    for (const rec of result.recommendations) {
+      lines.push(`  ${chalk.rgb(241, 196, 15)('\u2022')} ${rec}`)
+    }
+  }
+
+  return lines.join('\n')
 }

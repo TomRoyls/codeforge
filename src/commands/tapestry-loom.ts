@@ -1,45 +1,47 @@
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildTapestryLoomResult } from './tapestry-loom-helpers.js'
-import type { TapestryLoomResult } from './tapestry-loom-helpers.js'
+import {
+  buildTapestryLoomResult,
+  type TapestryLoomResult,
+} from './tapestry-loom-helpers.js'
 import { formatTapestryLoomJson, formatTapestryLoomTable } from './tapestry-loom-format-helpers.js'
 
 export default class TapestryLoom extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze interconnection weaving',
+      description: 'Path to analyze tapestry',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code interconnection weaving mechanics'
+  static override description = 'Analyze code weaving, patterns, and narrative quality'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze weaving in current directory',
+      description: 'Analyze tapestry in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Output tapestry loom analysis as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed mechanics and bench analysis',
+      description: 'Analyze tapestry in src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
       description: 'Analyze only TypeScript files',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --format json --output loom.json',
-      description: 'Export analysis to file',
+      command: '<%= config.bin %> <%= command.id %> --verbose',
+      description: 'Show per-file breakdown',
+    },
+    {
+      command: '<%= config.bin %> <%= command.id %> --format json --output tapestry.json',
+      description: 'Export tapestry analysis to JSON file',
     },
   ]
 
@@ -66,7 +68,7 @@ export default class TapestryLoom extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed mechanics and bench analysis',
+      description: 'Show per-file breakdown',
     }),
   }
 
@@ -103,31 +105,28 @@ export default class TapestryLoom extends Command {
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = f.path.slice(f.path.lastIndexOf('.')).toLowerCase()
-          return extensions.includes(ext)
-        })
+      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
       : discoveredFiles
 
-    spinner.text = 'Analyzing interconnection weaving...'
+    spinner.text = 'Analyzing tapestry...'
 
-    const contents: string[] = await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          return await fs.readFile(file.absolutePath, 'utf8')
-        } catch {
-          return ''
-        }
-      }),
-    )
+    const files: string[] = []
+    const contents: string[] = []
 
-    const result: TapestryLoomResult = buildTapestryLoomResult(
-      filteredFiles.map((f) => f.path),
-      contents,
-      { ext: flags.ext, format, verbose },
-    )
+    for (const file of filteredFiles) {
+      try {
+        const content = await fs.readFile(file.absolutePath, 'utf8')
+        files.push(file.path)
+        contents.push(content)
+      } catch {
+        files.push(file.path)
+        contents.push('')
+      }
+    }
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.benches.length} benches`)
+    const result: TapestryLoomResult = buildTapestryLoomResult(files, contents)
+
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.panels.length} panels`)
 
     const outputData =
       format === 'json'
@@ -149,6 +148,6 @@ export default class TapestryLoom extends Command {
   }
 }
 
-export { buildTapestryLoomResult, analyzeLoomMechanics, analyzeLoomBench, measureWarpTension, measureWeftTension, measureShedClarity, measureHeddleOperation, measureBeamWinding, measureTakeUp, classifyMechanics, classifyWeaverGrade, classifyLoomCondition, classifyBenchCondition, classifyThreadMaterial, analyzeShed, analyzeHeddles, analyzeBeams, analyzeReed, analyzeConnections, classifyThreadDirection, generateLoomRecommendations } from './tapestry-loom-helpers.js'
-export type { TapestryLoomResult, TapestryLoomStats, WorkshopInfo, LoomMechanics, LoomBench, ShedInfo, HeddleInfo, BeamInfo, ReedInfo, ThreadConnections, LoomThread, LoomMechanicsType, LoomCondition, BenchCondition, ThreadDirection, ThreadMaterial } from './tapestry-loom-helpers.js'
+export { buildTapestryLoomResult } from './tapestry-loom-helpers.js'
+export type { TapestryLoomResult, TapestryThread, TapestryPanel, TapestryGallery, TapestryStats, ThreadMeasure, WeaveMeasure, PatternMeasure, ColorMeasure, NarrativeMeasure, ArtistryMeasure } from './tapestry-loom-helpers.js'
 export { formatTapestryLoomJson, formatTapestryLoomTable } from './tapestry-loom-format-helpers.js'
