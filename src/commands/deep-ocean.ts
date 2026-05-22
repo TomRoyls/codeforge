@@ -1,175 +1,63 @@
-import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
-import * as fs from 'node:fs/promises'
-import { extname, resolve } from 'node:path'
+import { Command, Flags } from '@oclif/core'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildDeepOceanResult,
-  type DeepOceanResult,
-} from './deep-ocean-helpers.js'
-import {
-  formatDeepOceanCsv,
-  formatDeepOceanJson,
-  formatDeepOceanTable,
-} from './deep-ocean-format-helpers.js'
+import { buildDeepOceanResult } from './deep-ocean-helpers.js'
+import { formatDeepOceanJson, formatDeepOceanTable } from './deep-ocean-format-helpers.js'
 
+// ─── Constants ─────────────────────────────────────────────────────────────
+
+const FILE_PATTERNS = [
+  '**/*.ts',
+  '**/*.tsx',
+  '**/*.js',
+  '**/*.jsx',
+]
+
+// ─── Command ───────────────────────────────────────────────────────────────
+
+/** @example codeforge deep-ocean ./src --verbose */
 export default class DeepOcean extends Command {
-  static override args = {
-    path: Args.string({
-      default: '.',
-      description: 'Path to analyze code depth and complexity',
-      required: false,
-    }),
-  }
-
-  static override description = 'Analyze code depth like exploring the deep ocean'
+  static override description = 'Analyze code depth, mystery, currents, bioluminescence, pressure, and trench quality'
 
   static override examples = [
-    {
-      command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file depth details',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
-    },
+    '<%= config.bin %> <%= command.id %> ./src',
+    '<%= config.bin %> <%= command.id %> ./src --verbose',
+    '<%= config.bin %> <%= command.id %> ./src --json',
   ]
 
   static override flags = {
-    ext: Flags.string({
-      default: '',
-      description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
-    }),
-    format: Flags.string({
-      char: 'f',
-      default: 'table',
-      description: 'Output format',
-      options: ['csv', 'json', 'table'],
-    }),
-    ignore: Flags.string({
-      char: 'i',
-      description: 'Patterns to ignore',
-      multiple: true,
-    }),
-    output: Flags.string({
-      char: 'o',
-      description: 'Output file path',
-    }),
-    verbose: Flags.boolean({
-      char: 'v',
-      default: false,
-      description: 'Show per-file depth details',
-    }),
+    json: Flags.boolean({ char: 'j', description: 'Output as JSON' }),
+    verbose: Flags.boolean({ char: 'v', description: 'Show per-file details' }),
   }
+
+  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(DeepOcean)
+    const spinner = ora('Analyzing ocean depths...').start()
 
-    const targetPath = resolve(args.path as string)
-
-    if (!existsSync(targetPath)) {
-      this.error(`Path not found: ${targetPath}`, { exit: 1 })
-    }
-
-    const format = flags.format as 'csv' | 'json' | 'table'
-    const { verbose } = flags
-
-    const spinner = ora('Diving into code depths...').start()
-
-    const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
-    const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
-
-    const discoveredFiles = await discoverFiles({
-      cwd: targetPath,
-      ignore,
-      patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
-      ],
-    })
-
-    const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
-      : null
-
-    const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
-      : discoveredFiles
-
-    spinner.text = 'Measuring ocean depths...'
-
-    const files: string[] = []
+    const discovered = await discoverFiles(args.path, FILE_PATTERNS)
+    const files = discovered.map((f) => f.path)
     const contents: string[] = []
 
-    for (const file of filteredFiles) {
+    for (const file of files) {
       try {
-        const content = await fs.readFile(file.absolutePath, 'utf8')
-        files.push(file.path)
-        contents.push(content)
+        const { readFileSync } = await import('fs')
+        contents.push(readFileSync(file, 'utf-8'))
       } catch {
-        files.push(file.path)
         contents.push('')
       }
     }
 
-    const result: DeepOceanResult = buildDeepOceanResult(files, contents, {})
+    const result = buildDeepOceanResult(files, contents)
 
-    spinner.succeed(`Explored ${files.length} depths across ${result.basins.length} basins`)
+    spinner.stop()
 
-    const outputData =
-      format === 'json'
-        ? formatDeepOceanJson(result)
-        : format === 'csv'
-          ? formatDeepOceanCsv(result)
-          : formatDeepOceanTable(result, verbose)
-
-    if (flags.output) {
-      try {
-        await fs.writeFile(flags.output, outputData, 'utf8')
-        this.log(`Results written to ${flags.output}`)
-      } catch (error) {
-        this.error(
-          `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
-        )
-      }
+    if (flags.json) {
+      this.log(formatDeepOceanJson(result))
     } else {
-      this.log(outputData)
+      this.log(formatDeepOceanTable(result, flags.verbose))
     }
   }
 }
-
-export { buildDeepOceanResult } from './deep-ocean-helpers.js'
-export type { DeepOceanResult, OceanDepth, OceanBasin, DeepOceanStats, PlanetMeasure } from './deep-ocean-helpers.js'
-export { formatDeepOceanCsv, formatDeepOceanJson, formatDeepOceanTable } from './deep-ocean-format-helpers.js'

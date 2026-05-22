@@ -1,918 +1,715 @@
-// ─── Interfaces ──────────────────────────────────────────
+// ─── Interfaces ──────────────────────────────────────────────
 
-export interface ZoneMeasure {
-  current: 'sunlit-zone' | 'twilight-zone' | 'midnight-zone' | 'abyssal-zone' | 'hadal-zone' | 'trench'
-  depth: number
-  hasPhoticZone: boolean
-  hasAphoticZone: boolean
+export interface DepthMeasure {
+  complexity: number
+  zone: 'hadal-zone' | 'abyssal-zone' | 'bathyal-zone' | 'mesopelagic' | 'epipelagic' | 'surface'
+  hasModerateComplexity: boolean
+  hasProperStratification: boolean
+  hasNoExcessiveDepth: boolean
+  hasClearZones: boolean
+  hasNoDarkness: boolean
   hasThermocline: boolean
-  hasMixedLayer: boolean
-  layerCount: number
-}
-
-export interface SurfaceMeasure {
-  clarity: number
-  hasWaves: boolean
-  hasWhitecaps: boolean
-  hasCalmWater: boolean
-  hasRiptide: boolean
-  clarityScore: number
-}
-
-export interface PressureMeasure {
-  level: number
-  hasCrushingPressure: boolean
-  hasModeratePressure: boolean
-  hasLowPressure: boolean
-  hasPressureVents: boolean
-  ventCount: number
-  hasDecompression: boolean
-}
-
-export interface BioluminescenceMeasure {
-  score: number
-  hasGlowingCode: boolean
-  hasDarkCode: boolean
-  hasFlashingCode: boolean
-  hasAnglerFish: boolean
-  hasDeepStings: boolean
-  glowCount: number
-  stingCount: number
+  hasNoSuffocation: boolean
+  hasProperPressure: boolean
+  hasNoCrushing: boolean
+  hasLightPenetration: boolean
+  darknessCount: number
+  crushingCount: number
 }
 
 export interface CurrentMeasure {
-  strength: number
-  direction: 'upwelling' | 'downwelling' | 'thermohaline' | 'surface' | 'turbulent' | 'stagnant'
-  hasGulfStream: boolean
-  hasWhirlpool: boolean
-  hasUndertow: boolean
-  hasRipCurrent: boolean
-  isNavigable: boolean
-  whirlpoolCount: number
+  quality: number
+  flow: 'thermohaline' | 'gulf-stream' | 'steady-current' | 'tidal' | 'stagnant' | 'whirlpool'
+  hasHighQuality: boolean
+  hasSmoothFlow: boolean
+  hasProperCirculation: boolean
+  hasNoEddies: boolean
+  hasConveyor: boolean
+  hasNoBackflow: boolean
+  hasProperDirection: boolean
+  hasNoStagnation: boolean
+  hasCleanWater: boolean
+  hasNoPollution: boolean
+  eddyCount: number
+  pollutionCount: number
 }
 
-export interface ThermalMeasure {
-  temperature: number
-  hasHotVents: boolean
-  hasColdSeeps: boolean
-  hasThermalGradient: boolean
-  isIsothermal: boolean
-  ventCount: number
-  seepCount: number
+export interface BioMeasure {
+  luminescence: number
+  glow: 'dazzling' | 'bright-glow' | 'steady-glow' | 'dim-light' | 'flickering' | 'dark'
+  hasHighLuminescence: boolean
+  hasDocumentation: boolean
+  hasClearSignals: boolean
+  hasNoDarkSpots: boolean
+  hasIlluminated: boolean
+  hasNoShadowZones: boolean
+  hasProperAngler: boolean
+  hasNoBlinding: boolean
+  hasVisible: boolean
+  hasNoCamouflage: boolean
+  darkSpotCount: number
+  shadowZoneCount: number
 }
 
-export interface LifeMeasure {
-  diversity: number
-  hasPlankton: boolean
-  hasWhales: boolean
-  hasSquid: boolean
-  hasCoral: boolean
-  hasSharks: boolean
-  hasJellyfish: boolean
-  planktonCount: number
-  whaleCount: number
-  sharkCount: number
+export interface PressureMeasure {
+  handling: number
+  resistance: 'titanium-hull' | 'deep-adapted' | 'pressure-resistant' | 'moderate' | 'fragile' | 'crushed'
+  hasHighHandling: boolean
+  hasProperReinforcement: boolean
+  hasNoBuckling: boolean
+  hasPressureValve: boolean
+  hasNoImplosion: boolean
+  hasStructural: boolean
+  hasNoLeaks: boolean
+  hasEqualization: boolean
+  hasNoRapidDecompression: boolean
+  hasTestedDepth: boolean
+  bucklingCount: number
+  leakCount: number
 }
 
-export interface AbyssalMeasure {
-  stability: number
-  hasSeafloor: boolean
-  hasMountains: boolean
-  hasTrenches: boolean
-  hasPlains: boolean
-  hasVolcanicActivity: boolean
-  mountainCount: number
-  trenchCount: number
+export interface TrenchMeasure {
+  quality: number
+  formation: 'mariana-grade' | 'deep-trench' | 'mid-ocean-ridge' | 'continental-shelf' | 'shallow-basin' | 'puddle'
+  hasHighQuality: boolean
+  hasSolidStructure: boolean
+  hasProperPlates: boolean
+  hasNoSubduction: boolean
+  hasStableFoundation: boolean
+  hasNoFaultLine: boolean
+  hasProperSpreading: boolean
+  hasNoCollapse: boolean
+  hasDeepRoots: boolean
+  hasNoErosion: boolean
+  subductionCount: number
+  faultLineCount: number
 }
 
-export interface OceanDepth {
+export interface NavigationMeasure {
+  quality: number
+  equipment: 'sonar-perfect' | 'well-equipped' | 'basic-instruments' | 'compass-only' | 'lost' | 'hopeless'
+  hasHighQuality: boolean
+  hasProperCharts: boolean
+  hasNoBlindNavigation: boolean
+  hasWaypoints: boolean
+  hasNoDeadReckoning: boolean
+  hasSonar: boolean
+  hasNoDarkWater: boolean
+  hasClearDepth: boolean
+  hasNoUncharted: boolean
+  hasSafeHarbor: boolean
+  blindCount: number
+  unchartedCount: number
+}
+
+export interface AbyssalSpecimen {
   file: string
-  depth: number
-  pressure: number
+  depthComplexity: number
+  currentQuality: number
   bioluminescence: number
-  currentStrength: number
-  temperature: number
-  abyssalStability: number
-  zone: ZoneMeasure
-  surface: SurfaceMeasure
-  pressureMeasure: PressureMeasure
-  bioluminescenceMeasure: BioluminescenceMeasure
-  currentMeasure: CurrentMeasure
-  thermal: ThermalMeasure
-  life: LifeMeasure
-  abyssal: AbyssalMeasure
-  condition: 'crystal-clear-waters' | 'clear-ocean' | 'coastal-waters' | 'murky-depths' | 'black-smoker' | 'dead-sea'
+  pressureHandling: number
+  trenchQuality: number
+  abyssalNavigation: number
+  depth: DepthMeasure
+  current: CurrentMeasure
+  bio: BioMeasure
+  pressure: PressureMeasure
+  trench: TrenchMeasure
+  navigation: NavigationMeasure
+  condition: 'hydrothermal-vent' | 'coral-garden' | 'open-water' | 'murky-depths' | 'dead-zone' | 'void'
   qualityScore: number
 }
 
-export interface OceanBasin {
+export interface OceanZone {
   directory: string
-  depths: OceanDepth[]
+  specimens: AbyssalSpecimen[]
   avgDepth: number
-  avgPressure: number
-  avgCurrentStrength: number
-  clearWatersCount: number
-  deadSeaCount: number
-  surfaceOnlyCount: number
-  deepDiveCount: number
-  basinType: 'pacific-deep' | 'atlantic-mid' | 'indian-warm' | 'arctic-cold' | 'mediterranean' | 'dead-sea'
-  condition: 'pristine-ocean' | 'healthy-sea' | 'coastal-waters' | 'polluted-bay' | 'stagnant-pool' | 'toxic-dump'
-}
-
-export interface PlanetMeasure {
-  avgDepth: number
-  avgPressure: number
-  avgCurrentStrength: number
-  isHealthy: boolean
-  overallDepth: number
-}
-
-export interface DeepOceanStats {
-  totalFiles: number
-  totalBasins: number
-  avgDepth: number
-  avgPressure: number
-  avgBioluminescence: number
-  avgCurrentStrength: number
-  avgTemperature: number
-  avgAbyssalStability: number
-  crystalClearCount: number
-  clearOceanCount: number
-  coastalWatersCount: number
-  murkyDepthsCount: number
-  blackSmokerCount: number
-  deadSeaCount: number
-  sunlitZoneCount: number
-  twilightZoneCount: number
-  midnightZoneCount: number
-  abyssalZoneCount: number
-  hadalZoneCount: number
-  hasWhirlpoolCount: number
-  hasUndertowCount: number
-  hasAnglerFishCount: number
-  hasSharksCount: number
-  hasHotVentsCount: number
-  hasThermoclineCount: number
-  hasSeafloorCount: number
-  hasTrenchesCount: number
-  navigableCount: number
-  overallDepth: number
-  oceanographerGrade: 'chief-oceanographer' | 'oceanographer' | 'marine-biologist' | 'diver' | 'swimmer' | 'landlubber'
-  clearestWaters: string
-  deepestDive: string
-  strongestCurrent: string
-  mostStable: string
-  mostDangerous: string
+  avgCurrent: number
+  avgNavigation: number
+  ventCount: number
+  voidCount: number
+  deepCount: number
+  adaptedCount: number
+  zoneType: 'deep-trench-system' | 'abyssal-plain' | 'mid-ocean-ridge' | 'continental-shelf' | 'tidal-pool' | 'dry-land'
+  condition: 'thriving-ecosystem' | 'living-ocean' | 'stable-waters' | 'stressed' | 'dead-waters' | 'evaporated'
 }
 
 export interface DeepOceanResult {
-  depths: OceanDepth[]
-  basins: OceanBasin[]
-  planet: PlanetMeasure
-  stats: DeepOceanStats
+  specimens: AbyssalSpecimen[]
+  zones: OceanZone[]
+  ocean: {
+    avgDepth: number
+    avgCurrent: number
+    avgNavigation: number
+    isHealthy: boolean
+    overallHealth: number
+  }
+  stats: {
+    totalFiles: number
+    totalZones: number
+    avgDepthComplexity: number
+    avgCurrentQuality: number
+    avgBioluminescence: number
+    avgPressureHandling: number
+    avgTrenchQuality: number
+    avgAbyssalNavigation: number
+    hydrothermalVentCount: number
+    coralGardenCount: number
+    openWaterCount: number
+    murkyDepthsCount: number
+    deadZoneCount: number
+    voidCount: number
+    hasModerateComplexityCount: number
+    hasHighQualityCount: number
+    hasHighLuminescenceCount: number
+    hasHighHandlingCount: number
+    hasHighTrenchCount: number
+    hasHighNavigationCount: number
+    overallHealth: number
+    captainGrade: 'deep-sea-commander' | 'oceanographer' | 'navigator' | 'diver' | 'swimmer' | 'landlubber'
+    bestSpecimen: string
+    bestDepth: string
+    bestFlow: string
+    mostIlluminated: string
+    mostResilient: string
+    bestArchitected: string
+  }
   recommendations: string[]
 }
 
-// ─── Utility helpers ────────────────────────────────────
+// ─── Regex Patterns (no g flag on .test()-only regexes) ──────
 
-export function countLoc(content: string): number {
-  return content.split('\n').filter(l => l.trim().length > 0).length
-}
+const INTERFACE_RE = /\binterface\b/
+const CLASS_RE = /\bclass\b/
+const TYPE_RE = /\btype\b/
+const EXPORT_RE = /\bexport\b/
+const IMPORT_RE = /\bimport\b/
+const FUNCTION_RE = /\bfunction\b/
+const ARROW_RE = /=>/
+const ASYNC_RE = /\basync\b/
+const AWAIT_RE = /\bawait\b/
+const TRY_RE = /\btry\b/
+const CATCH_RE = /\bcatch\b/
+const RETURN_RE = /\breturn\b/
+const THROW_RE = /\bthrow\b/
+const GENERIC_RE = /<[A-Z]\w*[,>]/
+const OPTIONAL_RE = /\?\s*:/
+const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
+const CONSOLE_RE = /\bconsole\.\w+/g
+const ANY_RE = /:\s*any\b/g
+const EVAL_RE = /\beval\s*\(/g
+const TODO_RE = /\bTODO\b/gi
+const HACK_RE = /\bHACK\b/gi
+const FIXME_RE = /\bFIXME\b/gi
+const DEPRECATED_RE = /@deprecated/g
+const DOC_COMMENT_RE = /\/\*\*[\s\S]*?\*\//g
+const EMPTY_CATCH_RE = /catch\s*\(\w*\)\s*\{\s*\}/g
 
-export function countFunctions(content: string): number {
-  const m = content.match(/\bfunction\s+\w+|\b\w+\s*=\s*(?:async\s+)?(?:\([^)]*\)\s*=>|(?:async\s+)?\([^)]*\)\s*:\s*\w+)/g)
-  return m ? m.length : 0
-}
+// ─── measureDepth ────────────────────────────────────────────
 
-export function countClasses(content: string): number {
-  const m = content.match(/\bclass\s+\w+/g)
-  return m ? m.length : 0
-}
+/** @example measureDepth(content) returns DepthMeasure */
+export function measureDepth(content: string): DepthMeasure {
+  let score = 0
 
-export function countInterfaces(content: string): number {
-  const m = content.match(/\binterface\s+\w+/g)
-  return m ? m.length : 0
-}
+  const hasProperStratification = INTERFACE_RE.test(content) && TYPE_RE.test(content)
+  const hasNoExcessiveDepth = !NESTED_TERNARY_RE.test(content)
+  const hasClearZones = EXPORT_RE.test(content) && (FUNCTION_RE.test(content) || CLASS_RE.test(content))
+  const darknessCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoDarkness = darknessCount === 0
+  const hasThermocline = ASYNC_RE.test(content) && AWAIT_RE.test(content)
+  const crushingCount = (content.match(EMPTY_CATCH_RE) || []).length
+  const hasNoSuffocation = crushingCount === 0
+  const hasProperPressure = TRY_RE.test(content) && CATCH_RE.test(content)
+  const hasNoCrushing = (content.match(HACK_RE) || []).length === 0
+  const hasLightPenetration = (content.match(DOC_COMMENT_RE) || []).length > 0
 
-export function countEnums(content: string): number {
-  const m = content.match(/\benum\s+\w+/g)
-  return m ? m.length : 0
-}
+  if (content.length > 0) score += 5
+  if (hasProperStratification) score += 12
+  if (hasNoExcessiveDepth) score += 12
+  if (hasClearZones) score += 10
+  if (hasNoDarkness) score += 10
+  if (hasThermocline) score += 10
+  if (hasNoSuffocation) score += 10
+  if (hasProperPressure) score += 10
+  if (hasNoCrushing) score += 11
+  if (hasLightPenetration) score += 10
 
-export function countTypes(content: string): number {
-  const m = content.match(/\btype\s+\w+\s*=/g)
-  return m ? m.length : 0
-}
+  const complexity = Math.min(100, Math.max(0, score))
+  const hasModerateComplexity = complexity >= 70
 
-export function countExports(content: string): number {
-  const m = content.match(/^export\s/gm)
-  return m ? m.length : 0
-}
+  let zone: DepthMeasure['zone'] = 'surface'
+  if (hasModerateComplexity && hasNoDarkness && hasProperStratification && hasLightPenetration) zone = 'hadal-zone'
+  else if (hasModerateComplexity && hasNoDarkness) zone = 'abyssal-zone'
+  else if (hasModerateComplexity) zone = 'bathyal-zone'
+  else if (hasClearZones && hasProperPressure) zone = 'mesopelagic'
+  else if (complexity > 30) zone = 'epipelagic'
 
-export function countImports(content: string): number {
-  const m = content.match(/^import\s/gm)
-  return m ? m.length : 0
-}
-
-export function countJSDoc(content: string): number {
-  const m = content.match(/\/\*\*[\s\S]*?\*\//g)
-  return m ? m.length : 0
-}
-
-export function countComments(content: string): number {
-  const line = (content.match(/\/\/.*/g) || []).length
-  const block = (content.match(/\/\*[\s\S]*?\*\//g) || []).length
-  return line + block
-}
-
-export function countErrorHandling(content: string): number {
-  const m = content.match(/\b(catch|finally|throw)\b/g)
-  return m ? m.length : 0
-}
-
-export function countTypeAnnotations(content: string): number {
-  const m = content.match(/:\s*(?:number|string|boolean|void|any|unknown|never|object)\b/g)
-  return m ? m.length : 0
-}
-
-export function countTodos(content: string): number {
-  const m = content.match(/\bTODO\b/gi)
-  return m ? m.length : 0
-}
-
-export function countConsole(content: string): number {
-  const m = content.match(/\bconsole\.\w+/g)
-  return m ? m.length : 0
-}
-
-export function countBranches(content: string): number {
-  const ifs = (content.match(/\bif\b/g) || []).length
-  const switches = (content.match(/\bswitch\b/g) || []).length
-  const ternaries = (content.match(/\?[^:]*:/g) || []).length
-  return ifs + switches + ternaries
-}
-
-export function countDescriptiveNames(content: string): number {
-  const m = content.match(/\b(?:get|set|is|has|can|should|will|compute|calculate|validate|parse|format|transform|process|handle|build|create|generate|extract|resolve|initialize|configure|update|remove|delete|find|search|check|verify|ensure|assert)\w+/gi)
-  return m ? m.length : 0
-}
-
-export function countReturnTypes(content: string): number {
-  const m = content.match(/\)\s*:\s*\w+/g)
-  return m ? m.length : 0
-}
-
-export function countNestingDepth(content: string): number {
-  let maxDepth = 0
-  let currentDepth = 0
-  for (const ch of content) {
-    if (ch === '{' || ch === '(' || ch === '[') {
-      currentDepth++
-      if (currentDepth > maxDepth) maxDepth = currentDepth
-    } else if (ch === '}' || ch === ')' || ch === ']') {
-      currentDepth = Math.max(0, currentDepth - 1)
-    }
+  return {
+    complexity, zone, hasModerateComplexity, hasProperStratification,
+    hasNoExcessiveDepth, hasClearZones, hasNoDarkness, hasThermocline,
+    hasNoSuffocation, hasProperPressure, hasNoCrushing, hasLightPenetration,
+    darknessCount, crushingCount,
   }
-  return maxDepth
 }
 
-export function countAsync(content: string): number {
-  const m = content.match(/\basync\b/g)
-  return m ? m.length : 0
-}
+// ─── measureCurrent ──────────────────────────────────────────
 
-export function countAwait(content: string): number {
-  const m = content.match(/\bawait\b/g)
-  return m ? m.length : 0
-}
-
-export function countSideEffects(content: string): number {
-  const writes = (content.match(/\bprocess\.env\b/g) || []).length
-  const fsOps = (content.match(/\bfs\.\w+/g) || []).length
-  const domOps = (content.match(/\bdocument\.\w+/g) || []).length
-  return writes + fsOps + domOps
-}
-
-// ─── Zone Measurement ───────────────────────────────────
-
-/**
- * Measure code depth zone
- * @example
- * measureZone(codeString) // { current, depth, hasPhoticZone, ... }
- */
-export function measureZone(content: string): ZoneMeasure {
-  const loc = countLoc(content)
-  const nesting = countNestingDepth(content)
-  const jsdoc = countJSDoc(content)
-  const types = countTypeAnnotations(content)
-
-  const depth = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (nesting * 8) +
-    (countBranches(content) * 3) +
-    (countFunctions(content) * 2),
-  )))
-
-  const hasPhoticZone = jsdoc > 0 && types > 0
-  const hasAphoticZone = jsdoc === 0 && loc > 10
-  const hasThermocline = nesting > 3 && jsdoc > 0
-  const hasMixedLayer = nesting <= 2 && loc > 0
-  const layerCount = [hasPhoticZone, hasAphoticZone, nesting > 2, types > 0].filter(Boolean).length
-
-  let current: ZoneMeasure['current'] = 'sunlit-zone'
-  if (depth >= 80) current = 'trench'
-  else if (depth >= 65) current = 'hadal-zone'
-  else if (depth >= 50) current = 'abyssal-zone'
-  else if (depth >= 30) current = 'midnight-zone'
-  else if (depth >= 15) current = 'twilight-zone'
-
-  return { current, depth, hasPhoticZone, hasAphoticZone, hasThermocline, hasMixedLayer, layerCount }
-}
-
-// ─── Surface Measurement ────────────────────────────────
-
-/**
- * Measure surface code clarity
- * @example
- * measureSurface(codeString) // { clarity, hasWaves, hasCalmWater, ... }
- */
-export function measureSurface(content: string): SurfaceMeasure {
-  const loc = countLoc(content)
-  const jsdoc = countJSDoc(content)
-  const comments = countComments(content)
-  const types = countTypeAnnotations(content)
-  const exports = countExports(content)
-
-  const clarity = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 25 : 0) +
-    (comments > 0 ? 15 : 0) +
-    (types > 0 ? 20 : 0) +
-    (exports > 0 ? 15 : 0) +
-    (countDescriptiveNames(content) > 0 ? 15 : 0) +
-    (loc < 50 ? 10 : 0),
-  )))
-
-  const hasWaves = countBranches(content) > 3
-  const hasWhitecaps = countTodos(content) > 0 || countConsole(content) > 0
-  const hasCalmWater = countBranches(content) <= 2 && countTodos(content) === 0 && loc > 0
-  const hasRiptide = countAsync(content) > 0 && countErrorHandling(content) === 0
-  const clarityScore = clarity
-
-  return { clarity, hasWaves, hasWhitecaps, hasCalmWater, hasRiptide, clarityScore }
-}
-
-// ─── Pressure Measurement ───────────────────────────────
-
-/**
- * Measure code complexity pressure
- * @example
- * measurePressure(content) // { level, hasCrushingPressure, ... }
- */
-export function measurePressure(content: string): PressureMeasure {
-  const loc = countLoc(content)
-  const branches = countBranches(content)
-  const nesting = countNestingDepth(content)
-  const functions = countFunctions(content)
-
-  const level = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (branches * 8) +
-    (nesting * 5) +
-    (functions > 5 ? 10 : 0) +
-    (loc > 100 ? 10 : 0),
-  )))
-
-  const hasCrushingPressure = level >= 70
-  const hasModeratePressure = level >= 30 && level < 70
-  const hasLowPressure = level < 30 && loc > 0
-  const ventCount = countInterfaces(content) + countClasses(content)
-  const hasPressureVents = ventCount > 0 && level > 30
-  const hasDecompression = countErrorHandling(content) > 0
-
-  return { level, hasCrushingPressure, hasModeratePressure, hasLowPressure, hasPressureVents, ventCount, hasDecompression }
-}
-
-// ─── Bioluminescence Measurement ────────────────────────
-
-/**
- * Measure hidden behavior revelation
- * @example
- * measureBioluminescence(content) // { score, hasGlowingCode, ... }
- */
-export function measureBioluminescence(content: string): BioluminescenceMeasure {
-  const loc = countLoc(content)
-  const jsdoc = countJSDoc(content)
-  const types = countTypeAnnotations(content)
-  const returns = countReturnTypes(content)
-
-  const score = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (jsdoc > 0 ? 25 : 0) +
-    (types > 0 ? 25 : 0) +
-    (returns > 0 ? 15 : 0) +
-    (countDescriptiveNames(content) > 0 ? 15 : 0) +
-    (countComments(content) > 0 ? 10 : 0) +
-    (countExports(content) > 0 ? 10 : 0),
-  )))
-
-  const hasGlowingCode = jsdoc > 0 && types > 0
-  const hasDarkCode = jsdoc === 0 && types === 0 && loc > 0
-  const hasFlashingCode = countAsync(content) > 0 || countAwait(content) > 0
-  const glowCount = jsdoc + returns
-  const stingCount = countSideEffects(content) + countConsole(content)
-
-  const hasAnglerFish = countDescriptiveNames(content) === 0 && countFunctions(content) > 0 && loc > 0
-  const hasDeepStings = stingCount > 0
-
-  return { score, hasGlowingCode, hasDarkCode, hasFlashingCode, hasAnglerFish, hasDeepStings, glowCount, stingCount }
-}
-
-// ─── Current Measurement ────────────────────────────────
-
-/**
- * Measure data flow intensity
- * @example
- * measureCurrent(content) // { strength, direction, hasGulfStream, ... }
- */
+/** @example measureCurrent(content) returns CurrentMeasure */
 export function measureCurrent(content: string): CurrentMeasure {
-  const loc = countLoc(content)
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const functions = countFunctions(content)
-  const types = countTypeAnnotations(content)
-  const interfaces = countInterfaces(content)
+  let score = 0
 
-  const strength = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (imports > 0 ? 15 : 0) +
-    (exports > 0 ? 15 : 0) +
-    (functions > 0 ? 10 : 0) +
-    (types > 0 ? 10 : 0) +
-    (interfaces > 0 ? 10 : 0) +
-    (countJSDoc(content) > 0 ? 10 : 0) +
-    (countErrorHandling(content) > 0 ? 10 : 0) +
-    (countReturnTypes(content) > 0 ? 10 : 0) +
-    (countDescriptiveNames(content) > 0 ? 10 : 0),
-  )))
+  const hasSmoothFlow = FUNCTION_RE.test(content) || ARROW_RE.test(content)
+  const hasProperCirculation = EXPORT_RE.test(content) && IMPORT_RE.test(content)
+  const eddyCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoEddies = eddyCount === 0
+  const hasConveyor = ASYNC_RE.test(content) && AWAIT_RE.test(content)
+  const pollutionCount = (content.match(EMPTY_CATCH_RE) || []).length
+  const hasNoBackflow = pollutionCount === 0
+  const hasProperDirection = content.length > 0 && (RETURN_RE.test(content) || THROW_RE.test(content))
+  const hasNoStagnation = !NESTED_TERNARY_RE.test(content)
+  const hasCleanWater = (content.match(TODO_RE) || []).length === 0
+  const hasNoPollution = (content.match(HACK_RE) || []).length === 0
 
-  const hasGulfStream = imports > 0 && exports > 0 && functions > 0
-  const hasWhirlpool = countImports(content) > 5 && countExports(content) === 0 && loc > 0
-  const hasUndertow = countSideEffects(content) > 0 && exports === 0
-  const hasRipCurrent = countAsync(content) > 0 && countErrorHandling(content) === 0
-  const isNavigable = strength >= 50
-  const whirlpoolCount = hasWhirlpool ? 1 : 0
+  if (content.length > 0) score += 5
+  if (hasSmoothFlow) score += 12
+  if (hasProperCirculation) score += 12
+  if (hasNoEddies) score += 10
+  if (hasConveyor) score += 10
+  if (hasNoBackflow) score += 10
+  if (hasProperDirection) score += 10
+  if (hasNoStagnation) score += 10
+  if (hasCleanWater) score += 11
+  if (hasNoPollution) score += 10
 
-  let direction: CurrentMeasure['direction'] = 'stagnant'
-  if (imports > 0 && exports > 0 && Math.abs(imports - exports) <= 2) direction = 'thermohaline'
-  else if (imports > exports) direction = 'downwelling'
-  else if (exports > imports) direction = 'upwelling'
-  else if (functions > 0 && imports === 0 && exports === 0) direction = 'turbulent'
-  else if (imports === 0 && exports === 0 && loc > 0) direction = 'stagnant'
-  else direction = 'surface'
+  const quality = Math.min(100, Math.max(0, score))
+  const hasHighQuality = quality >= 70
 
-  return { strength, direction, hasGulfStream, hasWhirlpool, hasUndertow, hasRipCurrent, isNavigable, whirlpoolCount }
-}
-
-// ─── Thermal Measurement ────────────────────────────────
-
-/**
- * Measure activity level
- * @example
- * measureThermal(content) // { temperature, hasHotVents, ... }
- */
-export function measureThermal(content: string): ThermalMeasure {
-  const loc = countLoc(content)
-  const functions = countFunctions(content)
-  const branches = countBranches(content)
-  const asyncs = countAsync(content)
-
-  const temperature = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (functions * 8) +
-    (branches * 5) +
-    (asyncs * 10) +
-    (countErrorHandling(content) * 5) +
-    (countClasses(content) * 8),
-  )))
-
-  const hasHotVents = temperature >= 60
-  const hasColdSeeps = temperature < 20 && loc > 0
-  const hasThermalGradient = functions > 0 && branches > 0 && Math.abs(functions - branches) > 2
-  const isIsothermal = functions <= 1 && branches <= 1 && loc > 0
-  const ventCount = functions + countClasses(content)
-  const seepCount = hasColdSeeps ? 1 : 0
-
-  return { temperature, hasHotVents, hasColdSeeps, hasThermalGradient, isIsothermal, ventCount, seepCount }
-}
-
-// ─── Life Measurement ───────────────────────────────────
-
-/**
- * Measure construct variety
- * @example
- * measureLife(content) // { diversity, hasPlankton, hasWhales, ... }
- */
-export function measureLife(content: string): LifeMeasure {
-  const loc = countLoc(content)
-  const functions = countFunctions(content)
-  const classes = countClasses(content)
-  const interfaces = countInterfaces(content)
-  const enums = countEnums(content)
-  const types = countTypes(content)
-
-  const palette: string[] = []
-  if (functions > 0) palette.push('function')
-  if (classes > 0) palette.push('class')
-  if (interfaces > 0) palette.push('interface')
-  if (enums > 0) palette.push('enum')
-  if (types > 0) palette.push('type')
-  if (countExports(content) > 0) palette.push('export')
-  if (countImports(content) > 0) palette.push('import')
-
-  const diversity = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (palette.length * 12) +
-    (functions > 0 ? 5 : 0) +
-    (classes > 0 ? 5 : 0) +
-    (interfaces > 0 ? 5 : 0),
-  )))
-
-  const hasPlankton = functions > 3 && classes === 0
-  const hasWhales = classes > 0 && functions > 2
-  const hasSquid = countNestingDepth(content) > 4
-  const hasCoral = interfaces > 0 && functions > 0
-  const hasSharks = countTodos(content) > 2 || countConsole(content) > 3
-  const hasJellyfish = countAsync(content) > 0 && countAwait(content) > 0 && countErrorHandling(content) === 0
-
-  const planktonCount = functions
-  const whaleCount = classes
-  const sharkCount = countTodos(content) + countConsole(content)
+  let flow: CurrentMeasure['flow'] = 'whirlpool'
+  if (hasHighQuality && hasNoEddies && hasConveyor && hasProperCirculation) flow = 'thermohaline'
+  else if (hasHighQuality && hasNoEddies) flow = 'gulf-stream'
+  else if (hasHighQuality) flow = 'steady-current'
+  else if (hasSmoothFlow && hasProperDirection) flow = 'tidal'
+  else if (quality > 30) flow = 'stagnant'
 
   return {
-    diversity,
-    hasPlankton,
-    hasWhales,
-    hasSquid,
-    hasCoral,
-    hasSharks,
-    hasJellyfish,
-    planktonCount,
-    whaleCount,
-    sharkCount,
+    quality, flow, hasHighQuality, hasSmoothFlow, hasProperCirculation,
+    hasNoEddies, hasConveyor, hasNoBackflow, hasProperDirection,
+    hasNoStagnation, hasCleanWater, hasNoPollution, eddyCount, pollutionCount,
   }
 }
 
-// ─── Abyssal Measurement ────────────────────────────────
+// ─── measureBio ──────────────────────────────────────────────
 
-/**
- * Measure deep code stability
- * @example
- * measureAbyssal(content) // { stability, hasSeafloor, ... }
- */
-export function measureAbyssal(content: string): AbyssalMeasure {
-  const loc = countLoc(content)
-  const errors = countErrorHandling(content)
-  const types = countTypeAnnotations(content)
-  const interfaces = countInterfaces(content)
-  const classes = countClasses(content)
+/** @example measureBio(content) returns BioMeasure */
+export function measureBio(content: string): BioMeasure {
+  let score = 0
 
-  const stability = loc === 0 ? 0 : Math.min(100, Math.max(0, Math.round(
-    (errors > 0 ? 25 : 0) +
-    (types > 0 ? 20 : 0) +
-    (interfaces > 0 ? 15 : 0) +
-    (countJSDoc(content) > 0 ? 15 : 0) +
-    (countTodos(content) === 0 ? 10 : 0) +
-    (classes > 0 ? 10 : 0) +
-    (countExports(content) > 0 ? 5 : 0),
-  )))
+  const hasDocumentation = (content.match(DOC_COMMENT_RE) || []).length > 0
+  const hasClearSignals = INTERFACE_RE.test(content) || TYPE_RE.test(content)
+  const darkSpotCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoDarkSpots = darkSpotCount === 0
+  const hasIlluminated = EXPORT_RE.test(content) && (FUNCTION_RE.test(content) || CLASS_RE.test(content))
+  const shadowZoneCount = (content.match(TODO_RE) || []).length + (content.match(FIXME_RE) || []).length
+  const hasNoShadowZones = shadowZoneCount === 0
+  const hasProperAngler = (content.match(DOC_COMMENT_RE) || []).length > 0
+  const hasNoBlinding = (content.match(CONSOLE_RE) || []).length === 0
+  const hasVisible = content.length > 0 && (RETURN_RE.test(content) || THROW_RE.test(content))
+  const hasNoCamouflage = !NESTED_TERNARY_RE.test(content)
 
-  const hasSeafloor = interfaces > 0 && types > 0
-  const hasMountains = classes > 0 || (countFunctions(content) > 3 && loc > 0)
-  const hasTrenches = countNestingDepth(content) > 4
-  const hasPlains = countNestingDepth(content) <= 2 && loc > 0
-  const hasVolcanicActivity = countTodos(content) > 0 || countDeprecated(content) > 0
-  const mountainCount = classes + (countFunctions(content) > 3 ? 1 : 0)
-  const trenchCount = hasTrenches ? 1 : 0
+  if (content.length > 0) score += 5
+  if (hasDocumentation) score += 12
+  if (hasClearSignals) score += 12
+  if (hasNoDarkSpots) score += 10
+  if (hasIlluminated) score += 10
+  if (hasNoShadowZones) score += 10
+  if (hasProperAngler) score += 10
+  if (hasNoBlinding) score += 10
+  if (hasVisible) score += 11
+  if (hasNoCamouflage) score += 10
 
-  return { stability, hasSeafloor, hasMountains, hasTrenches, hasPlains, hasVolcanicActivity, mountainCount, trenchCount }
-}
+  const luminescence = Math.min(100, Math.max(0, score))
+  const hasHighLuminescence = luminescence >= 70
 
-// ─── Depth Analysis ─────────────────────────────────────
-
-/**
- * Analyze a single file as ocean depth
- * @example
- * analyzeOceanDepth(content, filePath) // OceanDepth
- */
-export function analyzeOceanDepth(content: string, filePath: string): OceanDepth {
-  const zone = measureZone(content)
-  const surface = measureSurface(content)
-  const pressureMeasure = measurePressure(content)
-  const bioluminescenceMeasure = measureBioluminescence(content)
-  const currentMeasure = measureCurrent(content)
-  const thermal = measureThermal(content)
-  const life = measureLife(content)
-  const abyssal = measureAbyssal(content)
-
-  const depth = zone.depth
-  const pressure = pressureMeasure.level
-  const bioluminescence = bioluminescenceMeasure.score
-  const currentStrength = currentMeasure.strength
-  const temperature = thermal.temperature
-  const abyssalStability = abyssal.stability
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    (surface.clarity * 0.2) +
-    (bioluminescence * 0.2) +
-    (currentStrength * 0.15) +
-    (abyssalStability * 0.15) +
-    ((100 - pressure) * 0.15) +
-    (life.diversity * 0.15),
-  )))
-
-  const condition = classifyDepthCondition(qualityScore, surface, pressureMeasure)
+  let glow: BioMeasure['glow'] = 'dark'
+  if (hasHighLuminescence && hasNoDarkSpots && hasDocumentation && hasIlluminated) glow = 'dazzling'
+  else if (hasHighLuminescence && hasNoDarkSpots) glow = 'bright-glow'
+  else if (hasHighLuminescence) glow = 'steady-glow'
+  else if (hasClearSignals && hasVisible) glow = 'dim-light'
+  else if (luminescence > 30) glow = 'flickering'
 
   return {
+    luminescence, glow, hasHighLuminescence, hasDocumentation, hasClearSignals,
+    hasNoDarkSpots, hasIlluminated, hasNoShadowZones, hasProperAngler,
+    hasNoBlinding, hasVisible, hasNoCamouflage, darkSpotCount, shadowZoneCount,
+  }
+}
+
+// ─── measurePressure ─────────────────────────────────────────
+
+/** @example measurePressure(content) returns PressureMeasure */
+export function measurePressure(content: string): PressureMeasure {
+  let score = 0
+
+  const hasProperReinforcement = INTERFACE_RE.test(content) || TYPE_RE.test(content) || CLASS_RE.test(content)
+  const hasNoBuckling = !NESTED_TERNARY_RE.test(content)
+  const hasPressureValve = TRY_RE.test(content) && CATCH_RE.test(content)
+  const hasNoImplosion = (content.match(HACK_RE) || []).length === 0
+  const hasStructural = EXPORT_RE.test(content) && (FUNCTION_RE.test(content) || CLASS_RE.test(content))
+  const leakCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoLeaks = leakCount === 0
+  const hasEqualization = ASYNC_RE.test(content) && AWAIT_RE.test(content)
+  const hasNoRapidDecompression = (content.match(DEPRECATED_RE) || []).length === 0
+  const hasTestedDepth = (content.match(EMPTY_CATCH_RE) || []).length === 0
+  const bucklingCount = (content.match(EMPTY_CATCH_RE) || []).length
+
+  if (content.length > 0) score += 5
+  if (hasProperReinforcement) score += 12
+  if (hasNoBuckling) score += 12
+  if (hasPressureValve) score += 10
+  if (hasNoImplosion) score += 10
+  if (hasStructural) score += 10
+  if (hasNoLeaks) score += 10
+  if (hasEqualization) score += 10
+  if (hasNoRapidDecompression) score += 11
+  if (hasTestedDepth) score += 10
+
+  const handling = Math.min(100, Math.max(0, score))
+  const hasHighHandling = handling >= 70
+
+  let resistance: PressureMeasure['resistance'] = 'crushed'
+  if (hasHighHandling && hasNoLeaks && hasPressureValve && hasProperReinforcement) resistance = 'titanium-hull'
+  else if (hasHighHandling && hasNoLeaks) resistance = 'deep-adapted'
+  else if (hasHighHandling) resistance = 'pressure-resistant'
+  else if (hasProperReinforcement && hasPressureValve) resistance = 'moderate'
+  else if (handling > 30) resistance = 'fragile'
+
+  return {
+    handling, resistance, hasHighHandling, hasProperReinforcement,
+    hasNoBuckling, hasPressureValve, hasNoImplosion, hasStructural,
+    hasNoLeaks, hasEqualization, hasNoRapidDecompression, hasTestedDepth,
+    bucklingCount, leakCount,
+  }
+}
+
+// ─── measureTrench ───────────────────────────────────────────
+
+/** @example measureTrench(content) returns TrenchMeasure */
+export function measureTrench(content: string): TrenchMeasure {
+  let score = 0
+
+  const hasSolidStructure = INTERFACE_RE.test(content) && TYPE_RE.test(content) && CLASS_RE.test(content)
+  const hasProperPlates = EXPORT_RE.test(content) && IMPORT_RE.test(content)
+  const subductionCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoSubduction = subductionCount === 0
+  const hasStableFoundation = (content.match(DOC_COMMENT_RE) || []).length > 0
+  const faultLineCount = (content.match(TODO_RE) || []).length + (content.match(FIXME_RE) || []).length + (content.match(HACK_RE) || []).length
+  const hasNoFaultLine = faultLineCount === 0
+  const hasProperSpreading = GENERIC_RE.test(content) && OPTIONAL_RE.test(content)
+  const hasNoCollapse = !NESTED_TERNARY_RE.test(content)
+  const hasDeepRoots = TRY_RE.test(content) && CATCH_RE.test(content)
+  const hasNoErosion = (content.match(DEPRECATED_RE) || []).length === 0
+
+  if (content.length > 0) score += 5
+  if (hasSolidStructure) score += 12
+  if (hasProperPlates) score += 12
+  if (hasNoSubduction) score += 10
+  if (hasStableFoundation) score += 10
+  if (hasNoFaultLine) score += 10
+  if (hasProperSpreading) score += 10
+  if (hasNoCollapse) score += 10
+  if (hasDeepRoots) score += 11
+  if (hasNoErosion) score += 10
+
+  const quality = Math.min(100, Math.max(0, score))
+  const hasHighQuality = quality >= 70
+
+  let formation: TrenchMeasure['formation'] = 'puddle'
+  if (hasHighQuality && hasNoSubduction && hasSolidStructure && hasProperSpreading) formation = 'mariana-grade'
+  else if (hasHighQuality && hasNoSubduction) formation = 'deep-trench'
+  else if (hasHighQuality) formation = 'mid-ocean-ridge'
+  else if (hasSolidStructure && hasDeepRoots) formation = 'continental-shelf'
+  else if (quality > 30) formation = 'shallow-basin'
+
+  return {
+    quality, formation, hasHighQuality, hasSolidStructure, hasProperPlates,
+    hasNoSubduction, hasStableFoundation, hasNoFaultLine, hasProperSpreading,
+    hasNoCollapse, hasDeepRoots, hasNoErosion, subductionCount, faultLineCount,
+  }
+}
+
+// ─── measureNavigation ───────────────────────────────────────
+
+/** @example measureNavigation(content) returns NavigationMeasure */
+export function measureNavigation(content: string): NavigationMeasure {
+  let score = 0
+
+  const hasProperCharts = (content.match(DOC_COMMENT_RE) || []).length > 0
+  const blindCount = (content.match(ANY_RE) || []).length + (content.match(EVAL_RE) || []).length
+  const hasNoBlindNavigation = blindCount === 0
+  const hasWaypoints = TRY_RE.test(content) && CATCH_RE.test(content)
+  const hasNoDeadReckoning = !NESTED_TERNARY_RE.test(content)
+  const hasSonar = (content.match(CONSOLE_RE) || []).length === 0
+  const hasNoDarkWater = (content.match(HACK_RE) || []).length === 0
+  const hasClearDepth = INTERFACE_RE.test(content) || TYPE_RE.test(content) || CLASS_RE.test(content)
+  const unchartedCount = (content.match(TODO_RE) || []).length + (content.match(FIXME_RE) || []).length
+  const hasNoUncharted = unchartedCount === 0
+  const hasSafeHarbor = EXPORT_RE.test(content) && (FUNCTION_RE.test(content) || ARROW_RE.test(content))
+
+  if (content.length > 0) score += 5
+  if (hasProperCharts) score += 12
+  if (hasNoBlindNavigation) score += 12
+  if (hasWaypoints) score += 10
+  if (hasNoDeadReckoning) score += 10
+  if (hasSonar) score += 10
+  if (hasNoDarkWater) score += 10
+  if (hasClearDepth) score += 10
+  if (hasNoUncharted) score += 11
+  if (hasSafeHarbor) score += 10
+
+  const quality = Math.min(100, Math.max(0, score))
+  const hasHighQuality = quality >= 70
+
+  let equipment: NavigationMeasure['equipment'] = 'hopeless'
+  if (hasHighQuality && hasNoBlindNavigation && hasProperCharts && hasWaypoints) equipment = 'sonar-perfect'
+  else if (hasHighQuality && hasNoBlindNavigation) equipment = 'well-equipped'
+  else if (hasHighQuality) equipment = 'basic-instruments'
+  else if (hasClearDepth && hasSafeHarbor) equipment = 'compass-only'
+  else if (quality > 30) equipment = 'lost'
+
+  return {
+    quality, equipment, hasHighQuality, hasProperCharts, hasNoBlindNavigation,
+    hasWaypoints, hasNoDeadReckoning, hasSonar, hasNoDarkWater,
+    hasClearDepth, hasNoUncharted, hasSafeHarbor, blindCount, unchartedCount,
+  }
+}
+
+// ─── classifyCondition ───────────────────────────────────────
+
+/** @example classifyCondition(specimen) returns condition */
+export function classifyCondition(specimen: AbyssalSpecimen): AbyssalSpecimen['condition'] {
+  const { qualityScore } = specimen
+  if (qualityScore >= 80) return 'hydrothermal-vent'
+  if (qualityScore >= 65) return 'coral-garden'
+  if (qualityScore >= 50) return 'open-water'
+  if (qualityScore >= 35) return 'murky-depths'
+  if (qualityScore >= 20) return 'dead-zone'
+  return 'void'
+}
+
+// ─── analyzeAbyssalSpecimen ──────────────────────────────────
+
+/** @example analyzeAbyssalSpecimen(content, filePath) returns full specimen */
+export function analyzeAbyssalSpecimen(content: string, filePath: string): AbyssalSpecimen {
+  const depth = measureDepth(content)
+  const current = measureCurrent(content)
+  const bio = measureBio(content)
+  const pressure = measurePressure(content)
+  const trench = measureTrench(content)
+  const navigation = measureNavigation(content)
+
+  const depthComplexity = depth.complexity
+  const currentQuality = current.quality
+  const bioluminescence = bio.luminescence
+  const pressureHandling = pressure.handling
+  const trenchQuality = trench.quality
+  const abyssalNavigation = navigation.quality
+
+  const qualityScore = Math.round(
+    depthComplexity * 0.15 +
+    currentQuality * 0.15 +
+    bioluminescence * 0.2 +
+    pressureHandling * 0.15 +
+    trenchQuality * 0.2 +
+    abyssalNavigation * 0.15,
+  )
+
+  const result: AbyssalSpecimen = {
     file: filePath,
-    depth,
-    pressure,
-    bioluminescence,
-    currentStrength,
-    temperature,
-    abyssalStability,
-    zone,
-    surface,
-    pressureMeasure,
-    bioluminescenceMeasure,
-    currentMeasure,
-    thermal,
-    life,
-    abyssal,
-    condition,
+    depthComplexity, currentQuality, bioluminescence,
+    pressureHandling, trenchQuality, abyssalNavigation,
+    depth, current, bio, pressure, trench, navigation,
     qualityScore,
+    condition: 'void',
   }
+
+  result.condition = classifyCondition(result)
+  return result
 }
 
-/**
- * Classify depth condition
- * @example
- * classifyDepthCondition(90, surface, pressure) // 'crystal-clear-waters'
- */
-export function classifyDepthCondition(
-  score: number,
-  surface: SurfaceMeasure,
-  pressure: PressureMeasure,
-): OceanDepth['condition'] {
-  if (score >= 80 && surface.hasCalmWater) return 'crystal-clear-waters'
-  if (score >= 65) return 'clear-ocean'
-  if (score >= 45) return 'coastal-waters'
-  if (score >= 25 && !pressure.hasCrushingPressure) return 'murky-depths'
-  if (score >= 10) return 'black-smoker'
-  return 'dead-sea'
-}
+// ─── Ocean Zone Analysis ─────────────────────────────────────
 
-// ─── Basin Analysis ─────────────────────────────────────
-
-/**
- * Analyze a directory as ocean basin
- * @example
- * analyzeOceanBasin(depths, dirPath) // OceanBasin
- */
-export function analyzeOceanBasin(depths: OceanDepth[], dirPath: string): OceanBasin {
-  const count = depths.length
-  if (count === 0) {
+/** @example analyzeOceanZone(specimens, dirPath) returns OceanZone */
+export function analyzeOceanZone(specimens: AbyssalSpecimen[], dirPath: string): OceanZone {
+  if (specimens.length === 0) {
     return {
-      directory: dirPath,
-      depths: [],
-      avgDepth: 0,
-      avgPressure: 0,
-      avgCurrentStrength: 0,
-      clearWatersCount: 0,
-      deadSeaCount: 0,
-      surfaceOnlyCount: 0,
-      deepDiveCount: 0,
-      basinType: 'dead-sea',
-      condition: 'toxic-dump',
+      directory: dirPath, specimens: [], avgDepth: 0, avgCurrent: 0, avgNavigation: 0,
+      ventCount: 0, voidCount: 0, deepCount: 0, adaptedCount: 0,
+      zoneType: 'dry-land', condition: 'evaporated',
     }
   }
 
-  const avgDepth = Math.round(depths.reduce((s, d) => s + d.depth, 0) / count)
-  const avgPressure = Math.round(depths.reduce((s, d) => s + d.pressure, 0) / count)
-  const avgCurrentStrength = Math.round(depths.reduce((s, d) => s + d.currentStrength, 0) / count)
+  const avgDepth = Math.round(specimens.reduce((s, sp) => s + sp.depthComplexity, 0) / specimens.length)
+  const avgCurrent = Math.round(specimens.reduce((s, sp) => s + sp.currentQuality, 0) / specimens.length)
+  const avgNavigation = Math.round(specimens.reduce((s, sp) => s + sp.abyssalNavigation, 0) / specimens.length)
+  const ventCount = specimens.filter((sp) => sp.condition === 'hydrothermal-vent').length
+  const voidCount = specimens.filter((sp) => sp.condition === 'void').length
+  const deepCount = specimens.filter((sp) => sp.depth.hasModerateComplexity).length
+  const adaptedCount = specimens.filter((sp) => sp.pressure.hasHighHandling).length
 
-  const clearWatersCount = depths.filter(d => d.condition === 'crystal-clear-waters' || d.condition === 'clear-ocean').length
-  const deadSeaCount = depths.filter(d => d.condition === 'dead-sea').length
-  const surfaceOnlyCount = depths.filter(d => d.zone.current === 'sunlit-zone').length
-  const deepDiveCount = depths.filter(d => d.zone.current === 'abyssal-zone' || d.zone.current === 'hadal-zone' || d.zone.current === 'trench').length
-
-  const basinType = classifyBasinType(depths, avgDepth)
-  const condition = classifyBasinCondition(avgDepth)
+  const zoneType = classifyZoneType(specimens)
+  const avgScore = specimens.reduce((s, sp) => s + sp.qualityScore, 0) / specimens.length
+  let condition: OceanZone['condition'] = 'evaporated'
+  if (avgScore >= 75) condition = 'thriving-ecosystem'
+  else if (avgScore >= 60) condition = 'living-ocean'
+  else if (avgScore >= 45) condition = 'stable-waters'
+  else if (avgScore >= 30) condition = 'stressed'
+  else if (avgScore >= 15) condition = 'dead-waters'
 
   return {
-    directory: dirPath,
-    depths,
-    avgDepth,
-    avgPressure,
-    avgCurrentStrength,
-    clearWatersCount,
-    deadSeaCount,
-    surfaceOnlyCount,
-    deepDiveCount,
-    basinType,
-    condition,
+    directory: dirPath, specimens, avgDepth, avgCurrent, avgNavigation,
+    ventCount, voidCount, deepCount, adaptedCount, zoneType, condition,
   }
 }
 
-/**
- * Classify basin type
- * @example
- * classifyBasinType(depths, 60) // 'pacific-deep'
- */
-export function classifyBasinType(depths: OceanDepth[], avgDepth: number): OceanBasin['basinType'] {
-  if (depths.length === 0) return 'dead-sea'
-  const clearRatio = depths.filter(d => d.condition === 'crystal-clear-waters' || d.condition === 'clear-ocean').length / depths.length
+// ─── classifyZoneType ────────────────────────────────────────
 
-  if (clearRatio >= 0.5 && avgDepth <= 40) return 'pacific-deep'
-  if (avgDepth >= 50) return 'atlantic-mid'
-  if (avgDepth >= 30) return 'indian-warm'
-  if (avgDepth >= 15) return 'mediterranean'
-  if (avgDepth >= 5) return 'arctic-cold'
-  return 'dead-sea'
+/** @example classifyZoneType(specimens) returns zone type */
+export function classifyZoneType(specimens: AbyssalSpecimen[]): OceanZone['zoneType'] {
+  if (specimens.length === 0) return 'dry-land'
+  const avgScore = specimens.reduce((s, sp) => s + sp.qualityScore, 0) / specimens.length
+  const ventCnt = specimens.filter((sp) => sp.condition === 'hydrothermal-vent').length
+  if (avgScore >= 75 && ventCnt >= Math.ceil(specimens.length * 0.3)) return 'deep-trench-system'
+  if (avgScore >= 60) return 'abyssal-plain'
+  if (avgScore >= 45) return 'mid-ocean-ridge'
+  if (avgScore >= 30) return 'continental-shelf'
+  if (avgScore >= 15) return 'tidal-pool'
+  return 'dry-land'
 }
 
-/**
- * Classify basin condition
- * @example
- * classifyBasinCondition(70) // 'pristine-ocean'
- */
-export function classifyBasinCondition(avgDepth: number): OceanBasin['condition'] {
-  if (avgDepth >= 65) return 'pristine-ocean'
-  if (avgDepth >= 50) return 'healthy-sea'
-  if (avgDepth >= 35) return 'coastal-waters'
-  if (avgDepth >= 20) return 'polluted-bay'
-  if (avgDepth >= 10) return 'stagnant-pool'
-  return 'toxic-dump'
-}
+// ─── classifyCaptainGrade ────────────────────────────────────
 
-// ─── Oceanographer Grade ────────────────────────────────
-
-/**
- * Classify oceanographer grade
- * @example
- * classifyOceanographerGrade(90) // 'chief-oceanographer'
- */
-export function classifyOceanographerGrade(avgDepth: number): DeepOceanStats['oceanographerGrade'] {
-  if (avgDepth >= 80) return 'chief-oceanographer'
-  if (avgDepth >= 65) return 'oceanographer'
-  if (avgDepth >= 50) return 'marine-biologist'
-  if (avgDepth >= 35) return 'diver'
-  if (avgDepth >= 20) return 'swimmer'
+/** @example classifyCaptainGrade(avgHealth) returns grade */
+export function classifyCaptainGrade(avgHealth: number): DeepOceanResult['stats']['captainGrade'] {
+  if (avgHealth >= 80) return 'deep-sea-commander'
+  if (avgHealth >= 65) return 'oceanographer'
+  if (avgHealth >= 50) return 'navigator'
+  if (avgHealth >= 35) return 'diver'
+  if (avgHealth >= 20) return 'swimmer'
   return 'landlubber'
 }
 
-// ─── Recommendations ────────────────────────────────────
+// ─── generateRecommendations ─────────────────────────────────
 
-/**
- * Generate recommendations
- * @example
- * generateRecommendations(depths, basins, planet, stats) // ['Add JSDoc...']
- */
+/** @example generateRecommendations(specimens, zones, ocean, stats) returns string[] */
 export function generateRecommendations(
-  depths: OceanDepth[],
-  _basins: OceanBasin[],
-  _planet: PlanetMeasure,
-  stats: DeepOceanStats,
+  specimens: AbyssalSpecimen[],
+  zones: OceanZone[],
+  ocean: DeepOceanResult['ocean'],
+  stats: DeepOceanResult['stats'],
 ): string[] {
   const recs: string[] = []
 
-  if (stats.deadSeaCount > 0) {
-    recs.push('Resuscitate dead sea files with documentation, types, and error handling')
-  }
-  if (stats.avgDepth < 30) {
-    recs.push('Dive deeper with type annotations and return types for better depth')
-  }
-  if (stats.avgPressure > 60) {
-    recs.push('Reduce pressure by extracting functions and adding error handling vents')
-  }
-  if (stats.hasAnglerFishCount > 0) {
-    recs.push('Name functions descriptively to illuminate angler fish code')
-  }
-  if (stats.hasWhirlpoolCount > 0) {
-    recs.push('Break circular dependencies to resolve data flow whirlpools')
-  }
-  if (stats.hasTrenchesCount > stats.totalFiles * 0.3) {
-    recs.push('Reduce nesting depth to fill dangerous code trenches')
-  }
-  if (stats.murkyDepthsCount > stats.totalFiles * 0.3) {
-    recs.push('Add JSDoc documentation to clear murky code depths')
-  }
+  if (stats.avgDepthComplexity < 50) recs.push('Increase depth complexity — add interfaces and types for proper code stratification')
+  if (stats.avgCurrentQuality < 50) recs.push('Improve current quality — reduce any/eval and establish smooth data flow')
+  if (stats.avgBioluminescence < 50) recs.push('Boost bioluminescence — add documentation and illuminate code paths')
+  if (stats.avgPressureHandling < 50) recs.push('Strengthen pressure handling — add error handling and remove code leaks')
+  if (stats.avgTrenchQuality < 50) recs.push('Improve trench quality — build solid architecture with interfaces, types, and classes')
+  if (stats.avgAbyssalNavigation < 50) recs.push('Enhance navigation — add documentation and reduce uncharted code areas')
+  if (stats.voidCount > stats.totalFiles * 0.3) recs.push('Critical: over 30% of specimens are void — consider major refactoring')
+  if (stats.deadZoneCount > 0) recs.push('Warning: dead zones detected — these files need ecosystem restoration')
+  if (ocean.overallHealth < 40) recs.push('Overall ocean health is critical — establish a deep-sea recovery plan')
+  if (zones.length > 0 && zones.every((z) => z.condition === 'evaporated')) recs.push('All zones are evaporated — your codebase needs fundamental revitalization')
 
-  if (recs.length === 0) {
-    recs.push('Continue maintaining healthy ocean code depths')
+  if (specimens.length > 0) {
+    const dark = specimens.filter((sp) => sp.depth.darknessCount > 2)
+    if (dark.length > specimens.length * 0.5) recs.push('Over 50% of specimens have excessive darkness — reduce any/eval usage')
   }
 
   return recs
 }
 
-// ─── Orchestrator ───────────────────────────────────────
+// ─── buildDeepOceanResult ────────────────────────────────────
 
-/**
- * Build the full deep ocean result
- * @example
- * buildDeepOceanResult(files, contents, {}) // DeepOceanResult
- */
-export function buildDeepOceanResult(
-  files: string[],
-  contents: string[],
-  _options: Record<string, unknown> = {},
-): DeepOceanResult {
-  const depths: OceanDepth[] = files.map((file, i) =>
-    analyzeOceanDepth(contents[i] ?? '', file),
+/** @example buildDeepOceanResult(files, contents) returns full result */
+export function buildDeepOceanResult(files: string[], contents: string[]): DeepOceanResult {
+  const specimens = files.map((file, i) => analyzeAbyssalSpecimen(contents[i] ?? '', file))
+
+  const zoneMap = new Map<string, AbyssalSpecimen[]>()
+  specimens.forEach((specimen) => {
+    const parts = specimen.file.split('/')
+    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
+    const existing = zoneMap.get(dir)
+    if (existing) existing.push(specimen)
+    else zoneMap.set(dir, [specimen])
+  })
+
+  const zones = Array.from(zoneMap.entries()).map(([dir, ss]) => analyzeOceanZone(ss, dir))
+
+  const avgDepthComplexity = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.depthComplexity, 0) / specimens.length) : 0
+  const avgCurrentQuality = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.currentQuality, 0) / specimens.length) : 0
+  const avgBioluminescence = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.bioluminescence, 0) / specimens.length) : 0
+  const avgPressureHandling = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.pressureHandling, 0) / specimens.length) : 0
+  const avgTrenchQuality = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.trenchQuality, 0) / specimens.length) : 0
+  const avgAbyssalNavigation = specimens.length > 0 ? Math.round(specimens.reduce((s, sp) => s + sp.abyssalNavigation, 0) / specimens.length) : 0
+
+  const overallHealth = Math.round(
+    avgDepthComplexity * 0.15 +
+    avgCurrentQuality * 0.15 +
+    avgBioluminescence * 0.2 +
+    avgPressureHandling * 0.15 +
+    avgTrenchQuality * 0.2 +
+    avgAbyssalNavigation * 0.15,
   )
 
-  const basinMap = new Map<string, OceanDepth[]>()
-  for (const d of depths) {
-    const dir = d.file.includes('/') ? d.file.substring(0, d.file.lastIndexOf('/')) : '.'
-    const existing = basinMap.get(dir)
-    if (existing) {
-      existing.push(d)
-    } else {
-      basinMap.set(dir, [d])
-    }
+  const ocean = {
+    avgDepth: avgDepthComplexity,
+    avgCurrent: avgCurrentQuality,
+    avgNavigation: avgAbyssalNavigation,
+    isHealthy: overallHealth >= 60,
+    overallHealth,
   }
 
-  const basins: OceanBasin[] = Array.from(basinMap.entries()).map(([dir, bDepths]) =>
-    analyzeOceanBasin(bDepths, dir),
-  )
-
-  const totalFiles = depths.length
-  const avg = (fn: (d: OceanDepth) => number) =>
-    totalFiles === 0 ? 0 : Math.round(depths.reduce((s, d) => s + fn(d), 0) / totalFiles)
-
-  const planet: PlanetMeasure = {
-    avgDepth: avg(d => d.depth),
-    avgPressure: avg(d => d.pressure),
-    avgCurrentStrength: avg(d => d.currentStrength),
-    isHealthy: avg(d => d.qualityScore) >= 50,
-    overallDepth: avg(d => d.qualityScore),
+  const stats = {
+    totalFiles: files.length,
+    totalZones: zones.length,
+    avgDepthComplexity,
+    avgCurrentQuality,
+    avgBioluminescence,
+    avgPressureHandling,
+    avgTrenchQuality,
+    avgAbyssalNavigation,
+    hydrothermalVentCount: specimens.filter((sp) => sp.condition === 'hydrothermal-vent').length,
+    coralGardenCount: specimens.filter((sp) => sp.condition === 'coral-garden').length,
+    openWaterCount: specimens.filter((sp) => sp.condition === 'open-water').length,
+    murkyDepthsCount: specimens.filter((sp) => sp.condition === 'murky-depths').length,
+    deadZoneCount: specimens.filter((sp) => sp.condition === 'dead-zone').length,
+    voidCount: specimens.filter((sp) => sp.condition === 'void').length,
+    hasModerateComplexityCount: specimens.filter((sp) => sp.depth.hasModerateComplexity).length,
+    hasHighQualityCount: specimens.filter((sp) => sp.current.hasHighQuality).length,
+    hasHighLuminescenceCount: specimens.filter((sp) => sp.bio.hasHighLuminescence).length,
+    hasHighHandlingCount: specimens.filter((sp) => sp.pressure.hasHighHandling).length,
+    hasHighTrenchCount: specimens.filter((sp) => sp.trench.hasHighQuality).length,
+    hasHighNavigationCount: specimens.filter((sp) => sp.navigation.hasHighQuality).length,
+    overallHealth,
+    captainGrade: classifyCaptainGrade(overallHealth),
+    bestSpecimen: '',
+    bestDepth: '',
+    bestFlow: '',
+    mostIlluminated: '',
+    mostResilient: '',
+    bestArchitected: '',
   }
 
-  const overallDepth = planet.overallDepth
-
-  const clearestWaters = depths.length > 0
-    ? depths.reduce((best, d) => d.surface.clarity > best.surface.clarity ? d : best, depths[0]).file
-    : ''
-  const deepestDive = depths.length > 0
-    ? depths.reduce((best, d) => d.depth > best.depth ? d : best, depths[0]).file
-    : ''
-  const strongestCurrent = depths.length > 0
-    ? depths.reduce((best, d) => d.currentStrength > best.currentStrength ? d : best, depths[0]).file
-    : ''
-  const mostStable = depths.length > 0
-    ? depths.reduce((best, d) => d.abyssalStability > best.abyssalStability ? d : best, depths[0]).file
-    : ''
-  const mostDangerous = depths.length > 0
-    ? depths.reduce((best, d) => d.life.sharkCount > best.life.sharkCount ? d : best, depths[0]).file
-    : ''
-
-  const stats: DeepOceanStats = {
-    totalFiles,
-    totalBasins: basins.length,
-    avgDepth: planet.avgDepth,
-    avgPressure: planet.avgPressure,
-    avgBioluminescence: avg(d => d.bioluminescence),
-    avgCurrentStrength: planet.avgCurrentStrength,
-    avgTemperature: avg(d => d.temperature),
-    avgAbyssalStability: avg(d => d.abyssalStability),
-    crystalClearCount: depths.filter(d => d.condition === 'crystal-clear-waters').length,
-    clearOceanCount: depths.filter(d => d.condition === 'clear-ocean').length,
-    coastalWatersCount: depths.filter(d => d.condition === 'coastal-waters').length,
-    murkyDepthsCount: depths.filter(d => d.condition === 'murky-depths').length,
-    blackSmokerCount: depths.filter(d => d.condition === 'black-smoker').length,
-    deadSeaCount: depths.filter(d => d.condition === 'dead-sea').length,
-    sunlitZoneCount: depths.filter(d => d.zone.current === 'sunlit-zone').length,
-    twilightZoneCount: depths.filter(d => d.zone.current === 'twilight-zone').length,
-    midnightZoneCount: depths.filter(d => d.zone.current === 'midnight-zone').length,
-    abyssalZoneCount: depths.filter(d => d.zone.current === 'abyssal-zone').length,
-    hadalZoneCount: depths.filter(d => d.zone.current === 'hadal-zone').length,
-    hasWhirlpoolCount: depths.filter(d => d.currentMeasure.hasWhirlpool).length,
-    hasUndertowCount: depths.filter(d => d.currentMeasure.hasUndertow).length,
-    hasAnglerFishCount: depths.filter(d => d.bioluminescenceMeasure.hasAnglerFish).length,
-    hasSharksCount: depths.filter(d => d.life.hasSharks).length,
-    hasHotVentsCount: depths.filter(d => d.thermal.hasHotVents).length,
-    hasThermoclineCount: depths.filter(d => d.zone.hasThermocline).length,
-    hasSeafloorCount: depths.filter(d => d.abyssal.hasSeafloor).length,
-    hasTrenchesCount: depths.filter(d => d.abyssal.hasTrenches).length,
-    navigableCount: depths.filter(d => d.currentMeasure.isNavigable).length,
-    overallDepth,
-    oceanographerGrade: classifyOceanographerGrade(overallDepth),
-    clearestWaters,
-    deepestDive,
-    strongestCurrent,
-    mostStable,
-    mostDangerous,
+  if (specimens.length > 0) {
+    stats.bestSpecimen = specimens.reduce((a, b) => a.qualityScore >= b.qualityScore ? a : b).file
+    stats.bestDepth = specimens.reduce((a, b) => a.depthComplexity >= b.depthComplexity ? a : b).file
+    stats.bestFlow = specimens.reduce((a, b) => a.currentQuality >= b.currentQuality ? a : b).file
+    stats.mostIlluminated = specimens.reduce((a, b) => a.bioluminescence >= b.bioluminescence ? a : b).file
+    stats.mostResilient = specimens.reduce((a, b) => a.pressureHandling >= b.pressureHandling ? a : b).file
+    stats.bestArchitected = specimens.reduce((a, b) => a.trenchQuality >= b.trenchQuality ? a : b).file
   }
 
-  const recommendations = generateRecommendations(depths, basins, planet, stats)
+  const recommendations = generateRecommendations(specimens, zones, ocean, stats)
 
-  return { depths, basins, planet, stats, recommendations }
-}
-
-function countDeprecated(content: string): number {
-  const m = content.match(/\bdeprecated\b|\@deprecated/gi)
-  return m ? m.length : 0
+  return { specimens, zones, ocean, stats, recommendations }
 }
