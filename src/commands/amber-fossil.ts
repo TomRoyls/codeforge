@@ -4,45 +4,33 @@ import * as fs from 'node:fs/promises'
 import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
-import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildAmberFossilResult,
-  type AmberFossilResult,
-} from './amber-fossil-helpers.js'
-import { formatAmberFossilJson, formatAmberFossilTable } from './amber-fossil-format-helpers.js'
+import { buildAmberFossilResult } from './amber-fossil-helpers.js'
+import { formatAmberFossilTable, formatAmberFossilJson } from './amber-fossil-format-helpers.js'
+
+// ─── Constants ─────────────────────────────────────────────────────────────
+
+const DEFAULT_IGNORE = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
+const DEFAULT_PATTERNS = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx']
+
+// ─── Command ───────────────────────────────────────────────────────────────
 
 export default class AmberFossil extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze amber fossil patterns',
+      description: 'Directory or file path to analyze',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code preservation, clarity, and permanence like amber fossils'
+  static override description = 'Analyze code preservation — stability, trapped essence, aging grace, fossilization, crystalline quality, and ancient wisdom'
 
   static override examples = [
-    {
-      command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze amber fossils in current directory',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze amber fossils in src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze only TypeScript files',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file breakdown',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output amber.json',
-      description: 'Export amber fossil analysis to JSON file',
-    },
+    '<%= config.bin %> amber-fossil ./src',
+    '<%= config.bin %> amber-fossil ./src --format json',
+    '<%= config.bin %> amber-fossil ./src --verbose',
+    '<%= config.bin %> amber-fossil ./src --ext .ts,.tsx',
+    '<%= config.bin %> amber-fossil ./src --ignore "**/test/**"',
   ]
 
   static override flags = {
@@ -68,7 +56,7 @@ export default class AmberFossil extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file breakdown',
+      description: 'Show per-file details',
     }),
   }
 
@@ -82,56 +70,57 @@ export default class AmberFossil extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
+    const spinner = ora('Analyzing amber fossil preservation...').start()
 
-    const spinner = ora('Discovering files...').start()
+    const ignore = flags.ignore ? [...DEFAULT_IGNORE, ...flags.ignore] : DEFAULT_IGNORE
 
-    const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
-    const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
-
-    const discoveredFiles = await discoverFiles({
+    const fg = await import('fast-glob')
+    const files = await fg.default(DEFAULT_PATTERNS, {
       cwd: targetPath,
+      absolute: true,
       ignore,
-      patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
-      ],
     })
 
+    if (files.length === 0) {
+      spinner.warn('No source files found')
+      return
+    }
+
+    const sortedFiles = Array.from(new Set(files)).sort()
+
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
+      ? flags.ext.split(',').map((e: string) => e.trim()).filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
-      : discoveredFiles
+      ? sortedFiles.filter((f: string) => {
+          const ext = extname(f).toLowerCase()
+          return extensions.includes(ext)
+        })
+      : sortedFiles
 
-    spinner.text = 'Analyzing amber fossils...'
-
-    const files: string[] = []
-    const contents: string[] = []
-
-    for (const file of filteredFiles) {
-      try {
-        const content = await fs.readFile(file.absolutePath, 'utf8')
-        files.push(file.path)
-        contents.push(content)
-      } catch {
-        files.push(file.path)
-        contents.push('')
-      }
+    if (filteredFiles.length === 0) {
+      spinner.warn('No matching files after extension filter')
+      return
     }
 
-    const result: AmberFossilResult = buildAmberFossilResult(files, contents)
+    const contents = await Promise.all(
+      filteredFiles.map(async (file: string) => {
+        try {
+          return await fs.readFile(file, 'utf8')
+        } catch {
+          return ''
+        }
+      }),
+    )
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.collections.length} fossil collections`)
+    const result = buildAmberFossilResult(filteredFiles, contents)
 
-    const outputData =
-      format === 'json'
-        ? formatAmberFossilJson(result)
-        : formatAmberFossilTable(result, verbose)
+    spinner.succeed(`Analyzed ${result.stats.totalFiles} files across ${result.stats.totalCollections} collections`)
+
+    const outputData = format === 'json'
+      ? formatAmberFossilJson(result)
+      : formatAmberFossilTable(result, flags.verbose)
 
     if (flags.output) {
       try {
@@ -147,7 +136,3 @@ export default class AmberFossil extends Command {
     }
   }
 }
-
-export { buildAmberFossilResult } from './amber-fossil-helpers.js'
-export type { AmberFossilResult, AmberSpecimen, AmberCollection, ClarityMeasure, InclusionMeasure, HardnessMeasure, AgeMeasure, PreservationMeasure, ValueMeasure } from './amber-fossil-helpers.js'
-export { formatAmberFossilJson, formatAmberFossilTable } from './amber-fossil-format-helpers.js'

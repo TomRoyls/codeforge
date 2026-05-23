@@ -1,53 +1,143 @@
 import chalk from 'chalk'
-
 import type { AmberFossilResult } from './amber-fossil-helpers.js'
 
 // ─── Color Helpers ─────────────────────────────────────────────────────────
 
-/** @example scoreColor(90) returns green string */
+/** @example scoreColor(90) returns colored string */
 export function scoreColor(score: number): string {
-  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
-  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
-  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
+  if (score >= 80) return chalk.rgb(255, 191, 0)(String(score))
+  if (score >= 60) return chalk.rgb(46, 204, 113)(String(score))
+  if (score >= 40) return chalk.rgb(241, 196, 15)(String(score))
   return chalk.rgb(231, 76, 60)(String(score))
 }
 
-/** @example conditionColor('baltic-gold') returns colored string */
-export function conditionColor(condition: string): string {
-  switch (condition) {
-    case 'baltic-gold': return chalk.rgb(46, 204, 113).bold(condition)
-    case 'dominican-blue': return chalk.rgb(52, 152, 219)(condition)
-    case 'burmite-royal': return chalk.rgb(155, 89, 182)(condition)
-    case 'copal-raw': return chalk.rgb(241, 196, 15)(condition)
-    case 'jet-black': return chalk.rgb(230, 126, 34)(condition)
-    case 'sandstone': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
+/** @example stateColor('perfectly-preserved') returns colored string */
+export function stateColor(s: string): string {
+  switch (s) {
+    case 'perfectly-preserved': return chalk.rgb(255, 191, 0).bold(s)
+    case 'well-preserved': return chalk.rgb(46, 204, 113)(s)
+    case 'good-condition': return chalk.rgb(155, 89, 182)(s)
+    case 'weathered': return chalk.rgb(52, 152, 219)(s)
+    case 'degraded': return chalk.rgb(241, 196, 15)(s)
+    case 'decomposed': return chalk.rgb(231, 76, 60)(s)
+    default: return s
   }
 }
 
-/** @example gradeColor('curator') returns bold string */
-export function gradeColor(grade: string): string {
-  switch (grade) {
-    case 'curator': return chalk.rgb(46, 204, 113).bold(grade)
-    case 'paleontologist': return chalk.rgb(52, 152, 219)(grade)
-    case 'collector': return chalk.rgb(155, 89, 182)(grade)
-    case 'enthusiast': return chalk.rgb(241, 196, 15)(grade)
-    case 'tourist': return chalk.rgb(230, 126, 34)(grade)
-    case 'beachcomber': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
+/** @example purityColor('pure-essence') returns colored string */
+export function purityColor(p: string): string {
+  switch (p) {
+    case 'pure-essence': return chalk.rgb(255, 191, 0).bold(p)
+    case 'rich-inclusion': return chalk.rgb(46, 204, 113)(p)
+    case 'clear-specimen': return chalk.rgb(155, 89, 182)(p)
+    case 'cloudy-inclusion': return chalk.rgb(52, 152, 219)(p)
+    case 'murky': return chalk.rgb(241, 196, 15)(p)
+    case 'opaque-mass': return chalk.rgb(231, 76, 60)(p)
+    default: return p
   }
 }
 
-/** @example collectionTypeColor('museum') returns colored string */
-export function collectionTypeColor(collectionType: string): string {
-  switch (collectionType) {
-    case 'museum': return chalk.rgb(46, 204, 113)(collectionType)
-    case 'private-collection': return chalk.rgb(52, 152, 219)(collectionType)
-    case 'exhibition': return chalk.rgb(155, 89, 182)(collectionType)
-    case 'workshop': return chalk.rgb(241, 196, 15)(collectionType)
-    case 'quarry': return chalk.rgb(230, 126, 34)(collectionType)
-    case 'beach': return chalk.rgb(231, 76, 60)(collectionType)
-    default: return collectionType
+/** @example agingQualityColor('vintage-masterpiece') returns colored string */
+export function agingQualityColor(q: string): string {
+  switch (q) {
+    case 'vintage-masterpiece': return chalk.rgb(255, 191, 0).bold(q)
+    case 'well-aged': return chalk.rgb(46, 204, 113)(q)
+    case 'properly-matured': return chalk.rgb(155, 89, 182)(q)
+    case 'showing-age': return chalk.rgb(52, 152, 219)(q)
+    case 'deteriorating': return chalk.rgb(241, 196, 15)(q)
+    case 'ancient-ruin': return chalk.rgb(231, 76, 60)(q)
+    default: return q
+  }
+}
+
+/** @example fossilStateColor('petrified-perfection') returns colored string */
+export function fossilStateColor(s: string): string {
+  switch (s) {
+    case 'petrified-perfection': return chalk.rgb(255, 191, 0).bold(s)
+    case 'solid-fossil': return chalk.rgb(46, 204, 113)(s)
+    case 'well-mineralized': return chalk.rgb(155, 89, 182)(s)
+    case 'partially-fossilized': return chalk.rgb(52, 152, 219)(s)
+    case 'soft-sediment': return chalk.rgb(241, 196, 15)(s)
+    case 'still-decaying': return chalk.rgb(231, 76, 60)(s)
+    default: return s
+  }
+}
+
+/** @example formColor('perfect-crystal') returns colored string */
+export function formColor(f: string): string {
+  switch (f) {
+    case 'perfect-crystal': return chalk.rgb(255, 191, 0).bold(f)
+    case 'well-formed': return chalk.rgb(46, 204, 113)(f)
+    case 'good-structure': return chalk.rgb(155, 89, 182)(f)
+    case 'rough-crystal': return chalk.rgb(52, 152, 219)(f)
+    case 'amorphous': return chalk.rgb(241, 196, 15)(f)
+    case 'chaotic': return chalk.rgb(231, 76, 60)(f)
+    default: return f
+  }
+}
+
+/** @example levelColor('ancient-sage') returns colored string */
+export function levelColor(l: string): string {
+  switch (l) {
+    case 'ancient-sage': return chalk.rgb(255, 191, 0).bold(l)
+    case 'wise-elder': return chalk.rgb(46, 204, 113)(l)
+    case 'experienced': return chalk.rgb(155, 89, 182)(l)
+    case 'maturing': return chalk.rgb(52, 152, 219)(l)
+    case 'young': return chalk.rgb(241, 196, 15)(l)
+    case 'naive': return chalk.rgb(231, 76, 60)(l)
+    default: return l
+  }
+}
+
+/** @example conditionColor('museum-piece') returns colored string */
+export function conditionColor(c: string): string {
+  switch (c) {
+    case 'museum-piece': return chalk.rgb(255, 191, 0).bold(c)
+    case 'fine-specimen': return chalk.rgb(46, 204, 113)(c)
+    case 'good-fossil': return chalk.rgb(155, 89, 182)(c)
+    case 'weathered-amber': return chalk.rgb(52, 152, 219)(c)
+    case 'degrading': return chalk.rgb(241, 196, 15)(c)
+    case 'dust': return chalk.rgb(231, 76, 60)(c)
+    default: return c
+  }
+}
+
+/** @example gradeColor('master-paleontologist') returns colored string */
+export function gradeColor(g: string): string {
+  switch (g) {
+    case 'master-paleontologist': return chalk.rgb(255, 191, 0).bold(g)
+    case 'expert-collector': return chalk.rgb(46, 204, 113)(g)
+    case 'skilled-finder': return chalk.rgb(155, 89, 182)(g)
+    case 'amateur-collector': return chalk.rgb(52, 152, 219)(g)
+    case 'beachcomber': return chalk.rgb(241, 196, 15)(g)
+    case 'tourist': return chalk.rgb(231, 76, 60)(g)
+    default: return g
+  }
+}
+
+/** @example collectionTypeColor('natural-history-museum') returns colored string */
+export function collectionTypeColor(t: string): string {
+  switch (t) {
+    case 'natural-history-museum': return chalk.rgb(255, 191, 0).bold(t)
+    case 'private-collection': return chalk.rgb(46, 204, 113)(t)
+    case 'jewelry-box': return chalk.rgb(155, 89, 182)(t)
+    case 'curiosity-cabinet': return chalk.rgb(52, 152, 219)(t)
+    case 'beach-combing': return chalk.rgb(241, 196, 15)(t)
+    case 'empty-display': return chalk.rgb(231, 76, 60)(t)
+    default: return t
+  }
+}
+
+/** @example collectionConditionColor('world-class-collection') returns colored string */
+export function collectionConditionColor(c: string): string {
+  switch (c) {
+    case 'world-class-collection': return chalk.rgb(255, 191, 0).bold(c)
+    case 'valuable-hoard': return chalk.rgb(46, 204, 113)(c)
+    case 'decent-exhibit': return chalk.rgb(155, 89, 182)(c)
+    case 'mixed-bag': return chalk.rgb(52, 152, 219)(c)
+    case 'dusty-shelf': return chalk.rgb(241, 196, 15)(c)
+    case 'empty-case': return chalk.rgb(231, 76, 60)(c)
+    default: return c
   }
 }
 
@@ -65,73 +155,64 @@ export function formatAmberFossilTable(result: AmberFossilResult, verbose: boole
   const lines: string[] = []
 
   lines.push('')
-  lines.push(chalk.rgb(44, 62, 80).bold('  Amber Fossil Analysis'))
+  lines.push(chalk.rgb(255, 191, 0).bold('  Amber Fossil Analysis'))
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Museum Overview:'))
-  lines.push(`    Overall Value:        ${scoreColor(result.museum.overallValue)}`)
-  lines.push(`    Avg Clarity:          ${scoreColor(result.museum.avgClarity)}`)
-  lines.push(`    Avg Hardness:         ${scoreColor(result.museum.avgHardness)}`)
-  lines.push(`    Avg Value:            ${scoreColor(result.museum.avgValue)}`)
-  lines.push(`    Priceless:            ${result.museum.isPriceless ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
+  lines.push(chalk.rgb(255, 191, 0)('  Museum Overview:'))
+  lines.push(`    Overall Preservation:   ${scoreColor(result.museum.overallPreservation)}`)
+  lines.push(`    Avg Preservation:       ${scoreColor(result.museum.avgPreservation)}`)
+  lines.push(`    Avg Crystalline:        ${scoreColor(result.museum.avgCrystalline)}`)
+  lines.push(`    Avg Wisdom:             ${scoreColor(result.museum.avgWisdom)}`)
+  lines.push(`    Is Preserved:           ${result.museum.isPreserved ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Statistics:'))
-  lines.push(`    Total Files:            ${result.stats.totalFiles}`)
-  lines.push(`    Total Collections:      ${result.stats.totalCollections}`)
-  lines.push(`    Baltic Gold:            ${result.stats.balticGoldCount}`)
-  lines.push(`    Dominican Blue:         ${result.stats.dominicanBlueCount}`)
-  lines.push(`    Burmite Royal:          ${result.stats.burmiteRoyalCount}`)
-  lines.push(`    Copal Raw:              ${result.stats.copalRawCount}`)
-  lines.push(`    Jet Black:              ${result.stats.jetBlackCount}`)
-  lines.push(`    Sandstone:              ${result.stats.sandstoneCount}`)
-  lines.push(`    Clear:                  ${result.stats.isClearCount}`)
-  lines.push(`    Fully Documented:       ${result.stats.hasCompleteDocumentationCount}`)
-  lines.push(`    Hard:                   ${result.stats.isHardCount}`)
-  lines.push(`    Mature:                 ${result.stats.isMatureCount}`)
-  lines.push(`    Well Preserved:         ${result.stats.isWellPreservedCount}`)
-  lines.push(`    Valuable:               ${result.stats.isValuableCount}`)
+  lines.push(chalk.rgb(255, 191, 0)('  Statistics:'))
+  lines.push(`    Total Files:              ${result.stats.totalFiles}`)
+  lines.push(`    Total Collections:        ${result.stats.totalCollections}`)
+  lines.push(`    Avg Preservation:         ${scoreColor(result.stats.avgPreservation)}`)
+  lines.push(`    Avg Trapped Essence:      ${scoreColor(result.stats.avgTrappedEssence)}`)
+  lines.push(`    Avg Aging Grace:          ${scoreColor(result.stats.avgAgingGrace)}`)
+  lines.push(`    Avg Fossilization:        ${scoreColor(result.stats.avgFossilization)}`)
+  lines.push(`    Avg Crystalline Quality:  ${scoreColor(result.stats.avgCrystallineQuality)}`)
+  lines.push(`    Avg Ancient Wisdom:       ${scoreColor(result.stats.avgAncientWisdom)}`)
+  lines.push(`    Paleontologist Grade:     ${gradeColor(result.stats.paleontologistGrade)}`)
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Grades & Highlights:'))
-  lines.push(`    Paleontologist:         ${gradeColor(result.stats.paleontologistGrade)}`)
-  lines.push(`    Best Specimen:          ${result.stats.bestSpecimen || 'N/A'}`)
-  lines.push(`    Clearest:               ${result.stats.clearest || 'N/A'}`)
-  lines.push(`    Best Documented:        ${result.stats.bestDocumented || 'N/A'}`)
-  lines.push(`    Hardest:                ${result.stats.hardest || 'N/A'}`)
-  lines.push(`    Oldest:                 ${result.stats.oldest || 'N/A'}`)
-  lines.push(`    Most Valuable:          ${result.stats.mostValuable || 'N/A'}`)
+  lines.push(chalk.rgb(255, 191, 0)('  Condition Counts:'))
+  lines.push(`    Museum Piece:       ${result.stats.museumPieceCount}`)
+  lines.push(`    Fine Specimen:      ${result.stats.fineSpecimenCount}`)
+  lines.push(`    Good Fossil:        ${result.stats.goodFossilCount}`)
+  lines.push(`    Weathered Amber:    ${result.stats.weatheredAmberCount}`)
+  lines.push(`    Degrading:          ${result.stats.degradingCount}`)
+  lines.push(`    Dust:               ${result.stats.dustCount}`)
   lines.push('')
 
-  if (verbose && result.specimens.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Per-Specimen Breakdown:'))
-    for (const sp of result.specimens) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(sp.file)}`)
-      lines.push(`      Condition:          ${conditionColor(sp.condition)}`)
-      lines.push(`      Quality Score:      ${scoreColor(sp.qualityScore)}`)
-      lines.push(`      Clarity:            ${scoreColor(sp.amberClarity)} (${sp.clarity.grade})`)
-      lines.push(`      Inclusion:          ${scoreColor(sp.inclusionQuality)} (${sp.inclusion.type})`)
-      lines.push(`      Hardness:           ${scoreColor(sp.resinHardness)} (${sp.hardness.scale})`)
-      lines.push(`      Age:                ${scoreColor(sp.fossilAge)} (${sp.age.era})`)
-      lines.push(`      Preservation:       ${scoreColor(sp.preservationState)} (${sp.preservation.quality})`)
-      lines.push(`      Value:              ${scoreColor(sp.specimenValue)} (${sp.value.appraisal})`)
-    }
+  if (result.stats.bestSpecimen) {
+    lines.push(chalk.rgb(255, 191, 0)('  Highlights:'))
+    lines.push(`    Best Specimen:      ${result.stats.bestSpecimen}`)
+    lines.push(`    Best Preserved:     ${result.stats.bestPreserved}`)
+    lines.push(`    Best Essence:       ${result.stats.bestEssence}`)
+    lines.push(`    Best Aged:          ${result.stats.bestAged}`)
+    lines.push(`    Most Immutable:     ${result.stats.mostImmutable}`)
+    lines.push(`    Best Structured:    ${result.stats.bestStructured}`)
     lines.push('')
   }
 
-  if (result.collections.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Collections:'))
-    for (const col of result.collections) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(col.directory)} — ${collectionTypeColor(col.collectionType)} (${col.condition})`)
-      lines.push(`      Specimens: ${col.specimens.length}, Baltic Gold: ${col.balticGoldCount}, Clear: ${col.clearCount}, Hard: ${col.hardCount}`)
+  if (verbose && result.specimens.length > 0) {
+    lines.push(chalk.rgb(255, 191, 0)('  Per-File Specimens:'))
+    for (const sp of result.specimens) {
+      lines.push(`    ${chalk.rgb(169, 169, 169)(sp.file)}`)
+      lines.push(`      Score: ${scoreColor(sp.qualityScore)}  Condition: ${conditionColor(sp.condition)}`)
+      lines.push(`      Preserved: ${stateColor(sp.preserved.state)}(${sp.preservation})  Essence: ${purityColor(sp.essence.purity)}(${sp.trappedEssence})  Aging: ${agingQualityColor(sp.aging.quality)}(${sp.agingGrace})`)
+      lines.push(`      Fossil: ${fossilStateColor(sp.fossil.state)}(${sp.fossilization})  Crystal: ${formColor(sp.crystalline.form)}(${sp.crystallineQuality})  Wisdom: ${levelColor(sp.wisdom.level)}(${sp.ancientWisdom})`)
     }
     lines.push('')
   }
 
   if (result.recommendations.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Recommendations:'))
+    lines.push(chalk.rgb(255, 191, 0)('  Recommendations:'))
     for (const rec of result.recommendations) {
-      lines.push(`    • ${rec}`)
+      lines.push(`    ${chalk.rgb(255, 191, 0)('\u{1FAB5}')} ${rec}`)
     }
     lines.push('')
   }
