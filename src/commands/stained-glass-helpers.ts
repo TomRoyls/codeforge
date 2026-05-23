@@ -1,763 +1,856 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Imports ───────────────────────────────────────────────────────
+import path from 'node:path'
+import fg from 'fast-glob'
 
-export interface PaneConnections {
-  north: string | null
-  south: string | null
-  east: string | null
-  west: string | null
-  totalCames: number
+// ─── Types ─────────────────────────────────────────────────────────
+
+/** Harmony grade */
+export type HarmonyGrade =
+  | 'symphony-colors'
+  | 'harmonious-palette'
+  | 'proper-matching'
+  | 'clashing-colors'
+  | 'random-palette'
+  | 'monochrome-drab'
+
+/** Lead grade */
+export type LeadGrade =
+  | 'pure-lead'
+  | 'strong-came'
+  | 'proper-binding'
+  | 'weak-joint'
+  | 'cracked-lead'
+  | 'no-binding'
+
+/** Light grade */
+export type LightGrade =
+  | 'crystal-clear'
+  | 'bright-transmission'
+  | 'proper-light'
+  | 'tinted-glass'
+  | 'frosted'
+  | 'opaque'
+
+/** Pattern grade */
+export type PatternGrade =
+  | 'masterwork-design'
+  | 'beautiful-mosaic'
+  | 'proper-pattern'
+  | 'random-tiles'
+  | 'broken-pattern'
+  | 'no-pattern'
+
+/** Frame grade */
+export type FrameGrade =
+  | 'iron-frame'
+  | 'strong-armature'
+  | 'proper-support'
+  | 'weak-frame'
+  | 'buckling'
+  | 'no-frame'
+
+/** Pane condition */
+export type PaneCondition =
+  | 'cathedral-window'
+  | 'beautiful-panel'
+  | 'proper-window'
+  | 'cracked-glass'
+  | 'shattered-pane'
+  | 'no-glass'
+
+/** Workshop type */
+export type WorkshopType =
+  | 'cathedral-studio'
+  | 'glass-atelier'
+  | 'proper-workshop'
+  | 'home-studio'
+  | 'craft-table'
+  | 'no-studio'
+
+/** Workshop condition */
+export type WorkshopCondition =
+  | 'masterwork-collection'
+  | 'beautiful-display'
+  | 'decent-gallery'
+  | 'cracked-display'
+  | 'broken-pieces'
+  | 'empty'
+
+/** Artisan grade */
+export type ArtisanGrade =
+  | 'master-glazier'
+  | 'stained-glass-artist'
+  | 'skilled-craftsman'
+  | 'apprentice'
+  | 'novice'
+  | 'window-shopper'
+
+/** Harmonizing measurement */
+export interface HarmonizingMeasure {
+  harmony: number
+  grade: HarmonyGrade
+  hasHighHarmony: boolean
+  hasConsistent: boolean
+  hasMatching: boolean
+  hasNoClashing: boolean
+  hasUnified: boolean
+  hasNoDiscordant: boolean
+  hasHarmonious: boolean
+  hasNoMismatched: boolean
+  hasCoherent: boolean
+  hasNoConflicting: boolean
+  hasBlended: boolean
+  clashingCount: number
+  discordantCount: number
 }
 
-export interface PaneDefects {
-  cracks: number
-  chips: number
-  cloudiness: number
-  paintLoss: number
-  leadingIssues: number
+/** Binding measurement */
+export interface BindingMeasure {
+  quality: number
+  lead: LeadGrade
+  hasHighQuality: boolean
+  hasConnected: boolean
+  hasJoined: boolean
+  hasNoSeparated: boolean
+  hasBound: boolean
+  hasNoLoose: boolean
+  hasIntegrated: boolean
+  hasNoFragmented: boolean
+  hasCoupled: boolean
+  hasNoUncoupled: boolean
+  hasLinked: boolean
+  separatedCount: number
+  looseCount: number
 }
 
+/** Transmitting measurement */
+export interface TransmittingMeasure {
+  clarity: number
+  light: LightGrade
+  hasHighClarity: boolean
+  hasTransparent: boolean
+  hasRevealing: boolean
+  hasNoHidden: boolean
+  hasClear: boolean
+  hasNoOpaque: boolean
+  hasVisible: boolean
+  hasNoObscured: boolean
+  hasOpen: boolean
+  hasNoConcealed: boolean
+  hasLuminous: boolean
+  hiddenCount: number
+  opaqueCount: number
+}
+
+/** Patterning measurement */
+export interface PatterningMeasure {
+  coherence: number
+  pattern: PatternGrade
+  hasHighCoherence: boolean
+  hasLogical: boolean
+  hasFlowing: boolean
+  hasNoChaotic: boolean
+  hasStructured: boolean
+  hasNoRandom: boolean
+  hasOrganized: boolean
+  hasNoScattered: boolean
+  hasCoherent: boolean
+  hasNoDisjointed: boolean
+  hasOrdered: boolean
+  chaoticCount: number
+  scatteredCount: number
+}
+
+/** Structuring measurement */
+export interface StructuringMeasure {
+  integrity: number
+  frame: FrameGrade
+  hasHighIntegrity: boolean
+  hasSolid: boolean
+  hasRobust: boolean
+  hasNoFragile: boolean
+  hasStable: boolean
+  hasNoUnstable: boolean
+  hasStrong: boolean
+  hasNoWeak: boolean
+  hasSound: boolean
+  hasNoBroken: boolean
+  hasSecure: boolean
+  fragileCount: number
+  unstableCount: number
+}
+
+/** Single file analysis */
 export interface GlassPane {
   file: string
-  glassQuality: number
-  colorRichness: number
-  transparency: number
-  thickness: number
-  colorPalette: string[]
-  dominantColor: string
-  paneType: 'figural' | 'geometric' | 'floral' | 'abstract' | 'medallion' | 'border' | 'background'
-  paneShape: 'circular' | 'rectangular' | 'triangular' | 'diamond' | 'arched' | 'irregular'
-  condition: 'intact' | 'cracked' | 'broken' | 'weathered' | 'restored' | 'missing'
-  lightTransmission: number
-  hasLeadCame: boolean
+  colorHarmony: number
   leadQuality: number
-  connections: PaneConnections
-  defects: PaneDefects
-  artistry: number
-  storytelling: number
-  craftsmanship: 'master' | 'artisan' | 'journeyman' | 'apprentice' | 'novice'
-  lightEffect: 'brilliant' | 'luminous' | 'translucent' | 'opaque' | 'dark'
+  lightTransmission: number
+  patternCoherence: number
+  structuralIntegrity: number
+  harmonizing: HarmonizingMeasure
+  binding: BindingMeasure
+  transmitting: TransmittingMeasure
+  patterning: PatterningMeasure
+  structuring: StructuringMeasure
+  condition: PaneCondition
+  qualityScore: number
 }
 
-export interface GlassPanel {
+/** Directory-level workshop */
+export interface GlassWorkshop {
   directory: string
   panes: GlassPane[]
-  panelType: 'rose-window' | 'lancet' | 'clerestory' | 'tracery' | 'grisaille' | 'mosaic-glass'
-  totalPanes: number
-  avgGlassQuality: number
-  avgColorRichness: number
-  avgTransparency: number
-  avgArtistry: number
-  dominantPaneType: string
-  dominantColor: string
-  totalCames: number
-  crackedPanes: number
-  brokenPanes: number
-  missingPanes: number
-  avgLeadQuality: number
-  lightTransmission: number
-  composition: number
-  coherence: number
-  storytelling: number
-  condition: 'pristine' | 'excellent' | 'good' | 'fair' | 'damaged' | 'ruined'
-  style: 'gothic' | 'romanesque' | 'byzantine' | 'art-deco' | 'modern' | 'folk'
-  narrative: string
+  avgHarmony: number
+  avgBinding: number
+  avgIntegrity: number
+  cathedralWindowCount: number
+  noGlassCount: number
+  workshopType: WorkshopType
+  condition: WorkshopCondition
 }
 
+/** Cathedral summary */
+export interface CathedralSummary {
+  avgHarmony: number
+  avgBinding: number
+  avgIntegrity: number
+  isLuminous: boolean
+  overallBrilliance: number
+}
+
+/** Full stats */
 export interface StainedGlassStats {
   totalFiles: number
-  totalPanels: number
-  totalPanes: number
-  avgGlassQuality: number
-  avgColorRichness: number
-  avgTransparency: number
-  avgArtistry: number
+  totalWorkshops: number
+  avgColorHarmony: number
   avgLeadQuality: number
-  masterCraftsman: number
-  noviceCraftsman: number
-  intactPanes: number
-  crackedPanes: number
-  brokenPanes: number
-  missingPanes: number
-  totalCracks: number
-  totalChips: number
-  totalCloudiness: number
-  totalPaintLoss: number
-  totalLeadingIssues: number
-  brilliantPanes: number
-  darkPanes: number
-  overallArtistry: number
-  overallLightTransmission: number
-  dominantStyle: string
-  dominantPaneType: string
-  windowGrade: 'cathedral' | 'church' | 'chapel' | 'home' | 'shack' | 'ruin'
+  avgLightTransmission: number
+  avgPatternCoherence: number
+  avgStructuralIntegrity: number
+  cathedralWindowCount: number
+  beautifulPanelCount: number
+  properWindowCount: number
+  crackedGlassCount: number
+  shatteredPaneCount: number
+  noGlassCount: number
+  hasHighHarmonyCount: number
+  hasHighQualityCount: number
+  hasHighClarityCount: number
+  hasHighCoherenceCount: number
+  hasHighIntegrityCount: number
+  overallBrilliance: number
+  artisanGrade: ArtisanGrade
   bestPane: string
-  worstPane: string
-  mostColorful: string
-  bestStorytelling: string
+  mostHarmonious: string
+  bestBound: string
+  mostTransparent: string
+  mostCoherent: string
 }
 
+/** Full result */
 export interface StainedGlassResult {
   panes: GlassPane[]
-  panels: GlassPanel[]
+  workshops: GlassWorkshop[]
+  cathedral: CathedralSummary
   stats: StainedGlassStats
   recommendations: string[]
 }
 
-// ─── Regex Patterns ──────────────────────────────────────────────────────────
+// ─── Regex Helpers ─────────────────────────────────────────────────
 
-const EXPORT_RE = /export\s+(?:default\s+)?(?:function|class|const|let|interface|type)/g
-const IMPORT_RE = /import\s+.*?from\s+['"]([^'"]+)['"]/g
-const FUNCTION_RE = /(?:export\s+)?(?:async\s+)?function\s+\w+/g
-const CLASS_RE = /(?:export\s+)?(?:abstract\s+)?class\s+\w+/g
-const INTERFACE_RE = /(?:export\s+)?interface\s+\w+/g
-const TYPE_RE = /(?:export\s+)?type\s+\w+/g
-const ENUM_RE = /(?:export\s+)?enum\s+\w+/g
-const JSDOC_RE = /\/\*\*[\s\S]*?\*\//g
-const TODO_RE = /\/\/\s*(TODO|FIXME|HACK|XXX)/gi
-const ANY_RE = /:\s*any\b/g
-const CONSOLE_RE = /console\.\w+\(/g
-const NESTED_IF_RE = /if\s*\(.*if\s*\(/s
+const has = (pattern: RegExp, content: string): boolean => pattern.test(content)
+const count = (pattern: RegExp, content: string): number => {
+  const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+  const globalPattern = new RegExp(pattern.source, flags)
+  return (content.match(globalPattern) ?? []).length
+}
 
-// ─── Classification Functions ────────────────────────────────────────────────
+// ─── Boolean Detectors ─────────────────────────────────────────────
+
+const hasExport = (c: string) => has(/\bexport\b/, c)
+const hasConst = (c: string) => has(/\bconst\b/, c)
+const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)
+const hasInterface = (c: string) => has(/\binterface\b/, c)
+const hasGenerics = (c: string) => has(/<[A-Z][A-Za-z]*>/, c)
+const hasAsync = (c: string) => has(/\basync\b/, c)
+const hasImport = (c: string) => has(/\bimport\b/, c)
+const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
+const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
+const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
+const hasReadonly = (c: string) => has(/\breadonly\b/, c)
+const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
+const hasStrictEq = (c: string) => has(/===/, c)
+const hasClass = (c: string) => has(/\bclass\b/, c)
+
+// ─── Measure Functions ─────────────────────────────────────────────
 
 /**
- * Classify pane type from code constructs
+ * Measure color harmony (style consistency)
  * @example
- * classifyPaneType(3, 0, 5) // 'figural'
+ * const m = measureHarmonizing(content)
+ * console.log(m.grade) // 'symphony-colors'
  */
-export function classifyPaneType(classes: number, interfaces: number, functions: number): GlassPane['paneType'] {
-  if (classes >= 3) return 'figural'
-  if (interfaces >= 2) return 'medallion'
-  if (functions >= 5) return 'floral'
-  if (functions >= 3 && classes >= 1) return 'geometric'
-  if (functions >= 2) return 'abstract'
-  if (classes >= 1) return 'border'
-  return 'background'
+export function measureHarmonizing(content: string): HarmonizingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasImport(content) ? 10 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+
+  const hasConsistent = hasExport(content) && hasImport(content)
+  const hasMatching = hasInterface(content) && hasClass(content)
+  const hasUnified = hasGenerics(content) && hasTypeAlias(content)
+  const hasHarmonious = hasConst(content) && hasReturnType(content)
+  const hasCoherent = hasDocComments(content) && hasExport(content)
+  const hasBlended = hasAsync(content) && hasInterface(content)
+
+  score += hasConsistent ? 5 : 0
+  score += hasMatching ? 5 : 0
+  score += hasUnified ? 5 : 0
+  score += hasHarmonious ? 5 : 0
+  score += hasCoherent ? 5 : 0
+  score += hasBlended ? 5 : 0
+
+  const harmony = Math.min(score, 100)
+  const clashingCount = count(/\bvar\b/, content)
+  const discordantCount = count(/\bany\b/, content)
+
+  const hasNoClashing = clashingCount === 0
+  const hasNoDiscordant = discordantCount === 0
+  const hasNoMismatched = !has(/\beval\b/, content)
+  const hasNoConflicting = !has(/\bdebugger\b/, content)
+  const hasHighHarmony = harmony >= 70
+
+  let grade: HarmonyGrade
+  if (harmony >= 85) grade = 'symphony-colors'
+  else if (harmony >= 70) grade = 'harmonious-palette'
+  else if (harmony >= 55) grade = 'proper-matching'
+  else if (harmony >= 40) grade = 'clashing-colors'
+  else if (harmony >= 25) grade = 'random-palette'
+  else grade = 'monochrome-drab'
+
+  return {
+    harmony, grade, hasHighHarmony, hasConsistent, hasMatching, hasNoClashing,
+    hasUnified, hasNoDiscordant, hasHarmonious, hasNoMismatched, hasCoherent,
+    hasNoConflicting, hasBlended, clashingCount, discordantCount,
+  }
 }
 
 /**
- * Classify pane shape from code structure
+ * Measure lead quality (binding quality)
  * @example
- * classifyPaneShape(10, 5, 3) // 'rectangular'
+ * const m = measureBinding(content)
+ * console.log(m.lead) // 'pure-lead'
  */
-export function classifyPaneShape(lines: number, functions: number, classes: number): GlassPane['paneShape'] {
-  if (classes >= 2 && functions >= 3) return 'diamond'
-  if (classes >= 2) return 'circular'
-  if (functions >= 5) return 'arched'
-  if (lines > 50 && functions <= 2) return 'triangular'
-  if (lines > 20) return 'rectangular'
-  return 'irregular'
+export function measureBinding(content: string): BindingMeasure {
+  let score = 0
+  score += hasInterface(content) ? 10 : 0
+  score += hasClass(content) ? 10 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+
+  const hasConnected = hasInterface(content) && hasClass(content)
+  const hasJoined = hasExport(content) && hasImport(content)
+  const hasBound = hasGenerics(content) && hasTypeAlias(content)
+  const hasIntegrated = hasConst(content) && hasReturnType(content)
+  const hasCoupled = hasNamedExport(content) && hasExport(content)
+  const hasLinked = hasDocComments(content) && hasInterface(content)
+
+  score += hasConnected ? 5 : 0
+  score += hasJoined ? 5 : 0
+  score += hasBound ? 5 : 0
+  score += hasIntegrated ? 5 : 0
+  score += hasCoupled ? 5 : 0
+  score += hasLinked ? 5 : 0
+
+  const quality = Math.min(score, 100)
+  const separatedCount = count(/\bvar\b/, content)
+  const looseCount = count(/\bany\b/, content)
+
+  const hasNoSeparated = separatedCount === 0
+  const hasNoLoose = looseCount === 0
+  const hasNoFragmented = !has(/\beval\b/, content)
+  const hasNoUncoupled = !has(/\bdebugger\b/, content)
+  const hasHighQuality = quality >= 70
+
+  let lead: LeadGrade
+  if (quality >= 85) lead = 'pure-lead'
+  else if (quality >= 70) lead = 'strong-came'
+  else if (quality >= 55) lead = 'proper-binding'
+  else if (quality >= 40) lead = 'weak-joint'
+  else if (quality >= 25) lead = 'cracked-lead'
+  else lead = 'no-binding'
+
+  return {
+    quality, lead, hasHighQuality, hasConnected, hasJoined, hasNoSeparated,
+    hasBound, hasNoLoose, hasIntegrated, hasNoFragmented, hasCoupled,
+    hasNoUncoupled, hasLinked, separatedCount, looseCount,
+  }
 }
 
 /**
- * Classify craftsmanship from quality score
+ * Measure light transmission (transparency)
  * @example
- * classifyCraftsmanship(90) // 'master'
+ * const m = measureTransmitting(content)
+ * console.log(m.light) // 'crystal-clear'
  */
-export function classifyCraftsmanship(quality: number): GlassPane['craftsmanship'] {
-  if (quality >= 85) return 'master'
-  if (quality >= 70) return 'artisan'
-  if (quality >= 50) return 'journeyman'
-  if (quality >= 30) return 'apprentice'
-  return 'novice'
+export function measureTransmitting(content: string): TransmittingMeasure {
+  let score = 0
+  score += hasReturnType(content) ? 10 : 0
+  score += hasStrictEq(content) ? 10 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+
+  const hasTransparent = hasReturnType(content) && hasStrictEq(content)
+  const hasRevealing = hasReadonly(content) && hasPrivate(content)
+  const hasClear = hasDocComments(content) && hasInterface(content)
+  const hasVisible = hasGenerics(content) && hasExport(content)
+  const hasOpen = hasAsync(content) && hasReturnType(content)
+  const hasLuminous = hasStrictEq(content) && hasClass(content)
+
+  score += hasTransparent ? 5 : 0
+  score += hasRevealing ? 5 : 0
+  score += hasClear ? 5 : 0
+  score += hasVisible ? 5 : 0
+  score += hasOpen ? 5 : 0
+  score += hasLuminous ? 5 : 0
+
+  const clarity = Math.min(score, 100)
+  const hiddenCount = count(/\bvar\b/, content)
+  const opaqueCount = count(/\bany\b/, content)
+
+  const hasNoHidden = hiddenCount === 0
+  const hasNoOpaque = opaqueCount === 0
+  const hasNoObscured = !has(/\beval\b/, content)
+  const hasNoConcealed = !has(/\bdebugger\b/, content)
+  const hasHighClarity = clarity >= 70
+
+  let light: LightGrade
+  if (clarity >= 85) light = 'crystal-clear'
+  else if (clarity >= 70) light = 'bright-transmission'
+  else if (clarity >= 55) light = 'proper-light'
+  else if (clarity >= 40) light = 'tinted-glass'
+  else if (clarity >= 25) light = 'frosted'
+  else light = 'opaque'
+
+  return {
+    clarity, light, hasHighClarity, hasTransparent, hasRevealing, hasNoHidden,
+    hasClear, hasNoOpaque, hasVisible, hasNoObscured, hasOpen,
+    hasNoConcealed, hasLuminous, hiddenCount, opaqueCount,
+  }
 }
 
 /**
- * Classify light effect from transparency
+ * Measure pattern coherence (logical flow)
  * @example
- * classifyLightEffect(85) // 'brilliant'
+ * const m = measurePatterning(content)
+ * console.log(m.pattern) // 'masterwork-design'
  */
-export function classifyLightEffect(transparency: number): GlassPane['lightEffect'] {
-  if (transparency >= 80) return 'brilliant'
-  if (transparency >= 60) return 'luminous'
-  if (transparency >= 40) return 'translucent'
-  if (transparency >= 20) return 'opaque'
-  return 'dark'
+export function measurePatterning(content: string): PatterningMeasure {
+  let score = 0
+  score += hasInterface(content) ? 10 : 0
+  score += hasClass(content) ? 10 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+
+  const hasLogical = hasInterface(content) && hasClass(content)
+  const hasFlowing = hasPrivate(content) && hasReadonly(content)
+  const hasStructured = hasExport(content) && hasImport(content)
+  const hasOrganized = hasGenerics(content) && hasTypeAlias(content)
+  const hasCoherent = hasConst(content) && hasExport(content)
+  const hasOrdered = hasNamedExport(content) && hasInterface(content)
+
+  score += hasLogical ? 5 : 0
+  score += hasFlowing ? 5 : 0
+  score += hasStructured ? 5 : 0
+  score += hasOrganized ? 5 : 0
+  score += hasCoherent ? 5 : 0
+  score += hasOrdered ? 5 : 0
+
+  const coherence = Math.min(score, 100)
+  const chaoticCount = count(/\bvar\b/, content)
+  const scatteredCount = count(/\bany\b/, content)
+
+  const hasNoChaotic = chaoticCount === 0
+  const hasNoRandom = scatteredCount === 0
+  const hasNoScattered = !has(/\beval\b/, content)
+  const hasNoDisjointed = !has(/\bdebugger\b/, content)
+  const hasHighCoherence = coherence >= 70
+
+  let pattern: PatternGrade
+  if (coherence >= 85) pattern = 'masterwork-design'
+  else if (coherence >= 70) pattern = 'beautiful-mosaic'
+  else if (coherence >= 55) pattern = 'proper-pattern'
+  else if (coherence >= 40) pattern = 'random-tiles'
+  else if (coherence >= 25) pattern = 'broken-pattern'
+  else pattern = 'no-pattern'
+
+  return {
+    coherence, pattern, hasHighCoherence, hasLogical, hasFlowing, hasNoChaotic,
+    hasStructured, hasNoRandom, hasOrganized, hasNoScattered, hasCoherent,
+    hasNoDisjointed, hasOrdered, chaoticCount, scatteredCount,
+  }
 }
 
 /**
- * Classify pane condition from defects
+ * Measure structural integrity (framework strength)
  * @example
- * classifyPaneCondition(0, 0) // 'intact'
+ * const m = measureStructuring(content)
+ * console.log(m.frame) // 'iron-frame'
  */
-export function classifyPaneCondition(totalDefects: number, quality: number): GlassPane['condition'] {
-  if (totalDefects === 0 && quality >= 70) return 'intact'
-  if (totalDefects === 0) return 'restored'
-  if (totalDefects >= 5) return 'broken'
-  if (totalDefects >= 3) return 'cracked'
-  if (quality < 30) return 'weathered'
-  return 'cracked'
+export function measureStructuring(content: string): StructuringMeasure {
+  let score = 0
+  score += hasClass(content) ? 10 : 0
+  score += hasInterface(content) ? 10 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+
+  const hasSolid = hasClass(content) && hasInterface(content)
+  const hasRobust = hasExport(content) && hasImport(content)
+  const hasStable = hasGenerics(content) && hasTypeAlias(content)
+  const hasStrong = hasReadonly(content) && hasPrivate(content)
+  const hasSound = hasDocComments(content) && hasReturnType(content)
+  const hasSecure = hasClass(content) && hasGenerics(content)
+
+  score += hasSolid ? 5 : 0
+  score += hasRobust ? 5 : 0
+  score += hasStable ? 5 : 0
+  score += hasStrong ? 5 : 0
+  score += hasSound ? 5 : 0
+  score += hasSecure ? 5 : 0
+
+  const integrity = Math.min(score, 100)
+  const fragileCount = count(/\bvar\b/, content)
+  const unstableCount = count(/\bany\b/, content)
+
+  const hasNoFragile = fragileCount === 0
+  const hasNoUnstable = unstableCount === 0
+  const hasNoBroken = !has(/\beval\b/, content)
+  const hasNoWeak = !has(/\bdebugger\b/, content)
+  const hasHighIntegrity = integrity >= 70
+
+  let frame: FrameGrade
+  if (integrity >= 85) frame = 'iron-frame'
+  else if (integrity >= 70) frame = 'strong-armature'
+  else if (integrity >= 55) frame = 'proper-support'
+  else if (integrity >= 40) frame = 'weak-frame'
+  else if (integrity >= 25) frame = 'buckling'
+  else frame = 'no-frame'
+
+  return {
+    integrity, frame, hasHighIntegrity, hasSolid, hasRobust, hasNoFragile,
+    hasStable, hasNoUnstable, hasStrong, hasNoWeak, hasSound,
+    hasNoBroken, hasSecure, fragileCount, unstableCount,
+  }
+}
+
+// ─── Classification Functions ───────────────────────────────────────
+
+/**
+ * Classify pane condition
+ * @example
+ * classifyPaneCondition(90) // 'cathedral-window'
+ */
+export function classifyPaneCondition(score: number): PaneCondition {
+  if (score >= 85) return 'cathedral-window'
+  if (score >= 70) return 'beautiful-panel'
+  if (score >= 55) return 'proper-window'
+  if (score >= 40) return 'cracked-glass'
+  if (score >= 25) return 'shattered-pane'
+  return 'no-glass'
 }
 
 /**
- * Classify panel condition from average quality
+ * Classify workshop type
  * @example
- * classifyPanelCondition(85) // 'pristine'
+ * classifyWorkshopType(panes) // 'cathedral-studio'
  */
-export function classifyPanelCondition(avgQuality: number): GlassPanel['condition'] {
-  if (avgQuality >= 85) return 'pristine'
-  if (avgQuality >= 70) return 'excellent'
-  if (avgQuality >= 55) return 'good'
-  if (avgQuality >= 40) return 'fair'
-  if (avgQuality >= 20) return 'damaged'
-  return 'ruined'
+export function classifyWorkshopType(panes: GlassPane[]): WorkshopType {
+  if (panes.length === 0) return 'no-studio'
+  const avgQs = Math.round(panes.reduce((s, p) => s + p.qualityScore, 0) / panes.length)
+  const cathedralRatio = panes.filter(p => p.condition === 'cathedral-window').length / panes.length
+  if (avgQs >= 75 && cathedralRatio >= 0.5) return 'cathedral-studio'
+  if (avgQs >= 60) return 'glass-atelier'
+  if (avgQs >= 45) return 'proper-workshop'
+  if (avgQs >= 30) return 'home-studio'
+  if (avgQs >= 15) return 'craft-table'
+  return 'no-studio'
 }
 
 /**
- * Classify window grade from overall artistry
+ * Classify artisan grade
  * @example
- * classifyWindowGrade(90) // 'cathedral'
+ * classifyArtisanGrade(85) // 'master-glazier'
  */
-export function classifyWindowGrade(avgArtistry: number): StainedGlassStats['windowGrade'] {
-  if (avgArtistry >= 80) return 'cathedral'
-  if (avgArtistry >= 60) return 'church'
-  if (avgArtistry >= 40) return 'chapel'
-  if (avgArtistry >= 25) return 'home'
-  if (avgArtistry >= 10) return 'shack'
-  return 'ruin'
+export function classifyArtisanGrade(avgBrilliance: number): ArtisanGrade {
+  if (avgBrilliance >= 80) return 'master-glazier'
+  if (avgBrilliance >= 65) return 'stained-glass-artist'
+  if (avgBrilliance >= 50) return 'skilled-craftsman'
+  if (avgBrilliance >= 35) return 'apprentice'
+  if (avgBrilliance >= 20) return 'novice'
+  return 'window-shopper'
 }
 
 /**
- * Classify style from pane characteristics
+ * Classify workshop condition
  * @example
- * classifyStyle(50, 80, 5) // 'gothic'
+ * classifyWorkshopCondition(80) // 'masterwork-collection'
  */
-export function classifyStyle(avgRichness: number, avgQuality: number, classes: number): GlassPanel['style'] {
-  if (avgRichness >= 60 && classes >= 3) return 'gothic'
-  if (avgQuality >= 70) return 'byzantine'
-  if (avgRichness >= 50) return 'art-deco'
-  if (avgQuality >= 50 && avgRichness >= 30) return 'romanesque'
-  if (avgRichness >= 30) return 'modern'
-  return 'folk'
+export function classifyWorkshopCondition(avgQs: number): WorkshopCondition {
+  if (avgQs >= 75) return 'masterwork-collection'
+  if (avgQs >= 60) return 'beautiful-display'
+  if (avgQs >= 45) return 'decent-gallery'
+  if (avgQs >= 30) return 'cracked-display'
+  if (avgQs >= 15) return 'broken-pieces'
+  return 'empty'
 }
+
+// ─── Recommendation Generator ──────────────────────────────────────
 
 /**
- * Classify panel type from pane distribution
+ * Generate recommendations
  * @example
- * classifyPanelType(10, 80, 5) // 'rose-window'
+ * generateRecommendations(panes, workshops, cathedral, stats)
  */
-export function classifyPanelType(paneCount: number, avgArtistry: number, avgConnections: number): GlassPanel['panelType'] {
-  if (paneCount >= 10 && avgArtistry >= 60) return 'rose-window'
-  if (avgConnections >= 5) return 'tracery'
-  if (paneCount >= 8) return 'mosaic-glass'
-  if (avgArtistry >= 50) return 'lancet'
-  if (paneCount <= 3) return 'grisaille'
-  return 'clerestory'
+export function generateRecommendations(
+  panes: GlassPane[],
+  workshops: GlassWorkshop[],
+  cathedral: CathedralSummary,
+  stats: StainedGlassStats,
+): string[] {
+  const recs: string[] = []
+  if (stats.avgColorHarmony < 50) {
+    recs.push('Harmonize colors with consistent exports, matching interfaces, and unified type patterns')
+  }
+  if (stats.avgLeadQuality < 50) {
+    recs.push('Strengthen lead bindings with connected interfaces, joined exports, and integrated modules')
+  }
+  if (stats.avgLightTransmission < 50) {
+    recs.push('Improve light transmission with transparent return types, clear documentation, and visible patterns')
+  }
+  if (stats.avgPatternCoherence < 50) {
+    recs.push('Coherence patterns with logical interfaces, flowing visibility, and structured organization')
+  }
+  if (stats.avgStructuralIntegrity < 50) {
+    recs.push('Reinforce structure with solid classes, robust exports, and stable generic types')
+  }
+  if (stats.noGlassCount > 0) {
+    recs.push(`${stats.noGlassCount} file(s) have no glass — consider significant refactoring`)
+  }
+  if (cathedral.overallBrilliance < 40) {
+    recs.push('Overall stained glass brilliance is poor — focus on color harmony and lead quality first')
+  }
+  const allEmpty = workshops.every(w => w.workshopType === 'no-studio' || w.workshopType === 'craft-table')
+  if (allEmpty && workshops.length > 0) {
+    recs.push('All workshops are empty or craft-tables — consider a major quality overhaul')
+  }
+  const noGlass = panes.filter(p => p.condition === 'no-glass').map(p => p.file)
+  if (noGlass.length > 0 && noGlass.length <= 3) {
+    recs.push(`Restore these no-glass files into panes: ${noGlass.join(', ')}`)
+  }
+  if (recs.length === 0) {
+    recs.push('Your stained glass masterpiece is complete! Every pane shimmers with color, light, and structural perfection')
+  }
+  return recs
 }
 
-// ─── Detection Functions ─────────────────────────────────────────────────────
-
-/**
- * Detect cracks (inconsistencies) in code
- * @example
- * detectCracks('const x: any = 1') // 1
- */
-export function detectCracks(content: string): number {
-  let count = 0
-  const anys = (content.match(ANY_RE) ?? []).length
-  count += anys
-  if (NESTED_IF_RE.test(content)) count += 1
-  return count
-}
-
-/**
- * Detect cloudiness (unclear code)
- * @example
- * detectCloudiness('function f(x) { return x }') // 1
- */
-export function detectCloudiness(content: string): number {
-  let count = 0
-  const lines = content.split('\n')
-  const longLines = lines.filter(l => l.length > 120).length
-  count += Math.min(3, longLines)
-  const consoles = (content.match(CONSOLE_RE) ?? []).length
-  count += Math.min(2, consoles)
-  return count
-}
-
-/**
- * Detect paint loss (missing documentation)
- * @example
- * detectPaintLoss('export function a() {}') // 1
- */
-export function detectPaintLoss(exports: number, jsdoc: number): number {
-  if (exports === 0) return 0
-  if (jsdoc >= exports) return 0
-  if (jsdoc === 0) return 2
-  return 1
-}
-
-// ─── Core Analysis ───────────────────────────────────────────────────────────
+// ─── Analysis Functions ────────────────────────────────────────────
 
 /**
  * Analyze a single file as a glass pane
  * @example
- * analyzeGlassPane('export function a() {}', 'a.ts', [], []) // GlassPane
+ * const pane = analyzeGlassPane(content, 'index.ts')
+ * console.log(pane.condition) // 'cathedral-window'
  */
-export function analyzeGlassPane(content: string, filePath: string, imports: string[], dependents: string[]): GlassPane {
-  const lines = content.split('\n')
-  const codeLines = lines.filter(l => l.trim().length > 0)
+export function analyzeGlassPane(content: string, filePath: string): GlassPane {
+  const harmonizing = measureHarmonizing(content)
+  const binding = measureBinding(content)
+  const transmitting = measureTransmitting(content)
+  const patterning = measurePatterning(content)
+  const structuring = measureStructuring(content)
 
-  const exports = (content.match(EXPORT_RE) ?? []).length
-  const functions = (content.match(FUNCTION_RE) ?? []).length
-  const classes = (content.match(CLASS_RE) ?? []).length
-  const interfaces = (content.match(INTERFACE_RE) ?? []).length
-  const types = (content.match(TYPE_RE) ?? []).length
-  const enums = (content.match(ENUM_RE) ?? []).length
-  const jsdoc = (content.match(JSDOC_RE) ?? []).length
-  const todos = (content.match(TODO_RE) ?? []).length
-  const anys = (content.match(ANY_RE) ?? []).length
-
-  const colorPalette = buildColorPalette(functions, classes, interfaces, types, enums, exports)
-  const dominantColor = findDominantColor(colorPalette)
-
-  const glassQuality = computeGlassQuality(jsdoc, anys, todos, codeLines.length, exports)
-  const colorRichness = computeColorRichness(colorPalette.length)
-  const transparency = computeTransparency(exports, interfaces + types, jsdoc, anys, codeLines.length)
-  const thickness = Math.min(100, codeLines.length)
-
-  const paneType = classifyPaneType(classes, interfaces, functions)
-  const paneShape = classifyPaneShape(codeLines.length, functions, classes)
-
-  const cracks = detectCracks(content)
-  const cloudiness = detectCloudiness(content)
-  const paintLoss = detectPaintLoss(exports, jsdoc)
-  const chips = todos
-  const leadingIssues = anys + (imports.length > 8 ? 2 : 0)
-  const defects: PaneDefects = { cracks, chips, cloudiness, paintLoss, leadingIssues }
-
-  const totalDefects = cracks + chips + cloudiness + paintLoss + leadingIssues
-  const condition = classifyPaneCondition(totalDefects, glassQuality)
-
-  const lightTransmission = computeLightTransmission(exports, dependents.length, transparency, codeLines.length)
-  const hasLeadCame = interfaces >= 1 || types >= 1
-  const leadQuality = computeLeadQuality(interfaces, types, jsdoc, anys)
-
-  const connections = computeConnections(imports, dependents, filePath)
-
-  const artistry = computeArtistry(glassQuality, colorRichness, transparency, leadQuality, totalDefects)
-  const storytelling = computeStorytelling(jsdoc, exports, functions, codeLines.length)
-
-  const craftsmanship = classifyCraftsmanship(artistry)
-  const lightEffect = classifyLightEffect(transparency)
+  const qualityScore = Math.round(
+    harmonizing.harmony * 0.2 +
+    binding.quality * 0.2 +
+    transmitting.clarity * 0.2 +
+    patterning.coherence * 0.2 +
+    structuring.integrity * 0.2,
+  )
 
   return {
     file: filePath,
-    glassQuality,
-    colorRichness,
-    transparency,
-    thickness,
-    colorPalette,
-    dominantColor,
-    paneType,
-    paneShape,
-    condition,
-    lightTransmission,
-    hasLeadCame,
-    leadQuality,
-    connections,
-    defects,
-    artistry,
-    storytelling,
-    craftsmanship,
-    lightEffect,
+    colorHarmony: harmonizing.harmony,
+    leadQuality: binding.quality,
+    lightTransmission: transmitting.clarity,
+    patternCoherence: patterning.coherence,
+    structuralIntegrity: structuring.integrity,
+    harmonizing,
+    binding,
+    transmitting,
+    patterning,
+    structuring,
+    condition: classifyPaneCondition(qualityScore),
+    qualityScore,
   }
 }
-
-// ─── Metric Computations ─────────────────────────────────────────────────────
-
-function buildColorPalette(functions: number, classes: number, interfaces: number, types: number, enums: number, exports: number): string[] {
-  const palette: string[] = []
-  if (functions > 0) palette.push('function')
-  if (classes > 0) palette.push('class')
-  if (interfaces > 0) palette.push('interface')
-  if (types > 0) palette.push('type')
-  if (enums > 0) palette.push('enum')
-  if (exports > 0) palette.push('export')
-  return palette
-}
-
-function findDominantColor(palette: string[]): string {
-  if (palette.length === 0) return 'none'
-  return palette[0]
-}
-
-function computeGlassQuality(jsdoc: number, anys: number, todos: number, lines: number, exports: number): number {
-  if (lines === 0) return 0
-  let score = 30
-  score += Math.min(20, jsdoc * 3)
-  score += Math.min(15, exports * 3)
-  score -= anys * 8
-  score -= todos * 4
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeColorRichness(paletteSize: number): number {
-  return Math.min(100, paletteSize * 18)
-}
-
-function computeTransparency(exports: number, structural: number, jsdoc: number, anys: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 25
-  score += Math.min(25, exports * 4)
-  score += Math.min(20, structural * 4)
-  score += Math.min(15, jsdoc * 3)
-  score -= anys * 10
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeLightTransmission(exports: number, dependents: number, transparency: number, lines: number): number {
-  if (lines === 0) return 0
-  const impact = exports * 2 + dependents * 3
-  return Math.min(100, Math.max(0, Math.round(transparency * 0.6 + Math.min(40, impact))))
-}
-
-function computeLeadQuality(interfaces: number, types: number, jsdoc: number, anys: number): number {
-  let score = 30
-  score += Math.min(25, (interfaces + types) * 5)
-  score += Math.min(15, jsdoc * 3)
-  score -= anys * 8
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-function computeConnections(imports: string[], dependents: string[], filePath: string): PaneConnections {
-  const dir = filePath.includes('/') ? filePath.substring(0, filePath.lastIndexOf('/')) : '.'
-  let east: string | null = null
-  let west: string | null = null
-
-  if (imports.length > 0) {
-    const first = imports[0]
-    west = first.startsWith('.') ? first : null
-  }
-  if (dependents.length > 0) {
-    east = dependents[0]
-  }
-
-  const north = dir !== '.' ? dir : null
-  const south: string | null = null
-  const totalCames = (north ? 1 : 0) + (south ? 1 : 0) + (east ? 1 : 0) + (west ? 1 : 0)
-
-  return { north, south, east, west, totalCames }
-}
-
-function computeArtistry(glassQuality: number, colorRichness: number, transparency: number, leadQuality: number, defects: number): number {
-  const defectPenalty = defects * 3
-  const raw = (glassQuality * 0.3 + colorRichness * 0.2 + transparency * 0.25 + leadQuality * 0.25) - defectPenalty
-  return Math.min(100, Math.max(0, Math.round(raw)))
-}
-
-function computeStorytelling(jsdoc: number, exports: number, functions: number, lines: number): number {
-  if (lines === 0) return 0
-  let score = 20
-  score += Math.min(20, jsdoc * 4)
-  score += Math.min(20, exports * 3)
-  score += Math.min(15, functions * 2)
-  if (jsdoc > 0 && exports > 0) score += 10
-  return Math.min(100, Math.max(0, Math.round(score)))
-}
-
-// ─── Panel Analysis ──────────────────────────────────────────────────────────
 
 /**
- * Analyze a directory as a glass panel
+ * Analyze a directory as a glass workshop
  * @example
- * analyzeGlassPanel(panes, 'src') // GlassPanel
+ * const workshop = analyzeGlassWorkshop(panes, 'src')
+ * console.log(workshop.workshopType) // 'cathedral-studio'
  */
-export function analyzeGlassPanel(panes: GlassPane[], dirPath: string): GlassPanel {
+export function analyzeGlassWorkshop(panes: GlassPane[], dirPath: string): GlassWorkshop {
   if (panes.length === 0) {
     return {
-      directory: dirPath,
-      panes: [],
-      panelType: 'grisaille',
-      totalPanes: 0,
-      avgGlassQuality: 0,
-      avgColorRichness: 0,
-      avgTransparency: 0,
-      avgArtistry: 0,
-      dominantPaneType: 'background',
-      dominantColor: 'none',
-      totalCames: 0,
-      crackedPanes: 0,
-      brokenPanes: 0,
-      missingPanes: 0,
-      avgLeadQuality: 0,
-      lightTransmission: 0,
-      composition: 0,
-      coherence: 0,
-      storytelling: 0,
-      condition: 'ruined',
-      style: 'folk',
-      narrative: 'No story to tell',
+      directory: dirPath, panes: [], avgHarmony: 0, avgBinding: 0, avgIntegrity: 0,
+      cathedralWindowCount: 0, noGlassCount: 0, workshopType: 'no-studio', condition: 'empty',
     }
   }
 
-  const n = panes.length
-  const avgGlassQuality = Math.round(panes.reduce((s, p) => s + p.glassQuality, 0) / n)
-  const avgColorRichness = Math.round(panes.reduce((s, p) => s + p.colorRichness, 0) / n)
-  const avgTransparency = Math.round(panes.reduce((s, p) => s + p.transparency, 0) / n)
-  const avgArtistry = Math.round(panes.reduce((s, p) => s + p.artistry, 0) / n)
-  const avgLeadQuality = Math.round(panes.reduce((s, p) => s + p.leadQuality, 0) / n)
-  const avgStorytelling = Math.round(panes.reduce((s, p) => s + p.storytelling, 0) / n)
-
-  const dominantPaneType = findDominant(panes.map(p => p.paneType))
-  const dominantColor = findDominant(panes.map(p => p.dominantColor))
-
-  const totalCames = panes.reduce((s, p) => s + p.connections.totalCames, 0)
-  const crackedPanes = panes.filter(p => p.condition === 'cracked').length
-  const brokenPanes = panes.filter(p => p.condition === 'broken').length
-  const missingPanes = panes.filter(p => p.condition === 'missing').length
-
-  const lightTransmission = Math.round(panes.reduce((s, p) => s + p.lightTransmission, 0) / n)
-
-  const totalClasses = panes.reduce((s, p) => { const m = p.colorPalette.includes('class'); return s + (m ? 1 : 0) }, 0)
-  const avgConn = totalCames / n
-  const panelType = classifyPanelType(n, avgArtistry, avgConn)
-  const style = classifyStyle(avgColorRichness, avgGlassQuality, totalClasses)
-
-  const composition = computeComposition(avgArtistry, avgLeadQuality, crackedPanes + brokenPanes, n)
-  const coherence = computeCoherence(avgColorRichness, avgTransparency, panes)
-  const condition = classifyPanelCondition(avgArtistry)
-  const narrative = buildNarrative(condition, avgArtistry, brokenPanes, style)
+  const avgHarmony = Math.round(panes.reduce((s, p) => s + p.colorHarmony, 0) / panes.length)
+  const avgBinding = Math.round(panes.reduce((s, p) => s + p.leadQuality, 0) / panes.length)
+  const avgIntegrity = Math.round(panes.reduce((s, p) => s + p.structuralIntegrity, 0) / panes.length)
+  const cathedralWindowCount = panes.filter(p => p.condition === 'cathedral-window').length
+  const noGlassCount = panes.filter(p => p.condition === 'no-glass').length
+  const avgQs = Math.round(panes.reduce((s, p) => s + p.qualityScore, 0) / panes.length)
 
   return {
-    directory: dirPath,
-    panes,
-    panelType,
-    totalPanes: n,
-    avgGlassQuality,
-    avgColorRichness,
-    avgTransparency,
-    avgArtistry,
-    dominantPaneType,
-    dominantColor,
-    totalCames,
-    crackedPanes,
-    brokenPanes,
-    missingPanes,
-    avgLeadQuality,
-    lightTransmission,
-    composition,
-    coherence,
-    storytelling: avgStorytelling,
-    condition,
-    style,
-    narrative,
+    directory: dirPath, panes, avgHarmony, avgBinding, avgIntegrity,
+    cathedralWindowCount, noGlassCount, workshopType: classifyWorkshopType(panes),
+    condition: classifyWorkshopCondition(avgQs),
   }
 }
 
-function findDominant(items: string[]): string {
-  const counts = new Map<string, number>()
-  for (const item of items) {
-    counts.set(item, (counts.get(item) ?? 0) + 1)
-  }
-  let dominant = items[0] ?? 'none'
-  let max = 0
-  for (const [item, count] of counts) {
-    if (count > max) { max = count; dominant = item }
-  }
-  return dominant
-}
-
-function computeComposition(avgArtistry: number, avgLead: number, damaged: number, total: number): number {
-  const damageRatio = total > 0 ? damaged / total : 0
-  return Math.min(100, Math.max(0, Math.round((avgArtistry * 0.5 + avgLead * 0.3 + 20) - damageRatio * 30)))
-}
-
-function computeCoherence(avgRichness: number, avgTransparency: number, panes: GlassPane[]): number {
-  const uniqueColors = Array.from(new Set(panes.flatMap(p => p.colorPalette))).length
-  const colorBonus = Math.min(15, uniqueColors * 3)
-  return Math.min(100, Math.max(0, Math.round((avgRichness * 0.3 + avgTransparency * 0.4 + colorBonus + 15))))
-}
-
-function buildNarrative(condition: GlassPanel['condition'], avgArtistry: number, broken: number, style: string): string {
-  if (condition === 'pristine' || condition === 'excellent') return `A ${style} masterpiece telling a clear story of well-crafted code`
-  if (broken > 0) return `A ${style} panel with ${broken} broken pane(s) obscuring its story`
-  if (avgArtistry < 30) return `A ${style} panel barely holding together, its story lost to time`
-  return `A ${style} panel of moderate craft, its story partially visible`
-}
-
-// ─── Recommendations ─────────────────────────────────────────────────────────
+// ─── Orchestrator ──────────────────────────────────────────────────
 
 /**
- * Generate recommendations for improving the stained glass
+ * Build complete stained glass result
  * @example
- * generateStainedGlassRecommendations(panes, panels, stats) // string[]
+ * const result = await buildStainedGlassResult(files, contents)
+ * console.log(result.stats.artisanGrade) // 'master-glazier'
  */
-export function generateStainedGlassRecommendations(
-  panes: GlassPane[],
-  _panels: GlassPanel[],
-  stats: StainedGlassStats,
-): string[] {
-  const recs: string[] = []
-
-  if (stats.crackedPanes > 0) recs.push(`${stats.crackedPanes} cracked pane(s) - fix code inconsistencies`)
-  if (stats.brokenPanes > 0) recs.push(`${stats.brokenPanes} broken pane(s) - repair severely damaged files`)
-  if (stats.totalCloudiness > 5) recs.push(`${stats.totalCloudiness} cloudiness points - improve code clarity`)
-  if (stats.totalPaintLoss > 3) recs.push(`${stats.totalPaintLoss} paint loss - add missing documentation`)
-  if (stats.totalLeadingIssues > 5) recs.push(`${stats.totalLeadingIssues} leading issues - improve interface quality`)
-  if (stats.darkPanes > 2) recs.push(`${stats.darkPanes} dark pane(s) - illuminate with documentation`)
-  if (stats.noviceCraftsman > 0) recs.push(`${stats.noviceCraftsman} novice-crafted pane(s) need major improvement`)
-  if (stats.avgLeadQuality < 40) recs.push('Low lead quality - strengthen interfaces and type definitions')
-
-  const damagedPanels = _panels.filter(p => p.condition === 'damaged' || p.condition === 'ruined')
-  if (damagedPanels.length > 0) recs.push(`${damagedPanels.length} damaged panel(s) need restoration`)
-
-  if (recs.length === 0) recs.push('Magnificent window - masterful craftsmanship across the codebase')
-  return recs
-}
-
-// ─── Build Result ────────────────────────────────────────────────────────────
-
-/**
- * Build the complete stained glass analysis result
- * @example
- * buildStainedGlassResult(files, contents, {}) // StainedGlassResult
- */
-export function buildStainedGlassResult(
+export async function buildStainedGlassResult(
   files: string[],
   contents: string[],
-  _options: Record<string, unknown>,
-): StainedGlassResult {
-  const importMap = new Map<string, string[]>()
-  const dependentMap = new Map<string, string[]>()
-
-  for (let i = 0; i < files.length; i++) {
-    const matches = contents[i].matchAll(IMPORT_RE)
-    const importedPaths: string[] = []
-    for (const m of matches) {
-      importedPaths.push(m[1])
-    }
-    importMap.set(files[i], importedPaths)
-    dependentMap.set(files[i], [])
-  }
-
-  for (const [file, impList] of importMap) {
-    for (const imp of impList) {
-      for (const otherFile of files) {
-        if (otherFile !== file && (otherFile.endsWith(imp) || otherFile.includes(imp.replace(/^\.\//, '')))) {
-          const deps = dependentMap.get(otherFile)
-          if (deps) deps.push(file)
-        }
-      }
-    }
-  }
-
-  const panes: GlassPane[] = []
-  for (let i = 0; i < files.length; i++) {
-    const fileImports = importMap.get(files[i]) ?? []
-    const fileDependents = dependentMap.get(files[i]) ?? []
-    panes.push(analyzeGlassPane(contents[i], files[i], fileImports, fileDependents))
-  }
+  _options?: Record<string, unknown>,
+): Promise<StainedGlassResult> {
+  const panes = files.map((file, i) => analyzeGlassPane(contents[i] ?? '', file))
 
   const dirMap = new Map<string, GlassPane[]>()
   for (const pane of panes) {
-    const normalized = pane.file.replace(/\\/g, '/')
-    const dir = normalized.includes('/') ? normalized.substring(0, normalized.lastIndexOf('/')) : '.'
+    const dir = path.dirname(pane.file)
     const existing = dirMap.get(dir)
-    if (existing) existing.push(pane)
-    else dirMap.set(dir, [pane])
+    if (existing) { existing.push(pane) } else { dirMap.set(dir, [pane]) }
   }
 
-  const panels: GlassPanel[] = []
-  for (const [dir, dirPanes] of dirMap) {
-    panels.push(analyzeGlassPanel(dirPanes, dir))
+  const workshops = Array.from(dirMap.entries()).map(([dir, dirPanes]) =>
+    analyzeGlassWorkshop(dirPanes, dir),
+  )
+
+  const avgHarmony = panes.length > 0
+    ? Math.round(panes.reduce((s, p) => s + p.colorHarmony, 0) / panes.length) : 0
+  const avgBinding = panes.length > 0
+    ? Math.round(panes.reduce((s, p) => s + p.leadQuality, 0) / panes.length) : 0
+  const avgIntegrity = panes.length > 0
+    ? Math.round(panes.reduce((s, p) => s + p.structuralIntegrity, 0) / panes.length) : 0
+
+  const overallBrilliance = panes.length > 0
+    ? Math.round((avgHarmony + avgBinding + avgIntegrity) / 3) : 0
+  const isLuminous = avgHarmony >= 60
+
+  const cathedral: CathedralSummary = { avgHarmony, avgBinding, avgIntegrity, isLuminous, overallBrilliance }
+
+  const avgColorHarmony = avgHarmony
+  const avgLeadQuality = avgBinding
+  const avgStructuralIntegrity = avgIntegrity
+  const avgLightTransmission = panes.length > 0
+    ? Math.round(panes.reduce((s, p) => s + p.lightTransmission, 0) / panes.length) : 0
+  const avgPatternCoherence = panes.length > 0
+    ? Math.round(panes.reduce((s, p) => s + p.patternCoherence, 0) / panes.length) : 0
+
+  const bestPane = panes.length > 0
+    ? panes.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best).file : ''
+  const mostHarmonious = panes.length > 0
+    ? panes.reduce((best, p) => p.colorHarmony > best.colorHarmony ? p : best).file : ''
+  const bestBound = panes.length > 0
+    ? panes.reduce((best, p) => p.leadQuality > best.leadQuality ? p : best).file : ''
+  const mostTransparent = panes.length > 0
+    ? panes.reduce((best, p) => p.lightTransmission > best.lightTransmission ? p : best).file : ''
+  const mostCoherent = panes.length > 0
+    ? panes.reduce((best, p) => p.patternCoherence > best.patternCoherence ? p : best).file : ''
+
+  const stats: StainedGlassStats = {
+    totalFiles: panes.length,
+    totalWorkshops: workshops.length,
+    avgColorHarmony,
+    avgLeadQuality,
+    avgLightTransmission,
+    avgPatternCoherence,
+    avgStructuralIntegrity,
+    cathedralWindowCount: panes.filter(p => p.condition === 'cathedral-window').length,
+    beautifulPanelCount: panes.filter(p => p.condition === 'beautiful-panel').length,
+    properWindowCount: panes.filter(p => p.condition === 'proper-window').length,
+    crackedGlassCount: panes.filter(p => p.condition === 'cracked-glass').length,
+    shatteredPaneCount: panes.filter(p => p.condition === 'shattered-pane').length,
+    noGlassCount: panes.filter(p => p.condition === 'no-glass').length,
+    hasHighHarmonyCount: panes.filter(p => p.harmonizing.hasHighHarmony).length,
+    hasHighQualityCount: panes.filter(p => p.binding.hasHighQuality).length,
+    hasHighClarityCount: panes.filter(p => p.transmitting.hasHighClarity).length,
+    hasHighCoherenceCount: panes.filter(p => p.patterning.hasHighCoherence).length,
+    hasHighIntegrityCount: panes.filter(p => p.structuring.hasHighIntegrity).length,
+    overallBrilliance,
+    artisanGrade: classifyArtisanGrade(overallBrilliance),
+    bestPane, mostHarmonious, bestBound, mostTransparent, mostCoherent,
   }
 
-  const stats = computeStats(panes, panels)
-  const recommendations = generateStainedGlassRecommendations(panes, panels, stats)
+  const recommendations = generateRecommendations(panes, workshops, cathedral, stats)
 
-  return { panes, panels, stats, recommendations }
+  return { panes, workshops, cathedral, stats, recommendations }
 }
 
-function computeStats(panes: GlassPane[], panels: GlassPanel[]): StainedGlassStats {
-  const totalFiles = panes.length
-  const totalPanels = panels.length
-  const totalPanes = panes.length
-
-  const avgGlassQuality = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.glassQuality, 0) / totalFiles) : 0
-  const avgColorRichness = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.colorRichness, 0) / totalFiles) : 0
-  const avgTransparency = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.transparency, 0) / totalFiles) : 0
-  const avgArtistry = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.artistry, 0) / totalFiles) : 0
-  const avgLeadQuality = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.leadQuality, 0) / totalFiles) : 0
-
-  const masterCraftsman = panes.filter(p => p.craftsmanship === 'master').length
-  const noviceCraftsman = panes.filter(p => p.craftsmanship === 'novice').length
-
-  const intactPanes = panes.filter(p => p.condition === 'intact').length
-  const crackedPanes = panes.filter(p => p.condition === 'cracked').length
-  const brokenPanes = panes.filter(p => p.condition === 'broken').length
-  const missingPanes = panes.filter(p => p.condition === 'missing').length
-
-  const totalCracks = panes.reduce((s, p) => s + p.defects.cracks, 0)
-  const totalChips = panes.reduce((s, p) => s + p.defects.chips, 0)
-  const totalCloudiness = panes.reduce((s, p) => s + p.defects.cloudiness, 0)
-  const totalPaintLoss = panes.reduce((s, p) => s + p.defects.paintLoss, 0)
-  const totalLeadingIssues = panes.reduce((s, p) => s + p.defects.leadingIssues, 0)
-
-  const brilliantPanes = panes.filter(p => p.lightEffect === 'brilliant').length
-  const darkPanes = panes.filter(p => p.lightEffect === 'dark').length
-
-  const overallArtistry = avgArtistry
-  const overallLightTransmission = totalFiles > 0 ? Math.round(panes.reduce((s, p) => s + p.lightTransmission, 0) / totalFiles) : 0
-
-  const styleCounts = new Map<string, number>()
-  for (const pl of panels) {
-    styleCounts.set(pl.style, (styleCounts.get(pl.style) ?? 0) + 1)
-  }
-  let dominantStyle = 'folk'
-  let maxS = 0
-  for (const [s, c] of styleCounts) { if (c > maxS) { maxS = c; dominantStyle = s } }
-
-  const paneTypeCounts = new Map<string, number>()
-  for (const p of panes) {
-    paneTypeCounts.set(p.paneType, (paneTypeCounts.get(p.paneType) ?? 0) + 1)
-  }
-  let dominantPaneType = 'background'
-  let maxPT = 0
-  for (const [pt, c] of paneTypeCounts) { if (c > maxPT) { maxPT = c; dominantPaneType = pt } }
-
-  const windowGrade = classifyWindowGrade(overallArtistry)
-
-  const sortedByArt = [...panes].sort((a, b) => b.artistry - a.artistry)
-  const bestPane = sortedByArt.length > 0 ? sortedByArt[0].file : 'none'
-  const worstPane = sortedByArt.length > 0 ? sortedByArt[sortedByArt.length - 1].file : 'none'
-
-  const sortedByColor = [...panes].sort((a, b) => b.colorRichness - a.colorRichness)
-  const mostColorful = sortedByColor.length > 0 ? sortedByColor[0].file : 'none'
-
-  const sortedByStory = [...panes].sort((a, b) => b.storytelling - a.storytelling)
-  const bestStorytelling = sortedByStory.length > 0 ? sortedByStory[0].file : 'none'
-
-  return {
-    totalFiles,
-    totalPanels,
-    totalPanes,
-    avgGlassQuality,
-    avgColorRichness,
-    avgTransparency,
-    avgArtistry,
-    avgLeadQuality,
-    masterCraftsman,
-    noviceCraftsman,
-    intactPanes,
-    crackedPanes,
-    brokenPanes,
-    missingPanes,
-    totalCracks,
-    totalChips,
-    totalCloudiness,
-    totalPaintLoss,
-    totalLeadingIssues,
-    brilliantPanes,
-    darkPanes,
-    overallArtistry,
-    overallLightTransmission,
-    dominantStyle,
-    dominantPaneType,
-    windowGrade,
-    bestPane,
-    worstPane,
-    mostColorful,
-    bestStorytelling,
-  }
+/**
+ * Gather files matching patterns
+ * @example
+ * const files = gatherFiles('./src', ['.ts'], [])
+ */
+export async function gatherFiles(
+  targetPath: string, exts: string[], ignore: string[],
+): Promise<string[]> {
+  const extensions = exts.length > 0 ? exts : ['.ts', '.js', '.tsx', '.jsx']
+  const patterns = extensions.map(ext => `**/*${ext}`)
+  const ignorePatterns = ignore.length > 0 ? ignore : ['**/node_modules/**', '**/dist/**', '**/.git/**']
+  const entries = await fg(patterns, { cwd: targetPath, ignore: ignorePatterns, absolute: true })
+  return Array.from(new Set(entries)).sort()
 }

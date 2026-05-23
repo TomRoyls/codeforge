@@ -5,8 +5,10 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import { buildStainedGlassResult, type StainedGlassResult } from './stained-glass-helpers.js'
-import { formatStainedGlassJson, formatStainedGlassTable } from './stained-glass-format-helpers.js'
+import {
+  buildStainedGlassResult,
+} from './stained-glass-helpers.js'
+import { formatResultJson, formatResultTable } from './stained-glass-format-helpers.js'
 
 export default class StainedGlass extends Command {
   static override args = {
@@ -17,12 +19,12 @@ export default class StainedGlass extends Command {
     }),
   }
 
-  static override description = 'Analyze code as a stained glass window'
+  static override description = 'Analyze code color-harmony, lead-quality, light-transmission, pattern-coherence, and structural-integrity'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze stained glass in current directory',
+      description: 'Analyze current directory as stained glass',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
@@ -34,10 +36,10 @@ export default class StainedGlass extends Command {
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed pane breakdown',
+      description: 'Show per-file pane breakdown',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --format json --output stained-glass.json',
+      command: '<%= config.bin %> <%= command.id %> --format json --output glass.json',
       description: 'Export analysis to JSON file',
     },
   ]
@@ -65,7 +67,7 @@ export default class StainedGlass extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show detailed breakdown',
+      description: 'Show per-file pane breakdown',
     }),
   }
 
@@ -79,9 +81,8 @@ export default class StainedGlass extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
 
-    const spinner = ora('Examining stained glass panes...').start()
+    const spinner = ora('Scanning for glass panes...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -125,7 +126,7 @@ export default class StainedGlass extends Command {
         })
       : discoveredFiles
 
-    spinner.text = 'Analyzing light transmission...'
+    spinner.text = 'Analyzing stained glass panes...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -137,19 +138,17 @@ export default class StainedGlass extends Command {
           files.push(file.path)
           contents.push(content)
         } catch {
-          // Skip unreadable files
+          files.push(file.path)
+          contents.push('')
         }
       }),
     )
 
-    const result: StainedGlassResult = buildStainedGlassResult(files, contents, {})
+    const result = await buildStainedGlassResult(files, contents)
 
-    spinner.succeed(`Analyzed ${files.length} panes with grade ${result.stats.windowGrade}`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.workshops.length} glass workshops`)
 
-    const outputData =
-      format === 'json'
-        ? formatStainedGlassJson(result)
-        : formatStainedGlassTable(result, verbose)
+    const outputData = format === 'json' ? formatResultJson(result) : formatResultTable(result)
 
     if (flags.output) {
       try {
@@ -166,6 +165,6 @@ export default class StainedGlass extends Command {
   }
 }
 
-export { buildStainedGlassResult } from './stained-glass-helpers.js'
-export type { StainedGlassResult, StainedGlassStats, GlassPane, GlassPanel, PaneConnections, PaneDefects } from './stained-glass-helpers.js'
-export { formatStainedGlassJson, formatStainedGlassTable } from './stained-glass-format-helpers.js'
+export { buildStainedGlassResult, analyzeGlassPane, analyzeGlassWorkshop, classifyWorkshopType, classifyArtisanGrade, classifyPaneCondition, classifyWorkshopCondition, measureHarmonizing, measureBinding, measureTransmitting, measurePatterning, measureStructuring, generateRecommendations } from './stained-glass-helpers.js'
+export type { GlassPane, GlassWorkshop, CathedralSummary, StainedGlassStats, StainedGlassResult, PaneCondition, WorkshopType, WorkshopCondition, ArtisanGrade, HarmonyGrade, LeadGrade, LightGrade, PatternGrade, FrameGrade, HarmonizingMeasure, BindingMeasure, TransmittingMeasure, PatterningMeasure, StructuringMeasure } from './stained-glass-helpers.js'
+export { formatResultTable, formatResultJson, formatPaneTable, formatPanesTable, formatWorkshopTable, formatWorkshopsTable, formatStatsTable, formatRecommendations, colorScore, colorGrade } from './stained-glass-format-helpers.js'

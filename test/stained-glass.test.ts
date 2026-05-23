@@ -1,854 +1,872 @@
 import { describe, it, expect } from 'vitest'
 import {
-  classifyPaneType,
-  classifyPaneShape,
-  classifyCraftsmanship,
-  classifyLightEffect,
+  measureHarmonizing,
+  measureBinding,
+  measureTransmitting,
+  measurePatterning,
+  measureStructuring,
   classifyPaneCondition,
-  classifyPanelCondition,
-  classifyWindowGrade,
-  classifyStyle,
-  classifyPanelType,
-  detectCracks,
-  detectCloudiness,
-  detectPaintLoss,
+  classifyWorkshopType,
+  classifyArtisanGrade,
+  classifyWorkshopCondition,
   analyzeGlassPane,
-  analyzeGlassPanel,
-  generateStainedGlassRecommendations,
+  analyzeGlassWorkshop,
   buildStainedGlassResult,
-  type GlassPane,
-  type GlassPanel,
+  generateRecommendations,
 } from '../src/commands/stained-glass-helpers.js'
-import { formatStainedGlassTable, formatStainedGlassJson } from '../src/commands/stained-glass-format-helpers.js'
+import {
+  colorScore,
+  colorGrade,
+  formatPaneTable,
+  formatPanesTable,
+  formatWorkshopTable,
+  formatWorkshopsTable,
+  formatStatsTable,
+  formatRecommendations,
+  formatResultTable,
+  formatResultJson,
+} from '../src/commands/stained-glass-format-helpers.js'
 
-// ─── classifyPaneType ──────────────────────────────────────────────────────
+// ─── Test Fixtures ──────────────────────────────────────────────────
 
-describe('classifyPaneType', () => {
-  it('returns figural for 3+ classes', () => {
-    expect(classifyPaneType(3, 0, 0)).toBe('figural')
-    expect(classifyPaneType(5, 0, 0)).toBe('figural')
+const minimalContent = 'const x = 1'
+
+const richContent = `import { readFileSync } from 'node:fs'
+import type { Result } from './types.js'
+
+/** Documentation */
+export interface Config {
+  readonly name: string
+  private?: boolean
+}
+
+export type Options = Record<string, unknown>
+
+export class Analyzer<T> {
+  async analyze(input: string): Promise<Result> {
+    const result = readFileSync(input, 'utf8')
+    if (result === 'test') {
+      return JSON.parse(result) as Result
+    }
+    return {} as Result
+  }
+}
+
+export const defaultConfig: Options = { name: 'test' }
+`
+
+// ─── measureHarmonizing ─────────────────────────────────────────────
+
+describe('measureHarmonizing', () => {
+  it('returns 0 for empty content', () => {
+    const m = measureHarmonizing('')
+    expect(m.harmony).toBe(0)
+    expect(m.grade).toBe('monochrome-drab')
+    expect(m.hasHighHarmony).toBe(false)
   })
 
-  it('returns medallion for 2+ interfaces', () => {
-    expect(classifyPaneType(0, 2, 0)).toBe('medallion')
-    expect(classifyPaneType(0, 3, 0)).toBe('medallion')
+  it('scores minimal content correctly', () => {
+    const m = measureHarmonizing(minimalContent)
+    expect(m.harmony).toBe(8)
+    expect(m.grade).toBe('monochrome-drab')
+    expect(m.hasConsistent).toBe(false)
+    expect(m.hasNoClashing).toBe(true)
+    expect(m.hasNoDiscordant).toBe(true)
+    expect(m.clashingCount).toBe(0)
+    expect(m.discordantCount).toBe(0)
   })
 
-  it('returns floral for 5+ functions', () => {
-    expect(classifyPaneType(0, 0, 5)).toBe('floral')
-    expect(classifyPaneType(0, 0, 10)).toBe('floral')
+  it('scores rich content at max', () => {
+    const m = measureHarmonizing(richContent)
+    expect(m.harmony).toBe(100)
+    expect(m.grade).toBe('symphony-colors')
+    expect(m.hasHighHarmony).toBe(true)
+    expect(m.hasConsistent).toBe(true)
+    expect(m.hasMatching).toBe(true)
+    expect(m.hasUnified).toBe(true)
+    expect(m.hasHarmonious).toBe(true)
+    expect(m.hasCoherent).toBe(true)
+    expect(m.hasBlended).toBe(true)
   })
 
-  it('returns geometric for 3+ functions and 1+ classes', () => {
-    expect(classifyPaneType(1, 0, 3)).toBe('geometric')
-    expect(classifyPaneType(2, 0, 4)).toBe('geometric')
+  it('detects clashing var usage', () => {
+    const m = measureHarmonizing('var x = 1')
+    expect(m.clashingCount).toBe(1)
+    expect(m.hasNoClashing).toBe(false)
   })
 
-  it('returns abstract for 2+ functions', () => {
-    expect(classifyPaneType(0, 0, 2)).toBe('abstract')
+  it('detects discordant any usage', () => {
+    const m = measureHarmonizing('const x: any = 1')
+    expect(m.discordantCount).toBe(1)
+    expect(m.hasNoDiscordant).toBe(false)
   })
 
-  it('returns border for 1+ classes', () => {
-    expect(classifyPaneType(1, 0, 0)).toBe('border')
+  it('detects eval as mismatched', () => {
+    const m = measureHarmonizing('eval("1")')
+    expect(m.hasNoMismatched).toBe(false)
   })
 
-  it('returns background for empty content', () => {
-    expect(classifyPaneType(0, 0, 0)).toBe('background')
-  })
-
-  it('prioritizes figural over medallion', () => {
-    expect(classifyPaneType(3, 5, 0)).toBe('figural')
-  })
-
-  it('prioritizes medallion over floral', () => {
-    expect(classifyPaneType(0, 2, 10)).toBe('medallion')
-  })
-})
-
-// ─── classifyPaneShape ─────────────────────────────────────────────────────
-
-describe('classifyPaneShape', () => {
-  it('returns diamond for 2+ classes and 3+ functions', () => {
-    expect(classifyPaneShape(50, 3, 2)).toBe('diamond')
-    expect(classifyPaneShape(100, 5, 3)).toBe('diamond')
-  })
-
-  it('returns circular for 2+ classes', () => {
-    expect(classifyPaneShape(50, 1, 2)).toBe('circular')
-  })
-
-  it('returns arched for 5+ functions', () => {
-    expect(classifyPaneShape(30, 5, 0)).toBe('arched')
-    expect(classifyPaneShape(50, 6, 1)).toBe('arched')
-  })
-
-  it('returns triangular for 50+ lines and <=2 functions', () => {
-    expect(classifyPaneShape(60, 2, 0)).toBe('triangular')
-    expect(classifyPaneShape(100, 1, 0)).toBe('triangular')
-  })
-
-  it('returns rectangular for 20+ lines', () => {
-    expect(classifyPaneShape(25, 0, 0)).toBe('rectangular')
-    expect(classifyPaneShape(30, 3, 1)).toBe('rectangular')
-  })
-
-  it('returns irregular for small files', () => {
-    expect(classifyPaneShape(10, 0, 0)).toBe('irregular')
-  })
-})
-
-// ─── classifyCraftsmanship ─────────────────────────────────────────────────
-
-describe('classifyCraftsmanship', () => {
-  it('returns master for 85+', () => {
-    expect(classifyCraftsmanship(85)).toBe('master')
-    expect(classifyCraftsmanship(100)).toBe('master')
-  })
-
-  it('returns artisan for 70-84', () => {
-    expect(classifyCraftsmanship(70)).toBe('artisan')
-    expect(classifyCraftsmanship(84)).toBe('artisan')
-  })
-
-  it('returns journeyman for 50-69', () => {
-    expect(classifyCraftsmanship(50)).toBe('journeyman')
-    expect(classifyCraftsmanship(69)).toBe('journeyman')
-  })
-
-  it('returns apprentice for 30-49', () => {
-    expect(classifyCraftsmanship(30)).toBe('apprentice')
-    expect(classifyCraftsmanship(49)).toBe('apprentice')
-  })
-
-  it('returns novice below 30', () => {
-    expect(classifyCraftsmanship(29)).toBe('novice')
-    expect(classifyCraftsmanship(0)).toBe('novice')
+  it('detects debugger as conflicting', () => {
+    const m = measureHarmonizing('debugger')
+    expect(m.hasNoConflicting).toBe(false)
   })
 })
 
-// ─── classifyLightEffect ───────────────────────────────────────────────────
+// ─── measureBinding ────────────────────────────────────────────────
 
-describe('classifyLightEffect', () => {
-  it('returns brilliant for 80+', () => {
-    expect(classifyLightEffect(80)).toBe('brilliant')
-    expect(classifyLightEffect(100)).toBe('brilliant')
+describe('measureBinding', () => {
+  it('returns 0 for empty content', () => {
+    const m = measureBinding('')
+    expect(m.quality).toBe(0)
+    expect(m.lead).toBe('no-binding')
+    expect(m.hasHighQuality).toBe(false)
   })
 
-  it('returns luminous for 60-79', () => {
-    expect(classifyLightEffect(60)).toBe('luminous')
-    expect(classifyLightEffect(79)).toBe('luminous')
+  it('scores minimal content correctly', () => {
+    const m = measureBinding(minimalContent)
+    expect(m.quality).toBe(8)
+    expect(m.lead).toBe('no-binding')
+    expect(m.hasConnected).toBe(false)
+    expect(m.hasNoSeparated).toBe(true)
+    expect(m.hasNoLoose).toBe(true)
+    expect(m.separatedCount).toBe(0)
+    expect(m.looseCount).toBe(0)
   })
 
-  it('returns translucent for 40-59', () => {
-    expect(classifyLightEffect(40)).toBe('translucent')
-    expect(classifyLightEffect(59)).toBe('translucent')
+  it('scores rich content at max', () => {
+    const m = measureBinding(richContent)
+    expect(m.quality).toBe(100)
+    expect(m.lead).toBe('pure-lead')
+    expect(m.hasHighQuality).toBe(true)
+    expect(m.hasConnected).toBe(true)
+    expect(m.hasJoined).toBe(true)
+    expect(m.hasBound).toBe(true)
+    expect(m.hasIntegrated).toBe(true)
+    expect(m.hasCoupled).toBe(true)
+    expect(m.hasLinked).toBe(true)
   })
 
-  it('returns opaque for 20-39', () => {
-    expect(classifyLightEffect(20)).toBe('opaque')
-    expect(classifyLightEffect(39)).toBe('opaque')
+  it('detects separated var usage', () => {
+    const m = measureBinding('var x = 1')
+    expect(m.separatedCount).toBe(1)
+    expect(m.hasNoSeparated).toBe(false)
   })
 
-  it('returns dark below 20', () => {
-    expect(classifyLightEffect(19)).toBe('dark')
-    expect(classifyLightEffect(0)).toBe('dark')
+  it('detects loose any usage', () => {
+    const m = measureBinding('const x: any = 1')
+    expect(m.looseCount).toBe(1)
+    expect(m.hasNoLoose).toBe(false)
   })
 })
 
-// ─── classifyPaneCondition ─────────────────────────────────────────────────
+// ─── measureTransmitting ────────────────────────────────────────────
+
+describe('measureTransmitting', () => {
+  it('returns 0 for empty content', () => {
+    const m = measureTransmitting('')
+    expect(m.clarity).toBe(0)
+    expect(m.light).toBe('opaque')
+    expect(m.hasHighClarity).toBe(false)
+  })
+
+  it('scores minimal content correctly', () => {
+    const m = measureTransmitting(minimalContent)
+    expect(m.clarity).toBe(0)
+    expect(m.light).toBe('opaque')
+    expect(m.hasTransparent).toBe(false)
+    expect(m.hasNoHidden).toBe(true)
+    expect(m.hasNoOpaque).toBe(true)
+    expect(m.hiddenCount).toBe(0)
+    expect(m.opaqueCount).toBe(0)
+  })
+
+  it('scores rich content at max', () => {
+    const m = measureTransmitting(richContent)
+    expect(m.clarity).toBe(100)
+    expect(m.light).toBe('crystal-clear')
+    expect(m.hasHighClarity).toBe(true)
+    expect(m.hasTransparent).toBe(true)
+    expect(m.hasRevealing).toBe(true)
+    expect(m.hasClear).toBe(true)
+    expect(m.hasVisible).toBe(true)
+    expect(m.hasOpen).toBe(true)
+    expect(m.hasLuminous).toBe(true)
+  })
+
+  it('detects hidden var usage', () => {
+    const m = measureTransmitting('var x = 1')
+    expect(m.hiddenCount).toBe(1)
+    expect(m.hasNoHidden).toBe(false)
+  })
+
+  it('detects opaque any usage', () => {
+    const m = measureTransmitting('const x: any = 1')
+    expect(m.opaqueCount).toBe(1)
+    expect(m.hasNoOpaque).toBe(false)
+  })
+})
+
+// ─── measurePatterning ──────────────────────────────────────────────
+
+describe('measurePatterning', () => {
+  it('returns 0 for empty content', () => {
+    const m = measurePatterning('')
+    expect(m.coherence).toBe(0)
+    expect(m.pattern).toBe('no-pattern')
+    expect(m.hasHighCoherence).toBe(false)
+  })
+
+  it('scores minimal content correctly', () => {
+    const m = measurePatterning(minimalContent)
+    expect(m.coherence).toBe(8)
+    expect(m.pattern).toBe('no-pattern')
+    expect(m.hasLogical).toBe(false)
+    expect(m.hasNoChaotic).toBe(true)
+    expect(m.hasNoRandom).toBe(true)
+    expect(m.chaoticCount).toBe(0)
+    expect(m.scatteredCount).toBe(0)
+  })
+
+  it('scores rich content at max', () => {
+    const m = measurePatterning(richContent)
+    expect(m.coherence).toBe(100)
+    expect(m.pattern).toBe('masterwork-design')
+    expect(m.hasHighCoherence).toBe(true)
+    expect(m.hasLogical).toBe(true)
+    expect(m.hasFlowing).toBe(true)
+    expect(m.hasStructured).toBe(true)
+    expect(m.hasOrganized).toBe(true)
+    expect(m.hasCoherent).toBe(true)
+    expect(m.hasOrdered).toBe(true)
+  })
+
+  it('detects chaotic var usage', () => {
+    const m = measurePatterning('var x = 1')
+    expect(m.chaoticCount).toBe(1)
+    expect(m.hasNoChaotic).toBe(false)
+  })
+
+  it('detects scattered any usage', () => {
+    const m = measurePatterning('const x: any = 1')
+    expect(m.scatteredCount).toBe(1)
+    expect(m.hasNoRandom).toBe(false)
+  })
+})
+
+// ─── measureStructuring ─────────────────────────────────────────────
+
+describe('measureStructuring', () => {
+  it('returns 0 for empty content', () => {
+    const m = measureStructuring('')
+    expect(m.integrity).toBe(0)
+    expect(m.frame).toBe('no-frame')
+    expect(m.hasHighIntegrity).toBe(false)
+  })
+
+  it('scores minimal content correctly', () => {
+    const m = measureStructuring(minimalContent)
+    expect(m.integrity).toBe(0)
+    expect(m.frame).toBe('no-frame')
+    expect(m.hasSolid).toBe(false)
+    expect(m.hasNoFragile).toBe(true)
+    expect(m.hasNoUnstable).toBe(true)
+    expect(m.fragileCount).toBe(0)
+    expect(m.unstableCount).toBe(0)
+  })
+
+  it('scores rich content at max', () => {
+    const m = measureStructuring(richContent)
+    expect(m.integrity).toBe(100)
+    expect(m.frame).toBe('iron-frame')
+    expect(m.hasHighIntegrity).toBe(true)
+    expect(m.hasSolid).toBe(true)
+    expect(m.hasRobust).toBe(true)
+    expect(m.hasStable).toBe(true)
+    expect(m.hasStrong).toBe(true)
+    expect(m.hasSound).toBe(true)
+    expect(m.hasSecure).toBe(true)
+  })
+
+  it('detects fragile var usage', () => {
+    const m = measureStructuring('var x = 1')
+    expect(m.fragileCount).toBe(1)
+    expect(m.hasNoFragile).toBe(false)
+  })
+
+  it('detects unstable any usage', () => {
+    const m = measureStructuring('const x: any = 1')
+    expect(m.unstableCount).toBe(1)
+    expect(m.hasNoUnstable).toBe(false)
+  })
+})
+
+// ─── classifyPaneCondition ──────────────────────────────────────────
 
 describe('classifyPaneCondition', () => {
-  it('returns intact for 0 defects and quality >= 70', () => {
-    expect(classifyPaneCondition(0, 70)).toBe('intact')
-    expect(classifyPaneCondition(0, 90)).toBe('intact')
+  it('classifies cathedral-window for 85+', () => {
+    expect(classifyPaneCondition(85)).toBe('cathedral-window')
+    expect(classifyPaneCondition(100)).toBe('cathedral-window')
   })
 
-  it('returns restored for 0 defects but low quality', () => {
-    expect(classifyPaneCondition(0, 50)).toBe('restored')
-    expect(classifyPaneCondition(0, 30)).toBe('restored')
+  it('classifies beautiful-panel for 70-84', () => {
+    expect(classifyPaneCondition(70)).toBe('beautiful-panel')
+    expect(classifyPaneCondition(84)).toBe('beautiful-panel')
   })
 
-  it('returns broken for 5+ defects', () => {
-    expect(classifyPaneCondition(5, 50)).toBe('broken')
-    expect(classifyPaneCondition(10, 70)).toBe('broken')
+  it('classifies proper-window for 55-69', () => {
+    expect(classifyPaneCondition(55)).toBe('proper-window')
+    expect(classifyPaneCondition(69)).toBe('proper-window')
   })
 
-  it('returns cracked for 3-4 defects', () => {
-    expect(classifyPaneCondition(3, 50)).toBe('cracked')
-    expect(classifyPaneCondition(4, 70)).toBe('cracked')
+  it('classifies cracked-glass for 40-54', () => {
+    expect(classifyPaneCondition(40)).toBe('cracked-glass')
+    expect(classifyPaneCondition(54)).toBe('cracked-glass')
   })
 
-  it('returns weathered for quality < 30 with defects', () => {
-    expect(classifyPaneCondition(1, 20)).toBe('weathered')
-    expect(classifyPaneCondition(2, 10)).toBe('weathered')
+  it('classifies shattered-pane for 25-39', () => {
+    expect(classifyPaneCondition(25)).toBe('shattered-pane')
+    expect(classifyPaneCondition(39)).toBe('shattered-pane')
   })
 
-  it('returns cracked as default for 1-2 defects with quality >= 30', () => {
-    expect(classifyPaneCondition(1, 50)).toBe('cracked')
-    expect(classifyPaneCondition(2, 70)).toBe('cracked')
-  })
-})
-
-// ─── classifyPanelCondition ────────────────────────────────────────────────
-
-describe('classifyPanelCondition', () => {
-  it('returns pristine for 85+', () => {
-    expect(classifyPanelCondition(85)).toBe('pristine')
-    expect(classifyPanelCondition(100)).toBe('pristine')
-  })
-
-  it('returns excellent for 70-84', () => {
-    expect(classifyPanelCondition(70)).toBe('excellent')
-    expect(classifyPanelCondition(84)).toBe('excellent')
-  })
-
-  it('returns good for 55-69', () => {
-    expect(classifyPanelCondition(55)).toBe('good')
-    expect(classifyPanelCondition(69)).toBe('good')
-  })
-
-  it('returns fair for 40-54', () => {
-    expect(classifyPanelCondition(40)).toBe('fair')
-    expect(classifyPanelCondition(54)).toBe('fair')
-  })
-
-  it('returns damaged for 20-39', () => {
-    expect(classifyPanelCondition(20)).toBe('damaged')
-    expect(classifyPanelCondition(39)).toBe('damaged')
-  })
-
-  it('returns ruined below 20', () => {
-    expect(classifyPanelCondition(19)).toBe('ruined')
-    expect(classifyPanelCondition(0)).toBe('ruined')
+  it('classifies no-glass for 0-24', () => {
+    expect(classifyPaneCondition(0)).toBe('no-glass')
+    expect(classifyPaneCondition(24)).toBe('no-glass')
   })
 })
 
-// ─── classifyWindowGrade ───────────────────────────────────────────────────
+// ─── classifyWorkshopType ───────────────────────────────────────────
 
-describe('classifyWindowGrade', () => {
-  it('returns cathedral for 80+', () => {
-    expect(classifyWindowGrade(80)).toBe('cathedral')
-    expect(classifyWindowGrade(100)).toBe('cathedral')
+describe('classifyWorkshopType', () => {
+  it('returns no-studio for empty panes', () => {
+    expect(classifyWorkshopType([])).toBe('no-studio')
   })
 
-  it('returns church for 60-79', () => {
-    expect(classifyWindowGrade(60)).toBe('church')
-    expect(classifyWindowGrade(79)).toBe('church')
+  it('classifies cathedral-studio for high avg + high cathedral ratio', () => {
+    const panes = Array.from({ length: 4 }, (_, i) => ({
+      ...analyzeGlassPane(richContent, `f${i}.ts`),
+    }))
+    expect(classifyWorkshopType(panes)).toBe('cathedral-studio')
   })
 
-  it('returns chapel for 40-59', () => {
-    expect(classifyWindowGrade(40)).toBe('chapel')
-    expect(classifyWindowGrade(59)).toBe('chapel')
+  it('classifies no-studio for low scores', () => {
+    const panes = [analyzeGlassPane('', 'a.ts')]
+    expect(classifyWorkshopType(panes)).toBe('no-studio')
   })
 
-  it('returns home for 25-39', () => {
-    expect(classifyWindowGrade(25)).toBe('home')
-    expect(classifyWindowGrade(39)).toBe('home')
+  it('classifies glass-atelier for mid-high scores', () => {
+    const panes = Array.from({ length: 3 }, () => ({
+      ...analyzeGlassPane(richContent, 'f.ts'),
+      qualityScore: 65,
+      condition: 'beautiful-panel' as const,
+    }))
+    expect(classifyWorkshopType(panes)).toBe('glass-atelier')
   })
 
-  it('returns shack for 10-24', () => {
-    expect(classifyWindowGrade(10)).toBe('shack')
-    expect(classifyWindowGrade(24)).toBe('shack')
+  it('classifies proper-workshop for mid scores', () => {
+    const panes = Array.from({ length: 3 }, () => ({
+      ...analyzeGlassPane(richContent, 'f.ts'),
+      qualityScore: 50,
+      condition: 'proper-window' as const,
+    }))
+    expect(classifyWorkshopType(panes)).toBe('proper-workshop')
   })
 
-  it('returns ruin below 10', () => {
-    expect(classifyWindowGrade(9)).toBe('ruin')
-    expect(classifyWindowGrade(0)).toBe('ruin')
-  })
-})
-
-// ─── classifyStyle ─────────────────────────────────────────────────────────
-
-describe('classifyStyle', () => {
-  it('returns gothic for high richness and 3+ classes', () => {
-    expect(classifyStyle(60, 50, 3)).toBe('gothic')
-    expect(classifyStyle(80, 70, 5)).toBe('gothic')
-  })
-
-  it('returns byzantine for quality >= 70 (without gothic)', () => {
-    expect(classifyStyle(50, 70, 1)).toBe('byzantine')
-    expect(classifyStyle(30, 80, 0)).toBe('byzantine')
-  })
-
-  it('returns art-deco for richness >= 50 (without gothic/byzantine)', () => {
-    expect(classifyStyle(50, 60, 1)).toBe('art-deco')
-    expect(classifyStyle(60, 65, 2)).toBe('art-deco')
-  })
-
-  it('returns romanesque for quality >= 50 and richness >= 30', () => {
-    expect(classifyStyle(30, 50, 0)).toBe('romanesque')
-    expect(classifyStyle(40, 55, 1)).toBe('romanesque')
-  })
-
-  it('returns modern for richness >= 30', () => {
-    expect(classifyStyle(30, 40, 0)).toBe('modern')
-    expect(classifyStyle(45, 45, 0)).toBe('modern')
-  })
-
-  it('returns folk for low everything', () => {
-    expect(classifyStyle(20, 30, 0)).toBe('folk')
-    expect(classifyStyle(0, 0, 0)).toBe('folk')
+  it('classifies craft-table for very low scores', () => {
+    const panes = Array.from({ length: 3 }, () => ({
+      ...analyzeGlassPane(richContent, 'f.ts'),
+      qualityScore: 18,
+      condition: 'shattered-pane' as const,
+    }))
+    expect(classifyWorkshopType(panes)).toBe('craft-table')
   })
 })
 
-// ─── classifyPanelType ─────────────────────────────────────────────────────
+// ─── classifyArtisanGrade ───────────────────────────────────────────
 
-describe('classifyPanelType', () => {
-  it('returns rose-window for 10+ panes and 60+ artistry', () => {
-    expect(classifyPanelType(10, 60, 2)).toBe('rose-window')
-    expect(classifyPanelType(15, 80, 3)).toBe('rose-window')
+describe('classifyArtisanGrade', () => {
+  it('classifies master-glazier for 80+', () => {
+    expect(classifyArtisanGrade(80)).toBe('master-glazier')
+    expect(classifyArtisanGrade(100)).toBe('master-glazier')
   })
 
-  it('returns tracery for 5+ avg connections', () => {
-    expect(classifyPanelType(5, 50, 5)).toBe('tracery')
-    expect(classifyPanelType(3, 30, 6)).toBe('tracery')
+  it('classifies stained-glass-artist for 65-79', () => {
+    expect(classifyArtisanGrade(65)).toBe('stained-glass-artist')
+    expect(classifyArtisanGrade(79)).toBe('stained-glass-artist')
   })
 
-  it('returns mosaic-glass for 8+ panes', () => {
-    expect(classifyPanelType(8, 40, 2)).toBe('mosaic-glass')
-    expect(classifyPanelType(12, 30, 2)).toBe('mosaic-glass')
+  it('classifies skilled-craftsman for 50-64', () => {
+    expect(classifyArtisanGrade(50)).toBe('skilled-craftsman')
+    expect(classifyArtisanGrade(64)).toBe('skilled-craftsman')
   })
 
-  it('returns lancet for 50+ artistry', () => {
-    expect(classifyPanelType(5, 50, 2)).toBe('lancet')
-    expect(classifyPanelType(7, 60, 1)).toBe('lancet')
+  it('classifies apprentice for 35-49', () => {
+    expect(classifyArtisanGrade(35)).toBe('apprentice')
+    expect(classifyArtisanGrade(49)).toBe('apprentice')
   })
 
-  it('returns grisaille for <=3 panes', () => {
-    expect(classifyPanelType(3, 30, 1)).toBe('grisaille')
-    expect(classifyPanelType(1, 20, 0)).toBe('grisaille')
+  it('classifies novice for 20-34', () => {
+    expect(classifyArtisanGrade(20)).toBe('novice')
+    expect(classifyArtisanGrade(34)).toBe('novice')
   })
 
-  it('returns clerestory as default', () => {
-    expect(classifyPanelType(5, 30, 2)).toBe('clerestory')
-    expect(classifyPanelType(6, 40, 3)).toBe('clerestory')
-  })
-})
-
-// ─── detectCracks ──────────────────────────────────────────────────────────
-
-describe('detectCracks', () => {
-  it('returns 0 for clean code', () => {
-    expect(detectCracks('const x: string = "hello"')).toBe(0)
-    expect(detectCracks('function f() { return 1 }')).toBe(0)
-  })
-
-  it('detects any type usage', () => {
-    expect(detectCracks('const x: any = 1')).toBe(1)
-    expect(detectCracks('const x: any = 1; const y: any = 2')).toBe(2)
-  })
-
-  it('detects nested if statements', () => {
-    expect(detectCracks('if (a) { if (b) { return 1 } }')).toBe(1)
-  })
-
-  it('combines any and nested if', () => {
-    expect(detectCracks('const x: any = 1; if (a) { if (b) {} }')).toBe(2)
+  it('classifies window-shopper for 0-19', () => {
+    expect(classifyArtisanGrade(0)).toBe('window-shopper')
+    expect(classifyArtisanGrade(19)).toBe('window-shopper')
   })
 })
 
-// ─── detectCloudiness ──────────────────────────────────────────────────────
+// ─── classifyWorkshopCondition ──────────────────────────────────────
 
-describe('detectCloudiness', () => {
-  it('returns 0 for clean short lines', () => {
-    expect(detectCloudiness('function f() { return 1 }')).toBe(0)
+describe('classifyWorkshopCondition', () => {
+  it('classifies masterwork-collection for 75+', () => {
+    expect(classifyWorkshopCondition(75)).toBe('masterwork-collection')
   })
 
-  it('detects long lines', () => {
-    const longLine = 'a'.repeat(150)
-    expect(detectCloudiness(longLine)).toBe(1)
+  it('classifies beautiful-display for 60-74', () => {
+    expect(classifyWorkshopCondition(60)).toBe('beautiful-display')
   })
 
-  it('detects console statements', () => {
-    expect(detectCloudiness('console.log("hello")')).toBe(1)
-    expect(detectCloudiness('console.log("a"); console.error("b")')).toBe(2)
+  it('classifies decent-gallery for 45-59', () => {
+    expect(classifyWorkshopCondition(45)).toBe('decent-gallery')
   })
 
-  it('caps long lines at 3', () => {
-    const lines = [`${'a'.repeat(150)}`, `${'b'.repeat(160)}`, `${'c'.repeat(170)}`, `${'d'.repeat(180)}`].join('\n')
-    const result = detectCloudiness(lines)
-    expect(result).toBeGreaterThanOrEqual(3)
-  })
-})
-
-// ─── detectPaintLoss ───────────────────────────────────────────────────────
-
-describe('detectPaintLoss', () => {
-  it('returns 0 for no exports', () => {
-    expect(detectPaintLoss(0, 0)).toBe(0)
-    expect(detectPaintLoss(0, 5)).toBe(0)
+  it('classifies cracked-display for 30-44', () => {
+    expect(classifyWorkshopCondition(30)).toBe('cracked-display')
   })
 
-  it('returns 0 when jsdoc covers all exports', () => {
-    expect(detectPaintLoss(3, 3)).toBe(0)
-    expect(detectPaintLoss(2, 5)).toBe(0)
+  it('classifies broken-pieces for 15-29', () => {
+    expect(classifyWorkshopCondition(15)).toBe('broken-pieces')
   })
 
-  it('returns 2 for exports with no jsdoc', () => {
-    expect(detectPaintLoss(1, 0)).toBe(2)
-    expect(detectPaintLoss(5, 0)).toBe(2)
-  })
-
-  it('returns 1 for partial jsdoc coverage', () => {
-    expect(detectPaintLoss(3, 1)).toBe(1)
-    expect(detectPaintLoss(5, 2)).toBe(1)
+  it('classifies empty for 0-14', () => {
+    expect(classifyWorkshopCondition(0)).toBe('empty')
   })
 })
 
-// ─── analyzeGlassPane ──────────────────────────────────────────────────────
+// ─── analyzeGlassPane ───────────────────────────────────────────────
 
 describe('analyzeGlassPane', () => {
-  it('analyzes empty content', () => {
-    const pane = analyzeGlassPane('', 'empty.ts', [], [])
-    expect(pane.file).toBe('empty.ts')
-    expect(pane.glassQuality).toBe(0)
-    expect(pane.colorRichness).toBe(0)
-    expect(pane.transparency).toBe(0)
-    expect(pane.paneType).toBe('background')
-    expect(pane.paneShape).toBe('irregular')
-    expect(pane.condition).toBe('restored')
-    expect(pane.craftsmanship).toBe('novice')
-    expect(pane.lightEffect).toBe('dark')
-    expect(pane.colorPalette).toEqual([])
-    expect(pane.dominantColor).toBe('none')
+  it('analyzes minimal content', () => {
+    const pane = analyzeGlassPane(minimalContent, 'minimal.ts')
+    expect(pane.file).toBe('minimal.ts')
+    expect(pane.colorHarmony).toBe(8)
+    expect(pane.leadQuality).toBe(8)
+    expect(pane.lightTransmission).toBe(0)
+    expect(pane.patternCoherence).toBe(8)
+    expect(pane.structuralIntegrity).toBe(0)
+    expect(pane.qualityScore).toBe(5)
+    expect(pane.condition).toBe('no-glass')
+    expect(pane.harmonizing.grade).toBe('monochrome-drab')
+    expect(pane.binding.lead).toBe('no-binding')
+    expect(pane.transmitting.light).toBe('opaque')
+    expect(pane.patterning.pattern).toBe('no-pattern')
+    expect(pane.structuring.frame).toBe('no-frame')
   })
 
-  it('analyzes a well-documented file with classes', () => {
-    const code = [
-      '/** A class */',
-      'export class Foo {',
-      '  bar(): string { return "hello" }',
-      '}',
-      '/** An interface */',
-      'export interface IFoo {',
-      '  name: string',
-      '}',
-      '/** A type */',
-      'export type TResult = string | number',
-    ].join('\n')
-    const pane = analyzeGlassPane(code, 'foo.ts', [], [])
-    expect(pane.file).toBe('foo.ts')
-    expect(pane.glassQuality).toBeGreaterThan(0)
-    expect(pane.colorPalette).toContain('class')
-    expect(pane.colorPalette).toContain('interface')
-    expect(pane.colorPalette).toContain('type')
-    expect(pane.hasLeadCame).toBe(true)
-    expect(pane.defects.paintLoss).toBe(0)
+  it('analyzes rich content', () => {
+    const pane = analyzeGlassPane(richContent, 'rich.ts')
+    expect(pane.file).toBe('rich.ts')
+    expect(pane.colorHarmony).toBe(100)
+    expect(pane.leadQuality).toBe(100)
+    expect(pane.lightTransmission).toBe(100)
+    expect(pane.patternCoherence).toBe(100)
+    expect(pane.structuralIntegrity).toBe(100)
+    expect(pane.qualityScore).toBe(100)
+    expect(pane.condition).toBe('cathedral-window')
+    expect(pane.harmonizing.grade).toBe('symphony-colors')
+    expect(pane.binding.lead).toBe('pure-lead')
+    expect(pane.transmitting.light).toBe('crystal-clear')
+    expect(pane.patterning.pattern).toBe('masterwork-design')
+    expect(pane.structuring.frame).toBe('iron-frame')
   })
 
-  it('detects defects in poor code', () => {
-    const code = [
-      'const x: any = 1',
-      'console.log("debug")',
-      '// TODO fix this',
-      '// FIXME broken',
-      'export function a() {}',
-    ].join('\n')
-    const pane = analyzeGlassPane(code, 'bad.ts', [], [])
-    expect(pane.defects.cracks).toBeGreaterThan(0)
-    expect(pane.defects.cloudiness).toBeGreaterThan(0)
-    expect(pane.defects.chips).toBeGreaterThan(0)
-    expect(pane.defects.paintLoss).toBeGreaterThan(0)
-  })
-
-  it('computes connections from imports', () => {
-    const pane = analyzeGlassPane('import { x } from "./utils"', 'app.ts', ['./utils'], [])
-    expect(pane.connections.west).toBe('./utils')
-    expect(pane.connections.totalCames).toBeGreaterThan(0)
-  })
-
-  it('computes connections from dependents', () => {
-    const pane = analyzeGlassPane('export function a() {}', 'utils.ts', [], ['app.ts'])
-    expect(pane.connections.east).toBe('app.ts')
-  })
-
-  it('computes north from directory', () => {
-    const pane = analyzeGlassPane('export function a() {}', 'src/utils.ts', [], [])
-    expect(pane.connections.north).toBe('src')
-  })
-
-  it('computes lightTransmission from exports and dependents', () => {
-    const code = 'export function a() {}'
-    const pane1 = analyzeGlassPane(code, 'a.ts', [], [])
-    const pane2 = analyzeGlassPane(code, 'b.ts', [], ['x', 'y', 'z'])
-    expect(pane2.lightTransmission).toBeGreaterThan(pane1.lightTransmission)
-  })
-
-  it('clamps artistry to 0-100', () => {
-    const pane = analyzeGlassPane('', 'empty.ts', [], [])
-    expect(pane.artistry).toBeGreaterThanOrEqual(0)
-    expect(pane.artistry).toBeLessThanOrEqual(100)
-  })
-
-  it('computes storytelling from jsdoc and exports', () => {
-    const good = [
-      '/** Docs */',
-      'export function wellDocumented() { return 1 }',
-    ].join('\n')
-    const bad = 'function noDocs() { return 1 }'
-    const goodPane = analyzeGlassPane(good, 'good.ts', [], [])
-    const badPane = analyzeGlassPane(bad, 'bad.ts', [], [])
-    expect(goodPane.storytelling).toBeGreaterThan(badPane.storytelling)
+  it('computes qualityScore as weighted average', () => {
+    const pane = analyzeGlassPane('export const x = 1', 'mid.ts')
+    const expected = Math.round(
+      pane.colorHarmony * 0.2 +
+      pane.leadQuality * 0.2 +
+      pane.lightTransmission * 0.2 +
+      pane.patternCoherence * 0.2 +
+      pane.structuralIntegrity * 0.2,
+    )
+    expect(pane.qualityScore).toBe(expected)
   })
 })
 
-// ─── analyzeGlassPanel ─────────────────────────────────────────────────────
+// ─── analyzeGlassWorkshop ───────────────────────────────────────────
 
-describe('analyzeGlassPanel', () => {
-  it('returns empty panel for no panes', () => {
-    const panel = analyzeGlassPanel([], 'src')
-    expect(panel.directory).toBe('src')
-    expect(panel.totalPanes).toBe(0)
-    expect(panel.condition).toBe('ruined')
-    expect(panel.style).toBe('folk')
-    expect(panel.narrative).toBe('No story to tell')
-    expect(panel.panelType).toBe('grisaille')
+describe('analyzeGlassWorkshop', () => {
+  it('returns empty workshop for empty panes', () => {
+    const workshop = analyzeGlassWorkshop([], 'empty-dir')
+    expect(workshop.directory).toBe('empty-dir')
+    expect(workshop.panes).toHaveLength(0)
+    expect(workshop.avgHarmony).toBe(0)
+    expect(workshop.workshopType).toBe('no-studio')
+    expect(workshop.condition).toBe('empty')
   })
 
-  it('aggregates pane averages', () => {
-    const panes: GlassPane[] = [
-      analyzeGlassPane('export function a() {}', 'src/a.ts', [], []),
-      analyzeGlassPane('/** Docs */ export class B {}', 'src/b.ts', [], []),
+  it('analyzes workshop with rich panes', () => {
+    const panes = [
+      analyzeGlassPane(richContent, 'dir/a.ts'),
+      analyzeGlassPane(richContent, 'dir/b.ts'),
     ]
-    const panel = analyzeGlassPanel(panes, 'src')
-    expect(panel.totalPanes).toBe(2)
-    expect(panel.avgGlassQuality).toBeGreaterThanOrEqual(0)
-    expect(panel.avgGlassQuality).toBeLessThanOrEqual(100)
-    expect(panel.avgColorRichness).toBeGreaterThanOrEqual(0)
-    expect(panel.avgTransparency).toBeGreaterThanOrEqual(0)
-    expect(panel.avgArtistry).toBeGreaterThanOrEqual(0)
-    expect(panel.avgLeadQuality).toBeGreaterThanOrEqual(0)
+    const workshop = analyzeGlassWorkshop(panes, 'dir')
+    expect(workshop.avgHarmony).toBe(100)
+    expect(workshop.cathedralWindowCount).toBe(2)
+    expect(workshop.noGlassCount).toBe(0)
+    expect(workshop.workshopType).toBe('cathedral-studio')
   })
 
-  it('counts cracked and broken panes', () => {
-    const panes: GlassPane[] = [
-      { ...analyzeGlassPane('', 'a.ts', [], []), condition: 'cracked' },
-      { ...analyzeGlassPane('', 'b.ts', [], []), condition: 'broken' },
-      { ...analyzeGlassPane('', 'c.ts', [], []), condition: 'intact' },
+  it('analyzes workshop with mixed panes', () => {
+    const panes = [
+      analyzeGlassPane(richContent, 'dir/a.ts'),
+      analyzeGlassPane(minimalContent, 'dir/b.ts'),
     ]
-    const panel = analyzeGlassPanel(panes, 'src')
-    expect(panel.crackedPanes).toBe(1)
-    expect(panel.brokenPanes).toBe(1)
-  })
-
-  it('classifies panel type based on pane count and artistry', () => {
-    const manyPanes: GlassPane[] = Array.from({ length: 12 }, (_, i) => ({
-      ...analyzeGlassPane('/** D */ export function f() {} export class C {}', `f${i}.ts`, [], []),
-    }))
-    const panel = analyzeGlassPanel(manyPanes, 'big')
-    expect(panel.panelType).toBeDefined()
-  })
-
-  it('builds narrative based on condition', () => {
-    const goodPane = analyzeGlassPane('/** D */ export class A { } export interface I { } export type T = string', 'good.ts', [], [])
-    const panel = analyzeGlassPanel([goodPane], 'src')
-    expect(panel.narrative).toBeTruthy()
-    expect(typeof panel.narrative).toBe('string')
-  })
-
-  it('computes composition and coherence', () => {
-    const panes: GlassPane[] = [
-      analyzeGlassPane('export function a() {}', 'a.ts', [], []),
-      analyzeGlassPane('export function b() {}', 'b.ts', [], []),
-    ]
-    const panel = analyzeGlassPanel(panes, 'src')
-    expect(panel.composition).toBeGreaterThanOrEqual(0)
-    expect(panel.composition).toBeLessThanOrEqual(100)
-    expect(panel.coherence).toBeGreaterThanOrEqual(0)
-    expect(panel.coherence).toBeLessThanOrEqual(100)
+    const workshop = analyzeGlassWorkshop(panes, 'dir')
+    expect(workshop.cathedralWindowCount).toBe(1)
+    expect(workshop.noGlassCount).toBe(1)
   })
 })
 
-// ─── generateStainedGlassRecommendations ───────────────────────────────────
-
-describe('generateStainedGlassRecommendations', () => {
-  const emptyStats = {
-    totalFiles: 0, totalPanels: 0, totalPanes: 0,
-    avgGlassQuality: 0, avgColorRichness: 0, avgTransparency: 0,
-    avgArtistry: 0, avgLeadQuality: 0,
-    masterCraftsman: 0, noviceCraftsman: 0,
-    intactPanes: 0, crackedPanes: 0, brokenPanes: 0, missingPanes: 0,
-    totalCracks: 0, totalChips: 0, totalCloudiness: 0,
-    totalPaintLoss: 0, totalLeadingIssues: 0,
-    brilliantPanes: 0, darkPanes: 0,
-    overallArtistry: 0, overallLightTransmission: 0,
-    dominantStyle: 'folk', dominantPaneType: 'background',
-    windowGrade: 'ruin' as const,
-    bestPane: 'none', worstPane: 'none',
-    mostColorful: 'none', bestStorytelling: 'none',
-  }
-
-  it('returns positive message when no issues', () => {
-    const cleanStats = { ...emptyStats, avgLeadQuality: 50 }
-    const recs = generateStainedGlassRecommendations([], [], cleanStats)
-    expect(recs).toHaveLength(1)
-    expect(recs[0]).toContain('Magnificent')
-  })
-
-  it('recommends fixing cracked panes', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, crackedPanes: 3 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('cracked')]))
-  })
-
-  it('recommends fixing broken panes', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, brokenPanes: 2 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('broken')]))
-  })
-
-  it('recommends improving clarity for cloudiness', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, totalCloudiness: 6 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('cloudiness')]))
-  })
-
-  it('recommends adding docs for paint loss', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, totalPaintLoss: 4 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('paint loss')]))
-  })
-
-  it('recommends improving interfaces for leading issues', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, totalLeadingIssues: 6 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('leading')]))
-  })
-
-  it('recommends illuminating dark panes', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, darkPanes: 3 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('dark')]))
-  })
-
-  it('recommends improving novice-crafted panes', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, noviceCraftsman: 2 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('novice')]))
-  })
-
-  it('recommends strengthening lead quality', () => {
-    const recs = generateStainedGlassRecommendations([], [], { ...emptyStats, avgLeadQuality: 30 })
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('lead quality')]))
-  })
-
-  it('recommends restoring damaged panels', () => {
-    const damagedPanel: GlassPanel = {
-      directory: 'src', panes: [], panelType: 'grisaille', totalPanes: 0,
-      avgGlassQuality: 0, avgColorRichness: 0, avgTransparency: 0, avgArtistry: 0,
-      dominantPaneType: 'background', dominantColor: 'none', totalCames: 0,
-      crackedPanes: 0, brokenPanes: 0, missingPanes: 0,
-      avgLeadQuality: 0, lightTransmission: 0, composition: 0, coherence: 0,
-      storytelling: 0, condition: 'damaged', style: 'folk', narrative: '',
-    }
-    const recs = generateStainedGlassRecommendations([], [damagedPanel], emptyStats)
-    expect(recs).toEqual(expect.arrayContaining([expect.stringContaining('damaged panel')]))
-  })
-})
-
-// ─── buildStainedGlassResult ───────────────────────────────────────────────
+// ─── buildStainedGlassResult ────────────────────────────────────────
 
 describe('buildStainedGlassResult', () => {
-  it('handles empty input', () => {
-    const result = buildStainedGlassResult([], [], {})
-    expect(result.panes).toEqual([])
-    expect(result.panels).toEqual([])
+  it('returns empty result for no files', async () => {
+    const result = await buildStainedGlassResult([], [])
+    expect(result.panes).toHaveLength(0)
+    expect(result.workshops).toHaveLength(0)
     expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.totalPanes).toBe(0)
-    expect(result.stats.totalPanels).toBe(0)
+    expect(result.stats.overallBrilliance).toBe(0)
+    expect(result.stats.artisanGrade).toBe('window-shopper')
+    expect(result.cathedral.isLuminous).toBe(false)
     expect(result.recommendations.length).toBeGreaterThan(0)
   })
 
-  it('analyzes single file', () => {
-    const result = buildStainedGlassResult(
-      ['hello.ts'],
-      ['/** Greeting */ export function hello() { return "world" }'],
-      {},
-    )
-    expect(result.panes).toHaveLength(1)
-    expect(result.panes[0].file).toBe('hello.ts')
-    expect(result.panes[0].glassQuality).toBeGreaterThan(0)
-    expect(result.panes[0].defects.paintLoss).toBe(0)
-  })
-
-  it('analyzes multiple files', () => {
-    const result = buildStainedGlassResult(
-      ['a.ts', 'b.ts', 'c.ts'],
-      [
-        'export function a() {}',
-        '/** Docs */ export class B {}',
-        'const x: any = 1',
-      ],
-      {},
-    )
-    expect(result.panes).toHaveLength(3)
-    expect(result.stats.totalFiles).toBe(3)
-  })
-
-  it('groups panes into panels by directory', () => {
-    const result = buildStainedGlassResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      ['export function a() {}', 'export function b() {}', 'export function c() {}'],
-      {},
-    )
-    expect(result.panels.length).toBe(2)
-    const dirs = result.panels.map(p => p.directory).sort()
-    expect(dirs).toContain('src')
-    expect(dirs).toContain('lib')
-  })
-
-  it('tracks import relationships between files', () => {
-    const result = buildStainedGlassResult(
-      ['src/a.ts', 'src/b.ts'],
-      [
-        "import { x } from './b'",
-        'export function x() {}',
-      ],
-      {},
-    )
+  it('returns full result for rich content', async () => {
+    const result = await buildStainedGlassResult(['a.ts', 'b.ts'], [richContent, richContent])
     expect(result.panes).toHaveLength(2)
-    const paneB = result.panes.find(p => p.file === 'src/b.ts')
-    expect(paneB).toBeDefined()
-    expect(paneB!.connections.east).toBeTruthy()
+    expect(result.workshops).toHaveLength(1)
+    expect(result.stats.avgColorHarmony).toBe(100)
+    expect(result.stats.avgLeadQuality).toBe(100)
+    expect(result.stats.avgLightTransmission).toBe(100)
+    expect(result.stats.avgPatternCoherence).toBe(100)
+    expect(result.stats.avgStructuralIntegrity).toBe(100)
+    expect(result.stats.cathedralWindowCount).toBe(2)
+    expect(result.stats.noGlassCount).toBe(0)
+    expect(result.stats.hasHighHarmonyCount).toBe(2)
+    expect(result.stats.hasHighQualityCount).toBe(2)
+    expect(result.stats.hasHighClarityCount).toBe(2)
+    expect(result.stats.hasHighCoherenceCount).toBe(2)
+    expect(result.stats.hasHighIntegrityCount).toBe(2)
+    expect(result.stats.overallBrilliance).toBe(100)
+    expect(result.stats.artisanGrade).toBe('master-glazier')
+    expect(result.cathedral.isLuminous).toBe(true)
+    expect(result.stats.bestPane).toBeTruthy()
+    expect(result.stats.mostHarmonious).toBeTruthy()
+    expect(result.stats.bestBound).toBeTruthy()
+    expect(result.stats.mostTransparent).toBeTruthy()
+    expect(result.stats.mostCoherent).toBeTruthy()
   })
 
-  it('computes best/worst pane', () => {
-    const result = buildStainedGlassResult(
-      ['good.ts', 'bad.ts'],
-      [
-        '/** Docs */ export function good() {}',
-        'const x: any = 1; console.log("bad")',
-      ],
-      {},
+  it('groups files by directory', async () => {
+    const result = await buildStainedGlassResult(
+      ['src/a.ts', 'src/b.ts', 'test/c.ts'],
+      [richContent, richContent, minimalContent],
     )
-    expect(result.stats.bestPane).toBe('good.ts')
-    expect(result.stats.worstPane).toBe('bad.ts')
+    expect(result.workshops).toHaveLength(2)
+    const dirs = result.workshops.map(w => w.directory).sort()
+    expect(dirs).toContain('src')
+    expect(dirs).toContain('test')
   })
 
-  it('computes mostColorful', () => {
-    const result = buildStainedGlassResult(
-      ['colorful.ts', 'plain.ts'],
-      [
-        'export function f() {} export class C {} interface I {} type T = string enum E { A }',
-        'const x = 1',
-      ],
-      {},
+  it('computes overall brilliance correctly', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    expect(result.cathedral.overallBrilliance).toBe(Math.round((8 + 8 + 0) / 3))
+  })
+
+  it('sets isLuminous when avgHarmony >= 60', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [richContent])
+    expect(result.cathedral.isLuminous).toBe(true)
+  })
+
+  it('sets isLuminous false when avgHarmony < 60', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    expect(result.cathedral.isLuminous).toBe(false)
+  })
+
+  it('picks best pane by qualityScore', async () => {
+    const result = await buildStainedGlassResult(
+      ['low.ts', 'high.ts'],
+      [minimalContent, richContent],
     )
-    expect(result.stats.mostColorful).toBe('colorful.ts')
+    expect(result.stats.bestPane).toBe('high.ts')
+    expect(result.stats.mostHarmonious).toBe('high.ts')
+    expect(result.stats.bestBound).toBe('high.ts')
+    expect(result.stats.mostTransparent).toBe('high.ts')
+    expect(result.stats.mostCoherent).toBe('high.ts')
   })
 
-  it('computes dominant pane type', () => {
-    const codes = Array.from({ length: 5 }, () => 'export function f() {}')
-    const files = codes.map((_, i) => `f${i}.ts`)
-    const result = buildStainedGlassResult(files, codes, {})
-    expect(result.stats.dominantPaneType).toBeDefined()
-    expect(typeof result.stats.dominantPaneType).toBe('string')
-  })
-
-  it('computes window grade', () => {
-    const result = buildStainedGlassResult([], [], {})
-    expect(['cathedral', 'church', 'chapel', 'home', 'shack', 'ruin']).toContain(result.stats.windowGrade)
-  })
-
-  it('clamps all stats to valid ranges', () => {
-    const result = buildStainedGlassResult(
-      ['a.ts'],
-      ['export function a() {}'],
-      {},
+  it('handles mixed content stats', async () => {
+    const result = await buildStainedGlassResult(
+      ['a.ts', 'b.ts'],
+      [richContent, minimalContent],
     )
-    const { stats } = result
-    expect(stats.avgGlassQuality).toBeGreaterThanOrEqual(0)
-    expect(stats.avgGlassQuality).toBeLessThanOrEqual(100)
-    expect(stats.avgColorRichness).toBeGreaterThanOrEqual(0)
-    expect(stats.avgTransparency).toBeGreaterThanOrEqual(0)
-    expect(stats.avgArtistry).toBeGreaterThanOrEqual(0)
-    expect(stats.avgLeadQuality).toBeGreaterThanOrEqual(0)
-    expect(stats.overallArtistry).toBeGreaterThanOrEqual(0)
-    expect(stats.overallLightTransmission).toBeGreaterThanOrEqual(0)
-    expect(stats.overallLightTransmission).toBeLessThanOrEqual(100)
+    expect(result.stats.cathedralWindowCount).toBe(1)
+    expect(result.stats.noGlassCount).toBe(1)
   })
 })
 
-// ─── formatStainedGlassTable ───────────────────────────────────────────────
+// ─── generateRecommendations ────────────────────────────────────────
 
-describe('formatStainedGlassTable', () => {
-  it('formats empty result', () => {
-    const result = buildStainedGlassResult([], [], {})
-    const output = formatStainedGlassTable(result, false)
-    expect(output).toContain('Stained Glass')
-    expect(output).toContain('No panes detected')
+describe('generateRecommendations', () => {
+  it('returns celebration for perfect result', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [richContent])
+    expect(result.recommendations).toEqual([
+      'Your stained glass masterpiece is complete! Every pane shimmers with color, light, and structural perfection',
+    ])
   })
 
-  it('includes pane info in non-verbose mode', () => {
-    const result = buildStainedGlassResult(
-      ['a.ts'],
-      ['export function a() {}'],
-      {},
+  it('recommends improving color harmony when low', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('Harmonize'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('recommends improving lead quality when low', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('lead'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('recommends improving light transmission when low', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('transmission'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('recommends improving pattern coherence when low', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('Coherence'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('recommends improving structural integrity when low', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('structure'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('warns about no-glass files', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('no glass'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('warns about poor overall brilliance', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    const rec = result.recommendations.find(r => r.includes('Overall stained glass brilliance'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('lists specific no-glass files to restore', async () => {
+    const result = await buildStainedGlassResult(
+      ['a.ts', 'b.ts', 'c.ts'],
+      [minimalContent, minimalContent, minimalContent],
     )
-    const output = formatStainedGlassTable(result, false)
+    const rec = result.recommendations.find(r => r.includes('Restore these'))
+    expect(rec).toBeTruthy()
+  })
+
+  it('warns when all workshops are empty/craft-tables', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [''])
+    const rec = result.recommendations.find(r => r.includes('empty or craft-tables'))
+    expect(rec).toBeTruthy()
+  })
+})
+
+// ─── Format Helpers ──────────────────────────────────────────────────
+
+describe('colorScore', () => {
+  it('returns a string for score 90', () => {
+    expect(typeof colorScore(90)).toBe('string')
+  })
+
+  it('returns a string for score 50', () => {
+    expect(typeof colorScore(50)).toBe('string')
+  })
+
+  it('returns a string for score 10', () => {
+    expect(typeof colorScore(10)).toBe('string')
+  })
+})
+
+describe('colorGrade', () => {
+  it('returns a string for cathedral-window', () => {
+    expect(typeof colorGrade('cathedral-window')).toBe('string')
+  })
+
+  it('returns a string for no-glass', () => {
+    expect(typeof colorGrade('no-glass')).toBe('string')
+  })
+
+  it('returns a string for unknown grade', () => {
+    expect(typeof colorGrade('unknown-grade')).toBe('string')
+  })
+})
+
+describe('formatPaneTable', () => {
+  it('formats a pane', () => {
+    const pane = analyzeGlassPane(richContent, 'test.ts')
+    const output = formatPaneTable(pane)
+    expect(output).toContain('test.ts')
+    expect(output).toContain('Color Harmony')
+    expect(output).toContain('Lead Quality')
+    expect(output).toContain('Light Transmission')
+    expect(output).toContain('Pattern Coherence')
+    expect(output).toContain('Structural Integrity')
+  })
+})
+
+describe('formatPanesTable', () => {
+  it('handles empty panes', () => {
+    const output = formatPanesTable([])
+    expect(output).toContain('No glass panes')
+  })
+
+  it('formats multiple panes', () => {
+    const panes = [
+      analyzeGlassPane(richContent, 'a.ts'),
+      analyzeGlassPane(minimalContent, 'b.ts'),
+    ]
+    const output = formatPanesTable(panes)
     expect(output).toContain('a.ts')
-    expect(output).toContain('Statistics')
+    expect(output).toContain('b.ts')
+  })
+})
+
+describe('formatWorkshopTable', () => {
+  it('formats a workshop', () => {
+    const panes = [analyzeGlassPane(richContent, 'dir/a.ts')]
+    const workshop = analyzeGlassWorkshop(panes, 'dir')
+    const output = formatWorkshopTable(workshop)
+    expect(output).toContain('dir')
+    expect(output).toContain('Workshop')
+  })
+})
+
+describe('formatWorkshopsTable', () => {
+  it('handles empty workshops', () => {
+    const output = formatWorkshopsTable([])
+    expect(output).toContain('No glass workshops')
   })
 
-  it('shows detailed info in verbose mode', () => {
-    const result = buildStainedGlassResult(
-      ['a.ts'],
-      ['export function a() {}'],
-      {},
-    )
-    const output = formatStainedGlassTable(result, true)
-    expect(output).toContain('palette')
-    expect(output).toContain('defects')
-  })
-
-  it('truncates panes at 15 in non-verbose mode', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `f${i}.ts`)
-    const codes = files.map(() => 'export function a() {}')
-    const result = buildStainedGlassResult(files, codes, {})
-    const output = formatStainedGlassTable(result, false)
-    expect(output).toContain('and 5 more')
-  })
-
-  it('shows all panes in verbose mode', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `f${i}.ts`)
-    const codes = files.map(() => 'export function a() {}')
-    const result = buildStainedGlassResult(files, codes, {})
-    const output = formatStainedGlassTable(result, true)
-    expect(output).toContain('f19.ts')
-  })
-
-  it('shows panels when present', () => {
-    const result = buildStainedGlassResult(
-      ['src/a.ts', 'src/b.ts'],
-      ['export function a() {}', 'export function b() {}'],
-      {},
-    )
-    const output = formatStainedGlassTable(result, false)
-    expect(output).toContain('Glass Panels')
+  it('formats multiple workshops', () => {
+    const panes = [analyzeGlassPane(richContent, 'src/a.ts')]
+    const workshops = [analyzeGlassWorkshop(panes, 'src')]
+    const output = formatWorkshopsTable(workshops)
     expect(output).toContain('src')
   })
+})
 
-  it('shows recommendations when present', () => {
-    const result = buildStainedGlassResult([], [], {})
-    const output = formatStainedGlassTable(result, false)
+describe('formatStatsTable', () => {
+  it('formats stats', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [richContent])
+    const output = formatStatsTable(result.stats)
+    expect(output).toContain('Stained Glass Statistics')
+    expect(output).toContain('Total Files')
+    expect(output).toContain('Artisan Grade')
+  })
+})
+
+describe('formatRecommendations', () => {
+  it('handles empty recommendations', () => {
+    const output = formatRecommendations([])
+    expect(output).toContain('No recommendations')
+  })
+
+  it('formats recommendations', () => {
+    const output = formatRecommendations(['Fix X', 'Improve Y'])
+    expect(output).toContain('Fix X')
+    expect(output).toContain('Improve Y')
+  })
+})
+
+describe('formatResultTable', () => {
+  it('formats complete result', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [richContent])
+    const output = formatResultTable(result)
+    expect(output).toContain('Stained Glass Pane Analysis')
+    expect(output).toContain('Glass Workshop Analysis')
+    expect(output).toContain('Stained Glass Statistics')
+    expect(output).toContain('Cathedral')
     expect(output).toContain('Recommendations')
   })
 })
 
-// ─── formatStainedGlassJson ────────────────────────────────────────────────
-
-describe('formatStainedGlassJson', () => {
-  it('produces valid JSON', () => {
-    const result = buildStainedGlassResult(
-      ['a.ts'],
-      ['export function a() {}'],
-      {},
-    )
-    const json = formatStainedGlassJson(result)
-    const parsed = JSON.parse(json)
+describe('formatResultJson', () => {
+  it('formats result as valid JSON', async () => {
+    const result = await buildStainedGlassResult(['a.ts'], [richContent])
+    const output = formatResultJson(result)
+    const parsed = JSON.parse(output)
     expect(parsed.panes).toHaveLength(1)
-    expect(parsed.stats).toBeDefined()
-    expect(parsed.recommendations).toBeDefined()
+    expect(parsed.stats.totalFiles).toBe(1)
+    expect(parsed.cathedral.isLuminous).toBe(true)
+  })
+})
+
+// ─── Edge Cases ─────────────────────────────────────────────────────
+
+describe('edge cases', () => {
+  it('handles content with only whitespace', () => {
+    const pane = analyzeGlassPane('   \n\t  ', 'blank.ts')
+    expect(pane.colorHarmony).toBe(0)
+    expect(pane.qualityScore).toBe(0)
+    expect(pane.condition).toBe('no-glass')
   })
 
-  it('handles empty result', () => {
-    const result = buildStainedGlassResult([], [], {})
-    const json = formatStainedGlassJson(result)
-    const parsed = JSON.parse(json)
-    expect(parsed.panes).toEqual([])
-    expect(parsed.panels).toEqual([])
+  it('handles content with only comments', () => {
+    const pane = analyzeGlassPane('// just a comment\n/* block */', 'comment.ts')
+    expect(pane.colorHarmony).toBe(0)
+    expect(pane.qualityScore).toBe(0)
+  })
+
+  it('handles very long content', async () => {
+    const longContent = richContent.repeat(100)
+    const result = await buildStainedGlassResult(['big.ts'], [longContent])
+    expect(result.panes).toHaveLength(1)
+    expect(result.stats.totalFiles).toBe(1)
+  })
+
+  it('handles many files', async () => {
+    const files = Array.from({ length: 50 }, (_, i) => `f${i}.ts`)
+    const contents = Array.from({ length: 50 }, () => richContent)
+    const result = await buildStainedGlassResult(files, contents)
+    expect(result.stats.totalFiles).toBe(50)
+    expect(result.stats.cathedralWindowCount).toBe(50)
+  })
+
+  it('handles single file workshop', async () => {
+    const result = await buildStainedGlassResult(['single.ts'], [richContent])
+    expect(result.workshops).toHaveLength(1)
+    expect(result.workshops[0]!.panes).toHaveLength(1)
+  })
+
+  it('quality score is capped at 100', () => {
+    const pane = analyzeGlassPane(richContent, 'cap.ts')
+    expect(pane.qualityScore).toBeLessThanOrEqual(100)
+    expect(pane.colorHarmony).toBeLessThanOrEqual(100)
+    expect(pane.leadQuality).toBeLessThanOrEqual(100)
+    expect(pane.lightTransmission).toBeLessThanOrEqual(100)
+    expect(pane.patternCoherence).toBeLessThanOrEqual(100)
+    expect(pane.structuralIntegrity).toBeLessThanOrEqual(100)
+  })
+
+  it('recommendations never empty', async () => {
+    const r1 = await buildStainedGlassResult([], [])
+    const r2 = await buildStainedGlassResult(['a.ts'], [richContent])
+    const r3 = await buildStainedGlassResult(['a.ts'], [minimalContent])
+    expect(r1.recommendations.length).toBeGreaterThan(0)
+    expect(r2.recommendations.length).toBeGreaterThan(0)
+    expect(r3.recommendations.length).toBeGreaterThan(0)
   })
 })
