@@ -1,1089 +1,883 @@
-// ─── Regex Constants ────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────
 
-const EXPORT_REGEX = /\bexport\s+/g
-const IMPORT_REGEX = /\bimport\s+/g
-const FUNCTION_REGEX = /\bfunction\s+\w+/g
-const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
-const CLASS_REGEX = /\bclass\s+\w+/g
-const INTERFACE_REGEX = /\binterface\s+\w+/g
-const TYPE_REGEX = /\btype\s+\w+/g
-const ENUM_REGEX = /\benum\s+\w+/g
-const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const ASYNC_REGEX = /\basync\s+/g
-const TRY_CATCH_REGEX = /\btry\s*\{/g
-const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
-const TERNARY_REGEX = /\?[^:]+:/g
-const CONSOLE_REGEX = /\bconsole\.\w+/g
-const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
-const GENERICS_REGEX = /<[^>]+>/g
-const PRIVATE_REGEX = /private\s+/g
-const PROTECTED_REGEX = /protected\s+/g
-const PUBLIC_REGEX = /public\s+/g
-const STATIC_REGEX = /\bstatic\s+/g
-const READONLY_REGEX = /\breadonly\b/g
-const ANY_REGEX = /\bany\b/g
-const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
-const RETURN_TYPE_REGEX = /\)\s*:\s*\w+/g
-const CONDITIONAL_REGEX = /\bif\s*\(/g
-const LOOP_REGEX = /\b(for|while|do)\s*[\({]/g
-const ERROR_THROW_REGEX = /\bthrow\s+/g
-const PROMISE_REGEX = /\bPromise\b/g
-const STRING_TEMPLATE_REGEX = /`[^`]*\$\{/g
-const DESTRUCTURE_REGEX = /\{[^}]*\}\s*=/g
-const DECORATOR_REGEX = /@\w+/g
-
-// ─── Helper Functions ───────────────────────────────────────────────────────
-
-function countMatches(content: string, regex: RegExp): number {
-  const matches = content.match(regex)
-  return matches ? matches.length : 0
-}
-
-function countImportKeywords(content: string): number { return countMatches(content, IMPORT_REGEX) }
-function countExportKeywords(content: string): number { return countMatches(content, EXPORT_REGEX) }
-function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
-function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
-function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
-function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
-function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
-function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
-function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
-function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
-function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
-function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
-function countTernaryOps(content: string): number { return countMatches(content, TERNARY_REGEX) }
-function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
-function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
-function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
-function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
-function countStaticMembers(content: string): number { return countMatches(content, STATIC_REGEX) }
-function countReadonlyMembers(content: string): number { return countMatches(content, READONLY_REGEX) }
-function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
-function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
-function countConditionals(content: string): number { return countMatches(content, CONDITIONAL_REGEX) }
-function countLoops(content: string): number { return countMatches(content, LOOP_REGEX) }
-function countErrorThrows(content: string): number { return countMatches(content, ERROR_THROW_REGEX) }
-function countPromiseUsage(content: string): number { return countMatches(content, PROMISE_REGEX) }
-function countTemplateLiterals(content: string): number { return countMatches(content, STRING_TEMPLATE_REGEX) }
-function countDestructures(content: string): number { return countMatches(content, DESTRUCTURE_REGEX) }
-function countDecorators(content: string): number { return countMatches(content, DECORATOR_REGEX) }
-
-// ─── Interfaces ─────────────────────────────────────────────────────────────
-
-export interface LuminosityMeasure {
-  level: number
-  brightness: 'blinding' | 'bright' | 'moderate' | 'faint' | 'dim' | 'dark'
-  hasHighLuminosity: boolean
-  hasGreenEmission: boolean
-  hasRedEmission: boolean
-  hasBlueEmission: boolean
-  hasVioletEmission: boolean
-  hasNoLightPollution: boolean
-  hasProperAltitude: boolean
-  hasCurtainForm: boolean
-  hasNoBreakup: boolean
-  hasPersistent: boolean
-  lightPollutionCount: number
-  breakupCount: number
-}
-
-export interface SpectrumMeasure {
-  diversity: number
-  palette: 'full-rainbow' | 'tricolor' | 'bicolor' | 'monochrome' | 'infrared' | 'invisible'
-  hasRichSpectrum: boolean
-  hasOxygenGreen: boolean
-  hasOxygenRed: boolean
-  hasNitrogenBlue: boolean
-  hasNitrogenViolet: boolean
-  hasNoSpectralGap: boolean
-  hasProperWavelength: boolean
-  hasContinuousEmission: boolean
-  hasNoAbsorption: boolean
-  hasEmissionPeaks: boolean
-  gapCount: number
-  absorptionCount: number
+export interface EtherealMeasure {
+  elegance: number
+  beauty: 'transcendent' | 'breathtaking' | 'beautiful' | 'pleasant' | 'ordinary' | 'uninspiring'
+  hasHighElegance: boolean
+  hasGraceful: boolean
+  hasElegant: boolean
+  hasNoHarshness: boolean
+  hasRefined: boolean
+  hasNoCrudeness: boolean
+  hasBeautiful: boolean
+  hasNoUgliness: boolean
+  hasPoetic: boolean
+  hasNoBrutalism: boolean
+  harshnessCount: number
+  crudenessCount: number
 }
 
 export interface MagneticMeasure {
-  deflection: number
-  field: 'dipole' | 'quadrupole' | 'multipole' | 'distorted' | 'weak' | 'absent'
-  hasProperStructure: boolean
-  hasFieldLines: boolean
-  hasMagnetopause: boolean
-  hasNoReconnection: boolean
-  hasVanAllenBelt: boolean
-  hasPolarCusp: boolean
-  hasAuroralOval: boolean
-  hasNoMagneticStorm: boolean
-  hasProperFieldStrength: boolean
-  hasNoFieldCollapse: boolean
-  reconnectionCount: number
-  stormCount: number
+  alignment: number
+  field: 'perfect-alignment' | 'strong-field' | 'proper-alignment' | 'drifting' | 'misaligned' | 'chaotic'
+  hasHighAlignment: boolean
+  hasConsistent: boolean
+  hasAligned: boolean
+  hasNoDeviation: boolean
+  hasUniform: boolean
+  hasNoContradiction: boolean
+  hasHarmonious: boolean
+  hasNoConflict: boolean
+  hasCoherent: boolean
+  hasNoInconsistency: boolean
+  deviationCount: number
+  conflictCount: number
 }
 
-export interface IonosphereMeasure {
-  charge: number
-  layer: 'f-layer' | 'e-layer' | 'd-layer' | 'sporadic-e' | 'ionospheric-storm' | 'dead-zone'
-  hasHighEnergy: boolean
-  hasProperIonization: boolean
-  hasElectronDensity: boolean
-  hasNoAbsorption: boolean
-  hasProperConductivity: boolean
-  hasNoScintillation: boolean
-  hasPlasmaBubbles: boolean
-  hasTravelingWave: boolean
-  hasNoBlackout: boolean
-  hasProperReflection: boolean
-  blackoutCount: number
-  scintillationCount: number
+export interface SpectralMeasure {
+  richness: number
+  spectrum: 'full-spectrum' | 'rich-palette' | 'colorful' | 'adequate-colors' | 'monochrome' | 'colorless'
+  hasHighRichness: boolean
+  hasDiverse: boolean
+  hasVaried: boolean
+  hasNoMonotony: boolean
+  hasRich: boolean
+  hasNoRepetition: boolean
+  hasMultiFaceted: boolean
+  hasNoSingle: boolean
+  hasColorful: boolean
+  hasNoBland: boolean
+  monotonyCount: number
+  repetitionCount: number
 }
 
-export interface ParticleMeasure {
-  collision: number
-  source: 'solar-wind' | 'magnetosphere' | 'cosmic-rays' | 'precipitation' | 'scattered' | 'none'
-  hasHighInteraction: boolean
-  hasProperPrecipitation: boolean
-  hasElectronCascade: boolean
-  hasNoOverIonization: boolean
-  hasProperEnergy: boolean
-  hasBremsstrahlung: boolean
-  hasNoParticleLoss: boolean
-  hasProperScattering: boolean
-  hasNoBeamInstability: boolean
-  hasMirroring: boolean
-  overIonizationCount: number
-  beamInstabilityCount: number
+export interface PolarMeasure {
+  clarity: number
+  focus: 'laser-focused' | 'sharp-focus' | 'clear-purpose' | 'somewhat-scattered' | 'diffuse' | 'scattered'
+  hasHighClarity: boolean
+  hasFocused: boolean
+  hasPurposeful: boolean
+  hasNoDistraction: boolean
+  hasTargeted: boolean
+  hasNoTangent: boolean
+  hasConcentrated: boolean
+  hasNoScatter: boolean
+  hasClearIntent: boolean
+  hasNoWandering: boolean
+  distractionCount: number
+  tangentCount: number
 }
 
-export interface GrandeurMeasure {
-  score: number
-  display: 'corona' | 'curtain' | 'band' | 'patch' | 'glow' | 'void'
-  isGrand: boolean
-  hasSubstorm: boolean
-  hasPiPulsations: boolean
-  hasNoFadeout: boolean
-  hasCrown: boolean
-  hasRayedStructure: boolean
-  hasNoDisruption: boolean
-  hasProperDuration: boolean
-  hasNoOscillation: boolean
-  hasZenith: boolean
-  fadeoutCount: number
-  disruptionCount: number
+export interface AtmosphericMeasure {
+  depth: number
+  pressure: 'deep-atmosphere' | 'rich-context' | 'proper-layering' | 'surface-level' | 'thin-air' | 'vacuum'
+  hasHighDepth: boolean
+  hasContextual: boolean
+  hasWellScoped: boolean
+  hasNoIsolation: boolean
+  hasConnected: boolean
+  hasNoDisconnection: boolean
+  hasLayered: boolean
+  hasNoFlatness: boolean
+  hasDeep: boolean
+  hasNoShallow: boolean
+  isolationCount: number
+  flatnessCount: number
 }
 
-export interface AuroraCurtain {
+export interface LuminousMeasure {
+  flow: number
+  radiance: 'brilliant-flow' | 'bright-stream' | 'clear-current' | 'murky-flow' | 'turbulent' | 'opaque'
+  hasHighFlow: boolean
+  hasReadable: boolean
+  hasFlowing: boolean
+  hasNoBlockage: boolean
+  hasClear: boolean
+  hasNoObfuscation: boolean
+  hasTransparent: boolean
+  hasNoMuddying: boolean
+  hasLuminous: boolean
+  hasNoDarkness: boolean
+  blockageCount: number
+  obfuscationCount: number
+}
+
+export type RibbonCondition = 'ethereal-veil' | 'dancing-lights' | 'steady-glow' | 'fading-aurora' | 'dim-light' | 'dark-sky'
+
+export interface AuroraRibbon {
   file: string
-  curtainLuminosity: number
-  colorSpectrum: number
-  magneticDeflection: number
-  ionosphericCharge: number
-  particleCollision: number
-  celestialGrandeur: number
-  luminosity: LuminosityMeasure
-  spectrum: SpectrumMeasure
+  etherealBeauty: number
+  magneticAlignment: number
+  spectralRichness: number
+  polarClarity: number
+  atmosphericDepth: number
+  luminousFlow: number
+  ethereal: EtherealMeasure
   magnetic: MagneticMeasure
-  ionosphere: IonosphereMeasure
-  particle: ParticleMeasure
-  grandeur: GrandeurMeasure
-  condition: 'solar-maximum' | 'storm-peak' | 'active-night' | 'quiet-arc' | 'substorm' | 'clouded-out'
+  spectral: SpectralMeasure
+  polar: PolarMeasure
+  atmospheric: AtmosphericMeasure
+  luminous: LuminousMeasure
+  condition: RibbonCondition
   qualityScore: number
 }
 
-export interface AuroraRegion {
+export type DisplayType = 'grand-display' | 'aurora-borealis' | 'southern-lights' | 'faint-glow' | 'cloud-cover' | 'clear-night'
+export type DisplayCondition = 'magnificent-aurora' | 'beautiful-display' | 'pleasant-lights' | 'fading-glow' | 'barely-visible' | 'invisible'
+
+export interface AuroraDisplay {
   directory: string
-  curtains: AuroraCurtain[]
-  avgLuminosity: number
-  avgStructure: number
-  avgGrandeur: number
-  solarMaximumCount: number
-  cloudedOutCount: number
-  highLuminosityCount: number
-  grandCount: number
-  regionType: 'aurora-oval' | 'polar-cap' | 'sub-auroral' | 'mid-latitude' | 'equatorial' | 'dark-side'
-  condition: 'observatory' | 'viewing-station' | 'dark-sky-reserve' | 'city-lights' | 'overcast' | 'daylight'
+  ribbons: AuroraRibbon[]
+  avgBeauty: number
+  avgClarity: number
+  avgFlow: number
+  etherealVeilCount: number
+  darkSkyCount: number
+  dancingLightsCount: number
+  steadyGlowCount: number
+  displayType: DisplayType
+  condition: DisplayCondition
+}
+
+export interface AuroraSky {
+  avgBeauty: number
+  avgClarity: number
+  avgFlow: number
+  isEthereal: boolean
+  overallLuminosity: number
+}
+
+export type AstronomerGrade = 'aurora-master' | 'expert-observer' | 'skilled-watcher' | 'amateur-stargazer' | 'casual-viewer' | 'cloudy-night'
+
+export interface AuroraVeilStats {
+  totalFiles: number
+  totalDisplays: number
+  avgEtherealBeauty: number
+  avgMagneticAlignment: number
+  avgSpectralRichness: number
+  avgPolarClarity: number
+  avgAtmosphericDepth: number
+  avgLuminousFlow: number
+  etherealVeilCount: number
+  dancingLightsCount: number
+  steadyGlowCount: number
+  fadingAuroraCount: number
+  dimLightCount: number
+  darkSkyCount: number
+  hasHighEleganceCount: number
+  hasHighAlignmentCount: number
+  hasHighRichnessCount: number
+  hasHighClarityCount: number
+  hasHighDepthCount: number
+  hasHighFlowCount: number
+  overallLuminosity: number
+  astronomerGrade: AstronomerGrade
+  bestRibbon: string
+  mostBeautiful: string
+  bestAligned: string
+  mostDiverse: string
+  mostFocused: string
+  deepest: string
 }
 
 export interface AuroraVeilResult {
-  curtains: AuroraCurtain[]
-  regions: AuroraRegion[]
-  sky: {
-    avgLuminosity: number
-    avgStructure: number
-    avgGrandeur: number
-    isBreathtaking: boolean
-    overallGrandeur: number
-  }
-  stats: {
-    totalFiles: number
-    totalRegions: number
-    avgCurtainLuminosity: number
-    avgColorSpectrum: number
-    avgMagneticDeflection: number
-    avgIonosphericCharge: number
-    avgParticleCollision: number
-    avgCelestialGrandeur: number
-    solarMaximumCount: number
-    stormPeakCount: number
-    activeNightCount: number
-    quietArcCount: number
-    substormCount: number
-    cloudedOutCount: number
-    hasHighLuminosityCount: number
-    hasRichSpectrumCount: number
-    hasProperStructureCount: number
-    hasHighEnergyCount: number
-    hasHighInteractionCount: number
-    isGrandCount: number
-    overallGrandeur: number
-    astronomerGrade: 'aurora-hunter' | 'astrophysicist' | 'astronomer' | 'sky-watcher' | 'stargazer' | 'blind-spot'
-    bestCurtain: string
-    brightest: string
-    mostDiverse: string
-    bestStructured: string
-    mostEnergetic: string
-    grandest: string
-  }
+  ribbons: AuroraRibbon[]
+  displays: AuroraDisplay[]
+  sky: AuroraSky
+  stats: AuroraVeilStats
   recommendations: string[]
 }
 
-// ─── Luminosity Measurement ─────────────────────────────────────────────────
+// ─── Measure Functions ─────────────────────────────────────────────────────
 
-/** @example measureLuminosity(content) returns luminosity analysis */
-export function measureLuminosity(content: string): LuminosityMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const asyncCount = countAsyncKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
-  const commentedCodeCount = countCommentedCode(content)
+/** @example measureEthereal(content) evaluates code elegance */
+export function measureEthereal(content: string): EtherealMeasure {
+  const hasExport = /export\s/.test(content)
+  const hasImport = /import\s+/.test(content)
+  const hasClass = /\bclass\s+\w+/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasTypeAlias = /\btype\s+\w+/.test(content)
+  const hasGenerics = /<\w+>/.test(content)
+  const hasReadonly = /\breadonly\b/.test(content)
+  const hasOptionalChaining = /\?\.\w/.test(content)
+  const hasDocComments = /\/\*\*[\s\S]*?\*\//.test(content)
+  const hasNamedExport = /export\s+(?:function|class|interface|type|const|enum)/.test(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  const harshnessMatches = content.match(/\bvar\s+/g)
+  const harshnessCount = harshnessMatches ? harshnessMatches.length : 0
+  const crudenessMatches = content.match(/\bany\b/g)
+  const crudenessCount = crudenessMatches ? crudenessMatches.length : 0
 
-  let level = 25
-  if (hasStructure) level += 15
-  if (hasTypes) level += 15
-  if (hasFunctions) level += 10
-  if (exportCount > 0) level += 5
-  if (importCount > 0) level += 5
-  if (jsdocCount > 0) level += 8
-  if (asyncCount > 0) level += 5
-  if (consoleCount === 0) level += 5
-  if (anyCount === 0) level += 4
-  if (todoCount === 0) level += 3
-  level = Math.min(100, Math.max(0, Math.round(level)))
+  const hasGraceful = hasOptionalChaining && hasReadonly
+  const hasElegant = hasInterface && hasGenerics
+  const hasRefined = hasExport && hasNamedExport
+  const hasBeautiful = hasClass && hasInterface
+  const hasPoetic = hasDocComments && hasTypeAlias
 
-  const lightPollutionCount = consoleCount + commentedCodeCount
-  const breakupCount = deepNestedCount + todoCount
+  let elegance = 0
+  if (hasExport) elegance += 10
+  if (hasImport) elegance += 8
+  if (hasClass) elegance += 8
+  if (hasInterface) elegance += 10
+  if (hasTypeAlias) elegance += 8
+  if (hasGenerics) elegance += 10
+  if (hasReadonly) elegance += 8
+  if (hasOptionalChaining) elegance += 8
+  if (hasDocComments) elegance += 8
+  if (hasNamedExport) elegance += 8
+  if (hasGraceful) elegance += 5
+  if (hasElegant) elegance += 5
+  if (hasRefined) elegance += 5
+  if (hasBeautiful) elegance += 5
+  if (hasPoetic) elegance += 5
 
-  const hasHighLuminosity = level >= 80 && hasStructure && hasTypes
-  const hasGreenEmission = hasStructure && hasTypes
-  const hasRedEmission = hasStructure && hasTypes && jsdocCount > 0
-  const hasBlueEmission = asyncCount > 0 && hasFunctions
-  const hasVioletEmission = hasStructure && hasTypes && hasFunctions && jsdocCount > 0 && exportCount > 0
-  const hasNoLightPollution = lightPollutionCount === 0
-  const hasProperAltitude = hasStructure && hasTypes && hasFunctions
-  const hasCurtainForm = hasStructure && exportCount > 0 && importCount > 0
-  const hasNoBreakup = breakupCount === 0
-  const hasPersistent = hasStructure && hasTypes && anyCount === 0 && todoCount === 0
+  elegance = Math.min(100, Math.round(elegance))
 
-  let brightness: LuminosityMeasure['brightness'] = 'dark'
-  if (level >= 90) brightness = 'blinding'
-  else if (level >= 75) brightness = 'bright'
-  else if (level >= 55) brightness = 'moderate'
-  else if (level >= 35) brightness = 'faint'
-  else if (level >= 20) brightness = 'dim'
+  let beauty: EtherealMeasure['beauty'] = 'uninspiring'
+  if (elegance >= 85) beauty = 'transcendent'
+  else if (elegance >= 70) beauty = 'breathtaking'
+  else if (elegance >= 55) beauty = 'beautiful'
+  else if (elegance >= 40) beauty = 'pleasant'
+  else if (elegance >= 25) beauty = 'ordinary'
 
   return {
-    level,
-    brightness,
-    hasHighLuminosity,
-    hasGreenEmission,
-    hasRedEmission,
-    hasBlueEmission,
-    hasVioletEmission,
-    hasNoLightPollution,
-    hasProperAltitude,
-    hasCurtainForm,
-    hasNoBreakup,
-    hasPersistent,
-    lightPollutionCount,
-    breakupCount,
+    elegance,
+    beauty,
+    hasHighElegance: elegance >= 70,
+    hasGraceful,
+    hasElegant,
+    hasNoHarshness: harshnessCount === 0,
+    hasRefined,
+    hasNoCrudeness: crudenessCount === 0,
+    hasBeautiful,
+    hasNoUgliness: harshnessCount === 0 && crudenessCount === 0,
+    hasPoetic,
+    hasNoBrutalism: harshnessCount === 0,
+    harshnessCount,
+    crudenessCount,
   }
 }
 
-// ─── Spectrum Measurement ──────────────────────────────────────────────────
-
-/** @example measureSpectrum(content) returns spectrum analysis */
-export function measureSpectrum(content: string): SpectrumMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const enumCount = countEnumKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = countGenericsUsage(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const readonlyCount = countReadonlyMembers(content)
-  const privateCount = countPrivateMembers(content)
-  const protectedCount = countProtectedMembers(content)
-  const staticCount = countStaticMembers(content)
-  const asyncCount = countAsyncKeywords(content)
-  const destructures = countDestructures(content)
-  const decorators = countDecorators(content)
-  const anyCount = countAnyUsage(content)
-  const consoleCount = countConsoleUsage(content)
-
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
-
-  let diversity = 20
-  if (hasStructure) diversity += 12
-  if (hasTypes) diversity += 12
-  if (enumCount > 0) diversity += 5
-  if (hasFunctions) diversity += 10
-  if (jsdocCount > 0) diversity += 8
-  if (genericsCount > 0) diversity += 5
-  if (exportCount > 0) diversity += 5
-  if (importCount > 0) diversity += 5
-  if (readonlyCount > 0) diversity += 3
-  if (privateCount > 0 || protectedCount > 0) diversity += 3
-  if (staticCount > 0) diversity += 2
-  if (asyncCount > 0) diversity += 3
-  if (destructures > 0) diversity += 2
-  if (decorators > 0) diversity += 2
-  if (anyCount === 0) diversity += 3
-  diversity = Math.min(100, Math.max(0, Math.round(diversity)))
-
-  const gapCount = anyCount + consoleCount
-  const absorptionCount = anyCount
-
-  const hasRichSpectrum = diversity >= 75
-  const hasOxygenGreen = hasStructure && hasTypes
-  const hasOxygenRed = hasStructure && hasTypes && genericsCount > 0
-  const hasNitrogenBlue = hasFunctions && asyncCount > 0
-  const hasNitrogenViolet = hasStructure && hasTypes && hasFunctions && jsdocCount > 0 && genericsCount > 0
-  const hasNoSpectralGap = gapCount === 0
-  const hasProperWavelength = exportCount > 0 && importCount > 0
-  const hasContinuousEmission = hasStructure && hasTypes && hasFunctions && anyCount === 0
-  const hasNoAbsorption = absorptionCount === 0
-  const hasEmissionPeaks = hasStructure && hasTypes && hasFunctions && jsdocCount > 0 && exportCount > 0
-
-  let palette: SpectrumMeasure['palette'] = 'invisible'
-  if (hasNitrogenViolet && hasRichSpectrum && hasNoSpectralGap) palette = 'full-rainbow'
-  else if (hasOxygenRed && hasNitrogenBlue && hasOxygenGreen) palette = 'tricolor'
-  else if (hasOxygenGreen && hasNitrogenBlue) palette = 'bicolor'
-  else if (hasOxygenGreen) palette = 'monochrome'
-  else if (diversity > 30) palette = 'infrared'
-
-  return {
-    diversity,
-    palette,
-    hasRichSpectrum,
-    hasOxygenGreen,
-    hasOxygenRed,
-    hasNitrogenBlue,
-    hasNitrogenViolet,
-    hasNoSpectralGap,
-    hasProperWavelength,
-    hasContinuousEmission,
-    hasNoAbsorption,
-    hasEmissionPeaks,
-    gapCount,
-    absorptionCount,
-  }
-}
-
-// ─── Magnetic Measurement ──────────────────────────────────────────────────
-
-/** @example measureMagnetic(content) returns magnetic analysis */
+/** @example measureMagnetic(content) evaluates code consistency */
 export function measureMagnetic(content: string): MagneticMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const enumCount = countEnumKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const tryCatchCount = countTryCatch(content)
-  const errorThrowCount = countErrorThrows(content)
-  const privateCount = countPrivateMembers(content)
-  const protectedCount = countProtectedMembers(content)
-  const readonlyCount = countReadonlyMembers(content)
-  const staticCount = countStaticMembers(content)
-  const anyCount = countAnyUsage(content)
-  const deepNestedCount = countDeepNested(content)
-  const consoleCount = countConsoleUsage(content)
+  const hasExport = /export\s/.test(content)
+  const hasImport = /import\s+/.test(content)
+  const hasConst = /\bconst\s+/.test(content)
+  const hasReturnType = /\)\s*:\s*\w+/.test(content)
+  const hasTypeAnnotation = /:\s*(?:string|number|boolean|void)\b/.test(content)
+  const hasStrictEquality = /===/.test(content) || /!==/.test(content)
+  const hasNamedExport = /export\s+(?:function|class|interface|type|const|enum)/.test(content)
+  const hasGenerics = /<\w+>/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasReadonly = /\breadonly\b/.test(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  const deviationMatches = content.match(/\bvar\s+/g)
+  const deviationCount = deviationMatches ? deviationMatches.length : 0
+  const conflictMatches = content.match(/\bany\b/g)
+  const conflictCount = conflictMatches ? conflictMatches.length : 0
 
-  let deflection = 25
-  if (hasStructure) deflection += 15
-  if (hasTypes) deflection += 15
-  if (enumCount > 0) deflection += 5
-  if (hasFunctions) deflection += 10
-  if (exportCount > 0) deflection += 5
-  if (importCount > 0) deflection += 5
-  if (tryCatchCount > 0) deflection += 5
-  if (errorThrowCount > 0) deflection += 3
-  if (privateCount > 0 || protectedCount > 0) deflection += 3
-  if (staticCount > 0) deflection += 2
-  if (readonlyCount > 0) deflection += 2
-  if (anyCount === 0) deflection += 3
-  if (consoleCount === 0) deflection += 2
-  deflection = Math.min(100, Math.max(0, Math.round(deflection)))
+  const hasConsistent = hasConst && hasStrictEquality
+  const hasAligned = hasExport && hasImport
+  const hasUniform = hasReturnType && hasTypeAnnotation
+  const hasHarmonious = hasInterface && hasGenerics
+  const hasCoherent = hasNamedExport && hasReadonly
 
-  const reconnectionCount = deepNestedCount
-  const stormCount = consoleCount + anyCount
+  let alignment = 0
+  if (hasExport) alignment += 10
+  if (hasImport) alignment += 8
+  if (hasConst) alignment += 10
+  if (hasReturnType) alignment += 10
+  if (hasTypeAnnotation) alignment += 8
+  if (hasStrictEquality) alignment += 10
+  if (hasNamedExport) alignment += 8
+  if (hasGenerics) alignment += 8
+  if (hasInterface) alignment += 8
+  if (hasReadonly) alignment += 8
+  if (hasConsistent) alignment += 5
+  if (hasAligned) alignment += 5
+  if (hasUniform) alignment += 5
+  if (hasHarmonious) alignment += 5
+  if (hasCoherent) alignment += 5
 
-  const hasProperStructure = hasStructure && hasTypes && hasFunctions
-  const hasFieldLines = hasStructure && hasTypes && exportCount > 0
-  const hasMagnetopause = importCount > 0 && exportCount > 0
-  const hasNoReconnection = reconnectionCount === 0
-  const hasVanAllenBelt = hasStructure && hasTypes && tryCatchCount > 0
-  const hasPolarCusp = hasFunctions && exportCount > 0
-  const hasAuroralOval = hasProperStructure && (privateCount > 0 || protectedCount > 0)
-  const hasNoMagneticStorm = stormCount === 0
-  const hasProperFieldStrength = hasProperStructure && anyCount === 0
-  const hasNoFieldCollapse = hasStructure && hasTypes
+  alignment = Math.min(100, Math.round(alignment))
 
-  let field: MagneticMeasure['field'] = 'absent'
-  if (hasProperStructure && hasAuroralOval && hasNoMagneticStorm && hasNoReconnection) field = 'dipole'
-  else if (hasProperStructure && hasAuroralOval) field = 'quadrupole'
-  else if (hasProperStructure) field = 'multipole'
-  else if (hasStructure || hasTypes) field = 'distorted'
-  else if (hasFunctions) field = 'weak'
+  let field: MagneticMeasure['field'] = 'chaotic'
+  if (alignment >= 85) field = 'perfect-alignment'
+  else if (alignment >= 70) field = 'strong-field'
+  else if (alignment >= 55) field = 'proper-alignment'
+  else if (alignment >= 40) field = 'drifting'
+  else if (alignment >= 25) field = 'misaligned'
 
   return {
-    deflection,
+    alignment,
     field,
-    hasProperStructure,
-    hasFieldLines,
-    hasMagnetopause,
-    hasNoReconnection,
-    hasVanAllenBelt,
-    hasPolarCusp,
-    hasAuroralOval,
-    hasNoMagneticStorm,
-    hasProperFieldStrength,
-    hasNoFieldCollapse,
-    reconnectionCount,
-    stormCount,
+    hasHighAlignment: alignment >= 70,
+    hasConsistent,
+    hasAligned,
+    hasNoDeviation: deviationCount === 0,
+    hasUniform,
+    hasNoContradiction: conflictCount === 0,
+    hasHarmonious,
+    hasNoConflict: deviationCount === 0 && conflictCount === 0,
+    hasCoherent,
+    hasNoInconsistency: deviationCount === 0,
+    deviationCount,
+    conflictCount,
   }
 }
 
-// ─── Ionosphere Measurement ────────────────────────────────────────────────
+/** @example measureSpectral(content) evaluates code diversity */
+export function measureSpectral(content: string): SpectralMeasure {
+  const hasExport = /export\s/.test(content)
+  const hasClass = /\bclass\s+\w+/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasTypeAlias = /\btype\s+\w+/.test(content)
+  const hasEnum = /\benum\s+\w+/.test(content)
+  const hasGenerics = /<\w+>/.test(content)
+  const hasAsync = /\basync\s+/.test(content)
+  const hasPromise = /\bPromise\b/.test(content)
+  const hasNamedExport = /export\s+(?:function|class|interface|type|const|enum)/.test(content)
+  const hasOptionalChaining = /\?\.\w/.test(content)
 
-/** @example measureIonosphere(content) returns ionosphere analysis */
-export function measureIonosphere(content: string): IonosphereMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = countGenericsUsage(content)
-  const asyncCount = countAsyncKeywords(content)
-  const tryCatchCount = countTryCatch(content)
-  const promiseCount = countPromiseUsage(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const readonlyCount = countReadonlyMembers(content)
-  const templateLiterals = countTemplateLiterals(content)
-  const anyCount = countAnyUsage(content)
-  const consoleCount = countConsoleUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
+  const monotonyMatches = content.match(/\bvar\s+/g)
+  const monotonyCount = monotonyMatches ? monotonyMatches.length : 0
+  const repetitionMatches = content.match(/\bany\b/g)
+  const repetitionCount = repetitionMatches ? repetitionMatches.length : 0
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  const hasDiverse = hasInterface && hasGenerics && hasEnum
+  const hasVaried = hasAsync && hasPromise
+  const hasRich = hasExport && hasNamedExport && hasTypeAlias
+  const hasMultiFaceted = hasClass && hasInterface && hasTypeAlias
+  const hasColorful = hasEnum && hasOptionalChaining
 
-  let charge = 25
-  if (hasStructure) charge += 12
-  if (hasTypes) charge += 12
-  if (hasFunctions) charge += 10
-  if (jsdocCount > 0) charge += 8
-  if (genericsCount > 0) charge += 5
-  if (asyncCount > 0) charge += 5
-  if (tryCatchCount > 0) charge += 5
-  if (promiseCount > 0) charge += 3
-  if (exportCount > 0) charge += 5
-  if (importCount > 0) charge += 5
-  if (readonlyCount > 0) charge += 3
-  if (templateLiterals > 0) charge += 2
-  if (anyCount === 0) charge += 3
-  if (consoleCount === 0) charge += 2
-  charge = Math.min(100, Math.max(0, Math.round(charge)))
+  let richness = 0
+  if (hasExport) richness += 10
+  if (hasClass) richness += 8
+  if (hasInterface) richness += 10
+  if (hasTypeAlias) richness += 8
+  if (hasEnum) richness += 10
+  if (hasGenerics) richness += 10
+  if (hasAsync) richness += 8
+  if (hasPromise) richness += 8
+  if (hasNamedExport) richness += 8
+  if (hasOptionalChaining) richness += 8
+  if (hasDiverse) richness += 5
+  if (hasVaried) richness += 5
+  if (hasRich) richness += 5
+  if (hasMultiFaceted) richness += 5
+  if (hasColorful) richness += 5
 
-  const blackoutCount = consoleCount + deepNestedCount
-  const scintillationCount = todoCount + anyCount
+  richness = Math.min(100, Math.round(richness))
 
-  const hasHighEnergy = charge >= 75 && hasStructure && hasTypes
-  const hasProperIonization = hasStructure && hasTypes && hasFunctions
-  const hasElectronDensity = hasFunctions && (asyncCount > 0 || promiseCount > 0)
-  const hasNoAbsorption = blackoutCount === 0
-  const hasProperConductivity = hasStructure && hasTypes && exportCount > 0
-  const hasNoScintillation = scintillationCount === 0
-  const hasPlasmaBubbles = hasStructure && hasTypes && genericsCount > 0
-  const hasTravelingWave = hasFunctions && importCount > 0 && exportCount > 0
-  const hasNoBlackout = blackoutCount === 0
-  const hasProperReflection = tryCatchCount > 0 && hasFunctions
-
-  let layer: IonosphereMeasure['layer'] = 'dead-zone'
-  if (hasHighEnergy && hasProperIonization && hasNoAbsorption && hasNoScintillation) layer = 'f-layer'
-  else if (hasProperIonization && hasNoAbsorption) layer = 'e-layer'
-  else if (hasProperIonization) layer = 'd-layer'
-  else if (hasProperConductivity) layer = 'sporadic-e'
-  else if (charge > 30) layer = 'ionospheric-storm'
+  let spectrum: SpectralMeasure['spectrum'] = 'colorless'
+  if (richness >= 85) spectrum = 'full-spectrum'
+  else if (richness >= 70) spectrum = 'rich-palette'
+  else if (richness >= 55) spectrum = 'colorful'
+  else if (richness >= 40) spectrum = 'adequate-colors'
+  else if (richness >= 25) spectrum = 'monochrome'
 
   return {
-    charge,
-    layer,
-    hasHighEnergy,
-    hasProperIonization,
-    hasElectronDensity,
-    hasNoAbsorption,
-    hasProperConductivity,
-    hasNoScintillation,
-    hasPlasmaBubbles,
-    hasTravelingWave,
-    hasNoBlackout,
-    hasProperReflection,
-    blackoutCount,
-    scintillationCount,
+    richness,
+    spectrum,
+    hasHighRichness: richness >= 70,
+    hasDiverse,
+    hasVaried,
+    hasNoMonotony: monotonyCount === 0,
+    hasRich,
+    hasNoRepetition: monotonyCount === 0 && repetitionCount === 0,
+    hasMultiFaceted,
+    hasNoSingle: monotonyCount === 0,
+    hasColorful,
+    hasNoBland: repetitionCount === 0,
+    monotonyCount,
+    repetitionCount,
   }
 }
 
-// ─── Particle Measurement ──────────────────────────────────────────────────
+/** @example measurePolar(content) evaluates code focus */
+export function measurePolar(content: string): PolarMeasure {
+  const hasExport = /export\s/.test(content)
+  const hasNamedExport = /export\s+(?:function|class|interface|type|const|enum)/.test(content)
+  const hasReturnType = /\)\s*:\s*\w+/.test(content)
+  const hasTypeAnnotation = /:\s*(?:string|number|boolean|void)\b/.test(content)
+  const hasConst = /\bconst\s+/.test(content)
+  const hasReadonly = /\breadonly\b/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasGenerics = /<\w+>/.test(content)
+  const hasDocComments = /\/\*\*[\s\S]*?\*\//.test(content)
+  const hasEnum = /\benum\s+\w+/.test(content)
 
-/** @example measureParticle(content) returns particle analysis */
-export function measureParticle(content: string): ParticleMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = countGenericsUsage(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const reExportCount = countReExports(content)
-  const asyncCount = countAsyncKeywords(content)
-  const tryCatchCount = countTryCatch(content)
-  const conditionalsCount = countConditionals(content)
-  const loopsCount = countLoops(content)
-  const anyCount = countAnyUsage(content)
-  const consoleCount = countConsoleUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
+  const distractionMatches = content.match(/\bvar\s+/g)
+  const distractionCount = distractionMatches ? distractionMatches.length : 0
+  const tangentMatches = content.match(/\bany\b/g)
+  const tangentCount = tangentMatches ? tangentMatches.length : 0
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  const hasFocused = hasConst && hasReturnType
+  const hasPurposeful = hasExport && hasNamedExport
+  const hasTargeted = hasInterface && hasGenerics
+  const hasConcentrated = hasReadonly && hasConst
+  const hasClearIntent = hasDocComments && hasReturnType
 
-  let collision = 25
-  if (hasStructure) collision += 12
-  if (hasTypes) collision += 12
-  if (hasFunctions) collision += 10
-  if (jsdocCount > 0) collision += 8
-  if (genericsCount > 0) collision += 5
-  if (exportCount > 0) collision += 5
-  if (importCount > 0) collision += 5
-  if (reExportCount > 0) collision += 5
-  if (asyncCount > 0) collision += 3
-  if (tryCatchCount > 0) collision += 5
-  if (conditionalsCount > 0) collision += 3
-  if (loopsCount > 0) collision += 2
-  if (anyCount === 0) collision += 3
-  if (consoleCount === 0) collision += 2
-  collision = Math.min(100, Math.max(0, Math.round(collision)))
+  let clarity = 0
+  if (hasExport) clarity += 10
+  if (hasNamedExport) clarity += 8
+  if (hasReturnType) clarity += 10
+  if (hasTypeAnnotation) clarity += 10
+  if (hasConst) clarity += 8
+  if (hasReadonly) clarity += 8
+  if (hasInterface) clarity += 10
+  if (hasGenerics) clarity += 8
+  if (hasDocComments) clarity += 8
+  if (hasEnum) clarity += 8
+  if (hasFocused) clarity += 5
+  if (hasPurposeful) clarity += 5
+  if (hasTargeted) clarity += 5
+  if (hasConcentrated) clarity += 5
+  if (hasClearIntent) clarity += 5
 
-  const overIonizationCount = deepNestedCount + todoCount
-  const beamInstabilityCount = anyCount + consoleCount
+  clarity = Math.min(100, Math.round(clarity))
 
-  const hasHighInteraction = collision >= 75 && hasStructure && hasTypes
-  const hasProperPrecipitation = hasFunctions && exportCount > 0
-  const hasElectronCascade = hasStructure && hasTypes && hasFunctions && genericsCount > 0
-  const hasNoOverIonization = overIonizationCount === 0
-  const hasProperEnergy = hasStructure && hasTypes && tryCatchCount > 0
-  const hasBremsstrahlung = reExportCount > 0 || (exportCount > 0 && importCount > 0)
-  const hasNoParticleLoss = anyCount === 0 && consoleCount === 0
-  const hasProperScattering = conditionalsCount > 0 || loopsCount > 0
-  const hasNoBeamInstability = beamInstabilityCount === 0
-  const hasMirroring = hasStructure && hasTypes && exportCount > 0 && importCount > 0
-
-  let source: ParticleMeasure['source'] = 'none'
-  if (hasHighInteraction && hasElectronCascade && hasNoOverIonization) source = 'solar-wind'
-  else if (hasHighInteraction) source = 'magnetosphere'
-  else if (hasElectronCascade) source = 'cosmic-rays'
-  else if (hasProperPrecipitation) source = 'precipitation'
-  else if (collision > 30) source = 'scattered'
+  let focus: PolarMeasure['focus'] = 'scattered'
+  if (clarity >= 85) focus = 'laser-focused'
+  else if (clarity >= 70) focus = 'sharp-focus'
+  else if (clarity >= 55) focus = 'clear-purpose'
+  else if (clarity >= 40) focus = 'somewhat-scattered'
+  else if (clarity >= 25) focus = 'diffuse'
 
   return {
-    collision,
-    source,
-    hasHighInteraction,
-    hasProperPrecipitation,
-    hasElectronCascade,
-    hasNoOverIonization,
-    hasProperEnergy,
-    hasBremsstrahlung,
-    hasNoParticleLoss,
-    hasProperScattering,
-    hasNoBeamInstability,
-    hasMirroring,
-    overIonizationCount,
-    beamInstabilityCount,
+    clarity,
+    focus,
+    hasHighClarity: clarity >= 70,
+    hasFocused,
+    hasPurposeful,
+    hasNoDistraction: distractionCount === 0,
+    hasTargeted,
+    hasNoTangent: tangentCount === 0,
+    hasConcentrated,
+    hasNoScatter: distractionCount === 0 && tangentCount === 0,
+    hasClearIntent,
+    hasNoWandering: distractionCount === 0,
+    distractionCount,
+    tangentCount,
   }
 }
 
-// ─── Grandeur Measurement ──────────────────────────────────────────────────
+/** @example measureAtmospheric(content) evaluates code context */
+export function measureAtmospheric(content: string): AtmosphericMeasure {
+  const hasExport = /export\s/.test(content)
+  const hasImport = /import\s+/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasClass = /\bclass\s+\w+/.test(content)
+  const hasTypeAlias = /\btype\s+\w+/.test(content)
+  const hasDocComments = /\/\*\*[\s\S]*?\*\//.test(content)
+  const hasGenerics = /<\w+>/.test(content)
+  const hasReturnType = /\)\s*:\s*\w+/.test(content)
+  const hasEnum = /\benum\s+\w+/.test(content)
+  const hasOptionalParam = /\w+\?\s*[):\]]/.test(content)
 
-/** @example measureGrandeur(content) returns grandeur analysis */
-export function measureGrandeur(content: string): GrandeurMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const enumCount = countEnumKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = countGenericsUsage(content)
-  const asyncCount = countAsyncKeywords(content)
-  const tryCatchCount = countTryCatch(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const privateCount = countPrivateMembers(content)
-  const protectedCount = countProtectedMembers(content)
-  const staticCount = countStaticMembers(content)
-  const readonlyCount = countReadonlyMembers(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
-  const commentedCodeCount = countCommentedCode(content)
+  const isolationMatches = content.match(/\bvar\s+/g)
+  const isolationCount = isolationMatches ? isolationMatches.length : 0
+  const flatnessMatches = content.match(/\bany\b/g)
+  const flatnessCount = flatnessMatches ? flatnessMatches.length : 0
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  const hasContextual = hasExport && hasImport
+  const hasWellScoped = hasReturnType && hasOptionalParam
+  const hasConnected = hasInterface && hasGenerics
+  const hasLayered = hasClass && hasInterface && hasTypeAlias
+  const hasDeep = hasDocComments && hasEnum
 
-  let score = 20
-  if (hasStructure) score += 12
-  if (hasTypes) score += 12
-  if (enumCount > 0) score += 5
-  if (hasFunctions) score += 10
-  if (jsdocCount > 0) score += 8
-  if (genericsCount > 0) score += 5
-  if (asyncCount > 0) score += 5
-  if (tryCatchCount > 0) score += 5
-  if (exportCount > 0) score += 5
-  if (importCount > 0) score += 5
-  if (privateCount > 0 || protectedCount > 0) score += 3
-  if (staticCount > 0) score += 3
-  if (readonlyCount > 0) score += 2
-  if (anyCount === 0) score += 3
-  if (consoleCount === 0) score += 3
-  score = Math.min(100, Math.max(0, Math.round(score)))
+  let depth = 0
+  if (hasExport) depth += 10
+  if (hasImport) depth += 8
+  if (hasInterface) depth += 10
+  if (hasClass) depth += 8
+  if (hasTypeAlias) depth += 8
+  if (hasDocComments) depth += 10
+  if (hasGenerics) depth += 8
+  if (hasReturnType) depth += 8
+  if (hasEnum) depth += 8
+  if (hasOptionalParam) depth += 7
+  if (hasContextual) depth += 5
+  if (hasWellScoped) depth += 5
+  if (hasConnected) depth += 5
+  if (hasLayered) depth += 5
+  if (hasDeep) depth += 5
 
-  const fadeoutCount = todoCount + commentedCodeCount
-  const disruptionCount = deepNestedCount + consoleCount
+  depth = Math.min(100, Math.round(depth))
 
-  const isGrand = score >= 80 && anyCount === 0 && todoCount === 0
-  const hasSubstorm = hasStructure && hasTypes && hasFunctions && tryCatchCount > 0
-  const hasPiPulsations = hasFunctions && (asyncCount > 0 || genericsCount > 0)
-  const hasNoFadeout = fadeoutCount === 0
-  const hasCrown = hasStructure && hasTypes && jsdocCount > 0 && genericsCount > 0
-  const hasRayedStructure = hasStructure && hasTypes && (privateCount > 0 || protectedCount > 0) && readonlyCount > 0
-  const hasNoDisruption = disruptionCount === 0
-  const hasProperDuration = hasStructure && hasTypes && hasFunctions && exportCount > 0
-  const hasNoOscillation = deepNestedCount === 0 && anyCount === 0
-  const hasZenith = isGrand && hasCrown && hasNoDisruption
-
-  let display: GrandeurMeasure['display'] = 'void'
-  if (isGrand && hasCrown && hasRayedStructure && hasNoDisruption) display = 'corona'
-  else if (isGrand && hasCrown) display = 'curtain'
-  else if (score >= 65 && hasProperDuration) display = 'band'
-  else if (score >= 45 && hasProperDuration) display = 'patch'
-  else if (score >= 25) display = 'glow'
+  let pressure: AtmosphericMeasure['pressure'] = 'vacuum'
+  if (depth >= 85) pressure = 'deep-atmosphere'
+  else if (depth >= 70) pressure = 'rich-context'
+  else if (depth >= 55) pressure = 'proper-layering'
+  else if (depth >= 40) pressure = 'surface-level'
+  else if (depth >= 25) pressure = 'thin-air'
 
   return {
-    score,
-    display,
-    isGrand,
-    hasSubstorm,
-    hasPiPulsations,
-    hasNoFadeout,
-    hasCrown,
-    hasRayedStructure,
-    hasNoDisruption,
-    hasProperDuration,
-    hasNoOscillation,
-    hasZenith,
-    fadeoutCount,
-    disruptionCount,
+    depth,
+    pressure,
+    hasHighDepth: depth >= 70,
+    hasContextual,
+    hasWellScoped,
+    hasNoIsolation: isolationCount === 0,
+    hasConnected,
+    hasNoDisconnection: isolationCount === 0 && flatnessCount === 0,
+    hasLayered,
+    hasNoFlatness: flatnessCount === 0,
+    hasDeep,
+    hasNoShallow: isolationCount === 0,
+    isolationCount,
+    flatnessCount,
   }
 }
 
-// ─── Condition Classification ───────────────────────────────────────────────
+/** @example measureLuminous(content) evaluates code readability */
+export function measureLuminous(content: string): LuminousMeasure {
+  const hasConst = /\bconst\s+/.test(content)
+  const hasReturnType = /\)\s*:\s*\w+/.test(content)
+  const hasTypeAnnotation = /:\s*(?:string|number|boolean|void)\b/.test(content)
+  const hasOptionalChaining = /\?\.\w/.test(content)
+  const hasNullishCoalescing = /\?\?/.test(content)
+  const hasDocComments = /\/\*\*[\s\S]*?\*\//.test(content)
+  const hasNamedExport = /export\s+(?:function|class|interface|type|const|enum)/.test(content)
+  const hasInterface = /\binterface\s+\w+/.test(content)
+  const hasReadonly = /\breadonly\b/.test(content)
+  const hasEnum = /\benum\s+\w+/.test(content)
 
-/** @example classifyCondition(curtain) returns condition string */
-export function classifyCondition(curtain: AuroraCurtain): AuroraCurtain['condition'] {
-  const { qualityScore } = curtain
-  if (qualityScore >= 80) return 'solar-maximum'
-  if (qualityScore >= 65) return 'storm-peak'
-  if (qualityScore >= 50) return 'active-night'
-  if (qualityScore >= 35) return 'quiet-arc'
-  if (qualityScore >= 20) return 'substorm'
-  return 'clouded-out'
+  const blockageMatches = content.match(/\bvar\s+/g)
+  const blockageCount = blockageMatches ? blockageMatches.length : 0
+  const obfuscationMatches = content.match(/\bany\b/g)
+  const obfuscationCount = obfuscationMatches ? obfuscationMatches.length : 0
+
+  const hasReadable = hasConst && hasReturnType
+  const hasFlowing = hasOptionalChaining && hasNullishCoalescing
+  const hasClear = hasTypeAnnotation && hasDocComments
+  const hasTransparent = hasNamedExport && hasInterface
+  const hasLuminous = hasReadonly && hasEnum
+
+  let flow = 0
+  if (hasConst) flow += 10
+  if (hasReturnType) flow += 10
+  if (hasTypeAnnotation) flow += 8
+  if (hasOptionalChaining) flow += 8
+  if (hasNullishCoalescing) flow += 7
+  if (hasDocComments) flow += 10
+  if (hasNamedExport) flow += 8
+  if (hasInterface) flow += 8
+  if (hasReadonly) flow += 8
+  if (hasEnum) flow += 7
+  if (hasReadable) flow += 5
+  if (hasFlowing) flow += 5
+  if (hasClear) flow += 5
+  if (hasTransparent) flow += 5
+  if (hasLuminous) flow += 5
+
+  flow = Math.min(100, Math.round(flow))
+
+  let radiance: LuminousMeasure['radiance'] = 'opaque'
+  if (flow >= 85) radiance = 'brilliant-flow'
+  else if (flow >= 70) radiance = 'bright-stream'
+  else if (flow >= 55) radiance = 'clear-current'
+  else if (flow >= 40) radiance = 'murky-flow'
+  else if (flow >= 25) radiance = 'turbulent'
+
+  return {
+    flow,
+    radiance,
+    hasHighFlow: flow >= 70,
+    hasReadable,
+    hasFlowing,
+    hasNoBlockage: blockageCount === 0,
+    hasClear,
+    hasNoObfuscation: obfuscationCount === 0,
+    hasTransparent,
+    hasNoMuddying: blockageCount === 0 && obfuscationCount === 0,
+    hasLuminous,
+    hasNoDarkness: blockageCount === 0,
+    blockageCount,
+    obfuscationCount,
+  }
 }
 
-// ─── Curtain Analysis ───────────────────────────────────────────────────────
+// ─── Classification Functions ──────────────────────────────────────────────
 
-/** @example analyzeAuroraCurtain(content, filePath) returns full curtain */
-export function analyzeAuroraCurtain(content: string, filePath: string): AuroraCurtain {
-  const luminosity = measureLuminosity(content)
-  const spectrum = measureSpectrum(content)
+/** @example classifyCondition(85) returns 'ethereal-veil' */
+export function classifyCondition(score: number): RibbonCondition {
+  if (score >= 85) return 'ethereal-veil'
+  if (score >= 70) return 'dancing-lights'
+  if (score >= 55) return 'steady-glow'
+  if (score >= 40) return 'fading-aurora'
+  if (score >= 25) return 'dim-light'
+  return 'dark-sky'
+}
+
+/** @example classifyDisplayType(ribbons) returns display classification */
+export function classifyDisplayType(ribbons: AuroraRibbon[]): DisplayType {
+  if (ribbons.length === 0) return 'clear-night'
+  const avgQs = ribbons.reduce((s, r) => s + r.qualityScore, 0) / ribbons.length
+  const etherealCount = ribbons.filter((r) => r.condition === 'ethereal-veil').length
+  const ratio = etherealCount / ribbons.length
+  if (avgQs >= 75 && ratio >= 0.5) return 'grand-display'
+  if (avgQs >= 60) return 'aurora-borealis'
+  if (avgQs >= 45) return 'southern-lights'
+  if (avgQs >= 30) return 'faint-glow'
+  if (avgQs >= 15) return 'cloud-cover'
+  return 'clear-night'
+}
+
+/** @example classifyDisplayCondition(avgQs) returns display condition */
+export function classifyDisplayCondition(avgQs: number): DisplayCondition {
+  if (avgQs >= 75) return 'magnificent-aurora'
+  if (avgQs >= 60) return 'beautiful-display'
+  if (avgQs >= 45) return 'pleasant-lights'
+  if (avgQs >= 30) return 'fading-glow'
+  if (avgQs >= 15) return 'barely-visible'
+  return 'invisible'
+}
+
+/** @example classifyAstronomerGrade(80) returns 'aurora-master' */
+export function classifyAstronomerGrade(avgLuminosity: number): AstronomerGrade {
+  if (avgLuminosity >= 80) return 'aurora-master'
+  if (avgLuminosity >= 65) return 'expert-observer'
+  if (avgLuminosity >= 50) return 'skilled-watcher'
+  if (avgLuminosity >= 35) return 'amateur-stargazer'
+  if (avgLuminosity >= 20) return 'casual-viewer'
+  return 'cloudy-night'
+}
+
+// ─── Orchestrator Functions ────────────────────────────────────────────────
+
+/** @example analyzeAuroraRibbon(content, filePath) evaluates single file */
+export function analyzeAuroraRibbon(content: string, filePath: string): AuroraRibbon {
+  const ethereal = measureEthereal(content)
   const magnetic = measureMagnetic(content)
-  const ionosphere = measureIonosphere(content)
-  const particle = measureParticle(content)
-  const grandeur = measureGrandeur(content)
-
-  const curtainLuminosity = luminosity.level
-  const colorSpectrum = spectrum.diversity
-  const magneticDeflection = magnetic.deflection
-  const ionosphericCharge = ionosphere.charge
-  const particleCollision = particle.collision
-  const celestialGrandeur = grandeur.score
+  const spectral = measureSpectral(content)
+  const polar = measurePolar(content)
+  const atmospheric = measureAtmospheric(content)
+  const luminous = measureLuminous(content)
 
   const qualityScore = Math.round(
-    curtainLuminosity * 0.15 +
-    colorSpectrum * 0.15 +
-    magneticDeflection * 0.2 +
-    ionosphericCharge * 0.15 +
-    particleCollision * 0.15 +
-    celestialGrandeur * 0.2,
+    ethereal.elegance * 0.2 +
+    magnetic.alignment * 0.15 +
+    spectral.richness * 0.15 +
+    polar.clarity * 0.15 +
+    atmospheric.depth * 0.15 +
+    luminous.flow * 0.2,
   )
 
-  const curtain: AuroraCurtain = {
+  return {
     file: filePath,
-    curtainLuminosity,
-    colorSpectrum,
-    magneticDeflection,
-    ionosphericCharge,
-    particleCollision,
-    celestialGrandeur,
-    luminosity,
-    spectrum,
+    etherealBeauty: ethereal.elegance,
+    magneticAlignment: magnetic.alignment,
+    spectralRichness: spectral.richness,
+    polarClarity: polar.clarity,
+    atmosphericDepth: atmospheric.depth,
+    luminousFlow: luminous.flow,
+    ethereal,
     magnetic,
-    ionosphere,
-    particle,
-    grandeur,
-    condition: 'clouded-out',
+    spectral,
+    polar,
+    atmospheric,
+    luminous,
+    condition: classifyCondition(qualityScore),
     qualityScore,
   }
-
-  curtain.condition = classifyCondition(curtain)
-
-  return curtain
 }
 
-// ─── Region Analysis ────────────────────────────────────────────────────────
-
-/** @example analyzeAuroraRegion(curtains, dirPath) returns region */
-export function analyzeAuroraRegion(curtains: AuroraCurtain[], dirPath: string): AuroraRegion {
-  if (curtains.length === 0) {
+/** @example analyzeAuroraDisplay(ribbons, dirPath) evaluates directory */
+export function analyzeAuroraDisplay(ribbons: AuroraRibbon[], dirPath: string): AuroraDisplay {
+  if (ribbons.length === 0) {
     return {
       directory: dirPath,
-      curtains: [],
-      avgLuminosity: 0,
-      avgStructure: 0,
-      avgGrandeur: 0,
-      solarMaximumCount: 0,
-      cloudedOutCount: 0,
-      highLuminosityCount: 0,
-      grandCount: 0,
-      regionType: 'dark-side',
-      condition: 'daylight',
+      ribbons: [],
+      avgBeauty: 0,
+      avgClarity: 0,
+      avgFlow: 0,
+      etherealVeilCount: 0,
+      darkSkyCount: 0,
+      dancingLightsCount: 0,
+      steadyGlowCount: 0,
+      displayType: 'clear-night',
+      condition: 'invisible',
     }
   }
 
-  const avgLuminosity = Math.round(curtains.reduce((s, c) => s + c.curtainLuminosity, 0) / curtains.length)
-  const avgStructure = Math.round(curtains.reduce((s, c) => s + c.magneticDeflection, 0) / curtains.length)
-  const avgGrandeur = Math.round(curtains.reduce((s, c) => s + c.celestialGrandeur, 0) / curtains.length)
+  const avgBeauty = Math.round(ribbons.reduce((s, r) => s + r.etherealBeauty, 0) / ribbons.length)
+  const avgClarity = Math.round(ribbons.reduce((s, r) => s + r.polarClarity, 0) / ribbons.length)
+  const avgFlow = Math.round(ribbons.reduce((s, r) => s + r.luminousFlow, 0) / ribbons.length)
 
-  const solarMaximumCount = curtains.filter((c) => c.condition === 'solar-maximum').length
-  const cloudedOutCount = curtains.filter((c) => c.condition === 'clouded-out').length
-  const highLuminosityCount = curtains.filter((c) => c.luminosity.hasHighLuminosity).length
-  const grandCount = curtains.filter((c) => c.grandeur.isGrand).length
+  const etherealVeilCount = ribbons.filter((r) => r.condition === 'ethereal-veil').length
+  const darkSkyCount = ribbons.filter((r) => r.condition === 'dark-sky').length
+  const dancingLightsCount = ribbons.filter((r) => r.condition === 'dancing-lights').length
+  const steadyGlowCount = ribbons.filter((r) => r.condition === 'steady-glow').length
 
-  const regionType = classifyRegionType(curtains)
-  const avgQuality = curtains.reduce((s, c) => s + c.qualityScore, 0) / curtains.length
-  const condition = classifyRegionCondition(avgQuality)
+  const avgQs = ribbons.reduce((s, r) => s + r.qualityScore, 0) / ribbons.length
 
   return {
     directory: dirPath,
-    curtains,
-    avgLuminosity,
-    avgStructure,
-    avgGrandeur,
-    solarMaximumCount,
-    cloudedOutCount,
-    highLuminosityCount,
-    grandCount,
-    regionType,
-    condition,
+    ribbons,
+    avgBeauty,
+    avgClarity,
+    avgFlow,
+    etherealVeilCount,
+    darkSkyCount,
+    dancingLightsCount,
+    steadyGlowCount,
+    displayType: classifyDisplayType(ribbons),
+    condition: classifyDisplayCondition(avgQs),
   }
 }
 
-// ─── Region Classification ─────────────────────────────────────────────────
-
-/** @example classifyRegionType(curtains) returns region type */
-export function classifyRegionType(curtains: AuroraCurtain[]): AuroraRegion['regionType'] {
-  if (curtains.length === 0) return 'dark-side'
-  const avgQuality = curtains.reduce((s, c) => s + c.qualityScore, 0) / curtains.length
-  const solarMaximumCount = curtains.filter((c) => c.condition === 'solar-maximum').length
-  if (avgQuality >= 75 && solarMaximumCount >= Math.ceil(curtains.length * 0.3)) return 'aurora-oval'
-  if (avgQuality >= 60) return 'polar-cap'
-  if (avgQuality >= 45) return 'sub-auroral'
-  if (avgQuality >= 30) return 'mid-latitude'
-  if (avgQuality >= 15) return 'equatorial'
-  return 'dark-side'
-}
-
-/** @example classifyRegionCondition(avgQuality) returns condition */
-export function classifyRegionCondition(avgQuality: number): AuroraRegion['condition'] {
-  if (avgQuality >= 80) return 'observatory'
-  if (avgQuality >= 65) return 'viewing-station'
-  if (avgQuality >= 50) return 'dark-sky-reserve'
-  if (avgQuality >= 35) return 'city-lights'
-  if (avgQuality >= 20) return 'overcast'
-  return 'daylight'
-}
-
-/** @example classifyAstronomerGrade(avgGrandeur) returns grade */
-export function classifyAstronomerGrade(avgGrandeur: number): AuroraVeilResult['stats']['astronomerGrade'] {
-  if (avgGrandeur >= 80) return 'aurora-hunter'
-  if (avgGrandeur >= 65) return 'astrophysicist'
-  if (avgGrandeur >= 50) return 'astronomer'
-  if (avgGrandeur >= 35) return 'sky-watcher'
-  if (avgGrandeur >= 20) return 'stargazer'
-  return 'blind-spot'
-}
-
-// ─── Recommendations ────────────────────────────────────────────────────────
-
-/** @example generateRecommendations(curtains, regions, sky, stats) returns recommendations */
+/** @example generateRecommendations(ribbons, displays, sky, stats) generates advice */
 export function generateRecommendations(
-  curtains: AuroraCurtain[],
-  regions: AuroraRegion[],
-  sky: AuroraVeilResult['sky'],
-  stats: AuroraVeilResult['stats'],
+  ribbons: AuroraRibbon[],
+  displays: AuroraDisplay[],
+  sky: AuroraSky,
+  stats: AuroraVeilStats,
 ): string[] {
   const recs: string[] = []
 
-  if (stats.avgCurtainLuminosity < 50) {
-    recs.push('Increase curtain luminosity — add clearer structure, types, and documentation')
+  if (stats.avgEtherealBeauty < 50) {
+    recs.push('Improve ethereal beauty with interfaces, generics, and expressive patterns')
   }
-  if (stats.avgColorSpectrum < 50) {
-    recs.push('Broaden color spectrum — use more diverse code patterns and constructs')
+  if (stats.avgMagneticAlignment < 50) {
+    recs.push('Strengthen magnetic alignment with const, strict equality, and consistent types')
   }
-  if (stats.avgMagneticDeflection < 50) {
-    recs.push('Strengthen magnetic deflection — build a more structured code foundation')
+  if (stats.avgSpectralRichness < 50) {
+    recs.push('Enhance spectral richness with enums, async patterns, and diverse code constructs')
   }
-  if (stats.avgIonosphericCharge < 50) {
-    recs.push('Boost ionospheric charge — add async patterns, generics, and error handling')
+  if (stats.avgPolarClarity < 50) {
+    recs.push('Sharpen polar clarity with return types, doc comments, and focused exports')
   }
-  if (stats.avgParticleCollision < 50) {
-    recs.push('Enhance particle collision — improve code interaction and integration')
+  if (stats.avgAtmosphericDepth < 50) {
+    recs.push('Deepen atmospheric depth with imports, documentation, and layered abstractions')
   }
-  if (stats.avgCelestialGrandeur < 50) {
-    recs.push('Elevate celestial grandeur — aim for grand, well-crafted code')
+  if (stats.avgLuminousFlow < 50) {
+    recs.push('Improve luminous flow with readable patterns, optional chaining, and clear naming')
   }
-  if (stats.cloudedOutCount > curtains.length * 0.5) {
-    recs.push('Too many clouded-out files — over half lack aurora quality')
+  if (stats.darkSkyCount > 0) {
+    recs.push(`${String(stats.darkSkyCount)} file(s) are in dark sky — consider significant improvement`)
   }
-  if (stats.isGrandCount === 0) {
-    recs.push('No grand displays found — strive for breathtaking code')
+  if (sky.overallLuminosity < 40) {
+    recs.push('Overall luminosity is low — prioritize code elegance and readability')
   }
-  if (regions.length > 0 && sky.overallGrandeur < 60) {
-    recs.push('Overall sky grandeur is low — systematic improvement recommended')
-  }
-  if (recs.length === 0) {
-    recs.push('Breathtaking aurora display — your code radiates celestial beauty')
+  if (displays.length > 0 && displays.every((d) => d.displayType === 'clear-night' || d.displayType === 'cloud-cover')) {
+    recs.push('All displays are dim — consider a major quality improvement effort')
   }
 
-  return recs
+  const dark = ribbons.filter((r) => r.condition === 'dark-sky')
+  if (dark.length > 0 && dark.length <= 3) {
+    const names = dark.map((r) => r.file).join(', ')
+    recs.push(`Illuminate these dark files: ${names}`)
+  }
+
+  if (recs.length === 0) {
+    recs.push('Your code has an ethereal veil! Luminous quality is exceptional')
+  }
+
+  return Array.from(new Set(recs))
 }
 
-// ─── Build Result ───────────────────────────────────────────────────────────
-
-/** @example buildAuroraVeilResult(files, contents, options) returns full result */
+/** @example buildAuroraVeilResult(files, contents, options) orchestrates analysis */
 export function buildAuroraVeilResult(
   files: string[],
   contents: string[],
-  _options?: { verbose?: boolean },
+  _options?: Record<string, unknown>,
 ): AuroraVeilResult {
-  const curtains: AuroraCurtain[] = files.map((file, i) =>
-    analyzeAuroraCurtain(contents[i] ?? '', file),
-  )
+  const ribbons = files.map((file, i) => analyzeAuroraRibbon(contents[i] ?? '', file))
 
-  const dirMap = new Map<string, AuroraCurtain[]>()
-  for (const curtain of curtains) {
-    const dir = curtain.file.includes('/')
-      ? curtain.file.substring(0, curtain.file.lastIndexOf('/'))
-      : '.'
-    const existing = dirMap.get(dir)
+  const dispMap = new Map<string, AuroraRibbon[]>()
+  for (const ribbon of ribbons) {
+    const dir = ribbon.file.includes('/') ? ribbon.file.split('/').slice(0, -1).join('/') : '.'
+    const existing = dispMap.get(dir)
     if (existing) {
-      existing.push(curtain)
+      existing.push(ribbon)
     } else {
-      dirMap.set(dir, [curtain])
+      dispMap.set(dir, [ribbon])
     }
   }
 
-  const regions: AuroraRegion[] = Array.from(dirMap.entries()).map(([dir, dirCurtains]) =>
-    analyzeAuroraRegion(dirCurtains, dir),
+  const displays = Array.from(dispMap.entries()).map(([dir, dirRibbons]) =>
+    analyzeAuroraDisplay(dirRibbons, dir),
   )
 
-  const avgLuminosity = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.curtainLuminosity, 0) / curtains.length)
-    : 0
-  const avgStructure = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.magneticDeflection, 0) / curtains.length)
-    : 0
-  const avgGrandeur = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.celestialGrandeur, 0) / curtains.length)
-    : 0
-  const overallGrandeur = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.qualityScore, 0) / curtains.length)
-    : 0
-  const isBreathtaking = overallGrandeur >= 65
+  const totalFiles = ribbons.length
+  const avgEtherealBeauty = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.etherealBeauty, 0) / totalFiles) : 0
+  const avgMagneticAlignment = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.magneticAlignment, 0) / totalFiles) : 0
+  const avgSpectralRichness = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.spectralRichness, 0) / totalFiles) : 0
+  const avgPolarClarity = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.polarClarity, 0) / totalFiles) : 0
+  const avgAtmosphericDepth = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.atmosphericDepth, 0) / totalFiles) : 0
+  const avgLuminousFlow = totalFiles > 0 ? Math.round(ribbons.reduce((s, r) => s + r.luminousFlow, 0) / totalFiles) : 0
 
-  const sky: AuroraVeilResult['sky'] = {
-    avgLuminosity,
-    avgStructure,
-    avgGrandeur,
-    isBreathtaking,
-    overallGrandeur,
+  const overallLuminosity = totalFiles > 0
+    ? Math.round((avgEtherealBeauty + avgPolarClarity + avgLuminousFlow) / 3)
+    : 0
+
+  const sky: AuroraSky = {
+    avgBeauty: avgEtherealBeauty,
+    avgClarity: avgPolarClarity,
+    avgFlow: avgLuminousFlow,
+    isEthereal: avgEtherealBeauty >= 60,
+    overallLuminosity,
   }
 
-  const avgCurtainLuminosity = avgLuminosity
-  const avgColorSpectrum = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.colorSpectrum, 0) / curtains.length)
-    : 0
-  const avgMagneticDeflection = avgStructure
-  const avgIonosphericCharge = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.ionosphericCharge, 0) / curtains.length)
-    : 0
-  const avgParticleCollision = curtains.length > 0
-    ? Math.round(curtains.reduce((s, c) => s + c.particleCollision, 0) / curtains.length)
-    : 0
-  const avgCelestialGrandeur = avgGrandeur
+  const etherealVeilCount = ribbons.filter((r) => r.condition === 'ethereal-veil').length
+  const dancingLightsCount = ribbons.filter((r) => r.condition === 'dancing-lights').length
+  const steadyGlowCount = ribbons.filter((r) => r.condition === 'steady-glow').length
+  const fadingAuroraCount = ribbons.filter((r) => r.condition === 'fading-aurora').length
+  const dimLightCount = ribbons.filter((r) => r.condition === 'dim-light').length
+  const darkSkyCount = ribbons.filter((r) => r.condition === 'dark-sky').length
 
-  const conditionCounts = {
-    solarMaximum: 0,
-    stormPeak: 0,
-    activeNight: 0,
-    quietArc: 0,
-    substorm: 0,
-    cloudedOut: 0,
-  }
-  for (const c of curtains) {
-    switch (c.condition) {
-      case 'solar-maximum': conditionCounts.solarMaximum++; break
-      case 'storm-peak': conditionCounts.stormPeak++; break
-      case 'active-night': conditionCounts.activeNight++; break
-      case 'quiet-arc': conditionCounts.quietArc++; break
-      case 'substorm': conditionCounts.substorm++; break
-      case 'clouded-out': conditionCounts.cloudedOut++; break
-    }
-  }
-
-  const hasHighLuminosityCount = curtains.filter((c) => c.luminosity.hasHighLuminosity).length
-  const hasRichSpectrumCount = curtains.filter((c) => c.spectrum.hasRichSpectrum).length
-  const hasProperStructureCount = curtains.filter((c) => c.magnetic.hasProperStructure).length
-  const hasHighEnergyCount = curtains.filter((c) => c.ionosphere.hasHighEnergy).length
-  const hasHighInteractionCount = curtains.filter((c) => c.particle.hasHighInteraction).length
-  const isGrandCount = curtains.filter((c) => c.grandeur.isGrand).length
-
-  const bestCurtain = curtains.length > 0
-    ? curtains.reduce((best, c) => c.qualityScore > best.qualityScore ? c : best).file
+  const bestRibbon = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.qualityScore > best.qualityScore ? r : best), ribbons[0]).file
     : ''
-  const brightest = curtains.length > 0
-    ? curtains.reduce((best, c) => c.curtainLuminosity > best.curtainLuminosity ? c : best).file
+  const mostBeautiful = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.etherealBeauty > best.etherealBeauty ? r : best), ribbons[0]).file
     : ''
-  const mostDiverse = curtains.length > 0
-    ? curtains.reduce((best, c) => c.colorSpectrum > best.colorSpectrum ? c : best).file
+  const bestAligned = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.magneticAlignment > best.magneticAlignment ? r : best), ribbons[0]).file
     : ''
-  const bestStructured = curtains.length > 0
-    ? curtains.reduce((best, c) => c.magneticDeflection > best.magneticDeflection ? c : best).file
+  const mostDiverse = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.spectralRichness > best.spectralRichness ? r : best), ribbons[0]).file
     : ''
-  const mostEnergetic = curtains.length > 0
-    ? curtains.reduce((best, c) => c.ionosphericCharge > best.ionosphericCharge ? c : best).file
+  const mostFocused = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.polarClarity > best.polarClarity ? r : best), ribbons[0]).file
     : ''
-  const grandest = curtains.length > 0
-    ? curtains.reduce((best, c) => c.celestialGrandeur > best.celestialGrandeur ? c : best).file
+  const deepest = totalFiles > 0
+    ? ribbons.reduce((best, r) => (r.atmosphericDepth > best.atmosphericDepth ? r : best), ribbons[0]).file
     : ''
 
-  const astronomerGrade = classifyAstronomerGrade(overallGrandeur)
-
-  const stats: AuroraVeilResult['stats'] = {
-    totalFiles: files.length,
-    totalRegions: regions.length,
-    avgCurtainLuminosity,
-    avgColorSpectrum,
-    avgMagneticDeflection,
-    avgIonosphericCharge,
-    avgParticleCollision,
-    avgCelestialGrandeur,
-    solarMaximumCount: conditionCounts.solarMaximum,
-    stormPeakCount: conditionCounts.stormPeak,
-    activeNightCount: conditionCounts.activeNight,
-    quietArcCount: conditionCounts.quietArc,
-    substormCount: conditionCounts.substorm,
-    cloudedOutCount: conditionCounts.cloudedOut,
-    hasHighLuminosityCount,
-    hasRichSpectrumCount,
-    hasProperStructureCount,
-    hasHighEnergyCount,
-    hasHighInteractionCount,
-    isGrandCount,
-    overallGrandeur,
-    astronomerGrade,
-    bestCurtain,
-    brightest,
+  const stats: AuroraVeilStats = {
+    totalFiles,
+    totalDisplays: displays.length,
+    avgEtherealBeauty,
+    avgMagneticAlignment,
+    avgSpectralRichness,
+    avgPolarClarity,
+    avgAtmosphericDepth,
+    avgLuminousFlow,
+    etherealVeilCount,
+    dancingLightsCount,
+    steadyGlowCount,
+    fadingAuroraCount,
+    dimLightCount,
+    darkSkyCount,
+    hasHighEleganceCount: ribbons.filter((r) => r.ethereal.hasHighElegance).length,
+    hasHighAlignmentCount: ribbons.filter((r) => r.magnetic.hasHighAlignment).length,
+    hasHighRichnessCount: ribbons.filter((r) => r.spectral.hasHighRichness).length,
+    hasHighClarityCount: ribbons.filter((r) => r.polar.hasHighClarity).length,
+    hasHighDepthCount: ribbons.filter((r) => r.atmospheric.hasHighDepth).length,
+    hasHighFlowCount: ribbons.filter((r) => r.luminous.hasHighFlow).length,
+    overallLuminosity,
+    astronomerGrade: classifyAstronomerGrade(overallLuminosity),
+    bestRibbon,
+    mostBeautiful,
+    bestAligned,
     mostDiverse,
-    bestStructured,
-    mostEnergetic,
-    grandest,
+    mostFocused,
+    deepest,
   }
 
-  const recommendations = generateRecommendations(curtains, regions, sky, stats)
+  const recommendations = generateRecommendations(ribbons, displays, sky, stats)
 
-  return {
-    curtains,
-    regions,
-    sky,
-    stats,
-    recommendations,
-  }
+  return { ribbons, displays, sky, stats, recommendations }
 }

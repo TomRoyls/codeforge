@@ -1,53 +1,117 @@
 import chalk from 'chalk'
-
 import type { AuroraVeilResult } from './aurora-veil-helpers.js'
 
 // ─── Color Helpers ─────────────────────────────────────────────────────────
 
-/** @example scoreColor(90) returns green string */
+/** @example scoreColor(90) returns colored string */
 export function scoreColor(score: number): string {
-  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
-  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
-  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
+  if (score >= 80) return chalk.rgb(118, 255, 3)(String(score))
+  if (score >= 60) return chalk.rgb(46, 204, 113)(String(score))
+  if (score >= 40) return chalk.rgb(241, 196, 15)(String(score))
   return chalk.rgb(231, 76, 60)(String(score))
 }
 
-/** @example conditionColor('solar-maximum') returns colored string */
-export function conditionColor(condition: string): string {
-  switch (condition) {
-    case 'solar-maximum': return chalk.rgb(46, 204, 113).bold(condition)
-    case 'storm-peak': return chalk.rgb(52, 152, 219)(condition)
-    case 'active-night': return chalk.rgb(155, 89, 182)(condition)
-    case 'quiet-arc': return chalk.rgb(241, 196, 15)(condition)
-    case 'substorm': return chalk.rgb(230, 126, 34)(condition)
-    case 'clouded-out': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
+/** @example beautyColor('transcendent') returns colored string */
+export function beautyColor(b: string): string {
+  switch (b) {
+    case 'transcendent': return chalk.rgb(118, 255, 3).bold(b)
+    case 'breathtaking': return chalk.rgb(46, 204, 113)(b)
+    case 'beautiful': return chalk.rgb(52, 152, 219)(b)
+    case 'pleasant': return chalk.rgb(241, 196, 15)(b)
+    case 'ordinary': return chalk.rgb(230, 126, 34)(b)
+    case 'uninspiring': return chalk.rgb(231, 76, 60)(b)
+    default: return b
   }
 }
 
-/** @example gradeColor('aurora-hunter') returns bold string */
-export function gradeColor(grade: string): string {
-  switch (grade) {
-    case 'aurora-hunter': return chalk.rgb(46, 204, 113).bold(grade)
-    case 'astrophysicist': return chalk.rgb(52, 152, 219)(grade)
-    case 'astronomer': return chalk.rgb(155, 89, 182)(grade)
-    case 'sky-watcher': return chalk.rgb(241, 196, 15)(grade)
-    case 'stargazer': return chalk.rgb(230, 126, 34)(grade)
-    case 'blind-spot': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
+/** @example fieldColor('perfect-alignment') returns colored string */
+export function fieldColor(f: string): string {
+  switch (f) {
+    case 'perfect-alignment': return chalk.rgb(118, 255, 3).bold(f)
+    case 'strong-field': return chalk.rgb(46, 204, 113)(f)
+    case 'proper-alignment': return chalk.rgb(52, 152, 219)(f)
+    case 'drifting': return chalk.rgb(241, 196, 15)(f)
+    case 'misaligned': return chalk.rgb(230, 126, 34)(f)
+    case 'chaotic': return chalk.rgb(231, 76, 60)(f)
+    default: return f
   }
 }
 
-/** @example regionTypeColor('aurora-oval') returns colored string */
-export function regionTypeColor(regionType: string): string {
-  switch (regionType) {
-    case 'aurora-oval': return chalk.rgb(46, 204, 113)(regionType)
-    case 'polar-cap': return chalk.rgb(52, 152, 219)(regionType)
-    case 'sub-auroral': return chalk.rgb(155, 89, 182)(regionType)
-    case 'mid-latitude': return chalk.rgb(241, 196, 15)(regionType)
-    case 'equatorial': return chalk.rgb(230, 126, 34)(regionType)
-    case 'dark-side': return chalk.rgb(231, 76, 60)(regionType)
-    default: return regionType
+/** @example spectrumColor('full-spectrum') returns colored string */
+export function spectrumColor(s: string): string {
+  switch (s) {
+    case 'full-spectrum': return chalk.rgb(118, 255, 3).bold(s)
+    case 'rich-palette': return chalk.rgb(46, 204, 113)(s)
+    case 'colorful': return chalk.rgb(52, 152, 219)(s)
+    case 'adequate-colors': return chalk.rgb(241, 196, 15)(s)
+    case 'monochrome': return chalk.rgb(230, 126, 34)(s)
+    case 'colorless': return chalk.rgb(231, 76, 60)(s)
+    default: return s
+  }
+}
+
+/** @example focusColor('laser-focused') returns colored string */
+export function focusColor(f: string): string {
+  switch (f) {
+    case 'laser-focused': return chalk.rgb(118, 255, 3).bold(f)
+    case 'sharp-focus': return chalk.rgb(46, 204, 113)(f)
+    case 'clear-purpose': return chalk.rgb(52, 152, 219)(f)
+    case 'somewhat-scattered': return chalk.rgb(241, 196, 15)(f)
+    case 'diffuse': return chalk.rgb(230, 126, 34)(f)
+    case 'scattered': return chalk.rgb(231, 76, 60)(f)
+    default: return f
+  }
+}
+
+/** @example pressureColor('deep-atmosphere') returns colored string */
+export function pressureColor(p: string): string {
+  switch (p) {
+    case 'deep-atmosphere': return chalk.rgb(118, 255, 3).bold(p)
+    case 'rich-context': return chalk.rgb(46, 204, 113)(p)
+    case 'proper-layering': return chalk.rgb(52, 152, 219)(p)
+    case 'surface-level': return chalk.rgb(241, 196, 15)(p)
+    case 'thin-air': return chalk.rgb(230, 126, 34)(p)
+    case 'vacuum': return chalk.rgb(231, 76, 60)(p)
+    default: return p
+  }
+}
+
+/** @example radianceColor('brilliant-flow') returns colored string */
+export function radianceColor(r: string): string {
+  switch (r) {
+    case 'brilliant-flow': return chalk.rgb(118, 255, 3).bold(r)
+    case 'bright-stream': return chalk.rgb(46, 204, 113)(r)
+    case 'clear-current': return chalk.rgb(52, 152, 219)(r)
+    case 'murky-flow': return chalk.rgb(241, 196, 15)(r)
+    case 'turbulent': return chalk.rgb(230, 126, 34)(r)
+    case 'opaque': return chalk.rgb(231, 76, 60)(r)
+    default: return r
+  }
+}
+
+/** @example conditionColor('ethereal-veil') returns colored string */
+export function conditionColor(c: string): string {
+  switch (c) {
+    case 'ethereal-veil': return chalk.rgb(118, 255, 3).bold(c)
+    case 'dancing-lights': return chalk.rgb(46, 204, 113)(c)
+    case 'steady-glow': return chalk.rgb(52, 152, 219)(c)
+    case 'fading-aurora': return chalk.rgb(241, 196, 15)(c)
+    case 'dim-light': return chalk.rgb(230, 126, 34)(c)
+    case 'dark-sky': return chalk.rgb(231, 76, 60)(c)
+    default: return c
+  }
+}
+
+/** @example astronomerColor('aurora-master') returns colored string */
+export function astronomerColor(g: string): string {
+  switch (g) {
+    case 'aurora-master': return chalk.rgb(118, 255, 3).bold(g)
+    case 'expert-observer': return chalk.rgb(46, 204, 113)(g)
+    case 'skilled-watcher': return chalk.rgb(52, 152, 219)(g)
+    case 'amateur-stargazer': return chalk.rgb(241, 196, 15)(g)
+    case 'casual-viewer': return chalk.rgb(230, 126, 34)(g)
+    case 'cloudy-night': return chalk.rgb(231, 76, 60)(g)
+    default: return g
   }
 }
 
@@ -65,79 +129,64 @@ export function formatAuroraVeilTable(result: AuroraVeilResult, verbose: boolean
   const lines: string[] = []
 
   lines.push('')
-  lines.push(chalk.rgb(44, 62, 80).bold('  Aurora Veil Analysis'))
+  lines.push(chalk.rgb(118, 255, 3).bold('  Aurora Veil Analysis'))
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Sky Overview:'))
-  lines.push(`    Overall Grandeur:     ${scoreColor(result.sky.overallGrandeur)}`)
-  lines.push(`    Avg Luminosity:       ${scoreColor(result.sky.avgLuminosity)}`)
-  lines.push(`    Avg Structure:        ${scoreColor(result.sky.avgStructure)}`)
-  lines.push(`    Avg Grandeur:         ${scoreColor(result.sky.avgGrandeur)}`)
-  lines.push(`    Breathtaking:         ${result.sky.isBreathtaking ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
+  lines.push(chalk.rgb(118, 255, 3)('  Sky:'))
+  lines.push(`    Avg Beauty:         ${scoreColor(result.sky.avgBeauty)}`)
+  lines.push(`    Avg Clarity:        ${scoreColor(result.sky.avgClarity)}`)
+  lines.push(`    Avg Flow:           ${scoreColor(result.sky.avgFlow)}`)
+  lines.push(`    Is Ethereal:        ${result.sky.isEthereal ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
+  lines.push(`    Overall Luminosity: ${scoreColor(result.sky.overallLuminosity)}`)
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Statistics:'))
+  lines.push(chalk.rgb(118, 255, 3)('  Statistics:'))
   lines.push(`    Total Files:              ${result.stats.totalFiles}`)
-  lines.push(`    Total Regions:            ${result.stats.totalRegions}`)
-  lines.push(`    Avg Luminosity:           ${scoreColor(result.stats.avgCurtainLuminosity)}`)
-  lines.push(`    Avg Spectrum:             ${scoreColor(result.stats.avgColorSpectrum)}`)
-  lines.push(`    Avg Magnetic:             ${scoreColor(result.stats.avgMagneticDeflection)}`)
-  lines.push(`    Avg Ionosphere:           ${scoreColor(result.stats.avgIonosphericCharge)}`)
-  lines.push(`    Avg Particle:             ${scoreColor(result.stats.avgParticleCollision)}`)
-  lines.push(`    Avg Grandeur:             ${scoreColor(result.stats.avgCelestialGrandeur)}`)
-  lines.push(`    Solar Maximum:            ${result.stats.solarMaximumCount}`)
-  lines.push(`    Storm Peak:               ${result.stats.stormPeakCount}`)
-  lines.push(`    Active Night:             ${result.stats.activeNightCount}`)
-  lines.push(`    Quiet Arc:                ${result.stats.quietArcCount}`)
-  lines.push(`    Substorm:                 ${result.stats.substormCount}`)
-  lines.push(`    Clouded Out:              ${result.stats.cloudedOutCount}`)
-  lines.push(`    High Luminosity:          ${result.stats.hasHighLuminosityCount}`)
-  lines.push(`    Rich Spectrum:            ${result.stats.hasRichSpectrumCount}`)
-  lines.push(`    Proper Structure:         ${result.stats.hasProperStructureCount}`)
-  lines.push(`    High Energy:              ${result.stats.hasHighEnergyCount}`)
-  lines.push(`    High Interaction:         ${result.stats.hasHighInteractionCount}`)
-  lines.push(`    Grand:                    ${result.stats.isGrandCount}`)
+  lines.push(`    Total Displays:           ${result.stats.totalDisplays}`)
+  lines.push(`    Avg Ethereal Beauty:      ${scoreColor(result.stats.avgEtherealBeauty)}`)
+  lines.push(`    Avg Magnetic Alignment:   ${scoreColor(result.stats.avgMagneticAlignment)}`)
+  lines.push(`    Avg Spectral Richness:    ${scoreColor(result.stats.avgSpectralRichness)}`)
+  lines.push(`    Avg Polar Clarity:        ${scoreColor(result.stats.avgPolarClarity)}`)
+  lines.push(`    Avg Atmospheric Depth:    ${scoreColor(result.stats.avgAtmosphericDepth)}`)
+  lines.push(`    Avg Luminous Flow:        ${scoreColor(result.stats.avgLuminousFlow)}`)
+  lines.push(`    Astronomer Grade:         ${astronomerColor(result.stats.astronomerGrade)}`)
   lines.push('')
 
-  lines.push(chalk.rgb(44, 62, 80)('  Grades & Highlights:'))
-  lines.push(`    Astronomer Grade:         ${gradeColor(result.stats.astronomerGrade)}`)
-  lines.push(`    Best Curtain:             ${result.stats.bestCurtain || 'N/A'}`)
-  lines.push(`    Brightest:                ${result.stats.brightest || 'N/A'}`)
-  lines.push(`    Most Diverse:             ${result.stats.mostDiverse || 'N/A'}`)
-  lines.push(`    Best Structured:          ${result.stats.bestStructured || 'N/A'}`)
-  lines.push(`    Most Energetic:           ${result.stats.mostEnergetic || 'N/A'}`)
-  lines.push(`    Grandest:                 ${result.stats.grandest || 'N/A'}`)
+  lines.push(chalk.rgb(118, 255, 3)('  Condition Counts:'))
+  lines.push(`    Ethereal Veil:    ${result.stats.etherealVeilCount}`)
+  lines.push(`    Dancing Lights:   ${result.stats.dancingLightsCount}`)
+  lines.push(`    Steady Glow:      ${result.stats.steadyGlowCount}`)
+  lines.push(`    Fading Aurora:    ${result.stats.fadingAuroraCount}`)
+  lines.push(`    Dim Light:        ${result.stats.dimLightCount}`)
+  lines.push(`    Dark Sky:         ${result.stats.darkSkyCount}`)
   lines.push('')
 
-  if (verbose && result.curtains.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Per-Curtain Breakdown:'))
-    for (const c of result.curtains) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(c.file)}`)
-      lines.push(`      Condition:             ${conditionColor(c.condition)}`)
-      lines.push(`      Quality Score:         ${scoreColor(c.qualityScore)}`)
-      lines.push(`      Luminosity:            ${scoreColor(c.curtainLuminosity)} (${c.luminosity.brightness})`)
-      lines.push(`      Spectrum:              ${scoreColor(c.colorSpectrum)} (${c.spectrum.palette})`)
-      lines.push(`      Magnetic:              ${scoreColor(c.magneticDeflection)} (${c.magnetic.field})`)
-      lines.push(`      Ionosphere:            ${scoreColor(c.ionosphericCharge)} (${c.ionosphere.layer})`)
-      lines.push(`      Particle:              ${scoreColor(c.particleCollision)} (${c.particle.source})`)
-      lines.push(`      Grandeur:              ${scoreColor(c.celestialGrandeur)} (${c.grandeur.display})`)
-    }
+  if (result.stats.bestRibbon) {
+    lines.push(chalk.rgb(118, 255, 3)('  Highlights:'))
+    lines.push(`    Best Ribbon:       ${result.stats.bestRibbon}`)
+    lines.push(`    Most Beautiful:    ${result.stats.mostBeautiful}`)
+    lines.push(`    Best Aligned:      ${result.stats.bestAligned}`)
+    lines.push(`    Most Diverse:      ${result.stats.mostDiverse}`)
+    lines.push(`    Most Focused:      ${result.stats.mostFocused}`)
+    lines.push(`    Deepest:           ${result.stats.deepest}`)
     lines.push('')
   }
 
-  if (result.regions.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Regions:'))
-    for (const r of result.regions) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(r.directory)} — ${regionTypeColor(r.regionType)} (${r.condition})`)
-      lines.push(`      Curtains: ${r.curtains.length}, Solar Max: ${r.solarMaximumCount}, Clouded: ${r.cloudedOutCount}, Grand: ${r.grandCount}`)
+  if (verbose && result.ribbons.length > 0) {
+    lines.push(chalk.rgb(118, 255, 3)('  Per-File Ribbons:'))
+    for (const r of result.ribbons) {
+      lines.push(`    ${chalk.rgb(169, 169, 169)(r.file)}`)
+      lines.push(`      Score: ${scoreColor(r.qualityScore)}  Condition: ${conditionColor(r.condition)}`)
+      lines.push(`      Ethereal: ${beautyColor(r.ethereal.beauty)}(${r.etherealBeauty})  Magnetic: ${fieldColor(r.magnetic.field)}(${r.magneticAlignment})  Spectral: ${spectrumColor(r.spectral.spectrum)}(${r.spectralRichness})`)
+      lines.push(`      Polar: ${focusColor(r.polar.focus)}(${r.polarClarity})  Atmospheric: ${pressureColor(r.atmospheric.pressure)}(${r.atmosphericDepth})  Luminous: ${radianceColor(r.luminous.radiance)}(${r.luminousFlow})`)
     }
     lines.push('')
   }
 
   if (result.recommendations.length > 0) {
-    lines.push(chalk.rgb(44, 62, 80)('  Recommendations:'))
+    lines.push(chalk.rgb(118, 255, 3)('  Recommendations:'))
     for (const rec of result.recommendations) {
-      lines.push(`    • ${rec}`)
+      lines.push(`    ${chalk.rgb(118, 255, 3)('\u{1F30C}')} ${rec}`)
     }
     lines.push('')
   }

@@ -5,31 +5,28 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildAuroraVeilResult,
-  type AuroraVeilResult,
-} from './aurora-veil-helpers.js'
+import { buildAuroraVeilResult, type AuroraVeilResult } from './aurora-veil-helpers.js'
 import { formatAuroraVeilJson, formatAuroraVeilTable } from './aurora-veil-format-helpers.js'
 
 export default class AuroraVeil extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze aurora veil patterns',
+      description: 'Path to analyze for aurora veil metrics',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code beauty, energy, radiance, and transformation like an aurora veil'
+  static override description = 'Analyze code ethereal beauty, magnetic alignment, spectral richness, polar clarity, atmospheric depth, and luminous flow'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze aurora veil in current directory',
+      description: 'Analyze current directory for aurora veil metrics',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze aurora veil in src directory as JSON',
+      description: 'Analyze src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
@@ -37,11 +34,7 @@ export default class AuroraVeil extends Command {
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file breakdown',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output aurora.json',
-      description: 'Export aurora veil analysis to JSON file',
+      description: 'Show per-file ribbon details',
     },
   ]
 
@@ -68,7 +61,7 @@ export default class AuroraVeil extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file breakdown',
+      description: 'Show per-file ribbon details',
     }),
   }
 
@@ -93,22 +86,28 @@ export default class AuroraVeil extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
+      ? flags.ext
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
+      ? discoveredFiles.filter((f) => {
+          const ext = extname(f.path).toLowerCase()
+          return extensions.includes(ext)
+        })
       : discoveredFiles
 
-    spinner.text = 'Analyzing aurora veil...'
+    spinner.text = 'Weaving aurora veil...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -126,7 +125,7 @@ export default class AuroraVeil extends Command {
 
     const result: AuroraVeilResult = buildAuroraVeilResult(files, contents)
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.regions.length} aurora regions`)
+    spinner.succeed(`Analyzed ${files.length} files across ${result.displays.length} displays`)
 
     const outputData =
       format === 'json'
@@ -149,5 +148,5 @@ export default class AuroraVeil extends Command {
 }
 
 export { buildAuroraVeilResult } from './aurora-veil-helpers.js'
-export type { AuroraVeilResult, AuroraCurtain, AuroraRegion, LuminosityMeasure, SpectrumMeasure, MagneticMeasure, IonosphereMeasure, ParticleMeasure, GrandeurMeasure } from './aurora-veil-helpers.js'
+export type { AuroraVeilResult, AuroraRibbon, AuroraDisplay, AuroraSky, AstronomerGrade, AuroraVeilStats, RibbonCondition, DisplayType, DisplayCondition, EtherealMeasure, MagneticMeasure, SpectralMeasure, PolarMeasure, AtmosphericMeasure, LuminousMeasure } from './aurora-veil-helpers.js'
 export { formatAuroraVeilJson, formatAuroraVeilTable } from './aurora-veil-format-helpers.js'
