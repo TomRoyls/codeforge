@@ -1,171 +1,66 @@
-import { Args, Command, Flags } from '@oclif/core'
-import { existsSync } from 'node:fs'
-import * as fs from 'node:fs/promises'
-import { extname, resolve } from 'node:path'
-import ora from 'ora'
+// ─── Imports ───────────────────────────────────────────────────────
+import { Command, Flags } from '@oclif/core'
+import fs from 'node:fs'
+import path from 'node:path'
+import { buildCompassRoseResult, gatherFiles } from './compass-rose-helpers.js'
+import { formatResultTable, formatResultJson } from './compass-rose-format-helpers.js'
 
-import { discoverFiles } from '../core/file-discovery.js'
-import { buildCompassRoseResult, type CompassRoseResult } from './compass-rose-helpers.js'
-import { formatCompassRoseJson, formatCompassRoseTable } from './compass-rose-format-helpers.js'
+// ─── Command ───────────────────────────────────────────────────────
 
+/**
+ * Analyze code directional clarity, bearing accuracy, navigation quality, orientation stability, and charting precision
+ * @example
+ * codeforge compass-rose ./src
+ */
 export default class CompassRose extends Command {
-  static override args = {
-    path: Args.string({
-      default: '.',
-      description: 'Path to analyze directional orientation',
-      required: false,
-    }),
-  }
-
-  static override description = 'Analyze code directional orientation and bearings'
+  static override description = 'Analyze code directional clarity, bearing accuracy, navigation quality, orientation stability, and charting precision'
 
   static override examples = [
-    {
-      command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze orientation in current directory',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze src directory as JSON',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show detailed compass point breakdown',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output compass.json',
-      description: 'Export analysis to JSON file',
-    },
+    '<%= config.bin %> <%= command.id %> ./src',
+    '<%= config.bin %> <%= command.id %> ./src --format json',
+    '<%= config.bin %> <%= command.id %> ./src --verbose',
   ]
 
   static override flags = {
-    ext: Flags.string({
-      default: '',
-      description: 'Comma-separated file extensions to analyze (e.g., ".ts,.tsx")',
-    }),
-    format: Flags.string({
-      char: 'f',
-      default: 'table',
-      description: 'Output format',
-      options: ['json', 'table'],
-    }),
-    ignore: Flags.string({
-      char: 'i',
-      description: 'Patterns to ignore',
-      multiple: true,
-    }),
-    output: Flags.string({
-      char: 'o',
-      description: 'Output file path',
-    }),
-    verbose: Flags.boolean({
-      char: 'v',
-      default: false,
-      description: 'Show detailed breakdown',
-    }),
+    format: Flags.string({ default: 'table', description: 'Output format (table or json)', options: ['table', 'json'] }),
+    output: Flags.string({ description: 'Output file path' }),
+    ignore: Flags.string({ description: 'Comma-separated ignore patterns', multiple: true }),
+    ext: Flags.string({ description: 'Comma-separated file extensions', multiple: true }),
+    verbose: Flags.boolean({ default: false, description: 'Show verbose output' }),
   }
+
+  static override args = [{ name: 'path', description: 'Path to analyze', default: '.' }]
 
   async run(): Promise<void> {
     const { args, flags } = await this.parse(CompassRose)
+    const targetPath = args.path as string ?? '.'
+    const exts = flags.ext?.flatMap(e => e.split(',').map(s => s.trim())) ?? []
+    const ignore = flags.ignore?.flatMap(i => i.split(',').map(s => s.trim())) ?? []
 
-    const targetPath = resolve(args.path as string)
+    const ora = await import('ora')
+    const spinner = ora.default('Scanning compass bearings...').start()
 
-    if (!existsSync(targetPath)) {
-      this.error(`Path not found: ${targetPath}`, { exit: 1 })
-    }
+    try {
+      const files = await gatherFiles(targetPath, exts, ignore)
+      if (files.length === 0) { spinner.warn('No files found to analyze'); return }
 
-    const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
+      spinner.text = `Analyzing ${files.length} file(s)...`
+      const contents = files.map(f => { try { return fs.readFileSync(f, 'utf-8') } catch { return '' } })
+      const result = await buildCompassRoseResult(files, contents, { verbose: flags.verbose })
+      spinner.succeed(`Analyzed ${result.stats.totalFiles} file(s) across ${result.stats.totalCharts} chart(s)`)
 
-    const spinner = ora('Discovering files...').start()
-
-    const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
-    const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
-
-    const discoveredFiles = await discoverFiles({
-      cwd: targetPath,
-      ignore,
-      patterns: [
-        '**/*.ts',
-        '**/*.tsx',
-        '**/*.js',
-        '**/*.jsx',
-        '**/*.json',
-        '**/*.css',
-        '**/*.html',
-        '**/*.md',
-        '**/*.py',
-        '**/*.rs',
-        '**/*.go',
-        '**/*.java',
-        '**/*.rb',
-        '**/*.sh',
-        '**/*.yaml',
-        '**/*.yml',
-        '**/*.xml',
-        '**/*.sql',
-      ],
-    })
-
-    const extensions = flags.ext
-      ? flags.ext
-          .split(',')
-          .map((e) => e.trim())
-          .filter(Boolean)
-      : null
-
-    const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
-      : discoveredFiles
-
-    spinner.text = 'Analyzing compass points...'
-
-    const files: string[] = []
-    const contents: string[] = []
-
-    await Promise.all(
-      filteredFiles.map(async (file) => {
-        try {
-          const content = await fs.readFile(file.absolutePath, 'utf8')
-          files.push(file.path)
-          contents.push(content)
-        } catch {
-          // Skip unreadable files
-        }
-      }),
-    )
-
-    const result: CompassRoseResult = buildCompassRoseResult(files, contents, {})
-
-    spinner.succeed(`Analyzed ${files.length} points with grade ${result.stats.navigatorGrade}`)
-
-    const outputData =
-      format === 'json'
-        ? formatCompassRoseJson(result)
-        : formatCompassRoseTable(result, verbose)
-
-    if (flags.output) {
-      try {
-        await fs.writeFile(flags.output, outputData, 'utf8')
+      const output = flags.format === 'json' ? formatResultJson(result) : formatResultTable(result)
+      if (flags.output) {
+        const outputDir = path.dirname(flags.output)
+        if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true })
+        fs.writeFileSync(flags.output, output, 'utf-8')
         this.log(`Results written to ${flags.output}`)
-      } catch (error) {
-        this.error(
-          `Failed to write output to ${flags.output}: ${error instanceof Error ? error.message : String(error)}`,
-        )
+      } else { this.log(output) }
+
+      if (flags.verbose) {
+        this.log(`\nCaptain Grade: ${result.stats.captainGrade}`)
+        this.log(`Overall Navigation: ${result.stats.overallNavigation}`)
       }
-    } else {
-      this.log(outputData)
-    }
+    } catch (error: unknown) { spinner.fail('Analysis failed'); throw error }
   }
 }
-
-export { buildCompassRoseResult } from './compass-rose-helpers.js'
-export type { CompassRoseResult, CompassRoseStats, CompassPoint, CompassRegion } from './compass-rose-helpers.js'
-export { formatCompassRoseJson, formatCompassRoseTable } from './compass-rose-format-helpers.js'

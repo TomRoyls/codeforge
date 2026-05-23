@@ -1,792 +1,853 @@
-// ─── Interfaces ──────────────────────────────────────────────────────────────
+// ─── Imports ───────────────────────────────────────────────────────
+import path from 'node:path'
+import fg from 'fast-glob'
 
-export type CardinalDirection = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW'
-export type CompassCondition = 'true-north' | 'well-oriented' | 'slightly-off' | 'disoriented' | 'lost' | 'spinning'
-export type RegionType = 'north-star' | 'constellation' | 'trade-winds' | 'doldrums' | 'maelstrom' | 'bermuda-triangle'
-export type RegionCondition = 'perfectly-aligned' | 'well-aligned' | 'mostly-aligned' | 'scattered' | 'disoriented' | 'chaotic'
-export type Polarity = 'attractive' | 'repulsive' | 'neutral'
-export type NavigatorGrade = 'master-navigator' | 'navigator' | 'pilot' | 'deckhand' | 'castaway' | 'shipwrecked'
+// ─── Types ─────────────────────────────────────────────────────────
 
-export interface CardinalInfo {
-  north: number
-  south: number
-  east: number
-  west: number
-  isCardinallyAligned: boolean
-  dominantCardinal: string
+/** Clarity grade */
+export type ClarityGrade =
+  | 'true-north'
+  | 'clear-bearing'
+  | 'proper-heading'
+  | 'uncertain-direction'
+  | 'lost-bearing'
+  | 'spinning-compass'
+
+/** Bearing compass */
+export type BearingCompass =
+  | 'gyroscopic'
+  | 'magnetic-north'
+  | 'proper-compass'
+  | 'wobbly-needle'
+  | 'spinning-needle'
+  | 'broken-compass'
+
+/** Navigation quality */
+export type NavigationQuality =
+  | 'gps-grade'
+  | 'clear-charts'
+  | 'proper-maps'
+  | 'vague-directions'
+  | 'no-signs'
+  | 'unmarked-trail'
+
+/** Orientation stability */
+export type OrientationStability =
+  | 'rock-steady'
+  | 'stable-platform'
+  | 'proper-gyroscope'
+  | 'wobbling'
+  | 'tilting'
+  | 'tumbling'
+
+/** Chart precision */
+export type ChartPrecision =
+  | 'detailed-chart'
+  | 'proper-map'
+  | 'basic-sketch'
+  | 'rough-outline'
+  | 'mental-map'
+  | 'no-map'
+
+/** Bearing condition */
+export type BearingCondition =
+  | 'master-navigator'
+  | 'skilled-pilot'
+  | 'proper-helmsman'
+  | 'lost-sailor'
+  | 'drifting-raft'
+  | 'shipwreck'
+
+/** Chart type */
+export type ChartType =
+  | 'admiralty-chart'
+  | 'nautical-map'
+  | 'coastal-guide'
+  | 'sketch-map'
+  | 'scratched-rock'
+  | 'blank-page'
+
+/** Chart condition */
+export type ChartCondition =
+  | 'chart-room'
+  | 'navigation-station'
+  | 'wheelhouse'
+  | 'deck'
+  | 'lifeboat'
+  | 'adrift'
+
+/** Captain grade */
+export type CaptainGrade =
+  | 'fleet-admiral'
+  | 'sea-captain'
+  | 'first-mate'
+  | 'deck-hand'
+  | 'cabin-boy'
+  | 'landlubber'
+
+/** Directing measurement */
+export interface DirectingMeasure {
+  clarity: number
+  grade: ClarityGrade
+  hasHighClarity: boolean
+  hasFocused: boolean
+  hasClear: boolean
+  hasNoConfused: boolean
+  hasPurposeful: boolean
+  hasNoAimless: boolean
+  hasDirected: boolean
+  hasNoWandering: boolean
+  hasIntentional: boolean
+  hasNoRandom: boolean
+  hasResolute: boolean
+  confusedCount: number
+  aimlessCount: number
 }
 
-export interface IntercardinalInfo {
-  northeast: number
-  southeast: number
-  southwest: number
-  northwest: number
+/** Bearing measurement */
+export interface BearingMeasure {
+  accuracy: number
+  compass: BearingCompass
+  hasHighAccuracy: boolean
+  hasCorrect: boolean
+  hasAccurate: boolean
+  hasNoWrong: boolean
+  hasPrecise: boolean
+  hasNoImprecise: boolean
+  hasTrue: boolean
+  hasNoFalse: boolean
+  hasExact: boolean
+  hasNoApproximate: boolean
+  hasReliable: boolean
+  wrongCount: number
+  impreciseCount: number
 }
 
-export interface BearingInfo {
-  trueNorth: number
-  magneticNorth: number
-  deviation: number
-  isCalibrated: boolean
-  needsRecalibration: boolean
+/** Navigating measurement */
+export interface NavigatingMeasure {
+  quality: number
+  nav: NavigationQuality
+  hasHighQuality: boolean
+  hasDiscoverable: boolean
+  hasFindable: boolean
+  hasNoHidden: boolean
+  hasAccessible: boolean
+  hasNoObscured: boolean
+  hasIntuitive: boolean
+  hasNoCryptic: boolean
+  hasApproachable: boolean
+  hasNoDaunting: boolean
+  hasWelcoming: boolean
+  hiddenCount: number
+  obscuredCount: number
 }
 
-export interface OrientationInfo {
-  isUpright: boolean
-  isInverted: boolean
-  isTilted: boolean
-  isSpinning: boolean
-  tiltAngle: number
+/** Orienting measurement */
+export interface OrientingMeasure {
+  stability: number
+  orientation: OrientationStability
+  hasHighStability: boolean
+  hasConsistent: boolean
+  hasStable: boolean
+  hasNoFluctuating: boolean
+  hasReliable: boolean
+  hasNoErratic: boolean
+  hasUniform: boolean
+  hasNoInconsistent: boolean
+  hasPredictable: boolean
+  hasNoVolatile: boolean
+  hasSteady: boolean
+  fluctuatingCount: number
+  erraticCount: number
 }
 
-export interface MagneticField {
-  range: number
-  isStrong: boolean
-  isWeak: boolean
-  hasInterference: boolean
+/** Charting measurement */
+export interface ChartingMeasure {
+  precision: number
+  chart: ChartPrecision
+  hasHighPrecision: boolean
+  hasDocumented: boolean
+  hasDescribed: boolean
+  hasNoUndocumented: boolean
+  hasAnnotated: boolean
+  hasNoUnmarked: boolean
+  hasExplained: boolean
+  hasNoUnexplained: boolean
+  hasDetailed: boolean
+  hasNoVague: boolean
+  hasMapped: boolean
+  undocumentedCount: number
+  unmarkedCount: number
 }
 
-export interface MagnetismInfo {
-  strength: number
-  polarity: Polarity
-  field: MagneticField
-}
-
-export interface NavigationInfo {
-  hasChart: boolean
-  hasWaypoints: boolean
-  hasLandmarks: boolean
-  hasHazards: boolean
-  hazardCount: number
-  isNavigable: boolean
-}
-
-export interface CompassPoint {
+/** Single file analysis */
+export interface CompassBearing {
   file: string
-  heading: number
-  cardinalDirection: CardinalDirection
-  magneticNorth: number
-  declination: number
+  directionalClarity: number
+  bearingAccuracy: number
+  navigationQuality: number
   orientationStability: number
-  cardinal: CardinalInfo
-  intercardinal: IntercardinalInfo
-  bearing: BearingInfo
-  orientation: OrientationInfo
-  magnetism: MagnetismInfo
-  navigation: NavigationInfo
-  condition: CompassCondition
+  chartingPrecision: number
+  directing: DirectingMeasure
+  bearing: BearingMeasure
+  navigating: NavigatingMeasure
+  orienting: OrientingMeasure
+  charting: ChartingMeasure
+  condition: BearingCondition
   qualityScore: number
 }
 
-export interface CompassRegion {
+/** Directory-level chart */
+export interface NavigationChart {
   directory: string
-  points: CompassPoint[]
-  avgMagneticNorth: number
-  avgDeclination: number
+  bearings: CompassBearing[]
+  avgClarity: number
+  avgAccuracy: number
   avgStability: number
-  trueNorthCount: number
-  lostCount: number
-  spinningCount: number
-  dominantDirection: string
-  regionAlignment: number
-  regionType: RegionType
-  condition: RegionCondition
+  masterNavigatorCount: number
+  shipwreckCount: number
+  chartType: ChartType
+  condition: ChartCondition
 }
 
-export interface HemisphereInfo {
-  avgMagneticNorth: number
-  avgDeclination: number
+/** Fleet summary */
+export interface FleetSummary {
+  avgClarity: number
+  avgAccuracy: number
   avgStability: number
-  isAligned: boolean
-  overallOrientation: number
+  isNavigable: boolean
+  overallNavigation: number
 }
 
+/** Full stats */
 export interface CompassRoseStats {
   totalFiles: number
-  totalRegions: number
-  avgHeading: number
-  avgMagneticNorth: number
-  avgDeclination: number
-  avgStability: number
-  trueNorthCount: number
-  wellOrientedCount: number
-  disorientedCount: number
-  lostCount: number
-  spinningCount: number
-  northDominant: number
-  southDominant: number
-  eastDominant: number
-  westDominant: number
-  attractiveCount: number
-  repulsiveCount: number
-  calibratedCount: number
-  needsRecalibrationCount: number
-  navigableCount: number
-  overallOrientation: number
-  navigatorGrade: NavigatorGrade
-  bestOriented: string
-  mostDisoriented: string
-  strongestMagnetism: string
-  mostCalibrated: string
+  totalCharts: number
+  avgDirectionalClarity: number
+  avgBearingAccuracy: number
+  avgNavigationQuality: number
+  avgOrientationStability: number
+  avgChartingPrecision: number
+  masterNavigatorCount: number
+  skilledPilotCount: number
+  properHelmsmanCount: number
+  lostSailorCount: number
+  driftingRaftCount: number
+  shipwreckCount: number
+  hasHighClarityCount: number
+  hasHighAccuracyCount: number
+  hasHighQualityCount: number
+  hasHighStabilityCount: number
+  hasHighPrecisionCount: number
+  overallNavigation: number
+  captainGrade: CaptainGrade
+  bestBearing: string
+  clearest: string
+  mostAccurate: string
+  mostNavigable: string
+  mostStable: string
 }
 
+/** Full result */
 export interface CompassRoseResult {
-  points: CompassPoint[]
-  regions: CompassRegion[]
-  hemisphere: HemisphereInfo
+  bearings: CompassBearing[]
+  charts: NavigationChart[]
+  fleet: FleetSummary
   stats: CompassRoseStats
   recommendations: string[]
 }
 
-// ─── Content Primitives ──────────────────────────────────────────────────────
+// ─── Regex Helpers ─────────────────────────────────────────────────
 
-/**
- * Count lines of code
- * @example
- * countLoc('const x = 1\nconst y = 2') // 2
- */
-export function countLoc(content: string): number {
-  return content.split('\n').filter(l => l.trim().length > 0).length
+const has = (pattern: RegExp, content: string): boolean => pattern.test(content)
+const count = (pattern: RegExp, content: string): number => {
+  const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+  const globalPattern = new RegExp(pattern.source, flags)
+  return (content.match(globalPattern) ?? []).length
 }
 
-/**
- * Count imports
- * @example
- * countImports('import { x } from "y"') // 1
- */
-export function countImports(content: string): number {
-  return (content.match(/^import\s+/gm) ?? []).length
-}
+// ─── Boolean Detectors ─────────────────────────────────────────────
+
+const hasExport = (c: string) => has(/\bexport\b/, c)
+const hasConst = (c: string) => has(/\bconst\b/, c)
+const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)
+const hasInterface = (c: string) => has(/\binterface\b/, c)
+const hasGenerics = (c: string) => has(/<[A-Z][A-Za-z]*>/, c)
+const hasAsync = (c: string) => has(/\basync\b/, c)
+const hasImport = (c: string) => has(/\bimport\b/, c)
+const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
+const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
+const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
+const hasReadonly = (c: string) => has(/\breadonly\b/, c)
+const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
+const hasStrictEq = (c: string) => has(/===/, c)
+const hasClass = (c: string) => has(/\bclass\b/, c)
+
+// ─── Measure Functions ─────────────────────────────────────────────
 
 /**
- * Count exports
+ * Measure directional clarity
  * @example
- * countExports('export function a() {}') // 1
+ * const m = measureDirecting(content)
+ * console.log(m.grade) // 'true-north'
  */
-export function countExports(content: string): number {
-  return (content.match(/\bexport\s+(?:default\s+)?(?:function|class|const|let|var|interface|type|enum)\s+/g) ?? []).length
-}
+export function measureDirecting(content: string): DirectingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasDocComments(content) ? 10 : 0
 
-/**
- * Count functions
- * @example
- * countFunctions('function a() {}') // 1
- */
-export function countFunctions(content: string): number {
-  return (content.match(/(?:function\s+\w+|const\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>)/g) ?? []).length
-}
+  const hasFocused = hasExport(content) && hasImport(content)
+  const hasClear = hasInterface(content) && hasClass(content)
+  const hasPurposeful = hasGenerics(content) && hasTypeAlias(content)
+  const hasDirected = hasNamedExport(content) && hasReturnType(content)
+  const hasIntentional = hasAsync(content) && hasDocComments(content)
+  const hasResolute = hasExport(content) && hasGenerics(content)
 
-/**
- * Count error handling constructs
- * @example
- * countErrorHandling('try {} catch(e) {}') // 2
- */
-export function countErrorHandling(content: string): number {
-  return (content.match(/\btry\s*\{|\bcatch\s*\(|\.catch\s*\(|\bthrow\s+/g) ?? []).length
-}
+  score += hasFocused ? 5 : 0
+  score += hasClear ? 5 : 0
+  score += hasPurposeful ? 5 : 0
+  score += hasDirected ? 5 : 0
+  score += hasIntentional ? 5 : 0
+  score += hasResolute ? 5 : 0
 
-/**
- * Count type annotations
- * @example
- * countTypeAnnotations('const x: number = 1') // 1
- */
-export function countTypeAnnotations(content: string): number {
-  return (content.match(/:\s*(?:string|number|boolean|void|any|never|unknown|object)/g) ?? []).length
-}
+  const clarity = Math.min(score, 100)
+  const confusedCount = count(/\bvar\b/, content)
+  const aimlessCount = count(/\bany\b/, content)
 
-/**
- * Count branches
- * @example
- * countBranches('if (a) {}') // 1
- */
-export function countBranches(content: string): number {
-  return (content.match(/\bif\s*\(|\?\s*[^?]\s*:|\bswitch\s*\(/g) ?? []).length
-}
+  const hasNoConfused = confusedCount === 0
+  const hasNoAimless = aimlessCount === 0
+  const hasNoWandering = !has(/\beval\b/, content)
+  const hasNoRandom = !has(/\bdebugger\b/, content)
+  const hasHighClarity = clarity >= 70
 
-/**
- * Count max nesting depth
- * @example
- * maxNesting('{{{}}}') // 3
- */
-export function maxNesting(content: string): number {
-  let m = 0
-  let c = 0
-  for (const ch of content) {
-    if (ch === '{') { c++; if (c > m) m = c }
-    else if (ch === '}') { c = Math.max(0, c - 1) }
-  }
-  return m
-}
-
-/**
- * Count console statements
- * @example
- * countConsole('console.log("x")') // 1
- */
-export function countConsole(content: string): number {
-  return (content.match(/console\.\w+\s*\(/g) ?? []).length
-}
-
-/**
- * Count comments
- * @example
- * countComments('// hello') // 1
- */
-export function countComments(content: string): number {
-  return (content.match(/\/\//g) ?? []).length + (content.match(/\/\*/g) ?? []).length
-}
-
-/**
- * Count TODO markers
- * @example
- * countTodos('TODO: fix') // 1
- */
-export function countTodos(content: string): number {
-  return (content.match(/TODO|FIXME|HACK|XXX/gi) ?? []).length
-}
-
-// ─── Classification Functions ────────────────────────────────────────────────
-
-/**
- * Classify compass condition from quality score
- * @example
- * classifyCompassCondition(90) // 'true-north'
- */
-export function classifyCompassCondition(qualityScore: number): CompassCondition {
-  if (qualityScore >= 85) return 'true-north'
-  if (qualityScore >= 70) return 'well-oriented'
-  if (qualityScore >= 50) return 'slightly-off'
-  if (qualityScore >= 30) return 'disoriented'
-  if (qualityScore >= 10) return 'lost'
-  return 'spinning'
-}
-
-/**
- * Classify region type from compass points
- * @example
- * classifyRegionType([]) // 'doldrums'
- */
-export function classifyRegionType(points: CompassPoint[]): RegionType {
-  if (points.length === 0) return 'doldrums'
-  const conditions = points.map(p => p.condition)
-  const trueNorth = conditions.filter(c => c === 'true-north').length
-  const wellOriented = conditions.filter(c => c === 'well-oriented').length
-  const lost = conditions.filter(c => c === 'lost').length
-  const spinning = conditions.filter(c => c === 'spinning').length
-  const n = points.length
-
-  if (spinning > n / 2) return 'bermuda-triangle'
-  if (lost > n / 2) return 'maelstrom'
-  if (trueNorth === n) return 'north-star'
-  if (trueNorth + wellOriented > n * 0.6) return 'constellation'
-  if (trueNorth + wellOriented > n * 0.3) return 'trade-winds'
-  return 'doldrums'
-}
-
-/**
- * Classify region condition from alignment
- * @example
- * classifyRegionCondition(85) // 'perfectly-aligned'
- */
-export function classifyRegionCondition(alignment: number): RegionCondition {
-  if (alignment >= 85) return 'perfectly-aligned'
-  if (alignment >= 65) return 'well-aligned'
-  if (alignment >= 45) return 'mostly-aligned'
-  if (alignment >= 25) return 'scattered'
-  if (alignment >= 10) return 'disoriented'
-  return 'chaotic'
-}
-
-/**
- * Classify navigator grade from average orientation
- * @example
- * classifyNavigatorGrade(85) // 'master-navigator'
- */
-export function classifyNavigatorGrade(avgOrientation: number): NavigatorGrade {
-  if (avgOrientation >= 80) return 'master-navigator'
-  if (avgOrientation >= 65) return 'navigator'
-  if (avgOrientation >= 45) return 'pilot'
-  if (avgOrientation >= 30) return 'deckhand'
-  if (avgOrientation >= 15) return 'castaway'
-  return 'shipwrecked'
-}
-
-/**
- * Classify cardinal direction from heading
- * @example
- * classifyCardinalDirection(0) // 'N'
- */
-export function classifyCardinalDirection(heading: number): CardinalDirection {
-  const h = ((heading % 360) + 360) % 360
-  if (h < 22.5 || h >= 337.5) return 'N'
-  if (h < 67.5) return 'NE'
-  if (h < 112.5) return 'E'
-  if (h < 157.5) return 'SE'
-  if (h < 202.5) return 'S'
-  if (h < 247.5) return 'SW'
-  if (h < 292.5) return 'W'
-  return 'NW'
-}
-
-// ─── Measurement Functions ───────────────────────────────────────────────────
-
-/**
- * Measure cardinal directions (N/S/E/W dependency strengths)
- * @example
- * measureCardinal('import { x } from "y"\nexport function a() {}') // CardinalInfo
- */
-export function measureCardinal(content: string): CardinalInfo {
-  const imports = countImports(content)
-  const exports = countExports(content)
-  const funcs = countFunctions(content)
-  const types = countTypeAnnotations(content)
-  const errors = countErrorHandling(content)
-
-  const north = Math.min(100, Math.round(
-    (types > 0 ? 30 : 0) +
-    (errors > 0 ? 25 : 0) +
-    (countComments(content) > 0 ? 20 : 0) +
-    (funcs > 0 ? 15 : 0) +
-    (countLoc(content) > 0 ? 10 : 0),
-  ))
-
-  const south = Math.min(100, Math.round(
-    (funcs > 0 ? 30 : 0) +
-    (countBranches(content) > 0 ? 25 : 0) +
-    (maxNesting(content) > 0 ? 20 : 0) +
-    (countConsole(content) > 0 ? 15 : 0) +
-    (countLoc(content) > 20 ? 10 : 0),
-  ))
-
-  const east = Math.min(100, Math.round(
-    exports * 15 +
-    (types > 0 ? 20 : 0) +
-    (countComments(content) > 0 ? 15 : 0),
-  ))
-
-  const west = Math.min(100, Math.round(
-    imports * 15 +
-    (errors > 0 ? 15 : 0) +
-    (countLoc(content) > 10 ? 10 : 0),
-  ))
-
-  const maxVal = Math.max(north, south, east, west)
-  const dominantCardinal = maxVal === north ? 'N' : maxVal === east ? 'E' : maxVal === west ? 'W' : 'S'
-  const isCardinallyAligned = maxVal > 0 && (maxVal - Math.min(north, south, east, west)) < 50
-
-  return { north, south, east, west, isCardinallyAligned, dominantCardinal }
-}
-
-/**
- * Measure bearing (true vs magnetic north)
- * @example
- * measureBearing('export function a(): number { return 1 }') // BearingInfo
- */
-export function measureBearing(content: string): BearingInfo {
-  const types = countTypeAnnotations(content)
-  const comments = countComments(content)
-  const exports = countExports(content)
-  const errors = countErrorHandling(content)
-  const todos = countTodos(content)
-
-  const trueNorth = Math.min(100, Math.round(
-    (types > 0 ? 30 : 0) +
-    (comments > 0 ? 25 : 0) +
-    (errors > 0 ? 20 : 0) +
-    (exports > 0 ? 15 : 0) +
-    (countLoc(content) > 0 ? 10 : 0),
-  ))
-
-  const magneticNorth = Math.min(100, Math.max(0, Math.round(
-    trueNorth -
-    (todos > 0 ? todos * 8 : 0) -
-    (countConsole(content) > 3 ? 10 : 0),
-  )))
-
-  const deviation = Math.abs(trueNorth - magneticNorth)
-  const isCalibrated = deviation <= 10 && trueNorth >= 50
-  const needsRecalibration = deviation > 20 || trueNorth < 30
-
-  return { trueNorth, magneticNorth, deviation, isCalibrated, needsRecalibration }
-}
-
-/**
- * Measure magnetism (influence and polarity)
- * @example
- * measureMagnetism('export function a() {}') // MagnetismInfo
- */
-export function measureMagnetism(content: string): MagnetismInfo {
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const funcs = countFunctions(content)
-  const types = countTypeAnnotations(content)
-
-  const strength = Math.min(100, Math.round(
-    exports * 12 +
-    funcs * 8 +
-    types * 5 +
-    (countComments(content) > 0 ? 10 : 0),
-  ))
-
-  const polarity: Polarity = exports > imports + 2 ? 'attractive'
-    : imports > exports + 2 ? 'repulsive'
-    : 'neutral'
-
-  const range = Math.min(100, Math.round(
-    (exports + imports) * 8 +
-    (funcs > 0 ? 15 : 0) +
-    (types > 0 ? 10 : 0),
-  ))
-
-  const isStrong = strength >= 60
-  const isWeak = strength < 25
-  const hasInterference = exports > 0 && imports > 0 && countErrorHandling(content) === 0
+  let grade: ClarityGrade
+  if (clarity >= 85) grade = 'true-north'
+  else if (clarity >= 70) grade = 'clear-bearing'
+  else if (clarity >= 55) grade = 'proper-heading'
+  else if (clarity >= 40) grade = 'uncertain-direction'
+  else if (clarity >= 25) grade = 'lost-bearing'
+  else grade = 'spinning-compass'
 
   return {
-    strength,
-    polarity,
-    field: { range, isStrong, isWeak, hasInterference },
+    clarity, grade, hasHighClarity, hasFocused, hasClear, hasNoConfused,
+    hasPurposeful, hasNoAimless, hasDirected, hasNoWandering, hasIntentional,
+    hasNoRandom, hasResolute, confusedCount, aimlessCount,
   }
 }
 
 /**
- * Measure orientation (upright, inverted, tilted, spinning)
+ * Measure bearing accuracy
  * @example
- * measureOrientation('export function a(): number { return 1 }') // OrientationInfo
+ * const m = measureBearing(content)
+ * console.log(m.compass) // 'gyroscopic'
  */
-export function measureOrientation(content: string): OrientationInfo {
-  const exports = countExports(content)
-  const imports = countImports(content)
-  const funcs = countFunctions(content)
-  const types = countTypeAnnotations(content)
-  const errors = countErrorHandling(content)
-  const branches = countBranches(content)
-  const nest = maxNesting(content)
+export function measureBearing(content: string): BearingMeasure {
+  let score = 0
+  score += hasStrictEq(content) ? 10 : 0
+  score += hasReturnType(content) ? 10 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
 
-  const isUpright = exports > 0 && types > 0 && errors > 0
-  const isInverted = imports > 3 && exports === 0 && funcs === 0
-  const isSpinning = branches > 5 && funcs === 0
+  const hasCorrect = hasStrictEq(content) && hasConst(content)
+  const hasAccurate = hasReturnType(content) && hasReadonly(content)
+  const hasPrecise = hasPrivate(content) && hasClass(content)
+  const hasTrue = hasInterface(content) && hasGenerics(content)
+  const hasExact = hasExport(content) && hasTypeAlias(content)
+  const hasReliable = hasStrictEq(content) && hasReturnType(content)
 
-  const balanceScore = Math.abs(exports - imports) + Math.abs(funcs - types)
-  const isTilted = !isUpright && !isInverted && balanceScore > 5
+  score += hasCorrect ? 5 : 0
+  score += hasAccurate ? 5 : 0
+  score += hasPrecise ? 5 : 0
+  score += hasTrue ? 5 : 0
+  score += hasExact ? 5 : 0
+  score += hasReliable ? 5 : 0
 
-  const tiltAngle = Math.min(90, Math.round(
-    Math.abs(exports - imports) * 3 +
-    (nest > 3 ? nest * 5 : 0) +
-    (branches > 5 ? 15 : 0),
-  ))
+  const accuracy = Math.min(score, 100)
+  const wrongCount = count(/\bvar\b/, content)
+  const impreciseCount = count(/\bany\b/, content)
 
-  return { isUpright, isInverted, isTilted, isSpinning, tiltAngle }
-}
+  const hasNoWrong = wrongCount === 0
+  const hasNoImprecise = impreciseCount === 0
+  const hasNoFalse = !has(/\beval\b/, content)
+  const hasNoApproximate = !has(/\bdebugger\b/, content)
+  const hasHighAccuracy = accuracy >= 70
 
-/**
- * Measure navigation features
- * @example
- * measureNavigation('export function a(): number { return 1 }') // NavigationInfo
- */
-export function measureNavigation(content: string): NavigationInfo {
-  const comments = countComments(content)
-  const types = countTypeAnnotations(content)
-  const exports = countExports(content)
-  const funcs = countFunctions(content)
-  const errors = countErrorHandling(content)
-  const todos = countTodos(content)
-  const branches = countBranches(content)
+  let compass: BearingCompass
+  if (accuracy >= 85) compass = 'gyroscopic'
+  else if (accuracy >= 70) compass = 'magnetic-north'
+  else if (accuracy >= 55) compass = 'proper-compass'
+  else if (accuracy >= 40) compass = 'wobbly-needle'
+  else if (accuracy >= 25) compass = 'spinning-needle'
+  else compass = 'broken-compass'
 
-  const hasChart = comments > 0 || types > 0
-  const hasWaypoints = funcs > 1 || exports > 1
-  const hasLandmarks = exports > 0 && types > 0
-
-  const hazardCount = todos +
-    (errors === 0 && branches > 3 ? 1 : 0) +
-    (maxNesting(content) > 4 ? 1 : 0)
-
-  const hasHazards = hazardCount > 0
-  const isNavigable = hasChart && (hasWaypoints || hasLandmarks)
-
-  return { hasChart, hasWaypoints, hasLandmarks, hasHazards, hazardCount, isNavigable }
-}
-
-// ─── Core Analysis ───────────────────────────────────────────────────────────
-
-/**
- * Analyze a single file as a compass point
- * @example
- * analyzeCompassPoint('export function calc(): number { return 1 }', 'calc.ts') // CompassPoint
- */
-export function analyzeCompassPoint(content: string, filePath: string): CompassPoint {
-  const loc = countLoc(content)
-  if (loc === 0) {
-    return {
-      file: filePath,
-      heading: 0,
-      cardinalDirection: 'N',
-      magneticNorth: 0,
-      declination: 100,
-      orientationStability: 0,
-      cardinal: { north: 0, south: 0, east: 0, west: 0, isCardinallyAligned: false, dominantCardinal: 'N' },
-      intercardinal: { northeast: 0, southeast: 0, southwest: 0, northwest: 0 },
-      bearing: { trueNorth: 0, magneticNorth: 0, deviation: 0, isCalibrated: false, needsRecalibration: true },
-      orientation: { isUpright: false, isInverted: false, isTilted: false, isSpinning: false, tiltAngle: 0 },
-      magnetism: { strength: 0, polarity: 'neutral', field: { range: 0, isStrong: false, isWeak: true, hasInterference: false } },
-      navigation: { hasChart: false, hasWaypoints: false, hasLandmarks: false, hasHazards: false, hazardCount: 0, isNavigable: false },
-      condition: 'spinning',
-      qualityScore: 0,
-    }
+  return {
+    accuracy, compass, hasHighAccuracy, hasCorrect, hasAccurate, hasNoWrong,
+    hasPrecise, hasNoImprecise, hasTrue, hasNoFalse, hasExact, hasNoApproximate,
+    hasReliable, wrongCount, impreciseCount,
   }
+}
 
-  const cardinal = measureCardinal(content)
+/**
+ * Measure navigation quality
+ * @example
+ * const m = measureNavigating(content)
+ * console.log(m.nav) // 'gps-grade'
+ */
+export function measureNavigating(content: string): NavigatingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasNamedExport(content) ? 10 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+
+  const hasDiscoverable = hasExport(content) && hasNamedExport(content)
+  const hasFindable = hasInterface(content) && hasClass(content)
+  const hasAccessible = hasDocComments(content) && hasReturnType(content)
+  const hasIntuitive = hasGenerics(content) && hasTypeAlias(content)
+  const hasApproachable = hasConst(content) && hasExport(content)
+  const hasWelcoming = hasDocComments(content) && hasAsync(content)
+
+  score += hasDiscoverable ? 5 : 0
+  score += hasFindable ? 5 : 0
+  score += hasAccessible ? 5 : 0
+  score += hasIntuitive ? 5 : 0
+  score += hasApproachable ? 5 : 0
+  score += hasWelcoming ? 5 : 0
+
+  const quality = Math.min(score, 100)
+  const hiddenCount = count(/\bvar\b/, content)
+  const obscuredCount = count(/\bany\b/, content)
+
+  const hasNoHidden = hiddenCount === 0
+  const hasNoObscured = obscuredCount === 0
+  const hasNoCryptic = !has(/\beval\b/, content)
+  const hasNoDaunting = !has(/\bdebugger\b/, content)
+  const hasHighQuality = quality >= 70
+
+  let nav: NavigationQuality
+  if (quality >= 85) nav = 'gps-grade'
+  else if (quality >= 70) nav = 'clear-charts'
+  else if (quality >= 55) nav = 'proper-maps'
+  else if (quality >= 40) nav = 'vague-directions'
+  else if (quality >= 25) nav = 'no-signs'
+  else nav = 'unmarked-trail'
+
+  return {
+    quality, nav, hasHighQuality, hasDiscoverable, hasFindable, hasNoHidden,
+    hasAccessible, hasNoObscured, hasIntuitive, hasNoCryptic, hasApproachable,
+    hasNoDaunting, hasWelcoming, hiddenCount, obscuredCount,
+  }
+}
+
+/**
+ * Measure orientation stability
+ * @example
+ * const m = measureOrienting(content)
+ * console.log(m.orientation) // 'rock-steady'
+ */
+export function measureOrienting(content: string): OrientingMeasure {
+  let score = 0
+  score += hasConst(content) ? 10 : 0
+  score += hasReadonly(content) ? 10 : 0
+  score += hasStrictEq(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+
+  const hasConsistent = hasConst(content) && hasReadonly(content)
+  const hasStable = hasStrictEq(content) && hasReturnType(content)
+  const hasReliable = hasInterface(content) && hasGenerics(content)
+  const hasUniform = hasClass(content) && hasPrivate(content)
+  const hasPredictable = hasTypeAlias(content) && hasExport(content)
+  const hasSteady = hasConst(content) && hasInterface(content)
+
+  score += hasConsistent ? 5 : 0
+  score += hasStable ? 5 : 0
+  score += hasReliable ? 5 : 0
+  score += hasUniform ? 5 : 0
+  score += hasPredictable ? 5 : 0
+  score += hasSteady ? 5 : 0
+
+  const stability = Math.min(score, 100)
+  const fluctuatingCount = count(/\bvar\b/, content)
+  const erraticCount = count(/\bany\b/, content)
+
+  const hasNoFluctuating = fluctuatingCount === 0
+  const hasNoErratic = erraticCount === 0
+  const hasNoInconsistent = !has(/\beval\b/, content)
+  const hasNoVolatile = !has(/\bdebugger\b/, content)
+  const hasHighStability = stability >= 70
+
+  let orientation: OrientationStability
+  if (stability >= 85) orientation = 'rock-steady'
+  else if (stability >= 70) orientation = 'stable-platform'
+  else if (stability >= 55) orientation = 'proper-gyroscope'
+  else if (stability >= 40) orientation = 'wobbling'
+  else if (stability >= 25) orientation = 'tilting'
+  else orientation = 'tumbling'
+
+  return {
+    stability, orientation, hasHighStability, hasConsistent, hasStable, hasNoFluctuating,
+    hasReliable, hasNoErratic, hasUniform, hasNoInconsistent, hasPredictable, hasNoVolatile,
+    hasSteady, fluctuatingCount, erraticCount,
+  }
+}
+
+/**
+ * Measure charting precision
+ * @example
+ * const m = measureCharting(content)
+ * console.log(m.chart) // 'detailed-chart'
+ */
+export function measureCharting(content: string): ChartingMeasure {
+  let score = 0
+  score += hasDocComments(content) ? 10 : 0
+  score += hasReturnType(content) ? 10 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+
+  const hasDocumented = hasDocComments(content) && hasReturnType(content)
+  const hasDescribed = hasExport(content) && hasDocComments(content)
+  const hasAnnotated = hasInterface(content) && hasGenerics(content)
+  const hasExplained = hasNamedExport(content) && hasReturnType(content)
+  const hasDetailed = hasClass(content) && hasDocComments(content)
+  const hasMapped = hasConst(content) && hasTypeAlias(content)
+
+  score += hasDocumented ? 5 : 0
+  score += hasDescribed ? 5 : 0
+  score += hasAnnotated ? 5 : 0
+  score += hasExplained ? 5 : 0
+  score += hasDetailed ? 5 : 0
+  score += hasMapped ? 5 : 0
+
+  const precision = Math.min(score, 100)
+  const undocumentedCount = count(/\bvar\b/, content)
+  const unmarkedCount = count(/\bany\b/, content)
+
+  const hasNoUndocumented = undocumentedCount === 0
+  const hasNoUnmarked = unmarkedCount === 0
+  const hasNoUnexplained = !has(/\beval\b/, content)
+  const hasNoVague = !has(/\bdebugger\b/, content)
+  const hasHighPrecision = precision >= 70
+
+  let chart: ChartPrecision
+  if (precision >= 85) chart = 'detailed-chart'
+  else if (precision >= 70) chart = 'proper-map'
+  else if (precision >= 55) chart = 'basic-sketch'
+  else if (precision >= 40) chart = 'rough-outline'
+  else if (precision >= 25) chart = 'mental-map'
+  else chart = 'no-map'
+
+  return {
+    precision, chart, hasHighPrecision, hasDocumented, hasDescribed, hasNoUndocumented,
+    hasAnnotated, hasNoUnmarked, hasExplained, hasNoUnexplained, hasDetailed, hasNoVague,
+    hasMapped, undocumentedCount, unmarkedCount,
+  }
+}
+
+// ─── Classification Functions ───────────────────────────────────────
+
+/**
+ * Classify bearing condition
+ * @example
+ * classifyBearingCondition(90) // 'master-navigator'
+ */
+export function classifyBearingCondition(score: number): BearingCondition {
+  if (score >= 85) return 'master-navigator'
+  if (score >= 70) return 'skilled-pilot'
+  if (score >= 55) return 'proper-helmsman'
+  if (score >= 40) return 'lost-sailor'
+  if (score >= 25) return 'drifting-raft'
+  return 'shipwreck'
+}
+
+/**
+ * Classify chart type
+ * @example
+ * classifyChartType(bearings) // 'admiralty-chart'
+ */
+export function classifyChartType(bearings: CompassBearing[]): ChartType {
+  if (bearings.length === 0) return 'blank-page'
+  const avgQs = Math.round(bearings.reduce((s, b) => s + b.qualityScore, 0) / bearings.length)
+  const masterRatio = bearings.filter(b => b.condition === 'master-navigator').length / bearings.length
+  if (avgQs >= 75 && masterRatio >= 0.5) return 'admiralty-chart'
+  if (avgQs >= 60) return 'nautical-map'
+  if (avgQs >= 45) return 'coastal-guide'
+  if (avgQs >= 30) return 'sketch-map'
+  if (avgQs >= 15) return 'scratched-rock'
+  return 'blank-page'
+}
+
+/**
+ * Classify captain grade
+ * @example
+ * classifyCaptainGrade(85) // 'fleet-admiral'
+ */
+export function classifyCaptainGrade(avgNavigation: number): CaptainGrade {
+  if (avgNavigation >= 80) return 'fleet-admiral'
+  if (avgNavigation >= 65) return 'sea-captain'
+  if (avgNavigation >= 50) return 'first-mate'
+  if (avgNavigation >= 35) return 'deck-hand'
+  if (avgNavigation >= 20) return 'cabin-boy'
+  return 'landlubber'
+}
+
+/**
+ * Classify chart condition
+ * @example
+ * classifyChartCondition(80) // 'chart-room'
+ */
+export function classifyChartCondition(avgQs: number): ChartCondition {
+  if (avgQs >= 75) return 'chart-room'
+  if (avgQs >= 60) return 'navigation-station'
+  if (avgQs >= 45) return 'wheelhouse'
+  if (avgQs >= 30) return 'deck'
+  if (avgQs >= 15) return 'lifeboat'
+  return 'adrift'
+}
+
+// ─── Recommendation Generator ──────────────────────────────────────
+
+/**
+ * Generate recommendations
+ * @example
+ * generateRecommendations(bearings, charts, fleet, stats)
+ */
+export function generateRecommendations(
+  bearings: CompassBearing[],
+  charts: NavigationChart[],
+  fleet: FleetSummary,
+  stats: CompassRoseStats,
+): string[] {
+  const recs: string[] = []
+  if (stats.avgDirectionalClarity < 50) {
+    recs.push('Improve directional clarity with focused exports, clear interfaces, and purposeful type signatures')
+  }
+  if (stats.avgBearingAccuracy < 50) {
+    recs.push('Strengthen bearing accuracy with strict equality, precise return types, and correct const declarations')
+  }
+  if (stats.avgNavigationQuality < 50) {
+    recs.push('Enhance navigation quality with discoverable exports, intuitive interfaces, and accessible documentation')
+  }
+  if (stats.avgOrientationStability < 50) {
+    recs.push('Stabilize orientation with consistent const usage, readonly properties, and reliable type patterns')
+  }
+  if (stats.avgChartingPrecision < 50) {
+    recs.push('Improve charting precision with thorough documentation, annotated types, and detailed doc comments')
+  }
+  if (stats.shipwreckCount > 0) {
+    recs.push(`${stats.shipwreckCount} file(s) are shipwrecks — consider significant refactoring`)
+  }
+  if (fleet.overallNavigation < 40) {
+    recs.push('Overall fleet navigation is poor — focus on clarity and bearing accuracy first')
+  }
+  const allDrift = charts.every(c => c.chartType === 'blank-page' || c.chartType === 'scratched-rock')
+  if (allDrift && charts.length > 0) {
+    recs.push('All charts are blank or scratched — consider a major navigation overhaul')
+  }
+  const wrecked = bearings.filter(b => b.condition === 'shipwreck').map(b => b.file)
+  if (wrecked.length > 0 && wrecked.length <= 3) {
+    recs.push(`Repair these shipwrecks: ${wrecked.join(', ')}`)
+  }
+  if (recs.length === 0) {
+    recs.push('Your compass rose points true north! Every bearing guides developers home')
+  }
+  return recs
+}
+
+// ─── Analysis Functions ────────────────────────────────────────────
+
+/**
+ * Analyze a single file as a compass bearing
+ * @example
+ * const bearing = analyzeCompassBearing(content, 'index.ts')
+ * console.log(bearing.condition) // 'master-navigator'
+ */
+export function analyzeCompassBearing(content: string, filePath: string): CompassBearing {
+  const directing = measureDirecting(content)
   const bearing = measureBearing(content)
-  const magnetism = measureMagnetism(content)
-  const orientation = measureOrientation(content)
-  const navigation = measureNavigation(content)
+  const navigating = measureNavigating(content)
+  const orienting = measureOrienting(content)
+  const charting = measureCharting(content)
 
-  const total = cardinal.north + cardinal.east + cardinal.south + cardinal.west
-  const heading = total > 0
-    ? Math.round(
-        (cardinal.north * 0 + cardinal.east * 90 + cardinal.south * 180 + cardinal.west * 270) / total,
-      ) % 360
-    : 0
-
-  const cardinalDirection = classifyCardinalDirection(heading)
-
-  const intercardinal: IntercardinalInfo = {
-    northeast: Math.round((cardinal.north + cardinal.east) / 2),
-    southeast: Math.round((cardinal.south + cardinal.east) / 2),
-    southwest: Math.round((cardinal.south + cardinal.west) / 2),
-    northwest: Math.round((cardinal.north + cardinal.west) / 2),
-  }
-
-  const magneticNorth = bearing.magneticNorth
-  const declination = Math.min(100, Math.max(0, 100 - magneticNorth))
-
-  const orientationStability = Math.min(100, Math.max(0, Math.round(
-    (orientation.isUpright ? 40 : 0) +
-    (!orientation.isSpinning ? 20 : 0) +
-    (orientation.tiltAngle <= 15 ? 20 : orientation.tiltAngle <= 30 ? 10 : 0) +
-    (cardinal.isCardinallyAligned ? 20 : 10),
-  )))
-
-  const qualityScore = Math.min(100, Math.max(0, Math.round(
-    magneticNorth * 0.25 +
-    orientationStability * 0.2 +
-    (100 - declination) * 0.15 +
-    magnetism.strength * 0.1 +
-    (bearing.isCalibrated ? 10 : 0) +
-    (navigation.isNavigable ? 10 : 0) +
-    (orientation.isUpright ? 5 : 0) +
-    (cardinal.isCardinallyAligned ? 5 : 0),
-  )))
-
-  const condition = classifyCompassCondition(qualityScore)
+  const qualityScore = Math.round(
+    directing.clarity * 0.2 +
+    bearing.accuracy * 0.2 +
+    navigating.quality * 0.2 +
+    orienting.stability * 0.2 +
+    charting.precision * 0.2,
+  )
 
   return {
     file: filePath,
-    heading,
-    cardinalDirection,
-    magneticNorth,
-    declination,
-    orientationStability,
-    cardinal,
-    intercardinal,
+    directionalClarity: directing.clarity,
+    bearingAccuracy: bearing.accuracy,
+    navigationQuality: navigating.quality,
+    orientationStability: orienting.stability,
+    chartingPrecision: charting.precision,
+    directing,
     bearing,
-    orientation,
-    magnetism,
-    navigation,
-    condition,
+    navigating,
+    orienting,
+    charting,
+    condition: classifyBearingCondition(qualityScore),
     qualityScore,
   }
 }
 
-// ─── Region Analysis ─────────────────────────────────────────────────────────
-
 /**
- * Analyze a directory as a compass region
+ * Analyze a directory as a navigation chart
  * @example
- * analyzeCompassRegion(points, 'src') // CompassRegion
+ * const chart = analyzeNavigationChart(bearings, 'src')
+ * console.log(chart.chartType) // 'admiralty-chart'
  */
-export function analyzeCompassRegion(points: CompassPoint[], dirPath: string): CompassRegion {
-  if (points.length === 0) {
+export function analyzeNavigationChart(bearings: CompassBearing[], dirPath: string): NavigationChart {
+  if (bearings.length === 0) {
     return {
-      directory: dirPath, points: [],
-      avgMagneticNorth: 0, avgDeclination: 0, avgStability: 0,
-      trueNorthCount: 0, lostCount: 0, spinningCount: 0,
-      dominantDirection: 'N',
-      regionAlignment: 100,
-      regionType: 'doldrums',
-      condition: 'perfectly-aligned',
+      directory: dirPath, bearings: [], avgClarity: 0, avgAccuracy: 0, avgStability: 0,
+      masterNavigatorCount: 0, shipwreckCount: 0, chartType: 'blank-page', condition: 'adrift',
     }
   }
 
-  const n = points.length
-  const avgMagneticNorth = Math.round(points.reduce((s, p) => s + p.magneticNorth, 0) / n)
-  const avgDeclination = Math.round(points.reduce((s, p) => s + p.declination, 0) / n)
-  const avgStability = Math.round(points.reduce((s, p) => s + p.orientationStability, 0) / n)
-  const trueNorthCount = points.filter(p => p.condition === 'true-north').length
-  const lostCount = points.filter(p => p.condition === 'lost').length
-  const spinningCount = points.filter(p => p.condition === 'spinning').length
-
-  const dirCounts = new Map<string, number>()
-  for (const p of points) {
-    const d = p.cardinal.dominantCardinal
-    dirCounts.set(d, (dirCounts.get(d) ?? 0) + 1)
-  }
-  let dominantDirection = 'N'
-  let maxCount = 0
-  for (const [dir, cnt] of dirCounts) {
-    if (cnt > maxCount) { maxCount = cnt; dominantDirection = dir }
-  }
-
-  const regionAlignment = Math.min(100, Math.max(0, Math.round(
-    avgMagneticNorth * 0.35 +
-    avgStability * 0.3 +
-    (trueNorthCount / n) * 100 * 0.2 +
-    (lostCount === 0 && spinningCount === 0 ? 15 : 0),
-  )))
-
-  const regionType = classifyRegionType(points)
-  const condition = classifyRegionCondition(regionAlignment)
+  const avgClarity = Math.round(bearings.reduce((s, b) => s + b.directionalClarity, 0) / bearings.length)
+  const avgAccuracy = Math.round(bearings.reduce((s, b) => s + b.bearingAccuracy, 0) / bearings.length)
+  const avgStability = Math.round(bearings.reduce((s, b) => s + b.orientationStability, 0) / bearings.length)
+  const masterNavigatorCount = bearings.filter(b => b.condition === 'master-navigator').length
+  const shipwreckCount = bearings.filter(b => b.condition === 'shipwreck').length
+  const avgQs = Math.round(bearings.reduce((s, b) => s + b.qualityScore, 0) / bearings.length)
 
   return {
-    directory: dirPath, points,
-    avgMagneticNorth, avgDeclination, avgStability,
-    trueNorthCount, lostCount, spinningCount,
-    dominantDirection, regionAlignment,
-    regionType, condition,
+    directory: dirPath, bearings, avgClarity, avgAccuracy, avgStability,
+    masterNavigatorCount, shipwreckCount, chartType: classifyChartType(bearings),
+    condition: classifyChartCondition(avgQs),
   }
 }
 
-// ─── Recommendations ─────────────────────────────────────────────────────────
+// ─── Orchestrator ──────────────────────────────────────────────────
 
 /**
- * Generate compass rose recommendations
+ * Build complete compass rose result
  * @example
- * generateRecommendations(points, regions, hemisphere, stats) // string[]
+ * const result = await buildCompassRoseResult(files, contents)
+ * console.log(result.stats.captainGrade) // 'fleet-admiral'
  */
-export function generateRecommendations(
-  _points: CompassPoint[],
-  _regions: CompassRegion[],
-  _hemisphere: HemisphereInfo,
-  stats: CompassRoseStats,
-): string[] {
-  void _points
-  void _regions
-  void _hemisphere
-  const recs: string[] = []
-
-  if (stats.spinningCount > 0) {
-    recs.push(`Spinning modules: ${stats.spinningCount} files have no clear direction`)
-  }
-  if (stats.lostCount > 0) {
-    recs.push(`Lost modules: ${stats.lostCount} files are disoriented`)
-  }
-  if (stats.needsRecalibrationCount > 0) {
-    recs.push(`Recalibration needed: ${stats.needsRecalibrationCount} files deviate from true north`)
-  }
-  if (stats.avgDeclination > 40) {
-    recs.push('High declination: significant architectural drift detected')
-  }
-  if (stats.overallOrientation >= 60) {
-    recs.push('Good orientation: the codebase maintains consistent bearings')
-  }
-  if (stats.westDominant > stats.eastDominant * 2) {
-    recs.push('Import-heavy: modules consume more than they produce')
-  }
-
-  return Array.from(new Set(recs))
-}
-
-// ─── Orchestrator ────────────────────────────────────────────────────────────
-
-/**
- * Build complete compass rose result from files and contents
- * @example
- * buildCompassRoseResult(['a.ts'], ['export function a() {}'], {}) // CompassRoseResult
- */
-export function buildCompassRoseResult(
+export async function buildCompassRoseResult(
   files: string[],
   contents: string[],
-  options: Record<string, unknown>,
-): CompassRoseResult {
-  void options
+  _options?: Record<string, unknown>,
+): Promise<CompassRoseResult> {
+  const bearings = files.map((file, i) => analyzeCompassBearing(contents[i] ?? '', file))
 
-  const points: CompassPoint[] = files.map((file, i) => {
-    const content = contents[i] ?? ''
-    try {
-      return analyzeCompassPoint(content, file)
-    } catch {
-      return analyzeCompassPoint('', file)
-    }
-  })
-
-  const dirMap = new Map<string, CompassPoint[]>()
-  for (const p of points) {
-    const dir = p.file.includes('/') ? p.file.slice(0, p.file.lastIndexOf('/')) : '.'
+  const dirMap = new Map<string, CompassBearing[]>()
+  for (const bearing of bearings) {
+    const dir = path.dirname(bearing.file)
     const existing = dirMap.get(dir)
-    if (existing) { existing.push(p) } else { dirMap.set(dir, [p]) }
+    if (existing) { existing.push(bearing) } else { dirMap.set(dir, [bearing]) }
   }
 
-  const regions: CompassRegion[] = Array.from(dirMap.entries()).map(([dir, ps]) =>
-    analyzeCompassRegion(ps, dir),
+  const charts = Array.from(dirMap.entries()).map(([dir, dirBearings]) =>
+    analyzeNavigationChart(dirBearings, dir),
   )
 
-  const n = points.length || 1
-  const avgMagneticNorth = Math.round(points.reduce((s, p) => s + p.magneticNorth, 0) / n)
-  const avgDeclination = Math.round(points.reduce((s, p) => s + p.declination, 0) / n)
-  const avgStability = Math.round(points.reduce((s, p) => s + p.orientationStability, 0) / n)
-  const overallOrientation = Math.min(100, Math.max(0, Math.round(
-    avgMagneticNorth * 0.35 +
-    avgStability * 0.35 +
-    (points.filter(p => p.bearing.isCalibrated).length / n) * 100 * 0.15 +
-    (points.filter(p => p.navigation.isNavigable).length / n) * 100 * 0.15,
-  )))
+  const avgClarity = bearings.length > 0
+    ? Math.round(bearings.reduce((s, b) => s + b.directionalClarity, 0) / bearings.length) : 0
+  const avgAccuracy = bearings.length > 0
+    ? Math.round(bearings.reduce((s, b) => s + b.bearingAccuracy, 0) / bearings.length) : 0
+  const avgStability = bearings.length > 0
+    ? Math.round(bearings.reduce((s, b) => s + b.orientationStability, 0) / bearings.length) : 0
 
-  const hemisphere: HemisphereInfo = {
-    avgMagneticNorth,
-    avgDeclination,
-    avgStability,
-    isAligned: overallOrientation >= 60,
-    overallOrientation,
-  }
+  const overallNavigation = bearings.length > 0
+    ? Math.round((avgClarity + avgAccuracy + avgStability) / 3) : 0
+  const isNavigable = avgAccuracy >= 60
 
-  const avgHeading = points.length > 0
-    ? Math.round(points.reduce((s, p) => s + p.heading, 0) / n)
-    : 0
+  const fleet: FleetSummary = { avgClarity, avgAccuracy, avgStability, isNavigable, overallNavigation }
+
+  const avgNavigationQuality = bearings.length > 0
+    ? Math.round(bearings.reduce((s, b) => s + b.navigationQuality, 0) / bearings.length) : 0
+  const avgChartingPrecision = bearings.length > 0
+    ? Math.round(bearings.reduce((s, b) => s + b.chartingPrecision, 0) / bearings.length) : 0
+
+  const bestBearing = bearings.length > 0
+    ? bearings.reduce((best, b) => b.qualityScore > best.qualityScore ? b : best).file : ''
+  const clearest = bearings.length > 0
+    ? bearings.reduce((best, b) => b.directionalClarity > best.directionalClarity ? b : best).file : ''
+  const mostAccurate = bearings.length > 0
+    ? bearings.reduce((best, b) => b.bearingAccuracy > best.bearingAccuracy ? b : best).file : ''
+  const mostNavigable = bearings.length > 0
+    ? bearings.reduce((best, b) => b.navigationQuality > best.navigationQuality ? b : best).file : ''
+  const mostStable = bearings.length > 0
+    ? bearings.reduce((best, b) => b.orientationStability > best.orientationStability ? b : best).file : ''
 
   const stats: CompassRoseStats = {
-    totalFiles: files.length,
-    totalRegions: regions.length,
-    avgHeading,
-    avgMagneticNorth,
-    avgDeclination,
-    avgStability,
-    trueNorthCount: points.filter(p => p.condition === 'true-north').length,
-    wellOrientedCount: points.filter(p => p.condition === 'well-oriented').length,
-    disorientedCount: points.filter(p => p.condition === 'disoriented').length,
-    lostCount: points.filter(p => p.condition === 'lost').length,
-    spinningCount: points.filter(p => p.condition === 'spinning').length,
-    northDominant: points.filter(p => p.cardinal.dominantCardinal === 'N').length,
-    southDominant: points.filter(p => p.cardinal.dominantCardinal === 'S').length,
-    eastDominant: points.filter(p => p.cardinal.dominantCardinal === 'E').length,
-    westDominant: points.filter(p => p.cardinal.dominantCardinal === 'W').length,
-    attractiveCount: points.filter(p => p.magnetism.polarity === 'attractive').length,
-    repulsiveCount: points.filter(p => p.magnetism.polarity === 'repulsive').length,
-    calibratedCount: points.filter(p => p.bearing.isCalibrated).length,
-    needsRecalibrationCount: points.filter(p => p.bearing.needsRecalibration).length,
-    navigableCount: points.filter(p => p.navigation.isNavigable).length,
-    overallOrientation,
-    navigatorGrade: classifyNavigatorGrade(overallOrientation),
-    bestOriented: points.length > 0
-      ? points.reduce((a, b) => b.qualityScore > a.qualityScore ? b : a, points[0]).file : 'none',
-    mostDisoriented: points.length > 0
-      ? points.reduce((a, b) => b.qualityScore < a.qualityScore ? b : a, points[0]).file : 'none',
-    strongestMagnetism: points.length > 0
-      ? points.reduce((a, b) => b.magnetism.strength > a.magnetism.strength ? b : a, points[0]).file : 'none',
-    mostCalibrated: points.length > 0
-      ? points.reduce((a, b) => b.bearing.deviation < a.bearing.deviation ? b : a, points[0]).file : 'none',
+    totalFiles: bearings.length,
+    totalCharts: charts.length,
+    avgDirectionalClarity: avgClarity,
+    avgBearingAccuracy: avgAccuracy,
+    avgNavigationQuality,
+    avgOrientationStability: avgStability,
+    avgChartingPrecision,
+    masterNavigatorCount: bearings.filter(b => b.condition === 'master-navigator').length,
+    skilledPilotCount: bearings.filter(b => b.condition === 'skilled-pilot').length,
+    properHelmsmanCount: bearings.filter(b => b.condition === 'proper-helmsman').length,
+    lostSailorCount: bearings.filter(b => b.condition === 'lost-sailor').length,
+    driftingRaftCount: bearings.filter(b => b.condition === 'drifting-raft').length,
+    shipwreckCount: bearings.filter(b => b.condition === 'shipwreck').length,
+    hasHighClarityCount: bearings.filter(b => b.directing.hasHighClarity).length,
+    hasHighAccuracyCount: bearings.filter(b => b.bearing.hasHighAccuracy).length,
+    hasHighQualityCount: bearings.filter(b => b.navigating.hasHighQuality).length,
+    hasHighStabilityCount: bearings.filter(b => b.orienting.hasHighStability).length,
+    hasHighPrecisionCount: bearings.filter(b => b.charting.hasHighPrecision).length,
+    overallNavigation,
+    captainGrade: classifyCaptainGrade(overallNavigation),
+    bestBearing, clearest, mostAccurate, mostNavigable, mostStable,
   }
 
-  const recommendations = generateRecommendations(points, regions, hemisphere, stats)
+  const recommendations = generateRecommendations(bearings, charts, fleet, stats)
 
-  return { points, regions, hemisphere, stats, recommendations }
+  return { bearings, charts, fleet, stats, recommendations }
+}
+
+/**
+ * Gather files matching patterns
+ * @example
+ * const files = gatherFiles('./src', ['.ts'], [])
+ */
+export async function gatherFiles(
+  targetPath: string, exts: string[], ignore: string[],
+): Promise<string[]> {
+  const extensions = exts.length > 0 ? exts : ['.ts', '.js', '.tsx', '.jsx']
+  const patterns = extensions.map(ext => `**/*${ext}`)
+  const ignorePatterns = ignore.length > 0 ? ignore : ['**/node_modules/**', '**/dist/**', '**/.git/**']
+  const entries = await fg(patterns, { cwd: targetPath, ignore: ignorePatterns, absolute: true })
+  return Array.from(new Set(entries)).sort()
 }

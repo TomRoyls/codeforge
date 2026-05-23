@@ -1,130 +1,214 @@
+// ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
-import type { CompassPoint, CompassRegion, CompassRoseResult } from './compass-rose-helpers.js'
+import type { CompassBearing, NavigationChart, CompassRoseResult } from './compass-rose-helpers.js'
 
-// ─── Color Utilities ─────────────────────────────────────────────────────────
+// ─── Color Palette ─────────────────────────────────────────────────
+const high = chalk.rgb(0, 200, 255)
+const midHigh = chalk.rgb(0, 165, 220)
+const mid = chalk.rgb(0, 130, 185)
+const lowMid = chalk.rgb(0, 100, 150)
+const low = chalk.rgb(0, 70, 115)
 
-function scoreColor(s: number): string {
-  if (s >= 70) return chalk.green(String(s))
-  if (s >= 40) return chalk.yellow(String(s))
-  return chalk.red(String(s))
-}
+const best = chalk.rgb(100, 220, 255).bold
+const good = chalk.rgb(50, 195, 245)
+const okay = chalk.rgb(0, 165, 220)
+const poor = chalk.rgb(0, 130, 190)
+const worst = chalk.rgb(0, 100, 160)
 
-function conditionColor(c: string): string {
-  switch (c) {
-    case 'true-north': return chalk.rgb(255, 215, 0)(c)
-    case 'well-oriented': return chalk.green(c)
-    case 'slightly-off': return chalk.blue(c)
-    case 'disoriented': return chalk.yellow(c)
-    case 'lost': return chalk.rgb(255, 165, 0)(c)
-    case 'spinning': return chalk.red(c)
-    default: return chalk.dim(c)
-  }
-}
+const heading = chalk.rgb(0, 210, 255).bold
+const label = chalk.rgb(0, 175, 230)
+const dim = chalk.rgb(150, 165, 175)
 
-function regionColor(c: string): string {
-  switch (c) {
-    case 'perfectly-aligned': return chalk.rgb(255, 215, 0)(c)
-    case 'well-aligned': return chalk.green(c)
-    case 'mostly-aligned': return chalk.blue(c)
-    case 'scattered': return chalk.yellow(c)
-    case 'disoriented': return chalk.rgb(255, 165, 0)(c)
-    case 'chaotic': return chalk.red(c)
-    default: return chalk.dim(c)
-  }
-}
-
-function gradeColor(g: string): string {
-  switch (g) {
-    case 'master-navigator': return chalk.rgb(255, 215, 0)(g)
-    case 'navigator': return chalk.green(g)
-    case 'pilot': return chalk.blue(g)
-    case 'deckhand': return chalk.cyan(g)
-    case 'castaway': return chalk.yellow(g)
-    case 'shipwrecked': return chalk.red(g)
-    default: return chalk.dim(g)
-  }
-}
-
-// ─── Point Formatting ────────────────────────────────────────────────────────
-
-function formatPoint(p: CompassPoint, verbose: boolean): string {
-  const line = ` ${conditionColor(p.condition)} ${chalk.bold(p.file)} ${p.cardinalDirection}(${p.heading}\u00B0) mag:${scoreColor(p.magneticNorth)} decl:${scoreColor(p.declination)} stab:${scoreColor(p.orientationStability)}`
-
-  if (!verbose) return line
-  const details = [line]
-  details.push(`    cardinal: N:${scoreColor(p.cardinal.north)} S:${scoreColor(p.cardinal.south)} E:${scoreColor(p.cardinal.east)} W:${scoreColor(p.cardinal.west)} dom:${p.cardinal.dominantCardinal}`)
-  details.push(`    bearing: true:${scoreColor(p.bearing.trueNorth)} mag:${scoreColor(p.bearing.magneticNorth)} dev:${p.bearing.deviation} cal:${p.bearing.isCalibrated ? chalk.green('Y') : chalk.red('N')}`)
-  details.push(`    magnetism: str:${scoreColor(p.magnetism.strength)} pol:${p.magnetism.polarity} nav:${p.navigation.isNavigable ? chalk.green('Y') : chalk.red('N')}`)
-  return details.join('\n')
-}
-
-// ─── Table Formatter ─────────────────────────────────────────────────────────
+// ─── Score Coloring ────────────────────────────────────────────────
 
 /**
- * Format compass rose result as a table
+ * Color a numeric score by tier
  * @example
- * formatCompassRoseTable(result, false) // string
+ * colorScore(90) // compass blue
  */
-export function formatCompassRoseTable(result: CompassRoseResult, verbose: boolean): string {
-  const lines: string[] = []
-  lines.push(chalk.bold('\n🧭 Compass Rose - Directional/Orientation Analysis\n'))
-  lines.push(chalk.bold('═'.repeat(60)))
-  lines.push('')
-
-  lines.push(chalk.bold('📍 Compass Points'))
-  if (result.points.length === 0) {
-    lines.push(chalk.dim('  No files analyzed.'))
-  } else {
-    const display = verbose ? result.points : result.points.slice(0, 15)
-    for (const p of display) {
-      lines.push(formatPoint(p, verbose))
-    }
-    if (!verbose && result.points.length > 15) {
-      lines.push(chalk.dim(`  ... and ${result.points.length - 15} more`))
-    }
-  }
-  lines.push('')
-
-  if (result.regions.length > 0) {
-    lines.push(chalk.bold('🗺️  Regions'))
-    for (const r of result.regions) {
-      lines.push(`  ${chalk.bold(r.directory)} ${regionColor(r.condition)} mag:${scoreColor(r.avgMagneticNorth)} align:${scoreColor(r.regionAlignment)} type:${r.regionType} pts:${r.points.length}`)
-    }
-    lines.push('')
-  }
-
-  const h = result.hemisphere
-  lines.push(chalk.bold('🌐 Hemisphere'))
-  lines.push(`  MagneticNorth:${scoreColor(h.avgMagneticNorth)} Declination:${scoreColor(h.avgDeclination)} Stability:${scoreColor(h.avgStability)} Aligned:${h.isAligned ? chalk.green('YES') : chalk.red('NO')} Overall:${scoreColor(h.overallOrientation)}`)
-  lines.push('')
-
-  const s = result.stats
-  lines.push(chalk.bold('📊 Statistics'))
-  lines.push(`  Grade: ${gradeColor(s.navigatorGrade)} | Orientation: ${scoreColor(s.overallOrientation)} | Files: ${s.totalFiles} | Regions: ${s.totalRegions}`)
-  lines.push(`  TrueNorth:${s.trueNorthCount} Well:${s.wellOrientedCount} Disoriented:${s.disorientedCount} Lost:${s.lostCount} Spinning:${s.spinningCount}`)
-  lines.push(`  Dominant: N:${s.northDominant} S:${s.southDominant} E:${s.eastDominant} W:${s.westDominant} | Attractive:${s.attractiveCount} Repulsive:${s.repulsiveCount}`)
-  lines.push(`  Calibrated:${s.calibratedCount} NeedsRecal:${s.needsRecalibrationCount} Navigable:${s.navigableCount}`)
-  lines.push(`  BestOriented:${chalk.green(s.bestOriented)} | MostDisoriented:${chalk.red(s.mostDisoriented)} | StrongestMag:${chalk.cyan(s.strongestMagnetism)} | MostCal:${chalk.blue(s.mostCalibrated)}`)
-
-  if (result.recommendations.length > 0) {
-    lines.push('')
-    lines.push(chalk.bold('💡 Recommendations'))
-    for (const rec of result.recommendations) {
-      lines.push(`  - ${rec}`)
-    }
-  }
-
-  lines.push('')
-  return lines.join('\n')
+export function colorScore(score: number): string {
+  if (score >= 80) return high(String(score))
+  if (score >= 60) return midHigh(String(score))
+  if (score >= 40) return mid(String(score))
+  if (score >= 20) return lowMid(String(score))
+  return low(String(score))
 }
 
-// ─── JSON Formatter ──────────────────────────────────────────────────────────
+/**
+ * Color a grade/tier string by quality
+ * @example
+ * colorGrade('master-navigator') // best (bold blue)
+ */
+export function colorGrade(grade: string): string {
+  const g = grade.toLowerCase()
+  const tierMap: Record<string, string> = {
+    'true-north': best, 'gyroscopic': best, 'gps-grade': best, 'rock-steady': best, 'detailed-chart': best,
+    'master-navigator': best, 'admiralty-chart': best, 'fleet-admiral': best, 'chart-room': best,
+
+    'clear-bearing': good, 'magnetic-north': good, 'clear-charts': good, 'stable-platform': good, 'proper-map': good,
+    'skilled-pilot': good, 'nautical-map': good, 'sea-captain': good, 'navigation-station': good,
+
+    'proper-heading': okay, 'proper-compass': okay, 'proper-maps': okay, 'proper-gyroscope': okay, 'basic-sketch': okay,
+    'proper-helmsman': okay, 'coastal-guide': okay, 'first-mate': okay, 'wheelhouse': okay,
+
+    'uncertain-direction': poor, 'wobbly-needle': poor, 'vague-directions': poor, 'wobbling': poor, 'rough-outline': poor,
+    'lost-sailor': poor, 'sketch-map': poor, 'deck-hand': poor, 'deck': poor,
+
+    'lost-bearing': worst, 'spinning-needle': worst, 'no-signs': worst, 'tilting': worst, 'mental-map': worst,
+    'drifting-raft': worst, 'scratched-rock': worst, 'cabin-boy': worst, 'lifeboat': worst,
+
+    'spinning-compass': worst, 'broken-compass': worst, 'unmarked-trail': worst, 'tumbling': worst, 'no-map': worst,
+    'shipwreck': worst, 'blank-page': worst, 'landlubber': worst, 'adrift': worst,
+  }
+  return (tierMap[g] ?? low)(grade)
+}
+
+// ─── Bearing Formatting ────────────────────────────────────────────
 
 /**
- * Format compass rose result as JSON
+ * Format a single bearing for display
  * @example
- * formatCompassRoseJson(result) // string
+ * formatBearingTable(bearing) // colored bearing info
  */
-export function formatCompassRoseJson(result: CompassRoseResult): string {
+export function formatBearingTable(bearing: CompassBearing): string {
+  const parts = [
+    `${label('File:')} ${dim(bearing.file)}`,
+    `${label('Directional Clarity:')} ${colorScore(bearing.directionalClarity)} ${colorGrade(bearing.directing.grade)}`,
+    `${label('Bearing Accuracy:')} ${colorScore(bearing.bearingAccuracy)} ${colorGrade(bearing.bearing.compass)}`,
+    `${label('Navigation Quality:')} ${colorScore(bearing.navigationQuality)} ${colorGrade(bearing.navigating.nav)}`,
+    `${label('Orientation Stability:')} ${colorScore(bearing.orientationStability)} ${colorGrade(bearing.orienting.orientation)}`,
+    `${label('Charting Precision:')} ${colorScore(bearing.chartingPrecision)} ${colorGrade(bearing.charting.chart)}`,
+    `${label('Score:')} ${colorScore(bearing.qualityScore)} ${colorGrade(bearing.condition)}`,
+  ]
+  return parts.join('\n')
+}
+
+/**
+ * Format bearings as summary table
+ * @example
+ * formatBearingsTable(bearings) // multi-line table
+ */
+export function formatBearingsTable(bearings: CompassBearing[]): string {
+  if (bearings.length === 0) return dim('No compass bearings found')
+  const header = heading('Compass Rose Analysis')
+  const rows = bearings.map(b => formatBearingTable(b))
+  return `${header}\n${rows.join('\n\n')}`
+}
+
+// ─── Chart Formatting ──────────────────────────────────────────────
+
+/**
+ * Format a chart for display
+ * @example
+ * formatChartTable(chart) // colored chart info
+ */
+export function formatChartTable(chart: NavigationChart): string {
+  const parts = [
+    `${label('Chart:')} ${dim(chart.directory)}`,
+    `${label('Type:')} ${colorGrade(chart.chartType)}`,
+    `${label('Condition:')} ${colorGrade(chart.condition)}`,
+    `${label('Bearings:')} ${String(chart.bearings.length)}`,
+    `${label('Avg Clarity:')} ${colorScore(chart.avgClarity)}`,
+    `${label('Avg Accuracy:')} ${colorScore(chart.avgAccuracy)}`,
+    `${label('Avg Stability:')} ${colorScore(chart.avgStability)}`,
+    `${label('Master Navigator:')} ${String(chart.masterNavigatorCount)}`,
+    `${label('Shipwreck:')} ${String(chart.shipwreckCount)}`,
+  ]
+  return parts.join('\n')
+}
+
+/**
+ * Format all charts as summary
+ * @example
+ * formatChartsTable(charts) // multi-line chart summary
+ */
+export function formatChartsTable(charts: NavigationChart[]): string {
+  if (charts.length === 0) return dim('No navigation charts found')
+  const header = heading('Navigation Chart Analysis')
+  const rows = charts.map(c => formatChartTable(c))
+  return `${header}\n${rows.join('\n\n')}`
+}
+
+// ─── Stats Formatting ──────────────────────────────────────────────
+
+/**
+ * Format statistics summary
+ * @example
+ * formatStatsTable(stats) // colored stats
+ */
+export function formatStatsTable(stats: CompassRoseResult['stats']): string {
+  const parts = [
+    heading('Fleet Statistics'),
+    `${label('Total Files:')} ${String(stats.totalFiles)}`,
+    `${label('Total Charts:')} ${String(stats.totalCharts)}`,
+    `${label('Avg Directional Clarity:')} ${colorScore(stats.avgDirectionalClarity)}`,
+    `${label('Avg Bearing Accuracy:')} ${colorScore(stats.avgBearingAccuracy)}`,
+    `${label('Avg Navigation Quality:')} ${colorScore(stats.avgNavigationQuality)}`,
+    `${label('Avg Orientation Stability:')} ${colorScore(stats.avgOrientationStability)}`,
+    `${label('Avg Charting Precision:')} ${colorScore(stats.avgChartingPrecision)}`,
+    `${label('Master Navigator:')} ${String(stats.masterNavigatorCount)}`,
+    `${label('Skilled Pilot:')} ${String(stats.skilledPilotCount)}`,
+    `${label('Proper Helmsman:')} ${String(stats.properHelmsmanCount)}`,
+    `${label('Lost Sailor:')} ${String(stats.lostSailorCount)}`,
+    `${label('Drifting Raft:')} ${String(stats.driftingRaftCount)}`,
+    `${label('Shipwreck:')} ${String(stats.shipwreckCount)}`,
+    `${label('High Clarity:')} ${String(stats.hasHighClarityCount)}`,
+    `${label('High Accuracy:')} ${String(stats.hasHighAccuracyCount)}`,
+    `${label('High Quality:')} ${String(stats.hasHighQualityCount)}`,
+    `${label('High Stability:')} ${String(stats.hasHighStabilityCount)}`,
+    `${label('High Precision:')} ${String(stats.hasHighPrecisionCount)}`,
+    `${label('Overall Navigation:')} ${colorScore(stats.overallNavigation)}`,
+    `${label('Captain Grade:')} ${colorGrade(stats.captainGrade)}`,
+    `${label('Best Bearing:')} ${stats.bestBearing}`,
+    `${label('Clearest:')} ${stats.clearest}`,
+    `${label('Most Accurate:')} ${stats.mostAccurate}`,
+    `${label('Most Navigable:')} ${stats.mostNavigable}`,
+    `${label('Most Stable:')} ${stats.mostStable}`,
+  ]
+  return parts.join('\n')
+}
+
+// ─── Recommendation Formatting ─────────────────────────────────────
+
+/**
+ * Format recommendations as list
+ * @example
+ * formatRecommendations(recs) // bullet list
+ */
+export function formatRecommendations(recommendations: string[]): string {
+  if (recommendations.length === 0) return dim('No recommendations')
+  const header = heading('Recommendations')
+  const items = recommendations.map(r => `${dim('\u2022')} ${r}`)
+  return `${header}\n${items.join('\n')}`
+}
+
+// ─── Full Result Formatting ────────────────────────────────────────
+
+/**
+ * Format complete result as table
+ * @example
+ * formatResultTable(result) // full colored output
+ */
+export function formatResultTable(result: CompassRoseResult): string {
+  const sections = [
+    formatBearingsTable(result.bearings),
+    '',
+    formatChartsTable(result.charts),
+    '',
+    formatStatsTable(result.stats),
+    '',
+    `${heading('Fleet')} ${label('Navigable:')} ${result.fleet.isNavigable ? high('Yes') : low('No')} ${label('Overall Navigation:')} ${colorScore(result.fleet.overallNavigation)}`,
+    '',
+    formatRecommendations(result.recommendations),
+  ]
+  return sections.join('\n')
+}
+
+/**
+ * Format complete result as JSON
+ * @example
+ * formatResultJson(result) // JSON string
+ */
+export function formatResultJson(result: CompassRoseResult): string {
   return JSON.stringify(result, null, 2)
 }

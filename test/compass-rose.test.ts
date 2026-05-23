@@ -1,555 +1,702 @@
 import { describe, it, expect } from 'vitest'
 import {
-  countLoc, countImports, countExports, countFunctions,
-  countErrorHandling, countTypeAnnotations, countBranches,
-  maxNesting, countConsole, countComments, countTodos,
-  classifyCompassCondition, classifyRegionType, classifyRegionCondition,
-  classifyNavigatorGrade, classifyCardinalDirection,
-  measureCardinal, measureBearing, measureMagnetism,
-  measureOrientation, measureNavigation,
-  analyzeCompassPoint, analyzeCompassRegion,
-  generateRecommendations, buildCompassRoseResult,
+  measureDirecting, measureBearing, measureNavigating, measureOrienting, measureCharting,
+  classifyBearingCondition, classifyChartType, classifyCaptainGrade, classifyChartCondition,
+  generateRecommendations, analyzeCompassBearing, analyzeNavigationChart,
+  buildCompassRoseResult,
 } from '../src/commands/compass-rose-helpers.js'
-import { formatCompassRoseTable, formatCompassRoseJson } from '../src/commands/compass-rose-format-helpers.js'
+import {
+  colorScore, colorGrade, formatBearingTable, formatBearingsTable,
+  formatChartTable, formatChartsTable, formatStatsTable,
+  formatRecommendations, formatResultTable, formatResultJson,
+} from '../src/commands/compass-rose-format-helpers.js'
 
-// ─── Sample Code Snippets ─────────────────────────────────────────────────────
+// ─── Fixtures ──────────────────────────────────────────────────────
 
-const emptyCode = ''
-const simpleCode = 'const x = 1'
-const typedCode = 'export function calc(x: number): string { return String(x) }'
-const strongCode = [
-  'import { helper } from "./utils.js"',
-  'import type { Config } from "./types.js"',
+const EMPTY = ''
+
+const RICH = [
   '/**',
-  ' * Calculate result',
-  ' * @example',
-  ' * calc(5) // number',
+  ' * Doc comment',
   ' */',
-  'export function calc(x: number): number {',
-  '  try {',
-  '    const result: number = helper(x)',
-  '    if (result > 0) { return result }',
-  '    return 0',
-  '  } catch (err) {',
-  '    throw new Error("fail")',
-  '  }',
+  'export interface Foo<T> { readonly bar: string }',
+  'export type Result = string | number',
+  'export class MyClass {',
+  '  private x: number = 0',
   '}',
-  'export interface CalcOptions { value: number; label: string }',
-  'export type CalcResult = number | string',
+  'export const fn = async (): Promise<string> => {',
+  '  const a: string = \'hello\'',
+  '  if (a === \'test\') { return a }',
+  '  return \'world\'',
+  '}',
+  'import path from \'node:path\'',
 ].join('\n')
 
-const noExportCode = [
-  'const a = 1',
-  'const b = 2',
-  'const c = 3',
-].join('\n')
+const MINIMAL = 'const x = 1'
 
-const todoCode = [
-  '// TODO: fix this',
-  '// FIXME: broken',
-  '// HACK: temp',
-  '// XXX: bad',
-  'export function a() { return 1 }',
-].join('\n')
+const BAD = 'export var x: any = 1; var y: any = 2; debugger;'
 
-const importHeavyCode = [
-  'import { a } from "a"',
-  'import { b } from "b"',
-  'import { c } from "c"',
-  'import { d } from "d"',
-  'import { e } from "e"',
-].join('\n')
+// ─── measureDirecting ──────────────────────────────────────────────
 
-const branchyNoFunc = [
-  'if (a) {}',
-  'if (b) {}',
-  'if (c) {}',
-  'if (d) {}',
-  'if (e) {}',
-  'if (f) {}',
-].join('\n')
-
-// ─── Primitive Tests ──────────────────────────────────────────────────────────
-
-describe('compass-rose primitives', () => {
-  it('countLoc counts non-empty lines', () => {
-    expect(countLoc(emptyCode)).toBe(0)
-    expect(countLoc(simpleCode)).toBe(1)
+describe('measureDirecting', () => {
+  it('returns clarity=0 and spinning-compass for empty content', () => {
+    const m = measureDirecting(EMPTY)
+    expect(m.clarity).toBe(0)
+    expect(m.grade).toBe('spinning-compass')
   })
 
-  it('countImports counts imports', () => {
-    expect(countImports(emptyCode)).toBe(0)
-    expect(countImports(strongCode)).toBe(2)
+  it('returns clarity=100 and true-north for rich content', () => {
+    const m = measureDirecting(RICH)
+    expect(m.clarity).toBe(100)
+    expect(m.grade).toBe('true-north')
   })
 
-  it('countExports counts exports', () => {
-    expect(countExports(emptyCode)).toBe(0)
-    expect(countExports(typedCode)).toBe(1)
+  it('returns clarity=8 for minimal content (only const)', () => {
+    expect(measureDirecting(MINIMAL).clarity).toBe(8)
   })
 
-  it('countFunctions counts functions', () => {
-    expect(countFunctions(emptyCode)).toBe(0)
-    expect(countFunctions('function a() {}')).toBe(1)
+  it('detects confused and aimless in bad content', () => {
+    const m = measureDirecting(BAD)
+    expect(m.confusedCount).toBe(2)
+    expect(m.aimlessCount).toBe(2)
+    expect(m.hasNoConfused).toBe(false)
+    expect(m.hasNoAimless).toBe(false)
   })
 
-  it('countErrorHandling counts try/catch/throw', () => {
-    expect(countErrorHandling(emptyCode)).toBe(0)
-    expect(countErrorHandling(strongCode)).toBeGreaterThanOrEqual(2)
+  it('sets hasHighClarity=true for rich content', () => {
+    expect(measureDirecting(RICH).hasHighClarity).toBe(true)
   })
 
-  it('countTypeAnnotations counts types', () => {
-    expect(countTypeAnnotations(emptyCode)).toBe(0)
-    expect(countTypeAnnotations('const x: number = 1')).toBe(1)
+  it('sets hasHighClarity=false for empty content', () => {
+    expect(measureDirecting(EMPTY).hasHighClarity).toBe(false)
   })
 
-  it('countBranches counts branches', () => {
-    expect(countBranches(emptyCode)).toBe(0)
-    expect(countBranches('if (a) {}')).toBe(1)
+  it('detects all combo booleans true for rich content', () => {
+    const m = measureDirecting(RICH)
+    expect(m.hasFocused).toBe(true)
+    expect(m.hasClear).toBe(true)
+    expect(m.hasPurposeful).toBe(true)
+    expect(m.hasDirected).toBe(true)
+    expect(m.hasIntentional).toBe(true)
+    expect(m.hasResolute).toBe(true)
   })
 
-  it('maxNesting counts nesting', () => {
-    expect(maxNesting('')).toBe(0)
-    expect(maxNesting('{{{}}}')).toBe(3)
+  it('detects debugger via hasNoRandom=false for bad content', () => {
+    expect(measureDirecting(BAD).hasNoRandom).toBe(false)
   })
 
-  it('countConsole counts console', () => {
-    expect(countConsole(emptyCode)).toBe(0)
-    expect(countConsole('console.log("x")')).toBe(1)
-  })
-
-  it('countComments counts comments', () => {
-    expect(countComments(emptyCode)).toBe(0)
-    expect(countComments('// hello')).toBe(1)
-  })
-
-  it('countTodos counts todos', () => {
-    expect(countTodos(emptyCode)).toBe(0)
-    expect(countTodos(todoCode)).toBe(4)
+  it('has no wandering for clean content', () => {
+    expect(measureDirecting(RICH).hasNoWandering).toBe(true)
+    expect(measureDirecting(MINIMAL).hasNoWandering).toBe(true)
   })
 })
 
-// ─── Classification Tests ─────────────────────────────────────────────────────
+// ─── measureBearing ────────────────────────────────────────────────
 
-describe('compass-rose classifications', () => {
-  it('classifyCompassCondition returns correct conditions', () => {
-    expect(classifyCompassCondition(90)).toBe('true-north')
-    expect(classifyCompassCondition(75)).toBe('well-oriented')
-    expect(classifyCompassCondition(55)).toBe('slightly-off')
-    expect(classifyCompassCondition(35)).toBe('disoriented')
-    expect(classifyCompassCondition(15)).toBe('lost')
-    expect(classifyCompassCondition(5)).toBe('spinning')
+describe('measureBearing', () => {
+  it('returns accuracy=0 and broken-compass for empty content', () => {
+    const m = measureBearing(EMPTY)
+    expect(m.accuracy).toBe(0)
+    expect(m.compass).toBe('broken-compass')
   })
 
-  it('classifyRegionType returns correct types', () => {
-    expect(classifyRegionType([])).toBe('doldrums')
+  it('returns accuracy=100 and gyroscopic for rich content', () => {
+    const m = measureBearing(RICH)
+    expect(m.accuracy).toBe(100)
+    expect(m.compass).toBe('gyroscopic')
   })
 
-  it('classifyRegionCondition returns correct conditions', () => {
-    expect(classifyRegionCondition(90)).toBe('perfectly-aligned')
-    expect(classifyRegionCondition(70)).toBe('well-aligned')
-    expect(classifyRegionCondition(50)).toBe('mostly-aligned')
-    expect(classifyRegionCondition(30)).toBe('scattered')
-    expect(classifyRegionCondition(15)).toBe('disoriented')
-    expect(classifyRegionCondition(5)).toBe('chaotic')
+  it('returns accuracy=8 for minimal content (only const)', () => {
+    expect(measureBearing(MINIMAL).accuracy).toBe(8)
   })
 
-  it('classifyNavigatorGrade returns correct grades', () => {
-    expect(classifyNavigatorGrade(85)).toBe('master-navigator')
-    expect(classifyNavigatorGrade(70)).toBe('navigator')
-    expect(classifyNavigatorGrade(50)).toBe('pilot')
-    expect(classifyNavigatorGrade(35)).toBe('deckhand')
-    expect(classifyNavigatorGrade(18)).toBe('castaway')
-    expect(classifyNavigatorGrade(5)).toBe('shipwrecked')
+  it('detects wrong and imprecise in bad content', () => {
+    const m = measureBearing(BAD)
+    expect(m.wrongCount).toBe(2)
+    expect(m.impreciseCount).toBe(2)
+    expect(m.hasNoWrong).toBe(false)
+    expect(m.hasNoImprecise).toBe(false)
   })
 
-  it('classifyCardinalDirection returns correct directions', () => {
-    expect(classifyCardinalDirection(0)).toBe('N')
-    expect(classifyCardinalDirection(45)).toBe('NE')
-    expect(classifyCardinalDirection(90)).toBe('E')
-    expect(classifyCardinalDirection(135)).toBe('SE')
-    expect(classifyCardinalDirection(180)).toBe('S')
-    expect(classifyCardinalDirection(225)).toBe('SW')
-    expect(classifyCardinalDirection(270)).toBe('W')
-    expect(classifyCardinalDirection(315)).toBe('NW')
-    expect(classifyCardinalDirection(360)).toBe('N')
+  it('sets hasHighAccuracy=true for rich content', () => {
+    expect(measureBearing(RICH).hasHighAccuracy).toBe(true)
   })
 
-  it('classifyRegionType detects bermuda-triangle', () => {
-    const spinningPoints = Array.from({ length: 3 }, () => analyzeCompassPoint('', 'x.ts'))
-    expect(classifyRegionType(spinningPoints)).toBe('bermuda-triangle')
+  it('sets hasHighAccuracy=false for empty content', () => {
+    expect(measureBearing(EMPTY).hasHighAccuracy).toBe(false)
   })
 
-  it('classifyRegionType detects north-star', () => {
-    const goodPoints = Array.from({ length: 3 }, (_, i) => analyzeCompassPoint(strongCode, `${i}.ts`))
-    if (goodPoints.every(p => p.condition === 'true-north')) {
-      expect(classifyRegionType(goodPoints)).toBe('north-star')
-    }
+  it('detects all combo booleans true for rich content', () => {
+    const m = measureBearing(RICH)
+    expect(m.hasCorrect).toBe(true)
+    expect(m.hasAccurate).toBe(true)
+    expect(m.hasPrecise).toBe(true)
+    expect(m.hasTrue).toBe(true)
+    expect(m.hasExact).toBe(true)
+    expect(m.hasReliable).toBe(true)
+  })
+
+  it('detects debugger via hasNoApproximate=false for bad content', () => {
+    expect(measureBearing(BAD).hasNoApproximate).toBe(false)
+  })
+
+  it('has no false positives for clean content', () => {
+    expect(measureBearing(RICH).hasNoFalse).toBe(true)
   })
 })
 
-// ─── Measurement Tests ────────────────────────────────────────────────────────
+// ─── measureNavigating ─────────────────────────────────────────────
 
-describe('compass-rose measurements', () => {
-  it('measureCardinal returns correct structure', () => {
-    const c = measureCardinal(strongCode)
-    expect(c.north).toBeGreaterThanOrEqual(0)
-    expect(c.south).toBeGreaterThanOrEqual(0)
-    expect(c.east).toBeGreaterThanOrEqual(0)
-    expect(c.west).toBeGreaterThanOrEqual(0)
-    expect(typeof c.isCardinallyAligned).toBe('boolean')
-    expect(['N', 'S', 'E', 'W']).toContain(c.dominantCardinal)
+describe('measureNavigating', () => {
+  it('returns quality=0 and unmarked-trail for empty content', () => {
+    const m = measureNavigating(EMPTY)
+    expect(m.quality).toBe(0)
+    expect(m.nav).toBe('unmarked-trail')
   })
 
-  it('measureCardinal gives non-zero east for exported code', () => {
-    expect(measureCardinal(typedCode).east).toBeGreaterThan(0)
+  it('returns quality=100 and gps-grade for rich content', () => {
+    const m = measureNavigating(RICH)
+    expect(m.quality).toBe(100)
+    expect(m.nav).toBe('gps-grade')
   })
 
-  it('measureCardinal gives non-zero west for imported code', () => {
-    expect(measureCardinal(strongCode).west).toBeGreaterThan(0)
+  it('returns quality=8 for minimal content (only const)', () => {
+    expect(measureNavigating(MINIMAL).quality).toBe(8)
   })
 
-  it('measureBearing returns correct structure', () => {
-    const b = measureBearing(strongCode)
-    expect(b.trueNorth).toBeGreaterThanOrEqual(0)
-    expect(b.magneticNorth).toBeGreaterThanOrEqual(0)
-    expect(b.deviation).toBeGreaterThanOrEqual(0)
-    expect(typeof b.isCalibrated).toBe('boolean')
-    expect(typeof b.needsRecalibration).toBe('boolean')
+  it('detects hidden and obscured in bad content', () => {
+    const m = measureNavigating(BAD)
+    expect(m.hiddenCount).toBe(2)
+    expect(m.obscuredCount).toBe(2)
+    expect(m.hasNoHidden).toBe(false)
+    expect(m.hasNoObscured).toBe(false)
   })
 
-  it('measureBearing detects deviation from todos', () => {
-    const good = measureBearing(typedCode)
-    const bad = measureBearing(todoCode)
-    expect(bad.deviation).toBeGreaterThanOrEqual(good.deviation)
+  it('sets hasHighQuality=true for rich content', () => {
+    expect(measureNavigating(RICH).hasHighQuality).toBe(true)
   })
 
-  it('measureBearing needs recalibration for simple code', () => {
-    expect(measureBearing(simpleCode).needsRecalibration).toBe(true)
+  it('sets hasHighQuality=false for empty content', () => {
+    expect(measureNavigating(EMPTY).hasHighQuality).toBe(false)
   })
 
-  it('measureMagnetism returns correct structure', () => {
-    const m = measureMagnetism(strongCode)
-    expect(m.strength).toBeGreaterThanOrEqual(0)
-    expect(['attractive', 'repulsive', 'neutral']).toContain(m.polarity)
-    expect(m.field.range).toBeGreaterThanOrEqual(0)
-    expect(typeof m.field.isStrong).toBe('boolean')
-    expect(typeof m.field.isWeak).toBe('boolean')
-    expect(typeof m.field.hasInterference).toBe('boolean')
+  it('detects all combo booleans true for rich content', () => {
+    const m = measureNavigating(RICH)
+    expect(m.hasDiscoverable).toBe(true)
+    expect(m.hasFindable).toBe(true)
+    expect(m.hasAccessible).toBe(true)
+    expect(m.hasIntuitive).toBe(true)
+    expect(m.hasApproachable).toBe(true)
+    expect(m.hasWelcoming).toBe(true)
   })
 
-  it('measureMagnetism detects attractive polarity', () => {
-    const exportHeavy = 'export function a() {}\nexport function b() {}\nexport function c() {}'
-    const m = measureMagnetism(exportHeavy)
-    expect(m.polarity).toBe('attractive')
+  it('detects debugger via hasNoDaunting=false for bad content', () => {
+    expect(measureNavigating(BAD).hasNoDaunting).toBe(false)
   })
 
-  it('measureMagnetism detects repulsive polarity', () => {
-    const m = measureMagnetism(importHeavyCode)
-    expect(m.polarity).toBe('repulsive')
-  })
-
-  it('measureOrientation returns correct structure', () => {
-    const o = measureOrientation(strongCode)
-    expect(typeof o.isUpright).toBe('boolean')
-    expect(typeof o.isInverted).toBe('boolean')
-    expect(typeof o.isTilted).toBe('boolean')
-    expect(typeof o.isSpinning).toBe('boolean')
-    expect(o.tiltAngle).toBeGreaterThanOrEqual(0)
-  })
-
-  it('measureOrientation detects upright for strong code', () => {
-    expect(measureOrientation(strongCode).isUpright).toBe(true)
-  })
-
-  it('measureOrientation detects inverted for import-heavy code', () => {
-    expect(measureOrientation(importHeavyCode).isInverted).toBe(true)
-  })
-
-  it('measureOrientation detects spinning for branchy code', () => {
-    expect(measureOrientation(branchyNoFunc).isSpinning).toBe(true)
-  })
-
-  it('measureNavigation returns correct structure', () => {
-    const n = measureNavigation(strongCode)
-    expect(typeof n.hasChart).toBe('boolean')
-    expect(typeof n.hasWaypoints).toBe('boolean')
-    expect(typeof n.hasLandmarks).toBe('boolean')
-    expect(typeof n.hasHazards).toBe('boolean')
-    expect(typeof n.hazardCount).toBe('number')
-    expect(typeof n.isNavigable).toBe('boolean')
-  })
-
-  it('measureNavigation detects chart in documented code', () => {
-    expect(measureNavigation(strongCode).hasChart).toBe(true)
-  })
-
-  it('measureNavigation detects hazards in todo code', () => {
-    expect(measureNavigation(todoCode).hasHazards).toBe(true)
+  it('has no cryptic for clean content', () => {
+    expect(measureNavigating(RICH).hasNoCryptic).toBe(true)
   })
 })
 
-// ─── Compass Point Analysis Tests ─────────────────────────────────────────────
+// ─── measureOrienting ──────────────────────────────────────────────
 
-describe('compass-rose point analysis', () => {
-  it('analyzeCompassPoint returns correct structure', () => {
-    const p = analyzeCompassPoint(strongCode, 'calc.ts')
-    expect(p.file).toBe('calc.ts')
-    expect(p.heading).toBeGreaterThanOrEqual(0)
-    expect(p.heading).toBeLessThanOrEqual(360)
-    expect(typeof p.cardinalDirection).toBe('string')
-    expect(p.magneticNorth).toBeGreaterThanOrEqual(0)
-    expect(p.qualityScore).toBeGreaterThanOrEqual(0)
-    expect(p.qualityScore).toBeLessThanOrEqual(100)
-    expect(typeof p.condition).toBe('string')
+describe('measureOrienting', () => {
+  it('returns stability=0 and tumbling for empty content', () => {
+    const m = measureOrienting(EMPTY)
+    expect(m.stability).toBe(0)
+    expect(m.orientation).toBe('tumbling')
   })
 
-  it('strong code has better quality than empty', () => {
-    const good = analyzeCompassPoint(strongCode, 'good.ts')
-    const bad = analyzeCompassPoint(emptyCode, 'bad.ts')
-    expect(good.qualityScore).toBeGreaterThan(bad.qualityScore)
+  it('returns stability=100 and rock-steady for rich content', () => {
+    const m = measureOrienting(RICH)
+    expect(m.stability).toBe(100)
+    expect(m.orientation).toBe('rock-steady')
   })
 
-  it('cardinal info is correct', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.cardinal.north).toBeGreaterThan(0)
-    expect(p.cardinal.east).toBeGreaterThan(0)
+  it('returns stability=10 for minimal content (only const)', () => {
+    expect(measureOrienting(MINIMAL).stability).toBe(10)
   })
 
-  it('intercardinal info is correct', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.intercardinal.northeast).toBeGreaterThanOrEqual(0)
-    expect(p.intercardinal.southeast).toBeGreaterThanOrEqual(0)
+  it('detects fluctuating and erratic in bad content', () => {
+    const m = measureOrienting(BAD)
+    expect(m.fluctuatingCount).toBe(2)
+    expect(m.erraticCount).toBe(2)
+    expect(m.hasNoFluctuating).toBe(false)
+    expect(m.hasNoErratic).toBe(false)
   })
 
-  it('bearing info is correct', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.bearing.trueNorth).toBeGreaterThan(0)
-    expect(p.bearing.isCalibrated).toBe(true)
+  it('sets hasHighStability=true for rich content', () => {
+    expect(measureOrienting(RICH).hasHighStability).toBe(true)
   })
 
-  it('magnetism info is correct', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.magnetism.strength).toBeGreaterThan(0)
+  it('sets hasHighStability=false for empty content', () => {
+    expect(measureOrienting(EMPTY).hasHighStability).toBe(false)
   })
 
-  it('navigation info is correct', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.navigation.isNavigable).toBe(true)
+  it('detects all combo booleans true for rich content', () => {
+    const m = measureOrienting(RICH)
+    expect(m.hasConsistent).toBe(true)
+    expect(m.hasStable).toBe(true)
+    expect(m.hasReliable).toBe(true)
+    expect(m.hasUniform).toBe(true)
+    expect(m.hasPredictable).toBe(true)
+    expect(m.hasSteady).toBe(true)
   })
 
-  it('empty code is spinning', () => {
-    const p = analyzeCompassPoint(emptyCode, 'empty.ts')
-    expect(p.condition).toBe('spinning')
-    expect(p.qualityScore).toBe(0)
+  it('detects debugger via hasNoVolatile=false for bad content', () => {
+    expect(measureOrienting(BAD).hasNoVolatile).toBe(false)
+  })
+
+  it('has no inconsistent for clean content', () => {
+    expect(measureOrienting(RICH).hasNoInconsistent).toBe(true)
   })
 })
 
-// ─── Region Tests ─────────────────────────────────────────────────────────────
+// ─── measureCharting ───────────────────────────────────────────────
 
-describe('compass-rose region analysis', () => {
-  it('analyzeCompassRegion handles empty points', () => {
-    const r = analyzeCompassRegion([], 'src')
-    expect(r.directory).toBe('src')
-    expect(r.points).toHaveLength(0)
-    expect(r.condition).toBe('perfectly-aligned')
+describe('measureCharting', () => {
+  it('returns precision=0 and no-map for empty content', () => {
+    const m = measureCharting(EMPTY)
+    expect(m.precision).toBe(0)
+    expect(m.chart).toBe('no-map')
   })
 
-  it('analyzeCompassRegion computes averages', () => {
-    const points = [
-      analyzeCompassPoint(strongCode, 'a.ts'),
-      analyzeCompassPoint(typedCode, 'b.ts'),
-    ]
-    const r = analyzeCompassRegion(points, 'src')
-    expect(r.avgMagneticNorth).toBeGreaterThanOrEqual(0)
-    expect(r.avgDeclination).toBeGreaterThanOrEqual(0)
-    expect(r.avgStability).toBeGreaterThanOrEqual(0)
-    expect(typeof r.regionType).toBe('string')
-    expect(r.regionAlignment).toBeGreaterThanOrEqual(0)
-    expect(typeof r.condition).toBe('string')
+  it('returns precision=100 and detailed-chart for rich content', () => {
+    const m = measureCharting(RICH)
+    expect(m.precision).toBe(100)
+    expect(m.chart).toBe('detailed-chart')
+  })
+
+  it('returns precision=8 for minimal content (only const)', () => {
+    expect(measureCharting(MINIMAL).precision).toBe(8)
+  })
+
+  it('detects undocumented and unmarked in bad content', () => {
+    const m = measureCharting(BAD)
+    expect(m.undocumentedCount).toBe(2)
+    expect(m.unmarkedCount).toBe(2)
+    expect(m.hasNoUndocumented).toBe(false)
+    expect(m.hasNoUnmarked).toBe(false)
+  })
+
+  it('sets hasHighPrecision=true for rich content', () => {
+    expect(measureCharting(RICH).hasHighPrecision).toBe(true)
+  })
+
+  it('sets hasHighPrecision=false for empty content', () => {
+    expect(measureCharting(EMPTY).hasHighPrecision).toBe(false)
+  })
+
+  it('detects all combo booleans true for rich content', () => {
+    const m = measureCharting(RICH)
+    expect(m.hasDocumented).toBe(true)
+    expect(m.hasDescribed).toBe(true)
+    expect(m.hasAnnotated).toBe(true)
+    expect(m.hasExplained).toBe(true)
+    expect(m.hasDetailed).toBe(true)
+    expect(m.hasMapped).toBe(true)
+  })
+
+  it('detects debugger via hasNoVague=false for bad content', () => {
+    expect(measureCharting(BAD).hasNoVague).toBe(false)
+  })
+
+  it('has no unexplained for clean content', () => {
+    expect(measureCharting(RICH).hasNoUnexplained).toBe(true)
   })
 })
 
-// ─── Build Result Tests ───────────────────────────────────────────────────────
+// ─── classifyBearingCondition ──────────────────────────────────────
 
-describe('compass-rose build result', () => {
-  it('buildCompassRoseResult returns correct structure', () => {
-    const result = buildCompassRoseResult(['a.ts'], [typedCode], {})
-    expect(result.points).toHaveLength(1)
-    expect(result.regions).toHaveLength(1)
+describe('classifyBearingCondition', () => {
+  it('returns master-navigator for 90', () => {
+    expect(classifyBearingCondition(90)).toBe('master-navigator')
+  })
+  it('returns skilled-pilot for 75', () => {
+    expect(classifyBearingCondition(75)).toBe('skilled-pilot')
+  })
+  it('returns proper-helmsman for 60', () => {
+    expect(classifyBearingCondition(60)).toBe('proper-helmsman')
+  })
+  it('returns lost-sailor for 45', () => {
+    expect(classifyBearingCondition(45)).toBe('lost-sailor')
+  })
+  it('returns drifting-raft for 30', () => {
+    expect(classifyBearingCondition(30)).toBe('drifting-raft')
+  })
+  it('returns shipwreck for 10', () => {
+    expect(classifyBearingCondition(10)).toBe('shipwreck')
+  })
+})
+
+// ─── classifyCaptainGrade ──────────────────────────────────────────
+
+describe('classifyCaptainGrade', () => {
+  it('returns fleet-admiral for 85', () => {
+    expect(classifyCaptainGrade(85)).toBe('fleet-admiral')
+  })
+  it('returns sea-captain for 70', () => {
+    expect(classifyCaptainGrade(70)).toBe('sea-captain')
+  })
+  it('returns first-mate for 55', () => {
+    expect(classifyCaptainGrade(55)).toBe('first-mate')
+  })
+  it('returns deck-hand for 40', () => {
+    expect(classifyCaptainGrade(40)).toBe('deck-hand')
+  })
+  it('returns cabin-boy for 25', () => {
+    expect(classifyCaptainGrade(25)).toBe('cabin-boy')
+  })
+  it('returns landlubber for 10', () => {
+    expect(classifyCaptainGrade(10)).toBe('landlubber')
+  })
+})
+
+// ─── classifyChartCondition ────────────────────────────────────────
+
+describe('classifyChartCondition', () => {
+  it('returns chart-room for 80', () => {
+    expect(classifyChartCondition(80)).toBe('chart-room')
+  })
+  it('returns navigation-station for 65', () => {
+    expect(classifyChartCondition(65)).toBe('navigation-station')
+  })
+  it('returns wheelhouse for 50', () => {
+    expect(classifyChartCondition(50)).toBe('wheelhouse')
+  })
+  it('returns deck for 35', () => {
+    expect(classifyChartCondition(35)).toBe('deck')
+  })
+  it('returns lifeboat for 20', () => {
+    expect(classifyChartCondition(20)).toBe('lifeboat')
+  })
+  it('returns adrift for 5', () => {
+    expect(classifyChartCondition(5)).toBe('adrift')
+  })
+})
+
+// ─── classifyChartType ─────────────────────────────────────────────
+
+describe('classifyChartType', () => {
+  it('returns blank-page for empty bearings', () => {
+    expect(classifyChartType([])).toBe('blank-page')
+  })
+
+  it('returns admiralty-chart for all master-navigator high scores', () => {
+    const bearing = analyzeCompassBearing(RICH, 'a.ts')
+    expect(classifyChartType([bearing])).toBe('admiralty-chart')
+  })
+
+  it('returns scratched-rock for medium-low quality scores', () => {
+    const bearing = analyzeCompassBearing('export function foo(): void {}', 'mid.ts')
+    expect(classifyChartType([bearing])).toBe('scratched-rock')
+  })
+
+  it('returns blank-page for shipwreck zero scores', () => {
+    const bearing = analyzeCompassBearing(EMPTY, 'empty.ts')
+    expect(classifyChartType([bearing])).toBe('blank-page')
+  })
+})
+
+// ─── analyzeCompassBearing ─────────────────────────────────────────
+
+describe('analyzeCompassBearing', () => {
+  it('returns qualityScore=0 and shipwreck for empty content', () => {
+    const b = analyzeCompassBearing(EMPTY, 'empty.ts')
+    expect(b.qualityScore).toBe(0)
+    expect(b.condition).toBe('shipwreck')
+    expect(b.file).toBe('empty.ts')
+  })
+
+  it('returns qualityScore=100 and master-navigator for rich content', () => {
+    const b = analyzeCompassBearing(RICH, 'rich.ts')
+    expect(b.qualityScore).toBe(100)
+    expect(b.condition).toBe('master-navigator')
+  })
+
+  it('returns qualityScore=8 and shipwreck for minimal content', () => {
+    const b = analyzeCompassBearing(MINIMAL, 'min.ts')
+    expect(b.qualityScore).toBe(8)
+    expect(b.condition).toBe('shipwreck')
+  })
+
+  it('returns qualityScore=9 and shipwreck for bad content', () => {
+    const b = analyzeCompassBearing(BAD, 'bad.ts')
+    expect(b.qualityScore).toBe(9)
+    expect(b.condition).toBe('shipwreck')
+  })
+
+  it('sets all five directional score fields', () => {
+    const b = analyzeCompassBearing(RICH, 'a.ts')
+    expect(b.directionalClarity).toBe(100)
+    expect(b.bearingAccuracy).toBe(100)
+    expect(b.navigationQuality).toBe(100)
+    expect(b.orientationStability).toBe(100)
+    expect(b.chartingPrecision).toBe(100)
+  })
+
+  it('contains all five measure sub-objects', () => {
+    const b = analyzeCompassBearing(RICH, 'a.ts')
+    expect(b.directing.grade).toBe('true-north')
+    expect(b.bearing.compass).toBe('gyroscopic')
+    expect(b.navigating.nav).toBe('gps-grade')
+    expect(b.orienting.orientation).toBe('rock-steady')
+    expect(b.charting.chart).toBe('detailed-chart')
+  })
+
+  it('rich content scores higher than empty content', () => {
+    const rich = analyzeCompassBearing(RICH, 'r.ts')
+    const empty = analyzeCompassBearing(EMPTY, 'e.ts')
+    expect(rich.qualityScore).toBeGreaterThan(empty.qualityScore)
+  })
+})
+
+// ─── analyzeNavigationChart ────────────────────────────────────────
+
+describe('analyzeNavigationChart', () => {
+  it('returns blank-page and adrift for empty bearings', () => {
+    const c = analyzeNavigationChart([], 'src')
+    expect(c.directory).toBe('src')
+    expect(c.bearings).toHaveLength(0)
+    expect(c.chartType).toBe('blank-page')
+    expect(c.condition).toBe('adrift')
+    expect(c.avgClarity).toBe(0)
+    expect(c.avgAccuracy).toBe(0)
+    expect(c.avgStability).toBe(0)
+  })
+
+  it('returns admiralty-chart and chart-room for rich bearings', () => {
+    const bearing = analyzeCompassBearing(RICH, 'a.ts')
+    const c = analyzeNavigationChart([bearing], 'src')
+    expect(c.chartType).toBe('admiralty-chart')
+    expect(c.condition).toBe('chart-room')
+    expect(c.masterNavigatorCount).toBe(1)
+    expect(c.shipwreckCount).toBe(0)
+  })
+
+  it('computes correct averages from mixed bearings', () => {
+    const rich = analyzeCompassBearing(RICH, 'a.ts')
+    const empty = analyzeCompassBearing(EMPTY, 'b.ts')
+    const c = analyzeNavigationChart([rich, empty], 'src')
+    expect(c.avgClarity).toBe(50)
+    expect(c.avgAccuracy).toBe(50)
+    expect(c.avgStability).toBe(50)
+    expect(c.masterNavigatorCount).toBe(1)
+    expect(c.shipwreckCount).toBe(1)
+  })
+
+  it('preserves bearings array', () => {
+    const b1 = analyzeCompassBearing(RICH, 'a.ts')
+    const b2 = analyzeCompassBearing(MINIMAL, 'b.ts')
+    const c = analyzeNavigationChart([b1, b2], 'lib')
+    expect(c.bearings).toHaveLength(2)
+    expect(c.directory).toBe('lib')
+  })
+})
+
+// ─── buildCompassRoseResult ────────────────────────────────────────
+
+describe('buildCompassRoseResult', () => {
+  it('returns correct structure for single rich file', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [RICH])
+    expect(result.bearings).toHaveLength(1)
+    expect(result.charts).toHaveLength(1)
     expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.navigatorGrade).toBeDefined()
+    expect(result.stats.captainGrade).toBe('fleet-admiral')
+    expect(result.fleet.isNavigable).toBe(true)
+    expect(result.fleet.overallNavigation).toBe(100)
     expect(Array.isArray(result.recommendations)).toBe(true)
-    expect(result.hemisphere.overallOrientation).toBeGreaterThanOrEqual(0)
   })
 
-  it('handles empty files', () => {
-    const result = buildCompassRoseResult([], [], {})
-    expect(result.points).toHaveLength(0)
-    expect(result.stats.bestOriented).toBe('none')
-    expect(result.stats.mostDisoriented).toBe('none')
-    expect(result.stats.strongestMagnetism).toBe('none')
-    expect(result.stats.mostCalibrated).toBe('none')
+  it('handles empty files array', async () => {
+    const result = await buildCompassRoseResult([], [])
+    expect(result.bearings).toHaveLength(0)
+    expect(result.charts).toHaveLength(0)
+    expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.totalCharts).toBe(0)
+    expect(result.stats.bestBearing).toBe('')
+    expect(result.stats.clearest).toBe('')
+    expect(result.stats.mostAccurate).toBe('')
+    expect(result.fleet.isNavigable).toBe(false)
+    expect(result.fleet.overallNavigation).toBe(0)
   })
 
-  it('groups points into regions by directory', () => {
-    const result = buildCompassRoseResult(
+  it('groups bearings into charts by directory', async () => {
+    const result = await buildCompassRoseResult(
       ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [typedCode, strongCode, simpleCode],
-      {},
+      [RICH, MINIMAL, BAD],
     )
-    expect(result.regions).toHaveLength(2)
+    expect(result.charts).toHaveLength(2)
   })
 
-  it('identifies best and most disoriented', () => {
-    const result = buildCompassRoseResult(
+  it('identifies best bearing and clearest file', async () => {
+    const result = await buildCompassRoseResult(
       ['good.ts', 'bad.ts'],
-      [strongCode, emptyCode],
-      {},
+      [RICH, EMPTY],
     )
-    expect(result.stats.bestOriented).toBe('good.ts')
-    expect(result.stats.mostDisoriented).toBe('bad.ts')
+    expect(result.stats.bestBearing).toBe('good.ts')
+    expect(result.stats.clearest).toBe('good.ts')
+    expect(result.stats.mostAccurate).toBe('good.ts')
+    expect(result.stats.mostNavigable).toBe('good.ts')
+    expect(result.stats.mostStable).toBe('good.ts')
   })
 
-  it('handles missing contents gracefully', () => {
-    const result = buildCompassRoseResult(['a.ts'], [], {})
-    expect(result.points).toHaveLength(1)
+  it('handles missing contents gracefully', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [])
+    expect(result.bearings).toHaveLength(1)
+    expect(result.bearings[0].qualityScore).toBe(0)
   })
 
-  it('computes all stat fields', () => {
-    const result = buildCompassRoseResult(
+  it('computes all stat fields for mixed content', async () => {
+    const result = await buildCompassRoseResult(
       ['a.ts', 'b.ts'],
-      [strongCode, todoCode],
-      {},
+      [RICH, BAD],
     )
-    expect(result.stats.avgHeading).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgMagneticNorth).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgDeclination).toBeGreaterThanOrEqual(0)
-    expect(result.stats.avgStability).toBeGreaterThanOrEqual(0)
-    expect(result.stats.trueNorthCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.wellOrientedCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.disorientedCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.lostCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.spinningCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.northDominant).toBeGreaterThanOrEqual(0)
-    expect(result.stats.southDominant).toBeGreaterThanOrEqual(0)
-    expect(result.stats.eastDominant).toBeGreaterThanOrEqual(0)
-    expect(result.stats.westDominant).toBeGreaterThanOrEqual(0)
-    expect(result.stats.attractiveCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.repulsiveCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.calibratedCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.needsRecalibrationCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.navigableCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.totalFiles).toBe(2)
+    expect(result.stats.avgDirectionalClarity).toBeGreaterThanOrEqual(0)
+    expect(result.stats.avgBearingAccuracy).toBeGreaterThanOrEqual(0)
+    expect(result.stats.avgNavigationQuality).toBeGreaterThanOrEqual(0)
+    expect(result.stats.avgOrientationStability).toBeGreaterThanOrEqual(0)
+    expect(result.stats.avgChartingPrecision).toBeGreaterThanOrEqual(0)
+    expect(result.stats.masterNavigatorCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.skilledPilotCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.properHelmsmanCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.lostSailorCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.driftingRaftCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.shipwreckCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasHighClarityCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasHighAccuracyCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasHighQualityCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasHighStabilityCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.hasHighPrecisionCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.overallNavigation).toBeGreaterThanOrEqual(0)
+    expect(typeof result.stats.captainGrade).toBe('string')
   })
 
-  it('computes hemisphere fields', () => {
-    const result = buildCompassRoseResult(['a.ts'], [strongCode], {})
-    expect(result.hemisphere.avgMagneticNorth).toBeGreaterThanOrEqual(0)
-    expect(result.hemisphere.avgDeclination).toBeGreaterThanOrEqual(0)
-    expect(result.hemisphere.avgStability).toBeGreaterThanOrEqual(0)
-    expect(typeof result.hemisphere.isAligned).toBe('boolean')
-  })
-})
-
-// ─── Recommendations Tests ────────────────────────────────────────────────────
-
-describe('compass-rose recommendations', () => {
-  it('returns array', () => {
-    const result = buildCompassRoseResult(['a.ts'], [strongCode], {})
-    expect(Array.isArray(result.recommendations)).toBe(true)
+  it('computes fleet summary correctly', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [RICH])
+    expect(result.fleet.avgClarity).toBe(100)
+    expect(result.fleet.avgAccuracy).toBe(100)
+    expect(result.fleet.avgStability).toBe(100)
+    expect(result.fleet.isNavigable).toBe(true)
+    expect(result.fleet.overallNavigation).toBe(100)
   })
 
-  it('warns about spinning modules', () => {
-    const result = buildCompassRoseResult(['a.ts'], [emptyCode], {})
-    if (result.stats.spinningCount > 0) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('Spinning modules')]),
-      )
-    }
-  })
-
-  it('includes good orientation message', () => {
-    const result = buildCompassRoseResult(['a.ts'], [strongCode], {})
-    if (result.stats.overallOrientation >= 60) {
-      expect(result.recommendations).toEqual(
-        expect.arrayContaining([expect.stringContaining('Good orientation')]),
-      )
-    }
+  it('handles single file with no directory path', async () => {
+    const result = await buildCompassRoseResult(['single.ts'], [MINIMAL])
+    expect(result.charts).toHaveLength(1)
+    expect(result.charts[0].directory).toBe('.')
   })
 })
 
-// ─── Format Tests ─────────────────────────────────────────────────────────────
+// ─── generateRecommendations ───────────────────────────────────────
+
+describe('generateRecommendations', () => {
+  it('gives positive recommendation for all high scores', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [RICH])
+    expect(result.recommendations).toEqual(
+      expect.arrayContaining([expect.stringContaining('true north')]),
+    )
+  })
+
+  it('warns about shipwreck files', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [EMPTY])
+    expect(result.recommendations).toEqual(
+      expect.arrayContaining([expect.stringContaining('shipwreck')]),
+    )
+  })
+
+  it('provides improvement suggestions for low scores', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [BAD])
+    expect(result.recommendations.length).toBeGreaterThan(0)
+  })
+
+  it('warns about poor fleet navigation', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [EMPTY])
+    expect(result.recommendations).toEqual(
+      expect.arrayContaining([expect.stringContaining('poor')]),
+    )
+  })
+})
+
+// ─── Format Helpers ────────────────────────────────────────────────
 
 describe('compass-rose formatters', () => {
-  const sampleResult = buildCompassRoseResult(
-    ['a.ts', 'b.ts'],
-    [strongCode, typedCode],
-    {},
-  )
+  it('colorScore returns a string', () => {
+    expect(typeof colorScore(50)).toBe('string')
+    expect(typeof colorScore(0)).toBe('string')
+    expect(typeof colorScore(100)).toBe('string')
+  })
 
-  it('formatCompassRoseTable returns string with header', () => {
-    const table = formatCompassRoseTable(sampleResult, false)
-    expect(table).toContain('Compass Rose')
-    expect(table).toContain('Compass Points')
-    expect(table).toContain('Statistics')
+  it('colorGrade returns a string for known grades', () => {
+    expect(typeof colorGrade('master-navigator')).toBe('string')
+    expect(typeof colorGrade('shipwreck')).toBe('string')
+    expect(typeof colorGrade('unknown-grade')).toBe('string')
+  })
+
+  it('formatBearingTable returns string with file info', () => {
+    const b = analyzeCompassBearing(RICH, 'test.ts')
+    const table = formatBearingTable(b)
+    expect(table).toContain('test.ts')
     expect(typeof table).toBe('string')
   })
 
-  it('formatCompassRoseTable verbose shows detail', () => {
-    const table = formatCompassRoseTable(sampleResult, true)
-    expect(table).toContain('cardinal:')
-    expect(table).toContain('bearing:')
+  it('formatBearingsTable handles empty array', () => {
+    expect(formatBearingsTable([])).toContain('No compass bearings')
   })
 
-  it('formatCompassRoseTable handles empty', () => {
-    const empty = buildCompassRoseResult([], [], {})
-    const table = formatCompassRoseTable(empty, false)
-    expect(table).toContain('No files analyzed')
+  it('formatBearingsTable shows header for non-empty', () => {
+    const b = analyzeCompassBearing(RICH, 'a.ts')
+    const table = formatBearingsTable([b])
+    expect(table).toContain('Compass Rose')
   })
 
-  it('formatCompassRoseTable truncates points at 15', () => {
-    const files = Array.from({ length: 20 }, (_, i) => `${i}.ts`)
-    const contents = Array.from({ length: 20 }, () => typedCode)
-    const big = buildCompassRoseResult(files, contents, {})
-    const table = formatCompassRoseTable(big, false)
-    expect(table).toContain('more')
+  it('formatChartTable returns string', () => {
+    const b = analyzeCompassBearing(RICH, 'a.ts')
+    const c = analyzeNavigationChart([b], 'src')
+    const table = formatChartTable(c)
+    expect(table).toContain('src')
+    expect(typeof table).toBe('string')
   })
 
-  it('formatCompassRoseJson returns valid JSON', () => {
-    const json = formatCompassRoseJson(sampleResult)
+  it('formatChartsTable handles empty array', () => {
+    expect(formatChartsTable([])).toContain('No navigation charts')
+  })
+
+  it('formatStatsTable returns string with statistics', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [RICH])
+    const table = formatStatsTable(result.stats)
+    expect(table).toContain('Fleet Statistics')
+    expect(table).toContain('Total Files')
+    expect(typeof table).toBe('string')
+  })
+
+  it('formatRecommendations handles empty array', () => {
+    expect(formatRecommendations([])).toContain('No recommendations')
+  })
+
+  it('formatRecommendations shows items', () => {
+    const table = formatRecommendations(['item one', 'item two'])
+    expect(table).toContain('item one')
+    expect(table).toContain('item two')
+  })
+
+  it('formatResultTable returns string', async () => {
+    const result = await buildCompassRoseResult(['a.ts'], [RICH])
+    const table = formatResultTable(result)
+    expect(typeof table).toBe('string')
+    expect(table.length).toBeGreaterThan(0)
+  })
+
+  it('formatResultJson returns valid JSON', async () => {
+    const result = await buildCompassRoseResult(['a.ts', 'b.ts'], [RICH, MINIMAL])
+    const json = formatResultJson(result)
     const parsed = JSON.parse(json)
-    expect(parsed.points).toHaveLength(2)
+    expect(parsed.bearings).toHaveLength(2)
     expect(parsed.stats).toBeDefined()
-    expect(parsed.hemisphere).toBeDefined()
-  })
-})
-
-// ─── Edge Case Tests ──────────────────────────────────────────────────────────
-
-describe('compass-rose edge cases', () => {
-  it('handles single file with no directory', () => {
-    const result = buildCompassRoseResult(['single.ts'], [typedCode], {})
-    expect(result.regions).toHaveLength(1)
-    expect(result.regions[0].directory).toBe('.')
-  })
-
-  it('handles many files in same directory', () => {
-    const files = ['src/a.ts', 'src/b.ts', 'src/c.ts']
-    const contents = [typedCode, strongCode, simpleCode]
-    const result = buildCompassRoseResult(files, contents, {})
-    expect(result.regions).toHaveLength(1)
-    expect(result.regions[0].points).toHaveLength(3)
-  })
-
-  it('empty code has zero magnetism', () => {
-    const p = analyzeCompassPoint(emptyCode, 'empty.ts')
-    expect(p.magnetism.strength).toBe(0)
-    expect(p.magnetism.polarity).toBe('neutral')
-    expect(p.magnetism.field.isWeak).toBe(true)
-  })
-
-  it('heading wraps around 360', () => {
-    const p = analyzeCompassPoint(strongCode, 'a.ts')
-    expect(p.heading).toBeGreaterThanOrEqual(0)
-    expect(p.heading).toBeLessThan(360)
+    expect(parsed.fleet).toBeDefined()
+    expect(parsed.charts).toBeDefined()
+    expect(parsed.recommendations).toBeDefined()
   })
 })
