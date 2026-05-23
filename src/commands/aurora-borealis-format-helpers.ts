@@ -1,222 +1,214 @@
+// ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
+import type { AuroraCurtain, AuroraBelt, AuroraBorealisResult } from './aurora-borealis-helpers.js'
 
-import type { AuroraBorealisResult } from './aurora-borealis-helpers.js'
+// ─── Color Palette (aurora green/cyan) ──────────────────────────────
+const high = chalk.rgb(100, 255, 180)
+const midHigh = chalk.rgb(80, 230, 160)
+const mid = chalk.rgb(60, 200, 140)
+const lowMid = chalk.rgb(40, 170, 120)
+const low = chalk.rgb(20, 140, 100)
 
-// ─── Color Helpers ─────────────────────────────────────────────────────────
+const best = chalk.rgb(130, 255, 200).bold
+const good = chalk.rgb(110, 240, 185)
+const okay = chalk.rgb(90, 215, 165)
+const poor = chalk.rgb(70, 185, 145)
+const worst = chalk.rgb(50, 155, 125)
 
-/** @example scoreColor(90) returns green string */
-export function scoreColor(score: number): string {
-  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
-  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
-  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
-  return chalk.rgb(231, 76, 60)(String(score))
+const heading = chalk.rgb(120, 250, 195).bold
+const label = chalk.rgb(100, 225, 170)
+const dim = chalk.rgb(150, 165, 175)
+
+// ─── Score Coloring ────────────────────────────────────────────────
+
+/**
+ * Color a numeric score by tier
+ * @example
+ * colorScore(90) // aurora green
+ */
+export function colorScore(score: number): string {
+  if (score >= 80) return high(String(score))
+  if (score >= 60) return midHigh(String(score))
+  if (score >= 40) return mid(String(score))
+  if (score >= 20) return lowMid(String(score))
+  return low(String(score))
 }
 
-/** @example conditionColor('magnificent-display') returns colored string */
-export function conditionColor(condition: string): string {
-  switch (condition) {
-    case 'magnificent-display': return chalk.rgb(255, 215, 0).bold(condition)
-    case 'brilliant-aurora': return chalk.rgb(46, 204, 113)(condition)
-    case 'visible-shimmer': return chalk.rgb(52, 152, 219)(condition)
-    case 'faint-glow': return chalk.rgb(241, 196, 15)(condition)
-    case 'subvisual': return chalk.rgb(230, 126, 34)(condition)
-    case 'darkness': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
+/**
+ * Color a grade/tier string by quality
+ * @example
+ * colorGrade('northern-lights') // best (bold green)
+ */
+export function colorGrade(grade: string): string {
+  const g = grade.toLowerCase()
+  const tierMap: Record<string, string> = {
+    'brilliant-aurora': best, 'full-spectrum': best, 'true-north': best, 'graceful-waltz': best, 'symphony': best,
+    'northern-lights': best, 'polar-belt': best, 'spectacular-display': best, 'chief-astronomer': best,
+
+    'bright-curtain': good, 'rich-palette': good, 'strong-field': good, 'flowing-ballet': good, 'harmonic-convergence': good,
+    'bright-aurora': good, 'auroral-zone': good, 'beautiful-show': good, 'aurora-hunter': good,
+
+    'proper-glow': okay, 'proper-colors': okay, 'proper-alignment': okay, 'proper-rhythm': okay, 'proper-harmony': okay,
+    'proper-curtain': okay, 'sub-auroral': okay, 'decent-display': okay, 'northern-lighter': okay,
+
+    'dim-light': poor, 'limited-palette': poor, 'weak-field': poor, 'stiff-march': poor, 'slight-dissonance': poor,
+    'faint-glow': poor, 'mid-latitude': poor, 'faint-glow-belt': poor, 'sky-watcher': poor,
+
+    'faint-shimmer': worst, 'monochrome': worst, 'misaligned': worst, 'awkward-stumble': worst, 'cacophony': worst,
+    'twilight': worst, 'tropical': worst, 'barely-visible': worst, 'stargazer': worst,
+
+    'dark-sky': worst, 'colorless': worst, 'no-field': worst, 'static': worst, 'chaos': worst,
+    'dark-night': worst, 'equatorial': worst, 'invisible': worst, 'cave-dweller': worst,
   }
+  return (tierMap[g] ?? low)(grade)
 }
 
-/** @example gradeColor('aurora-master') returns bold string */
-export function gradeColor(grade: string): string {
-  switch (grade) {
-    case 'aurora-master': return chalk.rgb(255, 215, 0).bold(grade)
-    case 'polar-observer': return chalk.rgb(46, 204, 113)(grade)
-    case 'aurora-hunter': return chalk.rgb(155, 89, 182)(grade)
-    case 'sky-watcher': return chalk.rgb(52, 152, 219)(grade)
-    case 'novice': return chalk.rgb(241, 196, 15)(grade)
-    case 'indoor': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
-  }
+// ─── Curtain Formatting ────────────────────────────────────────────
+
+/**
+ * Format a single curtain for display
+ * @example
+ * formatCurtainTable(curtain) // colored curtain info
+ */
+export function formatCurtainTable(curtain: AuroraCurtain): string {
+  const parts = [
+    `${label('File:')} ${dim(curtain.file)}`,
+    `${label('Luminosity:')} ${colorScore(curtain.luminosity)} ${colorGrade(curtain.shining.grade)}`,
+    `${label('Spectral Richness:')} ${colorScore(curtain.spectralRichness)} ${colorGrade(curtain.enriching.spectrum)}`,
+    `${label('Magnetic Alignment:')} ${colorScore(curtain.magneticAlignment)} ${colorGrade(curtain.aligning.field)}`,
+    `${label('Dance Quality:')} ${colorScore(curtain.danceQuality)} ${colorGrade(curtain.dancing.dance)}`,
+    `${label('Cosmic Harmony:')} ${colorScore(curtain.cosmicHarmony)} ${colorGrade(curtain.harmonizing.cosmic)}`,
+    `${label('Score:')} ${colorScore(curtain.qualityScore)} ${colorGrade(curtain.condition)}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example intensityColor('solar-flare') returns colored string */
-export function intensityColor(intensity: string): string {
-  switch (intensity) {
-    case 'solar-flare': return chalk.rgb(255, 215, 0).bold(intensity)
-    case 'geomagnetic-storm': return chalk.rgb(46, 204, 113)(intensity)
-    case 'aurora-maximum': return chalk.rgb(155, 89, 182)(intensity)
-    case 'substorm': return chalk.rgb(52, 152, 219)(intensity)
-    case 'quiet': return chalk.rgb(241, 196, 15)(intensity)
-    case 'dormant': return chalk.rgb(231, 76, 60)(intensity)
-    default: return intensity
-  }
+/**
+ * Format curtains as summary table
+ * @example
+ * formatCurtainsTable(curtains) // multi-line table
+ */
+export function formatCurtainsTable(curtains: AuroraCurtain[]): string {
+  if (curtains.length === 0) return dim('No aurora curtains found')
+  const header = heading('Aurora Borealis Curtain Analysis')
+  const rows = curtains.map(c => formatCurtainTable(c))
+  return `${header}\n${rows.join('\n\n')}`
 }
 
-/** @example fieldColor('perfect-dipole') returns colored string */
-export function fieldColor(field: string): string {
-  switch (field) {
-    case 'perfect-dipole': return chalk.rgb(255, 215, 0).bold(field)
-    case 'strong-alignment': return chalk.rgb(46, 204, 113)(field)
-    case 'magnetic-field': return chalk.rgb(155, 89, 182)(field)
-    case 'weak-field': return chalk.rgb(52, 152, 219)(field)
-    case 'distorted': return chalk.rgb(241, 196, 15)(field)
-    case 'collapsed': return chalk.rgb(231, 76, 60)(field)
-    default: return field
-  }
+// ─── Belt Formatting ──────────────────────────────────────────────
+
+/**
+ * Format a belt for display
+ * @example
+ * formatBeltTable(belt) // colored belt info
+ */
+export function formatBeltTable(belt: AuroraBelt): string {
+  const parts = [
+    `${label('Belt:')} ${dim(belt.directory)}`,
+    `${label('Type:')} ${colorGrade(belt.beltType)}`,
+    `${label('Condition:')} ${colorGrade(belt.condition)}`,
+    `${label('Curtains:')} ${String(belt.curtains.length)}`,
+    `${label('Avg Luminosity:')} ${colorScore(belt.avgLuminosity)}`,
+    `${label('Avg Alignment:')} ${colorScore(belt.avgAlignment)}`,
+    `${label('Avg Harmony:')} ${colorScore(belt.avgHarmony)}`,
+    `${label('Northern Lights:')} ${String(belt.northernLightsCount)}`,
+    `${label('Dark Night:')} ${String(belt.darkNightCount)}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example paletteColor('full-spectrum') returns colored string */
-export function paletteColor(palette: string): string {
-  switch (palette) {
-    case 'full-spectrum': return chalk.rgb(255, 215, 0).bold(palette)
-    case 'green-curtain': return chalk.rgb(46, 204, 113)(palette)
-    case 'violet-waves': return chalk.rgb(155, 89, 182)(palette)
-    case 'faint-glow': return chalk.rgb(52, 152, 219)(palette)
-    case 'monochrome': return chalk.rgb(241, 196, 15)(palette)
-    case 'invisible': return chalk.rgb(231, 76, 60)(palette)
-    default: return palette
-  }
+/**
+ * Format all belts as summary
+ * @example
+ * formatBeltsTable(belts) // multi-line belt summary
+ */
+export function formatBeltsTable(belts: AuroraBelt[]): string {
+  if (belts.length === 0) return dim('No aurora belts found')
+  const header = heading('Aurora Belt Analysis')
+  const rows = belts.map(b => formatBeltTable(b))
+  return `${header}\n${rows.join('\n\n')}`
 }
 
-/** @example processColor('fusion-reactor') returns colored string */
-export function processColor(process: string): string {
-  switch (process) {
-    case 'fusion-reactor': return chalk.rgb(255, 215, 0).bold(process)
-    case 'high-ionization': return chalk.rgb(46, 204, 113)(process)
-    case 'partial-ionization': return chalk.rgb(155, 89, 182)(process)
-    case 'excited-state': return chalk.rgb(52, 152, 219)(process)
-    case 'ground-state': return chalk.rgb(241, 196, 15)(process)
-    case 'frozen': return chalk.rgb(231, 76, 60)(process)
-    default: return process
-  }
+// ─── Stats Formatting ──────────────────────────────────────────────
+
+/**
+ * Format statistics summary
+ * @example
+ * formatStatsTable(stats) // colored stats
+ */
+export function formatStatsTable(stats: AuroraBorealisResult['stats']): string {
+  const parts = [
+    heading('Aurora Borealis Statistics'),
+    `${label('Total Files:')} ${String(stats.totalFiles)}`,
+    `${label('Total Belts:')} ${String(stats.totalBelts)}`,
+    `${label('Avg Luminosity:')} ${colorScore(stats.avgLuminosity)}`,
+    `${label('Avg Spectral Richness:')} ${colorScore(stats.avgSpectralRichness)}`,
+    `${label('Avg Magnetic Alignment:')} ${colorScore(stats.avgMagneticAlignment)}`,
+    `${label('Avg Dance Quality:')} ${colorScore(stats.avgDanceQuality)}`,
+    `${label('Avg Cosmic Harmony:')} ${colorScore(stats.avgCosmicHarmony)}`,
+    `${label('Northern Lights:')} ${String(stats.northernLightsCount)}`,
+    `${label('Bright Aurora:')} ${String(stats.brightAuroraCount)}`,
+    `${label('Proper Curtain:')} ${String(stats.properCurtainCount)}`,
+    `${label('Faint Glow:')} ${String(stats.faintGlowCount)}`,
+    `${label('Twilight:')} ${String(stats.twilightCount)}`,
+    `${label('Dark Night:')} ${String(stats.darkNightCount)}`,
+    `${label('High Luminosity:')} ${String(stats.hasHighLuminosityCount)}`,
+    `${label('High Richness:')} ${String(stats.hasHighRichnessCount)}`,
+    `${label('High Alignment:')} ${String(stats.hasHighAlignmentCount)}`,
+    `${label('High Quality:')} ${String(stats.hasHighQualityCount)}`,
+    `${label('High Harmony:')} ${String(stats.hasHighHarmonyCount)}`,
+    `${label('Overall Radiance:')} ${colorScore(stats.overallRadiance)}`,
+    `${label('Astronomer Grade:')} ${colorGrade(stats.astronomerGrade)}`,
+    `${label('Best Curtain:')} ${stats.bestCurtain}`,
+    `${label('Brightest:')} ${stats.brightest}`,
+    `${label('Most Colorful:')} ${stats.mostColorful}`,
+    `${label('Most Aligned:')} ${stats.mostAligned}`,
+    `${label('Most Graceful:')} ${stats.mostGraceful}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example atmosphericConditionColor('crystal-clear') returns colored string */
-export function atmosphericConditionColor(condition: string): string {
-  switch (condition) {
-    case 'crystal-clear': return chalk.rgb(255, 215, 0).bold(condition)
-    case 'arctic-clear': return chalk.rgb(46, 204, 113)(condition)
-    case 'high-altitude': return chalk.rgb(155, 89, 182)(condition)
-    case 'partly-cloudy': return chalk.rgb(52, 152, 219)(condition)
-    case 'overcast': return chalk.rgb(241, 196, 15)(condition)
-    case 'opaque': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
-  }
+// ─── Recommendation Formatting ─────────────────────────────────────
+
+/**
+ * Format recommendations as list
+ * @example
+ * formatRecommendations(recs) // bullet list
+ */
+export function formatRecommendations(recommendations: string[]): string {
+  if (recommendations.length === 0) return dim('No recommendations')
+  const header = heading('Recommendations')
+  const items = recommendations.map(r => `${dim('\u2022')} ${r}`)
+  return `${header}\n${items.join('\n')}`
 }
 
-/** @example powerColor('mega-flare') returns colored string */
-export function powerColor(power: string): string {
-  switch (power) {
-    case 'mega-flare': return chalk.rgb(255, 215, 0).bold(power)
-    case 'strong-force': return chalk.rgb(46, 204, 113)(power)
-    case 'moderate-field': return chalk.rgb(155, 89, 182)(power)
-    case 'weak-field': return chalk.rgb(52, 152, 219)(power)
-    case 'residual': return chalk.rgb(241, 196, 15)(power)
-    case 'void': return chalk.rgb(231, 76, 60)(power)
-    default: return power
-  }
+// ─── Full Result Formatting ────────────────────────────────────────
+
+/**
+ * Format complete result as table
+ * @example
+ * formatResultTable(result) // full colored output
+ */
+export function formatResultTable(result: AuroraBorealisResult): string {
+  const sections = [
+    formatCurtainsTable(result.curtains),
+    '',
+    formatBeltsTable(result.belts),
+    '',
+    formatStatsTable(result.stats),
+    '',
+    `${heading('Sky')} ${label('Luminous:')} ${result.sky.isLuminous ? high('Yes') : low('No')} ${label('Overall Radiance:')} ${colorScore(result.sky.overallRadiance)}`,
+    '',
+    formatRecommendations(result.recommendations),
+  ]
+  return sections.join('\n')
 }
 
-/** @example regionTypeColor('aurora-oval') returns colored string */
-export function regionTypeColor(type: string): string {
-  switch (type) {
-    case 'aurora-oval': return chalk.rgb(255, 215, 0).bold(type)
-    case 'polar-cap': return chalk.rgb(46, 204, 113)(type)
-    case 'sub-auroral': return chalk.rgb(155, 89, 182)(type)
-    case 'mid-latitude': return chalk.rgb(52, 152, 219)(type)
-    case 'equatorial': return chalk.rgb(241, 196, 15)(type)
-    case 'void': return chalk.rgb(231, 76, 60)(type)
-    default: return type
-  }
-}
-
-/** @example regionConditionColor('spectacular-display') returns colored string */
-export function regionConditionColor(condition: string): string {
-  switch (condition) {
-    case 'spectacular-display': return chalk.rgb(255, 215, 0).bold(condition)
-    case 'active-aurora': return chalk.rgb(46, 204, 113)(condition)
-    case 'quiet-aurora': return chalk.rgb(155, 89, 182)(condition)
-    case 'faint-glimmer': return chalk.rgb(52, 152, 219)(condition)
-    case 'dark-sky': return chalk.rgb(241, 196, 15)(condition)
-    case 'void': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
-  }
-}
-
-// ─── JSON Formatter ────────────────────────────────────────────────────────
-
-/** @example formatAuroraBorealisJson(result) returns JSON string */
-export function formatAuroraBorealisJson(result: AuroraBorealisResult): string {
+/**
+ * Format complete result as JSON
+ * @example
+ * formatResultJson(result) // JSON string
+ */
+export function formatResultJson(result: AuroraBorealisResult): string {
   return JSON.stringify(result, null, 2)
-}
-
-// ─── Table Formatter ───────────────────────────────────────────────────────
-
-/** @example formatAuroraBorealisTable(result, verbose) returns formatted string */
-export function formatAuroraBorealisTable(result: AuroraBorealisResult, verbose: boolean): string {
-  const lines: string[] = []
-
-  lines.push('')
-  lines.push(chalk.rgb(100, 200, 255).bold('  Aurora Borealis Analysis'))
-  lines.push('')
-
-  lines.push(chalk.rgb(100, 200, 255)('  Magnetosphere Overview:'))
-  lines.push(`    Overall Brilliance:  ${scoreColor(result.magnetosphere.overallBrilliance)}`)
-  lines.push(`    Avg Energy:          ${scoreColor(result.magnetosphere.avgEnergy)}`)
-  lines.push(`    Avg Alignment:       ${scoreColor(result.magnetosphere.avgAlignment)}`)
-  lines.push(`    Avg Electromagnetic: ${scoreColor(result.magnetosphere.avgElectromagnetic)}`)
-  lines.push(`    Is Brilliant:        ${result.magnetosphere.isBrilliant ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
-  lines.push('')
-
-  lines.push(chalk.rgb(100, 200, 255)('  Statistics:'))
-  lines.push(`    Total Files:               ${result.stats.totalFiles}`)
-  lines.push(`    Total Regions:             ${result.stats.totalRegions}`)
-  lines.push(`    Avg Polar Energy:          ${scoreColor(result.stats.avgPolarEnergy)}`)
-  lines.push(`    Avg Magnetic Alignment:    ${scoreColor(result.stats.avgMagneticAlignment)}`)
-  lines.push(`    Avg Spectral Beauty:       ${scoreColor(result.stats.avgSpectralBeauty)}`)
-  lines.push(`    Avg Ionization Quality:    ${scoreColor(result.stats.avgIonizationQuality)}`)
-  lines.push(`    Avg Atmospheric Clarity:   ${scoreColor(result.stats.avgAtmosphericClarity)}`)
-  lines.push(`    Avg Electromagnetic Force: ${scoreColor(result.stats.avgElectromagneticForce)}`)
-  lines.push(`    Observer Grade:            ${gradeColor(result.stats.observerGrade)}`)
-  lines.push('')
-
-  lines.push(chalk.rgb(100, 200, 255)('  Condition Counts:'))
-  lines.push(`    Magnificent Display: ${result.stats.magnificentDisplayCount}`)
-  lines.push(`    Brilliant Aurora:    ${result.stats.brilliantAuroraCount}`)
-  lines.push(`    Visible Shimmer:     ${result.stats.visibleShimmerCount}`)
-  lines.push(`    Faint Glow:          ${result.stats.faintGlowCount}`)
-  lines.push(`    Subvisual:           ${result.stats.subvisualCount}`)
-  lines.push(`    Darkness:            ${result.stats.darknessCount}`)
-  lines.push('')
-
-  if (result.stats.bestFlare) {
-    lines.push(chalk.rgb(100, 200, 255)('  Highlights:'))
-    lines.push(`    Best Flare:           ${result.stats.bestFlare}`)
-    lines.push(`    Most Energetic:       ${result.stats.mostEnergetic}`)
-    lines.push(`    Most Aligned:         ${result.stats.mostAligned}`)
-    lines.push(`    Most Beautiful:       ${result.stats.mostBeautiful}`)
-    lines.push(`    Most Transformative:  ${result.stats.mostTransformative}`)
-    lines.push(`    Strongest Force:      ${result.stats.strongestForce}`)
-    lines.push('')
-  }
-
-  if (verbose && result.flares.length > 0) {
-    lines.push(chalk.rgb(100, 200, 255)('  Per-File Details:'))
-    for (const f of result.flares) {
-      lines.push(`    ${chalk.rgb(169, 169, 169)(f.file)}`)
-      lines.push(`      Score: ${scoreColor(f.qualityScore)}  Condition: ${conditionColor(f.condition)}`)
-      lines.push(`      Energy: ${intensityColor(f.energy.intensity)}(${f.polarEnergy})  Alignment: ${fieldColor(f.alignment.field)}(${f.magneticAlignment})  Spectral: ${paletteColor(f.spectral.palette)}(${f.spectralBeauty})`)
-      lines.push(`      Ion: ${processColor(f.ionization.process)}(${f.ionizationQuality})  Atmo: ${atmosphericConditionColor(f.atmospheric.condition)}(${f.atmosphericClarity})  EM: ${powerColor(f.electromagnetic.power)}(${f.electromagneticForce})`)
-    }
-    lines.push('')
-  }
-
-  if (result.recommendations.length > 0) {
-    lines.push(chalk.rgb(100, 200, 255)('  Recommendations:'))
-    for (const rec of result.recommendations) {
-      lines.push(`    ${chalk.rgb(100, 200, 255)('\u{2728}')} ${rec}`)
-    }
-    lines.push('')
-  }
-
-  return lines.join('\n')
 }

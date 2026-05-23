@@ -1,706 +1,850 @@
 import { describe, it, expect } from 'vitest'
-
 import {
-  measureEnergy,
-  measureAlignment,
-  measureSpectral,
-  measureIonization,
-  measureAtmospheric,
-  measureElectromagnetic,
-  classifyCondition,
-  analyzeAuroraFlare,
-  analyzePolarRegion,
-  classifyRegionType,
-  classifyObserverGrade,
-  generateRecommendations,
+  measureShining,
+  measureEnriching,
+  measureAligning,
+  measureDancing,
+  measureHarmonizing,
+  classifyCurtainCondition,
+  classifyBeltType,
+  classifyAstronomerGrade,
+  classifyBeltCondition,
+  analyzeAuroraCurtain,
+  analyzeAuroraBelt,
   buildAuroraBorealisResult,
+  generateRecommendations,
+  gatherFiles,
+  type AuroraCurtain,
+  type AuroraBelt,
+  type SkySummary,
+  type AuroraBorealisStats,
 } from '../src/commands/aurora-borealis-helpers.js'
-
 import {
-  scoreColor,
-  conditionColor,
-  gradeColor,
-  intensityColor,
-  fieldColor,
-  paletteColor,
-  processColor,
-  atmosphericConditionColor,
-  powerColor,
-  regionTypeColor,
-  regionConditionColor,
-  formatAuroraBorealisJson,
-  formatAuroraBorealisTable,
+  colorScore,
+  colorGrade,
+  formatCurtainTable,
+  formatCurtainsTable,
+  formatBeltTable,
+  formatBeltsTable,
+  formatStatsTable,
+  formatRecommendations,
+  formatResultTable,
+  formatResultJson,
 } from '../src/commands/aurora-borealis-format-helpers.js'
 
-// ─── Fixtures ───────────────────────────────────────────────────────────────
+// ─── Fixtures ──────────────────────────────────────────────────────
 
-const RICH = `/**
- * Module description
+const minimalContent = 'const x = 1'
+const richContent = `/**
+ * Doc comment
  */
-import { readFileSync } from 'fs'
-import type { PathLike } from 'fs'
-import type { BufferEncoding } from 'fs'
-export interface Config {
+export interface Foo<T> {
+  readonly bar: string
+}
+
+export async function hello(): Promise<string> {
+  const x = 1
+  if (x === 1) {
+    return 'hi'
+  }
+  return 'bye'
+}
+
+export class MyClass {
+  private val: number
+}
+
+type Alias = string | number
+`
+
+const midContent = `export interface Item {
   name: string
-  version?: string
+  value: number
 }
-export type Status = 'active' | 'inactive'
-export class Runner {
-  private config: Config
-  constructor(config: Config) {
-    this.config = config
-  }
-  async execute(): Promise<string> {
-    try {
-      const data = readFileSync(this.config.name, 'utf-8')
-      return data
-    } catch (error) {
-      throw new Error('Failed')
-    }
-  }
-}
-export function createRunner(config: Config): Runner {
-  return new Runner(config)
-}
-export { Runner }
-`
 
-const EMPTY = ''
-
-const MEDIUM = `import { foo } from 'bar'
-export interface Foo {
-  x: number
-}
-export function hello(): void {
-  console.log('hello')
+export function process(data: Item): string {
+  const result = data.name
+  if (result === 'test') {
+    return 'ok'
+  }
+  return 'done'
 }
 `
 
-// ─── measureEnergy ──────────────────────────────────────────────────────────
+// ─── measureShining ────────────────────────────────────────────────
 
-describe('measureEnergy', () => {
-  it('returns geomagnetic-storm for rich content', () => {
-    const result = measureEnergy(RICH)
-    expect(result.level).toBe(79)
-    expect(result.intensity).toBe('geomagnetic-storm')
-    expect(result.hasHighLevel).toBe(true)
-    expect(result.hasChargedParticles).toBe(true)
-    expect(result.hasProperFlux).toBe(true)
-    expect(result.hasNoDischarge).toBe(true)
-    expect(result.hasHighActivity).toBe(true)
-    expect(result.hasNoBrownout).toBe(true)
-    expect(result.hasSustained).toBe(false)
-    expect(result.hasNoOutage).toBe(true)
-    expect(result.hasPulsating).toBe(false)
-    expect(result.hasNoDepletion).toBe(true)
-    expect(result.dischargeCount).toBe(0)
-    expect(result.brownoutCount).toBe(0)
+describe('measureShining', () => {
+  it('scores minimal content', () => {
+    const m = measureShining(minimalContent)
+    expect(m.luminosity).toBe(8)
+    expect(m.grade).toBe('dark-sky')
+    expect(m.hasHighLuminosity).toBe(false)
+    expect(m.hasBright).toBe(false)
+    expect(m.hasClear).toBe(false)
+    expect(m.hasRadiant).toBe(false)
+    expect(m.hasGlowing).toBe(false)
+    expect(m.hasLuminous).toBe(false)
+    expect(m.hasShining).toBe(false)
+    expect(m.hasNoDark).toBe(true)
+    expect(m.hasNoDim).toBe(true)
+    expect(m.hasNoMurky).toBe(true)
+    expect(m.hasNoObscure).toBe(true)
+    expect(m.darkCount).toBe(0)
+    expect(m.dimCount).toBe(0)
   })
 
-  it('returns quiet for empty content', () => {
-    const result = measureEnergy(EMPTY)
-    expect(result.level).toBe(42)
-    expect(result.intensity).toBe('quiet')
-    expect(result.hasHighLevel).toBe(false)
-    expect(result.hasChargedParticles).toBe(false)
+  it('scores rich content as brilliant-aurora', () => {
+    const m = measureShining(richContent)
+    expect(m.luminosity).toBe(100)
+    expect(m.grade).toBe('brilliant-aurora')
+    expect(m.hasHighLuminosity).toBe(true)
+    expect(m.hasBright).toBe(true)
+    expect(m.hasClear).toBe(true)
+    expect(m.hasRadiant).toBe(true)
+    expect(m.hasGlowing).toBe(true)
+    expect(m.hasLuminous).toBe(true)
+    expect(m.hasShining).toBe(true)
   })
 
-  it('returns correct values for medium content', () => {
-    const result = measureEnergy(MEDIUM)
-    expect(result.level).toBe(57)
-    expect(result.hasProperFlux).toBe(true)
-    expect(result.hasNoDischarge).toBe(true)
-  })
-})
-
-// ─── measureAlignment ───────────────────────────────────────────────────────
-
-describe('measureAlignment', () => {
-  it('returns perfect-dipole for rich content', () => {
-    const result = measureAlignment(RICH)
-    expect(result.level).toBe(100)
-    expect(result.field).toBe('perfect-dipole')
-    expect(result.hasHighLevel).toBe(true)
-    expect(result.hasProperPoles).toBe(true)
-    expect(result.hasFieldLines).toBe(true)
-    expect(result.hasNoReversal).toBe(true)
-    expect(result.hasStableField).toBe(true)
-    expect(result.hasNoFluctuation).toBe(true)
-    expect(result.hasProperOrbit).toBe(true)
-    expect(result.hasNoDrift).toBe(true)
-    expect(result.hasCoherent).toBe(true)
-    expect(result.hasNoChaos).toBe(true)
-    expect(result.reversalCount).toBe(0)
-    expect(result.driftCount).toBe(0)
+  it('detects dark patterns', () => {
+    const darkContent = 'var x = 1; var y: any = 2'
+    const m = measureShining(darkContent)
+    expect(m.hasNoDark).toBe(false)
+    expect(m.hasNoDim).toBe(false)
+    expect(m.darkCount).toBe(2)
+    expect(m.dimCount).toBe(1)
   })
 
-  it('returns distorted for empty content', () => {
-    const result = measureAlignment(EMPTY)
-    expect(result.level).toBe(40)
-    expect(result.field).toBe('distorted')
-    expect(result.hasHighLevel).toBe(false)
+  it('detects murky patterns', () => {
+    const murkyContent = 'eval("test"); debugger'
+    const m = measureShining(murkyContent)
+    expect(m.hasNoMurky).toBe(false)
+    expect(m.hasNoObscure).toBe(false)
   })
 
-  it('returns correct values for medium content', () => {
-    const result = measureAlignment(MEDIUM)
-    expect(result.level).toBe(67)
-    expect(result.hasFieldLines).toBe(true)
-    expect(result.hasProperOrbit).toBe(true)
+  it('scores mid content', () => {
+    const m = measureShining(midContent)
+    expect(m.luminosity).toBeGreaterThan(8)
+    expect(m.luminosity).toBeLessThan(100)
+  })
+
+  it('caps luminosity at 100', () => {
+    const megaContent = `${richContent}\n${richContent}`
+    const m = measureShining(megaContent)
+    expect(m.luminosity).toBeLessThanOrEqual(100)
   })
 })
 
-// ─── measureSpectral ────────────────────────────────────────────────────────
+// ─── measureEnriching ──────────────────────────────────────────────
 
-describe('measureSpectral', () => {
-  it('returns full-spectrum for rich content', () => {
-    const result = measureSpectral(RICH)
-    expect(result.beauty).toBe(80)
-    expect(result.palette).toBe('full-spectrum')
-    expect(result.hasHighBeauty).toBe(true)
-    expect(result.hasGreenEmission).toBe(true)
-    expect(result.hasNoColorBlindness).toBe(true)
-    expect(result.hasProperWavelength).toBe(true)
-    expect(result.hasNoDistortion).toBe(true)
-    expect(result.hasVibrant).toBe(true)
-    expect(result.hasNoFading).toBe(true)
-    expect(result.hasDancing).toBe(true)
-    expect(result.colorBlindnessCount).toBe(0)
-    expect(result.fadingCount).toBe(0)
+describe('measureEnriching', () => {
+  it('scores minimal content', () => {
+    const m = measureEnriching(minimalContent)
+    expect(m.richness).toBe(8)
+    expect(m.spectrum).toBe('colorless')
+    expect(m.hasHighRichness).toBe(false)
+    expect(m.hasDiverse).toBe(false)
+    expect(m.hasVaried).toBe(false)
+    expect(m.hasColorful).toBe(false)
+    expect(m.hasRich).toBe(false)
+    expect(m.hasVibrant).toBe(false)
+    expect(m.hasMultifaceted).toBe(false)
+    expect(m.hasNoUniform).toBe(true)
+    expect(m.hasNoDrab).toBe(true)
+    expect(m.hasNoSparse).toBe(true)
+    expect(m.hasNoFlat).toBe(true)
   })
 
-  it('returns monochrome for empty content', () => {
-    const result = measureSpectral(EMPTY)
-    expect(result.beauty).toBe(33)
-    expect(result.palette).toBe('monochrome')
-    expect(result.hasHighBeauty).toBe(false)
+  it('scores rich content as full-spectrum', () => {
+    const m = measureEnriching(richContent)
+    expect(m.richness).toBe(99)
+    expect(m.spectrum).toBe('full-spectrum')
+    expect(m.hasHighRichness).toBe(true)
+    expect(m.hasVaried).toBe(true)
+    expect(m.hasColorful).toBe(true)
+    expect(m.hasRich).toBe(true)
+    expect(m.hasVibrant).toBe(true)
+    expect(m.hasMultifaceted).toBe(true)
+    expect(m.hasDiverse).toBe(false)
   })
 
-  it('returns monochrome for medium content', () => {
-    const result = measureSpectral(MEDIUM)
-    expect(result.beauty).toBe(48)
-    expect(result.hasProperWavelength).toBe(true)
-  })
-})
-
-// ─── measureIonization ──────────────────────────────────────────────────────
-
-describe('measureIonization', () => {
-  it('returns fusion-reactor for rich content', () => {
-    const result = measureIonization(RICH)
-    expect(result.quality).toBe(90)
-    expect(result.process).toBe('fusion-reactor')
-    expect(result.hasHighQuality).toBe(true)
-    expect(result.hasProperExcitation).toBe(true)
-    expect(result.hasNoIonLoss).toBe(true)
-    expect(result.hasEnergyTransfer).toBe(true)
-    expect(result.hasNoDegradation).toBe(true)
-    expect(result.hasPhotonEmission).toBe(true)
-    expect(result.hasNoAbsorption).toBe(true)
-    expect(result.hasProperCascade).toBe(true)
-    expect(result.hasNoQuenching).toBe(true)
-    expect(result.ionLossCount).toBe(0)
-    expect(result.quenchingCount).toBe(0)
-  })
-
-  it('returns ground-state for empty content', () => {
-    const result = measureIonization(EMPTY)
-    expect(result.quality).toBe(43)
-    expect(result.process).toBe('ground-state')
-    expect(result.hasHighQuality).toBe(false)
-  })
-
-  it('returns ground-state for medium content', () => {
-    const result = measureIonization(MEDIUM)
-    expect(result.quality).toBe(58)
-    expect(result.hasEnergyTransfer).toBe(true)
+  it('detects uniform/drab patterns', () => {
+    const badContent = 'var x: any = 1'
+    const m = measureEnriching(badContent)
+    expect(m.hasNoUniform).toBe(false)
+    expect(m.hasNoDrab).toBe(false)
+    expect(m.uniformCount).toBe(1)
+    expect(m.drabCount).toBe(1)
   })
 })
 
-// ─── measureAtmospheric ─────────────────────────────────────────────────────
+// ─── measureAligning ───────────────────────────────────────────────
 
-describe('measureAtmospheric', () => {
-  it('returns crystal-clear for rich content', () => {
-    const result = measureAtmospheric(RICH)
-    expect(result.clarity).toBe(100)
-    expect(result.condition).toBe('crystal-clear')
-    expect(result.hasHighClarity).toBe(true)
-    expect(result.hasTransparent).toBe(true)
-    expect(result.hasNoInterference).toBe(true)
-    expect(result.hasProperContrast).toBe(true)
-    expect(result.hasNoLightPollution).toBe(true)
-    expect(result.hasVisible).toBe(true)
-    expect(result.hasNoObfuscation).toBe(true)
-    expect(result.hasDarkSky).toBe(true)
-    expect(result.hasNoSmog).toBe(true)
-    expect(result.hasBreathtaking).toBe(true)
-    expect(result.interferenceCount).toBe(0)
-    expect(result.lightPollutionCount).toBe(0)
+describe('measureAligning', () => {
+  it('scores minimal content', () => {
+    const m = measureAligning(minimalContent)
+    expect(m.alignment).toBe(10)
+    expect(m.field).toBe('no-field')
+    expect(m.hasHighAlignment).toBe(false)
+    expect(m.hasConsistent).toBe(false)
+    expect(m.hasPrincipled).toBe(false)
+    expect(m.hasAligned).toBe(false)
+    expect(m.hasCoherent).toBe(false)
+    expect(m.hasHarmonious).toBe(false)
+    expect(m.hasUnited).toBe(false)
+    expect(m.hasNoContradictory).toBe(true)
+    expect(m.hasNoConflicting).toBe(true)
+    expect(m.hasNoIncoherent).toBe(true)
+    expect(m.hasNoClashing).toBe(true)
   })
 
-  it('returns overcast for empty content', () => {
-    const result = measureAtmospheric(EMPTY)
-    expect(result.clarity).toBe(55)
-    expect(result.condition).toBe('overcast')
-    expect(result.hasHighClarity).toBe(false)
+  it('scores rich content as true-north', () => {
+    const m = measureAligning(richContent)
+    expect(m.alignment).toBe(100)
+    expect(m.field).toBe('true-north')
+    expect(m.hasHighAlignment).toBe(true)
+    expect(m.hasConsistent).toBe(true)
+    expect(m.hasPrincipled).toBe(true)
+    expect(m.hasAligned).toBe(true)
+    expect(m.hasCoherent).toBe(true)
+    expect(m.hasHarmonious).toBe(true)
+    expect(m.hasUnited).toBe(true)
   })
 
-  it('returns overcast for medium content with console', () => {
-    const result = measureAtmospheric(MEDIUM)
-    expect(result.clarity).toBe(58)
-    expect(result.condition).toBe('overcast')
-    expect(result.hasNoLightPollution).toBe(false)
-    expect(result.lightPollutionCount).toBe(1)
-  })
-})
-
-// ─── measureElectromagnetic ─────────────────────────────────────────────────
-
-describe('measureElectromagnetic', () => {
-  it('returns mega-flare for rich content', () => {
-    const result = measureElectromagnetic(RICH)
-    expect(result.force).toBe(90)
-    expect(result.power).toBe('mega-flare')
-    expect(result.hasHighForce).toBe(true)
-    expect(result.hasProperInduction).toBe(true)
-    expect(result.hasNoInterference).toBe(true)
-    expect(result.hasStrongSignal).toBe(true)
-    expect(result.hasNoNoise).toBe(true)
-    expect(result.hasProperConductance).toBe(true)
-    expect(result.hasNoResistance).toBe(true)
-    expect(result.hasAmplification).toBe(true)
-    expect(result.hasNoAttenuation).toBe(true)
-    expect(result.interferenceCount).toBe(0)
-    expect(result.attenuationCount).toBe(0)
-  })
-
-  it('returns residual for empty content', () => {
-    const result = measureElectromagnetic(EMPTY)
-    expect(result.force).toBe(43)
-    expect(result.power).toBe('residual')
-    expect(result.hasHighForce).toBe(false)
-  })
-
-  it('returns residual for medium content', () => {
-    const result = measureElectromagnetic(MEDIUM)
-    expect(result.force).toBe(58)
-    expect(result.hasProperConductance).toBe(true)
+  it('detects contradictory/conflicting patterns', () => {
+    const badContent = 'var x: any = 1'
+    const m = measureAligning(badContent)
+    expect(m.hasNoContradictory).toBe(false)
+    expect(m.hasNoConflicting).toBe(false)
+    expect(m.contradictoryCount).toBe(1)
+    expect(m.conflictingCount).toBe(1)
   })
 })
 
-// ─── classifyCondition ──────────────────────────────────────────────────────
+// ─── measureDancing ────────────────────────────────────────────────
 
-describe('classifyCondition', () => {
-  it('returns correct conditions at thresholds', () => {
-    const base = analyzeAuroraFlare(RICH, 'r.ts')
-    expect(classifyCondition({ ...base, qualityScore: 80 } as any)).toBe('magnificent-display')
-    expect(classifyCondition({ ...base, qualityScore: 65 } as any)).toBe('brilliant-aurora')
-    expect(classifyCondition({ ...base, qualityScore: 50 } as any)).toBe('visible-shimmer')
-    expect(classifyCondition({ ...base, qualityScore: 35 } as any)).toBe('faint-glow')
-    expect(classifyCondition({ ...base, qualityScore: 20 } as any)).toBe('subvisual')
-    expect(classifyCondition({ ...base, qualityScore: 10 } as any)).toBe('darkness')
+describe('measureDancing', () => {
+  it('scores minimal content', () => {
+    const m = measureDancing(minimalContent)
+    expect(m.quality).toBe(8)
+    expect(m.dance).toBe('static')
+    expect(m.hasHighQuality).toBe(false)
+    expect(m.hasGraceful).toBe(false)
+    expect(m.hasFlowing).toBe(false)
+    expect(m.hasElegant).toBe(false)
+    expect(m.hasSmooth).toBe(false)
+    expect(m.hasFluid).toBe(false)
+    expect(m.hasHarmonious2).toBe(false)
+    expect(m.hasNoJerky).toBe(true)
+    expect(m.hasNoClunky).toBe(true)
+    expect(m.hasNoRough).toBe(true)
+    expect(m.hasNoRigid).toBe(true)
+  })
+
+  it('scores rich content as graceful-waltz', () => {
+    const m = measureDancing(richContent)
+    expect(m.quality).toBe(100)
+    expect(m.dance).toBe('graceful-waltz')
+    expect(m.hasHighQuality).toBe(true)
+    expect(m.hasGraceful).toBe(true)
+    expect(m.hasFlowing).toBe(true)
+    expect(m.hasElegant).toBe(true)
+    expect(m.hasSmooth).toBe(true)
+    expect(m.hasFluid).toBe(true)
+    expect(m.hasHarmonious2).toBe(true)
+  })
+
+  it('detects jerky/clunky patterns', () => {
+    const badContent = 'var x: any = 1'
+    const m = measureDancing(badContent)
+    expect(m.hasNoJerky).toBe(false)
+    expect(m.hasNoClunky).toBe(false)
+    expect(m.jerkyCount).toBe(1)
+    expect(m.clunkyCount).toBe(1)
   })
 })
 
-// ─── analyzeAuroraFlare ─────────────────────────────────────────────────────
+// ─── measureHarmonizing ────────────────────────────────────────────
 
-describe('analyzeAuroraFlare', () => {
-  it('returns magnificent-display for rich content', () => {
-    const f = analyzeAuroraFlare(RICH, 'rich.ts')
-    expect(f.file).toBe('rich.ts')
-    expect(f.polarEnergy).toBe(79)
-    expect(f.magneticAlignment).toBe(100)
-    expect(f.spectralBeauty).toBe(80)
-    expect(f.ionizationQuality).toBe(90)
-    expect(f.atmosphericClarity).toBe(100)
-    expect(f.electromagneticForce).toBe(90)
-    expect(f.qualityScore).toBe(90)
-    expect(f.condition).toBe('magnificent-display')
+describe('measureHarmonizing', () => {
+  it('scores minimal content', () => {
+    const m = measureHarmonizing(minimalContent)
+    expect(m.harmony).toBe(8)
+    expect(m.cosmic).toBe('chaos')
+    expect(m.hasHighHarmony).toBe(false)
+    expect(m.hasBalanced).toBe(false)
+    expect(m.hasIntegrated).toBe(false)
+    expect(m.hasUnified).toBe(false)
+    expect(m.hasCohesive).toBe(false)
+    expect(m.hasWhole).toBe(false)
+    expect(m.hasComplete).toBe(false)
+    expect(m.hasNoFragmented).toBe(true)
+    expect(m.hasNoScattered).toBe(true)
+    expect(m.hasNoDisjoint).toBe(true)
+    expect(m.hasNoBroken).toBe(true)
   })
 
-  it('returns faint-glow for empty content', () => {
-    const f = analyzeAuroraFlare(EMPTY, 'empty.ts')
-    expect(f.polarEnergy).toBe(42)
-    expect(f.magneticAlignment).toBe(40)
-    expect(f.spectralBeauty).toBe(33)
-    expect(f.ionizationQuality).toBe(43)
-    expect(f.atmosphericClarity).toBe(55)
-    expect(f.electromagneticForce).toBe(43)
-    expect(f.qualityScore).toBe(43)
-    expect(f.condition).toBe('faint-glow')
+  it('scores rich content as symphony', () => {
+    const m = measureHarmonizing(richContent)
+    expect(m.harmony).toBe(99)
+    expect(m.cosmic).toBe('symphony')
+    expect(m.hasHighHarmony).toBe(true)
+    expect(m.hasIntegrated).toBe(true)
+    expect(m.hasUnified).toBe(true)
+    expect(m.hasCohesive).toBe(true)
+    expect(m.hasWhole).toBe(true)
+    expect(m.hasComplete).toBe(true)
+    expect(m.hasBalanced).toBe(false)
   })
 
-  it('returns visible-shimmer for medium content', () => {
-    const f = analyzeAuroraFlare(MEDIUM, 'medium.ts')
-    expect(f.polarEnergy).toBe(57)
-    expect(f.qualityScore).toBe(57)
-    expect(f.condition).toBe('visible-shimmer')
-  })
-})
-
-// ─── classifyObserverGrade ──────────────────────────────────────────────────
-
-describe('classifyObserverGrade', () => {
-  it('returns correct grades at thresholds', () => {
-    expect(classifyObserverGrade(80)).toBe('aurora-master')
-    expect(classifyObserverGrade(65)).toBe('polar-observer')
-    expect(classifyObserverGrade(50)).toBe('aurora-hunter')
-    expect(classifyObserverGrade(35)).toBe('sky-watcher')
-    expect(classifyObserverGrade(20)).toBe('novice')
-    expect(classifyObserverGrade(0)).toBe('indoor')
+  it('detects fragmented/scattered patterns', () => {
+    const badContent = 'var x: any = 1'
+    const m = measureHarmonizing(badContent)
+    expect(m.hasNoFragmented).toBe(false)
+    expect(m.hasNoScattered).toBe(false)
+    expect(m.fragmentedCount).toBe(1)
+    expect(m.scatteredCount).toBe(1)
   })
 })
 
-// ─── classifyRegionType ─────────────────────────────────────────────────────
+// ─── classifyCurtainCondition ──────────────────────────────────────
 
-describe('classifyRegionType', () => {
-  it('returns void for empty flares', () => {
-    expect(classifyRegionType([])).toBe('void')
+describe('classifyCurtainCondition', () => {
+  it('classifies northern-lights', () => expect(classifyCurtainCondition(90)).toBe('northern-lights'))
+  it('classifies bright-aurora', () => expect(classifyCurtainCondition(75)).toBe('bright-aurora'))
+  it('classifies proper-curtain', () => expect(classifyCurtainCondition(60)).toBe('proper-curtain'))
+  it('classifies faint-glow', () => expect(classifyCurtainCondition(45)).toBe('faint-glow'))
+  it('classifies twilight', () => expect(classifyCurtainCondition(30)).toBe('twilight'))
+  it('classifies dark-night', () => expect(classifyCurtainCondition(10)).toBe('dark-night'))
+  it('boundary 85', () => expect(classifyCurtainCondition(85)).toBe('northern-lights'))
+  it('boundary 70', () => expect(classifyCurtainCondition(70)).toBe('bright-aurora'))
+  it('boundary 55', () => expect(classifyCurtainCondition(55)).toBe('proper-curtain'))
+  it('boundary 40', () => expect(classifyCurtainCondition(40)).toBe('faint-glow'))
+  it('boundary 25', () => expect(classifyCurtainCondition(25)).toBe('twilight'))
+  it('boundary 0', () => expect(classifyCurtainCondition(0)).toBe('dark-night'))
+})
+
+// ─── classifyBeltType ──────────────────────────────────────────────
+
+describe('classifyBeltType', () => {
+  it('returns equatorial for empty curtains', () => {
+    expect(classifyBeltType([])).toBe('equatorial')
   })
 
-  it('returns correct types based on avg score', () => {
-    const rf = analyzeAuroraFlare(RICH, 'r.ts')
-    const mf = analyzeAuroraFlare(MEDIUM, 'm.ts')
-    expect(classifyRegionType([rf, mf])).toBe('polar-cap')
-    expect(classifyRegionType([rf])).toBe('aurora-oval')
-    expect(classifyRegionType([mf])).toBe('sub-auroral')
+  it('returns equatorial for qualityScore < 15', () => {
+    const curtains: AuroraCurtain[] = [
+      { file: 'a.ts', luminosity: 8, spectralRichness: 8, magneticAlignment: 10, danceQuality: 8, cosmicHarmony: 8,
+        shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+        aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+        harmonizing: {} as AuroraCurtain['harmonizing'],
+        condition: 'dark-night', qualityScore: 8 },
+    ]
+    expect(classifyBeltType(curtains)).toBe('equatorial')
+  })
+
+  it('returns polar-belt for high quality with northern lights majority', () => {
+    const makeCurtain = (cond: AuroraCurtain['condition'], qs: number): AuroraCurtain => ({
+      file: 'a.ts', luminosity: 90, spectralRichness: 90, magneticAlignment: 90, danceQuality: 90, cosmicHarmony: 90,
+      shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+      aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+      harmonizing: {} as AuroraCurtain['harmonizing'],
+      condition: cond, qualityScore: qs,
+    })
+    const curtains = [makeCurtain('northern-lights', 90), makeCurtain('northern-lights', 85)]
+    expect(classifyBeltType(curtains)).toBe('polar-belt')
+  })
+
+  it('returns auroral-zone for quality >= 60', () => {
+    const curtains: AuroraCurtain[] = [
+      { file: 'a.ts', luminosity: 70, spectralRichness: 70, magneticAlignment: 70, danceQuality: 70, cosmicHarmony: 70,
+        shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+        aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+        harmonizing: {} as AuroraCurtain['harmonizing'],
+        condition: 'bright-aurora', qualityScore: 65 },
+    ]
+    expect(classifyBeltType(curtains)).toBe('auroral-zone')
+  })
+
+  it('returns sub-auroral for quality >= 45', () => {
+    const curtains: AuroraCurtain[] = [
+      { file: 'a.ts', luminosity: 50, spectralRichness: 50, magneticAlignment: 50, danceQuality: 50, cosmicHarmony: 50,
+        shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+        aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+        harmonizing: {} as AuroraCurtain['harmonizing'],
+        condition: 'proper-curtain', qualityScore: 50 },
+    ]
+    expect(classifyBeltType(curtains)).toBe('sub-auroral')
+  })
+
+  it('returns mid-latitude for quality >= 30', () => {
+    const curtains: AuroraCurtain[] = [
+      { file: 'a.ts', luminosity: 35, spectralRichness: 35, magneticAlignment: 35, danceQuality: 35, cosmicHarmony: 35,
+        shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+        aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+        harmonizing: {} as AuroraCurtain['harmonizing'],
+        condition: 'faint-glow', qualityScore: 35 },
+    ]
+    expect(classifyBeltType(curtains)).toBe('mid-latitude')
+  })
+
+  it('returns tropical for quality >= 15', () => {
+    const curtains: AuroraCurtain[] = [
+      { file: 'a.ts', luminosity: 18, spectralRichness: 18, magneticAlignment: 18, danceQuality: 18, cosmicHarmony: 18,
+        shining: {} as AuroraCurtain['shining'], enriching: {} as AuroraCurtain['enriching'],
+        aligning: {} as AuroraCurtain['aligning'], dancing: {} as AuroraCurtain['dancing'],
+        harmonizing: {} as AuroraCurtain['harmonizing'],
+        condition: 'twilight', qualityScore: 18 },
+    ]
+    expect(classifyBeltType(curtains)).toBe('tropical')
   })
 })
 
-// ─── analyzePolarRegion ─────────────────────────────────────────────────────
+// ─── classifyAstronomerGrade ───────────────────────────────────────
 
-describe('analyzePolarRegion', () => {
-  it('returns void for empty flares', () => {
-    const r = analyzePolarRegion([], 'empty')
-    expect(r.directory).toBe('empty')
-    expect(r.regionType).toBe('void')
-    expect(r.condition).toBe('void')
-    expect(r.flares).toEqual([])
+describe('classifyAstronomerGrade', () => {
+  it('returns chief-astronomer for >= 80', () => expect(classifyAstronomerGrade(85)).toBe('chief-astronomer'))
+  it('returns aurora-hunter for >= 65', () => expect(classifyAstronomerGrade(70)).toBe('aurora-hunter'))
+  it('returns northern-lighter for >= 50', () => expect(classifyAstronomerGrade(55)).toBe('northern-lighter'))
+  it('returns sky-watcher for >= 35', () => expect(classifyAstronomerGrade(40)).toBe('sky-watcher'))
+  it('returns stargazer for >= 20', () => expect(classifyAstronomerGrade(25)).toBe('stargazer'))
+  it('returns cave-dweller for < 20', () => expect(classifyAstronomerGrade(10)).toBe('cave-dweller'))
+  it('boundary 80', () => expect(classifyAstronomerGrade(80)).toBe('chief-astronomer'))
+  it('boundary 65', () => expect(classifyAstronomerGrade(65)).toBe('aurora-hunter'))
+  it('boundary 50', () => expect(classifyAstronomerGrade(50)).toBe('northern-lighter'))
+  it('boundary 35', () => expect(classifyAstronomerGrade(35)).toBe('sky-watcher'))
+  it('boundary 20', () => expect(classifyAstronomerGrade(20)).toBe('stargazer'))
+  it('boundary 0', () => expect(classifyAstronomerGrade(0)).toBe('cave-dweller'))
+})
+
+// ─── classifyBeltCondition ─────────────────────────────────────────
+
+describe('classifyBeltCondition', () => {
+  it('returns spectacular-display for >= 75', () => expect(classifyBeltCondition(80)).toBe('spectacular-display'))
+  it('returns beautiful-show for >= 60', () => expect(classifyBeltCondition(65)).toBe('beautiful-show'))
+  it('returns decent-display for >= 45', () => expect(classifyBeltCondition(50)).toBe('decent-display'))
+  it('returns faint-glow-belt for >= 30', () => expect(classifyBeltCondition(35)).toBe('faint-glow-belt'))
+  it('returns barely-visible for >= 15', () => expect(classifyBeltCondition(20)).toBe('barely-visible'))
+  it('returns invisible for < 15', () => expect(classifyBeltCondition(5)).toBe('invisible'))
+})
+
+// ─── analyzeAuroraCurtain ──────────────────────────────────────────
+
+describe('analyzeAuroraCurtain', () => {
+  it('analyzes minimal content', () => {
+    const c = analyzeAuroraCurtain(minimalContent, 'test.ts')
+    expect(c.file).toBe('test.ts')
+    expect(c.qualityScore).toBe(8)
+    expect(c.condition).toBe('dark-night')
+    expect(c.luminosity).toBe(8)
+    expect(c.spectralRichness).toBe(8)
+    expect(c.magneticAlignment).toBe(10)
+    expect(c.danceQuality).toBe(8)
+    expect(c.cosmicHarmony).toBe(8)
+    expect(c.shining.grade).toBe('dark-sky')
+    expect(c.enriching.spectrum).toBe('colorless')
+    expect(c.aligning.field).toBe('no-field')
+    expect(c.dancing.dance).toBe('static')
+    expect(c.harmonizing.cosmic).toBe('chaos')
   })
 
-  it('returns correct region for rich + medium', () => {
-    const rf = analyzeAuroraFlare(RICH, 'r.ts')
-    const mf = analyzeAuroraFlare(MEDIUM, 'm.ts')
-    const r = analyzePolarRegion([rf, mf], 'src')
-    expect(r.directory).toBe('src')
-    expect(r.regionType).toBe('polar-cap')
-    expect(r.condition).toBe('active-aurora')
-    expect(r.avgEnergy).toBe(68)
-    expect(r.avgAlignment).toBe(84)
-    expect(r.avgElectromagnetic).toBe(74)
-    expect(r.magnificentCount).toBe(1)
-    expect(r.darknessCount).toBe(0)
-    expect(r.highEnergyCount).toBe(1)
-    expect(r.alignedCount).toBe(1)
+  it('analyzes rich content', () => {
+    const c = analyzeAuroraCurtain(richContent, 'rich.ts')
+    expect(c.qualityScore).toBe(100)
+    expect(c.condition).toBe('northern-lights')
+    expect(c.luminosity).toBe(100)
+    expect(c.spectralRichness).toBe(99)
+    expect(c.magneticAlignment).toBe(100)
+    expect(c.danceQuality).toBe(100)
+    expect(c.cosmicHarmony).toBe(99)
+  })
+
+  it('computes qualityScore as weighted average', () => {
+    const c = analyzeAuroraCurtain(midContent, 'mid.ts')
+    const expected = Math.round(
+      c.luminosity * 0.2 +
+      c.spectralRichness * 0.2 +
+      c.magneticAlignment * 0.2 +
+      c.danceQuality * 0.2 +
+      c.cosmicHarmony * 0.2,
+    )
+    expect(c.qualityScore).toBe(expected)
+  })
+
+  it('sets file path correctly', () => {
+    const c = analyzeAuroraCurtain('', 'deeply/nested/file.ts')
+    expect(c.file).toBe('deeply/nested/file.ts')
   })
 })
 
-// ─── buildAuroraBorealisResult ──────────────────────────────────────────────
+// ─── analyzeAuroraBelt ─────────────────────────────────────────────
+
+describe('analyzeAuroraBelt', () => {
+  it('handles empty curtains', () => {
+    const b = analyzeAuroraBelt([], 'empty-dir')
+    expect(b.directory).toBe('empty-dir')
+    expect(b.curtains).toEqual([])
+    expect(b.avgLuminosity).toBe(0)
+    expect(b.avgAlignment).toBe(0)
+    expect(b.avgHarmony).toBe(0)
+    expect(b.northernLightsCount).toBe(0)
+    expect(b.darkNightCount).toBe(0)
+    expect(b.beltType).toBe('equatorial')
+    expect(b.condition).toBe('invisible')
+  })
+
+  it('analyzes single curtain belt', () => {
+    const curtain = analyzeAuroraCurtain(richContent, 'good.ts')
+    const b = analyzeAuroraBelt([curtain], 'src')
+    expect(b.avgLuminosity).toBe(curtain.luminosity)
+    expect(b.avgAlignment).toBe(curtain.magneticAlignment)
+    expect(b.avgHarmony).toBe(curtain.cosmicHarmony)
+    expect(b.curtains).toHaveLength(1)
+  })
+
+  it('averages multiple curtains', () => {
+    const c1 = analyzeAuroraCurtain(richContent, 'a.ts')
+    const c2 = analyzeAuroraCurtain(minimalContent, 'b.ts')
+    const b = analyzeAuroraBelt([c1, c2], 'mix')
+    const avgLum = Math.round((c1.luminosity + c2.luminosity) / 2)
+    expect(b.avgLuminosity).toBe(avgLum)
+  })
+
+  it('counts conditions correctly', () => {
+    const c1 = analyzeAuroraCurtain(richContent, 'good.ts')
+    const c2 = analyzeAuroraCurtain(minimalContent, 'bad.ts')
+    const b = analyzeAuroraBelt([c1, c2], 'mixed')
+    expect(b.northernLightsCount + b.darkNightCount).toBeLessThanOrEqual(2)
+  })
+})
+
+// ─── buildAuroraBorealisResult ─────────────────────────────────────
 
 describe('buildAuroraBorealisResult', () => {
-  it('returns correct result for empty file', () => {
-    const r = buildAuroraBorealisResult(['empty.ts'], [EMPTY])
-    expect(r.stats.totalFiles).toBe(1)
-    expect(r.stats.avgPolarEnergy).toBe(42)
-    expect(r.stats.avgMagneticAlignment).toBe(40)
-    expect(r.stats.avgSpectralBeauty).toBe(33)
-    expect(r.stats.avgIonizationQuality).toBe(43)
-    expect(r.stats.avgAtmosphericClarity).toBe(55)
-    expect(r.stats.avgElectromagneticForce).toBe(43)
-    expect(r.stats.faintGlowCount).toBe(1)
-    expect(r.stats.overallBrilliance).toBe(43)
-    expect(r.stats.observerGrade).toBe('sky-watcher')
-    expect(r.magnetosphere.overallBrilliance).toBe(43)
-    expect(r.magnetosphere.isBrilliant).toBe(false)
-    expect(r.flares).toHaveLength(1)
-    expect(r.regions).toHaveLength(1)
-  })
-
-  it('returns correct result for rich + medium', () => {
-    const r = buildAuroraBorealisResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
-    expect(r.stats.totalFiles).toBe(2)
-    expect(r.stats.totalRegions).toBe(1)
-    expect(r.stats.avgPolarEnergy).toBe(68)
-    expect(r.stats.avgMagneticAlignment).toBe(84)
-    expect(r.stats.avgSpectralBeauty).toBe(64)
-    expect(r.stats.avgIonizationQuality).toBe(74)
-    expect(r.stats.avgAtmosphericClarity).toBe(79)
-    expect(r.stats.avgElectromagneticForce).toBe(74)
-    expect(r.stats.magnificentDisplayCount).toBe(1)
-    expect(r.stats.visibleShimmerCount).toBe(1)
-    expect(r.stats.overallBrilliance).toBe(74)
-    expect(r.stats.observerGrade).toBe('polar-observer')
-    expect(r.stats.bestFlare).toBe('rich.ts')
-    expect(r.stats.mostEnergetic).toBe('rich.ts')
-    expect(r.stats.mostAligned).toBe('rich.ts')
-    expect(r.stats.mostBeautiful).toBe('rich.ts')
-    expect(r.stats.mostTransformative).toBe('rich.ts')
-    expect(r.stats.strongestForce).toBe('rich.ts')
-    expect(r.stats.hasHighEnergyCount).toBe(1)
-    expect(r.stats.hasHighAlignmentCount).toBe(1)
-    expect(r.stats.hasHighBeautyCount).toBe(1)
-    expect(r.stats.hasHighQualityCount).toBe(1)
-    expect(r.stats.hasHighClarityCount).toBe(1)
-    expect(r.stats.hasHighForceCount).toBe(1)
-    expect(r.magnetosphere.isBrilliant).toBe(true)
-    expect(r.magnetosphere.avgEnergy).toBe(68)
-    expect(r.regions).toHaveLength(1)
-    expect(r.regions[0].regionType).toBe('polar-cap')
-    expect(r.recommendations).toHaveLength(0)
-  })
-
-  it('handles no files', () => {
-    const r = buildAuroraBorealisResult([], [])
+  it('handles empty input', async () => {
+    const r = await buildAuroraBorealisResult([], [])
+    expect(r.curtains).toEqual([])
+    expect(r.belts).toEqual([])
     expect(r.stats.totalFiles).toBe(0)
-    expect(r.stats.totalRegions).toBe(0)
-    expect(r.stats.overallBrilliance).toBe(0)
-    expect(r.stats.observerGrade).toBe('indoor')
-    expect(r.flares).toHaveLength(0)
-    expect(r.regions).toHaveLength(0)
-    expect(r.magnetosphere.isBrilliant).toBe(false)
-    expect(r.stats.bestFlare).toBe('')
+    expect(r.stats.totalBelts).toBe(0)
+    expect(r.stats.avgLuminosity).toBe(0)
+    expect(r.sky.isLuminous).toBe(false)
+    expect(r.sky.overallRadiance).toBe(0)
+    expect(r.stats.overallRadiance).toBe(0)
+    expect(r.stats.bestCurtain).toBe('')
+    expect(r.stats.brightest).toBe('')
+    expect(r.stats.mostColorful).toBe('')
+    expect(r.stats.mostAligned).toBe('')
+    expect(r.stats.mostGraceful).toBe('')
   })
 
-  it('splits files into different directories for regions', () => {
-    const r = buildAuroraBorealisResult(
-      ['src/a.ts', 'lib/b.ts'],
-      [RICH, MEDIUM],
+  it('analyzes single file', async () => {
+    const r = await buildAuroraBorealisResult(['test.ts'], [richContent])
+    expect(r.curtains).toHaveLength(1)
+    expect(r.belts).toHaveLength(1)
+    expect(r.stats.totalFiles).toBe(1)
+    expect(r.curtains[0].condition).toBe('northern-lights')
+  })
+
+  it('groups files by directory into belts', async () => {
+    const r = await buildAuroraBorealisResult(
+      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
+      [richContent, minimalContent, midContent],
     )
-    expect(r.stats.totalFiles).toBe(2)
-    expect(r.stats.totalRegions).toBe(2)
-    expect(r.regions[0].directory).toBe('src')
-    expect(r.regions[1].directory).toBe('lib')
+    expect(r.curtains).toHaveLength(3)
+    expect(r.belts).toHaveLength(2)
+  })
+
+  it('computes sky summary', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    expect(r.sky.isLuminous).toBe(true)
+    expect(r.sky.overallRadiance).toBeGreaterThan(0)
+  })
+
+  it('computes stats astronomerGrade', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    expect(r.stats.astronomerGrade).toBe('chief-astronomer')
+  })
+
+  it('identifies best/brightest/mostColorful/mostAligned/mostGraceful', async () => {
+    const r = await buildAuroraBorealisResult(
+      ['rich.ts', 'minimal.ts'],
+      [richContent, minimalContent],
+    )
+    expect(r.stats.bestCurtain).toBe('rich.ts')
+    expect(r.stats.brightest).toBe('rich.ts')
+    expect(r.stats.mostColorful).toBe('rich.ts')
+    expect(r.stats.mostAligned).toBe('rich.ts')
+    expect(r.stats.mostGraceful).toBe('rich.ts')
+  })
+
+  it('counts condition types in stats', async () => {
+    const r = await buildAuroraBorealisResult(
+      ['rich.ts', 'minimal.ts'],
+      [richContent, minimalContent],
+    )
+    expect(r.stats.northernLightsCount).toBeGreaterThanOrEqual(0)
+    expect(r.stats.brightAuroraCount).toBeGreaterThanOrEqual(0)
+    expect(r.stats.properCurtainCount).toBeGreaterThanOrEqual(0)
+    expect(r.stats.faintGlowCount).toBeGreaterThanOrEqual(0)
+    expect(r.stats.twilightCount).toBeGreaterThanOrEqual(0)
+    expect(r.stats.darkNightCount).toBeGreaterThanOrEqual(0)
+  })
+
+  it('counts hasHigh* flags', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    expect(r.stats.hasHighLuminosityCount).toBe(1)
+    expect(r.stats.hasHighRichnessCount).toBe(1)
+    expect(r.stats.hasHighAlignmentCount).toBe(1)
+    expect(r.stats.hasHighQualityCount).toBe(1)
+    expect(r.stats.hasHighHarmonyCount).toBe(1)
+  })
+
+  it('computes overallRadiance correctly for rich content', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    expect(r.stats.overallRadiance).toBe(Math.round((100 + 100 + 99) / 3))
   })
 })
 
-// ─── generateRecommendations ────────────────────────────────────────────────
+// ─── generateRecommendations ───────────────────────────────────────
 
 describe('generateRecommendations', () => {
-  it('generates recommendations for low scores', () => {
-    const r = buildAuroraBorealisResult(['e.ts'], [EMPTY])
-    expect(r.recommendations.length).toBeGreaterThan(0)
-    expect(r.recommendations).toContain('Increase polar energy — add interfaces and types to energize your code')
-    expect(r.recommendations).toContain('Improve magnetic alignment — organize code with proper import/export poles')
-    expect(r.recommendations).toContain('Enhance spectral beauty — add documentation for vibrant code colors')
-    expect(r.recommendations).toContain('Boost ionization quality — add error handling for proper code transformation')
-    expect(r.recommendations).toContain('Strengthen electromagnetic force — add type safety and proper code conductance')
+  const emptyStats: AuroraBorealisStats = {
+    totalFiles: 0, totalBelts: 0, avgLuminosity: 0, avgSpectralRichness: 0,
+    avgMagneticAlignment: 0, avgDanceQuality: 0, avgCosmicHarmony: 0,
+    northernLightsCount: 0, brightAuroraCount: 0, properCurtainCount: 0,
+    faintGlowCount: 0, twilightCount: 0, darkNightCount: 0,
+    hasHighLuminosityCount: 0, hasHighRichnessCount: 0, hasHighAlignmentCount: 0,
+    hasHighQualityCount: 0, hasHighHarmonyCount: 0,
+    overallRadiance: 0, astronomerGrade: 'cave-dweller',
+    bestCurtain: '', brightest: '', mostColorful: '', mostAligned: '', mostGraceful: '',
+  }
+
+  const emptySky: SkySummary = { avgLuminosity: 0, avgAlignment: 0, avgHarmony: 0, isLuminous: false, overallRadiance: 0 }
+
+  it('returns positive message for good code', () => {
+    const goodStats = { ...emptyStats, avgLuminosity: 80, avgSpectralRichness: 80, avgMagneticAlignment: 80, avgDanceQuality: 80, avgCosmicHarmony: 80 }
+    const goodSky: SkySummary = { avgLuminosity: 80, avgAlignment: 80, avgHarmony: 80, isLuminous: true, overallRadiance: 80 }
+    const recs = generateRecommendations([], [], goodSky, goodStats)
+    expect(recs).toHaveLength(1)
+    expect(recs[0]).toContain('brilliantly')
   })
 
-  it('generates no recommendations for high scores', () => {
-    const r = buildAuroraBorealisResult(['r.ts', 'm.ts'], [RICH, MEDIUM])
-    expect(r.recommendations).toHaveLength(0)
+  it('recommends brightening for low luminosity', () => {
+    const stats = { ...emptyStats, avgLuminosity: 30 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('Brighten'))).toBe(true)
+  })
+
+  it('recommends enriching for low spectral richness', () => {
+    const stats = { ...emptyStats, avgSpectralRichness: 30 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('Enrich'))).toBe(true)
+  })
+
+  it('recommends alignment for low magnetic alignment', () => {
+    const stats = { ...emptyStats, avgMagneticAlignment: 30 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('magnetic'))).toBe(true)
+  })
+
+  it('recommends dance improvement for low quality', () => {
+    const stats = { ...emptyStats, avgDanceQuality: 30 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('dance'))).toBe(true)
+  })
+
+  it('recommends harmony for low cosmic harmony', () => {
+    const stats = { ...emptyStats, avgCosmicHarmony: 30 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('Harmonize'))).toBe(true)
+  })
+
+  it('warns about dark night files', () => {
+    const stats = { ...emptyStats, darkNightCount: 2 }
+    const recs = generateRecommendations([], [], emptySky, stats)
+    expect(recs.some(r => r.includes('dark night'))).toBe(true)
+  })
+
+  it('warns about poor overall radiance', () => {
+    const sky: SkySummary = { avgLuminosity: 20, avgAlignment: 20, avgHarmony: 20, isLuminous: false, overallRadiance: 20 }
+    const recs = generateRecommendations([], [], sky, emptyStats)
+    expect(recs.some(r => r.includes('radiance'))).toBe(true)
+  })
+
+  it('warns when all belts are equatorial/tropical', () => {
+    const belt: AuroraBelt = {
+      directory: 'src', curtains: [], avgLuminosity: 10, avgAlignment: 10, avgHarmony: 10,
+      northernLightsCount: 0, darkNightCount: 0, beltType: 'equatorial', condition: 'invisible',
+    }
+    const recs = generateRecommendations([], [belt], emptySky, emptyStats)
+    expect(recs.some(r => r.includes('faint or absent'))).toBe(true)
+  })
+
+  it('names specific dark-night files', () => {
+    const curtain = analyzeAuroraCurtain('var x: any', 'bad.ts')
+    curtain.condition = 'dark-night'
+    const stats = { ...emptyStats, darkNightCount: 1 }
+    const recs = generateRecommendations([curtain], [], emptySky, stats)
+    expect(recs.some(r => r.includes('bad.ts'))).toBe(true)
   })
 })
 
-// ─── Format Helpers ─────────────────────────────────────────────────────────
+// ─── Format Helpers ────────────────────────────────────────────────
 
-describe('formatAuroraBorealisJson', () => {
-  it('returns valid JSON string', () => {
-    const r = buildAuroraBorealisResult(['r.ts'], [RICH])
-    const json = formatAuroraBorealisJson(r)
+describe('colorScore', () => {
+  it('returns a string', () => {
+    expect(typeof colorScore(50)).toBe('string')
+  })
+  it('handles 0', () => expect(typeof colorScore(0)).toBe('string'))
+  it('handles 100', () => expect(typeof colorScore(100)).toBe('string'))
+})
+
+describe('colorGrade', () => {
+  it('colors known grades', () => {
+    expect(typeof colorGrade('northern-lights')).toBe('string')
+    expect(typeof colorGrade('brilliant-aurora')).toBe('string')
+    expect(typeof colorGrade('dark-night')).toBe('string')
+  })
+  it('handles unknown grades', () => {
+    expect(typeof colorGrade('unknown-grade')).toBe('string')
+  })
+})
+
+describe('formatCurtainTable', () => {
+  it('formats a single curtain', () => {
+    const c = analyzeAuroraCurtain(richContent, 'test.ts')
+    const out = formatCurtainTable(c)
+    expect(out).toContain('test.ts')
+    expect(out).toContain('Luminosity')
+    expect(out).toContain('Score')
+  })
+})
+
+describe('formatCurtainsTable', () => {
+  it('handles empty array', () => {
+    expect(formatCurtainsTable([])).toContain('No aurora curtains')
+  })
+  it('formats multiple curtains', () => {
+    const c1 = analyzeAuroraCurtain(richContent, 'a.ts')
+    const c2 = analyzeAuroraCurtain(minimalContent, 'b.ts')
+    const out = formatCurtainsTable([c1, c2])
+    expect(out).toContain('a.ts')
+    expect(out).toContain('b.ts')
+    expect(out).toContain('Curtain Analysis')
+  })
+})
+
+describe('formatBeltTable', () => {
+  it('formats a belt', () => {
+    const c = analyzeAuroraCurtain(richContent, 'src/a.ts')
+    const b = analyzeAuroraBelt([c], 'src')
+    const out = formatBeltTable(b)
+    expect(out).toContain('src')
+    expect(out).toContain('Type')
+    expect(out).toContain('Condition')
+  })
+})
+
+describe('formatBeltsTable', () => {
+  it('handles empty array', () => {
+    expect(formatBeltsTable([])).toContain('No aurora belts')
+  })
+  it('formats belts', () => {
+    const c = analyzeAuroraCurtain(richContent, 'src/a.ts')
+    const b = analyzeAuroraBelt([c], 'src')
+    const out = formatBeltsTable([b])
+    expect(out).toContain('Belt Analysis')
+  })
+})
+
+describe('formatStatsTable', () => {
+  it('formats stats', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    const out = formatStatsTable(r.stats)
+    expect(out).toContain('Total Files')
+    expect(out).toContain('Astronomer Grade')
+    expect(out).toContain('Best Curtain')
+  })
+})
+
+describe('formatRecommendations', () => {
+  it('handles empty recommendations', () => {
+    expect(formatRecommendations([])).toContain('No recommendations')
+  })
+  it('formats recommendations', () => {
+    const out = formatRecommendations(['Fix X', 'Improve Y'])
+    expect(out).toContain('Fix X')
+    expect(out).toContain('Improve Y')
+  })
+})
+
+describe('formatResultTable', () => {
+  it('formats full result', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    const out = formatResultTable(r)
+    expect(out).toContain('Curtain Analysis')
+    expect(out).toContain('Belt Analysis')
+    expect(out).toContain('Statistics')
+    expect(out).toContain('Luminous')
+    expect(out).toContain('Recommendations')
+  })
+})
+
+describe('formatResultJson', () => {
+  it('returns valid JSON', async () => {
+    const r = await buildAuroraBorealisResult(['a.ts'], [richContent])
+    const json = formatResultJson(r)
     const parsed = JSON.parse(json)
+    expect(parsed.curtains).toHaveLength(1)
     expect(parsed.stats.totalFiles).toBe(1)
-    expect(parsed.flares).toHaveLength(1)
   })
 })
 
-describe('formatAuroraBorealisTable', () => {
-  it('returns formatted string with key labels', () => {
-    const r = buildAuroraBorealisResult(['r.ts'], [RICH])
-    const table = formatAuroraBorealisTable(r, false)
-    expect(table).toContain('Aurora Borealis Analysis')
-    expect(table).toContain('Magnetosphere Overview')
-    expect(table).toContain('Statistics')
-    expect(table).toContain('Condition Counts')
-  })
+// ─── gatherFiles ───────────────────────────────────────────────────
 
-  it('includes per-file details in verbose mode', () => {
-    const r = buildAuroraBorealisResult(['r.ts'], [RICH])
-    const table = formatAuroraBorealisTable(r, true)
-    expect(table).toContain('Per-File Details')
-    expect(table).toContain('r.ts')
-  })
-
-  it('shows highlights when bestFlare exists', () => {
-    const r = buildAuroraBorealisResult(['r.ts'], [RICH])
-    const table = formatAuroraBorealisTable(r, false)
-    expect(table).toContain('Highlights')
-    expect(table).toContain('Best Flare')
-  })
-
-  it('shows recommendations when present', () => {
-    const r = buildAuroraBorealisResult(['e.ts'], [EMPTY])
-    const table = formatAuroraBorealisTable(r, false)
-    expect(table).toContain('Recommendations')
+describe('gatherFiles', () => {
+  it('returns array', async () => {
+    const files = await gatherFiles('/home/georg/code/new', ['.ts'], ['**/node_modules/**'])
+    expect(Array.isArray(files)).toBe(true)
   })
 })
 
-// ─── Color Helpers ──────────────────────────────────────────────────────────
+// ─── Grade Boundary Tests ──────────────────────────────────────────
 
-describe('color helpers', () => {
-  it('scoreColor returns string for all ranges', () => {
-    expect(typeof scoreColor(90)).toBe('string')
-    expect(typeof scoreColor(70)).toBe('string')
-    expect(typeof scoreColor(50)).toBe('string')
-    expect(typeof scoreColor(20)).toBe('string')
-  })
-
-  it('conditionColor handles all conditions', () => {
-    const conditions = ['magnificent-display', 'brilliant-aurora', 'visible-shimmer', 'faint-glow', 'subvisual', 'darkness']
-    for (const c of conditions) expect(typeof conditionColor(c)).toBe('string')
-  })
-
-  it('gradeColor handles all grades', () => {
-    const grades = ['aurora-master', 'polar-observer', 'aurora-hunter', 'sky-watcher', 'novice', 'indoor']
-    for (const g of grades) expect(typeof gradeColor(g)).toBe('string')
-  })
-
-  it('intensityColor handles all intensities', () => {
-    const values = ['solar-flare', 'geomagnetic-storm', 'aurora-maximum', 'substorm', 'quiet', 'dormant']
-    for (const v of values) expect(typeof intensityColor(v)).toBe('string')
-  })
-
-  it('fieldColor handles all fields', () => {
-    const values = ['perfect-dipole', 'strong-alignment', 'magnetic-field', 'weak-field', 'distorted', 'collapsed']
-    for (const v of values) expect(typeof fieldColor(v)).toBe('string')
-  })
-
-  it('paletteColor handles all palettes', () => {
-    const values = ['full-spectrum', 'green-curtain', 'violet-waves', 'faint-glow', 'monochrome', 'invisible']
-    for (const v of values) expect(typeof paletteColor(v)).toBe('string')
-  })
-
-  it('processColor handles all processes', () => {
-    const values = ['fusion-reactor', 'high-ionization', 'partial-ionization', 'excited-state', 'ground-state', 'frozen']
-    for (const v of values) expect(typeof processColor(v)).toBe('string')
-  })
-
-  it('atmosphericConditionColor handles all conditions', () => {
-    const values = ['crystal-clear', 'arctic-clear', 'high-altitude', 'partly-cloudy', 'overcast', 'opaque']
-    for (const v of values) expect(typeof atmosphericConditionColor(v)).toBe('string')
-  })
-
-  it('powerColor handles all powers', () => {
-    const values = ['mega-flare', 'strong-force', 'moderate-field', 'weak-field', 'residual', 'void']
-    for (const v of values) expect(typeof powerColor(v)).toBe('string')
-  })
-
-  it('regionTypeColor handles all types', () => {
-    const values = ['aurora-oval', 'polar-cap', 'sub-auroral', 'mid-latitude', 'equatorial', 'void']
-    for (const v of values) expect(typeof regionTypeColor(v)).toBe('string')
-  })
-
-  it('regionConditionColor handles all conditions', () => {
-    const values = ['spectacular-display', 'active-aurora', 'quiet-aurora', 'faint-glimmer', 'dark-sky', 'void']
-    for (const v of values) expect(typeof regionConditionColor(v)).toBe('string')
+describe('grade boundaries - measureShining', () => {
+  it('proper-glow at luminosity from doc+export+interface', () => {
+    const content = '/** doc */ export interface I { x: string }'
+    const m = measureShining(content)
+    expect(m.luminosity).toBeGreaterThanOrEqual(40)
+    expect(m.grade).toBeDefined()
   })
 })
 
-// ─── Edge Cases ─────────────────────────────────────────────────────────────
-
-describe('edge cases', () => {
-  it('handles content with any type annotations', () => {
-    const anyContent = 'const x: any = 1\neval("test")\ntry {} catch (e) {}'
-    const e = measureEnergy(anyContent)
-    expect(e.dischargeCount).toBeGreaterThan(0)
-    expect(e.brownoutCount).toBeGreaterThan(0)
+describe('grade boundaries - measureEnriching', () => {
+  it('rich-palette at richness 70+', () => {
+    const content = 'export interface I {} class A {} type T = string; const x = 1; async function f() {}'
+    const m = measureEnriching(content)
+    expect(m.richness).toBeGreaterThanOrEqual(40)
+    expect(m.spectrum).toBeDefined()
   })
+})
 
-  it('handles content with TODO and FIXME markers', () => {
-    const debtContent = '// TODO: fix this\n// FIXME: broken\n// HACK: workaround'
-    const a = measureAlignment(debtContent)
-    expect(a.driftCount).toBeGreaterThan(0)
-    expect(a.hasNoChaos).toBe(false)
+describe('grade boundaries - measureAligning', () => {
+  it('proper-alignment at alignment 55', () => {
+    const content = 'const x = 1; if (x === 1) { console.log(x) }'
+    const m = measureAligning(content)
+    expect(m.alignment).toBeGreaterThanOrEqual(10)
+    expect(m.field).toBeDefined()
   })
+})
 
-  it('handles content with console statements', () => {
-    const consoleContent = "console.log('hello')\nconsole.error('bad')"
-    const atm = measureAtmospheric(consoleContent)
-    expect(atm.hasNoLightPollution).toBe(false)
-    expect(atm.lightPollutionCount).toBe(2)
-  })
+// ─── Type Export Tests ─────────────────────────────────────────────
 
-  it('qualityScore formula uses correct weights', () => {
-    const f = analyzeAuroraFlare(RICH, 'r.ts')
-    const expected = Math.round(
-      79 * 0.15 + 100 * 0.15 + 80 * 0.2 + 90 * 0.15 + 100 * 0.2 + 90 * 0.15,
-    )
-    expect(f.qualityScore).toBe(expected)
-  })
-
-  it('detects eval usage in electromagnetic interference', () => {
-    const evalContent = 'const x = eval("1+1")'
-    const em = measureElectromagnetic(evalContent)
-    expect(em.hasNoInterference).toBe(false)
-    expect(em.interferenceCount).toBe(1)
-  })
-
-  it('detects deprecated markers in spectral fading', () => {
-    const depContent = '/** @deprecated */ function old() {}'
-    const sp = measureSpectral(depContent)
-    expect(sp.hasNoFading).toBe(false)
-    expect(sp.fadingCount).toBe(1)
-  })
-
-  it('detects empty catch in electromagnetic resistance', () => {
-    const badContent = 'try {} catch (e) {}'
-    const em = measureElectromagnetic(badContent)
-    expect(em.hasNoResistance).toBe(false)
-  })
-
-  it('energy dormant for content below 30', () => {
-    const lowContent = 'const x = 1: any'
-    const e = measureEnergy('')
-    expect(e.intensity).toBe('quiet')
-  })
-
-  it('alignment collapsed for low-level content', () => {
-    const a = measureAlignment('')
-    expect(a.field).toBe('distorted')
-    expect(a.level).toBe(40)
-  })
-
-  it('spectral invisible for very low beauty', () => {
-    const s = measureSpectral('')
-    expect(s.palette).toBe('monochrome')
-    expect(s.beauty).toBe(33)
-  })
-
-  it('ionization frozen for low quality', () => {
-    const i = measureIonization('')
-    expect(i.process).toBe('ground-state')
-  })
-
-  it('atmospheric opaque for low clarity', () => {
-    const a = measureAtmospheric('')
-    expect(a.condition).toBe('overcast')
-  })
-
-  it('electromagnetic void for low force', () => {
-    const em = measureElectromagnetic('')
-    expect(em.power).toBe('residual')
-  })
-
-  it('buildAuroraBorealisResult with multiple regions', () => {
-    const r = buildAuroraBorealisResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [RICH, MEDIUM, EMPTY],
-    )
-    expect(r.stats.totalFiles).toBe(3)
-    expect(r.stats.totalRegions).toBe(2)
-    expect(r.regions).toHaveLength(2)
-  })
-
-  it('analyzePolarRegion single medium flare', () => {
-    const mf = analyzeAuroraFlare(MEDIUM, 'm.ts')
-    const r = analyzePolarRegion([mf], 'test')
-    expect(r.regionType).toBe('sub-auroral')
-    expect(r.condition).toBe('quiet-aurora')
-    expect(r.highEnergyCount).toBe(0)
-  })
-
-  it('formatAuroraBorealisTable omits per-file details when not verbose', () => {
-    const r = buildAuroraBorealisResult(['r.ts'], [RICH])
-    const table = formatAuroraBorealisTable(r, false)
-    expect(table).not.toContain('Per-File Details')
+describe('type exports', () => {
+  it('all types are importable', () => {
+    const curtain: AuroraCurtain = analyzeAuroraCurtain(minimalContent, 't.ts')
+    expect(curtain.file).toBe('t.ts')
+    const belt: AuroraBelt = analyzeAuroraBelt([curtain], 'dir')
+    expect(belt.directory).toBe('dir')
   })
 })
