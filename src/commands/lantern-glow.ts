@@ -5,31 +5,28 @@ import { extname, resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildLanternGlowResult,
-  type LanternGlowResult,
-} from './lantern-glow-helpers.js'
+import { buildLanternGlowResult, type LanternGlowResult } from './lantern-glow-helpers.js'
 import { formatLanternGlowJson, formatLanternGlowTable } from './lantern-glow-format-helpers.js'
 
 export default class LanternGlow extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze lantern glow patterns',
+      description: 'Path to analyze for lantern glow metrics',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code illumination, warmth, guidance, clarity, and hope like a lantern glow'
+  static override description = 'Analyze code illumination, warmth, guidance, fuel efficiency, glow reach, and shadow management'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze lantern glow in current directory',
+      description: 'Analyze current directory for lantern glow metrics',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze lantern glow in src directory as JSON',
+      description: 'Analyze src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
@@ -37,11 +34,7 @@ export default class LanternGlow extends Command {
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file breakdown',
-    },
-    {
-      command: '<%= config.bin %> <%= command.id %> --format json --output glow.json',
-      description: 'Export lantern glow analysis to JSON file',
+      description: 'Show per-file flame details',
     },
   ]
 
@@ -68,7 +61,7 @@ export default class LanternGlow extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file breakdown',
+      description: 'Show per-file flame details',
     }),
   }
 
@@ -93,22 +86,28 @@ export default class LanternGlow extends Command {
       cwd: targetPath,
       ignore,
       patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
+        '**/*.ts',
+        '**/*.tsx',
+        '**/*.js',
+        '**/*.jsx',
       ],
     })
 
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
+      ? flags.ext
+          .split(',')
+          .map((e) => e.trim())
+          .filter(Boolean)
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
+      ? discoveredFiles.filter((f) => {
+          const ext = extname(f.path).toLowerCase()
+          return extensions.includes(ext)
+        })
       : discoveredFiles
 
-    spinner.text = 'Analyzing lantern glow...'
+    spinner.text = 'Illuminating code...'
 
     const files: string[] = []
     const contents: string[] = []
@@ -126,7 +125,7 @@ export default class LanternGlow extends Command {
 
     const result: LanternGlowResult = buildLanternGlowResult(files, contents)
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.processions.length} lantern processions`)
+    spinner.succeed(`Analyzed ${files.length} files across ${result.rows.length} rows`)
 
     const outputData =
       format === 'json'
@@ -149,5 +148,5 @@ export default class LanternGlow extends Command {
 }
 
 export { buildLanternGlowResult } from './lantern-glow-helpers.js'
-export type { LanternGlowResult, LanternFlame, LanternProcession, GlowMeasure, WarmthMeasure, GuidanceMeasure, StabilityMeasure, ReachMeasure, CraftsmanshipMeasure } from './lantern-glow-helpers.js'
+export type { LanternGlowResult, LanternFlame, LanternRow, Village, LamplighterGrade, LanternGlowStats, FlameCondition, RowType, RowCondition, IlluminatedMeasure, WarmMeasure, GuidingMeasure, EfficientMeasure, ReachingMeasure, ShadowMeasure } from './lantern-glow-helpers.js'
 export { formatLanternGlowJson, formatLanternGlowTable } from './lantern-glow-format-helpers.js'

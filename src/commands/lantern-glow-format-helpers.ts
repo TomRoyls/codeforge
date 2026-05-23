@@ -1,79 +1,117 @@
 import chalk from 'chalk'
-
 import type { LanternGlowResult } from './lantern-glow-helpers.js'
 
 // ─── Color Helpers ─────────────────────────────────────────────────────────
 
-/** @example scoreColor(90) returns green string */
+/** @example scoreColor(90) returns colored string */
 export function scoreColor(score: number): string {
-  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
-  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
-  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
+  if (score >= 80) return chalk.rgb(255, 183, 77)(String(score))
+  if (score >= 60) return chalk.rgb(46, 204, 113)(String(score))
+  if (score >= 40) return chalk.rgb(241, 196, 15)(String(score))
   return chalk.rgb(231, 76, 60)(String(score))
 }
 
-/** @example conditionColor('sky-lantern') returns colored string */
-export function conditionColor(condition: string): string {
-  switch (condition) {
-    case 'sky-lantern': return chalk.rgb(255, 215, 0).bold(condition)
-    case 'stone-lantern': return chalk.rgb(46, 204, 113)(condition)
-    case 'paper-lantern': return chalk.rgb(255, 165, 0)(condition)
-    case 'oil-lamp': return chalk.rgb(241, 196, 15)(condition)
-    case 'candle-stub': return chalk.rgb(230, 126, 34)(condition)
-    case 'extinguished': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
+/** @example brightnessColor('blazing-light') returns colored string */
+export function brightnessColor(b: string): string {
+  switch (b) {
+    case 'blazing-light': return chalk.rgb(255, 183, 77).bold(b)
+    case 'bright-glow': return chalk.rgb(46, 204, 113)(b)
+    case 'steady-flame': return chalk.rgb(52, 152, 219)(b)
+    case 'flickering': return chalk.rgb(241, 196, 15)(b)
+    case 'dim-glow': return chalk.rgb(230, 126, 34)(b)
+    case 'extinguished': return chalk.rgb(231, 76, 60)(b)
+    default: return b
   }
 }
 
-/** @example gradeColor('grand-master') returns bold string */
-export function gradeColor(grade: string): string {
-  switch (grade) {
-    case 'grand-master': return chalk.rgb(255, 215, 0).bold(grade)
-    case 'master-keeper': return chalk.rgb(46, 204, 113)(grade)
-    case 'lantern-keeper': return chalk.rgb(52, 152, 219)(grade)
-    case 'attendant': return chalk.rgb(241, 196, 15)(grade)
-    case 'apprentice': return chalk.rgb(230, 126, 34)(grade)
-    case 'darkness-dweller': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
+/** @example feelingColor('hearth-fire') returns colored string */
+export function feelingColor(f: string): string {
+  switch (f) {
+    case 'hearth-fire': return chalk.rgb(255, 183, 77).bold(f)
+    case 'warm-welcome': return chalk.rgb(46, 204, 113)(f)
+    case 'friendly-glow': return chalk.rgb(52, 152, 219)(f)
+    case 'neutral-light': return chalk.rgb(241, 196, 15)(f)
+    case 'cold-fluorescent': return chalk.rgb(230, 126, 34)(f)
+    case 'sterile': return chalk.rgb(231, 76, 60)(f)
+    default: return f
   }
 }
 
-/** @example brightnessColor('beacon') returns colored string */
-export function brightnessColor(brightness: string): string {
-  switch (brightness) {
-    case 'beacon': return chalk.rgb(255, 215, 0)(brightness)
-    case 'bright': return chalk.rgb(46, 204, 113)(brightness)
-    case 'steady': return chalk.rgb(52, 152, 219)(brightness)
-    case 'dim': return chalk.rgb(241, 196, 15)(brightness)
-    case 'flickering': return chalk.rgb(230, 126, 34)(brightness)
-    case 'dark': return chalk.rgb(231, 76, 60)(brightness)
-    default: return brightness
+/** @example guideQualityColor('lighthouse-beam') returns colored string */
+export function guideQualityColor(g: string): string {
+  switch (g) {
+    case 'lighthouse-beam': return chalk.rgb(255, 183, 77).bold(g)
+    case 'clear-signpost': return chalk.rgb(46, 204, 113)(g)
+    case 'reliable-compass': return chalk.rgb(52, 152, 219)(g)
+    case 'vague-hint': return chalk.rgb(241, 196, 15)(g)
+    case 'misleading-trail': return chalk.rgb(230, 126, 34)(g)
+    case 'no-guide': return chalk.rgb(231, 76, 60)(g)
+    default: return g
   }
 }
 
-/** @example warmthColor('hearth') returns colored string */
-export function warmthColor(quality: string): string {
-  switch (quality) {
-    case 'hearth': return chalk.rgb(255, 100, 50)(quality)
-    case 'campfire': return chalk.rgb(255, 165, 0)(quality)
-    case 'candle': return chalk.rgb(255, 215, 0)(quality)
-    case 'match': return chalk.rgb(241, 196, 15)(quality)
-    case 'ember': return chalk.rgb(230, 126, 34)(quality)
-    case 'cold': return chalk.rgb(52, 152, 219)(quality)
-    default: return quality
+/** @example consumptionColor('perfect-burn') returns colored string */
+export function consumptionColor(c: string): string {
+  switch (c) {
+    case 'perfect-burn': return chalk.rgb(255, 183, 77).bold(c)
+    case 'efficient-flame': return chalk.rgb(46, 204, 113)(c)
+    case 'proper-combustion': return chalk.rgb(52, 152, 219)(c)
+    case 'wasteful-burn': return chalk.rgb(241, 196, 15)(c)
+    case 'smoky': return chalk.rgb(230, 126, 34)(c)
+    case 'burning-out': return chalk.rgb(231, 76, 60)(c)
+    default: return c
   }
 }
 
-/** @example stabilityColor('rock-steady') returns colored string */
-export function stabilityColor(state: string): string {
-  switch (state) {
-    case 'rock-steady': return chalk.rgb(46, 204, 113)(state)
-    case 'stable': return chalk.rgb(52, 152, 219)(state)
-    case 'mostly-stable': return chalk.rgb(241, 196, 15)(state)
-    case 'wavering': return chalk.rgb(230, 126, 34)(state)
-    case 'unstable': return chalk.rgb(231, 76, 60)(state)
-    case 'extinguished': return chalk.rgb(192, 57, 43).bold(state)
-    default: return state
+/** @example coverageColor('far-reaching') returns colored string */
+export function coverageColor(c: string): string {
+  switch (c) {
+    case 'far-reaching': return chalk.rgb(255, 183, 77).bold(c)
+    case 'wide-glow': return chalk.rgb(46, 204, 113)(c)
+    case 'proper-radius': return chalk.rgb(52, 152, 219)(c)
+    case 'limited-reach': return chalk.rgb(241, 196, 15)(c)
+    case 'narrow-beam': return chalk.rgb(230, 126, 34)(c)
+    case 'pocket-light': return chalk.rgb(231, 76, 60)(c)
+    default: return c
+  }
+}
+
+/** @example controlColor('shadow-master') returns colored string */
+export function controlColor(c: string): string {
+  switch (c) {
+    case 'shadow-master': return chalk.rgb(255, 183, 77).bold(c)
+    case 'controlled-shadows': return chalk.rgb(46, 204, 113)(c)
+    case 'managed-darkness': return chalk.rgb(52, 152, 219)(c)
+    case 'lurking-shadows': return chalk.rgb(241, 196, 15)(c)
+    case 'shadow-overrun': return chalk.rgb(230, 126, 34)(c)
+    case 'total-darkness': return chalk.rgb(231, 76, 60)(c)
+    default: return c
+  }
+}
+
+/** @example conditionColor('beacon-light') returns colored string */
+export function conditionColor(c: string): string {
+  switch (c) {
+    case 'beacon-light': return chalk.rgb(255, 183, 77).bold(c)
+    case 'steady-lantern': return chalk.rgb(46, 204, 113)(c)
+    case 'flickering-flame': return chalk.rgb(52, 152, 219)(c)
+    case 'dying-ember': return chalk.rgb(241, 196, 15)(c)
+    case 'smoking-wick': return chalk.rgb(230, 126, 34)(c)
+    case 'darkness': return chalk.rgb(231, 76, 60)(c)
+    default: return c
+  }
+}
+
+/** @example gradeColor('master-lamplighter') returns colored string */
+export function gradeColor(g: string): string {
+  switch (g) {
+    case 'master-lamplighter': return chalk.rgb(255, 183, 77).bold(g)
+    case 'expert-lightkeeper': return chalk.rgb(46, 204, 113)(g)
+    case 'skilled-lamplighter': return chalk.rgb(52, 152, 219)(g)
+    case 'apprentice': return chalk.rgb(241, 196, 15)(g)
+    case 'novice': return chalk.rgb(230, 126, 34)(g)
+    case 'arsonist': return chalk.rgb(231, 76, 60)(g)
+    default: return g
   }
 }
 
@@ -91,64 +129,64 @@ export function formatLanternGlowTable(result: LanternGlowResult, verbose: boole
   const lines: string[] = []
 
   lines.push('')
-  lines.push(chalk.rgb(255, 200, 100).bold('  Lantern Glow Analysis'))
+  lines.push(chalk.rgb(255, 183, 77).bold('  Lantern Glow Analysis'))
   lines.push('')
 
-  lines.push(chalk.rgb(210, 180, 140)('  Night Overview:'))
-  lines.push(`    Overall Illumination:   ${scoreColor(result.night.overallIllumination)}`)
-  lines.push(`    Avg Glow:               ${scoreColor(result.night.avgGlow)}`)
-  lines.push(`    Avg Stability:          ${scoreColor(result.night.avgStability)}`)
-  lines.push(`    Avg Craftsmanship:      ${scoreColor(result.night.avgCraftsmanship)}`)
-  lines.push(`    Is Illuminated:         ${result.night.isIlluminated ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
+  lines.push(chalk.rgb(255, 183, 77)('  Village:'))
+  lines.push(`    Overall Illumination:   ${scoreColor(result.village.overallIllumination)}`)
+  lines.push(`    Avg Illumination:       ${scoreColor(result.village.avgIllumination)}`)
+  lines.push(`    Avg Guidance:           ${scoreColor(result.village.avgGuidance)}`)
+  lines.push(`    Avg Efficiency:         ${scoreColor(result.village.avgEfficiency)}`)
+  lines.push(`    Is Bright:              ${result.village.isBright ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
   lines.push('')
 
-  lines.push(chalk.rgb(210, 180, 140)('  Statistics:'))
-  lines.push(`    Total Files:                   ${result.stats.totalFiles}`)
-  lines.push(`    Total Processions:             ${result.stats.totalProcessions}`)
-  lines.push(`    Avg Glow Intensity:            ${scoreColor(result.stats.avgGlowIntensity)}`)
-  lines.push(`    Avg Lantern Warmth:            ${scoreColor(result.stats.avgLanternWarmth)}`)
-  lines.push(`    Avg Guidance Quality:          ${scoreColor(result.stats.avgGuidanceQuality)}`)
-  lines.push(`    Avg Flame Stability:           ${scoreColor(result.stats.avgFlameStability)}`)
-  lines.push(`    Avg Light Reach:               ${scoreColor(result.stats.avgLightReach)}`)
-  lines.push(`    Avg Lantern Craftsmanship:     ${scoreColor(result.stats.avgLanternCraftsmanship)}`)
-  lines.push(`    Lantern Keeper Grade:          ${gradeColor(result.stats.lanternKeeperGrade)}`)
+  lines.push(chalk.rgb(255, 183, 77)('  Statistics:'))
+  lines.push(`    Total Files:              ${result.stats.totalFiles}`)
+  lines.push(`    Total Rows:               ${result.stats.totalRows}`)
+  lines.push(`    Avg Illumination:         ${scoreColor(result.stats.avgIllumination)}`)
+  lines.push(`    Avg Warmth:               ${scoreColor(result.stats.avgWarmth)}`)
+  lines.push(`    Avg Guidance:             ${scoreColor(result.stats.avgGuidance)}`)
+  lines.push(`    Avg Fuel Efficiency:      ${scoreColor(result.stats.avgFuelEfficiency)}`)
+  lines.push(`    Avg Glow Reach:           ${scoreColor(result.stats.avgGlowReach)}`)
+  lines.push(`    Avg Shadow Management:    ${scoreColor(result.stats.avgShadowManagement)}`)
+  lines.push(`    Lamplighter Grade:        ${gradeColor(result.stats.lamplighterGrade)}`)
   lines.push('')
 
-  lines.push(chalk.rgb(210, 180, 140)('  Condition Counts:'))
-  lines.push(`    Sky Lantern:                   ${result.stats.skyLanternCount}`)
-  lines.push(`    Stone Lantern:                 ${result.stats.stoneLanternCount}`)
-  lines.push(`    Paper Lantern:                 ${result.stats.paperLanternCount}`)
-  lines.push(`    Oil Lamp:                      ${result.stats.oilLampCount}`)
-  lines.push(`    Candle Stub:                   ${result.stats.candleStubCount}`)
-  lines.push(`    Extinguished:                  ${result.stats.extinguishedCount}`)
+  lines.push(chalk.rgb(255, 183, 77)('  Condition Counts:'))
+  lines.push(`    Beacon Light:      ${result.stats.beaconLightCount}`)
+  lines.push(`    Steady Lantern:    ${result.stats.steadyLanternCount}`)
+  lines.push(`    Flickering Flame:  ${result.stats.flickeringFlameCount}`)
+  lines.push(`    Dying Ember:       ${result.stats.dyingEmberCount}`)
+  lines.push(`    Smoking Wick:      ${result.stats.smokingWickCount}`)
+  lines.push(`    Darkness:          ${result.stats.darknessCount}`)
   lines.push('')
 
   if (result.stats.bestFlame) {
-    lines.push(chalk.rgb(210, 180, 140)('  Highlights:'))
-    lines.push(`    Best Flame:         ${result.stats.bestFlame}`)
-    lines.push(`    Brightest:          ${result.stats.brightest}`)
-    lines.push(`    Warmest:            ${result.stats.warmest}`)
-    lines.push(`    Best Guided:        ${result.stats.bestGuided}`)
-    lines.push(`    Most Stable:        ${result.stats.mostStable}`)
-    lines.push(`    Farthest Reach:     ${result.stats.farthestReach}`)
+    lines.push(chalk.rgb(255, 183, 77)('  Highlights:'))
+    lines.push(`    Best Flame:          ${result.stats.bestFlame}`)
+    lines.push(`    Brightest:           ${result.stats.brightest}`)
+    lines.push(`    Warmest:             ${result.stats.warmest}`)
+    lines.push(`    Best Guided:         ${result.stats.bestGuided}`)
+    lines.push(`    Most Efficient:      ${result.stats.mostEfficient}`)
+    lines.push(`    Farthest Reaching:   ${result.stats.farthestReaching}`)
     lines.push('')
   }
 
   if (verbose && result.flames.length > 0) {
-    lines.push(chalk.rgb(210, 180, 140)('  Per-File Details:'))
-    for (const flame of result.flames) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(flame.file)}`)
-      lines.push(`      Score: ${scoreColor(flame.qualityScore)}  Condition: ${conditionColor(flame.condition)}`)
-      lines.push(`      Glow: ${brightnessColor(flame.glow.brightness)}(${flame.glowIntensity})  Warmth: ${warmthColor(flame.warmth.quality)}(${flame.lanternWarmth})  Guidance: ${flame.guidance.type}(${flame.guidanceQuality})`)
-      lines.push(`      Stability: ${stabilityColor(flame.stability.state)}(${flame.flameStability})  Reach: ${flame.reach.range}(${flame.lightReach})  Craft: ${flame.craftsmanship.make}(${flame.lanternCraftsmanship})`)
+    lines.push(chalk.rgb(255, 183, 77)('  Per-File Flames:'))
+    for (const f of result.flames) {
+      lines.push(`    ${chalk.rgb(169, 169, 169)(f.file)}`)
+      lines.push(`      Score: ${scoreColor(f.qualityScore)}  Condition: ${conditionColor(f.condition)}`)
+      lines.push(`      Light: ${brightnessColor(f.illuminated.brightness)}(${f.illumination})  Warm: ${feelingColor(f.warm.feeling)}(${f.warmth})  Guide: ${guideQualityColor(f.guiding.quality)}(${f.guidance})`)
+      lines.push(`      Efficient: ${consumptionColor(f.efficient.consumption)}(${f.fuelEfficiency})  Reach: ${coverageColor(f.reaching.coverage)}(${f.glowReach})  Shadow: ${controlColor(f.shadow.control)}(${f.shadowManagement})`)
     }
     lines.push('')
   }
 
   if (result.recommendations.length > 0) {
-    lines.push(chalk.rgb(210, 180, 140)('  Recommendations:'))
+    lines.push(chalk.rgb(255, 183, 77)('  Recommendations:'))
     for (const rec of result.recommendations) {
-      lines.push(`    ${chalk.rgb(255, 215, 0)('\u{1F3EE}')} ${rec}`)
+      lines.push(`    ${chalk.rgb(255, 183, 77)('\u{1F56F}')} ${rec}`)
     }
     lines.push('')
   }

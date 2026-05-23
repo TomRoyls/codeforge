@@ -2,705 +2,699 @@ import { describe, expect, it } from 'vitest'
 
 import {
   analyzeLanternFlame,
-  analyzeLanternProcession,
+  analyzeLanternRow,
   buildLanternGlowResult,
   classifyCondition,
-  classifyLanternKeeperGrade,
-  classifyProcessionCondition,
-  classifyProcessionType,
+  classifyLamplighterGrade,
+  classifyRowCondition,
+  classifyRowType,
   generateRecommendations,
-  measureCraftsmanship,
-  measureGlow,
-  measureGuidance,
-  measureReach,
-  measureStability,
-  measureWarmth,
+  measureEfficient,
+  measureGuiding,
+  measureIlluminated,
+  measureReaching,
+  measureShadow,
+  measureWarm,
+  type LanternFlame,
 } from '../src/commands/lantern-glow-helpers.js'
+
 import {
   brightnessColor,
   conditionColor,
+  consumptionColor,
+  controlColor,
+  coverageColor,
+  feelingColor,
   formatLanternGlowJson,
   formatLanternGlowTable,
   gradeColor,
+  guideQualityColor,
   scoreColor,
-  stabilityColor,
-  warmthColor,
 } from '../src/commands/lantern-glow-format-helpers.js'
 
-// ─── Fixtures ───────────────────────────────────────────────────────────────
+// ─── Fixtures ──────────────────────────────────────────────────────────────
 
-const RICH = `export interface Item { name: string; value: number }
-export type ItemMap = Record<string, Item>
-export enum Status { Active = 'active', Inactive = 'inactive' }
-export class Container<T> { private items: T[] = []; protected backup: T[] = []; add(item: T): void { this.items.push(item) } remove(index: number): T { return this.items.splice(index, 1)[0] } }
-export function processItems(items: Item[]): ItemMap { const result: ItemMap = {}; for (const item of items) { result[item.name] = item } return result }
-export const createItem = (name: string, value: number): Item => ({ name, value })
-export async function fetchItems(): Promise<Item[]> { try { const data = await Promise.resolve([{ name: 'test', value: 1 }]); return data } catch { console.error('Failed'); return [] } }
-export { Container, processItems }
-/** Documentation block */ export function documented(): void { if (true) { if (true) { if (true) { console.error('deep') } } } }
+const RICH = `import { readFileSync } from 'fs'
+import type { Config } from './types'
+import { strictEqual } from 'assert'
+
+/**
+ * Process config file
+ */
+export interface ShardConfig {
+  readonly name: string
+  readonly version: number
+  readonly enabled: boolean
+}
+
+export class ShardProcessor<T extends ShardConfig> {
+  private data: T | null = null
+
+  constructor(private readonly config: T) {}
+
+  async process(): Promise<string> {
+    try {
+      if (this.config?.name) {
+        const result: string = await this.validate(this.config)
+        return result ?? 'done'
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error('Processing failed: ' + error.message)
+      }
+    } finally {
+      this.cleanup()
+    }
+    return 'empty'
+  }
+
+  private async validate(config: T): Promise<string> {
+    if (config.version === undefined || config.version === null) {
+      throw new Error('Invalid version')
+    }
+    return 'valid'
+  }
+
+  private cleanup(): void {
+    this.data = null
+  }
+}
+
+export type Result<T> = { ok: true; value: T } | { ok: false; error: Error }
+
+function assertNever(x: never): never {
+  throw new Error('Unreachable: ' + String(x))
+}
 `
 
-const EMPTY = ''
+const MEDIUM = `
+var x = 1
+var y = 2
+function add(a, b) {
+  return a + b
+}
+module.exports = { add }
+`
 
-const MEDIUM = `export class Simple { getName(): string { return 'test' } }
-export function helper(): void { console.log('debug') }`
+// ─── measureIlluminated ────────────────────────────────────────────────────
 
-// ─── measureGlow ────────────────────────────────────────────────────────────
-
-describe('measureGlow', () => {
-  it('RICH: returns correct intensity and brightness', () => {
-    const result = measureGlow(RICH)
-    expect(result.intensity).toBe(82)
-    expect(result.brightness).toBe('steady')
+describe('measureIlluminated', () => {
+  it('measures RICH content as blazing-light', () => {
+    const result = measureIlluminated(RICH)
+    expect(result.clarity).toBe(93)
+    expect(result.brightness).toBe('blazing-light')
+    expect(result.hasHighClarity).toBe(true)
+    expect(result.hasReadable).toBe(true)
+    expect(result.hasClearNaming).toBe(true)
+    expect(result.hasNoObfuscation).toBe(true)
+    expect(result.hasSelfDocumenting).toBe(true)
+    expect(result.hasNoDarkness).toBe(true)
+    expect(result.hasTransparent).toBe(true)
+    expect(result.hasNoMystery).toBe(true)
+    expect(result.hasVisible).toBe(true)
+    expect(result.hasNoHidden).toBe(true)
+    expect(result.darknessCount).toBe(0)
+    expect(result.mysteryCount).toBe(0)
   })
 
-  it('RICH: returns correct booleans', () => {
-    const result = measureGlow(RICH)
-    expect(result.hasHighIntensity).toBe(true)
-    expect(result.hasProperIllumination).toBe(true)
-    expect(result.hasNoDarkSpots).toBe(false)
-    expect(result.hasEvenLight).toBe(false)
-    expect(result.hasProperDiffusion).toBe(true)
-    expect(result.hasNoGlare).toBe(true)
-    expect(result.hasClearBeam).toBe(true)
-    expect(result.hasNoShadow).toBe(false)
-    expect(result.hasWarmTone).toBe(true)
-    expect(result.hasNoHarshLight).toBe(false)
+  it('measures MEDIUM content as extinguished', () => {
+    const result = measureIlluminated(MEDIUM)
+    expect(result.clarity).toBe(0)
+    expect(result.brightness).toBe('extinguished')
+    expect(result.hasNoDarkness).toBe(false)
+    expect(result.darknessCount).toBe(2)
   })
 
-  it('RICH: returns correct counters', () => {
-    const result = measureGlow(RICH)
-    expect(result.darkSpotCount).toBe(2)
-    expect(result.shadowCount).toBe(3)
+  it('measures empty content as extinguished', () => {
+    const result = measureIlluminated('')
+    expect(result.clarity).toBe(0)
+    expect(result.brightness).toBe('extinguished')
   })
 
-  it('EMPTY: returns correct intensity and brightness', () => {
-    const result = measureGlow(EMPTY)
-    expect(result.intensity).toBe(38)
-    expect(result.brightness).toBe('flickering')
-  })
-
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureGlow(EMPTY)
-    expect(result.hasHighIntensity).toBe(false)
-    expect(result.hasNoDarkSpots).toBe(true)
-    expect(result.hasNoShadow).toBe(true)
-    expect(result.hasNoGlare).toBe(true)
-  })
-
-  it('MEDIUM: returns correct intensity and brightness', () => {
-    const result = measureGlow(MEDIUM)
-    expect(result.intensity).toBe(63)
-    expect(result.brightness).toBe('flickering')
-    expect(result.darkSpotCount).toBe(1)
+  it('detects any usage as mystery', () => {
+    const code = `const x: any = {}`
+    const result = measureIlluminated(code)
+    expect(result.mysteryCount).toBe(1)
+    expect(result.hasNoObfuscation).toBe(false)
+    expect(result.hasNoMystery).toBe(false)
   })
 })
 
-// ─── measureWarmth ──────────────────────────────────────────────────────────
+// ─── measureWarm ───────────────────────────────────────────────────────────
 
-describe('measureWarmth', () => {
-  it('RICH: returns correct level and quality', () => {
-    const result = measureWarmth(RICH)
-    expect(result.level).toBe(90)
-    expect(result.quality).toBe('candle')
-  })
-
-  it('RICH: returns correct booleans', () => {
-    const result = measureWarmth(RICH)
-    expect(result.hasHighWarmth).toBe(true)
-    expect(result.hasWelcoming).toBe(true)
-    expect(result.hasApproachable).toBe(true)
-    expect(result.hasNoHostility).toBe(false)
-    expect(result.hasComfortable).toBe(true)
+describe('measureWarm', () => {
+  it('measures RICH content as hearth-fire', () => {
+    const result = measureWarm(RICH)
+    expect(result.approachability).toBe(93)
+    expect(result.feeling).toBe('hearth-fire')
+    expect(result.hasHighApproachability).toBe(true)
     expect(result.hasInviting).toBe(true)
+    expect(result.hasFriendly).toBe(true)
+    expect(result.hasNoHostility).toBe(true)
+    expect(result.hasWelcoming).toBe(true)
     expect(result.hasNoIntimidation).toBe(true)
+    expect(result.hasComfortable).toBe(true)
+    expect(result.hasNoHarshness).toBe(true)
     expect(result.hasGentle).toBe(true)
-    expect(result.hasNoRejection).toBe(true)
-    expect(result.hasNurturing).toBe(true)
-    expect(result.hasNoColdness).toBe(false)
-  })
-
-  it('RICH: returns correct counters', () => {
-    const result = measureWarmth(RICH)
-    expect(result.hostilityCount).toBe(2)
+    expect(result.hasNoBrutalism).toBe(true)
+    expect(result.hostilityCount).toBe(0)
     expect(result.intimidationCount).toBe(0)
   })
 
-  it('EMPTY: returns correct level and quality', () => {
-    const result = measureWarmth(EMPTY)
-    expect(result.level).toBe(40)
-    expect(result.quality).toBe('ember')
+  it('measures MEDIUM content as sterile', () => {
+    const result = measureWarm(MEDIUM)
+    expect(result.approachability).toBe(12)
+    expect(result.feeling).toBe('sterile')
+    expect(result.hasNoHostility).toBe(false)
+    expect(result.hostilityCount).toBe(2)
   })
 
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureWarmth(EMPTY)
-    expect(result.hasNoHostility).toBe(true)
-    expect(result.hasNoIntimidation).toBe(true)
-    expect(result.hasNoRejection).toBe(true)
-  })
-
-  it('MEDIUM: returns correct level and quality', () => {
-    const result = measureWarmth(MEDIUM)
-    expect(result.level).toBe(65)
-    expect(result.quality).toBe('ember')
+  it('measures empty content as sterile', () => {
+    const result = measureWarm('')
+    expect(result.approachability).toBe(0)
+    expect(result.feeling).toBe('sterile')
   })
 })
 
-// ─── measureGuidance ────────────────────────────────────────────────────────
+// ─── measureGuiding ────────────────────────────────────────────────────────
 
-describe('measureGuidance', () => {
-  it('RICH: returns correct quality and type', () => {
-    const result = measureGuidance(RICH)
-    expect(result.quality).toBe(85)
-    expect(result.type).toBe('trail-marker')
+describe('measureGuiding', () => {
+  it('measures RICH content as reliable-compass', () => {
+    const result = measureGuiding(RICH)
+    expect(result.direction).toBe(68)
+    expect(result.quality).toBe('reliable-compass')
+    expect(result.hasHighDirection).toBe(false)
+    expect(result.hasDocumented).toBe(true)
+    expect(result.hasExamples).toBe(false)
+    expect(result.hasNoUndocumented).toBe(true)
+    expect(result.hasClearInstructions).toBe(true)
+    expect(result.hasNoConfusion).toBe(true)
+    expect(result.hasGuiding).toBe(false)
+    expect(result.hasNoDeadEnd).toBe(true)
+    expect(result.hasProperFlow).toBe(true)
+    expect(result.hasNoOrphan).toBe(true)
+    expect(result.undocumentedCount).toBe(0)
+    expect(result.confusionCount).toBe(0)
   })
 
-  it('RICH: returns correct booleans', () => {
-    const result = measureGuidance(RICH)
-    expect(result.hasHighGuidance).toBe(true)
-    expect(result.hasClearDirections).toBe(true)
-    expect(result.hasProperSignage).toBe(true)
-    expect(result.hasNoAmbiguity).toBe(false)
-    expect(result.hasPathway).toBe(false)
-    expect(result.hasWarning).toBe(true)
-    expect(result.hasNoMisdirection).toBe(false)
-    expect(result.hasLandmark).toBe(true)
-    expect(result.hasNoBlindAlley).toBe(false)
-    expect(result.hasProperMapping).toBe(true)
-    expect(result.hasNoLostTravelers).toBe(false)
+  it('measures MEDIUM content as no-guide', () => {
+    const result = measureGuiding(MEDIUM)
+    expect(result.direction).toBe(0)
+    expect(result.quality).toBe('no-guide')
+    expect(result.hasDocumented).toBe(false)
   })
 
-  it('RICH: returns correct counters', () => {
-    const result = measureGuidance(RICH)
-    expect(result.ambiguityCount).toBe(2)
-    expect(result.misdirectionCount).toBe(2)
-  })
-
-  it('EMPTY: returns correct quality and type', () => {
-    const result = measureGuidance(EMPTY)
-    expect(result.quality).toBe(39)
-    expect(result.type).toBe('cairn')
-  })
-
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureGuidance(EMPTY)
-    expect(result.hasNoAmbiguity).toBe(true)
-    expect(result.hasNoMisdirection).toBe(true)
-    expect(result.hasNoBlindAlley).toBe(true)
-  })
-
-  it('MEDIUM: returns correct quality and type', () => {
-    const result = measureGuidance(MEDIUM)
-    expect(result.quality).toBe(62)
-    expect(result.type).toBe('cairn')
+  it('detects TODO/FIXME as undocumented', () => {
+    const code = `// TODO fix this\n// FIXME broken`
+    const result = measureGuiding(code)
+    expect(result.undocumentedCount).toBe(2)
+    expect(result.hasNoUndocumented).toBe(false)
+    expect(result.hasNoDeadEnd).toBe(false)
   })
 })
 
-// ─── measureStability ───────────────────────────────────────────────────────
+// ─── measureEfficient ──────────────────────────────────────────────────────
 
-describe('measureStability', () => {
-  it('RICH: returns correct level and state', () => {
-    const result = measureStability(RICH)
-    expect(result.level).toBe(90)
-    expect(result.state).toBe('stable')
+describe('measureEfficient', () => {
+  it('measures RICH content as perfect-burn', () => {
+    const result = measureEfficient(RICH)
+    expect(result.performance).toBe(96)
+    expect(result.consumption).toBe('perfect-burn')
+    expect(result.hasHighPerformance).toBe(true)
+    expect(result.hasOptimized).toBe(true)
+    expect(result.hasNoWaste).toBe(true)
+    expect(result.hasEfficient).toBe(true)
+    expect(result.hasNoRedundancy).toBe(true)
+    expect(result.hasLean).toBe(true)
+    expect(result.hasNoBloat).toBe(true)
+    expect(result.hasMinimal).toBe(true)
+    expect(result.hasNoExcess).toBe(true)
+    expect(result.wasteCount).toBe(0)
+    expect(result.bloatCount).toBe(0)
   })
 
-  it('RICH: returns correct booleans', () => {
-    const result = measureStability(RICH)
-    expect(result.hasHighStability).toBe(true)
-    expect(result.hasConsistentFlame).toBe(true)
-    expect(result.hasNoFlickering).toBe(true)
-    expect(result.hasWindResistance).toBe(true)
-    expect(result.hasNoGuttering).toBe(false)
-    expect(result.hasFuelReserve).toBe(true)
-    expect(result.hasNoSputtering).toBe(true)
-    expect(result.hasProperDraft).toBe(true)
-    expect(result.hasNoBlowout).toBe(false)
-    expect(result.hasSelfRelighting).toBe(true)
-    expect(result.hasNoBurnout).toBe(false)
+  it('measures MEDIUM content as burning-out', () => {
+    const result = measureEfficient(MEDIUM)
+    expect(result.performance).toBe(0)
+    expect(result.consumption).toBe('burning-out')
+    expect(result.hasNoWaste).toBe(false)
+    expect(result.wasteCount).toBe(2)
   })
 
-  it('RICH: returns correct counters', () => {
-    const result = measureStability(RICH)
-    expect(result.flickeringCount).toBe(0)
-    expect(result.blowoutCount).toBe(2)
-  })
-
-  it('EMPTY: returns correct level and state', () => {
-    const result = measureStability(EMPTY)
-    expect(result.level).toBe(30)
-    expect(result.state).toBe('extinguished')
-  })
-
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureStability(EMPTY)
-    expect(result.hasHighStability).toBe(false)
-    expect(result.hasNoFlickering).toBe(true)
-    expect(result.hasNoBlowout).toBe(true)
-  })
-
-  it('MEDIUM: returns correct level and state', () => {
-    const result = measureStability(MEDIUM)
-    expect(result.level).toBe(52)
-    expect(result.state).toBe('unstable')
+  it('detects console calls as bloat', () => {
+    const code = `console.log('hello')\nconsole.error('oops')`
+    const result = measureEfficient(code)
+    expect(result.bloatCount).toBe(2)
+    expect(result.hasNoBloat).toBe(false)
+    expect(result.hasNoRedundancy).toBe(false)
   })
 })
 
-// ─── measureReach ───────────────────────────────────────────────────────────
+// ─── measureReaching ───────────────────────────────────────────────────────
 
-describe('measureReach', () => {
-  it('RICH: returns correct distance and range', () => {
-    const result = measureReach(RICH)
-    expect(result.distance).toBe(80)
-    expect(result.range).toBe('candle-glow')
+describe('measureReaching', () => {
+  it('measures RICH content as far-reaching', () => {
+    const result = measureReaching(RICH)
+    expect(result.scope).toBe(93)
+    expect(result.coverage).toBe('far-reaching')
+    expect(result.hasHighScope).toBe(true)
+    expect(result.hasBroad).toBe(true)
+    expect(result.hasReusable).toBe(true)
+    expect(result.hasNoNarrow).toBe(true)
+    expect(result.hasNoRigid).toBe(true)
+    expect(result.hasGeneral).toBe(true)
+    expect(result.hasNoSpecific).toBe(true)
+    expect(result.hasNoBrittle).toBe(true)
+    expect(result.narrowCount).toBe(0)
+    expect(result.specificCount).toBe(0)
   })
 
-  it('RICH: returns correct booleans', () => {
-    const result = measureReach(RICH)
-    expect(result.hasHighReach).toBe(true)
-    expect(result.hasWideIllumination).toBe(true)
-    expect(result.hasDistantVisibility).toBe(false)
-    expect(result.hasNoObscurity).toBe(false)
-    expect(result.hasProperProjection).toBe(true)
-    expect(result.hasNoDiminishing).toBe(false)
-    expect(result.hasLongRange).toBe(true)
-    expect(result.hasNoLocalOnly).toBe(false)
-    expect(result.hasProperSpread).toBe(true)
-    expect(result.hasNoIsolation).toBe(false)
-    expect(result.hasBeacon).toBe(true)
+  it('measures MEDIUM content as pocket-light', () => {
+    const result = measureReaching(MEDIUM)
+    expect(result.scope).toBe(0)
+    expect(result.coverage).toBe('pocket-light')
+    expect(result.hasNoNarrow).toBe(false)
+    expect(result.narrowCount).toBe(2)
   })
 
-  it('RICH: returns correct counters', () => {
-    const result = measureReach(RICH)
-    expect(result.obscuringCount).toBe(2)
-    expect(result.isolationCount).toBe(3)
-  })
-
-  it('EMPTY: returns correct distance and range', () => {
-    const result = measureReach(EMPTY)
-    expect(result.distance).toBe(44)
-    expect(result.range).toBe('spark')
-  })
-
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureReach(EMPTY)
-    expect(result.hasNoObscurity).toBe(true)
-    expect(result.hasNoIsolation).toBe(true)
-  })
-
-  it('MEDIUM: returns correct distance and range', () => {
-    const result = measureReach(MEDIUM)
-    expect(result.distance).toBe(67)
-    expect(result.range).toBe('spark')
+  it('detects any as specific', () => {
+    const code = `const x: any = {}`
+    const result = measureReaching(code)
+    expect(result.specificCount).toBe(1)
+    expect(result.hasNoSpecific).toBe(false)
+    expect(result.hasNoRigid).toBe(false)
   })
 })
 
-// ─── measureCraftsmanship ───────────────────────────────────────────────────
+// ─── measureShadow ─────────────────────────────────────────────────────────
 
-describe('measureCraftsmanship', () => {
-  it('RICH: returns correct quality and make', () => {
-    const result = measureCraftsmanship(RICH)
-    expect(result.quality).toBe(85)
-    expect(result.make).toBe('masterwork')
+describe('measureShadow', () => {
+  it('measures RICH content as controlled-shadows', () => {
+    const result = measureShadow(RICH)
+    expect(result.management).toBe(78)
+    expect(result.control).toBe('controlled-shadows')
+    expect(result.hasHighManagement).toBe(true)
+    expect(result.hasErrorHandling).toBe(true)
+    expect(result.hasCaught).toBe(true)
+    expect(result.hasNoUncaught).toBe(true)
+    expect(result.hasEdgeCases).toBe(true)
+    expect(result.hasNoSurprises).toBe(true)
+    expect(result.hasDefensive).toBe(true)
+    expect(result.hasNoBare).toBe(true)
+    expect(result.hasGraceful).toBe(true)
+    expect(result.hasNoCrash).toBe(true)
+    expect(result.uncaughtCount).toBe(0)
+    expect(result.surpriseCount).toBe(0)
   })
 
-  it('RICH: returns correct booleans', () => {
-    const result = measureCraftsmanship(RICH)
-    expect(result.hasHighCraftsmanship).toBe(true)
-    expect(result.hasProperConstruction).toBe(true)
-    expect(result.hasNoDefects).toBe(true)
-    expect(result.hasProperMaterials).toBe(false)
-    expect(result.hasBeautifulDesign).toBe(true)
-    expect(result.hasNoShoddyWork).toBe(false)
-    expect(result.hasProperFinish).toBe(true)
-    expect(result.hasDurable).toBe(true)
-    expect(result.hasNoFragility).toBe(false)
-    expect(result.hasLegacy).toBe(true)
-    expect(result.hasTimeless).toBe(true)
+  it('measures MEDIUM content as total-darkness', () => {
+    const result = measureShadow(MEDIUM)
+    expect(result.management).toBe(5)
+    expect(result.control).toBe('total-darkness')
+    expect(result.hasHighManagement).toBe(false)
+    expect(result.hasErrorHandling).toBe(false)
   })
 
-  it('RICH: returns correct counters', () => {
-    const result = measureCraftsmanship(RICH)
-    expect(result.defectCount).toBe(0)
-    expect(result.shoddyCount).toBe(2)
-  })
-
-  it('EMPTY: returns correct quality and make', () => {
-    const result = measureCraftsmanship(EMPTY)
-    expect(result.quality).toBe(40)
-    expect(result.make).toBe('hasty')
-  })
-
-  it('EMPTY: returns correct booleans', () => {
-    const result = measureCraftsmanship(EMPTY)
-    expect(result.hasNoDefects).toBe(true)
-    expect(result.hasNoShoddyWork).toBe(true)
-  })
-
-  it('MEDIUM: returns correct quality and make', () => {
-    const result = measureCraftsmanship(MEDIUM)
-    expect(result.quality).toBe(65)
-    expect(result.make).toBe('hasty')
+  it('detects process.exit as surprise', () => {
+    const code = `process.exit(1)`
+    const result = measureShadow(code)
+    expect(result.surpriseCount).toBe(1)
+    expect(result.hasNoSurprises).toBe(false)
+    expect(result.hasNoCrash).toBe(false)
   })
 })
 
-// ─── analyzeLanternFlame ────────────────────────────────────────────────────
-
-describe('analyzeLanternFlame', () => {
-  it('RICH: returns correct quality score and condition', () => {
-    const flame = analyzeLanternFlame(RICH, 'test.ts')
-    expect(flame.qualityScore).toBe(86)
-    expect(flame.condition).toBe('sky-lantern')
-    expect(flame.file).toBe('test.ts')
-  })
-
-  it('RICH: returns correct measure scores', () => {
-    const flame = analyzeLanternFlame(RICH, 'test.ts')
-    expect(flame.glowIntensity).toBe(82)
-    expect(flame.lanternWarmth).toBe(90)
-    expect(flame.guidanceQuality).toBe(85)
-    expect(flame.flameStability).toBe(90)
-    expect(flame.lightReach).toBe(80)
-    expect(flame.lanternCraftsmanship).toBe(85)
-  })
-
-  it('EMPTY: returns correct quality score and condition', () => {
-    const flame = analyzeLanternFlame(EMPTY, 'empty.ts')
-    expect(flame.qualityScore).toBe(38)
-    expect(flame.condition).toBe('oil-lamp')
-  })
-
-  it('MEDIUM: returns correct quality score and condition', () => {
-    const flame = analyzeLanternFlame(MEDIUM, 'medium.ts')
-    expect(flame.qualityScore).toBe(62)
-    expect(flame.condition).toBe('paper-lantern')
-  })
-})
-
-// ─── classifyCondition ──────────────────────────────────────────────────────
+// ─── classifyCondition ─────────────────────────────────────────────────────
 
 describe('classifyCondition', () => {
-  it('classifies sky-lantern at 80+', () => {
-    const flame = { qualityScore: 85, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('sky-lantern')
+  it('classifies beacon-light at 85+', () => {
+    expect(classifyCondition(90)).toBe('beacon-light')
+    expect(classifyCondition(100)).toBe('beacon-light')
   })
-  it('classifies stone-lantern at 65-79', () => {
-    const flame = { qualityScore: 70, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('stone-lantern')
+  it('classifies steady-lantern at 70-84', () => {
+    expect(classifyCondition(75)).toBe('steady-lantern')
   })
-  it('classifies paper-lantern at 50-64', () => {
-    const flame = { qualityScore: 55, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('paper-lantern')
+  it('classifies flickering-flame at 55-69', () => {
+    expect(classifyCondition(60)).toBe('flickering-flame')
   })
-  it('classifies oil-lamp at 35-49', () => {
-    const flame = { qualityScore: 40, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('oil-lamp')
+  it('classifies dying-ember at 40-54', () => {
+    expect(classifyCondition(45)).toBe('dying-ember')
   })
-  it('classifies candle-stub at 20-34', () => {
-    const flame = { qualityScore: 25, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('candle-stub')
+  it('classifies smoking-wick at 25-39', () => {
+    expect(classifyCondition(30)).toBe('smoking-wick')
   })
-  it('classifies extinguished below 20', () => {
-    const flame = { qualityScore: 10, condition: 'extinguished' } as ReturnType<typeof analyzeLanternFlame>
-    expect(classifyCondition(flame)).toBe('extinguished')
+  it('classifies darkness below 25', () => {
+    expect(classifyCondition(10)).toBe('darkness')
+    expect(classifyCondition(0)).toBe('darkness')
   })
 })
 
-// ─── classifyProcessionType ─────────────────────────────────────────────────
+// ─── classifyLamplighterGrade ──────────────────────────────────────────────
 
-describe('classifyProcessionType', () => {
-  it('returns blackout for empty array', () => {
-    expect(classifyProcessionType([])).toBe('blackout')
+describe('classifyLamplighterGrade', () => {
+  it('classifies master-lamplighter at 80+', () => {
+    expect(classifyLamplighterGrade(85)).toBe('master-lamplighter')
   })
-  it('returns festival-of-lights for high avg with 30%+ sky-lantern', () => {
-    const flames = [
-      { qualityScore: 85, condition: 'sky-lantern' },
-      { qualityScore: 85, condition: 'sky-lantern' },
-      { qualityScore: 80, condition: 'sky-lantern' },
-    ] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('festival-of-lights')
+  it('classifies expert-lightkeeper at 65-79', () => {
+    expect(classifyLamplighterGrade(70)).toBe('expert-lightkeeper')
   })
-  it('returns lantern-parade for avg 60+', () => {
-    const flames = [{ qualityScore: 60, condition: 'paper-lantern' }] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('lantern-parade')
+  it('classifies skilled-lamplighter at 50-64', () => {
+    expect(classifyLamplighterGrade(55)).toBe('skilled-lamplighter')
   })
-  it('returns guided-tour for avg 45+', () => {
-    const flames = [{ qualityScore: 45, condition: 'oil-lamp' }] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('guided-tour')
+  it('classifies apprentice at 35-49', () => {
+    expect(classifyLamplighterGrade(40)).toBe('apprentice')
   })
-  it('returns night-walk for avg 30+', () => {
-    const flames = [{ qualityScore: 35, condition: 'oil-lamp' }] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('night-walk')
+  it('classifies novice at 20-34', () => {
+    expect(classifyLamplighterGrade(25)).toBe('novice')
   })
-  it('returns dark-alley for avg 15+', () => {
-    const flames = [{ qualityScore: 20, condition: 'candle-stub' }] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('dark-alley')
-  })
-  it('returns blackout for avg below 15', () => {
-    const flames = [{ qualityScore: 10, condition: 'extinguished' }] as ReturnType<typeof analyzeLanternFlame>[]
-    expect(classifyProcessionType(flames)).toBe('blackout')
+  it('classifies arsonist below 20', () => {
+    expect(classifyLamplighterGrade(10)).toBe('arsonist')
+    expect(classifyLamplighterGrade(0)).toBe('arsonist')
   })
 })
 
-// ─── classifyProcessionCondition ────────────────────────────────────────────
+// ─── classifyRowCondition ──────────────────────────────────────────────────
 
-describe('classifyProcessionCondition', () => {
-  it('returns floating-festival at 80+', () => { expect(classifyProcessionCondition(85)).toBe('floating-festival') })
-  it('returns illuminated-path at 65+', () => { expect(classifyProcessionCondition(70)).toBe('illuminated-path') })
-  it('returns twilight-walk at 50+', () => { expect(classifyProcessionCondition(55)).toBe('twilight-walk') })
-  it('returns dim-corridor at 35+', () => { expect(classifyProcessionCondition(40)).toBe('dim-corridor') })
-  it('returns dark-tunnel at 20+', () => { expect(classifyProcessionCondition(25)).toBe('dark-tunnel') })
-  it('returns void below 20', () => { expect(classifyProcessionCondition(10)).toBe('void') })
+describe('classifyRowCondition', () => {
+  it('classifies well-lit-path at 75+', () => {
+    expect(classifyRowCondition(80)).toBe('well-lit-path')
+  })
+  it('classifies navigable-trail at 60-74', () => {
+    expect(classifyRowCondition(65)).toBe('navigable-trail')
+  })
+  it('classifies dimly-lit at 45-59', () => {
+    expect(classifyRowCondition(50)).toBe('dimly-lit')
+  })
+  it('classifies shadowy-path at 30-44', () => {
+    expect(classifyRowCondition(35)).toBe('shadowy-path')
+  })
+  it('classifies groping-in-dark at 15-29', () => {
+    expect(classifyRowCondition(20)).toBe('groping-in-dark')
+  })
+  it('classifies lost below 15', () => {
+    expect(classifyRowCondition(5)).toBe('lost')
+    expect(classifyRowCondition(0)).toBe('lost')
+  })
 })
 
-// ─── classifyLanternKeeperGrade ─────────────────────────────────────────────
+// ─── analyzeLanternFlame ───────────────────────────────────────────────────
 
-describe('classifyLanternKeeperGrade', () => {
-  it('returns grand-master at 80+', () => { expect(classifyLanternKeeperGrade(85)).toBe('grand-master') })
-  it('returns master-keeper at 65+', () => { expect(classifyLanternKeeperGrade(70)).toBe('master-keeper') })
-  it('returns lantern-keeper at 50+', () => { expect(classifyLanternKeeperGrade(55)).toBe('lantern-keeper') })
-  it('returns attendant at 35+', () => { expect(classifyLanternKeeperGrade(40)).toBe('attendant') })
-  it('returns apprentice at 20+', () => { expect(classifyLanternKeeperGrade(25)).toBe('apprentice') })
-  it('returns darkness-dweller below 20', () => { expect(classifyLanternKeeperGrade(10)).toBe('darkness-dweller') })
-})
-
-// ─── analyzeLanternProcession ───────────────────────────────────────────────
-
-describe('analyzeLanternProcession', () => {
-  it('returns empty procession for no flames', () => {
-    const proc = analyzeLanternProcession([], '.')
-    expect(proc.flames).toEqual([])
-    expect(proc.processionType).toBe('blackout')
-    expect(proc.condition).toBe('void')
-    expect(proc.avgGlow).toBe(0)
-    expect(proc.avgStability).toBe(0)
-    expect(proc.avgCraftsmanship).toBe(0)
+describe('analyzeLanternFlame', () => {
+  it('analyzes RICH content correctly', () => {
+    const flame = analyzeLanternFlame(RICH, 'rich.ts')
+    expect(flame.file).toBe('rich.ts')
+    expect(flame.illumination).toBe(93)
+    expect(flame.warmth).toBe(93)
+    expect(flame.guidance).toBe(68)
+    expect(flame.fuelEfficiency).toBe(96)
+    expect(flame.glowReach).toBe(93)
+    expect(flame.shadowManagement).toBe(78)
+    expect(flame.condition).toBe('beacon-light')
+    expect(flame.qualityScore).toBe(87)
   })
 
-  it('returns correct procession for RICH flames', () => {
+  it('analyzes MEDIUM content correctly', () => {
+    const flame = analyzeLanternFlame(MEDIUM, 'medium.ts')
+    expect(flame.file).toBe('medium.ts')
+    expect(flame.illumination).toBe(0)
+    expect(flame.warmth).toBe(12)
+    expect(flame.guidance).toBe(0)
+    expect(flame.fuelEfficiency).toBe(0)
+    expect(flame.glowReach).toBe(0)
+    expect(flame.shadowManagement).toBe(5)
+    expect(flame.condition).toBe('darkness')
+    expect(flame.qualityScore).toBe(3)
+  })
+
+  it('computes qualityScore from weighted measures', () => {
     const flame = analyzeLanternFlame(RICH, 'test.ts')
-    const proc = analyzeLanternProcession([flame], 'src')
-    expect(proc.avgGlow).toBe(82)
-    expect(proc.avgStability).toBe(90)
-    expect(proc.avgCraftsmanship).toBe(85)
-    expect(proc.skyLanternCount).toBe(1)
-    expect(proc.extinguishedCount).toBe(0)
-    expect(proc.highIntensityCount).toBe(1)
-    expect(proc.stableCount).toBe(1)
-    expect(proc.processionType).toBe('festival-of-lights')
-    expect(proc.condition).toBe('floating-festival')
+    // illum*0.2 + warmth*0.15 + guidance*0.15 + efficiency*0.15 + reach*0.15 + shadow*0.2
+    const expected = Math.round(93 * 0.2 + 93 * 0.15 + 68 * 0.15 + 96 * 0.15 + 93 * 0.15 + 78 * 0.2)
+    expect(flame.qualityScore).toBe(expected)
+  })
+
+  it('includes all measure objects', () => {
+    const flame = analyzeLanternFlame(RICH, 'test.ts')
+    expect(flame.illuminated).toBeDefined()
+    expect(flame.warm).toBeDefined()
+    expect(flame.guiding).toBeDefined()
+    expect(flame.efficient).toBeDefined()
+    expect(flame.reaching).toBeDefined()
+    expect(flame.shadow).toBeDefined()
   })
 })
 
-// ─── buildLanternGlowResult ─────────────────────────────────────────────────
+// ─── analyzeLanternRow ─────────────────────────────────────────────────────
+
+describe('analyzeLanternRow', () => {
+  it('returns empty row for no flames', () => {
+    const row = analyzeLanternRow([], 'empty')
+    expect(row.directory).toBe('empty')
+    expect(row.flames).toEqual([])
+    expect(row.avgIllumination).toBe(0)
+    expect(row.avgGuidance).toBe(0)
+    expect(row.avgEfficiency).toBe(0)
+    expect(row.beaconCount).toBe(0)
+    expect(row.darknessCount).toBe(0)
+    expect(row.steadyCount).toBe(0)
+    expect(row.flickeringCount).toBe(0)
+    expect(row.rowType).toBe('pitch-black')
+    expect(row.condition).toBe('lost')
+  })
+
+  it('computes averages for single flame', () => {
+    const flame = analyzeLanternFlame(RICH, 'rich.ts')
+    const row = analyzeLanternRow([flame], 'src')
+    expect(row.avgIllumination).toBe(93)
+    expect(row.avgGuidance).toBe(68)
+    expect(row.avgEfficiency).toBe(96)
+    expect(row.beaconCount).toBe(1)
+    expect(row.darknessCount).toBe(0)
+  })
+
+  it('computes averages for multiple flames', () => {
+    const rFlame = analyzeLanternFlame(RICH, 'rich.ts')
+    const mFlame = analyzeLanternFlame(MEDIUM, 'medium.ts')
+    const row = analyzeLanternRow([rFlame, mFlame], 'src')
+    expect(row.avgIllumination).toBe(47)
+    expect(row.avgGuidance).toBe(34)
+    expect(row.avgEfficiency).toBe(48)
+    expect(row.beaconCount).toBe(1)
+    expect(row.darknessCount).toBe(1)
+  })
+})
+
+// ─── classifyRowType ───────────────────────────────────────────────────────
+
+describe('classifyRowType', () => {
+  it('returns pitch-black for no flames', () => {
+    expect(classifyRowType([])).toBe('pitch-black')
+  })
+
+  it('classifies illuminated-path for high avg with many beacons', () => {
+    const flames: LanternFlame[] = Array.from({ length: 5 }, (_, i) => ({
+      ...analyzeLanternFlame(RICH, `f${i}.ts`),
+      condition: i < 3 ? 'beacon-light' as const : 'steady-lantern' as const,
+      qualityScore: i < 3 ? 95 : 75,
+    }))
+    expect(classifyRowType(flames)).toBe('illuminated-path')
+  })
+})
+
+// ─── buildLanternGlowResult ────────────────────────────────────────────────
 
 describe('buildLanternGlowResult', () => {
-  it('RICH: returns correct night', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
-    expect(result.night.overallIllumination).toBe(86)
-    expect(result.night.avgGlow).toBe(82)
-    expect(result.night.avgStability).toBe(90)
-    expect(result.night.avgCraftsmanship).toBe(85)
-    expect(result.night.isIlluminated).toBe(true)
-  })
-
-  it('RICH: returns correct stats', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
-    expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.totalProcessions).toBe(1)
-    expect(result.stats.avgGlowIntensity).toBe(82)
-    expect(result.stats.avgLanternWarmth).toBe(90)
-    expect(result.stats.avgGuidanceQuality).toBe(85)
-    expect(result.stats.avgFlameStability).toBe(90)
-    expect(result.stats.avgLightReach).toBe(80)
-    expect(result.stats.avgLanternCraftsmanship).toBe(85)
-    expect(result.stats.skyLanternCount).toBe(1)
-    expect(result.stats.lanternKeeperGrade).toBe('grand-master')
-    expect(result.stats.bestFlame).toBe('test.ts')
-    expect(result.stats.brightest).toBe('test.ts')
-    expect(result.stats.warmest).toBe('test.ts')
-    expect(result.stats.bestGuided).toBe('test.ts')
-    expect(result.stats.mostStable).toBe('test.ts')
-    expect(result.stats.farthestReach).toBe('test.ts')
-  })
-
-  it('RICH: returns magnificent recommendations', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
-    expect(result.recommendations).toEqual([
-      'Magnificent illumination achieved — your lanterns light the way for all travelers',
-    ])
-  })
-
-  it('EMPTY: returns correct night', () => {
-    const result = buildLanternGlowResult(['empty.ts'], [EMPTY])
-    expect(result.night.overallIllumination).toBe(38)
-    expect(result.night.isIlluminated).toBe(false)
-  })
-
-  it('EMPTY: returns correct stats', () => {
-    const result = buildLanternGlowResult(['empty.ts'], [EMPTY])
-    expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.avgFlameStability).toBe(30)
-    expect(result.stats.oilLampCount).toBe(1)
-    expect(result.stats.lanternKeeperGrade).toBe('attendant')
-  })
-
-  it('EMPTY: returns improvement recommendations', () => {
-    const result = buildLanternGlowResult(['empty.ts'], [EMPTY])
-    expect(result.recommendations.length).toBe(8)
-    expect(result.recommendations[0]).toContain('glow intensity')
-    expect(result.recommendations[6]).toContain('masterwork')
-  })
-
-  it('MIXED: returns correct blended night', () => {
-    const result = buildLanternGlowResult(
-      ['rich.ts', 'empty.ts', 'medium.ts'],
-      [RICH, EMPTY, MEDIUM],
-    )
-    expect(result.night.overallIllumination).toBe(62)
-    expect(result.night.isIlluminated).toBe(false)
-    expect(result.stats.totalFiles).toBe(3)
-    expect(result.stats.skyLanternCount).toBe(1)
-    expect(result.stats.paperLanternCount).toBe(1)
-    expect(result.stats.oilLampCount).toBe(1)
-    expect(result.stats.lanternKeeperGrade).toBe('lantern-keeper')
-  })
-
-  it('MIXED: groups files into processions', () => {
-    const result = buildLanternGlowResult(
-      ['rich.ts', 'empty.ts', 'medium.ts'],
-      [RICH, EMPTY, MEDIUM],
-    )
-    expect(result.processions.length).toBe(1)
-    expect(result.processions[0].processionType).toBe('lantern-parade')
-    expect(result.processions[0].condition).toBe('twilight-walk')
-  })
-
-  it('handles empty input arrays', () => {
+  it('handles empty input', () => {
     const result = buildLanternGlowResult([], [])
     expect(result.flames).toEqual([])
-    expect(result.processions).toEqual([])
-    expect(result.night.overallIllumination).toBe(0)
-    expect(result.night.isIlluminated).toBe(false)
+    expect(result.rows).toEqual([])
+    expect(result.village.avgIllumination).toBe(0)
+    expect(result.village.avgGuidance).toBe(0)
+    expect(result.village.avgEfficiency).toBe(0)
+    expect(result.village.isBright).toBe(false)
+    expect(result.village.overallIllumination).toBe(0)
     expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.totalRows).toBe(0)
+    expect(result.stats.lamplighterGrade).toBe('arsonist')
     expect(result.stats.bestFlame).toBe('')
-  })
-})
-
-// ─── generateRecommendations ────────────────────────────────────────────────
-
-describe('generateRecommendations', () => {
-  it('returns magnificent message when all is good', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
-    const recs = generateRecommendations(result.flames, result.processions, result.night, result.stats)
-    expect(recs).toContain('Magnificent illumination achieved — your lanterns light the way for all travelers')
-  })
-
-  it('returns improvement recs for low scores', () => {
-    const result = buildLanternGlowResult(['empty.ts'], [EMPTY])
     expect(result.recommendations.length).toBeGreaterThan(0)
   })
+
+  it('handles RICH + MEDIUM combined', () => {
+    const result = buildLanternGlowResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
+    expect(result.flames).toHaveLength(2)
+    expect(result.rows).toHaveLength(1)
+    expect(result.village.avgIllumination).toBe(47)
+    expect(result.village.avgGuidance).toBe(34)
+    expect(result.village.avgEfficiency).toBe(48)
+    expect(result.village.isBright).toBe(false)
+    expect(result.village.overallIllumination).toBe(43)
+    expect(result.stats.totalFiles).toBe(2)
+    expect(result.stats.avgWarmth).toBe(53)
+    expect(result.stats.avgFuelEfficiency).toBe(48)
+    expect(result.stats.avgGlowReach).toBe(47)
+    expect(result.stats.avgShadowManagement).toBe(42)
+    expect(result.stats.beaconLightCount).toBe(1)
+    expect(result.stats.darknessCount).toBe(1)
+    expect(result.stats.lamplighterGrade).toBe('apprentice')
+    expect(result.stats.bestFlame).toBe('rich.ts')
+    expect(result.stats.brightest).toBe('rich.ts')
+    expect(result.stats.warmest).toBe('rich.ts')
+    expect(result.stats.bestGuided).toBe('rich.ts')
+    expect(result.stats.mostEfficient).toBe('rich.ts')
+    expect(result.stats.farthestReaching).toBe('rich.ts')
+  })
+
+  it('tracks high measure counts', () => {
+    const result = buildLanternGlowResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
+    expect(result.stats.hasHighClarityCount).toBe(1)
+    expect(result.stats.hasHighApproachabilityCount).toBe(1)
+    expect(result.stats.hasHighDirectionCount).toBe(0)
+    expect(result.stats.hasHighPerformanceCount).toBe(1)
+    expect(result.stats.hasHighScopeCount).toBe(1)
+    expect(result.stats.hasHighManagementCount).toBe(1)
+  })
+
+  it('separates files into rows by directory', () => {
+    const result = buildLanternGlowResult(
+      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
+      [RICH, RICH, MEDIUM],
+    )
+    expect(result.rows).toHaveLength(2)
+    const srcRow = result.rows.find((r) => r.directory === 'src')
+    const libRow = result.rows.find((r) => r.directory === 'lib')
+    expect(srcRow).toBeDefined()
+    expect(libRow).toBeDefined()
+    expect(srcRow!.flames).toHaveLength(2)
+    expect(libRow!.flames).toHaveLength(1)
+  })
+
+  it('computes overallIllumination as average of three measures', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
+    const expected = Math.round((93 + 68 + 96) / 3)
+    expect(result.village.overallIllumination).toBe(expected)
+    expect(result.village.isBright).toBe(true)
+  })
 })
 
-// ─── Format Helpers ─────────────────────────────────────────────────────────
+// ─── generateRecommendations ───────────────────────────────────────────────
+
+describe('generateRecommendations', () => {
+  it('generates recommendations for low scores', () => {
+    const result = buildLanternGlowResult(['medium.ts'], [MEDIUM])
+    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.recommendations).toContain('1 file(s) are in total darkness — consider significant refactoring')
+    expect(result.recommendations).toContain('Relight these dark files: medium.ts')
+  })
+
+  it('generates positive recommendation for high scores', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
+    expect(result.recommendations).toContain('Your code is a beacon of light! Keep the lanterns burning bright')
+  })
+
+  it('recommends improving village when low', () => {
+    const result = buildLanternGlowResult([], [])
+    expect(result.recommendations).toContain('Overall village illumination is low — prioritize clarity and error handling')
+  })
+})
+
+// ─── Format Helpers ────────────────────────────────────────────────────────
 
 describe('format helpers', () => {
-  it('scoreColor returns string for all ranges', () => {
-    expect(typeof scoreColor(90)).toBe('string')
-    expect(typeof scoreColor(70)).toBe('string')
-    expect(typeof scoreColor(50)).toBe('string')
-    expect(typeof scoreColor(20)).toBe('string')
+  describe('scoreColor', () => {
+    it('returns string for any score', () => {
+      expect(typeof scoreColor(90)).toBe('string')
+      expect(typeof scoreColor(0)).toBe('string')
+    })
   })
 
-  it('conditionColor returns string for all conditions', () => {
-    expect(typeof conditionColor('sky-lantern')).toBe('string')
-    expect(typeof conditionColor('stone-lantern')).toBe('string')
-    expect(typeof conditionColor('paper-lantern')).toBe('string')
-    expect(typeof conditionColor('oil-lamp')).toBe('string')
-    expect(typeof conditionColor('candle-stub')).toBe('string')
-    expect(typeof conditionColor('extinguished')).toBe('string')
-    expect(typeof conditionColor('unknown')).toBe('string')
+  describe('brightnessColor', () => {
+    it('colors blazing-light', () => { expect(typeof brightnessColor('blazing-light')).toBe('string') })
+    it('colors unknown', () => { expect(brightnessColor('unknown')).toBe('unknown') })
   })
 
-  it('gradeColor returns string for all grades', () => {
-    expect(typeof gradeColor('grand-master')).toBe('string')
-    expect(typeof gradeColor('master-keeper')).toBe('string')
-    expect(typeof gradeColor('lantern-keeper')).toBe('string')
-    expect(typeof gradeColor('attendant')).toBe('string')
-    expect(typeof gradeColor('apprentice')).toBe('string')
-    expect(typeof gradeColor('darkness-dweller')).toBe('string')
+  describe('feelingColor', () => {
+    it('colors hearth-fire', () => { expect(typeof feelingColor('hearth-fire')).toBe('string') })
+    it('colors unknown', () => { expect(feelingColor('unknown')).toBe('unknown') })
   })
 
-  it('brightnessColor returns string for all values', () => {
-    expect(typeof brightnessColor('beacon')).toBe('string')
-    expect(typeof brightnessColor('bright')).toBe('string')
-    expect(typeof brightnessColor('steady')).toBe('string')
-    expect(typeof brightnessColor('dim')).toBe('string')
-    expect(typeof brightnessColor('flickering')).toBe('string')
-    expect(typeof brightnessColor('dark')).toBe('string')
+  describe('guideQualityColor', () => {
+    it('colors lighthouse-beam', () => { expect(typeof guideQualityColor('lighthouse-beam')).toBe('string') })
+    it('colors unknown', () => { expect(guideQualityColor('unknown')).toBe('unknown') })
   })
 
-  it('warmthColor returns string for all values', () => {
-    expect(typeof warmthColor('hearth')).toBe('string')
-    expect(typeof warmthColor('campfire')).toBe('string')
-    expect(typeof warmthColor('candle')).toBe('string')
-    expect(typeof warmthColor('match')).toBe('string')
-    expect(typeof warmthColor('ember')).toBe('string')
-    expect(typeof warmthColor('cold')).toBe('string')
+  describe('consumptionColor', () => {
+    it('colors perfect-burn', () => { expect(typeof consumptionColor('perfect-burn')).toBe('string') })
+    it('colors unknown', () => { expect(consumptionColor('unknown')).toBe('unknown') })
   })
 
-  it('stabilityColor returns string for all values', () => {
-    expect(typeof stabilityColor('rock-steady')).toBe('string')
-    expect(typeof stabilityColor('stable')).toBe('string')
-    expect(typeof stabilityColor('mostly-stable')).toBe('string')
-    expect(typeof stabilityColor('wavering')).toBe('string')
-    expect(typeof stabilityColor('unstable')).toBe('string')
-    expect(typeof stabilityColor('extinguished')).toBe('string')
+  describe('coverageColor', () => {
+    it('colors far-reaching', () => { expect(typeof coverageColor('far-reaching')).toBe('string') })
+    it('colors unknown', () => { expect(coverageColor('unknown')).toBe('unknown') })
   })
 
-  it('formatLanternGlowJson returns valid JSON', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
+  describe('controlColor', () => {
+    it('colors shadow-master', () => { expect(typeof controlColor('shadow-master')).toBe('string') })
+    it('colors unknown', () => { expect(controlColor('unknown')).toBe('unknown') })
+  })
+
+  describe('conditionColor', () => {
+    it('colors beacon-light', () => { expect(typeof conditionColor('beacon-light')).toBe('string') })
+    it('colors unknown', () => { expect(conditionColor('unknown')).toBe('unknown') })
+  })
+
+  describe('gradeColor', () => {
+    it('colors master-lamplighter', () => { expect(typeof gradeColor('master-lamplighter')).toBe('string') })
+    it('colors unknown', () => { expect(gradeColor('unknown')).toBe('unknown') })
+  })
+})
+
+// ─── JSON Formatter ────────────────────────────────────────────────────────
+
+describe('formatLanternGlowJson', () => {
+  it('formats result as valid JSON', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
     const json = formatLanternGlowJson(result)
     const parsed = JSON.parse(json)
-    expect(parsed.night.overallIllumination).toBe(86)
+    expect(parsed.flames).toHaveLength(1)
+    expect(parsed.village).toBeDefined()
+    expect(parsed.stats).toBeDefined()
   })
+})
 
-  it('formatLanternGlowTable returns string with header', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
+// ─── Table Formatter ───────────────────────────────────────────────────────
+
+describe('formatLanternGlowTable', () => {
+  it('formats result as table string', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
     const table = formatLanternGlowTable(result, false)
-    expect(table).toContain('Lantern Glow Analysis')
-    expect(table).toContain('Night Overview')
-    expect(table).toContain('Statistics')
+    expect(typeof table).toBe('string')
+    expect(table.length).toBeGreaterThan(0)
   })
 
-  it('formatLanternGlowTable with verbose shows per-file details', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
+  it('includes per-file flames in verbose mode', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
     const table = formatLanternGlowTable(result, true)
-    expect(table).toContain('Per-File Details')
-    expect(table).toContain('test.ts')
+    expect(table).toContain('rich.ts')
+    expect(table).toContain('Per-File Flames')
   })
 
-  it('formatLanternGlowTable shows recommendations', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
+  it('hides per-file flames in non-verbose mode', () => {
+    const result = buildLanternGlowResult(['rich.ts'], [RICH])
+    const table = formatLanternGlowTable(result, false)
+    expect(table).not.toContain('Per-File Flames')
+  })
+
+  it('shows recommendations when present', () => {
+    const result = buildLanternGlowResult(['medium.ts'], [MEDIUM])
     const table = formatLanternGlowTable(result, false)
     expect(table).toContain('Recommendations')
-    expect(table).toContain('Magnificent')
   })
 
-  it('formatLanternGlowTable shows highlights', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
+  it('shows condition counts', () => {
+    const result = buildLanternGlowResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
     const table = formatLanternGlowTable(result, false)
-    expect(table).toContain('Highlights')
-    expect(table).toContain('Best Flame')
-    expect(table).toContain('Brightest')
-    expect(table).toContain('Farthest Reach')
-  })
-
-  it('formatLanternGlowTable shows condition counts', () => {
-    const result = buildLanternGlowResult(['test.ts'], [RICH])
-    const table = formatLanternGlowTable(result, false)
-    expect(table).toContain('Condition Counts')
-    expect(table).toContain('Sky Lantern')
-    expect(table).toContain('Extinguished')
+    expect(table).toContain('Beacon Light')
+    expect(table).toContain('Darkness')
   })
 })
