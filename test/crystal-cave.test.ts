@@ -1,685 +1,882 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  analyzeCaveChamber,
-  analyzeCrystalFormation,
+  analyzeCaveCrystal,
+  analyzeCaveSystem,
   buildCrystalCaveResult,
-  classifyChamberCondition,
-  classifyChamberType,
-  classifyCondition,
-  classifySpelunkerGrade,
+  classifyCrystalCondition,
+  classifyExplorerGrade,
+  classifySystemCondition,
+  classifySystemType,
   generateRecommendations,
-  measureClarity,
-  measureFormation,
-  measureGeode,
-  measureLuminescence,
-  measurePurity,
-  measureWonder,
+  measureDeepening,
+  measureDiversifying,
+  measureForming,
+  measureHanging,
+  measureResonating,
+  type CaveCrystal,
+  type CaveSystem,
+  type CrystalCaveStats,
+  type UndergroundSummary,
 } from '../src/commands/crystal-cave-helpers.js'
-
 import {
-  chamberColor,
-  clarityColor,
-  conditionColor,
-  formationColor,
-  formatCrystalCaveJson,
-  formatCrystalCaveTable,
-  geodeColor,
-  gradeColor,
-  luminescenceColor,
-  purityColor,
-  scoreColor,
-  wonderColor,
+  colorGrade,
+  colorScore,
+  formatCrystalTable,
+  formatCrystalsTable,
+  formatRecommendations,
+  formatResultJson,
+  formatResultTable,
+  formatStatsTable,
+  formatSystemTable,
+  formatSystemsTable,
 } from '../src/commands/crystal-cave-format-helpers.js'
 
-// ─── Fixtures ────────────────────────────────────────────────────────────────
+// ─── Test Content Fixtures ────────────────────────────────────────
 
-const RICH_CONTENT = `
-export interface Foo { x: number }
-export type Bar = Foo | null
-export class Baz implements Foo {
-  private x: number = 0
-  constructor(x: number) { this.x = x }
-  /** Docs */
-  async getValue(): Promise<number> {
-    try { return this.x } catch { return 0 }
+const richContent = `import { readFileSync } from 'node:fs'
+import type { Config } from './types.js'
+
+/** Read config from disk */
+export async function readConfig(path: string): Promise<Config> {
+  const raw = readFileSync(path, 'utf8')
+  const parsed = JSON.parse(raw)
+  if (typeof parsed !== 'object') {
+    throw new Error('Invalid config')
+  }
+  return parsed as Config
+}
+
+export class ConfigManager {
+  private readonly configs: Map<string, Config> = new Map()
+
+  add(key: string, config: Config): void {
+    this.configs.set(key, config)
+  }
+
+  get(key: string): Config | undefined {
+    return this.configs.get(key)
   }
 }
-export function add<T>(a: T, b: T): T { return a }
-export const mul = (a: number, b: number) => a * b
-export enum Color { Red, Green, Blue }
-export { Foo } from './foo'
-// TODO: fix later
+
+export type { Config }
+export interface ConfigOpts { debug: boolean; verbose: boolean }
+export const DEFAULT_OPTS: ConfigOpts = { debug: false, verbose: false }
 `
 
-const EMPTY_CONTENT = ''
+const minimalContent = `var x = 1
+var y = 2
+any
+`
 
-const MEDIUM_CONTENT = 'const x = 1\n'
+const emptyContent = ''
 
-// ─── measureClarity ──────────────────────────────────────────────────────────
+const moderateContent = `import { something } from './mod.js'
+export const name = 'test'
+export function hello(): string {
+  return 'hello'
+}
+`
 
-describe('measureClarity', () => {
-  it('returns high clarity for rich content', () => {
-    const result = measureClarity(RICH_CONTENT)
-    expect(result.level).toBe(92)
-    expect(result.grade).toBe('quartz-clear')
-    expect(result.hasHighClarity).toBe(true)
-    expect(result.hasTransparency).toBe(true)
-    expect(result.hasNoInclusions).toBe(true)
-    expect(result.hasProperRefraction).toBe(true)
-    expect(result.hasNoFractures).toBe(false)
-    expect(result.hasDispersion).toBe(true)
-    expect(result.hasNoInternalReflections).toBe(true)
-    expect(result.hasScintillation).toBe(true)
-    expect(result.hasPerfectTermination).toBe(true)
-    expect(result.inclusionCount).toBe(0)
-    expect(result.fractureCount).toBe(1)
-  })
+// ─── measureForming ───────────────────────────────────────────────
 
-  it('returns low clarity for empty content', () => {
-    const result = measureClarity(EMPTY_CONTENT)
-    expect(result.level).toBe(38)
-    expect(result.grade).toBe('opaque')
-    expect(result.hasHighClarity).toBe(false)
-    expect(result.hasTransparency).toBe(false)
-    expect(result.hasNoInclusions).toBe(true)
-    expect(result.hasNoFractures).toBe(true)
-    expect(result.inclusionCount).toBe(0)
-  })
-
-  it('returns opaque grade for medium content', () => {
-    const result = measureClarity(MEDIUM_CONTENT)
-    expect(result.level).toBe(38)
-    expect(result.grade).toBe('opaque')
-    expect(result.hasHighClarity).toBe(false)
-  })
-})
-
-// ─── measureFormation ────────────────────────────────────────────────────────
-
-describe('measureFormation', () => {
+describe('measureForming', () => {
   it('returns high quality for rich content', () => {
-    const result = measureFormation(RICH_CONTENT)
-    expect(result.quality).toBe(90)
-    expect(result.type).toBe('calcite')
-    expect(result.hasProperStructure).toBe(true)
-    expect(result.hasCrystalHabits).toBe(true)
-    expect(result.hasProperGrowth).toBe(true)
-    expect(result.hasNoMalformation).toBe(false)
-    expect(result.hasGeometricPrecision).toBe(true)
-    expect(result.hasNoTwinning).toBe(true)
-    expect(result.hasPerfectSymmetry).toBe(true)
-    expect(result.malformationCount).toBe(1)
-    expect(result.twinningCount).toBe(0)
+    const m = measureForming(richContent)
+    expect(m.quality).toBeGreaterThan(60)
+    expect(m.hasStructured).toBe(true)
+    expect(m.hasOrganized).toBe(true)
   })
 
-  it('returns low quality for empty content', () => {
-    const result = measureFormation(EMPTY_CONTENT)
-    expect(result.quality).toBe(40)
-    expect(result.type).toBe('flowstone')
-    expect(result.hasProperStructure).toBe(false)
-    expect(result.hasNoMalformation).toBe(true)
+  it('returns low quality for minimal content', () => {
+    const m = measureForming(minimalContent)
+    expect(m.quality).toBeLessThan(30)
   })
 
-  it('returns flowstone for medium content', () => {
-    const result = measureFormation(MEDIUM_CONTENT)
-    expect(result.quality).toBe(40)
-    expect(result.type).toBe('flowstone')
+  it('returns 0 quality for empty content', () => {
+    const m = measureForming(emptyContent)
+    expect(m.quality).toBe(0)
+    expect(m.grade).toBe('no-formation')
+  })
+
+  it('detects chaotic patterns', () => {
+    const m = measureForming(minimalContent)
+    expect(m.chaoticCount).toBeGreaterThan(0)
+    expect(m.randomCount).toBeGreaterThan(0)
+    expect(m.hasNoChaotic).toBe(false)
+    expect(m.hasNoRandom).toBe(false)
+  })
+
+  it('detects no chaotic patterns in clean code', () => {
+    const m = measureForming(richContent)
+    expect(m.hasNoChaotic).toBe(true)
+    expect(m.hasNoRandom).toBe(true)
+  })
+
+  it('classifies grade based on quality', () => {
+    const m = measureForming(richContent)
+    expect(m.grade).toBe('geode-perfect')
+  })
+
+  it('sets hasHighQuality when quality >= 70', () => {
+    const m = measureForming(richContent)
+    expect(m.hasHighQuality).toBe(true)
+  })
+
+  it('has ordered patterns', () => {
+    const m = measureForming(richContent)
+    expect(m.hasOrdered).toBe(true)
+  })
+
+  it('has systematic patterns', () => {
+    const m = measureForming(richContent)
+    expect(m.hasSystematic).toBe(true)
+  })
+
+  it('has patterned patterns', () => {
+    const m = measureForming(richContent)
+    expect(m.hasPatterned).toBe(true)
+  })
+
+  it('has regular patterns when type alias present', () => {
+    const content = `${richContent}\ntype Options = { debug: boolean }`
+    const m = measureForming(content)
+    expect(m.hasRegular).toBe(true)
+  })
+
+  it('has no regular patterns without type alias', () => {
+    const m = measureForming(richContent)
+    expect(m.hasRegular).toBe(false)
   })
 })
 
-// ─── measureLuminescence ─────────────────────────────────────────────────────
+// ─── measureHanging ───────────────────────────────────────────────
 
-describe('measureLuminescence', () => {
-  it('returns high luminescence for rich content', () => {
-    const result = measureLuminescence(RICH_CONTENT)
-    expect(result.level).toBe(95)
-    expect(result.type).toBe('fluorescent')
-    expect(result.hasHighLuminescence).toBe(true)
-    expect(result.hasProperGlow).toBe(true)
-    expect(result.hasNoDarkZones).toBe(true)
-    expect(result.hasProperExcitation).toBe(true)
-    expect(result.hasNoShadow).toBe(true)
-    expect(result.hasAfterglow).toBe(true)
-    expect(result.hasProperWavelength).toBe(true)
-    expect(result.darkZoneCount).toBe(0)
-    expect(result.quenchingCount).toBe(0)
+describe('measureHanging', () => {
+  it('returns precision above 60 for rich content', () => {
+    const m = measureHanging(richContent)
+    expect(m.precision).toBeGreaterThan(60)
   })
 
-  it('returns low luminescence for empty content', () => {
-    const result = measureLuminescence(EMPTY_CONTENT)
-    expect(result.level).toBe(37)
-    expect(result.type).toBe('dim')
-    expect(result.hasHighLuminescence).toBe(false)
-    expect(result.hasProperGlow).toBe(false)
+  it('detects exact patterns when strict-eq and readonly present', () => {
+    const content = `${richContent}\nif (x === 'test') {}`
+    const m = measureHanging(content)
+    expect(m.hasAccurate).toBe(true)
   })
 
-  it('returns dim for medium content', () => {
-    const result = measureLuminescence(MEDIUM_CONTENT)
-    expect(result.level).toBe(37)
-    expect(result.type).toBe('dim')
+  it('detects exact patterns when return type and readonly present', () => {
+    const m = measureHanging(richContent)
+    expect(m.hasExact).toBe(true)
+  })
+
+  it('returns low precision for minimal content', () => {
+    const m = measureHanging(minimalContent)
+    expect(m.precision).toBeLessThan(30)
+  })
+
+  it('returns 0 precision for empty content', () => {
+    const m = measureHanging(emptyContent)
+    expect(m.precision).toBe(0)
+    expect(m.stalactite).toBe('no-formation')
+  })
+
+  it('detects imprecise patterns', () => {
+    const m = measureHanging(minimalContent)
+    expect(m.impreciseCount).toBeGreaterThan(0)
+    expect(m.scatteredCount).toBeGreaterThan(0)
+  })
+
+  it('classifies stalactite grade', () => {
+    const m = measureHanging(richContent)
+    expect(m.stalactite).toBe('perfect-drop')
+  })
+
+  it('sets hasHighPrecision when precision >= 70', () => {
+    const m = measureHanging(richContent)
+    expect(m.hasHighPrecision).toBe(true)
+  })
+
+  it('detects targeted patterns', () => {
+    const m = measureHanging(richContent)
+    expect(m.hasTargeted).toBe(true)
+  })
+
+  it('detects focused patterns', () => {
+    const m = measureHanging(richContent)
+    expect(m.hasFocused).toBe(true)
+  })
+
+  it('detects deliberate patterns when type alias and strict-eq present', () => {
+    const content = `${richContent}\ntype Options = { debug: boolean }\nif (x === 1) {}`
+    const m = measureHanging(content)
+    expect(m.hasDeliberate).toBe(true)
   })
 })
 
-// ─── measureGeode ────────────────────────────────────────────────────────────
+// ─── measureDeepening ─────────────────────────────────────────────
 
-describe('measureGeode', () => {
+describe('measureDeepening', () => {
   it('returns high depth for rich content', () => {
-    const result = measureGeode(RICH_CONTENT)
-    expect(result.depth).toBe(95)
-    expect(result.interior).toBe('hollow')
-    expect(result.hasDeepContent).toBe(true)
-    expect(result.hasHiddenBeauty).toBe(true)
-    expect(result.hasProperCavity).toBe(true)
-    expect(result.hasInnerCrystals).toBe(true)
-    expect(result.hasNoDeadSpace).toBe(false)
-    expect(result.hasProperFormation).toBe(true)
-    expect(result.hasNoCollapse).toBe(true)
-    expect(result.hasNoFalseExterior).toBe(true)
-    expect(result.hasTreasure).toBe(true)
-    expect(result.deadSpaceCount).toBe(1)
-    expect(result.collapseCount).toBe(0)
+    const m = measureDeepening(richContent)
+    expect(m.depth).toBeGreaterThan(60)
+    expect(m.hasDeep).toBe(true)
   })
 
-  it('returns low depth for empty content', () => {
-    const result = measureGeode(EMPTY_CONTENT)
-    expect(result.depth).toBe(30)
-    expect(result.interior).toBe('empty')
-    expect(result.hasDeepContent).toBe(false)
+  it('returns low depth for minimal content', () => {
+    const m = measureDeepening(minimalContent)
+    expect(m.depth).toBeLessThan(30)
   })
 
-  it('returns empty for medium content', () => {
-    const result = measureGeode(MEDIUM_CONTENT)
-    expect(result.depth).toBe(30)
-    expect(result.interior).toBe('empty')
-  })
-})
-
-// ─── measurePurity ───────────────────────────────────────────────────────────
-
-describe('measurePurity', () => {
-  it('returns high purity for rich content', () => {
-    const result = measurePurity(RICH_CONTENT)
-    expect(result.level).toBe(90)
-    expect(result.state).toBe('pure')
-    expect(result.hasHighPurity).toBe(true)
-    expect(result.hasProperComposition).toBe(true)
-    expect(result.hasNoForeignMatter).toBe(true)
-    expect(result.hasChemicalStability).toBe(true)
-    expect(result.hasNoOxidation).toBe(true)
-    expect(result.hasProperCrystallization).toBe(true)
-    expect(result.contaminationCount).toBe(1)
-    expect(result.segregationCount).toBe(1)
+  it('returns 0 depth for empty content', () => {
+    const m = measureDeepening(emptyContent)
+    expect(m.depth).toBe(0)
+    expect(m.grotto).toBe('no-depth')
   })
 
-  it('returns low purity for empty content', () => {
-    const result = measurePurity(EMPTY_CONTENT)
-    expect(result.level).toBe(40)
-    expect(result.state).toBe('contaminated')
-    expect(result.hasHighPurity).toBe(false)
+  it('detects shallow patterns', () => {
+    const m = measureDeepening(minimalContent)
+    expect(m.shallowCount).toBeGreaterThan(0)
+    expect(m.flatCount).toBeGreaterThan(0)
   })
 
-  it('returns contaminated for medium content', () => {
-    const result = measurePurity(MEDIUM_CONTENT)
-    expect(result.level).toBe(40)
-    expect(result.state).toBe('contaminated')
+  it('classifies grotto grade', () => {
+    const m = measureDeepening(richContent)
+    expect(m.grotto).toBe('deep-cavern')
+  })
+
+  it('sets hasHighDepth when depth >= 70', () => {
+    const m = measureDeepening(richContent)
+    expect(m.hasHighDepth).toBe(true)
+  })
+
+  it('detects profound patterns', () => {
+    const m = measureDeepening(richContent)
+    expect(m.hasProfound).toBe(true)
+  })
+
+  it('detects layered patterns', () => {
+    const m = measureDeepening(richContent)
+    expect(m.hasLayered).toBe(true)
+  })
+
+  it('detects complex patterns', () => {
+    const m = measureDeepening(richContent)
+    expect(m.hasComplex).toBe(true)
+  })
+
+  it('detects rich patterns when type alias present', () => {
+    const content = `${richContent}\ntype Options = { debug: boolean }`
+    const m = measureDeepening(content)
+    expect(m.hasRich).toBe(true)
   })
 })
 
-// ─── measureWonder ───────────────────────────────────────────────────────────
+// ─── measureDiversifying ──────────────────────────────────────────
 
-describe('measureWonder', () => {
-  it('returns high wonder for rich content', () => {
-    const result = measureWonder(RICH_CONTENT)
-    expect(result.score).toBe(90)
-    expect(result.impact).toBe('beautiful')
-    expect(result.hasHighWonder).toBe(true)
-    expect(result.hasAwe).toBe(true)
-    expect(result.hasBeauty).toBe(true)
-    expect(result.hasNoMediocrity).toBe(false)
-    expect(result.hasNaturalWonder).toBe(true)
-    expect(result.hasNoArtificiality).toBe(true)
-    expect(result.hasInspiring).toBe(true)
-    expect(result.hasNoDullness).toBe(true)
-    expect(result.hasSpectacular).toBe(true)
-    expect(result.hasNoBoredom).toBe(true)
-    expect(result.hasMemorable).toBe(true)
-    expect(result.mediocrityCount).toBe(1)
-    expect(result.dullnessCount).toBe(0)
+describe('measureDiversifying', () => {
+  it('returns high diversity for rich content', () => {
+    const m = measureDiversifying(richContent)
+    expect(m.diversity).toBeGreaterThan(60)
+    expect(m.hasVaried).toBe(true)
   })
 
-  it('returns low wonder for empty content', () => {
-    const result = measureWonder(EMPTY_CONTENT)
-    expect(result.score).toBe(40)
-    expect(result.impact).toBe('ordinary')
-    expect(result.hasHighWonder).toBe(false)
+  it('returns low diversity for minimal content', () => {
+    const m = measureDiversifying(minimalContent)
+    expect(m.diversity).toBeLessThan(30)
   })
 
-  it('returns ordinary for medium content', () => {
-    const result = measureWonder(MEDIUM_CONTENT)
-    expect(result.score).toBe(40)
-    expect(result.impact).toBe('ordinary')
-  })
-})
-
-// ─── analyzeCrystalFormation ─────────────────────────────────────────────────
-
-describe('analyzeCrystalFormation', () => {
-  it('returns naica-mine for rich content', () => {
-    const result = analyzeCrystalFormation(RICH_CONTENT, 'rich.ts')
-    expect(result.crystalClarity).toBe(92)
-    expect(result.formationQuality).toBe(90)
-    expect(result.luminescence.level).toBe(95)
-    expect(result.luminescence.type).toBe('fluorescent')
-    expect(result.geodeDepth).toBe(95)
-    expect(result.mineralPurity).toBe(90)
-    expect(result.caveWonder).toBe(90)
-    expect(result.qualityScore).toBe(92)
-    expect(result.condition).toBe('naica-mine')
-    expect(result.file).toBe('rich.ts')
+  it('returns 0 diversity for empty content', () => {
+    const m = measureDiversifying(emptyContent)
+    expect(m.diversity).toBe(0)
+    expect(m.mineral).toBe('no-variety')
   })
 
-  it('returns geode-collection for empty content', () => {
-    const result = analyzeCrystalFormation(EMPTY_CONTENT, 'empty.ts')
-    expect(result.crystalClarity).toBe(38)
-    expect(result.formationQuality).toBe(40)
-    expect(result.luminescence.level).toBe(37)
-    expect(result.geodeDepth).toBe(30)
-    expect(result.mineralPurity).toBe(40)
-    expect(result.caveWonder).toBe(40)
-    expect(result.qualityScore).toBe(37)
-    expect(result.condition).toBe('geode-collection')
+  it('detects uniform patterns', () => {
+    const m = measureDiversifying(minimalContent)
+    expect(m.uniformCount).toBeGreaterThan(0)
   })
 
-  it('returns geode-collection for medium content', () => {
-    const result = analyzeCrystalFormation(MEDIUM_CONTENT, 'medium.ts')
-    expect(result.qualityScore).toBe(37)
-    expect(result.condition).toBe('geode-collection')
+  it('classifies mineral grade', () => {
+    const m = measureDiversifying(richContent)
+    expect(m.mineral).toBe('rainbow-cave')
+  })
+
+  it('sets hasHighDiversity when diversity >= 70', () => {
+    const m = measureDiversifying(richContent)
+    expect(m.hasHighDiversity).toBe(true)
+  })
+
+  it('detects diverse patterns', () => {
+    const m = measureDiversifying(richContent)
+    expect(m.hasDiverse).toBe(true)
+  })
+
+  it('detects colorful patterns when class and type alias present', () => {
+    const content = `${richContent}\ntype Options = { debug: boolean }`
+    const m = measureDiversifying(content)
+    expect(m.hasColorful).toBe(true)
+  })
+
+  it('detects abundant patterns', () => {
+    const m = measureDiversifying(richContent)
+    expect(m.hasAbundant).toBe(true)
   })
 })
 
-// ─── classifyCondition ───────────────────────────────────────────────────────
+// ─── measureResonating ────────────────────────────────────────────
 
-describe('classifyCondition', () => {
-  it('classifies naica-mine for 80+', () => {
-    const f = { qualityScore: 80 } as any
-    expect(classifyCondition(f)).toBe('naica-mine')
+describe('measureResonating', () => {
+  it('returns high resonance for rich content', () => {
+    const m = measureResonating(richContent)
+    expect(m.resonance).toBeGreaterThan(60)
+    expect(m.hasHarmonious).toBe(true)
   })
 
-  it('classifies crystal-cathedral for 65-79', () => {
-    const f = { qualityScore: 65 } as any
-    expect(classifyCondition(f)).toBe('crystal-cathedral')
+  it('returns low resonance for minimal content', () => {
+    const m = measureResonating(minimalContent)
+    expect(m.resonance).toBeLessThan(30)
   })
 
-  it('classifies amethyst-cave for 50-64', () => {
-    const f = { qualityScore: 50 } as any
-    expect(classifyCondition(f)).toBe('amethyst-cave')
+  it('returns 0 resonance for empty content', () => {
+    const m = measureResonating(emptyContent)
+    expect(m.resonance).toBe(0)
+    expect(m.chamber).toBe('silent')
   })
 
-  it('classifies geode-collection for 35-49', () => {
-    const f = { qualityScore: 35 } as any
-    expect(classifyCondition(f)).toBe('geode-collection')
+  it('detects isolated patterns', () => {
+    const m = measureResonating(minimalContent)
+    expect(m.isolatedCount).toBeGreaterThan(0)
   })
 
-  it('classifies rock-shop for 20-34', () => {
-    const f = { qualityScore: 20 } as any
-    expect(classifyCondition(f)).toBe('rock-shop')
+  it('classifies chamber grade', () => {
+    const m = measureResonating(richContent)
+    expect(m.chamber).toBe('concert-hall')
   })
 
-  it('classifies gravel-pit for <20', () => {
-    const f = { qualityScore: 10 } as any
-    expect(classifyCondition(f)).toBe('gravel-pit')
+  it('sets hasHighResonance when resonance >= 70', () => {
+    const m = measureResonating(richContent)
+    expect(m.hasHighResonance).toBe(true)
+  })
+
+  it('detects integrated patterns', () => {
+    const m = measureResonating(richContent)
+    expect(m.hasIntegrated).toBe(true)
+  })
+
+  it('detects connected patterns', () => {
+    const m = measureResonating(richContent)
+    expect(m.hasConnected).toBe(true)
+  })
+
+  it('detects coupled patterns', () => {
+    const m = measureResonating(richContent)
+    expect(m.hasCoupled).toBe(true)
+  })
+
+  it('detects sounding patterns', () => {
+    const m = measureResonating(richContent)
+    expect(m.hasSounding).toBe(true)
   })
 })
 
-// ─── classifyChamberType ─────────────────────────────────────────────────────
+// ─── classifyCrystalCondition ─────────────────────────────────────
 
-describe('classifyChamberType', () => {
-  it('returns mud-cave for empty formations', () => {
-    expect(classifyChamberType([])).toBe('mud-cave')
+describe('classifyCrystalCondition', () => {
+  it('returns cathedral-cave for 85+', () => {
+    expect(classifyCrystalCondition(90)).toBe('cathedral-cave')
+    expect(classifyCrystalCondition(85)).toBe('cathedral-cave')
   })
 
-  it('returns grand-cathedral for high avg with naica count', () => {
-    const formations = Array.from({ length: 5 }, () => ({
-      qualityScore: 90, condition: 'naica-mine',
-    }) as any)
-    expect(classifyChamberType(formations)).toBe('grand-cathedral')
+  it('returns crystal-grotto for 70-84', () => {
+    expect(classifyCrystalCondition(75)).toBe('crystal-grotto')
+    expect(classifyCrystalCondition(70)).toBe('crystal-grotto')
   })
 
-  it('returns crystal-gallery for avg >= 60', () => {
-    const formations = [{ qualityScore: 60, condition: 'geode-collection' } as any]
-    expect(classifyChamberType(formations)).toBe('crystal-gallery')
+  it('returns proper-cave for 55-69', () => {
+    expect(classifyCrystalCondition(60)).toBe('proper-cave')
+    expect(classifyCrystalCondition(55)).toBe('proper-cave')
   })
 
-  it('returns geode-room for avg >= 45', () => {
-    const formations = [{ qualityScore: 45, condition: 'geode-collection' } as any]
-    expect(classifyChamberType(formations)).toBe('geode-room')
+  it('returns limestone-hollow for 40-54', () => {
+    expect(classifyCrystalCondition(45)).toBe('limestone-hollow')
+    expect(classifyCrystalCondition(40)).toBe('limestone-hollow')
   })
 
-  it('returns flowstone-chamber for avg >= 30', () => {
-    const formations = [{ qualityScore: 30, condition: 'gravel-pit' } as any]
-    expect(classifyChamberType(formations)).toBe('flowstone-chamber')
+  it('returns mud-cave for 25-39', () => {
+    expect(classifyCrystalCondition(30)).toBe('mud-cave')
+    expect(classifyCrystalCondition(25)).toBe('mud-cave')
   })
 
-  it('returns dripping-cave for avg >= 15', () => {
-    const formations = [{ qualityScore: 15, condition: 'gravel-pit' } as any]
-    expect(classifyChamberType(formations)).toBe('dripping-cave')
-  })
-
-  it('returns mud-cave for avg < 15', () => {
-    const formations = [{ qualityScore: 5, condition: 'gravel-pit' } as any]
-    expect(classifyChamberType(formations)).toBe('mud-cave')
+  it('returns no-cave for below 25', () => {
+    expect(classifyCrystalCondition(20)).toBe('no-cave')
+    expect(classifyCrystalCondition(0)).toBe('no-cave')
   })
 })
 
-// ─── classifyChamberCondition ────────────────────────────────────────────────
+// ─── classifySystemType ───────────────────────────────────────────
 
-describe('classifyChamberCondition', () => {
-  it('classifies natural-wonder for 80+', () => {
-    expect(classifyChamberCondition(80)).toBe('natural-wonder')
+describe('classifySystemType', () => {
+  it('returns no-system for empty crystals', () => {
+    expect(classifySystemType([])).toBe('no-system')
   })
-  it('classifies show-cave for 65-79', () => {
-    expect(classifyChamberCondition(65)).toBe('show-cave')
+
+  it('returns mammoth-cave for high quality with high ratio', () => {
+    const crystals = Array.from({ length: 4 }, () => ({
+      qualityScore: 90, condition: 'cathedral-cave',
+    })) as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('mammoth-cave')
   })
-  it('classifies wild-cave for 50-64', () => {
-    expect(classifyChamberCondition(50)).toBe('wild-cave')
+
+  it('returns carlsbad-caverns for good quality', () => {
+    const crystals = Array.from({ length: 2 }, () => ({
+      qualityScore: 65, condition: 'crystal-grotto',
+    })) as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('carlsbad-caverns')
   })
-  it('classifies mine-tunnel for 35-49', () => {
-    expect(classifyChamberCondition(35)).toBe('mine-tunnel')
+
+  it('returns proper-system for decent quality', () => {
+    const crystals = [{ qualityScore: 50, condition: 'proper-cave' }] as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('proper-system')
   })
-  it('classifies basement for 20-34', () => {
-    expect(classifyChamberCondition(20)).toBe('basement')
+
+  it('returns small-cave for lower quality', () => {
+    const crystals = [{ qualityScore: 35, condition: 'limestone-hollow' }] as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('small-cave')
   })
-  it('classifies pothole for <20', () => {
-    expect(classifyChamberCondition(10)).toBe('pothole')
+
+  it('returns rock-shelter for poor quality', () => {
+    const crystals = [{ qualityScore: 18, condition: 'mud-cave' }] as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('rock-shelter')
+  })
+
+  it('returns no-system for zero quality', () => {
+    const crystals = [{ qualityScore: 5, condition: 'no-cave' }] as CaveCrystal[]
+    expect(classifySystemType(crystals)).toBe('no-system')
   })
 })
 
-// ─── classifySpelunkerGrade ──────────────────────────────────────────────────
+// ─── classifySystemCondition ──────────────────────────────────────
 
-describe('classifySpelunkerGrade', () => {
+describe('classifySystemCondition', () => {
+  it('returns spectacular-cave for 75+', () => {
+    expect(classifySystemCondition(80)).toBe('spectacular-cave')
+  })
+
+  it('returns beautiful-grotto for 60-74', () => {
+    expect(classifySystemCondition(65)).toBe('beautiful-grotto')
+  })
+
+  it('returns decent-cave for 45-59', () => {
+    expect(classifySystemCondition(50)).toBe('decent-cave')
+  })
+
+  it('returns rough-hollow for 30-44', () => {
+    expect(classifySystemCondition(35)).toBe('rough-hollow')
+  })
+
+  it('returns collapsed for 15-29', () => {
+    expect(classifySystemCondition(20)).toBe('collapsed')
+  })
+
+  it('returns filled-in for below 15', () => {
+    expect(classifySystemCondition(10)).toBe('filled-in')
+  })
+})
+
+// ─── classifyExplorerGrade ────────────────────────────────────────
+
+describe('classifyExplorerGrade', () => {
   it('returns master-spelunker for 80+', () => {
-    expect(classifySpelunkerGrade(80)).toBe('master-spelunker')
+    expect(classifyExplorerGrade(85)).toBe('master-spelunker')
   })
-  it('returns geologist for 65-79', () => {
-    expect(classifySpelunkerGrade(65)).toBe('geologist')
+
+  it('returns expert-caver for 65-79', () => {
+    expect(classifyExplorerGrade(70)).toBe('expert-caver')
   })
-  it('returns crystallographer for 50-64', () => {
-    expect(classifySpelunkerGrade(50)).toBe('crystallographer')
+
+  it('returns skilled-explorer for 50-64', () => {
+    expect(classifyExplorerGrade(55)).toBe('skilled-explorer')
   })
-  it('returns collector for 35-49', () => {
-    expect(classifySpelunkerGrade(35)).toBe('collector')
+
+  it('returns apprentice for 35-49', () => {
+    expect(classifyExplorerGrade(40)).toBe('apprentice')
   })
-  it('returns tourist for 20-34', () => {
-    expect(classifySpelunkerGrade(20)).toBe('tourist')
+
+  it('returns novice for 20-34', () => {
+    expect(classifyExplorerGrade(25)).toBe('novice')
   })
-  it('returns surface-dweller for <20', () => {
-    expect(classifySpelunkerGrade(10)).toBe('surface-dweller')
+
+  it('returns surface-dweller for below 20', () => {
+    expect(classifyExplorerGrade(10)).toBe('surface-dweller')
   })
 })
 
-// ─── analyzeCaveChamber ──────────────────────────────────────────────────────
+// ─── analyzeCaveCrystal ───────────────────────────────────────────
 
-describe('analyzeCaveChamber', () => {
-  it('returns mud-cave for empty formations', () => {
-    const result = analyzeCaveChamber([], 'empty-dir')
-    expect(result.directory).toBe('empty-dir')
-    expect(result.formations).toEqual([])
-    expect(result.avgClarity).toBe(0)
-    expect(result.avgFormation).toBe(0)
-    expect(result.avgWonder).toBe(0)
-    expect(result.naicaCount).toBe(0)
-    expect(result.gravelCount).toBe(0)
-    expect(result.clearCount).toBe(0)
-    expect(result.wonderCount).toBe(0)
-    expect(result.chamberType).toBe('mud-cave')
-    expect(result.condition).toBe('pothole')
+describe('analyzeCaveCrystal', () => {
+  it('returns a complete crystal analysis', () => {
+    const crystal = analyzeCaveCrystal(richContent, 'index.ts')
+    expect(crystal.file).toBe('index.ts')
+    expect(crystal.formationQuality).toBeGreaterThan(0)
+    expect(crystal.stalactitePrecision).toBeGreaterThan(0)
+    expect(crystal.grottoDepth).toBeGreaterThan(0)
+    expect(crystal.mineralDiversity).toBeGreaterThan(0)
+    expect(crystal.chamberResonance).toBeGreaterThan(0)
+    expect(crystal.qualityScore).toBeGreaterThan(0)
+    expect(crystal.condition).toBeDefined()
   })
 
-  it('analyzes chamber with formations', () => {
-    const f1 = analyzeCrystalFormation(RICH_CONTENT, 'rich.ts')
-    const result = analyzeCaveChamber([f1], 'src')
-    expect(result.avgClarity).toBe(92)
-    expect(result.avgFormation).toBe(90)
-    expect(result.avgWonder).toBe(90)
-    expect(result.naicaCount).toBe(1)
-    expect(result.gravelCount).toBe(0)
-    expect(result.clearCount).toBe(1)
-    expect(result.wonderCount).toBe(1)
-  })
-})
-
-// ─── buildCrystalCaveResult ──────────────────────────────────────────────────
-
-describe('buildCrystalCaveResult', () => {
-  it('returns empty result for no files', () => {
-    const result = buildCrystalCaveResult([], [])
-    expect(result.formations).toEqual([])
-    expect(result.chambers).toEqual([])
-    expect(result.cavern.overallWonder).toBe(0)
-    expect(result.cavern.isMagnificent).toBe(false)
-    expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.totalChambers).toBe(0)
-    expect(result.stats.spelunkerGrade).toBe('surface-dweller')
-  })
-
-  it('returns correct stats for rich + medium files', () => {
-    const result = buildCrystalCaveResult(
-      ['rich.ts', 'medium.ts'],
-      [RICH_CONTENT, MEDIUM_CONTENT],
+  it('computes quality score as weighted average', () => {
+    const crystal = analyzeCaveCrystal(richContent, 'test.ts')
+    const expected = Math.round(
+      crystal.forming.quality * 0.2 +
+      crystal.hanging.precision * 0.2 +
+      crystal.deepening.depth * 0.2 +
+      crystal.diversifying.diversity * 0.2 +
+      crystal.resonating.resonance * 0.2,
     )
-    expect(result.stats.totalFiles).toBe(2)
-    expect(result.stats.totalChambers).toBe(1)
-    expect(result.stats.avgCrystalClarity).toBe(65)
-    expect(result.stats.avgFormationQuality).toBe(65)
-    expect(result.stats.avgLuminescence).toBe(66)
-    expect(result.stats.avgGeodeDepth).toBe(63)
-    expect(result.stats.avgMineralPurity).toBe(65)
-    expect(result.stats.avgCaveWonder).toBe(65)
-    expect(result.stats.overallWonder).toBe(65)
-    expect(result.stats.spelunkerGrade).toBe('geologist')
-    expect(result.stats.naicaMineCount).toBe(1)
-    expect(result.stats.geodeCollectionCount).toBe(1)
-    expect(result.stats.bestFormation).toBe('rich.ts')
-    expect(result.stats.clearest).toBe('rich.ts')
-    expect(result.stats.bestFormed).toBe('rich.ts')
-    expect(result.stats.mostLuminous).toBe('rich.ts')
-    expect(result.stats.deepest).toBe('rich.ts')
-    expect(result.stats.mostWonderful).toBe('rich.ts')
-    expect(result.cavern.overallWonder).toBe(65)
-    expect(result.cavern.isMagnificent).toBe(true)
+    expect(crystal.qualityScore).toBe(expected)
   })
 
-  it('returns magnificent recommendation for high scores', () => {
-    const result = buildCrystalCaveResult(['rich.ts'], [RICH_CONTENT])
-    expect(result.recommendations).toContain('Magnificent crystal cave achieved — your formations are a natural wonder')
+  it('returns no-cave for empty content', () => {
+    const crystal = analyzeCaveCrystal(emptyContent, 'empty.ts')
+    expect(crystal.qualityScore).toBe(0)
+    expect(crystal.condition).toBe('no-cave')
   })
 
-  it('computes chambers by directory', () => {
-    const result = buildCrystalCaveResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [RICH_CONTENT, MEDIUM_CONTENT, MEDIUM_CONTENT],
-    )
-    expect(result.chambers.length).toBe(2)
+  it('returns cathedral-cave for rich content', () => {
+    const crystal = analyzeCaveCrystal(richContent, 'rich.ts')
+    expect(crystal.condition).toBe('cathedral-cave')
+  })
+
+  it('includes all measure objects', () => {
+    const crystal = analyzeCaveCrystal(richContent, 'test.ts')
+    expect(crystal.forming).toBeDefined()
+    expect(crystal.hanging).toBeDefined()
+    expect(crystal.deepening).toBeDefined()
+    expect(crystal.diversifying).toBeDefined()
+    expect(crystal.resonating).toBeDefined()
   })
 })
 
-// ─── generateRecommendations ─────────────────────────────────────────────────
+// ─── analyzeCaveSystem ────────────────────────────────────────────
+
+describe('analyzeCaveSystem', () => {
+  it('returns empty system for no crystals', () => {
+    const system = analyzeCaveSystem([], 'src')
+    expect(system.directory).toBe('src')
+    expect(system.crystals).toHaveLength(0)
+    expect(system.avgFormation).toBe(0)
+    expect(system.systemType).toBe('no-system')
+    expect(system.condition).toBe('filled-in')
+  })
+
+  it('computes averages correctly', () => {
+    const crystals = [
+      analyzeCaveCrystal(richContent, 'src/a.ts'),
+      analyzeCaveCrystal(moderateContent, 'src/b.ts'),
+    ]
+    const system = analyzeCaveSystem(crystals, 'src')
+    expect(system.avgFormation).toBeGreaterThan(0)
+    expect(system.avgDepth).toBeGreaterThan(0)
+    expect(system.avgResonance).toBeGreaterThan(0)
+    expect(system.crystals).toHaveLength(2)
+  })
+
+  it('counts cathedral and no-cave crystals', () => {
+    const rich = analyzeCaveCrystal(richContent, 'src/rich.ts')
+    const empty = analyzeCaveCrystal(emptyContent, 'src/empty.ts')
+    const system = analyzeCaveSystem([rich, empty], 'src')
+    expect(system.cathedralCaveCount).toBe(1)
+    expect(system.noCaveCount).toBe(1)
+  })
+})
+
+// ─── generateRecommendations ──────────────────────────────────────
 
 describe('generateRecommendations', () => {
-  it('recommends improving clarity when low', () => {
-    const formations = [analyzeCrystalFormation(EMPTY_CONTENT, 'empty.ts')]
-    const chambers: any[] = []
-    const cavern = { avgClarity: 30, avgFormation: 50, avgWonder: 50, isMagnificent: false, overallWonder: 40 }
-    const stats = {
-      totalFiles: 1, totalChambers: 0, avgCrystalClarity: 30, avgFormationQuality: 50,
-      avgLuminescence: 50, avgGeodeDepth: 50, avgMineralPurity: 50, avgCaveWonder: 50,
-      naicaMineCount: 0, crystalCathedralCount: 0, amethystCaveCount: 0,
-      geodeCollectionCount: 1, rockShopCount: 0, gravelPitCount: 0,
-      hasHighClarityCount: 0, hasProperStructureCount: 0, hasHighLuminescenceCount: 0,
-      hasDeepContentCount: 0, hasHighPurityCount: 0, hasHighWonderCount: 0,
-      overallWonder: 40, spelunkerGrade: 'collector' as const,
-      bestFormation: 'empty.ts', clearest: 'empty.ts', bestFormed: 'empty.ts',
-      mostLuminous: 'empty.ts', deepest: 'empty.ts', mostWonderful: 'empty.ts',
-    }
-    const recs = generateRecommendations(formations, chambers, cavern, stats)
-    expect(recs).toContain('Improve crystal clarity — make your code more transparent')
+  const goodStats: CrystalCaveStats = {
+    totalFiles: 5, totalSystems: 1,
+    avgFormationQuality: 80, avgStalactitePrecision: 80,
+    avgGrottoDepth: 80, avgMineralDiversity: 80,
+    avgChamberResonance: 80,
+    cathedralCaveCount: 3, crystalGrottoCount: 1,
+    properCaveCount: 1, limestoneHollowCount: 0,
+    mudCaveCount: 0, noCaveCount: 0,
+    hasHighQualityCount: 5, hasHighPrecisionCount: 5,
+    hasHighDepthCount: 5, hasHighDiversityCount: 5,
+    hasHighResonanceCount: 5,
+    overallSplendor: 80, explorerGrade: 'master-spelunker',
+    bestCrystal: 'a.ts', bestFormed: 'a.ts',
+    mostPrecise: 'a.ts', deepest: 'a.ts', mostDiverse: 'a.ts',
+  }
+
+  const goodUnderground: UndergroundSummary = {
+    avgFormation: 80, avgDepth: 80, avgResonance: 80,
+    isDeep: true, overallSplendor: 80,
+  }
+
+  it('returns success message when all metrics are good', () => {
+    const recs = generateRecommendations([], [], goodUnderground, goodStats)
+    expect(recs.length).toBeGreaterThan(0)
+    expect(recs[recs.length - 1]).toContain('master-spelunker')
   })
 
-  it('recommends magnificent when all scores are high', () => {
-    const formations = [analyzeCrystalFormation(RICH_CONTENT, 'rich.ts')]
-    const result = buildCrystalCaveResult(['rich.ts'], [RICH_CONTENT])
-    const recs = generateRecommendations(formations, result.chambers, result.cavern, result.stats)
-    expect(recs).toContain('Magnificent crystal cave achieved — your formations are a natural wonder')
+  it('recommends improving formation quality when low', () => {
+    const stats = { ...goodStats, avgFormationQuality: 40 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('formation quality'))).toBe(true)
+  })
+
+  it('recommends sharpening stalactite precision when low', () => {
+    const stats = { ...goodStats, avgStalactitePrecision: 40 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('stalactite precision'))).toBe(true)
+  })
+
+  it('recommends deepening grotto depth when low', () => {
+    const stats = { ...goodStats, avgGrottoDepth: 40 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('grotto depth'))).toBe(true)
+  })
+
+  it('recommends increasing mineral diversity when low', () => {
+    const stats = { ...goodStats, avgMineralDiversity: 40 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('mineral diversity'))).toBe(true)
+  })
+
+  it('recommends boosting chamber resonance when low', () => {
+    const stats = { ...goodStats, avgChamberResonance: 40 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('chamber resonance'))).toBe(true)
+  })
+
+  it('flags no-cave files', () => {
+    const stats = { ...goodStats, noCaveCount: 2 }
+    const recs = generateRecommendations([], [], goodUnderground, stats)
+    expect(recs.some(r => r.includes('no cave formation'))).toBe(true)
+  })
+
+  it('warns about low overall splendor', () => {
+    const underground = { ...goodUnderground, overallSplendor: 30 }
+    const recs = generateRecommendations([], [], underground, goodStats)
+    expect(recs.some(r => r.includes('splendor is low'))).toBe(true)
+  })
+
+  it('warns when all systems are collapsed', () => {
+    const systems: CaveSystem[] = [{
+      directory: 'src', crystals: [], avgFormation: 0, avgDepth: 0, avgResonance: 0,
+      cathedralCaveCount: 0, noCaveCount: 0, systemType: 'no-system', condition: 'filled-in',
+    }]
+    const recs = generateRecommendations([], systems, goodUnderground, goodStats)
+    expect(recs.some(r => r.includes('quality overhaul'))).toBe(true)
+  })
+
+  it('lists specific no-cave files when few', () => {
+    const crystals = [
+      { file: 'a.ts', condition: 'no-cave', qualityScore: 0 } as CaveCrystal,
+      { file: 'b.ts', condition: 'no-cave', qualityScore: 0 } as CaveCrystal,
+    ]
+    const recs = generateRecommendations(crystals, [], goodUnderground, goodStats)
+    expect(recs.some(r => r.includes('a.ts') && r.includes('b.ts'))).toBe(true)
   })
 })
 
-// ─── Format Helpers ──────────────────────────────────────────────────────────
+// ─── buildCrystalCaveResult ───────────────────────────────────────
 
-describe('scoreColor', () => {
-  it('returns green for high score', () => {
-    const result = scoreColor(90)
-    expect(result).toContain('90')
+describe('buildCrystalCaveResult', () => {
+  it('returns complete result with empty inputs', async () => {
+    const result = await buildCrystalCaveResult([], [])
+    expect(result.crystals).toHaveLength(0)
+    expect(result.systems).toHaveLength(0)
+    expect(result.stats.totalFiles).toBe(0)
+    expect(result.stats.overallSplendor).toBe(0)
+    expect(result.underground.isDeep).toBe(false)
   })
-  it('returns yellow for medium score', () => {
-    const result = scoreColor(70)
-    expect(result).toContain('70')
+
+  it('analyzes multiple files correctly', async () => {
+    const result = await buildCrystalCaveResult(
+      ['src/a.ts', 'src/b.ts'],
+      [richContent, moderateContent],
+    )
+    expect(result.crystals).toHaveLength(2)
+    expect(result.systems).toHaveLength(1)
+    expect(result.stats.totalFiles).toBe(2)
+    expect(result.stats.totalSystems).toBe(1)
   })
-  it('returns orange for low score', () => {
-    const result = scoreColor(45)
-    expect(result).toContain('45')
+
+  it('groups files by directory into systems', async () => {
+    const result = await buildCrystalCaveResult(
+      ['src/a.ts', 'lib/b.ts'],
+      [richContent, moderateContent],
+    )
+    expect(result.systems).toHaveLength(2)
   })
-  it('returns red for very low score', () => {
-    const result = scoreColor(20)
-    expect(result).toContain('20')
+
+  it('computes underground summary', async () => {
+    const result = await buildCrystalCaveResult(
+      ['a.ts'],
+      [richContent],
+    )
+    expect(result.underground.avgFormation).toBeGreaterThan(0)
+    expect(result.underground.avgDepth).toBeGreaterThan(0)
+    expect(result.underground.avgResonance).toBeGreaterThan(0)
+    expect(result.underground.overallSplendor).toBeGreaterThan(0)
+    expect(result.underground.isDeep).toBe(true)
+  })
+
+  it('computes stats correctly', async () => {
+    const result = await buildCrystalCaveResult(
+      ['a.ts', 'b.ts'],
+      [richContent, emptyContent],
+    )
+    expect(result.stats.avgFormationQuality).toBeGreaterThan(0)
+    expect(result.stats.avgStalactitePrecision).toBeGreaterThan(0)
+    expect(result.stats.avgGrottoDepth).toBeGreaterThan(0)
+    expect(result.stats.avgMineralDiversity).toBeGreaterThan(0)
+    expect(result.stats.avgChamberResonance).toBeGreaterThan(0)
+    expect(result.stats.cathedralCaveCount).toBeGreaterThanOrEqual(0)
+    expect(result.stats.noCaveCount).toBeGreaterThanOrEqual(0)
+  })
+
+  it('identifies best files', async () => {
+    const result = await buildCrystalCaveResult(
+      ['a.ts', 'b.ts'],
+      [richContent, moderateContent],
+    )
+    expect(result.stats.bestCrystal).toBe('a.ts')
+    expect(result.stats.bestFormed).toBe('a.ts')
+    expect(result.stats.mostPrecise).toBe('a.ts')
+    expect(result.stats.deepest).toBe('a.ts')
+    expect(result.stats.mostDiverse).toBe('a.ts')
+  })
+
+  it('generates recommendations', async () => {
+    const result = await buildCrystalCaveResult(
+      ['a.ts'],
+      [emptyContent],
+    )
+    expect(result.recommendations.length).toBeGreaterThan(0)
+  })
+
+  it('computes explorer grade', async () => {
+    const result = await buildCrystalCaveResult(
+      ['a.ts'],
+      [richContent],
+    )
+    expect(result.stats.explorerGrade).toBeDefined()
   })
 })
 
-describe('conditionColor', () => {
-  it('colors naica-mine', () => {
-    expect(conditionColor('naica-mine')).toContain('naica-mine')
-  })
-  it('colors gravel-pit', () => {
-    expect(conditionColor('gravel-pit')).toContain('gravel-pit')
-  })
-  it('passes through unknown conditions', () => {
-    expect(conditionColor('unknown')).toBe('unknown')
+// ─── Format Helpers ───────────────────────────────────────────────
+
+describe('colorScore', () => {
+  it('returns a string for each tier', () => {
+    expect(typeof colorScore(90)).toBe('string')
+    expect(typeof colorScore(70)).toBe('string')
+    expect(typeof colorScore(50)).toBe('string')
+    expect(typeof colorScore(30)).toBe('string')
+    expect(typeof colorScore(10)).toBe('string')
   })
 })
 
-describe('gradeColor', () => {
-  it('colors master-spelunker', () => {
-    expect(gradeColor('master-spelunker')).toContain('master-spelunker')
+describe('colorGrade', () => {
+  it('returns a string for known grades', () => {
+    expect(typeof colorGrade('cathedral-cave')).toBe('string')
+    expect(typeof colorGrade('no-cave')).toBe('string')
   })
-  it('colors surface-dweller', () => {
-    expect(gradeColor('surface-dweller')).toContain('surface-dweller')
-  })
-  it('passes through unknown grades', () => {
-    expect(gradeColor('unknown')).toBe('unknown')
+
+  it('returns a string for unknown grades', () => {
+    expect(typeof colorGrade('unknown-grade')).toBe('string')
   })
 })
 
-describe('clarityColor', () => {
-  it('colors diamond-grade', () => {
-    expect(clarityColor('diamond-grade')).toContain('diamond-grade')
-  })
-  it('colors muddy', () => {
-    expect(clarityColor('muddy')).toContain('muddy')
-  })
-})
-
-describe('formationColor', () => {
-  it('colors selenite', () => {
-    expect(formationColor('selenite')).toContain('selenite')
-  })
-  it('colors mud', () => {
-    expect(formationColor('mud')).toContain('mud')
+describe('formatCrystalTable', () => {
+  it('formats a crystal without error', () => {
+    const crystal = analyzeCaveCrystal(richContent, 'index.ts')
+    const result = formatCrystalTable(crystal)
+    expect(result).toContain('index.ts')
+    expect(result).toContain('Formation Quality')
+    expect(result).toContain('Score')
   })
 })
 
-describe('luminescenceColor', () => {
-  it('colors fluorescent', () => {
-    expect(luminescenceColor('fluorescent')).toContain('fluorescent')
+describe('formatCrystalsTable', () => {
+  it('returns empty message for no crystals', () => {
+    expect(formatCrystalsTable([])).toContain('No cave crystals found')
   })
-  it('colors dark', () => {
-    expect(luminescenceColor('dark')).toContain('dark')
+
+  it('formats multiple crystals', () => {
+    const crystals = [
+      analyzeCaveCrystal(richContent, 'a.ts'),
+      analyzeCaveCrystal(moderateContent, 'b.ts'),
+    ]
+    const result = formatCrystalsTable(crystals)
+    expect(result).toContain('Crystal Cave Analysis')
+    expect(result).toContain('a.ts')
+    expect(result).toContain('b.ts')
   })
 })
 
-describe('geodeColor', () => {
-  it('colors crystal-filled', () => {
-    expect(geodeColor('crystal-filled')).toContain('crystal-filled')
-  })
-  it('colors empty', () => {
-    expect(geodeColor('empty')).toContain('empty')
-  })
-})
-
-describe('purityColor', () => {
-  it('colors ultra-pure', () => {
-    expect(purityColor('ultra-pure')).toContain('ultra-pure')
-  })
-  it('colors polluted', () => {
-    expect(purityColor('polluted')).toContain('polluted')
+describe('formatSystemTable', () => {
+  it('formats a system', () => {
+    const system = analyzeCaveSystem([analyzeCaveCrystal(richContent, 'a.ts')], 'src')
+    const result = formatSystemTable(system)
+    expect(result).toContain('src')
+    expect(result).toContain('Type:')
+    expect(result).toContain('Crystals:')
   })
 })
 
-describe('wonderColor', () => {
-  it('colors breathtaking', () => {
-    expect(wonderColor('breathtaking')).toContain('breathtaking')
-  })
-  it('colors none', () => {
-    expect(wonderColor('none')).toContain('none')
+describe('formatSystemsTable', () => {
+  it('returns empty message for no systems', () => {
+    expect(formatSystemsTable([])).toContain('No cave systems found')
   })
 })
 
-describe('chamberColor', () => {
-  it('colors grand-cathedral', () => {
-    expect(chamberColor('grand-cathedral')).toContain('grand-cathedral')
-  })
-  it('colors mud-cave', () => {
-    expect(chamberColor('mud-cave')).toContain('mud-cave')
+describe('formatStatsTable', () => {
+  it('formats stats correctly', async () => {
+    const result = await buildCrystalCaveResult(['a.ts'], [richContent])
+    const formatted = formatStatsTable(result.stats)
+    expect(formatted).toContain('Crystal Cave Statistics')
+    expect(formatted).toContain('Total Files')
+    expect(formatted).toContain('Explorer Grade')
   })
 })
 
-// ─── JSON Formatter ──────────────────────────────────────────────────────────
+describe('formatRecommendations', () => {
+  it('returns empty message for no recommendations', () => {
+    expect(formatRecommendations([])).toContain('No recommendations')
+  })
 
-describe('formatCrystalCaveJson', () => {
-  it('returns valid JSON', () => {
-    const result = buildCrystalCaveResult([], [])
-    const json = formatCrystalCaveJson(result)
+  it('formats recommendations with bullets', () => {
+    const recs = formatRecommendations(['First recommendation', 'Second recommendation'])
+    expect(recs).toContain('Recommendations')
+    expect(recs).toContain('First recommendation')
+    expect(recs).toContain('Second recommendation')
+  })
+})
+
+describe('formatResultTable', () => {
+  it('formats full result as table', async () => {
+    const result = await buildCrystalCaveResult(['a.ts'], [richContent])
+    const formatted = formatResultTable(result)
+    expect(formatted).toContain('Crystal Cave Analysis')
+    expect(formatted).toContain('Cave Systems')
+    expect(formatted).toContain('Crystal Cave Statistics')
+    expect(formatted).toContain('Underground')
+    expect(formatted).toContain('Recommendations')
+  })
+})
+
+describe('formatResultJson', () => {
+  it('formats full result as JSON', async () => {
+    const result = await buildCrystalCaveResult(['a.ts'], [richContent])
+    const json = formatResultJson(result)
     const parsed = JSON.parse(json)
-    expect(parsed.formations).toEqual([])
-    expect(parsed.cavern.overallWonder).toBe(0)
-  })
-})
-
-// ─── Table Formatter ─────────────────────────────────────────────────────────
-
-describe('formatCrystalCaveTable', () => {
-  it('includes Crystal Cave Analysis header', () => {
-    const result = buildCrystalCaveResult([], [])
-    const table = formatCrystalCaveTable(result, false)
-    expect(table).toContain('Crystal Cave Analysis')
-  })
-
-  it('includes statistics in table output', () => {
-    const result = buildCrystalCaveResult(['rich.ts'], [RICH_CONTENT])
-    const table = formatCrystalCaveTable(result, false)
-    expect(table).toContain('Total Files')
-    expect(table).toContain('Spelunker Grade')
-  })
-
-  it('shows per-file details in verbose mode', () => {
-    const result = buildCrystalCaveResult(['rich.ts'], [RICH_CONTENT])
-    const table = formatCrystalCaveTable(result, true)
-    expect(table).toContain('Per-File Details')
-    expect(table).toContain('rich.ts')
-  })
-
-  it('includes recommendations', () => {
-    const result = buildCrystalCaveResult(['rich.ts'], [RICH_CONTENT])
-    const table = formatCrystalCaveTable(result, false)
-    expect(table).toContain('Recommendations')
+    expect(parsed.crystals).toHaveLength(1)
+    expect(parsed.stats).toBeDefined()
+    expect(parsed.underground).toBeDefined()
   })
 })

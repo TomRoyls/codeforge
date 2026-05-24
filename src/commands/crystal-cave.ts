@@ -7,41 +7,40 @@ import ora from 'ora'
 import { discoverFiles } from '../core/file-discovery.js'
 import {
   buildCrystalCaveResult,
-  type CrystalCaveResult,
 } from './crystal-cave-helpers.js'
-import { formatCrystalCaveJson, formatCrystalCaveTable } from './crystal-cave-format-helpers.js'
+import { formatResultJson, formatResultTable } from './crystal-cave-format-helpers.js'
 
 export default class CrystalCave extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze crystal cave patterns',
+      description: 'Path to analyze as crystal cave',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code clarity, formation, beauty, wonder, and preservation like exploring a crystal cave'
+  static override description = 'Analyze code formation-quality, stalactite-precision, grotto-depth, mineral-diversity, and chamber-resonance'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze crystal cave in current directory',
+      description: 'Analyze current directory as crystal cave',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
-      description: 'Analyze crystal cave in src directory as JSON',
+      description: 'Analyze src directory as JSON',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze only TypeScript files',
+      description: 'Analyze TypeScript files only',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file breakdown',
+      description: 'Show per-file crystal breakdown',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --format json --output cave.json',
-      description: 'Export crystal cave analysis to JSON file',
+      description: 'Export analysis to JSON file',
     },
   ]
 
@@ -68,7 +67,7 @@ export default class CrystalCave extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file breakdown',
+      description: 'Show per-file crystal breakdown',
     }),
   }
 
@@ -82,9 +81,8 @@ export default class CrystalCave extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
-    const { verbose } = flags
 
-    const spinner = ora('Discovering files...').start()
+    const spinner = ora('Scanning for cave crystals...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
@@ -95,8 +93,8 @@ export default class CrystalCave extends Command {
       patterns: [
         '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
         '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh',
-        '**/*.yaml', '**/*.yml', '**/*.xml', '**/*.sql',
+        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh', '**/*.yaml',
+        '**/*.yml', '**/*.xml', '**/*.sql',
       ],
     })
 
@@ -105,33 +103,35 @@ export default class CrystalCave extends Command {
       : null
 
     const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => extensions.includes(extname(f.path).toLowerCase()))
+      ? discoveredFiles.filter((f) => {
+          const ext = extname(f.path).toLowerCase()
+          return extensions.includes(ext)
+        })
       : discoveredFiles
 
-    spinner.text = 'Analyzing crystal cave...'
+    spinner.text = 'Analyzing cave crystals...'
 
     const files: string[] = []
     const contents: string[] = []
 
-    for (const file of filteredFiles) {
-      try {
-        const content = await fs.readFile(file.absolutePath, 'utf8')
-        files.push(file.path)
-        contents.push(content)
-      } catch {
-        files.push(file.path)
-        contents.push('')
-      }
-    }
+    await Promise.all(
+      filteredFiles.map(async (file) => {
+        try {
+          const content = await fs.readFile(file.absolutePath, 'utf8')
+          files.push(file.path)
+          contents.push(content)
+        } catch {
+          files.push(file.path)
+          contents.push('')
+        }
+      }),
+    )
 
-    const result: CrystalCaveResult = buildCrystalCaveResult(files, contents)
+    const result = await buildCrystalCaveResult(files, contents)
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.chambers.length} cave chambers`)
+    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.systems.length} cave systems`)
 
-    const outputData =
-      format === 'json'
-        ? formatCrystalCaveJson(result)
-        : formatCrystalCaveTable(result, verbose)
+    const outputData = format === 'json' ? formatResultJson(result) : formatResultTable(result)
 
     if (flags.output) {
       try {
@@ -148,6 +148,6 @@ export default class CrystalCave extends Command {
   }
 }
 
-export { buildCrystalCaveResult } from './crystal-cave-helpers.js'
-export type { CrystalCaveResult, CrystalFormation, CaveChamber, ClarityMeasure, FormationMeasure, LuminescenceMeasure, GeodeMeasure, PurityMeasure, WonderMeasure } from './crystal-cave-helpers.js'
-export { formatCrystalCaveJson, formatCrystalCaveTable } from './crystal-cave-format-helpers.js'
+export { buildCrystalCaveResult, analyzeCaveCrystal, analyzeCaveSystem, classifyCrystalCondition, classifySystemType, classifySystemCondition, classifyExplorerGrade, measureForming, measureHanging, measureDeepening, measureDiversifying, measureResonating, generateRecommendations } from './crystal-cave-helpers.js'
+export type { CaveCrystal as CaveCrystalType, CaveSystem, UndergroundSummary, CrystalCaveStats, CrystalCaveResult, CrystalCondition, SystemType, SystemCondition, ExplorerGrade, FormationGrade, StalactiteGrade, GrottoGrade, MineralGrade, ChamberGrade, FormingMeasure, HangingMeasure, DeepeningMeasure, DiversifyingMeasure, ResonatingMeasure } from './crystal-cave-helpers.js'
+export { formatResultTable, formatResultJson, formatCrystalTable, formatCrystalsTable, formatSystemTable, formatSystemsTable, formatStatsTable, formatRecommendations, colorScore, colorGrade } from './crystal-cave-format-helpers.js'

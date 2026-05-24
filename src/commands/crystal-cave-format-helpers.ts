@@ -1,209 +1,220 @@
+// ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
+import type { CaveCrystal, CaveSystem, CrystalCaveResult } from './crystal-cave-helpers.js'
 
-import type { CrystalCaveResult } from './crystal-cave-helpers.js'
+// ─── Color Palette (crystal cave — teal/cyan) ────────────────────
+const high = chalk.rgb(0, 200, 200)
+const midHigh = chalk.rgb(40, 180, 190)
+const mid = chalk.rgb(80, 160, 180)
+const lowMid = chalk.rgb(120, 140, 170)
+const low = chalk.rgb(160, 120, 160)
 
-// ─── Color Helpers ─────────────────────────────────────────────────────────
+const best = chalk.rgb(0, 220, 210).bold
+const good = chalk.rgb(30, 190, 195)
+const okay = chalk.rgb(70, 165, 180)
+const poor = chalk.rgb(120, 140, 165)
+const worst = chalk.rgb(150, 125, 160)
 
-/** @example scoreColor(90) returns green string */
-export function scoreColor(score: number): string {
-  if (score >= 80) return chalk.rgb(46, 204, 113)(String(score))
-  if (score >= 60) return chalk.rgb(241, 196, 15)(String(score))
-  if (score >= 40) return chalk.rgb(230, 126, 34)(String(score))
-  return chalk.rgb(231, 76, 60)(String(score))
+const heading = chalk.rgb(0, 180, 190).bold
+const label = chalk.rgb(50, 170, 185)
+const dim = chalk.rgb(130, 150, 175)
+
+// ─── Score Coloring ────────────────────────────────────────────────
+
+/**
+ * Color a numeric score by tier
+ * @example
+ * colorScore(90) // teal
+ */
+export function colorScore(score: number): string {
+  if (score >= 80) return high(String(score))
+  if (score >= 60) return midHigh(String(score))
+  if (score >= 40) return mid(String(score))
+  if (score >= 20) return lowMid(String(score))
+  return low(String(score))
 }
 
-/** @example conditionColor('naica-mine') returns colored string */
-export function conditionColor(condition: string): string {
-  switch (condition) {
-    case 'naica-mine': return chalk.rgb(255, 215, 0).bold(condition)
-    case 'crystal-cathedral': return chalk.rgb(46, 204, 113)(condition)
-    case 'amethyst-cave': return chalk.rgb(155, 89, 182)(condition)
-    case 'geode-collection': return chalk.rgb(52, 152, 219)(condition)
-    case 'rock-shop': return chalk.rgb(241, 196, 15)(condition)
-    case 'gravel-pit': return chalk.rgb(231, 76, 60)(condition)
-    default: return condition
+/**
+ * Color a grade/tier string by quality
+ * @example
+ * colorGrade('cathedral-cave') // best (bold teal)
+ */
+export function colorGrade(grade: string): string {
+  const g = grade.toLowerCase()
+  const tierMap: Record<string, (s: string) => string> = {
+    'geode-perfect': best, 'perfect-drop': best, 'deep-cavern': best,
+    'rainbow-cave': best, 'concert-hall': best, 'cathedral-cave': best,
+    'mammoth-cave': best, 'spectacular-cave': best, 'master-spelunker': best,
+
+    'crystal-growth': good, 'precise-point': good, 'proper-depth': good,
+    'diverse-minerals': good, 'harmonic-chamber': good, 'crystal-grotto': good,
+    'carlsbad-caverns': good, 'beautiful-grotto': good, 'expert-caver': good,
+
+    'proper-formation': okay, 'decent-grotto': okay,
+    'proper-variety': okay, 'proper-acoustics': okay, 'proper-cave': okay,
+    'proper-system': okay, 'decent-cave': okay, 'skilled-explorer': okay,
+
+    'rough-deposit': poor, 'irregular-drip': poor, 'shallow-cave': poor,
+    'limited-types': poor, 'dead-room': poor, 'limestone-hollow': poor,
+    'small-cave': poor, 'rough-hollow': poor, 'apprentice': poor,
+
+    'shapeless': worst, 'broken-stalactite': worst, 'surface-hollow': worst,
+    'monochrome': worst, 'echo-chamber': worst, 'mud-cave': worst,
+    'rock-shelter': worst, 'collapsed': worst, 'novice': worst,
+
+    'no-formation': worst, 'no-depth': worst,
+    'no-variety': worst, 'silent': worst, 'no-cave': worst,
+    'no-system': worst, 'filled-in': worst, 'surface-dweller': worst,
   }
+  return (tierMap[g] ?? low)(grade)
 }
 
-/** @example gradeColor('master-spelunker') returns bold string */
-export function gradeColor(grade: string): string {
-  switch (grade) {
-    case 'master-spelunker': return chalk.rgb(255, 215, 0).bold(grade)
-    case 'geologist': return chalk.rgb(46, 204, 113)(grade)
-    case 'crystallographer': return chalk.rgb(52, 152, 219)(grade)
-    case 'collector': return chalk.rgb(241, 196, 15)(grade)
-    case 'tourist': return chalk.rgb(230, 126, 34)(grade)
-    case 'surface-dweller': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
-  }
+// ─── Crystal Formatting ────────────────────────────────────────────
+
+/**
+ * Format a single crystal for display
+ * @example
+ * formatCrystalTable(crystal) // colored crystal info
+ */
+export function formatCrystalTable(crystal: CaveCrystal): string {
+  const parts = [
+    `${label('File:')} ${dim(crystal.file)}`,
+    `${label('Formation Quality:')} ${colorScore(crystal.formationQuality)} ${colorGrade(crystal.forming.grade)}`,
+    `${label('Stalactite Precision:')} ${colorScore(crystal.stalactitePrecision)} ${colorGrade(crystal.hanging.stalactite)}`,
+    `${label('Grotto Depth:')} ${colorScore(crystal.grottoDepth)} ${colorGrade(crystal.deepening.grotto)}`,
+    `${label('Mineral Diversity:')} ${colorScore(crystal.mineralDiversity)} ${colorGrade(crystal.diversifying.mineral)}`,
+    `${label('Chamber Resonance:')} ${colorScore(crystal.chamberResonance)} ${colorGrade(crystal.resonating.chamber)}`,
+    `${label('Score:')} ${colorScore(crystal.qualityScore)} ${colorGrade(crystal.condition)}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example clarityColor('diamond-grade') returns colored string */
-export function clarityColor(grade: string): string {
-  switch (grade) {
-    case 'diamond-grade': return chalk.rgb(255, 215, 0).bold(grade)
-    case 'quartz-clear': return chalk.rgb(46, 204, 113)(grade)
-    case 'frosted': return chalk.rgb(52, 152, 219)(grade)
-    case 'cloudy': return chalk.rgb(241, 196, 15)(grade)
-    case 'opaque': return chalk.rgb(230, 126, 34)(grade)
-    case 'muddy': return chalk.rgb(231, 76, 60)(grade)
-    default: return grade
-  }
+/**
+ * Format crystals as summary table
+ * @example
+ * formatCrystalsTable(crystals) // multi-line table
+ */
+export function formatCrystalsTable(crystals: CaveCrystal[]): string {
+  if (crystals.length === 0) return dim('No cave crystals found')
+  const header = heading('Crystal Cave Analysis')
+  const rows = crystals.map(c => formatCrystalTable(c))
+  return `${header}\n${rows.join('\n\n')}`
 }
 
-/** @example formationColor('selenite') returns colored string */
-export function formationColor(type: string): string {
-  switch (type) {
-    case 'selenite': return chalk.rgb(255, 215, 0).bold(type)
-    case 'amethyst': return chalk.rgb(155, 89, 182)(type)
-    case 'calcite': return chalk.rgb(46, 204, 113)(type)
-    case 'stalactite': return chalk.rgb(52, 152, 219)(type)
-    case 'flowstone': return chalk.rgb(241, 196, 15)(type)
-    case 'mud': return chalk.rgb(231, 76, 60)(type)
-    default: return type
-  }
+// ─── System Formatting ────────────────────────────────────────────
+
+/**
+ * Format a cave system for display
+ * @example
+ * formatSystemTable(system) // colored system info
+ */
+export function formatSystemTable(system: CaveSystem): string {
+  const parts = [
+    `${label('System:')} ${dim(system.directory)}`,
+    `${label('Type:')} ${colorGrade(system.systemType)}`,
+    `${label('Condition:')} ${colorGrade(system.condition)}`,
+    `${label('Crystals:')} ${String(system.crystals.length)}`,
+    `${label('Avg Formation:')} ${colorScore(system.avgFormation)}`,
+    `${label('Avg Depth:')} ${colorScore(system.avgDepth)}`,
+    `${label('Avg Resonance:')} ${colorScore(system.avgResonance)}`,
+    `${label('Cathedral Caves:')} ${String(system.cathedralCaveCount)}`,
+    `${label('No Cave:')} ${String(system.noCaveCount)}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example luminescenceColor('fluorescent') returns colored string */
-export function luminescenceColor(type: string): string {
-  switch (type) {
-    case 'fluorescent': return chalk.rgb(255, 215, 0).bold(type)
-    case 'phosphorescent': return chalk.rgb(46, 204, 113)(type)
-    case 'triboluminescent': return chalk.rgb(52, 152, 219)(type)
-    case 'radioluminescent': return chalk.rgb(155, 89, 182)(type)
-    case 'dim': return chalk.rgb(241, 196, 15)(type)
-    case 'dark': return chalk.rgb(231, 76, 60)(type)
-    default: return type
-  }
+/**
+ * Format all systems as summary
+ * @example
+ * formatSystemsTable(systems) // multi-line system summary
+ */
+export function formatSystemsTable(systems: CaveSystem[]): string {
+  if (systems.length === 0) return dim('No cave systems found')
+  const header = heading('Cave Systems')
+  const rows = systems.map(s => formatSystemTable(s))
+  return `${header}\n${rows.join('\n\n')}`
 }
 
-/** @example geodeColor('crystal-filled') returns colored string */
-export function geodeColor(interior: string): string {
-  switch (interior) {
-    case 'crystal-filled': return chalk.rgb(255, 215, 0).bold(interior)
-    case 'partially-filled': return chalk.rgb(46, 204, 113)(interior)
-    case 'hollow': return chalk.rgb(52, 152, 219)(interior)
-    case 'solid': return chalk.rgb(241, 196, 15)(interior)
-    case 'cracked': return chalk.rgb(230, 126, 34)(interior)
-    case 'empty': return chalk.rgb(231, 76, 60)(interior)
-    default: return interior
-  }
+// ─── Stats Formatting ─────────────────────────────────────────────
+
+/**
+ * Format statistics summary
+ * @example
+ * formatStatsTable(stats) // colored stats
+ */
+export function formatStatsTable(stats: CrystalCaveResult['stats']): string {
+  const parts = [
+    heading('Crystal Cave Statistics'),
+    `${label('Total Files:')} ${String(stats.totalFiles)}`,
+    `${label('Total Systems:')} ${String(stats.totalSystems)}`,
+    `${label('Avg Formation Quality:')} ${colorScore(stats.avgFormationQuality)}`,
+    `${label('Avg Stalactite Precision:')} ${colorScore(stats.avgStalactitePrecision)}`,
+    `${label('Avg Grotto Depth:')} ${colorScore(stats.avgGrottoDepth)}`,
+    `${label('Avg Mineral Diversity:')} ${colorScore(stats.avgMineralDiversity)}`,
+    `${label('Avg Chamber Resonance:')} ${colorScore(stats.avgChamberResonance)}`,
+    `${label('Cathedral Caves:')} ${String(stats.cathedralCaveCount)}`,
+    `${label('Crystal Grottos:')} ${String(stats.crystalGrottoCount)}`,
+    `${label('Proper Caves:')} ${String(stats.properCaveCount)}`,
+    `${label('Limestone Hollows:')} ${String(stats.limestoneHollowCount)}`,
+    `${label('Mud Caves:')} ${String(stats.mudCaveCount)}`,
+    `${label('No Cave:')} ${String(stats.noCaveCount)}`,
+    `${label('High Quality:')} ${String(stats.hasHighQualityCount)}`,
+    `${label('High Precision:')} ${String(stats.hasHighPrecisionCount)}`,
+    `${label('High Depth:')} ${String(stats.hasHighDepthCount)}`,
+    `${label('High Diversity:')} ${String(stats.hasHighDiversityCount)}`,
+    `${label('High Resonance:')} ${String(stats.hasHighResonanceCount)}`,
+    `${label('Overall Splendor:')} ${colorScore(stats.overallSplendor)}`,
+    `${label('Explorer Grade:')} ${colorGrade(stats.explorerGrade)}`,
+    `${label('Best Crystal:')} ${stats.bestCrystal}`,
+    `${label('Best Formed:')} ${stats.bestFormed}`,
+    `${label('Most Precise:')} ${stats.mostPrecise}`,
+    `${label('Deepest:')} ${stats.deepest}`,
+    `${label('Most Diverse:')} ${stats.mostDiverse}`,
+  ]
+  return parts.join('\n')
 }
 
-/** @example purityColor('ultra-pure') returns colored string */
-export function purityColor(state: string): string {
-  switch (state) {
-    case 'ultra-pure': return chalk.rgb(255, 215, 0).bold(state)
-    case 'high-purity': return chalk.rgb(46, 204, 113)(state)
-    case 'pure': return chalk.rgb(52, 152, 219)(state)
-    case 'impure': return chalk.rgb(241, 196, 15)(state)
-    case 'contaminated': return chalk.rgb(230, 126, 34)(state)
-    case 'polluted': return chalk.rgb(231, 76, 60)(state)
-    default: return state
-  }
+// ─── Recommendation Formatting ────────────────────────────────────
+
+/**
+ * Format recommendations as list
+ * @example
+ * formatRecommendations(recs) // bullet list
+ */
+export function formatRecommendations(recommendations: string[]): string {
+  if (recommendations.length === 0) return dim('No recommendations')
+  const header = heading('Recommendations')
+  const items = recommendations.map(r => `${dim('\u2022')} ${r}`)
+  return `${header}\n${items.join('\n')}`
 }
 
-/** @example wonderColor('breathtaking') returns colored string */
-export function wonderColor(impact: string): string {
-  switch (impact) {
-    case 'breathtaking': return chalk.rgb(255, 215, 0).bold(impact)
-    case 'magnificent': return chalk.rgb(46, 204, 113)(impact)
-    case 'beautiful': return chalk.rgb(155, 89, 182)(impact)
-    case 'pleasant': return chalk.rgb(52, 152, 219)(impact)
-    case 'ordinary': return chalk.rgb(241, 196, 15)(impact)
-    case 'none': return chalk.rgb(231, 76, 60)(impact)
-    default: return impact
-  }
+// ─── Full Result Formatting ───────────────────────────────────────
+
+/**
+ * Format complete result as table
+ * @example
+ * formatResultTable(result) // full colored output
+ */
+export function formatResultTable(result: CrystalCaveResult): string {
+  const sections = [
+    formatCrystalsTable(result.crystals),
+    '',
+    formatSystemsTable(result.systems),
+    '',
+    formatStatsTable(result.stats),
+    '',
+    `${heading('Underground')} ${label('Deep:')} ${result.underground.isDeep ? high('Yes') : low('No')} ${label('Overall Splendor:')} ${colorScore(result.underground.overallSplendor)}`,
+    '',
+    formatRecommendations(result.recommendations),
+  ]
+  return sections.join('\n')
 }
 
-/** @example chamberColor('grand-cathedral') returns colored string */
-export function chamberColor(type: string): string {
-  switch (type) {
-    case 'grand-cathedral': return chalk.rgb(255, 215, 0).bold(type)
-    case 'crystal-gallery': return chalk.rgb(46, 204, 113)(type)
-    case 'geode-room': return chalk.rgb(155, 89, 182)(type)
-    case 'flowstone-chamber': return chalk.rgb(52, 152, 219)(type)
-    case 'dripping-cave': return chalk.rgb(241, 196, 15)(type)
-    case 'mud-cave': return chalk.rgb(231, 76, 60)(type)
-    default: return type
-  }
-}
-
-// ─── JSON Formatter ────────────────────────────────────────────────────────
-
-/** @example formatCrystalCaveJson(result) returns JSON string */
-export function formatCrystalCaveJson(result: CrystalCaveResult): string {
+/**
+ * Format complete result as JSON
+ * @example
+ * formatResultJson(result) // JSON string
+ */
+export function formatResultJson(result: CrystalCaveResult): string {
   return JSON.stringify(result, null, 2)
-}
-
-// ─── Table Formatter ───────────────────────────────────────────────────────
-
-/** @example formatCrystalCaveTable(result, verbose) returns formatted string */
-export function formatCrystalCaveTable(result: CrystalCaveResult, verbose: boolean): string {
-  const lines: string[] = []
-
-  lines.push('')
-  lines.push(chalk.rgb(155, 89, 182).bold('  Crystal Cave Analysis'))
-  lines.push('')
-
-  lines.push(chalk.rgb(210, 180, 140)('  Cavern Overview:'))
-  lines.push(`    Overall Wonder:          ${scoreColor(result.cavern.overallWonder)}`)
-  lines.push(`    Avg Clarity:             ${scoreColor(result.cavern.avgClarity)}`)
-  lines.push(`    Avg Formation:           ${scoreColor(result.cavern.avgFormation)}`)
-  lines.push(`    Avg Wonder:              ${scoreColor(result.cavern.avgWonder)}`)
-  lines.push(`    Is Magnificent:          ${result.cavern.isMagnificent ? chalk.rgb(46, 204, 113)('Yes') : chalk.rgb(231, 76, 60)('No')}`)
-  lines.push('')
-
-  lines.push(chalk.rgb(210, 180, 140)('  Statistics:'))
-  lines.push(`    Total Files:              ${result.stats.totalFiles}`)
-  lines.push(`    Total Chambers:           ${result.stats.totalChambers}`)
-  lines.push(`    Avg Crystal Clarity:      ${scoreColor(result.stats.avgCrystalClarity)}`)
-  lines.push(`    Avg Formation Quality:    ${scoreColor(result.stats.avgFormationQuality)}`)
-  lines.push(`    Avg Luminescence:         ${scoreColor(result.stats.avgLuminescence)}`)
-  lines.push(`    Avg Geode Depth:          ${scoreColor(result.stats.avgGeodeDepth)}`)
-  lines.push(`    Avg Mineral Purity:       ${scoreColor(result.stats.avgMineralPurity)}`)
-  lines.push(`    Avg Cave Wonder:          ${scoreColor(result.stats.avgCaveWonder)}`)
-  lines.push(`    Spelunker Grade:          ${gradeColor(result.stats.spelunkerGrade)}`)
-  lines.push('')
-
-  lines.push(chalk.rgb(210, 180, 140)('  Condition Counts:'))
-  lines.push(`    Naica Mine:               ${result.stats.naicaMineCount}`)
-  lines.push(`    Crystal Cathedral:        ${result.stats.crystalCathedralCount}`)
-  lines.push(`    Amethyst Cave:            ${result.stats.amethystCaveCount}`)
-  lines.push(`    Geode Collection:         ${result.stats.geodeCollectionCount}`)
-  lines.push(`    Rock Shop:                ${result.stats.rockShopCount}`)
-  lines.push(`    Gravel Pit:               ${result.stats.gravelPitCount}`)
-  lines.push('')
-
-  if (result.stats.bestFormation) {
-    lines.push(chalk.rgb(210, 180, 140)('  Highlights:'))
-    lines.push(`    Best Formation:    ${result.stats.bestFormation}`)
-    lines.push(`    Clearest:          ${result.stats.clearest}`)
-    lines.push(`    Best Formed:       ${result.stats.bestFormed}`)
-    lines.push(`    Most Luminous:     ${result.stats.mostLuminous}`)
-    lines.push(`    Deepest:           ${result.stats.deepest}`)
-    lines.push(`    Most Wonderful:    ${result.stats.mostWonderful}`)
-    lines.push('')
-  }
-
-  if (verbose && result.formations.length > 0) {
-    lines.push(chalk.rgb(210, 180, 140)('  Per-File Details:'))
-    for (const formation of result.formations) {
-      lines.push(`    ${chalk.rgb(52, 152, 219)(formation.file)}`)
-      lines.push(`      Score: ${scoreColor(formation.qualityScore)}  Condition: ${conditionColor(formation.condition)}`)
-      lines.push(`      Clarity: ${clarityColor(formation.clarity.grade)}(${formation.crystalClarity})  Formation: ${formationColor(formation.formation.type)}(${formation.formationQuality})  Luminescence: ${luminescenceColor(formation.luminescence.type)}(${formation.luminescence.level})`)
-      lines.push(`      Geode: ${geodeColor(formation.geode.interior)}(${formation.geodeDepth})  Purity: ${purityColor(formation.purity.state)}(${formation.mineralPurity})  Wonder: ${wonderColor(formation.wonder.impact)}(${formation.caveWonder})`)
-    }
-    lines.push('')
-  }
-
-  if (result.recommendations.length > 0) {
-    lines.push(chalk.rgb(210, 180, 140)('  Recommendations:'))
-    for (const rec of result.recommendations) {
-      lines.push(`    ${chalk.rgb(155, 89, 182)('\u{1F48E}')} ${rec}`)
-    }
-    lines.push('')
-  }
-
-  return lines.join('\n')
 }

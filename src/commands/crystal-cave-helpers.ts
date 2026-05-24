@@ -1,902 +1,857 @@
-// ─── Regex Constants ────────────────────────────────────────────────────────
+// ─── Imports ───────────────────────────────────────────────────────
+import path from 'node:path'
+import fg from 'fast-glob'
 
-const EXPORT_REGEX = /\bexport\s+/g
-const IMPORT_REGEX = /\bimport\s+/g
-const FUNCTION_REGEX = /\bfunction\s+\w+/g
-const ARROW_REGEX = /(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?\([^)]*\)\s*=>/g
-const CLASS_REGEX = /\bclass\s+\w+/g
-const INTERFACE_REGEX = /\binterface\s+\w+/g
-const TYPE_REGEX = /\btype\s+\w+/g
-const ENUM_REGEX = /\benum\s+\w+/g
-const JSDOC_REGEX = /\/\*\*[\s\S]*?\*\//g
-const ASYNC_REGEX = /\basync\s+/g
-const TRY_CATCH_REGEX = /\btry\s*\{/g
-const DEEP_NESTED_REGEX = /\{[^{}]*\{[^{}]*\{[^{}]*\}/g
-const CONSOLE_REGEX = /\bconsole\.\w+/g
-const TODO_REGEX = /\/\/\s*(TODO|FIXME|HACK|XXX|BUG)/gi
-const GENERICS_REGEX = /<[^>]+>/g
-const PRIVATE_REGEX = /private\s+/g
-const PROTECTED_REGEX = /protected\s+/g
-const ANY_REGEX = /\bany\b/g
-const COMMENTED_CODE_REGEX = /\/\/\s*(function|const|let|var|import|export|class|if|for|while|return|switch)\b/g
-const REEXPORT_REGEX = /\bexport\s*\{[^}]*\}\s*from/g
+// ─── Types ─────────────────────────────────────────────────────────
 
-// ─── Helper Functions ───────────────────────────────────────────────────────
+/** Formation quality grade */
+export type FormationGrade =
+  | 'geode-perfect'
+  | 'crystal-growth'
+  | 'proper-formation'
+  | 'rough-deposit'
+  | 'shapeless'
+  | 'no-formation'
 
-function countMatches(content: string, regex: RegExp): number {
-  const matches = content.match(regex)
-  return matches ? matches.length : 0
-}
+/** Stalactite precision grade */
+export type StalactiteGrade =
+  | 'perfect-drop'
+  | 'precise-point'
+  | 'proper-formation'
+  | 'irregular-drip'
+  | 'broken-stalactite'
+  | 'no-formation'
 
-function countImportKeywords(content: string): number { return countMatches(content, IMPORT_REGEX) }
-function countExportKeywords(content: string): number { return countMatches(content, EXPORT_REGEX) }
-function countClassKeywords(content: string): number { return countMatches(content, CLASS_REGEX) }
-function countInterfaceKeywords(content: string): number { return countMatches(content, INTERFACE_REGEX) }
-function countTypeKeywords(content: string): number { return countMatches(content, TYPE_REGEX) }
-function countEnumKeywords(content: string): number { return countMatches(content, ENUM_REGEX) }
-function countFunctionKeywords(content: string): number { return countMatches(content, FUNCTION_REGEX) }
-function countArrowFunctions(content: string): number { return countMatches(content, ARROW_REGEX) }
-function countJSDocBlocks(content: string): number { return countMatches(content, JSDOC_REGEX) }
-function countAsyncKeywords(content: string): number { return countMatches(content, ASYNC_REGEX) }
-function countTryCatch(content: string): number { return countMatches(content, TRY_CATCH_REGEX) }
-function countDeepNested(content: string): number { return countMatches(content, DEEP_NESTED_REGEX) }
-function countConsoleUsage(content: string): number { return countMatches(content, CONSOLE_REGEX) }
-function countTodoComments(content: string): number { return countMatches(content, TODO_REGEX) }
-function countGenericsUsage(content: string): number { return countMatches(content, GENERICS_REGEX) }
-function countPrivateMembers(content: string): number { return countMatches(content, PRIVATE_REGEX) }
-function countProtectedMembers(content: string): number { return countMatches(content, PROTECTED_REGEX) }
-function countAnyUsage(content: string): number { return countMatches(content, ANY_REGEX) }
-function countCommentedCode(content: string): number { return countMatches(content, COMMENTED_CODE_REGEX) }
-function countReExports(content: string): number { return countMatches(content, REEXPORT_REGEX) }
+/** Grotto depth grade */
+export type GrottoGrade =
+  | 'deep-cavern'
+  | 'proper-depth'
+  | 'decent-grotto'
+  | 'shallow-cave'
+  | 'surface-hollow'
+  | 'no-depth'
 
-function genericsCount_safe(content: string): number { return countMatches(content, GENERICS_REGEX) }
-function reExportCount_safe(content: string): number { return countMatches(content, REEXPORT_REGEX) }
-function enumCount_safe(content: string): number { return countMatches(content, ENUM_REGEX) }
+/** Mineral diversity grade */
+export type MineralGrade =
+  | 'rainbow-cave'
+  | 'diverse-minerals'
+  | 'proper-variety'
+  | 'limited-types'
+  | 'monochrome'
+  | 'no-variety'
 
-// ─── Interfaces ─────────────────────────────────────────────────────────────
+/** Chamber resonance grade */
+export type ChamberGrade =
+  | 'concert-hall'
+  | 'harmonic-chamber'
+  | 'proper-acoustics'
+  | 'dead-room'
+  | 'echo-chamber'
+  | 'silent'
 
-export interface ClarityMeasure {
-  level: number
-  grade: 'diamond-grade' | 'quartz-clear' | 'frosted' | 'cloudy' | 'opaque' | 'muddy'
-  hasHighClarity: boolean
-  hasTransparency: boolean
-  hasNoInclusions: boolean
-  hasProperRefraction: boolean
-  hasNoFractures: boolean
-  hasBrilliance: boolean
-  hasDispersion: boolean
-  hasNoInternalReflections: boolean
-  hasScintillation: boolean
-  hasPerfectTermination: boolean
-  inclusionCount: number
-  fractureCount: number
-}
+/** Crystal condition */
+export type CrystalCondition =
+  | 'cathedral-cave'
+  | 'crystal-grotto'
+  | 'proper-cave'
+  | 'limestone-hollow'
+  | 'mud-cave'
+  | 'no-cave'
 
-export interface FormationMeasure {
+/** System type */
+export type SystemType =
+  | 'mammoth-cave'
+  | 'carlsbad-caverns'
+  | 'proper-system'
+  | 'small-cave'
+  | 'rock-shelter'
+  | 'no-system'
+
+/** System condition */
+export type SystemCondition =
+  | 'spectacular-cave'
+  | 'beautiful-grotto'
+  | 'decent-cave'
+  | 'rough-hollow'
+  | 'collapsed'
+  | 'filled-in'
+
+/** Explorer grade */
+export type ExplorerGrade =
+  | 'master-spelunker'
+  | 'expert-caver'
+  | 'skilled-explorer'
+  | 'apprentice'
+  | 'novice'
+  | 'surface-dweller'
+
+/** Forming measurement */
+export interface FormingMeasure {
   quality: number
-  type: 'selenite' | 'amethyst' | 'calcite' | 'stalactite' | 'flowstone' | 'mud'
-  hasProperStructure: boolean
-  hasCrystalHabits: boolean
-  hasProperGrowth: boolean
-  hasNoMalformation: boolean
-  hasGeometricPrecision: boolean
-  hasNoIrregularGrowth: boolean
-  hasProperOrientation: boolean
-  hasPrismaticForm: boolean
-  hasNoTwinning: boolean
-  hasPerfectSymmetry: boolean
-  malformationCount: number
-  twinningCount: number
+  grade: FormationGrade
+  hasHighQuality: boolean
+  hasStructured: boolean
+  hasOrganized: boolean
+  hasNoChaotic: boolean
+  hasOrdered: boolean
+  hasNoRandom: boolean
+  hasSystematic: boolean
+  hasNoHaphazard: boolean
+  hasPatterned: boolean
+  hasNoDisordered: boolean
+  hasRegular: boolean
+  chaoticCount: number
+  randomCount: number
 }
 
-export interface LuminescenceMeasure {
-  level: number
-  type: 'fluorescent' | 'phosphorescent' | 'triboluminescent' | 'radioluminescent' | 'dim' | 'dark'
-  hasHighLuminescence: boolean
-  hasProperGlow: boolean
-  hasUVResponse: boolean
-  hasNoDarkZones: boolean
-  hasProperEmission: boolean
-  hasCathodoluminescence: boolean
-  hasNoQuenching: boolean
-  hasProperExcitation: boolean
-  hasNoShadow: boolean
-  hasAfterglow: boolean
-  hasProperWavelength: boolean
-  darkZoneCount: number
-  quenchingCount: number
+/** Hanging measurement */
+export interface HangingMeasure {
+  precision: number
+  stalactite: StalactiteGrade
+  hasHighPrecision: boolean
+  hasAccurate: boolean
+  hasExact: boolean
+  hasNoImprecise: boolean
+  hasTargeted: boolean
+  hasNoScattered: boolean
+  hasFocused: boolean
+  hasNoDiffuse: boolean
+  hasPrecise: boolean
+  hasNoSloppy: boolean
+  hasDeliberate: boolean
+  impreciseCount: number
+  scatteredCount: number
 }
 
-export interface GeodeMeasure {
+/** Deepening measurement */
+export interface DeepeningMeasure {
   depth: number
-  interior: 'crystal-filled' | 'partially-filled' | 'hollow' | 'solid' | 'cracked' | 'empty'
-  hasDeepContent: boolean
-  hasHiddenBeauty: boolean
-  hasProperCavity: boolean
-  hasInnerCrystals: boolean
-  hasNoDeadSpace: boolean
-  hasProperFormation: boolean
-  hasNoCollapse: boolean
-  hasRevealable: boolean
-  hasNoFalseExterior: boolean
-  hasTreasure: boolean
-  deadSpaceCount: number
-  collapseCount: number
+  grotto: GrottoGrade
+  hasHighDepth: boolean
+  hasDeep: boolean
+  hasProfound: boolean
+  hasNoShallow: boolean
+  hasLayered: boolean
+  hasNoFlat: boolean
+  hasComplex: boolean
+  hasNoSimple: boolean
+  hasSubstantive: boolean
+  hasNoTrivial: boolean
+  hasRich: boolean
+  shallowCount: number
+  flatCount: number
 }
 
-export interface PurityMeasure {
-  level: number
-  state: 'ultra-pure' | 'high-purity' | 'pure' | 'impure' | 'contaminated' | 'polluted'
-  hasHighPurity: boolean
-  hasNoContamination: boolean
-  hasProperComposition: boolean
-  hasNoForeignMatter: boolean
-  hasChemicalStability: boolean
-  hasNoOxidation: boolean
-  hasProperCrystallization: boolean
-  hasNoInclusions: boolean
-  hasHomogeneous: boolean
-  hasNoSegregation: boolean
-  contaminationCount: number
-  segregationCount: number
+/** Diversifying measurement */
+export interface DiversifyingMeasure {
+  diversity: number
+  mineral: MineralGrade
+  hasHighDiversity: boolean
+  hasVaried: boolean
+  hasDiverse: boolean
+  hasNoUniform: boolean
+  hasColorful: boolean
+  hasNoDrab: boolean
+  hasRich: boolean
+  hasNoSparse: boolean
+  hasMultiple: boolean
+  hasNoSingle: boolean
+  hasAbundant: boolean
+  uniformCount: number
+  drabCount: number
 }
 
-export interface WonderMeasure {
-  score: number
-  impact: 'breathtaking' | 'magnificent' | 'beautiful' | 'pleasant' | 'ordinary' | 'none'
-  hasHighWonder: boolean
-  hasAwe: boolean
-  hasBeauty: boolean
-  hasNoMediocrity: boolean
-  hasNaturalWonder: boolean
-  hasNoArtificiality: boolean
-  hasInspiring: boolean
-  hasNoDullness: boolean
-  hasSpectacular: boolean
-  hasNoBoredom: boolean
-  hasMemorable: boolean
-  mediocrityCount: number
-  dullnessCount: number
+/** Resonating measurement */
+export interface ResonatingMeasure {
+  resonance: number
+  chamber: ChamberGrade
+  hasHighResonance: boolean
+  hasHarmonious: boolean
+  hasIntegrated: boolean
+  hasNoIsolated: boolean
+  hasConnected: boolean
+  hasNoDisconnected: boolean
+  hasResonant: boolean
+  hasNoDead: boolean
+  hasCoupled: boolean
+  hasNoSeparated: boolean
+  hasSounding: boolean
+  isolatedCount: number
+  disconnectedCount: number
 }
 
-export interface CrystalFormation {
+/** Single file analysis */
+export interface CaveCrystal {
   file: string
-  crystalClarity: number
   formationQuality: number
-  luminescence: number
-  geodeDepth: number
-  mineralPurity: number
-  caveWonder: number
-  clarity: ClarityMeasure
-  formation: FormationMeasure
-  luminescence: LuminescenceMeasure
-  geode: GeodeMeasure
-  purity: PurityMeasure
-  wonder: WonderMeasure
-  condition: 'naica-mine' | 'crystal-cathedral' | 'amethyst-cave' | 'geode-collection' | 'rock-shop' | 'gravel-pit'
+  stalactitePrecision: number
+  grottoDepth: number
+  mineralDiversity: number
+  chamberResonance: number
+  forming: FormingMeasure
+  hanging: HangingMeasure
+  deepening: DeepeningMeasure
+  diversifying: DiversifyingMeasure
+  resonating: ResonatingMeasure
+  condition: CrystalCondition
   qualityScore: number
 }
 
-export interface CaveChamber {
+/** Directory-level system */
+export interface CaveSystem {
   directory: string
-  formations: CrystalFormation[]
-  avgClarity: number
+  crystals: CaveCrystal[]
   avgFormation: number
-  avgWonder: number
-  naicaCount: number
-  gravelCount: number
-  clearCount: number
-  wonderCount: number
-  chamberType: 'grand-cathedral' | 'crystal-gallery' | 'geode-room' | 'flowstone-chamber' | 'dripping-cave' | 'mud-cave'
-  condition: 'natural-wonder' | 'show-cave' | 'wild-cave' | 'mine-tunnel' | 'basement' | 'pothole'
+  avgDepth: number
+  avgResonance: number
+  cathedralCaveCount: number
+  noCaveCount: number
+  systemType: SystemType
+  condition: SystemCondition
 }
 
+/** Underground summary */
+export interface UndergroundSummary {
+  avgFormation: number
+  avgDepth: number
+  avgResonance: number
+  isDeep: boolean
+  overallSplendor: number
+}
+
+/** Full stats */
+export interface CrystalCaveStats {
+  totalFiles: number
+  totalSystems: number
+  avgFormationQuality: number
+  avgStalactitePrecision: number
+  avgGrottoDepth: number
+  avgMineralDiversity: number
+  avgChamberResonance: number
+  cathedralCaveCount: number
+  crystalGrottoCount: number
+  properCaveCount: number
+  limestoneHollowCount: number
+  mudCaveCount: number
+  noCaveCount: number
+  hasHighQualityCount: number
+  hasHighPrecisionCount: number
+  hasHighDepthCount: number
+  hasHighDiversityCount: number
+  hasHighResonanceCount: number
+  overallSplendor: number
+  explorerGrade: ExplorerGrade
+  bestCrystal: string
+  bestFormed: string
+  mostPrecise: string
+  deepest: string
+  mostDiverse: string
+}
+
+/** Full result */
 export interface CrystalCaveResult {
-  formations: CrystalFormation[]
-  chambers: CaveChamber[]
-  cavern: {
-    avgClarity: number
-    avgFormation: number
-    avgWonder: number
-    isMagnificent: boolean
-    overallWonder: number
-  }
-  stats: {
-    totalFiles: number
-    totalChambers: number
-    avgCrystalClarity: number
-    avgFormationQuality: number
-    avgLuminescence: number
-    avgGeodeDepth: number
-    avgMineralPurity: number
-    avgCaveWonder: number
-    naicaMineCount: number
-    crystalCathedralCount: number
-    amethystCaveCount: number
-    geodeCollectionCount: number
-    rockShopCount: number
-    gravelPitCount: number
-    hasHighClarityCount: number
-    hasProperStructureCount: number
-    hasHighLuminescenceCount: number
-    hasDeepContentCount: number
-    hasHighPurityCount: number
-    hasHighWonderCount: number
-    overallWonder: number
-    spelunkerGrade: 'master-spelunker' | 'geologist' | 'crystallographer' | 'collector' | 'tourist' | 'surface-dweller'
-    bestFormation: string
-    clearest: string
-    bestFormed: string
-    mostLuminous: string
-    deepest: string
-    mostWonderful: string
-  }
+  crystals: CaveCrystal[]
+  systems: CaveSystem[]
+  underground: UndergroundSummary
+  stats: CrystalCaveStats
   recommendations: string[]
 }
 
-// ─── Clarity Measurement ────────────────────────────────────────────────────
+// ─── Regex Helpers ─────────────────────────────────────────────────
 
-/** @example measureClarity(content) returns clarity analysis */
-export function measureClarity(content: string): ClarityMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const deepNestedCount = countDeepNested(content)
-  const privateCount = countPrivateMembers(content)
+const has = (pattern: RegExp, content: string): boolean => pattern.test(content)
+const countMatches = (pattern: RegExp, content: string): number => {
+  const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+  const globalPattern = new RegExp(pattern.source, flags)
+  return (content.match(globalPattern) ?? []).length
+}
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+// ─── Boolean Detectors ─────────────────────────────────────────────
 
-  let level = 20
-  if (hasStructure) level += 12
-  if (hasTypes) level += 12
-  if (hasFunctions) level += 10
-  if (jsdocCount > 0) level += 10
-  if (exportCount > 0) level += 8
-  if (importCount > 0) level += 5
-  if (genericsCount > 0) level += 5
-  if (anyCount === 0) level += 5
-  if (consoleCount === 0) level += 5
-  if (deepNestedCount === 0) level += 5
-  if (privateCount === 0) level += 3
-  level = Math.min(100, Math.max(0, Math.round(level)))
+const hasExport = (c: string) => has(/\bexport\b/, c)
+const hasConst = (c: string) => has(/\bconst\b/, c)
+const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)
+const hasInterface = (c: string) => has(/\binterface\b/, c)
+const hasGenerics = (c: string) => has(/<[A-Z][A-Za-z]*>/, c)
+const hasAsync = (c: string) => has(/\basync\b/, c)
+const hasImport = (c: string) => has(/\bimport\b/, c)
+const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
+const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
+const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
+const hasReadonly = (c: string) => has(/\breadonly\b/, c)
+const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
+const hasStrictEq = (c: string) => has(/===/, c)
+const hasClass = (c: string) => has(/\bclass\b/, c)
 
-  const inclusionCount = consoleCount + anyCount
-  const fractureCount = deepNestedCount + privateCount
+// ─── Measure Functions ─────────────────────────────────────────────
 
-  const hasHighClarity = level >= 75 && hasStructure && hasTypes
-  const hasTransparency = hasStructure && hasTypes && hasFunctions
-  const hasNoInclusions = inclusionCount === 0
-  const hasProperRefraction = hasStructure && hasTypes && genericsCount > 0
-  const hasNoFractures = fractureCount === 0
-  const hasBrilliance = exportCount > 0 && importCount > 0
-  const hasDispersion = hasStructure && hasTypes && jsdocCount > 0
-  const hasNoInternalReflections = anyCount === 0 && deepNestedCount === 0
-  const hasScintillation = enumCount_safe(content) > 0 || reExportCount_safe(content) > 0
-  const hasPerfectTermination = hasFunctions && exportCount > 0
+/**
+ * Measure formation quality
+ * @example
+ * const m = measureForming(content)
+ * console.log(m.grade) // 'geode-perfect'
+ */
+export function measureForming(content: string): FormingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasConst(content) ? 10 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
 
-  let grade: ClarityMeasure['grade'] = 'muddy'
-  if (hasHighClarity && hasNoInclusions && hasNoFractures && hasProperRefraction) grade = 'diamond-grade'
-  else if (hasHighClarity && hasNoInclusions) grade = 'quartz-clear'
-  else if (hasHighClarity) grade = 'frosted'
-  else if (hasTransparency && hasBrilliance) grade = 'cloudy'
-  else if (level > 30) grade = 'opaque'
+  const hasStructured = hasExport(content) && hasConst(content)
+  const hasOrganized = hasReturnType(content) && hasInterface(content)
+  const hasOrdered = hasImport(content) && hasNamedExport(content)
+  const hasSystematic = hasAsync(content) && hasGenerics(content)
+  const hasPatterned = hasDocComments(content) && hasExport(content)
+  const hasRegular = hasTypeAlias(content) && hasConst(content)
+
+  score += hasStructured ? 5 : 0
+  score += hasOrganized ? 5 : 0
+  score += hasOrdered ? 5 : 0
+  score += hasSystematic ? 5 : 0
+  score += hasPatterned ? 5 : 0
+  score += hasRegular ? 5 : 0
+
+  const quality = Math.min(score, 100)
+  const chaoticCount = countMatches(/\bvar\b/, content)
+  const randomCount = countMatches(/\bany\b/, content)
+
+  const hasNoChaotic = chaoticCount === 0
+  const hasNoRandom = randomCount === 0
+  const hasNoHaphazard = !has(/\beval\b/, content)
+  const hasNoDisordered = !has(/\bdebugger\b/, content)
+  const hasHighQuality = quality >= 70
+
+  let grade: FormationGrade
+  if (quality >= 85) grade = 'geode-perfect'
+  else if (quality >= 70) grade = 'crystal-growth'
+  else if (quality >= 55) grade = 'proper-formation'
+  else if (quality >= 40) grade = 'rough-deposit'
+  else if (quality >= 25) grade = 'shapeless'
+  else grade = 'no-formation'
 
   return {
-    level, grade, hasHighClarity, hasTransparency, hasNoInclusions,
-    hasProperRefraction, hasNoFractures, hasBrilliance, hasDispersion,
-    hasNoInternalReflections, hasScintillation, hasPerfectTermination,
-    inclusionCount, fractureCount,
+    quality, grade, hasHighQuality, hasStructured, hasOrganized, hasNoChaotic,
+    hasOrdered, hasNoRandom, hasSystematic, hasNoHaphazard, hasPatterned,
+    hasNoDisordered, hasRegular, chaoticCount, randomCount,
   }
 }
 
-// ─── Formation Measurement ──────────────────────────────────────────────────
+/**
+ * Measure stalactite precision
+ * @example
+ * const m = measureHanging(content)
+ * console.log(m.stalactite) // 'perfect-drop'
+ */
+export function measureHanging(content: string): HangingMeasure {
+  let score = 0
+  score += hasConst(content) ? 10 : 0
+  score += hasStrictEq(content) ? 10 : 0
+  score += hasReturnType(content) ? 10 : 0
+  score += hasReadonly(content) ? 10 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
 
-/** @example measureFormation(content) returns formation analysis */
-export function measureFormation(content: string): FormationMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
-  const commentedCodeCount = countCommentedCode(content)
+  const hasAccurate = hasConst(content) && hasStrictEq(content)
+  const hasExact = hasReturnType(content) && hasReadonly(content)
+  const hasTargeted = hasInterface(content) && hasClass(content)
+  const hasFocused = hasExport(content) && hasImport(content)
+  const hasPrecise = hasPrivate(content) && hasStrictEq(content)
+  const hasDeliberate = hasTypeAlias(content) && hasConst(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  score += hasAccurate ? 5 : 0
+  score += hasExact ? 5 : 0
+  score += hasTargeted ? 5 : 0
+  score += hasFocused ? 5 : 0
+  score += hasPrecise ? 5 : 0
+  score += hasDeliberate ? 5 : 0
 
-  let quality = 20
-  if (hasStructure) quality += 12
-  if (hasTypes) quality += 12
-  if (hasFunctions) quality += 10
-  if (jsdocCount > 0) quality += 8
-  if (exportCount > 0) quality += 8
-  if (genericsCount > 0) quality += 5
-  if (importCount > 0) quality += 5
-  if (anyCount === 0) quality += 5
-  if (consoleCount === 0) quality += 5
-  if (todoCount === 0) quality += 5
-  if (deepNestedCount === 0) quality += 5
-  quality = Math.min(100, Math.max(0, Math.round(quality)))
+  const precision = Math.min(score, 100)
+  const impreciseCount = countMatches(/\bvar\b/, content)
+  const scatteredCount = countMatches(/\bany\b/, content)
 
-  const malformationCount = todoCount + anyCount
-  const twinningCount = deepNestedCount + commentedCodeCount
+  const hasNoImprecise = impreciseCount === 0
+  const hasNoScattered = scatteredCount === 0
+  const hasNoDiffuse = !has(/\beval\b/, content)
+  const hasNoSloppy = !has(/\bdebugger\b/, content)
+  const hasHighPrecision = precision >= 70
 
-  const hasProperStructure = hasStructure && hasTypes && hasFunctions
-  const hasCrystalHabits = hasStructure && hasTypes
-  const hasProperGrowth = hasFunctions && exportCount > 0
-  const hasNoMalformation = malformationCount === 0
-  const hasGeometricPrecision = hasStructure && hasTypes && genericsCount > 0
-  const hasNoIrregularGrowth = consoleCount === 0 && deepNestedCount === 0
-  const hasProperOrientation = importCount > 0 && exportCount > 0
-  const hasPrismaticForm = hasStructure && hasTypes && jsdocCount > 0
-  const hasNoTwinning = twinningCount === 0
-  const hasPerfectSymmetry = hasStructure && hasTypes && genericsCount > 0 && jsdocCount > 0
-
-  let formationType: FormationMeasure['type'] = 'mud'
-  if (quality >= 75 && hasNoMalformation && hasNoTwinning && hasPerfectSymmetry) formationType = 'selenite'
-  else if (quality >= 75 && hasNoMalformation) formationType = 'amethyst'
-  else if (quality >= 75) formationType = 'calcite'
-  else if (hasProperStructure && hasProperGrowth) formationType = 'stalactite'
-  else if (quality > 30) formationType = 'flowstone'
+  let stalactite: StalactiteGrade
+  if (precision >= 85) stalactite = 'perfect-drop'
+  else if (precision >= 70) stalactite = 'precise-point'
+  else if (precision >= 55) stalactite = 'proper-formation'
+  else if (precision >= 40) stalactite = 'irregular-drip'
+  else if (precision >= 25) stalactite = 'broken-stalactite'
+  else stalactite = 'no-formation'
 
   return {
-    quality, type: formationType, hasProperStructure, hasCrystalHabits,
-    hasProperGrowth, hasNoMalformation, hasGeometricPrecision,
-    hasNoIrregularGrowth, hasProperOrientation, hasPrismaticForm,
-    hasNoTwinning, hasPerfectSymmetry, malformationCount, twinningCount,
+    precision, stalactite, hasHighPrecision, hasAccurate, hasExact, hasNoImprecise,
+    hasTargeted, hasNoScattered, hasFocused, hasNoDiffuse, hasPrecise, hasNoSloppy,
+    hasDeliberate, impreciseCount, scatteredCount,
   }
 }
 
-// ─── Luminescence Measurement ───────────────────────────────────────────────
+/**
+ * Measure grotto depth
+ * @example
+ * const m = measureDeepening(content)
+ * console.log(m.grotto) // 'deep-cavern'
+ */
+export function measureDeepening(content: string): DeepeningMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasAsync(content) ? 10 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
 
-/** @example measureLuminescence(content) returns luminescence analysis */
-export function measureLuminescence(content: string): LuminescenceMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const enumCount = countEnumKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const deepNestedCount = countDeepNested(content)
-  const commentedCodeCount = countCommentedCode(content)
+  const hasDeep = hasExport(content) && hasAsync(content)
+  const hasProfound = hasNamedExport(content) && hasReturnType(content)
+  const hasLayered = hasConst(content) && hasImport(content)
+  const hasComplex = hasGenerics(content) && hasInterface(content)
+  const hasSubstantive = hasDocComments(content) && hasExport(content)
+  const hasRich = hasTypeAlias(content) && hasConst(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  score += hasDeep ? 5 : 0
+  score += hasProfound ? 5 : 0
+  score += hasLayered ? 5 : 0
+  score += hasComplex ? 5 : 0
+  score += hasSubstantive ? 5 : 0
+  score += hasRich ? 5 : 0
 
-  let level = 20
-  if (hasStructure) level += 10
-  if (hasTypes) level += 10
-  if (hasFunctions) level += 10
-  if (jsdocCount > 0) level += 10
-  if (enumCount > 0) level += 5
-  if (genericsCount > 0) level += 5
-  if (exportCount > 0) level += 8
-  if (importCount > 0) level += 5
-  if (anyCount === 0) level += 5
-  if (consoleCount === 0) level += 5
-  if (deepNestedCount === 0) level += 4
-  if (commentedCodeCount === 0) level += 3
-  level = Math.min(100, Math.max(0, Math.round(level)))
+  const depth = Math.min(score, 100)
+  const shallowCount = countMatches(/\bvar\b/, content)
+  const flatCount = countMatches(/\bany\b/, content)
 
-  const darkZoneCount = consoleCount + anyCount
-  const quenchingCount = deepNestedCount + commentedCodeCount
+  const hasNoShallow = shallowCount === 0
+  const hasNoFlat = flatCount === 0
+  const hasNoSimple = !has(/\beval\b/, content)
+  const hasNoTrivial = !has(/\bdebugger\b/, content)
+  const hasHighDepth = depth >= 70
 
-  const hasHighLuminescence = level >= 75 && hasStructure && hasTypes
-  const hasProperGlow = hasStructure && hasTypes && jsdocCount > 0
-  const hasUVResponse = exportCount > 0 && importCount > 0
-  const hasNoDarkZones = darkZoneCount === 0
-  const hasProperEmission = hasFunctions && jsdocCount > 0
-  const hasCathodoluminescence = hasStructure && hasTypes && genericsCount > 0
-  const hasNoQuenching = quenchingCount === 0
-  const hasProperExcitation = countTryCatch(content) > 0 && countAsyncKeywords(content) > 0
-  const hasNoShadow = consoleCount === 0 && deepNestedCount === 0
-  const hasAfterglow = enumCount_safe(content) > 0 || reExportCount_safe(content) > 0
-  const hasProperWavelength = hasFunctions && exportCount > 0
-
-  let luminescenceType: LuminescenceMeasure['type'] = 'dark'
-  if (hasHighLuminescence && hasNoDarkZones && hasNoQuenching && hasAfterglow) luminescenceType = 'fluorescent'
-  else if (hasHighLuminescence && hasNoDarkZones) luminescenceType = 'phosphorescent'
-  else if (hasHighLuminescence) luminescenceType = 'triboluminescent'
-  else if (hasProperGlow && hasProperEmission) luminescenceType = 'radioluminescent'
-  else if (level > 30) luminescenceType = 'dim'
+  let grotto: GrottoGrade
+  if (depth >= 85) grotto = 'deep-cavern'
+  else if (depth >= 70) grotto = 'proper-depth'
+  else if (depth >= 55) grotto = 'decent-grotto'
+  else if (depth >= 40) grotto = 'shallow-cave'
+  else if (depth >= 25) grotto = 'surface-hollow'
+  else grotto = 'no-depth'
 
   return {
-    level, type: luminescenceType, hasHighLuminescence, hasProperGlow,
-    hasUVResponse, hasNoDarkZones, hasProperEmission, hasCathodoluminescence,
-    hasNoQuenching, hasProperExcitation, hasNoShadow, hasAfterglow,
-    hasProperWavelength, darkZoneCount, quenchingCount,
+    depth, grotto, hasHighDepth, hasDeep, hasProfound, hasNoShallow,
+    hasLayered, hasNoFlat, hasComplex, hasNoSimple, hasSubstantive,
+    hasNoTrivial, hasRich, shallowCount, flatCount,
   }
 }
 
-// ─── Geode Measurement ─────────────────────────────────────────────────────
+/**
+ * Measure mineral diversity
+ * @example
+ * const m = measureDiversifying(content)
+ * console.log(m.mineral) // 'rainbow-cave'
+ */
+export function measureDiversifying(content: string): DiversifyingMeasure {
+  let score = 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
 
-/** @example measureGeode(content) returns geode analysis */
-export function measureGeode(content: string): GeodeMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const asyncCount = countAsyncKeywords(content)
-  const tryCatchCount = countTryCatch(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
+  const hasVaried = hasExport(content) && hasImport(content)
+  const hasDiverse = hasConst(content) && hasInterface(content)
+  const hasColorful = hasClass(content) && hasTypeAlias(content)
+  const hasRich = hasAsync(content) && hasGenerics(content)
+  const hasMultiple = hasReturnType(content) && hasReadonly(content)
+  const hasAbundant = hasPrivate(content) && hasDocComments(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  score += hasVaried ? 5 : 0
+  score += hasDiverse ? 5 : 0
+  score += hasColorful ? 5 : 0
+  score += hasRich ? 5 : 0
+  score += hasMultiple ? 5 : 0
+  score += hasAbundant ? 5 : 0
 
-  let depth = 20
-  if (hasStructure) depth += 12
-  if (hasTypes) depth += 12
-  if (hasFunctions) depth += 10
-  if (jsdocCount > 0) depth += 8
-  if (tryCatchCount > 0) depth += 8
-  if (genericsCount > 0) depth += 5
-  if (exportCount > 0) depth += 5
-  if (importCount > 0) depth += 5
-  if (asyncCount > 0) depth += 5
-  if (anyCount === 0) depth += 5
-  if (consoleCount === 0) depth += 5
-  depth = Math.min(100, Math.max(0, Math.round(depth)))
+  const diversity = Math.min(score, 100)
+  const uniformCount = countMatches(/\bvar\b/, content)
+  const drabCount = countMatches(/\bany\b/, content)
 
-  const deadSpaceCount = todoCount + anyCount
-  const collapseCount = deepNestedCount
+  const hasNoUniform = uniformCount === 0
+  const hasNoDrab = drabCount === 0
+  const hasNoSparse = !has(/\beval\b/, content)
+  const hasNoSingle = !has(/\bdebugger\b/, content)
+  const hasHighDiversity = diversity >= 70
 
-  const hasDeepContent = depth >= 75 && hasStructure && hasTypes
-  const hasHiddenBeauty = hasStructure && hasTypes && genericsCount > 0
-  const hasProperCavity = hasStructure && hasTypes && hasFunctions
-  const hasInnerCrystals = hasFunctions && jsdocCount > 0
-  const hasNoDeadSpace = deadSpaceCount === 0
-  const hasProperFormation = tryCatchCount > 0 && asyncCount > 0
-  const hasNoCollapse = collapseCount === 0
-  const hasRevealable = hasStructure && hasTypes && exportCount > 0
-  const hasNoFalseExterior = consoleCount === 0 && deepNestedCount === 0
-  const hasTreasure = enumCount_safe(content) > 0 || reExportCount_safe(content) > 0
-
-  let interior: GeodeMeasure['interior'] = 'empty'
-  if (hasDeepContent && hasNoDeadSpace && hasNoCollapse && hasProperFormation) interior = 'crystal-filled'
-  else if (hasDeepContent && hasNoDeadSpace) interior = 'partially-filled'
-  else if (hasDeepContent) interior = 'hollow'
-  else if (hasProperCavity && hasInnerCrystals) interior = 'solid'
-  else if (depth > 30) interior = 'cracked'
+  let mineral: MineralGrade
+  if (diversity >= 85) mineral = 'rainbow-cave'
+  else if (diversity >= 70) mineral = 'diverse-minerals'
+  else if (diversity >= 55) mineral = 'proper-variety'
+  else if (diversity >= 40) mineral = 'limited-types'
+  else if (diversity >= 25) mineral = 'monochrome'
+  else mineral = 'no-variety'
 
   return {
-    depth, interior, hasDeepContent, hasHiddenBeauty, hasProperCavity,
-    hasInnerCrystals, hasNoDeadSpace, hasProperFormation, hasNoCollapse,
-    hasRevealable, hasNoFalseExterior, hasTreasure, deadSpaceCount, collapseCount,
+    diversity, mineral, hasHighDiversity, hasVaried, hasDiverse, hasNoUniform,
+    hasColorful, hasNoDrab, hasRich, hasNoSparse, hasMultiple, hasNoSingle,
+    hasAbundant, uniformCount, drabCount,
   }
 }
 
-// ─── Purity Measurement ─────────────────────────────────────────────────────
+/**
+ * Measure chamber resonance
+ * @example
+ * const m = measureResonating(content)
+ * console.log(m.chamber) // 'concert-hall'
+ */
+export function measureResonating(content: string): ResonatingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasImport(content) ? 10 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
 
-/** @example measurePurity(content) returns purity analysis */
-export function measurePurity(content: string): PurityMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
-  const privateCount = countPrivateMembers(content)
-  const commentedCodeCount = countCommentedCode(content)
+  const hasHarmonious = hasExport(content) && hasImport(content)
+  const hasIntegrated = hasAsync(content) && hasReturnType(content)
+  const hasConnected = hasInterface(content) && hasGenerics(content)
+  const hasResonant = hasNamedExport(content) && hasConst(content)
+  const hasCoupled = hasDocComments(content) && hasExport(content)
+  const hasSounding = hasClass(content) && hasReturnType(content)
 
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
+  score += hasHarmonious ? 5 : 0
+  score += hasIntegrated ? 5 : 0
+  score += hasConnected ? 5 : 0
+  score += hasResonant ? 5 : 0
+  score += hasCoupled ? 5 : 0
+  score += hasSounding ? 5 : 0
 
-  let level = 20
-  if (hasStructure) level += 12
-  if (hasTypes) level += 12
-  if (hasFunctions) level += 10
-  if (jsdocCount > 0) level += 8
-  if (exportCount > 0) level += 8
-  if (genericsCount > 0) level += 5
-  if (importCount > 0) level += 5
-  if (anyCount === 0) level += 5
-  if (consoleCount === 0) level += 5
-  if (todoCount === 0) level += 5
-  if (deepNestedCount === 0) level += 5
-  level = Math.min(100, Math.max(0, Math.round(level)))
+  const resonance = Math.min(score, 100)
+  const isolatedCount = countMatches(/\bvar\b/, content)
+  const disconnectedCount = countMatches(/\bany\b/, content)
 
-  const contaminationCount = anyCount + consoleCount + todoCount
-  const segregationCount = deepNestedCount + privateCount + commentedCodeCount
+  const hasNoIsolated = isolatedCount === 0
+  const hasNoDisconnected = disconnectedCount === 0
+  const hasNoDead = !has(/\beval\b/, content)
+  const hasNoSeparated = !has(/\bdebugger\b/, content)
+  const hasHighResonance = resonance >= 70
 
-  const hasHighPurity = level >= 75 && hasStructure && hasTypes
-  const hasNoContamination = contaminationCount === 0
-  const hasProperComposition = hasStructure && hasTypes && hasFunctions
-  const hasNoForeignMatter = commentedCodeCount === 0 && anyCount === 0
-  const hasChemicalStability = countTryCatch(content) > 0 && countAsyncKeywords(content) > 0
-  const hasNoOxidation = consoleCount === 0 && deepNestedCount === 0
-  const hasProperCrystallization = hasStructure && hasTypes && genericsCount > 0
-  const hasNoInclusions = privateCount === 0 && todoCount === 0
-  const hasHomogeneous = exportCount > 0 && importCount > 0
-  const hasNoSegregation = segregationCount === 0
-
-  let state: PurityMeasure['state'] = 'polluted'
-  if (hasHighPurity && hasNoContamination && hasNoSegregation && hasNoForeignMatter) state = 'ultra-pure'
-  else if (hasHighPurity && hasNoContamination) state = 'high-purity'
-  else if (hasHighPurity) state = 'pure'
-  else if (hasProperComposition && hasHomogeneous) state = 'impure'
-  else if (level > 30) state = 'contaminated'
+  let chamber: ChamberGrade
+  if (resonance >= 85) chamber = 'concert-hall'
+  else if (resonance >= 70) chamber = 'harmonic-chamber'
+  else if (resonance >= 55) chamber = 'proper-acoustics'
+  else if (resonance >= 40) chamber = 'dead-room'
+  else if (resonance >= 25) chamber = 'echo-chamber'
+  else chamber = 'silent'
 
   return {
-    level, state, hasHighPurity, hasNoContamination, hasProperComposition,
-    hasNoForeignMatter, hasChemicalStability, hasNoOxidation, hasProperCrystallization,
-    hasNoInclusions, hasHomogeneous, hasNoSegregation, contaminationCount, segregationCount,
+    resonance, chamber, hasHighResonance, hasHarmonious, hasIntegrated, hasNoIsolated,
+    hasConnected, hasNoDisconnected, hasResonant, hasNoDead, hasCoupled, hasNoSeparated,
+    hasSounding, isolatedCount, disconnectedCount,
   }
 }
 
-// ─── Wonder Measurement ─────────────────────────────────────────────────────
+// ─── Classification Functions ───────────────────────────────────────
 
-/** @example measureWonder(content) returns wonder analysis */
-export function measureWonder(content: string): WonderMeasure {
-  const classCount = countClassKeywords(content)
-  const interfaceCount = countInterfaceKeywords(content)
-  const typeCount = countTypeKeywords(content)
-  const functionCount = countFunctionKeywords(content)
-  const arrowCount = countArrowFunctions(content)
-  const jsdocCount = countJSDocBlocks(content)
-  const genericsCount = genericsCount_safe(content)
-  const exportCount = countExportKeywords(content)
-  const importCount = countImportKeywords(content)
-  const consoleCount = countConsoleUsage(content)
-  const anyCount = countAnyUsage(content)
-  const todoCount = countTodoComments(content)
-  const deepNestedCount = countDeepNested(content)
-  const commentedCodeCount = countCommentedCode(content)
-
-  const hasStructure = classCount > 0
-  const hasTypes = interfaceCount > 0 || typeCount > 0
-  const hasFunctions = functionCount > 0 || arrowCount > 0
-
-  let score = 20
-  if (hasStructure) score += 12
-  if (hasTypes) score += 12
-  if (hasFunctions) score += 10
-  if (jsdocCount > 0) score += 8
-  if (exportCount > 0) score += 8
-  if (genericsCount > 0) score += 5
-  if (importCount > 0) score += 5
-  if (anyCount === 0) score += 5
-  if (consoleCount === 0) score += 5
-  if (todoCount === 0) score += 5
-  if (deepNestedCount === 0) score += 5
-  score = Math.min(100, Math.max(0, Math.round(score)))
-
-  const mediocrityCount = anyCount + todoCount
-  const dullnessCount = deepNestedCount + commentedCodeCount
-
-  const hasHighWonder = score >= 75 && hasStructure && hasTypes
-  const hasAwe = hasStructure && hasTypes && genericsCount > 0
-  const hasBeauty = hasStructure && hasTypes && jsdocCount > 0
-  const hasNoMediocrity = mediocrityCount === 0
-  const hasNaturalWonder = enumCount_safe(content) > 0 || reExportCount_safe(content) > 0
-  const hasNoArtificiality = consoleCount === 0 && commentedCodeCount === 0
-  const hasInspiring = countTryCatch(content) > 0 && countAsyncKeywords(content) > 0
-  const hasNoDullness = dullnessCount === 0
-  const hasSpectacular = hasStructure && hasTypes && exportCount > 0
-  const hasNoBoredom = consoleCount === 0 && deepNestedCount === 0
-  const hasMemorable = hasFunctions && jsdocCount > 0 && genericsCount > 0
-
-  let impact: WonderMeasure['impact'] = 'none'
-  if (hasHighWonder && hasNoMediocrity && hasNoDullness && hasMemorable) impact = 'breathtaking'
-  else if (hasHighWonder && hasNoMediocrity) impact = 'magnificent'
-  else if (hasHighWonder) impact = 'beautiful'
-  else if (hasBeauty && hasInspiring) impact = 'pleasant'
-  else if (score > 30) impact = 'ordinary'
-
-  return {
-    score, impact, hasHighWonder, hasAwe, hasBeauty, hasNoMediocrity,
-    hasNaturalWonder, hasNoArtificiality, hasInspiring, hasNoDullness,
-    hasSpectacular, hasNoBoredom, hasMemorable, mediocrityCount, dullnessCount,
-  }
+/**
+ * Classify crystal condition
+ * @example
+ * classifyCrystalCondition(90) // 'cathedral-cave'
+ */
+export function classifyCrystalCondition(score: number): CrystalCondition {
+  if (score >= 85) return 'cathedral-cave'
+  if (score >= 70) return 'crystal-grotto'
+  if (score >= 55) return 'proper-cave'
+  if (score >= 40) return 'limestone-hollow'
+  if (score >= 25) return 'mud-cave'
+  return 'no-cave'
 }
 
-// ─── Condition Classification ───────────────────────────────────────────────
-
-/** @example classifyCondition(formation) returns condition string */
-export function classifyCondition(formation: CrystalFormation): CrystalFormation['condition'] {
-  const { qualityScore } = formation
-  if (qualityScore >= 80) return 'naica-mine'
-  if (qualityScore >= 65) return 'crystal-cathedral'
-  if (qualityScore >= 50) return 'amethyst-cave'
-  if (qualityScore >= 35) return 'geode-collection'
-  if (qualityScore >= 20) return 'rock-shop'
-  return 'gravel-pit'
+/**
+ * Classify system type
+ * @example
+ * classifySystemType(crystals) // 'mammoth-cave'
+ */
+export function classifySystemType(crystals: CaveCrystal[]): SystemType {
+  if (crystals.length === 0) return 'no-system'
+  const avgQs = Math.round(crystals.reduce((s, c) => s + c.qualityScore, 0) / crystals.length)
+  const cathedralRatio = crystals.filter(c => c.condition === 'cathedral-cave').length / crystals.length
+  if (avgQs >= 75 && cathedralRatio >= 0.5) return 'mammoth-cave'
+  if (avgQs >= 60) return 'carlsbad-caverns'
+  if (avgQs >= 45) return 'proper-system'
+  if (avgQs >= 30) return 'small-cave'
+  if (avgQs >= 15) return 'rock-shelter'
+  return 'no-system'
 }
 
-// ─── Formation Analysis ─────────────────────────────────────────────────────
-
-/** @example analyzeCrystalFormation(content, filePath) returns full formation */
-export function analyzeCrystalFormation(content: string, filePath: string): CrystalFormation {
-  const clarity = measureClarity(content)
-  const formation = measureFormation(content)
-  const luminescence = measureLuminescence(content)
-  const geode = measureGeode(content)
-  const purity = measurePurity(content)
-  const wonder = measureWonder(content)
-
-  const crystalClarity = clarity.level
-  const formationQuality = formation.quality
-  const luminescenceLevel = luminescence.level
-  const geodeDepth = geode.depth
-  const mineralPurity = purity.level
-  const caveWonder = wonder.score
-
-  const qualityScore = Math.round(
-    crystalClarity * 0.15 +
-    formationQuality * 0.15 +
-    luminescenceLevel * 0.15 +
-    geodeDepth * 0.2 +
-    mineralPurity * 0.15 +
-    caveWonder * 0.2,
-  )
-
-  const result: CrystalFormation = {
-    file: filePath,
-    crystalClarity, formationQuality, luminescence: luminescenceLevel,
-    geodeDepth, mineralPurity, caveWonder,
-    clarity, formation, luminescence, geode, purity, wonder,
-    condition: 'gravel-pit',
-    qualityScore,
-  }
-
-  result.condition = classifyCondition(result)
-
-  return result
+/**
+ * Classify system condition
+ * @example
+ * classifySystemCondition(80) // 'spectacular-cave'
+ */
+export function classifySystemCondition(avgQs: number): SystemCondition {
+  if (avgQs >= 75) return 'spectacular-cave'
+  if (avgQs >= 60) return 'beautiful-grotto'
+  if (avgQs >= 45) return 'decent-cave'
+  if (avgQs >= 30) return 'rough-hollow'
+  if (avgQs >= 15) return 'collapsed'
+  return 'filled-in'
 }
 
-// ─── Chamber Analysis ───────────────────────────────────────────────────────
-
-/** @example analyzeCaveChamber(formations, dirPath) returns chamber */
-export function analyzeCaveChamber(formations: CrystalFormation[], dirPath: string): CaveChamber {
-  if (formations.length === 0) {
-    return {
-      directory: dirPath, formations: [], avgClarity: 0, avgFormation: 0, avgWonder: 0,
-      naicaCount: 0, gravelCount: 0, clearCount: 0, wonderCount: 0,
-      chamberType: 'mud-cave', condition: 'pothole',
-    }
-  }
-
-  const avgClarity = Math.round(formations.reduce((s, f) => s + f.crystalClarity, 0) / formations.length)
-  const avgFormation = Math.round(formations.reduce((s, f) => s + f.formationQuality, 0) / formations.length)
-  const avgWonder = Math.round(formations.reduce((s, f) => s + f.caveWonder, 0) / formations.length)
-
-  const naicaCount = formations.filter((f) => f.condition === 'naica-mine').length
-  const gravelCount = formations.filter((f) => f.condition === 'gravel-pit').length
-  const clearCount = formations.filter((f) => f.clarity.hasHighClarity).length
-  const wonderCount = formations.filter((f) => f.wonder.hasHighWonder).length
-
-  const chamberType = classifyChamberType(formations)
-  const avgScore = formations.reduce((s, f) => s + f.qualityScore, 0) / formations.length
-  const condition = classifyChamberCondition(avgScore)
-
-  return {
-    directory: dirPath, formations, avgClarity, avgFormation, avgWonder,
-    naicaCount, gravelCount, clearCount, wonderCount, chamberType, condition,
-  }
-}
-
-// ─── Chamber Classification ─────────────────────────────────────────────────
-
-/** @example classifyChamberType(formations) returns chamber type */
-export function classifyChamberType(formations: CrystalFormation[]): CaveChamber['chamberType'] {
-  if (formations.length === 0) return 'mud-cave'
-  const avgScore = formations.reduce((s, f) => s + f.qualityScore, 0) / formations.length
-  const naicaCnt = formations.filter((f) => f.condition === 'naica-mine').length
-  if (avgScore >= 75 && naicaCnt >= Math.ceil(formations.length * 0.3)) return 'grand-cathedral'
-  if (avgScore >= 60) return 'crystal-gallery'
-  if (avgScore >= 45) return 'geode-room'
-  if (avgScore >= 30) return 'flowstone-chamber'
-  if (avgScore >= 15) return 'dripping-cave'
-  return 'mud-cave'
-}
-
-/** @example classifyChamberCondition(avgScore) returns condition */
-export function classifyChamberCondition(avgScore: number): CaveChamber['condition'] {
-  if (avgScore >= 80) return 'natural-wonder'
-  if (avgScore >= 65) return 'show-cave'
-  if (avgScore >= 50) return 'wild-cave'
-  if (avgScore >= 35) return 'mine-tunnel'
-  if (avgScore >= 20) return 'basement'
-  return 'pothole'
-}
-
-/** @example classifySpelunkerGrade(avgWonder) returns grade */
-export function classifySpelunkerGrade(avgWonder: number): CrystalCaveResult['stats']['spelunkerGrade'] {
-  if (avgWonder >= 80) return 'master-spelunker'
-  if (avgWonder >= 65) return 'geologist'
-  if (avgWonder >= 50) return 'crystallographer'
-  if (avgWonder >= 35) return 'collector'
-  if (avgWonder >= 20) return 'tourist'
+/**
+ * Classify explorer grade
+ * @example
+ * classifyExplorerGrade(85) // 'master-spelunker'
+ */
+export function classifyExplorerGrade(avgSplendor: number): ExplorerGrade {
+  if (avgSplendor >= 80) return 'master-spelunker'
+  if (avgSplendor >= 65) return 'expert-caver'
+  if (avgSplendor >= 50) return 'skilled-explorer'
+  if (avgSplendor >= 35) return 'apprentice'
+  if (avgSplendor >= 20) return 'novice'
   return 'surface-dweller'
 }
 
-// ─── Recommendations ────────────────────────────────────────────────────────
+// ─── Recommendation Generator ──────────────────────────────────────
 
-/** @example generateRecommendations(formations, chambers, cavern, stats) returns recommendations */
+/**
+ * Generate recommendations
+ * @example
+ * generateRecommendations(crystals, systems, underground, stats)
+ */
 export function generateRecommendations(
-  formations: CrystalFormation[],
-  chambers: CaveChamber[],
-  cavern: CrystalCaveResult['cavern'],
-  stats: CrystalCaveResult['stats'],
+  crystals: CaveCrystal[],
+  systems: CaveSystem[],
+  underground: UndergroundSummary,
+  stats: CrystalCaveStats,
 ): string[] {
   const recs: string[] = []
-
-  if (stats.avgCrystalClarity < 50) recs.push('Improve crystal clarity — make your code more transparent')
-  if (stats.avgFormationQuality < 50) recs.push('Enhance formation quality — build better code structure')
-  if (stats.avgLuminescence < 50) recs.push('Increase luminescence — illuminate your code with documentation')
-  if (stats.avgGeodeDepth < 50) recs.push('Deepen geode content — add more substance to your code')
-  if (stats.avgMineralPurity < 50) recs.push('Purify your minerals — clean contaminants from your code')
-  if (stats.avgCaveWonder < 50) recs.push('Increase cave wonder — make your code more awe-inspiring')
-  if (stats.gravelPitCount > formations.length * 0.5) recs.push('Too many gravel pits — over half the codebase lacks crystalline quality')
-  if (stats.hasHighWonderCount === 0) recs.push('No breathtaking formations found — cultivate wonder with patience')
-  if (chambers.length > 0 && cavern.overallWonder < 60) recs.push('Overall cave wonder is low — consult the master spelunker')
-  if (recs.length === 0) recs.push('Magnificent crystal cave achieved — your formations are a natural wonder')
-
+  if (stats.avgFormationQuality < 50) {
+    recs.push('Improve formation quality with structured exports, organized const patterns, and systematic interfaces')
+  }
+  if (stats.avgStalactitePrecision < 50) {
+    recs.push('Sharpen stalactite precision with exact const/strict-eq, precise return types/readonly, and targeted imports')
+  }
+  if (stats.avgGrottoDepth < 50) {
+    recs.push('Deepen grotto depth with layered async/export pairs, profound named exports, and complex generics')
+  }
+  if (stats.avgMineralDiversity < 50) {
+    recs.push('Increase mineral diversity with varied patterns, diverse interface/class usage, and colorful type variety')
+  }
+  if (stats.avgChamberResonance < 50) {
+    recs.push('Boost chamber resonance with harmonious export/import pairs, integrated async patterns, and connected interfaces')
+  }
+  if (stats.noCaveCount > 0) {
+    recs.push(`${stats.noCaveCount} file(s) have no cave formation — consider significant refactoring`)
+  }
+  if (underground.overallSplendor < 40) {
+    recs.push('Overall cave splendor is low — focus on formation quality and stalactite precision first')
+  }
+  const allCollapsed = systems.every(s => s.systemType === 'no-system' || s.systemType === 'rock-shelter')
+  if (allCollapsed && systems.length > 0) {
+    recs.push('All cave systems are collapsed or minimal — consider a major quality overhaul')
+  }
+  const noCaveFiles = crystals.filter(c => c.condition === 'no-cave').map(c => c.file)
+  if (noCaveFiles.length > 0 && noCaveFiles.length <= 3) {
+    recs.push(`Transform these no-cave files into cathedral caves: ${noCaveFiles.join(', ')}`)
+  }
+  if (recs.length === 0) {
+    recs.push('Your crystal cave is master-spelunker quality! Every crystal gleams with perfect formation')
+  }
   return recs
 }
 
-// ─── Build Result ───────────────────────────────────────────────────────────
+// ─── Analysis Functions ────────────────────────────────────────────
 
-/** @example buildCrystalCaveResult(files, contents, options) returns full result */
-export function buildCrystalCaveResult(
+/**
+ * Analyze a single file as cave crystal
+ * @example
+ * const c = analyzeCaveCrystal(content, 'index.ts')
+ * console.log(c.condition) // 'cathedral-cave'
+ */
+export function analyzeCaveCrystal(content: string, filePath: string): CaveCrystal {
+  const forming = measureForming(content)
+  const hanging = measureHanging(content)
+  const deepening = measureDeepening(content)
+  const diversifying = measureDiversifying(content)
+  const resonating = measureResonating(content)
+
+  const qualityScore = Math.round(
+    forming.quality * 0.2 +
+    hanging.precision * 0.2 +
+    deepening.depth * 0.2 +
+    diversifying.diversity * 0.2 +
+    resonating.resonance * 0.2,
+  )
+
+  return {
+    file: filePath,
+    formationQuality: forming.quality,
+    stalactitePrecision: hanging.precision,
+    grottoDepth: deepening.depth,
+    mineralDiversity: diversifying.diversity,
+    chamberResonance: resonating.resonance,
+    forming,
+    hanging,
+    deepening,
+    diversifying,
+    resonating,
+    condition: classifyCrystalCondition(qualityScore),
+    qualityScore,
+  }
+}
+
+/**
+ * Analyze a directory as cave system
+ * @example
+ * const s = analyzeCaveSystem(crystals, 'src')
+ * console.log(s.systemType) // 'mammoth-cave'
+ */
+export function analyzeCaveSystem(crystals: CaveCrystal[], dirPath: string): CaveSystem {
+  if (crystals.length === 0) {
+    return {
+      directory: dirPath, crystals: [], avgFormation: 0, avgDepth: 0, avgResonance: 0,
+      cathedralCaveCount: 0, noCaveCount: 0, systemType: 'no-system', condition: 'filled-in',
+    }
+  }
+
+  const avgFormation = Math.round(crystals.reduce((s, c) => s + c.formationQuality, 0) / crystals.length)
+  const avgDepth = Math.round(crystals.reduce((s, c) => s + c.grottoDepth, 0) / crystals.length)
+  const avgResonance = Math.round(crystals.reduce((s, c) => s + c.chamberResonance, 0) / crystals.length)
+  const cathedralCaveCount = crystals.filter(c => c.condition === 'cathedral-cave').length
+  const noCaveCount = crystals.filter(c => c.condition === 'no-cave').length
+  const avgQs = Math.round(crystals.reduce((s, c) => s + c.qualityScore, 0) / crystals.length)
+
+  return {
+    directory: dirPath, crystals, avgFormation, avgDepth, avgResonance,
+    cathedralCaveCount, noCaveCount, systemType: classifySystemType(crystals),
+    condition: classifySystemCondition(avgQs),
+  }
+}
+
+// ─── Orchestrator ──────────────────────────────────────────────────
+
+/**
+ * Build complete crystal cave result
+ * @example
+ * const result = await buildCrystalCaveResult(files, contents)
+ * console.log(result.stats.explorerGrade) // 'master-spelunker'
+ */
+export async function buildCrystalCaveResult(
   files: string[],
   contents: string[],
-  _options?: { verbose?: boolean },
-): CrystalCaveResult {
-  const formations: CrystalFormation[] = files.map((file, i) =>
-    analyzeCrystalFormation(contents[i] ?? '', file),
-  )
+  _options?: Record<string, unknown>,
+): Promise<CrystalCaveResult> {
+  const crystals = files.map((file, i) => analyzeCaveCrystal(contents[i] ?? '', file))
 
-  const dirMap = new Map<string, CrystalFormation[]>()
-  for (const formation of formations) {
-    const dir = formation.file.includes('/')
-      ? formation.file.substring(0, formation.file.lastIndexOf('/'))
-      : '.'
+  const dirMap = new Map<string, CaveCrystal[]>()
+  for (const crystal of crystals) {
+    const dir = path.dirname(crystal.file)
     const existing = dirMap.get(dir)
-    if (existing) {
-      existing.push(formation)
-    } else {
-      dirMap.set(dir, [formation])
-    }
+    if (existing) { existing.push(crystal) } else { dirMap.set(dir, [crystal]) }
   }
 
-  const chambers: CaveChamber[] = Array.from(dirMap.entries()).map(([dir, dirFormations]) =>
-    analyzeCaveChamber(dirFormations, dir),
+  const systems = Array.from(dirMap.entries()).map(([dir, dirCrystals]) =>
+    analyzeCaveSystem(dirCrystals, dir),
   )
 
-  const avgClarity = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.crystalClarity, 0) / formations.length)
-    : 0
-  const avgFormation = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.formationQuality, 0) / formations.length)
-    : 0
-  const avgWonder = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.caveWonder, 0) / formations.length)
-    : 0
-  const overallWonder = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.qualityScore, 0) / formations.length)
-    : 0
-  const isMagnificent = overallWonder >= 65
+  const avgFormation = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.formationQuality, 0) / crystals.length) : 0
+  const avgDepth = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.grottoDepth, 0) / crystals.length) : 0
+  const avgResonance = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.chamberResonance, 0) / crystals.length) : 0
 
-  const cavern: CrystalCaveResult['cavern'] = {
-    avgClarity, avgFormation, avgWonder, isMagnificent, overallWonder,
+  const overallSplendor = crystals.length > 0
+    ? Math.round((avgFormation + avgDepth + avgResonance) / 3) : 0
+  const isDeep = avgDepth >= 60
+
+  const underground: UndergroundSummary = { avgFormation, avgDepth, avgResonance, isDeep, overallSplendor }
+
+  const avgStalactitePrecision = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.stalactitePrecision, 0) / crystals.length) : 0
+  const avgMineralDiversity = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.mineralDiversity, 0) / crystals.length) : 0
+  const avgChamberResonance = crystals.length > 0
+    ? Math.round(crystals.reduce((s, c) => s + c.chamberResonance, 0) / crystals.length) : 0
+
+  const bestCrystal = crystals.length > 0
+    ? crystals.reduce((best, c) => c.qualityScore > best.qualityScore ? c : best).file : ''
+  const bestFormed = crystals.length > 0
+    ? crystals.reduce((best, c) => c.formationQuality > best.formationQuality ? c : best).file : ''
+  const mostPrecise = crystals.length > 0
+    ? crystals.reduce((best, c) => c.stalactitePrecision > best.stalactitePrecision ? c : best).file : ''
+  const deepest = crystals.length > 0
+    ? crystals.reduce((best, c) => c.grottoDepth > best.grottoDepth ? c : best).file : ''
+  const mostDiverse = crystals.length > 0
+    ? crystals.reduce((best, c) => c.mineralDiversity > best.mineralDiversity ? c : best).file : ''
+
+  const stats: CrystalCaveStats = {
+    totalFiles: crystals.length,
+    totalSystems: systems.length,
+    avgFormationQuality: avgFormation,
+    avgStalactitePrecision,
+    avgGrottoDepth: avgDepth,
+    avgMineralDiversity,
+    avgChamberResonance,
+    cathedralCaveCount: crystals.filter(c => c.condition === 'cathedral-cave').length,
+    crystalGrottoCount: crystals.filter(c => c.condition === 'crystal-grotto').length,
+    properCaveCount: crystals.filter(c => c.condition === 'proper-cave').length,
+    limestoneHollowCount: crystals.filter(c => c.condition === 'limestone-hollow').length,
+    mudCaveCount: crystals.filter(c => c.condition === 'mud-cave').length,
+    noCaveCount: crystals.filter(c => c.condition === 'no-cave').length,
+    hasHighQualityCount: crystals.filter(c => c.forming.hasHighQuality).length,
+    hasHighPrecisionCount: crystals.filter(c => c.hanging.hasHighPrecision).length,
+    hasHighDepthCount: crystals.filter(c => c.deepening.hasHighDepth).length,
+    hasHighDiversityCount: crystals.filter(c => c.diversifying.hasHighDiversity).length,
+    hasHighResonanceCount: crystals.filter(c => c.resonating.hasHighResonance).length,
+    overallSplendor,
+    explorerGrade: classifyExplorerGrade(overallSplendor),
+    bestCrystal, bestFormed, mostPrecise, deepest, mostDiverse,
   }
 
-  const avgCrystalClarity = avgClarity
-  const avgFormationQuality = avgFormation
-  const avgLuminescence = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.luminescence.level, 0) / formations.length)
-    : 0
-  const avgGeodeDepth = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.geodeDepth, 0) / formations.length)
-    : 0
-  const avgMineralPurity = formations.length > 0
-    ? Math.round(formations.reduce((s, f) => s + f.mineralPurity, 0) / formations.length)
-    : 0
-  const avgCaveWonder = avgWonder
+  const recommendations = generateRecommendations(crystals, systems, underground, stats)
 
-  const conditionCounts = {
-    naicaMine: 0, crystalCathedral: 0, amethystCave: 0,
-    geodeCollection: 0, rockShop: 0, gravelPit: 0,
-  }
-  for (const f of formations) {
-    switch (f.condition) {
-      case 'naica-mine': conditionCounts.naicaMine++; break
-      case 'crystal-cathedral': conditionCounts.crystalCathedral++; break
-      case 'amethyst-cave': conditionCounts.amethystCave++; break
-      case 'geode-collection': conditionCounts.geodeCollection++; break
-      case 'rock-shop': conditionCounts.rockShop++; break
-      case 'gravel-pit': conditionCounts.gravelPit++; break
-    }
-  }
+  return { crystals, systems, underground, stats, recommendations }
+}
 
-  const hasHighClarityCount = formations.filter((f) => f.clarity.hasHighClarity).length
-  const hasProperStructureCount = formations.filter((f) => f.formation.hasProperStructure).length
-  const hasHighLuminescenceCount = formations.filter((f) => f.luminescence.hasHighLuminescence).length
-  const hasDeepContentCount = formations.filter((f) => f.geode.hasDeepContent).length
-  const hasHighPurityCount = formations.filter((f) => f.purity.hasHighPurity).length
-  const hasHighWonderCount = formations.filter((f) => f.wonder.hasHighWonder).length
-
-  const bestFormation = formations.length > 0
-    ? formations.reduce((best, f) => f.qualityScore > best.qualityScore ? f : best).file
-    : ''
-  const clearest = formations.length > 0
-    ? formations.reduce((best, f) => f.crystalClarity > best.crystalClarity ? f : best).file
-    : ''
-  const bestFormed = formations.length > 0
-    ? formations.reduce((best, f) => f.formationQuality > best.formationQuality ? f : best).file
-    : ''
-  const mostLuminous = formations.length > 0
-    ? formations.reduce((best, f) => f.luminescence.level > best.luminescence.level ? f : best).file
-    : ''
-  const deepest = formations.length > 0
-    ? formations.reduce((best, f) => f.geodeDepth > best.geodeDepth ? f : best).file
-    : ''
-  const mostWonderful = formations.length > 0
-    ? formations.reduce((best, f) => f.caveWonder > best.caveWonder ? f : best).file
-    : ''
-
-  const spelunkerGrade = classifySpelunkerGrade(overallWonder)
-
-  const stats: CrystalCaveResult['stats'] = {
-    totalFiles: files.length, totalChambers: chambers.length,
-    avgCrystalClarity, avgFormationQuality, avgLuminescence,
-    avgGeodeDepth, avgMineralPurity, avgCaveWonder,
-    naicaMineCount: conditionCounts.naicaMine,
-    crystalCathedralCount: conditionCounts.crystalCathedral,
-    amethystCaveCount: conditionCounts.amethystCave,
-    geodeCollectionCount: conditionCounts.geodeCollection,
-    rockShopCount: conditionCounts.rockShop,
-    gravelPitCount: conditionCounts.gravelPit,
-    hasHighClarityCount, hasProperStructureCount, hasHighLuminescenceCount,
-    hasDeepContentCount, hasHighPurityCount, hasHighWonderCount,
-    overallWonder, spelunkerGrade,
-    bestFormation, clearest, bestFormed,
-    mostLuminous, deepest, mostWonderful,
-  }
-
-  const recommendations = generateRecommendations(formations, chambers, cavern, stats)
-
-  return { formations, chambers, cavern, stats, recommendations }
+/**
+ * Gather files matching patterns
+ * @example
+ * const files = gatherFiles('./src', ['.ts'], [])
+ */
+export async function gatherFiles(
+  targetPath: string, exts: string[], ignore: string[],
+): Promise<string[]> {
+  const extensions = exts.length > 0 ? exts : ['.ts', '.js', '.tsx', '.jsx']
+  const patterns = extensions.map(ext => `**/*${ext}`)
+  const ignorePatterns = ignore.length > 0 ? ignore : ['**/node_modules/**', '**/dist/**', '**/.git/**']
+  const entries = await fg(patterns, { cwd: targetPath, ignore: ignorePatterns, absolute: true })
+  return Array.from(new Set(entries)).sort()
 }
