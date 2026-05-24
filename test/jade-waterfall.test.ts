@@ -2,607 +2,531 @@ import { describe, it, expect } from 'vitest'
 import {
   measureFlowing,
   measureCascading,
-  measureGathering,
-  measureThriving,
-  measureClarifying,
+  measurePooling,
+  measureCleansing,
+  measureKnowing,
+  analyzeJadeDrop,
+  analyzeJadeBasin,
   classifyDropCondition,
-  classifyTerraceType,
-  classifyTerraceCondition,
-  classifyKeeperGrade,
-  analyzeWaterDrop,
-  analyzeWaterfallTerrace,
-  buildJadeWaterfallResult,
+  classifyBasinType,
+  classifyBasinCondition,
+  classifyNavigatorGrade,
   generateRecommendations,
+  buildJadeWaterfallResult,
+  gatherFiles,
 } from '../src/commands/jade-waterfall-helpers.js'
 import {
   colorScore,
   colorGrade,
   formatDropTable,
   formatDropsTable,
-  formatTerraceTable,
-  formatTerracesTable,
+  formatBasinTable,
+  formatBasinsTable,
   formatStatsTable,
   formatRecommendations,
   formatResultTable,
   formatResultJson,
 } from '../src/commands/jade-waterfall-format-helpers.js'
-import type { WaterDrop } from '../src/commands/jade-waterfall-helpers.js'
 
 // ─── Fixtures ──────────────────────────────────────────────────────
 
-const emptyContent = ''
+const minimalContent = 'const x = 1'
 
-const minimalContent = `const x = 1`
+const moderateContent = `export interface Foo {
+  bar: string
+}
 
-const moderateContent = `
-import { foo } from 'bar'
-export interface User {
-  name: string
-  age: number
+export function greet(name: string): string {
+  return 'hello ' + name
 }
-export type UserRole = 'admin' | 'user'
-export function getUser(id: string): User | null {
-  if (id === '1') return { name: 'test', age: 20 }
-  return null
-}
-const users: User[] = []
+
+const foo: Foo = { bar: 'baz' }
 `
 
-const richContent = `
-import { z } from 'zod'
-import type { Config } from './config.js'
-
-/**
- * User configuration interface
+const richContent = `/**
+ * A type alias for string or number
  */
-export interface UserConfig {
-  readonly name: string
-  readonly age: number
-  readonly role: UserRole
-  nickname?: string
+type StringOrNumber = string | number
+
+export enum Color {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
 }
 
-export type UserRole = 'admin' | 'user' | 'moderator'
-export type Maybe<T> = T | null
+export interface Widget<T> {
+  readonly id: string
+  name: string
+  value: T
+  optional?: boolean
+}
 
-/**
- * Create a new user with validation
- */
-export async function createUser(input: string): Promise<UserConfig> {
-  const config: Config = JSON.parse(input)
-  if (config.name === undefined || config.name === null) {
-    throw new Error('Name required')
-  }
-  try {
-    const result = await validateConfig(config)
-    return result ?? defaultValue()
-  } catch (error) {
-    return handleDefault(config)
+export class Processor {
+  private status: string = 'idle'
+
+  async process(input: string): Promise<string> {
+    try {
+      this.status = 'running'
+      return input.toUpperCase()
+    } catch (err) {
+      throw new Error('Processing failed')
+    }
   }
 }
 
-export function handleDefault(config: Config): UserConfig {
-  return config ?? { name: 'default', age: 0, role: 'user' }
+export function findWidget(widgets: Widget<string>[], id: string): Widget<string> | undefined {
+  return widgets.find(w => w.id === id)
 }
 
-export function defaultValue(): UserConfig {
-  return { name: 'default', age: 0, role: 'user' }
-}
-
-enum Status {
-  Active = 'ACTIVE',
-  Inactive = 'INACTIVE',
-  Pending = 'PENDING'
-}
-
-switch (status) {
-  case Status.Active:
-    users.map(u => u.name)
-    users.filter(u => u.age > 18).forEach(u => console.log(u))
-    break
-  default:
-    break
-}
+const DEFAULT_COLOR = Color.Red
 `
 
 // ─── measureFlowing ────────────────────────────────────────────────
 
 describe('measureFlowing', () => {
-  it('returns no-flow for empty content', () => {
-    const m = measureFlowing(emptyContent)
-    expect(m.grace).toBe(0)
-    expect(m.grade).toBe('no-flow')
+  it('returns low grace for minimal content', () => {
+    const m = measureFlowing(minimalContent)
+    expect(m.grace).toBeLessThanOrEqual(15)
     expect(m.hasHighGrace).toBe(false)
+    expect(m.hasSmoothFlow).toBe(false)
+    expect(m.hasNoBottlenecks).toBe(true)
+    expect(m.hasStreamlined).toBe(false)
+    expect(m.hasDirectPaths).toBe(false)
+    expect(m.hasEfficient).toBe(false)
+    expect(m.hasGraceful).toBe(false)
+    expect(m.hasNoJerky).toBe(true)
+    expect(m.bottleneckCount).toBe(0)
     expect(m.tangledCount).toBe(0)
-    expect(m.circuitCount).toBe(0)
   })
 
-  it('returns silk-waterfall for rich content', () => {
+  it('returns high grace for rich content', () => {
     const m = measureFlowing(richContent)
-    expect(m.grace).toBeGreaterThanOrEqual(85)
-    expect(m.grade).toBe('silk-waterfall')
-    expect(m.hasHighGrace).toBe(true)
-    expect(m.hasElegantDataFlow).toBe(true)
-    expect(m.hasCleanTransformations).toBe(true)
-    expect(m.hasNoTangled).toBe(true)
+    expect(m.grace).toBeGreaterThan(40)
+    expect(m.hasSmoothFlow).toBe(true)
     expect(m.hasStreamlined).toBe(true)
-    expect(m.hasNoCircuits).toBe(true)
-    expect(m.hasPipelined).toBe(true)
-    expect(m.hasNoAdhoc).toBe(true)
-    expect(m.hasSequential).toBe(true)
-    expect(m.hasSmooth).toBe(true)
+    expect(m.hasNoBottlenecks).toBe(true)
   })
 
-  it('counts tangled patterns (var)', () => {
-    const m = measureFlowing('var x = 1; var y = 2;')
-    expect(m.tangledCount).toBe(2)
-    expect(m.hasNoTangled).toBe(false)
+  it('detects var as jerky', () => {
+    const m = measureFlowing('var x = 1')
+    expect(m.hasNoJerky).toBe(false)
   })
 
-  it('counts circuit patterns (any)', () => {
-    const m = measureFlowing('const x: any = 1;')
-    expect(m.circuitCount).toBeGreaterThanOrEqual(1)
-    expect(m.hasNoCircuits).toBe(false)
+  it('detects pipeline as smooth', () => {
+    const m = measureFlowing('const r = [1,2,3].map(x => x * 2).filter(x => x > 2)')
+    expect(m.hasSmoothFlow).toBe(true)
+    expect(m.hasCleanPipelines).toBe(true)
   })
 
-  it('detects eval as adhoc', () => {
-    const m = measureFlowing("eval('x')")
-    expect(m.hasNoAdhoc).toBe(false)
+  it('detects async/await as smooth', () => {
+    const m = measureFlowing('async function f() { await g() }')
+    expect(m.hasSmoothFlow).toBe(true)
   })
 
-  it('detects debugger as random', () => {
-    const m = measureFlowing('debugger')
-    expect(m.hasNoRandom).toBe(false)
-  })
-
-  it('returns higher grace for moderate content', () => {
-    const m = measureFlowing(moderateContent)
-    expect(m.grace).toBeGreaterThan(0)
+  it('grace is within 0-100', () => {
+    const m = measureFlowing(richContent)
+    expect(m.grace).toBeLessThanOrEqual(100)
+    expect(m.grace).toBeGreaterThanOrEqual(0)
   })
 })
 
 // ─── measureCascading ──────────────────────────────────────────────
 
 describe('measureCascading', () => {
-  it('returns no-cascade for empty content', () => {
-    const m = measureCascading(emptyContent)
-    expect(m.clarity).toBe(0)
-    expect(m.cascade).toBe('no-cascade')
+  it('returns low clarity for minimal content', () => {
+    const m = measureCascading(minimalContent)
+    expect(m.clarity).toBeLessThanOrEqual(15)
     expect(m.hasHighClarity).toBe(false)
-    expect(m.hiddenStepCount).toBe(0)
-    expect(m.blackBoxCount).toBe(0)
-  })
-
-  it('returns crystal-steps for rich content', () => {
-    const m = measureCascading(richContent)
-    expect(m.clarity).toBeGreaterThanOrEqual(85)
-    expect(m.cascade).toBe('crystal-steps')
-    expect(m.hasHighClarity).toBe(true)
-    expect(m.hasClearSteps).toBe(true)
-    expect(m.hasDocumentedTransformations).toBe(true)
-    expect(m.hasNoHiddenSteps).toBe(true)
-    expect(m.hasVisiblePipeline).toBe(true)
-    expect(m.hasTraceable).toBe(true)
-    expect(m.hasExplicit).toBe(true)
-  })
-
-  it('counts hidden steps (var)', () => {
-    const m = measureCascading('var x = 1; var y = 2;')
-    expect(m.hiddenStepCount).toBe(2)
-    expect(m.hasNoHiddenSteps).toBe(false)
-  })
-
-  it('counts black boxes (any)', () => {
-    const m = measureCascading('const x: any = 1;')
-    expect(m.blackBoxCount).toBeGreaterThanOrEqual(1)
-    expect(m.hasNoBlackBoxes).toBe(false)
-  })
-
-  it('detects eval as untraceable', () => {
-    const m = measureCascading("eval('x')")
-    expect(m.hasNoUntraceable).toBe(false)
-  })
-})
-
-// ─── measureGathering ──────────────────────────────────────────────
-
-describe('measureGathering', () => {
-  it('returns no-pool for empty content', () => {
-    const m = measureGathering(emptyContent)
-    expect(m.depth).toBe(0)
-    expect(m.pool).toBe('no-pool')
-    expect(m.hasHighDepth).toBe(false)
-    expect(m.mutableCount).toBe(0)
-    expect(m.leakedCount).toBe(0)
-  })
-
-  it('returns deep-jade-pool for rich content', () => {
-    const m = measureGathering(richContent)
-    expect(m.depth).toBeGreaterThanOrEqual(85)
-    expect(m.pool).toBe('deep-jade-pool')
-    expect(m.hasHighDepth).toBe(true)
-    expect(m.hasManagedState).toBe(true)
-    expect(m.hasImmutable).toBe(true)
-    expect(m.hasNoMutable).toBe(true)
-    expect(m.hasEncapsulated).toBe(true)
-    expect(m.hasPersistent).toBe(true)
-    expect(m.hasStructured).toBe(true)
-    expect(m.hasDeep).toBe(true)
-  })
-
-  it('counts mutable patterns (var)', () => {
-    const m = measureGathering('var x = 1; var y = 2;')
-    expect(m.mutableCount).toBe(2)
-    expect(m.hasNoMutable).toBe(false)
-  })
-
-  it('counts leaked patterns (any)', () => {
-    const m = measureGathering('const x: any = 1;')
-    expect(m.leakedCount).toBeGreaterThanOrEqual(1)
-    expect(m.hasNoLeaked).toBe(false)
-  })
-
-  it('detects eval as lost', () => {
-    const m = measureGathering("eval('x')")
-    expect(m.hasNoLost).toBe(false)
-  })
-})
-
-// ─── measureThriving ──────────────────────────────────────────────
-
-describe('measureThriving', () => {
-  it('returns no-growth for empty content', () => {
-    const m = measureThriving(emptyContent)
-    expect(m.resilience).toBe(0)
-    expect(m.moss).toBe('no-growth')
-    expect(m.hasHighResilience).toBe(false)
-    expect(m.bareCrashCount).toBe(0)
-    expect(m.trustingCount).toBe(0)
-  })
-
-  it('returns ancient-moss for rich content', () => {
-    const m = measureThriving(richContent)
-    expect(m.resilience).toBeGreaterThanOrEqual(85)
-    expect(m.moss).toBe('ancient-moss')
-    expect(m.hasHighResilience).toBe(true)
-    expect(m.hasErrorHandling).toBe(true)
-    expect(m.hasEdgeCaseCoverage).toBe(true)
-    expect(m.hasNoBareCrash).toBe(true)
-    expect(m.hasDefensiveCode).toBe(true)
-    expect(m.hasRetryLogic).toBe(true)
-    expect(m.hasFallbackPaths).toBe(true)
-    expect(m.hasHardy).toBe(true)
-  })
-
-  it('counts bare crash patterns (var)', () => {
-    const m = measureThriving('var x = 1; var y = 2;')
-    expect(m.bareCrashCount).toBe(2)
-    expect(m.hasNoBareCrash).toBe(false)
-  })
-
-  it('counts trusting patterns (any)', () => {
-    const m = measureThriving('const x: any = 1;')
-    expect(m.trustingCount).toBeGreaterThanOrEqual(1)
-    expect(m.hasNoTrusting).toBe(false)
-  })
-
-  it('detects eval as single fail', () => {
-    const m = measureThriving("eval('x')")
-    expect(m.hasNoSingleFail).toBe(false)
-  })
-
-  it('detects debugger as dead end', () => {
-    const m = measureThriving('debugger')
-    expect(m.hasNoDeadEnd).toBe(false)
-  })
-})
-
-// ─── measureClarifying ─────────────────────────────────────────────
-
-describe('measureClarifying', () => {
-  it('returns opaque for empty content', () => {
-    const m = measureClarifying(emptyContent)
-    expect(m.clarity).toBe(0)
-    expect(m.mist).toBe('opaque')
-    expect(m.hasHighClarity).toBe(false)
-    expect(m.obfuscatedCount).toBe(0)
+    expect(m.hasSelfDocumenting).toBe(false)
+    expect(m.hasNoCryptic).toBe(true)
+    expect(m.hasVisible).toBe(false)
     expect(m.crypticCount).toBe(0)
+    expect(m.obfuscatedCount).toBe(0)
   })
 
-  it('returns crystal-mist for rich content', () => {
-    const m = measureClarifying(richContent)
-    expect(m.clarity).toBeGreaterThanOrEqual(85)
-    expect(m.mist).toBe('crystal-mist')
-    expect(m.hasHighClarity).toBe(true)
-    expect(m.hasTransparentLogic).toBe(true)
-    expect(m.hasReadableComplexity).toBe(true)
-    expect(m.hasNoObfuscated).toBe(true)
+  it('returns moderate clarity for moderate content', () => {
+    const m = measureCascading(moderateContent)
+    expect(m.clarity).toBeGreaterThan(20)
+    expect(m.hasReadable).toBe(true)
+    expect(m.hasVisible).toBe(true)
+  })
+
+  it('returns high clarity for rich content', () => {
+    const m = measureCascading(richContent)
+    expect(m.clarity).toBeGreaterThan(50)
     expect(m.hasSelfDocumenting).toBe(true)
     expect(m.hasNoCryptic).toBe(true)
-    expect(m.hasUnderstandable).toBe(true)
-    expect(m.hasVisible).toBe(true)
-    expect(m.hasClear).toBe(true)
+    expect(m.hasNoObfuscated).toBe(true)
   })
 
-  it('counts obfuscated patterns (var)', () => {
-    const m = measureClarifying('var x = 1; var y = 2;')
-    expect(m.obfuscatedCount).toBe(2)
-    expect(m.hasNoObfuscated).toBe(false)
-  })
-
-  it('counts cryptic patterns (any)', () => {
-    const m = measureClarifying('const x: any = 1;')
-    expect(m.crypticCount).toBeGreaterThanOrEqual(1)
+  it('detects eval as cryptic', () => {
+    const m = measureCascading('eval("1")')
     expect(m.hasNoCryptic).toBe(false)
+    expect(m.crypticCount).toBe(1)
   })
 
-  it('detects eval as impenetrable', () => {
-    const m = measureClarifying("eval('x')")
-    expect(m.hasNoImpenetrable).toBe(false)
+  it('detects debugger as obfuscated', () => {
+    const m = measureCascading('function f() { debugger }')
+    expect(m.hasNoObfuscated).toBe(false)
+    expect(m.obfuscatedCount).toBe(1)
+  })
+
+  it('classifies step correctly', () => {
+    expect(measureCascading(minimalContent).step).toBe('no-cascade')
   })
 })
 
-// ─── classifyDropCondition ─────────────────────────────────────────
+// ─── measurePooling ────────────────────────────────────────────────
+
+describe('measurePooling', () => {
+  it('returns low depth for minimal content', () => {
+    const m = measurePooling(minimalContent)
+    expect(m.depth).toBeLessThanOrEqual(15)
+    expect(m.hasHighDepth).toBe(false)
+    expect(m.hasAbstracted).toBe(false)
+    expect(m.hasLayered).toBe(false)
+    expect(m.hasModular).toBe(false)
+    expect(m.overComplexCount).toBe(0)
+    expect(m.leakyCount).toBe(0)
+  })
+
+  it('returns high depth for rich content', () => {
+    const m = measurePooling(richContent)
+    expect(m.depth).toBeGreaterThan(40)
+    expect(m.hasAbstracted).toBe(true)
+    expect(m.hasEncapsulated).toBe(true)
+    expect(m.hasNoLeaky).toBe(true)
+  })
+
+  it('detects var as leaky', () => {
+    const m = measurePooling('var x = 1')
+    expect(m.hasNoLeaky).toBe(false)
+    expect(m.leakyCount).toBe(1)
+  })
+
+  it('detects any as leaky', () => {
+    const m = measurePooling('const x: any = 1')
+    expect(m.hasNoLeaky).toBe(false)
+    expect(m.leakyCount).toBe(1)
+  })
+
+  it('depth is within 0-100', () => {
+    const m = measurePooling(richContent)
+    expect(m.depth).toBeLessThanOrEqual(100)
+    expect(m.depth).toBeGreaterThanOrEqual(0)
+  })
+})
+
+// ─── measureCleansing ──────────────────────────────────────────────
+
+describe('measureCleansing', () => {
+  it('returns low purity for minimal content', () => {
+    const m = measureCleansing(minimalContent)
+    expect(m.purity).toBeLessThanOrEqual(15)
+    expect(m.hasHighPurity).toBe(false)
+    expect(m.hasCleanOutput).toBe(true)
+    expect(m.hasNoSideEffects).toBe(true)
+    expect(m.hasPure).toBe(false)
+    expect(m.sideEffectCount).toBe(0)
+    expect(m.hackyCount).toBe(0)
+  })
+
+  it('returns moderate purity for moderate content', () => {
+    const m = measureCleansing(moderateContent)
+    expect(m.purity).toBeGreaterThan(20)
+    expect(m.hasCleanOutput).toBe(true)
+  })
+
+  it('returns high purity for rich content', () => {
+    const m = measureCleansing(richContent)
+    expect(m.purity).toBeGreaterThan(40)
+    expect(m.hasNoImpure).toBe(true)
+    expect(m.hasNoHacky).toBe(true)
+  })
+
+  it('detects eval as side effect', () => {
+    const m = measureCleansing('eval("x")')
+    expect(m.hasNoSideEffects).toBe(false)
+    expect(m.sideEffectCount).toBe(1)
+  })
+
+  it('detects as any as hacky', () => {
+    const m = measureCleansing('const x = y as any')
+    expect(m.hasNoHacky).toBe(false)
+    expect(m.hackyCount).toBe(1)
+  })
+
+  it('purity is within 0-100', () => {
+    const m = measureCleansing(richContent)
+    expect(m.purity).toBeLessThanOrEqual(100)
+    expect(m.purity).toBeGreaterThanOrEqual(0)
+  })
+})
+
+// ─── measureKnowing ────────────────────────────────────────────────
+
+describe('measureKnowing', () => {
+  it('returns low wisdom for minimal content', () => {
+    const m = measureKnowing(minimalContent)
+    expect(m.wisdom).toBeLessThanOrEqual(15)
+    expect(m.hasHighWisdom).toBe(false)
+    expect(m.hasDocumented).toBe(false)
+    expect(m.hasWellStructured).toBe(false)
+    expect(m.hasNoAdHoc).toBe(true)
+    expect(m.hasNoHacky).toBe(true)
+    expect(m.adHocCount).toBe(0)
+    expect(m.hackyCount).toBe(0)
+  })
+
+  it('returns high wisdom for rich content', () => {
+    const m = measureKnowing(richContent)
+    expect(m.wisdom).toBeGreaterThan(50)
+    expect(m.hasDocumented).toBe(true)
+    expect(m.hasWellStructured).toBe(true)
+    expect(m.hasNoAdHoc).toBe(true)
+  })
+
+  it('detects var as adHoc', () => {
+    const m = measureKnowing('var x = 1')
+    expect(m.hasNoAdHoc).toBe(false)
+    expect(m.adHocCount).toBe(1)
+  })
+
+  it('detects as any as hacky', () => {
+    const m = measureKnowing('const x = y as any')
+    expect(m.hasNoHacky).toBe(false)
+    expect(m.hackyCount).toBe(1)
+  })
+
+  it('detects debugger as naive', () => {
+    const m = measureKnowing('function f() { debugger }')
+    expect(m.hasNoNaive).toBe(false)
+  })
+})
+
+// ─── Classification Functions ──────────────────────────────────────
 
 describe('classifyDropCondition', () => {
-  it('classifies correctly at all boundaries', () => {
-    expect(classifyDropCondition(90)).toBe('jade-masterpiece')
-    expect(classifyDropCondition(85)).toBe('jade-masterpiece')
-    expect(classifyDropCondition(70)).toBe('emerald-falls')
-    expect(classifyDropCondition(55)).toBe('proper-waterfall')
-    expect(classifyDropCondition(40)).toBe('trickling-stream')
-    expect(classifyDropCondition(25)).toBe('dry-bed')
-    expect(classifyDropCondition(0)).toBe('drought')
-    expect(classifyDropCondition(24)).toBe('drought')
+  it('classifies jade-masterpiece', () => expect(classifyDropCondition(92)).toBe('jade-masterpiece'))
+  it('classifies emerald-falls', () => expect(classifyDropCondition(78)).toBe('emerald-falls'))
+  it('classifies proper-waterfall', () => expect(classifyDropCondition(65)).toBe('proper-waterfall'))
+  it('classifies murky-cascade', () => expect(classifyDropCondition(45)).toBe('murky-cascade'))
+  it('classifies trickle', () => expect(classifyDropCondition(25)).toBe('trickle'))
+  it('classifies dry-bed', () => expect(classifyDropCondition(10)).toBe('dry-bed'))
+})
+
+describe('classifyBasinCondition', () => {
+  it('classifies magnificent-falls', () => expect(classifyBasinCondition(88)).toBe('magnificent-falls'))
+  it('classifies beautiful-cascade', () => expect(classifyBasinCondition(72)).toBe('beautiful-cascade'))
+  it('classifies proper-waterfall', () => expect(classifyBasinCondition(58)).toBe('proper-waterfall'))
+  it('classifies murky-stream', () => expect(classifyBasinCondition(38)).toBe('murky-stream'))
+  it('classifies dried-river', () => expect(classifyBasinCondition(18)).toBe('dried-river'))
+  it('classifies void', () => expect(classifyBasinCondition(5)).toBe('void'))
+})
+
+describe('classifyNavigatorGrade', () => {
+  it('classifies master-navigator', () => expect(classifyNavigatorGrade(88)).toBe('master-navigator'))
+  it('classifies river-guide', () => expect(classifyNavigatorGrade(72)).toBe('river-guide'))
+  it('classifies skilled-rafter', () => expect(classifyNavigatorGrade(58)).toBe('skilled-rafter'))
+  it('classifies apprentice', () => expect(classifyNavigatorGrade(42)).toBe('apprentice'))
+  it('classifies novice', () => expect(classifyNavigatorGrade(22)).toBe('novice'))
+  it('classifies landlubber', () => expect(classifyNavigatorGrade(8)).toBe('landlubber'))
+})
+
+describe('classifyBasinType', () => {
+  it('returns no-basin for empty', () => {
+    expect(classifyBasinType([])).toBe('no-basin')
   })
 })
 
-// ─── classifyTerraceType ───────────────────────────────────────────
+// ─── analyzeJadeDrop ───────────────────────────────────────────────
 
-describe('classifyTerraceType', () => {
-  it('returns no-terrace for empty array', () => {
-    expect(classifyTerraceType([])).toBe('no-terrace')
+describe('analyzeJadeDrop', () => {
+  it('analyzes minimal content', () => {
+    const drop = analyzeJadeDrop(minimalContent, 'mini.ts')
+    expect(drop.file).toBe('mini.ts')
+    expect(drop.qualityScore).toBeLessThanOrEqual(20)
+    expect(drop.condition).toBe('dry-bed')
+    expect(drop.flowGrace).toBeLessThanOrEqual(15)
+    expect(drop.cascadeClarity).toBeLessThanOrEqual(15)
+    expect(drop.poolDepth).toBeLessThanOrEqual(15)
+    expect(drop.mistPurity).toBeLessThanOrEqual(15)
+    expect(drop.riverWisdom).toBeLessThanOrEqual(15)
   })
 
-  it('returns grand-waterfall for high-quality drops', () => {
-    const drops = Array.from({ length: 4 }, () => ({
-      ...analyzeWaterDrop(richContent, 'test.ts'),
-      qualityScore: 90,
-      condition: 'jade-masterpiece' as const,
-    }))
-    expect(classifyTerraceType(drops)).toBe('grand-waterfall')
-  })
-
-  it('returns terraced-falls for decent drops', () => {
-    const drops = Array.from({ length: 2 }, () => ({
-      ...analyzeWaterDrop(richContent, 'test.ts'),
-      qualityScore: 65,
-      condition: 'emerald-falls' as const,
-    }))
-    expect(classifyTerraceType(drops)).toBe('terraced-falls')
-  })
-
-  it('returns no-terrace for low-quality drops', () => {
-    const drops = Array.from({ length: 2 }, () => ({
-      ...analyzeWaterDrop(emptyContent, 'test.ts'),
-      qualityScore: 10,
-      condition: 'drought' as const,
-    }))
-    expect(classifyTerraceType(drops)).toBe('no-terrace')
-  })
-})
-
-// ─── classifyTerraceCondition ──────────────────────────────────────
-
-describe('classifyTerraceCondition', () => {
-  it('classifies all conditions', () => {
-    expect(classifyTerraceCondition(80)).toBe('magnificent-falls')
-    expect(classifyTerraceCondition(60)).toBe('beautiful-cascade')
-    expect(classifyTerraceCondition(45)).toBe('decent-waterfall')
-    expect(classifyTerraceCondition(30)).toBe('modest-stream')
-    expect(classifyTerraceCondition(15)).toBe('dry-cliff')
-    expect(classifyTerraceCondition(0)).toBe('void')
-  })
-})
-
-// ─── classifyKeeperGrade ───────────────────────────────────────────
-
-describe('classifyKeeperGrade', () => {
-  it('classifies all grades', () => {
-    expect(classifyKeeperGrade(85)).toBe('water-master')
-    expect(classifyKeeperGrade(65)).toBe('river-guardian')
-    expect(classifyKeeperGrade(50)).toBe('skilled-steward')
-    expect(classifyKeeperGrade(35)).toBe('apprentice')
-    expect(classifyKeeperGrade(20)).toBe('novice')
-    expect(classifyKeeperGrade(0)).toBe('drought-bringer')
-  })
-})
-
-// ─── analyzeWaterDrop ──────────────────────────────────────────────
-
-describe('analyzeWaterDrop', () => {
-  it('analyzes empty content as drought', () => {
-    const drop = analyzeWaterDrop(emptyContent, 'empty.ts')
-    expect(drop.file).toBe('empty.ts')
-    expect(drop.flowGrace).toBe(0)
-    expect(drop.cascadeClarity).toBe(0)
-    expect(drop.poolDepth).toBe(0)
-    expect(drop.mossResilience).toBe(0)
-    expect(drop.mistClarity).toBe(0)
-    expect(drop.qualityScore).toBe(0)
-    expect(drop.condition).toBe('drought')
-  })
-
-  it('analyzes rich content as jade-masterpiece', () => {
-    const drop = analyzeWaterDrop(richContent, 'rich.ts')
+  it('analyzes rich content', () => {
+    const drop = analyzeJadeDrop(richContent, 'rich.ts')
     expect(drop.file).toBe('rich.ts')
-    expect(drop.condition).toBe('jade-masterpiece')
-    expect(drop.flowGrace).toBeGreaterThan(0)
-    expect(drop.cascadeClarity).toBeGreaterThan(0)
-    expect(drop.poolDepth).toBeGreaterThan(0)
-    expect(drop.mossResilience).toBeGreaterThan(0)
-    expect(drop.mistClarity).toBeGreaterThan(0)
+    expect(drop.qualityScore).toBeGreaterThan(30)
+    expect(drop.condition).not.toBe('dry-bed')
+    expect(drop.flowGrace).toBeGreaterThan(40)
+    expect(drop.riverWisdom).toBeGreaterThan(40)
   })
 
-  it('computes qualityScore as weighted average', () => {
-    const drop = analyzeWaterDrop(moderateContent, 'mod.ts')
+  it('quality score is average of 5 measures', () => {
+    const drop = analyzeJadeDrop(richContent, 'rich.ts')
     const expected = Math.round(
-      drop.flowGrace * 0.2 + drop.cascadeClarity * 0.2 + drop.poolDepth * 0.2 +
-      drop.mossResilience * 0.2 + drop.mistClarity * 0.2,
+      drop.flowGrace * 0.2 +
+      drop.cascadeClarity * 0.2 +
+      drop.poolDepth * 0.2 +
+      drop.mistPurity * 0.2 +
+      drop.riverWisdom * 0.2,
     )
     expect(drop.qualityScore).toBe(expected)
   })
-
-  it('preserves all measure data', () => {
-    const drop = analyzeWaterDrop(richContent, 'rich.ts')
-    expect(drop.flowing.grace).toBe(drop.flowGrace)
-    expect(drop.cascading.clarity).toBe(drop.cascadeClarity)
-    expect(drop.gathering.depth).toBe(drop.poolDepth)
-    expect(drop.thriving.resilience).toBe(drop.mossResilience)
-    expect(drop.clarifying.clarity).toBe(drop.mistClarity)
-  })
 })
 
-// ─── analyzeWaterfallTerrace ───────────────────────────────────────
+// ─── analyzeJadeBasin ──────────────────────────────────────────────
 
-describe('analyzeWaterfallTerrace', () => {
-  it('returns empty terrace for no drops', () => {
-    const terrace = analyzeWaterfallTerrace([], 'empty-dir')
-    expect(terrace.directory).toBe('empty-dir')
-    expect(terrace.drops).toHaveLength(0)
-    expect(terrace.avgGrace).toBe(0)
-    expect(terrace.avgDepth).toBe(0)
-    expect(terrace.avgClarity).toBe(0)
-    expect(terrace.terraceType).toBe('no-terrace')
-    expect(terrace.condition).toBe('void')
+describe('analyzeJadeBasin', () => {
+  it('handles empty drops', () => {
+    const basin = analyzeJadeBasin([], 'empty')
+    expect(basin.directory).toBe('empty')
+    expect(basin.drops).toHaveLength(0)
+    expect(basin.avgGrace).toBe(0)
+    expect(basin.avgClarity).toBe(0)
+    expect(basin.avgWisdom).toBe(0)
+    expect(basin.basinType).toBe('no-basin')
+    expect(basin.condition).toBe('void')
   })
 
-  it('aggregates drop metrics', () => {
-    const drops = [
-      analyzeWaterDrop(richContent, 'a.ts'),
-      analyzeWaterDrop(richContent, 'b.ts'),
-    ]
-    const terrace = analyzeWaterfallTerrace(drops, 'src')
-    expect(terrace.drops).toHaveLength(2)
-    expect(terrace.avgGrace).toBeGreaterThan(0)
-    expect(terrace.avgDepth).toBeGreaterThan(0)
-    expect(terrace.avgClarity).toBeGreaterThan(0)
+  it('classifies basin with rich drops', () => {
+    const drop = analyzeJadeDrop(richContent, 'rich.ts')
+    const basin = analyzeJadeBasin([drop], 'src')
+    expect(basin.drops).toHaveLength(1)
+    expect(basin.dryBedCount).toBe(0)
+    expect(basin.avgGrace).toBeGreaterThan(0)
+    expect(basin.basinType).not.toBe('no-basin')
   })
 
-  it('counts drought drops', () => {
-    const drops = [
-      analyzeWaterDrop(emptyContent, 'bad.ts'),
-      analyzeWaterDrop(emptyContent, 'worse.ts'),
-    ]
-    const terrace = analyzeWaterfallTerrace(drops, 'bad-dir')
-    expect(terrace.droughtCount).toBe(2)
+  it('classifies basin with mixed drops', () => {
+    const rich = analyzeJadeDrop(richContent, 'rich.ts')
+    const minimal = analyzeJadeDrop(minimalContent, 'mini.ts')
+    const basin = analyzeJadeBasin([rich, minimal], 'src')
+    expect(basin.drops).toHaveLength(2)
+    expect(basin.dryBedCount).toBe(1)
   })
 })
 
 // ─── buildJadeWaterfallResult ──────────────────────────────────────
 
-describe('buildJadeWaterfallResult', () => {
-  it('returns valid result for empty input', async () => {
+describe('buildJadeWaterfallResult', async () => {
+  it('handles empty input', async () => {
     const result = await buildJadeWaterfallResult([], [])
     expect(result.drops).toHaveLength(0)
-    expect(result.terraces).toHaveLength(0)
+    expect(result.basins).toHaveLength(0)
     expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.overallSerenity).toBe(0)
-    expect(result.river.isFlowing).toBe(false)
+    expect(result.stats.overallFlow).toBe(0)
+    expect(result.stats.navigatorGrade).toBe('landlubber')
+    expect(result.river.isJade).toBe(false)
   })
 
-  it('returns valid result for single file', async () => {
+  it('analyzes single file', async () => {
     const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
     expect(result.drops).toHaveLength(1)
-    expect(result.terraces).toHaveLength(1)
+    expect(result.drops[0].condition).not.toBe('dry-bed')
     expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.avgFlowGrace).toBeGreaterThan(0)
-    expect(result.stats.overallSerenity).toBeGreaterThan(0)
-    expect(result.stats.bestDrop).toBe('test.ts')
-    expect(result.stats.mostGraceful).toBe('test.ts')
-    expect(result.stats.clearestCascade).toBe('test.ts')
-    expect(result.stats.deepest).toBe('test.ts')
-    expect(result.stats.mostResilient).toBe('test.ts')
+    expect(result.stats.dryBedCount).toBe(0)
   })
 
-  it('returns valid result for multiple files', async () => {
+  it('analyzes multiple files in different dirs', async () => {
     const result = await buildJadeWaterfallResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [richContent, moderateContent, emptyContent],
+      ['src/a.ts', 'lib/b.ts'],
+      [richContent, moderateContent],
     )
-    expect(result.drops).toHaveLength(3)
-    expect(result.terraces).toHaveLength(2)
-    expect(result.stats.totalFiles).toBe(3)
-    expect(result.stats.totalTerraces).toBe(2)
-    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.drops).toHaveLength(2)
+    expect(result.basins).toHaveLength(2)
+    expect(result.stats.totalBasins).toBe(2)
   })
 
   it('computes river correctly', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
     expect(result.river.avgGrace).toBeGreaterThan(0)
-    expect(result.river.avgDepth).toBeGreaterThan(0)
     expect(result.river.avgClarity).toBeGreaterThan(0)
-    expect(result.river.overallSerenity).toBeGreaterThan(0)
+    expect(result.river.avgWisdom).toBeGreaterThan(0)
+    expect(typeof result.river.isJade).toBe('boolean')
+    expect(result.river.overallFlow).toBeGreaterThan(0)
   })
 
-  it('tracks all condition counts', async () => {
-    const result = await buildJadeWaterfallResult(
-      ['a.ts', 'b.ts'],
-      [emptyContent, emptyContent],
+  it('computes overall flow as avg of grace, clarity, wisdom', async () => {
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
+    const expected = Math.round(
+      (result.stats.avgFlowGrace + result.stats.avgCascadeClarity + result.stats.avgRiverWisdom) / 3,
     )
-    expect(result.stats.droughtCount).toBe(2)
-    expect(result.stats.jadeMasterpieceCount).toBe(0)
+    expect(result.stats.overallFlow).toBe(expected)
   })
 
-  it('tracks high-quality counts', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
-    expect(result.stats.hasHighGraceCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.hasHighClarityCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.hasHighDepthCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.hasHighResilienceCount).toBeGreaterThanOrEqual(0)
-    expect(result.stats.hasHighMistClarityCount).toBeGreaterThanOrEqual(0)
+  it('tracks condition counts', async () => {
+    const result = await buildJadeWaterfallResult(
+      ['rich.ts', 'mini.ts'],
+      [richContent, minimalContent],
+    )
+    expect(result.stats.dryBedCount).toBe(1)
+    expect(result.stats.totalFiles).toBe(2)
+  })
+
+  it('identifies best drop and extremes', async () => {
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
+    expect(result.stats.bestDrop).toBe('rich.ts')
+    expect(result.stats.mostGraceful).toBe('rich.ts')
+    expect(result.stats.clearest).toBe('rich.ts')
+    expect(result.stats.deepest).toBe('rich.ts')
+    expect(result.stats.wisest).toBe('rich.ts')
   })
 })
 
 // ─── generateRecommendations ───────────────────────────────────────
 
-describe('generateRecommendations', () => {
-  it('returns congratulatory message for good code', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
-    const recs = generateRecommendations(result.drops, result.terraces, result.river, result.stats)
-    expect(recs.length).toBeGreaterThan(0)
+describe('generateRecommendations', async () => {
+  it('returns steady message when quality is good', async () => {
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
+    expect(result.recommendations.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('returns recommendations for poor code', async () => {
-    const result = await buildJadeWaterfallResult(['bad.ts'], [emptyContent])
-    const recs = generateRecommendations(result.drops, result.terraces, result.river, result.stats)
-    expect(recs.length).toBeGreaterThan(0)
-    expect(recs.some(r => r.includes('flow grace'))).toBe(true)
+  it('recommends improving flow when low', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('flow') || r.includes('pipeline'))).toBe(true)
   })
 
-  it('recommends for drought drops', async () => {
-    const result = await buildJadeWaterfallResult(
-      ['a.ts', 'b.ts'],
-      [emptyContent, emptyContent],
-    )
-    const recs = generateRecommendations(result.drops, result.terraces, result.river, result.stats)
-    expect(recs.some(r => r.includes('drought'))).toBe(true)
+  it('recommends improving clarity when low', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('cascade') || r.includes('doc'))).toBe(true)
   })
 
-  it('restores specific drought files', async () => {
-    const result = await buildJadeWaterfallResult(
-      ['a.ts', 'b.ts'],
-      [emptyContent, emptyContent],
-    )
-    const recs = generateRecommendations(result.drops, result.terraces, result.river, result.stats)
-    expect(recs.some(r => r.includes('a.ts') || r.includes('b.ts'))).toBe(true)
+  it('recommends improving depth when low', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('pool') || r.includes('interface'))).toBe(true)
+  })
+
+  it('recommends improving purity when low', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('mist') || r.includes('eval'))).toBe(true)
+  })
+
+  it('recommends improving wisdom when low', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('wisdom') || r.includes('JSDoc'))).toBe(true)
+  })
+
+  it('notes dry files', async () => {
+    const result = await buildJadeWaterfallResult(['mini.ts'], [minimalContent])
+    expect(result.recommendations.some(r => r.includes('dry') || r.includes('Dry'))).toBe(true)
+  })
+})
+
+// ─── gatherFiles ───────────────────────────────────────────────────
+
+describe('gatherFiles', () => {
+  it('returns empty for non-existent path', async () => {
+    const files = await gatherFiles('/nonexistent', ['.ts'], [])
+    expect(files).toHaveLength(0)
   })
 })
 
 // ─── Format Helpers ────────────────────────────────────────────────
 
 describe('colorScore', () => {
-  it('returns a string for any score', () => {
+  it('returns string for any score', () => {
     expect(typeof colorScore(0)).toBe('string')
     expect(typeof colorScore(50)).toBe('string')
     expect(typeof colorScore(100)).toBe('string')
@@ -610,151 +534,125 @@ describe('colorScore', () => {
 })
 
 describe('colorGrade', () => {
-  it('returns a string for known grades', () => {
-    expect(typeof colorGrade('water-master')).toBe('string')
-    expect(typeof colorGrade('silk-waterfall')).toBe('string')
+  it('returns string for any grade', () => {
     expect(typeof colorGrade('jade-masterpiece')).toBe('string')
-  })
-
-  it('returns a string for unknown grades', () => {
+    expect(typeof colorGrade('dry-bed')).toBe('string')
     expect(typeof colorGrade('unknown')).toBe('string')
   })
 })
 
 describe('formatDropTable', () => {
-  it('formats a single drop', () => {
-    const drop = analyzeWaterDrop(richContent, 'test.ts')
+  it('formats a drop', () => {
+    const drop = analyzeJadeDrop(richContent, 'rich.ts')
     const output = formatDropTable(drop)
-    expect(output).toContain('test.ts')
+    expect(output).toContain('rich.ts')
     expect(output).toContain('Flow Grace')
     expect(output).toContain('Cascade Clarity')
     expect(output).toContain('Pool Depth')
-    expect(output).toContain('Moss Resilience')
-    expect(output).toContain('Mist Clarity')
+    expect(output).toContain('Mist Purity')
+    expect(output).toContain('River Wisdom')
+    expect(output).toContain('Quality Score')
   })
 })
 
 describe('formatDropsTable', () => {
-  it('returns message for empty array', () => {
-    expect(formatDropsTable([])).toContain('No water drops')
-  })
-
-  it('formats multiple drops', () => {
-    const drops = [
-      analyzeWaterDrop(richContent, 'a.ts'),
-      analyzeWaterDrop(moderateContent, 'b.ts'),
-    ]
-    const output = formatDropsTable(drops)
-    expect(output).toContain('a.ts')
-    expect(output).toContain('b.ts')
+  it('returns message for empty drops', () => {
+    expect(formatDropsTable([])).toContain('No jade drops')
   })
 })
 
-describe('formatTerraceTable', () => {
-  it('formats a single terrace', () => {
-    const drops = [analyzeWaterDrop(richContent, 'test.ts')]
-    const terrace = analyzeWaterfallTerrace(drops, 'src')
-    const output = formatTerraceTable(terrace)
+describe('formatBasinTable', () => {
+  it('formats a basin', () => {
+    const drop = analyzeJadeDrop(richContent, 'rich.ts')
+    const basin = analyzeJadeBasin([drop], 'src')
+    const output = formatBasinTable(basin)
     expect(output).toContain('src')
+    expect(output).toContain('Avg Grace')
   })
 })
 
-describe('formatTerracesTable', () => {
-  it('returns message for empty array', () => {
-    expect(formatTerracesTable([])).toContain('No waterfall terraces')
+describe('formatBasinsTable', () => {
+  it('returns message for empty basins', () => {
+    expect(formatBasinsTable([])).toContain('No jade basins')
   })
 })
 
 describe('formatStatsTable', () => {
   it('formats stats', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
     const output = formatStatsTable(result.stats)
+    expect(output).toContain('Jade Waterfall Statistics')
     expect(output).toContain('Total Files')
-    expect(output).toContain('Keeper Grade')
+    expect(output).toContain('Navigator Grade')
   })
 })
 
 describe('formatRecommendations', () => {
-  it('returns message for empty array', () => {
+  it('returns message for empty recs', () => {
     expect(formatRecommendations([])).toContain('No recommendations')
   })
 
   it('formats recommendations', () => {
-    const output = formatRecommendations(['Fix this', 'Improve that'])
-    expect(output).toContain('Fix this')
-    expect(output).toContain('Improve that')
+    const output = formatRecommendations(['improve X', 'fix Y'])
+    expect(output).toContain('improve X')
+    expect(output).toContain('fix Y')
   })
 })
 
 describe('formatResultTable', () => {
   it('formats full result', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
     const output = formatResultTable(result)
-    expect(output).toContain('Jade Waterfall Analysis')
+    expect(output).toContain('Jade Drop Analysis')
+    expect(output).toContain('Jade Basins')
+    expect(output).toContain('Jade Waterfall Statistics')
     expect(output).toContain('Recommendations')
   })
 })
 
 describe('formatResultJson', () => {
-  it('formats full result as JSON', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
-    const output = formatResultJson(result)
-    const parsed = JSON.parse(output)
+  it('returns valid JSON', async () => {
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
+    const json = formatResultJson(result)
+    const parsed = JSON.parse(json)
     expect(parsed.drops).toHaveLength(1)
-    expect(parsed.stats).toBeDefined()
-    expect(parsed.river).toBeDefined()
-    expect(parsed.recommendations).toBeDefined()
+    expect(parsed.stats.navigatorGrade).toBeDefined()
+    expect(parsed.river.overallFlow).toBeGreaterThan(0)
   })
 })
 
-// ─── Integration ───────────────────────────────────────────────────
+// ─── Edge Cases ────────────────────────────────────────────────────
 
-describe('integration', () => {
-  it('handles mixed quality files', async () => {
+describe('edge cases', () => {
+  it('all scores within 0-100 for varied content', () => {
+    const contents = ['', 'x', minimalContent, moderateContent, richContent, 'eval("x") as any var z']
+    for (const c of contents) {
+      expect(measureFlowing(c).grace).toBeGreaterThanOrEqual(0)
+      expect(measureFlowing(c).grace).toBeLessThanOrEqual(100)
+      expect(measureCascading(c).clarity).toBeGreaterThanOrEqual(0)
+      expect(measureCascading(c).clarity).toBeLessThanOrEqual(100)
+      expect(measurePooling(c).depth).toBeGreaterThanOrEqual(0)
+      expect(measurePooling(c).depth).toBeLessThanOrEqual(100)
+      expect(measureCleansing(c).purity).toBeGreaterThanOrEqual(0)
+      expect(measureCleansing(c).purity).toBeLessThanOrEqual(100)
+      expect(measureKnowing(c).wisdom).toBeGreaterThanOrEqual(0)
+      expect(measureKnowing(c).wisdom).toBeLessThanOrEqual(100)
+    }
+  })
+
+  it('multi-dir creates multiple basins', async () => {
     const result = await buildJadeWaterfallResult(
-      ['good.ts', 'ok.ts', 'bad.ts'],
-      [richContent, moderateContent, emptyContent],
+      ['src/a.ts', 'lib/b.ts', 'src/c.ts'],
+      [richContent, moderateContent, minimalContent],
     )
-    expect(result.drops).toHaveLength(3)
-    expect(result.stats.totalFiles).toBe(3)
-    expect(result.stats.droughtCount).toBeGreaterThanOrEqual(1)
-    expect(result.river.overallSerenity).toBeGreaterThanOrEqual(0)
+    expect(result.basins).toHaveLength(2)
+    const srcBasin = result.basins.find(b => b.directory === 'src')
+    expect(srcBasin).toBeDefined()
+    expect(srcBasin!.drops).toHaveLength(2)
   })
 
-  it('groups files into terraces by directory', async () => {
-    const result = await buildJadeWaterfallResult(
-      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
-      [richContent, moderateContent, richContent],
-    )
-    expect(result.terraces).toHaveLength(2)
-    const src = result.terraces.find(t => t.directory === 'src')
-    const lib = result.terraces.find(t => t.directory === 'lib')
-    expect(src).toBeDefined()
-    expect(lib).toBeDefined()
-    if (src) expect(src.drops).toHaveLength(2)
-    if (lib) expect(lib.drops).toHaveLength(1)
-  })
-
-  it('condition counts match drop conditions', async () => {
-    const result = await buildJadeWaterfallResult(
-      ['a.ts', 'b.ts'],
-      [emptyContent, emptyContent],
-    )
-    const drought = result.drops.filter(d => d.condition === 'drought').length
-    expect(result.stats.droughtCount).toBe(drought)
-  })
-
-  it('river overallSerenity is avg of 3 measures', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
-    const expected = Math.round(
-      (result.river.avgGrace + result.river.avgDepth + result.river.avgClarity) / 3,
-    )
-    expect(result.river.overallSerenity).toBe(expected)
-  })
-
-  it('stats avgMossResilience is computed', async () => {
-    const result = await buildJadeWaterfallResult(['test.ts'], [richContent])
-    expect(result.stats.avgMossResilience).toBeGreaterThan(0)
-    expect(result.stats.avgMistClarity).toBeGreaterThan(0)
+  it('overall flow matches river', async () => {
+    const result = await buildJadeWaterfallResult(['rich.ts'], [richContent])
+    expect(result.stats.overallFlow).toBe(result.river.overallFlow)
   })
 })

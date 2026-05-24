@@ -1,219 +1,164 @@
 // ─── Imports ───────────────────────────────────────────────────────
 import chalk from 'chalk'
-import type { WaterDrop, WaterfallTerrace, JadeWaterfallResult } from './jade-waterfall-helpers.js'
 
-// ─── Color Palette (jade waterfall — jade/teal/cyan) ──────────────
-const high = chalk.rgb(0, 200, 150)
-const midHigh = chalk.rgb(0, 175, 130)
-const mid = chalk.rgb(0, 150, 110)
-const lowMid = chalk.rgb(0, 125, 90)
-const low = chalk.rgb(0, 100, 70)
+import type { JadeWaterfallResult, JadeDrop, JadeBasin } from './jade-waterfall-helpers.js'
 
-const best = chalk.rgb(50, 255, 180).bold
-const good = chalk.rgb(0, 220, 150)
-const okay = chalk.rgb(0, 185, 125)
-const poor = chalk.rgb(0, 140, 95)
-const worst = chalk.rgb(0, 95, 60)
+// ─── Color Palette ─────────────────────────────────────────────────
 
-const heading = chalk.rgb(30, 220, 160).bold
-const label = chalk.rgb(15, 195, 140)
-const dim = chalk.rgb(10, 165, 115)
+const JADE = chalk.rgb(0, 168, 107)
+const WATER = chalk.rgb(100, 200, 255)
+const MIST = chalk.rgb(180, 230, 200)
+const DEEP = chalk.rgb(0, 100, 80)
+const DIM = chalk.rgb(130, 130, 170)
+const BULLET = '\u{1F4A7}'
 
 // ─── Score Coloring ────────────────────────────────────────────────
 
 /**
- * Color a numeric score by tier
- * @example
- * colorScore(90) // jade
+ * @example colorScore(85)
  */
 export function colorScore(score: number): string {
-  if (score >= 80) return high(String(score))
-  if (score >= 60) return midHigh(String(score))
-  if (score >= 40) return mid(String(score))
-  if (score >= 20) return lowMid(String(score))
-  return low(String(score))
+  if (score >= 80) return JADE.bold(String(score))
+  if (score >= 60) return WATER(String(score))
+  if (score >= 40) return MIST(String(score))
+  if (score >= 20) return DIM(String(score))
+  return chalk.gray(String(score))
 }
 
 /**
- * Color a grade/tier string by quality
- * @example
- * colorGrade('water-master') // best (bold jade)
+ * @example colorGrade('jade-masterpiece')
  */
 export function colorGrade(grade: string): string {
-  const g = grade.toLowerCase()
-  const tierMap: Record<string, (s: string) => string> = {
-    'silk-waterfall': best, 'crystal-steps': best, 'deep-jade-pool': best,
-    'ancient-moss': best, 'crystal-mist': best, 'jade-masterpiece': best,
-    'grand-waterfall': best, 'magnificent-falls': best, 'water-master': best,
-
-    'graceful-cascade': good, 'clear-terraces': good, 'proper-depth': good,
-    'thriving-green': good, 'clear-vapor': good, 'emerald-falls': good,
-    'terraced-falls': good, 'beautiful-cascade': good, 'river-guardian': good,
-
-    'proper-flow': okay, 'proper-cascade': okay, 'decent-pond': okay,
-    'proper-growth': okay, 'proper-transparency': okay, 'proper-waterfall': okay,
-    'proper-cascade': okay, 'decent-waterfall': okay, 'skilled-steward': okay,
-
-    'turbulent-rapids': poor, 'murky-drops': poor, 'shallow-puddle': poor,
-    'wilting-fern': poor, 'foggy-haze': poor, 'trickling-stream': poor,
-    'small-rapids': poor, 'modest-stream': poor, 'apprentice': poor,
-
-    'blocked-stream': worst, 'muddy-slide': worst, 'surface-drip': worst,
-    'dead-lichen': worst, 'dense-fog': worst, 'dry-bed': worst,
-    'drip-trickle': worst, 'dry-cliff': worst, 'novice': worst,
-
-    'no-flow': worst, 'no-cascade': worst, 'no-pool': worst,
-    'no-growth': worst, 'opaque': worst, 'drought': worst,
-    'no-terrace': worst, 'void': worst, 'drought-bringer': worst,
-  }
-  return (tierMap[g] ?? low)(grade)
+  if (grade.includes('jade') || grade.includes('effortless') || grade.includes('crystal') || grade.includes('bottomless') || grade.includes('ancient') || grade.includes('emerald-lake') || grade.includes('magnificent') || grade.includes('master')) return JADE.bold(grade)
+  if (grade.includes('emerald') || grade.includes('smooth') || grade.includes('clear') || grade.includes('deep') || grade.includes('clean') || grade.includes('wise') || grade.includes('jade-pool') || grade.includes('beautiful') || grade.includes('river-guide')) return WATER(grade)
+  if (grade.includes('proper') || grade.includes('proper-')) return MIST(grade)
+  return DIM(grade)
 }
 
-// ─── Drop Formatting ──────────────────────────────────────────────
+// ─── Drop Table ────────────────────────────────────────────────────
 
 /**
- * Format a single drop for display
- * @example
- * formatDropTable(drop) // colored drop info
+ * @example formatDropTable(drop)
  */
-export function formatDropTable(drop: WaterDrop): string {
-  const parts = [
-    `${label('File:')} ${dim(drop.file)}`,
-    `${label('Flow Grace:')} ${colorScore(drop.flowGrace)} ${colorGrade(drop.flowing.grade)}`,
-    `${label('Cascade Clarity:')} ${colorScore(drop.cascadeClarity)} ${colorGrade(drop.cascading.cascade)}`,
-    `${label('Pool Depth:')} ${colorScore(drop.poolDepth)} ${colorGrade(drop.gathering.pool)}`,
-    `${label('Moss Resilience:')} ${colorScore(drop.mossResilience)} ${colorGrade(drop.thriving.moss)}`,
-    `${label('Mist Clarity:')} ${colorScore(drop.mistClarity)} ${colorGrade(drop.clarifying.mist)}`,
-    `${label('Score:')} ${colorScore(drop.qualityScore)} ${colorGrade(drop.condition)}`,
-  ]
-  return parts.join('\n')
+export function formatDropTable(drop: JadeDrop): string {
+  const lines: string[] = []
+  lines.push(JADE.bold(`${BULLET} ${drop.file}`))
+  lines.push(`  Flow Grace       : ${colorScore(drop.flowGrace)}  ${colorGrade(drop.flowing.current)}`)
+  lines.push(`  Cascade Clarity  : ${colorScore(drop.cascadeClarity)}  ${colorGrade(drop.cascading.step)}`)
+  lines.push(`  Pool Depth       : ${colorScore(drop.poolDepth)}  ${colorGrade(drop.pooling.pool)}`)
+  lines.push(`  Mist Purity      : ${colorScore(drop.mistPurity)}  ${colorGrade(drop.cleansing.mist)}`)
+  lines.push(`  River Wisdom     : ${colorScore(drop.riverWisdom)}  ${colorGrade(drop.knowing.river)}`)
+  lines.push(`  Quality Score    : ${colorScore(drop.qualityScore)}  ${colorGrade(drop.condition)}`)
+  return lines.join('\n')
 }
 
 /**
- * Format drops as summary table
- * @example
- * formatDropsTable(drops) // multi-line table
+ * @example formatDropsTable(drops)
  */
-export function formatDropsTable(drops: WaterDrop[]): string {
-  if (drops.length === 0) return dim('No water drops found')
-  const header = heading('Jade Waterfall Analysis')
-  const rows = drops.map(d => formatDropTable(d))
-  return `${header}\n${rows.join('\n\n')}`
+export function formatDropsTable(drops: JadeDrop[]): string {
+  if (drops.length === 0) return chalk.gray('No jade drops to display')
+  return drops.map(formatDropTable).join('\n\n')
 }
 
-// ─── Terrace Formatting ───────────────────────────────────────────
+// ─── Basin Table ───────────────────────────────────────────────────
 
 /**
- * Format a terrace for display
- * @example
- * formatTerraceTable(terrace) // colored terrace info
+ * @example formatBasinTable(basin)
  */
-export function formatTerraceTable(terrace: WaterfallTerrace): string {
-  const parts = [
-    `${label('Terrace:')} ${dim(terrace.directory)}`,
-    `${label('Type:')} ${colorGrade(terrace.terraceType)}`,
-    `${label('Condition:')} ${colorGrade(terrace.condition)}`,
-    `${label('Drops:')} ${String(terrace.drops.length)}`,
-    `${label('Avg Grace:')} ${colorScore(terrace.avgGrace)}`,
-    `${label('Avg Depth:')} ${colorScore(terrace.avgDepth)}`,
-    `${label('Avg Clarity:')} ${colorScore(terrace.avgClarity)}`,
-    `${label('Jade Masterpieces:')} ${String(terrace.jadeMasterpieceCount)}`,
-    `${label('Drought Count:')} ${String(terrace.droughtCount)}`,
-  ]
-  return parts.join('\n')
+export function formatBasinTable(basin: JadeBasin): string {
+  const lines: string[] = []
+  lines.push(JADE.bold(`${BULLET} ${basin.directory}`))
+  lines.push(`  Drops          : ${basin.drops.length}`)
+  lines.push(`  Avg Grace      : ${colorScore(basin.avgGrace)}`)
+  lines.push(`  Avg Clarity    : ${colorScore(basin.avgClarity)}`)
+  lines.push(`  Avg Wisdom     : ${colorScore(basin.avgWisdom)}`)
+  lines.push(`  Masterpieces   : ${basin.jadeMasterpieceCount}`)
+  lines.push(`  Dry Beds       : ${basin.dryBedCount}`)
+  lines.push(`  Basin Type     : ${colorGrade(basin.basinType)}`)
+  lines.push(`  Condition      : ${colorGrade(basin.condition)}`)
+  return lines.join('\n')
 }
 
 /**
- * Format all terraces as summary
- * @example
- * formatTerracesTable(terraces) // multi-line summary
+ * @example formatBasinsTable(basins)
  */
-export function formatTerracesTable(terraces: WaterfallTerrace[]): string {
-  if (terraces.length === 0) return dim('No waterfall terraces found')
-  const header = heading('Waterfall Terraces')
-  const rows = terraces.map(t => formatTerraceTable(t))
-  return `${header}\n${rows.join('\n\n')}`
+export function formatBasinsTable(basins: JadeBasin[]): string {
+  if (basins.length === 0) return chalk.gray('No jade basins to display')
+  return basins.map(formatBasinTable).join('\n\n')
 }
 
-// ─── Stats Formatting ──────────────────────────────────────────────
+// ─── Stats Table ───────────────────────────────────────────────────
 
 /**
- * Format statistics summary
- * @example
- * formatStatsTable(stats) // colored stats
+ * @example formatStatsTable(stats)
  */
 export function formatStatsTable(stats: JadeWaterfallResult['stats']): string {
-  const parts = [
-    heading('Jade Waterfall Statistics'),
-    `${label('Total Files:')} ${String(stats.totalFiles)}`,
-    `${label('Total Terraces:')} ${String(stats.totalTerraces)}`,
-    `${label('Avg Flow Grace:')} ${colorScore(stats.avgFlowGrace)}`,
-    `${label('Avg Cascade Clarity:')} ${colorScore(stats.avgCascadeClarity)}`,
-    `${label('Avg Pool Depth:')} ${colorScore(stats.avgPoolDepth)}`,
-    `${label('Avg Moss Resilience:')} ${colorScore(stats.avgMossResilience)}`,
-    `${label('Avg Mist Clarity:')} ${colorScore(stats.avgMistClarity)}`,
-    `${label('Jade Masterpiece:')} ${String(stats.jadeMasterpieceCount)}`,
-    `${label('Emerald Falls:')} ${String(stats.emeraldFallsCount)}`,
-    `${label('Proper Waterfall:')} ${String(stats.properWaterfallCount)}`,
-    `${label('Trickling Stream:')} ${String(stats.tricklingStreamCount)}`,
-    `${label('Dry Bed:')} ${String(stats.dryBedCount)}`,
-    `${label('Drought:')} ${String(stats.droughtCount)}`,
-    `${label('High Grace:')} ${String(stats.hasHighGraceCount)}`,
-    `${label('High Clarity:')} ${String(stats.hasHighClarityCount)}`,
-    `${label('High Depth:')} ${String(stats.hasHighDepthCount)}`,
-    `${label('High Resilience:')} ${String(stats.hasHighResilienceCount)}`,
-    `${label('High Mist Clarity:')} ${String(stats.hasHighMistClarityCount)}`,
-    `${label('Overall Serenity:')} ${colorScore(stats.overallSerenity)}`,
-    `${label('Keeper Grade:')} ${colorGrade(stats.keeperGrade)}`,
-    `${label('Best Drop:')} ${stats.bestDrop}`,
-    `${label('Most Graceful:')} ${stats.mostGraceful}`,
-    `${label('Clearest Cascade:')} ${stats.clearestCascade}`,
-    `${label('Deepest:')} ${stats.deepest}`,
-    `${label('Most Resilient:')} ${stats.mostResilient}`,
-  ]
-  return parts.join('\n')
+  const lines: string[] = []
+  lines.push(JADE.bold('Jade Waterfall Statistics'))
+  lines.push(`  Total Files        : ${stats.totalFiles}`)
+  lines.push(`  Total Basins       : ${stats.totalBasins}`)
+  lines.push(`  Avg Flow Grace     : ${colorScore(stats.avgFlowGrace)}`)
+  lines.push(`  Avg Cascade Clarity: ${colorScore(stats.avgCascadeClarity)}`)
+  lines.push(`  Avg Pool Depth     : ${colorScore(stats.avgPoolDepth)}`)
+  lines.push(`  Avg Mist Purity    : ${colorScore(stats.avgMistPurity)}`)
+  lines.push(`  Avg River Wisdom   : ${colorScore(stats.avgRiverWisdom)}`)
+  lines.push(`  Jade Masterpiece   : ${stats.jadeMasterpieceCount}`)
+  lines.push(`  Emerald Falls      : ${stats.emeraldFallsCount}`)
+  lines.push(`  Proper Waterfall   : ${stats.properWaterfallCount}`)
+  lines.push(`  Murky Cascade      : ${stats.murkyCascadeCount}`)
+  lines.push(`  Trickle            : ${stats.trickleCount}`)
+  lines.push(`  Dry Bed            : ${stats.dryBedCount}`)
+  lines.push(`  Overall Flow       : ${colorScore(stats.overallFlow)}`)
+  lines.push(`  Navigator Grade    : ${colorGrade(stats.navigatorGrade)}`)
+  lines.push(`  Best Drop          : ${WATER(stats.bestDrop)}`)
+  lines.push(`  Most Graceful      : ${WATER(stats.mostGraceful)}`)
+  lines.push(`  Clearest           : ${WATER(stats.clearest)}`)
+  lines.push(`  Deepest            : ${WATER(stats.deepest)}`)
+  lines.push(`  Wisest             : ${WATER(stats.wisest)}`)
+  return lines.join('\n')
 }
 
-// ─── Recommendation Formatting ─────────────────────────────────────
+// ─── Recommendations ───────────────────────────────────────────────
 
 /**
- * Format recommendations as list
- * @example
- * formatRecommendations(recs) // bullet list
+ * @example formatRecommendations(['improve X'])
  */
-export function formatRecommendations(recommendations: string[]): string {
-  if (recommendations.length === 0) return dim('No recommendations')
-  const header = heading('Recommendations')
-  const items = recommendations.map(r => `${dim('\u2022')} ${r}`)
-  return `${header}\n${items.join('\n')}`
+export function formatRecommendations(recs: string[]): string {
+  if (recs.length === 0) return chalk.gray('No recommendations')
+  return recs.map(r => `${BULLET} ${WATER(r)}`).join('\n')
 }
 
-// ─── Full Result Formatting ────────────────────────────────────────
+// ─── Full Result ───────────────────────────────────────────────────
 
 /**
- * Format complete result as table
- * @example
- * formatResultTable(result) // full colored output
+ * @example formatResultTable(result)
  */
 export function formatResultTable(result: JadeWaterfallResult): string {
-  const sections = [
-    formatDropsTable(result.drops),
-    '',
-    formatTerracesTable(result.terraces),
-    '',
-    formatStatsTable(result.stats),
-    '',
-    `${heading('River')} ${label('Flowing:')} ${result.river.isFlowing ? high('Yes') : low('No')} ${label('Overall Serenity:')} ${colorScore(result.river.overallSerenity)}`,
-    '',
-    formatRecommendations(result.recommendations),
-  ]
+  const sections: string[] = []
+
+  sections.push(JADE.bold('Jade Drop Analysis'))
+  sections.push(formatDropsTable(result.drops))
+  sections.push('')
+  sections.push(JADE.bold('Jade Basins'))
+  sections.push(formatBasinsTable(result.basins))
+  sections.push('')
+  sections.push(formatStatsTable(result.stats))
+  sections.push('')
+  sections.push(JADE.bold('River'))
+  sections.push(`  Avg Grace     : ${colorScore(result.river.avgGrace)}`)
+  sections.push(`  Avg Clarity   : ${colorScore(result.river.avgClarity)}`)
+  sections.push(`  Avg Wisdom    : ${colorScore(result.river.avgWisdom)}`)
+  sections.push(`  Is Jade       : ${result.river.isJade ? JADE.bold('YES') : chalk.gray('NO')}`)
+  sections.push(`  Overall Flow  : ${colorScore(result.river.overallFlow)}`)
+  sections.push('')
+  sections.push(JADE.bold('Recommendations'))
+  sections.push(formatRecommendations(result.recommendations))
+
   return sections.join('\n')
 }
 
 /**
- * Format complete result as JSON
- * @example
- * formatResultJson(result) // JSON string
+ * @example formatResultJson(result)
  */
 export function formatResultJson(result: JadeWaterfallResult): string {
   return JSON.stringify(result, null, 2)

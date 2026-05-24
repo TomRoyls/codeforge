@@ -1,46 +1,46 @@
+// ─── Imports ───────────────────────────────────────────────────────
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
-import { extname, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import ora from 'ora'
 
 import { discoverFiles } from '../core/file-discovery.js'
-import {
-  buildJadeWaterfallResult,
-} from './jade-waterfall-helpers.js'
+import { buildJadeWaterfallResult, gatherFiles } from './jade-waterfall-helpers.js'
+import type { JadeWaterfallResult } from './jade-waterfall-helpers.js'
 import { formatResultJson, formatResultTable } from './jade-waterfall-format-helpers.js'
 
 export default class JadeWaterfall extends Command {
   static override args = {
     path: Args.string({
       default: '.',
-      description: 'Path to analyze as jade waterfall',
+      description: 'Path to analyze for jade waterfall quality',
       required: false,
     }),
   }
 
-  static override description = 'Analyze code flow-grace, cascade-clarity, pool-depth, moss-resilience, and mist-clarity'
+  static override description = 'Analyze code flow-grace/cascade-clarity/pool-depth/mist-purity/river-wisdom'
 
   static override examples = [
     {
       command: '<%= config.bin %> <%= command.id %>',
-      description: 'Analyze current directory as jade waterfall',
+      description: 'Analyze jade waterfall quality in current directory',
     },
     {
       command: '<%= config.bin %> <%= command.id %> ./src --format json',
       description: 'Analyze src directory as JSON',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --ext .ts,.tsx',
-      description: 'Analyze TypeScript files only',
+      command: '<%= config.bin %> <%= command.id %> --ext .ts',
+      description: 'Analyze only TypeScript files',
     },
     {
       command: '<%= config.bin %> <%= command.id %> --verbose',
-      description: 'Show per-file drop breakdown',
+      description: 'Show detailed drop breakdown',
     },
     {
-      command: '<%= config.bin %> <%= command.id %> --format json --output waterfall.json',
-      description: 'Export analysis to JSON file',
+      command: '<%= config.bin %> <%= command.id %> --format json --output report.json',
+      description: 'Export results to JSON file',
     },
   ]
 
@@ -67,7 +67,7 @@ export default class JadeWaterfall extends Command {
     verbose: Flags.boolean({
       char: 'v',
       default: false,
-      description: 'Show per-file drop breakdown',
+      description: 'Show detailed drop breakdown',
     }),
   }
 
@@ -81,57 +81,53 @@ export default class JadeWaterfall extends Command {
     }
 
     const format = flags.format as 'json' | 'table'
+    const { verbose } = flags
 
-    const spinner = ora('Scanning for water drops...').start()
+    const spinner = ora('Discovering jade drops...').start()
 
     const defaultIgnore = ['**/node_modules/**', '**/dist/**', '**/coverage/**', '**/.git/**']
     const ignore = flags.ignore ? [...defaultIgnore, ...flags.ignore] : defaultIgnore
 
-    const discoveredFiles = await discoverFiles({
-      cwd: targetPath,
-      ignore,
-      patterns: [
-        '**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.json',
-        '**/*.css', '**/*.html', '**/*.md', '**/*.py', '**/*.rs',
-        '**/*.go', '**/*.java', '**/*.rb', '**/*.sh', '**/*.yaml',
-        '**/*.yml', '**/*.xml', '**/*.sql',
-      ],
-    })
-
     const extensions = flags.ext
-      ? flags.ext.split(',').map((e) => e.trim()).filter(Boolean)
-      : null
+      ? flags.ext.split(',').map(e => e.trim()).filter(Boolean)
+      : []
 
-    const filteredFiles = extensions
-      ? discoveredFiles.filter((f) => {
-          const ext = extname(f.path).toLowerCase()
-          return extensions.includes(ext)
-        })
-      : discoveredFiles
+    const discoveredFiles = extensions.length > 0
+      ? await gatherFiles(targetPath, extensions, ignore)
+      : (await discoverFiles({
+          cwd: targetPath,
+          ignore,
+          patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+        })).map(f => f.path)
 
-    spinner.text = 'Analyzing jade waterfall...'
+    if (discoveredFiles.length === 0) {
+      spinner.warn('No files found to analyze')
+      return
+    }
 
-    const files: string[] = []
-    const contents: string[] = []
+    spinner.text = 'Flowing through jade waterfall...'
 
-    await Promise.all(
-      filteredFiles.map(async (file) => {
+    const contents = await Promise.all(
+      discoveredFiles.map(async (file) => {
         try {
-          const content = await fs.readFile(file.absolutePath, 'utf8')
-          files.push(file.path)
-          contents.push(content)
+          return await fs.readFile(resolve(targetPath, file), 'utf8')
         } catch {
-          files.push(file.path)
-          contents.push('')
+          return ''
         }
       }),
     )
 
-    const result = await buildJadeWaterfallResult(files, contents)
+    const result: JadeWaterfallResult = await buildJadeWaterfallResult(
+      discoveredFiles,
+      contents,
+      { verbose },
+    )
 
-    spinner.succeed(`Analyzed ${filteredFiles.length} files across ${result.terraces.length} waterfall terraces`)
+    spinner.succeed(`Analyzed ${result.stats.totalFiles} files across ${result.stats.totalBasins} basin(s) — flow: ${result.stats.overallFlow}`)
 
-    const outputData = format === 'json' ? formatResultJson(result) : formatResultTable(result)
+    const outputData = format === 'json'
+      ? formatResultJson(result)
+      : formatResultTable(result)
 
     if (flags.output) {
       try {
@@ -148,6 +144,6 @@ export default class JadeWaterfall extends Command {
   }
 }
 
-export { buildJadeWaterfallResult, analyzeWaterDrop, analyzeWaterfallTerrace, classifyDropCondition, classifyTerraceType, classifyTerraceCondition, classifyKeeperGrade, measureFlowing, measureCascading, measureGathering, measureThriving, measureClarifying, generateRecommendations, gatherFiles } from './jade-waterfall-helpers.js'
-export type { WaterDrop as WaterDropType, WaterfallTerrace as WaterfallTerraceType, JadeRiver, JadeWaterfallStats, JadeWaterfallResult as JadeWaterfallResultType, DropCondition, TerraceType, TerraceCondition, KeeperGrade, FlowGrade, CascadeGrade, PoolGrade, MossGrade, MistGrade, FlowingMeasure, CascadingMeasure, GatheringMeasure, ThrivingMeasure, ClarifyingMeasure } from './jade-waterfall-helpers.js'
-export { formatResultTable, formatResultJson, formatDropTable, formatDropsTable, formatTerraceTable, formatTerracesTable, formatStatsTable, formatRecommendations, colorScore, colorGrade } from './jade-waterfall-format-helpers.js'
+export { buildJadeWaterfallResult, gatherFiles } from './jade-waterfall-helpers.js'
+export type { JadeWaterfallResult, JadeDrop, JadeBasin } from './jade-waterfall-helpers.js'
+export { formatResultJson, formatResultTable } from './jade-waterfall-format-helpers.js'
