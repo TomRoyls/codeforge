@@ -1,664 +1,658 @@
-import { describe, expect, it } from 'vitest'
-
+import { describe, it, expect } from 'vitest'
 import {
-  analyzeCoralColony,
-  analyzeReefZone,
-  buildCoralReefResult,
-  classifyCondition,
-  classifyGuardianGrade,
-  classifyZoneCondition,
-  classifyZoneType,
+  measureDiversifying,
+  measureColonizing,
+  measureStrengthening,
+  measureStructuring,
+  measureAdapting,
+  analyzeCoralPolyp,
+  classifyPolypCondition,
+  classifyReefType,
+  classifyMarineGrade,
+  classifyReefCondition,
   generateRecommendations,
-  measureBio,
-  measureBleaching,
-  measurePolyp,
-  measureReef,
-  measureSymbiosis,
-  measureTide,
-  type CoralColony,
+  analyzeReefSystem,
+  buildCoralReefResult,
 } from '../src/commands/coral-reef-helpers.js'
 import {
-  bleachingStatusColor,
-  conditionColor,
-  formationColor,
-  formatCoralReefJson,
-  formatCoralReefTable,
-  gradeColor,
-  harmonyColor,
-  richnessColor,
-  scoreColor,
-  strengthColor,
-  vitalityColor,
-  zoneTypeColor,
+  colorScore,
+  colorGrade,
+  formatPolypTable,
+  formatPolypsTable,
+  formatReefTable,
+  formatReefsTable,
+  formatStatsTable,
+  formatRecommendations,
+  formatResultTable,
+  formatResultJson,
 } from '../src/commands/coral-reef-format-helpers.js'
 
-// ─── Fixtures ──────────────────────────────────────────────────────────────
+// ─── Fixtures ──────────────────────────────────────────────────────
 
-const RICH = `
-export interface Foo { x: number }
-export type Bar = Foo | null
-export class Baz implements Foo {
-  private x: number = 0
-  constructor(x: number) { this.x = x }
-  /** Docs */
-  async getValue(): Promise<number> {
-    try { return this.x } catch { return 0 }
+const RICH = `import { promisify } from 'util'
+import type { Config } from './config.js'
+
+/** Documentation */
+export interface DataProcessor<T> {
+  process(item: T): Promise<string>
+}
+
+export class MainProcessor implements DataProcessor<Config> {
+  private readonly items: readonly string[] = []
+
+  async process(item: Config): Promise<string> {
+    try {
+      const result = item?.value ?? 'default'
+      if (result === item.name) {
+        return result
+      }
+      return await promisify((cb: (err: Error | null, val?: string) => void) => {
+        cb(null, item.name)
+      })()
+    } catch (error: unknown) {
+      return ''
+    }
   }
 }
-export function add<T>(a: T, b: T): T { return a }
-export const mul = (a: number, b: number) => a * b
-export enum Color { Red, Green, Blue }
-export { Foo } from './foo'
-// TODO: fix later
+
+export const helper = (input?: string): string => {
+  return input ?? ''
+}
+
+export type Result = { readonly value: string; readonly label: string }
 `
 
-const EMPTY = ''
-const MEDIUM = 'const x = 1\n'
+const MINIMAL = 'const x = 1'
 
-// ─── measureReef ───────────────────────────────────────────────────────────
+const MODERATE = `export interface Item {
+  name: string
+}
 
-describe('measureReef', () => {
-  it('returns fringing-reef for RICH content', () => {
-    const result = measureReef(RICH)
-    expect(result.structure).toBe(78)
-    expect(result.formation).toBe('fringing-reef')
-    expect(result.hasHighStructure).toBe(true)
-    expect(result.hasSolidFoundation).toBe(true)
-    expect(result.hasLayered).toBe(true)
-    expect(result.hasComplexity).toBe(true)
-    expect(result.hasGrowth).toBe(true)
-    expect(result.erosionCount).toBe(1)
-    expect(result.fragmentationCount).toBe(0)
+export function process(item: Item): string {
+  return item.name
+}
+
+const result = process({ name: 'test' })`
+
+const POOR = `var x: any = 1
+var y: any = 2
+function bad(a: any): any {
+  return a
+}`
+
+// ─── Measure Tests ─────────────────────────────────────────────────
+
+describe('measureDiversifying', () => {
+  it('returns great-barrier for rich content', () => {
+    const m = measureDiversifying(RICH)
+    expect(m.diversity).toBe(100)
+    expect(m.grade).toBe('great-barrier')
+    expect(m.hasHighDiversity).toBe(true)
   })
 
-  it('returns rubble for EMPTY content', () => {
-    const result = measureReef(EMPTY)
-    expect(result.structure).toBe(40)
-    expect(result.formation).toBe('rubble')
-    expect(result.hasHighStructure).toBe(false)
-    expect(result.hasSolidFoundation).toBe(false)
-    expect(result.hasNoErosion).toBe(true)
-    expect(result.hasGrowth).toBe(false)
-    expect(result.erosionCount).toBe(0)
+  it('returns dead-zone for minimal content', () => {
+    const m = measureDiversifying(MINIMAL)
+    expect(m.diversity).toBe(8)
+    expect(m.grade).toBe('dead-zone')
+    expect(m.hasHighDiversity).toBe(false)
   })
 
-  it('returns rubble for MEDIUM content', () => {
-    const result = measureReef(MEDIUM)
-    expect(result.structure).toBe(45)
-    expect(result.formation).toBe('rubble')
-    expect(result.hasNoCollapse).toBe(true)
-    expect(result.hasNoSubsidence).toBe(true)
-    expect(result.hasNoFragmentation).toBe(true)
-  })
-})
-
-// ─── measurePolyp ──────────────────────────────────────────────────────────
-
-describe('measurePolyp', () => {
-  it('returns thriving for RICH content', () => {
-    const result = measurePolyp(RICH)
-    expect(result.health).toBe(90)
-    expect(result.vitality).toBe('thriving')
-    expect(result.hasHighHealth).toBe(true)
-    expect(result.hasCleanTentacles).toBe(true)
-    expect(result.hasProperFeeding).toBe(true)
-    expect(result.hasNoParasites).toBe(true)
-    expect(result.hasCalcification).toBe(true)
-    expect(result.hasNoDisease).toBe(true)
-    expect(result.parasiteCount).toBe(0)
+  it('returns bleached-coral for moderate content', () => {
+    const m = measureDiversifying(MODERATE)
+    expect(m.diversity).toBe(39)
+    expect(m.grade).toBe('bleached-coral')
   })
 
-  it('returns dying for EMPTY content', () => {
-    const result = measurePolyp(EMPTY)
-    expect(result.health).toBe(50)
-    expect(result.vitality).toBe('dying')
-    expect(result.hasHighHealth).toBe(false)
-    expect(result.hasProperFeeding).toBe(false)
-    expect(result.hasCalcification).toBe(false)
-    expect(result.hasReproduction).toBe(false)
-    expect(result.parasiteCount).toBe(0)
-    expect(result.diseaseCount).toBe(0)
+  it('returns dead-zone for poor content', () => {
+    const m = measureDiversifying(POOR)
+    expect(m.diversity).toBe(0)
+    expect(m.grade).toBe('dead-zone')
   })
 
-  it('returns dying for MEDIUM content', () => {
-    const result = measurePolyp(MEDIUM)
-    expect(result.health).toBe(45)
-    expect(result.vitality).toBe('dying')
-    expect(result.hasCleanTentacles).toBe(true)
-    expect(result.hasNoStunting).toBe(true)
-    expect(result.hasNoNecrosis).toBe(false)
-  })
-})
-
-// ─── measureSymbiosis ──────────────────────────────────────────────────────
-
-describe('measureSymbiosis', () => {
-  it('returns neutral for RICH content', () => {
-    const result = measureSymbiosis(RICH)
-    expect(result.index).toBe(66)
-    expect(result.harmony).toBe('neutral')
-    expect(result.hasNoExploitation).toBe(true)
-    expect(result.hasProperExchange).toBe(true)
-    expect(result.hasNoCompetition).toBe(true)
-    expect(result.hasNoConflict).toBe(true)
-    expect(result.exploitationCount).toBe(0)
+  it('detects varied (export + import)', () => {
+    expect(measureDiversifying(RICH).hasVaried).toBe(true)
+    expect(measureDiversifying(MINIMAL).hasVaried).toBe(false)
   })
 
-  it('returns parasitism for EMPTY content', () => {
-    const result = measureSymbiosis(EMPTY)
-    expect(result.index).toBe(40)
-    expect(result.harmony).toBe('parasitism')
-    expect(result.hasHighHarmony).toBe(false)
-    expect(result.hasCleanPartnership).toBe(false)
-    expect(result.hasMutualBenefit).toBe(false)
-    expect(result.exploitationCount).toBe(0)
-    expect(result.conflictCount).toBe(0)
+  it('detects diverse (interface + class)', () => {
+    expect(measureDiversifying(RICH).hasDiverse).toBe(true)
   })
 
-  it('returns parasitism for MEDIUM content', () => {
-    const result = measureSymbiosis(MEDIUM)
-    expect(result.index).toBe(45)
-    expect(result.harmony).toBe('parasitism')
-    expect(result.hasNoOverdependence).toBe(true)
-    expect(result.hasSharedResources).toBe(false)
+  it('detects rich (generics + typeAlias)', () => {
+    expect(measureDiversifying(RICH).hasRich).toBe(true)
+  })
+
+  it('detects colorful (async + docComments)', () => {
+    expect(measureDiversifying(RICH).hasColorful).toBe(true)
+  })
+
+  it('detects abundant (namedExport + const)', () => {
+    expect(measureDiversifying(RICH).hasAbundant).toBe(true)
+    expect(measureDiversifying(MODERATE).hasAbundant).toBe(true)
+  })
+
+  it('detects teeming (export + generics)', () => {
+    expect(measureDiversifying(RICH).hasTeeming).toBe(true)
+  })
+
+  it('counts monoculture (var) and barren (any)', () => {
+    const m = measureDiversifying(POOR)
+    expect(m.monocultureCount).toBe(2)
+    expect(m.barrenCount).toBe(4)
+    expect(m.hasNoMonoculture).toBe(false)
+    expect(m.hasNoBarren).toBe(false)
+  })
+
+  it('clean code has no monoculture or barren', () => {
+    const m = measureDiversifying(RICH)
+    expect(m.hasNoMonoculture).toBe(true)
+    expect(m.hasNoBarren).toBe(true)
+    expect(m.hasNoUniform).toBe(true)
+    expect(m.hasNoSparse).toBe(true)
   })
 })
 
-// ─── measureTide ───────────────────────────────────────────────────────────
-
-describe('measureTide', () => {
-  it('returns tide-proof for RICH content', () => {
-    const result = measureTide(RICH)
-    expect(result.resilience).toBe(80)
-    expect(result.strength).toBe('tide-proof')
-    expect(result.hasHighResilience).toBe(true)
-    expect(result.hasAdaptation).toBe(true)
-    expect(result.hasProperAnchor).toBe(true)
-    expect(result.hasNoDisplacement).toBe(true)
-    expect(result.hasNoScouring).toBe(true)
-    expect(result.displacementCount).toBe(0)
+describe('measureColonizing', () => {
+  it('returns vibrant-colony for rich content', () => {
+    const m = measureColonizing(RICH)
+    expect(m.health).toBe(100)
+    expect(m.colony).toBe('vibrant-colony')
+    expect(m.hasHighHealth).toBe(true)
   })
 
-  it('returns fragile for EMPTY content', () => {
-    const result = measureTide(EMPTY)
-    expect(result.resilience).toBe(40)
-    expect(result.strength).toBe('fragile')
-    expect(result.hasHighResilience).toBe(false)
-    expect(result.hasAdaptation).toBe(false)
-    expect(result.hasProperAnchor).toBe(false)
-    expect(result.displacementCount).toBe(0)
-    expect(result.scouringCount).toBe(0)
+  it('returns collapsed-colony for minimal', () => {
+    const m = measureColonizing(MINIMAL)
+    expect(m.health).toBe(8)
+    expect(m.colony).toBe('collapsed-colony')
   })
 
-  it('returns fragile for MEDIUM content', () => {
-    const result = measureTide(MEDIUM)
-    expect(result.resilience).toBe(45)
-    expect(result.strength).toBe('fragile')
-    expect(result.hasNoBrittle).toBe(true)
-    expect(result.hasNoCrushing).toBe(true)
-  })
-})
-
-// ─── measureBio ────────────────────────────────────────────────────────────
-
-describe('measureBio', () => {
-  it('returns mega-diverse for RICH content', () => {
-    const result = measureBio(RICH)
-    expect(result.diversity).toBe(90)
-    expect(result.richness).toBe('mega-diverse')
-    expect(result.hasHighDiversity).toBe(true)
-    expect(result.hasVariety).toBe(true)
-    expect(result.hasMultipleSpecies).toBe(true)
-    expect(result.hasEndemic).toBe(true)
-    expect(result.hasKeystone).toBe(true)
-    expect(result.invasiveCount).toBe(0)
+  it('returns stable-colony for moderate', () => {
+    const m = measureColonizing(MODERATE)
+    expect(m.health).toBe(57)
+    expect(m.colony).toBe('stable-colony')
   })
 
-  it('returns barren for EMPTY content', () => {
-    const result = measureBio(EMPTY)
-    expect(result.diversity).toBe(20)
-    expect(result.richness).toBe('barren')
-    expect(result.hasHighDiversity).toBe(false)
-    expect(result.hasVariety).toBe(false)
-    expect(result.hasNoMonoculture).toBe(false)
-    expect(result.extinctionCount).toBe(1)
+  it('detects connected (export + import)', () => {
+    expect(measureColonizing(RICH).hasConnected).toBe(true)
   })
 
-  it('returns barren for MEDIUM content', () => {
-    const result = measureBio(MEDIUM)
-    expect(result.diversity).toBe(25)
-    expect(result.richness).toBe('barren')
-    expect(result.hasNoInvasive).toBe(true)
-    expect(result.hasNoOvergrowth).toBe(true)
+  it('detects symbiotic (interface + returnType)', () => {
+    expect(measureColonizing(RICH).hasSymbiotic).toBe(true)
+    expect(measureColonizing(MODERATE).hasSymbiotic).toBe(true)
+  })
+
+  it('detects cohesive (export + interface)', () => {
+    expect(measureColonizing(RICH).hasCohesive).toBe(true)
+    expect(measureColonizing(MODERATE).hasCohesive).toBe(true)
+  })
+
+  it('counts isolated (var) and conflicting (any)', () => {
+    const m = measureColonizing(POOR)
+    expect(m.isolatedCount).toBe(2)
+    expect(m.conflictingCount).toBe(4)
+    expect(m.hasNoIsolated).toBe(false)
+    expect(m.hasNoConflicting).toBe(false)
+  })
+
+  it('clean code has no isolated or conflicting', () => {
+    const m = measureColonizing(RICH)
+    expect(m.hasNoIsolated).toBe(true)
+    expect(m.hasNoConflicting).toBe(true)
+    expect(m.hasNoParasitic).toBe(true)
+    expect(m.hasNoFragmented).toBe(true)
   })
 })
 
-// ─── measureBleaching ──────────────────────────────────────────────────────
-
-describe('measureBleaching', () => {
-  it('returns healthy for RICH content', () => {
-    const result = measureBleaching(RICH)
-    expect(result.risk).toBe(28)
-    expect(result.status).toBe('healthy')
-    expect(result.hasLowRisk).toBe(true)
-    expect(result.hasNoThermalStress).toBe(true)
-    expect(result.hasProtection).toBe(true)
-    expect(result.hasNoPollution).toBe(false)
-    expect(result.hasRecoveryPath).toBe(true)
-    expect(result.pollutionCount).toBe(1)
+describe('measureStrengthening', () => {
+  it('returns giant-polyp for rich content', () => {
+    const m = measureStrengthening(RICH)
+    expect(m.strength).toBe(100)
+    expect(m.polyp).toBe('giant-polyp')
+    expect(m.hasHighStrength).toBe(true)
   })
 
-  it('returns stressed for EMPTY content', () => {
-    const result = measureBleaching(EMPTY)
-    expect(result.risk).toBe(46)
-    expect(result.status).toBe('stressed')
-    expect(result.hasLowRisk).toBe(false)
-    expect(result.hasProtection).toBe(false)
-    expect(result.hasRecoveryPath).toBe(false)
-    expect(result.pollutionCount).toBe(0)
-    expect(result.overfishingCount).toBe(0)
+  it('returns dissolved for minimal', () => {
+    const m = measureStrengthening(MINIMAL)
+    expect(m.strength).toBe(10)
+    expect(m.polyp).toBe('dissolved')
   })
 
-  it('returns warning for MEDIUM content', () => {
-    const result = measureBleaching(MEDIUM)
-    expect(result.risk).toBe(36)
-    expect(result.status).toBe('warning')
-    expect(result.hasNoThermalStress).toBe(true)
-    expect(result.hasNoAcidification).toBe(true)
-    expect(result.hasNoAlgalBloom).toBe(true)
-  })
-})
-
-// ─── classifyCondition ─────────────────────────────────────────────────────
-
-describe('classifyCondition', () => {
-  it('returns pristine-reef for score >= 80', () => {
-    const colony = { qualityScore: 80 } as CoralColony
-    expect(classifyCondition(colony)).toBe('pristine-reef')
+  it('returns weak-polyp for moderate', () => {
+    const m = measureStrengthening(MODERATE)
+    expect(m.strength).toBe(41)
+    expect(m.polyp).toBe('weak-polyp')
   })
 
-  it('returns healthy-reef for score >= 65', () => {
-    const colony = { qualityScore: 65 } as CoralColony
-    expect(classifyCondition(colony)).toBe('healthy-reef')
+  it('detects solid (const + strictEq)', () => {
+    expect(measureStrengthening(RICH).hasSolid).toBe(true)
   })
 
-  it('returns recovering-reef for score >= 50', () => {
-    const colony = { qualityScore: 50 } as CoralColony
-    expect(classifyCondition(colony)).toBe('recovering-reef')
+  it('detects robust (interface + readonly)', () => {
+    expect(measureStrengthening(RICH).hasRobust).toBe(true)
   })
 
-  it('returns stressed-reef for score >= 35', () => {
-    const colony = { qualityScore: 35 } as CoralColony
-    expect(classifyCondition(colony)).toBe('stressed-reef')
+  it('detects hardy (const + returnType)', () => {
+    expect(measureStrengthening(RICH).hasHardy).toBe(true)
+    expect(measureStrengthening(MODERATE).hasHardy).toBe(true)
   })
 
-  it('returns degraded for score >= 20', () => {
-    const colony = { qualityScore: 20 } as CoralColony
-    expect(classifyCondition(colony)).toBe('degraded')
+  it('counts fragile (var) and brittle (any)', () => {
+    const m = measureStrengthening(POOR)
+    expect(m.fragileCount).toBe(2)
+    expect(m.brittleCount).toBe(4)
   })
 
-  it('returns dead-zone for score < 20', () => {
-    const colony = { qualityScore: 10 } as CoralColony
-    expect(classifyCondition(colony)).toBe('dead-zone')
+  it('clean code has no fragile or brittle', () => {
+    const m = measureStrengthening(RICH)
+    expect(m.hasNoFragile).toBe(true)
+    expect(m.hasNoBrittle).toBe(true)
+    expect(m.hasNoBreakable).toBe(true)
+    expect(m.hasNoCrumbly).toBe(true)
   })
 })
 
-// ─── classifyZoneType ──────────────────────────────────────────────────────
-
-describe('classifyZoneType', () => {
-  it('returns mud-flat for empty colonies', () => {
-    expect(classifyZoneType([])).toBe('mud-flat')
+describe('measureStructuring', () => {
+  it('returns massive-reef for rich content', () => {
+    const m = measureStructuring(RICH)
+    expect(m.structure).toBe(100)
+    expect(m.architecture).toBe('massive-reef')
+    expect(m.hasHighStructure).toBe(true)
   })
 
-  it('returns great-barrier for high avg and pristine majority', () => {
-    const colonies = Array.from({ length: 5 }, () => ({
-      qualityScore: 90, condition: 'pristine-reef',
-    } as unknown as CoralColony))
-    expect(classifyZoneType(colonies)).toBe('great-barrier')
+  it('returns rubble for minimal', () => {
+    const m = measureStructuring(MINIMAL)
+    expect(m.structure).toBe(8)
+    expect(m.architecture).toBe('rubble')
   })
 
-  it('returns major-reef for avg >= 60', () => {
-    const colonies = [{ qualityScore: 60, condition: 'stressed-reef' } as unknown as CoralColony]
-    expect(classifyZoneType(colonies)).toBe('major-reef')
+  it('returns encrusting for moderate', () => {
+    const m = measureStructuring(MODERATE)
+    expect(m.structure).toBe(52)
+    expect(m.architecture).toBe('encrusting')
   })
 
-  it('returns atoll-system for avg >= 45', () => {
-    const colonies = [{ qualityScore: 45, condition: 'stressed-reef' } as unknown as CoralColony]
-    expect(classifyZoneType(colonies)).toBe('atoll-system')
+  it('detects organized (interface + export)', () => {
+    expect(measureStructuring(RICH).hasOrganized).toBe(true)
+    expect(measureStructuring(MODERATE).hasOrganized).toBe(true)
   })
 
-  it('returns patch-system for avg >= 30', () => {
-    const colonies = [{ qualityScore: 30, condition: 'degraded' } as unknown as CoralColony]
-    expect(classifyZoneType(colonies)).toBe('patch-system')
+  it('detects patterned (namedExport + returnType)', () => {
+    expect(measureStructuring(RICH).hasPatterned).toBe(true)
+    expect(measureStructuring(MODERATE).hasPatterned).toBe(true)
   })
 
-  it('returns rocky-shore for avg >= 15', () => {
-    const colonies = [{ qualityScore: 15, condition: 'dead-zone' } as unknown as CoralColony]
-    expect(classifyZoneType(colonies)).toBe('rocky-shore')
-  })
-})
-
-// ─── classifyZoneCondition ─────────────────────────────────────────────────
-
-describe('classifyZoneCondition', () => {
-  it('returns world-heritage for avg >= 80', () => {
-    expect(classifyZoneCondition(80)).toBe('world-heritage')
+  it('counts chaotic (var) and random (any)', () => {
+    const m = measureStructuring(POOR)
+    expect(m.chaoticCount).toBe(2)
+    expect(m.randomCount).toBe(4)
   })
 
-  it('returns marine-reserve for avg >= 65', () => {
-    expect(classifyZoneCondition(65)).toBe('marine-reserve')
-  })
-
-  it('returns fishing-zone for avg >= 50', () => {
-    expect(classifyZoneCondition(50)).toBe('fishing-zone')
-  })
-
-  it('returns stressed-area for avg >= 35', () => {
-    expect(classifyZoneCondition(35)).toBe('stressed-area')
-  })
-
-  it('returns dead-zone for avg >= 20', () => {
-    expect(classifyZoneCondition(20)).toBe('dead-zone')
-  })
-
-  it('returns desert for avg < 20', () => {
-    expect(classifyZoneCondition(10)).toBe('desert')
+  it('clean code has no chaotic or random', () => {
+    const m = measureStructuring(RICH)
+    expect(m.hasNoChaotic).toBe(true)
+    expect(m.hasNoRandom).toBe(true)
+    expect(m.hasNoHaphazard).toBe(true)
+    expect(m.hasNoMessy).toBe(true)
   })
 })
 
-// ─── classifyGuardianGrade ─────────────────────────────────────────────────
-
-describe('classifyGuardianGrade', () => {
-  it('returns reef-guardian for avg >= 80', () => {
-    expect(classifyGuardianGrade(80)).toBe('reef-guardian')
+describe('measureAdapting', () => {
+  it('returns deep-current for rich content', () => {
+    const m = measureAdapting(RICH)
+    expect(m.resilience).toBe(100)
+    expect(m.adaptation).toBe('deep-current')
+    expect(m.hasHighResilience).toBe(true)
   })
 
-  it('returns marine-biologist for avg >= 65', () => {
-    expect(classifyGuardianGrade(65)).toBe('marine-biologist')
+  it('returns beached for minimal', () => {
+    const m = measureAdapting(MINIMAL)
+    expect(m.resilience).toBe(8)
+    expect(m.adaptation).toBe('beached')
   })
 
-  it('returns conservationist for avg >= 50', () => {
-    expect(classifyGuardianGrade(50)).toBe('conservationist')
+  it('returns weak-current for moderate', () => {
+    const m = measureAdapting(MODERATE)
+    expect(m.resilience).toBe(42)
+    expect(m.adaptation).toBe('weak-current')
   })
 
-  it('returns observer for avg >= 35', () => {
-    expect(classifyGuardianGrade(35)).toBe('observer')
+  it('detects adaptable (async + tryCatch)', () => {
+    expect(measureAdapting(RICH).hasAdaptable).toBe(true)
   })
 
-  it('returns tourist for avg >= 20', () => {
-    expect(classifyGuardianGrade(20)).toBe('tourist')
+  it('detects flexible (optionalChaining + nullishCoalescing)', () => {
+    expect(measureAdapting(RICH).hasFlexible).toBe(true)
   })
 
-  it('returns polluter for avg < 20', () => {
-    expect(classifyGuardianGrade(10)).toBe('polluter')
-  })
-})
-
-// ─── analyzeCoralColony ────────────────────────────────────────────────────
-
-describe('analyzeCoralColony', () => {
-  it('produces healthy-reef for RICH', () => {
-    const colony = analyzeCoralColony(RICH, 'rich.ts')
-    expect(colony.file).toBe('rich.ts')
-    expect(colony.reefStructure).toBe(78)
-    expect(colony.polypHealth).toBe(90)
-    expect(colony.symbiosisIndex).toBe(66)
-    expect(colony.tideResilience).toBe(80)
-    expect(colony.biodiversity).toBe(90)
-    expect(colony.bleachingRisk).toBe(28)
-    expect(colony.qualityScore).toBe(79)
-    expect(colony.condition).toBe('healthy-reef')
+  it('detects flowing (const + export)', () => {
+    expect(measureAdapting(RICH).hasFlowing).toBe(true)
+    expect(measureAdapting(MODERATE).hasFlowing).toBe(true)
   })
 
-  it('produces stressed-reef for EMPTY', () => {
-    const colony = analyzeCoralColony(EMPTY, 'empty.ts')
-    expect(colony.file).toBe('empty.ts')
-    expect(colony.reefStructure).toBe(40)
-    expect(colony.polypHealth).toBe(50)
-    expect(colony.symbiosisIndex).toBe(40)
-    expect(colony.tideResilience).toBe(40)
-    expect(colony.biodiversity).toBe(20)
-    expect(colony.bleachingRisk).toBe(46)
-    expect(colony.qualityScore).toBe(41)
-    expect(colony.condition).toBe('stressed-reef')
+  it('detects dynamic (interface + returnType)', () => {
+    expect(measureAdapting(RICH).hasDynamic).toBe(true)
+    expect(measureAdapting(MODERATE).hasDynamic).toBe(true)
   })
 
-  it('produces stressed-reef for MEDIUM', () => {
-    const colony = analyzeCoralColony(MEDIUM, 'medium.ts')
-    expect(colony.file).toBe('medium.ts')
-    expect(colony.reefStructure).toBe(45)
-    expect(colony.polypHealth).toBe(45)
-    expect(colony.symbiosisIndex).toBe(45)
-    expect(colony.tideResilience).toBe(45)
-    expect(colony.biodiversity).toBe(25)
-    expect(colony.bleachingRisk).toBe(36)
-    expect(colony.qualityScore).toBe(46)
-    expect(colony.condition).toBe('stressed-reef')
+  it('counts rigid (var) and stuck (any)', () => {
+    const m = measureAdapting(POOR)
+    expect(m.rigidCount).toBe(2)
+    expect(m.stuckCount).toBe(4)
+  })
+
+  it('clean code has no rigid or stuck', () => {
+    const m = measureAdapting(RICH)
+    expect(m.hasNoRigid).toBe(true)
+    expect(m.hasNoStuck).toBe(true)
+    expect(m.hasNoStiff).toBe(true)
+    expect(m.hasNoStatic).toBe(true)
   })
 })
 
-// ─── analyzeReefZone ───────────────────────────────────────────────────────
+// ─── Classification Tests ──────────────────────────────────────────
 
-describe('analyzeReefZone', () => {
-  it('handles empty colonies with mud-flat', () => {
-    const zone = analyzeReefZone([], 'src')
-    expect(zone.directory).toBe('src')
-    expect(zone.colonies).toEqual([])
-    expect(zone.zoneType).toBe('mud-flat')
-  })
+describe('classifyPolypCondition', () => {
+  it('returns barrier-reef for 85+', () => expect(classifyPolypCondition(85)).toBe('barrier-reef'))
+  it('returns atoll-reef for 70-84', () => expect(classifyPolypCondition(70)).toBe('atoll-reef'))
+  it('returns fringing-reef for 55-69', () => expect(classifyPolypCondition(55)).toBe('fringing-reef'))
+  it('returns patch-reef for 40-54', () => expect(classifyPolypCondition(40)).toBe('patch-reef'))
+  it('returns dead-coral for 25-39', () => expect(classifyPolypCondition(25)).toBe('dead-coral'))
+  it('returns sandbar for < 25', () => expect(classifyPolypCondition(24)).toBe('sandbar'))
+  it('returns sandbar for 0', () => expect(classifyPolypCondition(0)).toBe('sandbar'))
+})
 
-  it('computes correct averages for single colony', () => {
-    const colony = analyzeCoralColony(RICH, 'rich.ts')
-    const zone = analyzeReefZone([colony], 'src')
-    expect(zone.avgStructure).toBe(colony.reefStructure)
-    expect(zone.avgSymbiosis).toBe(colony.symbiosisIndex)
-    expect(zone.colonies.length).toBe(1)
-  })
+describe('classifyMarineGrade', () => {
+  it('returns marine-biologist for 80+', () => expect(classifyMarineGrade(80)).toBe('marine-biologist'))
+  it('returns reef-guardian for 65-79', () => expect(classifyMarineGrade(65)).toBe('reef-guardian'))
+  it('returns ocean-steward for 50-64', () => expect(classifyMarineGrade(50)).toBe('ocean-steward'))
+  it('returns beachcomber for 35-49', () => expect(classifyMarineGrade(35)).toBe('beachcomber'))
+  it('returns tourist for 20-34', () => expect(classifyMarineGrade(20)).toBe('tourist'))
+  it('returns polluter for < 20', () => expect(classifyMarineGrade(19)).toBe('polluter'))
+})
 
-  it('computes correct averages for multiple colonies', () => {
-    const rich = analyzeCoralColony(RICH, 'rich.ts')
-    const med = analyzeCoralColony(MEDIUM, 'medium.ts')
-    const zone = analyzeReefZone([rich, med], 'src')
-    expect(zone.avgStructure).toBe(62)
-    expect(zone.avgSymbiosis).toBe(56)
-    expect(zone.colonies.length).toBe(2)
+describe('classifyReefCondition', () => {
+  it('returns pristine-reef for 75+', () => expect(classifyReefCondition(75)).toBe('pristine-reef'))
+  it('returns healthy-reef for 60-74', () => expect(classifyReefCondition(60)).toBe('healthy-reef'))
+  it('returns fair-reef for 45-59', () => expect(classifyReefCondition(45)).toBe('fair-reef'))
+  it('returns stressed-reef for 30-44', () => expect(classifyReefCondition(30)).toBe('stressed-reef'))
+  it('returns degraded-reef for 15-29', () => expect(classifyReefCondition(15)).toBe('degraded-reef'))
+  it('returns dead-reef for < 15', () => expect(classifyReefCondition(14)).toBe('dead-reef'))
+})
+
+describe('classifyReefType', () => {
+  it('returns barren-coast for empty polyps', () => {
+    expect(classifyReefType([])).toBe('barren-coast')
   })
 })
 
-// ─── generateRecommendations ───────────────────────────────────────────────
+// ─── analyzeCoralPolyp Tests ───────────────────────────────────────
 
-describe('generateRecommendations', () => {
-  it('returns empty array for empty result', () => {
-    const result = buildCoralReefResult([], [])
-    const recs = generateRecommendations(result.colonies, result.zones, result.ocean, result.stats)
-    expect(Array.isArray(recs)).toBe(true)
+describe('analyzeCoralPolyp', () => {
+  it('returns barrier-reef for rich content', () => {
+    const p = analyzeCoralPolyp(RICH, 'rich.ts')
+    expect(p.qualityScore).toBe(100)
+    expect(p.condition).toBe('barrier-reef')
+    expect(p.biodiversity).toBe(100)
+    expect(p.colonyHealth).toBe(100)
+    expect(p.polypStrength).toBe(100)
+    expect(p.reefStructure).toBe(100)
+    expect(p.currentResilience).toBe(100)
   })
 
-  it('returns recommendations for RICH content', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    const recs = generateRecommendations(result.colonies, result.zones, result.ocean, result.stats)
-    expect(Array.isArray(recs)).toBe(true)
+  it('returns sandbar for minimal content', () => {
+    const p = analyzeCoralPolyp(MINIMAL, 'minimal.ts')
+    expect(p.qualityScore).toBe(8)
+    expect(p.condition).toBe('sandbar')
+    expect(p.biodiversity).toBe(8)
+    expect(p.colonyHealth).toBe(8)
+    expect(p.polypStrength).toBe(10)
+    expect(p.reefStructure).toBe(8)
+    expect(p.currentResilience).toBe(8)
   })
 
-  it('returns recommendations for mixed content', () => {
-    const result = buildCoralReefResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
-    const recs = generateRecommendations(result.colonies, result.zones, result.ocean, result.stats)
-    expect(Array.isArray(recs)).toBe(true)
+  it('returns patch-reef for moderate content', () => {
+    const p = analyzeCoralPolyp(MODERATE, 'moderate.ts')
+    expect(p.qualityScore).toBe(46)
+    expect(p.condition).toBe('patch-reef')
+    expect(p.biodiversity).toBe(39)
+    expect(p.colonyHealth).toBe(57)
+    expect(p.polypStrength).toBe(41)
+    expect(p.reefStructure).toBe(52)
+    expect(p.currentResilience).toBe(42)
+  })
+
+  it('returns sandbar for poor content', () => {
+    const p = analyzeCoralPolyp(POOR, 'poor.ts')
+    expect(p.qualityScore).toBe(0)
+    expect(p.condition).toBe('sandbar')
+  })
+
+  it('contains all measure objects', () => {
+    const p = analyzeCoralPolyp(RICH, 'test.ts')
+    expect(p.diversifying).toBeDefined()
+    expect(p.colonizing).toBeDefined()
+    expect(p.strengthening).toBeDefined()
+    expect(p.structuring).toBeDefined()
+    expect(p.adapting).toBeDefined()
   })
 })
 
-// ─── buildCoralReefResult ──────────────────────────────────────────────────
+// ─── analyzeReefSystem Tests ───────────────────────────────────────
+
+describe('analyzeReefSystem', () => {
+  it('returns empty reef for no polyps', () => {
+    const reef = analyzeReefSystem([], 'empty')
+    expect(reef.reefType).toBe('barren-coast')
+    expect(reef.condition).toBe('dead-reef')
+  })
+
+  it('computes reef averages correctly', () => {
+    const p1 = analyzeCoralPolyp(RICH, 'a.ts')
+    const p2 = analyzeCoralPolyp(MINIMAL, 'b.ts')
+    const reef = analyzeReefSystem([p1, p2], 'test')
+    expect(reef.avgBiodiversity).toBe(54)
+    expect(reef.barrierReefCount).toBe(1)
+    expect(reef.sandbarCount).toBe(1)
+  })
+})
+
+// ─── buildCoralReefResult Tests ────────────────────────────────────
 
 describe('buildCoralReefResult', () => {
-  it('handles empty input gracefully', () => {
-    const result = buildCoralReefResult([], [])
-    expect(result.colonies).toEqual([])
-    expect(result.zones).toEqual([])
-    expect(result.stats.totalFiles).toBe(0)
-    expect(result.stats.totalZones).toBe(0)
-    expect(result.ocean.overallHealth).toBe(20)
+  it('computes full result for 4-file mix', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.stats.totalFiles).toBe(4)
+    expect(result.stats.totalReefs).toBe(1)
+    expect(result.stats.avgBiodiversity).toBe(37)
+    expect(result.stats.avgColonyHealth).toBe(41)
+    expect(result.stats.avgPolypStrength).toBe(38)
+    expect(result.stats.avgReefStructure).toBe(40)
+    expect(result.stats.avgCurrentResilience).toBe(38)
+    expect(result.stats.overallHealth).toBe(38)
+    expect(result.stats.marineGrade).toBe('beachcomber')
+    expect(result.ocean.isThriving).toBe(false)
   })
 
-  it('handles single RICH file', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    expect(result.stats.totalFiles).toBe(1)
-    expect(result.stats.totalZones).toBe(1)
-    expect(result.colonies.length).toBe(1)
-    expect(result.colonies[0].qualityScore).toBe(79)
-    expect(result.colonies[0].condition).toBe('healthy-reef')
-    expect(result.stats.healthyReefCount).toBe(1)
-    expect(result.stats.bestColony).toBe('rich.ts')
+  it('computes condition counts correctly', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.stats.barrierReefCount).toBe(1)
+    expect(result.stats.atollReefCount).toBe(0)
+    expect(result.stats.fringingReefCount).toBe(0)
+    expect(result.stats.patchReefCount).toBe(1)
+    expect(result.stats.deadCoralCount).toBe(0)
+    expect(result.stats.sandbarCount).toBe(2)
   })
 
-  it('handles rich+medium files', () => {
-    const result = buildCoralReefResult(['rich.ts', 'medium.ts'], [RICH, MEDIUM])
-    expect(result.stats.totalFiles).toBe(2)
-    expect(result.stats.totalZones).toBe(1)
-    expect(result.stats.avgReefStructure).toBe(62)
-    expect(result.stats.avgPolypHealth).toBe(68)
-    expect(result.stats.avgSymbiosisIndex).toBe(56)
-    expect(result.stats.avgTideResilience).toBe(63)
-    expect(result.stats.avgBiodiversity).toBe(58)
-    expect(result.stats.avgBleachingRisk).toBe(32)
-    expect(result.stats.guardianGrade).toBe('conservationist')
-    expect(result.stats.bestColony).toBe('rich.ts')
-    expect(result.stats.bestStructured).toBe('rich.ts')
-    expect(result.stats.healthiest).toBe('rich.ts')
-    expect(result.stats.mostHarmonious).toBe('rich.ts')
-    expect(result.stats.mostResilient).toBe('rich.ts')
+  it('computes high boolean counts correctly', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.stats.hasHighDiversityCount).toBe(1)
+    expect(result.stats.hasHighHealthCount).toBe(1)
+    expect(result.stats.hasHighStrengthCount).toBe(1)
+    expect(result.stats.hasHighStructureCount).toBe(1)
+    expect(result.stats.hasHighResilienceCount).toBe(1)
+  })
+
+  it('identifies best files correctly', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.stats.bestPolyp).toBe('rich.ts')
     expect(result.stats.mostDiverse).toBe('rich.ts')
-    expect(result.ocean.avgStructure).toBe(62)
-    expect(result.ocean.avgSymbiosis).toBe(56)
-    expect(result.ocean.avgBleaching).toBe(32)
-    expect(result.ocean.isHealthy).toBe(true)
-    expect(result.ocean.overallHealth).toBe(63)
+    expect(result.stats.healthiest).toBe('rich.ts')
+    expect(result.stats.strongest).toBe('rich.ts')
+    expect(result.stats.bestStructured).toBe('rich.ts')
+  })
+
+  it('classifies reef correctly', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.reefs[0]!.reefType).toBe('patch-reef')
+    expect(result.reefs[0]!.condition).toBe('stressed-reef')
+  })
+
+  it('generates recommendations', async () => {
+    const result = await buildCoralReefResult(
+      ['rich.ts', 'minimal.ts', 'moderate.ts', 'poor.ts'],
+      [RICH, MINIMAL, MODERATE, POOR],
+    )
+    expect(result.recommendations.length).toBeGreaterThan(0)
+    expect(result.recommendations).toContain('2 file(s) are sandbars — consider significant refactoring')
+  })
+
+  it('handles empty input', async () => {
+    const result = await buildCoralReefResult([], [])
+    expect(result.polyps).toHaveLength(0)
+    expect(result.stats.overallHealth).toBe(0)
+    expect(result.ocean.isThriving).toBe(false)
+  })
+
+  it('returns thriving message for all-barrier-reef polyps', async () => {
+    const result = await buildCoralReefResult(['a.ts', 'b.ts'], [RICH, RICH])
+    expect(result.recommendations).toContain('Your coral reef is thriving! The ecosystem is healthy and resilient')
+  })
+
+  it('isThriving is true when avgBiodiversity >= 60', async () => {
+    const result = await buildCoralReefResult(['a.ts', 'b.ts'], [RICH, RICH])
+    expect(result.ocean.isThriving).toBe(true)
+  })
+
+  it('groups files by directory', async () => {
+    const result = await buildCoralReefResult(
+      ['src/a.ts', 'src/b.ts', 'lib/c.ts'],
+      [RICH, MODERATE, MINIMAL],
+    )
+    expect(result.stats.totalReefs).toBe(2)
   })
 })
 
-// ─── formatCoralReefJson ───────────────────────────────────────────────────
+// ─── Format Helpers Tests ──────────────────────────────────────────
 
-describe('formatCoralReefJson', () => {
-  it('produces valid JSON string', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    const json = formatCoralReefJson(result)
+describe('colorScore', () => {
+  it('returns a string for any score', () => {
+    expect(typeof colorScore(0)).toBe('string')
+    expect(typeof colorScore(50)).toBe('string')
+    expect(typeof colorScore(100)).toBe('string')
+  })
+})
+
+describe('colorGrade', () => {
+  it('returns a string for any grade', () => {
+    expect(typeof colorGrade('great-barrier')).toBe('string')
+    expect(typeof colorGrade('dead-zone')).toBe('string')
+    expect(typeof colorGrade('unknown')).toBe('string')
+  })
+})
+
+describe('formatPolypTable', () => {
+  it('formats a polyp', () => {
+    const p = analyzeCoralPolyp(RICH, 'rich.ts')
+    const out = formatPolypTable(p)
+    expect(out).toContain('rich.ts')
+    expect(out).toContain('Biodiversity:')
+    expect(out).toContain('Score:')
+  })
+})
+
+describe('formatPolypsTable', () => {
+  it('formats empty array', () => {
+    expect(formatPolypsTable([])).toContain('No coral polyps')
+  })
+
+  it('formats multiple polyps', () => {
+    const polyps = [analyzeCoralPolyp(RICH, 'a.ts'), analyzeCoralPolyp(MINIMAL, 'b.ts')]
+    const out = formatPolypsTable(polyps)
+    expect(out).toContain('a.ts')
+    expect(out).toContain('b.ts')
+  })
+})
+
+describe('formatReefTable', () => {
+  it('formats a reef', () => {
+    const p = analyzeCoralPolyp(RICH, 'a.ts')
+    const reef = analyzeReefSystem([p], 'src')
+    const out = formatReefTable(reef)
+    expect(out).toContain('src')
+    expect(out).toContain('Type:')
+  })
+})
+
+describe('formatReefsTable', () => {
+  it('formats empty reefs', () => {
+    expect(formatReefsTable([])).toContain('No reef systems')
+  })
+})
+
+describe('formatStatsTable', () => {
+  it('formats stats', async () => {
+    const result = await buildCoralReefResult(['rich.ts', 'minimal.ts'], [RICH, MINIMAL])
+    const out = formatStatsTable(result.stats)
+    expect(out).toContain('Ocean Statistics')
+    expect(out).toContain('Total Files:')
+    expect(out).toContain('Marine Grade:')
+  })
+})
+
+describe('formatRecommendations', () => {
+  it('formats empty recommendations', () => {
+    expect(formatRecommendations([])).toContain('No recommendations')
+  })
+
+  it('formats recommendations as bullet list', () => {
+    const out = formatRecommendations(['Fix A', 'Fix B'])
+    expect(out).toContain('Fix A')
+    expect(out).toContain('•')
+  })
+})
+
+describe('formatResultTable', () => {
+  it('formats full result', async () => {
+    const result = await buildCoralReefResult(['rich.ts', 'minimal.ts'], [RICH, MINIMAL])
+    const out = formatResultTable(result)
+    expect(out).toContain('Coral Polyp Analysis')
+    expect(out).toContain('Reef System Analysis')
+    expect(out).toContain('Ocean Statistics')
+    expect(out).toContain('Recommendations')
+  })
+})
+
+describe('formatResultJson', () => {
+  it('formats result as valid JSON', async () => {
+    const result = await buildCoralReefResult(['rich.ts'], [RICH])
+    const json = formatResultJson(result)
     const parsed = JSON.parse(json)
+    expect(parsed.polyps).toHaveLength(1)
     expect(parsed.stats.totalFiles).toBe(1)
-    expect(parsed.colonies[0].file).toBe('rich.ts')
   })
-})
-
-// ─── formatCoralReefTable ──────────────────────────────────────────────────
-
-describe('formatCoralReefTable', () => {
-  it('produces non-empty string for table format', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    const table = formatCoralReefTable(result, false)
-    expect(table.length).toBeGreaterThan(0)
-    expect(table).toContain('Coral Reef')
-  })
-
-  it('includes per-file details when verbose', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    const table = formatCoralReefTable(result, true)
-    expect(table).toContain('rich.ts')
-    expect(table).toContain('Per-File Details')
-  })
-
-  it('includes recommendations when present', () => {
-    const result = buildCoralReefResult(['rich.ts'], [RICH])
-    const table = formatCoralReefTable(result, false)
-    if (result.recommendations.length > 0) {
-      expect(table).toContain('Recommendations')
-    }
-  })
-})
-
-// ─── Color Helpers ─────────────────────────────────────────────────────────
-
-describe('scoreColor', () => {
-  it('returns green for >= 80', () => { expect(scoreColor(90)).toBeTruthy() })
-  it('returns yellow for >= 60', () => { expect(scoreColor(70)).toBeTruthy() })
-  it('returns orange for >= 40', () => { expect(scoreColor(50)).toBeTruthy() })
-  it('returns red for < 40', () => { expect(scoreColor(30)).toBeTruthy() })
-})
-
-describe('conditionColor', () => {
-  it('colors pristine-reef', () => { expect(conditionColor('pristine-reef')).toBeTruthy() })
-  it('colors healthy-reef', () => { expect(conditionColor('healthy-reef')).toBeTruthy() })
-  it('colors recovering-reef', () => { expect(conditionColor('recovering-reef')).toBeTruthy() })
-  it('colors stressed-reef', () => { expect(conditionColor('stressed-reef')).toBeTruthy() })
-  it('colors degraded', () => { expect(conditionColor('degraded')).toBeTruthy() })
-  it('colors dead-zone', () => { expect(conditionColor('dead-zone')).toBeTruthy() })
-})
-
-describe('gradeColor', () => {
-  it('colors reef-guardian', () => { expect(gradeColor('reef-guardian')).toBeTruthy() })
-  it('colors marine-biologist', () => { expect(gradeColor('marine-biologist')).toBeTruthy() })
-  it('colors conservationist', () => { expect(gradeColor('conservationist')).toBeTruthy() })
-  it('colors observer', () => { expect(gradeColor('observer')).toBeTruthy() })
-  it('colors tourist', () => { expect(gradeColor('tourist')).toBeTruthy() })
-  it('colors polluter', () => { expect(gradeColor('polluter')).toBeTruthy() })
-})
-
-describe('formationColor', () => {
-  it('colors barrier-reef', () => { expect(formationColor('barrier-reef')).toBeTruthy() })
-  it('colors atoll', () => { expect(formationColor('atoll')).toBeTruthy() })
-  it('colors fringing-reef', () => { expect(formationColor('fringing-reef')).toBeTruthy() })
-  it('colors patch-reef', () => { expect(formationColor('patch-reef')).toBeTruthy() })
-  it('colors rubble', () => { expect(formationColor('rubble')).toBeTruthy() })
-  it('colors sand', () => { expect(formationColor('sand')).toBeTruthy() })
-})
-
-describe('vitalityColor', () => {
-  it('colors thriving', () => { expect(vitalityColor('thriving')).toBeTruthy() })
-  it('colors healthy', () => { expect(vitalityColor('healthy')).toBeTruthy() })
-  it('colors stressed', () => { expect(vitalityColor('stressed')).toBeTruthy() })
-  it('colors declining', () => { expect(vitalityColor('declining')).toBeTruthy() })
-  it('colors dying', () => { expect(vitalityColor('dying')).toBeTruthy() })
-  it('colors dead', () => { expect(vitalityColor('dead')).toBeTruthy() })
-})
-
-describe('harmonyColor', () => {
-  it('colors perfect-symbiosis', () => { expect(harmonyColor('perfect-symbiosis')).toBeTruthy() })
-  it('colors mutualism', () => { expect(harmonyColor('mutualism')).toBeTruthy() })
-  it('colors commensalism', () => { expect(harmonyColor('commensalism')).toBeTruthy() })
-  it('colors neutral', () => { expect(harmonyColor('neutral')).toBeTruthy() })
-  it('colors parasitism', () => { expect(harmonyColor('parasitism')).toBeTruthy() })
-  it('colors toxic', () => { expect(harmonyColor('toxic')).toBeTruthy() })
-})
-
-describe('strengthColor', () => {
-  it('colors tide-proof', () => { expect(strengthColor('tide-proof')).toBeTruthy() })
-  it('colors storm-resistant', () => { expect(strengthColor('storm-resistant')).toBeTruthy() })
-  it('colors weathered', () => { expect(strengthColor('weathered')).toBeTruthy() })
-  it('colors vulnerable', () => { expect(strengthColor('vulnerable')).toBeTruthy() })
-  it('colors fragile', () => { expect(strengthColor('fragile')).toBeTruthy() })
-  it('colors washed-away', () => { expect(strengthColor('washed-away')).toBeTruthy() })
-})
-
-describe('richnessColor', () => {
-  it('colors mega-diverse', () => { expect(richnessColor('mega-diverse')).toBeTruthy() })
-  it('colors high-diversity', () => { expect(richnessColor('high-diversity')).toBeTruthy() })
-  it('colors moderate', () => { expect(richnessColor('moderate')).toBeTruthy() })
-  it('colors low-diversity', () => { expect(richnessColor('low-diversity')).toBeTruthy() })
-  it('colors monoculture', () => { expect(richnessColor('monoculture')).toBeTruthy() })
-  it('colors barren', () => { expect(richnessColor('barren')).toBeTruthy() })
-})
-
-describe('bleachingStatusColor', () => {
-  it('colors pristine', () => { expect(bleachingStatusColor('pristine')).toBeTruthy() })
-  it('colors healthy', () => { expect(bleachingStatusColor('healthy')).toBeTruthy() })
-  it('colors warning', () => { expect(bleachingStatusColor('warning')).toBeTruthy() })
-  it('colors stressed', () => { expect(bleachingStatusColor('stressed')).toBeTruthy() })
-  it('colors bleaching', () => { expect(bleachingStatusColor('bleaching')).toBeTruthy() })
-  it('colors dead-zone', () => { expect(bleachingStatusColor('dead-zone')).toBeTruthy() })
-})
-
-describe('zoneTypeColor', () => {
-  it('colors great-barrier', () => { expect(zoneTypeColor('great-barrier')).toBeTruthy() })
-  it('colors major-reef', () => { expect(zoneTypeColor('major-reef')).toBeTruthy() })
-  it('colors atoll-system', () => { expect(zoneTypeColor('atoll-system')).toBeTruthy() })
-  it('colors patch-system', () => { expect(zoneTypeColor('patch-system')).toBeTruthy() })
-  it('colors rocky-shore', () => { expect(zoneTypeColor('rocky-shore')).toBeTruthy() })
-  it('colors mud-flat', () => { expect(zoneTypeColor('mud-flat')).toBeTruthy() })
 })

@@ -1,738 +1,959 @@
-// ─── Interfaces ──────────────────────────────────────────────
+// ─── Imports ───────────────────────────────────────────────────────
+import path from 'node:path'
+import fg from 'fast-glob'
 
-export interface ReefMeasure {
-  structure: number
-  formation: 'barrier-reef' | 'atoll' | 'fringing-reef' | 'patch-reef' | 'rubble' | 'sand'
-  hasHighStructure: boolean
-  hasSolidFoundation: boolean
-  hasProperZonation: boolean
-  hasNoErosion: boolean
-  hasLayered: boolean
-  hasNoCollapse: boolean
-  hasComplexity: boolean
-  hasNoFragmentation: boolean
-  hasGrowth: boolean
-  hasNoSubsidence: boolean
-  erosionCount: number
-  fragmentationCount: number
-}
+// ─── Types ─────────────────────────────────────────────────────────
 
-export interface PolypMeasure {
-  health: number
-  vitality: 'thriving' | 'healthy' | 'stressed' | 'declining' | 'dying' | 'dead'
-  hasHighHealth: boolean
-  hasCleanTentacles: boolean
-  hasProperFeeding: boolean
-  hasNoParasites: boolean
-  hasCalcification: boolean
-  hasNoDisease: boolean
-  hasReproduction: boolean
-  hasNoStunting: boolean
-  hasZooxanthellae: boolean
-  hasNoNecrosis: boolean
-  parasiteCount: number
-  diseaseCount: number
-}
+/** Biodiversity grade for a file */
+export type DiversityGrade =
+  | 'great-barrier'
+  | 'thriving-reef'
+  | 'healthy-colony'
+  | 'stressed-reef'
+  | 'bleached-coral'
+  | 'dead-zone'
 
-export interface SymbiosisMeasure {
-  index: number
-  harmony: 'perfect-symbiosis' | 'mutualism' | 'commensalism' | 'neutral' | 'parasitism' | 'toxic'
-  hasHighHarmony: boolean
-  hasCleanPartnership: boolean
-  hasMutualBenefit: boolean
-  hasNoExploitation: boolean
-  hasProperExchange: boolean
-  hasNoCompetition: boolean
-  hasBalancedLoad: boolean
-  hasNoOverdependence: boolean
-  hasSharedResources: boolean
-  hasNoConflict: boolean
-  exploitationCount: number
-  conflictCount: number
-}
+/** Colony health classification */
+export type ColonyHealth =
+  | 'vibrant-colony'
+  | 'healthy-colony'
+  | 'stable-colony'
+  | 'stressed-colony'
+  | 'declining-colony'
+  | 'collapsed-colony'
 
-export interface TideMeasure {
-  resilience: number
-  strength: 'tide-proof' | 'storm-resistant' | 'weathered' | 'vulnerable' | 'fragile' | 'washed-away'
-  hasHighResilience: boolean
-  hasAdaptation: boolean
-  hasProperAnchor: boolean
-  hasNoDisplacement: boolean
-  hasRegeneration: boolean
-  hasNoScouring: boolean
-  hasFlexibility: boolean
-  hasNoBrittle: boolean
-  hasWaveDissipation: boolean
-  hasNoCrushing: boolean
-  displacementCount: number
-  scouringCount: number
-}
+/** Polyp strength classification */
+export type PolypStrength =
+  | 'giant-polyp'
+  | 'strong-polyp'
+  | 'proper-polyp'
+  | 'weak-polyp'
+  | 'fragile-polyp'
+  | 'dissolved'
 
-export interface BioMeasure {
+/** Reef architecture classification */
+export type ReefArchitecture =
+  | 'massive-reef'
+  | 'branching-reef'
+  | 'plate-reef'
+  | 'encrusting'
+  | 'fragile-framework'
+  | 'rubble'
+
+/** Current adaptation classification */
+export type CurrentAdaptation =
+  | 'deep-current'
+  | 'strong-swimmer'
+  | 'proper-flow'
+  | 'weak-current'
+  | 'stagnant'
+  | 'beached'
+
+/** Polyp condition */
+export type PolypCondition =
+  | 'barrier-reef'
+  | 'atoll-reef'
+  | 'fringing-reef'
+  | 'patch-reef'
+  | 'dead-coral'
+  | 'sandbar'
+
+/** Reef type classification */
+export type ReefType =
+  | 'great-barrier'
+  | 'barrier-reef'
+  | 'fringing-reef'
+  | 'patch-reef'
+  | 'rocky-shore'
+  | 'barren-coast'
+
+/** Reef condition classification */
+export type ReefCondition =
+  | 'pristine-reef'
+  | 'healthy-reef'
+  | 'fair-reef'
+  | 'stressed-reef'
+  | 'degraded-reef'
+  | 'dead-reef'
+
+/** Marine grade classification */
+export type MarineGrade =
+  | 'marine-biologist'
+  | 'reef-guardian'
+  | 'ocean-steward'
+  | 'beachcomber'
+  | 'tourist'
+  | 'polluter'
+
+/** Diversifying measurement */
+export interface DiversifyingMeasure {
   diversity: number
-  richness: 'mega-diverse' | 'high-diversity' | 'moderate' | 'low-diversity' | 'monoculture' | 'barren'
+  grade: DiversityGrade
   hasHighDiversity: boolean
-  hasVariety: boolean
-  hasMultipleSpecies: boolean
+  hasVaried: boolean
+  hasDiverse: boolean
   hasNoMonoculture: boolean
-  hasEndemic: boolean
-  hasNoInvasive: boolean
-  hasKeystone: boolean
-  hasNoExtinction: boolean
-  hasNursery: boolean
-  hasNoOvergrowth: boolean
-  invasiveCount: number
-  extinctionCount: number
+  hasRich: boolean
+  hasNoBarren: boolean
+  hasColorful: boolean
+  hasNoUniform: boolean
+  hasAbundant: boolean
+  hasNoSparse: boolean
+  hasTeeming: boolean
+  monocultureCount: number
+  barrenCount: number
 }
 
-export interface BleachingMeasure {
-  risk: number
-  status: 'pristine' | 'healthy' | 'warning' | 'stressed' | 'bleaching' | 'dead-zone'
-  hasLowRisk: boolean
-  hasNoThermalStress: boolean
-  hasProtection: boolean
-  hasNoPollution: boolean
-  hasRecoveryPath: boolean
-  hasNoAcidification: boolean
-  hasMonitoring: boolean
-  hasNoOverfishing: boolean
-  hasCoralNursery: boolean
-  hasNoAlgalBloom: boolean
-  pollutionCount: number
-  overfishingCount: number
+/** Colonizing measurement */
+export interface ColonizingMeasure {
+  health: number
+  colony: ColonyHealth
+  hasHighHealth: boolean
+  hasConnected: boolean
+  hasLinked: boolean
+  hasNoIsolated: boolean
+  hasCooperative: boolean
+  hasNoConflicting: boolean
+  hasSymbiotic: boolean
+  hasNoParasitic: boolean
+  hasIntegrated: boolean
+  hasNoFragmented: boolean
+  hasCohesive: boolean
+  isolatedCount: number
+  conflictingCount: number
 }
 
-export interface CoralColony {
+/** Strengthening measurement */
+export interface StrengtheningMeasure {
+  strength: number
+  polyp: PolypStrength
+  hasHighStrength: boolean
+  hasSolid: boolean
+  hasRobust: boolean
+  hasNoFragile: boolean
+  hasDurable: boolean
+  hasNoBrittle: boolean
+  hasResilient: boolean
+  hasNoBreakable: boolean
+  hasTough: boolean
+  hasNoCrumbly: boolean
+  hasHardy: boolean
+  fragileCount: number
+  brittleCount: number
+}
+
+/** Structuring measurement */
+export interface StructuringMeasure {
+  structure: number
+  architecture: ReefArchitecture
+  hasHighStructure: boolean
+  hasOrganized: boolean
+  hasLayered: boolean
+  hasNoChaotic: boolean
+  hasStructured: boolean
+  hasNoRandom: boolean
+  hasPatterned: boolean
+  hasNoHaphazard: boolean
+  hasSystematic: boolean
+  hasNoMessy: boolean
+  hasOrdered: boolean
+  chaoticCount: number
+  randomCount: number
+}
+
+/** Adapting measurement */
+export interface AdaptingMeasure {
+  resilience: number
+  adaptation: CurrentAdaptation
+  hasHighResilience: boolean
+  hasAdaptable: boolean
+  hasFlexible: boolean
+  hasNoRigid: boolean
+  hasResponsive: boolean
+  hasNoStiff: boolean
+  hasEvolving: boolean
+  hasNoStuck: boolean
+  hasDynamic: boolean
+  hasNoStatic: boolean
+  hasFlowing: boolean
+  rigidCount: number
+  stuckCount: number
+}
+
+/** Single file analysis result */
+export interface CoralPolyp {
   file: string
-  reefStructure: number
-  polypHealth: number
-  symbiosisIndex: number
-  tideResilience: number
   biodiversity: number
-  bleachingRisk: number
-  reef: ReefMeasure
-  polyp: PolypMeasure
-  symbiosis: SymbiosisMeasure
-  tide: TideMeasure
-  bio: BioMeasure
-  bleaching: BleachingMeasure
-  condition: 'pristine-reef' | 'healthy-reef' | 'recovering-reef' | 'stressed-reef' | 'degraded' | 'dead-zone'
+  colonyHealth: number
+  polypStrength: number
+  reefStructure: number
+  currentResilience: number
+  diversifying: DiversifyingMeasure
+  colonizing: ColonizingMeasure
+  strengthening: StrengtheningMeasure
+  structuring: StructuringMeasure
+  adapting: AdaptingMeasure
+  condition: PolypCondition
   qualityScore: number
 }
 
-export interface ReefZone {
+/** Directory-level reef result */
+export interface ReefSystem {
   directory: string
-  colonies: CoralColony[]
+  polyps: CoralPolyp[]
+  avgBiodiversity: number
   avgStructure: number
-  avgSymbiosis: number
-  avgBleaching: number
-  pristineCount: number
-  deadCount: number
-  diverseCount: number
-  resilientCount: number
-  zoneType: 'great-barrier' | 'major-reef' | 'atoll-system' | 'patch-system' | 'rocky-shore' | 'mud-flat'
-  condition: 'world-heritage' | 'marine-reserve' | 'fishing-zone' | 'stressed-area' | 'dead-zone' | 'desert'
+  avgResilience: number
+  barrierReefCount: number
+  sandbarCount: number
+  reefType: ReefType
+  condition: ReefCondition
 }
 
+/** Ocean-level summary */
+export interface CoralOcean {
+  avgBiodiversity: number
+  avgStructure: number
+  avgResilience: number
+  isThriving: boolean
+  overallHealth: number
+}
+
+/** Full analysis stats */
+export interface CoralReefStats {
+  totalFiles: number
+  totalReefs: number
+  avgBiodiversity: number
+  avgColonyHealth: number
+  avgPolypStrength: number
+  avgReefStructure: number
+  avgCurrentResilience: number
+  barrierReefCount: number
+  atollReefCount: number
+  fringingReefCount: number
+  patchReefCount: number
+  deadCoralCount: number
+  sandbarCount: number
+  hasHighDiversityCount: number
+  hasHighHealthCount: number
+  hasHighStrengthCount: number
+  hasHighStructureCount: number
+  hasHighResilienceCount: number
+  overallHealth: number
+  marineGrade: MarineGrade
+  bestPolyp: string
+  mostDiverse: string
+  healthiest: string
+  strongest: string
+  bestStructured: string
+}
+
+/** Full analysis result */
 export interface CoralReefResult {
-  colonies: CoralColony[]
-  zones: ReefZone[]
-  ocean: {
-    avgStructure: number
-    avgSymbiosis: number
-    avgBleaching: number
-    isHealthy: boolean
-    overallHealth: number
-  }
-  stats: {
-    totalFiles: number
-    totalZones: number
-    avgReefStructure: number
-    avgPolypHealth: number
-    avgSymbiosisIndex: number
-    avgTideResilience: number
-    avgBiodiversity: number
-    avgBleachingRisk: number
-    pristineReefCount: number
-    healthyReefCount: number
-    recoveringCount: number
-    stressedCount: number
-    degradedCount: number
-    deadZoneCount: number
-    hasHighStructureCount: number
-    hasHighHealthCount: number
-    hasHighHarmonyCount: number
-    hasHighResilienceCount: number
-    hasHighDiversityCount: number
-    hasLowRiskCount: number
-    overallHealth: number
-    guardianGrade: 'reef-guardian' | 'marine-biologist' | 'conservationist' | 'observer' | 'tourist' | 'polluter'
-    bestColony: string
-    bestStructured: string
-    healthiest: string
-    mostHarmonious: string
-    mostResilient: string
-    mostDiverse: string
-  }
+  polyps: CoralPolyp[]
+  reefs: ReefSystem[]
+  ocean: CoralOcean
+  stats: CoralReefStats
   recommendations: string[]
 }
 
-// ─── Regex Patterns ─────────────────────────────────────────
+// ─── Regex Helpers ─────────────────────────────────────────────────
 
-const INTERFACE_RE = /\binterface\b/
-const CLASS_RE = /\bclass\b/
-const TYPE_RE = /\btype\b/
-const EXPORT_RE = /\bexport\b/
-const IMPORT_RE = /\bimport\b/
-const FUNCTION_RE = /\bfunction\b/
-const ARROW_RE = /=>/
-const ASYNC_RE = /\basync\b/
-const AWAIT_RE = /\bawait\b/
-const TRY_RE = /\btry\b/
-const CATCH_RE = /\bcatch\b/
-const GENERIC_RE = /<[A-Z]\w*[,>]/
-const RETURN_TYPE_RE = /\)\s*:\s*[A-Z]\w*/
-const ENUM_RE = /\benum\b/
-const OPTIONAL_RE = /\?\s*:/
-const DEFAULT_RE = /\bdefault\b/
-const NESTED_TERNARY_RE = /\?.*:.*\?.*:/
-const DESCRIBE_RE = /\bdescribe\s*\(/
-const TEST_RE = /\b(it|test)\s*\(/
-const CONSOLE_RE = /\bconsole\.\w+/g
-const ANY_RE = /:\s*any\b/g
-const EVAL_RE = /\beval\s*\(/g
-const TODO_RE = /\bTODO\b/gi
-const HACK_RE = /\bHACK\b/gi
-const FIXME_RE = /\bFIXME\b/gi
-const EMPTY_CATCH_RE = /catch\s*\(\w*\)\s*\{\s*\}/g
-const DEPRECATED_RE = /@deprecated/g
-const EXCESSIVE_COMMENT_RE = /\/\*[\s\S]*?\*\//g
-
-// ─── measureReef ────────────────────────────────────────────
-
-/** @example measureReef(content) returns ReefMeasure */
-export function measureReef(content: string): ReefMeasure {
-  let score = 0
-
-  const hasSolidFoundation = INTERFACE_RE.test(content) || CLASS_RE.test(content) || TYPE_RE.test(content)
-  const hasProperZonation = EXPORT_RE.test(content) && IMPORT_RE.test(content)
-  const erosionCount = (content.match(TODO_RE) || []).length + (content.match(HACK_RE) || []).length + (content.match(FIXME_RE) || []).length
-  const hasNoErosion = erosionCount === 0
-  const hasLayered = CLASS_RE.test(content) && FUNCTION_RE.test(content)
-  const emptyCatchCount = (content.match(EMPTY_CATCH_RE) || []).length
-  const hasNoCollapse = emptyCatchCount === 0
-  const hasComplexity = GENERIC_RE.test(content)
-  const fragmentationCount = emptyCatchCount
-  const hasNoFragmentation = fragmentationCount === 0
-  const hasGrowth = FUNCTION_RE.test(content) || ARROW_RE.test(content) || CLASS_RE.test(content)
-  const hasNoSubsidence = !NESTED_TERNARY_RE.test(content)
-
-  if (content.length > 0) score += 5
-  if (hasSolidFoundation) score += 12
-  if (hasProperZonation) score += 12
-  if (hasNoErosion) score += 10
-  if (hasLayered) score += 10
-  if (hasNoCollapse) score += 10
-  if (hasComplexity) score += 10
-  if (hasNoFragmentation) score += 10
-  if (hasGrowth) score += 11
-  if (hasNoSubsidence) score += 10
-
-  const structure = Math.min(100, Math.max(0, score))
-  const hasHighStructure = structure >= 70
-
-  let formation: ReefMeasure['formation'] = 'sand'
-  if (hasHighStructure && hasNoErosion && hasNoFragmentation && hasComplexity) formation = 'barrier-reef'
-  else if (hasHighStructure && hasNoErosion) formation = 'atoll'
-  else if (hasHighStructure) formation = 'fringing-reef'
-  else if (hasSolidFoundation && hasProperZonation) formation = 'patch-reef'
-  else if (structure > 30) formation = 'rubble'
-
-  return {
-    structure, formation, hasHighStructure, hasSolidFoundation, hasProperZonation,
-    hasNoErosion, hasLayered, hasNoCollapse, hasComplexity, hasNoFragmentation,
-    hasGrowth, hasNoSubsidence, erosionCount, fragmentationCount,
-  }
+const has = (pattern: RegExp, content: string): boolean => pattern.test(content)
+const count = (pattern: RegExp, content: string): number => {
+  const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+  const globalPattern = new RegExp(pattern.source, flags)
+  return (content.match(globalPattern) ?? []).length
 }
 
-// ─── measurePolyp ───────────────────────────────────────────
+// ─── Boolean Detectors ─────────────────────────────────────────────
 
-/** @example measurePolyp(content) returns PolypMeasure */
-export function measurePolyp(content: string): PolypMeasure {
+const hasExport = (c: string) => has(/\bexport\b/, c)
+const hasConst = (c: string) => has(/\bconst\b/, c)
+const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)
+const hasInterface = (c: string) => has(/\binterface\b/, c)
+const hasGenerics = (c: string) => has(/<[A-Z][A-Za-z]*>/, c)
+const hasAsync = (c: string) => has(/\basync\b/, c)
+const hasOptionalChaining = (c: string) => has(/\?\./, c)
+const hasImport = (c: string) => has(/\bimport\b/, c)
+const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
+const hasNullishCoalescing = (c: string) => has(/\?\?/, c)
+const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
+const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
+const hasReadonly = (c: string) => has(/\breadonly\b/, c)
+const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
+const hasStrictEq = (c: string) => has(/===/, c)
+const hasClass = (c: string) => has(/\bclass\b/, c)
+const hasTryCatch = (c: string) => has(/\btry\s*\{/, c)
+
+// ─── Measure Functions ─────────────────────────────────────────────
+
+/**
+ * Measure biodiversity of code
+ * @example
+ * const m = measureDiversifying(content)
+ * console.log(m.grade) // 'great-barrier'
+ */
+export function measureDiversifying(content: string): DiversifyingMeasure {
   let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasImport(content) ? 10 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
 
-  const excessiveCommentCount = (content.match(EXCESSIVE_COMMENT_RE) || []).length
-  const hasCleanTentacles = excessiveCommentCount === 0 || excessiveCommentCount <= 3
-  const hasProperFeeding = FUNCTION_RE.test(content) || ARROW_RE.test(content)
-  const parasiteCount = (content.match(CONSOLE_RE) || []).length
-  const hasNoParasites = parasiteCount === 0
-  const hasCalcification = RETURN_TYPE_RE.test(content)
-  const diseaseCount = (content.match(EVAL_RE) || []).length + (content.match(ANY_RE) || []).length
-  const hasNoDisease = diseaseCount === 0
-  const hasReproduction = EXPORT_RE.test(content)
-  const hasNoStunting = content.split('\n').every((line) => line.length < 300)
-  const hasZooxanthellae = ASYNC_RE.test(content) && AWAIT_RE.test(content)
-  const hasNoNecrosis = content.length === 0 || content.split('\n').filter((l) => l.trim().length > 0).length > 2
+  const hasVaried = hasExport(content) && hasImport(content)
+  const hasDiverse = hasInterface(content) && hasClass(content)
+  const hasRich = hasGenerics(content) && hasTypeAlias(content)
+  const hasColorful = hasAsync(content) && hasDocComments(content)
+  const hasAbundant = hasNamedExport(content) && hasConst(content)
+  const hasTeeming = hasExport(content) && hasGenerics(content)
 
-  if (content.length > 0) score += 5
-  if (hasCleanTentacles) score += 10
-  if (hasProperFeeding) score += 12
-  if (hasNoParasites) score += 10
-  if (hasCalcification) score += 12
-  if (hasNoDisease) score += 10
-  if (hasReproduction) score += 11
-  if (hasNoStunting) score += 10
-  if (hasZooxanthellae) score += 10
-  if (hasNoNecrosis) score += 10
+  score += hasVaried ? 5 : 0
+  score += hasDiverse ? 5 : 0
+  score += hasRich ? 5 : 0
+  score += hasColorful ? 5 : 0
+  score += hasAbundant ? 5 : 0
+  score += hasTeeming ? 5 : 0
 
-  const health = Math.min(100, Math.max(0, score))
-  const hasHighHealth = health >= 70
+  const diversity = Math.min(score, 100)
+  const monocultureCount = count(/\bvar\b/, content)
+  const barrenCount = count(/\bany\b/, content)
 
-  let vitality: PolypMeasure['vitality'] = 'dead'
-  if (hasHighHealth && hasNoParasites && hasNoDisease && hasCalcification) vitality = 'thriving'
-  else if (hasHighHealth && hasNoDisease) vitality = 'healthy'
-  else if (hasHighHealth) vitality = 'stressed'
-  else if (hasProperFeeding && hasReproduction) vitality = 'declining'
-  else if (health > 30) vitality = 'dying'
-
-  return {
-    health, vitality, hasHighHealth, hasCleanTentacles, hasProperFeeding,
-    hasNoParasites, hasCalcification, hasNoDisease, hasReproduction,
-    hasNoStunting, hasZooxanthellae, hasNoNecrosis, parasiteCount, diseaseCount,
-  }
-}
-
-// ─── measureSymbiosis ───────────────────────────────────────
-
-/** @example measureSymbiosis(content) returns SymbiosisMeasure */
-export function measureSymbiosis(content: string): SymbiosisMeasure {
-  let score = 0
-
-  const importCount = (content.match(IMPORT_RE) || []).length
-  const exportCount = (content.match(EXPORT_RE) || []).length
-  const hasCleanPartnership = importCount > 0 && importCount <= 15
-  const hasMutualBenefit = importCount > 0 && exportCount > 0
-  const exploitationCount = (content.match(ANY_RE) || []).length
-  const hasNoExploitation = exploitationCount === 0
-  const hasProperExchange = exportCount > 0
-  const hasNoCompetition = importCount <= 20
-  const hasBalancedLoad = importCount > 0 && importCount <= 10
-  const hasNoOverdependence = importCount <= 15
-  const hasSharedResources = TYPE_RE.test(content) || INTERFACE_RE.test(content)
-  const conflictCount = (content.match(DEPRECATED_RE) || []).length
-  const hasNoConflict = conflictCount === 0
-
-  if (content.length > 0) score += 5
-  if (hasCleanPartnership) score += 12
-  if (hasMutualBenefit) score += 12
-  if (hasNoExploitation) score += 10
-  if (hasProperExchange) score += 10
-  if (hasNoCompetition) score += 10
-  if (hasBalancedLoad) score += 10
-  if (hasNoOverdependence) score += 10
-  if (hasSharedResources) score += 11
-  if (hasNoConflict) score += 10
-
-  const index = Math.min(100, Math.max(0, score))
-  const hasHighHarmony = index >= 70
-
-  let harmony: SymbiosisMeasure['harmony'] = 'toxic'
-  if (hasHighHarmony && hasNoExploitation && hasNoConflict && hasMutualBenefit) harmony = 'perfect-symbiosis'
-  else if (hasHighHarmony && hasNoExploitation) harmony = 'mutualism'
-  else if (hasHighHarmony) harmony = 'commensalism'
-  else if (hasProperExchange && hasNoConflict) harmony = 'neutral'
-  else if (index > 30) harmony = 'parasitism'
-
-  return {
-    index, harmony, hasHighHarmony, hasCleanPartnership, hasMutualBenefit,
-    hasNoExploitation, hasProperExchange, hasNoCompetition, hasBalancedLoad,
-    hasNoOverdependence, hasSharedResources, hasNoConflict,
-    exploitationCount, conflictCount,
-  }
-}
-
-// ─── measureTide ────────────────────────────────────────────
-
-/** @example measureTide(content) returns TideMeasure */
-export function measureTide(content: string): TideMeasure {
-  let score = 0
-
-  const hasAdaptation = TRY_RE.test(content) && CATCH_RE.test(content)
-  const hasProperAnchor = TYPE_RE.test(content) || INTERFACE_RE.test(content) || CLASS_RE.test(content)
-  const displacementCount = (content.match(CONSOLE_RE) || []).length
-  const hasNoDisplacement = displacementCount === 0
-  const hasRegeneration = DEFAULT_RE.test(content)
-  const scouringCount = (content.match(EVAL_RE) || []).length
-  const hasNoScouring = scouringCount === 0
-  const hasFlexibility = OPTIONAL_RE.test(content)
-  const hasNoBrittle = !NESTED_TERNARY_RE.test(content)
-  const hasWaveDissipation = TRY_RE.test(content)
-  const hasNoCrushing = content.length === 0 || content.split('\n').filter((l) => l.length > 200).length <= 3
-
-  if (content.length > 0) score += 5
-  if (hasAdaptation) score += 12
-  if (hasProperAnchor) score += 12
-  if (hasNoDisplacement) score += 10
-  if (hasRegeneration) score += 10
-  if (hasNoScouring) score += 10
-  if (hasFlexibility) score += 10
-  if (hasNoBrittle) score += 10
-  if (hasWaveDissipation) score += 11
-  if (hasNoCrushing) score += 10
-
-  const resilience = Math.min(100, Math.max(0, score))
-  const hasHighResilience = resilience >= 70
-
-  let strength: TideMeasure['strength'] = 'washed-away'
-  if (hasHighResilience && hasNoDisplacement && hasNoScouring && hasAdaptation) strength = 'tide-proof'
-  else if (hasHighResilience && hasNoDisplacement) strength = 'storm-resistant'
-  else if (hasHighResilience) strength = 'weathered'
-  else if (hasProperAnchor && hasAdaptation) strength = 'vulnerable'
-  else if (resilience > 30) strength = 'fragile'
-
-  return {
-    resilience, strength, hasHighResilience, hasAdaptation, hasProperAnchor,
-    hasNoDisplacement, hasRegeneration, hasNoScouring, hasFlexibility,
-    hasNoBrittle, hasWaveDissipation, hasNoCrushing,
-    displacementCount, scouringCount,
-  }
-}
-
-// ─── measureBio ─────────────────────────────────────────────
-
-/** @example measureBio(content) returns BioMeasure */
-export function measureBio(content: string): BioMeasure {
-  let score = 0
-
-  const patterns: string[] = []
-  if (INTERFACE_RE.test(content)) patterns.push('interface')
-  if (CLASS_RE.test(content)) patterns.push('class')
-  if (TYPE_RE.test(content)) patterns.push('type')
-  if (FUNCTION_RE.test(content)) patterns.push('function')
-  if (ARROW_RE.test(content)) patterns.push('arrow')
-  if (ENUM_RE.test(content)) patterns.push('enum')
-  if (ASYNC_RE.test(content)) patterns.push('async')
-  if (GENERIC_RE.test(content)) patterns.push('generic')
-  const uniquePatterns = Array.from(new Set(patterns))
-
-  const hasVariety = uniquePatterns.length >= 3
-  const hasMultipleSpecies = uniquePatterns.length >= 4
-  const hasNoMonoculture = uniquePatterns.length >= 2
-  const hasEndemic = GENERIC_RE.test(content) || ENUM_RE.test(content)
-  const invasiveCount = (content.match(DEPRECATED_RE) || []).length
-  const hasNoInvasive = invasiveCount === 0
-  const hasKeystone = EXPORT_RE.test(content) && (INTERFACE_RE.test(content) || CLASS_RE.test(content))
-  const extinctionCount = uniquePatterns.length === 0 ? 1 : 0
-  const hasNoExtinction = uniquePatterns.length > 0
-  const hasNursery = DESCRIBE_RE.test(content) || TEST_RE.test(content)
-  const hasNoOvergrowth = content.length === 0 || content.split('\n').filter((l) => l.length > 150).length <= 5
-
-  if (content.length > 0) score += 5
-  if (hasVariety) score += 12
-  if (hasMultipleSpecies) score += 12
-  if (hasNoMonoculture) score += 10
-  if (hasEndemic) score += 10
-  if (hasNoInvasive) score += 10
-  if (hasKeystone) score += 11
-  if (hasNoExtinction) score += 10
-  if (hasNursery) score += 10
-  if (hasNoOvergrowth) score += 10
-
-  const diversity = Math.min(100, Math.max(0, score))
+  const hasNoMonoculture = monocultureCount === 0
+  const hasNoBarren = barrenCount === 0
+  const hasNoUniform = !has(/\beval\b/, content)
+  const hasNoSparse = !has(/\bdebugger\b/, content)
   const hasHighDiversity = diversity >= 70
 
-  let richness: BioMeasure['richness'] = 'barren'
-  if (hasHighDiversity && uniquePatterns.length >= 5) richness = 'mega-diverse'
-  else if (hasHighDiversity) richness = 'high-diversity'
-  else if (diversity >= 50) richness = 'moderate'
-  else if (diversity > 30) richness = 'low-diversity'
-  else if (uniquePatterns.length >= 1) richness = 'monoculture'
+  let grade: DiversityGrade
+  if (diversity >= 85) grade = 'great-barrier'
+  else if (diversity >= 70) grade = 'thriving-reef'
+  else if (diversity >= 55) grade = 'healthy-colony'
+  else if (diversity >= 40) grade = 'stressed-reef'
+  else if (diversity >= 25) grade = 'bleached-coral'
+  else grade = 'dead-zone'
 
   return {
-    diversity, richness, hasHighDiversity, hasVariety, hasMultipleSpecies,
-    hasNoMonoculture, hasEndemic, hasNoInvasive, hasKeystone, hasNoExtinction,
-    hasNursery, hasNoOvergrowth, invasiveCount, extinctionCount,
+    diversity,
+    grade,
+    hasHighDiversity,
+    hasVaried,
+    hasDiverse,
+    hasNoMonoculture,
+    hasRich,
+    hasNoBarren,
+    hasColorful,
+    hasNoUniform,
+    hasAbundant,
+    hasNoSparse,
+    hasTeeming,
+    monocultureCount,
+    barrenCount,
   }
 }
 
-// ─── measureBleaching ───────────────────────────────────────
+/**
+ * Measure colony health of code
+ * @example
+ * const m = measureColonizing(content)
+ * console.log(m.colony) // 'vibrant-colony'
+ */
+export function measureColonizing(content: string): ColonizingMeasure {
+  let score = 0
+  score += hasExport(content) ? 10 : 0
+  score += hasImport(content) ? 10 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasAsync(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasOptionalChaining(content) ? 8 : 0
+  score += hasNullishCoalescing(content) ? 8 : 0
 
-/** @example measureBleaching(content) returns BleachingMeasure */
-export function measureBleaching(content: string): BleachingMeasure {
-  let risk = 0
+  const hasConnected = hasExport(content) && hasImport(content)
+  const hasLinked = hasGenerics(content) && hasAsync(content)
+  const hasCooperative = hasOptionalChaining(content) && hasNullishCoalescing(content)
+  const hasSymbiotic = hasInterface(content) && hasReturnType(content)
+  const hasIntegrated = hasNamedExport(content) && hasConst(content)
+  const hasCohesive = hasExport(content) && hasInterface(content)
 
-  const hasNoThermalStress = !NESTED_TERNARY_RE.test(content)
-  const hasProtection = TYPE_RE.test(content) || INTERFACE_RE.test(content)
-  const pollutionCount = (content.match(TODO_RE) || []).length + (content.match(HACK_RE) || []).length + (content.match(FIXME_RE) || []).length
-  const hasNoPollution = pollutionCount === 0
-  const hasRecoveryPath = TRY_RE.test(content) && CATCH_RE.test(content)
-  const hasNoAcidification = !EVAL_RE.test(content)
-  const hasMonitoring = CONSOLE_RE.test(content) || TEST_RE.test(content)
-  const overfishingCount = (content.match(ANY_RE) || []).length
-  const hasNoOverfishing = overfishingCount === 0
-  const hasCoralNursery = DESCRIBE_RE.test(content) || TEST_RE.test(content)
-  const hasNoAlgalBloom = (content.match(EXCESSIVE_COMMENT_RE) || []).length <= 5
+  score += hasConnected ? 5 : 0
+  score += hasLinked ? 5 : 0
+  score += hasCooperative ? 5 : 0
+  score += hasSymbiotic ? 5 : 0
+  score += hasIntegrated ? 5 : 0
+  score += hasCohesive ? 5 : 0
 
-  if (!hasNoThermalStress) risk += 12
-  if (!hasProtection) risk += 10
-  if (!hasNoPollution) risk += 12
-  if (!hasRecoveryPath) risk += 10
-  if (!hasNoAcidification) risk += 12
-  if (!hasNoOverfishing) risk += 10
-  if (!hasNoAlgalBloom) risk += 8
-  if (!hasMonitoring) risk += 8
-  if (!hasCoralNursery) risk += 8
-  if (content.length === 0) risk += 10
+  const health = Math.min(score, 100)
+  const isolatedCount = count(/\bvar\b/, content)
+  const conflictingCount = count(/\bany\b/, content)
 
-  const finalRisk = Math.min(100, Math.max(0, risk))
-  const hasLowRisk = finalRisk < 30
+  const hasNoIsolated = isolatedCount === 0
+  const hasNoConflicting = conflictingCount === 0
+  const hasNoParasitic = !has(/\beval\b/, content)
+  const hasNoFragmented = !has(/\bdebugger\b/, content)
+  const hasHighHealth = health >= 70
 
-  let status: BleachingMeasure['status'] = 'dead-zone'
-  if (finalRisk < 15) status = 'pristine'
-  else if (finalRisk < 30) status = 'healthy'
-  else if (finalRisk < 45) status = 'warning'
-  else if (finalRisk < 60) status = 'stressed'
-  else if (finalRisk < 80) status = 'bleaching'
+  let colony: ColonyHealth
+  if (health >= 85) colony = 'vibrant-colony'
+  else if (health >= 70) colony = 'healthy-colony'
+  else if (health >= 55) colony = 'stable-colony'
+  else if (health >= 40) colony = 'stressed-colony'
+  else if (health >= 25) colony = 'declining-colony'
+  else colony = 'collapsed-colony'
 
   return {
-    risk: finalRisk, status, hasLowRisk, hasNoThermalStress, hasProtection,
-    hasNoPollution, hasRecoveryPath, hasNoAcidification, hasMonitoring,
-    hasNoOverfishing, hasCoralNursery, hasNoAlgalBloom,
-    pollutionCount, overfishingCount,
+    health,
+    colony,
+    hasHighHealth,
+    hasConnected,
+    hasLinked,
+    hasNoIsolated,
+    hasCooperative,
+    hasNoConflicting,
+    hasSymbiotic,
+    hasNoParasitic,
+    hasIntegrated,
+    hasNoFragmented,
+    hasCohesive,
+    isolatedCount,
+    conflictingCount,
   }
 }
 
-// ─── classifyCondition ──────────────────────────────────────
+/**
+ * Measure polyp strength of code
+ * @example
+ * const m = measureStrengthening(content)
+ * console.log(m.polyp) // 'giant-polyp'
+ */
+export function measureStrengthening(content: string): StrengtheningMeasure {
+  let score = 0
+  score += hasConst(content) ? 10 : 0
+  score += hasReturnType(content) ? 10 : 0
+  score += hasStrictEq(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasDocComments(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
 
-/** @example classifyCondition(colony) returns condition */
-export function classifyCondition(colony: CoralColony): CoralColony['condition'] {
-  const { qualityScore } = colony
-  if (qualityScore >= 80) return 'pristine-reef'
-  if (qualityScore >= 65) return 'healthy-reef'
-  if (qualityScore >= 50) return 'recovering-reef'
-  if (qualityScore >= 35) return 'stressed-reef'
-  if (qualityScore >= 20) return 'degraded'
-  return 'dead-zone'
-}
+  const hasSolid = hasConst(content) && hasStrictEq(content)
+  const hasRobust = hasInterface(content) && hasReadonly(content)
+  const hasDurable = hasPrivate(content) && hasReadonly(content)
+  const hasResilient = hasReturnType(content) && hasGenerics(content)
+  const hasTough = hasExport(content) && hasDocComments(content)
+  const hasHardy = hasConst(content) && hasReturnType(content)
 
-// ─── Colony Analysis ────────────────────────────────────────
+  score += hasSolid ? 5 : 0
+  score += hasRobust ? 5 : 0
+  score += hasDurable ? 5 : 0
+  score += hasResilient ? 5 : 0
+  score += hasTough ? 5 : 0
+  score += hasHardy ? 5 : 0
 
-/** @example analyzeCoralColony(content, filePath) returns full colony */
-export function analyzeCoralColony(content: string, filePath: string): CoralColony {
-  const reef = measureReef(content)
-  const polyp = measurePolyp(content)
-  const symbiosis = measureSymbiosis(content)
-  const tide = measureTide(content)
-  const bio = measureBio(content)
-  const bleaching = measureBleaching(content)
+  const strength = Math.min(score, 100)
+  const fragileCount = count(/\bvar\b/, content)
+  const brittleCount = count(/\bany\b/, content)
 
-  const reefStructure = reef.structure
-  const polypHealth = polyp.health
-  const symbiosisIndex = symbiosis.index
-  const tideResilience = tide.resilience
-  const biodiversity = bio.diversity
-  const bleachingRisk = bleaching.risk
+  const hasNoFragile = fragileCount === 0
+  const hasNoBrittle = brittleCount === 0
+  const hasNoBreakable = !has(/\beval\b/, content)
+  const hasNoCrumbly = !has(/\bdebugger\b/, content)
+  const hasHighStrength = strength >= 70
 
-  const qualityScore = Math.round(
-    reefStructure * 0.15 +
-    polypHealth * 0.15 +
-    symbiosisIndex * 0.15 +
-    tideResilience * 0.2 +
-    biodiversity * 0.15 +
-    (100 - bleachingRisk) * 0.2,
-  )
-
-  const colony: CoralColony = {
-    file: filePath,
-    reefStructure, polypHealth, symbiosisIndex, tideResilience,
-    biodiversity, bleachingRisk,
-    reef, polyp, symbiosis, tide, bio, bleaching,
-    qualityScore,
-    condition: 'dead-zone',
-  }
-
-  colony.condition = classifyCondition(colony)
-  return colony
-}
-
-// ─── Zone Analysis ──────────────────────────────────────────
-
-/** @example analyzeReefZone(colonies, dirPath) returns ReefZone */
-export function analyzeReefZone(colonies: CoralColony[], dirPath: string): ReefZone {
-  if (colonies.length === 0) {
-    return {
-      directory: dirPath, colonies: [], avgStructure: 0, avgSymbiosis: 0,
-      avgBleaching: 0, pristineCount: 0, deadCount: 0, diverseCount: 0,
-      resilientCount: 0, zoneType: 'mud-flat', condition: 'desert',
-    }
-  }
-
-  const avgStructure = Math.round(colonies.reduce((s, c) => s + c.reefStructure, 0) / colonies.length)
-  const avgSymbiosis = Math.round(colonies.reduce((s, c) => s + c.symbiosisIndex, 0) / colonies.length)
-  const avgBleaching = Math.round(colonies.reduce((s, c) => s + c.bleachingRisk, 0) / colonies.length)
-  const pristineCount = colonies.filter((c) => c.condition === 'pristine-reef').length
-  const deadCount = colonies.filter((c) => c.condition === 'dead-zone').length
-  const diverseCount = colonies.filter((c) => c.bio.hasHighDiversity).length
-  const resilientCount = colonies.filter((c) => c.tide.hasHighResilience).length
-
-  const zoneType = classifyZoneType(colonies)
-  const avgScore = colonies.reduce((s, c) => s + c.qualityScore, 0) / colonies.length
-  const condition = classifyZoneCondition(avgScore)
+  let polyp: PolypStrength
+  if (strength >= 85) polyp = 'giant-polyp'
+  else if (strength >= 70) polyp = 'strong-polyp'
+  else if (strength >= 55) polyp = 'proper-polyp'
+  else if (strength >= 40) polyp = 'weak-polyp'
+  else if (strength >= 25) polyp = 'fragile-polyp'
+  else polyp = 'dissolved'
 
   return {
-    directory: dirPath, colonies, avgStructure, avgSymbiosis, avgBleaching,
-    pristineCount, deadCount, diverseCount, resilientCount,
-    zoneType, condition,
+    strength,
+    polyp,
+    hasHighStrength,
+    hasSolid,
+    hasRobust,
+    hasNoFragile,
+    hasDurable,
+    hasNoBrittle,
+    hasResilient,
+    hasNoBreakable,
+    hasTough,
+    hasNoCrumbly,
+    hasHardy,
+    fragileCount,
+    brittleCount,
   }
 }
 
-// ─── Zone Classification ────────────────────────────────────
+/**
+ * Measure reef structure of code
+ * @example
+ * const m = measureStructuring(content)
+ * console.log(m.architecture) // 'massive-reef'
+ */
+export function measureStructuring(content: string): StructuringMeasure {
+  let score = 0
+  score += hasInterface(content) ? 10 : 0
+  score += hasClass(content) ? 8 : 0
+  score += hasTypeAlias(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+  score += hasNamedExport(content) ? 8 : 0
+  score += hasReadonly(content) ? 8 : 0
+  score += hasPrivate(content) ? 8 : 0
 
-/** @example classifyZoneType(colonies) returns zone type */
-export function classifyZoneType(colonies: CoralColony[]): ReefZone['zoneType'] {
-  if (colonies.length === 0) return 'mud-flat'
-  const avgScore = colonies.reduce((s, c) => s + c.qualityScore, 0) / colonies.length
-  const pristineCnt = colonies.filter((c) => c.condition === 'pristine-reef').length
-  if (avgScore >= 75 && pristineCnt >= Math.ceil(colonies.length * 0.3)) return 'great-barrier'
-  if (avgScore >= 60) return 'major-reef'
-  if (avgScore >= 45) return 'atoll-system'
-  if (avgScore >= 30) return 'patch-system'
-  if (avgScore >= 15) return 'rocky-shore'
-  return 'mud-flat'
+  const hasOrganized = hasInterface(content) && hasExport(content)
+  const hasLayered = hasClass(content) && hasTypeAlias(content)
+  const hasStructured = hasGenerics(content) && hasReadonly(content)
+  const hasPatterned = hasNamedExport(content) && hasReturnType(content)
+  const hasSystematic = hasPrivate(content) && hasConst(content)
+  const hasOrdered = hasInterface(content) && hasClass(content)
+
+  score += hasOrganized ? 5 : 0
+  score += hasLayered ? 5 : 0
+  score += hasStructured ? 5 : 0
+  score += hasPatterned ? 5 : 0
+  score += hasSystematic ? 5 : 0
+  score += hasOrdered ? 5 : 0
+
+  const structure = Math.min(score, 100)
+  const chaoticCount = count(/\bvar\b/, content)
+  const randomCount = count(/\bany\b/, content)
+
+  const hasNoChaotic = chaoticCount === 0
+  const hasNoRandom = randomCount === 0
+  const hasNoHaphazard = !has(/\beval\b/, content)
+  const hasNoMessy = !has(/\bdebugger\b/, content)
+  const hasHighStructure = structure >= 70
+
+  let architecture: ReefArchitecture
+  if (structure >= 85) architecture = 'massive-reef'
+  else if (structure >= 70) architecture = 'branching-reef'
+  else if (structure >= 55) architecture = 'plate-reef'
+  else if (structure >= 40) architecture = 'encrusting'
+  else if (structure >= 25) architecture = 'fragile-framework'
+  else architecture = 'rubble'
+
+  return {
+    structure,
+    architecture,
+    hasHighStructure,
+    hasOrganized,
+    hasLayered,
+    hasNoChaotic,
+    hasStructured,
+    hasNoRandom,
+    hasPatterned,
+    hasNoHaphazard,
+    hasSystematic,
+    hasNoMessy,
+    hasOrdered,
+    chaoticCount,
+    randomCount,
+  }
 }
 
-/** @example classifyZoneCondition(avgScore) returns condition */
-export function classifyZoneCondition(avgScore: number): ReefZone['condition'] {
-  if (avgScore >= 80) return 'world-heritage'
-  if (avgScore >= 65) return 'marine-reserve'
-  if (avgScore >= 50) return 'fishing-zone'
-  if (avgScore >= 35) return 'stressed-area'
-  if (avgScore >= 20) return 'dead-zone'
-  return 'desert'
+/**
+ * Measure current resilience of code
+ * @example
+ * const m = measureAdapting(content)
+ * console.log(m.adaptation) // 'deep-current'
+ */
+export function measureAdapting(content: string): AdaptingMeasure {
+  let score = 0
+  score += hasAsync(content) ? 10 : 0
+  score += hasOptionalChaining(content) ? 10 : 0
+  score += hasNullishCoalescing(content) ? 10 : 0
+  score += hasTryCatch(content) ? 8 : 0
+  score += hasExport(content) ? 8 : 0
+  score += hasImport(content) ? 8 : 0
+  score += hasConst(content) ? 8 : 0
+  score += hasInterface(content) ? 8 : 0
+  score += hasReturnType(content) ? 8 : 0
+  score += hasGenerics(content) ? 8 : 0
+
+  const hasAdaptable = hasAsync(content) && hasTryCatch(content)
+  const hasFlexible = hasOptionalChaining(content) && hasNullishCoalescing(content)
+  const hasResponsive = hasExport(content) && hasImport(content)
+  const hasEvolving = hasGenerics(content) && hasAsync(content)
+  const hasDynamic = hasInterface(content) && hasReturnType(content)
+  const hasFlowing = hasConst(content) && hasExport(content)
+
+  score += hasAdaptable ? 5 : 0
+  score += hasFlexible ? 5 : 0
+  score += hasResponsive ? 5 : 0
+  score += hasEvolving ? 5 : 0
+  score += hasDynamic ? 5 : 0
+  score += hasFlowing ? 5 : 0
+
+  const resilience = Math.min(score, 100)
+  const rigidCount = count(/\bvar\b/, content)
+  const stuckCount = count(/\bany\b/, content)
+
+  const hasNoRigid = rigidCount === 0
+  const hasNoStuck = stuckCount === 0
+  const hasNoStiff = !has(/\beval\b/, content)
+  const hasNoStatic = !has(/\bdebugger\b/, content)
+  const hasHighResilience = resilience >= 70
+
+  let adaptation: CurrentAdaptation
+  if (resilience >= 85) adaptation = 'deep-current'
+  else if (resilience >= 70) adaptation = 'strong-swimmer'
+  else if (resilience >= 55) adaptation = 'proper-flow'
+  else if (resilience >= 40) adaptation = 'weak-current'
+  else if (resilience >= 25) adaptation = 'stagnant'
+  else adaptation = 'beached'
+
+  return {
+    resilience,
+    adaptation,
+    hasHighResilience,
+    hasAdaptable,
+    hasFlexible,
+    hasNoRigid,
+    hasResponsive,
+    hasNoStuck,
+    hasEvolving,
+    hasNoStiff,
+    hasDynamic,
+    hasNoStatic,
+    hasFlowing,
+    rigidCount,
+    stuckCount,
+  }
 }
 
-/** @example classifyGuardianGrade(avgHealth) returns grade */
-export function classifyGuardianGrade(avgHealth: number): CoralReefResult['stats']['guardianGrade'] {
-  if (avgHealth >= 80) return 'reef-guardian'
-  if (avgHealth >= 65) return 'marine-biologist'
-  if (avgHealth >= 50) return 'conservationist'
-  if (avgHealth >= 35) return 'observer'
+// ─── Classification Functions ───────────────────────────────────────
+
+/**
+ * Classify polyp condition based on quality score
+ * @example
+ * classifyPolypCondition(90) // 'barrier-reef'
+ */
+export function classifyPolypCondition(score: number): PolypCondition {
+  if (score >= 85) return 'barrier-reef'
+  if (score >= 70) return 'atoll-reef'
+  if (score >= 55) return 'fringing-reef'
+  if (score >= 40) return 'patch-reef'
+  if (score >= 25) return 'dead-coral'
+  return 'sandbar'
+}
+
+/**
+ * Classify reef type based on polyps
+ * @example
+ * classifyReefType(polyps) // 'great-barrier'
+ */
+export function classifyReefType(polyps: CoralPolyp[]): ReefType {
+  if (polyps.length === 0) return 'barren-coast'
+  const avgQs = Math.round(polyps.reduce((s, p) => s + p.qualityScore, 0) / polyps.length)
+  const barrierRatio = polyps.filter(p => p.condition === 'barrier-reef').length / polyps.length
+  if (avgQs >= 75 && barrierRatio >= 0.5) return 'great-barrier'
+  if (avgQs >= 60) return 'barrier-reef'
+  if (avgQs >= 45) return 'fringing-reef'
+  if (avgQs >= 30) return 'patch-reef'
+  if (avgQs >= 15) return 'rocky-shore'
+  return 'barren-coast'
+}
+
+/**
+ * Classify marine grade based on overall health
+ * @example
+ * classifyMarineGrade(85) // 'marine-biologist'
+ */
+export function classifyMarineGrade(avgHealth: number): MarineGrade {
+  if (avgHealth >= 80) return 'marine-biologist'
+  if (avgHealth >= 65) return 'reef-guardian'
+  if (avgHealth >= 50) return 'ocean-steward'
+  if (avgHealth >= 35) return 'beachcomber'
   if (avgHealth >= 20) return 'tourist'
   return 'polluter'
 }
 
-// ─── Recommendations ────────────────────────────────────────
+/**
+ * Classify reef condition based on average quality score
+ * @example
+ * classifyReefCondition(80) // 'pristine-reef'
+ */
+export function classifyReefCondition(avgQs: number): ReefCondition {
+  if (avgQs >= 75) return 'pristine-reef'
+  if (avgQs >= 60) return 'healthy-reef'
+  if (avgQs >= 45) return 'fair-reef'
+  if (avgQs >= 30) return 'stressed-reef'
+  if (avgQs >= 15) return 'degraded-reef'
+  return 'dead-reef'
+}
 
-/** @example generateRecommendations(colonies, zones, ocean, stats) returns string[] */
+// ─── Recommendation Generator ──────────────────────────────────────
+
+/**
+ * Generate actionable recommendations
+ * @example
+ * generateRecommendations(polyps, reefs, ocean, stats)
+ */
 export function generateRecommendations(
-  colonies: CoralColony[],
-  zones: ReefZone[],
-  ocean: CoralReefResult['ocean'],
-  stats: CoralReefResult['stats'],
+  polyps: CoralPolyp[],
+  reefs: ReefSystem[],
+  ocean: CoralOcean,
+  stats: CoralReefStats,
 ): string[] {
   const recs: string[] = []
-
-  if (stats.avgReefStructure < 50) recs.push('Rebuild reef structure — add interfaces and type definitions for a stronger foundation')
-  if (stats.avgPolypHealth < 50) recs.push('Heal polyp colony — remove console.log statements and add return types')
-  if (stats.avgSymbiosisIndex < 50) recs.push('Restore symbiosis — balance imports and exports for healthier dependencies')
-  if (stats.avgTideResilience < 50) recs.push('Strengthen tide resilience — add try/catch blocks and optional parameters')
-  if (stats.avgBiodiversity < 50) recs.push('Increase biodiversity — use more code patterns (interfaces, enums, generics, async)')
-  if (stats.avgBleachingRisk > 60) recs.push('Reduce bleaching risk — remove TODOs, HACKs, and eval() calls')
-  if (stats.degradedCount > stats.totalFiles * 0.3) recs.push('Critical: over 30% of colonies are degraded — consider refactoring')
-  if (stats.deadZoneCount > 0) recs.push('Warning: dead-zone colonies detected — these files need immediate attention')
-  if (ocean.overallHealth < 40) recs.push('Overall reef health is critical — establish a conservation plan')
-  if (zones.length > 0 && zones.every((z) => z.condition === 'desert')) recs.push('All zones are deserts — your codebase needs nurturing')
-
-  if (colonies.length > 0) {
-    const highBleaching = colonies.filter((c) => c.bleaching.risk > 60)
-    if (highBleaching.length > colonies.length * 0.5) recs.push('Over 50% of colonies have high bleaching risk — urgent intervention needed')
+  if (stats.avgBiodiversity < 50) {
+    recs.push('Increase biodiversity with varied code patterns, diverse type compositions, and rich abstractions')
   }
-
+  if (stats.avgColonyHealth < 50) {
+    recs.push('Improve colony health with stronger interconnections, better imports, and cooperative modules')
+  }
+  if (stats.avgPolypStrength < 50) {
+    recs.push('Strengthen individual polyps with const declarations, strict equality, and robust typing')
+  }
+  if (stats.avgReefStructure < 50) {
+    recs.push('Reinforce reef structure with organized interfaces, layered types, and systematic architecture')
+  }
+  if (stats.avgCurrentResilience < 50) {
+    recs.push('Boost current resilience with async patterns, flexible chaining, and adaptive error handling')
+  }
+  if (stats.sandbarCount > 0) {
+    recs.push(`${stats.sandbarCount} file(s) are sandbars — consider significant refactoring`)
+  }
+  if (ocean.overallHealth < 40) {
+    recs.push('Overall reef health is low — focus on biodiversity and structural improvements')
+  }
+  const allBarren = reefs.every(r => r.reefType === 'barren-coast' || r.reefType === 'rocky-shore')
+  if (allBarren && reefs.length > 0) {
+    recs.push('All reef systems are degraded — consider a major quality restoration effort')
+  }
+  const sandbars = polyps.filter(p => p.condition === 'sandbar').map(p => p.file)
+  if (sandbars.length > 0 && sandbars.length <= 3) {
+    recs.push(`Restore these sandbar files: ${sandbars.join(', ')}`)
+  }
+  if (recs.length === 0) {
+    recs.push('Your coral reef is thriving! The ecosystem is healthy and resilient')
+  }
   return recs
 }
 
-// ─── Build Result ───────────────────────────────────────────
+// ─── Analysis Functions ────────────────────────────────────────────
 
-/** @example buildCoralReefResult(files, contents) returns full result */
-export function buildCoralReefResult(files: string[], contents: string[]): CoralReefResult {
-  const colonies = files.map((file, i) => analyzeCoralColony(contents[i] ?? '', file))
+/**
+ * Analyze a single file as a coral polyp
+ * @example
+ * const polyp = analyzeCoralPolyp(content, 'index.ts')
+ * console.log(polyp.condition) // 'barrier-reef'
+ */
+export function analyzeCoralPolyp(content: string, filePath: string): CoralPolyp {
+  const diversifying = measureDiversifying(content)
+  const colonizing = measureColonizing(content)
+  const strengthening = measureStrengthening(content)
+  const structuring = measureStructuring(content)
+  const adapting = measureAdapting(content)
 
-  const zoneMap = new Map<string, CoralColony[]>()
-  colonies.forEach((colony) => {
-    const parts = colony.file.split('/')
-    const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.'
-    const existing = zoneMap.get(dir)
-    if (existing) existing.push(colony)
-    else zoneMap.set(dir, [colony])
-  })
-
-  const zones = Array.from(zoneMap.entries()).map(([dir, cols]) => analyzeReefZone(cols, dir))
-
-  const avgReefStructure = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.reefStructure, 0) / colonies.length) : 0
-  const avgPolypHealth = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.polypHealth, 0) / colonies.length) : 0
-  const avgSymbiosisIndex = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.symbiosisIndex, 0) / colonies.length) : 0
-  const avgTideResilience = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.tideResilience, 0) / colonies.length) : 0
-  const avgBiodiversity = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.biodiversity, 0) / colonies.length) : 0
-  const avgBleachingRisk = colonies.length > 0 ? Math.round(colonies.reduce((s, c) => s + c.bleachingRisk, 0) / colonies.length) : 0
-
-  const overallHealth = Math.round(
-    avgReefStructure * 0.15 +
-    avgPolypHealth * 0.15 +
-    avgSymbiosisIndex * 0.15 +
-    avgTideResilience * 0.2 +
-    avgBiodiversity * 0.15 +
-    (100 - avgBleachingRisk) * 0.2,
+  const qualityScore = Math.round(
+    diversifying.diversity * 0.2 +
+    colonizing.health * 0.2 +
+    strengthening.strength * 0.2 +
+    structuring.structure * 0.2 +
+    adapting.resilience * 0.2,
   )
 
-  const ocean = {
-    avgStructure: avgReefStructure,
-    avgSymbiosis: avgSymbiosisIndex,
-    avgBleaching: avgBleachingRisk,
-    isHealthy: overallHealth >= 60,
-    overallHealth,
+  return {
+    file: filePath,
+    biodiversity: diversifying.diversity,
+    colonyHealth: colonizing.health,
+    polypStrength: strengthening.strength,
+    reefStructure: structuring.structure,
+    currentResilience: adapting.resilience,
+    diversifying,
+    colonizing,
+    strengthening,
+    structuring,
+    adapting,
+    condition: classifyPolypCondition(qualityScore),
+    qualityScore,
+  }
+}
+
+/**
+ * Analyze a directory as a reef system
+ * @example
+ * const reef = analyzeReefSystem(polyps, 'src')
+ * console.log(reef.reefType) // 'great-barrier'
+ */
+export function analyzeReefSystem(polyps: CoralPolyp[], dirPath: string): ReefSystem {
+  if (polyps.length === 0) {
+    return {
+      directory: dirPath,
+      polyps: [],
+      avgBiodiversity: 0,
+      avgStructure: 0,
+      avgResilience: 0,
+      barrierReefCount: 0,
+      sandbarCount: 0,
+      reefType: 'barren-coast',
+      condition: 'dead-reef',
+    }
   }
 
-  const stats = {
-    totalFiles: files.length,
-    totalZones: zones.length,
-    avgReefStructure,
-    avgPolypHealth,
-    avgSymbiosisIndex,
-    avgTideResilience,
+  const avgBiodiversity = Math.round(polyps.reduce((s, p) => s + p.biodiversity, 0) / polyps.length)
+  const avgStructure = Math.round(polyps.reduce((s, p) => s + p.reefStructure, 0) / polyps.length)
+  const avgResilience = Math.round(polyps.reduce((s, p) => s + p.currentResilience, 0) / polyps.length)
+  const barrierReefCount = polyps.filter(p => p.condition === 'barrier-reef').length
+  const sandbarCount = polyps.filter(p => p.condition === 'sandbar').length
+  const reefType = classifyReefType(polyps)
+  const avgQs = Math.round(polyps.reduce((s, p) => s + p.qualityScore, 0) / polyps.length)
+
+  return {
+    directory: dirPath,
+    polyps,
     avgBiodiversity,
-    avgBleachingRisk,
-    pristineReefCount: colonies.filter((c) => c.condition === 'pristine-reef').length,
-    healthyReefCount: colonies.filter((c) => c.condition === 'healthy-reef').length,
-    recoveringCount: colonies.filter((c) => c.condition === 'recovering-reef').length,
-    stressedCount: colonies.filter((c) => c.condition === 'stressed-reef').length,
-    degradedCount: colonies.filter((c) => c.condition === 'degraded').length,
-    deadZoneCount: colonies.filter((c) => c.condition === 'dead-zone').length,
-    hasHighStructureCount: colonies.filter((c) => c.reef.hasHighStructure).length,
-    hasHighHealthCount: colonies.filter((c) => c.polyp.hasHighHealth).length,
-    hasHighHarmonyCount: colonies.filter((c) => c.symbiosis.hasHighHarmony).length,
-    hasHighResilienceCount: colonies.filter((c) => c.tide.hasHighResilience).length,
-    hasHighDiversityCount: colonies.filter((c) => c.bio.hasHighDiversity).length,
-    hasLowRiskCount: colonies.filter((c) => c.bleaching.hasLowRisk).length,
+    avgStructure,
+    avgResilience,
+    barrierReefCount,
+    sandbarCount,
+    reefType,
+    condition: classifyReefCondition(avgQs),
+  }
+}
+
+// ─── Orchestrator ──────────────────────────────────────────────────
+
+/**
+ * Build complete coral reef analysis result
+ * @example
+ * const result = buildCoralReefResult(files, contents)
+ * console.log(result.stats.marineGrade) // 'marine-biologist'
+ */
+export async function buildCoralReefResult(
+  files: string[],
+  contents: string[],
+  _options?: Record<string, unknown>,
+): Promise<CoralReefResult> {
+  const polyps = files.map((file, i) => analyzeCoralPolyp(contents[i] ?? '', file))
+
+  const dirMap = new Map<string, CoralPolyp[]>()
+  for (const polyp of polyps) {
+    const dir = path.dirname(polyp.file)
+    const existing = dirMap.get(dir)
+    if (existing) {
+      existing.push(polyp)
+    } else {
+      dirMap.set(dir, [polyp])
+    }
+  }
+
+  const reefs = Array.from(dirMap.entries()).map(([dir, dirPolyps]) =>
+    analyzeReefSystem(dirPolyps, dir),
+  )
+
+  const avgBiodiversity = polyps.length > 0
+    ? Math.round(polyps.reduce((s, p) => s + p.biodiversity, 0) / polyps.length)
+    : 0
+  const avgStructure = polyps.length > 0
+    ? Math.round(polyps.reduce((s, p) => s + p.reefStructure, 0) / polyps.length)
+    : 0
+  const avgResilience = polyps.length > 0
+    ? Math.round(polyps.reduce((s, p) => s + p.currentResilience, 0) / polyps.length)
+    : 0
+
+  const overallHealth = polyps.length > 0
+    ? Math.round((avgBiodiversity + avgStructure + avgResilience) / 3)
+    : 0
+  const isThriving = avgBiodiversity >= 60
+
+  const ocean: CoralOcean = { avgBiodiversity, avgStructure, avgResilience, isThriving, overallHealth }
+
+  const avgColonyHealth = polyps.length > 0
+    ? Math.round(polyps.reduce((s, p) => s + p.colonyHealth, 0) / polyps.length)
+    : 0
+  const avgPolypStrength = polyps.length > 0
+    ? Math.round(polyps.reduce((s, p) => s + p.polypStrength, 0) / polyps.length)
+    : 0
+  const avgReefStructure = avgStructure
+  const avgCurrentResilience = avgResilience
+
+  const bestPolyp = polyps.length > 0
+    ? polyps.reduce((best, p) => p.qualityScore > best.qualityScore ? p : best).file
+    : ''
+  const mostDiverse = polyps.length > 0
+    ? polyps.reduce((best, p) => p.biodiversity > best.biodiversity ? p : best).file
+    : ''
+  const healthiest = polyps.length > 0
+    ? polyps.reduce((best, p) => p.colonyHealth > best.colonyHealth ? p : best).file
+    : ''
+  const strongest = polyps.length > 0
+    ? polyps.reduce((best, p) => p.polypStrength > best.polypStrength ? p : best).file
+    : ''
+  const bestStructured = polyps.length > 0
+    ? polyps.reduce((best, p) => p.reefStructure > best.reefStructure ? p : best).file
+    : ''
+
+  const stats: CoralReefStats = {
+    totalFiles: polyps.length,
+    totalReefs: reefs.length,
+    avgBiodiversity,
+    avgColonyHealth,
+    avgPolypStrength,
+    avgReefStructure,
+    avgCurrentResilience,
+    barrierReefCount: polyps.filter(p => p.condition === 'barrier-reef').length,
+    atollReefCount: polyps.filter(p => p.condition === 'atoll-reef').length,
+    fringingReefCount: polyps.filter(p => p.condition === 'fringing-reef').length,
+    patchReefCount: polyps.filter(p => p.condition === 'patch-reef').length,
+    deadCoralCount: polyps.filter(p => p.condition === 'dead-coral').length,
+    sandbarCount: polyps.filter(p => p.condition === 'sandbar').length,
+    hasHighDiversityCount: polyps.filter(p => p.diversifying.hasHighDiversity).length,
+    hasHighHealthCount: polyps.filter(p => p.colonizing.hasHighHealth).length,
+    hasHighStrengthCount: polyps.filter(p => p.strengthening.hasHighStrength).length,
+    hasHighStructureCount: polyps.filter(p => p.structuring.hasHighStructure).length,
+    hasHighResilienceCount: polyps.filter(p => p.adapting.hasHighResilience).length,
     overallHealth,
-    guardianGrade: classifyGuardianGrade(overallHealth),
-    bestColony: '',
-    bestStructured: '',
-    healthiest: '',
-    mostHarmonious: '',
-    mostResilient: '',
-    mostDiverse: '',
+    marineGrade: classifyMarineGrade(overallHealth),
+    bestPolyp,
+    mostDiverse,
+    healthiest,
+    strongest,
+    bestStructured,
   }
 
-  if (colonies.length > 0) {
-    stats.bestColony = colonies.reduce((a, b) => a.qualityScore >= b.qualityScore ? a : b).file
-    stats.bestStructured = colonies.reduce((a, b) => a.reefStructure >= b.reefStructure ? a : b).file
-    stats.healthiest = colonies.reduce((a, b) => a.polypHealth >= b.polypHealth ? a : b).file
-    stats.mostHarmonious = colonies.reduce((a, b) => a.symbiosisIndex >= b.symbiosisIndex ? a : b).file
-    stats.mostResilient = colonies.reduce((a, b) => a.tideResilience >= b.tideResilience ? a : b).file
-    stats.mostDiverse = colonies.reduce((a, b) => a.biodiversity >= b.biodiversity ? a : b).file
-  }
+  const recommendations = generateRecommendations(polyps, reefs, ocean, stats)
 
-  const recommendations = generateRecommendations(colonies, zones, ocean, stats)
+  return { polyps, reefs, ocean, stats, recommendations }
+}
 
-  return { colonies, zones, ocean, stats, recommendations }
+/**
+ * Gather files matching the given patterns
+ * @example
+ * const files = gatherFiles('./src', ['.ts'], [])
+ */
+export async function gatherFiles(
+  targetPath: string,
+  exts: string[],
+  ignore: string[],
+): Promise<string[]> {
+  const extensions = exts.length > 0 ? exts : ['.ts', '.js', '.tsx', '.jsx']
+  const patterns = extensions.map(ext => `**/*${ext}`)
+  const ignorePatterns = ignore.length > 0
+    ? ignore
+    : ['**/node_modules/**', '**/dist/**', '**/.git/**']
+  const entries = await fg(patterns, {
+    cwd: targetPath,
+    ignore: ignorePatterns,
+    absolute: true,
+  })
+  return Array.from(new Set(entries)).sort()
 }
