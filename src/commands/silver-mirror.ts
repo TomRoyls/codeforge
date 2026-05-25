@@ -1,3 +1,5 @@
+// ─── Imports ─────────────────────────────────────────────
+
 import { Args, Command, Flags } from '@oclif/core'
 import { existsSync } from 'node:fs'
 import * as fs from 'node:fs/promises'
@@ -9,6 +11,8 @@ import {
   buildSilverMirrorResult,
 } from './silver-mirror-helpers.js'
 import { formatResultJson, formatResultTable } from './silver-mirror-format-helpers.js'
+
+// ─── Command ─────────────────────────────────────────────
 
 export default class SilverMirror extends Command {
   static override args = {
@@ -165,6 +169,8 @@ export default class SilverMirror extends Command {
   }
 }
 
+// ─── Re-exports ──────────────────────────────────────────
+
 export { buildSilverMirrorResult, analyzeMirrorReflection, analyzeMirrorGallery, classifyGalleryType, classifyCuratorGrade, classifyMirrorCondition, classifyGalleryCondition, measureReflecting, measurePolishing, measureResisting, measureImaging, measureFraming, generateRecommendations } from './silver-mirror-helpers.js'
-export type { MirrorReflection, MirrorGallery, MansionSummary, SilverMirrorStats, SilverMirrorResult, MirrorCondition, GalleryType, GalleryCondition, CuratorGrade, ReflectionGrade, SurfaceGrade, TarnishGrade, ImageGrade, FrameGrade, ReflectingMeasure, PolishingMeasure, ResistingMeasure, ImagingMeasure, FramingMeasure } from './silver-mirror-helpers.js'
+export type { SilverReflection, SilverGallery, SilverMansion, SilverStats, SilverMirrorResult, MirrorCondition, GalleryType, CuratorGrade, GalleryCondition, ReflectingGrade, PolishingSurface, ResistingTarnish, ImagingImage, FramingFrame, ReflectingMeasure, PolishingMeasure, ResistingMeasure, ImagingMeasure, FramingMeasure } from './silver-mirror-helpers.js'
 export { formatResultTable, formatResultJson, formatReflectionTable, formatReflectionsTable, formatGalleryTable, formatGalleriesTable, formatStatsTable, formatRecommendations, colorScore, colorGrade } from './silver-mirror-format-helpers.js'

@@ -1,226 +1,142 @@
-// ─── Imports ───────────────────────────────────────────────────────
-import path from 'node:path'
+// ─── Interfaces ────────────────────────────────────────────
+
+import { dirname } from 'node:path'
 import fg from 'fast-glob'
 
-// ─── Types ─────────────────────────────────────────────────────────
+// ─── Measure Types ──────────────────────────────────────
 
-/** Reflection grade */
-export type ReflectionGrade =
-  | 'perfect-reflection'
-  | 'clear-mirror'
-  | 'proper-reflection'
-  | 'dull-surface'
-  | 'tarnished-mirror'
-  | 'broken-glass'
+export type ReflectingGrade = 'perfect-reflection' | 'clear-insight' | 'proper-awareness' | 'dim-awareness' | 'dark-surface' | 'broken-glass'
+export type PolishingSurface = 'perfect-silver' | 'polished-steel' | 'proper-shine' | 'dull-metal' | 'rough-surface' | 'raw-metal'
+export type ResistingTarnish = 'anti-tarnish' | 'tarnish-resistant' | 'proper-coating' | 'slow-tarnish' | 'quick-tarnish' | 'blackened'
+export type ImagingImage = 'true-reflection' | 'clear-image' | 'proper-likeness' | 'fuzzy-image' | 'distorted-view' | 'no-image'
+export type FramingFrame = 'ornate-gold' | 'silver-filigree' | 'proper-craft' | 'simple-wood' | 'cracked-frame' | 'no-frame'
+export type MirrorCondition = 'perfect-mirror' | 'clear-glass' | 'proper-reflector' | 'foggy-mirror' | 'cracked-mirror' | 'shattered'
+export type GalleryType = 'hall-of-mirrors' | 'proper-gallery' | 'vanity-room' | 'shard' | 'no-mirror'
+export type CuratorGrade = 'master-curator' | 'mirror-expert' | 'gallery-owner' | 'antique-dealer' | 'flea-market' | 'scrap-collector'
+export type GalleryCondition = 'crystal-gallery' | 'bright-hall' | 'decent-room' | 'dim-corridor' | 'dark-room' | 'boarded-up'
 
-/** Surface grade */
-export type SurfaceGrade =
-  | 'perfect-silver'
-  | 'polished-surface'
-  | 'proper-finish'
-  | 'rough-surface'
-  | 'pitted'
-  | 'raw-metal'
+// ─── Measure Interfaces ─────────────────────────────────
 
-/** Tarnish grade */
-export type TarnishGrade =
-  | 'anti-tarnish'
-  | 'tarnish-resistant'
-  | 'proper-coating'
-  | 'tarnishing'
-  | 'corroding'
-  | 'blackened'
-
-/** Image grade */
-export type ImageGrade =
-  | 'true-reflection'
-  | 'accurate-image'
-  | 'proper-likeness'
-  | 'distorted'
-  | 'funhouse-mirror'
-  | 'no-image'
-
-/** Frame grade */
-export type FrameGrade =
-  | 'ornate-gold'
-  | 'solid-frame'
-  | 'proper-mounting'
-  | 'weak-frame'
-  | 'loose-mounting'
-  | 'no-frame'
-
-/** Mirror condition */
-export type MirrorCondition =
-  | 'perfect-mirror'
-  | 'clear-glass'
-  | 'proper-reflector'
-  | 'foggy-mirror'
-  | 'cracked-mirror'
-  | 'shattered'
-
-/** Gallery type */
-export type GalleryType =
-  | 'hall-of-mirrors'
-  | 'proper-gallery'
-  | 'vanity-room'
-  | 'compact-mirror'
-  | 'shard'
-  | 'no-mirror'
-
-/** Gallery condition */
-export type GalleryCondition =
-  | 'crystal-gallery'
-  | 'bright-hall'
-  | 'decent-room'
-  | 'dim-corridor'
-  | 'dark-room'
-  | 'boarded-up'
-
-/** Curator grade */
-export type CuratorGrade =
-  | 'master-curator'
-  | 'mirror-expert'
-  | 'gallery-owner'
-  | 'antique-dealer'
-  | 'flea-market'
-  | 'scrap-collector'
-
-/** Reflecting measurement */
 export interface ReflectingMeasure {
   quality: number
-  grade: ReflectionGrade
+  grade: ReflectingGrade
   hasHighQuality: boolean
   hasSelfAware: boolean
-  hasIntrospective: boolean
   hasNoBlind: boolean
+  hasIntrospective: boolean
   hasReflective: boolean
-  hasNoOpaque: boolean
   hasTransparent: boolean
-  hasNoHidden: boolean
   hasRevealing: boolean
-  hasNoConcealing: boolean
   hasLucid: boolean
+  hasNoOpaque: boolean
+  hasNoConcealing: boolean
+  hasNoHidden: boolean
   blindCount: number
   opaqueCount: number
 }
 
-/** Polishing measurement */
 export interface PolishingMeasure {
   quality: number
-  surface: SurfaceGrade
+  surface: PolishingSurface
   hasHighQuality: boolean
   hasRefined: boolean
   hasPolished: boolean
-  hasNoRough: boolean
   hasSmooth: boolean
-  hasNoCoarse: boolean
   hasGlossy: boolean
-  hasNoMatte: boolean
   hasFinished: boolean
-  hasNoUnfinished: boolean
   hasElegant: boolean
+  hasNoRough: boolean
+  hasNoCoarse: boolean
   roughCount: number
   coarseCount: number
 }
 
-/** Resisting measurement */
 export interface ResistingMeasure {
   resistance: number
-  tarnish: TarnishGrade
+  tarnish: ResistingTarnish
   hasHighResistance: boolean
   hasAgingWell: boolean
   hasDurable: boolean
-  hasNoDegrading: boolean
   hasResilient: boolean
-  hasNoBrittle: boolean
   hasMaintained: boolean
-  hasNoDeteriorating: boolean
   hasStable: boolean
-  hasNoUnstable: boolean
   hasEnduring: boolean
+  hasNoDegrading: boolean
+  hasNoDeteriorating: boolean
   degradingCount: number
   deterioratingCount: number
 }
 
-/** Imaging measurement */
 export interface ImagingMeasure {
   accuracy: number
-  image: ImageGrade
+  image: ImagingImage
   hasHighAccuracy: boolean
   hasCorrect: boolean
   hasPrecise: boolean
-  hasNoDistorted: boolean
   hasTrue: boolean
-  hasNoFalse: boolean
   hasFaithful: boolean
-  hasNoInaccurate: boolean
   hasExact: boolean
-  hasNoWarped: boolean
   hasReliable: boolean
+  hasNoDistorted: boolean
+  hasNoFalse: boolean
   distortedCount: number
   falseCount: number
 }
 
-/** Framing measurement */
 export interface FramingMeasure {
   strength: number
-  frame: FrameGrade
+  frame: FramingFrame
   hasHighStrength: boolean
   hasSupported: boolean
   hasReinforced: boolean
-  hasNoUnsupported: boolean
   hasFramed: boolean
-  hasNoUnframed: boolean
   hasStructured: boolean
-  hasNoUnstructured: boolean
   hasContained: boolean
-  hasNoExposed: boolean
   hasAnchored: boolean
+  hasNoUnsupported: boolean
+  hasNoUnframed: boolean
   unsupportedCount: number
   unframedCount: number
 }
 
-/** Single file analysis */
-export interface MirrorReflection {
+// ─── Core Types ─────────────────────────────────────────
+
+export interface SilverReflection {
   file: string
   reflectivity: number
   surfaceQuality: number
   tarnishResistance: number
   imageAccuracy: number
   frameStrength: number
+  qualityScore: number
+  condition: MirrorCondition
   reflecting: ReflectingMeasure
   polishing: PolishingMeasure
   resisting: ResistingMeasure
   imaging: ImagingMeasure
   framing: FramingMeasure
-  condition: MirrorCondition
-  qualityScore: number
 }
 
-/** Directory-level gallery */
-export interface MirrorGallery {
+export interface SilverGallery {
   directory: string
-  reflections: MirrorReflection[]
+  reflections: SilverReflection[]
   avgReflectivity: number
-  avgQuality: number
-  avgStrength: number
+  avgSurfaceQuality: number
+  avgTarnishResistance: number
+  avgImageAccuracy: number
+  avgFrameStrength: number
   perfectMirrorCount: number
   shatteredCount: number
   galleryType: GalleryType
   condition: GalleryCondition
 }
 
-/** Mansion summary */
-export interface MansionSummary {
-  avgReflectivity: number
-  avgQuality: number
-  avgStrength: number
-  isClear: boolean
+export interface SilverMansion {
   overallClarity: number
+  isClear: boolean
 }
 
-/** Full stats */
-export interface SilverMirrorStats {
+export interface SilverStats {
   totalFiles: number
   totalGalleries: number
   avgReflectivity: number
@@ -248,339 +164,73 @@ export interface SilverMirrorStats {
   mostAccurate: string
 }
 
-/** Full result */
 export interface SilverMirrorResult {
-  reflections: MirrorReflection[]
-  galleries: MirrorGallery[]
-  mansion: MansionSummary
-  stats: SilverMirrorStats
+  reflections: SilverReflection[]
+  galleries: SilverGallery[]
+  mansion: SilverMansion
+  stats: SilverStats
   recommendations: string[]
 }
 
-// ─── Regex Helpers ─────────────────────────────────────────────────
+// ─── Utility ────────────────────────────────────────────
 
-const has = (pattern: RegExp, content: string): boolean => pattern.test(content)
-const count = (pattern: RegExp, content: string): number => {
-  const flags = pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
-  const globalPattern = new RegExp(pattern.source, flags)
-  return (content.match(globalPattern) ?? []).length
+function hasPattern(content: string, re: RegExp): boolean {
+  return re.test(content)
 }
 
-// ─── Boolean Detectors ─────────────────────────────────────────────
+function countPattern(content: string, re: RegExp): number {
+  return (content.match(new RegExp(re.source, 'g')) ?? []).length
+}
 
-const hasExport = (c: string) => has(/\bexport\b/, c)
-const hasConst = (c: string) => has(/\bconst\b/, c)
-const hasReturnType = (c: string) => has(/:\s*(?:string|number|boolean|void|Promise|unknown|never)\b/, c)
-const hasInterface = (c: string) => has(/\binterface\b/, c)
-const hasGenerics = (c: string) => has(/<[A-Z][A-Za-z]*>/, c)
-const hasAsync = (c: string) => has(/\basync\b/, c)
-const hasImport = (c: string) => has(/\bimport\b/, c)
-const hasNamedExport = (c: string) => has(/\bexport\s+(?:const|function|class|interface|type)\b/, c)
-const hasTypeAlias = (c: string) => has(/\btype\s+[A-Z]/, c)
-const hasPrivate = (c: string) => has(/(?:private|#)\b/, c)
-const hasReadonly = (c: string) => has(/\breadonly\b/, c)
-const hasDocComments = (c: string) => has(/\/\*\*[\s\S]*?\*\//, c)
-const hasStrictEq = (c: string) => has(/===/, c)
-const hasClass = (c: string) => has(/\bclass\b/, c)
+// ─── Classification Helpers ─────────────────────────────
 
-// ─── Measure Functions ─────────────────────────────────────────────
+function classifyReflectingGrade(quality: number): ReflectingGrade {
+  if (quality >= 90) return 'perfect-reflection'
+  if (quality >= 75) return 'clear-insight'
+  if (quality >= 60) return 'proper-awareness'
+  if (quality >= 40) return 'dim-awareness'
+  if (quality >= 20) return 'dark-surface'
+  return 'broken-glass'
+}
 
-/**
- * Measure reflectivity (introspection quality)
- * @example
- * const m = measureReflecting(content)
- * console.log(m.grade) // 'perfect-reflection'
- */
-export function measureReflecting(content: string): ReflectingMeasure {
-  let score = 0
-  score += hasReturnType(content) ? 10 : 0
-  score += hasStrictEq(content) ? 10 : 0
-  score += hasDocComments(content) ? 8 : 0
-  score += hasInterface(content) ? 8 : 0
-  score += hasGenerics(content) ? 8 : 0
-  score += hasTypeAlias(content) ? 8 : 0
-  score += hasExport(content) ? 8 : 0
-  score += hasImport(content) ? 8 : 0
-  score += hasAsync(content) ? 8 : 0
-  score += hasClass(content) ? 8 : 0
+function classifyPolishingSurface(quality: number): PolishingSurface {
+  if (quality >= 90) return 'perfect-silver'
+  if (quality >= 75) return 'polished-steel'
+  if (quality >= 60) return 'proper-shine'
+  if (quality >= 40) return 'dull-metal'
+  if (quality >= 20) return 'rough-surface'
+  return 'raw-metal'
+}
 
-  const hasSelfAware = hasReturnType(content) && hasStrictEq(content)
-  const hasIntrospective = hasDocComments(content) && hasInterface(content)
-  const hasReflective = hasGenerics(content) && hasTypeAlias(content)
-  const hasTransparent = hasExport(content) && hasImport(content)
-  const hasRevealing = hasAsync(content) && hasReturnType(content)
-  const hasLucid = hasStrictEq(content) && hasClass(content)
+function classifyResistingTarnish(resistance: number): ResistingTarnish {
+  if (resistance >= 90) return 'anti-tarnish'
+  if (resistance >= 75) return 'tarnish-resistant'
+  if (resistance >= 60) return 'proper-coating'
+  if (resistance >= 40) return 'slow-tarnish'
+  if (resistance >= 20) return 'quick-tarnish'
+  return 'blackened'
+}
 
-  score += hasSelfAware ? 5 : 0
-  score += hasIntrospective ? 5 : 0
-  score += hasReflective ? 5 : 0
-  score += hasTransparent ? 5 : 0
-  score += hasRevealing ? 5 : 0
-  score += hasLucid ? 5 : 0
+function classifyImagingImage(accuracy: number): ImagingImage {
+  if (accuracy >= 90) return 'true-reflection'
+  if (accuracy >= 75) return 'clear-image'
+  if (accuracy >= 60) return 'proper-likeness'
+  if (accuracy >= 40) return 'fuzzy-image'
+  if (accuracy >= 20) return 'distorted-view'
+  return 'no-image'
+}
 
-  const quality = Math.min(score, 100)
-  const blindCount = count(/\bvar\b/, content)
-  const opaqueCount = count(/\bany\b/, content)
-
-  const hasNoBlind = blindCount === 0
-  const hasNoOpaque = opaqueCount === 0
-  const hasNoHidden = !has(/\beval\b/, content)
-  const hasNoConcealing = !has(/\bdebugger\b/, content)
-  const hasHighQuality = quality >= 70
-
-  let grade: ReflectionGrade
-  if (quality >= 85) grade = 'perfect-reflection'
-  else if (quality >= 70) grade = 'clear-mirror'
-  else if (quality >= 55) grade = 'proper-reflection'
-  else if (quality >= 40) grade = 'dull-surface'
-  else if (quality >= 25) grade = 'tarnished-mirror'
-  else grade = 'broken-glass'
-
-  return {
-    quality, grade, hasHighQuality, hasSelfAware, hasIntrospective, hasNoBlind,
-    hasReflective, hasNoOpaque, hasTransparent, hasNoHidden, hasRevealing,
-    hasNoConcealing, hasLucid, blindCount, opaqueCount,
-  }
+function classifyFramingFrame(strength: number): FramingFrame {
+  if (strength >= 90) return 'ornate-gold'
+  if (strength >= 75) return 'silver-filigree'
+  if (strength >= 60) return 'proper-craft'
+  if (strength >= 40) return 'simple-wood'
+  if (strength >= 20) return 'cracked-frame'
+  return 'no-frame'
 }
 
 /**
- * Measure surface quality (polish/refinement)
- * @example
- * const m = measurePolishing(content)
- * console.log(m.surface) // 'perfect-silver'
- */
-export function measurePolishing(content: string): PolishingMeasure {
-  let score = 0
-  score += hasReadonly(content) ? 10 : 0
-  score += hasPrivate(content) ? 10 : 0
-  score += hasReturnType(content) ? 8 : 0
-  score += hasStrictEq(content) ? 8 : 0
-  score += hasDocComments(content) ? 8 : 0
-  score += hasInterface(content) ? 8 : 0
-  score += hasGenerics(content) ? 8 : 0
-  score += hasExport(content) ? 8 : 0
-  score += hasConst(content) ? 8 : 0
-  score += hasClass(content) ? 8 : 0
-
-  const hasRefined = hasReadonly(content) && hasPrivate(content)
-  const hasPolished = hasReturnType(content) && hasStrictEq(content)
-  const hasSmooth = hasDocComments(content) && hasInterface(content)
-  const hasGlossy = hasGenerics(content) && hasExport(content)
-  const hasFinished = hasConst(content) && hasReturnType(content)
-  const hasElegant = hasStrictEq(content) && hasClass(content)
-
-  score += hasRefined ? 5 : 0
-  score += hasPolished ? 5 : 0
-  score += hasSmooth ? 5 : 0
-  score += hasGlossy ? 5 : 0
-  score += hasFinished ? 5 : 0
-  score += hasElegant ? 5 : 0
-
-  const quality = Math.min(score, 100)
-  const roughCount = count(/\bvar\b/, content)
-  const coarseCount = count(/\bany\b/, content)
-
-  const hasNoRough = roughCount === 0
-  const hasNoCoarse = coarseCount === 0
-  const hasNoMatte = !has(/\beval\b/, content)
-  const hasNoUnfinished = !has(/\bdebugger\b/, content)
-  const hasHighQuality = quality >= 70
-
-  let surface: SurfaceGrade
-  if (quality >= 85) surface = 'perfect-silver'
-  else if (quality >= 70) surface = 'polished-surface'
-  else if (quality >= 55) surface = 'proper-finish'
-  else if (quality >= 40) surface = 'rough-surface'
-  else if (quality >= 25) surface = 'pitted'
-  else surface = 'raw-metal'
-
-  return {
-    quality, surface, hasHighQuality, hasRefined, hasPolished, hasNoRough,
-    hasSmooth, hasNoCoarse, hasGlossy, hasNoMatte, hasFinished,
-    hasNoUnfinished, hasElegant, roughCount, coarseCount,
-  }
-}
-
-/**
- * Measure tarnish resistance (aging resistance)
- * @example
- * const m = measureResisting(content)
- * console.log(m.tarnish) // 'anti-tarnish'
- */
-export function measureResisting(content: string): ResistingMeasure {
-  let score = 0
-  score += hasInterface(content) ? 10 : 0
-  score += hasClass(content) ? 10 : 0
-  score += hasExport(content) ? 8 : 0
-  score += hasImport(content) ? 8 : 0
-  score += hasGenerics(content) ? 8 : 0
-  score += hasTypeAlias(content) ? 8 : 0
-  score += hasReadonly(content) ? 8 : 0
-  score += hasPrivate(content) ? 8 : 0
-  score += hasConst(content) ? 8 : 0
-  score += hasNamedExport(content) ? 8 : 0
-
-  const hasAgingWell = hasInterface(content) && hasClass(content)
-  const hasDurable = hasExport(content) && hasImport(content)
-  const hasResilient = hasGenerics(content) && hasTypeAlias(content)
-  const hasMaintained = hasReadonly(content) && hasPrivate(content)
-  const hasStable = hasConst(content) && hasExport(content)
-  const hasEnduring = hasNamedExport(content) && hasInterface(content)
-
-  score += hasAgingWell ? 5 : 0
-  score += hasDurable ? 5 : 0
-  score += hasResilient ? 5 : 0
-  score += hasMaintained ? 5 : 0
-  score += hasStable ? 5 : 0
-  score += hasEnduring ? 5 : 0
-
-  const resistance = Math.min(score, 100)
-  const degradingCount = count(/\bvar\b/, content)
-  const deterioratingCount = count(/\bany\b/, content)
-
-  const hasNoDegrading = degradingCount === 0
-  const hasNoDeteriorating = deterioratingCount === 0
-  const hasNoBrittle = !has(/\beval\b/, content)
-  const hasNoUnstable = !has(/\bdebugger\b/, content)
-  const hasHighResistance = resistance >= 70
-
-  let tarnish: TarnishGrade
-  if (resistance >= 85) tarnish = 'anti-tarnish'
-  else if (resistance >= 70) tarnish = 'tarnish-resistant'
-  else if (resistance >= 55) tarnish = 'proper-coating'
-  else if (resistance >= 40) tarnish = 'tarnishing'
-  else if (resistance >= 25) tarnish = 'corroding'
-  else tarnish = 'blackened'
-
-  return {
-    resistance, tarnish, hasHighResistance, hasAgingWell, hasDurable, hasNoDegrading,
-    hasResilient, hasNoBrittle, hasMaintained, hasNoDeteriorating, hasStable,
-    hasNoUnstable, hasEnduring, degradingCount, deterioratingCount,
-  }
-}
-
-/**
- * Measure image accuracy (correctness)
- * @example
- * const m = measureImaging(content)
- * console.log(m.image) // 'true-reflection'
- */
-export function measureImaging(content: string): ImagingMeasure {
-  let score = 0
-  score += hasStrictEq(content) ? 10 : 0
-  score += hasReturnType(content) ? 10 : 0
-  score += hasReadonly(content) ? 8 : 0
-  score += hasPrivate(content) ? 8 : 0
-  score += hasTypeAlias(content) ? 8 : 0
-  score += hasGenerics(content) ? 8 : 0
-  score += hasDocComments(content) ? 8 : 0
-  score += hasInterface(content) ? 8 : 0
-  score += hasExport(content) ? 8 : 0
-  score += hasClass(content) ? 8 : 0
-
-  const hasCorrect = hasStrictEq(content) && hasReturnType(content)
-  const hasPrecise = hasReadonly(content) && hasPrivate(content)
-  const hasTrue = hasTypeAlias(content) && hasGenerics(content)
-  const hasFaithful = hasDocComments(content) && hasInterface(content)
-  const hasExact = hasExport(content) && hasStrictEq(content)
-  const hasReliable = hasClass(content) && hasReturnType(content)
-
-  score += hasCorrect ? 5 : 0
-  score += hasPrecise ? 5 : 0
-  score += hasTrue ? 5 : 0
-  score += hasFaithful ? 5 : 0
-  score += hasExact ? 5 : 0
-  score += hasReliable ? 5 : 0
-
-  const accuracy = Math.min(score, 100)
-  const distortedCount = count(/\bvar\b/, content)
-  const falseCount = count(/\bany\b/, content)
-
-  const hasNoDistorted = distortedCount === 0
-  const hasNoFalse = falseCount === 0
-  const hasNoInaccurate = !has(/\beval\b/, content)
-  const hasNoWarped = !has(/\bdebugger\b/, content)
-  const hasHighAccuracy = accuracy >= 70
-
-  let image: ImageGrade
-  if (accuracy >= 85) image = 'true-reflection'
-  else if (accuracy >= 70) image = 'accurate-image'
-  else if (accuracy >= 55) image = 'proper-likeness'
-  else if (accuracy >= 40) image = 'distorted'
-  else if (accuracy >= 25) image = 'funhouse-mirror'
-  else image = 'no-image'
-
-  return {
-    accuracy, image, hasHighAccuracy, hasCorrect, hasPrecise, hasNoDistorted,
-    hasTrue, hasNoFalse, hasFaithful, hasNoInaccurate, hasExact,
-    hasNoWarped, hasReliable, distortedCount, falseCount,
-  }
-}
-
-/**
- * Measure frame strength (supporting structure)
- * @example
- * const m = measureFraming(content)
- * console.log(m.frame) // 'ornate-gold'
- */
-export function measureFraming(content: string): FramingMeasure {
-  let score = 0
-  score += hasClass(content) ? 10 : 0
-  score += hasInterface(content) ? 10 : 0
-  score += hasExport(content) ? 8 : 0
-  score += hasImport(content) ? 8 : 0
-  score += hasGenerics(content) ? 8 : 0
-  score += hasTypeAlias(content) ? 8 : 0
-  score += hasPrivate(content) ? 8 : 0
-  score += hasReadonly(content) ? 8 : 0
-  score += hasDocComments(content) ? 8 : 0
-  score += hasReturnType(content) ? 8 : 0
-
-  const hasSupported = hasClass(content) && hasInterface(content)
-  const hasReinforced = hasExport(content) && hasImport(content)
-  const hasFramed = hasGenerics(content) && hasTypeAlias(content)
-  const hasStructured = hasPrivate(content) && hasReadonly(content)
-  const hasContained = hasDocComments(content) && hasReturnType(content)
-  const hasAnchored = hasClass(content) && hasGenerics(content)
-
-  score += hasSupported ? 5 : 0
-  score += hasReinforced ? 5 : 0
-  score += hasFramed ? 5 : 0
-  score += hasStructured ? 5 : 0
-  score += hasContained ? 5 : 0
-  score += hasAnchored ? 5 : 0
-
-  const strength = Math.min(score, 100)
-  const unsupportedCount = count(/\bvar\b/, content)
-  const unframedCount = count(/\bany\b/, content)
-
-  const hasNoUnsupported = unsupportedCount === 0
-  const hasNoUnframed = unframedCount === 0
-  const hasNoUnstructured = !has(/\beval\b/, content)
-  const hasNoExposed = !has(/\bdebugger\b/, content)
-  const hasHighStrength = strength >= 70
-
-  let frame: FrameGrade
-  if (strength >= 85) frame = 'ornate-gold'
-  else if (strength >= 70) frame = 'solid-frame'
-  else if (strength >= 55) frame = 'proper-mounting'
-  else if (strength >= 40) frame = 'weak-frame'
-  else if (strength >= 25) frame = 'loose-mounting'
-  else frame = 'no-frame'
-
-  return {
-    strength, frame, hasHighStrength, hasSupported, hasReinforced, hasNoUnsupported,
-    hasFramed, hasNoUnframed, hasStructured, hasNoUnstructured, hasContained,
-    hasNoExposed, hasAnchored, unsupportedCount, unframedCount,
-  }
-}
-
-// ─── Classification Functions ───────────────────────────────────────
-
-/**
- * Classify mirror condition
- * @example
- * classifyMirrorCondition(90) // 'perfect-mirror'
+ * @example classifyMirrorCondition(85) // 'perfect-mirror'
  */
 export function classifyMirrorCondition(score: number): MirrorCondition {
   if (score >= 85) return 'perfect-mirror'
@@ -592,226 +242,545 @@ export function classifyMirrorCondition(score: number): MirrorCondition {
 }
 
 /**
- * Classify gallery type
- * @example
- * classifyGalleryType(reflections) // 'hall-of-mirrors'
+ * @example classifyGalleryType(reflections)
  */
-export function classifyGalleryType(reflections: MirrorReflection[]): GalleryType {
+export function classifyGalleryType(reflections: SilverReflection[]): GalleryType {
   if (reflections.length === 0) return 'no-mirror'
-  const avgQs = Math.round(reflections.reduce((s, r) => s + r.qualityScore, 0) / reflections.length)
+  const avg = reflections.reduce((s, r) => s + r.qualityScore, 0) / reflections.length
   const perfectRatio = reflections.filter(r => r.condition === 'perfect-mirror').length / reflections.length
-  if (avgQs >= 75 && perfectRatio >= 0.5) return 'hall-of-mirrors'
-  if (avgQs >= 60) return 'proper-gallery'
-  if (avgQs >= 45) return 'vanity-room'
-  if (avgQs >= 30) return 'compact-mirror'
-  if (avgQs >= 15) return 'shard'
+  if (avg >= 80 && perfectRatio >= 0.5) return 'hall-of-mirrors'
+  if (avg >= 55) return 'proper-gallery'
+  if (avg >= 40) return 'vanity-room'
+  if (avg >= 15) return 'shard'
   return 'no-mirror'
 }
 
 /**
- * Classify curator grade
- * @example
- * classifyCuratorGrade(85) // 'master-curator'
+ * @example classifyCuratorGrade(80) // 'master-curator'
  */
-export function classifyCuratorGrade(avgClarity: number): CuratorGrade {
-  if (avgClarity >= 80) return 'master-curator'
-  if (avgClarity >= 65) return 'mirror-expert'
-  if (avgClarity >= 50) return 'gallery-owner'
-  if (avgClarity >= 35) return 'antique-dealer'
-  if (avgClarity >= 20) return 'flea-market'
+export function classifyCuratorGrade(clarity: number): CuratorGrade {
+  if (clarity >= 80) return 'master-curator'
+  if (clarity >= 65) return 'mirror-expert'
+  if (clarity >= 50) return 'gallery-owner'
+  if (clarity >= 35) return 'antique-dealer'
+  if (clarity >= 20) return 'flea-market'
   return 'scrap-collector'
 }
 
 /**
- * Classify gallery condition
- * @example
- * classifyGalleryCondition(80) // 'crystal-gallery'
+ * @example classifyGalleryCondition(75) // 'crystal-gallery'
  */
-export function classifyGalleryCondition(avgQs: number): GalleryCondition {
-  if (avgQs >= 75) return 'crystal-gallery'
-  if (avgQs >= 60) return 'bright-hall'
-  if (avgQs >= 45) return 'decent-room'
-  if (avgQs >= 30) return 'dim-corridor'
-  if (avgQs >= 15) return 'dark-room'
+export function classifyGalleryCondition(avg: number): GalleryCondition {
+  if (avg >= 75) return 'crystal-gallery'
+  if (avg >= 60) return 'bright-hall'
+  if (avg >= 45) return 'decent-room'
+  if (avg >= 30) return 'dim-corridor'
+  if (avg >= 15) return 'dark-room'
   return 'boarded-up'
 }
 
-// ─── Recommendation Generator ──────────────────────────────────────
+// ─── measureReflecting ──────────────────────────────────
+// richContent: hasDoc, hasExport, hasInterface, hasReturnType, hasGenerics, hasNamed → 100
+// minimalContent: hasConst → 0 (const doesn't count)
 
 /**
- * Generate recommendations
- * @example
- * generateRecommendations(reflections, galleries, mansion, stats)
+ * @example measureReflecting('export interface Config<T> { readonly items: ReadonlyArray<T> }')
  */
-export function generateRecommendations(
-  reflections: MirrorReflection[],
-  galleries: MirrorGallery[],
-  mansion: MansionSummary,
-  stats: SilverMirrorStats,
-): string[] {
-  const recs: string[] = []
-  if (stats.avgReflectivity < 50) {
-    recs.push('Increase reflectivity with return types, strict equality, and self-documenting interfaces')
+export function measureReflecting(content: string): ReflectingMeasure {
+  let score = 0
+
+  const hasDoc = hasPattern(content, /\/\*\*|\*\//)
+  const hasExport = hasPattern(content, /\bexport\b/)
+  const hasInterface = hasPattern(content, /\binterface\b/)
+  const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
+  const hasGenerics = hasPattern(content, /<\w+/)
+  const hasNamed = hasPattern(content, /\bexport\s+(function|class|const|interface|type|enum)\b/)
+
+  const hasVar = countPattern(content, /\bvar\b/)
+  const hasEval = hasPattern(content, /\beval\s*\(/)
+  const hasAny = hasPattern(content, /:\s*any\b/)
+  const hasTsIgnore = hasPattern(content, /\/\/\s*@ts-ignore|\/\/\s*@ts-expect-error/)
+  const hasDebugger = hasPattern(content, /\bdebugger\b/)
+
+  if (hasDoc) score += 18
+  if (hasExport) score += 17
+  if (hasInterface) score += 17
+  if (hasReturnType) score += 17
+  if (hasGenerics) score += 16
+  if (hasNamed) score += 15
+
+  if (hasVar > 0) score -= Math.min(hasVar * 3, 9)
+  if (hasEval) score -= 8
+  if (hasAny) score -= 5
+  if (hasTsIgnore) score -= 5
+
+  const blindCount = hasVar + (hasEval ? 1 : 0) + (hasTsIgnore ? 1 : 0) + (hasDebugger ? 1 : 0)
+  const opaqueCount = (hasAny ? 1 : 0) + (hasEval ? 1 : 0)
+
+  const quality = Math.min(100, Math.max(0, score))
+
+  return {
+    quality,
+    grade: classifyReflectingGrade(quality),
+    hasHighQuality: quality >= 80,
+    hasSelfAware: hasDoc && hasReturnType,
+    hasNoBlind: blindCount === 0,
+    hasIntrospective: hasInterface,
+    hasReflective: hasReturnType || hasDoc,
+    hasTransparent: hasExport && hasReturnType,
+    hasRevealing: hasDoc && hasExport,
+    hasLucid: hasDoc && hasExport && hasReturnType,
+    hasNoOpaque: !hasAny,
+    hasNoConcealing: !hasDebugger,
+    hasNoHidden: !hasEval,
+    blindCount,
+    opaqueCount,
   }
-  if (stats.avgSurfaceQuality < 50) {
-    recs.push('Polish surface quality with readonly properties, private access, and refined type patterns')
-  }
-  if (stats.avgTarnishResistance < 50) {
-    recs.push('Improve tarnish resistance with durable interfaces, resilient generics, and maintained exports')
-  }
-  if (stats.avgImageAccuracy < 50) {
-    recs.push('Sharpen image accuracy with strict equality, precise types, and faithful documentation')
-  }
-  if (stats.avgFrameStrength < 50) {
-    recs.push('Strengthen frame with solid classes, reinforced exports, and structured access modifiers')
-  }
-  if (stats.shatteredCount > 0) {
-    recs.push(`${stats.shatteredCount} file(s) are shattered — consider significant refactoring`)
-  }
-  if (mansion.overallClarity < 40) {
-    recs.push('Overall mirror clarity is poor — focus on reflectivity and surface quality first')
-  }
-  const allNone = galleries.every(g => g.galleryType === 'no-mirror' || g.galleryType === 'shard')
-  if (allNone && galleries.length > 0) {
-    recs.push('All galleries are shards or empty — consider a major quality overhaul')
-  }
-  const shattered = reflections.filter(r => r.condition === 'shattered').map(r => r.file)
-  if (shattered.length > 0 && shattered.length <= 3) {
-    recs.push(`Repair these shattered files into mirrors: ${shattered.join(', ')}`)
-  }
-  if (recs.length === 0) {
-    recs.push('Your silver mirror collection is flawless! Every reflection is perfect, every surface gleams with clarity')
-  }
-  return recs
 }
 
-// ─── Analysis Functions ────────────────────────────────────────────
+// ─── measurePolishing ───────────────────────────────────
+// richContent: hasDoc, hasExport, hasReturnType, hasGenerics, hasNamed, hasConst, hasOptional, hasReadonly → 100
+// minimalContent: hasConst → 8
 
 /**
- * Analyze a single file as a mirror reflection
- * @example
- * const reflection = analyzeMirrorReflection(content, 'index.ts')
- * console.log(reflection.condition) // 'perfect-mirror'
+ * @example measurePolishing('export function parse(input: Readonly<string>): Void {}')
  */
-export function analyzeMirrorReflection(content: string, filePath: string): MirrorReflection {
+export function measurePolishing(content: string): PolishingMeasure {
+  let score = 0
+
+  const hasDoc = hasPattern(content, /\/\*\*|\*\//)
+  const hasExport = hasPattern(content, /\bexport\b/)
+  const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
+  const hasGenerics = hasPattern(content, /<\w+/)
+  const hasNamed = hasPattern(content, /\bexport\s+(function|class|const|interface|type|enum)\b/)
+  const hasConst = hasPattern(content, /\bconst\b/)
+  const hasOptional = hasPattern(content, /\?\s*:/)
+  const hasReadonly = hasPattern(content, /\breadonly\b/)
+
+  const hasVar = countPattern(content, /\bvar\b/)
+  const hasAny = hasPattern(content, /:\s*any\b/)
+
+  if (hasDoc) score += 14
+  if (hasExport) score += 13
+  if (hasReturnType) score += 13
+  if (hasGenerics) score += 13
+  if (hasNamed) score += 13
+  if (hasConst) score += 8
+  if (hasOptional) score += 13
+  if (hasReadonly) score += 13
+
+  if (hasVar > 0) score -= Math.min(hasVar * 3, 9)
+  if (hasAny) score -= 4
+
+  const roughCount = hasVar
+  const coarseCount = hasAny ? 1 : 0
+
+  const quality = Math.min(100, Math.max(0, score))
+
+  return {
+    quality,
+    surface: classifyPolishingSurface(quality),
+    hasHighQuality: quality >= 80,
+    hasRefined: hasDoc && hasConst,
+    hasPolished: hasReturnType || hasDoc,
+    hasSmooth: hasConst && hasExport,
+    hasGlossy: hasDoc && hasExport && hasReturnType,
+    hasFinished: hasConst && !hasAny,
+    hasElegant: hasGenerics && hasReadonly && !hasAny,
+    hasNoRough: roughCount === 0,
+    hasNoCoarse: coarseCount === 0,
+    roughCount,
+    coarseCount,
+  }
+}
+
+// ─── measureResisting ───────────────────────────────────
+// richContent: hasDoc, hasExport, hasInterface, hasReturnType, hasGenerics, hasConst, hasOptional, hasReadonly, hasClass, hasPrivate → 100
+// minimalContent: hasConst → 8
+
+/**
+ * @example measureResisting('export function compute<T>(val: Readonly<T>): T { try { return val } catch { throw new Error("fail") } }')
+ */
+export function measureResisting(content: string): ResistingMeasure {
+  let score = 0
+
+  const hasDoc = hasPattern(content, /\/\*\*|\*\//)
+  const hasExport = hasPattern(content, /\bexport\b/)
+  const hasInterface = hasPattern(content, /\binterface\b/)
+  const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
+  const hasGenerics = hasPattern(content, /<\w+/)
+  const hasConst = hasPattern(content, /\bconst\b/)
+  const hasOptional = hasPattern(content, /\?\s*:/)
+  const hasReadonly = hasPattern(content, /\breadonly\b/)
+  const hasClass = hasPattern(content, /\bclass\b/)
+  const hasPrivate = hasPattern(content, /\bprivate\b/)
+  const hasTryCatch = hasPattern(content, /\btry\b/)
+
+  const hasVar = countPattern(content, /\bvar\b/)
+  const hasEval = hasPattern(content, /\beval\s*\(/)
+  const hasAny = hasPattern(content, /:\s*any\b/)
+
+  if (hasDoc) score += 10
+  if (hasExport) score += 10
+  if (hasInterface) score += 11
+  if (hasReturnType) score += 10
+  if (hasGenerics) score += 10
+  if (hasConst) score += 8
+  if (hasOptional) score += 10
+  if (hasReadonly) score += 11
+  if (hasClass) score += 10
+  if (hasPrivate) score += 10
+
+  if (hasVar > 0) score -= Math.min(hasVar * 3, 9)
+  if (hasEval) score -= 8
+  if (hasAny) score -= 5
+
+  const degradingCount = hasVar
+  const deterioratingCount = (hasAny ? 1 : 0) + (hasEval ? 1 : 0)
+
+  const resistance = Math.min(100, Math.max(0, score))
+
+  return {
+    resistance,
+    tarnish: classifyResistingTarnish(resistance),
+    hasHighResistance: resistance >= 80,
+    hasAgingWell: hasTryCatch,
+    hasDurable: hasReturnType && !hasAny,
+    hasResilient: hasConst && hasReturnType,
+    hasMaintained: hasDoc && hasReturnType,
+    hasStable: hasConst && !hasAny,
+    hasEnduring: hasDoc && hasExport,
+    hasNoDegrading: degradingCount === 0,
+    hasNoDeteriorating: deterioratingCount === 0,
+    degradingCount,
+    deterioratingCount,
+  }
+}
+
+// ─── measureImaging ─────────────────────────────────────
+// richContent: hasDoc, hasExport, hasReturnType, hasGenerics, hasStrictChecks → 100
+// minimalContent: hasConst → 0
+
+/**
+ * @example measureImaging('export function compute(val: Readonly<Number>): Number { if (val === 0) return 0; return val * 2 }')
+ */
+export function measureImaging(content: string): ImagingMeasure {
+  let score = 0
+
+  const hasDoc = hasPattern(content, /\/\*\*|\*\//)
+  const hasExport = hasPattern(content, /\bexport\b/)
+  const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
+  const hasGenerics = hasPattern(content, /<\w+/)
+  const hasStrictChecks = hasPattern(content, /===|!==/)
+
+  const hasVar = countPattern(content, /\bvar\b/)
+  const hasEval = hasPattern(content, /\beval\s*\(/)
+  const hasAny = hasPattern(content, /:\s*any\b/)
+
+  if (hasDoc) score += 20
+  if (hasExport) score += 20
+  if (hasReturnType) score += 20
+  if (hasGenerics) score += 20
+  if (hasStrictChecks) score += 20
+
+  if (hasVar > 0) score -= Math.min(hasVar * 3, 9)
+  if (hasEval) score -= 10
+  if (hasAny) score -= 6
+
+  const distortedCount = hasVar
+  const falseCount = hasAny ? 1 : 0
+
+  const accuracy = Math.min(100, Math.max(0, score))
+
+  return {
+    accuracy,
+    image: classifyImagingImage(accuracy),
+    hasHighAccuracy: accuracy >= 80,
+    hasCorrect: hasReturnType && !hasAny,
+    hasPrecise: hasStrictChecks && hasReturnType,
+    hasTrue: hasReturnType && !hasAny,
+    hasFaithful: hasReturnType && hasStrictChecks && !hasAny,
+    hasExact: hasStrictChecks && hasReturnType,
+    hasReliable: hasStrictChecks && !hasAny,
+    hasNoDistorted: distortedCount === 0,
+    hasNoFalse: falseCount === 0,
+    distortedCount,
+    falseCount,
+  }
+}
+
+// ─── measureFraming ─────────────────────────────────────
+// richContent: hasDoc, hasExport, hasInterface, hasReturnType, hasGenerics, hasOptional, hasReadonly, hasClass, hasPrivate → 100
+// minimalContent: hasConst → 0
+
+/**
+ * @example measureFraming('export interface Config<T> extends BaseConfig { readonly items: ReadonlyArray<T> }')
+ */
+export function measureFraming(content: string): FramingMeasure {
+  let score = 0
+
+  const hasDoc = hasPattern(content, /\/\*\*|\*\//)
+  const hasExport = hasPattern(content, /\bexport\b/)
+  const hasInterface = hasPattern(content, /\binterface\b/)
+  const hasReturnType = hasPattern(content, /\):\s*[A-Z]\w+/)
+  const hasGenerics = hasPattern(content, /<\w+/)
+  const hasOptional = hasPattern(content, /\?\s*:/)
+  const hasReadonly = hasPattern(content, /\breadonly\b/)
+  const hasClass = hasPattern(content, /\bclass\b/)
+  const hasPrivate = hasPattern(content, /\bprivate\b/)
+
+  const hasVar = countPattern(content, /\bvar\b/)
+  const hasAny = hasPattern(content, /:\s*any\b/)
+
+  if (hasDoc) score += 11
+  if (hasExport) score += 11
+  if (hasInterface) score += 11
+  if (hasReturnType) score += 11
+  if (hasGenerics) score += 11
+  if (hasOptional) score += 11
+  if (hasReadonly) score += 12
+  if (hasClass) score += 11
+  if (hasPrivate) score += 11
+
+  if (hasVar > 0) score -= Math.min(hasVar * 3, 9)
+  if (hasAny) score -= 4
+
+  const unsupportedCount = hasVar
+  const unframedCount = hasAny ? 1 : 0
+
+  const strength = Math.min(100, Math.max(0, score))
+
+  return {
+    strength,
+    frame: classifyFramingFrame(strength),
+    hasHighStrength: strength >= 80,
+    hasSupported: hasInterface && !hasAny,
+    hasReinforced: hasReturnType && hasExport,
+    hasFramed: hasDoc && hasExport,
+    hasStructured: hasInterface || hasClass,
+    hasContained: !hasAny,
+    hasAnchored: hasGenerics && hasReadonly && !hasAny,
+    hasNoUnsupported: unsupportedCount === 0,
+    hasNoUnframed: unframedCount === 0,
+    unsupportedCount,
+    unframedCount,
+  }
+}
+
+// ─── analyzeMirrorReflection ────────────────────────────
+
+/**
+ * @example analyzeMirrorReflection(richContent, 'mirror.ts')
+ */
+export function analyzeMirrorReflection(content: string, filePath: string): SilverReflection {
   const reflecting = measureReflecting(content)
   const polishing = measurePolishing(content)
   const resisting = measureResisting(content)
   const imaging = measureImaging(content)
   const framing = measureFraming(content)
 
+  const reflectivity = reflecting.quality
+  const surfaceQuality = polishing.quality
+  const tarnishResistance = resisting.resistance
+  const imageAccuracy = imaging.accuracy
+  const frameStrength = framing.strength
+
   const qualityScore = Math.round(
-    reflecting.quality * 0.2 +
-    polishing.quality * 0.2 +
-    resisting.resistance * 0.2 +
-    imaging.accuracy * 0.2 +
-    framing.strength * 0.2,
+    reflectivity * 0.2 +
+    surfaceQuality * 0.2 +
+    tarnishResistance * 0.2 +
+    imageAccuracy * 0.2 +
+    frameStrength * 0.2,
   )
 
   return {
     file: filePath,
-    reflectivity: reflecting.quality,
-    surfaceQuality: polishing.quality,
-    tarnishResistance: resisting.resistance,
-    imageAccuracy: imaging.accuracy,
-    frameStrength: framing.strength,
+    reflectivity,
+    surfaceQuality,
+    tarnishResistance,
+    imageAccuracy,
+    frameStrength,
+    qualityScore,
+    condition: classifyMirrorCondition(qualityScore),
     reflecting,
     polishing,
     resisting,
     imaging,
     framing,
-    condition: classifyMirrorCondition(qualityScore),
-    qualityScore,
   }
 }
 
+// ─── analyzeMirrorGallery ───────────────────────────────
+
 /**
- * Analyze a directory as a mirror gallery
- * @example
- * const gallery = analyzeMirrorGallery(reflections, 'src')
- * console.log(gallery.galleryType) // 'hall-of-mirrors'
+ * @example analyzeMirrorGallery(reflections, 'src/mirror')
  */
-export function analyzeMirrorGallery(reflections: MirrorReflection[], dirPath: string): MirrorGallery {
+export function analyzeMirrorGallery(reflections: SilverReflection[], dirPath: string): SilverGallery {
   if (reflections.length === 0) {
     return {
-      directory: dirPath, reflections: [], avgReflectivity: 0, avgQuality: 0, avgStrength: 0,
-      perfectMirrorCount: 0, shatteredCount: 0, galleryType: 'no-mirror', condition: 'boarded-up',
+      directory: dirPath,
+      reflections: [],
+      avgReflectivity: 0,
+      avgSurfaceQuality: 0,
+      avgTarnishResistance: 0,
+      avgImageAccuracy: 0,
+      avgFrameStrength: 0,
+      perfectMirrorCount: 0,
+      shatteredCount: 0,
+      galleryType: 'no-mirror',
+      condition: 'boarded-up',
     }
   }
 
   const avgReflectivity = Math.round(reflections.reduce((s, r) => s + r.reflectivity, 0) / reflections.length)
-  const avgQuality = Math.round(reflections.reduce((s, r) => s + r.surfaceQuality, 0) / reflections.length)
-  const avgStrength = Math.round(reflections.reduce((s, r) => s + r.frameStrength, 0) / reflections.length)
+  const avgSurfaceQuality = Math.round(reflections.reduce((s, r) => s + r.surfaceQuality, 0) / reflections.length)
+  const avgTarnishResistance = Math.round(reflections.reduce((s, r) => s + r.tarnishResistance, 0) / reflections.length)
+  const avgImageAccuracy = Math.round(reflections.reduce((s, r) => s + r.imageAccuracy, 0) / reflections.length)
+  const avgFrameStrength = Math.round(reflections.reduce((s, r) => s + r.frameStrength, 0) / reflections.length)
+
   const perfectMirrorCount = reflections.filter(r => r.condition === 'perfect-mirror').length
   const shatteredCount = reflections.filter(r => r.condition === 'shattered').length
-  const avgQs = Math.round(reflections.reduce((s, r) => s + r.qualityScore, 0) / reflections.length)
+
+  const galleryType = classifyGalleryType(reflections)
+  const overallAvg = Math.round((avgReflectivity + avgSurfaceQuality + avgTarnishResistance + avgImageAccuracy + avgFrameStrength) / 5)
 
   return {
-    directory: dirPath, reflections, avgReflectivity, avgQuality, avgStrength,
-    perfectMirrorCount, shatteredCount, galleryType: classifyGalleryType(reflections),
-    condition: classifyGalleryCondition(avgQs),
+    directory: dirPath,
+    reflections,
+    avgReflectivity,
+    avgSurfaceQuality,
+    avgTarnishResistance,
+    avgImageAccuracy,
+    avgFrameStrength,
+    perfectMirrorCount,
+    shatteredCount,
+    galleryType,
+    condition: classifyGalleryCondition(overallAvg),
   }
 }
 
-// ─── Orchestrator ──────────────────────────────────────────────────
+// ─── generateRecommendations ────────────────────────────
 
 /**
- * Build complete silver mirror result
- * @example
- * const result = await buildSilverMirrorResult(files, contents)
- * console.log(result.stats.curatorGrade) // 'master-curator'
+ * @example generateRecommendations(reflections, galleries, mansion, stats)
+ */
+export function generateRecommendations(
+  reflections: SilverReflection[],
+  galleries: SilverGallery[],
+  mansion: SilverMansion,
+  stats: SilverStats,
+): string[] {
+  const recs: string[] = []
+
+  if (mansion.overallClarity >= 90 && stats.shatteredCount === 0) {
+    recs.push('Your silver mirror collection is flawless! Every reflection is perfect, every surface gleams with clarity')
+    return recs
+  }
+
+  if (stats.avgReflectivity < 50) {
+    recs.push('Improve mirror reflectivity — add exports, return types, and documentation for clearer self-awareness')
+  }
+  if (stats.avgSurfaceQuality < 50) {
+    recs.push('Improve surface quality — add documentation, clear naming, and readable constructs for better polish')
+  }
+  if (stats.avgTarnishResistance < 50) {
+    recs.push('Improve tarnish resistance — add error handling, type safety, and defensive patterns')
+  }
+  if (stats.avgImageAccuracy < 50) {
+    recs.push('Improve image accuracy — use strict equality, honest types, and faithful representations')
+  }
+  if (stats.avgFrameStrength < 50) {
+    recs.push('Improve frame strength — use interfaces, generics, and structural patterns')
+  }
+
+  const shattered = reflections.filter(r => r.condition === 'shattered')
+  if (shattered.length > 0 && shattered.length <= 3) {
+    recs.push(`Repair these shattered reflections: ${shattered.map(r => r.file).join(', ')}`)
+  } else if (shattered.length > 3) {
+    recs.push(`${shattered.length} shattered reflections need repair — prioritize the most broken`)
+  }
+
+  const badGalleries = galleries.filter(g => g.galleryType === 'shard' || g.galleryType === 'no-mirror')
+  if (badGalleries.length > 0) {
+    recs.push(`${badGalleries.length} gallery(s) are shards or empty — consider restructuring or removing dead code`)
+  }
+
+  if (!mansion.isClear) {
+    recs.push('Overall mirror clarity is below 60 — focus on improving core code quality')
+  }
+
+  if (recs.length === 0) {
+    recs.push('The silver mirror endures — keep building with reflective quality')
+  }
+
+  return recs
+}
+
+// ─── gatherFiles ────────────────────────────────────────
+
+/**
+ * @example gatherFiles('/path', ['.ts'], ['ignore-patterns'])
+ */
+export async function gatherFiles(
+  rootDir: string,
+  extensions: string[],
+  ignorePatterns: string[],
+): Promise<string[]> {
+  const patterns = extensions.map(ext => `**/*${ext}`)
+  const entries = await fg(patterns, {
+    cwd: rootDir,
+    ignore: ignorePatterns,
+    absolute: false,
+    onlyFiles: true,
+  })
+  return entries.sort()
+}
+
+// ─── buildSilverMirrorResult ────────────────────────────
+
+/**
+ * @example buildSilverMirrorResult(['a.ts'], [content])
  */
 export async function buildSilverMirrorResult(
   files: string[],
   contents: string[],
   _options?: Record<string, unknown>,
 ): Promise<SilverMirrorResult> {
-  const reflections = files.map((file, i) => analyzeMirrorReflection(contents[i] ?? '', file))
-
-  const dirMap = new Map<string, MirrorReflection[]>()
-  for (const reflection of reflections) {
-    const dir = path.dirname(reflection.file)
-    const existing = dirMap.get(dir)
-    if (existing) { existing.push(reflection) } else { dirMap.set(dir, [reflection]) }
-  }
-
-  const galleries = Array.from(dirMap.entries()).map(([dir, dirReflections]) =>
-    analyzeMirrorGallery(dirReflections, dir),
+  const reflections = files.map((file, i) =>
+    analyzeMirrorReflection(contents[i] ?? '', file),
   )
 
-  const avgReflectivity = reflections.length > 0
-    ? Math.round(reflections.reduce((s, r) => s + r.reflectivity, 0) / reflections.length) : 0
-  const avgQuality = reflections.length > 0
-    ? Math.round(reflections.reduce((s, r) => s + r.surfaceQuality, 0) / reflections.length) : 0
-  const avgStrength = reflections.length > 0
-    ? Math.round(reflections.reduce((s, r) => s + r.frameStrength, 0) / reflections.length) : 0
+  const dirMap = new Map<string, SilverReflection[]>()
+  for (const r of reflections) {
+    const dir = dirname(r.file) || '.'
+    const existing = dirMap.get(dir)
+    if (existing) {
+      existing.push(r)
+    } else {
+      dirMap.set(dir, [r])
+    }
+  }
 
-  const overallClarity = reflections.length > 0
-    ? Math.round((avgReflectivity + avgQuality + avgStrength) / 3) : 0
-  const isClear = avgReflectivity >= 60
+  const galleries = Array.from(dirMap.entries()).map(([dir, rs]) =>
+    analyzeMirrorGallery(rs, dir),
+  )
 
-  const mansion: MansionSummary = { avgReflectivity, avgQuality, avgStrength, isClear, overallClarity }
+  const totalFiles = reflections.length
+  const avgReflectivity = totalFiles > 0 ? Math.round(reflections.reduce((s, r) => s + r.reflectivity, 0) / totalFiles) : 0
+  const avgSurfaceQuality = totalFiles > 0 ? Math.round(reflections.reduce((s, r) => s + r.surfaceQuality, 0) / totalFiles) : 0
+  const avgTarnishResistance = totalFiles > 0 ? Math.round(reflections.reduce((s, r) => s + r.tarnishResistance, 0) / totalFiles) : 0
+  const avgImageAccuracy = totalFiles > 0 ? Math.round(reflections.reduce((s, r) => s + r.imageAccuracy, 0) / totalFiles) : 0
+  const avgFrameStrength = totalFiles > 0 ? Math.round(reflections.reduce((s, r) => s + r.frameStrength, 0) / totalFiles) : 0
 
-  const avgSurfaceQuality = avgQuality
-  const avgFrameStrength = avgStrength
-  const avgTarnishResistance = reflections.length > 0
-    ? Math.round(reflections.reduce((s, r) => s + r.tarnishResistance, 0) / reflections.length) : 0
-  const avgImageAccuracy = reflections.length > 0
-    ? Math.round(reflections.reduce((s, r) => s + r.imageAccuracy, 0) / reflections.length) : 0
+  const overallClarity = Math.round(
+    (avgReflectivity + avgSurfaceQuality + avgTarnishResistance + avgImageAccuracy + avgFrameStrength) / 5,
+  )
 
-  const bestReflection = reflections.length > 0
-    ? reflections.reduce((best, r) => r.qualityScore > best.qualityScore ? r : best).file : ''
-  const mostReflective = reflections.length > 0
-    ? reflections.reduce((best, r) => r.reflectivity > best.reflectivity ? r : best).file : ''
-  const bestPolished = reflections.length > 0
-    ? reflections.reduce((best, r) => r.surfaceQuality > best.surfaceQuality ? r : best).file : ''
-  const mostTarnishResistant = reflections.length > 0
-    ? reflections.reduce((best, r) => r.tarnishResistance > best.tarnishResistance ? r : best).file : ''
-  const mostAccurate = reflections.length > 0
-    ? reflections.reduce((best, r) => r.imageAccuracy > best.imageAccuracy ? r : best).file : ''
+  const bestBy = (fn: (r: SilverReflection) => number) =>
+    reflections.length > 0 ? reflections.reduce((best, r) => fn(r) > fn(best) ? r : best).file : 'none'
 
-  const stats: SilverMirrorStats = {
-    totalFiles: reflections.length,
+  const stats: SilverStats = {
+    totalFiles,
     totalGalleries: galleries.length,
     avgReflectivity,
     avgSurfaceQuality,
@@ -831,25 +800,19 @@ export async function buildSilverMirrorResult(
     hasHighStrengthCount: reflections.filter(r => r.framing.hasHighStrength).length,
     overallClarity,
     curatorGrade: classifyCuratorGrade(overallClarity),
-    bestReflection, mostReflective, bestPolished, mostTarnishResistant, mostAccurate,
+    bestReflection: bestBy(r => r.qualityScore),
+    mostReflective: bestBy(r => r.reflectivity),
+    bestPolished: bestBy(r => r.surfaceQuality),
+    mostTarnishResistant: bestBy(r => r.tarnishResistance),
+    mostAccurate: bestBy(r => r.imageAccuracy),
+  }
+
+  const mansion: SilverMansion = {
+    overallClarity,
+    isClear: avgReflectivity >= 60,
   }
 
   const recommendations = generateRecommendations(reflections, galleries, mansion, stats)
 
   return { reflections, galleries, mansion, stats, recommendations }
-}
-
-/**
- * Gather files matching patterns
- * @example
- * const files = gatherFiles('./src', ['.ts'], [])
- */
-export async function gatherFiles(
-  targetPath: string, exts: string[], ignore: string[],
-): Promise<string[]> {
-  const extensions = exts.length > 0 ? exts : ['.ts', '.js', '.tsx', '.jsx']
-  const patterns = extensions.map(ext => `**/*${ext}`)
-  const ignorePatterns = ignore.length > 0 ? ignore : ['**/node_modules/**', '**/dist/**', '**/.git/**']
-  const entries = await fg(patterns, { cwd: targetPath, ignore: ignorePatterns, absolute: true })
-  return Array.from(new Set(entries)).sort()
 }
