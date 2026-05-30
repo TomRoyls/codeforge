@@ -87,4 +87,19 @@ describe('RungeKutta', () => {
     const last = result[result.length - 1]!
     expect(last.y).toBeCloseTo(8 / 3, 3)
   })
+
+  it('solveSystem handles single equation', () => {
+    const result = RungeKutta.solveSystem(
+      (_t, _y) => [2],
+      0, [0], 1, 0.01
+    )
+    const last = result[result.length - 1]!
+    expect(last.y[0]).toBeCloseTo(2, 3)
+  })
+
+  it('solve preserves solution quality for sin(t)', () => {
+    const result = RungeKutta.solve(Math.cos, 0, 0, Math.PI, 0.01)
+    const last = result[result.length - 1]!
+    expect(last.y).toBeCloseTo(0, 2)
+  })
 })
