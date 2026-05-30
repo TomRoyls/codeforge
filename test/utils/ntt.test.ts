@@ -52,4 +52,16 @@ describe('NTT', () => {
     const result = NTT.multiplyPolynomials([100n, 200n], [300n, 400n])
     expect(result).toEqual([30000n, 100000n, 80000n])
   })
+
+  it('transform of 8 elements and inverse', () => {
+    const input = [1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n]
+    const transformed = NTT.transform(input)
+    const inverted = NTT.transform(transformed, 998244353n, 3n, true)
+    expect(inverted).toEqual(input)
+  })
+
+  it('multiplyPolynomials degree-3', () => {
+    const result = NTT.multiplyPolynomials([1n, 1n, 1n], [1n, 1n, 1n])
+    expect(result).toEqual([1n, 2n, 3n, 2n, 1n])
+  })
 })

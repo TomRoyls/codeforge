@@ -59,4 +59,20 @@ describe('FastFourierTransform', () => {
       expect(Math.abs(result[i]!.re)).toBeLessThan(1e-6)
     }
   })
+
+  it('transform of 8-point signal preserves energy', () => {
+    const input = [{ re: 1, im: 0 }, { re: 0, im: 0 }, { re: 1, im: 0 }, { re: 0, im: 0 },
+      { re: 1, im: 0 }, { re: 0, im: 0 }, { re: 1, im: 0 }, { re: 0, im: 0 }]
+    const transformed = FastFourierTransform.transform(input)
+    let energyIn = 0
+    let energyOut = 0
+    for (const x of input) energyIn += x.re * x.re + x.im * x.im
+    for (const x of transformed) energyOut += x.re * x.re + x.im * x.im
+    expect(energyOut / input.length).toBeCloseTo(energyIn, 4)
+  })
+
+  it('multiplyPolynomials (x^2+1)(x^2-1) = x^4-1', () => {
+    const result = FastFourierTransform.multiplyPolynomials([1, 0, 1], [-1, 0, 1])
+    expect(result).toEqual([-1, 0, 0, 0, 1])
+  })
 })
