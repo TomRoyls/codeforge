@@ -56,4 +56,22 @@ describe('DisjointSparseTable', () => {
     expect(dst.query(0, 1)).toBe(30)
     expect(dst.query(1, 2)).toBe(50)
   })
+
+  it('queries full range product', () => {
+    const dst = new DisjointSparseTable([1, 2, 3, 4], (a, b) => a * b)
+    expect(dst.query(0, 3)).toBe(24)
+  })
+
+  it('handles large array min query', () => {
+    const data = Array.from({ length: 100 }, (_, i) => 100 - i)
+    const dst = new DisjointSparseTable(data, (a, b) => Math.min(a, b))
+    expect(dst.query(0, 99)).toBe(1)
+    expect(dst.query(50, 99)).toBe(1)
+  })
+
+  it('handles bitwise AND queries', () => {
+    const dst = new DisjointSparseTable([15, 12, 10, 9], (a, b) => a & b)
+    expect(dst.query(0, 3)).toBe(8)
+    expect(dst.query(0, 1)).toBe(12)
+  })
 })

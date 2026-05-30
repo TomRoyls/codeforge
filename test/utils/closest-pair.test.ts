@@ -87,4 +87,13 @@ describe('ClosestPair', () => {
     const result = ClosestPair.find(points)
     expect(result!.distance).toBeCloseTo(2, 8)
   })
+
+  it('bruteForce returns null for 0 or 1 points', () => {
+    expect(ClosestPair.bruteForce([])).toBeNull()
+    expect(ClosestPair.bruteForce([{ x: 0, y: 0 }])).toBeNull()
+  })
+
+  it('distance handles negative coordinates', () => {
+    expect(ClosestPair.distance({ x: -1, y: -1 }, { x: 2, y: 3 })).toBeCloseTo(5, 8)
+  })
 })
