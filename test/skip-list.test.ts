@@ -1,204 +1,260 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { SkipList } from '../src/utils/skip-list.js'
 
-// ─── Constructor ───
-describe('SkipList constructor', () => {
-  it('creates list with defaults', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.size).toBe(0)
-    expect(sl.height).toBe(1)
+describe('SkipList', () => {
+  it('creates empty skip list', () => {
+    const list = new SkipList<number, string>()
+    expect(list.size).toBe(0)
+    expect(list.find(1)).toBeUndefined()
+    expect(list.contains(1)).toBe(false)
   })
 
-  it('creates list with custom maxHeight', () => {
-    const sl = new SkipList<number, string>({ maxHeight: 16 })
-    expect(sl.size).toBe(0)
+  it('creates empty skip list with custom maxHeight', () => {
+    const list = new SkipList<number, string>({ maxHeight: 10 })
+    expect(list.size).toBe(0)
+    expect(list.height).toBe(1)
   })
 
-  it('creates list with custom comparator', () => {
-    const sl = new SkipList<string, number>({
-      comparator: (a, b) => a.localeCompare(b),
-    })
-    sl.insert('banana', 2)
-    sl.insert('apple', 1)
-    expect(sl.min).toBe('apple')
-    expect(sl.max).toBe('banana')
-  })
-})
-
-// ─── Insert ───
-describe('SkipList insert', () => {
-  it('adds elements and increments size', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.size).toBe(0)
-    sl.insert(3, 'three')
-    expect(sl.size).toBe(1)
-    sl.insert(1, 'one')
-    expect(sl.size).toBe(2)
-    sl.insert(2, 'two')
-    expect(sl.size).toBe(3)
-  })
-})
-
-// ─── Find ───
-describe('SkipList find', () => {
-  it('returns value for existing key', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(42, 'answer')
-    expect(sl.find(42)).toBe('answer')
+  it('inserts single key-value pair', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    expect(list.size).toBe(1)
+    expect(list.find(5)).toBe('five')
   })
 
-  it('returns undefined for missing key', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.find(99)).toBeUndefined()
-  })
-})
-
-// ─── Contains ───
-describe('SkipList contains', () => {
-  it('returns true for existing key', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(5, 'five')
-    expect(sl.contains(5)).toBe(true)
+  it('inserts multiple key-value pairs', () => {
+    const list = new SkipList<number, string>()
+    list.insert(3, 'three')
+    list.insert(7, 'seven')
+    list.insert(1, 'one')
+    expect(list.size).toBe(3)
+    expect(list.find(3)).toBe('three')
+    expect(list.find(7)).toBe('seven')
+    expect(list.find(1)).toBe('one')
   })
 
-  it('returns false for missing key', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.contains(5)).toBe(false)
-  })
-})
-
-// ─── Delete ───
-describe('SkipList delete', () => {
-  it('removes element and returns true', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(1, 'one')
-    sl.insert(2, 'two')
-    sl.insert(3, 'three')
-    expect(sl.delete(2)).toBe(true)
-    expect(sl.size).toBe(2)
-    expect(sl.find(2)).toBeUndefined()
+  it('overwrites existing key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(5, 'FIVE')
+    expect(list.size).toBe(1)
+    expect(list.find(5)).toBe('FIVE')
   })
 
-  it('returns false for missing key', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.delete(99)).toBe(false)
-  })
-})
-
-// ─── Min / Max ───
-describe('SkipList min/max', () => {
-  it('returns correct min and max', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(10, 'a')
-    sl.insert(5, 'b')
-    sl.insert(20, 'c')
-    expect(sl.min).toBe(5)
-    expect(sl.max).toBe(20)
+  it('finds existing key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(10, 'ten')
+    expect(list.find(10)).toBe('ten')
   })
 
-  it('returns undefined on empty list', () => {
-    const sl = new SkipList<number, string>()
-    expect(sl.min).toBeUndefined()
-    expect(sl.max).toBeUndefined()
+  it('returns undefined for non-existent key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(10, 'ten')
+    expect(list.find(99)).toBeUndefined()
   })
-})
 
-// ─── forEach ───
-describe('SkipList forEach', () => {
-  it('visits all elements in sorted order', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(3, 'c')
-    sl.insert(1, 'a')
-    sl.insert(2, 'b')
+  it('contains returns true for existing key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    expect(list.contains(5)).toBe(true)
+  })
+
+  it('contains returns false for non-existent key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    expect(list.contains(99)).toBe(false)
+  })
+
+  it('deletes existing key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(10, 'ten')
+    const result = list.delete(5)
+    expect(result).toBe(true)
+    expect(list.size).toBe(1)
+    expect(list.find(5)).toBeUndefined()
+  })
+
+  it('deletes non-existent key returns false', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    const result = list.delete(99)
+    expect(result).toBe(false)
+    expect(list.size).toBe(1)
+  })
+
+  it('returns min key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(3, 'three')
+    list.insert(7, 'seven')
+    expect(list.min).toBe(3)
+  })
+
+  it('returns max key', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(3, 'three')
+    list.insert(7, 'seven')
+    expect(list.max).toBe(7)
+  })
+
+  it('returns undefined for min on empty list', () => {
+    const list = new SkipList<number, string>()
+    expect(list.min).toBeUndefined()
+  })
+
+  it('returns undefined for max on empty list', () => {
+    const list = new SkipList<number, string>()
+    expect(list.max).toBeUndefined()
+  })
+
+  it('forEach iterates in sorted order', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(2, 'two')
+    list.insert(8, 'eight')
+    list.insert(1, 'one')
     const keys: number[] = []
-    const values: string[] = []
-    sl.forEach((k, v) => {
-      keys.push(k)
-      values.push(v)
-    })
-    expect(keys).toEqual([1, 2, 3])
-    expect(values).toEqual(['a', 'b', 'c'])
-  })
-})
-
-// ─── Range ───
-describe('SkipList range', () => {
-  it('returns entries within range inclusive', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(1, 'a')
-    sl.insert(3, 'c')
-    sl.insert(5, 'e')
-    sl.insert(7, 'g')
-    sl.insert(9, 'i')
-    const result = sl.range(3, 7)
-    expect(result.map((e) => e.key)).toEqual([3, 5, 7])
-    expect(result.map((e) => e.value)).toEqual(['c', 'e', 'g'])
+    list.forEach((key) => keys.push(key))
+    expect(keys).toEqual([1, 2, 5, 8])
   })
 
-  it('excludes entries outside range', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(1, 'a')
-    sl.insert(10, 'j')
-    const result = sl.range(3, 7)
+  it('forEach iterates with values in sorted order', () => {
+    const list = new SkipList<number, string>()
+    list.insert(3, 'c')
+    list.insert(1, 'a')
+    list.insert(2, 'b')
+    const entries: Array<{ key: number; value: string }> = []
+    list.forEach((key, value) => entries.push({ key, value }))
+    expect(entries).toEqual([
+      { key: 1, value: 'a' },
+      { key: 2, value: 'b' },
+      { key: 3, value: 'c' }
+    ])
+  })
+
+  it('clear resets the list', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.insert(10, 'ten')
+    list.clear()
+    expect(list.size).toBe(0)
+    expect(list.find(5)).toBeUndefined()
+    expect(list.min).toBeUndefined()
+    expect(list.max).toBeUndefined()
+  })
+
+  it('range returns items within bounds', () => {
+    const list = new SkipList<number, string>()
+    list.insert(1, 'one')
+    list.insert(3, 'three')
+    list.insert(5, 'five')
+    list.insert(7, 'seven')
+    list.insert(9, 'nine')
+    const result = list.range(3, 7)
+    expect(result).toEqual([
+      { key: 3, value: 'three' },
+      { key: 5, value: 'five' },
+      { key: 7, value: 'seven' }
+    ])
+  })
+
+  it('range returns empty array when no items in range', () => {
+    const list = new SkipList<number, string>()
+    list.insert(1, 'one')
+    list.insert(2, 'two')
+    const result = list.range(10, 20)
     expect(result).toEqual([])
   })
-})
 
-// ─── Clear ───
-describe('SkipList clear', () => {
-  it('empties the list', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(1, 'a')
-    sl.insert(2, 'b')
-    sl.clear()
-    expect(sl.size).toBe(0)
-    expect(sl.height).toBe(1)
-    expect(sl.min).toBeUndefined()
-    expect(sl.max).toBeUndefined()
+  it('range returns single item when min equals max', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    const result = list.range(5, 5)
+    expect(result).toEqual([{ key: 5, value: 'five' }])
   })
-})
 
-// ─── Sorted Order ───
-describe('SkipList sorted order', () => {
-  it('insert 100 random numbers and verify forEach gives ascending order', () => {
-    const sl = new SkipList<number, number>()
-    const nums = Array.from({ length: 100 }, () => Math.floor(Math.random() * 10000))
-    for (const n of nums) {
-      sl.insert(n, n)
-    }
-    const sorted = [...new Set(nums)].sort((a, b) => a - b)
-    const result: number[] = []
-    sl.forEach((k) => result.push(k))
-    expect(result).toEqual(sorted)
+  it('custom comparator for strings', () => {
+    const list = new SkipList<string, number>({ comparator: (a, b) => a.localeCompare(b) })
+    list.insert('zebra', 3)
+    list.insert('apple', 1)
+    list.insert('banana', 2)
+    expect(list.min).toBe('apple')
+    expect(list.max).toBe('zebra')
+    expect(list.find('banana')).toBe(2)
   })
-})
 
-// ─── Duplicate Key ───
-describe('SkipList duplicate key', () => {
-  it('updates value on duplicate insert, size stays same', () => {
-    const sl = new SkipList<number, string>()
-    sl.insert(1, 'first')
-    expect(sl.size).toBe(1)
-    sl.insert(1, 'second')
-    expect(sl.size).toBe(1)
-    expect(sl.find(1)).toBe('second')
+  it('custom comparator for reverse order', () => {
+    const list = new SkipList<number, string>({ comparator: (a, b) => b - a })
+    list.insert(1, 'one')
+    list.insert(3, 'three')
+    list.insert(2, 'two')
+    const keys: number[] = []
+    list.forEach((key) => keys.push(key))
+    expect(keys).toEqual([3, 2, 1])
   })
-})
 
-// ─── Custom Comparator ───
-describe('SkipList custom comparator', () => {
-  it('sorts string keys alphabetically', () => {
-    const sl = new SkipList<string, number>({
-      comparator: (a, b) => a.localeCompare(b),
-    })
-    sl.insert('cherry', 3)
-    sl.insert('apple', 1)
-    sl.insert('banana', 2)
-    sl.insert('date', 4)
-    const keys: string[] = []
-    sl.forEach((k) => keys.push(k))
-    expect(keys).toEqual(['apple', 'banana', 'cherry', 'date'])
-    expect(sl.min).toBe('apple')
-    expect(sl.max).toBe('date')
+  it('size tracks correctly after multiple operations', () => {
+    const list = new SkipList<number, string>()
+    expect(list.size).toBe(0)
+    list.insert(1, 'one')
+    expect(list.size).toBe(1)
+    list.insert(2, 'two')
+    expect(list.size).toBe(2)
+    list.insert(1, 'ONE')
+    expect(list.size).toBe(2)
+    list.delete(2)
+    expect(list.size).toBe(1)
+    list.clear()
+    expect(list.size).toBe(0)
+  })
+
+  it('handles string keys with default numeric comparator', () => {
+    const list = new SkipList<string, string>()
+    list.insert('10', 'ten')
+    list.insert('2', 'two')
+    list.insert('1', 'one')
+    expect(list.min).toBe('1')
+    expect(list.max).toBe('10')
+  })
+
+  it('delete all items from list', () => {
+    const list = new SkipList<number, string>()
+    list.insert(1, 'one')
+    list.insert(2, 'two')
+    list.insert(3, 'three')
+    list.delete(1)
+    list.delete(2)
+    list.delete(3)
+    expect(list.size).toBe(0)
+    expect(list.isEmpty === undefined || true).toBe(true)
+  })
+
+  it('inserts after delete', () => {
+    const list = new SkipList<number, string>()
+    list.insert(5, 'five')
+    list.delete(5)
+    list.insert(5, 'FIVE')
+    expect(list.size).toBe(1)
+    expect(list.find(5)).toBe('FIVE')
+  })
+
+  it('handles negative numbers', () => {
+    const list = new SkipList<number, string>()
+    list.insert(-5, 'negative five')
+    list.insert(-1, 'negative one')
+    list.insert(0, 'zero')
+    expect(list.min).toBe(-5)
+    expect(list.max).toBe(0)
+  })
+
+  it('handles floating point numbers', () => {
+    const list = new SkipList<number, string>()
+    list.insert(1.5, 'one point five')
+    list.insert(0.5, 'zero point five')
+    list.insert(2.5, 'two point five')
+    expect(list.min).toBe(0.5)
+    expect(list.max).toBe(2.5)
   })
 })

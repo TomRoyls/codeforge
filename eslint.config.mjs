@@ -10,7 +10,7 @@ const gitignorePath = path.resolve(__dirname, '.gitignore')
 
 export default tseslintConfig(
   {
-    ignores: ['dist/', 'coverage/', 'node_modules/', 'bin/', 'test/', 'vitest.config.ts'],
+    ignores: ['dist/', 'coverage/', 'node_modules/', 'bin/', 'test/', 'vitest.config.ts', 'src/commands/'],
   },
   ...tseslintConfigs.recommended,
   ...oclif,

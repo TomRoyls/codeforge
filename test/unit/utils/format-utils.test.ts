@@ -4,7 +4,9 @@ import {
   formatPercentage,
   formatTimeSeconds,
   countSeverities,
-} from '../../../src/utils/format-utils'
+  formatBytes,
+  formatDuration,
+} from '../../../src/utils/format-utils.js'
 
 describe('format-utils', () => {
   describe('formatTime', () => {
@@ -1462,6 +1464,82 @@ describe('format-utils', () => {
 
     test('e percentage', () => {
       expect(formatPercentage(Math.E, 4)).toBe(`${Math.E.toFixed(4)}%`)
+    })
+  })
+
+  describe('formatBytes', () => {
+    test('formats 0 bytes', () => {
+      expect(formatBytes(0)).toBe('0.0 B')
+    })
+
+    test('formats bytes under 1KB', () => {
+      expect(formatBytes(100)).toBe('100.0 B')
+      expect(formatBytes(512)).toBe('512.0 B')
+      expect(formatBytes(1023)).toBe('1023.0 B')
+    })
+
+    test('formats kilobytes', () => {
+      expect(formatBytes(1024)).toBe('1.0 KB')
+      expect(formatBytes(1536)).toBe('1.5 KB')
+      expect(formatBytes(5120)).toBe('5.0 KB')
+    })
+
+    test('formats megabytes', () => {
+      expect(formatBytes(1048576)).toBe('1.0 MB')
+      expect(formatBytes(5242880)).toBe('5.0 MB')
+    })
+
+    test('formats gigabytes', () => {
+      expect(formatBytes(1073741824)).toBe('1.0 GB')
+    })
+
+    test('formats terabytes', () => {
+      expect(formatBytes(1099511627776)).toBe('1.0 TB')
+    })
+
+    test('respects custom decimals', () => {
+      expect(formatBytes(1536, 0)).toBe('2 KB')
+      expect(formatBytes(1536, 2)).toBe('1.50 KB')
+      expect(formatBytes(1536, 3)).toBe('1.500 KB')
+    })
+
+    test('handles 0 with custom decimals', () => {
+      expect(formatBytes(0, 0)).toBe('0 B')
+      expect(formatBytes(0, 2)).toBe('0.00 B')
+    })
+
+    test('returns string type', () => {
+      expect(typeof formatBytes(0)).toBe('string')
+      expect(typeof formatBytes(1024)).toBe('string')
+    })
+  })
+
+  describe('formatDuration', () => {
+    test('formats milliseconds under 1 second', () => {
+      expect(formatDuration(0)).toBe('0ms')
+      expect(formatDuration(100)).toBe('100ms')
+      expect(formatDuration(500)).toBe('500ms')
+      expect(formatDuration(999)).toBe('999ms')
+    })
+
+    test('formats seconds', () => {
+      expect(formatDuration(1000)).toBe('1.0s')
+      expect(formatDuration(5000)).toBe('5.0s')
+      expect(formatDuration(30000)).toBe('30.0s')
+      expect(formatDuration(59999)).toBe('60.0s')
+    })
+
+    test('formats minutes and seconds', () => {
+      expect(formatDuration(60000)).toBe('1m 0s')
+      expect(formatDuration(90000)).toBe('1m 30s')
+      expect(formatDuration(120000)).toBe('2m 0s')
+      expect(formatDuration(3661000)).toBe('61m 1s')
+    })
+
+    test('returns string type', () => {
+      expect(typeof formatDuration(0)).toBe('string')
+      expect(typeof formatDuration(1000)).toBe('string')
+      expect(typeof formatDuration(60000)).toBe('string')
     })
   })
 })
